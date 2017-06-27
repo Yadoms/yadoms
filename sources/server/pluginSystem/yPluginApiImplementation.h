@@ -59,10 +59,6 @@ namespace pluginSystem
                          const std::string& model,
                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords,
                          const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
-      std::string declareManuallyCreatedDevice(const std::string& userDeviceName,
-                                               const std::string& type,
-                                               const std::string& model,
-                                               const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
       std::vector<std::string> getAllDevices() const override;
       bool deviceExists(const std::string& device) const override;
       shared::CDataContainer getDeviceConfiguration(const std::string& device) const override;
@@ -104,9 +100,6 @@ namespace pluginSystem
       // [END] IYPluginApi implementation 
 
       int getPluginId() const;
-
-   protected:
-      std::string generateUniqueDeviceName() const;
 
    private:
       //--------------------------------------------------------------

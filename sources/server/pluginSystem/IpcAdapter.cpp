@@ -255,8 +255,6 @@ namespace pluginSystem
          break;
       case plugin_IPC::toYadoms::msg::kExtraQueryProgress: processExtraQueryProgression(toYadomsProtoBuffer.extraqueryprogress());
          break;
-      case plugin_IPC::toYadoms::msg::kDeclareManuallyCreatedDeviceRequest: processDeclareManuallyCreatedDeviceRequest(toYadomsProtoBuffer.declaremanuallycreateddevicerequest());
-         break;
       default:
          throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
       }
@@ -513,17 +511,6 @@ namespace pluginSystem
       }
    }
 
-   void CIpcAdapter::processDeclareManuallyCreatedDeviceRequest(const plugin_IPC::toYadoms::DeclareManuallyCreatedDeviceRequest& msg)
-   {
-      plugin_IPC::toPlugin::msg ans;
-      auto answer = ans.mutable_declaremanuallycreateddeviceanswer();
-      answer->set_devicename(m_pluginApi->declareManuallyCreatedDevice(msg.userdevicename(),
-                                                                       msg.type(),
-                                                                       msg.model(),
-                                                                       msg.details().empty() ? shared::CDataContainer::EmptyContainer : shared::CDataContainer(msg.details())));
-      send(ans);
-   }
-
 
    void CIpcAdapter::postStopRequest()
    {
@@ -712,7 +699,7 @@ namespace pluginSystem
               {
                  success = ans.manuallydevicecreationanswer().has_sucess();
                  result = success ?
-                             ans.manuallydevicecreationanswer().sucess().newdevicename() :
+                             std::string() :
                              ans.manuallydevicecreationanswer().error().message();
               });
       }
@@ -723,7 +710,7 @@ namespace pluginSystem
       }
 
       if (success)
-         request->sendSuccess(result);
+         request->sendSuccess();
       else
          request->sendError(result);
    }

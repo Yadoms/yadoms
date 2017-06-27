@@ -328,12 +328,11 @@ namespace plugin_cpp_api
    {
       boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request =
          boost::make_shared<CManuallyDeviceCreation>(msg,
-                                                     [&](const std::string& newDeviceName)
+                                                     [&]()
                                                      {
                                                         plugin_IPC::toYadoms::msg ans;
                                                         auto answer = ans.mutable_manuallydevicecreationanswer();
                                                         auto success = answer->mutable_sucess();
-                                                        success->set_newdevicename(newDeviceName);
                                                         send(ans);
                                                      },
                                                      [&](const std::string& errorMessage)
@@ -454,40 +453,6 @@ namespace plugin_cpp_api
          std::cerr << "}, " << details.serialize() << ")" << std::endl;
          throw;
       }
-   }
-
-   std::string CApiImplementation::declareManuallyCreatedDevice(const std::string& userDeviceName,
-                                                                const std::string& type,
-                                                                const std::string& model,
-                                                                const shared::CDataContainer& details)
-   {
-      plugin_IPC::toYadoms::msg req;
-      auto request = req.mutable_declaremanuallycreateddevicerequest();
-      request->set_userdevicename(userDeviceName);
-      request->set_type(type);
-      request->set_model(model);
-      if (!details.empty())
-         request->set_details(details.serialize());
-
-      std::string deviceName;
-      try
-      {
-         send(req,
-              [](const plugin_IPC::toPlugin::msg& ans) -> bool
-              {
-                 return ans.has_declaremanuallycreateddeviceanswer();
-              },
-              [&](const plugin_IPC::toPlugin::msg& ans) -> void
-              {
-                 deviceName = ans.declaremanuallycreateddeviceanswer().devicename();
-              });
-      }
-      catch (std::exception&)
-      {
-         std::cerr << "Call was : declareManuallyCreatedDevice(" << userDeviceName << ")" << std::endl;
-         throw;
-      }
-      return deviceName;
    }
 
    std::vector<std::string> CApiImplementation::getAllDevices() const

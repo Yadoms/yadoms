@@ -113,6 +113,7 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       }
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
       {
+         //TODO revoir la création de device
          // Yadoms asks for device creation
          setPluginState(api, EWESPluginState::kupdateConfiguration);
          auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();

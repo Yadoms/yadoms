@@ -19,7 +19,6 @@ namespace web
                              communication::ISendMessageAsync& messageSender);
             virtual ~CPlugin();
 
-         public:
             // IRestService implementation
             void configureDispatcher(CRestDispatcher& dispatcher) override;
             // [END] IRestService implementation
@@ -64,6 +63,9 @@ namespace web
             shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
                                                        const std::vector<std::string>& parameters,
                                                        const std::string& requestContent) const;
+
+         protected:
+            std::string generateUniqueDeviceName(const int pluginId) const;
 
          private:
             boost::shared_ptr<database::IDataProvider> m_dataProvider;

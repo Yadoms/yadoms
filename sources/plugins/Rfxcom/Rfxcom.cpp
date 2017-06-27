@@ -77,7 +77,8 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
          case yApi::IYPluginApi::kEventManuallyDeviceCreation:
             {
-               // Yadoms asks for device creation
+            //TODO revoir la création de device
+            // Yadoms asks for device creation
                auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
                YADOMS_LOG(information) << "Manually device creation request received for device :" << request->getData().getDeviceName();
                try

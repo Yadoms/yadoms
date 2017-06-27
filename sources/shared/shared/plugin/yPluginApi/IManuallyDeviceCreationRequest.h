@@ -28,10 +28,9 @@ namespace shared
             virtual const IManuallyDeviceCreationData& getData() const = 0;
 
             //-----------------------------------------------------
-            ///\brief Answer the request with success, providing device name
-            ///\param [in] newDeviceName  The created device name
+            ///\brief Answer the request with success
             //-----------------------------------------------------
-            virtual void sendSuccess(const std::string& newDeviceName) = 0;
+            virtual void sendSuccess() = 0;
 
             //-----------------------------------------------------
             ///\brief Answer the request with error

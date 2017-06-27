@@ -44,7 +44,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    // Trace the configuration (just for test)
    m_configuration.trace();
 
-   // Create 2 fake sensors
+   // Create fake sensors
    CFakeSensor fakeSensor1("fakeSensor1");
    CFakeSensor fakeSensor2("fakeSensor2");
    CFakeCounter fakeCounter("fakeCounter");
@@ -54,7 +54,8 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    CFakeSwitch fakeDimmableReadWriteSwitch("fakeDimmableReadWriteSwitch", true, true);
    CFakeController fakeController("fakeController1");
    CFakeConfigurableDevice configurableDevice("configurableDevice");
-   CFakeDynamicallyConfigurableDevice dynamicallyConfigurableDevice("dynamicallyConfigurableDevice");
+   CFakeDynamicallyConfigurableDevice dynamicallyConfigurableDevice("dynamicallyConfigurableDevice",
+                                                                    shared::CDataContainer());
    CFakeCurtain fakeCurtain("fakeCurtain");
 
 
@@ -68,7 +69,10 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    fakeDimmableReadWriteSwitch.declareDevice(api);
    fakeController.declareDevice(api);
    configurableDevice.declareDevice(api);
-   dynamicallyConfigurableDevice.declareDevice(api);
+   api->declareDevice(dynamicallyConfigurableDevice.getDeviceName(),
+                      dynamicallyConfigurableDevice.getType(),
+                      dynamicallyConfigurableDevice.getModel(),
+                      dynamicallyConfigurableDevice.historizers());
    fakeCurtain.declareDevice(api);
 
    // Timer used to send fake sensor states periodically
@@ -78,7 +82,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-   //Retreive previously manually created devices and instance them in plugin
+   //Retrieve previously created devices and instance them in plugin
    for (const auto& devName : api->getAllDevices())
    {
       if (devName != fakeSensor1.getDeviceName() &&
@@ -95,16 +99,14 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          auto type = api->getDeviceType(devName);
          if (type == CFakeAnotherConfigurableDevice::getType())
          {
-            auto createdDevice = boost::make_shared<CFakeAnotherConfigurableDevice>(devName);
-            createdDevice->setConfiguration(api->getDeviceConfiguration(devName));
-            createdDevice->declareDevice(api);
+            auto createdDevice = boost::make_shared<CFakeAnotherConfigurableDevice>(devName,
+                                                                                    api->getDeviceConfiguration(devName));
             m_manuallyCreatedStaticConfDevices.push_back(createdDevice);
          }
          else if (type == CFakeDynamicallyConfigurableDevice::getType())
          {
-            auto createdDevice = boost::make_shared<CFakeDynamicallyConfigurableDevice>(devName);
-            createdDevice->setConfiguration(api->getDeviceConfiguration(devName));
-            createdDevice->declareDevice(api);
+            auto createdDevice = boost::make_shared<CFakeDynamicallyConfigurableDevice>(devName,
+                                                                                        api->getDeviceConfiguration(devName));
             m_manuallyCreatedDynaConfDevices.push_back(createdDevice);
          }
       }
@@ -251,14 +253,15 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
             YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
             if (command->getKeyword().empty())
-               YADOMS_LOG(information) << "Specific command for a device (can be used for any purpose, unless keyword driving, device configuration (see kGetDeviceConfigurationSchemaRequest and kSetDeviceConfiguration documentation) and deletion";
+            YADOMS_LOG(information) << "Specific command for a device (can be used for any purpose, unless keyword driving, device configuration (see kGetDeviceConfigurationSchemaRequest and kSetDeviceConfiguration documentation) and deletion";
             else
-               YADOMS_LOG(information) << "Standard command to a keyword (used to drive a switch, a thermostat...)";
+            YADOMS_LOG(information) << "Standard command to a keyword (used to drive a switch, a thermostat...)";
             break;
          }
 
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
          {
+            // A new device was manually created. Instance it in the plugin, and declare its keywords.
             auto creation = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
             try
             {
@@ -277,32 +280,34 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   YADOMS_LOG(information) << "CFakeConfigurableDevice config : MySection/SubIntParameter : " << creation->getData().getConfiguration().get<int>("MySection.content.SubIntParameter");
                   YADOMS_LOG(information) << "CFakeConfigurableDevice config : MySection/SubStringParameter : " << creation->getData().getConfiguration().get<std::string>("MySection.content.SubStringParameter");
 
-                  auto createdDevice = boost::make_shared<CFakeAnotherConfigurableDevice>(creation->getData().getDeviceName());
-                  createdDevice->setConfiguration(creation->getData().getConfiguration());
-                  const auto devName = createdDevice->declareManuallyCreatedDevice(api);
+                  auto createdDevice = boost::make_shared<CFakeAnotherConfigurableDevice>(creation->getData().getDeviceName(),
+                                                                                          creation->getData().getConfiguration());
+                  api->declareKeywords(creation->getData().getDeviceName(),
+                                       createdDevice->historizers());
+
                   m_manuallyCreatedStaticConfDevices.push_back(createdDevice);
-                  creation->sendSuccess(devName);
+                  creation->sendSuccess();
                }
                else if (creation->getData().getDeviceType() == CFakeDynamicallyConfigurableDevice::getType())
                {
                   YADOMS_LOG(information) << "CFakeDynamicallyConfigurableDevice config : CounterDivider : " << creation->getData().getConfiguration().get<std::string>("CounterDivider");
-                  auto createdDevice = boost::make_shared<CFakeDynamicallyConfigurableDevice>(creation->getData().getDeviceName());
-                  createdDevice->setConfiguration(creation->getData().getConfiguration());
-                  const auto devName = createdDevice->declareManuallyCreatedDevice(api);
+
+                  auto createdDevice = boost::make_shared<CFakeDynamicallyConfigurableDevice>(creation->getData().getDeviceName(),
+                                                                                              creation->getData().getConfiguration());
+                  api->declareKeywords(creation->getData().getDeviceName(),
+                                       createdDevice->historizers());
+
                   m_manuallyCreatedDynaConfDevices.push_back(createdDevice);
-                  creation->sendSuccess(devName);
+                  creation->sendSuccess();
                }
                else
                {
-                  //any other model
+                  //any other model (don't need a local instance)
                   creation->getData().getConfiguration().printToLog(YADOMS_LOG(information));
-                  const auto devName = api->declareManuallyCreatedDevice(creation->getData().getDeviceName(),
-                                                                         creation->getData().getDeviceType(),
-                                                                         creation->getData().getDeviceType(),
-                                                                         creation->getData().getConfiguration());
-                  api->declareKeyword(devName,
+                  api->declareKeyword(creation->getData().getDeviceName(),
                                       boost::make_shared<yApi::historization::CSwitch>("manualSwitch"));
-                  creation->sendSuccess(creation->getData().getDeviceName());
+
+                  creation->sendSuccess();
                }
             }
             catch (std::exception& ex)
@@ -329,7 +334,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             if (deviceConfigurationSchemaRequest->device() == dynamicallyConfigurableDevice.getDeviceName())
             {
                YADOMS_LOG(information) << "This device is dynamically configurable, return its configuration schema to device configuration schema request";
-               deviceConfigurationSchemaRequest->sendSuccess(dynamicallyConfigurableDevice.getDynamicConfiguration());
+               deviceConfigurationSchemaRequest->sendSuccess(dynamicallyConfigurableDevice.getDynamicConfigurationSchema());
             }
             else
             {
@@ -340,7 +345,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                if (mcds != m_manuallyCreatedDynaConfDevices.end())
                {
                   YADOMS_LOG(information) << "This device is dynamically configurable, return its configuration schema to device configuration schema request";
-                  deviceConfigurationSchemaRequest->sendSuccess((*mcds)->getDynamicConfiguration());
+                  deviceConfigurationSchemaRequest->sendSuccess((*mcds)->getDynamicConfigurationSchema());
                }
                else
                {

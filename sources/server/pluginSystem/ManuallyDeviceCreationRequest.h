@@ -28,7 +28,7 @@ namespace pluginSystem
 
       // IManuallyDeviceCreationRequest Implementation
       const shared::plugin::yPluginApi::IManuallyDeviceCreationData& getData() const override;
-      void sendSuccess(const std::string& newDeviceName) override;
+      void sendSuccess() override;
       void sendError(const std::string& errorMessage) override;
       // [END] IManuallyDeviceCreationRequest Implementation
 

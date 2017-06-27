@@ -88,7 +88,6 @@ namespace web
             return result;
          }
 
-
          shared::CDataContainer CPlugin::getOnePlugin(const std::vector<std::string>& parameters,
                                                       const std::string& requestContent) const
          {
@@ -478,6 +477,26 @@ namespace web
             }
          }
 
+         std::string CPlugin::generateUniqueDeviceName(const int pluginId) const
+         {
+            static const boost::regex DeviceNamePattern("^manuallyCreatedDevice_([[:digit:]]*)$");
+            const auto& devices = m_dataProvider->getDeviceRequester()->getDevices(pluginId,
+                                                                                   true);
+            unsigned int lastNumber = 0;
+            for (const auto& device : devices)
+            {
+               boost::smatch result;
+               if (boost::regex_search(device->Name(), result, DeviceNamePattern))
+               {
+                  auto number = std::stoul(std::string(result[1].first, result[1].second), nullptr, 16);
+                  if (lastNumber < number)
+                     lastNumber = number;
+               }
+            }
+
+            return std::string("manuallyCreatedDevice_") + std::to_string(lastNumber + 1);
+         }
+
          shared::CDataContainer CPlugin::createDevice(const std::vector<std::string>& parameters,
                                                       const std::string& requestContent) const
          {
@@ -491,19 +510,34 @@ namespace web
                   if (!content.exists("name") || !content.exists("type") || !content.exists("configuration"))
                      return CResult::GenerateError("invalid request content. There must be a name, a type and a configuration field");
 
+                  YADOMS_LOG(information) << "Manually device creation request received";
+                  content.printToLog(YADOMS_LOG(debug));
+
+                  const auto& deviceName = generateUniqueDeviceName(pluginId);
+
                   try
                   {
-                     //create a callback (allow waiting for result)              
+                     // Declare device
+                     const auto& device = m_dataProvider->getDeviceRequester()->createDevice(pluginId,
+                                                                                             deviceName,
+                                                                                             content.get<std::string>("name"),
+                                                                                             content.get<std::string>("type"),
+                                                                                             content.exists("model") && !content.get<std::string>("model").empty() ?
+                                                                                                content.get<std::string>("name") : content.get<std::string>("model"),
+                                                                                             shared::CDataContainer());
+                     m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(device->Id(),
+                                                                                     content.get<shared::CDataContainer>("configuration"));
+
+                     // Send request to plugin
                      communication::callback::CSynchronousCallback<std::string> cb;
+                     pluginSystem::CManuallyDeviceCreationData data(deviceName,
+                                                                    content.get<std::string>("type"),
+                                                                    content.get<shared::CDataContainer>("configuration"));
+                     m_messageSender.sendManuallyDeviceCreationRequest(pluginId,
+                                                                       data,
+                                                                       cb);
 
-                     //create the data container to send to plugin
-                     content.printToLog(YADOMS_LOG(information));
-                     pluginSystem::CManuallyDeviceCreationData data(content.get<std::string>("name"), content.get<std::string>("type"), content.get<shared::CDataContainer>("configuration"));
-
-                     //send request to plugin
-                     m_messageSender.sendManuallyDeviceCreationRequest(pluginId, data, cb);
-
-                     //wait for result
+                     // Wait for result
                      switch (cb.waitForResult())
                      {
                      case communication::callback::CSynchronousCallback<std::string>::kResult:
@@ -511,42 +545,33 @@ namespace web
                            auto res = cb.getCallbackResult();
 
                            if (res.Success)
-                           {
-                              //find created device
-                              auto createdDevice = m_dataProvider->getDeviceRequester()->getDeviceInPlugin(pluginId, res.Result);
+                              return CResult::GenerateSuccess(m_dataProvider->getDeviceRequester()->getDeviceInPlugin(pluginId,
+                                                                                                                      device->Name()));
 
-                              //update friendly name
-                              m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(createdDevice->Id(), content.get<std::string>("name"));
-
-                              //update model
-                              if (content.exists("model") && !content.get<std::string>("model").empty())
-                                 m_dataProvider->getDeviceRequester()->updateDeviceModel(createdDevice->Id(), content.get<std::string>("model"));
-
-                              //update type
-                              m_dataProvider->getDeviceRequester()->updateDeviceType(createdDevice->Id(), content.get<std::string>("type"));
-
-                              //set the device configuration
-                              m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(createdDevice->Id(), content.get<shared::CDataContainer>("configuration"));
-
-                              //get device with friendly name updated
-                              createdDevice = m_dataProvider->getDeviceRequester()->getDeviceInPlugin(pluginId, res.Result);
-
-                              return CResult::GenerateSuccess(createdDevice);
-                           }
-
-                           //the plugin failed to create the device
+                           // The plugin failed to process manually creation request, we have to remove the just created device
+                           m_dataProvider->getDeviceRequester()->removeDevice(device->Id());
                            return CResult::GenerateError(res.ErrorMessage);
                         }
 
                      case shared::event::kTimeout:
-                        return CResult::GenerateError("The plugin did not respond");
+                        {
+                           m_dataProvider->getDeviceRequester()->removeDevice(device->Id());
+                           return CResult::GenerateError("The plugin did not respond");
+                        }
 
                      default:
-                        return CResult::GenerateError("Unkown plugin result");
+                        {
+                           m_dataProvider->getDeviceRequester()->removeDevice(device->Id());
+                           return CResult::GenerateError("Unkown plugin result");
+                        }
                      }
                   }
                   catch (shared::exception::CException& ex)
                   {
+                     if (m_dataProvider->getDeviceRequester()->deviceExists(pluginId,
+                                                                            deviceName))
+                        m_dataProvider->getDeviceRequester()->removeDevice(pluginId,
+                                                                           deviceName);
                      return CResult::GenerateError(ex);
                   }
                }

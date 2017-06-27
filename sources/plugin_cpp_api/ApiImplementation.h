@@ -41,12 +41,7 @@ namespace plugin_cpp_api
                          const std::string& model,
                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords,
                          const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
-      std::string declareManuallyCreatedDevice(const std::string& userDeviceName,
-                                               const std::string& type,
-                                               const std::string& model,
-                                               const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
-      std
-      ::vector<std::string> getAllDevices() const override;
+      std::vector<std::string> getAllDevices() const override;
       bool deviceExists(const std::string& device) const override;
       shared::CDataContainer getDeviceConfiguration(const std::string& device) const override;
       void updateDeviceConfiguration(const std::string& device,

@@ -2,11 +2,12 @@
 #include "FakeAnotherConfigurableDevice.h"
 #include <shared/Log.h>
 
-CFakeAnotherConfigurableDevice::CFakeAnotherConfigurableDevice(const std::string& deviceName)
+CFakeAnotherConfigurableDevice::CFakeAnotherConfigurableDevice(const std::string& deviceName,
+                                                               const shared::CDataContainer& configuration)
    : m_deviceName(deviceName),
      m_counter(boost::make_shared<yApi::historization::CCounter>("counter")),
      m_internalCounter(0),
-     m_divider(1),
+     m_divider(readDividerConfiguration(configuration)),
      m_historizers({m_counter})
 {
    m_counter->set(0);
@@ -14,46 +15,6 @@ CFakeAnotherConfigurableDevice::CFakeAnotherConfigurableDevice(const std::string
 
 CFakeAnotherConfigurableDevice::~CFakeAnotherConfigurableDevice()
 {
-}
-
-void CFakeAnotherConfigurableDevice::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api)
-{
-   // Declare device and associated keywords (= values managed by this device)
-   if (!api->deviceExists(m_deviceName))
-      api->declareDevice(m_deviceName, getType(), getModel(), m_historizers);
-
-   // Get the divider value from the device configuration
-   try
-   {
-      YADOMS_LOG(information) << "Configuration = " << api->getDeviceConfiguration(m_deviceName).serialize();
-      m_divider = api->getDeviceConfiguration(m_deviceName).get<int>("CounterDivider2");
-   }
-   catch (std::exception&)
-   {
-      // Configuration may not actually exist, set the default value to divider
-      m_divider = 1;
-   }
-}
-
-std::string CFakeAnotherConfigurableDevice::declareManuallyCreatedDevice(boost::shared_ptr<yApi::IYPluginApi> api)
-{
-   // Declare device and associated keywords (= values managed by this device)
-   const auto realName = api->declareManuallyCreatedDevice(m_deviceName, getType(), getModel());
-   api->declareKeywords(realName, m_historizers);
-
-   // Get the divider value from the device configuration
-   try
-   {
-      YADOMS_LOG(information) << "Configuration = " << api->getDeviceConfiguration(m_deviceName).serialize();
-      m_divider = api->getDeviceConfiguration(realName).get<int>("CounterDivider2");
-   }
-   catch (std::exception&)
-   {
-      // Configuration may not actually exist, set the default value to divider
-      m_divider = 1;
-   }
-
-   return realName;
 }
 
 void CFakeAnotherConfigurableDevice::read()
@@ -77,23 +38,41 @@ const std::string& CFakeAnotherConfigurableDevice::getDeviceName() const
    return m_deviceName;
 }
 
-const std::string& CFakeAnotherConfigurableDevice::getModel()
-{
-   static const std::string model("Another Fake Configurable Device");
-   return model;
-}
-
 const std::string& CFakeAnotherConfigurableDevice::getType()
 {
    static const std::string type("anotherFakeConfigurableDeviceType");
    return type;
 }
 
+const std::string& CFakeAnotherConfigurableDevice::getModel()
+{
+   static const std::string model("Another Fake Configurable Device");
+   return model;
+}
 
 void CFakeAnotherConfigurableDevice::setConfiguration(const shared::CDataContainer& newConfiguration)
 {
-   YADOMS_LOG(information) << "Configuration = " << newConfiguration.serialize();
-   if(newConfiguration.containsValue("CounterDivider2"))
-      m_divider = newConfiguration.get<int>("CounterDivider2");
+   m_divider = readDividerConfiguration(newConfiguration);
+}
+
+std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> CFakeAnotherConfigurableDevice::historizers() const
+{
+   return m_historizers;
+}
+
+int CFakeAnotherConfigurableDevice::readDividerConfiguration(const shared::CDataContainer& configuration)
+{
+   try
+   {
+      YADOMS_LOG(information) << "Configuration = " << configuration.serialize();
+      if (configuration.containsValue("CounterDivider2"))
+         return configuration.get<int>("CounterDivider2");
+   }
+   catch (std::exception&)
+   {
+      // Configuration may not actually exist
+   }
+   // Return default value
+   return 1;
 }
 

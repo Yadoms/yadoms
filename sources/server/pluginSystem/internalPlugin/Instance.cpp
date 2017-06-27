@@ -157,8 +157,9 @@ namespace pluginSystem
                      YADOMS_LOG(information) << "Manually device creation request received for device : " << request->getData().getDeviceName();
                      try
                      {
-                        request->sendSuccess(createVirtualDevice(api,
-                                                                 request->getData()));
+                        createVirtualDevice(api,
+                                            request->getData());
+                        request->sendSuccess();
                      }
                      catch (std::exception& e)
                      {
@@ -185,8 +186,8 @@ namespace pluginSystem
          }
       }
 
-      std::string CInstance::createVirtualDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                 const yApi::IManuallyDeviceCreationData& data) const
+      void CInstance::createVirtualDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                          const yApi::IManuallyDeviceCreationData& data) const
       {
          if (data.getDeviceType() != "virtualDeviceType")
             throw std::invalid_argument("Wrong device type");
@@ -198,15 +199,13 @@ namespace pluginSystem
             isStandardCapacity = data.getConfiguration().get<std::string>("capacity.activeSection") == "standardCapacity";
             boost::shared_ptr<const yApi::historization::IHistorizable> keyword;
             if (isStandardCapacity)
-               return createStandardCapacityDevice(api,
-                                                   data.getDeviceName(),
-                                                   data.getDeviceType(),
-                                                   data.getConfiguration().get<std::string>("capacity.content.standardCapacity.content.capacity"));
-
-            return createCustomEnumCapacityDevice(api,
-                                                  data.getDeviceName(),
-                                                  data.getDeviceType(),
-                                                  data.getConfiguration().get<std::string>("capacity.content.customEnumCapacity.content.valueList"));
+               createStandardCapacityDevice(api,
+                                            data.getDeviceName(),
+                                            data.getConfiguration().get<std::string>("capacity.content.standardCapacity.content.capacity"));
+            else
+               createCustomEnumCapacityDevice(api,
+                                              data.getDeviceName(),
+                                              data.getConfiguration().get<std::string>("capacity.content.customEnumCapacity.content.valueList"));
          }
          catch (std::exception& e)
          {
@@ -214,10 +213,9 @@ namespace pluginSystem
          }
       }
 
-      std::string CInstance::createStandardCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                          const std::string& deviceName,
-                                                          const std::string& deviceType,
-                                                          const std::string& standardCapacity) const
+      void CInstance::createStandardCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                   const std::string& deviceName,
+                                                   const std::string& standardCapacity) const
       {
          boost::shared_ptr<const yApi::historization::IHistorizable> keyword;
 
@@ -289,19 +287,13 @@ namespace pluginSystem
          if (!keyword)
             throw std::invalid_argument("Unsupported device type");
 
-         const auto& deviceRealName = api->declareManuallyCreatedDevice(deviceName,
-                                                                        deviceType,
-                                                                        deviceName);
-         api->declareKeyword(deviceRealName,
+         api->declareKeyword(deviceName,
                              keyword);
-
-         return deviceRealName;
       }
 
-      std::string CInstance::createCustomEnumCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                            const std::string& deviceName,
-                                                            const std::string& deviceType,
-                                                            const std::string& commaSeparatedValues) const
+      void CInstance::createCustomEnumCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                     const std::string& deviceName,
+                                                     const std::string& commaSeparatedValues) const
       {
          std::vector<std::string> enumValues;
          boost::split(enumValues, commaSeparatedValues, boost::is_any_of(","));
@@ -312,13 +304,8 @@ namespace pluginSystem
                                                                   yApi::EKeywordAccessMode::kGetSet,
                                                                   enumValues);
 
-         const auto& deviceRealName = api->declareManuallyCreatedDevice(deviceName,
-                                                                        deviceType,
-                                                                        deviceName);
-         api->declareKeyword(deviceRealName,
+         api->declareKeyword(deviceName,
                              keyword);
-
-         return deviceRealName;
       }
    }
 } // namespace pluginSystem::internalPlugin

@@ -1,5 +1,4 @@
 #pragma once
-
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 
@@ -16,25 +15,15 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    /// \param[in] deviceName    The device name
+   /// \param[in] configuration The device configuration
    //--------------------------------------------------------------
-   explicit CFakeAnotherConfigurableDevice(const std::string& deviceName);
+   explicit CFakeAnotherConfigurableDevice(const std::string& deviceName,
+                                           const shared::CDataContainer& configuration);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~CFakeAnotherConfigurableDevice();
-
-   //--------------------------------------------------------------
-   /// \brief	            Declare device and associated keywords if necessary
-   /// \param[in] api      yPluginApi context
-   //--------------------------------------------------------------
-   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api);
-
-   //--------------------------------------------------------------
-   /// \brief	            Declare manually created device and associated keywords if necessary
-   /// \param[in] api      yPluginApi context
-   //--------------------------------------------------------------
-   std::string declareManuallyCreatedDevice(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
@@ -70,6 +59,16 @@ public:
    /// \param[in] newConfiguration  The new configuration
    //--------------------------------------------------------------
    void setConfiguration(const shared::CDataContainer& newConfiguration);
+
+   //--------------------------------------------------------------
+   /// \brief	    Get the historizers
+   /// \return     The device historizers
+   //--------------------------------------------------------------
+   std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> historizers() const;
+
+
+protected:
+   static int readDividerConfiguration(const shared::CDataContainer& configuration);
 
 private:
    //--------------------------------------------------------------

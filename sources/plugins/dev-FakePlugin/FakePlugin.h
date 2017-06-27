@@ -40,8 +40,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The managed devices
    //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<CFakeAnotherConfigurableDevice>> m_manuallyCreatedStaticConfDevices;
    std::vector<boost::shared_ptr<CFakeDynamicallyConfigurableDevice>> m_manuallyCreatedDynaConfDevices;
-
+   std::vector<boost::shared_ptr<CFakeAnotherConfigurableDevice>> m_manuallyCreatedStaticConfDevices;
 };
 

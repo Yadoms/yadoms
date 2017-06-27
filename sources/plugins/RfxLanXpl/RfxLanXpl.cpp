@@ -125,7 +125,8 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
          case yApi::IYPluginApi::kEventManuallyDeviceCreation:
             {
-               // Yadoms asks for device creation
+            //TODO revoir la création de device
+            // Yadoms asks for device creation
                auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
                OnCreateDeviceRequest(data, api);
                break;
