@@ -110,3 +110,48 @@ std::string CTransceiver::buildLedActivityCommand(bool ledActivity) const
       return "LEDACTIVITY 1\r\n";
    return "LEDACTIVITY 0\r\n";
 }
+
+std::string CTransceiver::buildFrequencyCommand(bool for433MHz, bool enabled, const std::string & freq) const
+{
+   //if disabkled, freq param is 0
+   std::string freqParam = "0";
+   if (enabled)
+      freqParam = boost::replace_all_copy(freq, "_", "");
+
+   if (for433MHz)
+      return (boost::format("FREQ L %1%\r\n") % freqParam).str();
+   return (boost::format("FREQ H %1%\r\n") % freqParam).str();
+}
+
+std::string CTransceiver::buildSelectivityCommand(bool for433MHz, int value) const
+{
+   if (for433MHz)
+      return (boost::format("SELECTIVITY L %1%\r\n") % value).str();
+   return (boost::format("SELECTIVITY H %1%\r\n") % value).str();
+}
+
+std::string CTransceiver::buildSensivityCommand(bool for433MHz, int value) const
+{
+   if (for433MHz)
+      return (boost::format("SENSITIVITY L %1%\r\n") % value).str();
+   return (boost::format("SENSITIVITY H %1%\r\n") % value).str();
+}
+
+std::string CTransceiver::buildDspTriggerCommand(bool for433MHz, int value) const
+{
+   if (for433MHz)
+      return (boost::format("DSPTRIGGER L %1%\r\n") % value).str();
+   return (boost::format("DSPTRIGGER H %1%\r\n") % value).str();
+}
+
+std::string CTransceiver::buildRfLinkTriggerCommand(bool for433MHz, int value) const
+{
+   if (for433MHz)
+      return (boost::format("RFLINKTRIGGER L %1%\r\n") % value).str();
+   return (boost::format("RFLINKTRIGGER H %1%\r\n") % value).str();
+}
+
+std::string CTransceiver::buildLBTCommand(bool enable, int value) const
+{
+   return (boost::format("LBT %1%\r\n") % value).str();
+}
