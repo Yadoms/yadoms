@@ -155,6 +155,9 @@
             "x10": {
               "canBeCreatedManually": "true"
             },
+            "chacon": {
+              "canBeCreatedManually": "true"
+            },
             "domia": {
               "canBeCreatedManually": "true"
             },
