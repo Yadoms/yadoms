@@ -203,11 +203,11 @@ namespace web
 
          void CSystem::addVirtualDevicesSupportedCapacity(const shared::plugin::yPluginApi::CStandardCapacity& capacity)
          {
-            auto capcityContainer = boost::make_shared<shared::CDataContainer>();
-            capcityContainer->set("name", capacity.getName());
-            capcityContainer->set("unit", capacity.getUnit());
-            capcityContainer->set("dataType", capacity.getType());
-            VirtualDevicesSupportedCapacities.set(capacity.getName(), capcityContainer);
+            auto capacityContainer = boost::make_shared<shared::CDataContainer>();
+            capacityContainer->set("name", capacity.getName());
+            capacityContainer->set("unit", capacity.getUnit());
+            capacityContainer->set("dataType", capacity.getType());
+            VirtualDevicesSupportedCapacities.set(capacity.getName(), capacityContainer);
          }
 
          const shared::CDataContainer& CSystem::getVirtualDevicesSupportedCapacities()
