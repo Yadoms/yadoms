@@ -171,6 +171,8 @@ namespace pluginSystem
                      break;
                   }
 
+                  //TODO gérer le setDeviceConfiguration
+
                default:
                   break;
                }

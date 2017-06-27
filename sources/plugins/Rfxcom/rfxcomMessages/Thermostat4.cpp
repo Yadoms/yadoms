@@ -44,8 +44,10 @@ namespace rfxcomMessages
 
    CThermostat4::CThermostat4(boost::shared_ptr<yApi::IYPluginApi> api,
                               unsigned int subType,
+      const std::string& name,
                               const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
+      : m_deviceName(name),
+      m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
         m_flame(boost::make_shared<yApi::historization::CDimmable>("flame")),
       m_fan1(boost::make_shared<yApi::historization::CDimmable>("fan 1")),
       m_fan1AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 1 auto mode")),
@@ -77,7 +79,9 @@ namespace rfxcomMessages
 
       m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode");
 
-      Init(api);
+      buildDeviceDetails();
+      api->updateDeviceDetails(m_deviceName, m_deviceDetails);
+      api->declareKeywords(m_deviceName, m_keywords);
    }
 
    CThermostat4::CThermostat4(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -104,21 +108,26 @@ namespace rfxcomMessages
    {
    }
 
+   void CThermostat4::buildDeviceDetails()
+   {
+      if (m_deviceDetails.empty())
+      {
+         m_deviceDetails.set("type", pTypeThermostat4);
+         m_deviceDetails.set("subType", m_subType);
+         m_deviceDetails.set("unitCode", m_unitCode);
+      }
+   }
+
    void CThermostat4::Init(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       // Build device description
       buildDeviceModel();
       buildDeviceName();
+      buildDeviceDetails();
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypeThermostat4);
-         details.set("subType", m_subType);
-         details.set("unitCode", m_unitCode);
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
-      }
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CThermostat4::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const

@@ -44,8 +44,10 @@ namespace rfxcomMessages
 
    CFS20::CFS20(boost::shared_ptr<yApi::IYPluginApi> api,
                 unsigned int subType,
+      const std::string& name,
                 const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
+      : m_deviceName(name),
+      m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
       m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
       m_keywords({ m_state , m_signalPower })
    {
@@ -67,7 +69,9 @@ namespace rfxcomMessages
       m_groupAddress = manuallyDeviceCreationConfiguration.get<std::string>("groupAddress");
       m_subAddress = manuallyDeviceCreationConfiguration.get<std::string>("subAddress");
 
-      Init(api);
+      buildDeviceDetails();
+      api->updateDeviceDetails(m_deviceName, m_deviceDetails);
+      api->declareKeywords(m_deviceName, m_keywords);
    }
 
    CFS20::CFS20(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -179,24 +183,28 @@ namespace rfxcomMessages
    {
    }
 
+   void CFS20::buildDeviceDetails()
+   {
+      if (m_deviceDetails.empty())
+      {
+         m_deviceDetails.set("type", pTypeFS20);
+         m_deviceDetails.set("subType", m_subType);
+         m_deviceDetails.set("houseCode", m_houseCode);
+         m_deviceDetails.set("groupAddress", m_groupAddress);
+         m_deviceDetails.set("subAddress", m_subAddress);
+      }
+   }
+
    void CFS20::Init(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       // Build device description
       buildDeviceModel();
       buildDeviceName();
+      buildDeviceDetails();
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypeFS20);
-         details.set("subType", m_subType);
-         details.set("houseCode", m_houseCode);
-         details.set("groupAddress", m_groupAddress);
-         details.set("subAddress", m_subAddress);
-
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
-      }
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CFS20::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const

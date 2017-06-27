@@ -77,13 +77,14 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
          case yApi::IYPluginApi::kEventManuallyDeviceCreation:
             {
-            //TODO revoir la création de device
-            // Yadoms asks for device creation
+               // Yadoms asks for device creation
                auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
                YADOMS_LOG(information) << "Manually device creation request received for device :" << request->getData().getDeviceName();
                try
                {
-                  request->sendSuccess(m_transceiver->createDeviceManually(api, request->getData()));
+                  m_transceiver->createDeviceManually(api,
+                                                      request->getData());
+                  request->sendSuccess();
                }
                catch (CManuallyDeviceCreationException& e)
                {
@@ -211,9 +212,9 @@ void CRfxcom::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
       auto message(m_transceiver->buildMessageToDevice(api, command));
       send(api, message);
    }
-   catch(std::exception& e)
+   catch (std::exception& e)
    {
-      YADOMS_LOG(error) << "Fail to send command " << yApi::IDeviceCommand::toString(command) << ", error : "<< e.what();
+      YADOMS_LOG(error) << "Fail to send command " << yApi::IDeviceCommand::toString(command) << ", error : " << e.what();
    }
 }
 
@@ -430,3 +431,4 @@ void CRfxcom::processRfxcomAckMessage(const rfxcomMessages::CAck& ack)
    else
    YADOMS_LOG(information) << "RFXCom Received acknowledge is KO";
 }
+

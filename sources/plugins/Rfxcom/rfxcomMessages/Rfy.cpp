@@ -24,8 +24,10 @@ namespace rfxcomMessages
 
    CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api,
               unsigned int subType,
+              const std::string& name,
               const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
+      : m_deviceName(name),
+        m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
    {
       m_state->set(yApi::historization::ECurtainCommand::kStop);
 
@@ -43,16 +45,18 @@ namespace rfxcomMessages
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
       m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
-      Init(api);
+      buildDeviceDetails();
+      api->updateDeviceDetails(m_deviceName, m_deviceDetails);
+      api->declareKeyword(m_deviceName, m_state);
    }
 
    CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api,
               const RBUF& rbuf,
               size_t rbufSize)
       : m_subType(0),
-      m_unitCode(0),
-      m_id(0),
-      m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
+        m_unitCode(0),
+        m_id(0),
+        m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
    {
       // Should not be called (transmitter-only device)
       throw std::logic_error("Constructing CRfy object from received buffer is not possible, CRfy is transmitter-only device");
@@ -62,25 +66,30 @@ namespace rfxcomMessages
    {
    }
 
+   void CRfy::buildDeviceDetails()
+   {
+      if (m_deviceDetails.empty())
+      {
+         m_deviceDetails.set("type", pTypeRFY);
+         m_deviceDetails.set("subType", m_subType);
+         m_deviceDetails.set("id", m_id);
+         m_deviceDetails.set("unitCode", m_unitCode);
+      }
+   }
+
    void CRfy::Init(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       // Build device description
       buildDeviceModel();
       buildDeviceName();
+      buildDeviceDetails();
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypeRFY);
-         details.set("subType", m_subType);
-         details.set("id", m_id);
-         details.set("unitCode", m_unitCode);
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_state, details);
-      }
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_state, m_deviceDetails);
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CRfy::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CRfy::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF rbuf;
       MEMCLEAR(rbuf.RFY);

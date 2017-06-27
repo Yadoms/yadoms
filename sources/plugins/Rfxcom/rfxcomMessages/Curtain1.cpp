@@ -23,11 +23,13 @@ namespace rfxcomMessages
 
    CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> api,
                         unsigned int subType,
+                        const std::string& name,
                         const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_subType(0),
-      m_houseCode(0),
-      m_unitCode(0),
-      m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
+        m_houseCode(0),
+        m_unitCode(0),
+        m_deviceName(name),
+        m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
    {
       m_state->set(yApi::historization::ECurtainCommand::kStop);
 
@@ -38,16 +40,18 @@ namespace rfxcomMessages
       m_houseCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<char>("houseCode"));
       m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
-      Init(api);
+      buildDeviceDetails();
+      api->updateDeviceDetails(m_deviceName, m_deviceDetails);
+      api->declareKeyword(m_deviceName, m_state);
    }
 
    CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> api,
                         const RBUF& rbuf,
                         size_t rbufSize)
       : m_subType(0),
-      m_houseCode(0),
-      m_unitCode(0),
-      m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
+        m_houseCode(0),
+        m_unitCode(0),
+        m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
    {
       // Should not be called (transmitter-only device)
       throw std::logic_error("Constructing Curtain1 object from received buffer is not possible, Curtain1 is transmitter-only device");
@@ -57,29 +61,34 @@ namespace rfxcomMessages
    {
    }
 
+   void CCurtain1::buildDeviceDetails()
+   {
+      if (m_deviceDetails.empty())
+      {
+         m_deviceDetails.set("type", pTypeCurtain);
+         m_deviceDetails.set("subType", m_subType);
+         m_deviceDetails.set("houseCode", m_houseCode);
+         m_deviceDetails.set("unitCode", m_unitCode);
+      }
+   }
+
    void CCurtain1::Init(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       // Build device description
       buildDeviceModel();
       buildDeviceName();
+      buildDeviceDetails();
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypeCurtain);
-         details.set("subType", m_subType);
-         details.set("houseCode", m_houseCode);
-         details.set("unitCode", m_unitCode);
          api->declareDevice(m_deviceName,
                             m_deviceModel,
                             m_deviceModel,
                             m_state,
-                            details);
-      }
+                            m_deviceDetails);
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CCurtain1::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CCurtain1::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF buffer;
       MEMCLEAR(buffer.CURTAIN1);

@@ -11,8 +11,8 @@ namespace rfxcomMessages
                       const std::string& command,
                       const shared::CDataContainer& deviceDetails)
       : m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_camera , m_signalPower })
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_camera , m_signalPower})
    {
       m_camera->setCommand(command);
       m_signalPower->set(0);
@@ -25,10 +25,12 @@ namespace rfxcomMessages
 
    CCamera1::CCamera1(boost::shared_ptr<yApi::IYPluginApi> api,
                       unsigned int subType,
+                      const std::string& name,
                       const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_camera , m_signalPower })
+      : m_deviceName(name),
+        m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_camera , m_signalPower})
    {
       m_camera->set(yApi::historization::ECameraMoveCommand::kCenterPosition);
       m_signalPower->set(0);
@@ -39,15 +41,17 @@ namespace rfxcomMessages
 
       m_houseCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<char>("houseCode"));
 
-      Init(api);
+      buildDeviceDetails();
+      api->updateDeviceDetails(m_deviceName, m_deviceDetails);
+      api->declareKeywords(m_deviceName, m_keywords);
    }
 
    CCamera1::CCamera1(boost::shared_ptr<yApi::IYPluginApi> api,
                       const RBUF& rbuf,
                       size_t rbufSize)
       : m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_camera , m_signalPower })
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_camera , m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -68,29 +72,33 @@ namespace rfxcomMessages
    {
    }
 
+   void CCamera1::buildDeviceDetails()
+   {
+      if (m_deviceDetails.empty())
+      {
+         m_deviceDetails.set("type", pTypeCamera);
+         m_deviceDetails.set("subType", m_subType);
+         m_deviceDetails.set("houseCode", m_houseCode);
+      }
+   }
+
    void CCamera1::Init(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       // Build device description
       buildDeviceModel();
       buildDeviceName();
+      buildDeviceDetails();
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypeCamera);
-         details.set("subType", m_subType);
-         details.set("houseCode", m_houseCode);
-
          api->declareDevice(m_deviceName,
                             m_deviceModel,
                             m_deviceModel,
                             m_keywords,
-                            details);
-      }
+                            m_deviceDetails);
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CCamera1::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CCamera1::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF rbuf;
       MEMCLEAR(rbuf.CAMERA1);

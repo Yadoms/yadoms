@@ -25,8 +25,10 @@ namespace rfxcomMessages
 
    CChime::CChime(boost::shared_ptr<yApi::IYPluginApi> api,
                   unsigned int subType,
+      const std::string& name,
                   const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      : m_deviceName(name),
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
       m_keywords({ m_signalPower })
    {
       m_signalPower->set(0);
@@ -34,7 +36,10 @@ namespace rfxcomMessages
       createSubType(static_cast<unsigned char>(subType));
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
 
-      declare(api);
+      buildDeviceDetails();
+      api->updateDeviceDetails(m_deviceName, m_deviceDetails);
+      api->declareKeywords(m_deviceName, m_keywords);
+
       m_subTypeManager->reset();
    }
 
@@ -61,6 +66,16 @@ namespace rfxcomMessages
 
    CChime::~CChime()
    {
+   }
+
+   void CChime::buildDeviceDetails()
+   {
+      if (m_deviceDetails.empty())
+      {
+         m_deviceDetails.set("type", pTypeChime);
+         m_deviceDetails.set("subType", m_subType);
+         m_deviceDetails.set("id", m_id);
+      }
    }
 
    void CChime::createSubType(unsigned char subType)
@@ -91,17 +106,12 @@ namespace rfxcomMessages
 
       // Build device description
       buildDeviceName();
+      buildDeviceDetails();
+      auto model = m_subTypeManager->getModel();
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypeChime);
-         details.set("subType", m_subType);
-         details.set("id", m_id);
-         std::string model = m_subTypeManager->getModel();
-         api->declareDevice(m_deviceName, model, model, m_keywords, details);
-      }
+         api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CChime::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const

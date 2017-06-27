@@ -44,7 +44,9 @@ namespace rfxcomMessages
 
    CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> api,
               unsigned int subType,
+              const std::string& name,
               const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+      : m_deviceName(name)
    {
       m_light->set(false);
       m_fan->set(false);
@@ -72,14 +74,15 @@ namespace rfxcomMessages
          m_keywords.push_back(m_t4);
          m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id") |
             ((manuallyDeviceCreationConfiguration.get<bool>("sw2-1") ? 0x80 : 0x00) |
-                (manuallyDeviceCreationConfiguration.get<bool>("sw2-2") ? 0x40 : 0x00) << 16);
+               (manuallyDeviceCreationConfiguration.get<bool>("sw2-2") ? 0x40 : 0x00) << 16);
          break;
       default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
       }
 
-
-      Init(api);
+      buildDeviceDetails();
+      api->updateDeviceDetails(m_deviceName, m_deviceDetails);
+      api->declareKeywords(m_deviceName, m_keywords);
    }
 
    CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -96,21 +99,26 @@ namespace rfxcomMessages
    {
    }
 
+   void CFan::buildDeviceDetails()
+   {
+      if (m_deviceDetails.empty())
+      {
+         m_deviceDetails.set("type", pTypeFan);
+         m_deviceDetails.set("subType", m_subType);
+         m_deviceDetails.set("id", m_id);
+      }
+   }
+
    void CFan::Init(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       // Build device description
       buildDeviceModel();
       buildDeviceName();
+      buildDeviceDetails();
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypeFan);
-         details.set("subType", m_subType);
-         details.set("id", m_id);
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
-      }
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CFan::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
@@ -200,3 +208,5 @@ namespace rfxcomMessages
       }
    }
 } // namespace rfxcomMessages
+
+

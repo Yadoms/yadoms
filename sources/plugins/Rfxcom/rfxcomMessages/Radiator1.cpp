@@ -12,9 +12,9 @@ namespace rfxcomMessages
                           const std::string& command,
                           const shared::CDataContainer& deviceDetails)
       : m_day(boost::make_shared<yApi::historization::CSwitch>("day")),
-      m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_day , m_setPoint , m_signalPower })
+        m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_day , m_setPoint , m_signalPower})
    {
       if (boost::iequals(keyword, m_day->getKeyword()))
       {
@@ -40,12 +40,14 @@ namespace rfxcomMessages
 
    CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> api,
                           unsigned int subType,
+                          const std::string& name,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_dayNightCmd(false),
-      m_day(boost::make_shared<yApi::historization::CSwitch>("day")),
-      m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_day , m_setPoint , m_signalPower })
+      : m_deviceName(name),
+        m_dayNightCmd(false),
+        m_day(boost::make_shared<yApi::historization::CSwitch>("day")),
+        m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_day , m_setPoint , m_signalPower})
    {
       m_day->set(false);
       m_setPoint->set(0.0);
@@ -63,20 +65,22 @@ namespace rfxcomMessages
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
       m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
-      Init(api);
+      buildDeviceDetails();
+      api->updateDeviceDetails(m_deviceName, m_deviceDetails);
+      api->declareKeywords(m_deviceName, m_keywords);
    }
 
    CRadiator1::CRadiator1(boost::shared_ptr<yApi::IYPluginApi> api,
                           const RBUF& rbuf,
                           size_t rbufSize)
       : m_subType(0),
-      m_unitCode(0),
-      m_id(0),
-      m_dayNightCmd(false),
-      m_day(boost::make_shared<yApi::historization::CSwitch>("day")),
-      m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_day , m_setPoint , m_signalPower })
+        m_unitCode(0),
+        m_id(0),
+        m_dayNightCmd(false),
+        m_day(boost::make_shared<yApi::historization::CSwitch>("day")),
+        m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_day , m_setPoint , m_signalPower})
    {
       // Should not be called (transmitter-only device)
       throw std::logic_error("Constructing CRadiator1 object from received buffer is not possible, CRadiator1 is transmitter-only device");
@@ -86,25 +90,30 @@ namespace rfxcomMessages
    {
    }
 
+   void CRadiator1::buildDeviceDetails()
+   {
+      if (m_deviceDetails.empty())
+      {
+         m_deviceDetails.set("type", pTypeRadiator1);
+         m_deviceDetails.set("subType", m_subType);
+         m_deviceDetails.set("id", m_id);
+         m_deviceDetails.set("unitCode", m_unitCode);
+      }
+   }
+
    void CRadiator1::Init(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       // Build device description
       buildDeviceModel();
       buildDeviceName();
+      buildDeviceDetails();
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypeRadiator1);
-         details.set("subType", m_subType);
-         details.set("id", m_id);
-         details.set("unitCode", m_unitCode);
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
-      }
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CRadiator1::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CRadiator1::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF rbuf;
       MEMCLEAR(rbuf.RADIATOR1);

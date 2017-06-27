@@ -14,7 +14,7 @@ namespace rfxcomMessages
                               const std::string& command,
                               const shared::CDataContainer& deviceDetails)
       : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_signalPower })
+        m_keywords({m_signalPower})
    {
       m_signalPower->set(0);
 
@@ -27,9 +27,11 @@ namespace rfxcomMessages
 
    CThermostat3::CThermostat3(boost::shared_ptr<yApi::IYPluginApi> api,
                               unsigned int subType,
+                              const std::string& name,
                               const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_signalPower })
+      : m_deviceName(name),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_signalPower})
    {
       m_signalPower->set(0);
 
@@ -37,7 +39,10 @@ namespace rfxcomMessages
 
       m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode");
 
-      Init(api);
+      buildDeviceDetails();
+      api->updateDeviceDetails(m_deviceName, m_deviceDetails);
+      api->declareKeywords(m_deviceName, m_keywords);
+
       m_subTypeManager->reset();
    }
 
@@ -45,7 +50,7 @@ namespace rfxcomMessages
                               const RBUF& rbuf,
                               size_t rbufSize)
       : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_signalPower })
+        m_keywords({m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -64,6 +69,16 @@ namespace rfxcomMessages
 
    CThermostat3::~CThermostat3()
    {
+   }
+
+   void CThermostat3::buildDeviceDetails()
+   {
+      if (m_deviceDetails.empty())
+      {
+         m_deviceDetails.set("type", pTypeThermostat3);
+         m_deviceDetails.set("subType", m_subType);
+         m_deviceDetails.set("unitCode", m_unitCode);
+      }
    }
 
    void CThermostat3::Init(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -85,20 +100,14 @@ namespace rfxcomMessages
 
       // Build device description
       buildDeviceName();
+      auto model = m_subTypeManager->getModel();
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypeThermostat3);
-         details.set("subType", m_subType);
-         details.set("unitCode", m_unitCode);
-         std::string model = m_subTypeManager->getModel();
-         api->declareDevice(m_deviceName, model, model, m_keywords, details);
-      }
+         api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CThermostat3::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CThermostat3::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF rbuf;
       MEMCLEAR(rbuf.THERMOSTAT3);

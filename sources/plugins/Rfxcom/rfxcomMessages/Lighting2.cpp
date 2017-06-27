@@ -26,8 +26,10 @@ namespace rfxcomMessages
 
    CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api,
                           unsigned int subType,
+      const std::string& name,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      : m_deviceName(name),
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
       m_keywords({ m_signalPower })
    {
       m_signalPower->set(0);
@@ -38,7 +40,10 @@ namespace rfxcomMessages
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
       m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
-      declare(api);
+      buildDeviceDetails();
+      api->updateDeviceDetails(m_deviceName, m_deviceDetails);
+      api->declareKeywords(m_deviceName, m_keywords);
+
       m_subTypeManager->reset();
    }
 
@@ -68,6 +73,19 @@ namespace rfxcomMessages
    {
    }
 
+   void CLighting2::buildDeviceDetails()
+   {
+      if (m_deviceDetails.empty())
+      {
+         m_deviceDetails.set("type", pTypeLighting2);
+         m_deviceDetails.set("subType", m_subType);
+         if (m_subType == sTypeKambrook)
+            m_deviceDetails.set("houseCode", m_houseCode);
+         m_deviceDetails.set("id", m_id);
+         m_deviceDetails.set("unitCode", m_unitCode);
+      }
+   }
+
    void CLighting2::createSubType(unsigned char subType)
    {
       m_subType = subType;
@@ -94,19 +112,13 @@ namespace rfxcomMessages
 
       // Build device description
       buildDeviceName();
+      buildDeviceDetails();
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
       {
-         shared::CDataContainer details;
-         details.set("type", pTypeLighting2);
-         details.set("subType", m_subType);
-         if (m_subType == sTypeKambrook)
-            details.set("houseCode", m_houseCode);
-         details.set("id", m_id);
-         details.set("unitCode", m_unitCode);
-         std::string model = m_subTypeManager->getModel();
-         api->declareDevice(m_deviceName, model, model, m_keywords, details);
+         auto model = m_subTypeManager->getModel();
+         api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
       }
    }
 

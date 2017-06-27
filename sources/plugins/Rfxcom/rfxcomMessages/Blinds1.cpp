@@ -11,9 +11,9 @@ namespace rfxcomMessages
                       const std::string& command,
                       const shared::CDataContainer& deviceDetails)
       : m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
-      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_state, m_batteryLevel, m_signalPower })
+        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_state, m_batteryLevel, m_signalPower})
    {
       m_state->setCommand(command);
       m_batteryLevel->set(100);
@@ -28,11 +28,13 @@ namespace rfxcomMessages
 
    CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> api,
                       unsigned int subType,
+                      const std::string& name,
                       const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
-      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_state, m_batteryLevel, m_signalPower })
+      : m_deviceName(name),
+        m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
+        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_state, m_batteryLevel, m_signalPower})
    {
       m_state->set(yApi::historization::ECurtainCommand::kStop);
       m_batteryLevel->set(100);
@@ -63,16 +65,18 @@ namespace rfxcomMessages
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
       m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode", 0);
 
-      Init(api);
+      buildDeviceDetails();
+      api->updateDeviceDetails(m_deviceName, m_deviceDetails);
+      api->declareKeywords(m_deviceName, m_keywords);
    }
 
    CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> api,
                       const RBUF& rbuf,
                       size_t rbufSize)
       : m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
-      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_state, m_batteryLevel, m_signalPower })
+        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_state, m_batteryLevel, m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -127,30 +131,34 @@ namespace rfxcomMessages
    {
    }
 
+   void CBlinds1::buildDeviceDetails()
+   {
+      if (m_deviceDetails.empty())
+      {
+         m_deviceDetails.set("type", pTypeBlinds);
+         m_deviceDetails.set("subType", m_subType);
+         m_deviceDetails.set("id", m_id);
+         m_deviceDetails.set("unitCode", m_unitCode);
+      }
+   }
+
    void CBlinds1::Init(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       // Build device description
       buildDeviceModel();
       buildDeviceName();
+      buildDeviceDetails();
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypeBlinds);
-         details.set("subType", m_subType);
-         details.set("id", m_id);
-         details.set("unitCode", m_unitCode);
-
          api->declareDevice(m_deviceName,
                             m_deviceModel,
                             m_deviceModel,
                             m_keywords,
-                            details);
-      }
+                            m_deviceDetails);
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CBlinds1::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CBlinds1::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF buffer;
       MEMCLEAR(buffer.BLINDS1);

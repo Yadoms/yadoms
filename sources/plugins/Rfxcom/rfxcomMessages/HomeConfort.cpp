@@ -26,8 +26,10 @@ namespace rfxcomMessages
 
    CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> api,
                               unsigned int subType,
+      const std::string& name,
                               const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
+      : m_deviceName(name),
+      m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
       m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
       m_keywords({ m_state , m_signalPower })
    {
@@ -42,7 +44,9 @@ namespace rfxcomMessages
       m_houseCode = manuallyDeviceCreationConfiguration.get<char>("houseCode");
       m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
-      Init(api);
+      buildDeviceDetails();
+      api->updateDeviceDetails(m_deviceName, m_deviceDetails);
+      api->declareKeywords(m_deviceName, m_keywords);
    }
 
    CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -73,24 +77,28 @@ namespace rfxcomMessages
    {
    }
 
+   void CHomeConfort::buildDeviceDetails()
+   {
+      if (m_deviceDetails.empty())
+      {
+         m_deviceDetails.set("type", pTypeHomeConfort);
+         m_deviceDetails.set("subType", m_subType);
+         m_deviceDetails.set("id", m_id);
+         m_deviceDetails.set("houseCode", m_houseCode);
+         m_deviceDetails.set("unitCode", m_unitCode);
+      }
+   }
+
    void CHomeConfort::Init(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       // Build device description
       buildDeviceModel();
       buildDeviceName();
+      buildDeviceDetails();
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypeHomeConfort);
-         details.set("subType", m_subType);
-         details.set("id", m_id);
-         details.set("houseCode", m_houseCode);
-         details.set("unitCode", m_unitCode);
-
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
-      }
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CHomeConfort::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
