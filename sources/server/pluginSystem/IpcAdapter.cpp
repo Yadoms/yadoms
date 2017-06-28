@@ -705,7 +705,7 @@ namespace pluginSystem
       }
       catch (std::exception& e)
       {
-         request->sendError((boost::format("Plugin doesn't answer to binding query : %1%") % e.what()).str());
+         request->sendError((boost::format("Plugin doesn't answer to manually device creation : %1%") % e.what()).str());
          return;
       }
 
