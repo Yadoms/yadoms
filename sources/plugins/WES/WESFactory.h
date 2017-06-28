@@ -32,7 +32,7 @@ public:
    /// \return                         The IO Manager containing all parameters
    //--------------------------------------------------------------
    boost::shared_ptr<CIOManager> loadConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                 const boost::shared_ptr<IWESConfiguration> configuration);
+                                 const boost::shared_ptr<IWESConfiguration> configuration) const;
 
    //--------------------------------------------------------------
    /// \brief	    createDeviceManually
@@ -44,7 +44,7 @@ public:
    std::string createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const boost::shared_ptr<CIOManager> iomanager,
                                     const yApi::IManuallyDeviceCreationData& data,
-                                    const boost::shared_ptr<IWESConfiguration> configuration);
+                                    const boost::shared_ptr<IWESConfiguration> configuration) const;
 
 private:
    

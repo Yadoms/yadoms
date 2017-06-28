@@ -42,8 +42,8 @@ public:
    ///\param[in] api                             Yadoms API
    ///\param[in] keywordsToHistorize             the new plugin configuration
    //-----------------------------------------------------
-   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, 
-                              const shared::CDataContainer& newConfigurationData);
+   void onUpdateConfiguration(
+      const shared::CDataContainer& newConfigurationData) const;
 
    //--------------------------------------------------------------
    /// \brief	Destructor

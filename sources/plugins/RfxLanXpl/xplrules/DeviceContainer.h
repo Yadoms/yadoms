@@ -31,7 +31,7 @@ namespace xplrules
       ///\brief Get the keywords
       ///\return the keywords
       //------------------------------------
-      const std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> >& getKeywords() const;
+      const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& getKeywords() const;
 
       //------------------------------------
       ///\brief Get the device identifier
@@ -48,7 +48,7 @@ namespace xplrules
       //------------------------------------
       ///\brief The device keywords
       //------------------------------------
-      std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > m_keywords;
+      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> > m_keywords;
    };
 } //namespace xplrules
 

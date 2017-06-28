@@ -84,7 +84,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          case yApi::IYPluginApi::kEventDeviceCommand:
             {
                // Command was received from Yadoms
-               auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
+               auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
                OnSendDeviceCommand(command, api, xplService);
                break;
             }
@@ -125,9 +125,8 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
          case yApi::IYPluginApi::kEventManuallyDeviceCreation:
             {
-            //TODO revoir la création de device
-            // Yadoms asks for device creation
-               auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
+               // Yadoms asks for device creation
+               auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
                OnCreateDeviceRequest(data, api);
                break;
             }
@@ -135,7 +134,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          case yApi::IYPluginApi::kBindingQuery:
             {
                // Yadoms asks for device creation
-               auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
+               auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
                OnBindingQueryRequest(data, api);
                break;
             }
@@ -232,7 +231,7 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage& xplMessage,
                api->declareDevice(deviceAddress.getId(),
                                   deviceAddress.getCommercialName(),
                                   deviceAddress.getCommercialName(),
-                                  std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(),
+                                  std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>(),
                                   details);
             }
 
@@ -380,28 +379,30 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
             //retreeive device identifier
             auto deviceContainer = deviceCreationRule->generateDeviceParameters(innerContent);
             const auto& deviceAddress = deviceContainer.getDeviceIdentifier();
-            if (!api->deviceExists(deviceAddress.getId()))
-            {
-               shared::CDataContainer details;
-               details.set("readingProtocol", deviceAddress.getReadingXplProtocol().toString());
-               details.set("writingProtocol", deviceAddress.getWritingXplProtocol().toString());
-               details.set("source", std::string("yadomssource!"));
-               api->declareDevice(deviceAddress.getId(),
-                                  deviceAddress.getCommercialName(),
-                                  deviceAddress.getCommercialName(),
-                                  std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(),
-                                  details);
-            }
 
-            //create message keywords in database
-            for (auto keyword = deviceContainer.getKeywords().begin(); keyword != deviceContainer.getKeywords().end(); ++keyword)
-            {
-               if (!api->keywordExists(deviceAddress.getId(), *keyword))
-                  api->declareKeyword(deviceAddress.getId(), *keyword);
-            }
+            shared::CDataContainer details;
+            details.set("readingProtocol", deviceAddress.getReadingXplProtocol().toString());
+            details.set("writingProtocol", deviceAddress.getWritingXplProtocol().toString());
+            details.set("source", std::string("yadomssource!"));
+            api->declareDevice(deviceAddress.getId(),
+                               deviceAddress.getCommercialName(),
+                               deviceAddress.getCommercialName(),
+                               std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>(),
+                               details);
+
+            api->updateDeviceDetails(data->getData().getDeviceName(),
+                                     details);
+
+            auto existingModel = api->getDeviceModel(data->getData().getDeviceName());
+            if (existingModel.empty())
+               api->updateDeviceModel(data->getData().getDeviceName(),
+                                      deviceAddress.getCommercialName());
+
+            api->declareKeywords(data->getData().getDeviceName(),
+                                 deviceContainer.getKeywords());
 
             //send created device
-            data->sendSuccess(deviceAddress.getId());
+            data->sendSuccess();
          }
          else
          {

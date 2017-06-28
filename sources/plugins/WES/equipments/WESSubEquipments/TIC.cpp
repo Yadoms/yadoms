@@ -91,7 +91,7 @@ namespace equipments
          details.set("type", m_deviceType);
 
          //Déclaration of all IOs
-         api->declareDevice(m_deviceName, "TeleInfo",model, m_keywords, details);
+         api->declareDevice(m_deviceName, "TeleInfo", model, m_keywords, details);
       }
 
       void CTIC::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -215,7 +215,8 @@ namespace equipments
       }
 
       CTIC::~CTIC()
-      {}
+      {
+      }
 
       void CTIC::setPeriodTime(const int period)
       {
@@ -290,3 +291,5 @@ namespace equipments
       }
    }
 }// namespace equipments::subdevices
+
+

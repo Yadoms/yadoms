@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/event/EventHandler.hpp>
 #include "equipments/IEquipment.h"
 #include "IWESConfiguration.h"
 #include "equipments/specificHistorizers/deviceStatus.h"
@@ -72,7 +71,7 @@ public:
    /// \brief	    getMasterEquipment
    /// \return the number of servers
    //--------------------------------------------------------------
-   int getMasterEquipment();
+   int getMasterEquipment() const;
 
    //--------------------------------------------------------------
    /// \brief	    check if a device with the same name already exist into the CioManager
