@@ -5,6 +5,7 @@
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 #include "specificHistorizers/outgoing/Blyss.h"
+#include "specificHistorizers/outgoing/Chacon.h"
 #include "specificHistorizers/outgoing/Visonic.h"
 #include "specificHistorizers/outgoing/X10.h"
 #include "specificHistorizers/outgoing/Domia.h"
@@ -74,6 +75,23 @@ const std::string CManuallyDeviceFactory::createDeviceManually(boost::shared_ptr
          details.set("protocol", "domia");
          details.set("burst", request.getConfiguration().getWithDefault<std::string>("burst", ""));
          api->declareDevice(devId, request.getDeviceType(), "DOMIA", obj, details);
+      }
+
+      //create keywords
+      return devId;
+   }     
+   else if (request.getDeviceType() == "chacon")
+   {
+      //create device
+      if (!api->deviceExists(devId))
+      {
+         auto obj = boost::make_shared<specificHistorizers::outgoing::CChaconKeyword>("command");
+         shared::CDataContainer details;
+         details.set("id", request.getConfiguration().get<int>("id"));
+         details.set("frequency", "433");
+         details.set("protocol", "chacon");
+         details.set("burst", request.getConfiguration().getWithDefault<std::string>("burst", ""));
+         api->declareDevice(devId, request.getDeviceType(), "CHACON", obj, details);
       }
 
       //create keywords

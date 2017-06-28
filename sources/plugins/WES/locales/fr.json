@@ -62,7 +62,8 @@
 					"content": {
 						"IPAddress": {
 							"name": "Adresse IP",
-							"description": "L'adresse IP du module"
+							"description": "L'adresse IP du module",
+                     "regexErrorMessage": "Ce n'est pas une adresse IP valide"
 						},
 						"Port": {
 							"name": "Port",

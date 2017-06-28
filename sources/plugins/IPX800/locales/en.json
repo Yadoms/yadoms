@@ -4,7 +4,8 @@
    "configurationSchema":{
       "IPAddress":{
 			"name": "IP Address",
-			"description": "the IP address of the equipment"
+			"description": "the IP address of the equipment",
+         "regexErrorMessage": "this is not a valid IP address"
       },	
       "Port":{
 			"name": "Port",

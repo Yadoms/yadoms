@@ -322,7 +322,7 @@
            }
          },
          "id1_65535": {
-           "types": { "mdRemote106": { "canBeCreatedManually" : "true" } , "livolo": { "canBeCreatedManually" : "true" } , "aoke": { "canBeCreatedManually" : "true" } , "rgb432w": { "canBeCreatedManually" : "true" } , "mdremote107": { "canBeCreatedManually" : "true" } , "legrandCad": { "canBeCreatedManually" : "true" } , "it": { "canBeCreatedManually" : "true" } , "mdRemote108": { "canBeCreatedManually" : "true" } , "kangtai" : { "canBeCreatedManually" : "true" } },
+           "types": { "mdRemote106": { "canBeCreatedManually" : "true" } , "livolo": { "canBeCreatedManually" : "true" } , "aoke": { "canBeCreatedManually" : "true" } , "rgb432w": { "canBeCreatedManually" : "true" } , "mdremote107": { "canBeCreatedManually" : "true" } , "legrandCad": { "canBeCreatedManually" : "true" } , "it": { "canBeCreatedManually" : "true" } , "mdRemote108": { "canBeCreatedManually" : "true" } },
            "content": {
              "id": {
                "type": "int",
@@ -450,6 +450,22 @@
                "type": "int",
                "minimumValue": "1",
                "maximumValue": "15"
+             }
+           }
+         },
+
+         "id1_65535-uc1_30": {
+           "types": { "kangtai" : { "canBeCreatedManually" : "true" } },
+           "content": {
+             "id": {
+               "type": "int",
+               "minimumValue": "1",
+               "maximumValue": "65535"
+             },
+             "unitCode": {
+               "type": "int",
+               "minimumValue": "1",
+               "maximumValue": "30"
              }
            }
          },
