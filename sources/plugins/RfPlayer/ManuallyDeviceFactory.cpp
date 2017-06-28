@@ -2,6 +2,7 @@
 #include "ManuallyDeviceFactory.h"
 #include <shared/Log.h>
 #include "specificHistorizers/outgoing/Blyss.h"
+#include "specificHistorizers/outgoing/Chacon.h"
 #include "specificHistorizers/outgoing/Visonic.h"
 #include "specificHistorizers/outgoing/X10.h"
 #include "specificHistorizers/outgoing/Domia.h"
@@ -35,9 +36,9 @@ void CManuallyDeviceFactory::createDeviceManually(boost::shared_ptr<shared::plug
          api->updateDeviceModel(request.getDeviceName(), "BLYSS");
       api->updateDeviceDetails(request.getDeviceName(), details);
       api->declareKeyword(request.getDeviceName(), keyword);
-
       return;
    }
+
    if (request.getDeviceType() == "x10")
    {
       auto keyword = boost::make_shared<specificHistorizers::outgoing::CX10Keyword>("command");
@@ -65,9 +66,24 @@ void CManuallyDeviceFactory::createDeviceManually(boost::shared_ptr<shared::plug
          api->updateDeviceModel(request.getDeviceName(), "DOMIA");
       api->updateDeviceDetails(request.getDeviceName(), details);
       api->declareKeyword(request.getDeviceName(), keyword);
-
       return;
    }
+
+   if (request.getDeviceType() == "chacon")
+   {
+      auto keyword = boost::make_shared<specificHistorizers::outgoing::CChaconKeyword>("command");
+      shared::CDataContainer details;
+      details.set("id", request.getConfiguration().get<int>("id"));
+      details.set("frequency", "433");
+      details.set("protocol", "chacon");
+      details.set("burst", request.getConfiguration().getWithDefault<std::string>("burst", ""));
+      if (api->getDeviceModel(request.getDeviceName()).empty())
+         api->updateDeviceModel(request.getDeviceName(), "CHACON");
+      api->updateDeviceDetails(request.getDeviceName(), details);
+      api->declareKeyword(request.getDeviceName(), keyword);
+      return;
+   }
+
    if (request.getDeviceType() == "kd101")
    {
       auto keyword = boost::make_shared<specificHistorizers::outgoing::CKd101Keyword>("command");
@@ -80,9 +96,9 @@ void CManuallyDeviceFactory::createDeviceManually(boost::shared_ptr<shared::plug
          api->updateDeviceModel(request.getDeviceName(), "KD101");
       api->updateDeviceDetails(request.getDeviceName(), details);
       api->declareKeyword(request.getDeviceName(), keyword);
-
       return;
    }
+
    if (request.getDeviceType() == "parrot")
    {
       auto keyword = boost::make_shared<specificHistorizers::outgoing::CParrotKeyword>("command");
@@ -94,9 +110,9 @@ void CManuallyDeviceFactory::createDeviceManually(boost::shared_ptr<shared::plug
          api->updateDeviceModel(request.getDeviceName(), "PARROT");
       api->updateDeviceDetails(request.getDeviceName(), details);
       api->declareKeyword(request.getDeviceName(), keyword);
-
       return;
    }
+
    if (request.getDeviceType() == "visonic")
    {
       auto keyword = boost::make_shared<specificHistorizers::outgoing::CVisonicKeyword>("command");
@@ -110,9 +126,9 @@ void CManuallyDeviceFactory::createDeviceManually(boost::shared_ptr<shared::plug
          api->updateDeviceModel(request.getDeviceName(), "VISONIC");
       api->updateDeviceDetails(request.getDeviceName(), details);
       api->declareKeyword(request.getDeviceName(), keyword);
-
       return;
    }
+
    if (request.getDeviceType() == "x2dAlarm433" || request.getDeviceType() == "x2dAlarm866" || request.getDeviceType() == "x2dShutter" || request.getDeviceType() == "x2dElec" || request.getDeviceType() == "x2dGas")
    {
       auto keyword = boost::make_shared<specificHistorizers::outgoing::CX2DKeyword>("command");
@@ -130,9 +146,9 @@ void CManuallyDeviceFactory::createDeviceManually(boost::shared_ptr<shared::plug
          api->updateDeviceModel(request.getDeviceName(), "X2D");
       api->updateDeviceDetails(request.getDeviceName(), details);
       api->declareKeyword(request.getDeviceName(), keyword);
-
       return;
    }
+
    if (request.getDeviceType() == "rts")
    {
       auto keyword = boost::make_shared<specificHistorizers::outgoing::CRtsKeyword>("command");

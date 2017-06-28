@@ -136,6 +136,53 @@ public:
    bool getLedActivity() const;
 
    //--------------------------------------------------------------
+   /// \brief	               Tells is frequency is enabled
+   /// \param [in] for433MHz  If true configure 433MHz, if false 868 MHz
+   /// \return                true if frequency is enabled
+   //--------------------------------------------------------------
+   bool isFrequencyEnabled(bool for433MHz) const;
+
+   //--------------------------------------------------------------
+   /// \brief	               Get the selected frequency
+   /// \param [in] for433MHz  If true configure 433MHz, if false 868 MHz
+   /// \return                The frequency
+   //--------------------------------------------------------------
+   std::string getSelectedFrequency(bool for433MHz) const;
+
+   //--------------------------------------------------------------
+   /// \brief	               Get the selectivity
+   /// \param [in] for433MHz  If true configure 433MHz, if false 868 MHz
+   /// \return                The selectivity
+   //--------------------------------------------------------------
+   int getSelectiviy(bool for433MHz) const;
+
+   //--------------------------------------------------------------
+   /// \brief	               Get the DSP trigger level
+   /// \param [in] for433MHz  If true configure 433MHz, if false 868 MHz
+   /// \return                The DSP trigger level
+   //--------------------------------------------------------------
+   int getDspTrigger(bool for433MHz) const;
+
+   //--------------------------------------------------------------
+   /// \brief	               Get the RfLink trigger level
+   /// \param [in] for433MHz  If true configure 433MHz, if false 868 MHz
+   /// \return                The RfLink trigger level
+   //--------------------------------------------------------------
+   int getRfLinkTrigger(bool for433MHz) const;
+
+   //--------------------------------------------------------------
+   /// \brief	               Tells is ListenBeofreTalk is enabled
+   /// \return                true if ListenBeofreTalk is enabled
+   //--------------------------------------------------------------
+   bool isListenBeforeTalkEnabled() const;
+
+   //--------------------------------------------------------------
+   /// \brief	               Get the ListenBeofreTalk level
+   /// \return                The ListenBeofreTalk level value
+   //--------------------------------------------------------------
+   int getListenBeforeTalkValue() const;
+
+   //--------------------------------------------------------------
    /// \brief	    Initialize configuration
    //--------------------------------------------------------------
    void initializeWith(shared::CDataContainer container);

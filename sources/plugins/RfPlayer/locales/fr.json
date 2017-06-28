@@ -113,152 +113,240 @@
 		"ledactiviy": {
 			"name": "LED",
 			"description": "Active ou désactive la LED selon l'activité RF 433/868."
+		},
+		"advanced": {
+			"name": "Paramètres avancés",
+			"description": "Permet de configurer précisément les paramètres radio fréquence",
+			"content": {
+				"433": {
+					"name": "Fréquence 433 MHz",
+					"description": "Active le fonctionnement en écoute et emission en 433 MHz. (Chacon, Domia, X10, DeltaDore, Somfy, Blyss, Oregon Scientific, OWL, Visonic, Parrot Learn&Play)",
+					"content": {
+						"freq": {
+							"name": "Choix de la fréquence",
+							"description": "Permet de définir précisement quelle fréquence utiliser.",
+							"values": {
+								"433_420": "433.420 MHz (Somfy)",
+								"433_920": "433.920 MHz (Toutes les autres marques)"
+							}
+						},
+						"selectivity": {
+							"name": "Choix de la selectivité",
+							"description": "Une sélectivité plus élevée (faible valeur en termes de Khz) signifie une plus grande sensibilité du récepteur RF, mais les appareils de transmission hors fréquence peuvent être rejectés. La sélectivité inférieure (valeur élevée en termes de Khz) signifie une sensibilité du récepteur RF plus faible (performance inférieure). Les anciens appareils bon marché peuvent avoir un grand décalage de fréquence ou un décalage dans le temps, surtout lorsqu'ils sont utilisés à l'extérieur. (Valeur par défaut : 300 kHz)",
+							"values": {
+								"0": "Moyenne (300 kHz)",
+								"1": "Très faible (800khz). Permet d'utiliser les deux fréquences simultanément 433.420 et 433.920",
+								"3": "Faible (500khz)",
+								"5": "Haute (200 kHz)"
+							}
+						},
+						"dsptrigger": {
+							"name": "Déclencheur DSP",
+							"description": "Définir la plus petite amplitude du signal conduisant à commencer la détection et l'analyse trame. La faible valeur de déclenchement signifie une sensibilité élevée. Une trop grande valeur de déclenchement peu conduire au rejet des trames utiles. Une valeur de déclenchement trop faible conduit à la détection de trames fantômes, générées par le bruit, et parfois peu conduire au rejet des trames utiles car elles sont cachées pendant ce temps (Valeur par défaut : 8dBm)"
+						},
+						"rflinktrigger": {
+							"name": "Déclencheur RFLink",
+							"description": "Définir la plus petite amplitude du signal conduisant à commencer la détection et l'analyse trame. La faible valeur de déclenchement signifie une sensibilité élevée. Une trop grande valeur de déclenchement peu conduire au rejet des trames utiles. Une valeur de déclenchement trop faible conduit à la détection de trames fantômes, générées par le bruit, et parfois peu conduire au rejet des trames utiles car elles sont cachées pendant ce temps (Valeur par défaut : 12dBm)"
+						}
+					}
+				},
+				"868": {
+					"name": "Fréquence 868 MHz",
+					"description": "Active le fonctionnement en écoute et emission en 868 MHz. (DeltaDore, Visonic, Parrot Learn&Play)",
+					"content": {
+						"freq": {
+							"name": "Choix de la fréquence",
+							"description": "Permet de définir précisement quelle fréquence utiliser.",
+							"values": {
+								"868_350": "868.350 MHz (DeltaDore)",
+								"868_950": "868.950 MHz (Visonic)"
+							}
+						},
+						"selectivity": {
+							"name": "Choix de la selectivité",
+							"description": "Une sélectivité plus élevée (faible valeur en termes de Khz) signifie une plus grande sensibilité du récepteur RF, mais les appareils de transmission hors fréquence peuvent être rejectés. La sélectivité inférieure (valeur élevée en termes de Khz) signifie une sensibilité du récepteur RF plus faible (performance inférieure). Les anciens appareils bon marché peuvent avoir un grand décalage de fréquence ou un décalage dans le temps, surtout lorsqu'ils sont utilisés à l'extérieur. (Valeur par défaut : 300 kHz)",
+							"values": {
+								"0": "Moyenne (300 kHz)",
+								"1": "Très faible (800khz). Permet d'utiliser les deux fréquences simultanément 868.350 et 868.950",
+								"3": "Faible (500khz)",
+								"5": "Haute (200 kHz)"
+							}
+						},
+						"dsptrigger": {
+							"name": "Déclencheur DSP",
+							"description": "Définir la plus petite amplitude du signal conduisant à commencer la détection et l'analyse trame. La faible valeur de déclenchement signifie une sensibilité élevée. Une trop grande valeur de déclenchement peu conduire au rejet des trames utiles. Une valeur de déclenchement trop faible conduit à la détection de trames fantômes, générées par le bruit, et parfois peu conduire au rejet des trames utiles car elles sont cachées pendant ce temps (Valeur par défaut : 6dBm)"
+						},
+						"rflinktrigger": {
+							"name": "Déclencheur RFLink",
+							"description": "Définir la plus petite amplitude du signal conduisant à commencer la détection et l'analyse trame. La faible valeur de déclenchement signifie une sensibilité élevée. Une trop grande valeur de déclenchement peu conduire au rejet des trames utiles. Une valeur de déclenchement trop faible conduit à la détection de trames fantômes, générées par le bruit, et parfois peu conduire au rejet des trames utiles car elles sont cachées pendant ce temps (Valeur par défaut : 10dBm)"
+						}
+					}
+				},
+				"lbt": {
+					"name": "Listen Before Talk",
+					"description": "Lorsqu'il est activé, l'émetteur <i>écoute</i> l'activité actuelle sur la même fréquence et attend un silence avant d'emettre. Les trames envoyées ne peuvent pas être retardés de plus de 3 secondes.",
+					"content": {
+						"lbtvalue": {
+							"name": "Déclencheur",
+							"description": "Haute valeur recommandée. (Valeur par défaut : 16dBm)"
+						}
+					}
+				}
+			}
 		}
 	},
 	"deviceConfiguration": {
 		"staticConfigurationSchema": {
 			"name": "Type",
 			"description": "Type d'équipement",
-      "schemas": {
-        "blyssDevice": {
-          "types": {
-            "blyss": {
-              "title": "BLYSS",
-              "description": "Marque BLYSS distribuée par Castorama"
-            }
-          },
-          "content": {
-            "groupCode": {
-              "name": "Groupe",
-              "description": "L'identifiant du groupe de l'équipement (A-P)"
-            },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de la fonction de l'équipement (1-5)"
-            },
-            "burst": {
-              "name": "Burst",
-              "description": "Facteur de répétition de trame (0 par défaut)"
-            }
-          }
-        },
-        "simpleDevice": {
-          "types": {
-            "x10": {
-              "title": "X10"
-            },
-            "domia": {
-              "title": "DomiaLite"
-            },
-            "kd101": {
-              "title": "KD101 (détecteur de fumée)"
-            },
-            "parrot": {
-              "title": "Parrot"
-            }
-          },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement"
-            },
-            "burst": {
-              "name": "Burst",
-              "description": "Facteur de répétition de trame (0 par défaut)"
-            }
-          }
-        },
-        "visonicDevice": {
-          "types": {
-            "visonic": {
-              "title": "Visonic",
-              "description": "Marque VISONIC, BFT,..."
-            }
-          },
-          "content": {
-            "frequency": {
-              "name": "Fréquence",
-              "description": "La fréquence utilisée",
-              "values": {
-                "433": "433 MHz",
-                "866": "868 MHz"
-              }
-            },
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement"
-            },
-            "burst": {
-              "name": "Burst",
-              "description": "Facteur de répétition de trame (0 par défaut)"
-            },
-            "qualifier": {
-              "name": "Qualificatif",
-              "description": "Paramètre optionnel"
-            }
-          }
-        },
-        "x2dDevice": {
-          "types": {
-            "x2dAlarm433": {
-              "title": "Alarme DeltaDore 433MHz",
-              "description": "Alarme Deltadore/X2D fonctionnant en 433MHz"
-            },
-            "x2dAlarm868": {
-              "title": "Alarme DeltaDore 868MHz",
-              "description": "Alarme Deltadore/X2D fonctionnant en 868MHz"
-            },
-            "x2dShutter": {
-              "title": "Volet X2D",
-              "description": "Commande de volet DeltaDore/X2D"
-            },
-            "x2dElec": {
-              "title": "Commande electrique X2D",
-              "description": "Commande électrique DeltaDore/X2D"
-            },
-            "x2dGas": {
-              "title": "Commande de gaz X2D",
-              "description": "Commande de gaz DeltaDore/X2D"
-            }
-          },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement"
-            },
-            "burst": {
-              "name": "Burst",
-              "description": "Facteur de répétition de trame (0 par défaut)"
-            },
-            "x2dVariant": {
-              "name": "Variante X2D",
-              "description": "Si coché, utilise la variante x2d"
-            }
-          }
-        },
-        "genericDevice": {
-          "types": {
-            "rts": {
-              "title": "Somfy RTS",
-              "description": "Somfy"
-            }
-          },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement"
-            },
-            "burst": {
-              "name": "Burst",
-              "description": "Facteur de répétition de trame (0 par défaut)"
-            },
-            "qualifier": {
-              "name": "Qualificatif",
-              "description": "Paramètre optionnel"
-            }
-          }
-        }
-      }
+			"schemas": {
+				"blyssDevice": {
+					"types": {
+						"blyss": {
+							"title": "BLYSS",
+							"description": "Marque BLYSS distribuée par Castorama"
+						}
+					},
+					"content": {
+						"groupCode": {
+							"name": "Groupe",
+							"description": "L'identifiant du groupe de l'équipement (A-P)"
+						},
+						"unitCode": {
+							"name": "Unité",
+							"description": "L'identifiant de la fonction de l'équipement (1-5)"
+						},
+						"burst": {
+							"name": "Burst",
+							"description": "Facteur de répétition de trame (0 par défaut)"
+						}
+					}
+				},
+				"simpleDevice": {
+					"types": {
+						"x10": {
+							"title": "X10",
+                     "description": "Produits utilisant le procotole X10"
+						},
+						"chacon": {
+							"title": "Chacon",
+                     "description": "Produits distribués par Chacon (Chacon, DIO,..)"
+						},
+						"domia": {
+							"title": "DomiaLite",
+                     "description": "Produits distribués par Domia"
+						},
+						"kd101": {
+							"title": "KD101",
+                     "description": "Détecteur de fumée"
+						},
+						"parrot": {
+							"title": "Parrot",
+                     "description": "Learn and play"
+						}
+					},
+					"content": {
+						"id": {
+							"name": "ID",
+							"description": "L'identifiant de l'équipement"
+						},
+						"burst": {
+							"name": "Burst",
+							"description": "Facteur de répétition de trame (0 par défaut)"
+						}
+					}
+				},
+				"visonicDevice": {
+					"types": {
+						"visonic": {
+							"title": "Visonic",
+							"description": "Marque VISONIC, BFT,..."
+						}
+					},
+					"content": {
+						"frequency": {
+							"name": "Fréquence",
+							"description": "La fréquence utilisée",
+							"values": {
+								"433": "433 MHz",
+								"866": "868 MHz"
+							}
+						},
+						"id": {
+							"name": "ID",
+							"description": "L'identifiant de l'équipement"
+						},
+						"burst": {
+							"name": "Burst",
+							"description": "Facteur de répétition de trame (0 par défaut)"
+						},
+						"qualifier": {
+							"name": "Qualificatif",
+							"description": "Paramètre optionnel"
+						}
+					}
+				},
+				"x2dDevice": {
+					"types": {
+						"x2dAlarm433": {
+							"title": "Alarme DeltaDore 433MHz",
+							"description": "Alarme Deltadore/X2D fonctionnant en 433MHz"
+						},
+						"x2dAlarm868": {
+							"title": "Alarme DeltaDore 868MHz",
+							"description": "Alarme Deltadore/X2D fonctionnant en 868MHz"
+						},
+						"x2dShutter": {
+							"title": "Volet X2D",
+							"description": "Commande de volet DeltaDore/X2D"
+						},
+						"x2dElec": {
+							"title": "Commande electrique X2D",
+							"description": "Commande électrique DeltaDore/X2D"
+						},
+						"x2dGas": {
+							"title": "Commande de gaz X2D",
+							"description": "Commande de gaz DeltaDore/X2D"
+						}
+					},
+					"content": {
+						"id": {
+							"name": "ID",
+							"description": "L'identifiant de l'équipement"
+						},
+						"burst": {
+							"name": "Burst",
+							"description": "Facteur de répétition de trame (0 par défaut)"
+						},
+						"x2dVariant": {
+							"name": "Variante X2D",
+							"description": "Si coché, utilise la variante x2d"
+						}
+					}
+				},
+				"genericDevice": {
+					"types": {
+						"rts": {
+							"title": "Somfy RTS",
+							"description": "Somfy"
+						}
+					},
+					"content": {
+						"id": {
+							"name": "ID",
+							"description": "L'identifiant de l'équipement"
+						},
+						"burst": {
+							"name": "Burst",
+							"description": "Facteur de répétition de trame (0 par défaut)"
+						},
+						"qualifier": {
+							"name": "Qualificatif",
+							"description": "Paramètre optionnel"
+						}
+					}
+				}
+			}
 		}
 	},
 	"extraQueries": {
@@ -279,17 +367,17 @@
 			"waitReboot": "Ecriture du microcode (~1 min)"
 		}
 	},
-  "enumerations": {
-    "EBlyss": {
-      "name": "",
-      "values": {
-        "Off": "OFF",
-        "On": "ON",
-        "Dim": "DIM",
-        "AllOff": "Tous ON",
-        "AllOn": "Tous OFF",
-        "Assoc": "Trame d'appairage"
-      }
-    }
-  }   
+	"enumerations": {
+		"EBlyss": {
+			"name": "",
+			"values": {
+				"Off": "OFF",
+				"On": "ON",
+				"Dim": "DIM",
+				"AllOff": "Tous ON",
+				"AllOn": "Tous OFF",
+				"Assoc": "Trame d'appairage"
+			}
+		}
+	}
 }

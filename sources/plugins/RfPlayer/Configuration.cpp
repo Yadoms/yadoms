@@ -64,3 +64,49 @@ std::string CConfiguration::getSerialPort() const
 
 
 
+bool CConfiguration::isFrequencyEnabled(bool for433MHz) const
+{
+   if(for433MHz)
+      return m_container.getWithDefault<bool>("advanced.content.433.checkbox", true);
+   return m_container.getWithDefault<bool>("advanced.content.868.checkbox", true);
+}
+
+std::string CConfiguration::getSelectedFrequency(bool for433MHz) const
+{
+   if (for433MHz)
+      return m_container.getWithDefault<std::string>("advanced.content.433.content.freq", "433_920");
+   return m_container.getWithDefault<std::string>("advanced.content.868.content.freq", "868_950");
+}
+
+int CConfiguration::getSelectiviy(bool for433MHz) const
+{
+   if (for433MHz)
+      return m_container.getWithDefault<int>("advanced.content.433.content.selectivity", 0);
+   return m_container.getWithDefault<int>("advanced.content.868.content.selectivity", 0);
+}
+
+int CConfiguration::getDspTrigger(bool for433MHz) const
+{
+   if (for433MHz)
+      return m_container.getWithDefault<int>("advanced.content.433.content.dsptrigger", 8);
+   return m_container.getWithDefault<int>("advanced.content.868.content.dsptrigger", 6);
+}
+
+int CConfiguration::getRfLinkTrigger(bool for433MHz) const
+{
+   if (for433MHz)
+      return m_container.getWithDefault<int>("advanced.content.433.content.rflinktrigger", 12);
+   return m_container.getWithDefault<int>("advanced.content.868.content.rflinktrigger", 10);
+}
+
+bool CConfiguration::isListenBeforeTalkEnabled() const
+{
+   return m_container.getWithDefault<bool>("advanced.content.lbt.checkbox", true);
+}
+
+int CConfiguration::getListenBeforeTalkValue() const
+{
+   return m_container.getWithDefault<int>("advanced.content.lbt.content.lbtvalue", 16);
+}
+
+

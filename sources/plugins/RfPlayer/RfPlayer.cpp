@@ -354,6 +354,21 @@ void CRfPlayer::updateDongleConfiguration(boost::shared_ptr<yApi::IYPluginApi> a
       if (m_configuration.isRepeaterActive())
          m_messageHandler->send(m_transceiver->buildRepeaterConfigurationCommand(m_configuration.getRepeaterActiveProtocols()));
       m_messageHandler->send(m_transceiver->buildLedActivityCommand(m_configuration.getLedActivity()));
+      
+      //433 MHz
+      m_messageHandler->send(m_transceiver->buildFrequencyCommand(true, m_configuration.isFrequencyEnabled(true), m_configuration.getSelectedFrequency(true)));
+      m_messageHandler->send(m_transceiver->buildSelectivityCommand(true, m_configuration.getSelectiviy(true)));
+      m_messageHandler->send(m_transceiver->buildDspTriggerCommand(true, m_configuration.getDspTrigger(true)));
+      m_messageHandler->send(m_transceiver->buildRfLinkTriggerCommand(true, m_configuration.getRfLinkTrigger(true)));
+
+      //868 MHz
+      m_messageHandler->send(m_transceiver->buildFrequencyCommand(false, m_configuration.isFrequencyEnabled(false), m_configuration.getSelectedFrequency(false)));
+      m_messageHandler->send(m_transceiver->buildSelectivityCommand(false, m_configuration.getSelectiviy(false)));
+      m_messageHandler->send(m_transceiver->buildDspTriggerCommand(false, m_configuration.getDspTrigger(false)));
+      m_messageHandler->send(m_transceiver->buildRfLinkTriggerCommand(false, m_configuration.getRfLinkTrigger(false)));
+
+      //Listen Before Talk
+      m_messageHandler->send(m_transceiver->buildLBTCommand(m_configuration.isListenBeforeTalkEnabled(), m_configuration.getListenBeforeTalkValue()));
    }
    catch (std::exception& e)
    {
