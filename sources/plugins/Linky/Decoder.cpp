@@ -162,7 +162,7 @@ void CDecoder::processMessage(const std::string& key,
          std::string s_period(value);
          boost::trim_right(s_period);
          boost::trim_left(s_period);
-         teleInfo::specificHistorizers::EPeriod period(s_period); //TODO : Changer le nom teleInfo en linky
+         linky::specificHistorizers::EPeriod period(s_period);
          m_TimePeriod->set(period);
 		}
 		else if (key == m_tag_LTARF)

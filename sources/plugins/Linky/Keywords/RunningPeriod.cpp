@@ -7,12 +7,12 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CRunningPeriod::CRunningPeriod(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& KeyWordName)
-   : m_runningPeriod(boost::make_shared<teleInfo::specificHistorizers::CPeriod>(KeyWordName)),
+   : m_runningPeriod(boost::make_shared<linky::specificHistorizers::CPeriod>(KeyWordName)),
      m_isDeveloperMode(api->getYadomsInformation()->developperMode())
 {
 }
 
-void CRunningPeriod::set(const teleInfo::specificHistorizers::EPeriod value) const
+void CRunningPeriod::set(const linky::specificHistorizers::EPeriod value) const
 {
    try
    {

@@ -4,7 +4,7 @@
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 
 //TODO V2 : To be copy in a library teleInfo
-namespace teleInfo { namespace specificHistorizers
+namespace linky { namespace specificHistorizers
 
 {   
    //-----------------------------------------------------
@@ -42,4 +42,4 @@ namespace teleInfo { namespace specificHistorizers
       virtual ~CPeriod();
    };
 
-} } // namespace teleInfo::specificHistorizer
+} } // namespace linky::specificHistorizer

@@ -40,14 +40,14 @@ protected:
    /// \brief	                     Check if we got a complete message
    /// \return                      The complet message
    //--------------------------------------------------------------
-   boost::shared_ptr<std::map<std::string, std::string>> getCompleteMessage();
+   boost::shared_ptr<std::map<std::string, std::vector<std::string> > > getCompleteMessage();
 
    //--------------------------------------------------------------
    /// \brief	                     Retreive all labels/values in a frame
    /// \param[in] frame             the frame to decode
    /// \return                      A map containing labels/values
    //--------------------------------------------------------------
-   static boost::shared_ptr<std::map<std::string, std::string>> getMessages(boost::shared_ptr<const std::vector<unsigned char>> frame);
+   static boost::shared_ptr<std::map<std::string, std::vector<std::string> > > getMessages(boost::shared_ptr<const std::vector<unsigned char>> frame);
 
    //--------------------------------------------------------------
    /// \brief	                     Check if the CRC is ok
@@ -60,7 +60,7 @@ protected:
    /// \brief	                     Send a message to the target event handler
    /// \param[in] messages          Received messages as map(key, value)
    //--------------------------------------------------------------
-   void notifyEventHandler(boost::shared_ptr<std::map<std::string, std::string> > messages) const;
+   void notifyEventHandler(boost::shared_ptr<std::map<std::string, std::vector<std::string> > > messages) const;
 
 private:
    //--------------------------------------------------------------

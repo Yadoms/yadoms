@@ -58,9 +58,9 @@ void CLinkyReceiveBufferHandler::flush()
    m_content.clear();
 }
 
-boost::shared_ptr<std::map<std::string, std::string>> CLinkyReceiveBufferHandler::getCompleteMessage()
+boost::shared_ptr<std::map<std::string, std::vector<std::string> > > CLinkyReceiveBufferHandler::getCompleteMessage()
 {
-   static const auto noMessages = boost::make_shared<std::map<std::string, std::string>>();
+   static const auto noMessages = boost::make_shared<std::map<std::string, std::vector<std::string> > >();
 
    if (m_content.empty())
       return noMessages;
@@ -97,10 +97,10 @@ boost::shared_ptr<std::map<std::string, std::string>> CLinkyReceiveBufferHandler
    return messages;
 }
 
-boost::shared_ptr<std::map<std::string, std::string>> CLinkyReceiveBufferHandler::getMessages(boost::shared_ptr<const std::vector<unsigned char> > frame)
+boost::shared_ptr<std::map<std::string, std::vector<std::string> > > CLinkyReceiveBufferHandler::getMessages(boost::shared_ptr<const std::vector<unsigned char> > frame)
 {
-   static const auto noMessages = boost::make_shared<std::map<std::string, std::string>>();
-   auto messages = boost::make_shared<std::map<std::string, std::string>>();
+   static const auto noMessages = boost::make_shared<std::map<std::string, std::vector<std::string> > >();
+   auto messages = boost::make_shared<std::map<std::string, std::vector<std::string> > >();
    auto endPos = frame->begin();
    while (true)
    {
@@ -137,10 +137,17 @@ boost::shared_ptr<std::map<std::string, std::string>> CLinkyReceiveBufferHandler
 			 if (iterator != tok.end())
 			 {
 				 const auto value = *iterator;
-				 (*messages)[key] = value;
+				 (*messages)[key].push_back(value);
 			 }
 			 else
 				return noMessages;
+
+          ++iterator;
+          if (iterator != tok.end())
+          {
+             const auto value = *iterator;
+             (*messages)[key].push_back(value);
+          }
 		 }
 		 else
 			return noMessages;
@@ -186,8 +193,8 @@ bool CLinkyReceiveBufferHandler::isCheckSumOk(const std::string& message)
    return checksum == message[message.size() - 2];
 }
 
-void CLinkyReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<std::map<std::string, std::string>> messages) const
+void CLinkyReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<std::map<std::string, std::vector<std::string> > > messages) const
 {
-   m_receiveDataEventHandler.postEvent<boost::shared_ptr<std::map<std::string, std::string>>>(m_receiveDataEventId,
-                                                                                              messages);
+   m_receiveDataEventHandler.postEvent<boost::shared_ptr<std::map<std::string, std::vector<std::string > > > >(m_receiveDataEventId,
+                                                                                                               messages);
 }

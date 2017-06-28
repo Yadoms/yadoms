@@ -23,7 +23,7 @@ public:
    /// \brief	                      Set the value of the keyword
    /// \param[in] value              The new value
    //--------------------------------------------------------------
-   void set(const teleInfo::specificHistorizers::EPeriod value) const;
+   void set(const linky::specificHistorizers::EPeriod value) const;
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -43,7 +43,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The period type
    //--------------------------------------------------------------
-   boost::shared_ptr<teleInfo::specificHistorizers::CPeriod> m_runningPeriod;
+   boost::shared_ptr<linky::specificHistorizers::CPeriod> m_runningPeriod;
 
    //--------------------------------------------------------------
    /// \brief	The map of returned value to the IHM
