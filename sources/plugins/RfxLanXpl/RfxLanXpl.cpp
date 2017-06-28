@@ -384,17 +384,11 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
             details.set("readingProtocol", deviceAddress.getReadingXplProtocol().toString());
             details.set("writingProtocol", deviceAddress.getWritingXplProtocol().toString());
             details.set("source", std::string("yadomssource!"));
-            api->declareDevice(deviceAddress.getId(),
-                               deviceAddress.getCommercialName(),
-                               deviceAddress.getCommercialName(),
-                               std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>(),
-                               details);
 
             api->updateDeviceDetails(data->getData().getDeviceName(),
                                      details);
 
-            auto existingModel = api->getDeviceModel(data->getData().getDeviceName());
-            if (existingModel.empty())
+            if (api->getDeviceModel(data->getData().getDeviceName()).empty())
                api->updateDeviceModel(data->getData().getDeviceName(),
                                       deviceAddress.getCommercialName());
 
