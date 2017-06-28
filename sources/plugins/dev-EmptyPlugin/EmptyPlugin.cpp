@@ -90,7 +90,22 @@ void CEmptyPlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             break;
          }
 
-      case yApi::IYPluginApi::kEventExtraQuery: // Optional, required flag "extraQueries" in package.json
+      case yApi::IYPluginApi::kEventDeviceCommand:
+         {
+            // A command was received from Yadoms
+            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
+            YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
+
+            /*
+
+            Process the command here (to drive a keyword for example)
+
+            */
+
+            break;
+         }
+
+      case yApi::IYPluginApi::kEventExtraQuery: // Optional (remove the case if not needed), required flag "extraQueries" in package.json
          {
             // Extra-command was received from Yadoms
             auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
@@ -116,7 +131,7 @@ void CEmptyPlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             break;
          }
 
-      case yApi::IYPluginApi::kBindingQuery: // Optional, required flag "__binding__", with "type" = "plugin" in package.json
+      case yApi::IYPluginApi::kBindingQuery: // Optional (remove the case if not needed), required flag "__binding__", with "type" = "plugin" in package.json
          {
             // Yadoms ask for a binding query 
             auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
@@ -145,19 +160,7 @@ void CEmptyPlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             break;
          }
 
-      case yApi::IYPluginApi::kEventDeviceCommand:
-         {
-            // A command was received from Yadoms
-            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
-            YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
-            if (command->getKeyword().empty())
-            YADOMS_LOG(information) << "Specific command for a device (can be used for any purpose, unless keyword driving, device configuration (see kGetDeviceConfigurationSchemaRequest and kSetDeviceConfiguration documentation) and deletion";
-            else
-            YADOMS_LOG(information) << "Standard command to a keyword (used to drive a switch, a thermostat...)";
-            break;
-         }
-
-      case yApi::IYPluginApi::kEventManuallyDeviceCreation: // Optional, required flag "supportManuallyDeviceCreation" and device configuration schema in package.json
+      case yApi::IYPluginApi::kEventManuallyDeviceCreation: // Optional (remove the case if not needed), required flag "supportManuallyDeviceCreation" and device configuration schema in package.json
          {
             auto creation = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
             try
@@ -172,7 +175,7 @@ void CEmptyPlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                api->declareKeyword(creation->getData().getDeviceName(), ...);
 
                */
-               
+
                creation->sendSuccess();
             }
             catch (std::exception& ex)
@@ -182,7 +185,7 @@ void CEmptyPlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             break;
          }
 
-      case yApi::IYPluginApi::kEventDeviceRemoved: // Optional, required flag "supportDeviceRemovedNotification" in package.json
+      case yApi::IYPluginApi::kEventDeviceRemoved: // Optional (remove the case if not needed), required flag "supportDeviceRemovedNotification" in package.json
          {
             auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved>>();
             YADOMS_LOG(information) << device->device() << " was removed";

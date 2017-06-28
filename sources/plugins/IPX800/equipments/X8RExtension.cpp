@@ -7,39 +7,38 @@
 
 namespace equipments
 {
-
    CX8RExtension::CX8RExtension(boost::shared_ptr<yApi::IYPluginApi> api,
                                 const std::string& device,
                                 const int position):
       m_deviceName(device),
-      m_deviceType("X-8R"),
       m_position(position)
    {
       shared::CDataContainer details;
       details.set("provider", "IPX800");
       details.set("shortProvider", "ipx");
-      details.set("type", m_deviceType);
+      details.set("type", deviceType());
       details.set("position", boost::lexical_cast<std::string>(position));
 
       // Relay Configuration
-      for (int counter = 0; counter<X8R_RELAY_QTY; ++counter)
+      for (int counter = 0; counter < X8R_RELAY_QTY; ++counter)
       {
          std::stringstream name, hardwareName;
          name << "R" << std::setfill('0') << std::setw(2) << boost::lexical_cast<int>(counter + 1);
          hardwareName << "R" << boost::lexical_cast<int>(position * 8 + counter + 1);
-         boost::shared_ptr<specificHistorizers::CInputOuput> temp = boost::make_shared<specificHistorizers::CInputOuput>(name.str(),
-                                                                                                                         hardwareName.str(),
-                                                                                                                         yApi::EKeywordAccessMode::kGetSet);
+         auto temp = boost::make_shared<specificHistorizers::CInputOuput>(name.str(),
+                                                                          hardwareName.str(),
+                                                                          yApi::EKeywordAccessMode::kGetSet);
          m_keywordList.push_back(temp);
       }
 
-      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToDeclare;
       keywordsToDeclare.insert(keywordsToDeclare.end(), m_keywordList.begin(), m_keywordList.end());
 
       //Declaration of all IOs
-      api->declareDevice(device, m_deviceType, m_deviceType, keywordsToDeclare, details);
+      api->updateDeviceDetails(device, details);
+      api->declareKeywords(device, keywordsToDeclare);
 
-      YADOMS_LOG(trace) << "creation of the device " << device << " of type " << m_deviceType << " at position " << position;
+      YADOMS_LOG(trace) << "creation of the device " << device << " of type " << deviceType() << " at position " << position;
    }
 
    std::string CX8RExtension::getDeviceName() const
@@ -49,7 +48,7 @@ namespace equipments
 
    std::string CX8RExtension::getDeviceType() const
    {
-      return m_deviceType;
+      return deviceType();
    }
 
    int CX8RExtension::getSlot() const
@@ -64,11 +63,12 @@ namespace equipments
    {
       if (type == "R")
       {
-         std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >::const_iterator diIterator;
-         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize;
+         std::vector<boost::shared_ptr<specificHistorizers::CInputOuput>>::const_iterator diIterator;
+         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToHistorize;
          std::string productRevision("");
 
-         try {
+         try
+         {
             productRevision = values.getWithDefault<std::string>("product", "");
             for (diIterator = m_keywordList.begin(); diIterator != m_keywordList.end(); ++diIterator)
             {
@@ -77,7 +77,7 @@ namespace equipments
                //historize only for new value
                if ((*diIterator)->get() != newValue || forceHistorization)
                {
-				  YADOMS_LOG(information) << "read IO : " << (*diIterator)->getHardwareName() << " : " << boost::lexical_cast<std::string>(newValue) ;
+                  YADOMS_LOG(information) << "read IO : " << (*diIterator)->getHardwareName() << " : " << boost::lexical_cast<std::string>(newValue) ;
                   (*diIterator)->set(newValue);
                   keywordsToHistorize.push_back((*diIterator));
                }
@@ -93,15 +93,16 @@ namespace equipments
       }
    }
 
-   shared::CDataContainer CX8RExtension::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
-                                                              shared::CDataContainer& parameters, 
+   shared::CDataContainer CX8RExtension::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                              shared::CDataContainer& parameters,
                                                               boost::shared_ptr<const yApi::IDeviceCommand> command)
    {
       std::string keywordName = command->getKeyword();
 
-      std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >::const_iterator diIterator;
+      std::vector<boost::shared_ptr<specificHistorizers::CInputOuput>>::const_iterator diIterator;
 
-      try {
+      try
+      {
          for (diIterator = m_keywordList.begin(); diIterator != m_keywordList.end(); ++diIterator)
          {
             // // Keyword found
@@ -154,7 +155,7 @@ namespace equipments
 
    void CX8RExtension::setNewConfiguration(const shared::CDataContainer& newConfiguration)
    {
-      std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >::const_iterator iterator;
+      std::vector<boost::shared_ptr<specificHistorizers::CInputOuput>>::const_iterator iterator;
 
       m_position = newConfiguration.get<int>("Position");
       int counter = 0;
@@ -169,6 +170,15 @@ namespace equipments
       YADOMS_LOG(information) << "equipment " << m_deviceName << " configuration is updated";
    }
 
+   const std::string& CX8RExtension::deviceType()
+   {
+      static const std::string deviceType("X-8R");
+      return deviceType;
+   }
+
    CX8RExtension::~CX8RExtension()
-   {}
+   {
+   }
 }// namespace equipments
+
+

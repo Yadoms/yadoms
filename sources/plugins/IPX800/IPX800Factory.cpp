@@ -10,9 +10,9 @@
 CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
                                const std::string& device,
                                const IIPX800Configuration& configuration):
-   m_ioManager(boost::make_shared<CIOManager>(device, 
+   m_ioManager(boost::make_shared<CIOManager>(device,
                                               configuration.getIPAddressWithSocket(),
-                                              configuration.isPasswordActivated(), 
+                                              configuration.isPasswordActivated(),
                                               configuration.getPassword()))
 {
    for (int counter = 0; counter < 6; ++counter)
@@ -34,13 +34,15 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
    // Create all extensions devices
    for (devicesIterator = devices.begin(); devicesIterator != devices.end(); ++devicesIterator)
    {
-	   std::string type = "";
+      std::string type = "";
       // plugin state have no type
-	   try {
-		   type = api->getDeviceDetails(*devicesIterator).get<std::string>("type");
-	   }
-	   catch (...)
-	   {}
+      try
+      {
+         type = api->getDeviceDetails(*devicesIterator).get<std::string>("type");
+      }
+      catch (...)
+      {
+      }
 
       YADOMS_LOG(information) << "Name : " << (*devicesIterator) ;
       YADOMS_LOG(information) << "Model : " << type ;
@@ -49,53 +51,56 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
       {
          auto details = api->getDeviceDetails((*devicesIterator));
          int position = details.get<int>("position");
-         extension = boost::make_shared<equipments::CX8RExtension>(api, (*devicesIterator), position);
+         api->declareDevice(*devicesIterator, equipments::CX8RExtension::deviceType(), equipments::CX8RExtension::deviceType());
+         extension = boost::make_shared<equipments::CX8RExtension>(api, *devicesIterator, position);
          m_devicesList.push_back(extension);
-         X8RSlotused[position-1] = true;
+         X8RSlotused[position - 1] = true;
       }
       else if (type == "X-8D")
       {
          auto details = api->getDeviceDetails((*devicesIterator));
          int position = details.get<int>("position");
-         extension = boost::make_shared<equipments::CX8DExtension>(api, (*devicesIterator), position);
+         api->declareDevice(*devicesIterator, equipments::CX8DExtension::deviceType(), equipments::CX8DExtension::deviceType());
+         extension = boost::make_shared<equipments::CX8DExtension>(api, *devicesIterator, position);
          m_devicesList.push_back(extension);
-         X8DSlotused[position-1] = true;
+         X8DSlotused[position - 1] = true;
       }
       else if (type == "X-24D")
       {
          auto details = api->getDeviceDetails((*devicesIterator));
          int position = details.get<int>("position");
-         extension = boost::make_shared<equipments::CX24DExtension>(api, (*devicesIterator), position);
+         api->declareDevice(*devicesIterator, equipments::CX24DExtension::deviceType(), equipments::CX24DExtension::deviceType());
+         extension = boost::make_shared<equipments::CX24DExtension>(api, *devicesIterator, position);
          m_devicesList.push_back(extension);
 
          // The corresponding slots for X-8D could not be installed
          X8DSlotused[position * 3] = true;
          X8DSlotused[position * 3 + 1] = true;
          X8DSlotused[position * 3 + 2] = true;
-      }  
+      }
    }
 
    m_ioManager->Initialize(m_devicesList);
 }
 
-std::string CIPX800Factory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                 const yApi::IManuallyDeviceCreationData& data)
+void CIPX800Factory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
+                                          const yApi::IManuallyDeviceCreationData& data)
 {
    boost::shared_ptr<equipments::IEquipment> extension;
 
-   try {
-      
+   try
+   {
       if (data.getDeviceType() == "X8R")
       {
          int position = data.getConfiguration().get<int>("Position");
          extension = boost::make_shared<equipments::CX8RExtension>(api, data.getDeviceName(), position);
-         X8RSlotused[position-1] = true;
+         X8RSlotused[position - 1] = true;
       }
       else if (data.getDeviceType() == "X8D")
       {
          int position = data.getConfiguration().get<int>("Position");
          extension = boost::make_shared<equipments::CX8DExtension>(api, data.getDeviceName(), position);
-         X8DSlotused[position-1] = true;
+         X8DSlotused[position - 1] = true;
       }
       else if (data.getDeviceType() == "X24D")
       {
@@ -103,9 +108,9 @@ std::string CIPX800Factory::createDeviceManually(boost::shared_ptr<yApi::IYPlugi
          extension = boost::make_shared<equipments::CX24DExtension>(api, data.getDeviceName(), position);
 
          // The corresponding slots for X-8D could not be installed
-         X8DSlotused[(position-1) * 3] = true;
-         X8DSlotused[(position-1) * 3 + 1] = true;
-         X8DSlotused[(position-1) * 3 + 2] = true;
+         X8DSlotused[(position - 1) * 3] = true;
+         X8DSlotused[(position - 1) * 3 + 1] = true;
+         X8DSlotused[(position - 1) * 3 + 2] = true;
       }
 
       if (extension)
@@ -118,8 +123,6 @@ std::string CIPX800Factory::createDeviceManually(boost::shared_ptr<yApi::IYPlugi
 
    // Update IO list
    m_ioManager->Initialize(m_devicesList);
-
-   return extension->getDeviceName();
 }
 
 shared::CDataContainer CIPX800Factory::bindSlotsX8R()
@@ -185,7 +188,7 @@ shared::CDataContainer CIPX800Factory::bindSlotsX24D()
       // Add only not used slots
       if (!X8DSlotused[counter * 3] && !X8DSlotused[counter * 3 + 1] && !X8DSlotused[counter * 3 + 2])
       {
-         ev.set(boost::lexical_cast<std::string>(counter + 1), (boost::format("SLOT%1%") % (counter+1)).str() );
+         ev.set(boost::lexical_cast<std::string>(counter + 1), (boost::format("SLOT%1%") % (counter + 1)).str());
 
          if (defaultValue.empty())
             defaultValue = boost::lexical_cast<std::string>(counter + 1);
@@ -216,23 +219,22 @@ void CIPX800Factory::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std:
       // Deletion from the list of the device
       if (m_devicesList[counter]->getDeviceName() == deviceRemoved)
       {
-
          // If it's an extension, we delete the extension.
          // If it's the IPX800, we delete all elements
          if (m_devicesList[counter]->getDeviceType() != "IPX800")
          {
             // free slot(s) associated to this device for future configurations
             int position = m_devicesList[counter]->getSlot();
-            
+
             if (m_devicesList[counter]->getDeviceType() == "X-8R") X8RSlotused[position - 1] = false;
             if (m_devicesList[counter]->getDeviceType() == "X-8D") X8DSlotused[position - 1] = false;
             if (m_devicesList[counter]->getDeviceType() == "X-24D")
-            { 
+            {
                X8DSlotused[(position - 1) * 3] = false;
                X8DSlotused[(position - 1) * 3 + 1] = false;
                X8DSlotused[(position - 1) * 3 + 2] = false;
             }
-            
+
             // remove the extension
             m_devicesList.erase(m_devicesList.begin() + counter);
          }
@@ -245,7 +247,7 @@ void CIPX800Factory::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std:
 void CIPX800Factory::onDeviceConfigurationChange(const std::string& name,
                                                  const shared::CDataContainer& newConfiguration)
 {
-   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorExtension;
+   std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorExtension;
 
    for (iteratorExtension = m_devicesList.begin(); iteratorExtension != m_devicesList.end(); ++iteratorExtension)
    {
@@ -287,4 +289,6 @@ void CIPX800Factory::onDeviceConfigurationChange(const std::string& name,
 }
 
 CIPX800Factory::~CIPX800Factory()
-{}
+{
+}
+

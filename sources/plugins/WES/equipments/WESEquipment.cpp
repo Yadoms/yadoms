@@ -13,7 +13,7 @@ namespace equipments
    CWESEquipment::CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
                                 const std::string& device,
                                 const shared::CDataContainer& deviceConfiguration)
-      : m_deviceName(device), //TODO revoir la descente de m_deviceName jusqu'aux accès aux API
+      : m_deviceName(device),
         m_deviceType("WES"),
         m_deviceStatus(boost::make_shared<specificHistorizers::CdeviceStatus>("Status")),
         m_version(0)
