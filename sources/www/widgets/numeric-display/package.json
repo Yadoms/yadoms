@@ -1,6 +1,6 @@
 {
 	"type": "numeric-display",
-	"version": "1.0.0-rc.1",
+	"version": "1.0.0-rc.2",
 	"author": "Nicolas HILAIRE",
 	"url": "https://github.com/Yadoms/yadoms/wiki/numeric-display",
 	"credits": "",
@@ -24,6 +24,10 @@
 			"type": "keyword",
 			"expectedKeywordType": "numeric",
 			"expectedKeywordAccess": "get"
-		}
+		},
+      "dateDisplay": {
+         "type": "bool",
+         "defaultValue" : "false"
+      }
 	}
 }

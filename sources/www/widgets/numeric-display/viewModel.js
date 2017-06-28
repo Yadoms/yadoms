@@ -8,6 +8,8 @@ function numericDisplayViewModel() {
     //observable data
     this.data = ko.observable(0).extend({ numeric: 1 });
     this.unit = ko.observable("");
+    this.shouldBeVisible = ko.observable(false);
+    this.lastReceiveDate = ko.observable("");
 
     /**
      * Initialization method
@@ -35,6 +37,15 @@ function numericDisplayViewModel() {
         
         //we fill the deviceId of the battery indicator
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
+        
+        try{
+           self.shouldBeVisible(self.widget.configuration.dateDisplay);
+        }
+        catch(error)
+        {
+           self.shouldBeVisible(false);
+           console.warn (error);
+        }
     }
 
     /**
@@ -49,6 +60,9 @@ function numericDisplayViewModel() {
             //it is the right device
             self.data(data.value);
             self.widgetApi.fitText();
+            
+            if (self.shouldBeVisible())
+               self.lastReceiveDate(moment(data.date).calendar().toString());
         }
     };
 };

@@ -5,6 +5,10 @@
 		"device": {
 			"name": "Data to display",
 			"description": "Select the data that you want to display"
-		}
+		},
+      "dateDisplay": {
+			"name": "Update date",
+			"description": ""
+      }
 	}
 }
