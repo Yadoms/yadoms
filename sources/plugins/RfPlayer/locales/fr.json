@@ -225,16 +225,24 @@
 				"simpleDevice": {
 					"types": {
 						"x10": {
-							"title": "X10"
+							"title": "X10",
+                     "description": "Produits utilisant le procotole X10"
+						},
+						"chacon": {
+							"title": "Chacon",
+                     "description": "Produits distribués par Chacon (Chacon, DIO,..)"
 						},
 						"domia": {
-							"title": "DomiaLite"
+							"title": "DomiaLite",
+                     "description": "Produits distribués par Domia"
 						},
 						"kd101": {
-							"title": "KD101 (détecteur de fumée)"
+							"title": "KD101",
+                     "description": "Détecteur de fumée"
 						},
 						"parrot": {
-							"title": "Parrot"
+							"title": "Parrot",
+                     "description": "Learn and play"
 						}
 					},
 					"content": {

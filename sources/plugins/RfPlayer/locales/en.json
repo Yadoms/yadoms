@@ -225,16 +225,24 @@
         "simpleDevice": {
           "types": {
             "x10": {
-              "title": "X10"
+              "title": "X10",
+              "description": "Products using X10 protocol"
+            },
+            "chacon": {
+               "title": "Chacon",
+               "description": "Products distributed by Chacon (Chacon, DIO,..)"
             },
             "domia": {
-              "title": "DomiaLite"
+              "title": "DomiaLite",
+              "description": "Products distributed by Domia"
             },
             "kd101": {
-              "title": "KD101 (smoke detector)"
+              "title": "KD101",
+              "description": "Smoke detector"
             },
             "parrot": {
-              "title": "Parrot"
+              "title": "Parrot",
+              "description": "Learn & Play"
             }
           },
           "content": {
