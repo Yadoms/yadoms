@@ -31,9 +31,6 @@ public:
       return true;
    }
 
-   void sendText(const std::string & content) override
-   {}
-
    void subscribeForConnectionEvents(shared::event::CEventHandler& forEventHandler,
                                      int forId) override
    {
