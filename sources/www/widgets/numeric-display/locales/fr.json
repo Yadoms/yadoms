@@ -5,6 +5,10 @@
 		"device": {
 			"name": "Donnée à afficher",
 			"description": "Selectionnez ici la donnée que vous souhaitez visualiser"
-		}
+		},
+      "dateDisplay": {
+			"name": "Date de dernière mise à jour",
+			"description": ""
+      }      
 	}
 }
