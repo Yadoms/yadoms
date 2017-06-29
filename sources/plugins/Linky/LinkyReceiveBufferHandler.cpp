@@ -112,18 +112,22 @@ boost::shared_ptr<std::map<std::string, std::vector<std::string> > > CLinkyRecei
 	  if (endPos == frame->end())
 		  return noMessages;
 
+     // If a new complete message is present, then we delete old values
+     //if (!messages->empty() && std::find(endPos, frame->end(), kSTX) != frame->end() && std::find(endPos, frame->end(), kETX) != frame->end())
+     //   messages->clear();
+
 	  ++endPos;
       auto message = std::string(startPos, endPos);
       if (!isCheckSumOk(message))
          return noMessages;
 
       // Remove <cr> and <lf>
-	  message.pop_back();
+	   message.pop_back();
       message.erase(message.begin());
 
       // Separate key/value
       boost::char_separator<char> sep("\t");
-      boost::tokenizer<boost::char_separator<char>> tok(message, sep);
+      boost::tokenizer<boost::char_separator<char> > tok(message, sep);
 
       try
       {
@@ -137,7 +141,14 @@ boost::shared_ptr<std::map<std::string, std::vector<std::string> > > CLinkyRecei
 			 if (iterator != tok.end())
 			 {
 				 const auto value = *iterator;
-				 (*messages)[key].push_back(value);
+             if (messages->find(key) == messages->end())
+				    (*messages)[key].push_back(value);
+             else // if tag already present we supressed old values
+             {
+                messages->erase(key);
+                (*messages)[key].push_back(value);
+             }
+
 			 }
 			 else
 				return noMessages;
@@ -146,7 +157,9 @@ boost::shared_ptr<std::map<std::string, std::vector<std::string> > > CLinkyRecei
           if (iterator != tok.end())
           {
              const auto value = *iterator;
-             (*messages)[key].push_back(value);
+             ++iterator;
+             if (iterator != tok.end()) // We don't want to get the checksum. The checksum is the last element of the token
+                (*messages)[key].push_back(value);
           }
 		 }
 		 else

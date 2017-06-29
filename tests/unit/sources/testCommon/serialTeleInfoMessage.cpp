@@ -10,6 +10,10 @@ namespace testCommon
       for (const auto car : content)
          message.push_back(car);
       message.push_back(kEndMessage);
+
+      // replace internal characters of the message if any
+      boost::replace_all(message, "<ht>", std::string(1, kHorizontalTab));
+
       return message;
    }
 

@@ -133,7 +133,7 @@ void CDecoder::createKeywordList(const std::string& tariff)
 }
 
 void CDecoder::processMessage(const std::string& key,
-                                  const std::string& value)
+                              const std::string& value)
 {
 	try
 	{
