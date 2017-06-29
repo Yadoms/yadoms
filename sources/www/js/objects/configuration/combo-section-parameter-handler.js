@@ -150,9 +150,6 @@ ComboSectionParameterHandler.prototype.afterI18n = function() {
           $(value).siblings(".combo-item-title").removeClass("combo-item-title").addClass("combo-item-title-without-description");
        }
     });   
-  
-   // force first selection
-   $ul.find("li a").first().trigger('click');
 }
 
 ComboSectionParameterHandler.prototype.locateInDOM = function () {
@@ -174,7 +171,6 @@ ComboSectionParameterHandler.prototype.applyScript = function () {
     var self = this;
 
    $("#" + self.dropdownUuid).find("li a").click(function(){
-      
      $("#" + self.comboUuid).find(".current-selected-item").html($(this).html());
      $("#" + self.comboUuid).val($(this).data('value')).change();
    });
@@ -209,7 +205,7 @@ ComboSectionParameterHandler.prototype.applyScript = function () {
     if (!activeSectionUuid)
       activeSectionUuid = this.configurationHandlers[0].uuid;
     
-    $("#" + self.dropdownUuid).find("li a").first().trigger('click');
+    $("#" + self.dropdownUuid).find("li a[data-value='" + activeSectionUuid +"']").trigger('click');
 };
 
 /**
