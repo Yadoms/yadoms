@@ -3,4 +3,5 @@
         <div class="textfit-in-parent textfit" data-bind="text: data()"></div>
         <div class="unit textfit" data-bind="text: unit()" min-font="14"></div>
     </div>
+    <div class="date-div" data-bind="css: { hidden: !shouldBeVisible()}, text: lastReceiveDate()" />
 </script>

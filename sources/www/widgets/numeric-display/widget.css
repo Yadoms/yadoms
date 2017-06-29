@@ -5,6 +5,12 @@
     flex-direction: row;
 }
 
+.widget-numeric-display .date-div {
+    height: 15px;
+    text-align: center;
+    font-size: 9px;
+}
+
 .widget-numeric-display .unit {
     flex: 0 0 20%;
     vertical-align:top;
