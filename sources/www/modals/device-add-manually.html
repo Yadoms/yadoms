@@ -50,9 +50,10 @@
          //validation form
          //erase previous jqBootstrapValidation
          $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
-               preventSubmit: false,
-               submitError: function ($form, event, errors) {
-                  console.warn("Unable to validate form: " + errors);
+            preventSubmit: false,
+            submitError: function ($form, event, errors) {
+               console.warn("Unable to validate form: " + errors);
+               event.preventDefault();
             },
             submitSuccess: function ($form, event) {
                event.preventDefault();
