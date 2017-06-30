@@ -144,6 +144,10 @@ namespace pluginSystem
                         if (!tools::COperatingSystem::shutdown(true))
                         YADOMS_LOG(error) << "Fail to reboot";
                      }
+                     else
+                     {
+                        YADOMS_LOG(information) << "Received command for virtual device from Yadoms : " << yApi::IDeviceCommand::toString(command);
+                     }
 
                      break;
                   }
