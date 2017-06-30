@@ -161,6 +161,7 @@
    applyCurrentConfiguration= function (configurationSchema, currentDevice) {
    
       configurationSchema.capacity.activeSection = currentDevice.configuration.capacity.activeSection;
+      debugger; // TODO griser ce qui ne peut être modifié ou générer un schéma de conf différent
       for (var section in configurationSchema.capacity.content) {
          configurationSchema.capacity.content[section].radio = (section === currentDevice.configuration.capacity.activeSection) ? 'true' : 'false';
       }

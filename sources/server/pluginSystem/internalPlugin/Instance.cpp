@@ -124,7 +124,7 @@ namespace pluginSystem
                                   "yadoms system",
                                   keywords);
 
-            while (1)
+            while (true)
             {
                switch (eventHandler.waitForEvents())
                {
@@ -170,8 +170,6 @@ namespace pluginSystem
 
                      break;
                   }
-
-                  //TODO gérer le setDeviceConfiguration
 
                default:
                   break;
