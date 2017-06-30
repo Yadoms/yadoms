@@ -165,8 +165,7 @@ namespace pluginSystem
                      catch (std::exception& e)
                      {
                         YADOMS_LOG(error) << "Unable to create virtual device " << request->getData().getDeviceName() << ", " << e.what();
-                        //TODO remonter les erreurs de création, et les traduire
-                        request->sendError("Unable to create virtual device");
+                        request->sendError("Virtual device creation failed");
                      }
 
                      break;
