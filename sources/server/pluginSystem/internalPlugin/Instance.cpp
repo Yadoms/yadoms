@@ -144,10 +144,7 @@ namespace pluginSystem
                         if (!tools::COperatingSystem::shutdown(true))
                         YADOMS_LOG(error) << "Fail to reboot";
                      }
-                     else
-                     {
-                        YADOMS_LOG(warning) << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command);
-                     }
+
                      break;
                   }
 
