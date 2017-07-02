@@ -215,7 +215,7 @@
                }
             },
             "virtualDevice" : {
-               "name": "Device virtuel",
+               "name": "Equipement virtuel",
                "description": "Un équipement virtuel peut être utilisé pour mémoriser toute donnée ne correspondant pas à un équipement physique. Exemples : état de l'alarme, niveau d'une cuve basé sur la consommation (sans capteur de niveau), commande globale de lampes..."
             }
          }
