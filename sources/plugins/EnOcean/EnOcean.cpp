@@ -463,14 +463,6 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
 
       if (!rorg->isEepProvided(erp1UserData))
       {
-         if (m_api->deviceExists(deviceId))
-         {
-            // Device exist.
-            // It is ether configured or not, but this teachin message give us nothing new (no EEP is provided), so ignore it
-            YADOMS_LOG(information) << "Device " << deviceId << " already declared, teachin message ignored.";
-            return;
-         }
-
          // Special case for the 1BS RORG : only one func and type exist, so profile can be known
          if (rorg->id() == CRorgs::k1BS_Telegram)
          {
@@ -482,12 +474,30 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
             CDeviceConfigurationHelper deviceConfiguration(profile,
                                                            manufacturerName);
 
-            declareDevice(deviceId,
-                          profile,
-                          manufacturerName);
+            if (m_api->deviceExists(deviceId))
+            {
+               m_api->updateDeviceModel(deviceId,
+                                        generateModel(m_api->getDeviceModel(deviceId),
+                                                      manufacturerName,
+                                                      profile));
+            }
+            else
+            {
+               declareDevice(deviceId,
+                             profile,
+                             manufacturerName);
+            }
 
             m_api->updateDeviceConfiguration(deviceId,
                                              deviceConfiguration.configuration());
+            return;
+         }
+
+         if (m_api->deviceExists(deviceId))
+         {
+            // Device exist.
+            // It is ether configured or not, but this teachin message give us nothing new (no EEP is provided), so ignore it
+            YADOMS_LOG(information) << "Device " << deviceId << " already declared, teachin message ignored.";
             return;
          }
 
