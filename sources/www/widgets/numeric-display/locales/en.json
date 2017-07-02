@@ -1,5 +1,6 @@
 {
 	"name": "Numeric display",
+   "NoAcquisition": "No acquisition",
 	"description": "A simple widget that display a numeric value of a device",
 	"configurationSchema": {
 		"device": {
