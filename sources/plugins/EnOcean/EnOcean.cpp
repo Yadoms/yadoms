@@ -336,6 +336,9 @@ void CEnOcean::processDeviceConfiguration(const std::string& deviceId,
 {
    try
    {
+      // TODO virer
+      configuration.printToLog(YADOMS_LOG(trace));
+
       auto selectedProfile = CProfileHelper(configuration.get<std::string>("profile.activeSection"));
       auto manufacturer = configuration.get<std::string>("manufacturer");
 
@@ -468,6 +471,26 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
             return;
          }
 
+         // Special case for the 1BS RORG : only one func and type exist, so profile can be known
+         if (rorg->id() == CRorgs::k1BS_Telegram)
+         {
+            auto profile = CProfileHelper(CRorgs::k1BS_Telegram,
+                                          C1BSTelegram::kContacts_and_Switches,
+                                          C1BS_0x00::k0x01);
+
+            static const std::string manufacturerName("Unknown manufacturer");
+            CDeviceConfigurationHelper deviceConfiguration(profile,
+                                                           manufacturerName);
+
+            declareDevice(deviceId,
+                          profile,
+                          manufacturerName);
+
+            m_api->updateDeviceConfiguration(deviceId,
+                                             deviceConfiguration.configuration());
+            return;
+         }
+
          declareDeviceWithoutProfile(deviceId);
          return;
       }
@@ -596,15 +619,15 @@ void CEnOcean::processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket
       throw CProtocolException((boost::format("RadioERP1 message : wrong data size (%1%, < 1)") % esp3Packet->header().dataLength()).str());
 
    enum
-      {
-         SA_RECLAIM_NOT_SUCCESSFUL = 0x01,
-         SA_CONFIRM_LEARN = 0x02,
-         SA_LEARN_ACK = 0x03,
-         CO_READY = 0x04,
-         CO_EVENT_SECUREDEVICES = 0x05,
-         CO_DUTYCYCLE_LIMIT = 0x06,
-         CO_TRANSMIT_FAILED = 0x07
-      };
+   {
+      SA_RECLAIM_NOT_SUCCESSFUL = 0x01,
+      SA_CONFIRM_LEARN = 0x02,
+      SA_LEARN_ACK = 0x03,
+      CO_READY = 0x04,
+      CO_EVENT_SECUREDEVICES = 0x05,
+      CO_DUTYCYCLE_LIMIT = 0x06,
+      CO_TRANSMIT_FAILED = 0x07
+   };
 
    auto eventCode = esp3Packet->data()[0];
    YADOMS_LOG(information) << "Event " << eventCode << " received";
@@ -683,13 +706,13 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
       message::CResponseReceivedMessage::EReturnCode returnCode;
       if (!m_messageHandler->send(*sendMessage,
                                   [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                                  {
-                                     return esp3Packet->header().packetType() == message::RESPONSE;
-                                  },
+                               {
+                                  return esp3Packet->header().packetType() == message::RESPONSE;
+                               },
                                   [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                                  {
-                                     returnCode = message::CResponseReceivedMessage(esp3Packet).returnCode();
-                                  }))
+                               {
+                                  returnCode = message::CResponseReceivedMessage(esp3Packet).returnCode();
+                               }))
          throw CProtocolException("Unable to send UTE response, timeout waiting acknowledge");
 
       if (returnCode != message::CResponseReceivedMessage::RET_OK)
@@ -747,13 +770,13 @@ void CEnOcean::requestDongleVersion()
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!m_messageHandler->send(sendMessage,
                                [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                               {
-                                  return esp3Packet->header().packetType() == message::RESPONSE;
-                               },
+                            {
+                               return esp3Packet->header().packetType() == message::RESPONSE;
+                            },
                                [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                               {
-                                  answer = esp3Packet;
-                               }))
+                            {
+                               answer = esp3Packet;
+                            }))
       throw CProtocolException("Unable to get Dongle Version, timeout waiting answer");
 
    if (answer->header().dataLength() != message::RESPONSE_DONGLE_VERSION_SIZE)
@@ -763,4 +786,3 @@ void CEnOcean::requestDongleVersion()
    processDongleVersionResponse(response->returnCode(),
                                 message::CDongleVersionResponseReceivedMessage(response));
 }
-
