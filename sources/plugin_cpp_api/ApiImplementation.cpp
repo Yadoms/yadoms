@@ -332,7 +332,7 @@ namespace plugin_cpp_api
                                                      {
                                                         plugin_IPC::toYadoms::msg ans;
                                                         auto answer = ans.mutable_manuallydevicecreationanswer();
-                                                        auto success = answer->mutable_sucess();
+                                                        answer->mutable_sucess();
                                                         send(ans);
                                                      },
                                                      [&](const std::string& errorMessage)
