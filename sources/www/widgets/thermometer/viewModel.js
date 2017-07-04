@@ -6,10 +6,7 @@ widgetViewModelCtor =
  */
 function thermometerViewModel() 
 {  
-   //observable data
-   this.data = ko.observable(0).extend({ numeric: 1 });
-   
-   //simple data
+   this.data = "-";
    
    // default size
    this.WidgetHeight = 175;
@@ -44,10 +41,13 @@ function thermometerViewModel()
 	  
       if (keywordId === self.widget.configuration.device.keywordId) 
 	  {
-		  if ( data.value !== self.data() ) // refresh only when it's necessary.
+		  if ( data.value !== self.data ) // refresh only when it's necessary.
 		  {
 			 //it is the good device
-			 self.data(data.value);
+          if (data.value !== "")
+			    self.data = data.value;
+          else 
+             self.data = "-";
 			 
 			 //refresh the canvas
 			 self.refresh();
@@ -80,63 +80,73 @@ function thermometerViewModel()
 		// -40° -> 10 of height
 		// 50°  -> 60 of height
 		
-		// Value 
-		var tempMax = self.widget.configuration.customYAxisMinMax.content.maximumValue;
-		var tempMin = self.widget.configuration.customYAxisMinMax.content.minimumValue;
-		
-		// Value for the physical representation
-		var posYMin = 10 * self.WidgetHeight / 99;
-		var posYMax = 60 * self.WidgetHeight / 99;		
-		var posYBall = (90 - (self.WidgetWidth/100-1)*7) * (self.WidgetHeight / 99);
-		var posCenterBall = (91 - (self.WidgetWidth/100-1)*7) * (self.WidgetHeight / 99);
+      // Value 
+      var tempMax = self.widget.configuration.customYAxisMinMax.content.maximumValue;
+      var tempMin = self.widget.configuration.customYAxisMinMax.content.minimumValue;
+      
+      // Value for the physical representation
+      var posYMin = 10 * self.WidgetHeight / 99;
+      var posYMax = 60 * self.WidgetHeight / 99;		
+      var posYBall = (90 - (self.WidgetWidth/100-1)*7) * (self.WidgetHeight / 99);
+      var posCenterBall = (91 - (self.WidgetWidth/100-1)*7) * (self.WidgetHeight / 99);
+       
+      //draw a circle
+      ctx.beginPath();
+               // position x         position y             diameter
+      ctx.arc(self.WidgetWidth / 2, posCenterBall , 8 * self.WidgetWidth / 100, 0, Math.PI*2, true); 
+      ctx.closePath();
 
-      ctx.fillStyle = "rgb(" + Math.round(255 - (tempMax - self.data()) * 255 / 90) + ",0," + Math.round(255 - (self.data() - tempMin) * 255 / 90) + ")";
-		 
-		//draw a circle
-		ctx.beginPath();
-		         // position x         position y             diameter
-		ctx.arc(self.WidgetWidth / 2, posCenterBall , 8 * self.WidgetWidth / 100, 0, Math.PI*2, true); 
-		ctx.closePath();
-		ctx.fill();
-		
-		var initialPositionY = posYMax;
-		var lenghtColumn = posYBall - initialPositionY;		
-		
-		if (self.data() > tempMin && self.data() < tempMax)
-		{
-			initialPositionY = posYMin + ( tempMax - self.data() )*( posYMax - posYMin )/ ( tempMax - tempMin) ;
-			lenghtColumn = posYBall - initialPositionY;
-		}
-		else
-		{
-			if ( self.data() <= tempMin )
-			{
-				initialPositionY = posYMax;
-				lenghtColumn = posYBall - initialPositionY;
-			}
-			if (self.data() > tempMax )
-			{
-				initialPositionY = posYMin;
-				lenghtColumn = posYBall - initialPositionY;
-			}			
-		}
-		
-		ctx.fillRect( (self.WidgetWidth / 2) - (3 * self.WidgetWidth / 100), initialPositionY, 6 * self.WidgetWidth / 100, lenghtColumn );
-
+      var initialPositionY = posYMax;
+      
+      // We draw into the thermeter only if a value is present
+      if (self.data !== "-")
+      {
+         ctx.fillStyle = "rgb(" + Math.round(255 - (tempMax - self.data) * 255 / 90) + ",0," + Math.round(255 - (self.data - tempMin) * 255 / 90) + ")";
+         ctx.fill();
+         
+         var lenghtColumn = posYBall - initialPositionY;		
+         
+         if (self.data > tempMin && self.data < tempMax)
+         {
+            initialPositionY = posYMin + ( tempMax - self.data )*( posYMax - posYMin )/ ( tempMax - tempMin) ;
+            lenghtColumn = posYBall - initialPositionY;
+         }
+         else
+         {
+            if ( self.data <= tempMin )
+            {
+               initialPositionY = posYMax;
+               lenghtColumn = posYBall - initialPositionY;
+            }
+            if (self.data > tempMax )
+            {
+               initialPositionY = posYMin;
+               lenghtColumn = posYBall - initialPositionY;
+            }			
+         }
+         
+         ctx.fillRect( (self.WidgetWidth / 2) - (3 * self.WidgetWidth / 100), initialPositionY, 6 * self.WidgetWidth / 100, lenghtColumn );
+      }
+      else{
+         ctx.fillStyle = "rgb(128,0,128)";
+         ctx.fill();
+         initialPositionY = 50;
+      }
+      
 		if (self.WidgetWidth <= 100)
 		   ctx.font="12px Georgia";
 		else
 		   ctx.font="20px Georgia";
    
 		//write the text at the same position as the height of the column
-		ctx.fillText(self.data() + "°",self.WidgetWidth / 2 + 15*self.WidgetWidth / 100, initialPositionY );
+		ctx.fillText(self.data + "°",self.WidgetWidth / 2 + 15*self.WidgetWidth / 100, initialPositionY );
 		  
-        // Draw the thermometer
+      // Draw the thermometer
 		//draw a circle
 		ctx.beginPath();
 		
 		//black color
-        ctx.fillStyle = "rgb(0,0,0)";
+      ctx.fillStyle = "rgb(0,0,0)";
 		ctx.lineWidth = 3;		
 		
 		//bubble

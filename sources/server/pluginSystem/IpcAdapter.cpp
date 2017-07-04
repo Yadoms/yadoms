@@ -473,8 +473,8 @@ namespace pluginSystem
    {
       m_pluginApi->updateDeviceModel(msg.device(),
                                      msg.model());
-   }  
-   
+   }
+
    void CIpcAdapter::processDeviceTypeRequest(const plugin_IPC::toYadoms::DeviceTypeRequest& msg)
    {
       plugin_IPC::toPlugin::msg ans;
@@ -504,13 +504,13 @@ namespace pluginSystem
 
    void CIpcAdapter::processExtraQueryProgression(const plugin_IPC::toYadoms::ExtraQueryProgression& msg) const
    {
-      std::map<std::string, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> >::const_iterator extraQueryIter = m_pendingExtraQueries.find(msg.taskid());
+      auto extraQueryIter = m_pendingExtraQueries.find(msg.taskid());
       if (extraQueryIter != m_pendingExtraQueries.end())
       {
          extraQueryIter->second->reportProgress(msg.progress(), msg.message());
       }
    }
-      
+
 
    void CIpcAdapter::postStopRequest()
    {
@@ -631,7 +631,7 @@ namespace pluginSystem
       send(msg);
    }
 
-   void CIpcAdapter::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery, const std::string & taskId)
+   void CIpcAdapter::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery, const std::string& taskId)
    {
       plugin_IPC::toPlugin::msg req;
       auto message = req.mutable_extraquery();
@@ -665,9 +665,9 @@ namespace pluginSystem
 
                     m_pendingExtraQueries.erase(taskId);
                  }
-                 else if(ans.has_extraqueryprogress())
+                 else if (ans.has_extraqueryprogress())
                  {
-                     extraQuery->reportProgress(ans.extraqueryprogress().progress(), ans.extraqueryprogress().message());
+                    extraQuery->reportProgress(ans.extraqueryprogress().progress(), ans.extraqueryprogress().message());
                  }
               }, boost::posix_time::minutes(10));
       }
@@ -675,8 +675,6 @@ namespace pluginSystem
       {
          extraQuery->sendError((boost::format("Plugin doesn't answer to extra query : %1%") % e.what()).str());
       }
-
-
    }
 
    void CIpcAdapter::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request)
@@ -701,18 +699,18 @@ namespace pluginSystem
               {
                  success = ans.manuallydevicecreationanswer().has_sucess();
                  result = success ?
-                             ans.manuallydevicecreationanswer().sucess().newdevicename() :
+                             std::string() :
                              ans.manuallydevicecreationanswer().error().message();
               });
       }
       catch (std::exception& e)
       {
-         request->sendError((boost::format("Plugin doesn't answer to binding query : %1%") % e.what()).str());
+         request->sendError((boost::format("Plugin doesn't answer to manually device creation : %1%") % e.what()).str());
          return;
       }
 
       if (success)
-         request->sendSuccess(result);
+         request->sendSuccess();
       else
          request->sendError(result);
    }

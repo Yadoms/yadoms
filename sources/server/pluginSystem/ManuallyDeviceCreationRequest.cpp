@@ -19,9 +19,9 @@ namespace pluginSystem
       return m_requestPtr->getData();
    }
 
-   void CManuallyDeviceCreationRequest::sendSuccess(const std::string& newDeviceName)
+   void CManuallyDeviceCreationRequest::sendSuccess()
    {
-      m_requestPtr->sendSuccess(newDeviceName);
+      m_requestPtr->sendSuccess(std::string());
    }
 
    void CManuallyDeviceCreationRequest::sendError(const std::string& errorMessage)

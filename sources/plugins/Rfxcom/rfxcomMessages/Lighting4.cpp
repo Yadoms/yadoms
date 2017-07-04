@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Lighting4.h"
+#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -10,8 +11,8 @@ namespace rfxcomMessages
                           const std::string& command,
                           const shared::CDataContainer& deviceDetails)
       : m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_keyword , m_signalPower })
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_keyword , m_signalPower})
    {
       m_signalPower->set(0);
 
@@ -23,10 +24,12 @@ namespace rfxcomMessages
 
    CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> api,
                           unsigned int subType,
+                          const std::string& name,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_keyword , m_signalPower })
+      : m_deviceName(name),
+        m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_keyword , m_signalPower})
    {
       m_signalPower->set(0);
 
@@ -36,15 +39,17 @@ namespace rfxcomMessages
 
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
 
-      Init(api);
+      buildDeviceDetails();
+      api->updateDeviceDetails(m_deviceName, m_deviceDetails);
+      api->declareKeywords(m_deviceName, m_keywords);
    }
 
    CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> api,
                           const RBUF& rbuf,
                           size_t rbufSize)
       : m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_keyword , m_signalPower })
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_keyword , m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -64,24 +69,33 @@ namespace rfxcomMessages
    {
    }
 
+   void CLighting4::buildDeviceDetails()
+   {
+      if (m_deviceDetails.empty())
+      {
+         m_deviceDetails.set("type", pTypeLighting4);
+         m_deviceDetails.set("subType", m_subType);
+         m_deviceDetails.set("id", m_id);
+      }
+   }
+
    void CLighting4::Init(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       // Build device description
       buildDeviceModel();
       buildDeviceName();
+      buildDeviceDetails();
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
       {
-         shared::CDataContainer details;
-         details.set("type", pTypeLighting4);
-         details.set("subType", m_subType);
-         details.set("id", m_id);
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
+         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+         m_deviceDetails.printToLog(YADOMS_LOG(information));         
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CLighting4::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CLighting4::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF rbuf;
       MEMCLEAR(rbuf.LIGHTING4);

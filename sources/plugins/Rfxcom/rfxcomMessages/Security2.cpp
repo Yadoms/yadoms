@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Security2.h"
 #include "Security2ClassicKeyLoq.h"
+#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -12,8 +13,8 @@ namespace rfxcomMessages
                           const std::string& command,
                           const shared::CDataContainer& deviceDetails)
       : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_batteryLevel, m_signalPower })
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_batteryLevel, m_signalPower})
    {
       m_batteryLevel->set(100);
       m_signalPower->set(0);
@@ -27,10 +28,12 @@ namespace rfxcomMessages
 
    CSecurity2::CSecurity2(boost::shared_ptr<yApi::IYPluginApi> api,
                           unsigned int subType,
+                          const std::string& name,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_batteryLevel, m_signalPower })
+      : m_deviceName(name),
+        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_batteryLevel, m_signalPower})
    {
       m_batteryLevel->set(100);
       m_signalPower->set(0);
@@ -38,7 +41,10 @@ namespace rfxcomMessages
       createSubType(static_cast<unsigned char>(subType));
       m_subTypeManager->setId(manuallyDeviceCreationConfiguration.get<unsigned int>("id"));
 
-      declare(api);
+      buildDeviceDetails();
+      api->updateDeviceDetails(m_deviceName, m_deviceDetails);
+      api->declareKeywords(m_deviceName, m_keywords);
+
       m_subTypeManager->resetState();
    }
 
@@ -46,8 +52,8 @@ namespace rfxcomMessages
                           const RBUF& rbuf,
                           size_t rbufSize)
       : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_batteryLevel, m_signalPower })
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_batteryLevel, m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -66,6 +72,16 @@ namespace rfxcomMessages
 
    CSecurity2::~CSecurity2()
    {
+   }
+
+   void CSecurity2::buildDeviceDetails()
+   {
+      if (m_deviceDetails.empty())
+      {
+         m_deviceDetails.set("type", pTypeSecurity2);
+         m_deviceDetails.set("subType", m_subType);
+         m_deviceDetails.set("id", m_subTypeManager->getId());
+      }
    }
 
    void CSecurity2::createSubType(unsigned char subType)
@@ -88,21 +104,19 @@ namespace rfxcomMessages
 
       // Build device description
       buildDeviceName();
+      auto model = m_subTypeManager->getModel();
+      buildDeviceDetails();
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
       {
-         shared::CDataContainer details;
-         details.set("type", pTypeSecurity2);
-         details.set("subType", m_subType);
-         details.set("id", m_subTypeManager->getId());
-
-         std::string model = m_subTypeManager->getModel();
-         api->declareDevice(m_deviceName, model, model, m_keywords, details);
+         api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
+         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
+         m_deviceDetails.printToLog(YADOMS_LOG(information));         
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CSecurity2::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CSecurity2::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF rbuf;
       MEMCLEAR(rbuf.SECURITY2);

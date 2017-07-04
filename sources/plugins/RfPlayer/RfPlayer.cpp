@@ -2,9 +2,7 @@
 #include "RfPlayer.h"
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/Log.h>
-#include <shared/communication/BufferLogger.h>
 #include "Factory.h"
-#include "MessageHandler.h"
 #include <shared/encryption/Base64.h>
 #include "frames/outgoing/Factory.h"
 #include "ManuallyDeviceFactory.h"
@@ -16,6 +14,7 @@ IMPLEMENT_PLUGIN(CRfPlayer)
 
 
 CRfPlayer::CRfPlayer()
+   : m_isDeveloperMode(false)
 {
 }
 
@@ -165,8 +164,8 @@ void CRfPlayer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             YADOMS_LOG(information) << "Manually device creation request received for device :" << request->getData().getDeviceName();
             try
             {
-               std::string newDeviceName = CManuallyDeviceFactory::createDeviceManually(api, request->getData());
-               request->sendSuccess(newDeviceName);
+               CManuallyDeviceFactory::createDeviceManually(api, request->getData());
+               request->sendSuccess();
             }
             catch (std::exception& e)
             {
@@ -291,7 +290,7 @@ void CRfPlayer::processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginA
    errorProcess(api);
 }
 
-void CRfPlayer::processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::incoming::CBinaryFrame> data)
+void CRfPlayer::processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::incoming::CBinaryFrame> data) const
 {
    try
    {
@@ -311,7 +310,7 @@ void CRfPlayer::processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPlugi
    }
 }
 
-void CRfPlayer::processZiBlueAsciiFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::incoming::CAsciiFrame> data)
+void CRfPlayer::processZiBlueAsciiFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::incoming::CAsciiFrame> data) const
 {
    if (m_isDeveloperMode)
       YADOMS_LOG(debug) << "RfPlayer Ascii <<< " << data->getContent();

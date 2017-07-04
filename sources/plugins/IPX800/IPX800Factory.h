@@ -56,8 +56,8 @@ public:
    /// \param[in] api                  yPluginApi API
    /// \param[in] data                 information for the creation of the new device
    //--------------------------------------------------------------
-   std::string createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api, 
-                                    const yApi::IManuallyDeviceCreationData& data);
+   void createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
+                             const yApi::IManuallyDeviceCreationData& data);
 
    //--------------------------------------------------------------
    /// \brief	    getIOManager
@@ -70,7 +70,7 @@ public:
    /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] deviceRemoved    The name of the device removed
    //--------------------------------------------------------------
-   void removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
+   void removeDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                      std::string deviceRemoved);
 
    //--------------------------------------------------------------
@@ -97,9 +97,10 @@ private:
    /// \brief	X8D et X24D Slots used
    //--------------------------------------------------------------
    bool X8DSlotused[6];
-   
+
    //--------------------------------------------------------------
    /// \brief	All extensions
    //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<equipments::IEquipment> > m_devicesList;
+   std::vector<boost::shared_ptr<equipments::IEquipment>> m_devicesList;
 };
+

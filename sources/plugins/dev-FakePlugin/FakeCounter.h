@@ -1,7 +1,4 @@
 #pragma once
-
-#include <boost/random/mersenne_twister.hpp>
-#include <boost/random/uniform_int_distribution.hpp>
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 namespace yApi = shared::plugin::yPluginApi;
@@ -80,11 +77,5 @@ private:
    /// \brief	Historizers vector
    //--------------------------------------------------------------
    std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> m_historizers;
-
-   //--------------------------------------------------------------
-   /// \brief	    Random number generator, used to simulate increments
-   //--------------------------------------------------------------
-   boost::random::mt19937 m_gen;
-   boost::random::uniform_int_distribution<> m_dist;
 };
 

@@ -26,13 +26,14 @@ CEmptyPlugin::~CEmptyPlugin()
 // Event IDs
 enum
 {
-   kSendSensorsStateTimerEventId = yApi::IYPluginApi::kPluginFirstEventId, // Always start from yApi::IYPluginApi::kPluginFirstEventId
+   // Example of adding a custom event
+   kCustomEvent = yApi::IYPluginApi::kPluginFirstEventId, // Always start from yApi::IYPluginApi::kPluginFirstEventId
 
    /* ----------------------------------
 
    Insert here all your events
 
-      ---------------------------------- */
+   ---------------------------------- */
 };
 
 void CEmptyPlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -62,7 +63,7 @@ void CEmptyPlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
       case yApi::IYPluginApi::kEventStopRequested:
          {
-            // Yadoms request the plugin to stop. Note that plugin must be stop in 10 seconds max, otherwise it will be killed.
+            // Yadoms request the plugin to stop. Note that plugin must be stopped in 10 seconds max, otherwise it will be killed.
             YADOMS_LOG(information) << "Stop requested";
             api->setPluginState(yApi::historization::EPluginState::kStopped);
             return;
@@ -89,7 +90,22 @@ void CEmptyPlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             break;
          }
 
-      case yApi::IYPluginApi::kEventExtraQuery:
+      case yApi::IYPluginApi::kEventDeviceCommand:
+         {
+            // A command was received from Yadoms
+            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
+            YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
+
+            /*
+
+            Process the command here (to drive a keyword for example)
+
+            */
+
+            break;
+         }
+
+      case yApi::IYPluginApi::kEventExtraQuery: // Optional (remove the case if not needed), required flag "extraQueries" in package.json
          {
             // Extra-command was received from Yadoms
             auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
@@ -115,34 +131,28 @@ void CEmptyPlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             break;
          }
 
-      case yApi::IYPluginApi::kBindingQuery:
+      case yApi::IYPluginApi::kBindingQuery: // Optional (remove the case if not needed), required flag "__binding__", with "type" = "plugin" in package.json
          {
             // Yadoms ask for a binding query 
             auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
-            if (request->getData().getQuery() == "test")
+            if (request->getData().getQuery() == "exemple")
             {
-               shared::CDataContainer ev;
-               ev.set("HOUR", "1 hour");
-               ev.set("DAY", "1 day");
-               ev.set("WEEK", "1 week");
-               ev.set("MONTH", "1 month");
-               ev.set("HALF_YEAR", "6 months");
-               ev.set("YEAR", "1 year");
+               /*
 
-               shared::CDataContainer en;
-               en.set("name", "Interval of the chart");
-               en.set("description", "Permit to change the interval of all the chart");
-               en.set("type", "enum");
-               en.set("values", ev);
-               en.set("defaultValue", "DAY");
+               Manage the query "exemple"
+               
+               Build the query result and send it back
+
+               */
 
                shared::CDataContainer result;
-               result.set("interval", en);
+               result.set("exmepleResult", "success");
 
                request->sendSuccess(result);
             }
             else
             {
+               // Receive an unsupported query (is your package.json synchronized with the code ?)
                auto errorMessage = (boost::format("unknown query : %1%") % request->getData().getQuery()).str();
                request->sendError(errorMessage);
                YADOMS_LOG(error) << errorMessage;
@@ -150,31 +160,23 @@ void CEmptyPlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             break;
          }
 
-      case yApi::IYPluginApi::kEventDeviceCommand:
-         {
-            // A command was received from Yadoms
-            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
-            YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
-            if (command->getKeyword().empty())
-               YADOMS_LOG(information) << "Specific command for a device (can be used for any purpose, unless keyword driving, device configuration (see kGetDeviceConfigurationSchemaRequest and kSetDeviceConfiguration documentation) and deletion";
-            else
-               YADOMS_LOG(information) << "Standard command to a keyword (used to drive a switch, a thermostat...)";
-            break;
-         }
-
-      case yApi::IYPluginApi::kEventManuallyDeviceCreation:
+      case yApi::IYPluginApi::kEventManuallyDeviceCreation: // Optional (remove the case if not needed), required flag "supportManuallyDeviceCreation" and device configuration schema in package.json
          {
             auto creation = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
-            try {
-
+            try
+            {
                /*
 
                Treat here the manually device creation event
 
+               Note that the device is already created by Yadoms. You just need to add keywords and/or details here :
+
+               api->updateDeviceDetails(creation->getData().getDeviceName(), ...);
+               api->declareKeyword(creation->getData().getDeviceName(), ...);
+
                */
-               
-               std::string devId;
-               creation->sendSuccess(devId);
+
+               creation->sendSuccess();
             }
             catch (std::exception& ex)
             {
@@ -183,7 +185,7 @@ void CEmptyPlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             break;
          }
 
-      case yApi::IYPluginApi::kEventDeviceRemoved:
+      case yApi::IYPluginApi::kEventDeviceRemoved: // Optional (remove the case if not needed), required flag "supportDeviceRemovedNotification" in package.json
          {
             auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved>>();
             YADOMS_LOG(information) << device->device() << " was removed";
@@ -220,13 +222,11 @@ void CEmptyPlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             break;
          }
 
-      case kSendSensorsStateTimerEventId:
+      case kCustomEvent:
          {
-            // Timer used here to read data, ...
-
             /*
 
-            Read here all information
+            Process your custom event
 
             */
 

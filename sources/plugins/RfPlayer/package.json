@@ -332,9 +332,34 @@
 						}
 					},
 					"content": {
-						"id": {
-							"type": "int"
-						},
+                  "identifier": {
+                    "type": "radioSection",
+                    "content": {
+                      "id32": {
+                        "type": "section",
+                        "content": {
+                          "id": {
+                             "type": "int"
+                          }
+                        }
+                      },
+                      "idx10form": {
+                        "type": "section",
+                        "content": {
+                          "groupCode": {
+                             "type": "string",
+                             "regex": "[A-P]",
+                             "defaultValue": "A"
+                          },
+                          "unitCode": {
+                             "type": "int",
+                             "minimumValue": "1",
+                             "maximumValue": "15"
+                          }
+                        }
+                      }
+                    }
+                  },
 						"burst": {
 							"type": "int"
 						},

@@ -99,11 +99,7 @@ namespace pluginSystem
       boost::shared_ptr<const shared::plugin::information::IYadomsInformation> getYadomsInformation() const override;
       // [END] IYPluginApi implementation 
 
-      //-----------------------------------------------------
-      ///\brief Get the plugin instance ID
-      //-----------------------------------------------------
       int getPluginId() const;
-
 
    private:
       //--------------------------------------------------------------

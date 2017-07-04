@@ -12,7 +12,6 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief Interface for keyword type information
       //-----------------------------------------------------
-      //TODO cette classe pourrait être mise en commun (dans les historizers ou pas loin), et être utilisée également dans ZWave\typeinfo\EnumTypeInfo
       class CCustomEnumTypeInfo : public yApi::historization::typeInfo::ITypeInfo
       {
       public:

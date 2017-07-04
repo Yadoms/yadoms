@@ -2,11 +2,12 @@
 #include "FakeDynamicallyConfigurableDevice.h"
 #include <shared/Log.h>
 
-CFakeDynamicallyConfigurableDevice::CFakeDynamicallyConfigurableDevice(const std::string& deviceName)
+CFakeDynamicallyConfigurableDevice::CFakeDynamicallyConfigurableDevice(const std::string& deviceName,
+                                                                       const shared::CDataContainer& configuration)
    : m_deviceName(deviceName),
      m_counter(boost::make_shared<yApi::historization::CCounter>("counter")),
      m_internalCounter(0),
-     m_divider(1.00),
+     m_divider(readDividerConfiguration(configuration)),
      m_historizers({m_counter})
 {
    m_counter->set(0);
@@ -14,25 +15,6 @@ CFakeDynamicallyConfigurableDevice::CFakeDynamicallyConfigurableDevice(const std
 
 CFakeDynamicallyConfigurableDevice::~CFakeDynamicallyConfigurableDevice()
 {
-}
-
-void CFakeDynamicallyConfigurableDevice::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api)
-{
-   // Declare device and associated keywords (= values managed by this device)
-   if (!api->deviceExists(m_deviceName))
-      api->declareDevice(m_deviceName, getType(), getModel(), m_historizers);
-
-   // Get the divider value from the device configuration
-   try
-   {
-      YADOMS_LOG(information) << "Configuration = " << api->getDeviceConfiguration(m_deviceName).serialize();
-      m_divider = api->getDeviceConfiguration(m_deviceName).get<int>("DynamicDivider");
-   }
-   catch (std::exception&)
-   {
-      // Configuration may not actually exist, set the default value to divider
-      m_divider = 1.0;
-   }
 }
 
 void CFakeDynamicallyConfigurableDevice::read()
@@ -56,19 +38,19 @@ const std::string& CFakeDynamicallyConfigurableDevice::getDeviceName() const
    return m_deviceName;
 }
 
-const std::string& CFakeDynamicallyConfigurableDevice::getModel()
-{
-   static const std::string model("Fake dynamically configurable device");
-   return model;
-}
-
 const std::string& CFakeDynamicallyConfigurableDevice::getType()
 {
    static const std::string type("fakeDynamicallyConfigurableDeviceType");
    return type;
 }
 
-shared::CDataContainer CFakeDynamicallyConfigurableDevice::getDynamicConfiguration()
+const std::string& CFakeDynamicallyConfigurableDevice::getModel()
+{
+   static const std::string model("Fake dynamically configurable device");
+   return model;
+}
+
+shared::CDataContainer CFakeDynamicallyConfigurableDevice::getDynamicConfigurationSchema()
 {
    //this code must be runtime dynamic.
    //in case of static configration, define the configuration schema in package.json
@@ -88,15 +70,24 @@ shared::CDataContainer CFakeDynamicallyConfigurableDevice::getDynamicConfigurati
 
 void CFakeDynamicallyConfigurableDevice::setConfiguration(const shared::CDataContainer& newConfiguration)
 {
+   m_divider = readDividerConfiguration(newConfiguration);
+}
+
+std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> CFakeDynamicallyConfigurableDevice::historizers() const
+{
+   return m_historizers;
+}
+
+double CFakeDynamicallyConfigurableDevice::readDividerConfiguration(const shared::CDataContainer& configuration)
+{
    try
    {
-      YADOMS_LOG(information) << "Configuration = " << newConfiguration.serialize();
-      m_divider = newConfiguration.get<double>("DynamicDivider");
+      YADOMS_LOG(information) << "Configuration = " << configuration.serialize();
+      return configuration.get<double>("DynamicDivider");
    }
    catch (std::exception&)
    {
       // Configuration may not actually exist, set the default value to divider
-      m_divider = 1.0;
+      return 1.0;
    }
 }
-

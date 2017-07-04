@@ -65,7 +65,12 @@ namespace pluginSystem
                                                  const shared::CDataContainer& details)
    {
       if (!deviceExists(device))
-         m_deviceManager->createDevice(getPluginId(), device, device, type, model, details);
+         m_deviceManager->createDevice(getPluginId(),
+                                       device,
+                                       device,
+                                       type,
+                                       model,
+                                       details);
 
       declareKeywords(device, keywords);
    }

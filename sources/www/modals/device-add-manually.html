@@ -2,29 +2,24 @@
 <div class="modal fade" id="new-manually-device-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
    <div class="modal-dialog">
       <div class="modal-content">
-         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" data-i18n="modals.add-manually-device.title"></h4>
-         </div>
-         <div class="modal-body">
-            <form>
-               <div class="form-group">
-                  <label for="associatedPluginTypeList" data-i18n="modals.add-manually-device.attachedPlugin"></label>
-                  <select id="associatedPluginTypeList" class="form-control"></select>
-               </div>
-            </form>
-         </div>
-         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
-            <button id="btn-confirm-add-manually-device" type="button" class="btn btn-primary" data-i18n="common.ok"></button>
-         </div>
+         <form class="form-horizontal" novalidate>
+            <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+               <h4 class="modal-title" data-i18n="modals.add-manually-device.title"></h4>
+            </div>
+            <div class="modal-body form-group">
+               <!--configuration will be inserted here-->
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
+               <button type="submit" id="btn-confirm-add-manually-device" class="btn btn-primary" data-i18n="common.ok"></button>
+            </div>
+         </form>
       </div>
    </div>
 </div>
 
 <script>
-
-   var pluginTypes = [];
    
    const VIRTUAL_DEVICE_PLUGIN_ID = "1";
    
@@ -33,54 +28,104 @@
     */
    Yadoms.askPluginTypesForManuallyDeviceCreation = function(callback) {
       assert($.isFunction(callback), "callback must be defined");
+      
+      buildAddManuallyDeviceSchema()
+      .done(function (schema, availablePlugins) {
 
-      PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation()
-         .done(function(list) {
-
-            $("select#associatedPluginTypeList").empty();
+         var $modalBody = $("div#new-manually-device-modal .modal-body");
+         $modalBody.empty();
             
-            // Insert virtual device into list
-            <!-- TODO mettre "Virtual device" en i18n -->
-            var systemPi = PluginInstanceManager.factory({id: VIRTUAL_DEVICE_PLUGIN_ID, type: "system", configuration: "", autoStart: "true", category: "system", displayName: "Virtual device" });
-            list.splice(0, 0, systemPi);
+         var configMgr = new ConfigurationControlManager(
+            schema,
+            null,
+            "modals.add-manually-device.",
+            $modalBody);   
 
-            // Enter all Plugins into an array
-            var tabPlugins = [];
-
-            $.each(list, function(index, value) {
-               var pi = PluginInstanceManager.factory(value);
-               //foreach plugin
-               tabPlugins.push ( {type: pi.id, displayName: pi.displayName });
-            });
-			
-            //sort plugins
-            tabPlugins = sortListItemsWithdisplayName ( tabPlugins );
-            
-            $.each(tabPlugins, function(index, value) {
-               $("select#associatedPluginTypeList").append("<option value=\"" + value.type + "\">" + value.displayName + "</option>");
-			});
-
-         //event click on add device button
-         $("button#btn-confirm-add-manually-device").unbind("click").bind("click", function() {
-            //we close the new device modal
-            $("div#new-manually-device-modal").modal("hide");
-
-            //we get the device instance id chosen
-            var pluginId = $("select#associatedPluginTypeList").val();
+         //i18n
+         $modalBody.i18n();
          
-            //from the id, retreive the plugin instance
-            var instance = $.grep(list, function(e) { return e.id === pluginId; });
-         
-            //send found instance
-            callback(instance[0]);
+         //finalize treatments (ie sort items after trnaslation)
+         configMgr.afterI18n();
+
+         //validation form
+         //erase previous jqBootstrapValidation
+         $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
+            preventSubmit: false,
+            submitError: function ($form, event, errors) {
+               console.warn("Unable to validate form: " + errors);
+               event.preventDefault();
+            },
+            submitSuccess: function ($form, event) {
+               event.preventDefault();
+
+               configMgr.getCurrentConfiguration()
+               .done(function(config) {
+                  $("div#new-manually-device-modal").modal("hide");
+                  
+                  if (config.addManuallyDeviceSection.activeSection === "attachedToPlugin") {
+                     var pluginId = config.addManuallyDeviceSection.content.attachedToPlugin.content.plugins;
+                     var pluginInstance = $.grep(availablePlugins, function(e) { return e.id === pluginId; });
+                     callback(pluginInstance[0]);
+                  } else {
+                     var systemPluginInstance = PluginInstanceManager.factory({id: VIRTUAL_DEVICE_PLUGIN_ID, type: "system", configuration: "", autoStart: "true", category: "system", displayName: "Virtual device" });
+                     callback(systemPluginInstance);
+                  }
+               });
+            },
+            filter: function () {
+               //we check only control that have class enable-validation and are visible
+               return $(this).is(".enable-validation") && $(this).is(":visible");
+            }
          });
+
+         //fix additional sub modals input (like icon picker search box)
+         $('div#new-manually-device-modal').on('shown.bs.modal', function (e) { $(document).off('focusin.modal'); });
 
          //we display the modal
          $('div#new-manually-device-modal').modal({ backdrop: 'static' });
-      })
-      .fail(function(error) {
-         notifyError($.t("modals.pluginInstance.errorGettingManuallyDeviceCreation"), error);
       });
-   };
+   };   
+   
+   buildAddManuallyDeviceSchema= function () {
+      
+      var d = $.Deferred();    
+      
+      schema = {
+         addManuallyDeviceSection: {
+            type: 'radioSection',
+            content: {
+               attachedToPlugin: {                  
+                  type: 'section',
+                  content: {
+                     plugins: {
+                        type: 'enum',
+                        sort : 'true',
+                        values: {}
+                     }
+                  }
+               },
+               virtualDevice: {                  
+                  type: 'section'
+               }
+            }
+         }
+      }
+      
+      PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation()
+      .done(function(plugins) {
+         $.each(plugins, function(index, value) {
+            var pi = PluginInstanceManager.factory(value);
+            schema.addManuallyDeviceSection.content.attachedToPlugin.content.plugins.values[pi.id] = pi.displayName;
+         });
+         
+         d.resolve(schema, plugins);
+      })
+      .fail(function (error) {
+         console.error("Fail to get plugins that handle manually device creation");
+         d.resolve(schema, null);
+      });
+      
+      return d.promise();
+   };   
 
 </script>

@@ -5,39 +5,39 @@
 #include <shared/Log.h>
 
 CWESFactory::CWESFactory()
-{}
+{
+}
 
 boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                             const boost::shared_ptr<IWESConfiguration> configuration)
+                                                             const boost::shared_ptr<IWESConfiguration> configuration) const
 {
-   std::vector<boost::shared_ptr<equipments::IEquipment> > deviceList;
-
-   std::vector<std::string> devices = api->getAllDevices();
-   std::vector<std::string>::iterator devicesIterator;
+   std::vector<boost::shared_ptr<equipments::IEquipment>> deviceList;
 
    boost::shared_ptr<equipments::IEquipment> equipment;
 
    // Create all devices and equipments
-   for (devicesIterator = devices.begin(); devicesIterator != devices.end(); ++devicesIterator)
+   for (const auto& device : api->getAllDevices())
    {
       std::string type = "";
 
       // plugin state have no type
-      try {
-         api->getDeviceDetails(*devicesIterator).printToLog(YADOMS_LOG(information));
-         type = api->getDeviceDetails(*devicesIterator).getWithDefault<std::string>("type", "");
+      try
+      {
+         api->getDeviceDetails(device).printToLog(YADOMS_LOG(information));
+         type = api->getDeviceDetails(device).getWithDefault<std::string>("type", "");
 
-         if (type =="WES")
+         if (type == "WES")
          {
-            equipment = boost::make_shared<equipments::CWESEquipment>(api, 
-                                                                      (*devicesIterator), 
-                                                                      api->getDeviceConfiguration(*devicesIterator));
+            equipment = boost::make_shared<equipments::CWESEquipment>(api,
+                                                                      device,
+                                                                      api->getDeviceConfiguration(device));
             deviceList.push_back(equipment);
          }
 
          // Do Noting, all is done into CWESEquipments
-         if (type =="TIC")
-         {}
+         if (type == "TIC")
+         {
+         }
       }
       catch (std::exception& e)
       {
@@ -45,7 +45,7 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
          throw;
       }
 
-      YADOMS_LOG(information) << "Name : " << (*devicesIterator);
+      YADOMS_LOG(information) << "Name : " << device;
       YADOMS_LOG(information) << "Model : " << type;
    }
 
@@ -55,18 +55,18 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
 std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
                                               const boost::shared_ptr<CIOManager> ioManager,
                                               const yApi::IManuallyDeviceCreationData& data,
-                                              const boost::shared_ptr<IWESConfiguration> configuration)
+                                              const boost::shared_ptr<IWESConfiguration> configuration) const
 {
    boost::shared_ptr<equipments::IEquipment> equipment;
 
-   try {
-
+   try
+   {
       data.getConfiguration().printToLog(YADOMS_LOG(information));
 
       if (data.getDeviceType() == "WES")
       {
-         equipment = boost::make_shared<equipments::CWESEquipment>(api, 
-                                                                   data.getDeviceName(), 
+         equipment = boost::make_shared<equipments::CWESEquipment>(api,
+                                                                   data.getDeviceName(),
                                                                    data.getConfiguration(),
                                                                    configuration);
          ioManager->addEquipment(equipment);
@@ -86,4 +86,6 @@ std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginAp
 }
 
 CWESFactory::~CWESFactory()
-{}
+{
+}
+

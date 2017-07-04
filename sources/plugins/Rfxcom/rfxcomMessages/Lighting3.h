@@ -29,12 +29,14 @@ namespace rfxcomMessages
       /// \brief	                        Constructor
       /// \param[in] api                  Yadoms APi context
       /// \param[in] subType              Device subType
+      /// \param[in] name                 Device name
       /// \param[in] manuallyDeviceCreationConfiguration The device concfiguration
       /// \throw                          shared::exception::CInvalidParameter or shared::exception::COutOfRange if fail to interpret configuration
       /// \note                           Use this constructor for manually device creation
       //--------------------------------------------------------------
       CLighting3(boost::shared_ptr<yApi::IYPluginApi> api,
                  unsigned int subType,
+                 const std::string& name,
                  const shared::CDataContainer& manuallyDeviceCreationConfiguration);
 
       //--------------------------------------------------------------
@@ -77,6 +79,8 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       void buildDeviceModel();
 
+      void buildDeviceDetails();
+
       //--------------------------------------------------------------
       /// \brief	                        Convert Yadoms command to protocol value
       /// \param[in] switchState          The state from Yadoms
@@ -118,6 +122,8 @@ namespace rfxcomMessages
       /// \brief	The device model
       //--------------------------------------------------------------
       std::string m_deviceModel;
+
+      shared::CDataContainer m_deviceDetails;
 
       //--------------------------------------------------------------
       /// \brief	The keyword associated with state

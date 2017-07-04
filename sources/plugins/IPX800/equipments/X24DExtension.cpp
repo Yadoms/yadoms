@@ -7,39 +7,38 @@
 
 namespace equipments
 {
-
    CX24DExtension::CX24DExtension(boost::shared_ptr<yApi::IYPluginApi> api,
                                   const std::string& device,
                                   const int position):
       m_deviceName(device),
-      m_deviceType("X-24D"),
       m_position(position)
    {
       shared::CDataContainer details;
       details.set("provider", "IPX800");
       details.set("shortProvider", "ipx");
-      details.set("type", m_deviceType);
+      details.set("type", deviceType());
       details.set("position", boost::lexical_cast<std::string>(position));
 
       // Relay Configuration
-      for (int counter = 0; counter<X24D_DI_QTY; ++counter)
+      for (int counter = 0; counter < X24D_DI_QTY; ++counter)
       {
          std::stringstream name, hardwareName;
          name << "D" << std::setfill('0') << std::setw(2) << boost::lexical_cast<int>(counter + 1);
-         hardwareName << "D" << boost::lexical_cast<int>(position*24 + counter + 1);
-         boost::shared_ptr<specificHistorizers::CInputOuput> temp = boost::make_shared<specificHistorizers::CInputOuput>(name.str(),
-                                                                                                                         hardwareName.str(),
-                                                                                                                         yApi::EKeywordAccessMode::kGet);
+         hardwareName << "D" << boost::lexical_cast<int>(position * 24 + counter + 1);
+         auto temp = boost::make_shared<specificHistorizers::CInputOuput>(name.str(),
+                                                                          hardwareName.str(),
+                                                                          yApi::EKeywordAccessMode::kGet);
          m_keywordList.push_back(temp);
       }
 
-      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToDeclare;
       keywordsToDeclare.insert(keywordsToDeclare.end(), m_keywordList.begin(), m_keywordList.end());
 
       //Declaration of all IOs
-      api->declareDevice(device, m_deviceType, m_deviceType, keywordsToDeclare, details);
+      api->updateDeviceDetails(device, details);
+      api->declareKeywords(device, keywordsToDeclare);
 
-      YADOMS_LOG(trace) << "creation of the device " << device << " of type " << m_deviceType << " at position " << position;
+      YADOMS_LOG(trace) << "creation of the device " << device << " of type " << deviceType() << " at position " << position;
    }
 
    std::string CX24DExtension::getDeviceName() const
@@ -49,7 +48,7 @@ namespace equipments
 
    std::string CX24DExtension::getDeviceType() const
    {
-      return m_deviceType;
+      return deviceType();
    }
 
    int CX24DExtension::getSlot() const
@@ -57,25 +56,26 @@ namespace equipments
       return m_position;
    }
 
-   shared::CDataContainer CX24DExtension::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
-                                                               shared::CDataContainer& parameters, 
+   shared::CDataContainer CX24DExtension::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                               shared::CDataContainer& parameters,
                                                                boost::shared_ptr<const yApi::IDeviceCommand> command)
    {
       throw shared::exception::CException("Extension module X-24D have no keyword to set");
    }
 
-   void CX24DExtension::updateFromDevice(const std::string& type, 
+   void CX24DExtension::updateFromDevice(const std::string& type,
                                          boost::shared_ptr<yApi::IYPluginApi> api,
                                          shared::CDataContainer& values,
                                          bool forceHistorization)
    {
       if (type == "D")
       {
-         std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >::const_iterator diIterator;
-         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize;
+         std::vector<boost::shared_ptr<specificHistorizers::CInputOuput>>::const_iterator diIterator;
+         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToHistorize;
          std::string productRevision("");
 
-         try {
+         try
+         {
             productRevision = values.getWithDefault<std::string>("product", "");
             for (diIterator = m_keywordList.begin(); diIterator != m_keywordList.end(); ++diIterator)
             {
@@ -84,7 +84,7 @@ namespace equipments
                //historize only for new value
                if ((*diIterator)->get() != newValue || forceHistorization)
                {
-				  YADOMS_LOG(information) << "read IO : " << (*diIterator)->getHardwareName() << " : " << boost::lexical_cast<std::string>(newValue) ;
+                  YADOMS_LOG(information) << "read IO : " << (*diIterator)->getHardwareName() << " : " << boost::lexical_cast<std::string>(newValue) ;
                   (*diIterator)->set(newValue);
                   keywordsToHistorize.push_back((*diIterator));
                }
@@ -113,7 +113,7 @@ namespace equipments
 
    void CX24DExtension::setNewConfiguration(const shared::CDataContainer& newConfiguration)
    {
-      std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >::const_iterator iterator;
+      std::vector<boost::shared_ptr<specificHistorizers::CInputOuput>>::const_iterator iterator;
 
       m_position = newConfiguration.get<int>("Position");
       int counter = 0;
@@ -128,6 +128,15 @@ namespace equipments
       YADOMS_LOG(information) << "equipment " << m_deviceName << " configuration is updated";
    }
 
+   const std::string& CX24DExtension::deviceType()
+   {
+      static const std::string deviceType("X-24D");
+      return deviceType;
+   }
+
    CX24DExtension::~CX24DExtension()
-   {}
+   {
+   }
 }// namespace equipments
+
+

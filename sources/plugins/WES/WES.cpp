@@ -7,7 +7,6 @@
 #include <shared/plugin/yPluginApi/IDeviceRemoved.h>
 
 #include "equipments/manuallyDeviceCreationException.hpp"
-#include "equipments/noInformationException.hpp"
 #include <shared/Log.h>
 #include <boost/property_tree/xml_parser.hpp>
 
@@ -18,13 +17,16 @@
 IMPLEMENT_PLUGIN(CWES)
 
 
-CWES::CWES():
-   m_configuration(boost::make_shared<CWESConfiguration>()),
-   m_factory(boost::make_shared<CWESFactory>())
-{}
+CWES::CWES()
+   : m_configuration(boost::make_shared<CWESConfiguration>()),
+     m_factory(boost::make_shared<CWESFactory>()),
+     m_pluginState(kUndefined)
+{
+}
 
 CWES::~CWES()
-{}
+{
+}
 
 // Event IDs
 enum
@@ -37,8 +39,9 @@ enum
 
 void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   try {
-      setPluginState(api, EWESPluginState::kInitialization);
+   try
+   {
+      setPluginState(api, kInitialization);
       m_configuration->initializeWith(api->getConfiguration());
       m_ioManager = m_factory->loadConfiguration(api, m_configuration);
 
@@ -47,20 +50,20 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       if (m_ioManager->getMasterEquipment() == 0)
       {
-         setPluginState(api, EWESPluginState::kReady);
+         setPluginState(api, kReady);
          m_refreshTimer->stop();
       }
       else
       {
          m_ioManager->readAllDevices(api, m_configuration, true); // first reading
          m_refreshTimer->start();
-         setPluginState(api, EWESPluginState::kRunning);
+         setPluginState(api, kRunning);
       }
    }
-   catch (std::exception &e)
+   catch (std::exception& e)
    {
       YADOMS_LOG(error) << e.what();
-      setPluginState(api, EWESPluginState::kInitializationError);
+      setPluginState(api, kInitializationError);
    }
 
    // the main loop
@@ -69,183 +72,191 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       switch (api->getEventHandler().waitForEvents())
       {
       case yApi::IYPluginApi::kEventStopRequested:
-      {
-         YADOMS_LOG(information) << "Stop requested";
-         setPluginState(api, EWESPluginState::kStop);
-         return;
-      }
+         {
+            YADOMS_LOG(information) << "Stop requested";
+            setPluginState(api, kStop);
+            return;
+         }
       case kConnectionRetryTimer:
          break;
       case yApi::IYPluginApi::kEventUpdateConfiguration:
-      {
-         setPluginState(api, EWESPluginState::kupdateConfiguration);
-         onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
-         setPluginState(api, EWESPluginState::kRunning);
-         break;
-      }
+         {
+            setPluginState(api, kupdateConfiguration);
+            onUpdateConfiguration(api->getEventHandler().getEventData<shared::CDataContainer>());
+            setPluginState(api, kRunning);
+            break;
+         }
       case yApi::IYPluginApi::kEventDeviceCommand:
-      {
-         // Command received from Yadoms
-         auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
+         {
+            // Command received from Yadoms
+            auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
 
-         try
-         {
-            m_ioManager->onCommand(api, command);
+            try
+            {
+               m_ioManager->onCommand(api, command);
+            }
+            catch (std::exception& e)
+            {
+               YADOMS_LOG(error) << "Fail to send command " << yApi::IDeviceCommand::toString(command) << ", error : " << e.what();
+            }
+            break;
          }
-         catch (std::exception& e)
-         {
-            YADOMS_LOG(error) << "Fail to send command " << yApi::IDeviceCommand::toString(command) << ", error : " << e.what();
-         }
-         break;
-      }
       case kRefreshStatesReceived:
-      {
-         YADOMS_LOG(information) << "Timer received";
+         {
+            YADOMS_LOG(information) << "Timer received";
 
-         auto forceRefresh = false;
+            auto forceRefresh = false;
 
-         try { forceRefresh = api->getEventHandler().getEventData<bool>(); }
-         catch (shared::exception::CBadConversion&) {}
+            try
+            {
+               forceRefresh = api->getEventHandler().getEventData<bool>();
+            }
+            catch (shared::exception::CBadConversion&)
+            {
+            }
 
-         m_ioManager->readAllDevices(api, m_configuration, forceRefresh);
-         analyzePluginState(api);
-         break;
-      }
+            m_ioManager->readAllDevices(api, m_configuration, forceRefresh);
+            analyzePluginState(api);
+            break;
+         }
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
-      {
-         // Yadoms asks for device creation
-         setPluginState(api, EWESPluginState::kupdateConfiguration);
-         auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
-         YADOMS_LOG(information) << "Manually device creation request received for device : " << request->getData().getDeviceName();
-         try
          {
-            if (!m_ioManager->deviceAlreadyExist(request->getData().getDeviceName()))
+            // Yadoms asks for device creation
+            setPluginState(api, kupdateConfiguration);
+            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
+            YADOMS_LOG(information) << "Manually device creation request received for device : " << request->getData().getDeviceName();
+            try
             {
-               // Creation of the device only when the name doesn't already exist
-               request->sendSuccess(m_factory->createDeviceManually(api, m_ioManager, request->getData(), m_configuration));
-
-               // ask immediately for reading values
-               api->getEventHandler().postEvent<bool>(kRefreshStatesReceived, true);
-
-               if (m_ioManager->getMasterEquipment() != 0)
+               if (!m_ioManager->deviceAlreadyExist(request->getData().getDeviceName()))
                {
-                  m_refreshTimer->start();
-                  setPluginState(api, EWESPluginState::kRunning);
+                  // Creation of the device only when the name doesn't already exist
+                  m_factory->createDeviceManually(api, m_ioManager, request->getData(), m_configuration);
+                  request->sendSuccess();
+
+                  // ask immediately for reading values
+                  api->getEventHandler().postEvent<bool>(kRefreshStatesReceived, true);
+
+                  if (m_ioManager->getMasterEquipment() != 0)
+                  {
+                     m_refreshTimer->start();
+                     setPluginState(api, kRunning);
+                  }
+               }
+               else
+               {
+                  request->sendError("device Name already exist");
                }
             }
-            else
+            catch (CManuallyDeviceCreationException& e)
             {
-               request->sendError("device Name already exist");
+               request->sendError(e.what());
+               setPluginState(api, kInitializationError);
             }
+            catch (std::exception& e)
+            {
+               YADOMS_LOG(information) << "Unknow error : " << e.what();
+               request->sendError(e.what());
+               setPluginState(api, kInitializationError);
+            }
+            break;
          }
-         catch (CManuallyDeviceCreationException& e)
-         {
-            request->sendError(e.what());
-            setPluginState(api, EWESPluginState::kInitializationError);
-         }
-         catch (std::exception &e)
-         {
-            YADOMS_LOG(information) << "Unknow error : " << e.what();
-            request->sendError(e.what());
-            setPluginState(api, EWESPluginState::kInitializationError);
-         }
-         break;
-      }
       case yApi::IYPluginApi::kEventDeviceRemoved:
-      {
-         try {
-            auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
-
-            if (m_ioManager)
+         {
+            try
             {
-               m_ioManager->removeDevice(api, device->device());
-               YADOMS_LOG(information) << device->device() << " is removed";
+               auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved>>();
 
-               // Check if no module present
-               if (m_ioManager->getMasterEquipment() == 0)
+               if (m_ioManager)
                {
-                  m_refreshTimer->stop();                        // No more refresh timer
-                  setPluginState(api, EWESPluginState::kReady);  // State ready
+                  m_ioManager->removeDevice(api, device->device());
+                  YADOMS_LOG(information) << device->device() << " is removed";
+
+                  // Check if no module present
+                  if (m_ioManager->getMasterEquipment() == 0)
+                  {
+                     m_refreshTimer->stop(); // No more refresh timer
+                     setPluginState(api, kReady); // State ready
+                  }
+               }
+               else
+               YADOMS_LOG(error) << "Cannot remove the device " << device->device() << ". IO Manager is not initialized";
+            }
+            catch (std::exception& e)
+            {
+               YADOMS_LOG(information) << "Unknow error : " << e.what();
+            }
+            break;
+         }
+      case yApi::IYPluginApi::kBindingQuery:
+         {
+            // Yadoms ask for a binding query 
+            try
+            {
+               auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
+
+               if (data->getData().getQuery() == "wes")
+               {
+                  data->sendSuccess(m_ioManager->bindMasterDevice());
+               }
+               else
+               {
+                  std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
+                  data->sendError(errorMessage);
+                  YADOMS_LOG(error) << errorMessage;
                }
             }
-            else
-               YADOMS_LOG(error) << "Cannot remove the device " << device->device() << ". IO Manager is not initialized";
-         }
-         catch (std::exception &e)
-         {
-            YADOMS_LOG(information) << "Unknow error : " << e.what();
-         }
-         break;
-      }
-      case yApi::IYPluginApi::kBindingQuery:
-      {
-         // Yadoms ask for a binding query 
-         try {
-            auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
-
-            if (data->getData().getQuery() == "wes")
+            catch (std::exception& e)
             {
-               data->sendSuccess(m_ioManager->bindMasterDevice());
+               YADOMS_LOG(information) << "Unknow error : " << e.what();
             }
-            else
-            {
-               std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
-               data->sendError(errorMessage);
-               YADOMS_LOG(error) << errorMessage;
-            }
+            break;
          }
-         catch (std::exception &e)
-         {
-            YADOMS_LOG(information) << "Unknow error : " << e.what();
-         }
-         break;
-      }
       case yApi::IYPluginApi::kEventExtraQuery:
-      {
-         // TODO : To be developped when received directly information from the WES
-         // Check the IP address to know how send us data
-
-         // Extra-command was received from Yadoms
-         auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
-
-         if (extraQuery)
          {
-            YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData()->query();
+            // TODO : To be developped when received directly information from the WES
+            // Check the IP address to know how send us data
 
-            if (extraQuery->getData()->query() == "wes")
+            // Extra-command was received from Yadoms
+            auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
+
+            if (extraQuery)
             {
-               YADOMS_LOG(information) << "Simple command received";
+               YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData()->query();
+
+               if (extraQuery->getData()->query() == "wes")
+               {
+                  YADOMS_LOG(information) << "Simple command received";
+               }
             }
+            // Extra-query can return success or error indicator. In case of success, can also return data.
+            // Return here a success without data (=empty container)
+            extraQuery->sendSuccess(shared::CDataContainer());
+            break;
          }
-         // Extra-query can return success or error indicator. In case of success, can also return data.
-         // Return here a success without data (=empty container)
-         extraQuery->sendSuccess(shared::CDataContainer());
-         break;
-      }
       case yApi::IYPluginApi::kSetDeviceConfiguration:
-      {
-         // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
-         auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
+         {
+            // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
+            auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
 
-         setPluginState(api, EWESPluginState::kupdateConfiguration);
-         m_ioManager->OnDeviceConfigurationUpdate(api, 
-                                                  deviceConfiguration->name(),
-                                                  deviceConfiguration->configuration());
+            setPluginState(api, kupdateConfiguration);
+            m_ioManager->OnDeviceConfigurationUpdate(api,
+                                                     deviceConfiguration->name(),
+                                                     deviceConfiguration->configuration());
 
-         setPluginState(api, EWESPluginState::kRunning);
+            setPluginState(api, kRunning);
 
-         break;
-      }
+            break;
+         }
       default:
-      {
-         YADOMS_LOG(information) << "Unknown message id received";
-         break;
-      }
+         {
+            YADOMS_LOG(information) << "Unknown message id received";
+            break;
+         }
       }
    }
 }
 
-void CWES::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData)
+void CWES::onUpdateConfiguration(const shared::CDataContainer& newConfigurationData) const
 {
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration...";
@@ -257,17 +268,14 @@ void CWES::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const
 
 void CWES::analyzePluginState(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   std::vector<specificHistorizers::EWESdeviceStatus>::const_iterator devicesStatusIterator;
-   std::vector<specificHistorizers::EWESdeviceStatus> devicesStatus = m_ioManager->getMasterdeviceStates();
-   EWESPluginState newState = EWESPluginState::kRunning; // default state
+   auto newState = kRunning; // default state
 
-   for (devicesStatusIterator = devicesStatus.begin(); devicesStatusIterator != devicesStatus.end(); ++devicesStatusIterator)
+   for (const auto& devicesStatus : m_ioManager->getMasterdeviceStates())
    {
-      if (
-         ((*devicesStatusIterator) == specificHistorizers::EWESdeviceStatus::kTimeOut) ||
-         ((*devicesStatusIterator) == specificHistorizers::EWESdeviceStatus::kError))
+      if (devicesStatus == specificHistorizers::EWESdeviceStatus::kTimeOut ||
+         devicesStatus == specificHistorizers::EWESdeviceStatus::kError)
       {
-         newState = EWESPluginState::kAtLeastOneConnectionFaulty;
+         newState = kAtLeastOneConnectionFaulty;
       }
    }
 
@@ -280,25 +288,25 @@ void CWES::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, EWESPluginSt
    {
       switch (newState)
       {
-      case EWESPluginState::kInitialization:
+      case kInitialization:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "initialization");
          break;
-      case EWESPluginState::kInitializationError:
+      case kInitializationError:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "initializationError");
          break;
-      case EWESPluginState::kReady:
+      case kReady:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "ready");
          break;
-      case EWESPluginState::kupdateConfiguration:
+      case kupdateConfiguration:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "updateconfiguration");
          break;
-      case EWESPluginState::kAtLeastOneConnectionFaulty:
+      case kAtLeastOneConnectionFaulty:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "kAtLeastOneConnectionFaulty");
          break;
-      case EWESPluginState::kRunning:
+      case kRunning:
          api->setPluginState(yApi::historization::EPluginState::kRunning);
          break;
-      case EWESPluginState::kStop:
+      case kStop:
          api->setPluginState(yApi::historization::EPluginState::kStopped);
          break;
       default:
@@ -309,3 +317,4 @@ void CWES::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, EWESPluginSt
       m_pluginState = newState;
    }
 }
+

@@ -11,142 +11,144 @@
 			"description": "Démarre un hub Xpl au lancement du plugin"
 		}
 	},
-   "deviceConfiguration": {
-      "staticConfigurationSchema": {
-         "ac": {
-            "name": "ac",
-            "description": "AC Basic",
-            "content": {
-               "deviceAddress": {
-                  "name": "Adresse",
-                  "description": "Indiquer l'adresse de l'équipement"
-               }
-            }
-         },
-         "x10": {
-            "name": "x10",
-            "description": "X10",
-            "content": {
-               "Protocol": {
-                  "name": "Protocole",
-                  "description": "Protocole de l'équipement",
-                  "content": {
-                     "proto_x10": {
-                        "name": "x10",
-                        "description": "Standard X10",
-                        "content": {
-                           "HouseCode": {
-                              "name": "Code bâtiment",
-                              "description": "Le code bâtiment X10"
-                           },
-                           "UnitCode": {
-                              "name": "Code unité",
-                              "description": "Le code unité X10"
-                           }
-                        }
-                     },
-                     "proto_arc": {
-                        "name": "Arc",
-                        "description": "KlikAanKlikUit, Chacon, HomeEasy, DomiaLite, Domia, ByeByeStandBy, ELROAB600, NEXAProoveIntertechnoDuwi",
-                        "content": {
-                           "HouseCode": {
-                              "name": "Code bâtiment",
-                              "description": "Le code bâtiment X10"
-                           },
-                           "UnitCode": {
-                              "name": "Code unité",
-                              "description": "Le code unité X10"
-                           }
-                        }
-                     },
-                     "proto_flamingo": {
-                        "name": "Flamingo",
-                        "description": "Flamingo",
-                        "content": {
-                           "HouseCode": {
-                              "name": "Code bâtiment",
-                              "description": "Le code bâtiment X10"
-                           },
-                           "UnitCode": {
-                              "name": "Code unité",
-                              "description": "Le code unité X10"
-                           }
-                        }
-                     },
-                     "proto_koppla": {
-                        "name": "Koppla",
-                        "description": "Ikea Koppla",
-                        "content": {
-                           "HouseCode": {
-                              "name": "Code bâtiment",
-                              "description": "Le code bâtiment X10"
-                           },
-                           "UnitCode": {
-                              "name": "Code unité",
-                              "description": "Le code unité X10"
-                           }
-                        }
-                     },
-                     "proto_waveman": {
-                        "name": "Waveman",
-                        "description": "Waveman",
-                        "content": {
-                           "HouseCode": {
-                              "name": "Code bâtiment",
-                              "description": "Le code bâtiment X10"
-                           },
-                           "UnitCode": {
-                              "name": "Code unité",
-                              "description": "Le code unité X10"
-                           }
-                        }
-                     },
-                     "proto_harrison": {
-                        "name": "Harrison",
-                        "description": "Harrison",
-                        "content": {
-                           "HouseCode": {
-                              "name": "Code bâtiment",
-                              "description": "Le code bâtiment X10"
-                           },
-                           "UnitCode": {
-                              "name": "Code unité",
-                              "description": "Le code unité X10"
-                           }
-                        }
-                     },
-                     "proto_he105": {
-                        "name": "He105",
-                        "description": "HomeEasy Heater HE105",
-                        "content": {
-                           "HouseCode": {
-                              "name": "Code bâtiment",
-                              "description": "Le code bâtiment X10"
-                           },
-                           "UnitCode": {
-                              "name": "Code unité",
-                              "description": "Le code unité X10"
-                           }
-                        }
-                     },
-                     "proto_rts10": {
-                        "name": "Rts10",
-                        "description": "Rts10",
-                        "content": {
-                           "HouseCode": {
-                              "name": "Code bâtiment",
-                              "description": "Le code bâtiment X10"
-                           },
-                           "UnitCode": {
-                              "name": "Code unité",
-                              "description": "Le code unité X10"
-                           }
-                        }
-                     }
-                  }
-               }
-            }
-         }
+	"deviceConfiguration": {
+		"staticConfigurationSchema": {
+			"schemas": {
+				"ac": {
+					"name": "ac",
+					"description": "AC Basic",
+					"content": {
+						"deviceAddress": {
+							"name": "Adresse",
+							"description": "Indiquer l'adresse de l'équipement"
+						}
+					}
+				},
+				"x10": {
+					"name": "x10",
+					"description": "X10",
+					"content": {
+						"Protocol": {
+							"name": "Protocole",
+							"description": "Protocole de l'équipement",
+							"content": {
+								"proto_x10": {
+									"name": "x10",
+									"description": "Standard X10",
+									"content": {
+										"HouseCode": {
+											"name": "Code bâtiment",
+											"description": "Le code bâtiment X10"
+										},
+										"UnitCode": {
+											"name": "Code unité",
+											"description": "Le code unité X10"
+										}
+									}
+								},
+								"proto_arc": {
+									"name": "Arc",
+									"description": "KlikAanKlikUit, Chacon, HomeEasy, DomiaLite, Domia, ByeByeStandBy, ELROAB600, NEXAProoveIntertechnoDuwi",
+									"content": {
+										"HouseCode": {
+											"name": "Code bâtiment",
+											"description": "Le code bâtiment X10"
+										},
+										"UnitCode": {
+											"name": "Code unité",
+											"description": "Le code unité X10"
+										}
+									}
+								},
+								"proto_flamingo": {
+									"name": "Flamingo",
+									"description": "Flamingo",
+									"content": {
+										"HouseCode": {
+											"name": "Code bâtiment",
+											"description": "Le code bâtiment X10"
+										},
+										"UnitCode": {
+											"name": "Code unité",
+											"description": "Le code unité X10"
+										}
+									}
+								},
+								"proto_koppla": {
+									"name": "Koppla",
+									"description": "Ikea Koppla",
+									"content": {
+										"HouseCode": {
+											"name": "Code bâtiment",
+											"description": "Le code bâtiment X10"
+										},
+										"UnitCode": {
+											"name": "Code unité",
+											"description": "Le code unité X10"
+										}
+									}
+								},
+								"proto_waveman": {
+									"name": "Waveman",
+									"description": "Waveman",
+									"content": {
+										"HouseCode": {
+											"name": "Code bâtiment",
+											"description": "Le code bâtiment X10"
+										},
+										"UnitCode": {
+											"name": "Code unité",
+											"description": "Le code unité X10"
+										}
+									}
+								},
+								"proto_harrison": {
+									"name": "Harrison",
+									"description": "Harrison",
+									"content": {
+										"HouseCode": {
+											"name": "Code bâtiment",
+											"description": "Le code bâtiment X10"
+										},
+										"UnitCode": {
+											"name": "Code unité",
+											"description": "Le code unité X10"
+										}
+									}
+								},
+								"proto_he105": {
+									"name": "He105",
+									"description": "HomeEasy Heater HE105",
+									"content": {
+										"HouseCode": {
+											"name": "Code bâtiment",
+											"description": "Le code bâtiment X10"
+										},
+										"UnitCode": {
+											"name": "Code unité",
+											"description": "Le code unité X10"
+										}
+									}
+								},
+								"proto_rts10": {
+									"name": "Rts10",
+									"description": "Rts10",
+									"content": {
+										"HouseCode": {
+											"name": "Code bâtiment",
+											"description": "Le code bâtiment X10"
+										},
+										"UnitCode": {
+											"name": "Code unité",
+											"description": "Le code unité X10"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	},
 	"customLabels": {

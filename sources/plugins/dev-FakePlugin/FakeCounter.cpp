@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "FakeCounter.h"
+#include <shared/tools/Random.h>
 
 CFakeCounter::CFakeCounter(const std::string& deviceName)
    : m_deviceName(deviceName),
      m_incrementCount(boost::make_shared<yApi::historization::CCounter>("incrementCount", yApi::EKeywordAccessMode::kGet, yApi::historization::EMeasureType::kIncrement)),
      m_totalCount(boost::make_shared<yApi::historization::CCounter>("totalCounter")),
-     m_historizers({m_incrementCount , m_totalCount}),
-     m_dist(0, 15)
+     m_historizers({m_incrementCount , m_totalCount})
 {
    m_totalCount->set(0);
 }
@@ -25,10 +25,10 @@ void CFakeCounter::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
 void CFakeCounter::read()
 {
    // Generate a random increment (0 to 15)
-   m_incrementCount->set(m_dist(m_gen));
+   m_incrementCount->set(shared::tools::CRandom::generate(0, 15));
 
    // Generate a random increment (0 to 15)
-   m_totalCount->set(m_totalCount->get() + m_dist(m_gen));
+   m_totalCount->set(m_totalCount->get() + shared::tools::CRandom::generate(0, 15));
 }
 
 void CFakeCounter::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const

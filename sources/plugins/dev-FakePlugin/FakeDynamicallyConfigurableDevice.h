@@ -1,5 +1,4 @@
 #pragma once
-
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 
@@ -16,19 +15,15 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    /// \param[in] deviceName    The device name
+   /// \param[in] configuration The device configuration
    //--------------------------------------------------------------
-   explicit CFakeDynamicallyConfigurableDevice(const std::string& deviceName);
+   explicit CFakeDynamicallyConfigurableDevice(const std::string& deviceName,
+                                               const shared::CDataContainer& configuration);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~CFakeDynamicallyConfigurableDevice();
-
-   //--------------------------------------------------------------
-   /// \brief	            Declare device and associated keywords if necessary
-   /// \param[in] api      yPluginApi context
-   //--------------------------------------------------------------
-   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
@@ -48,28 +43,38 @@ public:
    const std::string& getDeviceName() const;
 
    //--------------------------------------------------------------
-   /// \brief	    Returns the fake sensor model
-   /// \return     The fake sensor model
-   //--------------------------------------------------------------
-   static const std::string& getModel();
-
-   //--------------------------------------------------------------
    /// \brief	    Returns the fake sensor type
    /// \return     The fake sensor type
    //--------------------------------------------------------------
    static const std::string& getType();
 
    //--------------------------------------------------------------
-   /// \brief	            Get the device dynamic configuration schema
-   /// \return             The device dynmaic configuration schema
+   /// \brief	    Returns the fake sensor model
+   /// \return     The fake sensor model
    //--------------------------------------------------------------
-   static shared::CDataContainer getDynamicConfiguration();
+   static const std::string& getModel();
 
    //--------------------------------------------------------------
    /// \brief	    Change the device configuration
    /// \param[in] newConfiguration  The new configuration
    //--------------------------------------------------------------
    void setConfiguration(const shared::CDataContainer& newConfiguration);
+
+   //--------------------------------------------------------------
+   /// \brief	    Get the historizers
+   /// \return     The device historizers
+   //--------------------------------------------------------------
+   std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> historizers() const;
+
+   //--------------------------------------------------------------
+   /// \brief	            Get the device dynamic configuration schema
+   /// \return             The device dynmaic configuration schema
+   //--------------------------------------------------------------
+   static shared::CDataContainer getDynamicConfigurationSchema();
+
+protected:
+   static double readDividerConfiguration(const shared::CDataContainer& configuration);
+
 
 private:
    //--------------------------------------------------------------

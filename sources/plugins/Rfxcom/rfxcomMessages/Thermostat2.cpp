@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Thermostat2.h"
 #include <shared/exception/InvalidParameter.hpp>
+#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -11,8 +12,8 @@ namespace rfxcomMessages
                               const std::string& command,
                               const shared::CDataContainer& deviceDetails)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_state, m_signalPower })
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_state, m_signalPower})
    {
       m_state->setCommand(command);
       m_signalPower->set(0);
@@ -25,10 +26,12 @@ namespace rfxcomMessages
 
    CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYPluginApi> api,
                               unsigned int subType,
+                              const std::string& name,
                               const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_state, m_signalPower })
+      : m_deviceName(name),
+        m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_state, m_signalPower})
    {
       m_state->set(false);
       m_signalPower->set(0);
@@ -45,15 +48,17 @@ namespace rfxcomMessages
 
       m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode");
 
-      Init(api);
+      buildDeviceDetails();
+      api->updateDeviceDetails(m_deviceName, m_deviceDetails);
+      api->declareKeywords(m_deviceName, m_keywords);
    }
 
    CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYPluginApi> api,
                               const RBUF& rbuf,
                               size_t rbufSize)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_state, m_signalPower })
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_state, m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -74,25 +79,33 @@ namespace rfxcomMessages
    {
    }
 
+   void CThermostat2::buildDeviceDetails()
+   {
+      if (m_deviceDetails.empty())
+      {
+         m_deviceDetails.set("type", pTypeThermostat2);
+         m_deviceDetails.set("subType", m_subType);
+         m_deviceDetails.set("unitCode", m_unitCode);
+      }
+   }
+
    void CThermostat2::Init(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       // Build device description
       buildDeviceModel();
       buildDeviceName();
+      buildDeviceDetails();
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
       {
-         shared::CDataContainer details;
-         details.set("type", pTypeThermostat2);
-         details.set("subType", m_subType);
-         details.set("unitCode", m_unitCode);
-
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
+         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+         m_deviceDetails.printToLog(YADOMS_LOG(information));         
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CThermostat2::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CThermostat2::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF rbuf;
       MEMCLEAR(rbuf.THERMOSTAT2);

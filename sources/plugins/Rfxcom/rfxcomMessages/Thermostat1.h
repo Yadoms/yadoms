@@ -31,12 +31,14 @@ namespace rfxcomMessages
       /// \brief	                        Constructor
       /// \param[in] api                  Yadoms APi context
       /// \param[in] subType              Device subType
+      /// \param[in] name                 Device name
       /// \param[in] manuallyDeviceCreationConfiguration The device concfiguration
       /// \throw                          shared::exception::CInvalidParameter or shared::exception::COutOfRange if fail to interpret configuration
       /// \note                           Use this constructor for manually device creation
       //--------------------------------------------------------------
       CThermostat1(boost::shared_ptr<yApi::IYPluginApi> api,
                    unsigned int subType,
+                   const std::string& name,
                    const shared::CDataContainer& manuallyDeviceCreationConfiguration);
 
       //--------------------------------------------------------------
@@ -57,7 +59,7 @@ namespace rfxcomMessages
       virtual ~CThermostat1();
 
       // IRfxcomMessage implementation
-      boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const override;
+      boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const override;
       void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
       const std::string& getDeviceName() const override;
       // [END] IRfxcomMessage implementation
@@ -73,6 +75,8 @@ namespace rfxcomMessages
       /// \brief	                        Build the device name
       //--------------------------------------------------------------
       void buildDeviceName();
+
+      void buildDeviceDetails();
 
       //--------------------------------------------------------------
       /// \brief	Declare the device
@@ -96,6 +100,8 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       std::string m_deviceName;
 
+      shared::CDataContainer m_deviceDetails;
+
       //--------------------------------------------------------------
       /// \brief	The sub-type management
       //--------------------------------------------------------------
@@ -109,7 +115,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    };
 } // namespace rfxcomMessages
 

@@ -1,7 +1,5 @@
 #pragma once
 #include <shared/DataContainer.h>
-#include <Poco/Net/SocketAddress.h>
-#include <Poco/Net/NetworkInterface.h>
 #include "../IWESConfiguration.h"
 #include "specificHistorizers/deviceStatus.h"
 

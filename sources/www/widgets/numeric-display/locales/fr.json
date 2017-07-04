@@ -1,5 +1,6 @@
 {
 	"name": "Afficheur numérique",
+   "NoAcquisition": "Pas d'acquisition",
 	"description": "Un widget qui affiche une valeur numérique d'un périphérique",
 	"configurationSchema": {
 		"device": {

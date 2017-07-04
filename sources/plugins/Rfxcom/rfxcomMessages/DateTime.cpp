@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DateTime.h"
 #include <shared/exception/InvalidParameter.hpp>
+#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -57,6 +58,8 @@ namespace rfxcomMessages
                             m_deviceModel,
                             m_keywords,
                             details);
+         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+         details.printToLog(YADOMS_LOG(information));
       }
    }
 

@@ -193,160 +193,186 @@
 					}
 				}
 			}
-		}      
+		}
 	},
 	"deviceConfiguration": {
 		"staticConfigurationSchema": {
 			"name": "Type",
 			"description": "Device type",
-      "schemas": {
-        "blyssDevice": {
-          "types": {
-            "blyss": {
-              "title": "BLYSS",
-              "description": "BLYSS distributed by Castorama"
-            }
-          },
-          "content": {
-            "groupCode": {
-              "name": "Group",
-              "description": "The group ID (A-P)"
-            },
-            "unitCode": {
-              "name": "Unit",
-              "description": "The unit code (1-5)"
-            },
-            "burst": {
-              "name": "Burst",
-              "description": "Frame repetition factor (0 by default)"
-            }
-          }
-        },
-        "simpleDevice": {
-          "types": {
-            "x10": {
-              "title": "X10",
-              "description": "Products using X10 protocol"
-            },
-            "chacon": {
-               "title": "Chacon",
-               "description": "Products distributed by Chacon (Chacon, DIO,..)"
-            },
-            "domia": {
-              "title": "DomiaLite",
-              "description": "Products distributed by Domia"
-            },
-            "kd101": {
-              "title": "KD101",
-              "description": "Smoke detector"
-            },
-            "parrot": {
-              "title": "Parrot",
-              "description": "Learn & Play"
-            }
-          },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "Device identifier"
-            },
-            "burst": {
-              "name": "Burst",
-              "description": "Frame repetition factor (0 by default)"
-            }
-          }
-        },
-        "visonicDevice": {
-          "types": {
-            "visonic": {
-              "title": "Visonic",
-              "description": "Marque VISONIC, BFT,..."
-            }
-          },
-          "content": {
-            "frequency": {
-              "name": "Frequency",
-              "description": "The used frequency",
-              "values": {
-                "433": "433 MHz",
-                "866": "868 MHz"
-              }
-            },
-            "id": {
-              "name": "ID",
-              "description": "Device identifier"
-            },
-            "burst": {
-              "name": "Burst",
-              "description": "Frame repetition factor (0 by default)"
-            },
-            "qualifier": {
-              "name": "Qualifier",
-              "description": "The frame qualifier"
-            }
-          }
-        },
-        "x2dDevice": {
-          "types": {
-            "x2dAlarm433": {
-              "title": "Alarm DeltaDore 433MHz",
-              "description": "Alarme Deltadore/X2D in 433MHz band"
-            },
-            "x2dAlarm868": {
-              "title": "Alarm DeltaDore 868MHz",
-              "description": "Alarme Deltadore/X2D in 868MHz band"
-            },
-            "x2dShutter": {
-              "title": "Shutter X2D",
-              "description": "Shutter command DeltaDore/X2D"
-            },
-            "x2dElec": {
-              "title": "Elec X2D",
-              "description": "Electrical command DeltaDore/X2D"
-            },
-            "x2dGas": {
-              "title": "Gas X2D",
-              "description": "Gas command DeltaDore/X2D"
-            }
-          },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "Device identifier"
-            },
-            "burst": {
-              "name": "Burst",
-              "description": "Frame repetition factor (0 by default)"
-            },
-            "x2dVariant": {
-              "name": "X2D Variant",
-              "description": "Use the X2D variant"
-            }
-          }
-        },
-        "genericDevice": {
-          "types": {
-            "rts": {
-              "title": "Somfy RTS",
-              "description": "Somfy"
-            }
-          },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "Device identifier"
-            },
-            "burst": {
-              "name": "Burst",
-              "description": "Frame repetition factor (0 by default)"
-            },
-            "qualifier": {
-              "name": "Qualifier",
-              "description": "The frame qualifier"
-            }
-          }
-        }
-      }
+			"schemas": {
+				"blyssDevice": {
+					"types": {
+						"blyss": {
+							"title": "BLYSS",
+							"description": "BLYSS distributed by Castorama"
+						}
+					},
+					"content": {
+						"groupCode": {
+							"name": "Group",
+							"description": "The group ID (A-P)"
+						},
+						"unitCode": {
+							"name": "Unit",
+							"description": "The unit code (1-5)"
+						},
+						"burst": {
+							"name": "Burst",
+							"description": "Frame repetition factor (0 by default)"
+						}
+					}
+				},
+				"simpleDevice": {
+					"types": {
+						"x10": {
+							"title": "X10",
+							"description": "Products using X10 protocol"
+						},
+						"chacon": {
+							"title": "Chacon",
+							"description": "Products distributed by Chacon (Chacon, DIO,..)"
+						},
+						"domia": {
+							"title": "DomiaLite",
+							"description": "Products distributed by Domia"
+						},
+						"kd101": {
+							"title": "KD101",
+							"description": "Smoke detector"
+						},
+						"parrot": {
+							"title": "Parrot",
+							"description": "Learn & Play"
+						}
+					},
+					"content": {
+						"id": {
+							"name": "ID",
+							"description": "Device identifier"
+						},
+						"burst": {
+							"name": "Burst",
+							"description": "Frame repetition factor (0 by default)"
+						}
+					}
+				},
+				"visonicDevice": {
+					"types": {
+						"visonic": {
+							"title": "Visonic",
+							"description": "Marque VISONIC, BFT,..."
+						}
+					},
+					"content": {
+						"frequency": {
+							"name": "Frequency",
+							"description": "The used frequency",
+							"values": {
+								"433": "433 MHz",
+								"866": "868 MHz"
+							}
+						},
+						"id": {
+							"name": "ID",
+							"description": "Device identifier"
+						},
+						"burst": {
+							"name": "Burst",
+							"description": "Frame repetition factor (0 by default)"
+						},
+						"qualifier": {
+							"name": "Qualifier",
+							"description": "The frame qualifier"
+						}
+					}
+				},
+				"x2dDevice": {
+					"types": {
+						"x2dAlarm433": {
+							"title": "Alarm DeltaDore 433MHz",
+							"description": "Alarme Deltadore/X2D in 433MHz band"
+						},
+						"x2dAlarm868": {
+							"title": "Alarm DeltaDore 868MHz",
+							"description": "Alarme Deltadore/X2D in 868MHz band"
+						},
+						"x2dShutter": {
+							"title": "Shutter X2D",
+							"description": "Shutter command DeltaDore/X2D"
+						},
+						"x2dElec": {
+							"title": "Elec X2D",
+							"description": "Electrical command DeltaDore/X2D"
+						},
+						"x2dGas": {
+							"title": "Gas X2D",
+							"description": "Gas command DeltaDore/X2D"
+						}
+					},
+					"content": {
+						"id": {
+							"name": "ID",
+							"description": "Device identifier"
+						},
+						"burst": {
+							"name": "Burst",
+							"description": "Frame repetition factor (0 by default)"
+						},
+						"x2dVariant": {
+							"name": "X2D Variant",
+							"description": "Use the X2D variant"
+						}
+					}
+				},
+				"genericDevice": {
+					"types": {
+						"rts": {
+							"title": "Somfy RTS",
+							"description": "Somfy"
+						}
+					},
+					"content": {
+						"identifier": {
+							"name": "Identifier",
+							"description": "Identifier mode",
+							"content": {
+								"id32": {
+									"name": "Simple identifier",
+									"description": "Use of simple/unique identifier (single 32bits number)",
+									"content": {
+										"id": {
+											"name": "ID",
+											"description": "Device identifier"
+										}
+									}
+								},
+								"idx10form": {
+									"name": "Pseudo x10 code identifier",
+									"description": "Use the X10 code form (A15, D8,..)",
+									"content": {
+										"groupCode": {
+											"name": "Group",
+											"description": "The group ID (A-P)"
+										},
+										"unitCode": {
+											"name": "Unit",
+											"description": "The unit code (1-15)"
+										}
+									}
+								}
+							}
+						},
+						"burst": {
+							"name": "Burst",
+							"description": "Frame repetition factor (0 by default)"
+						},
+						"qualifier": {
+							"name": "Qualifier",
+							"description": "The frame qualifier"
+						}
+					}
+				}
+			}
 		}
 	},
 	"extraQueries": {
@@ -367,18 +393,18 @@
 			"waitReboot": "Writing firmware (~1 min)"
 		}
 	},
-  "enumerations": {
-    "EBlyss": {
-      "name": "",
-      "values": {
-        "Off": "OFF",
-        "On": "ON",
-        "Dim": "DIM",
-        "AllOff": "All ON",
-        "AllOn": "All OFF",
-        "Assoc": "Peering frame"
-      }
-    }
-  }   
+	"enumerations": {
+		"EBlyss": {
+			"name": "",
+			"values": {
+				"Off": "OFF",
+				"On": "ON",
+				"Dim": "DIM",
+				"AllOff": "All ON",
+				"AllOn": "All OFF",
+				"Assoc": "Peering frame"
+			}
+		}
+	}
 
 }

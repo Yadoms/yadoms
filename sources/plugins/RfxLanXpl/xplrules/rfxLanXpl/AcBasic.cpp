@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "AcBasic.h"
 #include <shared/tools/Random.h>
 #include <shared/plugin/yPluginApi/historization/Dimmable.h>
@@ -38,7 +38,7 @@ namespace xplrules
       CDeviceIdentifier CAcBasic::getDeviceAddressFromMessage(xplcore::CXplMessage& msg)
       {
          std::string deviceId = msg.getBodyValue(m_keywordAddress) + "-" + msg.getBodyValue(m_keywordUnit);
-         std::string commercialName = "ANSLUT, Chacon, DI.O, KlikAanKlikUit, NEXA, Proove, Intertechno, Düwi, HomeEasy UK/EU";
+         std::string commercialName("ANSLUT, Chacon, DI.O, KlikAanKlikUit, NEXA, Proove, Intertechno, Düwi, HomeEasy UK/EU");
          return CDeviceIdentifier(deviceId, commercialName, m_protocol, m_protocol);
       }
 
@@ -167,7 +167,7 @@ namespace xplrules
       CDeviceContainer CAcBasic::generateDeviceParameters(shared::CDataContainer& configuration) const
       {
          auto deviceId = configuration.get<std::string>("deviceAddress");
-         std::string commercialName = "ANSLUT, Chacon, DI.O, KlikAanKlikUit, NEXA, Proove, Intertechno, Düwi, HomeEasy UK/EU";
+         std::string commercialName("ANSLUT, Chacon, DI.O, KlikAanKlikUit, NEXA, Proove, Intertechno, Düwi, HomeEasy UK/EU");
 
          CDeviceIdentifier device(deviceId, commercialName, m_protocol, m_protocol);
 

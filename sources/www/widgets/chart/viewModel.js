@@ -754,8 +754,6 @@ widgetViewModelCtor =
                                           }
                                        }
                                        catch (err) {
-                                          console.warn(err);
-                                          
                                           // Default configuration
                                           serie.options.showInLegend = true;
                                           self.chart.legend.renderItem(serie);

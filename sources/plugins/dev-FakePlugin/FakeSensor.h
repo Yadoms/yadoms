@@ -101,11 +101,5 @@ private:
    /// \brief	Historizers vector
    //--------------------------------------------------------------
    std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> m_historizers;
-
-   //--------------------------------------------------------------
-   /// \brief	    Random number generator, used to simulate temperature variations
-   //--------------------------------------------------------------
-   boost::random::mt19937 m_gen;
-   boost::random::uniform_int_distribution<> m_dist;
 };
 

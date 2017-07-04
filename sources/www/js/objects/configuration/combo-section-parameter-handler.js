@@ -139,20 +139,17 @@ ComboSectionParameterHandler.prototype.afterI18n = function() {
       let aTxt = $(a).find("a span").first().text();
       let bTxt = $(b).find("a span").first().text();
       
-       if (aTxt > bTxt) return 1;
-       else if (aTxt < bTxt) return -1;
-       else return 0
+      if (aTxt > bTxt) return 1;
+      else if (aTxt < bTxt) return -1;
+      else return 0;
    });
    $ul.append($li);
    
-    $.each($("#" + this.dropdownUuid).find(".combo-item-description"), function (key, value) {
-       if($(value).text() === "") {
-          $(value).siblings(".combo-item-title").removeClass("combo-item-title").addClass("combo-item-title-without-description");
-       }
-    });   
-  
-   // force first selection
-   $ul.find("li a").first().trigger('click');
+   $.each($("#" + this.dropdownUuid).find(".combo-item-description"), function (key, value) {
+      if($(value).text() === "") {
+         $(value).siblings(".combo-item-title").removeClass("combo-item-title").addClass("combo-item-title-without-description");
+      }
+   });   
 }
 
 ComboSectionParameterHandler.prototype.locateInDOM = function () {
@@ -174,7 +171,6 @@ ComboSectionParameterHandler.prototype.applyScript = function () {
     var self = this;
 
    $("#" + self.dropdownUuid).find("li a").click(function(){
-      
      $("#" + self.comboUuid).find(".current-selected-item").html($(this).html());
      $("#" + self.comboUuid).val($(this).data('value')).change();
    });
@@ -209,7 +205,7 @@ ComboSectionParameterHandler.prototype.applyScript = function () {
     if (!activeSectionUuid)
       activeSectionUuid = this.configurationHandlers[0].uuid;
     
-    $("#" + self.dropdownUuid).find("li a").first().trigger('click');
+    $("#" + self.dropdownUuid).find("li a[data-value='" + activeSectionUuid +"']").trigger('click');
 };
 
 /**

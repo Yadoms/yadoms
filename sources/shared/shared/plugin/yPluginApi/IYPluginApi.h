@@ -98,11 +98,12 @@ namespace shared
                kEventDeviceCommand,
 
                //-----------------------------------------------------
-               ///\brief Yadoms ask the plugin to create a device
+               ///\brief Yadoms notify the plugin that a device was manually created
                ///\usage Optional, required if package.json declare that plugin supports manually device creation
                ///       (Flag "supportManuallyDeviceCreation" set to true in package.json)
                ///\note Data : a boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> object containing the device creation request
                ///\note Plugin must process the specified request, and return result within 10 seconds, by calling request->sendSuccess or sendError
+               ///\note To declare the device, use declareManuallyCreatedDevice instead of declareDevice
                //-----------------------------------------------------
                kEventManuallyDeviceCreation,
 

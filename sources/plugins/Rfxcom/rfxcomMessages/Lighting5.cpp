@@ -4,6 +4,7 @@
 #include "Lighting5Livolo.h"
 #include "Lighting5MdRemote.h"
 #include "Lighting5OnOff.h"
+#include <shared/Log.h>
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -13,7 +14,7 @@ namespace rfxcomMessages
                           const std::string& command,
                           const shared::CDataContainer& deviceDetails)
       : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_signalPower })
+        m_keywords({m_signalPower})
    {
       m_signalPower->set(0);
 
@@ -27,9 +28,11 @@ namespace rfxcomMessages
 
    CLighting5::CLighting5(boost::shared_ptr<yApi::IYPluginApi> api,
                           unsigned int subType,
+                          const std::string& name,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_signalPower })
+      : m_deviceName(name),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_signalPower})
    {
       m_signalPower->set(0);
 
@@ -38,7 +41,10 @@ namespace rfxcomMessages
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
       m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
-      declare(api);
+      buildDeviceDetails();
+      api->updateDeviceDetails(m_deviceName, m_deviceDetails);
+      api->declareKeywords(m_deviceName, m_keywords);
+
       m_subTypeManager->reset();
    }
 
@@ -46,7 +52,7 @@ namespace rfxcomMessages
                           const RBUF& rbuf,
                           size_t rbufSize)
       : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_signalPower })
+        m_keywords({m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -66,6 +72,17 @@ namespace rfxcomMessages
 
    CLighting5::~CLighting5()
    {
+   }
+
+   void CLighting5::buildDeviceDetails()
+   {
+      if (m_deviceDetails.empty())
+      {
+         m_deviceDetails.set("type", pTypeLighting5);
+         m_deviceDetails.set("subType", m_subType);
+         m_deviceDetails.set("id", m_id);
+         m_deviceDetails.set("unitCode", m_unitCode);
+      }
    }
 
    void CLighting5::createSubType(unsigned char subType)
@@ -122,21 +139,19 @@ namespace rfxcomMessages
 
       // Build device description
       buildDeviceName();
+      buildDeviceDetails();
+      auto model = m_subTypeManager->getModel();
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypeLighting5);
-         details.set("subType", m_subType);
-         details.set("id", m_id);
-         details.set("unitCode", m_unitCode);
-         std::string model = m_subTypeManager->getModel();
-         api->declareDevice(m_deviceName, model, model, m_keywords, details);
+      {         
+         api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
+         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
+         m_deviceDetails.printToLog(YADOMS_LOG(information));
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CLighting5::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CLighting5::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF rbuf;
       MEMCLEAR(rbuf.LIGHTING5);
@@ -153,7 +168,7 @@ namespace rfxcomMessages
       rbuf.LIGHTING5.filler = 0;
 
       // Some sub-protocols need several messages
-      auto buffers(boost::make_shared<std::queue<shared::communication::CByteBuffer> >());
+      auto buffers(boost::make_shared<std::queue<shared::communication::CByteBuffer>>());
       for (size_t idxMessage = 0; idxMessage < m_subTypeManager->getMessageNb(); ++idxMessage)
       {
          m_subTypeManager->toProtocolState(idxMessage, rbuf.LIGHTING5.cmnd, rbuf.LIGHTING5.level);

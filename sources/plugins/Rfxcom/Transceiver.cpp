@@ -363,203 +363,203 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
       auto deviceType = data.getDeviceType();
       // Lighting1
       if (deviceType == "x10")
-         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeX10, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeX10, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "arc")
-         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeARC, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeARC, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "ab400d")
-         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeAB400D, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeAB400D, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "waveman")
-         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeWaveman, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeWaveman, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "emw200")
-         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeEMW200, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeEMW200, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "impuls")
-         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeIMPULS, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeIMPULS, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "risingSun")
-         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeRisingSun, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeRisingSun, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "philips")
-         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypePhilips, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypePhilips, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "energenie")
-         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeEnergenie, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeEnergenie, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "energenie5")
-         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeEnergenie5, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeEnergenie5, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "gdr2")
-         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeGDR2, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeGDR2, data.getDeviceName(), data.getConfiguration());
 
       // Lighting2
       else if (deviceType == "ac")
-         msg = boost::make_shared<rfxcomMessages::CLighting2>(api, sTypeX10, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting2>(api, sTypeX10, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "homeEasyEU")
-         msg = boost::make_shared<rfxcomMessages::CLighting2>(api, sTypeARC, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting2>(api, sTypeARC, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "anslut")
-         msg = boost::make_shared<rfxcomMessages::CLighting2>(api, sTypeARC, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting2>(api, sTypeARC, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "kambrookRf3672")
-         msg = boost::make_shared<rfxcomMessages::CLighting2>(api, sTypeARC, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting2>(api, sTypeARC, data.getDeviceName(), data.getConfiguration());
 
       // Lighting3
       else if (deviceType == "koppla")
-         msg = boost::make_shared<rfxcomMessages::CLighting3>(api, sTypeKoppla, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting3>(api, sTypeKoppla, data.getDeviceName(), data.getConfiguration());
 
       // Lighting4
       else if (deviceType == "pt2262")
-         msg = boost::make_shared<rfxcomMessages::CLighting4>(api, sTypePT2262, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting4>(api, sTypePT2262, data.getDeviceName(), data.getConfiguration());
 
       // Lighting5
       else if (deviceType == "lightwaveRf")
-         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeLightwaveRF, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeLightwaveRF, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "emw100")
-         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeEMW100, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeEMW100, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "bbsb")
-         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeBBSB, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeBBSB, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "mdRemote106")
-         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeMDREMOTE, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeMDREMOTE, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "rsl")
-         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeRSL, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeRSL, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "livolo")
-         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeLivolo, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeLivolo, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "trc02")
-         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeTRC02, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeTRC02, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "aoke")
-         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeAoke, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeAoke, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "trc02_2")
-         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeTRC02_2, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeTRC02_2, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "eurodomest")
-         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeEurodomest, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeEurodomest, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "livoloAppliance")
-         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeLivoloAppliance, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeLivoloAppliance, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "rgb432w")
-         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeRGB432W, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeRGB432W, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "mdremote107")
-         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeMDREMOTE107, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeMDREMOTE107, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "legrandCad")
-         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeLegrandCAD, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeLegrandCAD, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "mdRemote108")
-         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeMDREMOTE108, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeMDREMOTE108, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "kangtai")
-         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeKangtai, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeKangtai, data.getDeviceName(), data.getConfiguration());
 
       // Lighting6
       else if (deviceType == "blyss")
-         msg = boost::make_shared<rfxcomMessages::CLighting6>(api, sTypeBlyss, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CLighting6>(api, sTypeBlyss, data.getDeviceName(), data.getConfiguration());
 
       // Chime
       else if (deviceType == "byronSx")
-         msg = boost::make_shared<rfxcomMessages::CChime>(api, sTypeByronSX, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CChime>(api, sTypeByronSX, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "byronMp001")
-         msg = boost::make_shared<rfxcomMessages::CChime>(api, sTypeByronMP001, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CChime>(api, sTypeByronMP001, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "selectPlus")
-         msg = boost::make_shared<rfxcomMessages::CChime>(api, sTypeSelectPlus, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CChime>(api, sTypeSelectPlus, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "envivo")
-         msg = boost::make_shared<rfxcomMessages::CChime>(api, sTypeEnvivo, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CChime>(api, sTypeEnvivo, data.getDeviceName(), data.getConfiguration());
 
       // Fan
       else if (deviceType == "siemensSf01")
-         msg = boost::make_shared<rfxcomMessages::CFan>(api, sTypeSiemensSF01, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CFan>(api, sTypeSiemensSF01, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "lucciAir")
-         msg = boost::make_shared<rfxcomMessages::CFan>(api, sTypeLucciAir, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CFan>(api, sTypeLucciAir, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "seavTxs4")
-         msg = boost::make_shared<rfxcomMessages::CFan>(api, sTypeSeavTXS4, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CFan>(api, sTypeSeavTXS4, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "westinghouse7226640")
-         msg = boost::make_shared<rfxcomMessages::CFan>(api, sTypeWestinghouse, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CFan>(api, sTypeWestinghouse, data.getDeviceName(), data.getConfiguration());
 
       // Curtain1
       else if (deviceType == "harrisonCurtain")
-         msg = boost::make_shared<rfxcomMessages::CCurtain1>(api, sTypeHarrison, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CCurtain1>(api, sTypeHarrison, data.getDeviceName(), data.getConfiguration());
 
       // Blinds1
       else if (deviceType == "rollerTrolHastaNew")
-         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT0, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT0, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "hastaOld")
-         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT1, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT1, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "aOkRf01")
-         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT2, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT2, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "aOkAc114")
-         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT3, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT3, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "raex")
-         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT4, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT4, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "mediaMount")
-         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT5, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT5, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "dc106")
-         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT6, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT6, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "forest")
-         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT7, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT7, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "chamberlaincs4330cn")
-         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT8, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT8, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "sunperyBtx")
-         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT9, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT9, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "dolatDlm1")
-         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT10, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT10, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "asp")
-         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT11, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT11, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "confexx")
-         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT12, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT12, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "screenline")
-         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT13, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT13, data.getDeviceName(), data.getConfiguration());
 
       // Rfy
       else if (deviceType == "rfy")
-         msg = boost::make_shared<rfxcomMessages::CRfy>(api, sTypeRFY, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CRfy>(api, sTypeRFY, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "rfyExt")
-         msg = boost::make_shared<rfxcomMessages::CRfy>(api, sTypeRFYext, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CRfy>(api, sTypeRFYext, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "asa")
-         msg = boost::make_shared<rfxcomMessages::CRfy>(api, sTypeASA, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CRfy>(api, sTypeASA, data.getDeviceName(), data.getConfiguration());
 
       // HomeConfort
       else if (deviceType == "homeConfort")
-         msg = boost::make_shared<rfxcomMessages::CHomeConfort>(api, sTypeHomeConfortTEL010, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CHomeConfort>(api, sTypeHomeConfortTEL010, data.getDeviceName(), data.getConfiguration());
 
       // Security1
       else if (deviceType == "x10SecurityR")
-         msg = boost::make_shared<rfxcomMessages::CSecurity1>(api, sTypeSecX10R, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CSecurity1>(api, sTypeSecX10R, data.getDeviceName(), data.getConfiguration());
 
       // Security2
       else if (deviceType == "keeLoq")
-         msg = boost::make_shared<rfxcomMessages::CSecurity2>(api, sTypeSec2Classic, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CSecurity2>(api, sTypeSec2Classic, data.getDeviceName(), data.getConfiguration());
 
       // Camera1
       else if (deviceType == "cameraX10Ninja")
-         msg = boost::make_shared<rfxcomMessages::CCamera1>(api, sTypeNinja, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CCamera1>(api, sTypeNinja, data.getDeviceName(), data.getConfiguration());
 
       // Thermostat1
       else if (deviceType == "digimax")
-         msg = boost::make_shared<rfxcomMessages::CThermostat1>(api, sTypeDigimax, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CThermostat1>(api, sTypeDigimax, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "digimaxShort")
-         msg = boost::make_shared<rfxcomMessages::CThermostat1>(api, sTypeDigimaxShort, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CThermostat1>(api, sTypeDigimaxShort, data.getDeviceName(), data.getConfiguration());
 
       // Thermostat2
       else if (deviceType == "he105")
-         msg = boost::make_shared<rfxcomMessages::CThermostat2>(api, sTypeHE105, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CThermostat2>(api, sTypeHE105, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "rts10")
-         msg = boost::make_shared<rfxcomMessages::CThermostat2>(api, sTypeRTS10, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CThermostat2>(api, sTypeRTS10, data.getDeviceName(), data.getConfiguration());
 
       // Thermostat3
       else if (deviceType == "g6rH4t1")
-         msg = boost::make_shared<rfxcomMessages::CThermostat3>(api, sTypeMertikG6RH4T1, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CThermostat3>(api, sTypeMertikG6RH4T1, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "g6rH4tb")
-         msg = boost::make_shared<rfxcomMessages::CThermostat3>(api, sTypeMertikG6RH4TB, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CThermostat3>(api, sTypeMertikG6RH4TB, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "g6rH4td")
-         msg = boost::make_shared<rfxcomMessages::CThermostat3>(api, sTypeMertikG6RH4TD, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CThermostat3>(api, sTypeMertikG6RH4TD, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "g6rH4s")
-         msg = boost::make_shared<rfxcomMessages::CThermostat3>(api, sTypeMertikG6RH4S, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CThermostat3>(api, sTypeMertikG6RH4S, data.getDeviceName(), data.getConfiguration());
 
       // Thermostat4
       else if (deviceType == "mcz1PelletStove")
-         msg = boost::make_shared<rfxcomMessages::CThermostat4>(api, sTypeMCZ1, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CThermostat4>(api, sTypeMCZ1, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "mcz2PelletStove")
-         msg = boost::make_shared<rfxcomMessages::CThermostat4>(api, sTypeMCZ2, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CThermostat4>(api, sTypeMCZ2, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "mcz2PelletStove")
-         msg = boost::make_shared<rfxcomMessages::CThermostat4>(api, sTypeMCZ3, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CThermostat4>(api, sTypeMCZ3, data.getDeviceName(), data.getConfiguration());
 
       // Radiator1
       else if (deviceType == "smartwares")
-         msg = boost::make_shared<rfxcomMessages::CRadiator1>(api, sTypeSmartwares, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CRadiator1>(api, sTypeSmartwares, data.getDeviceName(), data.getConfiguration());
 
       // FS20
       else if (deviceType == "fs20")
-         msg = boost::make_shared<rfxcomMessages::CFS20>(api, sTypeFS20, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CFS20>(api, sTypeFS20, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "fht8v")
-         msg = boost::make_shared<rfxcomMessages::CFS20>(api, sTypeFHT8V, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CFS20>(api, sTypeFHT8V, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "fht80")
-         msg = boost::make_shared<rfxcomMessages::CFS20>(api, sTypeFHT80, data.getConfiguration());
+         msg = boost::make_shared<rfxcomMessages::CFS20>(api, sTypeFHT80, data.getDeviceName(), data.getConfiguration());
 
       else
          throw shared::exception::CInvalidParameter("Unknown device type");

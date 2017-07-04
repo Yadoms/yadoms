@@ -312,12 +312,12 @@ namespace plugin_cpp_api
                                                                                                               answer->set_taskid(taskId);
                                                                                                               send(ans);
                                                                                                            },
-                                                                                                           [&, taskId](const float progression, const std::string& msg)
+                                                                                                           [&, taskId](const float progression, const std::string& text)
                                                                                                            {
                                                                                                               plugin_IPC::toYadoms::msg ans;
                                                                                                               auto answer = ans.mutable_extraqueryprogress();
                                                                                                               answer->set_progress(progression);
-                                                                                                              answer->set_message(msg);
+                                                                                                              answer->set_message(text);
                                                                                                               answer->set_taskid(taskId);
                                                                                                               send(ans);
                                                                                                            });
@@ -328,12 +328,11 @@ namespace plugin_cpp_api
    {
       boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request =
          boost::make_shared<CManuallyDeviceCreation>(msg,
-                                                     [&](const std::string& newDeviceName)
+                                                     [&]()
                                                      {
                                                         plugin_IPC::toYadoms::msg ans;
                                                         auto answer = ans.mutable_manuallydevicecreationanswer();
-                                                        auto success = answer->mutable_sucess();
-                                                        success->set_newdevicename(newDeviceName);
+                                                        answer->mutable_sucess();
                                                         send(ans);
                                                      },
                                                      [&](const std::string& errorMessage)

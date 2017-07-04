@@ -124,7 +124,7 @@ namespace pluginSystem
                                   "yadoms system",
                                   keywords);
 
-            while (1)
+            while (true)
             {
                switch (eventHandler.waitForEvents())
                {
@@ -146,8 +146,9 @@ namespace pluginSystem
                      }
                      else
                      {
-                        YADOMS_LOG(warning) << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command);
+                        YADOMS_LOG(information) << "Received command for virtual device from Yadoms : " << yApi::IDeviceCommand::toString(command);
                      }
+
                      break;
                   }
 
@@ -157,21 +158,14 @@ namespace pluginSystem
                      YADOMS_LOG(information) << "Manually device creation request received for device : " << request->getData().getDeviceName();
                      try
                      {
-                        // Autoriser les noms de device en doublons.
-                        // Prenons cet exemple :
-                        // - Création du device dev1
-                        // - Renommage de dev1 en dev2 (en réalité, seul friendlyName est changé)
-                        // - Création du device dev1 ==> échec, alors que pour l'utilisateur dev1 n'existe plus
-                        // La solution est de ne pas utiliser le nom entré par l'utilisateur pour le champ name,
-                        // mais un nom généré "VirtualDevice_XXX" par exemple (le friendlyName reste celui entré par l'utilisateur).
-                        request->sendSuccess(createVirtualDevice(api,
-                                                                 request->getData()));
+                        createVirtualDevice(api,
+                                            request->getData());
+                        request->sendSuccess();
                      }
                      catch (std::exception& e)
                      {
                         YADOMS_LOG(error) << "Unable to create virtual device " << request->getData().getDeviceName() << ", " << e.what();
-                        //TODO remonter les erreurs de création, et les traduire
-                        request->sendError("Unable to create virtual device");
+                        request->sendError("Virtual device creation failed");
                      }
 
                      break;
@@ -192,12 +186,9 @@ namespace pluginSystem
          }
       }
 
-      std::string CInstance::createVirtualDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                 const yApi::IManuallyDeviceCreationData& data) const
+      void CInstance::createVirtualDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                          const yApi::IManuallyDeviceCreationData& data) const
       {
-         if (api->deviceExists(data.getDeviceName()))
-            throw std::invalid_argument("device already exists");
-
          if (data.getDeviceType() != "virtualDeviceType")
             throw std::invalid_argument("Wrong device type");
 
@@ -210,14 +201,11 @@ namespace pluginSystem
             if (isStandardCapacity)
                createStandardCapacityDevice(api,
                                             data.getDeviceName(),
-                                            data.getDeviceType(),
                                             data.getConfiguration().get<std::string>("capacity.content.standardCapacity.content.capacity"));
             else
                createCustomEnumCapacityDevice(api,
                                               data.getDeviceName(),
-                                              data.getDeviceType(),
                                               data.getConfiguration().get<std::string>("capacity.content.customEnumCapacity.content.valueList"));
-            return data.getDeviceName();
          }
          catch (std::exception& e)
          {
@@ -227,7 +215,6 @@ namespace pluginSystem
 
       void CInstance::createStandardCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                                    const std::string& deviceName,
-                                                   const std::string& deviceType,
                                                    const std::string& standardCapacity) const
       {
          boost::shared_ptr<const yApi::historization::IHistorizable> keyword;
@@ -300,15 +287,12 @@ namespace pluginSystem
          if (!keyword)
             throw std::invalid_argument("Unsupported device type");
 
-         api->declareDevice(deviceName,
-                            deviceType,
-                            deviceName,
-                            keyword);
+         api->declareKeyword(deviceName,
+                             keyword);
       }
 
       void CInstance::createCustomEnumCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                                      const std::string& deviceName,
-                                                     const std::string& deviceType,
                                                      const std::string& commaSeparatedValues) const
       {
          std::vector<std::string> enumValues;
@@ -320,10 +304,8 @@ namespace pluginSystem
                                                                   yApi::EKeywordAccessMode::kGetSet,
                                                                   enumValues);
 
-         api->declareDevice(deviceName,
-                            deviceType,
-                            deviceName,
-                            keyword);
+         api->declareKeyword(deviceName,
+                             keyword);
       }
    }
 } // namespace pluginSystem::internalPlugin

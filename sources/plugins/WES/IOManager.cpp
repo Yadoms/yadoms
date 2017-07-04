@@ -5,9 +5,10 @@
 #include <shared/Log.h>
 #include <algorithm>
 
-CIOManager::CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment> >& deviceList):
+CIOManager::CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment>>& deviceList):
    m_deviceManager(deviceList)
-{}
+{
+}
 
 void CIOManager::addEquipment(boost::shared_ptr<equipments::IEquipment> equipment)
 {
@@ -22,18 +23,18 @@ void CIOManager::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::str
       if (m_deviceManager[counter]->getDeviceName() == deviceRemoved)
       {
          m_deviceManager[counter]->remove(api);
-         m_deviceManager.erase(m_deviceManager.begin()+counter);
+         m_deviceManager.erase(m_deviceManager.begin() + counter);
          return;
       }
    }
 }
 
-int CIOManager::getMasterEquipment()
+int CIOManager::getMasterEquipment() const
 {
    return m_deviceManager.size();
 }
 
-void CIOManager::readAllDevices(boost::shared_ptr<yApi::IYPluginApi> api, 
+void CIOManager::readAllDevices(boost::shared_ptr<yApi::IYPluginApi> api,
                                 const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
                                 bool forceHistorization)
 {
@@ -46,10 +47,10 @@ void CIOManager::readAllDevices(boost::shared_ptr<yApi::IYPluginApi> api,
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                            boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
-   std::string deviceName = command->getDevice();
+   auto deviceName = command->getDevice();
 
    YADOMS_LOG(information) << "Command received : " << yApi::IDeviceCommand::toString(command) ;
-   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorDevice;
+   std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice;
 
    for (iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
    {
@@ -62,10 +63,10 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void CIOManager::OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                                             const std::string &deviceName,
+                                             const std::string& deviceName,
                                              const shared::CDataContainer& newConfiguration)
 {
-   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorDevice;
+   std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice;
    for (iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
    {
       if (deviceName == (*iteratorDevice)->getDeviceName())
@@ -79,7 +80,7 @@ shared::CDataContainer CIOManager::bindMasterDevice()
 {
    shared::CDataContainer ev;
    int counter = 0;
-   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorDevice;
+   std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice;
 
    for (iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
    {
@@ -97,7 +98,7 @@ shared::CDataContainer CIOManager::bindMasterDevice()
 std::vector<specificHistorizers::EWESdeviceStatus> CIOManager::getMasterdeviceStates()
 {
    std::vector<specificHistorizers::EWESdeviceStatus> devicesStatus;
-   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorDevice;
+   std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice;
 
    for (iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
    {
@@ -109,16 +110,19 @@ std::vector<specificHistorizers::EWESdeviceStatus> CIOManager::getMasterdeviceSt
 
 bool CIOManager::deviceAlreadyExist(const std::string& deviceName)
 {
-   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorDevice;
+   std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice;
 
    for (iteratorDevice = m_deviceManager.begin(); (iteratorDevice != m_deviceManager.end() && (*iteratorDevice)->getDeviceName() != deviceName); ++iteratorDevice)
-   {}
+   {
+   }
 
    if (iteratorDevice != m_deviceManager.end())
       return true;
-   else
-      return false;
+   
+   return false;
 }
 
 CIOManager::~CIOManager()
-{}
+{
+}
+

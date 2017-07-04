@@ -8,13 +8,12 @@ namespace communication
       //--------------------------------------------------------------
       /// \brief	Interface for CallbackRequest
       /// \template  TEventData        the type of data provided
-      /// \template  TCallbackResult   the type of object excpected in in callback answer
+      /// \template  TCallbackResult   the type of expected object in in callback answer
       //--------------------------------------------------------------
       template <class TEventData, class TCallbackResult>
       class ICallbackRequest : public ISynchronousCallback<TCallbackResult>
       {
       public:
-
          //--------------------------------------------------------------
          /// \brief	Destructor
          //--------------------------------------------------------------

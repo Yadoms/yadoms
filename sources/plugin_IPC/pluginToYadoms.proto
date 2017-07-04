@@ -87,7 +87,6 @@ message HistorizeData {
 
 message ManuallyDeviceCreationAnswer {
 	message Success {
-		string NewDeviceName = 1;
 	}
 	message Error {
 		string Message = 1;

@@ -38,6 +38,8 @@ namespace equipments
       void setNewConfiguration(const shared::CDataContainer& newConfiguration) override;
       // [END] IExtension implementation
 
+      static const std::string& deviceType();
+
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
@@ -49,11 +51,6 @@ namespace equipments
       ///\brief                     The device name
       //-----------------------------------------------------
       std::string m_deviceName;
-
-      //-----------------------------------------------------
-      ///\brief                     The device type
-      //-----------------------------------------------------
-      std::string m_deviceType;
 
       //-----------------------------------------------------
       ///\brief                     The slot position

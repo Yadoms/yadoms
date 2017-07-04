@@ -1,6 +1,8 @@
 #pragma once
 #include <plugin_cpp_api/IPlugin.h>
 #include "FakePluginConfiguration.h"
+#include "FakeDynamicallyConfigurableDevice.h"
+#include "FakeAnotherConfigurableDevice.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -34,5 +36,11 @@ private:
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
    CFakePluginConfiguration m_configuration;
+
+   //--------------------------------------------------------------
+   /// \brief	The managed devices
+   //--------------------------------------------------------------
+   std::vector<boost::shared_ptr<CFakeDynamicallyConfigurableDevice>> m_manuallyCreatedDynaConfDevices;
+   std::vector<boost::shared_ptr<CFakeAnotherConfigurableDevice>> m_manuallyCreatedStaticConfDevices;
 };
 

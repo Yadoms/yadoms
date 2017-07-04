@@ -77,13 +77,13 @@ private:
    /// \param [in] conf2            Second configuration to compare
    /// \return                      true is connection data are all the same in the both configurations
    //--------------------------------------------------------------
-   bool connectionsAreEqual(const CConfiguration& conf1, const CConfiguration& conf2);
+   static bool connectionsAreEqual(const CConfiguration& conf1, const CConfiguration& conf2);
 
    void processZiBlueConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
    void errorProcess(boost::shared_ptr<yApi::IYPluginApi> api);
    void processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
-   void processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::incoming::CBinaryFrame> data);
-   void processZiBlueAsciiFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::incoming::CAsciiFrame> data);
+   void processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::incoming::CBinaryFrame> data) const;
+   void processZiBlueAsciiFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::incoming::CAsciiFrame> data) const;
    void initZiBlue(boost::shared_ptr<yApi::IYPluginApi> api);
    void updateDongleConfiguration(boost::shared_ptr<yApi::IYPluginApi> api);
    void processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> & api, boost::shared_ptr<yApi::IExtraQuery> & extraQuery);

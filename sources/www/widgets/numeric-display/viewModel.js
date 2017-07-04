@@ -6,7 +6,7 @@ widgetViewModelCtor =
  */
 function numericDisplayViewModel() {
     //observable data
-    this.data = ko.observable(0).extend({ numeric: 1 });
+    this.data = ko.observable("-");
     this.unit = ko.observable("");
     this.shouldBeVisible = ko.observable(false);
     this.lastReceiveDate = ko.observable("");
@@ -57,12 +57,25 @@ function numericDisplayViewModel() {
         var self = this;
 
         if (keywordId === self.widget.configuration.device.keywordId) {
+           
             //it is the right device
-            self.data(data.value);
+            if (data.value !=="")
+            {
+               var temp = parseFloat(data.value).toFixed(1);
+               self.data(temp.toString());
+            }
+            else 
+               self.data("-");
+            
             self.widgetApi.fitText();
             
             if (self.shouldBeVisible())
-               self.lastReceiveDate(moment(data.date).calendar().toString());
+            {
+               if (data.date!=="")
+                  self.lastReceiveDate(moment(data.date).calendar().toString());
+               else
+                  self.lastReceiveDate($.t("widgets/numeric-display:NoAcquisition"));
+            }
         }
     };
 };
