@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Camera1.h"
 #include <shared/exception/InvalidParameter.hpp>
+#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -96,6 +97,8 @@ namespace rfxcomMessages
                             m_deviceModel,
                             m_keywords,
                             m_deviceDetails);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+      m_deviceDetails.printToLog(YADOMS_LOG(information));
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CCamera1::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
