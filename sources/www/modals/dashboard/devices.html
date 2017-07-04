@@ -214,6 +214,10 @@
                $deviceRow.find("button.btn-configure").unbind('click');
                $deviceRow.find("button.btn-delete").addClass("hide");
                $deviceRow.find("button.btn-delete").unbind('click');
+            } else {
+               // Disable virtual devices editing
+               $deviceRow.find("button.btn-configure").prop('disabled', true);
+               $deviceRow.find("button.btn-configure").unbind('click');
             }
          }
 

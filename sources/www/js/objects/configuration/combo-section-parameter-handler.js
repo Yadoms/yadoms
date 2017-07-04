@@ -139,17 +139,17 @@ ComboSectionParameterHandler.prototype.afterI18n = function() {
       let aTxt = $(a).find("a span").first().text();
       let bTxt = $(b).find("a span").first().text();
       
-       if (aTxt > bTxt) return 1;
-       else if (aTxt < bTxt) return -1;
-       else return 0
+      if (aTxt > bTxt) return 1;
+      else if (aTxt < bTxt) return -1;
+      else return 0;
    });
    $ul.append($li);
    
-    $.each($("#" + this.dropdownUuid).find(".combo-item-description"), function (key, value) {
-       if($(value).text() === "") {
-          $(value).siblings(".combo-item-title").removeClass("combo-item-title").addClass("combo-item-title-without-description");
-       }
-    });   
+   $.each($("#" + this.dropdownUuid).find(".combo-item-description"), function (key, value) {
+      if($(value).text() === "") {
+         $(value).siblings(".combo-item-title").removeClass("combo-item-title").addClass("combo-item-title-without-description");
+      }
+   });   
 }
 
 ComboSectionParameterHandler.prototype.locateInDOM = function () {

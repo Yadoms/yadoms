@@ -135,7 +135,7 @@
                      content: {
                         valueList: {
                            type: 'string',
-                           defaultValue: 'on,off'
+                           defaultValue: 'value1,value2,value3'
                         }
                      }
                   }
@@ -160,8 +160,7 @@
     
    applyCurrentConfiguration= function (configurationSchema, currentDevice) {
    
-      configurationSchema.capacity.activeSection = currentDevice.configuration.capacity.activeSection;
-      debugger; // TODO griser ce qui ne peut être modifié ou générer un schéma de conf différent
+      configurationSchema.capacity.activeSection = currentDevice.configuration.capacity.activeSection;      
       for (var section in configurationSchema.capacity.content) {
          configurationSchema.capacity.content[section].radio = (section === currentDevice.configuration.capacity.activeSection) ? 'true' : 'false';
       }
