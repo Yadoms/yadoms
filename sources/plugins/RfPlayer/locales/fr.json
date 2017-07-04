@@ -226,23 +226,23 @@
 					"types": {
 						"x10": {
 							"title": "X10",
-                     "description": "Produits utilisant le procotole X10"
+							"description": "Produits utilisant le procotole X10"
 						},
 						"chacon": {
 							"title": "Chacon",
-                     "description": "Produits distribués par Chacon (Chacon, DIO,..)"
+							"description": "Produits distribués par Chacon (Chacon, DIO,..)"
 						},
 						"domia": {
 							"title": "DomiaLite",
-                     "description": "Produits distribués par Domia"
+							"description": "Produits distribués par Domia"
 						},
 						"kd101": {
 							"title": "KD101",
-                     "description": "Détecteur de fumée"
+							"description": "Détecteur de fumée"
 						},
 						"parrot": {
 							"title": "Parrot",
-                     "description": "Learn and play"
+							"description": "Learn and play"
 						}
 					},
 					"content": {
@@ -332,9 +332,35 @@
 						}
 					},
 					"content": {
-						"id": {
-							"name": "ID",
-							"description": "L'identifiant de l'équipement"
+						"identifier": {
+							"name": "Identifiant",
+							"description": "Choix de l'identifiant",
+							"content": {
+								"id32": {
+									"name": "Identifiant simple",
+									"description": "Utilisation d'un identifiant simple",
+									"content": {
+										"id": {
+											"name": "ID",
+											"description": "L'identifiant de l'équipement"
+										}
+									}
+								},
+								"idx10form": {
+									"name": "Identifiant sous forme de code X10",
+									"description": "Utilisation d'un identifiant sous la forme d'un code x10 (A15, D8,..)",
+									"content": {
+										"groupCode": {
+											"name": "Groupe",
+											"description": "L'identifiant du groupe de l'équipement (A-P)"
+										},
+										"unitCode": {
+											"name": "Unité",
+											"description": "L'identifiant de la fonction de l'équipement (1-15)"
+										}
+									}
+								}
+							}
 						},
 						"burst": {
 							"name": "Burst",

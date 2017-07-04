@@ -24,11 +24,10 @@ void CManuallyDeviceFactory::createDeviceManually(boost::shared_ptr<shared::plug
 
    if (request.getDeviceType() == "blyss")
    {
-      YADOMS_LOG(information) << "Blyss config : groupCode : " << request.getConfiguration().get<std::string>("groupCode");
-      YADOMS_LOG(information) << "Blyss config : unitCode : " << request.getConfiguration().get<int>("unitCode");
-
       auto keyword = boost::make_shared<specificHistorizers::outgoing::CBlyssKeyword>("command");
       shared::CDataContainer details;
+      details.set("groupCode", request.getConfiguration().get<std::string>("groupCode"));
+      details.set("unitCode", request.getConfiguration().get<int>("unitCode"));
       details.set("frequency", "433");
       details.set("protocol", "blyss");
       details.set("burst", request.getConfiguration().getWithDefault<std::string>("burst", ""));
@@ -153,7 +152,7 @@ void CManuallyDeviceFactory::createDeviceManually(boost::shared_ptr<shared::plug
    {
       auto keyword = boost::make_shared<specificHistorizers::outgoing::CRtsKeyword>("command");
       shared::CDataContainer details;
-      details.set("id", request.getConfiguration().get<int>("id"));
+      details.set("identififer", request.getConfiguration().get<int>("identififer"));
       details.set("frequency", 433);
       details.set("protocol", "rts");
       details.set("burst", request.getConfiguration().getWithDefault<std::string>("burst", ""));
