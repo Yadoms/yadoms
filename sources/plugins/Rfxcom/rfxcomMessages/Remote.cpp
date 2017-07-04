@@ -6,6 +6,7 @@
 #include "specificHistorizers/RemoteAtiWonderPlusHistorizer.h"
 #include "specificHistorizers/RemoteMedionHistorizer.h"
 #include "specificHistorizers/RemotePCHistorizer.h"
+#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -89,8 +90,10 @@ namespace rfxcomMessages
          details.set("type", pTypeRemote);
          details.set("subType", m_subType);
          details.set("id", m_id);
-         std::string model = m_subTypeManager->getModel();
+         auto model = m_subTypeManager->getModel();
          api->declareDevice(m_deviceName, model, model, m_keywords, details);
+         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
+         details.printToLog(YADOMS_LOG(information));
       }
    }
 

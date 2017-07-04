@@ -7,6 +7,7 @@
 #include "Security1PowerCodeSensor.h"
 #include "Security1PowerCodeMotion.h"
 #include "Security1Meiantech.h"
+#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -135,7 +136,11 @@ namespace rfxcomMessages
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
+      {
          api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
+         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
+         m_deviceDetails.printToLog(YADOMS_LOG(information));         
+      }
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CSecurity1::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const

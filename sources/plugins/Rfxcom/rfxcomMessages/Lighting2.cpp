@@ -2,6 +2,7 @@
 #include "Lighting2.h"
 #include "Lighting2Dimmable.h"
 #include "Lighting2OnOff.h"
+#include <shared/Log.h>
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -119,6 +120,8 @@ namespace rfxcomMessages
       {
          auto model = m_subTypeManager->getModel();
          api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
+         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
+         m_deviceDetails.printToLog(YADOMS_LOG(information));
       }
    }
 

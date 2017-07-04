@@ -2,6 +2,7 @@
 #include "Rfy.h"
 #include <shared/plugin/yPluginApi/historization/Curtain.h>
 #include <shared/exception/InvalidParameter.hpp>
+#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -86,7 +87,11 @@ namespace rfxcomMessages
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
+      {
          api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_state, m_deviceDetails);
+         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+         m_deviceDetails.printToLog(YADOMS_LOG(information));         
+      }
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CRfy::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const

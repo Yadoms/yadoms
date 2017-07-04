@@ -3,6 +3,7 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include "CartelectronicTIC.h"
 #include "CartelectronicEncoder.h"
+#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -59,8 +60,10 @@ namespace rfxcomMessages
          details.set("subType", m_subType);
          details.set("id", m_id);
 
-         std::string model = m_subTypeManager->getModel();
+         auto model = m_subTypeManager->getModel();
          api->declareDevice(m_id, model, model, m_keywords, details);
+         YADOMS_LOG(information) << "New device : " << m_id << " (" << model << ")";
+         details.printToLog(YADOMS_LOG(information));
       }
    }
 

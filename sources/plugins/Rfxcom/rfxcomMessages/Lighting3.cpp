@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Lighting3.h"
 #include <shared/exception/InvalidParameter.hpp>
+#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -95,7 +96,11 @@ namespace rfxcomMessages
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
+      {
          api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
+         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+         m_deviceDetails.printToLog(YADOMS_LOG(information));         
+      }
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CLighting3::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
