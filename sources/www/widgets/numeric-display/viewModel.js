@@ -60,7 +60,10 @@ function numericDisplayViewModel() {
            
             //it is the right device
             if (data.value !=="")
-               self.data(data.value.toString());
+            {
+               var temp = parseFloat(data.value).toFixed(1);
+               self.data(temp.toString());
+            }
             else 
                self.data("-");
             

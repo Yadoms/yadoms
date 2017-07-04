@@ -46,27 +46,43 @@ KeywordValueParameterHandler.prototype.onKeywordChange = function () {
    
    var selectedKeywordId = $("select#" + self.keywordPH.uuidKeywordList).val();
    
-   if(self.valuePH && self.valuePH.uuidContainer) {
-      $("#" + self.valuePH.uuidContainer).remove();
+   if(self.valuePH && self.valuePH.uuid) {
+      $("#" + self.valuePH.uuid).parents(".control-group").first().remove();
    }
     
    if(!isNullOrUndefinedOrEmpty(selectedKeywordId)) {
-      RestEngine.getJson("/rest/device/keyword/" + selectedKeywordId)
+      KeywordManager.get(selectedKeywordId)
       .done(function(keywordData) {
          var curVal;
          if(self.currentValue && self.currentValue.value) {
             curVal = self.currentValue.value.toString();
          }
-         self.valuePH = ConfigurationHelper.createKeywordValueParameterHandler(self.i18nContext, "value", "value", keywordData, curVal);
-         if(self.valuePH) {
-            $("#" + self.uuidContainer).append(self.valuePH.getDOMObject());
-            if ($.isFunction(self.valuePH.applyScript)) {
-               self.valuePH.applyScript();
-            }
-            d.resolve();
-         } else {
-           d.reject("Cannot create parameter handler for keyword id=" + selectedKeywordId);
-         }         
+         
+         DeviceManager.get(keywordData.deviceId)
+         .done(function(deviceData) {
+            DeviceManager.getAttachedPlugin(deviceData)
+            .done(function() {
+               PluginInstanceManager.downloadPackage(deviceData.attachedPlugin)
+               .done(function() {
+                  self.valuePH = ConfigurationHelper.createKeywordValueParameterHandler(self.i18nContext, undefined, "value", keywordData, curVal, deviceData.attachedPlugin);
+                  if(self.valuePH) {
+                     $("#" + self.uuidContainer).append(self.valuePH.getDOMObject());
+                     if ($.isFunction(self.valuePH.applyScript)) {
+                        self.valuePH.applyScript();
+                     }
+                     $("#" + self.uuidContainer).i18n();
+                     d.resolve();
+                  } else {
+                    d.reject("Cannot create parameter handler for keyword id=" + selectedKeywordId);
+                  }                  
+               })
+               .fail(d.reject);
+            })
+            .fail(d.reject);
+         })
+         .fail(d.reject);
+         
+      
       })
       .fail(d.reject);
    } else {
