@@ -42,7 +42,11 @@ function KeywordParameterHandler(i18NContext, i18nKey, paramName, content, curre
          //we look for a capacity name
          this.expectedCapacity = content.expectedCapacity;
          this.lookupMethod = "name";
+      } else if (!isNullOrUndefined(content.expectedKeywordAccess)) {
+         //we look for a capacity name
+         this.lookupMethod = "accessMode";
       } else {
+         
          //we look for all
          this.lookupMethod = "all";
       }
@@ -229,6 +233,7 @@ KeywordParameterHandler.prototype.applyScript = function () {
                               break;
 
                            default:
+                           case "accessMode": // accessMode is filter
                            case "all":
                               //we take everyone
                               newList.push(value);
@@ -341,6 +346,15 @@ KeywordParameterHandler.prototype.applyScript = function () {
                });
          }
          break;
+         
+      case "accessMode":
+         RestEngine.getJson("/rest/device/matchkeywordaccess/" + self.expectedKeywordAccess)
+            .done(populateDeviceList(self))
+            .fail(function(error) {
+               notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchKeywordAccess", {expectedKeywordAccess : self.expectedKeywordAccess}), error);
+            });         
+         break;
+         
       default:
       case "all":
       

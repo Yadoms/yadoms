@@ -46,6 +46,7 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*"), CDevice::getKeyword);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchcapacity")("*")("*"), CDevice::getDevicesWithCapacity);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchcapacitytype")("*")("*"), CDevice::getDeviceWithCapacityType);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchkeywordaccess")("*"), CDevice::getDeviceWithKeywordAccessMode);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*")("*"), CDevice::getDeviceKeywordsForCapacity);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("configuration"), CDevice::updateDeviceConfiguration, CDevice::transactionalMethod);
@@ -219,6 +220,34 @@ namespace web
                return CResult::GenerateError("unknown exception in retreiving device with get capacity");
             }
          }
+
+         shared::CDataContainer CDevice::getDeviceWithKeywordAccessMode(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         {
+            try
+            {
+               if (parameters.size() > 2)
+               {
+                  shared::plugin::yPluginApi::EKeywordAccessMode cam(parameters[2]);
+
+                  //run query
+                  auto result = m_dataProvider->getDeviceRequester()->getDeviceWithKeywordAccessMode(cam);
+                  shared::CDataContainer collection;
+                  collection.set(getRestKeyword(), result);
+                  return CResult::GenerateSuccess(collection);
+               }
+               return CResult::GenerateError("invalid parameter. Can not retreive accessmode in url");
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in retreiving device with get capacity");
+            }
+         }
+
+         
 
          shared::CDataContainer CDevice::getDeviceKeywordsForCapacity(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {

@@ -70,6 +70,14 @@ namespace database
       virtual std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode, const shared::plugin::yPluginApi::EKeywordDataType& capacityType) const = 0;
 
       //--------------------------------------------------------------
+      /// \brief                          Get the device list which contains at least one keyword with matching access mode
+      /// \param [in] capacityAccessMode  The capacity access mode
+      /// \return                         the device list
+      /// \throw  shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithKeywordAccessMode(const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const = 0;
+
+      //--------------------------------------------------------------
       /// \brief                          Create a device identified by (pluginId and name).
       /// \param [in] pluginId            The pluginId
       /// \param [in] name                The device name (plugin internal name)

@@ -164,6 +164,7 @@
       "errorDuringGettingDeviceList": "Error lors de la récupération de la liste des équipements",
       "errorDuringGettingDeviceListMatchCapacity": "Erreur lors de la récupération de la liste des équipements ayant la capacité __expectedCapacityAccess__ __expectedCapacity__",
       "errorDuringGettingDeviceListMatchCapacityType": "Erreur lors de la récupération de la liste des équipements ayant la capacité __expectedCapacityAccess__ __expectedCapacityType__",
+      "errorDuringGettingDeviceListMatchKeywordAccess": "Erreur lors de la récupération de la liste des équipements ayant une données en accès __expectedKeywordAccess__",
       "errorDuringGettingKeywordList": "Erreur lors de la récupération de la liste des données",
       "errorDuringGettingKeywordListMatchCapacity": "Erreur lors de la récupération de la liste des données équipement ayant la capacité __expectedCapacityAccess__ __expectedCapacity__",
       "errorDuringGettingSerialPortList": "Erreur lors de la récupération de la liste des ports série"

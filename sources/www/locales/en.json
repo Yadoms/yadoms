@@ -164,6 +164,7 @@
       "errorDuringGettingDeviceList": "Error during getting device list",
       "errorDuringGettingDeviceListMatchCapacity": "Error during getting device list that match capacity __expectedCapacityAccess__ __expectedCapacity__",
       "errorDuringGettingDeviceListMatchCapacityType": "Error during getting device list that match capacity type __expectedCapacityAccess__ __expectedCapacityType__",
+      "errorDuringGettingDeviceListMatchKeywordAccess": "Error during getting device list that match keyword with access mode __expectedKeywordAccess__",
       "errorDuringGettingKeywordList": "Error during getting keyword list",
       "errorDuringGettingKeywordListMatchCapacity": "Error during getting keyword list that match capacity __expectedCapacityAccess__ __expectedCapacity__",
       "errorDuringGettingSerialPortList": "Error during getting serial port list"
