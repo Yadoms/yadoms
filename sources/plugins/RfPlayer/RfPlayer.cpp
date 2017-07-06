@@ -247,6 +247,10 @@ void CRfPlayer::createConnection(shared::event::CEventHandler& eventHandler)
 
 void CRfPlayer::destroyConnection()
 {
+   // Break circular reference to be able to destroy m_port
+   if (m_port)
+      m_port->setReceiveBufferHandler(boost::shared_ptr<shared::communication::IReceiveBufferHandler>());
+   m_messageHandler.reset();
    m_port.reset();
 }
 
@@ -278,7 +282,7 @@ void CRfPlayer::processZiBlueConnectionEvent(boost::shared_ptr<yApi::IYPluginApi
 
 void CRfPlayer::errorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   m_port.reset();
+   destroyConnection();
    api->getEventHandler().createTimer(kProtocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
 }
 
