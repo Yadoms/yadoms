@@ -10,12 +10,12 @@ namespace shared
    namespace communication
    {
       CAsyncSerialPort::CAsyncSerialPort(const std::string& port,
-                                         boost::asio::serial_port_base::baud_rate baudrate,
-                                         boost::asio::serial_port_base::parity parity,
-                                         boost::asio::serial_port_base::character_size characterSize,
-                                         boost::asio::serial_port_base::stop_bits stop_bits,
-                                         boost::asio::serial_port_base::flow_control flowControl,
-                                         boost::posix_time::time_duration connectRetryDelay,
+                                         const boost::asio::serial_port_base::baud_rate& baudrate,
+                                         const boost::asio::serial_port_base::parity& parity,
+                                         const boost::asio::serial_port_base::character_size& characterSize,
+                                         const boost::asio::serial_port_base::stop_bits& stop_bits,
+                                         const boost::asio::serial_port_base::flow_control& flowControl,
+                                         const boost::posix_time::time_duration& connectRetryDelay,
                                          bool flushAtConnect)
          : m_boostSerialPort(m_ioService),
            m_port(port),
@@ -29,13 +29,21 @@ namespace shared
            m_connectStateEventId(event::kNoEvent),
            m_connectRetryDelay(connectRetryDelay),
            m_connectRetryTimer(m_ioService),
-           m_flushAtConnect(flushAtConnect)
+           m_flushAtConnect(flushAtConnect),
+           m_writeTimeout(boost::date_time::pos_infin)
       {
+         YADOMS_LOG(debug) << "CAsyncSerialPort::CAsyncSerialPort()";//TODO virer
       }
 
       CAsyncSerialPort::~CAsyncSerialPort()
       {
+         YADOMS_LOG(debug) << "CAsyncSerialPort::~CAsyncSerialPort()";//TODO virer
          CAsyncSerialPort::stop();
+      }
+
+      void CAsyncSerialPort::setWriteTimeout(const boost::posix_time::time_duration& writeTimeout)
+      {
+         m_writeTimeout = writeTimeout;
       }
 
       void CAsyncSerialPort::setReceiveBufferMaxSize(std::size_t size)
@@ -50,7 +58,7 @@ namespace shared
 
          // Try to connect
          tryConnect();
-         m_asyncThread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &m_ioService)));
+         m_asyncThread = boost::make_shared<boost::thread>(boost::bind(&boost::asio::io_service::run, &m_ioService));
       }
 
       void CAsyncSerialPort::stop()
@@ -60,6 +68,7 @@ namespace shared
 
          disconnect();
 
+         YADOMS_LOG(debug) << "m_ioService.stop();";//TODO virer
          m_ioService.stop();
          m_asyncThread->join();
          m_asyncThread.reset();
@@ -67,9 +76,12 @@ namespace shared
 
       bool CAsyncSerialPort::connect()
       {
+         YADOMS_LOG(debug) << "CAsyncSerialPort::connect();";//TODO virer
          // Open the port
          try
          {
+
+            YADOMS_LOG(debug) << "m_boostSerialPort.open();";
             m_boostSerialPort.open(m_port);
          }
          catch (boost::system::system_error& e)
@@ -90,18 +102,21 @@ namespace shared
 
       void CAsyncSerialPort::disconnect()
       {
+         YADOMS_LOG(debug) << "CAsyncSerialPort::disconnect(); isConnected = " << isConnected();//TODO virer
          if (!isConnected())
             return;
 
          // Close the port
          try
          {
+            YADOMS_LOG(debug) << "m_boostSerialPort.cancel();";//TODO virer
+            m_boostSerialPort.cancel();
+            YADOMS_LOG(debug) << "m_boostSerialPort.close();";
             m_boostSerialPort.close();
          }
          catch (boost::system::system_error& e)
          {
             YADOMS_LOG(error) << "Failed to close serial port " << e.what();
-            return;
          }
       }
 
@@ -124,6 +139,8 @@ namespace shared
 
       void CAsyncSerialPort::flush()
       {
+         YADOMS_LOG(debug) << "CAsyncSerialPort::flush();";//TODO virer
+
          // Hardware flush
          CPeripherals::flushSerialPort(m_boostSerialPort);
 
@@ -142,6 +159,8 @@ namespace shared
 
       void CAsyncSerialPort::tryConnect()
       {
+         YADOMS_LOG(debug) << "CAsyncSerialPort::tryConnect();";//TODO virer
+
          if (isConnected())
          {
             YADOMS_LOG(warning) << "Already connected";
@@ -150,7 +169,7 @@ namespace shared
          {
             if (!connect())
             {
-               // Fail to reconnect, retry after a certain delay
+               YADOMS_LOG(debug) << "Fail to reconnect, retry after a certain delay";
                m_connectRetryTimer.expires_from_now(m_connectRetryDelay);
                m_connectRetryTimer.async_wait(boost::bind(&CAsyncSerialPort::reconnectTimerHandler, this, boost::asio::placeholders::error));
                return;
@@ -170,13 +189,20 @@ namespace shared
 
       void CAsyncSerialPort::startRead()
       {
+         YADOMS_LOG(debug) << "CAsyncSerialPort::startRead();";//TODO virer
          // Start an asynchronous read and call readCompleted when it completes or fails 
-         m_boostSerialPort.async_read_some(boost::asio::buffer(m_asyncReadBuffer.begin(), m_asyncReadBuffer.size()),
-                                           boost::bind(&CAsyncSerialPort::readCompleted, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+         m_boostSerialPort.async_read_some(boost::asio::buffer(m_asyncReadBuffer.begin(),
+                                                               m_asyncReadBuffer.size()),
+                                           boost::bind(&CAsyncSerialPort::readCompleted,
+                                                       this,
+                                                       boost::asio::placeholders::error,
+                                                       boost::asio::placeholders::bytes_transferred));
       }
 
-      void CAsyncSerialPort::readCompleted(const boost::system::error_code& error, std::size_t bytesTransferred)
+      void CAsyncSerialPort::readCompleted(const boost::system::error_code& error,
+                                           std::size_t bytesTransferred)
       {
+         YADOMS_LOG(debug) << "CAsyncSerialPort::readCompleted(error=" << error << ", bytesTransferred=" << bytesTransferred << ");";//TODO virer
          if (error)
          {
             // boost::asio::error::operation_aborted is fired when stop is required
@@ -207,29 +233,83 @@ namespace shared
          sendBuffer(toSend);
       }
 
-      void CAsyncSerialPort::sendText(const std::string & content)
+      void CAsyncSerialPort::sendText(const std::string& content)
       {
          auto toSend = boost::asio::buffer(content);
          sendBuffer(toSend);
       }
 
-      void CAsyncSerialPort::sendBuffer(boost::asio::const_buffers_1 & buffer)
+      void CAsyncSerialPort::sendBuffer(boost::asio::const_buffers_1& buffer)
       {
+         YADOMS_LOG(debug) << "CAsyncSerialPort::sendBuffer();";//TODO virer
          try
          {
-            m_boostSerialPort.write_some(buffer);
+            if (m_flowControl.value() == boost::asio::serial_port_base::flow_control::none
+               || m_writeTimeout == boost::date_time::pos_infin)
+            {
+               YADOMS_LOG(debug) << "m_boostSerialPort.write_some();";//TODO virer
+               m_boostSerialPort.write_some(buffer);
+            }
+            else
+            {
+               // Flow control is used, so write can block.
+               // In this case, use async write and apply timeout
+               event::CEventHandler evtHandler;
+               enum
+                  {
+                     kSendFinished = event::kUserFirstId
+                  };
+               YADOMS_LOG(debug) << "m_boostSerialPort.async_write_some();";//TODO virer
+               m_boostSerialPort.async_write_some(buffer,
+                                                  [&evtHandler](const boost::system::error_code& ec,
+                                                     std::size_t bytes_transferred)
+                                                  {
+                                                     YADOMS_LOG(debug) << "evtHandler.postEvent(kSendFinished, " << ec << ");";//TODO virer
+                                                     evtHandler.postEvent(kSendFinished, ec);
+                                                  });
+
+               switch (evtHandler.waitForEvents(m_writeTimeout))
+               {
+               case event::kTimeout:
+                  {
+                     YADOMS_LOG(debug) << "m_boostSerialPort.async_write_some() ==> Timeout";//TODO virer
+                     auto rc = boost::system::error_code(boost::system::errc::timed_out,
+                                                         boost::asio::error::get_misc_category());
+                     // Stop async operation
+                     m_boostSerialPort.cancel(rc); //TODO attention, ça arrête aussi l'opération de lecture (qui n'est pas redémarrée)
+                     auto event = evtHandler.waitForEvents(m_writeTimeout);
+                     if (event != kSendFinished)
+                        throw std::runtime_error("Fail to stop async send on serial port : " + std::to_string(event));
+
+                     // Fail to send data on serial port, timeout. Do as it was sent (should be handled by protocol)
+                     YADOMS_LOG(warning) << "Fail to send data on serial port, timeout";
+                     return;
+                     throw boost::system::system_error(boost::system::error_code(boost::system::errc::timed_out,
+                                                                                 boost::asio::error::get_misc_category()),
+                                                       "Fail to send data on serial port, timeout");//TODO virer
+                  }
+               case kSendFinished:
+                  YADOMS_LOG(debug) << "m_boostSerialPort.async_write_some() ==> OK";//TODO virer
+                  return;
+               default:
+                  throw std::runtime_error("Unexpected event " + std::to_string(evtHandler.getEventId()));
+               }
+            }
          }
          catch (boost::system::system_error& e)
          {
             // boost::asio::error::eof is the normal stop
             if (e.code() != boost::asio::error::eof)
             {
-               YADOMS_LOG(error) << "Serial port write text error : " << e.what();
+               YADOMS_LOG(error) << "Serial port send error : " << e.what();
                disconnect();
+               notifyEventHandler(false);
+               throw CPortException(CPortException::kConnectionError, e.what());
             }
 
+            YADOMS_LOG(debug) << "e.code() == boost::asio::error::eof ==> normal stop";//TODO virer
             notifyEventHandler(false);
-            throw CPortException((e.code() == boost::asio::error::eof) ? CPortException::kConnectionClosed : CPortException::kConnectionError, e.what());
+            throw CPortException(CPortException::kConnectionClosed, e.what());
          }
       }
 
