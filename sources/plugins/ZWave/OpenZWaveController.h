@@ -56,6 +56,11 @@ private:
    boost::shared_ptr<COpenZWaveNode> getNode(const uint32 homeId, const uint8 nodeId);
 
    //-----------------------------------------------------------------------------
+   /// \brief	Return the Node information
+   //-----------------------------------------------------------------------------   
+   shared::CDataContainer getNodeInfo(const uint32 homeId, const uint8 nodeId);
+
+   //-----------------------------------------------------------------------------
    /// \brief	Ask configuration parameters to each found node
    //-----------------------------------------------------------------------------   
    void RequestConfigurationParameters();
