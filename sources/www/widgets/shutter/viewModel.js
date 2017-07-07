@@ -37,10 +37,13 @@ widgetViewModelCtor =
                   displayValue = !displayValue;
               }
               
-              if (displayValue)
-                  return "widgets/shutter/icons/" + self.kind() + "-close.png";
-              else
-                  return "widgets/shutter/icons/" + self.kind() + "-open.png";
+              if (self.kind() !== "verticalInverter")
+              {
+                 if (displayValue)
+                     return "widgets/shutter/icons/" + self.kind() + "-close.png";
+                 else
+                     return "widgets/shutter/icons/" + self.kind() + "-open.png";
+              }
           });
 
           /**
