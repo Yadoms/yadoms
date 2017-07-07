@@ -157,6 +157,29 @@ namespace database
          }
 
 
+         std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDeviceWithKeywordAccessMode(const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const
+         {
+            auto subQuery = m_databaseRequester->newQuery();
+            subQuery.Select(CKeywordTable::getDeviceIdColumnName()).
+               From(CKeywordTable::getTableName());
+
+            if (capacityAccessMode() == shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
+            {
+               //we add a constraint on accessmode
+               subQuery.Where(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, capacityAccessMode);
+            }
+
+            auto qSelect = m_databaseRequester->newQuery();
+            qSelect.Select().
+               From(CDeviceTable::getTableName()).
+               Where(CDeviceTable::getIdColumnName(), CQUERY_OP_IN, subQuery).
+               And(CDeviceTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, 0);
+
+            adapters::CDeviceAdapter adapter;
+            m_databaseRequester->queryEntities(&adapter, qSelect);
+            return adapter.getResults();
+         }
+
          boost::shared_ptr<entities::CDevice> CDevice::createDevice(int pluginId, const std::string& name, const std::string& friendlyName, const std::string& type, const std::string& model, const shared::CDataContainer& details)
          {
             if (deviceExists(pluginId, name))
