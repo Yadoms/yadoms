@@ -502,7 +502,8 @@
               "units": "Unité",
               "update": "Dernier état",
               "actions": "Actions"
-            }
+            },
+            "nokeywords" : "Aucune donnée associée"
           },
           "configure": "Configuration de l'équipement",
           "delete": "Suppression de l'équipement",

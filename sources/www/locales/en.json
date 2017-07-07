@@ -502,7 +502,8 @@
               "units": "Units",
               "update": "Last state",
               "actions": "Actions"
-            }
+            },
+            "nokeywords" : "No associated data"
           },
           "configure": "Configure the device",
           "delete": "Delete the device",
