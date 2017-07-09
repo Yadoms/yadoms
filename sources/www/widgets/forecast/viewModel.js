@@ -21,7 +21,6 @@ function forecastViewModel() {
    this.TempPeriod = new Array();
 
    this.dateformat = "";
-   this.lastUpdate = "";
 
    //Number of day to be displayed
    this.DayNumber = ko.observable(10);
@@ -184,12 +183,6 @@ function forecastViewModel() {
 
             //Resize the widget and display the elements automatically
             self.resized();
-
-            //Send update information to the HMI, on if the date is new
-            if (self.lastUpdate !== data.date._i) {
-               notifyInformation($.t("widgets/forecast:forecastUpdated", { objectName: self.widget.configuration.device.friendlyName }));
-               self.lastUpdate = data.date._i;
-            }
          }
       }
    };
