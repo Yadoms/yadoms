@@ -17,6 +17,9 @@ const std::string CDecoder::m_tag_BBRHCJR = "BBRHCJR";// total power usage low t
 const std::string CDecoder::m_tag_BBRHPJR = "BBRHPJR";// total power usage normal tariff in HC option tempo red
 const std::string CDecoder::m_tag_PTEC = "PTEC";//current tariff period
 const std::string CDecoder::m_tag_IINST = "IINST";//instant current power usage
+const std::string CDecoder::m_tag_IINST1 = "IINST1";//instant current power usage phase 1
+const std::string CDecoder::m_tag_IINST2 = "IINST2";//instant current power usage phase 2
+const std::string CDecoder::m_tag_IINST3 = "IINST3";//instant current power usage phase 3
 const std::string CDecoder::m_tag_PAPP = "PAPP";//apparent power
 const std::string CDecoder::m_tag_DEMAIN = "DEMAIN"; // Color of the next day
 
@@ -43,6 +46,9 @@ CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
      m_optarif(OP_NOT_DEFINED)
 {
    m_isdeveloperMode = api->getYadomsInformation()->developperMode();
+
+   for (unsigned char counter = 0; counter < 3; ++counter)
+      m_instantCurrentPhase[counter] = boost::make_shared<yApi::historization::CCurrent>("InstantCurrentPhase" + boost::lexical_cast<std::string>(counter));
 }
 
 CDecoder::~CDecoder()
@@ -236,6 +242,21 @@ void CDecoder::processMessage(const std::string& key,
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "IINST" << "=" << value ;
 			m_instantCurrent->set(std::stod(value));
 		}
+      else if (key == m_tag_IINST1)
+      {
+         if (m_isdeveloperMode) YADOMS_LOG(information) << "IINST1" << "=" << value;
+         m_instantCurrentPhase[0]->set(std::stod(value));
+      }
+      else if (key == m_tag_IINST2)
+      {
+         if (m_isdeveloperMode) YADOMS_LOG(information) << "IINST2" << "=" << value;
+         m_instantCurrentPhase[1]->set(std::stod(value));
+      }
+      else if (key == m_tag_IINST3)
+      {
+         if (m_isdeveloperMode) YADOMS_LOG(information) << "IINST3" << "=" << value;
+         m_instantCurrentPhase[2]->set(std::stod(value));
+      }
 		else if (key == m_tag_PAPP)
 		{
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "PAPP" << "=" << value ;

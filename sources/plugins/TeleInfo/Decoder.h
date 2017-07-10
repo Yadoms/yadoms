@@ -65,6 +65,7 @@ private:
    boost::shared_ptr<yApi::historization::CEnergy> m_tempoWhiteDaysLowCostPeriod;
    boost::shared_ptr<yApi::historization::CEnergy> m_tempoWhiteDaysNormalCostPeriod;
    boost::shared_ptr<yApi::historization::CCurrent> m_instantCurrent;
+   boost::shared_ptr<yApi::historization::CCurrent> m_instantCurrentPhase[3];
    boost::shared_ptr<yApi::historization::CApparentPower> m_apparentPower;
 
 
@@ -104,6 +105,9 @@ private:
    static const std::string m_tag_BBRHPJR;
    static const std::string m_tag_PTEC;
    static const std::string m_tag_IINST;
+   static const std::string m_tag_IINST1;
+   static const std::string m_tag_IINST2;
+   static const std::string m_tag_IINST3;
    static const std::string m_tag_PAPP;
    static const std::string m_tag_DEMAIN;
 };
