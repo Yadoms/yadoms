@@ -32,11 +32,21 @@ public:
 private:
    //--------------------------------------------------------------
    /// \brief	                     Create the Device with the counter Id
+   ///\param[in] monoPhase          the counter is mono phase
+   //-----------------------------------------------------
+   void createDeviceAndKeywords(const bool monoPhase);
+
    //--------------------------------------------------------------
-   void createDeviceAndKeywords(bool apparentPowerPresent);
-
-
+   /// \brief	                     Create the keyword list depending of the tariff
+   ///\param[in] tariff             contract of the tele-info
+   //-----------------------------------------------------
    void createKeywordList(const std::string& tariff);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Process each tele-Info message
+   ///\param[in] key                identifier of the message
+   ///\param[in] value              value of the identifier
+   //-----------------------------------------------------
    void processMessage(const std::string& key,
                        const std::string& value);
 
