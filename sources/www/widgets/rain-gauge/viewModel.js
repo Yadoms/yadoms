@@ -67,9 +67,11 @@ deffered.done(function (data) {
        
        // the actual time
        var date = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
+       console.log ("self.serverTime", self.serverTime);
+       console.log ("date : ", date);
        
        // Retrieve the last value
-       var deffered = RestEngine.getJson("rest/acquisition/keyword/" + /*device.content.source.*/keywordId + "/" + date);
+       var deffered = RestEngine.getJson("rest/acquisition/keyword/" + keywordId + "/" + date);
        
        deffered.done(function (data) {
           
@@ -77,19 +79,19 @@ deffered.done(function (data) {
           
           // date - 1h
           date1h = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'hours').startOf('minute'));
-          var deffered1h = RestEngine.getJson("rest/acquisition/keyword/" + /*device.content.source.*/keywordId + "/" + date1h);
+          var deffered1h = RestEngine.getJson("rest/acquisition/keyword/" + keywordId + "/" + date1h);
           deffered1h.done(function (data) {
              
              console.log ("2 : ", data);
              
              // date - 24h
              date24h = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'days').startOf('minute'));
-             var deffered24h = RestEngine.getJson("rest/acquisition/keyword/" + /*device.content.source.*/keywordId + "/" + date24h);
+             var deffered24h = RestEngine.getJson("rest/acquisition/keyword/" + keywordId + "/" + date24h);
              deffered24h.done(function (data) {
                 console.log ("3 : ", data);
                 
-                self.rate_1h("0"/*temp.toString()*/);
-                self.rate_24h("0"/*temp.toString()*/);
+                self.rate_1h("0");
+                self.rate_24h("0");
              });
           });
        });
