@@ -157,11 +157,11 @@ Yadoms.askPackages = function (elements, instanceManager, thumbnail, title, call
 						//we show more details about the element
 						var $detailsDiv = $("div#add-pickup-details");
 						$detailsDiv.attr("element-type", type);
-
+                  
 						//we fill the details div
 						$detailsDiv.find("img").attr("src", "/" + elements + "/" + value.type + "/" + thumbnail);
 						$detailsDiv.find("span.element-name").text($.t( elements + "/" + type + ":name", { defaultValue: value.name }));
-						$detailsDiv.find("td.element-description").text($.t( elements + "/" + type + ":description", { defaultValue: value.description }));
+						$detailsDiv.find("td.element-description").html(ConfigurationHelper.makdownIt($.t( elements + "/" + type + ":description", { defaultValue: value.description })));
 						$detailsDiv.find("td.element-version").text(value.version);
 						$detailsDiv.find("td.element-author").text(value.author);
 

@@ -429,7 +429,7 @@
             },
             "location": {
               "name": "Location",
-              "description": "Enter below coordonates of your city (<a href=\"http://www.latlong.net/\" target=\"_blank\">latlong website</a>)"
+              "description": "Enter below coordonates of your city ([Site web latlong](http://www.latlong.net/))"
             },
             "latitude": {
                "name": "Latitude",
