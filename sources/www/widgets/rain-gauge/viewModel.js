@@ -18,81 +18,73 @@ function rainGaugeDisplayViewModel() {
     this.shouldBeVisible = ko.observable(false);
     this.lastReceiveDate = ko.observable("");    
     this.serverTime = null;
+    this.deferredTime = null;
 
     /**
      * Initialization method
      * @param widget widget class object
      */
     this.initialize = function () {
+       
+       var self = this;
+       
         //we configure the toolbar
         this.widgetApi.toolbar({
             activated: true,
             displayTitle: true,
             batteryItem: true
         });
-        
-      this.widgetApi.askServerLocalTime(function (serverLocalTime) {
-         self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
-      });
       
       // Display traductions
-      this.title1($.t("widgets/rain-gauge:title1"));
-      this.title2($.t("widgets/rain-gauge:title2"));      
+      self.title1($.t("widgets/rain-gauge:title1"));
+      self.title2($.t("widgets/rain-gauge:title2"));      
+      
+      return this.widgetApi.askServerLocalTime(function (serverLocalTime) {
+         self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
+      });
     };
-/*
-        dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
-    dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'hours').startOf('minute'));
-    //we request all data
-    timeBetweenTwoConsecutiveValues = undefined;
-    isSummaryData = false;
-    break;
-default:
-case "DAY":
-    dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf('hour').subtract(1, 'seconds'));
-    dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'days').startOf('hour'));
-    //we request hour summary data
-    prefixUri = "/hour";
-    timeBetweenTwoConsecutiveValues = 1000 * 3600;
-    isSummaryData = true;
   
-
-var deffered = RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
-var deffered = RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + date);
-arrayOfDeffered.push(deffered);
-deffered.done(function (data) {
-*/
-  
-    this.getValues = function (keywordId) {
+    this.getValues = function (dataNow, keywordId) {
        self = this;
-       
-       // the actual time
-       var date = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
-       console.log ("self.serverTime", self.serverTime);
-       console.log ("date : ", date);
-       
-       // Retrieve the last value
-       var deffered = RestEngine.getJson("rest/acquisition/keyword/" + keywordId + "/" + date);
-       
-       deffered.done(function (data) {
           
-          console.log ("1 : ", data);
+       console.log ("1 : ", dataNow);
+       
+       // date - 1h
+       date1h = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'hours').startOf('minute'));
+       var deffered1h = RestEngine.getJson("rest/acquisition/keyword/" + keywordId + "/" + date1h);
+       deffered1h.done(function (data) {
           
-          // date - 1h
-          date1h = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'hours').startOf('minute'));
-          var deffered1h = RestEngine.getJson("rest/acquisition/keyword/" + keywordId + "/" + date1h);
-          deffered1h.done(function (data) {
-             
-             console.log ("2 : ", data);
-             
-             // date - 24h
-             date24h = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'days').startOf('minute'));
-             var deffered24h = RestEngine.getJson("rest/acquisition/keyword/" + keywordId + "/" + date24h);
-             deffered24h.done(function (data) {
-                console.log ("3 : ", data);
-                
+          if (dataNow!=0)
+          {
+             if (data.data !=="")
+             {
+                self.rate_1h( (dataNow - parseFloat(data.data[0].key)).toFixed(1).toString() );
+             }
+             else
                 self.rate_1h("0");
-                self.rate_24h("0");
-             });
+          }
+       else
+          self.rate_1h("-");
+          
+          console.log ("2 : ", data);
+          
+          // date - 24h
+          date24h = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'days').startOf('minute'));
+          var deffered24h = RestEngine.getJson("rest/acquisition/keyword/" + keywordId + "/" + date24h);
+          deffered24h.done(function (data) {
+             console.log ("3 : ", data);
+             
+             if (dataNow!=0)
+             {
+                if (data.data !=="")
+                {
+                   self.rate_24h( (dataNow - parseFloat(data.data[0].key)).toFixed(1).toString() );
+                }
+                else
+                   self.rate_24h("0");
+             }
+             else
+                self.rate_24h("-");             
           });
        });
     };
@@ -110,6 +102,32 @@ deffered.done(function (data) {
         
         //we fill the deviceId of the battery indicator
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
+        
+       // the actual time
+       var date = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
+       
+       self.shouldBeVisible(self.widget.configuration.dateDisplay);       
+       
+       // Retrieve the last value
+       var deffered = RestEngine.getJson("rest/acquisition/keyword/" + self.widget.configuration.device.keywordId + "/" + date);       
+       
+       deffered.done(function (data) {
+          
+          console.log ("data", data);
+          
+          // initial refresh value
+          if (data.data !=="")
+          {
+             self.getValues(parseFloat(data.data), self.widget.configuration.device.keywordId);
+          }
+          else
+          {
+             self.rate_1h("-");
+             self.rate_24h("-");
+          }
+          
+          self.widgetApi.fitText();
+       });
     }
 
     /**
@@ -125,8 +143,7 @@ deffered.done(function (data) {
             //it is the right device
             if (data.value !=="")
             {  
-               var temp = parseFloat(data.value).toFixed(1);
-               self.getValues(keywordId);
+               self.getValues(parseFloat(data.value), keywordId);
             }
             else
             {

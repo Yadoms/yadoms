@@ -24,6 +24,10 @@
 			"type": "keyword",
 			"expectedCapacity": ["rain"],
 			"expectedKeywordAccess": "get"
-		}
+		},
+      "dateDisplay": {
+         "type": "bool",
+         "defaultValue" : "false"
+      }
    }
 }
