@@ -150,10 +150,6 @@ void CRfPlayer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             else
                api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-
-            if(!needToReconnect) //if reconnect needed, configuration is applyed after dogle detection
-               updateDongleConfiguration(api);
-
             break;
          }
 
