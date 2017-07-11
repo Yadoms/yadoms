@@ -1,0 +1,31 @@
+.widget-rain-gauge .main-div {
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+}
+
+.widget-rain-gauge .title-div {
+    width: 100%;
+    text-align: center;
+    flex: 0 0 25%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.widget-rain-gauge .date-div {
+    height: 15px;
+    text-align: center;
+    font-size: 9px;
+}
+
+.widget-rain-gauge .value {
+    flex : 1;
+    width: auto;
+}
+
+.widget-rain-gauge .unit {
+    flex: 0 0 15%;
+    vertical-align:top;
+}

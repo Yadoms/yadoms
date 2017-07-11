@@ -1,0 +1,17 @@
+{
+	"name": "Pluviomètre",
+   "NoAcquisition": "Pas d'acquisition",
+	"description": "Un widget qui affiche la pluviométrie en 1h, et en 24h",
+   "title1": "depuis 1h",
+   "title2": "depuis 24h",   
+	"configurationSchema": {
+		"device": {
+			"name": "Donnée à afficher",
+			"description": "Selectionnez ici la donnée que vous souhaitez visualiser"
+		},
+      "dateDisplay": {
+			"name": "Date de dernière mise à jour",
+			"description": ""
+      }      
+	}
+}
