@@ -140,6 +140,13 @@ namespace pluginSystem
       //--------------------------------------------------------------
       void requestStopInstance(int id);
 
+      //-----------------------------------------------------
+      ///\brief               Stop the instance and wait for stopped
+      ///\param[in] id        The instance ID
+      ///\throw               CPluginException if timeout
+      //-----------------------------------------------------
+      void stopInstance(int id);
+
       //--------------------------------------------------------------
       /// \brief           Kill a running instance of plugin
       /// \param [in] id   Instance Id
@@ -264,12 +271,6 @@ namespace pluginSystem
       //-----------------------------------------------------
       void stopInstances();
 
-      //-----------------------------------------------------
-      ///\brief               Stop the instance and wait for stopped
-      ///\param[in] id        The instance ID
-      ///\throw               CPluginException if timeout
-      //-----------------------------------------------------
-      void stopInstanceAndWaitForStopped(int id);
       void onPluginStopped(int pluginInstanceId);
 
       void startInternalPlugin();

@@ -164,6 +164,7 @@
       "errorDuringGettingDeviceList": "Error during getting device list",
       "errorDuringGettingDeviceListMatchCapacity": "Error during getting device list that match capacity __expectedCapacityAccess__ __expectedCapacity__",
       "errorDuringGettingDeviceListMatchCapacityType": "Error during getting device list that match capacity type __expectedCapacityAccess__ __expectedCapacityType__",
+      "errorDuringGettingDeviceListMatchKeywordAccess": "Error during getting device list that match keyword with access mode __expectedKeywordAccess__",
       "errorDuringGettingKeywordList": "Error during getting keyword list",
       "errorDuringGettingKeywordListMatchCapacity": "Error during getting keyword list that match capacity __expectedCapacityAccess__ __expectedCapacity__",
       "errorDuringGettingSerialPortList": "Error during getting serial port list"
@@ -428,7 +429,7 @@
             },
             "location": {
               "name": "Location",
-              "description": "Enter below coordonates of your city (<a href=\"http://www.latlong.net/\" target=\"_blank\">latlong website</a>)"
+              "description": "Enter below coordonates of your city ([Site web latlong](http://www.latlong.net/))"
             },
             "latitude": {
                "name": "Latitude",
@@ -501,7 +502,8 @@
               "units": "Units",
               "update": "Last state",
               "actions": "Actions"
-            }
+            },
+            "nokeywords" : "No associated data"
           },
           "configure": "Configure the device",
           "delete": "Delete the device",

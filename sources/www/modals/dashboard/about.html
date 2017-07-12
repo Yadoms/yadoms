@@ -56,25 +56,6 @@
    
    var d = new $.Deferred();
       
-   var iterator = window.markdownitForInline;
-    
-   var md = window.markdownit({
-        html: true,
-        breaks:true,
-       highlight: function (str, lang) {
-         if (lang && hljs.getLanguage(lang)) {
-          try {
-            return hljs.highlight(lang, str).value;
-          } catch (__) {}
-         }
-
-         return ''; // use external default escaping
-       }
-      })
-      .use(iterator, 'url_new_win', 'link_open', function (tokens, idx) {
-        tokens[idx].attrPush([ 'target', '_blank' ]);
-      });   
-       
       function getWidgetDomRow(widgetPackage) {
         return $("table#widget-package-list").find("tr[widget-id='" + widgetPackage + "']");
       }
@@ -241,7 +222,7 @@
                      
                      var result = "";
                      if ( !isNullOrUndefined ( value.plugin.package.credits ))
-                        result = md.renderInline( value.plugin.package.credits ); 
+                        result = ConfigurationHelper.makdownIt( value.plugin.package.credits ); 
                      
                      AddPluginPackage ( value.plugin.type, value.friendlyName, value.plugin.package.version, value.plugin.package.author, result, value.plugin.package.url );
                    }); 
@@ -275,7 +256,7 @@
             
             var result = "";
             if ( !isNullOrUndefined ( value.widget.credits ))
-               result = md.renderInline( value.widget.credits ); 
+               result = ConfigurationHelper.makdownIt( value.widget.credits ); 
             
                 AddWidgetPackage ( value.displayName, value.widget.version, value.widget.author, result, value.widget.url );
          });

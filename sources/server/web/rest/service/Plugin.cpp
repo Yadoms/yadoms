@@ -429,14 +429,11 @@ namespace web
                   auto instanceId = boost::lexical_cast<int>(parameters[1]);
 
                   auto pluginInstanceFound = m_pluginManager->getInstance(instanceId);
-                  if (pluginInstanceFound)
-                  {
-                     //stop instance
-                     m_pluginManager->requestStopInstance(instanceId);
-                     return CResult::GenerateSuccess();
-                  }
+                  if (!pluginInstanceFound)
+                     return CResult::GenerateError("invalid parameter. Can not retreive instance id");
 
-                  return CResult::GenerateError("invalid parameter. Can not retreive instance id");
+                  m_pluginManager->stopInstance(instanceId);
+                  return CResult::GenerateSuccess();
                }
 
                return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");

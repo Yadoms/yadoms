@@ -19,7 +19,6 @@
 #include "DeviceConfigurationSchemaRequest.h"
 #include "SetDeviceConfiguration.h"
 #include "DeviceRemoved.h"
-#include "ExtraQuery.h"
 #include "task/plugins/ExtraQuery.h"
 
 namespace pluginSystem
@@ -193,7 +192,7 @@ namespace pluginSystem
             return;
 
          // Stop plugin instance
-         stopInstanceAndWaitForStopped(id);
+         stopInstance(id);
 
          // Remove in database
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
@@ -463,14 +462,14 @@ namespace pluginSystem
       instance->second->kill();
    }
 
-   void CManager::stopInstanceAndWaitForStopped(int id)
+   void CManager::stopInstance(int id)
    {
       if (!isInstanceRunning(id))
          return;
 
       requestStopInstance(id);
 
-      auto timeout = shared::currentTime::Provider().now() + boost::posix_time::seconds(20);
+      auto timeout = shared::currentTime::Provider().now() + boost::posix_time::seconds(10);
       do
       {
          {
@@ -527,7 +526,7 @@ namespace pluginSystem
 
    void CManager::stopInternalPlugin()
    {
-      stopInstanceAndWaitForStopped(m_pluginDBTable->getSystemInstance()->Id());
+      stopInstance(m_pluginDBTable->getSystemInstance()->Id());
    }
 
    bool CManager::isInstanceRunning(int id) const

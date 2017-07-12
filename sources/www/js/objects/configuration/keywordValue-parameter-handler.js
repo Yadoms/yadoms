@@ -24,7 +24,7 @@ function KeywordValueParameterHandler(i18NContext, i18nKey, paramName, content, 
    this.content = content;
 
    this.content.expectedKeywordAccess = "GetSet";
-   this.content.lookupMethod = "all";
+   this.content.lookupMethod = "accessMode";
    this.currentValue = currentValue;
    this.keywordPH = new KeywordParameterHandler(i18NContext, i18nKey, paramName, content, currentValue);
 }

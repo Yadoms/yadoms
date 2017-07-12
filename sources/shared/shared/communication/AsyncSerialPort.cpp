@@ -209,7 +209,7 @@ namespace shared
 
       void CAsyncSerialPort::sendText(const std::string & content)
       {
-         boost::asio::const_buffers_1 toSend = boost::asio::buffer(content);
+         auto toSend = boost::asio::buffer(content);
          sendBuffer(toSend);
       }
 

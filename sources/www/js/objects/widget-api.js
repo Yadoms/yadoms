@@ -286,11 +286,18 @@ WidgetApi.prototype.manageRollingTitle = function () {
 WidgetApi.prototype.askServerLocalTime = function (callback) {
    assert(typeof callback === 'function', "callback must be defined");
    
+   var d = $.Deferred();
+   
    YadomsTimeManager.getCurrentLocalTime()
    .done(function(data) {
       callback(data.now);
+      d.resolve(data.now);
    })
    .fail(function(error) {
-      console.warn("Fail to get server local time " + error);
+      var message = "Fail to get server local time " + error;
+      console.warn(message);
+      d.reject(message);
    });
+   
+   return d.promise();
 }
