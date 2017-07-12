@@ -109,14 +109,19 @@ function rainGaugeDisplayViewModel() {
        self.shouldBeVisible(self.widget.configuration.dateDisplay);       
        
        // Retrieve the last value
-       var deffered = RestEngine.getJson("rest/acquisition/keyword/" + self.widget.configuration.device.keywordId + "/" + date);       
+       var deffered = RestEngine.getJson("rest/acquisition/keyword/" + self.widget.configuration.device.keywordId + "/lastvalue");       
        
        deffered.done(function (data) {
           
           console.log ("data", data);
+          // TODO : Check the time of the last update and the time of the server.
           
           // initial refresh value
-          if (data.data !=="")
+          if (data.data instanceof Array)
+          {
+             self.getValues(parseFloat(data.data[data.data.length-1].key), self.widget.configuration.device.keywordId);
+          }
+          else if (data.data !=="")
           {
              self.getValues(parseFloat(data.data), self.widget.configuration.device.keywordId);
           }
@@ -128,6 +133,7 @@ function rainGaugeDisplayViewModel() {
           
           self.widgetApi.fitText();
        });
+       //TODO : Do the failed !
     }
 
     /**
