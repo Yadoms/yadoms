@@ -429,7 +429,7 @@
             },
             "location": {
               "name": "Localisation",
-              "description": "Entrer ci-dessous les coordonnées de votre ville(<a href=\"http://www.latlong.net/\" target=\"_blank\">site web latlong</a>)"           
+              "description": "Entrer ci-dessous les coordonnées de votre ville ([Site web latlong](http://www.latlong.net/))"
             },
             "latitude": {
                "name": "Latitude",
