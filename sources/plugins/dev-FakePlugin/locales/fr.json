@@ -4,7 +4,7 @@
   "configurationSchema": {
     "StringParameter": {
       "name": "Un exemple de chaîne",
-      "description": "Voici un exemple de paramètre chaîne"
+      "description": "Voici un exemple de paramètre chaîne. Les champs de description supportent [les liens](http://www.yadoms.com)"
     },
     "BoolParameter": {
       "name": "Un exemple de booléen",

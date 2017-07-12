@@ -114,7 +114,7 @@
 
       //we fill the data
       $ruleRow.find("td.automation-rule-name").text(rule.name);
-      $ruleRow.find("td.automation-rule-description").text(rule.description);
+      $ruleRow.find("td.automation-rule-description").html(ConfigurationHelper.makdownIt(rule.description));
 
       //autoStart property
       if (rule.autoStart)
