@@ -30,7 +30,8 @@ namespace shared
            m_connectRetryDelay(connectRetryDelay),
            m_connectRetryTimer(m_ioService),
            m_flushAtConnect(flushAtConnect),
-           m_writeTimeout(boost::date_time::pos_infin)
+           m_writeTimeout(boost::date_time::pos_infin),
+           m_writeTimeouted(false)
       {
          YADOMS_LOG(debug) << "CAsyncSerialPort::CAsyncSerialPort()";//TODO virer
       }
@@ -207,7 +208,12 @@ namespace shared
          {
             // boost::asio::error::operation_aborted is fired when stop is required
             if (error == boost::asio::error::operation_aborted)
+            {
+               if (m_writeTimeouted)
+                  // Read operation was cancelled because of stop async write operation on timeout ==> should be restarted
+                  startRead();
                return; // Normal stop
+            }
 
             // Error ==> disconnecting
             YADOMS_LOG(error) << "Serial port read error : " << error.message();
@@ -260,6 +266,7 @@ namespace shared
                      kSendFinished = event::kUserFirstId
                   };
                YADOMS_LOG(debug) << "m_boostSerialPort.async_write_some();";//TODO virer
+               m_writeTimeouted = false;
                m_boostSerialPort.async_write_some(buffer,
                                                   [&evtHandler](const boost::system::error_code& ec,
                                                      std::size_t bytes_transferred)
@@ -273,6 +280,7 @@ namespace shared
                case event::kTimeout:
                   {
                      YADOMS_LOG(debug) << "m_boostSerialPort.async_write_some() ==> Timeout";//TODO virer
+                     m_writeTimeouted = true;
                      auto rc = boost::system::error_code(boost::system::errc::timed_out,
                                                          boost::asio::error::get_misc_category());
                      // Stop async operation
@@ -284,12 +292,10 @@ namespace shared
                      // Fail to send data on serial port, timeout. Do as it was sent (should be handled by protocol)
                      YADOMS_LOG(warning) << "Fail to send data on serial port, timeout";
                      return;
-                     throw boost::system::system_error(boost::system::error_code(boost::system::errc::timed_out,
-                                                                                 boost::asio::error::get_misc_category()),
-                                                       "Fail to send data on serial port, timeout");//TODO virer
                   }
                case kSendFinished:
                   YADOMS_LOG(debug) << "m_boostSerialPort.async_write_some() ==> OK";//TODO virer
+                  m_writeTimeouted = false;
                   return;
                default:
                   throw std::runtime_error("Unexpected event " + std::to_string(evtHandler.getEventId()));

@@ -171,6 +171,7 @@ namespace shared
          /// \brief	The write timeout (if flow control is used)
          //--------------------------------------------------------------
          boost::posix_time::time_duration m_writeTimeout;
+         bool m_writeTimeouted;
       };
    }
 } // namespace shared::communication
