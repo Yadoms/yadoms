@@ -198,13 +198,13 @@ widgetViewModelCtor =
                
                self.widgetApi.askServerLocalTime(function (serverLocalTime) {
                   self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
+                  d.resolve();                  
                });
-               
-               d.resolve();
            })
            .fail(function (error) {
                notifyError($.t("widgets/chart:errorInitialization"), error);
                throw $.t("widgets/chart:errorInitialization");
+               d.reject();
            });
            return d.promise();
        };
