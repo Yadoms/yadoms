@@ -103,9 +103,6 @@ function rainGaugeDisplayViewModel() {
         
         //we fill the deviceId of the battery indicator
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
-        
-       //the actual time
-       var date = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
        
        self.shouldBeVisible(self.widget.configuration.dateDisplay);
        
