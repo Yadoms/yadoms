@@ -18,7 +18,7 @@ function rainGaugeDisplayViewModel() {
     this.shouldBeVisible = ko.observable(false);
     this.lastReceiveDate = ko.observable("");    
     this.serverTime = null;
-    this.deferredTime = null;
+    this.acquisitionData = [];
 
     /**
      * Initialization method
@@ -44,49 +44,66 @@ function rainGaugeDisplayViewModel() {
       });
     };
   
-    this.getValues = function (dataNow, keywordId) {
+    this.getValues = function (keywordId) {
        self = this;
-          
-       console.log ("1 : ", dataNow);
        
-       // date - 1h
-       date1h = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'hours').startOf('minute'));
-       var deffered1h = RestEngine.getJson("rest/acquisition/keyword/" + keywordId + "/" + date1h);
-       deffered1h.done(function (data) {
-          
-          if (dataNow!=0)
-          {
-             if (data.data !=="")
-             {
-                self.rate_1h( (dataNow - parseFloat(data.data[0].key)).toFixed(1).toString() );
-             }
-             else
-                self.rate_1h("0");
+       console.log ("self.acquisitionData", self.acquisitionData);
+       console.log ("self.acquisitionData[0] : ", self.acquisitionData[0]);
+       
+       while(self.acquisitionData.length>0){
+          if (self.serverTime - DateTimeFormatter.isoDateToDate(self.acquisitionData[0].date) > 86400000){
+             self.acquisitionData.shift();
           }
-       else
-          self.rate_1h("-");
+          else
+             break;
+       }
+       
+       //clean old values at the begin of the tab
+       if (self.acquisitionData.length != 0)
+       {
+          // TODO : Treat the case with only 1, or 2 values
+       
+          var index = self.acquisitionData.length-1;
+       
+          // retrieve all values
+          var lastValue = self.acquisitionData[index];
+          var last24h = self.acquisitionData[0];
           
-          console.log ("2 : ", data);
+          // Retrieve 1h ago
           
-          // date - 24h
-          date24h = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'days').startOf('minute'));
-          var deffered24h = RestEngine.getJson("rest/acquisition/keyword/" + keywordId + "/" + date24h);
-          deffered24h.done(function (data) {
-             console.log ("3 : ", data);
+          while (index>=0 && (self.serverTime - DateTimeFormatter.isoDateToDate(self.acquisitionData[index].date) < 3600000) ){
+             if (index >= 0) index--;
+          }
+          
+          if (index != -1)
+          {
+             var last1h = self.acquisitionData[index];
              
-             if (dataNow!=0)
-             {
-                if (data.data !=="")
-                {
-                   self.rate_24h( (dataNow - parseFloat(data.data[0].key)).toFixed(1).toString() );
-                }
-                else
-                   self.rate_24h("0");
-             }
-             else
-                self.rate_24h("-");             
-          });
-       });
+             self.rate_1h = ( parseFloat(lastValue.key) - parseFloat(last1h.key) ).toFixed(1).toString();
+             self.rate_24h = ( parseFloat(lastValue.key) - parseFloat(last24h.key) ).toFixed(1).toString();
+          }
+          else
+          {
+             self.rate_1h = ("-");
+             self.rate_24h = ("-");
+          }
+       }
+       else
+       {
+          self.rate_1h = ("-");
+          self.rate_24h = ("-");
+       }
+       
+       // treat the time  
+       if (self.shouldBeVisible())
+       {
+         if (self.acquisitionData.length!=0)
+            self.lastReceiveDate(moment(lastValue.date).calendar().toString());
+         else
+            self.lastReceiveDate($.t("widgets/rain-gauge:NoAcquisition"));
+       }
+      
+      self.widgetApi.fitText();
     };
   
     this.configurationChanged = function () {
@@ -106,34 +123,40 @@ function rainGaugeDisplayViewModel() {
        // the actual time
        var date = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
        
-       self.shouldBeVisible(self.widget.configuration.dateDisplay);       
+       console.log ("self.serverTime", self.serverTime);
+       self.shouldBeVisible(self.widget.configuration.dateDisplay);
        
-       // Retrieve the last value
-       var deffered = RestEngine.getJson("rest/acquisition/keyword/" + self.widget.configuration.device.keywordId + "/lastvalue");       
+       
+       // Retrieve last values
+       date24h = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'days').startOf('minute'));
+       var deffered = RestEngine.getJson("rest/acquisition/keyword/" + self.widget.configuration.device.keywordId + "/" + date24h);
        
        deffered.done(function (data) {
           
-          console.log ("data", data);
-          // TODO : Check the time of the last update and the time of the server.
+          console.log ("configurationChanged-Data", data);
           
-          // initial refresh value
-          if (data.data instanceof Array)
-          {
-             self.getValues(parseFloat(data.data[data.data.length-1].key), self.widget.configuration.device.keywordId);
-          }
-          else if (data.data !=="")
-          {
-             self.getValues(parseFloat(data.data), self.widget.configuration.device.keywordId);
-          }
-          else
-          {
-             self.rate_1h("-");
-             self.rate_24h("-");
+          if (data.data !==""){
+             if (self.acquisitionData.length!=0)
+             {
+                self.acquisitionData.splice(0, self.acquisitionData.length);
+                Array.prototype.push.apply(self.acquisitionData, {date: moment(data.data.date), key: data.data.key});
+                //else if (self.acquisitionData[self.acquisitionData.length-1].date < data.data.date){
+                   // Add the last received data to the list
+                //   self.acquisitionData.push(data.data);
+                //}
+             }
+             else{
+                Array.prototype.push.apply(self.acquisitionData, {date: moment(data.data.date), key: data.data.key});
+             }
           }
           
-          self.widgetApi.fitText();
-       });
-       //TODO : Do the failed !
+          // treat the tab
+          self.getValues(self.widget.configuration.device.keywordId);
+       })
+      .fail(function(error) {
+         var message = "Fail to get server lastvalue : " + error;
+         console.warn(message);
+      });
     }
 
     /**
@@ -145,27 +168,21 @@ function rainGaugeDisplayViewModel() {
         var self = this;
 
         if (keywordId === self.widget.configuration.device.keywordId) {
-           
             //it is the right device
-            if (data.value !=="")
-            {  
-               self.getValues(parseFloat(data.value), keywordId);
-            }
-            else
-            {
-               self.rate_1h("-");
-               self.rate_24h("-");
+            if (data.value !==""){
+               console.log ("new data",data);
+               
+               if (self.acquisitionData.length!=0){
+                  if (data.date != self.acquisitionData[self.acquisitionData.length-1].date) {
+                     self.acquisitionData.push({key: data.value, date: data.date});
+                  }
+               }
+               else{
+                  self.acquisitionData.push({key: data.value, date: data.date});
+               }
             }
             
-            if (self.shouldBeVisible())
-            {
-               if (data.date!=="")
-                  self.lastReceiveDate(moment(data.date).calendar().toString());
-               else
-                  self.lastReceiveDate($.t("widgets/rain-gauge:NoAcquisition"));
-            }            
-            
-            self.widgetApi.fitText();
+            self.getValues(keywordId);
         }
     };
 };
