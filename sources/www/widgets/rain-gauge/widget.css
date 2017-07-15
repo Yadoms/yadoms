@@ -6,13 +6,13 @@
     flex-direction: row;
 }
 
-.widget-rain-gauge .essai {
+.widget-rain-gauge .main-div {
     display: flex;
     flex-direction: column;
     height:100%;
 }
 
-.widget-rain-gauge .main-div {
+.widget-rain-gauge .values-div {
     width: 100%;
     text-align: center;
     display: flex;
