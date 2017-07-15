@@ -1,9 +1,10 @@
 {
 	"name": "Rain Gauge",
-   "NoAcquisition": "No acquisition",
 	"description": "A simple widget that display the rain rate in 1h and in 24h",
    "title1": "1 hour ago",
    "title2": "1 day ago",
+   "NoAcquisition": "No acquisition",
+   "loadingData": "Loading data",   
 	"configurationSchema": {
 		"device": {
 			"name": "Data to display",
