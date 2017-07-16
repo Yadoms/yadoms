@@ -4,7 +4,7 @@
 	"configurationSchema": {
 		"StringParameter": {
 			"name": "A string example",
-			"description": "Just a string parameter. Description fields support [links](http://www.yadoms.com)""
+			"description": "Just a string parameter. Description fields support [links](http://www.yadoms.com)"
 		},
 		"BoolParameter": {
 			"name": "A bool example",
