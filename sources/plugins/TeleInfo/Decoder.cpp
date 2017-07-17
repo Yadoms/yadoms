@@ -46,9 +46,9 @@ CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
      m_optarif(OP_NOT_DEFINED)
 {
    m_isdeveloperMode = api->getYadomsInformation()->developperMode();
-
-   for (unsigned char counter = 0; counter < 3; ++counter)
-      m_instantCurrentPhase[counter] = boost::make_shared<yApi::historization::CCurrent>("InstantCurrentPhase" + boost::lexical_cast<std::string>(counter));
+   m_instantCurrentPhase[0] = boost::make_shared<yApi::historization::CCurrent>("InstantCurrentPhase1");
+   m_instantCurrentPhase[1] = boost::make_shared<yApi::historization::CCurrent>("InstantCurrentPhase2");
+   m_instantCurrentPhase[2] = boost::make_shared<yApi::historization::CCurrent>("InstantCurrentPhase3");
 }
 
 CDecoder::~CDecoder()
@@ -106,7 +106,7 @@ void CDecoder::createDeviceAndKeywords(const bool monoPhase)
    else
    {
       for (unsigned char counter = 0; counter < 3; ++counter)
-         m_keywords.push_back(m_instantCurrentPhase[0]);
+         m_keywords.push_back(m_instantCurrentPhase[counter]);
    }
 
    if (!isERDFCounterDesactivated())
