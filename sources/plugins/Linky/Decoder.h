@@ -2,6 +2,7 @@
 
 #include "IDecoder.h"
 #include "Keywords/RunningPeriod.h"
+#include "Keywords/ForecastTomorrow.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -58,21 +59,13 @@ private:
    //--------------------------------------------------------------
    /// \brief  Keywords
    //--------------------------------------------------------------
-   boost::shared_ptr<yApi::historization::CEnergy> m_baseCounter;
-   boost::shared_ptr<yApi::historization::CEnergy> m_lowCostCounter;
-   boost::shared_ptr<yApi::historization::CEnergy> m_normalCostCounter;
-   boost::shared_ptr<yApi::historization::CEnergy> m_EJPPeakPeriod;
-   boost::shared_ptr<yApi::historization::CEnergy> m_EJPNormalPeriod;
-   boost::shared_ptr<yApi::historization::CEnergy> m_tempoBlueDaysLowCostPeriod;
-   boost::shared_ptr<yApi::historization::CEnergy> m_tempoBlueDaysNormalCostPeriod;
-   boost::shared_ptr<yApi::historization::CEnergy> m_tempoRedDaysLowCostPeriod;
-   boost::shared_ptr<yApi::historization::CEnergy> m_tempoRedDaysNormalCostPeriod;
-   boost::shared_ptr<yApi::historization::CEnergy> m_tempoWhiteDaysLowCostPeriod;
-   boost::shared_ptr<yApi::historization::CEnergy> m_tempoWhiteDaysNormalCostPeriod;
+   boost::shared_ptr<yApi::historization::CEnergy> m_counter[10];
+   boost::shared_ptr<yApi::historization::CEnergy> m_activeEnergyInjected;
    boost::shared_ptr<yApi::historization::CCurrent> m_instantCurrent;
    boost::shared_ptr<yApi::historization::CApparentPower> m_apparentPower;
 
    boost::shared_ptr<CRunningPeriod> m_TimePeriod;
+   boost::shared_ptr<CForecastTomorrow> m_forecastTomorrow;
 
    boost::shared_ptr<yApi::IYPluginApi> m_api;
    std::string m_deviceName;
@@ -80,7 +73,7 @@ private:
    bool m_isdeveloperMode;
    bool m_linkyEnableInCounter; // TODO : Check if this one always exist
    bool m_deviceCreated;
-   std::string m_revision;
+   unsigned char m_revision;
    
    enum
    {
@@ -97,6 +90,12 @@ private:
    static const std::string m_tag_LTARF;
    static const std::string m_tag_EASF;
    static const std::string m_tag_EASD;
+   static const std::string m_tag_STGE;
+   static const std::string m_tag_EAIT;
+   static const std::string m_tag_SINST1;
+   static const std::string m_tag_SINST2;
+   static const std::string m_tag_SINST3;
+   static const std::string m_tag_SINSTS;
 
    static const int m_nb_period=11;
    static const int m_nb_contrat=4;
@@ -104,4 +103,6 @@ private:
    static const std::string Enedis_Periode[m_nb_period];
    static const std::string Enedis_Contrat[m_nb_contrat];
 
+   unsigned char m_indexFournisseurActif;
+   bool m_producteur;
 };
