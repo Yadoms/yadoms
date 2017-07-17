@@ -380,7 +380,7 @@
                      $keywordRow.find("td.keyword-units").html(units);
 
                      //we add actions to the keyword
-                     if (keyword.accessMode && keyword.accessMode.toLowerCase() === "getset" && keyword.capacityName && keyword.capacityName.toLowerCase() !== "event") {
+                     if (keyword.accessMode && keyword.accessMode.toLowerCase() === "getset" && keyword.capacityName) {
                         $keywordRow.find("td.keyword-actions").append(actionsBtnsWithEdit);
                      } else {
                         $keywordRow.find("td.keyword-actions").append(actionsBtns);
@@ -510,17 +510,22 @@
       } else {      
          value = $tdvalue.find("span").html();
       }
-
-      Yadoms.modals.keywordSetValue.loadAsync()
-       .done(function () {
-          Yadoms.showSetKeywordValueModal(keyword, value, device.attachedPlugin)
-          .done(function (keyword, newValue) {
-            KeywordManager.sendCommand(keyword.id, newValue.toString());
-          })
-          .fail(function () {
+      
+      if (keyword.capacityName.toLowerCase() === "event")
+      {
+         KeywordManager.sendCommand(keyword.id, '1');
+      } else {
+         Yadoms.modals.keywordSetValue.loadAsync()
+         .done(function () {
+            Yadoms.showSetKeywordValueModal(keyword, value, device.attachedPlugin)
+            .done(function (keyword, newValue) {
+               KeywordManager.sendCommand(keyword.id, newValue.toString());
+            })
+            .fail(function () {
              //cancelled
-          });
-       });
+            });
+         });
+      }
    }
 
    function addNewDevice() {

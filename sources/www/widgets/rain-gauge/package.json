@@ -1,0 +1,33 @@
+{
+	"type": "rain-gauge",
+	"version": "1.0.0-rc.1",
+	"author": "Jean-Michel BERHAULT",
+	"url": "https://github.com/Yadoms/yadoms/wiki/rain-gauge",
+	"credits": "",
+  "dimensions": {
+    "min": {
+      "x": 2,
+      "y": 1
+    },
+    "max": {
+      "x": 2,
+      "y": 1
+    },
+    "default": {
+      "x": 2,
+      "y": 1
+    }
+  },
+  "hasTitle" :  true,
+	"configurationSchema": {
+		"device": {
+			"type": "keyword",
+			"expectedCapacity": ["rain"],
+			"expectedKeywordAccess": "get"
+		},
+      "dateDisplay": {
+         "type": "bool",
+         "defaultValue" : "false"
+      }
+   }
+}
