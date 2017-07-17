@@ -16,8 +16,6 @@ widgetViewModelCtor = function weatherViewModel() {
         return "wi wi-wu-" + self.condition().toLowerCase();
     });
 
-    this.lastUpdate = "";
-
     /**
      * Initialization method
      * @param widget widget class object

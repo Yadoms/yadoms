@@ -312,8 +312,6 @@ widgetViewModelCtor =
            });
 
            $.whenAll(arrayOfDeffered).done(function () {
-               //we use the periodic task of cleaning
-               clearInterval(self.cleaningTask);
                self.refreshData(self.widget.configuration.interval);
            });
        };
