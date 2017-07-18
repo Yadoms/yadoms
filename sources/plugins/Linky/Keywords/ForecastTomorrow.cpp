@@ -12,11 +12,12 @@ CForecastTomorrow::CForecastTomorrow(boost::shared_ptr<yApi::IYPluginApi> api, c
 {
 }
 
-void CForecastTomorrow::set(const linky::specificHistorizers::EColor value) const
+void CForecastTomorrow::set(const unsigned char value) const
 {
    try
    {
-      m_forecastPeriod->set(value);
+      linky::specificHistorizers::EColor forecast(value);
+      m_forecastPeriod->set(forecast);
       if (m_isDeveloperMode) YADOMS_LOG(information) << m_forecastPeriod->getKeyword() << "=" << m_forecastPeriod->get();
    }
    catch (shared::exception::CException& e)

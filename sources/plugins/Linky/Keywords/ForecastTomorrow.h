@@ -23,7 +23,7 @@ public:
    /// \brief	                      Set the value of the keyword
    /// \param[in] value                The new value
    //--------------------------------------------------------------
-   void set(const linky::specificHistorizers::EColor value) const;
+   void set(const unsigned char value) const;
 
    //--------------------------------------------------------------
    /// \brief	Destructor
