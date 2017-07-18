@@ -22,7 +22,7 @@
 			"values" : {
 				"AllHours": "All hours",
 				"LowCostHours": "Low cost hours",
-				"PeakCostHour": "Peak cost hour",
+				"PeakCostHours": "Peak cost hour",
 				"NormalCostHours": "Normal cost hours",
             "MobilePeakCostHours": "Mobile peak cost hours",
             "LowCostBlueDays": "Low cost blue day",
