@@ -448,6 +448,9 @@
                            case "Custom":
                               $label.removeClass("label-success").addClass("label-warning").removeClass("label-danger").text(getCustomMessage(pluginInstance, status.messageId, status.messageData, "modals.dashboard.sub-windows.plugins.starting"));
                               break;
+                           case "WaitDebugger":
+                              $label.removeClass("label-success").addClass("label-warning").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.waitDebugger"));
+                              break;
                            default:
                               $label.removeClass("label-danger").text("");
                               break;

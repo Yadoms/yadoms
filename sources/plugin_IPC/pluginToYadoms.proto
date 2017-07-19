@@ -3,7 +3,7 @@ package plugin_IPC.toYadoms;
 
 message SetPluginState {
 	enum EPluginState {
-		kUnknown = 0; kError = 1; kStopped = 2; kRunning = 3; kCustom = 4;
+		kUnknown = 0; kError = 1; kStopped = 2; kRunning = 3; kCustom = 4; kWaitDebugger = 5;
 	}
 	EPluginState pluginState = 1;
 	string customMessageId = 2;
@@ -171,6 +171,17 @@ message DeclareKeywords {
 	repeated Historizable keywords = 3;
 }
 
+message SetDeviceState {
+	enum EDeviceState {
+		kUnknown = 0; kActive = 1; kBusy = 2; kAsleep = 3; kDead = 4; kCustom = 5;
+	}
+	string device = 1;
+	EDeviceState deviceState = 2;
+	string customMessageId = 3;
+	string customMessageData = 4;
+}
+
+
 message msg {
 	oneof OneOf {
 		SetPluginState pluginState = 1;
@@ -202,5 +213,6 @@ message msg {
 		AllKeywordsRequest allKeywordsRequest = 27;
 		DeclareKeywords declareKeywords = 28;
 		ExtraQueryProgression extraQueryProgress = 29;
+		SetDeviceState deviceState = 30;
 	}
 }

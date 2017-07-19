@@ -61,9 +61,16 @@ private:
    shared::CDataContainer getNodeInfo(const uint32 homeId, const uint8 nodeId);
 
    //-----------------------------------------------------------------------------
+   /// \brief	Configure the value refresh mode depending on the device listening state
+   //-----------------------------------------------------------------------------   
+   void setupValue(boost::shared_ptr<COpenZWaveNode> node, OpenZWave::ValueID & vid);
+
+   //-----------------------------------------------------------------------------
    /// \brief	Ask configuration parameters to each found node
    //-----------------------------------------------------------------------------   
    void RequestConfigurationParameters();
+
+   void ExploreNetwork();
 
    //--------------------------------------------------------------
    /// \brief	   Mutex protecting the configuration content

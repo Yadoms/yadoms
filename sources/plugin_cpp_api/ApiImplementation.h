@@ -53,6 +53,10 @@ namespace plugin_cpp_api
       void updateDeviceModel(const std::string& device, const std::string& model) const override;
       std::string getDeviceType(const std::string& device) const override;
       void updateDeviceType(const std::string& device, const std::string& type) const override;
+      void updateDeviceState(const std::string& device,
+         const shared::plugin::yPluginApi::historization::EDeviceState& state,
+         const std::string& customMessageId = std::string(),
+         const std::map<std::string, std::string>& customMessageDataParams = std::map<std::string, std::string>()) const override;
       void removeDevice(const std::string& device) override;
       void declareKeyword(const std::string& device,
                           boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,

@@ -372,6 +372,8 @@ namespace plugin_cpp_api
          break;
       case shared::plugin::yPluginApi::historization::EPluginState::kCustomValue: request->set_pluginstate(plugin_IPC::toYadoms::SetPluginState_EPluginState_kCustom);
          break;
+      case shared::plugin::yPluginApi::historization::EPluginState::kWaitDebuggerValue : request->set_pluginstate(plugin_IPC::toYadoms::SetPluginState_EPluginState_kWaitDebugger);
+         break;
       default:
          throw std::out_of_range((boost::format("CApiImplementation::setPluginState, unknown state %1%") % state).str());
       }
@@ -684,6 +686,50 @@ namespace plugin_cpp_api
       catch (std::exception&)
       {
          std::cerr << "Call was : updateDeviceType(" << device << ", " << type << ")" << std::endl;
+         throw;
+      }
+   }
+
+   void CApiImplementation::updateDeviceState(const std::string& device, const shared::plugin::yPluginApi::historization::EDeviceState& state,
+      const std::string& customMessageId, const std::map<std::string, std::string>& customMessageDataParams) const
+   {
+      plugin_IPC::toYadoms::msg req;
+      auto request = req.mutable_devicestate();
+      switch (state)
+      {
+      case shared::plugin::yPluginApi::historization::EDeviceState::kUnknownValue: request->set_devicestate(plugin_IPC::toYadoms::SetDeviceState_EDeviceState_kUnknown);
+         break;
+      case shared::plugin::yPluginApi::historization::EDeviceState::kActiveValue: request->set_devicestate(plugin_IPC::toYadoms::SetDeviceState_EDeviceState_kActive);
+         break;
+      case shared::plugin::yPluginApi::historization::EDeviceState::kBusyValue: request->set_devicestate(plugin_IPC::toYadoms::SetDeviceState_EDeviceState_kBusy);
+         break;
+      case shared::plugin::yPluginApi::historization::EDeviceState::kAsleepValue: request->set_devicestate(plugin_IPC::toYadoms::SetDeviceState_EDeviceState_kAsleep);
+         break;
+      case shared::plugin::yPluginApi::historization::EDeviceState::kDeadValue: request->set_devicestate(plugin_IPC::toYadoms::SetDeviceState_EDeviceState_kDead);
+         break;
+      case shared::plugin::yPluginApi::historization::EDeviceState::kCustomValue: request->set_devicestate(plugin_IPC::toYadoms::SetDeviceState_EDeviceState_kCustom);
+         break;
+      default:
+         throw std::out_of_range((boost::format("CApiImplementation::updateDeviceState, unknown state %1%") % state).str());
+      }
+      request->set_custommessageid(customMessageId);
+      request->set_device(device);
+      shared::CDataContainer dc(customMessageDataParams);
+      request->set_custommessagedata(dc.serialize());
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : updateDeviceState(" << state << ", " << customMessageId << ", { ";
+         std::for_each(customMessageDataParams.begin(),
+            customMessageDataParams.end(),
+            [](const std::pair<const std::string, std::string>& param)
+         {
+            std::cerr << param.first << " = " << param.second << ", ";
+         });
+         std::cerr << "} )" << std::endl;
          throw;
       }
    }

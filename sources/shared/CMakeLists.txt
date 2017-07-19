@@ -165,6 +165,10 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Curtain.h
    shared/plugin/yPluginApi/historization/DateTime.cpp
    shared/plugin/yPluginApi/historization/DateTime.h
+   shared/plugin/yPluginApi/historization/DeviceState.cpp
+   shared/plugin/yPluginApi/historization/DeviceState.h
+   shared/plugin/yPluginApi/historization/DeviceStateMessage.cpp
+   shared/plugin/yPluginApi/historization/DeviceStateMessage.h
    shared/plugin/yPluginApi/historization/Dimmable.cpp
    shared/plugin/yPluginApi/historization/Dimmable.h
    shared/plugin/yPluginApi/historization/Direction.cpp

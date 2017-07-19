@@ -255,6 +255,8 @@ namespace pluginSystem
          break;
       case plugin_IPC::toYadoms::msg::kExtraQueryProgress: processExtraQueryProgression(toYadomsProtoBuffer.extraqueryprogress());
          break;
+      case plugin_IPC::toYadoms::msg::kDeviceState: processSetDeviceState(toYadomsProtoBuffer.devicestate());
+         break;
       default:
          throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
       }
@@ -265,15 +267,17 @@ namespace pluginSystem
       shared::plugin::yPluginApi::historization::EPluginState state;
       switch (msg.pluginstate())
       {
-      case plugin_IPC::toYadoms::SetPluginState_EPluginState_kUnknown: state = shared::plugin::yPluginApi::historization::EPluginState::kUnknownValue;
+      case plugin_IPC::toYadoms::SetPluginState_EPluginState_kUnknown: state = shared::plugin::yPluginApi::historization::EPluginState::kUnknown;
          break;
-      case plugin_IPC::toYadoms::SetPluginState_EPluginState_kError: state = shared::plugin::yPluginApi::historization::EPluginState::kErrorValue;
+      case plugin_IPC::toYadoms::SetPluginState_EPluginState_kError: state = shared::plugin::yPluginApi::historization::EPluginState::kError;
          break;
-      case plugin_IPC::toYadoms::SetPluginState_EPluginState_kStopped: state = shared::plugin::yPluginApi::historization::EPluginState::kStoppedValue;
+      case plugin_IPC::toYadoms::SetPluginState_EPluginState_kStopped: state = shared::plugin::yPluginApi::historization::EPluginState::kStopped;
          break;
-      case plugin_IPC::toYadoms::SetPluginState_EPluginState_kRunning: state = shared::plugin::yPluginApi::historization::EPluginState::kRunningValue;
+      case plugin_IPC::toYadoms::SetPluginState_EPluginState_kRunning: state = shared::plugin::yPluginApi::historization::EPluginState::kRunning;
          break;
-      case plugin_IPC::toYadoms::SetPluginState_EPluginState_kCustom: state = shared::plugin::yPluginApi::historization::EPluginState::kCustomValue;
+      case plugin_IPC::toYadoms::SetPluginState_EPluginState_kCustom: state = shared::plugin::yPluginApi::historization::EPluginState::kCustom;
+         break;
+      case plugin_IPC::toYadoms::SetPluginState_EPluginState_kWaitDebugger: state = shared::plugin::yPluginApi::historization::EPluginState::kWaitDebugger;
          break;
       default:
          throw std::out_of_range((boost::format("Unsupported plugin state received : %1%") % msg.pluginstate()).str());
@@ -284,6 +288,32 @@ namespace pluginSystem
       auto values = dc.get<std::map<std::string, std::string>>();
 
       m_pluginApi->setPluginState(state, msg.custommessageid(), values);
+   }
+
+   void CIpcAdapter::processSetDeviceState(const plugin_IPC::toYadoms::SetDeviceState& msg) const
+   {
+      shared::plugin::yPluginApi::historization::EDeviceState state;
+      switch (msg.devicestate())
+      {
+      case plugin_IPC::toYadoms::SetDeviceState_EDeviceState_kUnknown: state = shared::plugin::yPluginApi::historization::EDeviceState::kUnknown;
+         break;
+      case plugin_IPC::toYadoms::SetDeviceState_EDeviceState_kActive: state = shared::plugin::yPluginApi::historization::EDeviceState::kActive;
+         break;
+      case plugin_IPC::toYadoms::SetDeviceState_EDeviceState_kBusy: state = shared::plugin::yPluginApi::historization::EDeviceState::kBusy;
+         break;
+      case plugin_IPC::toYadoms::SetDeviceState_EDeviceState_kAsleep: state = shared::plugin::yPluginApi::historization::EDeviceState::kAsleep;
+         break;
+      case plugin_IPC::toYadoms::SetDeviceState_EDeviceState_kDead: state = shared::plugin::yPluginApi::historization::EDeviceState::kDead;
+         break;
+      case plugin_IPC::toYadoms::SetDeviceState_EDeviceState_kCustom: state = shared::plugin::yPluginApi::historization::EDeviceState::kCustom;
+         break;
+      default:
+         throw std::out_of_range((boost::format("Unsupported device state received : %1%") % msg.devicestate()).str());
+      }
+
+      shared::CDataContainer dc(msg.custommessagedata());
+      auto values = dc.get<std::map<std::string, std::string>>();
+      m_pluginApi->updateDeviceState(msg.device(), state, msg.custommessageid(), values);
    }
 
    void CIpcAdapter::processGetConfiguration(const plugin_IPC::toYadoms::ConfigurationRequest& msg)

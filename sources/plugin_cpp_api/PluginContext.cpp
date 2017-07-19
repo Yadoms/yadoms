@@ -85,6 +85,7 @@ namespace plugin_cpp_api
    {
       if (boost::filesystem::exists(api->getInformation()->getPath() / "waitForDebuggerAtStart"))
       {
+         api->setPluginState(yApi::historization::EPluginState::kWaitDebugger);
          std::cout << "***********************************************" << std::endl;
          std::cout << " Wait for a debugger to attach current process " << std::endl;
          std::cout << "***********************************************" << std::endl;

@@ -18,6 +18,7 @@ namespace shared
                ((Stopped))
                ((Running))
                ((Custom))
+               ((WaitDebugger))
             );
 
             DECLARE_CAPACITY(PluginStateCapacity, "pluginState_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::yPluginApi::EKeywordDataType::kEnum);

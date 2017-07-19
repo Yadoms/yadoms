@@ -1,5 +1,6 @@
 #pragma once
 #include "database/entities/Entities.h"
+#include <shared/plugin/yPluginApi/historization/DeviceState.h>
 
 namespace dataAccessLayer
 {
@@ -140,6 +141,15 @@ namespace dataAccessLayer
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void updateDeviceBlacklistState(int deviceId, const bool blacklist) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                          Update the device state (create keyword if needed)
+      /// \param [in] deviceId            The device id
+      /// \param [in] state               The device state
+      /// \param [in] data                The device state message data
+      /// \throw  shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual void updateDeviceState(int deviceId, const shared::plugin::yPluginApi::historization::EDeviceState& state, const std::string& customMessageId, const shared::CDataContainer &data) const = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove device 

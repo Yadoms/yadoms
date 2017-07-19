@@ -27,8 +27,8 @@ namespace dataAccessLayer
       // [END] IDataAccessLayer implementation
 
    private:
-      boost::shared_ptr<IDeviceManager> m_deviceManager;
       boost::shared_ptr<IKeywordManager> m_keywordManager;
+      boost::shared_ptr<IDeviceManager> m_deviceManager;
       boost::shared_ptr<IAcquisitionHistorizer> m_acquisitionHistorizer;
       boost::shared_ptr<IConfigurationManager> m_configurationManager;
       boost::shared_ptr<IEventLogger> m_eventLogger;
