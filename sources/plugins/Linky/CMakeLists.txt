@@ -24,6 +24,8 @@ set(LINKY_SOURCES
    stdafx.cpp
    Keywords/IKeyword.h
    Keywords/KeywordException.hpp
+   Keywords/ForecastTomorrow.cpp
+   Keywords/ForecastTomorrow.h
    Keywords/RunningPeriod.cpp
    Keywords/RunningPeriod.h
    specificHistorizer/Color.h
