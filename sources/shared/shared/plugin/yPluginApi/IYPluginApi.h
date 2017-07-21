@@ -307,6 +307,19 @@ namespace shared
             //-----------------------------------------------------
             virtual void updateDeviceType(const std::string& device, const std::string& model) const = 0;
 
+
+            //-----------------------------------------------------
+            ///\brief Set the device state
+            ///\param    [in]    device                  The device name
+            ///\param    [in]    state                   The new state
+            ///\param    [in]    customMessageId         The associated message ID (translatable in the locales file of the plugin). Ignored if state != kCustom or kError. (ie: 'i18nStringId' , with 'i18nStringId' : 'Message __something__ received')
+            ///\param    [in]    customMessageDataParams The message data parameters (map<name, value> ) (used as translation parameters). Ignored if state != kCustom or kError.
+            //-----------------------------------------------------
+            virtual void updateDeviceState(const std::string& device,
+                                           const historization::EDeviceState& state,
+                                           const std::string& customMessageId = std::string(),
+                                           const std::map<std::string, std::string>& customMessageDataParams = std::map<std::string, std::string>()) const = 0;
+
             //-----------------------------------------------------
             ///\brief Remove device (and remove all associated keywords and acquisitions)
             ///\param    [in]    device            The device name

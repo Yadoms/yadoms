@@ -185,9 +185,12 @@ ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, 
 
       case "enum":
          var enumValues = {};
-         for(var item of obj.values) { 
-            if(item) {
-               enumValues[item]=item;
+         if (obj.values) {
+            for(var i in obj.values) { //don't use for(.. of obj.values) because it fails when values is less than 2 elements
+               var item = obj.values[i]; 
+               if(item) {
+                  enumValues[item]=item;
+               }
             }
          }
          obj.values = enumValues;

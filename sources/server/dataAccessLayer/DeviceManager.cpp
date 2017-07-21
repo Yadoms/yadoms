@@ -2,15 +2,18 @@
 #include "DeviceManager.h"
 #include "notification/Helpers.hpp"
 #include <shared/Log.h>
+#include <shared/plugin/yPluginApi/historization/DeviceStateMessage.h>
 
 namespace dataAccessLayer
 {
    CDeviceManager::CDeviceManager(boost::shared_ptr<database::IDeviceRequester> deviceRequester,
                                   boost::shared_ptr<database::IKeywordRequester> keywordRequester,
-                                  boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester)
+                                  boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
+                                  boost::shared_ptr<IKeywordManager> keywordManager)
       : m_deviceRequester(deviceRequester),
         m_keywordRequester(keywordRequester),
-        m_acquisitionRequester(acquisitionRequester)
+        m_acquisitionRequester(acquisitionRequester),
+        m_keywordManager(keywordManager)
    {
    }
 
@@ -112,6 +115,44 @@ namespace dataAccessLayer
       //update device blacklist state
       m_deviceRequester->updateDeviceBlacklistState(deviceId, blacklist);
    }
+
+   void CDeviceManager::updateDeviceState(int deviceId, const shared::plugin::yPluginApi::historization::EDeviceState& state, const std::string& customMessageId, const shared::CDataContainer &data) const
+   {
+
+      //if keywords do exist, create them
+      shared::plugin::yPluginApi::historization::CDeviceState ds("deviceState");
+      auto stateKeywords = m_keywordRequester->getDeviceKeywordsWithCapacity(deviceId, ds.getCapacity().getName(), shared::plugin::yPluginApi::EKeywordAccessMode::kGet);
+      if (stateKeywords.empty())
+      {
+         m_keywordManager->addKeyword(deviceId, ds);
+      }
+
+      shared::plugin::yPluginApi::historization::CDeviceStateMessage dsm("deviceStateMessage");
+      auto stateMessageKeywords = m_keywordRequester->getDeviceKeywordsWithCapacity(deviceId, dsm.getCapacity().getName(), shared::plugin::yPluginApi::EKeywordAccessMode::kGet);
+      if (stateMessageKeywords.empty())
+      {
+         m_keywordManager->addKeyword(deviceId, dsm);
+      }
+
+      //update deviceSate
+      ds.set(state);
+     
+      //update deviceMessageState
+      dsm.set(data);
+
+      auto currentDate = shared::currentTime::Provider().now();
+
+      stateKeywords = m_keywordRequester->getDeviceKeywordsWithCapacity(deviceId, ds.getCapacity().getName(), shared::plugin::yPluginApi::EKeywordAccessMode::kGet);
+      for (auto i = stateKeywords.begin(); i != stateKeywords.end(); ++i)
+         m_acquisitionRequester->saveData((*i)->Id, ds.formatValue(), currentDate);
+
+      stateMessageKeywords = m_keywordRequester->getDeviceKeywordsWithCapacity(deviceId, dsm.getCapacity().getName(), shared::plugin::yPluginApi::EKeywordAccessMode::kGet);
+      for (auto i = stateMessageKeywords.begin(); i != stateMessageKeywords.end(); ++i)
+         m_acquisitionRequester->saveData((*i)->Id, dsm.formatValue(), currentDate);
+   }
+
+  
+
 
    void CDeviceManager::removeDevice(int deviceId)
    {

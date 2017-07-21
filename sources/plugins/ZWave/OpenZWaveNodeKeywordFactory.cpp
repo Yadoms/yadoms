@@ -8,6 +8,7 @@
 #include "OpenZWaveNodeKeywordBase.h"
 #include "OpenZWaveNodeKeywordGeneric.h"
 #include "OpenZWaveNodeKeywordDimmable.h"
+#include "OpenZWaveNodeKeywordColor.h"
 
 #include "historizers/Counter.h"
 #include "historizers/Current.h"
@@ -145,6 +146,12 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
       break;
+   case ECommandClass::kColorValue:
+      {
+         return boost::make_shared<COpenZWaveNodeKeywordColor>(vID, vLabel, accessMode);
+      }
+      break;
+
    case ECommandClass::kMeterValue:
       if (vLabel == "Energy")
       {

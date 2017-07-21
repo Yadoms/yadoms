@@ -65,6 +65,17 @@ namespace shared
                {
                   return static_cast<int>(boost::lexical_cast<float>(commandBody));
                }
+            }   
+            
+            //-----------------------------------------------------
+            ///\brief                  Convert a numeric value to unsigned int
+            ///\param[in] commandBody  The command body containing the numeric value
+            ///\return                 The unsigned integer value
+            ///\throw                  boost::lexical_cast if not convertible
+            //-----------------------------------------------------
+            static unsigned int simpleNumericCommandHelperToUInt(const std::string& commandBody)
+            {
+               return boost::lexical_cast<unsigned int>(commandBody);
             }
          };
       }

@@ -25,7 +25,7 @@
       ((SensorBinary))
       ((SensorMultilevel))
       ((Meter))
-      ((ZipAdvServer))
+      ((Color))
       ((ZipAdvClient))
       ((MeterPulse))
       ((ThermostatHeating))

@@ -14,6 +14,8 @@ namespace shared
          DECLARE_CAPACITY(CStandardCapacities::ArmingAlarm, "armingAlarm", CStandardUnits::NoUnit(), EKeywordDataType::kEnum);
          DECLARE_CAPACITY(CStandardCapacities::BatteryLevel, "batteryLevel", CStandardUnits::Percent(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::CameraMove, "cameraMove", CStandardUnits::NoUnit(), EKeywordDataType::kEnum);
+         DECLARE_CAPACITY(CStandardCapacities::ColorRGB, "colorrgb", CStandardUnits::NoUnit(), EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::ColorRGBW, "colorrgbw", CStandardUnits::NoUnit(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Counter, "count", CStandardUnits::NoUnit(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Current, "current", CStandardUnits::Ampere(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Curtain, "curtain", CStandardUnits::NoUnit(), EKeywordDataType::kEnum);

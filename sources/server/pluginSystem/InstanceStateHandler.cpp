@@ -80,7 +80,7 @@ namespace pluginSystem
    void CInstanceStateHandler::setState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string& customMessageId, const std::string& customMessageData)
    {
       if (!customMessageId.empty() && (state != shared::plugin::yPluginApi::historization::EPluginState::kCustom && state != shared::plugin::yPluginApi::historization::EPluginState::kError))
-      YADOMS_LOG(warning) << "Custom message ID \"" << customMessageId << "\" will be ignored as state is " << state.toString();
+         YADOMS_LOG(warning) << "Custom message ID \"" << customMessageId << "\" will be ignored as state is " << state.toString();
 
       m_pluginStateKeyword->set(state);
       m_pluginStateMessage->setMessage(customMessageId, customMessageData);

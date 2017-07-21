@@ -20,6 +20,7 @@ namespace shared
                ((Stopped))
                ((Running))
                ((Custom))
+               ((WaitDebugger))
             )
 
 

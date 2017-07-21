@@ -164,8 +164,8 @@ IZWaveController::E_StartResult COpenZWaveController::start()
 
       if (!m_initFailed)
       {
-         //RequestConfigurationParameters();
-
+         RequestConfigurationParameters();
+         ExploreNetwork();
          OpenZWave::Manager::Get()->WriteConfig(m_homeId);
 
          m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kRunning);
@@ -237,6 +237,32 @@ void COpenZWaveController::RequestConfigurationParameters()
    }
 }
 
+void COpenZWaveController::ExploreNetwork()
+{
+   for (auto it = m_nodes.begin(); it != m_nodes.end(); ++it)
+   {
+      YADOMS_LOG(information) << "Exploring " << (*it)->getHomeId() << "." << (int)(*it)->getNodeId();
+
+      unsigned char nGrp = OpenZWave::Manager::Get()->GetNumGroups((*it)->getHomeId(), (*it)->getNodeId());
+      YADOMS_LOG(information) << "    Group count : " << nGrp;
+      for (unsigned char i = 1; i <= nGrp; ++i)
+      {
+         std::string label = OpenZWave::Manager::Get()->GetGroupLabel((*it)->getHomeId(), (*it)->getNodeId(), i);
+         YADOMS_LOG(information) << "        Group name : " << label;
+
+         OpenZWave::InstanceAssociation* ia = NULL;
+         int assocNb = OpenZWave::Manager::Get()->GetAssociations((*it)->getHomeId(), (*it)->getNodeId(), i, &ia);
+         YADOMS_LOG(information) << "        Assoc count : " << assocNb;
+         for (int k = 0; k < assocNb; k++)
+         {
+            YADOMS_LOG(information) << "          Association : " << (int)ia[k].m_nodeId << "#" << (int)ia[k].m_instance;
+         }
+      }
+      
+   }
+
+}
+
 
 void COpenZWaveController::onNotification(OpenZWave::Notification const* _notification, void* _context)
 {
@@ -255,11 +281,6 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
 
       if (node)
          node->registerKeyword(vID, m_configuration->getIncludeSystemKeywords());
-
-      /*if (!OpenZWave::Manager::Get()->IsValuePolled(vID))
-      {
-         OpenZWave::Manager::Get()->EnablePoll(vID, 1);
-      }*/
       break;
    }
 
@@ -268,33 +289,27 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
 
    case OpenZWave::Notification::Type_ValueChanged:
    {
-      if (!OpenZWave::Manager::Get()->GetChangeVerified(vID))
+      auto node = getNode(_notification);
+      setupValue(node, vID);
+      if (node)
       {
-         OpenZWave::Manager::Get()->SetChangeVerified(vID, true);
-      }
-      else
-      {
-         auto node = getNode(_notification);
-         if (node)
+         auto kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
+         if (kw)
          {
-            auto kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
-            if (kw)
+            auto historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
+            auto d(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), historizedData));
+
+            YADOMS_LOG(debug) << "===================================";
+            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : instance=" << static_cast<int>(vID.GetInstance());
+            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : node=" << static_cast<int>(vID.GetNodeId());
+            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : valeur=" << historizedData->formatValue();
+
+            if (m_handler != nullptr)
             {
-               auto historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
-               auto d(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), historizedData));
-
-               YADOMS_LOG(debug) << "===================================";
-               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : instance=" << static_cast<int>(vID.GetInstance());
-               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : node=" << static_cast<int>(vID.GetNodeId());
-               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : valeur=" << historizedData->formatValue();
-
-               if (m_handler != nullptr)
-               {
-                  if (vID.GetGenre() == OpenZWave::ValueID::ValueGenre_Config)
-                     m_handler->postEvent(CZWave::kUpdateConfiguration, d);
-                  else
-                     m_handler->postEvent(CZWave::kUpdateKeyword, d);
-               }
+               if (vID.GetGenre() == OpenZWave::ValueID::ValueGenre_Config)
+                  m_handler->postEvent(CZWave::kUpdateConfiguration, d);
+               else
+                  m_handler->postEvent(CZWave::kUpdateKeyword, d);
             }
          }
       }
@@ -363,7 +378,9 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       {
          bool isrouting = OpenZWave::Manager::Get()->IsNodeRoutingDevice(node->getHomeId(), node->getNodeId());
          bool islistening = OpenZWave::Manager::Get()->IsNodeListeningDevice(node->getHomeId(), node->getNodeId());
+         bool islisteningfrequent = OpenZWave::Manager::Get()->IsNodeFrequentListeningDevice(node->getHomeId(), node->getNodeId());
          bool isawake = OpenZWave::Manager::Get()->IsNodeAwake(node->getHomeId(), node->getNodeId());
+         bool isbeaming = OpenZWave::Manager::Get()->IsNodeBeamingDevice(node->getHomeId(), node->getNodeId());
          bool isfailed = OpenZWave::Manager::Get()->IsNodeFailed(node->getHomeId(), node->getNodeId());
          bool issecurity = OpenZWave::Manager::Get()->IsNodeSecurityDevice(node->getHomeId(), node->getNodeId());
          bool iszwplus = OpenZWave::Manager::Get()->IsNodeZWavePlus(node->getHomeId(), node->getNodeId());
@@ -372,6 +389,8 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          YADOMS_LOG(information) << "ZWave : NodeProtocolInfo : " << sNodeType;
          YADOMS_LOG(information) << "ZWave : NodeProtocolInfo : Routing node " << isrouting;
          YADOMS_LOG(information) << "ZWave : NodeProtocolInfo : Listening node " << islistening;
+         YADOMS_LOG(information) << "ZWave : NodeProtocolInfo : Listening frequent (FLiRS) " << islisteningfrequent;
+         YADOMS_LOG(information) << "ZWave : NodeProtocolInfo : Beaming node " << isbeaming;
          YADOMS_LOG(information) << "ZWave : NodeProtocolInfo : Awake node " << isawake;
          YADOMS_LOG(information) << "ZWave : NodeProtocolInfo : Failed node " << isfailed;
          YADOMS_LOG(information) << "ZWave : NodeProtocolInfo : Security node " << issecurity;
@@ -568,7 +587,49 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          if (m_handler != nullptr)
             m_handler->postEvent(CZWave::kDeclareDevice, d);
       }
+      break;
    }
+
+   case OpenZWave::Notification::Type_Notification:
+   {
+      auto nodeInfo = getNode(_notification);
+      if (nodeInfo)
+      {
+         
+         
+         std::string sNodeName = (boost::format("%1%.%2%") % nodeInfo->getHomeId() % (int)nodeInfo->getNodeId()).str();
+         shared::CDataContainer d;
+         d.set("name", sNodeName);
+
+         switch (_notification->GetNotification())
+         {
+         case OpenZWave::Notification::Code_MsgComplete: //Completed messages
+            break;
+         case OpenZWave::Notification::Code_Timeout: //Messages that timeout will send a Notification with this code.
+            break;
+         case OpenZWave::Notification::Code_NoOperation: //Report on NoOperation message sent completion
+            break;
+         case OpenZWave::Notification::Code_Awake: //Report when a sleeping node wakes up
+            d.set("state", shared::plugin::yPluginApi::historization::EDeviceState::kActive);
+            break;
+         case OpenZWave::Notification::Code_Sleep: //Report when a node goes to sleep
+            d.set("state", shared::plugin::yPluginApi::historization::EDeviceState::kAsleep);
+            break;
+         case OpenZWave::Notification::Code_Dead: //Report when a node is presumed dead
+            d.set("state", shared::plugin::yPluginApi::historization::EDeviceState::kDead);
+            break;
+         case OpenZWave::Notification::Code_Alive: //Report when a node is revived
+            d.set("state", shared::plugin::yPluginApi::historization::EDeviceState::kActive);
+            break;
+         }
+         if (m_handler != nullptr && d.containsValue("state"))
+            m_handler->postEvent(CZWave::kUpdateDeviceState, d);
+
+      }
+      break;
+   }
+
+
    break;
 
    default:
@@ -591,7 +652,9 @@ shared::CDataContainer COpenZWaveController::getNodeInfo(const uint32 homeId, co
 
    bool isrouting = OpenZWave::Manager::Get()->IsNodeRoutingDevice(homeId, nodeId);
    bool islistening = OpenZWave::Manager::Get()->IsNodeListeningDevice(homeId, nodeId);
+   bool islisteningfrequent = OpenZWave::Manager::Get()->IsNodeFrequentListeningDevice(homeId, nodeId);
    bool isawake = OpenZWave::Manager::Get()->IsNodeAwake(homeId, nodeId);
+   bool isbeaming = OpenZWave::Manager::Get()->IsNodeBeamingDevice(homeId, nodeId);
    bool isfailed = OpenZWave::Manager::Get()->IsNodeFailed(homeId, nodeId);
    bool issecurity = OpenZWave::Manager::Get()->IsNodeSecurityDevice(homeId, nodeId);
    bool iszwplus = OpenZWave::Manager::Get()->IsNodeZWavePlus(homeId, nodeId);
@@ -600,7 +663,6 @@ shared::CDataContainer COpenZWaveController::getNodeInfo(const uint32 homeId, co
 
    std::string sNodeDeviceTypeString = OpenZWave::Manager::Get()->GetNodeDeviceTypeString(homeId, nodeId);
    std::string sNodeRole = OpenZWave::Manager::Get()->GetNodeRoleString(homeId, nodeId);
-
 
    YADOMS_LOG(information) << "ZWave : NodeInfo : id = " << id;
    YADOMS_LOG(information) << "ZWave : NodeInfo : name = " << sNodeName;
@@ -618,6 +680,8 @@ shared::CDataContainer COpenZWaveController::getNodeInfo(const uint32 homeId, co
    YADOMS_LOG(information) << "ZWave : NodeInfo : " << sNodeType;
    YADOMS_LOG(information) << "ZWave : NodeInfo : Routing node " << isrouting;
    YADOMS_LOG(information) << "ZWave : NodeInfo : Listening node " << islistening;
+   YADOMS_LOG(information) << "ZWave : NodeInfo : Listening frequent (FLiRS) " << islisteningfrequent;
+   YADOMS_LOG(information) << "ZWave : NodeInfo : Beaming node " << isbeaming;
    YADOMS_LOG(information) << "ZWave : NodeInfo : Awake node " << isawake;
    YADOMS_LOG(information) << "ZWave : NodeInfo : Failed node " << isfailed;
    YADOMS_LOG(information) << "ZWave : NodeInfo : Security node " << issecurity;
@@ -646,7 +710,9 @@ shared::CDataContainer COpenZWaveController::getNodeInfo(const uint32 homeId, co
    details.set("Role", sNodeRole);
 
    details.set("IsRouting", isrouting);
-   details.set("ISListening", isrouting);
+   details.set("IsListening", isrouting);
+   details.set("IsFLiRS", islisteningfrequent);
+   details.set("IsBeaming", isbeaming);
    details.set("IsAwake", isawake);
    details.set("IsFailed", isfailed);
    details.set("IsSecurity", issecurity);
@@ -655,6 +721,30 @@ shared::CDataContainer COpenZWaveController::getNodeInfo(const uint32 homeId, co
    d.set("details", details);
    return d;
 }
+
+void COpenZWaveController::setupValue(boost::shared_ptr<COpenZWaveNode> node, OpenZWave::ValueID & vID)
+{
+   if (OpenZWave::Manager::Get()->IsNodeListeningDevice(node->getHomeId(), node->getNodeId()) ||
+      OpenZWave::Manager::Get()->IsNodeFrequentListeningDevice(node->getHomeId(), node->getNodeId()))
+   {
+      //this is a connected device (or often wakeup)
+      //make all values to be verified
+      if (!OpenZWave::Manager::Get()->GetChangeVerified(vID))
+      {
+         OpenZWave::Manager::Get()->SetChangeVerified(vID, true);
+      }
+   }
+   else
+   {
+      //this is an sleeping node (probably for battery life)
+      //just get values
+      if (OpenZWave::Manager::Get()->GetChangeVerified(vID))
+      {
+         OpenZWave::Manager::Get()->SetChangeVerified(vID, false);
+      }
+   }
+}
+
 
 void COpenZWaveController::sendCommand(const std::string& device, const std::string& keyword, const std::string& value)
 {

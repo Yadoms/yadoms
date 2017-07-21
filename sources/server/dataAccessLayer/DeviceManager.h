@@ -3,6 +3,7 @@
 #include "database/IDeviceRequester.h"
 #include "database/IKeywordRequester.h"
 #include "database/IAcquisitionRequester.h"
+#include "IKeywordManager.h"
 
 namespace dataAccessLayer
 {
@@ -17,7 +18,8 @@ namespace dataAccessLayer
       //--------------------------------------------------------------
       CDeviceManager(boost::shared_ptr<database::IDeviceRequester> deviceRequester,
                      boost::shared_ptr<database::IKeywordRequester> keywordRequester,
-                     boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester);
+                     boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
+                     boost::shared_ptr<IKeywordManager> keywordManager);
 
       //--------------------------------------------------------------
       /// \brief       Destructor
@@ -47,6 +49,7 @@ namespace dataAccessLayer
       void updateDeviceModel(int deviceId, const std::string& model) override;
       void updateDeviceType(int deviceId, const std::string& type) override;
       void updateDeviceBlacklistState(int deviceId, const bool blacklist) override;
+      void updateDeviceState(int deviceId, const shared::plugin::yPluginApi::historization::EDeviceState& state, const std::string& customMessageId, const shared::CDataContainer &data) const override;
       void removeDevice(int deviceId) override;
       void removeDevice(int pluginId, const std::string& deviceName) override;
       void removeAllDeviceForPlugin(int pluginId) override;
@@ -60,6 +63,7 @@ namespace dataAccessLayer
       boost::shared_ptr<database::IDeviceRequester> m_deviceRequester;
       boost::shared_ptr<database::IKeywordRequester> m_keywordRequester;
       boost::shared_ptr<database::IAcquisitionRequester> m_acquisitionRequester;
+      boost::shared_ptr<IKeywordManager> m_keywordManager;
    };
 } //namespace dataAccessLayer 
 

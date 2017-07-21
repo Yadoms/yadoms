@@ -463,6 +463,7 @@
           "startStop": "Start / Stop the plugin",
           "running": "Running",
           "starting": "Starting...",
+          "waitDebugger" : "Waiting for debugger...",
           "stopped": "Stopped",
           "error": "Error",
           "packageError": "Invalid plugin",

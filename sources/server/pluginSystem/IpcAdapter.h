@@ -107,6 +107,8 @@ namespace pluginSystem
       void processDeviceConfigurationRequest(const plugin_IPC::toYadoms::DeviceConfigurationRequest& msg);
       void processUpdateDeviceConfiguration(const plugin_IPC::toYadoms::UpdateDeviceConfiguration& msg) const;
       void processExtraQueryProgression(const plugin_IPC::toYadoms::ExtraQueryProgression& msg) const;
+      void processSetDeviceState(const plugin_IPC::toYadoms::SetDeviceState& msg) const;
+      
    private:
       //--------------------------------------------------------------
       /// \brief	Message queue max message size & number

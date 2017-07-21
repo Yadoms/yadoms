@@ -137,6 +137,20 @@ namespace pluginSystem
       m_deviceManager->updateDeviceType(m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Id(), type);
    }
 
+   void CYPluginApiImplementation::updateDeviceState(const std::string& device, const shared::plugin::yPluginApi::historization::EDeviceState& state, const std::string& customMessageId, const std::map<std::string, std::string>& customMessageDataParams) const
+   {
+      if (!deviceExists(device))
+         throw shared::exception::CEmptyResult("Fail to update device state : device doesn't exist.");
+
+      //convert map to dataContainer
+      shared::CDataContainer dc;
+      std::map<std::string, std::string>::const_iterator i;
+      for (i = customMessageDataParams.begin(); i != customMessageDataParams.end(); ++i)
+         dc.set(i->first, i->second);
+
+      m_deviceManager->updateDeviceState(m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Id(), state, customMessageId, dc);
+   }
+
    void CYPluginApiImplementation::removeDevice(const std::string& device)
    {
       if (!deviceExists(device))

@@ -8,6 +8,7 @@
 #include "Current.h"
 #include "Curtain.h"
 #include "DateTime.h"
+#include "DeviceState.h"
 #include "Dimmable.h"
 #include "Direction.h"
 #include "Distance.h"

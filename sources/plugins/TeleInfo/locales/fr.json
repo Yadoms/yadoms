@@ -20,10 +20,10 @@
 		"EPeriod": {
 			"name" : "Période tarifaire",
 			"values" : {
-				"AllHours": "Toutes heures",
-				"LowCostHours": "Heures creuses",
-				"PeakCostHour": "Heures pleines",
-				"NormalCostHours": "Heures pleines",
+            "AllHours": "Toutes heures",
+            "LowCostHours": "Heures creuses",
+            "PeakCostHours": "Heures pleines",
+            "NormalCostHours": "Heures pleines",
             "MobilePeakCostHours": "heures pointe mobile",
             "LowCostBlueDays": "Heures creuses bleues",
             "LowCostWhiteDays": "Heures creuses blanches",
