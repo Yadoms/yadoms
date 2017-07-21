@@ -33,6 +33,8 @@ set(ZWAVE_PLUGIN_SOURCES
 	OpenZWaveNodeKeywordBase.cpp 
 	OpenZWaveNodeKeywordDimmable.h
 	OpenZWaveNodeKeywordDimmable.cpp 
+	OpenZWaveNodeKeywordColor.h
+	OpenZWaveNodeKeywordColor.cpp 
    OpenZWaveNodeKeywordGeneric.h
    OpenZWaveNodeKeywordGenericByType.h
 	OpenZWaveNodeKeywordFactory.h

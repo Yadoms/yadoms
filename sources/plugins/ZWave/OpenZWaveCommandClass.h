@@ -23,7 +23,7 @@
       ((SensorBinary)(0x30))
       ((SensorMultilevel)(0x31))
       ((Meter)(0x32))
-      ((ZipAdvServer)(0x33))
+      ((Color)(0x33))
       ((ZipAdvClient)(0x34))
       ((MeterPulse)(0x35))
       ((ThermostatHeating)(0x38))

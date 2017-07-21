@@ -157,6 +157,10 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Historizers.h
    shared/plugin/yPluginApi/historization/CameraMove.cpp
    shared/plugin/yPluginApi/historization/CameraMove.h
+   shared/plugin/yPluginApi/historization/ColorRGB.cpp
+   shared/plugin/yPluginApi/historization/ColorRGB.h
+   shared/plugin/yPluginApi/historization/ColorRGBW.cpp
+   shared/plugin/yPluginApi/historization/ColorRGBW.h
    shared/plugin/yPluginApi/historization/Counter.cpp
    shared/plugin/yPluginApi/historization/Counter.h
    shared/plugin/yPluginApi/historization/Current.cpp
