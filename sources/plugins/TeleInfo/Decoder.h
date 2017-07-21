@@ -32,11 +32,21 @@ public:
 private:
    //--------------------------------------------------------------
    /// \brief	                     Create the Device with the counter Id
+   ///\param[in] monoPhase          the counter is mono phase
+   //-----------------------------------------------------
+   void createDeviceAndKeywords(const bool monoPhase);
+
    //--------------------------------------------------------------
-   void createDeviceAndKeywords(bool apparentPowerPresent);
-
-
+   /// \brief	                     Create the keyword list depending of the tariff
+   ///\param[in] tariff             contract of the tele-info
+   //-----------------------------------------------------
    void createKeywordList(const std::string& tariff);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Process each tele-Info message
+   ///\param[in] key                identifier of the message
+   ///\param[in] value              value of the identifier
+   //-----------------------------------------------------
    void processMessage(const std::string& key,
                        const std::string& value);
 
@@ -65,6 +75,7 @@ private:
    boost::shared_ptr<yApi::historization::CEnergy> m_tempoWhiteDaysLowCostPeriod;
    boost::shared_ptr<yApi::historization::CEnergy> m_tempoWhiteDaysNormalCostPeriod;
    boost::shared_ptr<yApi::historization::CCurrent> m_instantCurrent;
+   boost::shared_ptr<yApi::historization::CCurrent> m_instantCurrentPhase[3];
    boost::shared_ptr<yApi::historization::CApparentPower> m_apparentPower;
 
 
@@ -104,6 +115,9 @@ private:
    static const std::string m_tag_BBRHPJR;
    static const std::string m_tag_PTEC;
    static const std::string m_tag_IINST;
+   static const std::string m_tag_IINST1;
+   static const std::string m_tag_IINST2;
+   static const std::string m_tag_IINST3;
    static const std::string m_tag_PAPP;
    static const std::string m_tag_DEMAIN;
 };
