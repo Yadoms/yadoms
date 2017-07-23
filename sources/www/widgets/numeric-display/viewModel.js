@@ -39,7 +39,7 @@ function numericDisplayViewModel() {
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
         
         try{
-           self.shouldBeVisible(self.widget.configuration.dateDisplay);
+           self.shouldBeVisible(parseBool(self.widget.configuration.dateDisplay));
         }
         catch(error)
         {
