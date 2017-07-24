@@ -318,7 +318,12 @@ widgetViewModelCtor =
            });
 
            $.whenAll(arrayOfDeffered).done(function () {
-               return self.refreshData(self.widget.configuration.interval);
+               self.refreshData(self.widget.configuration.interval).done(function () {
+                  d.resolve();
+               })
+               .fail(function (error) {
+                  d.reject();
+               });
            })
            .fail(function (error) {
                notifyError($.t("widgets/chart:errorInitialization"), error);
