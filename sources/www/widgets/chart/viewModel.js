@@ -254,9 +254,7 @@ widgetViewModelCtor =
            
                //we update uuid if they don't exist
                if (isNullOrUndefined(self.seriesUuid[index]))
-                   self.seriesUuid[index] = createUUID();               
-                
-               //console.log ("registerKeywordAcquisitions", registerKeywordAcquisitions);
+                   self.seriesUuid[index] = createUUID();
                
                // We ask the current device name
                var deffered = DeviceManager.get(device.content.source.deviceId);
@@ -970,11 +968,6 @@ widgetViewModelCtor =
 
                if (self.seriesUuid.length === 0)
                    return;
-
-                console.log ("widget id : ", self.widget.id);
-                console.log ("self.widget.configuration.devices : ", self.widget.configuration.devices);
-                console.log ("keywordId : ", keywordId);
-                console.log ("data : ", data);
                 
                try {
                    $.each(self.widget.configuration.devices, function (index, device) {

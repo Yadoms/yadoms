@@ -255,15 +255,10 @@ function dispatchNewAcquisitionsToWidgets(acq) {
     $.each(page.widgets, function (widgetIndex, widget) {
         //we ask which devices are needed for this widget instance
         if (!isNullOrUndefined(widget.listenedKeywords)) {
-           //console.log ("widget", widget);
-           //console.log ("widget.listenedKeywords", widget.listenedKeywords);
             $.each(widget.listenedKeywords, function (keywordIndex, keywordId) {
                 if (!isNullOrUndefined(keywordId)) {
-                   console.log ("keywordId", keywordId);
-                   console.log ("acq.keywordId", acq.keywordId);
-                    foreach device we ask for last values
+                    //foreach device we ask for last values
                     if (keywordId == acq.keywordId) {
-                        console.debug("onNewAcquisition : " + JSON.stringify(acq));
                         try {
                             //we signal the new acquisition to the widget if the widget supports the method
                             if (typeof widget.viewModel.onNewAcquisition === 'function')

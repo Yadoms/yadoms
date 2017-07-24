@@ -49,8 +49,6 @@ WidgetApi.prototype.registerKeywordAcquisitions = function (keywordIds) {
    } else {
       self.widget.listenedKeywords.push(keywordIds);
    }
-   
-   console.log ("self.widget.listenedKeywords", self.widget.listenedKeywords);
 };
 
 /**

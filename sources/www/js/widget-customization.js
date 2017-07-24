@@ -53,14 +53,14 @@ function exitCustomization(saveCustomization) {
     if (isNullOrUndefined(saveCustomization))
         saveCustomization = true;
 
-    customization = false;
     waitForRealeaseButtonAfterEnteringCustomization = false;
     $("a#customizeButton i").removeClass("fa-spin");
-
+    
     //we save all widgets in each page
     $.each(PageManager.pages, function (index, currentPage) {
         PageManager.enableCustomization(currentPage, false);
         if (currentPage.loaded) {
+           
             $.each(currentPage.widgets, function (index, currentWidget) {
                 WidgetManager.enableCustomization(currentWidget, false);
             });
