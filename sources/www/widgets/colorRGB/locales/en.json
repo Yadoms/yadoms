@@ -1,0 +1,10 @@
+{
+	"name": "RGB color",
+	"description": "This widget allow to choose a color (Red/Green/Blue)",
+	"configurationSchema": {
+		"device": {
+			"name": "Data to display",
+			"description": "Select the data that you want to display"
+		}
+	}
+}

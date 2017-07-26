@@ -1,0 +1,10 @@
+{
+	"name": "Sélecteur de couleur",
+	"description": "Ce widget permet de choisir une couleur sur une palette de couleur",
+	"configurationSchema": {
+		"device": {
+			"name": "Donnée à afficher",
+			"description": "Selectionnez ici la donnée que vous souhaitez visualiser"
+		}
+	}
+}
