@@ -1,5 +1,5 @@
 {
-	"name": "RGB color",
+	"name": "RGB color picker",
 	"description": "This widget allow to choose a color (Red/Green/Blue)",
 	"configurationSchema": {
 		"device": {

@@ -4,6 +4,8 @@
 #include "ArmingAlarm.h"
 #include "BatteryLevel.h"
 #include "CameraMove.h"
+#include "ColorRGB.h"
+#include "ColorRGBW.h"
 #include "Counter.h"
 #include "Current.h"
 #include "Curtain.h"

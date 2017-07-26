@@ -218,6 +218,8 @@ namespace web
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ArmingAlarm());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::BatteryLevel());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::CameraMove());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ColorRGB());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ColorRGBW());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Counter());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Current());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Curtain());

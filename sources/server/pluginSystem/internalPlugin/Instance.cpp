@@ -227,6 +227,10 @@ namespace pluginSystem
             keyword = boost::make_shared<yApi::historization::CBatteryLevel>("battery", yApi::EKeywordAccessMode::kGetSet);
          else if (standardCapacity == yApi::CStandardCapacities::CameraMove().getName())
             keyword = boost::make_shared<yApi::historization::CCameraMove>("camera", yApi::EKeywordAccessMode::kGetSet);
+         else if (standardCapacity == yApi::CStandardCapacities::ColorRGB().getName())
+            keyword = boost::make_shared<yApi::historization::CColorRGB>("ColorRGB", yApi::EKeywordAccessMode::kGetSet);
+         else if (standardCapacity == yApi::CStandardCapacities::ColorRGBW().getName())
+            keyword = boost::make_shared<yApi::historization::CColorRGBW>("ColorRGBW", yApi::EKeywordAccessMode::kGetSet);
          else if (standardCapacity == yApi::CStandardCapacities::Counter().getName())
             keyword = boost::make_shared<yApi::historization::CCounter>("counter", yApi::EKeywordAccessMode::kGetSet);
          else if (standardCapacity == yApi::CStandardCapacities::Current().getName())
