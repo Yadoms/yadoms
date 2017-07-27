@@ -24,17 +24,18 @@ function colorRGBViewModel() {
             customClass: 'colorpicker-2x',
             sliders: {
                 saturation: {
-                    maxLeft: 150,
-                    maxTop: 150
+                    maxLeft: 200,
+                    maxTop: 200
                 },
                 hue: {
-                    maxTop: 150
+                    maxTop: 200
                 },
                 alpha: {
-                    maxTop: 150
+                    maxTop: 200
                 }
-            },            
-            color: '#ffaa00',
+            },
+            color: '#000000',
+            format: 'rgb',
             container: true,
             inline: true
         });
@@ -42,7 +43,9 @@ function colorRGBViewModel() {
         // capture the event changeColor
         this.widgetApi.find(".picker-canvas").colorpicker().on('changeColor', function(e) {
            
-            console.log ("color changed !");
+            console.log ("color changed ! :", e.color.toHex());
+           
+            
            
             //$('body')[0].style.backgroundColor = e.color.toString(
             //    'rgba');

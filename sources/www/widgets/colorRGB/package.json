@@ -6,16 +6,16 @@
 	"credits": "",
   "dimensions": {
     "min": {
-      "x": 1,
-      "y": 1
+      "x": 2,
+      "y": 2
     },
     "max": {
       "x": 4,
       "y": 4
     },
     "default": {
-      "x": 1,
-      "y": 1
+      "x": 2,
+      "y": 2
     }
   },
   "hasTitle" :  true,

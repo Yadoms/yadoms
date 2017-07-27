@@ -5,17 +5,20 @@
 }
 
 .widget-colorRGB .colorpicker-2x .colorpicker-saturation {
-        width: 150px;
-        height: 150px;
+        width: 200px;
+        height: 200px;
+        background-size: 200px 200px;
 }
 
 .widget-colorRGB .colorpicker-2x .colorpicker-hue,
 .widget-colorRGB .colorpicker-2x .colorpicker-alpha {
         width: 15px;
-        height: 150px;
+        height: 200px;
+        background-size: 15px 200px;
 }
 
 .widget-colorRGB .colorpicker-2x .colorpicker-color,
 .widget-colorRGB .colorpicker-2x .colorpicker-color div {
         height: 15px;
+        background-size: 15px 200px;
 }
