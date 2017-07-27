@@ -1,5 +1,21 @@
-.widget-numeric-display .inline-main-div {
+.widget-colorRGB .inline-main-div {
     display: inline-block;
     height:100%;
     width:100%;
+}
+
+.widget-colorRGB .colorpicker-2x .colorpicker-saturation {
+        width: 150px;
+        height: 150px;
+}
+
+.widget-colorRGB .colorpicker-2x .colorpicker-hue,
+.widget-colorRGB .colorpicker-2x .colorpicker-alpha {
+        width: 15px;
+        height: 150px;
+}
+
+.widget-colorRGB .colorpicker-2x .colorpicker-color,
+.widget-colorRGB .colorpicker-2x .colorpicker-color div {
+        height: 15px;
 }

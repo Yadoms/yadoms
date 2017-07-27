@@ -21,10 +21,32 @@ function colorRGBViewModel() {
         // Display the color picker
         console.log (this.widgetApi.find(".picker-canvas"));
         this.widgetApi.find(".picker-canvas").colorpicker({
+            customClass: 'colorpicker-2x',
+            sliders: {
+                saturation: {
+                    maxLeft: 150,
+                    maxTop: 150
+                },
+                hue: {
+                    maxTop: 150
+                },
+                alpha: {
+                    maxTop: 150
+                }
+            },            
             color: '#ffaa00',
             container: true,
             inline: true
         });
+        
+        // capture the event changeColor
+        this.widgetApi.find(".picker-canvas").colorpicker().on('changeColor', function(e) {
+           
+            console.log ("color changed !");
+           
+            //$('body')[0].style.backgroundColor = e.color.toString(
+            //    'rgba');
+        });        
     };
 
     this.configurationChanged = function () {
