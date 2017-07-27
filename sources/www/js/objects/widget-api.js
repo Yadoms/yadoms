@@ -41,7 +41,7 @@ WidgetApi.prototype.registerKeywordAcquisitions = function (keywordIds) {
 
    if (!self.widget.listenedKeywords)
       self.widget.listenedKeywords = [];
-
+   
    if (Array.isArray(keywordIds)) {
       $.each(keywordIds, function (index, value) {
          self.widget.listenedKeywords.push(value);

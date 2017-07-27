@@ -47,6 +47,16 @@ function rainGaugeDisplayViewModel() {
     this.getValues = function (keywordId) {
        self = this;
        
+       console.log (self.acquisitionData);
+       
+       // When all values are outside the range, only 1 value is sent.
+       if (self.acquisitionData.length == 1)
+       {
+          // We check if this value is up to date. We delete it if not
+          if (self.serverTime - DateTimeFormatter.isoDateToDate(self.acquisitionData[0].date) > 86400000)
+             self.acquisitionData.shift();
+       }       
+       
        //clean old values at the begin of the tab
        if (self.acquisitionData.length != 0)
        {
@@ -156,9 +166,6 @@ function rainGaugeDisplayViewModel() {
         if (keywordId === self.widget.configuration.device.keywordId) {
             //it is the right device
             if (data.value !==""){
-
-               self.serverTime = data.date;
-               
                if (self.acquisitionData.length!=0){
                   if (data.date != DateTimeFormatter.isoDateToDate(self.acquisitionData[self.acquisitionData.length-1].date)) {
                      self.acquisitionData.push({date: DateTimeFormatter.dateToIsoDate(data.date), key: data.value});
@@ -168,7 +175,6 @@ function rainGaugeDisplayViewModel() {
                   self.acquisitionData.push({date: DateTimeFormatter.dateToIsoDate(data.date), key: data.value});
                }
             }
-            
             self.getValues(keywordId);
         }
     };

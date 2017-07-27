@@ -198,7 +198,11 @@ widgetViewModelCtor =
                
                self.widgetApi.askServerLocalTime(function (serverLocalTime) {
                   self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
-                  d.resolve();                  
+               }).done(function(data) {
+                  d.resolve();
+               })
+               .fail(function(error) {
+                  d.reject();
                });
            })
            .fail(function (error) {
@@ -224,6 +228,7 @@ widgetViewModelCtor =
            // Reset of some values
            self.periodValueType = [];
            self.seriesUuid = [];
+           var d = new $.Deferred();
 
            if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
                return;
@@ -244,12 +249,12 @@ widgetViewModelCtor =
            //we create an uuid for each serie
            $.each(self.widget.configuration.devices, function (index, device) {
 
+               //we register keyword new acquisition
+               self.widgetApi.registerKeywordAcquisitions(device.content.source.keywordId);
+           
                //we update uuid if they don't exist
                if (isNullOrUndefined(self.seriesUuid[index]))
                    self.seriesUuid[index] = createUUID();
-
-               //we register keyword new acquisition
-               self.widgetApi.registerKeywordAcquisitions(device.content.source.keywordId);
                
                // We ask the current device name
                var deffered = DeviceManager.get(device.content.source.deviceId);
@@ -259,7 +264,7 @@ widgetViewModelCtor =
                });
 
                //we ask the current value
-               var deffered2 = KeywordManager.get(device.content.source.keywordId);
+               var deffered2 = self.widgetApi.getKeywordInformation(device.content.source.keywordId);
                arrayOfDeffered.push(deffered2);
                deffered2.done(function (keyword) {
                    self.keywordInfo[index] = keyword;
@@ -307,13 +312,24 @@ widgetViewModelCtor =
                   }
                   else
                      self.incompatibility = false;
-                   
                });
            });
 
            $.whenAll(arrayOfDeffered).done(function () {
-               self.refreshData(self.widget.configuration.interval);
-           });
+               self.refreshData(self.widget.configuration.interval).done(function () {
+                  d.resolve();
+               })
+               .fail(function (error) {
+                  d.reject();
+               });
+           })
+           .fail(function (error) {
+               notifyError($.t("widgets/chart:errorInitialization"), error);
+               throw $.t("widgets/chart:errorInitialization");
+               d.reject();
+           });           
+           
+           return d.promise();
        };
 
        this.navigatorBtnClick = function () {
@@ -329,7 +345,6 @@ widgetViewModelCtor =
                //we ask the new time server, and we refresh information
                self.widgetApi.askServerLocalTime(function (serverLocalTime) {
                   self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
-                  
                   self.refreshData(interval);
                });
            };
@@ -357,6 +372,7 @@ widgetViewModelCtor =
 
        this.refreshData = function (interval) {
            var self = this;
+           var d = new $.Deferred();
 
            if (self.chart) {
                self.interval = interval;
@@ -764,19 +780,28 @@ widgetViewModelCtor =
                                })
                                .fail(function (error) {
                                   notifyError($.t("widgets/chart:errorDuringGettingDeviceData"), error);
+                                  d.reject();
                                });
                            }
                        });
 
                        $.whenAll(arrayOfDeffered).done(function () {
                            self.finalRefresh();
-                       });
+                           d.resolve();
+                       })
+                      .fail(function (error) {
+                         notifyError($.t("widgets/chart:errorDuringGettingDeviceData"), error);
+                         d.reject();
+                      });                       
                    }
                } catch (err) {
                    console.error(err.message);
                    self.refreshingData = false;
+                   d.reject();
                }
            }
+           
+           return d.promise();
        };
 
 
@@ -943,7 +968,7 @@ widgetViewModelCtor =
 
                if (self.seriesUuid.length === 0)
                    return;
-
+                
                try {
                    $.each(self.widget.configuration.devices, function (index, device) {
                        if (keywordId === device.content.source.keywordId) {

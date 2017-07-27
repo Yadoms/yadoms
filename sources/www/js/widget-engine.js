@@ -259,7 +259,6 @@ function dispatchNewAcquisitionsToWidgets(acq) {
                 if (!isNullOrUndefined(keywordId)) {
                     //foreach device we ask for last values
                     if (keywordId == acq.keywordId) {
-                        console.debug("onNewAcquisition : " + JSON.stringify(acq));
                         try {
                             //we signal the new acquisition to the widget if the widget supports the method
                             if (typeof widget.viewModel.onNewAcquisition === 'function')
