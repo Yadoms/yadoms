@@ -19,6 +19,7 @@ function colorRGBViewModel() {
         });
         
         // Display the color picker
+        console.log (this.widgetApi.find(".picker-canvas"));
         this.widgetApi.find(".picker-canvas").colorpicker({
             color: '#ffaa00',
             container: true,
@@ -47,3 +48,43 @@ function colorRGBViewModel() {
         }
     };
 };
+
+/*
+<input id="cp9" type="text" class="form-control" value="pink" />
+<style>
+    .colorpicker-2x .colorpicker-saturation {
+        width: 200px;
+        height: 200px;
+    }
+
+    .colorpicker-2x .colorpicker-hue,
+    .colorpicker-2x .colorpicker-alpha {
+        width: 30px;
+        height: 200px;
+    }
+
+    .colorpicker-2x .colorpicker-color,
+    .colorpicker-2x .colorpicker-color div {
+        height: 30px;
+    }
+</style>
+<script>
+    $(function() {
+        $('#cp9').colorpicker({
+            customClass: 'colorpicker-2x',
+            sliders: {
+                saturation: {
+                    maxLeft: 200,
+                    maxTop: 200
+                },
+                hue: {
+                    maxTop: 200
+                },
+                alpha: {
+                    maxTop: 200
+                }
+            }
+        });
+    });
+</script>
+*/

@@ -1,3 +1,5 @@
 .widget-numeric-display .inline-main-div {
     display: inline-block;
+    height:100%;
+    width:100%;
 }
