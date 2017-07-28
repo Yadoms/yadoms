@@ -3,6 +3,7 @@
 #include "OpenZWaveHelpers.h"
 #include <Poco/RegularExpression.h>
 #include <shared/plugin/yPluginApi/IDeviceCommand.h>
+#include <Poco/Types.h>
 
 COpenZWaveNodeKeywordColor::COpenZWaveNodeKeywordColor(OpenZWave::ValueID& valueId, const std::string& vLabel, shared::plugin::yPluginApi::EKeywordAccessMode accessMode)
    : COpenZWaveNodeKeywordBase(valueId),
@@ -17,7 +18,7 @@ COpenZWaveNodeKeywordColor::~COpenZWaveNodeKeywordColor()
 bool COpenZWaveNodeKeywordColor::sendCommand(const std::string& commandData)
 {
    //commandData should contain an integer (unsigned) value 287454020
-   unsigned int value = shared::plugin::yPluginApi::IDeviceCommand::simpleNumericCommandHelperToUInt(commandData);
+   Poco::UInt32 value = shared::plugin::yPluginApi::IDeviceCommand::simpleNumericCommandHelperToUInt(commandData);
    m_keyword->set(value);
 
    //it must be converted to "#11223344"
@@ -40,7 +41,7 @@ boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> COpe
       std::stringstream ss;
       ss << std::hex << results[1];
 
-      unsigned int valueInt = 0;
+      Poco::UInt32 valueInt = 0;
       ss >> valueInt;
       m_keyword->set(valueInt);
    } 

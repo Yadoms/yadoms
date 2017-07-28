@@ -199,33 +199,10 @@
     margin-top: 5px;
 }
 
-.blocklySvg {
-    width: 100%;
-    z-index: 9999 !important;
-	display:block; /* fix svg growing up after each clic */
-    height: 100%;
-}
-
 .blockly-container {
     height: 100%;
 }
 
-/**
-Fix dropdown menus hidden by bootstrap modal
-*/
-.blocklyWidgetDiv {
-
-    z-index: 9999 !important;
-
-}
-
-
-
-.blocklyToolboxDiv{
-
-    z-index: 9999 !important;
-
-}
 
 .blocklyValidationDropdownError{
     font-style: italic;
