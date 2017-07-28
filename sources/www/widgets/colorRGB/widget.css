@@ -22,3 +22,15 @@
         height: 15px;
         background-size: 15px 200px;
 }
+
+.widget-colorRGB .colorpicker-2x .colorpicker-selectors {
+        height: 15px;
+        width: 200px;
+        background-size: 15px 200px;
+}
+
+.widget-colorRGB .colorpicker-2x .colorpicker-selectors-color {
+        height: 10px;
+        width: 10px;
+        background-size: 10px 10px;
+}

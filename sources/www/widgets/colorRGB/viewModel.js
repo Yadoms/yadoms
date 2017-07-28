@@ -11,6 +11,8 @@ function colorRGBViewModel() {
      * @param widget widget class object
      */
     this.initialize = function () {
+        self = this;
+       
         //we configure the toolbar
         this.widgetApi.toolbar({
             activated: true,
@@ -36,27 +38,40 @@ function colorRGBViewModel() {
             },
             color: '#000000',
             format: 'rgb',
+            colorSelectors: {
+                'black': '#000000',
+                'white': '#ffffff',
+                'red': '#FF0000',
+                'default': '#777777',
+                'primary': '#337ab7',
+                'success': '#5cb85c',
+                'info': '#5bc0de',
+                'warning': '#f0ad4e',
+                'danger': '#d9534f'
+            },
             container: true,
             inline: true
         });
         
         // capture the event changeColor
-        this.widgetApi.find(".picker-canvas").colorpicker().on('changeColor', function(e) {
-           
-            console.log ("color changed ! :", e.color.toHex());
-           
-            
-           
-            //$('body')[0].style.backgroundColor = e.color.toString(
-            //    'rgba');
-        });        
+        this.widgetApi.find(".picker-canvas").colorpicker().unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
     };
 
+    // function called when the color changed
+    this.changeColorButtonClick = function () {
+           var self = this;
+           return function (e) {
+            console.log ("color changed ! :", e.color.toHex());
+            KeywordManager.sendCommand(self.widget.configuration.device.keywordId, e.color.toHex().slice(1).toString());
+            
+        };
+    };
+    
     this.configurationChanged = function () {
         var self = this;
 
         // TODO
-    }
+    };
 
     /**
     * New acquisition handler
@@ -73,43 +88,3 @@ function colorRGBViewModel() {
         }
     };
 };
-
-/*
-<input id="cp9" type="text" class="form-control" value="pink" />
-<style>
-    .colorpicker-2x .colorpicker-saturation {
-        width: 200px;
-        height: 200px;
-    }
-
-    .colorpicker-2x .colorpicker-hue,
-    .colorpicker-2x .colorpicker-alpha {
-        width: 30px;
-        height: 200px;
-    }
-
-    .colorpicker-2x .colorpicker-color,
-    .colorpicker-2x .colorpicker-color div {
-        height: 30px;
-    }
-</style>
-<script>
-    $(function() {
-        $('#cp9').colorpicker({
-            customClass: 'colorpicker-2x',
-            sliders: {
-                saturation: {
-                    maxLeft: 200,
-                    maxTop: 200
-                },
-                hue: {
-                    maxTop: 200
-                },
-                alpha: {
-                    maxTop: 200
-                }
-            }
-        });
-    });
-</script>
-*/
