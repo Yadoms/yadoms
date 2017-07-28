@@ -12,7 +12,7 @@ namespace shared
          namespace historization
          {
             CColorRGB::CColorRGB(const std::string& keywordName,  const EKeywordAccessMode& accessMode)
-               : CSingleHistorizableData<unsigned int>(keywordName, CStandardCapacities::ColorRGB(), accessMode, 0)
+               : CSingleHistorizableData<Poco::UInt32>(keywordName, CStandardCapacities::ColorRGB(), accessMode, 0)
             {
             }
 
