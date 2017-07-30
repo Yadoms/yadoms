@@ -36,11 +36,11 @@ CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    m_forecastToday(boost::make_shared<linky::specificHistorizers::CColor>("TodayColor")),
      m_api(api),
      m_isdeveloperMode(false),
-     m_linkyEnableInCounter(false),
+     //m_linkyEnableInCounter(false),
      m_deviceCreated(false),
      m_optarif(OP_NOT_DEFINED),
-   m_indexFournisseurActif(0),
-   m_producteur(false)
+   m_activeIndex(0),
+   m_production(false)
 {
    m_isdeveloperMode = api->getYadomsInformation()->developperMode();
 
@@ -208,14 +208,12 @@ void CDecoder::processMessage(const std::string& key,
          ss << std::hex << value;
          ss >> status;
 
-         // TODO : rename french names
-
-         m_indexFournisseurActif = (status & 0x00003C00) >> 10; // bits 10 to 13
+         m_activeIndex = (status & 0x00003C00) >> 10; // bits 10 to 13
 
          if (status & 0x00000100) // bit 8
-            m_producteur = true;
+            m_production = true;
          else
-            m_producteur = false;
+            m_production = false;
 
          m_forecastToday->set(linky::specificHistorizers::EColor((status >> 24) & 0x03)); // bit 24 to 25 color of today
          m_forecastTomorrow->set(linky::specificHistorizers::EColor((status & 0x0C000000) >> 26)); // bits 26 to 27 color of tomorrow

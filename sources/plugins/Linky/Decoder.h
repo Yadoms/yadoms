@@ -74,7 +74,7 @@ private:
    std::string m_deviceName;
 
    bool m_isdeveloperMode;
-   bool m_linkyEnableInCounter; // TODO : Check if this one always exist
+   //bool m_linkyEnableInCounter; // TODO : Check if this one always exist
    bool m_deviceCreated;
    unsigned char m_revision;
    
@@ -104,11 +104,11 @@ private:
    static const std::string m_tag_UMOY3;
 
    static const int m_nb_period=11;
-   static const int m_nb_contrat=4;
+   static const int m_nb_contract=4;
 
-   static const std::string Enedis_Periode[m_nb_period];
-   static const std::string Enedis_Contrat[m_nb_contrat];
+   static const std::string Enedis_Period[m_nb_period];
+   static const std::string Enedis_Contract[m_nb_contract];
 
-   unsigned char m_indexFournisseurActif;
-   bool m_producteur;
+   unsigned char m_activeIndex;
+   bool m_production;
 };
