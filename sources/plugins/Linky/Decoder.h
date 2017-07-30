@@ -1,8 +1,10 @@
 #pragma once
 
 #include "IDecoder.h"
-#include "Keywords/RunningPeriod.h"
-#include "Keywords/ForecastTomorrow.h"
+//#include "Keywords/RunningPeriod.h"
+//#include "Keywords/ColorPrice.h"
+#include "specificHistorizer/Color.h"
+#include "specificHistorizer/Period.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -39,7 +41,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	                     Create the Device with the counter Id
    //--------------------------------------------------------------
-   void createDeviceAndKeywords();
+   void createDeviceAndKeywords(bool isTriphases);
 
 
    void createKeywordList(const std::string& tariff);
@@ -61,11 +63,12 @@ private:
    //--------------------------------------------------------------
    boost::shared_ptr<yApi::historization::CEnergy> m_counter[10];
    boost::shared_ptr<yApi::historization::CEnergy> m_activeEnergyInjected;
-   boost::shared_ptr<yApi::historization::CCurrent> m_instantCurrent;
-   boost::shared_ptr<yApi::historization::CApparentPower> m_apparentPower;
+   boost::shared_ptr<yApi::historization::CApparentPower> m_apparentPower[3];
+   boost::shared_ptr<yApi::historization::CVoltage> m_meanVoltage[3];
 
-   boost::shared_ptr<CRunningPeriod> m_TimePeriod;
-   boost::shared_ptr<CForecastTomorrow> m_forecastTomorrow;
+   boost::shared_ptr<linky::specificHistorizers::CPeriod> m_TimePeriod;
+   boost::shared_ptr<linky::specificHistorizers::CColor> m_forecastTomorrow;
+   boost::shared_ptr<linky::specificHistorizers::CColor> m_forecastToday;
 
    boost::shared_ptr<yApi::IYPluginApi> m_api;
    std::string m_deviceName;
@@ -96,6 +99,9 @@ private:
    static const std::string m_tag_SINST2;
    static const std::string m_tag_SINST3;
    static const std::string m_tag_SINSTS;
+   static const std::string m_tag_UMOY1;
+   static const std::string m_tag_UMOY2;
+   static const std::string m_tag_UMOY3;
 
    static const int m_nb_period=11;
    static const int m_nb_contrat=4;

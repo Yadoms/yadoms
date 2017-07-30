@@ -17,6 +17,9 @@ const std::string CDecoder::m_tag_SINST1 = "SINST1";// apparent power for phase 
 const std::string CDecoder::m_tag_SINST2 = "SINST2";// apparent power for phase 2
 const std::string CDecoder::m_tag_SINST3 = "SINST3";// apparent power for phase 3
 const std::string CDecoder::m_tag_SINSTS = "SINSTS";// global apparent power
+const std::string CDecoder::m_tag_UMOY1  = "UMOY1"; // mean voltage for phase 1
+const std::string CDecoder::m_tag_UMOY2  = "UMOY2"; // mean voltage for phase 2
+const std::string CDecoder::m_tag_UMOY3  = "UMOY3"; // mean voltage for phase 3
 
 DECLARE_ENUM_IMPLEMENTATION(EContract,
 ((BASE))
@@ -28,9 +31,9 @@ DECLARE_ENUM_IMPLEMENTATION(EContract,
 CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    :
    m_activeEnergyInjected(boost::make_shared<yApi::historization::CEnergy>("ActiveEnergyInjected")),
-   m_instantCurrent(boost::make_shared<yApi::historization::CCurrent>("InstantCurrent")),
-     m_apparentPower(boost::make_shared<yApi::historization::CApparentPower>("ApparentPower")),
-     m_TimePeriod(boost::make_shared<CRunningPeriod>(api, "RunningPeriod")),
+   m_TimePeriod(boost::make_shared<linky::specificHistorizers::CPeriod>("runningPeriod")),
+   m_forecastTomorrow(boost::make_shared<linky::specificHistorizers::CColor>("TomorrowColor")),
+   m_forecastToday(boost::make_shared<linky::specificHistorizers::CColor>("TodayColor")),
      m_api(api),
      m_isdeveloperMode(false),
      m_linkyEnableInCounter(false),
@@ -41,7 +44,10 @@ CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    m_isdeveloperMode = api->getYadomsInformation()->developperMode();
 
-   for (unsigned char counter = 0; counter < 10; ++counter)
+   for (int counter = 0; counter < 3; ++counter)
+      m_apparentPower[counter] = boost::make_shared<yApi::historization::CApparentPower>("ApparentPower" + boost::lexical_cast<std::string>(counter + 1));
+
+   for (int counter = 0; counter < 10; ++counter)
       m_counter[counter] = boost::make_shared<yApi::historization::CEnergy>("Counter" + boost::lexical_cast<std::string>(counter+1));
 }
 
@@ -54,6 +60,7 @@ void CDecoder::decodeLinkyMessage(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    // TODO : To be checked
    //m_linkyEnableInCounter = (messages->size() == 1 && messages->find(m_tag_ADSC) != messages->end()) ? false : true;
+   bool triphases = (messages->find(m_tag_SINST2) != messages->end()) ? false : true;
 
    for (const auto message : *messages)
    {
@@ -62,17 +69,25 @@ void CDecoder::decodeLinkyMessage(boost::shared_ptr<yApi::IYPluginApi> api,
    }
 
    if (!m_deviceCreated)
-      createDeviceAndKeywords();
+      createDeviceAndKeywords(triphases);
 
    m_api->historizeData(m_deviceName, m_keywords);
 }
 
-void CDecoder::createDeviceAndKeywords()
+void CDecoder::createDeviceAndKeywords(bool isTriphases)
 {
    if (m_isdeveloperMode) YADOMS_LOG(information) << "Nb keywords : " << "=" << m_keywords.size() ;
 
-   m_api->declareDevice(m_deviceName, "teleInfoUSB", 
-                        "TeleInfoUSB : Id = " + m_deviceName,
+   if (isTriphases) // We add missing phases
+   {
+      m_keywords.push_back(m_apparentPower[1]);
+      m_keywords.push_back(m_apparentPower[2]);
+      m_keywords.push_back(m_meanVoltage[1]);
+      m_keywords.push_back(m_meanVoltage[2]);
+   }
+
+   m_api->declareDevice(m_deviceName, "linkyUSB", 
+                        "linkyUSB : Id = " + m_deviceName,
                         m_keywords,
                         m_DeviceDetails);
 
@@ -103,7 +118,8 @@ void CDecoder::createKeywordList(const std::string& tariff)
    case 'B':
    {
       m_optarif = OP_TEMPO;
-      m_keywords.push_back(m_forecastTomorrow->GetHistorizable());
+      m_keywords.push_back(m_forecastTomorrow);
+      m_keywords.push_back(m_forecastToday);
       break;
    }
    default:
@@ -114,9 +130,9 @@ void CDecoder::createKeywordList(const std::string& tariff)
    if (tariff[1] == 'A' || tariff[1] == 'C' || tariff[1] == 'J' || tariff[1] == 'B')
    {
       // common for all contracts
-      m_keywords.push_back(m_instantCurrent);
-      m_keywords.push_back(m_apparentPower);
-      m_keywords.push_back(m_TimePeriod->GetHistorizable());
+      m_keywords.push_back(m_apparentPower[0]);
+      m_keywords.push_back(m_meanVoltage[0]);
+      m_keywords.push_back(m_TimePeriod);
 
       for (unsigned char counter = 0; counter < 10; ++counter)
       {
@@ -192,6 +208,8 @@ void CDecoder::processMessage(const std::string& key,
          ss << std::hex << value;
          ss >> status;
 
+         // TODO : rename french names
+
          m_indexFournisseurActif = (status & 0x00003C00) >> 10; // bits 10 to 13
 
          if (status & 0x00000100) // bit 8
@@ -199,6 +217,7 @@ void CDecoder::processMessage(const std::string& key,
          else
             m_producteur = false;
 
+         m_forecastToday->set(linky::specificHistorizers::EColor((status >> 24) & 0x03)); // bit 24 to 25 color of today
          m_forecastTomorrow->set(linky::specificHistorizers::EColor((status & 0x0C000000) >> 26)); // bits 26 to 27 color of tomorrow
 
          // Creation of keywords here with the STGE near the end of the frame
@@ -211,21 +230,21 @@ void CDecoder::processMessage(const std::string& key,
       }
       else if (key.find(m_tag_SINST2))
       {
-         // TODO : To finish
+         m_apparentPower[1]->set(boost::lexical_cast<double>(value));
       }
       else if (key.find(m_tag_SINST3))
       {
-         // TODO : To finish
+         m_apparentPower[2]->set(boost::lexical_cast<double>(value));
       }
       else if (m_revision == 1) // specific functions v1
       {
          if (key.find(m_tag_SINST1))
-            m_apparentPower->set(boost::lexical_cast<double>(value));
+            m_apparentPower[0]->set(boost::lexical_cast<double>(value));
       }
       else if (m_revision == 2) // specific functions v2
       {
          if (key.find(m_tag_SINSTS))
-            m_apparentPower->set(boost::lexical_cast<double>(value));
+            m_apparentPower[0]->set(boost::lexical_cast<double>(value));
          else
          {
          }

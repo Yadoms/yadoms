@@ -22,19 +22,12 @@ set(LINKY_SOURCES
    LinkyReceiveBufferHandler.cpp
    stdafx.h
    stdafx.cpp
-   Keywords/IKeyword.h
-   Keywords/KeywordException.hpp
-   Keywords/ForecastTomorrow.cpp
-   Keywords/ForecastTomorrow.h
-   Keywords/RunningPeriod.cpp
-   Keywords/RunningPeriod.h
    specificHistorizer/Color.h
    specificHistorizer/Color.cpp
    specificHistorizer/Period.h
    specificHistorizer/Period.cpp
 )
 
-source_group(Keywords Keywords/*.*)
 source_group(specificHistorizer specificHistorizer/*.*)
 
 #########################################
