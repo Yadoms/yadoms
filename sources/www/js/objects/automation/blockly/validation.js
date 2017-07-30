@@ -115,7 +115,7 @@ Blockly.Validation.isBlockValid = function (block) {
  * Add the error shpae to the block
  */
 Blockly.BlockSvg.prototype.addError = function () {
-    Blockly.addClass_(/** @type {!Element} */(this.svgGroup_),
+    Blockly.utils.addClass(/** @type {!Element} */(this.svgGroup_),
         "blocklySelectedError");
     // Move the selected block to the top of the stack.
     if (!isNullOrUndefined(this.svgGroup_.parentNode))
@@ -126,7 +126,7 @@ Blockly.BlockSvg.prototype.addError = function () {
  * Remove the error shape of a block
  */
 Blockly.BlockSvg.prototype.removeError = function () {
-    Blockly.removeClass_(/** @type {!Element} */(this.svgGroup_),
+    Blockly.utils.removeClass(/** @type {!Element} */(this.svgGroup_),
         "blocklySelectedError");
 };
 

@@ -52,6 +52,8 @@ AcquisitionManager.getLastValues = function(keywords) {
 
    if (keywords && keywords.length > 0) {
 
+      duplicateRemoval(keywords);
+   
       //extract only keyword id
       var allKeywordId = [];
       $.each(keywords, function(index, keyword) {

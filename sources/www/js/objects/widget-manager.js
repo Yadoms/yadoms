@@ -392,16 +392,24 @@ WidgetManager.loadWidget = function (widget, pageWhereToAdd, ensureVisible) {
         if (!WidgetPackageManager.packageList[widget.type].viewAnViewModelHaveBeenDownloaded) {
             WidgetManager.downloadWidgetViewAndVieWModel_(widget.type, true)
             .done(function () {
-                WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible);
-                d.resolve();
+                WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible).done(function(){
+                  d.resolve();
+               })
+               .fail(function(){
+                  d.reject();
+               });
             })
             .fail(function (errorMessage) {
                 WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, errorMessage, ensureVisible);
                 d.reject(errorMessage);
             });
         } else {
-            WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible);
-            d.resolve();
+            WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible).done(function(){
+               d.resolve();
+            })
+            .fail(function(){
+               d.reject();
+            });
         }
 
     }
@@ -418,10 +426,18 @@ WidgetManager.loadWidget = function (widget, pageWhereToAdd, ensureVisible) {
  * @private
  */
 WidgetManager.instanciateWidgetToPage_ = function (pageWhereToAdd, widget, widgetType, ensureVisible) {
+   
+    var d = $.Deferred();
+   
     try {
         //we finalize the load of the widget
         WidgetManager.consolidate_(widget, WidgetPackageManager.packageList[widgetType]);
-        WidgetManager.addToDom_(widget, ensureVisible);
+        WidgetManager.addToDom_(widget, ensureVisible).done(function(){
+           d.resolve();
+        })
+        .fail(function(){
+           d.reject();
+        });
         //we add the widget to the collection
         pageWhereToAdd.addWidget(widget);
     }
@@ -433,6 +449,8 @@ WidgetManager.instanciateWidgetToPage_ = function (pageWhereToAdd, widget, widge
             console.error("Fail to load deactivated widget");
         }
     }
+    
+    return d.promise();
 }
 
 /**
@@ -463,6 +481,8 @@ WidgetManager.instanciateDowngradedWidgetToPage_ = function (pageWhereToAdd, wid
 WidgetManager.addToDom_ = function (widget, ensureVisible) {
     assert(!isNullOrUndefined(widget), "widget must be defined");
 
+    var d = new $.Deferred();
+    
     WidgetManager.createGridWidget(widget);
 
     //we check if we are in customization we must apply customization on the new item
@@ -541,7 +561,9 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
                         //we ask for widget refresh data
                         updateWidgetPolling(widget);
 						
-						widget.viewModel.widgetApi.manageRollingTitle();
+						      widget.viewModel.widgetApi.manageRollingTitle();
+                        
+                        d.resolve();
                     });
                 });
             });
@@ -550,7 +572,10 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
     catch (e) {
         notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'initialize' }));
         console.warn(e);
+        d.reject();
     }
+    
+    return d.promise();
 };
 
 /**

@@ -180,6 +180,8 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "          </shadow>";
     toolbox += "        </value>";
     toolbox += "      </block>";
+    toolbox += "      <block type=\"math_random_float\">";
+    toolbox += "      </block>";
     toolbox += "  </category>";
     toolbox += "  <category name=\"" + catText + "\" colour=\"160\">";
     toolbox += "     <block type=\"text\"></block>";
@@ -361,6 +363,10 @@ Blockly.Yadoms.CreateToolbox_ = function () {
     toolbox += "              <field name=\"TEXT\">,</field>";
     toolbox += "           </shadow>";
     toolbox += "        </value>";
+    toolbox += "     </block>";
+    toolbox += "     <block type=\"lists_sort\">";
+    toolbox += "        <field name=\"TYPE\">NUMERIC</field>";
+    toolbox += "        <field name=\"DIRECTION\">1</field>";
     toolbox += "     </block>";
     toolbox += "  </category>";
     toolbox += "  <category name=\"" + catColour + "\" colour=\"20\">";

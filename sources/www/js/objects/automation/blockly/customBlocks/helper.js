@@ -108,9 +108,9 @@ Blockly.Yadoms.ConfigureBlockForYadomsCapacitySelection = function(thisBlock, ca
         var capacityValid = thisBlock.getSelectedCapacity() !== thisBlock.emptyCapacityDropDownItem_[1];
         if (capacityDd.textElement_) {
             if (!capacityValid) {
-                Blockly.addClass_(capacityDd.textElement_, "blocklyValidationDropdownError");
+                Blockly.utils.addClass(capacityDd.textElement_, "blocklyValidationDropdownError");
             } else {
-                Blockly.removeClass_(capacityDd.textElement_, "blocklyValidationDropdownError");
+                Blockly.utils.removeClass(capacityDd.textElement_, "blocklyValidationDropdownError");
             }
         }
         return {
@@ -147,6 +147,8 @@ Blockly.Yadoms.ConfigureBlockForYadomsCapacitySelection = function(thisBlock, ca
 
     capacityDd.setValue(capacityDd.getValue());
     thisBlock.isValid();
+    
+    capacityDd.init();
     return result;	
 	
 };
@@ -311,17 +313,17 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, on
         var deviceValid = thisBlock.getSelectedDevice() !== thisBlock.emptyDeviceDropDownItem_[1];
         if (deviceDd.textElement_) {
             if (!deviceValid) {
-                Blockly.addClass_(deviceDd.textElement_, "blocklyValidationDropdownError");
+                Blockly.utils.addClass(deviceDd.textElement_, "blocklyValidationDropdownError");
             } else {
-                Blockly.removeClass_(deviceDd.textElement_, "blocklyValidationDropdownError");
+                Blockly.utils.removeClass(deviceDd.textElement_, "blocklyValidationDropdownError");
             }
         }
         var keywordValid = thisBlock.getSelectedKeyword() !== thisBlock.emptyKeywordDropDownItem_[1];
         if (keywordDd.textElement_) {
             if (!keywordValid) {
-                Blockly.addClass_(keywordDd.textElement_, "blocklyValidationDropdownError");
+                Blockly.utils.addClass(keywordDd.textElement_, "blocklyValidationDropdownError");
             } else {
-                Blockly.removeClass_(keywordDd.textElement_, "blocklyValidationDropdownError");
+                Blockly.utils.removeClass(keywordDd.textElement_, "blocklyValidationDropdownError");
             }
         }
         return {
@@ -371,5 +373,8 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, on
 
     deviceDd.setValue(deviceDd.getValue());
     thisBlock.isValid();
+
+    keywordDd.init();
+    deviceDd.init();
     return result;
 };
