@@ -279,6 +279,8 @@ namespace pluginSystem
             keyword = boost::make_shared<yApi::historization::CUv>("uv", yApi::EKeywordAccessMode::kGetSet);
          else if (standardCapacity == yApi::CStandardCapacities::Voltage().getName())
             keyword = boost::make_shared<yApi::historization::CVoltage>("voltage", yApi::EKeywordAccessMode::kGetSet);
+         else if (standardCapacity == yApi::CStandardCapacities::Volume().getName())
+            keyword = boost::make_shared<yApi::historization::CVolume>("volume", yApi::EKeywordAccessMode::kGetSet);
          else if (standardCapacity == yApi::CStandardCapacities::WeatherCondition().getName())
             keyword = boost::make_shared<yApi::historization::CWeatherCondition>("weatherCondition", yApi::EKeywordAccessMode::kGetSet);
          else if (standardCapacity == yApi::CStandardCapacities::Weight().getName())
