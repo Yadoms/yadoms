@@ -1,6 +1,6 @@
 {
 	"name": "linky",
-	"description": "EDF power meter information",
+	"description": "Linky - EDF power meter information. The equipment is connected directly on the EDF power meter.",
 	"configurationSchema": {
 		"SerialPort": {
 			"name": "Serial port",
