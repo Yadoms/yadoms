@@ -56,7 +56,7 @@ CDecoder::~CDecoder()
 }
 
 void CDecoder::decodeLinkyMessage(boost::shared_ptr<yApi::IYPluginApi> api,
-                                  const boost::shared_ptr<std::map<std::string, std::string>>& messages)
+                                  const boost::shared_ptr<std::map<std::string, std::vector<std::string>>>& messages)
 {
    // TODO : To be checked
    //m_linkyEnableInCounter = (messages->size() == 1 && messages->find(m_tag_ADSC) != messages->end()) ? false : true;

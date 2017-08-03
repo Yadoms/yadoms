@@ -96,7 +96,7 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             if (m_isDeveloperMode) YADOMS_LOG(information) << "TeleInfo plugin :  DataReceived" ;
 
             processDataReceived(api,
-                                api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::string>>>());
+                                api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string>>>>());
 
 			//Lauch a new time the time out to detect connexion failure
 			m_waitForAnswerTimer->start();
@@ -181,7 +181,7 @@ void CLinky::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void CLinky::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
-                                 const boost::shared_ptr<std::map<std::string, std::string>>& messages)
+                                 const boost::shared_ptr<std::map<std::string, std::vector<std::string>>>& messages)
 {
    m_decoder->decodeLinkyMessage(api, messages);
 

@@ -42,12 +42,12 @@ void CLinkyReceiveBufferHandler::push(const shared::communication::CByteBuffer& 
    // Send message if complete (separate aggregated messages)
    while (true)
    {
-      m_logger->logReceived(shared::communication::CByteBuffer(m_content));
-
       const auto messages = getCompleteMessage();
       if (messages->empty())
          break;
       notifyEventHandler(messages);
+
+      m_logger->logReceived(shared::communication::CByteBuffer(m_content));
 
       m_nextSendMessageDate = shared::currentTime::Provider().now() + m_suspendDelay;
    }

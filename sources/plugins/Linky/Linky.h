@@ -54,7 +54,7 @@ protected:
    /// \param [in] messages         The buffer with the received information
    //--------------------------------------------------------------
    void processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
-                            const boost::shared_ptr<std::map<std::string, std::string>>& messages);
+                            const boost::shared_ptr<std::map<std::string, std::vector<std::string>>>& messages);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the Linky Receiver becomes connected

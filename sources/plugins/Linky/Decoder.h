@@ -34,7 +34,7 @@ public:
 
    // IDecoder implementation
    void decodeLinkyMessage(boost::shared_ptr<yApi::IYPluginApi> api,
-                           const boost::shared_ptr<std::map<std::string, std::string>>& messages) override;
+                           const boost::shared_ptr<std::map<std::string, std::vector<std::string>>>& messages) override;
    // [END] IDecoder implementation
 
 private:
