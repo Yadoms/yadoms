@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Pulse.h"
+#include "shared/plugin/yPluginApi/historization/MeasureType.h"
 #include <shared/Log.h>
 
 namespace equipments
@@ -33,7 +34,8 @@ namespace equipments
          case litre:
          case m3:
             m_pulseVolume = boost::make_shared<yApi::historization::CVolume>(keywordName,
-                                                                             yApi::EKeywordAccessMode::kGet);
+                                                                             yApi::EKeywordAccessMode::kGet,
+                                                                             yApi::historization::EMeasureType::kCumulative);
             keywordsToDeclare.push_back(m_pulseVolume);
             break;
          default:

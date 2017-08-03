@@ -1,10 +1,10 @@
 ﻿{
 	"name": "linky",
-	"description": "Module de suivi de consommation électrique.",
+	"description": "Module de suivi de consommation électrique. Cet équipement se connecte directement sur le compteur électrique Linky.",
 	"configurationSchema": {
 		"SerialPort": {
 			"name": "Port Série",
-			"description": "Le port série sur lequel est connecté le module Linky"
+			"description": "Le port série sur lequel est connecté l'équipement de lecture des informations."
 		}
 	},
 	"enumerations": {
