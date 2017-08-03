@@ -58,7 +58,7 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    createConnection(api);
 
    // the main loop
-   YADOMS_LOG(information) << "Teleinfo plugin is running..." ;
+   YADOMS_LOG(information) << "Linky plugin is running..." ;
 
    while (true)
    {
@@ -74,7 +74,7 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kEvtPortConnection:
          {
-            YADOMS_LOG(information) << "Teleinfo plugin :  Port Connection" ;
+            YADOMS_LOG(information) << "Linky plugin :  Port Connection" ;
             api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
             m_runningState = kConnecting;
 
@@ -93,7 +93,7 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
 			 m_waitForAnswerTimer->stop();
 
-            if (m_isDeveloperMode) YADOMS_LOG(information) << "TeleInfo plugin :  DataReceived" ;
+            if (m_isDeveloperMode) YADOMS_LOG(information) << "Linky plugin :  DataReceived" ;
 
             processDataReceived(api,
                                 api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::string>>>());
