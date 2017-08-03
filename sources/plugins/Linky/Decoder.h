@@ -1,8 +1,6 @@
 #pragma once
 
 #include "IDecoder.h"
-//#include "Keywords/RunningPeriod.h"
-//#include "Keywords/ColorPrice.h"
 #include "specificHistorizer/Color.h"
 #include "specificHistorizer/Period.h"
 
@@ -10,6 +8,7 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 DECLARE_ENUM_HEADER(EContract,
+((NOT_DEFINED))
 ((BASE))
 ((CREUSE))
 ((EJP))
@@ -46,7 +45,7 @@ private:
 
    void createKeywordList(const std::string& tariff);
    void processMessage(const std::string& key,
-                       const std::string& value);
+                       const std::vector<std::string>& value);
 
    //--------------------------------------------------------------
    /// \brief  Keywords list
@@ -74,18 +73,9 @@ private:
    std::string m_deviceName;
 
    bool m_isdeveloperMode;
-   //bool m_linkyEnableInCounter; // TODO : Check if this one always exist
    bool m_deviceCreated;
    unsigned char m_revision;
-   
-   enum
-   {
-      OP_NOT_DEFINED,
-      OP_BASE,
-      OP_CREUSE,
-      OP_EJP,
-      OP_TEMPO
-   } m_optarif;
+   EContract m_contract;
 
    static const std::string m_tag_ADSC;
    static const std::string m_tag_VTIC;

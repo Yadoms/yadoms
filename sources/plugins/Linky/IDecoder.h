@@ -23,5 +23,5 @@ public:
    /// \param [in] messages        Received messages
    //--------------------------------------------------------------
    virtual void decodeLinkyMessage(boost::shared_ptr<yApi::IYPluginApi> api,
-                                   const boost::shared_ptr<std::map<std::string, std::string>>& messages) = 0;
+                                   const boost::shared_ptr<std::map<std::string, std::vector<std::string>>>& messages) = 0;
 };
