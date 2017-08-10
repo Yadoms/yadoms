@@ -2,18 +2,9 @@
 
 #include "IDecoder.h"
 #include "specificHistorizer/Color.h"
-#include "specificHistorizer/Period.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
-
-DECLARE_ENUM_HEADER(EContract,
-((NOT_DEFINED))
-((BASE))
-((CREUSE))
-((EJP))
-((TEMPO))
-);
 
 //--------------------------------------------------------------
 /// \brief	This class implement the Linky protocol
@@ -40,10 +31,9 @@ private:
    //--------------------------------------------------------------
    /// \brief	                     Create the Device with the counter Id
    //--------------------------------------------------------------
-   void createDeviceAndKeywords(bool isTriphases);
-
-
-   void createKeywordList(const std::string& tariff);
+   void createDeviceAndKeywords();
+   void createFirstKeywordList(bool isTriphases);
+   void createRunningKeywordList(bool isTriphases);
    void processMessage(const std::string& key,
                        const std::vector<std::string>& value);
 
@@ -64,25 +54,23 @@ private:
    boost::shared_ptr<yApi::historization::CEnergy> m_activeEnergyInjected;
    boost::shared_ptr<yApi::historization::CApparentPower> m_apparentPower[3];
    boost::shared_ptr<yApi::historization::CVoltage> m_meanVoltage[3];
+   boost::shared_ptr<yApi::historization::CText> m_runningPeriod;
+   boost::shared_ptr<yApi::historization::CCounter> m_runningIndex;
 
-   boost::shared_ptr<linky::specificHistorizers::CPeriod> m_TimePeriod;
-   boost::shared_ptr<linky::specificHistorizers::CColor> m_forecastTomorrow;
-   boost::shared_ptr<linky::specificHistorizers::CColor> m_forecastToday;
+   boost::shared_ptr<linky::specificHistorizers::CColor> m_tomorrowColor;
+   boost::shared_ptr<linky::specificHistorizers::CColor> m_todayColor;
 
    boost::shared_ptr<yApi::IYPluginApi> m_api;
    std::string m_deviceName;
+   std::string m_newPeriod;
 
-   bool m_isdeveloperMode;
    bool m_deviceCreated;
-   unsigned char m_revision;
-   EContract m_contract;
+   int m_revision;
 
    static const std::string m_tag_ADSC;
    static const std::string m_tag_VTIC;
-   static const std::string m_tag_NGTF;
    static const std::string m_tag_LTARF;
    static const std::string m_tag_EASF;
-   static const std::string m_tag_EASD;
    static const std::string m_tag_STGE;
    static const std::string m_tag_EAIT;
    static const std::string m_tag_SINST1;
@@ -93,12 +81,8 @@ private:
    static const std::string m_tag_UMOY2;
    static const std::string m_tag_UMOY3;
 
-   static const int m_nb_period=11;
-   static const int m_nb_contract=4;
-
-   static const std::string Enedis_Period[m_nb_period];
-   static const std::string Enedis_Contract[m_nb_contract];
-
-   unsigned char m_activeIndex;
+   // index 0 : new index
+   // index 1 : old index
+   unsigned char m_activeIndex[2];
    bool m_production;
 };
