@@ -24,8 +24,6 @@ set(LINKY_SOURCES
    stdafx.cpp
    specificHistorizer/Color.h
    specificHistorizer/Color.cpp
-   specificHistorizer/Period.h
-   specificHistorizer/Period.cpp
 )
 
 source_group(specificHistorizer specificHistorizer/*.*)
