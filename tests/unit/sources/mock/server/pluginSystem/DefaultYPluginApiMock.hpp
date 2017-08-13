@@ -114,6 +114,13 @@ public:
       m_devices.find(device)->second.m_details.initializeWith(details);
    }
 
+   void updateDeviceState(const std::string& device,
+                          const shared::plugin::yPluginApi::historization::EDeviceState& state,
+                          const std::string& customMessageId = std::string(),
+                          const std::map<std::string, std::string>& customMessageDataParams = std::map<std::string, std::string>()) const override
+   {
+   }
+
    std::string getDeviceModel(const std::string& device) const override
    {
       return m_devices.find(device)->second.m_model;
