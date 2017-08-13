@@ -17,6 +17,7 @@ widgetViewModelCtor =
        this.differentialDisplay = [];
        this.incompatibility = false;
        this.serverTime = null;
+       this.precision = 1;
        
        //This variable is used in differential display
        this.chartLastValue = [];
@@ -123,10 +124,10 @@ widgetViewModelCtor =
                                if (!this.series.hideInLegend) {
                                    if (isNullOrUndefined(this.point.low)) { //Standard serie
                                        s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
-                                           this.series.name + " : " + this.y.toFixed(1) + " " + this.series.units;
+                                           this.series.name + " : " + this.y.toFixed(this.series.chart.precision) + " " + this.series.units;
                                    } else { //Range Serie
                                        s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
-                                           this.series.name + " : " + this.point.low.toFixed(1) + "-" + this.point.high.toFixed(1) + " " + this.series.units;
+                                           this.series.name + " : " + this.point.low.toFixed(this.series.chart.precision) + "-" + this.point.high.toFixed(this.series.chart.precision) + " " + this.series.units;
                                    }
                                }
                            });
@@ -312,6 +313,14 @@ widgetViewModelCtor =
                   }
                   else
                      self.incompatibility = false;
+                  
+                  // reading of the precision for the display of the value and the unit
+                  if (!isNullOrUndefined(device.content.advancedConfiguration.content.precision))
+                     self.precision = parseInt(device.content.advancedConfiguration.content.precision, 10);
+                  else
+                     self.precision = 1;
+                  
+                  self.chart.precision  = self.precision;
                });
            });
 
@@ -643,7 +652,7 @@ widgetViewModelCtor =
                                                title: getAxisTitle(),
                                                labels: {
                                                    align: align,
-                                                   format: '{value:.1f} ' + unit,
+                                                   format: '{value:.' + self.precision.toString() + 'f} ' + unit,
                                                    style: {
                                                        color: colorAxis
                                                    }

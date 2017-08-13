@@ -10,7 +10,7 @@
       "precision": {
 			"name": "Précision d'affichage de la valeur",
 			"description": "Nombre de chiffres après la virgule"
-      },      
+      },
       "dateDisplay": {
 			"name": "Date de dernière mise à jour",
 			"description": ""
