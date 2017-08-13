@@ -7,6 +7,10 @@
 			"name": "Data to display",
 			"description": "Select the data that you want to display"
 		},
+      "precision": {
+			"name": "Precision of the value",
+			"description": "Number of digits after the decimal point"
+      },
       "dateDisplay": {
 			"name": "Update date",
 			"description": ""

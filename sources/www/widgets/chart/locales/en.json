@@ -72,7 +72,11 @@
          "advancedConfiguration": {
             "name": "Advanced configuration",
             "description": "",
-            "content": {            
+            "content": {
+               "precision": {
+                  "name": "Precision of the value",
+                  "description": "Number of digits after the decimal point"
+               },            
                 "differentialDisplay": {
                    "name": "Differential display",
                    "description": "The display show the difference between each points (useful for cumulative rain measurement, ...). This option is ignore for boolean and enum values.",

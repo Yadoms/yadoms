@@ -1,6 +1,6 @@
 {
 	"type": "chart",
-	"version": "1.0.1-rc.2",
+	"version": "1.0.1-rc.3",
 	"author": "Jean-Michel BERHAULT, Nicolas HILAIRE",
 	"url": "https://github.com/Yadoms/yadoms/wiki/chart",
 	"credits": "[Highstocks](http://www.highcharts.com/)",
@@ -96,6 +96,12 @@
                   "enableWithCheckBox": "true",
                   "enableWithCheckBoxDefaultValue": "false",
                   "content": {
+                     "precision": {
+                        "type" : "int",
+                        "defaultValue" : "1",
+                        "maximumValue" : "3",
+                        "minimumValue" : "1"
+                     },                  
                      "differentialDisplay": {
                         "type": "enum",
                         "values": {

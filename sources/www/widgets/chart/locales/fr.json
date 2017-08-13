@@ -73,6 +73,10 @@
                   "name": "Configuration avancée",
                   "description": "",
                   "content": {
+                     "precision": {
+                        "name": "Précision d'affichage de la valeur",
+                        "description": "Nombre de chiffres après la virgule"
+                     },
                      "differentialDisplay": {
                         "name": "Affichage différentiel",
                         "description": "Ce graphique représente la différence de valeur entre chaque acquisition (Précipitations pluviométriques cumulatives, ...). Cette option est ignorée dans le cas de variables booléennes ou d'énumération.",
