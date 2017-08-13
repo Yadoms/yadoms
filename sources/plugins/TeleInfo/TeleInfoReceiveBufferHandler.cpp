@@ -18,12 +18,14 @@ enum
 CTeleInfoReceiveBufferHandler::CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
                                                              int receiveDataEventId,
                                                              const boost::posix_time::time_duration suspendDelay,
-															 boost::shared_ptr<shared::communication::IBufferLogger> logger)
+                                                             boost::shared_ptr<shared::communication::IBufferLogger> logger,
+                                                             const bool isdeveloperMode)
    : m_receiveDataEventHandler(receiveDataEventHandler),
      m_receiveDataEventId(receiveDataEventId),
      m_logger (logger),
      m_nextSendMessageDate(shared::currentTime::Provider().now()),
-     m_suspendDelay (suspendDelay)
+     m_suspendDelay (suspendDelay),
+   m_isDeveloperMode(isdeveloperMode)
 {
 }
 
@@ -39,15 +41,17 @@ void CTeleInfoReceiveBufferHandler::push(const shared::communication::CByteBuffe
    for (size_t idx = 0; idx < buffer.size(); ++idx)
 	   m_content.push_back(buffer[idx]);
 
+   if (m_isDeveloperMode) m_logger->logReceived(buffer);
+
    // Send message if complete (separate aggregated messages)
    while (true)
    {
-      m_logger->logReceived(shared::communication::CByteBuffer(m_content));
-
       const auto messages = getCompleteMessage();
       if (messages->empty())
          break;
       notifyEventHandler(messages);
+
+      m_logger->logReceived(shared::communication::CByteBuffer(m_content));
 
       m_nextSendMessageDate = shared::currentTime::Provider().now() + m_suspendDelay;
    }
@@ -72,8 +76,16 @@ boost::shared_ptr<std::map<std::string, std::string>> CTeleInfoReceiveBufferHand
    if (m_content.empty())
       return noMessages;
 
+   // In this case kSTX or kStartMessage are not correct, we suppress the first one, to restart a frame
    if (m_content[1] != kStartMessage)
-	   return noMessages;
+   {
+      m_content.erase(m_content.begin());
+
+      while (!m_content.empty() && m_content[0] != kSTX)
+         m_content.erase(m_content.begin());
+
+      //return noMessages;
+   }
 
    auto etxIterator = std::find(m_content.rbegin(), m_content.rend(), kETX);
    if (etxIterator == m_content.rend())
