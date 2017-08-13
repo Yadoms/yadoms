@@ -975,9 +975,9 @@ widgetViewModelCtor =
                            //we've found the device
 
                            var serie = self.chart.get(self.seriesUuid[index]);
-
+                           
                            // If a serie is available
-                           if (!isNullOrUndefined(serie)) {
+                           if (!isNullOrUndefined(serie) && data.date!=="" & data.value!=="") {
 
                               // date received in iso format to compare
                               var isolastdate = DateTimeFormatter.isoDateToDate(data.date)._d.getTime().valueOf();
@@ -1031,6 +1031,8 @@ widgetViewModelCtor =
                                        break;
                                }
                            }
+                           else
+                              console.log ("no data to be display for keyword ", data.keywordId);
                        }
                    });
                } catch (err) {
