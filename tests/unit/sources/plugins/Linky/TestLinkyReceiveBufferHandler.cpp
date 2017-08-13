@@ -29,11 +29,12 @@ public:
    CLinkyReceiveBufferHandlerMock(shared::event::CEventHandler& receiveDataEventHandler,
                                   int receiveDataEventId,
                                   const boost::posix_time::time_duration suspendDelay,
-									 boost::shared_ptr<shared::communication::IBufferLogger> logger)
+                                  boost::shared_ptr<shared::communication::IBufferLogger> logger)
       : CLinkyReceiveBufferHandler(receiveDataEventHandler,
                                    receiveDataEventId,
                                    suspendDelay,
-									  logger)
+                                   logger,
+                                   false)
    {
    }
 
@@ -124,7 +125,8 @@ BOOST_AUTO_TEST_CASE(getMessages)
       CLinkyReceiveBufferHandler bufferHandler(evtHandler,
                                                shared::event::kUserFirstId,
                                                boost::posix_time::seconds(0),
-												           boost::make_shared<BufferLoggerMock>());
+												           boost::make_shared<BufferLoggerMock>(),
+                                               false);
       bufferHandler.push(shared::communication::CByteBuffer(frame));
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
       const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string> > > >();
@@ -147,7 +149,8 @@ BOOST_AUTO_TEST_CASE(getMessages)
 	   CLinkyReceiveBufferHandler bufferHandler(evtHandler,
 												           shared::event::kUserFirstId,
 												           boost::posix_time::seconds(0),
-												           boost::make_shared<BufferLoggerMock>());
+												           boost::make_shared<BufferLoggerMock>(),
+                                               false);
 	   bufferHandler.push(shared::communication::CByteBuffer(frame));
 	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 	   const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string> > > >();
@@ -170,7 +173,8 @@ BOOST_AUTO_TEST_CASE(getMessages)
 	   CLinkyReceiveBufferHandler bufferHandler(evtHandler,
 												           shared::event::kUserFirstId,
 												           boost::posix_time::seconds(0),
-												           boost::make_shared<BufferLoggerMock>());
+												           boost::make_shared<BufferLoggerMock>(),
+                                               false);
 	   bufferHandler.push(shared::communication::CByteBuffer(frame1));
 	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 	   const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string> > > >();
@@ -189,7 +193,8 @@ BOOST_AUTO_TEST_CASE(getMessages)
 	   CLinkyReceiveBufferHandler bufferHandler(evtHandler,
 												           shared::event::kUserFirstId,
 												           boost::posix_time::seconds(0),
-												           boost::make_shared<BufferLoggerMock>());
+												           boost::make_shared<BufferLoggerMock>(),
+                                               false);
 	   bufferHandler.push(shared::communication::CByteBuffer(frame));
 	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
    }
@@ -210,7 +215,8 @@ BOOST_AUTO_TEST_CASE(getMessages)
 	   CLinkyReceiveBufferHandler bufferHandler(evtHandler,
 												           shared::event::kUserFirstId,
 												           boost::posix_time::seconds(0),
-												           boost::make_shared<BufferLoggerMock>());
+												           boost::make_shared<BufferLoggerMock>(),
+                                               false);
 	   bufferHandler.push(shared::communication::CByteBuffer(frame));
 	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
    }
@@ -231,7 +237,8 @@ BOOST_AUTO_TEST_CASE(getMessages)
 	   CLinkyReceiveBufferHandler bufferHandler(evtHandler,
 												           shared::event::kUserFirstId,
 												           boost::posix_time::seconds(0),
-												           boost::make_shared<BufferLoggerMock>());
+												           boost::make_shared<BufferLoggerMock>(),
+                                               false);
 	   bufferHandler.push(shared::communication::CByteBuffer(frame));
 	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 	   const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string> > > >();
@@ -254,7 +261,8 @@ BOOST_AUTO_TEST_CASE(getMessages)
 	   CLinkyReceiveBufferHandler bufferHandler(evtHandler,
 												           shared::event::kUserFirstId,
 												           boost::posix_time::seconds(0),
-												           boost::make_shared<BufferLoggerMock>());
+												           boost::make_shared<BufferLoggerMock>(),
+                                               false);
 	   bufferHandler.push(shared::communication::CByteBuffer(frame));
 	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 	   const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string> > > >();
@@ -269,7 +277,8 @@ BOOST_AUTO_TEST_CASE(getMessages)
 	   CLinkyReceiveBufferHandler bufferHandler(evtHandler,
 												           shared::event::kUserFirstId,
 												           boost::posix_time::seconds(0),
-												           boost::make_shared<BufferLoggerMock>());
+												           boost::make_shared<BufferLoggerMock>(),
+                                               false);
 	   bufferHandler.push(shared::communication::CByteBuffer(frame));
 	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
    }
@@ -282,7 +291,8 @@ BOOST_AUTO_TEST_CASE(getMessages)
 	   CLinkyReceiveBufferHandler bufferHandler(evtHandler,
 												           shared::event::kUserFirstId,
 												           boost::posix_time::seconds(0),
-												           boost::make_shared<BufferLoggerMock>());
+												           boost::make_shared<BufferLoggerMock>(),
+                                               false);
 	   bufferHandler.push(shared::communication::CByteBuffer(frame));
 	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
    }
@@ -308,7 +318,8 @@ BOOST_AUTO_TEST_CASE(getMessages)
 	   CLinkyReceiveBufferHandler bufferHandler(evtHandler,
 												           shared::event::kUserFirstId,
 												           boost::posix_time::seconds(0),
-												           boost::make_shared<BufferLoggerMock>());
+												           boost::make_shared<BufferLoggerMock>(),
+                                               false);
 
 	   bufferHandler.push(shared::communication::CByteBuffer(frame1));
 	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
@@ -342,7 +353,8 @@ BOOST_AUTO_TEST_CASE(getMessages)
 	   CLinkyReceiveBufferHandler bufferHandler(evtHandler,
 												           shared::event::kUserFirstId,
 												           boost::posix_time::seconds(0),
-												           boost::make_shared<BufferLoggerMock>());
+												           boost::make_shared<BufferLoggerMock>(),
+                                               false);
 	   bufferHandler.push(shared::communication::CByteBuffer(frame1));
 	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
 	   bufferHandler.push(shared::communication::CByteBuffer(frame2));
@@ -369,7 +381,8 @@ BOOST_AUTO_TEST_CASE(getMessages)
 	   CLinkyReceiveBufferHandler bufferHandler(evtHandler,
 												           shared::event::kUserFirstId,
 												           boost::posix_time::seconds(30),
-												           boost::make_shared<BufferLoggerMock>());
+												           boost::make_shared<BufferLoggerMock>(),
+                                               false);
 	   bufferHandler.push(shared::communication::CByteBuffer(frame1));
 	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 	   const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string> > > >();
@@ -399,7 +412,8 @@ BOOST_AUTO_TEST_CASE(getMessages)
 	   CLinkyReceiveBufferHandler bufferHandler(evtHandler,
 												           shared::event::kUserFirstId,
 												           boost::posix_time::seconds(30),
-												           boost::make_shared<BufferLoggerMock>());
+												           boost::make_shared<BufferLoggerMock>(),
+                                               false);
 	   bufferHandler.push(shared::communication::CByteBuffer(frame1));
 	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 	   const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string> > > >();
@@ -414,6 +428,30 @@ BOOST_AUTO_TEST_CASE(getMessages)
 	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 	   const auto out2 = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string> > > >();
 	   BOOST_CHECK_EQUAL(*out2 == expectedMap, true);
+   }
+
+   BOOST_AUTO_TEST_CASE(LF_Change_to_STX)
+   {
+      const auto frame = testCommon::serialTeleInfoMessage::normalizeFrame("<stx>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx><stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx><stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx><stx><lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
+      const std::map<std::string, std::vector<std::string> > expectedMap = {
+         { "ADSC",{ "041067003463" } },
+         { "VTIC",{ "01" } },
+         { "DATE",{ "h150101150844" } },
+         { "NGTF",{ "       HC       " } },
+         { "LTARF",{ "       BASE     " } },
+         { "SMAXN-1",{ "h141230000000","00000" } },
+         { "EAST",{ "000046245" } } };
+
+      shared::event::CEventHandler evtHandler;
+      CLinkyReceiveBufferHandler bufferHandler(evtHandler,
+                                               shared::event::kUserFirstId,
+                                               boost::posix_time::seconds(0),
+                                               boost::make_shared<BufferLoggerMock>(),
+                                               false);
+      bufferHandler.push(shared::communication::CByteBuffer(frame));
+      BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
+      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string> > > >();
+      BOOST_CHECK_EQUAL(*out == expectedMap, true);
    }
 
    BOOST_AUTO_TEST_SUITE_END()

@@ -48,7 +48,8 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    // Create the buffer handler
    m_receiveBufferHandler = CLinkyFactory::GetBufferHandler(api->getEventHandler(),
-                                                            kEvtPortDataReceived);
+                                                            kEvtPortDataReceived,
+                                                            m_isDeveloperMode);
 
    m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
                                                              shared::event::CEventTimer::kOneShot,

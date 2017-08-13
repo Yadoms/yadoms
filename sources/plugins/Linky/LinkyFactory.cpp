@@ -33,7 +33,8 @@ boost::shared_ptr<shared::communication::IAsyncPort> CLinkyFactory::constructPor
 }
 
 boost::shared_ptr<shared::communication::IReceiveBufferHandler> CLinkyFactory::GetBufferHandler(shared::event::CEventHandler& eventHandler,
-                                                                                                int evtPortDataReceived)
+                                                                                                int evtPortDataReceived,
+                                                                                                const bool isDeveloperMode)
 {
    boost::shared_ptr<shared::communication::IBufferLogger> logger;
 
@@ -42,7 +43,8 @@ boost::shared_ptr<shared::communication::IReceiveBufferHandler> CLinkyFactory::G
    return boost::make_shared<CLinkyReceiveBufferHandler>(eventHandler,
                                                          evtPortDataReceived,
                                                          boost::posix_time::seconds(30),
-                                                         logger);
+                                                         logger,
+                                                         isDeveloperMode);
 }
 
 boost::shared_ptr<IDecoder> CLinkyFactory::constructDecoder(boost::shared_ptr<yApi::IYPluginApi> api)

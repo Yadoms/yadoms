@@ -11,6 +11,8 @@
 // Includes needed to compile the test
 #include "../../testCommon/serialTeleInfoMessage.h"
 
+using namespace testCommon;
+
 class BufferLoggerMock : public shared::communication::IBufferLogger
 {
 public:
@@ -102,9 +104,9 @@ BOOST_AUTO_TEST_CASE(getMessages)
 
 	shared::event::CEventHandler evtHandler;
 	CTeleInfoReceiveBufferHandlerMock bufferHandler(evtHandler,
-												    shared::event::kUserFirstId,
-												    boost::posix_time::seconds(0),
-													boost::make_shared<BufferLoggerMock>());
+                                                   shared::event::kUserFirstId,
+                                                   boost::posix_time::seconds(0),
+                                                   boost::make_shared<BufferLoggerMock>());
 
 	const auto out = bufferHandler.getMessages(frame);
 	BOOST_CHECK_EQUAL(*out == expectedMap, true);
@@ -112,7 +114,7 @@ BOOST_AUTO_TEST_CASE(getMessages)
 
 BOOST_AUTO_TEST_CASE(Nominal)
 {
-      const auto frame = normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
+      const auto frame = serialTeleInfoMessage::normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
    const std::map<std::string, std::string> expectedMap = {
       { "ADCO", "031428097115" },
       { "OPTARIF", "BASE" },
@@ -138,7 +140,7 @@ BOOST_AUTO_TEST_CASE(Nominal)
 
 BOOST_AUTO_TEST_CASE(twoframesOnePush)
 {
-	const auto frame = normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
+	const auto frame = serialTeleInfoMessage::normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
 	const std::map<std::string, std::string> expectedMap = {
 		{ "ADCO", "031428097115" },
 		{ "OPTARIF", "BASE" },
@@ -164,7 +166,7 @@ BOOST_AUTO_TEST_CASE(twoframesOnePush)
 
 BOOST_AUTO_TEST_CASE(twoframesTwoPush)
 {
-	const auto frame1 = normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
+	const auto frame1 = serialTeleInfoMessage::normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
 	const std::map<std::string, std::string> expectedMap = {
 		{ "ADCO", "031428097115" },
 		{ "OPTARIF", "BASE" },
@@ -194,7 +196,7 @@ BOOST_AUTO_TEST_CASE(twoframesTwoPush)
 
 BOOST_AUTO_TEST_CASE(extraCharactersbetweenCRetx)
 {                                                                                                                                                                                                                                          //*******//
-	const auto frame = normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr>D4R } $<etx>");
+	const auto frame = serialTeleInfoMessage::normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr>D4R } $<etx>");
 
 	shared::event::CEventHandler evtHandler;
 	CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
@@ -208,7 +210,7 @@ BOOST_AUTO_TEST_CASE(extraCharactersbetweenCRetx)
 
 BOOST_AUTO_TEST_CASE(extraCharactersbetweenstxLF)
 {                                         //*******//                                                                                                                                                                                                
-	const auto frame = normalizeFrame("<stx>D4R } $<lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
+	const auto frame = serialTeleInfoMessage::normalizeFrame("<stx>D4R } $<lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
 	const std::map<std::string, std::string> expectedMap = {
 		{ "ADCO", "031428097115" },
 		{ "OPTARIF", "BASE" },
@@ -232,7 +234,7 @@ BOOST_AUTO_TEST_CASE(extraCharactersbetweenstxLF)
 
 BOOST_AUTO_TEST_CASE(extraCharactersbeforestx)
 {                                    //******************************************************************************************************************************************************************************************************//                                                                                                                                                                                                
-	const auto frame = normalizeFrame("<lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
+	const auto frame = serialTeleInfoMessage::normalizeFrame("<lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
 	const std::map<std::string, std::string> expectedMap = {
 		{ "ADCO", "031428097115" },
 		{ "OPTARIF", "BASE" },
@@ -258,7 +260,7 @@ BOOST_AUTO_TEST_CASE(extraCharactersbeforestx)
 
 BOOST_AUTO_TEST_CASE(extraCharactersbeforestx2)
 {
-	const auto frame = normalizeFrame("T 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006251729 +<cr><lf>PTEC TH.. $<cr><lf>IINST 002 Y<cr><lf>IMAX 025 F<cr><lf>PAPP 00460 +<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006251729 +<cr><lf>PTEC TH.. $<cr><lf>IINST 002 Y<cr><lf>IMAX 025 F<cr><lf>PAPP 00450 *<cr><lf>MOTDETAT 000000 B<cr><etx>");
+	const auto frame = serialTeleInfoMessage::normalizeFrame("T 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006251729 +<cr><lf>PTEC TH.. $<cr><lf>IINST 002 Y<cr><lf>IMAX 025 F<cr><lf>PAPP 00460 +<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006251729 +<cr><lf>PTEC TH.. $<cr><lf>IINST 002 Y<cr><lf>IMAX 025 F<cr><lf>PAPP 00450 *<cr><lf>MOTDETAT 000000 B<cr><etx>");
 	const std::map<std::string, std::string> expectedMap = {
 		{ "ADCO", "031428097115" },
 		{ "OPTARIF", "BASE" },
@@ -284,7 +286,7 @@ BOOST_AUTO_TEST_CASE(extraCharactersbeforestx2)
 
 BOOST_AUTO_TEST_CASE(OneCRCFailed)
 {                                                                                     //|// Here the CRC Error
-	const auto frame = normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE Z<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
+	const auto frame = serialTeleInfoMessage::normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE Z<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
 
 	shared::event::CEventHandler evtHandler;
 	CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
@@ -298,7 +300,7 @@ BOOST_AUTO_TEST_CASE(OneCRCFailed)
 
 BOOST_AUTO_TEST_CASE(MissingCR)
 {                                                                                                                                                    //|// Missing CR
-	const auto frame = normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
+	const auto frame = serialTeleInfoMessage::normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
 
 	shared::event::CEventHandler evtHandler;
 	CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
@@ -312,11 +314,11 @@ BOOST_AUTO_TEST_CASE(MissingCR)
 
 BOOST_AUTO_TEST_CASE(Multiframe)
 {
-	const auto frame1 = normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTA");
-	const auto frame2 = normalizeFrame("RIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE ");
-	const auto frame3 = normalizeFrame("006238747 0<cr><lf>PTEC TH.. $<cr><lf>I");
-	const auto frame4 = normalizeFrame("INST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 0");
-	const auto frame5 = normalizeFrame("1940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
+	const auto frame1 = serialTeleInfoMessage::normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTA");
+	const auto frame2 = serialTeleInfoMessage::normalizeFrame("RIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE ");
+	const auto frame3 = serialTeleInfoMessage::normalizeFrame("006238747 0<cr><lf>PTEC TH.. $<cr><lf>I");
+	const auto frame4 = serialTeleInfoMessage::normalizeFrame("INST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 0");
+	const auto frame5 = serialTeleInfoMessage::normalizeFrame("1940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
 
 	const std::map<std::string, std::string> expectedMap = {
 		{ "ADCO", "031428097115" },
@@ -352,8 +354,8 @@ BOOST_AUTO_TEST_CASE(Multiframe)
 
 BOOST_AUTO_TEST_CASE(final)
 {
-	const auto frame1 = normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr>");
-	const auto frame2 = normalizeFrame("<etx>");
+	const auto frame1 = serialTeleInfoMessage::normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr>");
+	const auto frame2 = serialTeleInfoMessage::normalizeFrame("<etx>");
 	   
 	const std::map<std::string, std::string> expectedMap = {
 		{ "ADCO", "031428097115" },
@@ -384,7 +386,7 @@ BOOST_AUTO_TEST_CASE(threeImmediateframesTwoPushdelay30s)
 {
 	shared::currentTime::Provider().setProvider(boost::make_shared<CDefaultCurrentTimeMock>());
 
-	const auto frame1 = normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
+	const auto frame1 = serialTeleInfoMessage::normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
 	const std::map<std::string, std::string> expectedMap = {
 		{ "ADCO", "031428097115" },
 		{ "OPTARIF", "BASE" },
@@ -417,7 +419,7 @@ BOOST_AUTO_TEST_CASE(threeframesat30sTwoPushdelay30s)
 	auto timeMock = boost::make_shared<CDefaultCurrentTimeMock>();
 	shared::currentTime::Provider().setProvider(timeMock);
 
-	const auto frame1 = normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
+	const auto frame1 = serialTeleInfoMessage::normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
 	const std::map<std::string, std::string> expectedMap = {
 		{ "ADCO", "031428097115" },
 		{ "OPTARIF", "BASE" },
@@ -457,7 +459,7 @@ BOOST_AUTO_TEST_CASE(threeframesat30sTwoPushdelay30s)
 
 BOOST_AUTO_TEST_CASE(LF_Change_to_STX)
 {
-   const auto frame = normalizeFrame("<stx>PAPP 00160 (<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
+   const auto frame = serialTeleInfoMessage::normalizeFrame("<stx>PAPP 00160 (<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
    const std::map<std::string, std::string> expectedMap = {
       { "ADCO", "031428097115" },
       { "OPTARIF", "BASE" },

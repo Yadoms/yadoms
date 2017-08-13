@@ -20,7 +20,6 @@ namespace testCommon
    public:
 
       static std::string toMessage(const std::string& content);
-
       static std::vector<unsigned char> normalizeFrame(const std::string& content);
    };
 } // namespace testCommon
