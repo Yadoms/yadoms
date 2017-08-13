@@ -7,6 +7,10 @@
 			"name": "Donnée à afficher",
 			"description": "Selectionnez ici la donnée que vous souhaitez visualiser"
 		},
+      "precision": {
+			"name": "Précision d'affichage de la valeur",
+			"description": "Nombre de chiffres après la virgule"
+      },      
       "dateDisplay": {
 			"name": "Date de dernière mise à jour",
 			"description": ""
