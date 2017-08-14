@@ -70,7 +70,7 @@ CDecoder::~CDecoder()
 void CDecoder::decodeLinkyMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                                   const boost::shared_ptr<std::map<std::string, std::vector<std::string>>>& messages)
 {
-   bool triphases = (messages->find(m_tag_SINST2) != messages->end()) ? false : true;
+   bool triphases = (messages->find(m_tag_SINST2) != messages->end()) ? true : false;
 
    for (const auto message : *messages)
    {
