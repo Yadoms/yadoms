@@ -42,9 +42,9 @@ const std::string CDecoder::m_tag_UMOY3  = "UMOY3"; // mean voltage for phase 3
 CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    :
    m_activeEnergyInjected(boost::make_shared<yApi::historization::CEnergy>("activeEnergyInjected")),
+   m_runningPeriod(boost::make_shared<yApi::historization::CText>("runningPeriod")),
    m_tomorrowColor(boost::make_shared<linky::specificHistorizers::CColor>("tomorrowColor")),
    m_todayColor(boost::make_shared<linky::specificHistorizers::CColor>("todayColor")),
-   m_runningPeriod(boost::make_shared<yApi::historization::CText>("runningPeriod")),
    m_runningIndex(boost::make_shared<yApi::historization::CCounter>("runningIndex")),
    m_api(api),
    m_deviceCreated(false),
@@ -61,55 +61,6 @@ CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
 
    for (int counter = 0; counter < 10; ++counter)
       m_counter[counter] = boost::make_shared<yApi::historization::CEnergy>("Counter" + boost::lexical_cast<std::string>(counter+1));
-
-   //
-   //
-   // Pour les tests
-   //
-   //
-
-   const std::map<std::string, std::vector<std::string> > expectedMap = {
-      { "ADSC",{ "041067003463" } },
-      { "VTIC",{ "01" } },
-      { "DATE",{ "h150101150844" } },
-      { "NGTF",{ "       HC       " } },
-      { "LTARF",{ "       BASE     " } },
-      { "SMAXN-1",{ "h141230000000","00000" } },
-      { "EAST",{ "000046245" } } ,
-      { "EASF01",{ "000046245" } },
-      { "STGE",{ "000A0301" } },
-      { "UMOY1",{ "E170629180000", "237" } },
-      { "PJOURF+1",{ "00008001", "NONUTILE", "NONUTILE", "NONUTILE", "NONUTILE", "NONUTILE", "NONUTILE", "NONUTILE", "NONUTILE", "NONUTILE", "NONUTILE" } }
-   };
-
-   for (const auto message : expectedMap) //*messages
-   {
-      processMessage(message.first,
-                     message.second);
-   }
-   /*
-   const std::map<std::string, std::vector<std::string> > expectedMap1 = {
-      { "ADSC",{ "021775325397" } },
-      { "VTIC",{ "02" } },
-      { "DATE",{ "h150101150844" } },
-      { "NGTF",{ "       HC       " } },
-      { "LTARF",{ "       BASE     " } },
-      { "SMAXN-1",{ "h141230000000","00000" } },
-      { "EASF01",{ "000046245" } },
-      { "STGE", {"000A0301"} }
-      };
-
-   for (const auto message : expectedMap1) //*messages
-   {
-      processMessage(message.first,
-                     message.second);
-   }*/
-
-   //
-   //
-   // ------------
-   //
-   //
 }
 
 CDecoder::~CDecoder()
