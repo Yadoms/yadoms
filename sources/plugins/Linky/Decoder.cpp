@@ -135,6 +135,9 @@ void CDecoder::createFirstKeywordList(bool isTriphases)
       m_keywords.push_back(m_meanVoltage[1]);
       m_keywords.push_back(m_meanVoltage[2]);
    }
+
+   if (m_production)
+      m_keywords.push_back(m_activeEnergyInjected);
 }
 
 void CDecoder::createRunningKeywordList(bool isTriphases)
@@ -171,6 +174,9 @@ void CDecoder::createRunningKeywordList(bool isTriphases)
    // when the index changed, we register the olf index also, to register the last index value
    if (m_activeIndex[0] != m_activeIndex[1])
       m_keywords.push_back(m_counter[m_activeIndex[1]]);
+
+   if (m_production)
+      m_keywords.push_back(m_activeEnergyInjected);
 }
 
 void CDecoder::processMessage(const std::string& key,
