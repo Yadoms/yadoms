@@ -4,21 +4,21 @@
 //--------------------------------------------------------------
 /// \brief	Exception handling for protocol errors
 //--------------------------------------------------------------
-class CInitializationException : public shared::exception::CException
+class CSPIException : public shared::exception::CException
 {
 public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
    //--------------------------------------------------------------
-   explicit CInitializationException()
-      :CException("Initialization error - SPI is present - Board is not detected")
+   explicit CSPIException()
+      :CException("Initialization error - SPI is not present - Configuration of the SPI in raspi-config ?")
    {
    }
 
    //--------------------------------------------------------------
    /// \brief      Destructor
    //--------------------------------------------------------------
-   virtual ~CInitializationException() throw()
+   virtual ~CSPIException() throw()
    {
    }
 };

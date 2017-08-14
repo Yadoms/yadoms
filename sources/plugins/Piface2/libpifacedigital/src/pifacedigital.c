@@ -27,7 +27,7 @@ int pifacedigital_open_noinit(uint8_t hw_addr)
             fprintf(stderr,
                     "pifacedigital_open_noinit: ERROR Could not open MCP23S17 "
                     "device.");
-            return -1;
+            return mcp23s17_fd; // JM. BERHAULT for debugging purpose
         }
     }
     pfd_count++;

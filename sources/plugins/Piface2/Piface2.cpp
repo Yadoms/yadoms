@@ -34,12 +34,18 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    try 
    {
-      m_factory.reset( new CPiface2Factory(api, m_deviceName, m_configuration, details));
+      m_factory = boost::make_shared<CPiface2Factory>(api, m_deviceName, m_configuration, details);
       m_ioManager = m_factory->getIOManager();
    }
    catch (const CInitializationException& e)
    {
       api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
+      std::cerr << e.what() << std::endl;
+      initializationError = true;
+   }
+   catch (const CSPIException& e)
+   {
+      api->setPluginState(yApi::historization::EPluginState::kCustom, "SPIError");
       std::cerr << e.what() << std::endl;
       initializationError = true;
    }

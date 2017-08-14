@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "IOManager.h"
 #include "InitializationException.hpp"
+#include "SPIException.hpp"
 #include "pifacedigital.h"
 #include <mcp23s17.h>
 #include "eventDefinitions.h"
@@ -11,17 +12,13 @@ CIOManager::CIOManager(const std::string& device)
      m_inputValue(0)
 {
    // Open the connection
+   if (pifacedigital_open(0) == -2)
+      throw CSPIException();
+
    if (pifacedigital_open(0) == -1)
-      throw CInitializationException("Initialization error - Configuration of the SPI in raspi-config ?");
+      throw CInitializationException();
 
-   //TODO : clean-up when another Piface2
    if (pifacedigital_enable_interrupts()<0)
-   //  boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
-   
-   // if the first initialization doesn't work
-   //int ret = pifacedigital_enable_interrupts();
-
-   //if (ret != 0)
       throw CInitializationException("interrupt initialization error");
 }
 
