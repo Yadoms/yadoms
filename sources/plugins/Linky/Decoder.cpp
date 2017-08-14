@@ -43,9 +43,9 @@ CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    :
    m_activeEnergyInjected(boost::make_shared<yApi::historization::CEnergy>("activeEnergyInjected")),
    m_runningPeriod(boost::make_shared<yApi::historization::CText>("runningPeriod")),
+   m_runningIndex(boost::make_shared<yApi::historization::CCounter>("runningIndex")),
    m_tomorrowColor(boost::make_shared<linky::specificHistorizers::CColor>("tomorrowColor")),
    m_todayColor(boost::make_shared<linky::specificHistorizers::CColor>("todayColor")),
-   m_runningIndex(boost::make_shared<yApi::historization::CCounter>("runningIndex")),
    m_api(api),
    m_deviceCreated(false),
    m_production(false)
