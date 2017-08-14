@@ -5,11 +5,15 @@ widgetViewModelCtor =
  * @constructor
  */
 function numericDisplayViewModel() {
+   
+    this.precision = 1;
+   
     //observable data
     this.data = ko.observable("-");
     this.unit = ko.observable("");
     this.shouldBeVisible = ko.observable(false);
     this.lastReceiveDate = ko.observable("");
+    //
 
     /**
      * Initialization method
@@ -46,6 +50,11 @@ function numericDisplayViewModel() {
            self.shouldBeVisible(false);
            console.warn (error);
         }
+        
+        if (!isNullOrUndefined(self.widget.configuration.precision))
+           self.precision = parseInt(self.widget.configuration.precision, 10);
+        else
+           self.precision = 1;     
     }
 
     /**
@@ -61,7 +70,7 @@ function numericDisplayViewModel() {
             //it is the right device
             if (data.value !=="")
             {
-               var temp = parseFloat(data.value).toFixed(1);
+               var temp = parseFloat(data.value).toFixed(self.precision);
                self.data(temp.toString());
             }
             else 
