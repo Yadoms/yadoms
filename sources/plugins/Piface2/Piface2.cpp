@@ -4,6 +4,7 @@
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include "eventDefinitions.h"
 #include "InitializationException.hpp"
+#include "SPIException.hpp"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png

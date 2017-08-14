@@ -10,8 +10,8 @@ public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
    //--------------------------------------------------------------
-   explicit CInitializationException()
-      :CException("Initialization error - SPI is present - Board is not detected")
+   explicit CInitializationException(const std::string& message)
+      :CException(message)
    {
    }
 

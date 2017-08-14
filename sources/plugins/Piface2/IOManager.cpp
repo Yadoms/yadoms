@@ -13,10 +13,10 @@ CIOManager::CIOManager(const std::string& device)
 {
    // Open the connection
    if (pifacedigital_open(0) == -2)
-      throw CSPIException();
+      throw CSPIException("Initialization error - SPI is not present - Configuration of the SPI in raspi-config ?");
 
    if (pifacedigital_open(0) == -1)
-      throw CInitializationException();
+      throw CInitializationException("Initialization error - SPI is present - Board is not detected");
 
    if (pifacedigital_enable_interrupts()<0)
       throw CInitializationException("interrupt initialization error");

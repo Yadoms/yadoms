@@ -10,8 +10,8 @@ public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
    //--------------------------------------------------------------
-   explicit CSPIException()
-      :CException("Initialization error - SPI is not present - Configuration of the SPI in raspi-config ?")
+   explicit CSPIException(const std::string& message)
+      :CException(message)
    {
    }
 
