@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Piface2.h"
 #include <shared/event/EventTimer.h>
+#include <shared/Log.h>
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include "eventDefinitions.h"
 #include "InitializationException.hpp"
@@ -23,7 +24,7 @@ CPiface2::~CPiface2()
 
 void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   std::cout << "Piface2 is starting..." << std::endl;
+   YADOMS_LOG(information) << "Piface2 is starting..." ;
 
    bool initializationError = false;
    
@@ -37,22 +38,30 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       m_factory = boost::make_shared<CPiface2Factory>(api, m_deviceName, m_configuration, details);
       m_ioManager = m_factory->getIOManager();
-   }
-   catch (const CInitializationException& e)
-   {
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
-      std::cerr << e.what() << std::endl;
-      initializationError = true;
+      setPluginState(api, EPiface2PluginState::kRunning);
    }
    catch (const CSPIException& e)
    {
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "SPIError");
-      std::cerr << e.what() << std::endl;
+      YADOMS_LOG(error) << e.what();
+      YADOMS_LOG(information) << "1";
+      initializationError = true;
+      setPluginState(api, EPiface2PluginState::kSPIError);
+   }
+   catch (const CInitializationException& e)
+   {
+      YADOMS_LOG(error) << e.what();
+      YADOMS_LOG(information) << "2";
+      initializationError = true;
+      setPluginState(api, EPiface2PluginState::kInitializationError);
+   }
+   catch (...)
+   {
+      YADOMS_LOG(error) << "Unknow error";
       initializationError = true;
    }
 
    // the main loop
-   std::cout << "Piface2 plugin is running..." << std::endl;
+   YADOMS_LOG(information) << "Piface2 plugin is running..." ;
 
    while (true)
    {
@@ -61,14 +70,14 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
       case yApi::IYPluginApi::kEventStopRequested:
          {
-            std::cout << "Stop requested" << std::endl;
-            api->setPluginState(yApi::historization::EPluginState::kStopped);
+            YADOMS_LOG(information) << "Stop requested" ;
+            setPluginState(api, EPiface2PluginState::kStop);
             return;
          }
       case kEvtIOStateReceived:
       {
          //Value received from DI
-		 if (!initializationError)
+         if (!initializationError)
             m_ioManager->onCommand(api, api->getEventHandler().getEventData<const int>() );
          break;
       }
@@ -77,20 +86,23 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          // Command received from Yadoms
          auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
 
-		 if (!initializationError)
+         if (!initializationError)
             m_ioManager->onCommand(api, command);
          break;
       }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
-            api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>(), details);
-            api->setPluginState(yApi::historization::EPluginState::kRunning);
+            if (!initializationError) 
+            {
+               setPluginState(api, EPiface2PluginState::kupdateConfiguration);
+               onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>(), details);
+               setPluginState(api, EPiface2PluginState::kRunning);
+            }
             break;
          }
       default:
          {
-            std::cerr << "Unknown message id" << std::endl;
+            YADOMS_LOG(error) << "Unknown message id " << api->getEventHandler().getEventId();
             break;
          }
       }
@@ -100,7 +112,7 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 void CPiface2::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData, shared::CDataContainer& details)
 {
    // Configuration was updated
-   std::cout << "Update configuration..." << std::endl;
+   YADOMS_LOG(information) << "Update configuration...";
    BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Update configuration
@@ -108,4 +120,34 @@ void CPiface2::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, c
    
    // Update the configuration for sub-components
    m_factory->OnConfigurationUpdate(api, m_configuration, details);
+}
+
+void CPiface2::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, EPiface2PluginState newState)
+{
+   if (m_pluginState != newState)
+   {
+      switch (newState)
+      {
+      case kSPIError:
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "SPIError");
+         break;
+      case kInitializationError:
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "initializationError");
+         break;
+      case kupdateConfiguration:
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "updateconfiguration");
+         break;
+      case kRunning:
+         api->setPluginState(yApi::historization::EPluginState::kRunning);
+         break;
+      case kStop:
+         api->setPluginState(yApi::historization::EPluginState::kStopped);
+         break;
+      default:
+         YADOMS_LOG(error) << "this plugin status does not exist : " << newState;
+         break;
+      }
+
+      m_pluginState = newState;
+   }
 }

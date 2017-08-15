@@ -23,7 +23,8 @@ int pifacedigital_open_noinit(uint8_t hw_addr)
 {
     // if initialising the first PiFace Digital, open the fd
     if (pfd_count <= 0) {
-        if ((mcp23s17_fd = mcp23s17_open(bus, chip_select)) < 0) {
+        mcp23s17_fd = mcp23s17_open(bus, chip_select);
+        if (mcp23s17_fd < 0) {
             fprintf(stderr,
                     "pifacedigital_open_noinit: ERROR Could not open MCP23S17 "
                     "device.");
@@ -39,7 +40,7 @@ int pifacedigital_open(uint8_t hw_addr)
     if ((mcp23s17_fd = pifacedigital_open_noinit(hw_addr)) < 0) {
         fprintf(stderr,
                 "pifacedigital_open: ERROR Could not open MCP23S17 device.");
-        return -1;
+        return mcp23s17_fd; // JM. BERHAULT for debugging purpose
     }
 
     // set up config register
