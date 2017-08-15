@@ -83,8 +83,6 @@ boost::shared_ptr<std::map<std::string, std::string>> CTeleInfoReceiveBufferHand
 
       while (!m_content.empty() && m_content[0] != kSTX)
          m_content.erase(m_content.begin());
-
-      //return noMessages;
    }
 
    auto etxIterator = std::find(m_content.rbegin(), m_content.rend(), kETX);
