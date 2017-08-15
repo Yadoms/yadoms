@@ -85,4 +85,6 @@ private:
    ///\brief   Values of the DI
    //--------------------------------------------------------------
    char m_inputValue;
+   
+   bool m_initializationOk;
 };

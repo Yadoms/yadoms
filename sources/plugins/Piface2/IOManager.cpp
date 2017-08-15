@@ -10,7 +10,8 @@
 CIOManager::CIOManager(const std::string& device)
    : m_InterruptEventHandler(nullptr),
      m_deviceName (device),
-     m_inputValue(0)
+     m_inputValue(0),
+     m_initializationOk(false)
 {
    int returnValue = pifacedigital_open(0);
 
@@ -24,6 +25,7 @@ CIOManager::CIOManager(const std::string& device)
       throw CInitializationException("interrupt initialization error");
 
    // At this time, it's not possible to detect a missing board with theses libraries
+   m_initializationOk = true;
 }
 
 void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api, 
@@ -139,6 +141,6 @@ CIOManager::~CIOManager()
       YADOMS_LOG(error) << "Thread interruptReceiverThread join time out";
 
    // Close de connection
-   // TODO : Seulement si l'initialisation s'est bien passée
-   pifacedigital_close(0);
+   if (m_initializationOk)
+      pifacedigital_close(0);
 }
