@@ -3,6 +3,7 @@
 #include "pifacedigital.h"
 #include "InitializationException.hpp"
 #include <mcp23s17.h>
+#include <shared/Log.h>
 
 CIO::CIO(const std::string& keywordName,
          const int pin,
@@ -28,13 +29,13 @@ void CIO::set(bool state)
    // Writing the value only if it's a getSet
    if ((m_value->getAccessMode() == yApi::EKeywordAccessMode::kGetSet))
    {
-	   if (state)
-		  pifacedigital_digital_write(m_portUsed, 1);
-	   else
-		  pifacedigital_digital_write(m_portUsed, 0);
+      if (state)
+         pifacedigital_digital_write(m_portUsed, 1);
+      else
+         pifacedigital_digital_write(m_portUsed, 0);
    }
    
-   std::cout << m_value->getKeyword() << " set to " << state << std::endl;
+   YADOMS_LOG(trace) << m_value->getKeyword() << " set to " << state;
 }
 
 bool CIO::get(void)
@@ -42,7 +43,7 @@ bool CIO::get(void)
    bool ret = pifacedigital_digital_read(m_portUsed);
    m_value->set(ret);
 
-   std::cout << "read " << m_value->getKeyword() << " at " << ret << std::endl;
+   YADOMS_LOG(information) << "read " << m_value->getKeyword() << " at " << ret;
 
    return ret;
 }
@@ -55,11 +56,11 @@ void CIO::ConfigurePullResistance(const EPullResistance pullResistanceState)
       {
          case kDisable:
 			pifacedigital_write_bit(0x00, m_portUsed, GPPUB, 0 );
-			std::cout << "pull-up for " << m_value->getKeyword() << " disabled." << std::endl;
+			YADOMS_LOG(information) << "pull-up for " << m_value->getKeyword() << " disabled.";
             break;
          case kPullUp:
 			pifacedigital_write_bit(0x01, m_portUsed, GPPUB, 0 );
-			std::cout << "pull-up for " << m_value->getKeyword() << " enabled." << std::endl;
+			YADOMS_LOG(information) << "pull-up for " << m_value->getKeyword() << " enabled.";
             break;
          case kPullDown: // Never used for Piface2
             break;

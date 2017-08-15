@@ -22,6 +22,8 @@ CIOManager::CIOManager(const std::string& device)
 
    if (pifacedigital_enable_interrupts()<0)
       throw CInitializationException("interrupt initialization error");
+
+   // At this time, it's not possible to detect a missing board with theses libraries
 }
 
 void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api, 
