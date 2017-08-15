@@ -14,7 +14,8 @@
 IMPLEMENT_PLUGIN(CPiface2)
 
 CPiface2::CPiface2()
-   : m_deviceName("Piface2")
+   : m_deviceName("Piface2"),
+     m_pluginState(EPiface2PluginState::kUndefined)
 {
 }
 
@@ -43,14 +44,12 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    catch (const CSPIException& e)
    {
       YADOMS_LOG(error) << e.what();
-      YADOMS_LOG(information) << "1";
       initializationError = true;
       setPluginState(api, EPiface2PluginState::kSPIError);
    }
    catch (const CInitializationException& e)
    {
       YADOMS_LOG(error) << e.what();
-      YADOMS_LOG(information) << "2";
       initializationError = true;
       setPluginState(api, EPiface2PluginState::kInitializationError);
    }
@@ -132,10 +131,10 @@ void CPiface2::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, EPiface2
          api->setPluginState(yApi::historization::EPluginState::kCustom, "SPIError");
          break;
       case kInitializationError:
-         api->setPluginState(yApi::historization::EPluginState::kCustom, "initializationError");
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
          break;
       case kupdateConfiguration:
-         api->setPluginState(yApi::historization::EPluginState::kCustom, "updateconfiguration");
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
          break;
       case kRunning:
          api->setPluginState(yApi::historization::EPluginState::kRunning);

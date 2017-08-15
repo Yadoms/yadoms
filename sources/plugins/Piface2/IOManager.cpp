@@ -13,7 +13,6 @@ CIOManager::CIOManager(const std::string& device)
      m_inputValue(0)
 {
    int returnValue = pifacedigital_open(0);
-   YADOMS_LOG(information) << "returnValue : " << returnValue;
 
    // Open the connection
    if (returnValue == -2)
@@ -138,5 +137,6 @@ CIOManager::~CIOManager()
       YADOMS_LOG(error) << "Thread interruptReceiverThread join time out";
 
    // Close de connection
+   // TODO : Seulement si l'initialisation s'est bien passée
    pifacedigital_close(0);
 }
