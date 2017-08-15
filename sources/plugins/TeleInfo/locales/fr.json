@@ -1,6 +1,6 @@
 ﻿{
 	"name": "TeleInfo",
-	"description": "Module de suivi de consommation électrique.",
+	"description": "Module de suivi de consommation électrique. Cet équipement se connecte directement sur le compteur électrique.",
 	"configurationSchema": {
 		"SerialPort": {
 			"name": "Port Série",

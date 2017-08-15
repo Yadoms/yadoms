@@ -1,0 +1,20 @@
+{
+	"type": "Linky",
+	"version": "1.0.2-beta.1",
+	"author": "Jean-Michel BERHAULT",
+    "url": "https://github.com/Yadoms/yadoms/wiki/Linky",
+	"credits": "",
+	"SupportedPlatforms": "all",
+	"supportManuallyDeviceCreation": "false",
+	"configurationSchema": {
+		"SerialPort": {
+			"type": "enum",
+			"values": {
+				"__Binding__": {
+					"type": "system",
+					"query": "serialPorts"
+				}
+			}
+		}
+	}
+}

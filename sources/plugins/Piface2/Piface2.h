@@ -7,6 +7,20 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
+//-----------------------------------------------------
+///\brief The plugin state
+//-----------------------------------------------------
+
+enum EPiface2PluginState
+{
+   kUndefined = 0,
+   kInitializationError,
+   kupdateConfiguration,
+   kSPIError,
+   kRunning,
+   kStop
+};
+
 //--------------------------------------------------------------
 /// \brief	This class is the Piface2 plugin
 /// \note   This plugin configure GPIOs of the Pi board for using the Piface2 extension board.
@@ -40,6 +54,15 @@ public:
 protected:
 
 private:
+
+   //-----------------------------------------------------
+   ///\brief                                      set the new plugin state
+   ///\param[in] api                             Yadoms API
+   ///\param[in] newState                        the new plugin state
+   //-----------------------------------------------------
+   void setPluginState(boost::shared_ptr<yApi::IYPluginApi> api,
+                       EPiface2PluginState newState);
+
    //--------------------------------------------------------------
    /// \brief	The device name
    //--------------------------------------------------------------
@@ -59,5 +82,10 @@ private:
    /// \brief	The factory
    //--------------------------------------------------------------
    boost::shared_ptr<CPiface2Factory> m_factory;
+
+   //--------------------------------------------------------------
+   /// \brief	PluginState
+   //--------------------------------------------------------------
+   EPiface2PluginState m_pluginState;
 };
 

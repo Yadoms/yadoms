@@ -1,6 +1,6 @@
 {
 	"name": "TeleInfo",
-	"description": "EDF power meter information",
+	"description": "EDF power meter information. This equipment is connected directly in the EDF power meter.",
 	"configurationSchema": {
 		"SerialPort": {
 			"name": "Serial port",

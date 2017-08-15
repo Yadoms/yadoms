@@ -67,10 +67,11 @@
 				}
 		}
 	},
-	"customLabels": {
-		"pluginState": {
-			"InitializationError": "Initialization error",
-            "updateConfiguration": "Configuration updating..."
-		}
+        "customLabels": {
+           "pluginState": {
+           "InitializationError": "Initialization error - The board is not present",
+           "SPIError": "Initialization error - The SPI is not activated or not present",
+           "updateConfiguration": "Configuration updating..."
+	   }
 	}
 }

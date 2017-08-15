@@ -41,7 +41,7 @@ int mcp23s17_open(int bus, int chip_select)
         fprintf(stderr,
                 "mcp23s17_open: ERROR Could not open SPI device (%s).\n",
                 spidev[bus][chip_select]);
-        return -1;
+        return -2; // JM. BERHAULT for debugging purpose
     }
 
     // initialise

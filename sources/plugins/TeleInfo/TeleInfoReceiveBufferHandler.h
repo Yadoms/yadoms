@@ -23,7 +23,8 @@ public:
    CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
                                  int receiveDataEventId,
                                  const boost::posix_time::time_duration suspendDelay,
-                                 boost::shared_ptr<shared::communication::IBufferLogger> logger);
+                                 boost::shared_ptr<shared::communication::IBufferLogger> logger,
+                                 const bool isdeveloperMode);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
@@ -88,5 +89,6 @@ private:
    //--------------------------------------------------------------
    boost::posix_time::ptime m_nextSendMessageDate;
    const boost::posix_time::time_duration m_suspendDelay;
+   bool m_isDeveloperMode;
 };
 
