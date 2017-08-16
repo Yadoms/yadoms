@@ -8,7 +8,7 @@ function colorRGBViewModel() {
     //observable data
      
      this.colorpicker = null;
-     this.WidgetWidth  = 140;
+     this.WidgetWidth  = 156;
      this.WidgetHeight = 140;
      
     /**
@@ -18,6 +18,8 @@ function colorRGBViewModel() {
     this.initialize = function () {
         self = this;
        
+        //TODO : Register predefines colors -> In the widget configuration ?
+       
         //we configure the toolbar
         this.widgetApi.toolbar({
             activated: true,
@@ -25,15 +27,13 @@ function colorRGBViewModel() {
             batteryItem: false
         });
         
-        // TODO : display colorSelector.
-        // TODO : Change the place of the top/bot to hide the border
-        
         // Display the color picker
         self.colorpicker = this.widgetApi.find(".picker-canvas").colorpicker({
-            customClass: 'cssClass', // TODO : Change the name
-            sliders: { // TODO : Check how to modify theses values after the initialization
+            customClass: 'colorpicker-size',
+            hexNumberSignPrefix: false,
+            sliders: {
                 saturation: {
-                    maxLeft: 140,
+                    maxLeft: 156,
                     maxTop: 140
                 },
                 hue: {
@@ -43,12 +43,9 @@ function colorRGBViewModel() {
                     maxTop: 140
                 }
             },
-            slidersHorz: {
-               // TODO : To be defined
-            },
             color: '#000000',
             format: 'rgb',
-            colorSelectors: {
+            colorSelectors: {      // TODO : to be modified
                 'black': '#000000',
                 'white': '#ffffff',
                 'red': '#FF0000',
@@ -59,6 +56,8 @@ function colorRGBViewModel() {
                 'warning': '#f0ad4e',
                 'danger': '#d9534f'
             },
+            // remove the dropdown-menu class to disable the border
+            template : "<div class='colorpicker'><div class='colorpicker-saturation'><i><b></b></i></div><div class='colorpicker-hue'><i></i></div><div class='colorpicker-alpha'><i></i></div><div class='colorpicker-color'><div /></div><div class='colorpicker-selectors'></div></div>",
             container: true,
             inline: true
         });
@@ -72,8 +71,7 @@ function colorRGBViewModel() {
            var self = this;
            return function (e) {
             console.log ("color changed ! :", e.color.toHex());
-            KeywordManager.sendCommand(self.widget.configuration.device.keywordId, e.color.toHex().slice(1).toString());
-            
+            KeywordManager.sendCommand(self.widget.configuration.device.keywordId, e.color.toHex()/*.slice(1)*/.toString());      
         };
     };
     
@@ -81,32 +79,42 @@ function colorRGBViewModel() {
         var self = this;
 
         // Nothing to do
-        
-        //self.colorpicker.colorpicker('reposition');
     };
     
     this.changeCss = function(width, height) {
-      $('.cssClass .colorpicker-saturation').css('height', height+'px');
-      $('.cssClass .colorpicker-saturation').css('width', width+'px');
-      $('.cssClass .colorpicker-saturation').css('background-size', width+'px '+height+'px');
-      $('.cssClass .colorpicker-hue').css('height', height+'px');
-      $('.cssClass .colorpicker-hue').css('background-size', '15px '+height+'px');
-      $('.cssClass .colorpicker-alpha').css('height', height+'px');
-      $('.cssClass .colorpicker-alpha').css('background-size', '15px '+height+'px');
-      $('.cssClass .colorpicker-color').css('background-size', '15px '+height+'px');
-      $('.cssClass .colorpicker-color div').css('background-size', '15px '+height+'px');
+      $('.widget-colorRGB .colorpicker-saturation').css('height', height+'px');
+      $('.widget-colorRGB .colorpicker-saturation').css('width', width+'px');
+      $('.widget-colorRGB .colorpicker-saturation').css('background-size', width+'px '+height+'px');
+      $('.widget-colorRGB .colorpicker-hue').css('height', height+'px');
+      $('.widget-colorRGB .colorpicker-hue').css('background-size', '15px '+height+'px');
+      $('.widget-colorRGB .colorpicker-alpha').css('height', height+'px');
+      $('.widget-colorRGB .colorpicker-alpha').css('background-size', '14px '+height+'px');
+      $('.widget-colorRGB .colorpicker-color').css('background-size', '14px '+height+'px');
+      $('.widget-colorRGB .colorpicker-color div').css('background-size', '14px '+height+'px');
+      $('.widget-colorRGB .colorpicker-selectors').css('width', width+15+'px');
     };
 
    this.resized = function() 
    {
       var self = this;
       
-      self.WidgetWidth = this.widget.getWidth()-60;
+      console.log ("resized !");
+      
+      self.WidgetWidth = this.widget.getWidth()-34;
       self.WidgetHeight = this.widget.getHeight()-70;
+      
+      // Update sliders values
+      self.colorpicker.data('colorpicker').options.sliders.saturation.maxLeft = self.WidgetWidth;
+      self.colorpicker.data('colorpicker').options.sliders.saturation.maxTop = self.WidgetHeight;
+      
+      self.colorpicker.data('colorpicker').options.sliders.hue.maxTop = self.WidgetHeight;
+      self.colorpicker.data('colorpicker').options.sliders.alpha.maxTop = self.WidgetHeight;      
+      
+      console.log (self.colorpicker.data('colorpicker'));
       
       self.changeCss(self.WidgetWidth, self.WidgetHeight);
       
-      //this.widgetApi.find(".colorpicker-selectors-visible").css('enable', 'true');
+      self.colorpicker.colorpicker('update');
    };	
     
     /**
