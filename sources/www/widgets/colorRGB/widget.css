@@ -4,32 +4,38 @@
     width:100%;
 }
 
-.widget-colorRGB .colorpicker-2x .colorpicker-saturation {
-        width: 200px;
-        height: 200px;
-        background-size: 200px 200px;
+.widget-colorRGB .cssClass .colorpicker-saturation {
+        width: 150px;
+        height: 150px;
+        background-size: 150px 150px;
 }
 
-.widget-colorRGB .colorpicker-2x .colorpicker-hue,
-.widget-colorRGB .colorpicker-2x .colorpicker-alpha {
+.widget-colorRGB .cssClass .colorpicker-hue,
+.widget-colorRGB .cssClass .colorpicker-alpha {
         width: 15px;
-        height: 200px;
-        background-size: 15px 200px;
+        height: 150px;
+        background-size: 15px 150px;
 }
 
-.widget-colorRGB .colorpicker-2x .colorpicker-color,
-.widget-colorRGB .colorpicker-2x .colorpicker-color div {
+.widget-colorRGB .cssClass .colorpicker-color,
+.widget-colorRGB .cssClass .colorpicker-color div {
         height: 15px;
-        background-size: 15px 200px;
+        background-size: 15px 150px;
 }
 
-.widget-colorRGB .colorpicker-2x .colorpicker-selectors {
+.widget-colorRGB .cssClass .colorpicker-selectors {
         height: 15px;
-        width: 200px;
-        background-size: 15px 200px;
+        width: 150px;
+        background-size: 15px 150px;
 }
 
-.widget-colorRGB .colorpicker-2x .colorpicker-selectors-color {
+.widget-colorRGB .cssClass .colorpicker-selectors-visible {
+        height: 10px;
+        width: 10px;
+        background-size: 10px 10px;
+}
+
+.widget-colorRGB .cssClass .colorpicker-selectors-color {
         height: 10px;
         width: 10px;
         background-size: 10px 10px;
