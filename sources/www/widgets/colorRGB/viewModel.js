@@ -51,7 +51,7 @@ function colorRGBViewModel() {
         });
         
         // capture the event changeColor
-        self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());       
+        self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
     };
     
     // function called when the color changed
@@ -62,13 +62,49 @@ function colorRGBViewModel() {
             KeywordManager.sendCommand(self.widget.configuration.device.keywordId, e.color.toHex()/*.slice(1)*/.toString());      
         };
     };
+
+/*
+https://stackoverflow.com/questions/21117842/converting-an-rgbw-color-to-a-standard-rgb-hsb-rappresentation
+M = max(Ri,Gi,Bi)
+m = min(Ri,Gi,Bi)
+
+Wo = if (m/M < 0.5) use ( (m*M) / (M-m) ) else M 
+Q = 255
+K = (Wo + M) / m
+Ro = floor( [ ( K * Ri ) - Wo ] / Q )
+Go = floor( [ ( K * Gi ) - Wo ] / Q )
+Bo = floor( [ ( K * Bi ) - Wo ] / Q )
+*/    
+    
+    this.convertRGBtoRGBW = function (red, green, blue) {
+       var max = Math.max(red, green, blue);
+       var min = Math.min(red, green, blue);
+       var W0 = 0;
+       
+       if (min/max <0.5)
+          W0 = (min*max)/(max-min);
+       else
+          W0 = max;
+       
+       var Q = 255;
+       
+       value["white"] = (W0 + max) / min;
+       value["red"]   = Math.floor (((K*red)-W0)/Q);
+       value["green"] = Math.floor (((K*green)-W0)/Q);
+       value["blue"]  = Math.floor (((K*blue)-W0)/Q);
+       
+       return value;
+    };
     
     this.configurationChanged = function () {
-        var self = this;
-        var preselectedColor = null;
+       var self = this;
+       var preselectedColor = null;
 
-        if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
-            return;
+       if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
+          return;
+       
+       //we register keyword new acquisition
+       self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);       
        
        // destroy the precedent colorPicker if any
        // it's the only solution, to create/delete preselected colors
@@ -131,10 +167,13 @@ function colorRGBViewModel() {
     */
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
-
+        
         if (keywordId === self.widget.configuration.device.keywordId) {
-          console.log(data);
-          self.colorpicker.setColor(data.data);
+          
+          // unbind the changeColor, otherwise, firea 'changeColor'
+          self.colorpicker.unbind('changeColor');
+          self.colorpicker.colorpicker('setValue', data.value);
+          self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
         }
     };
 };
