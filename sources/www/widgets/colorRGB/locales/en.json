@@ -5,6 +5,25 @@
 		"device": {
 			"name": "Data to display",
 			"description": "Select the data that you want to display"
-		}
+		},
+      "preselector": {
+          "name": "Color selector",
+          "description": "Change the gauge color depending on data value",
+          "content": {
+            "colorsSection": {
+              "name": "Name1",
+              "description": "description1",
+              "item": {
+                "name": "Color",
+                "description": "Add a color to the preselector",
+                "content": {
+                  "color": {
+						   "name": "Color"
+                  }
+                }
+              }
+            }
+          }
+      }      
 	}
 }

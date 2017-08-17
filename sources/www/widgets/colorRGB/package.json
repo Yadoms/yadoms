@@ -24,6 +24,26 @@
 			"type": "keyword",
 			"expectedCapacity": "colorrgb",
 			"expectedKeywordAccess": "get"
-		}
+		},
+      "preselector": {
+          "type": "section",
+          "content": {
+            "colorsSection": {
+              "type": "list",
+              "nbItemsMin": "1",
+              "nbItemsMax": "5",
+              "allowDuplication": "true",
+              "item": {
+                "type": "section",
+                "content": {
+                  "color": {
+                    "type": "color",
+                    "defaultValue": "#FF0000"
+                  }
+                }
+              }
+            }
+          }
+      }
 	}
 }
