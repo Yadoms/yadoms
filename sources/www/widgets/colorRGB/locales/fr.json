@@ -6,24 +6,20 @@
 			"name": "Donnée à afficher",
 			"description": "Selectionnez ici la donnée que vous souhaitez visualiser"
 		},
-      "preselector": {
-          "name": "Sélecteur de couleurs pré-définies",
-          "description": "Ajoute une couleur au pré-sélecteur",
+      "colorsSelection": {
+        "name": "Sélecteur de couleurs pré-définies",
+        "description": "Ajoute une couleur au pré-sélecteur (5 couleurs maximum)",
+        "item": {
+          "name": "",
           "content": {
-            "colorsSection": {
-              "name": "Name1",
-              "description": "description1",            
-              "item": {
-                "name": "Couleur",
-                "description": "Ajoute une couleur au pré-sélecteur",
-                "content": {
-                  "color": {
-						   "name": "Couleur"
-                  }
-                }
-              }
+            "name": {
+               "name": "Alias de la couleur"
+            },          
+            "color": {
+               "name": "Couleur"
             }
           }
-      }      
+        }
+      }
 	}
 }

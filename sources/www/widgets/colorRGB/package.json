@@ -25,25 +25,23 @@
 			"expectedCapacity": "colorrgb",
 			"expectedKeywordAccess": "get"
 		},
-      "preselector": {
+      "colorsSelection": {
+        "type": "list",
+        "nbItemsMin": "0",
+        "nbItemsMax": "5",
+        "allowDuplication": "true",
+        "item": {
           "type": "section",
           "content": {
-            "colorsSection": {
-              "type": "list",
-              "nbItemsMin": "1",
-              "nbItemsMax": "5",
-              "allowDuplication": "true",
-              "item": {
-                "type": "section",
-                "content": {
-                  "color": {
-                    "type": "color",
-                    "defaultValue": "#FF0000"
-                  }
-                }
-              }
+            "name": {
+               "type": "string"
+            },          
+            "color": {
+              "type": "color",
+              "defaultValue": "#FF0000"
             }
           }
+        }
       }
 	}
 }

@@ -5,11 +5,9 @@ widgetViewModelCtor =
  * @constructor
  */
 function colorRGBViewModel() {
-    //observable data
-     
      this.colorpicker = null;
      this.WidgetWidth  = 156;
-     this.WidgetHeight = 140;
+     this.WidgetHeight = 120;
      
     /**
      * Initialization method
@@ -18,44 +16,34 @@ function colorRGBViewModel() {
     this.initialize = function () {
         self = this;
        
-        //TODO : Register predefines colors -> In the widget configuration ?
-       
         //we configure the toolbar
         this.widgetApi.toolbar({
             activated: true,
             displayTitle: true,
             batteryItem: false
         });
-        
-        // Display the color picker
+    };
+
+    this.createPicker = function (preselectedColor) {
         self.colorpicker = this.widgetApi.find(".picker-canvas").colorpicker({
             customClass: 'colorpicker-size',
             hexNumberSignPrefix: false,
             sliders: {
                 saturation: {
                     maxLeft: 156,
-                    maxTop: 140
+                    maxTop: 120
                 },
                 hue: {
-                    maxTop: 140
+                    maxTop: 120
                 },
                 alpha: {
-                    maxTop: 140
+                    maxTop: 120
                 }
             },
             color: '#000000',
             format: 'rgb',
-            colorSelectors: {      // TODO : to be modified
-                'black': '#000000',
-                'white': '#ffffff',
-                'red': '#FF0000',
-                'default': '#777777',
-                'primary': '#337ab7',
-                'success': '#5cb85c',
-                'info': '#5bc0de',
-                'warning': '#f0ad4e',
-                'danger': '#d9534f'
-            },
+
+            colorSelectors: preselectedColor,
             // remove the dropdown-menu class to disable the border
             template : "<div class='colorpicker'><div class='colorpicker-saturation'><i><b></b></i></div><div class='colorpicker-hue'><i></i></div><div class='colorpicker-alpha'><i></i></div><div class='colorpicker-color'><div /></div><div class='colorpicker-selectors'></div></div>",
             container: true,
@@ -63,9 +51,9 @@ function colorRGBViewModel() {
         });
         
         // capture the event changeColor
-        self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
+        self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());       
     };
-
+    
     // function called when the color changed
     this.changeColorButtonClick = function () {
            var self = this;
@@ -77,8 +65,27 @@ function colorRGBViewModel() {
     
     this.configurationChanged = function () {
         var self = this;
+        var preselectedColor = null;
 
-        // Nothing to do
+        if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
+            return;
+       
+       // destroy the precedent colorPicker if any
+       // it's the only solution, to create/delete preselected colors
+       if (!isNullOrUndefined(self.colorpicker)) self.colorpicker.colorpicker('destroy');
+       
+       if (!(isNullOrUndefinedOrEmpty(self.widget.configuration.colorsSelection)))
+       {
+          if (self.widget.configuration.colorsSelection.length>0) preselectedColor={};
+          self.widget.configuration.colorsSelection.forEach(function (item) {
+              var newProperties={};
+              newProperties[item.content.name] = item.content.color;
+              $.extend(preselectedColor, newProperties);
+          });
+       }
+       
+       self.createPicker(preselectedColor);
+       self.resized();
     };
     
     this.changeCss = function(width, height) {
@@ -97,11 +104,13 @@ function colorRGBViewModel() {
    this.resized = function() 
    {
       var self = this;
-      
-      console.log ("resized !");
-      
       self.WidgetWidth = this.widget.getWidth()-34;
-      self.WidgetHeight = this.widget.getHeight()-70;
+      
+      // If no colors preselected, we use all the space
+      if (isNullOrUndefined(self.colorpicker.data('colorpicker').options.colorSelectors))
+         self.WidgetHeight = this.widget.getHeight()-57;
+      else
+         self.WidgetHeight = this.widget.getHeight()-90;
       
       // Update sliders values
       self.colorpicker.data('colorpicker').options.sliders.saturation.maxLeft = self.WidgetWidth;
@@ -110,12 +119,10 @@ function colorRGBViewModel() {
       self.colorpicker.data('colorpicker').options.sliders.hue.maxTop = self.WidgetHeight;
       self.colorpicker.data('colorpicker').options.sliders.alpha.maxTop = self.WidgetHeight;      
       
-      console.log (self.colorpicker.data('colorpicker'));
-      
       self.changeCss(self.WidgetWidth, self.WidgetHeight);
       
       self.colorpicker.colorpicker('update');
-   };	
+   };
     
     /**
     * New acquisition handler

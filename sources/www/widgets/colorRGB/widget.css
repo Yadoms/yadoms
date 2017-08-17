@@ -7,14 +7,14 @@
 .widget-colorRGB .colorpicker-size .colorpicker-saturation {
         width: 150px;
         height: 150px;
-        background-size: 150px 150px;
+        background-size: 150px 135px;
 }
 
 .widget-colorRGB .colorpicker-size .colorpicker-hue,
 .widget-colorRGB .colorpicker-size .colorpicker-alpha {
         width: 15px;
         height: 150px;
-        background-size: 15px 150px;
+        background-size: 15px 135px;
 }
 
 .widget-colorRGB .colorpicker-size .colorpicker-color,
@@ -25,7 +25,7 @@
 
 .widget-colorRGB .colorpicker-size .colorpicker-selectors {
    display: none;
-   height: 14px;
+   height: 35px;
    width: 150px;
    margin-top: 4px;
    clear: both;
@@ -34,8 +34,8 @@
 .widget-colorRGB .colorpicker-size .colorpicker-selectors i {
   cursor: pointer;
   float: left;
-  height: 10px;
-  width: 10px;
+  height: 30px;
+  width: 30px;
 }
 
 .widget-colorRGB .colorpicker-size .colorpicker-selectors i + i {
@@ -43,9 +43,9 @@
 }
 
 .widget-colorRGB .colorpicker-size .colorpicker-selectors-color {
-        height: 10px;
-        width: 10px;
-        background-size: 10px 10px;
+        height: 30px;
+        width: 30px;
+        background-size: 30px 30px;
 }
 
 /*
