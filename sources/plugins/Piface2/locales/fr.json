@@ -68,10 +68,11 @@
 		}
 	},
 	"customLabels": {
-		"pluginState": {
-            "InitializationError": "Erreur d'initialisation",
-			"updateConfiguration": "Mise à jour de la configuration..."
-		}
+           "pluginState": {
+              "InitializationError": "Erreur d'initialisation - La carte n'est pas détectée",
+              "SPIError": "Erreur d'initialisation - Le SPI n'est pas présent ou activé",
+              "updateConfiguration": "Mise à jour de la configuration..."
+           }
 	}
 }
 

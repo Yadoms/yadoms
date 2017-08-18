@@ -11,7 +11,10 @@ if(CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
       stdafx.h
       stdafx.cpp
       eventDefinitions.h
+      IIO.h
       InitializationException.hpp
+      IO.h
+      IO.cpp
       IOManager.h
       IOManager.cpp
       IPf2Configuration.h
@@ -21,9 +24,7 @@ if(CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
       Piface2.cpp
       Piface2Factory.h
       Piface2Factory.cpp
-      IIO.h
-      IO.h
-      IO.cpp
+      SPIException.hpp
       )
 
    ADD_SUBDIRECTORY(libmcp23s17)  

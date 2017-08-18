@@ -4,13 +4,13 @@
 //--------------------------------------------------------------
 /// \brief	Exception handling for protocol errors
 //--------------------------------------------------------------
-class CInitializationException : public shared::exception::CException
+class CSPIException : public shared::exception::CException
 {
 public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
    //--------------------------------------------------------------
-   explicit CInitializationException(const std::string& message)
+   explicit CSPIException(const std::string& message)
       :CException(message)
    {
    }
@@ -18,7 +18,7 @@ public:
    //--------------------------------------------------------------
    /// \brief      Destructor
    //--------------------------------------------------------------
-   virtual ~CInitializationException() throw()
+   virtual ~CSPIException() throw()
    {
    }
 };
