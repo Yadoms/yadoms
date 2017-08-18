@@ -107,7 +107,7 @@
         "customization": {
             "addNewPage": "Ajouter une nouvelle page",
             "addNewWidget": "Ajouter un nouveau widget",
-			"dropHereToMovePage": "Glisser ici pour délpacer sur la page __pageName__",
+			"dropHereToMovePage": "Glisser ici pour déplacer sur la page __pageName__",
             "moveToLeft": "Déplacer à gauche",
             "moveToRight": "Déplacer à droite",
             "rename": "Renommer",
@@ -118,7 +118,7 @@
             "unableToGetEventLog": "Impossible de récupérer le journal des évènements",
             "errorDuringSavingPagePosition": "Erreur pendant la sauvegarde de la position des pages",
             "unableToGetPages": "Impossible de charger les pages",
-            "errorDuringRequestingWidgets": "Error lors de la récupartion des widgets",
+            "errorDuringRequestingWidgets": "Erreur lors de la récupération des widgets",
             "errorDuringRequestingNewLogEvents": "Erreur pendant la récupération des derniers évènements serveur",
             "youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline": "Vous avez été déconnecté du serveur ou il est éteint",
             "errorSavingCustomization": "Erreur pendant la sauvegarde de la personnalisation",
