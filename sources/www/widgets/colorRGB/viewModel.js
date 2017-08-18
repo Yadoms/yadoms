@@ -8,6 +8,7 @@ function colorRGBViewModel() {
      this.colorpicker = null;
      this.WidgetWidth  = 156;
      this.WidgetHeight = 120;
+     this.capacity = "";
      
     /**
      * Initialization method
@@ -24,6 +25,10 @@ function colorRGBViewModel() {
         });
     };
 
+    //
+    // TODO : Bug with 2 widgets. Need to have a unique name !
+    //
+    
     this.createPicker = function (preselectedColor) {
         self.colorpicker = this.widgetApi.find(".picker-canvas").colorpicker({
             customClass: 'colorpicker-size',
@@ -59,39 +64,58 @@ function colorRGBViewModel() {
            var self = this;
            return function (e) {
             console.log ("color changed ! :", e.color.toHex());
-            KeywordManager.sendCommand(self.widget.configuration.device.keywordId, e.color.toHex()/*.slice(1)*/.toString());      
+               
+            if (self.capacity === "colorrgb")
+               KeywordManager.sendCommand(self.widget.configuration.device.keywordId, e.color.toHex().toString());
+            else if (self.capacity === "colorrgbw")
+            {
+               var temp = e.color.toHex().toString();
+               var red = temp.substring(0, 2);
+               var green = temp.substring(2, 4);
+               var blue = temp.substring(4, 6);
+               rgbw = self.convertRGBtoRGBW(parseInt(red, 16), 
+                                            parseInt(green, 16),
+                                            parseInt(blue, 16));
+               console.log (rgbw);
+               var RGBWString = rgbw.red.toString(16)+rgbw.green.toString(16)+rgbw.blue.toString(16)+rgbw.white.toString(16);
+               console.log (RGBWString);
+               KeywordManager.sendCommand(self.widget.configuration.device.keywordId, RGBWString);
+            }
+            else
+               console.warn("This capacity is not supported !");
         };
     };
-
-/*
-https://stackoverflow.com/questions/21117842/converting-an-rgbw-color-to-a-standard-rgb-hsb-rappresentation
-M = max(Ri,Gi,Bi)
-m = min(Ri,Gi,Bi)
-
-Wo = if (m/M < 0.5) use ( (m*M) / (M-m) ) else M 
-Q = 255
-K = (Wo + M) / m
-Ro = floor( [ ( K * Ri ) - Wo ] / Q )
-Go = floor( [ ( K * Gi ) - Wo ] / Q )
-Bo = floor( [ ( K * Bi ) - Wo ] / Q )
-*/    
+    
+    //
+    // http://219.223.223.150/ldm/images/papers/Advanced_RGBW_OLED_Display_System_with_Novel_RGB-to-RGBW_and_Subpixel_Rendering_Algorithm.pdf
+    // Algorithm of Kwon and Kim
+    //
     
     this.convertRGBtoRGBW = function (red, green, blue) {
-       var max = Math.max(red, green, blue);
-       var min = Math.min(red, green, blue);
-       var W0 = 0;
-       
-       if (min/max <0.5)
-          W0 = (min*max)/(max-min);
-       else
-          W0 = max;
        
        var Q = 255;
        
-       value["white"] = (W0 + max) / min;
-       value["red"]   = Math.floor (((K*red)-W0)/Q);
-       value["green"] = Math.floor (((K*green)-W0)/Q);
-       value["blue"]  = Math.floor (((K*blue)-W0)/Q);
+      console.log ("red:",red);
+      console.log ("green",green);
+      console.log ("blue",blue);
+       
+       var max = Math.max(red/Q, green/Q, blue/Q);
+       var min = Math.min(red/Q, green/Q, blue/Q);
+       
+       console.log ("min",min);
+       console.log ("max",max);
+       
+       var W0 = -min*min*min+min*min+min;
+       console.log ("W0", W0);
+       
+       var K = 1+W0/max;
+       console.log ("K", K);
+       
+       var value = {};
+       value["white"] = Math.floor (W0*Q);
+       value["red"]   = Math.floor (((K*red/Q)-W0)*Q);
+       value["green"] = Math.floor (((K*green/Q)-W0)*Q);
+       value["blue"]  = Math.floor (((K*blue/Q)-W0)*Q);
        
        return value;
     };
@@ -105,6 +129,12 @@ Bo = floor( [ ( K * Bi ) - Wo ] / Q )
        
        //we register keyword new acquisition
        self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);       
+       
+       //we ask the capacity Name
+       var deffered2 = self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId);
+       deffered2.done(function (keyword) {
+          self.capacity = keyword.capacityName;
+       });
        
        // destroy the precedent colorPicker if any
        // it's the only solution, to create/delete preselected colors
@@ -122,6 +152,8 @@ Bo = floor( [ ( K * Bi ) - Wo ] / Q )
        
        self.createPicker(preselectedColor);
        self.resized();
+       
+       return deffered2.promise();
     };
     
     this.changeCss = function(width, height) {
@@ -172,7 +204,13 @@ Bo = floor( [ ( K * Bi ) - Wo ] / Q )
           
           // unbind the changeColor, otherwise, firea 'changeColor'
           self.colorpicker.unbind('changeColor');
-          self.colorpicker.colorpicker('setValue', data.value);
+          if (self.capacity === "colorrgb")
+             self.colorpicker.colorpicker('setValue', data.value);
+          else if (self.capacity === "colorrgbw")
+          { // TODO : To be finalize RGBW -> RGB conversion to be write
+          }
+          else
+            console.warn("This capacity is not supported !");          
           self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
         }
     };

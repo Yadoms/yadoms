@@ -22,7 +22,7 @@
 	"configurationSchema": {
 		"device": {
 			"type": "keyword",
-			"expectedCapacity": "colorrgb",
+			"expectedCapacity": ["colorrgb", "colorrgbw"],
 			"expectedKeywordAccess": "get"
 		},
       "colorsSelection": {
