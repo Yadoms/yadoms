@@ -1,6 +1,6 @@
 ﻿{
     "core": {
-        "event": "evènement",
+        "event": "évènement",
         "plugin": {
             "name": "plugin",
             "install": "Installation du plugin ...",
@@ -20,7 +20,7 @@
             "update": "Mise à jour du widget ...",
             "remove": "Suppression du widget ...",
             "removeFailed": "La suppression du widget a échoué",
-            "download": "Téléchargement du  widget ...",
+            "download": "Téléchargement du widget ...",
             "downloadFailed": "Le téléchargement du widget a échoué",
             "deploy": "Déploiement du widget ...",
             "deployFailed": "Le déploiement du widget a échoué",
@@ -28,7 +28,7 @@
             "success": "Succès"
         },
         "scriptInterpreter": {
-            "name": "script interpreter",
+            "name": "interpréteur de scripts",
             "install": "Installation de l'interpréteur de scripts ...",
             "update": "Mise à jour de l'interpréteur de scripts ...",
             "remove": "Suppression de l'interpréteur de scripts ...",
@@ -49,7 +49,7 @@
             "extract": "Extraction de Yadoms ...",
             "extractFailed": "L'extraction de Yadoms a échoué",
             "deploy": "Déploiement de Yadoms ...",
-            "deployFailed": "Le déploiement de Yadoms a echoué",
+            "deployFailed": "Le déploiement de Yadoms a échoué",
             "exit": "Arrêt Yadoms ...",
             "information": "Informations à propos de Yadoms"
         },
@@ -64,8 +64,8 @@
         "database" : {
             "backup" : {
                 "name" : "Sauvegarde de base de données",
-                "inprogress" : "Sauvergarde en cours...",
-                "success" : "Sauvergarde réussie",
+                "inprogress" : "Sauvegarde en cours...",
+                "success" : "Sauvegarde réussie",
                 "fail" : "Echec de la sauvegarde"
             }
         },
@@ -107,7 +107,7 @@
         "customization": {
             "addNewPage": "Ajouter une nouvelle page",
             "addNewWidget": "Ajouter un nouveau widget",
-			"dropHereToMovePage": "Glisser ici pour délpacer sur la page __pageName__",
+			"dropHereToMovePage": "Glisser ici pour déplacer sur la page __pageName__",
             "moveToLeft": "Déplacer à gauche",
             "moveToRight": "Déplacer à droite",
             "rename": "Renommer",
@@ -118,7 +118,7 @@
             "unableToGetEventLog": "Impossible de récupérer le journal des évènements",
             "errorDuringSavingPagePosition": "Erreur pendant la sauvegarde de la position des pages",
             "unableToGetPages": "Impossible de charger les pages",
-            "errorDuringRequestingWidgets": "Error lors de la récupartion des widgets",
+            "errorDuringRequestingWidgets": "Erreur lors de la récupération des widgets",
             "errorDuringRequestingNewLogEvents": "Erreur pendant la récupération des derniers évènements serveur",
             "youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline": "Vous avez été déconnecté du serveur ou il est éteint",
             "errorSavingCustomization": "Erreur pendant la sauvegarde de la personnalisation",
@@ -161,7 +161,7 @@
         "name": "Titre",
         "description": "Texte affiché au-dessus du widget"
       },
-      "errorDuringGettingDeviceList": "Error lors de la récupération de la liste des équipements",
+      "errorDuringGettingDeviceList": "Erreur lors de la récupération de la liste des équipements",
       "errorDuringGettingDeviceListMatchCapacity": "Erreur lors de la récupération de la liste des équipements ayant la capacité __expectedCapacityAccess__ __expectedCapacity__",
       "errorDuringGettingDeviceListMatchCapacityType": "Erreur lors de la récupération de la liste des équipements ayant la capacité __expectedCapacityAccess__ __expectedCapacityType__",
       "errorDuringGettingDeviceListMatchKeywordAccess": "Erreur lors de la récupération de la liste des équipements ayant une données en accès __expectedKeywordAccess__",
@@ -190,8 +190,8 @@
       "createNewPageValidationButton": "Créer",
       "errorDuringModifyingPage": "Erreur pendant la modification de la page",
       "errorDuringModifyingPageNamed": "Erreur pendant la modification de la page __pageName__",
-      "errorDuringCreatingPage": "Erreur pendant la creation de la page",
-      "errorDuringCreatingPageNamed": "Erreur pendant la creation de la page __pageName__",
+      "errorDuringCreatingPage": "Erreur pendant la création de la page",
+      "errorDuringCreatingPageNamed": "Erreur pendant la création de la page __pageName__",
       "placeholder": "Saisissez un nom de page"
     },
     "add-plugin": {
@@ -662,7 +662,7 @@
             "maxNumberItemsAllowed": "La liste ne peut contenir plus de __maxValue__ éléments",
             "required": "Une valeur est nécessaire"
         },
-        "iconpicker-search-prompt" : "Rechercher une icone..."
+        "iconpicker-search-prompt" : "Rechercher une icône..."
     },
     "blockly": {
         "toolbox": {
@@ -698,7 +698,7 @@
         "invalid": "Invalide",
         "validation" : {
             "errorMaxTopBlock" : "Un seul 'top block' est autorisé. Il faut soit les chaîner, soit en supprimer un",
-            "chooseItemInList" : "Veuiller selectionner une valeur correcte dans la liste",
+            "chooseItemInList" : "Veuiller sélectionner une valeur correcte dans la liste",
             "missingInputBlock" : "Veuiller compléter le block manquant"
         },
         "global": {
@@ -709,7 +709,7 @@
                 "days": "jours"
             }
         },
-        "templateHelp": "Cliquer sur l'icone engrenage bleu pour configurer les évènements",
+        "templateHelp": "Cliquer sur l'icône engrenage bleu pour configurer les évènements",
         "chooseDeviceHelper": "Choisir un équipement",
         "chooseKeywordHelper": "Choisir une donnée",
         "chooseCapacityHelper": "Choisir une capacité",
@@ -851,12 +851,12 @@
                     "tooltip": "Choisi un jour de la semaine"
                 },
                 "yadoms_date_time": {
-                    "tooltip": "Selection d'une heure/minute",
+                    "tooltip": "Sélection d'une heure/minute",
                     "hour": "h",
                     "minute": ""
                 },
                 "yadoms_date_datetime": {
-                    "tooltip": "Selection d'une date/heure",
+                    "tooltip": "Sélection d'une date/heure",
                     "date": "",
                     "time": "à"
                 },
@@ -887,7 +887,7 @@
                     "minute": "min"
                 },
                 "yadoms_date_arithmetic": {
-                    "tooltip": "Ajoute ou supprime une duée d'une date et/ou heure"
+                    "tooltip": "Ajoute ou supprime une durée d'une date et/ou heure"
                 },
                 "yadoms_date_extract": {
                     "title": "Extraire ",
@@ -1037,11 +1037,11 @@
         "install": "Installation d'un interpréteur de scripts ...",
         "update": "Mise à jour d'un interpréteur de scripts ...",
         "remove": "Suppression d'un interpréteur de scripts ...",
-        "removeFailed": "Erreur lors de la suppresion d'un interpréteur de scripts",
+        "removeFailed": "Erreur lors de la suppression d'un interpréteur de scripts",
         "download": "Téléchargement d'un interpréteur de scripts ...",
         "downloadFailed": "Erreur lors du téléchargement d'un interpréteur de scripts",
         "deploy": "Déploiement d'un interpréteur de scripts ...",
-        "deployFailed": "Erreur lors du déploiement  d'un interpréteur de scripts",
+        "deployFailed": "Erreur lors du déploiement d'un interpréteur de scripts",
         "finalize": "Finalisation ...",
         "success": "Succès"
       }
@@ -1176,4 +1176,3 @@
     "tb" : "To"
   }
 }
-

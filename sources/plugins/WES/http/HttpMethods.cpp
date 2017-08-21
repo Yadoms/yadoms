@@ -40,16 +40,17 @@ namespace http
          
          Poco::Net::HTTPResponse response;
          session.sendRequest(request);
+         session.receiveResponse(response);
 
          std::string buffer;
          if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED)
          {
             creds.authenticate(request, response);
             session.sendRequest(request);
-            auto& rs = session.receiveResponse(response);
+            auto& receiveSecureStream = session.receiveResponse(response);
             
             std::ostringstream oss;
-            Poco::StreamCopier::copyStream(rs, oss);
+            Poco::StreamCopier::copyStream(receiveSecureStream, oss);
             buffer = oss.str();
          }
 
