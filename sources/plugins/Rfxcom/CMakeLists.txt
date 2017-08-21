@@ -20,6 +20,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Cartelectronic.cpp
    rfxcomMessages/CartelectronicEncoder.h
    rfxcomMessages/CartelectronicEncoder.cpp
+   rfxcomMessages/CartelectronicLinky.h
+   rfxcomMessages/CartelectronicLinky.cpp
    rfxcomMessages/CartelectronicTIC.h
    rfxcomMessages/CartelectronicTIC.cpp
    rfxcomMessages/Chime.h

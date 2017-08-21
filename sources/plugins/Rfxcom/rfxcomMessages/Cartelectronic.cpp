@@ -3,6 +3,7 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include "CartelectronicTIC.h"
 #include "CartelectronicEncoder.h"
+#include "CartelectronicLinky.h"
 #include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
@@ -40,6 +41,8 @@ namespace rfxcomMessages
       case sTypeTIC: m_subTypeManager = boost::make_shared<CCartelectronicTIC>(rbuf, rbufSize);
          break;
       case sTypeCEencoder: m_subTypeManager = boost::make_shared<CCartelectronicEncoder>(rbuf, rbufSize);
+         break;
+      case 3: m_subTypeManager = boost::make_shared<CCartelectronicLinky>(rbuf, rbufSize); // TODO : Mettre en place la vrai valeur
          break;
       default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
