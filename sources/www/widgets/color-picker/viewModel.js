@@ -17,6 +17,9 @@ function colorPickerViewModel() {
     this.initialize = function () {
         self = this;
        
+        console.log (self.widget);
+        self.createWidgetPickerStyle(self.widget.id);
+       
         //we configure the toolbar
         this.widgetApi.toolbar({
             activated: true,
@@ -24,14 +27,25 @@ function colorPickerViewModel() {
             batteryItem: false
         });
     };
-
-    //
-    // TODO : Bug with 2 widgets. Need to have a unique name !
-    //
+    
+    this.createWidgetPickerStyle = function(widgetId) {
+       $('head').append(
+          $('<style/>', {
+             id: 'widget-picker-' + widgetId,
+             html: '.colorpicker-size-'+widgetId+' .colorpicker-saturation { width: 150px; height: 150px; background-size: 150px 135px;}'
+          })
+       );
+       $('widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-hue, .colorpicker-size .colorpicker-alpha {width: 15px;height: 150px;background-size: 15px 135px;} ');
+       $('widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-color, .colorpicker-size .colorpicker-color div {height: 14px;background-size: 14px 150px;} ');
+       $('widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-selectors{display: none;height: 35px;width: 150px;margin-top: 4px;clear: both;} ');
+       $('widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-selectors i{cursor: pointer;float: left;height: 30px;width: 30px;} ');
+       $('widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-selectors i + i{margin-left: 3px;} ');
+       $('widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-selectors-color{height: 30px;width: 30px;background-size: 30px 30px;} ');
+    };
     
     this.createPicker = function (preselectedColor) {
         self.colorpicker = this.widgetApi.find(".picker-canvas").colorpicker({
-            customClass: 'colorpicker-size',
+            customClass: 'colorpicker-size-'+self.widget.id,
             hexNumberSignPrefix: false,
             sliders: {
                 saturation: {
@@ -157,16 +171,16 @@ function colorPickerViewModel() {
     };
     
     this.changeCss = function(width, height) {
-      this.widgetApi.find(".colorpicker-saturation").css('height', height+'px');
-      this.widgetApi.find(".colorpicker-saturation").css('width', width+'px');
-      this.widgetApi.find(".colorpicker-saturation").css('background-size', width+'px '+height+'px');
-      this.widgetApi.find(".colorpicker-hue").css('height', height+'px');
-      this.widgetApi.find(".colorpicker-hue").css('background-size', '15px '+height+'px');
-      this.widgetApi.find(".colorpicker-alpha").css('height', height+'px');
-      this.widgetApi.find(".colorpicker-alpha").css('background-size', '14px '+height+'px');
-      this.widgetApi.find(".colorpicker-color").css('background-size', '14px '+height+'px');
-      this.widgetApi.find(".colorpicker-color div").css('background-size', '14px '+height+'px');
-      this.widgetApi.find(".colorpicker-selectors").css('width', width+15+'px');
+      this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-saturation").css('height', height+'px');
+      this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-saturation").css('width', width+'px');
+      this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-saturation").css('background-size', width+'px '+height+'px');
+      this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-hue").css('height', height+'px');
+      this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-hue").css('background-size', '15px '+height+'px');
+      this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-alpha").css('height', height+'px');
+      this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-alpha").css('background-size', '14px '+height+'px');
+      this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-color").css('background-size', '14px '+height+'px');
+      this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-color div").css('background-size', '14px '+height+'px');
+      this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-selectors").css('width', width+15+'px');
     };
 
    this.resized = function() 

@@ -4,50 +4,6 @@
     width:100%;
 }
 
-.widget-colorpicker .colorpicker-size .colorpicker-saturation {
-        width: 150px;
-        height: 150px;
-        background-size: 150px 135px;
-}
-
-.widget-colorpicker .colorpicker-size .colorpicker-hue,
-.widget-colorpicker .colorpicker-size .colorpicker-alpha {
-        width: 15px;
-        height: 150px;
-        background-size: 15px 135px;
-}
-
-.widget-colorpicker .colorpicker-size .colorpicker-color,
-.widget-colorpicker .colorpicker-size .colorpicker-color div {
-        height: 14px;
-        background-size: 14px 150px;
-}
-
-.widget-colorpicker .colorpicker-size .colorpicker-selectors {
-   display: none;
-   height: 35px;
-   width: 150px;
-   margin-top: 4px;
-   clear: both;
-}
-
-.widget-colorpicker .colorpicker-size .colorpicker-selectors i {
-  cursor: pointer;
-  float: left;
-  height: 30px;
-  width: 30px;
-}
-
-.widget-colorpicker .colorpicker-size .colorpicker-selectors i + i {
-  margin-left: 3px;
-}
-
-.widget-colorpicker .colorpicker-size .colorpicker-selectors-color {
-        height: 30px;
-        width: 30px;
-        background-size: 30px 30px;
-}
-
 /*
   this css is for hide border at top and left of the color picker
 */
