@@ -1,29 +1,29 @@
-.widget-colorRGB .inline-main-div {
+.widget-colorpicker .inline-main-div {
     display: inline-block;
     height:100%;
     width:100%;
 }
 
-.widget-colorRGB .colorpicker-size .colorpicker-saturation {
+.widget-colorpicker .colorpicker-size .colorpicker-saturation {
         width: 150px;
         height: 150px;
         background-size: 150px 135px;
 }
 
-.widget-colorRGB .colorpicker-size .colorpicker-hue,
-.widget-colorRGB .colorpicker-size .colorpicker-alpha {
+.widget-colorpicker .colorpicker-size .colorpicker-hue,
+.widget-colorpicker .colorpicker-size .colorpicker-alpha {
         width: 15px;
         height: 150px;
         background-size: 15px 135px;
 }
 
-.widget-colorRGB .colorpicker-size .colorpicker-color,
-.widget-colorRGB .colorpicker-size .colorpicker-color div {
+.widget-colorpicker .colorpicker-size .colorpicker-color,
+.widget-colorpicker .colorpicker-size .colorpicker-color div {
         height: 14px;
         background-size: 14px 150px;
 }
 
-.widget-colorRGB .colorpicker-size .colorpicker-selectors {
+.widget-colorpicker .colorpicker-size .colorpicker-selectors {
    display: none;
    height: 35px;
    width: 150px;
@@ -31,18 +31,18 @@
    clear: both;
 }
 
-.widget-colorRGB .colorpicker-size .colorpicker-selectors i {
+.widget-colorpicker .colorpicker-size .colorpicker-selectors i {
   cursor: pointer;
   float: left;
   height: 30px;
   width: 30px;
 }
 
-.widget-colorRGB .colorpicker-size .colorpicker-selectors i + i {
+.widget-colorpicker .colorpicker-size .colorpicker-selectors i + i {
   margin-left: 3px;
 }
 
-.widget-colorRGB .colorpicker-size .colorpicker-selectors-color {
+.widget-colorpicker .colorpicker-size .colorpicker-selectors-color {
         height: 30px;
         width: 30px;
         background-size: 30px 30px;
@@ -52,7 +52,7 @@
   this css is for hide border at top and left of the color picker
 */
 
-.widget-colorRGB .colorpicker{
+.widget-colorpicker .colorpicker{
    top:-1px;
    left:0px;
 }

@@ -1,10 +1,10 @@
 widgetViewModelCtor =
 
 /**
- * Create a colorRGB ViewModel
+ * Create a colorPicker ViewModel
  * @constructor
  */
-function colorRGBViewModel() {
+function colorPickerViewModel() {
      this.colorpicker = null;
      this.WidgetWidth  = 156;
      this.WidgetHeight = 120;
@@ -157,16 +157,16 @@ function colorRGBViewModel() {
     };
     
     this.changeCss = function(width, height) {
-      $('.widget-colorRGB .colorpicker-saturation').css('height', height+'px');
-      $('.widget-colorRGB .colorpicker-saturation').css('width', width+'px');
-      $('.widget-colorRGB .colorpicker-saturation').css('background-size', width+'px '+height+'px');
-      $('.widget-colorRGB .colorpicker-hue').css('height', height+'px');
-      $('.widget-colorRGB .colorpicker-hue').css('background-size', '15px '+height+'px');
-      $('.widget-colorRGB .colorpicker-alpha').css('height', height+'px');
-      $('.widget-colorRGB .colorpicker-alpha').css('background-size', '14px '+height+'px');
-      $('.widget-colorRGB .colorpicker-color').css('background-size', '14px '+height+'px');
-      $('.widget-colorRGB .colorpicker-color div').css('background-size', '14px '+height+'px');
-      $('.widget-colorRGB .colorpicker-selectors').css('width', width+15+'px');
+      this.widgetApi.find(".colorpicker-saturation").css('height', height+'px');
+      this.widgetApi.find(".colorpicker-saturation").css('width', width+'px');
+      this.widgetApi.find(".colorpicker-saturation").css('background-size', width+'px '+height+'px');
+      this.widgetApi.find(".colorpicker-hue").css('height', height+'px');
+      this.widgetApi.find(".colorpicker-hue").css('background-size', '15px '+height+'px');
+      this.widgetApi.find(".colorpicker-alpha").css('height', height+'px');
+      this.widgetApi.find(".colorpicker-alpha").css('background-size', '14px '+height+'px');
+      this.widgetApi.find(".colorpicker-color").css('background-size', '14px '+height+'px');
+      this.widgetApi.find(".colorpicker-color div").css('background-size', '14px '+height+'px');
+      this.widgetApi.find(".colorpicker-selectors").css('width', width+15+'px');
     };
 
    this.resized = function() 

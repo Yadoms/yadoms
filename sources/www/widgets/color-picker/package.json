@@ -1,8 +1,8 @@
 {
-	"type": "colorRGB",
+	"type": "color-picker",
 	"version": "1.0.0-rc.1",
 	"author": "Jean-Michel BERHAULT",
-	"url": "https://github.com/Yadoms/yadoms/wiki/colorRGB",
+	"url": "https://github.com/Yadoms/yadoms/wiki/color-picker",
 	"credits": "",
   "dimensions": {
     "min": {
