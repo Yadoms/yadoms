@@ -81,6 +81,7 @@ namespace equipments
             break;
          case NotAvailable:
             YADOMS_LOG(information) << "This equipment (" << m_deviceName << ") is not available. This keyword is desactivated.";
+            m_teleInfoStatus->set(specificHistorizers::EWESTeleInfoStatus::kDesactivated);
             break;
          default:
             YADOMS_LOG(error) << "This contract is unknown";
