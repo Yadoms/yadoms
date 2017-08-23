@@ -1,0 +1,39 @@
+{
+	"type": "thermostat",
+	"version": "1.0.0-rc.1",
+	"author": "jean-Michel BERHAULT",
+	"url": "https://github.com/Yadoms/yadoms/wiki/thermostat",
+	"credits": "",
+  "dimensions": {
+    "min": {
+      "x": 1,
+      "y": 1
+    },
+    "max": {
+      "x": 4,
+      "y": 4
+    },
+    "default": {
+      "x": 1,
+      "y": 1
+    }
+  },
+  "hasTitle" :  true,
+	"configurationSchema": {
+		"temperatureDevice": {
+			"type": "keyword",
+			"expectedKeywordType": "temperature",
+			"expectedKeywordAccess": "get"
+		},
+		"temperatureSet": {
+			"type": "keyword",
+			"expectedKeywordType": "temperature",
+			"expectedKeywordAccess": "getset"
+		},
+      "heating":{
+			"type": "keyword",
+			"expectedKeywordType": "bool",
+			"expectedKeywordAccess": "get"      
+      }
+	}
+}

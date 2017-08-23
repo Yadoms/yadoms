@@ -1,0 +1,18 @@
+{
+	"name": "Thermostat",
+	"description": "A widget to display parameters about a boiler/heater",
+	"configurationSchema": {
+		"temperatureDevice": {
+			"name": "Live temperature",
+			"description": "Temperature of your room, house, ..."
+		},
+		"temperatureSet": {
+			"name": "Temperature set",
+			"description": "Temperature set for the place"
+		},
+      "heating":{
+			"name": "State of the boiler/heater",
+			"description": ""   
+      }
+	}
+}
