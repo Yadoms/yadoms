@@ -22,13 +22,13 @@
 	"configurationSchema": {
 		"temperatureDevice": {
 			"type": "keyword",
-			"expectedKeywordType": "temperature",
+			"expectedCapacity": ["temperature"],
 			"expectedKeywordAccess": "get"
 		},
 		"temperatureSet": {
 			"type": "keyword",
-			"expectedKeywordType": "temperature",
-			"expectedKeywordAccess": "getset"
+			"expectedCapacity": ["temperature"],
+			"expectedKeywordAccess": "get"
 		},
       "heating":{
 			"type": "keyword",
