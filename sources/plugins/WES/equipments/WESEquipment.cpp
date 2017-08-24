@@ -334,14 +334,17 @@ namespace equipments
          details.printToLog(YADOMS_LOG(information));
 
          //Déclaration of all IOs
+         if (api->deviceExists(m_deviceName))
+         {
+            auto existingModel = api->getDeviceModel(m_deviceName);
+            if (existingModel.empty())
+               api->updateDeviceModel(m_deviceName, "WES");
 
-         auto existingModel = api->getDeviceModel(m_deviceName);
-         if (existingModel.empty())
-            api->updateDeviceModel(m_deviceName, "WES");
-
-         api->updateDeviceDetails(m_deviceName, details);
-
-         api->declareKeywords(m_deviceName, keywordsToDeclare);
+            api->updateDeviceDetails(m_deviceName, details);
+            api->declareKeywords(m_deviceName, keywordsToDeclare);
+         }
+         else
+            api->declareDevice(m_deviceName, "WES", "WES", keywordsToDeclare, details);
       }
       catch (std::exception& e)
       {

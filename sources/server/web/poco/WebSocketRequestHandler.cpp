@@ -291,6 +291,7 @@ namespace web
                   }
 
                   std::string bufferString(buffer);
+                  memset(buffer, 0, sizeof(buffer)); // clean up the buffer
 
                   YADOMS_LOG(debug) << "Websocket receive data : " << bufferString;
 

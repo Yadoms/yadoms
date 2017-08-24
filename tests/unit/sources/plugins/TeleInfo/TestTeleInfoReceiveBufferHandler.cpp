@@ -483,4 +483,30 @@ BOOST_AUTO_TEST_CASE(LF_Change_to_STX)
    BOOST_CHECK_EQUAL(*out == expectedMap, true);
 }
 
+BOOST_AUTO_TEST_CASE(LF_Change_to_STX2)
+{
+   const auto frame = serialTeleInfoMessage::normalizeFrame("<stx>F<cr><lf>PAPP 00280 +<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 008453671 -<cr><lf>PTEC TH.. $<cr><lf>IINST 001 X<cr><lf>IMAX 025 F<cr><lf>PAPP 00280 +<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 008453671 -<cr><lf>PTEC TH.. $<cr><lf>IINST 001 X<cr><lf>IMAX 025 F<cr><lf>PAPP 00270 *<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 008453671 -<cr><lf>PTEC TH.. $<cr><lf>IINST 001 X<cr><lf>IMAX 025 F<cr><lf>PAPP 00270 *<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @");
+   const std::map<std::string, std::string> expectedMap = {
+      { "ADCO", "031428097115" },
+      { "OPTARIF", "BASE" },
+      { "ISOUSC", "30" },
+      { "BASE", "008453671" },
+      { "PTEC", "TH.." },
+      { "IINST", "001" },
+      { "IMAX", "025" },
+      { "PAPP", "00270" },
+      { "MOTDETAT", "000000" } };
+
+   shared::event::CEventHandler evtHandler;
+   CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
+                                               shared::event::kUserFirstId,
+                                               boost::posix_time::seconds(0),
+                                               boost::make_shared<BufferLoggerMock>(),
+                                               false);
+   bufferHandler.push(shared::communication::CByteBuffer(frame));
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
+   const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
+   BOOST_CHECK_EQUAL(*out == expectedMap, true);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
