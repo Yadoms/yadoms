@@ -82,6 +82,9 @@ function addDeviceList(handler, tabDevice) {
    
      var $deviceList = $("select#" + handler.uuid);
 
+     console.log("tabDevice :", tabDevice);
+     console.log("$deviceList :", $deviceList);
+     
    //A device matches criteria
    if (tabDevice.length !== 0) {
      var itemToSelect = -1;
@@ -115,8 +118,7 @@ function addDeviceList(handler, tabDevice) {
  * @returns {Function}
  */
  
-//function populateDeviceList(handler) {
-KeywordParameterHandler.prototype.populateDeviceList = function(handler) {
+function populateDeviceList(handler) {
    return function(data) {
       var $deviceList = $("select#" + handler.uuid);
 	  
@@ -169,6 +171,8 @@ KeywordParameterHandler.prototype.applyScript = function () {
    
    //until no device has been select the list is disabled
    $cbKeywords.prop('disabled', true);
+   
+   var self = this;
    
    //$deviceList.change(function(handler) {
      $deviceList.on('change', function(handler) {
@@ -283,7 +287,7 @@ KeywordParameterHandler.prototype.applyScript = function () {
                });
          }
       }
-   }(this));
+   }(self));
 
    console.log (this.lookupMethod);
    
@@ -292,36 +296,37 @@ KeywordParameterHandler.prototype.applyScript = function () {
    {
       case "type":
           
+         console.log ("this.expectedKeywordType : ", this.expectedKeywordType); 
          //we look for a type
-         if (Array.isArray(self.expectedKeywordType)) {
+         if (Array.isArray(this.expectedKeywordType)) {
             
             var arrayOfDeffered = [];
             var tabDevice = [];            
             
-            //console.log ("self.expectedKeywordType", self.expectedKeywordType);
+            console.log ("this.expectedKeywordAccess", this.expectedKeywordAccess);
             
             //we have a list of types
             //we async ask for device list that support a type
-            $.each(self.expectedKeywordType, function (index, type) {
-               
+            $.each(this.expectedKeywordType, function (index, type) {
+               console.log ("self.expectedKeywordAccess", self.expectedKeywordAccess);
                var promise = new $.Deferred();
                arrayOfDeffered.push(promise);               
                
-               RestEngine.getJson("/rest/device/matchcapacitytype/" + this.expectedKeywordAccess + "/" + type)
+               RestEngine.getJson("/rest/device/matchcapacitytype/" + self.expectedKeywordAccess + "/" + type)
                   .done(returnDevices(this, tabDevice, promise))
                   .fail(function(error) {
-                     notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacityType", {expectedKeywordAccess : this.expectedKeywordAccess, expectedKeywordType : type}), error);
-                     //promise.reject();
+                     notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacityType", {expectedKeywordAccess : self.expectedKeywordAccess, expectedKeywordType : type}), error);
+                     promise.reject();
                   });
             });
             $.whenAll(arrayOfDeffered).done(function () {
-               addDeviceList(this, tabDevice);
+               addDeviceList(self, tabDevice);
             });            
          }
          else {
             //we async ask for device list that support a type
             RestEngine.getJson("/rest/device/matchcapacitytype/" + this.expectedKeywordAccess + "/" + this.expectedKeywordType)
-               .done(this.populateDeviceList(this))
+               .done(populateDeviceList(this))
                .fail(function(error) {
                   notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacityType", {expectedKeywordAccess : this.expectedKeywordAccess, expectedKeywordType : this.expectedKeywordType}), error);
                });
@@ -342,10 +347,12 @@ KeywordParameterHandler.prototype.applyScript = function () {
                var promise = new $.Deferred();
                arrayOfDeffered.push(promise);
                
+               console.log ("self.expectedKeywordAccess : ", self.expectedKeywordAccess);
+               
                RestEngine.getJson("/rest/device/matchcapacity/" + self.expectedKeywordAccess + "/" + capacity)
                   .done(returnDevices(self, tabDevice, promise))
                   .fail(function(error) {
-                     notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacity", {expectedKeywordAccess : self.expectedKeywordAccess, expectedCapacity : self.expectedCapacity}), error);
+                     notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacity", {expectedKeywordAccess : self.expectedKeywordAccess, expectedCapacity : capacity}), error);
                   });
             });
             $.whenAll(arrayOfDeffered).done(function () {
@@ -355,7 +362,7 @@ KeywordParameterHandler.prototype.applyScript = function () {
          else {
             //we have only one capacity
             RestEngine.getJson("/rest/device/matchcapacity/" + this.expectedKeywordAccess + "/" + this.expectedCapacity)
-               .done(this.populateDeviceList(this))
+               .done(populateDeviceList(this))
                .fail(function(error) {
                   notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacity", {expectedKeywordAccess : this.expectedKeywordAccess, expectedCapacity : this.expectedCapacity}), error);
                });
@@ -364,7 +371,7 @@ KeywordParameterHandler.prototype.applyScript = function () {
          
       case "accessMode":
          RestEngine.getJson("/rest/device/matchkeywordaccess/" + this.expectedKeywordAccess)
-            .done(this.populateDeviceList(this))
+            .done(populateDeviceList(this))
             .fail(function(error) {
                notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchKeywordAccess", {expectedKeywordAccess : this.expectedKeywordAccess}), error);
             });         
@@ -375,7 +382,7 @@ KeywordParameterHandler.prototype.applyScript = function () {
       
          //we get all devices
          RestEngine.getJson("/rest/device/")
-            .done(this.populateDeviceList(this))
+            .done(populateDeviceList(this))
             .fail(function(error) {
                notifyError($.t("modals.configure-widget.errorDuringGettingDeviceList"), error);
             });
