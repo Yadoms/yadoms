@@ -1,6 +1,8 @@
 {
 	"name": "Thermostat",
 	"description": "Un widget qui affiche les paramètres(température ambiante, consignes, état) d'un chauffage",
+   "title1": "température",
+   "title2": "consigne",      
 	"configurationSchema": {
 		"temperatureDevice": {
 			"name": "température ambiante",
@@ -13,6 +15,10 @@
       "heating":{
 			"name": "Etat du chauffage",
 			"description": ""   
+      },
+      "stepValue":{
+			"name": "Pas",
+			"description": "Entrer le pas d'incrément"
       }
 	}
 }

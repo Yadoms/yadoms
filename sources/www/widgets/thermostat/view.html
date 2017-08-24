@@ -1,8 +1,21 @@
 <script type="text/html" id="thermostat-template">
-    <div class="textfit-in-parent main-div">
-        <input >
-        <div class="textfit-in-parent textfit" data-bind="text: data()"></div>
-        <div class="unit textfit" data-bind="text: unit()" min-font="14"></div>
-        <div class="glyphicon glyphicon-fire"></div>
+    <div class="global-div">
+       <div class="glyphicon glyphicon-fire icon-div"></div>
+       <div class="textfit-in-parent main-div">
+          <div class="textfit-in-parent title-div">
+             <div class="textfit" data-i18n="widgets/thermostat:title1"/>
+             <div class="textfit" data-i18n="widgets/thermostat:title2"/>
+          </div>
+          <div class="textfit-in-parent values-div">
+             <div class="value textfit" data-bind="text: temperature()" min-font="6"></div>
+             <div class="unit textfit" data-bind="text: unit()" min-font="6"></div>
+             <div class="value textfit" data-bind="text: temperatureSet()" min-font="6"></div>
+             <div class=" unit textfit" data-bind="text: unit()" min-font="6"></div>
+             <div class="btn-group-vertical btn-toggle buttonGroup" role="group">
+                <button class="btn btn-default textfit thermostatButton" data-bind="event: {click: commandClickPlus}"><span class="glyphicon glyphicon-plus"></span></button>
+                <button class="btn btn-default textfit thermostatButton" data-bind="event: {click: commandClickMinus}"><span class="glyphicon glyphicon-minus"></span></button>
+             </div>             
+          </div>
+       </div>
     </div>
 </script>

@@ -1,6 +1,8 @@
 {
 	"name": "Thermostat",
 	"description": "A widget to display parameters about a boiler/heater",
+   "title1": "temperature",
+   "title2": "temperature set",   
 	"configurationSchema": {
 		"temperatureDevice": {
 			"name": "Live temperature",
@@ -12,7 +14,11 @@
 		},
       "heating":{
 			"name": "State of the boiler/heater",
-			"description": ""   
+			"description": ""
+      },
+      "stepValue":{
+			"name": "Step",
+			"description": "set the incremental step"      
       }
 	}
 }

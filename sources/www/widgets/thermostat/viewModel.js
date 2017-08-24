@@ -7,8 +7,10 @@ widgetViewModelCtor =
 function thermostatViewModel() {
    
     //observable data
-    this.data = ko.observable("-");
+    this.temperature = ko.observable("-");
+    this.temperatureSet = ko.observable(0.0/*"-"*/).extend({ numeric: 1 });
     this.unit = ko.observable("");
+    this.step = ko.observable(0.1).extend({ numeric: 1 });
     //
 
     /**
@@ -24,6 +26,23 @@ function thermostatViewModel() {
         });
     };
 
+    this.commandClickPlus = function () {
+        this.commandClick(this.step());
+
+    }
+    this.commandClickMinus = function () {
+        this.commandClick(-this.step());
+    }
+    
+    this.commandClick = function (value) {
+        if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.temperatureSet))) {
+            this.temperatureSet(parseFloat(this.temperatureSet()) + parseFloat(value));
+            console.log ("temperature set", this.temperatureSet());
+            KeywordManager.sendCommand(this.widget.configuration.temperatureSet.keywordId, this.temperatureSet().toString());
+        }
+        this.widgetApi.find(".textfit").fitText();
+    };    
+    
     this.configurationChanged = function () {
         var self = this;
 
@@ -41,6 +60,9 @@ function thermostatViewModel() {
         //we fill the deviceId of the battery indicator
         //TODO : handle all keywords
         self.widgetApi.configureBatteryIcon(self.widget.configuration.temperatureSet.deviceId);
+        
+        //Read the step
+        self.step(self.widget.configuration.stepValue);
     }
 
     /**
@@ -56,38 +78,36 @@ function thermostatViewModel() {
             //it is the right device
             if (data.value !=="")
             {
-               var temp = parseFloat(data.value).toFixed(self.precision);
-               self.data(temp.toString());
+               var temp = parseFloat(data.value).toFixed(1);
+               self.temperature(temp.toString());
             }
             else 
-               self.data("-");
-            
-            self.widgetApi.fitText();
+               self.temperature("-");
         }
         else if (keywordId === self.widget.configuration.temperatureSet.keywordId) {
            
             //it is the right device
             if (data.value !=="")
             {
-               var temp = parseFloat(data.value).toFixed(self.precision);
-               self.data(temp.toString());
+               var temp = parseFloat(data.value).toFixed(1);
+               self.temperatureSet(temp/*.toString()*/);
             }
             else 
-               self.data("-");
-            
-            self.widgetApi.fitText();
-        } else if (keywordId === self.widget.configuration.heating.keywordId) {
+               self.temperatureSet("-");
+        } 
+        else if (keywordId === self.widget.configuration.heating.keywordId) {
            
             //it is the right device
             if (data.value !=="")
             {
-               var temp = parseFloat(data.value).toFixed(self.precision);
-               self.data(temp.toString());
+               if (!parseBool(data.value))
+                  this.widgetApi.find(".icon-div").css("visibility", "hidden");
+               else 
+                  this.widgetApi.find(".icon-div").css("visibility", "visible");
             }
             else 
-               self.data("-");
-            
-            self.widgetApi.fitText();
+               this.widgetApi.find(".icon-div").css("visibility", "hidden");
         }
+        self.widgetApi.fitText();
     };
 };
