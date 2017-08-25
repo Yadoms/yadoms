@@ -22,7 +22,7 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (shared::exception::CException& e)
    {
-      YADOMS_LOG(information) << "Configuration or initialization error of the forecast module :" << e.what() ;
+      YADOMS_LOG(error) << "Configuration or initialization error of the forecast module :" << e.what() ;
       throw;
    }
 }
@@ -185,6 +185,8 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    try
    {
+      dataToParse.printToLog(YADOMS_LOG(trace));
+
       if (wuConfiguration.isForecast10DaysEnabled())
       {
          auto result = dataToParse.get<std::vector<shared::CDataContainer> >("forecast.simpleforecast.forecastday");
