@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "urlManager.h"
-#include "http/HttpMethods.h"
 #include <shared/Log.h>
 
-static boost::posix_time::time_duration httpRequestWESTimeout(boost::posix_time::time_duration(boost::posix_time::seconds(8)));
+boost::posix_time::time_duration urlManager::httpRequestCreationTimeout(boost::posix_time::time_duration(boost::posix_time::seconds(8)));
+boost::posix_time::time_duration urlManager::httpRequestWESTimeout(boost::posix_time::time_duration(boost::posix_time::seconds(25)));
 
 void urlManager::parseNode(shared::CDataContainer &container, boost::property_tree::ptree node)
 {
@@ -33,7 +33,8 @@ void urlManager::parseNode(shared::CDataContainer &container, boost::property_tr
 
 shared::CDataContainer urlManager::readFileState(Poco::Net::SocketAddress socket,
                                                  const shared::CDataContainer& credentials,
-                                                 const std::string &file)
+                                                 const std::string &file,
+                                                 const boost::posix_time::time_duration& timeout)
 {
    std::stringstream url;
    shared::CDataContainer noParameters;
@@ -47,7 +48,7 @@ shared::CDataContainer urlManager::readFileState(Poco::Net::SocketAddress socket
    responseTree =  http::CHttpMethods::SendGetRequest(url.str(),
                                                       credentials, 
                                                       noParameters,
-                                                      httpRequestWESTimeout);
+                                                      timeout);
    parseNode(response, responseTree);
    return response;
 }

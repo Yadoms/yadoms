@@ -126,7 +126,8 @@ namespace equipments
          std::string CGXfileName = "WESVERSION.CGX";
          auto results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
                                                   credentials,
-                                                  CGXfileName);
+                                                  CGXfileName,
+                                                  urlManager::httpRequestCreationTimeout);
 
          // get the revision, for E/S numbers
          m_version = results.get<int>("version");
@@ -146,7 +147,8 @@ namespace equipments
             CGXfileName = "WESNAMES" + boost::lexical_cast<std::string>(m_version) + ".CGX";
             results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
                                                 credentials,
-                                                CGXfileName);
+                                                CGXfileName,
+                                                urlManager::httpRequestCreationTimeout);
 
             contract[0] = results.get<subdevices::ContractAvailable>("CPT1_abo_name");
             contract[1] = results.get<subdevices::ContractAvailable>("CPT2_abo_name");
@@ -381,7 +383,8 @@ namespace equipments
 
          shared::CDataContainer results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
                                                                     credentials,
-                                                                    CGXfileName);
+                                                                    CGXfileName,
+                                                                    urlManager::httpRequestWESTimeout);
 
          results.printToLog(YADOMS_LOG(trace));
 

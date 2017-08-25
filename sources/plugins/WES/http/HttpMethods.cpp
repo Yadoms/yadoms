@@ -11,6 +11,8 @@
 
 namespace http
 {
+   boost::posix_time::time_duration CHttpMethods::httpRequestDefaultTimeout(boost::posix_time::time_duration(boost::posix_time::seconds(45)));
+
    bool CHttpMethods::SendGetRequest(const std::string& url,
                                      const shared::CDataContainer& credentials,
                                      const shared::CDataContainer& parameters,

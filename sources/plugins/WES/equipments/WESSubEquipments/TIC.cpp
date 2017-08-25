@@ -182,6 +182,8 @@ namespace equipments
             break;
          }
 
+         YADOMS_LOG(information) << "Time period :" << timePeriod;
+
          m_apparentPower->set(apparentPower);
 
          api->historizeData(m_deviceName, m_keywords);

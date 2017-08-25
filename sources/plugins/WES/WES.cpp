@@ -46,7 +46,7 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       m_ioManager = m_factory->loadConfiguration(api, m_configuration);
 
       // Create timer for refresh IOs
-      m_refreshTimer = api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(15));
+      m_refreshTimer = api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(30));
 
       if (m_ioManager->getMasterEquipment() == 0)
       {
