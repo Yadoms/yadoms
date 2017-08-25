@@ -50,7 +50,12 @@
               {				 
                  "name": "Temperature data",
                  "description": "temperature data are stored individually to be used by rules."
-              }
+              },
+              "individualConditionsForecast" :
+              {				 
+                 "name": "Weather conditions data",
+                 "description": "weather conditions data are stored individually to be used by rules."
+              } 
            }
       }      
 	},

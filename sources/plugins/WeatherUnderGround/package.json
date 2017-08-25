@@ -1,6 +1,6 @@
 {
 	"type": "WeatherUnderground",
-	"version": "1.0.2-rc.1",
+	"version": "1.0.2-rc.2",
 	"author": "Jean-Michel BERHAULT",
    "url": "https://github.com/Yadoms/yadoms/wiki/WeatherUnderground",
 	"credits": "",
@@ -63,7 +63,12 @@
               {				 
                  "type" : "bool",
                  "defaultValue" : "false"
-              }                    
+              },
+              "individualConditionsForecast" :
+              {				 
+                 "type" : "bool",
+                 "defaultValue" : "false"
+              }              
            }
       }   
    }
