@@ -108,7 +108,13 @@
       clearInterval(Yadoms.periodicDashboardTask);
       asyncLoad("modals/dashboard/summary.html")
       .done(function() {
-         setBtnActive(this.id);
+         Yadoms.initializeSummaryDashboard()
+            .done(function() {
+               setBtnActive(this.id);
+            })
+            .always(function () {
+               $("#btn-dashboard-summary").bind('click', showDashboardTabSummary);
+            });         
       })
       .always(function() {
          $("#btn-dashboard-summary").bind('click', showDashboardTabSummary);
