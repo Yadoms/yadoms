@@ -172,9 +172,15 @@
             updateDeviceConfiguration(device); 
       });
 
-      $deviceRow.find("button.btn-delete").unbind('click').bind('click', function (e) { 
+      $deviceRow.find("button.btn-delete").unbind('click').bind('click', function (e) {
+            // Stop periodic task before the deletion and refresh
+            // This disabled the periodic refresh during the deletion and wrong display
+            clearInterval(Yadoms.periodicDashboardTask); 
             e.stopPropagation();
             deleteDevice(device);
+            
+            // Restart the periodic refresh
+            Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
       });
 
       $deviceRow.find("button.btn-restore").unbind('click').bind('click', function (e) { 
