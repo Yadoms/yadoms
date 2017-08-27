@@ -25,8 +25,20 @@
 
    Yadoms.initializeDeviceDashboard = function () {
    
-      $("input.cb-showblacklist").unbind('change').bind('change', function () { refreshDeviceList(); });
-      $("#btn-add-new-device").unbind("click").bind("click", function () { addNewDevice(); });
+      $("input.cb-showblacklist").unbind('change').bind('change', function () 
+      { 
+         // during the page resfresh, we disable the peridic task => Avoid button in double , ...
+         clearInterval(Yadoms.periodicDashboardTask);
+         refreshDeviceList(); 
+         Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+      });
+      $("#btn-add-new-device").unbind("click").bind("click", function ()
+      {
+         // during adding a new equipment, we disable the periodic task.
+         clearInterval(Yadoms.periodicDashboardTask);
+         addNewDevice(); 
+         Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+      });
       
       var d = new $.Deferred();
 
