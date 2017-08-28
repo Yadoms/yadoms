@@ -29,15 +29,13 @@
       { 
          // during the page resfresh, we disable the peridic task => Avoid button in double , ...
          clearInterval(Yadoms.periodicDashboardTask);
-         refreshDeviceList(); 
-         Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+         refreshDeviceList().always(function() {
+            Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+         });
       });
       $("#btn-add-new-device").unbind("click").bind("click", function ()
       {
-         // during adding a new equipment, we disable the periodic task.
-         clearInterval(Yadoms.periodicDashboardTask);
          addNewDevice(); 
-         Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
       });
       
       var d = new $.Deferred();
@@ -561,6 +559,7 @@
    }
 
    function addNewDevice() {
+      clearInterval(Yadoms.periodicDashboardTask);
       Yadoms.modals.deviceAddManually.loadAsync()
       .done(function () {
          Yadoms.askPluginTypesForManuallyDeviceCreation(function (pi) {
@@ -571,9 +570,13 @@
                    Yadoms.showVirtualDeviceConfigurationModal(null, function (newDeviceName, newDeviceModel, newDeviceConfiguration) {
                      PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, "virtualDeviceType", newDeviceConfiguration)
                      .done(function () {
-                        refreshDeviceList();
+                        refreshDeviceList()
+                           .always(function() {
+                               Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+                           });
                      })
                      .fail(function (error) {
+                        Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                         notifyError($.t("objects.pluginInstance.errorCreatingManuallyDevice", { deviceName: newDeviceName }), error);
                      });
                   });
@@ -590,9 +593,13 @@
                           //we ask for manually device creation
                         PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
                         .done(function () {
-                           refreshDeviceList();
+                           refreshDeviceList()
+                           .always(function() {
+                              Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+                           });
                         })
                         .fail(function (error) {
+                           Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                            notifyError($.t("objects.pluginInstance.errorCreatingManuallyDevice", { deviceName: newDeviceName }), error);
                         });
                      });
