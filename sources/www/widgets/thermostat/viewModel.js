@@ -11,6 +11,7 @@ function thermostatViewModel() {
     this.temperatureSet = ko.observable(0.0/*"-"*/).extend({ numeric: 1 });
     this.unit = ko.observable("");
     this.step = ko.observable(0.1).extend({ numeric: 1 });
+    this.isTemperatureVisible = ko.observable(true);
     //
 
     /**
@@ -35,10 +36,10 @@ function thermostatViewModel() {
     }
     
     this.commandClick = function (value) {
-        if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.temperatureSet))) {
+        if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.controlSection.content.temperatureSet))) {
             this.temperatureSet(parseFloat(this.temperatureSet()) + parseFloat(value));
             console.log ("temperature set", this.temperatureSet());
-            KeywordManager.sendCommand(this.widget.configuration.temperatureSet.keywordId, this.temperatureSet().toString());
+            KeywordManager.sendCommand(this.widget.configuration.controlSection.content.temperatureSet.keywordId, this.temperatureSet().toString());
         }
         this.widgetApi.find(".textfit").fitText();
     };    
@@ -47,24 +48,40 @@ function thermostatViewModel() {
         var self = this;
 
         //we get the unit of the keyword
-        self.widgetApi.getKeywordInformation(self.widget.configuration.temperatureDevice.keywordId).done(function (keyword) {
+        self.widgetApi.getKeywordInformation(self.widget.configuration.LivetemperatureSection.content.temperatureDevice.keywordId).done(function (keyword) {
             self.unit($.t(keyword.units));
         });
 
         //we register keyword new acquisition
-        self.widgetApi.registerKeywordAcquisitions([self.widget.configuration.temperatureDevice.keywordId,
-                                                    self.widget.configuration.temperatureSet.keywordId,
-                                                    self.widget.configuration.heating.keywordId
+        self.widgetApi.registerKeywordAcquisitions([self.widget.configuration.LivetemperatureSection.content.temperatureDevice.keywordId,
+                                                    self.widget.configuration.controlSection.content.temperatureSet.keywordId,
+                                                    self.widget.configuration.thermostatStateSection.content.state.keywordId
                                                    ]);
         
         //we fill the deviceId of the battery indicator
         //TODO : handle all keywords
-        self.widgetApi.configureBatteryIcon(self.widget.configuration.temperatureSet.deviceId);
+        self.widgetApi.configureBatteryIcon(self.widget.configuration.controlSection.content.temperatureSet.deviceId);
         
         //Read the step
-        self.step(self.widget.configuration.stepValue);
+        self.step(self.widget.configuration.controlSection.content.stepValue);
+        
+        // Visibility of the temperature
+        self.isTemperatureVisible(self.widget.configuration.LivetemperatureSection.checkbox);
     }
 
+    this.resized = function () {
+        var self = this;
+        
+        //self.widget.getWidth() - 30, self.widget.getHeight() - 40
+        
+    /*
+.btn-lg
+.btn-md
+.btn-sm
+.btn-xs    
+    */        
+    };
+    
     /**
     * New acquisition handler
     * @param keywordId keywordId on which new acquisition was received
@@ -73,7 +90,7 @@ function thermostatViewModel() {
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
 
-        if (keywordId === self.widget.configuration.temperatureDevice.keywordId) {
+        if (keywordId === self.widget.configuration.LivetemperatureSection.content.temperatureDevice.keywordId) {
            
             //it is the right device
             if (data.value !=="")
@@ -84,18 +101,18 @@ function thermostatViewModel() {
             else 
                self.temperature("-");
         }
-        else if (keywordId === self.widget.configuration.temperatureSet.keywordId) {
+        else if (keywordId === self.widget.configuration.controlSection.content.temperatureSet.keywordId) {
            
             //it is the right device
             if (data.value !=="")
             {
                var temp = parseFloat(data.value).toFixed(1);
-               self.temperatureSet(temp/*.toString()*/);
+               self.temperatureSet(temp);
             }
             else 
                self.temperatureSet("-");
         } 
-        else if (keywordId === self.widget.configuration.heating.keywordId) {
+        else if (keywordId === self.widget.configuration.thermostatStateSection.content.state.keywordId) {
            
             //it is the right device
             if (data.value !=="")

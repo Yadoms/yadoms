@@ -4,21 +4,39 @@
    "title1": "température",
    "title2": "consigne",      
 	"configurationSchema": {
-		"temperatureDevice": {
-			"name": "température ambiante",
-			"description": "température de la pièce, de la maison, ..."
-		},
-		"temperatureSet": {
-			"name": "consigne de température",
-			"description": ""
-		},
-      "heating":{
-			"name": "Etat du chauffage",
-			"description": ""   
+      "LivetemperatureSection" : {
+			"name": "Température ambiante",
+			"description": "",
+         "content": {        
+		      "temperatureDevice": {
+			      "name": "température ambiante",
+			      "description": "température de la pièce, de la maison, ..."
+		      }
+         }
       },
-      "stepValue":{
-			"name": "Pas",
-			"description": "Entrer le pas d'incrément"
+      "controlSection" : {
+			"name": "Consigne",
+			"description": "",
+         "content": {      
+		      "temperatureSet": {
+			      "name": "consigne de température",
+			      "description": ""
+            },
+            "stepValue":{
+			      "name": "Pas",
+			      "description": "Entrer le pas d'incrément"
+            }
+         }
+		},
+      "thermostatStateSection" : {
+			"name": "Etat de l'équipement",
+			"description": "",
+         "content": {
+            "state":{
+			      "name": "Etat de l'équipement (chauffage, réfrigération, ...)",
+			      "description": ""   
+            }
+         }
       }
 	}
 }

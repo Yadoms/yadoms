@@ -9,7 +9,12 @@
 .widget-thermostat .main-div {
     display: flex;
     flex-direction: column;
-    height:100%;
+}
+
+.widget-thermostat .thermostat-info{
+    display: flex;
+    flex-direction: row;
+    height:100%;   
 }
 
 .widget-thermostat .values-div {
@@ -23,6 +28,7 @@
    margin : auto;
 }
 
+/*
 .widget-thermostat .title-div {
     width: 100%;
     text-align: center;
@@ -31,10 +37,11 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-}
+}*/
 
 .widget-thermostat .value {
     flex : 1;
+    vertical-align:middle;
     width: auto;
 }
 
@@ -43,10 +50,10 @@
 }
 
 .widget-thermostat .thermostatButton {
-    background-color: #337ab7;
+    background-color: #cccccc;
 }
-
+/*
 .widget-thermostat .unit {
     flex: 0 0 15%;
     vertical-align:top;
-}
+}*/

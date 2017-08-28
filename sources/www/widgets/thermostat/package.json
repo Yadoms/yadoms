@@ -6,38 +6,59 @@
 	"credits": "",
   "dimensions": {
     "min": {
-      "x": 3,
+      "x": 1,
       "y": 1
     },
     "max": {
       "x": 4,
-      "y": 1
+      "y": 4
     },
     "default": {
-      "x": 3,
+      "x": 1,
       "y": 1
     }
   },
   "hasTitle" :  true,
 	"configurationSchema": {
-		"temperatureDevice": {
-			"type": "keyword",
-			"expectedCapacity": ["temperature"],
-			"expectedKeywordAccess": "get"
-		},
-		"temperatureSet": {
-			"type": "keyword",
-			"expectedCapacity": ["temperature"],
-			"expectedKeywordAccess": "get"
-		},
-      "heating":{
-			"type": "keyword",
-			"expectedKeywordType": "bool",
-			"expectedKeywordAccess": "get"      
+      "LivetemperatureSection" : {
+			"type": "section",
+			"defaultValue": "true",
+			"enableWithCheckBox": "true",
+			"enableWithCheckBoxDefaultValue": "true",
+         "content": {
+		      "temperatureDevice": {
+			      "type": "keyword",
+			      "expectedCapacity": ["temperature"],
+			      "expectedKeywordAccess": "get"
+		      }
+         }
       },
-      "stepValue": {
-         "type": "decimal",
-         "defaultValue": "0.2"
+      "controlSection" : {
+			"type": "section",
+         "content": {         
+		      "temperatureSet": {
+			   "type": "keyword",
+			   "expectedCapacity": ["temperature"],
+			   "expectedKeywordAccess": "get"
+            },
+            "stepValue": {
+               "type": "decimal",
+               "defaultValue": "0.2"
+            }
+         }
+		},
+      "thermostatStateSection" : {
+			"type": "section",
+			"defaultValue": "true",
+			"enableWithCheckBox": "true",
+			"enableWithCheckBoxDefaultValue": "true",
+         "content": {
+            "state":{
+               "type": "keyword",
+               "expectedKeywordType": "bool",
+               "expectedKeywordAccess": "get"      
+            }
+         }
       }
 	}
 }
