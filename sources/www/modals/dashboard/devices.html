@@ -191,14 +191,7 @@
 
       $deviceRow.find("button.btn-delete").unbind('click').bind('click', function (e) {
             e.stopPropagation();
-            
-            // Stop periodic task before the deletion and refresh
-            // This disabled the periodic refresh during the deletion and wrong display
-            clearInterval(Yadoms.periodicDashboardTask); 
             deleteDevice(device);
-            
-            // Restart the periodic refresh
-            Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
       });
 
       $deviceRow.find("button.btn-restore").unbind('click').bind('click', function (e) { 
@@ -451,6 +444,10 @@
    
    
    function deleteDevice(device) {
+      // Stop periodic task before the deletion and refresh
+      // This disabled the periodic refresh during the deletion and wrong display
+      clearInterval(Yadoms.periodicDashboardTask); 
+      
       if(parseBool(device.blacklist)===true)
       {
          Yadoms.modals.confirmation.loadAsync()
@@ -461,10 +458,15 @@
                   //force a device and associated keyword refresh
                   DeviceManager.getKeywords(device, true)
                   .always(function () {   
-                     refreshDeviceList();
+                     refreshDeviceList()
+                     .always(function() {
+                        // Restart the periodic refresh
+                        Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+                     });
                   });
                })
                .fail(function (error) {
+                  Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                   notifyError($.t("modals.dashboard.sub-windows.devices.errorDeletingDevice", { device: device.friendlyName }), error);
                });
             });
@@ -478,10 +480,15 @@
                   //force a device and associated keyword refresh
                   DeviceManager.getKeywords(device, true)
                   .always(function () {   
-                     refreshDeviceList();
+                     refreshDeviceList()
+                     .always(function() {
+                        // Restart the periodic refresh
+                        Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);                     
+                     });                     
                   });
                })
                .fail(function (error) {
+                  Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                   notifyError($.t("modals.dashboard.sub-windows.devices.errorDeletingDevice", { device: device.friendlyName }), error);
                });
             });
