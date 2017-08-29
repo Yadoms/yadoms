@@ -8,7 +8,7 @@ function thermostatViewModel() {
    
     //observable data
     this.temperature = ko.observable("-");
-    this.temperatureSet = ko.observable(0.0/*"-"*/).extend({ numeric: 1 });
+    this.temperatureSet = ko.observable(0.0).extend({ numeric: 1 });
     this.unit = ko.observable("");
     this.step = ko.observable(0.1).extend({ numeric: 1 });
     this.isTemperatureVisible = ko.observable(true);
@@ -72,14 +72,22 @@ function thermostatViewModel() {
     this.resized = function () {
         var self = this;
         
-        //self.widget.getWidth() - 30, self.widget.getHeight() - 40
-        
-    /*
-.btn-lg
-.btn-md
-.btn-sm
-.btn-xs    
-    */        
+        if (self.widget.getHeight() == 200)
+        {
+           self.widgetApi.find(".btn").addClass("btn-md");
+           self.widgetApi.find(".btn").removeClass("btn-lg btn-xs");
+        }
+        else if (self.widget.getHeight() == 300)
+        {
+           self.widgetApi.find(".btn").addClass("btn-lg");
+           self.widgetApi.find(".btn").removeClass("btn-xs btn-md");
+        }
+        else if (self.widget.getHeight() == 100)
+        {
+           self.widgetApi.find(".btn").addClass("btn-xs");
+           self.widgetApi.find(".btn").removeClass("btn-lg btn-md");
+        }
+        else{}      
     };
     
     /**
