@@ -32,8 +32,6 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Current.cpp
    rfxcomMessages/CurrentEnergy.h
    rfxcomMessages/CurrentEnergy.cpp
-   rfxcomMessages/CurrentEnergyFilter.h
-   rfxcomMessages/CurrentEnergyFilter.cpp
    rfxcomMessages/Curtain1.h
    rfxcomMessages/Curtain1.cpp
    rfxcomMessages/DateTime.h
@@ -86,6 +84,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Power.cpp
    rfxcomMessages/Radiator1.h
    rfxcomMessages/Radiator1.cpp
+   rfxcomMessages/RareDeviceIdFilter.h
+   rfxcomMessages/RareDeviceIdFilter.cpp
    rfxcomMessages/Remote.h
    rfxcomMessages/Remote.cpp
    rfxcomMessages/RemoteAtiWonder2.h

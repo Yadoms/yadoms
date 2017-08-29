@@ -2,15 +2,15 @@
 #include <boost/test/unit_test.hpp>
 
 // Includes needed to compile tested classes
-#include "../../../../sources/plugins/Rfxcom/rfxcomMessages/CurrentEnergyFilter.h"
+#include "../../../../sources/plugins/Rfxcom/rfxcomMessages/RareDeviceIdFilter.h"
 
 #include "../../mock/shared/currentTime/DefaultCurrentTimeMock.h"
 
-BOOST_AUTO_TEST_SUITE(TestCurrentEnergyFilter)
+BOOST_AUTO_TEST_SUITE(TestRareDeviceIdFilter)
 
 BOOST_AUTO_TEST_CASE(DeviceSeen5Times)
 {
-   CCurrentEnergyFilter filter;
+   CRareDeviceIdFilter filter(3, boost::posix_time::hours(12));
    const std::string newDeviceName("device");
 
    BOOST_CHECK_EQUAL(filter.isValid(newDeviceName), false);
@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE(DeviceSeen5Times)
 
 BOOST_AUTO_TEST_CASE(DeviceSeen3TimesEachHours)
 {
-   CCurrentEnergyFilter filter;
+   CRareDeviceIdFilter filter(3, boost::posix_time::hours(12));
    const std::string newDeviceName("device");
 
    auto timeProviderMock = boost::make_shared<CDefaultCurrentTimeMock>();
@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE(DeviceSeen3TimesEachHours)
 
 BOOST_AUTO_TEST_CASE(TimeOver)
 {
-   CCurrentEnergyFilter filter;
+   CRareDeviceIdFilter filter(3, boost::posix_time::hours(12));
    const std::string newDeviceName("device");
 
    auto timeProviderMock = boost::make_shared<CDefaultCurrentTimeMock>();
