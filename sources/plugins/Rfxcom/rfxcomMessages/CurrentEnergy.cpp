@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CurrentEnergy.h"
 #include <shared/exception/InvalidParameter.hpp>
-#include "../IUnsecuredProtocolFilter.h"
+#include "RareDeviceIdFilter.h"
 #include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
@@ -62,7 +62,8 @@ namespace rfxcomMessages
 
    boost::shared_ptr<IUnsecuredProtocolFilter> CCurrentEnergy::createFilter()
    {
-      return boost::make_shared<CCurrentEnergyFilter>();
+      return boost::make_shared<CRareDeviceIdFilter>(3,
+                                                     boost::posix_time::hours(12));
    }
 
    void CCurrentEnergy::Init(boost::shared_ptr<yApi::IYPluginApi> api)

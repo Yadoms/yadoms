@@ -1,24 +1,33 @@
 #include "stdafx.h"
-#include "CurrentEnergyFilter.h"
+#include "RareDeviceIdFilter.h"
 #include <shared/currentTime/Provider.h>
 
 
-static const int NbOccurencesToBeValid = 3;
+CRareDeviceIdFilter::CRareDeviceIdFilter(const int minTimesPerPeriod,
+                                         const boost::posix_time::time_duration& period)
+   : m_minTimesPerPeriod(minTimesPerPeriod),
+     m_period(period)
+{
+}
 
-bool CCurrentEnergyFilter::isValid(const std::string& deviceName)
+CRareDeviceIdFilter::~CRareDeviceIdFilter()
+{
+}
+
+bool CRareDeviceIdFilter::isValid(const std::string& deviceName)
 {
    // Add the new device
    m_recentlySeenDevices.push_back(std::pair<boost::posix_time::ptime, std::string>(shared::currentTime::Provider().now(), deviceName));
 
    // Remove too old elements
-   auto tooOldThreshold = shared::currentTime::Provider().now() - boost::posix_time::hours(12);
+   auto tooOldThreshold = shared::currentTime::Provider().now() - m_period;
    {
       m_recentlySeenDevices.erase(std::remove_if(m_recentlySeenDevices.begin(),
                                                  m_recentlySeenDevices.end(),
                                                  [&](std::pair<boost::posix_time::ptime, std::string> value)
-      {
-         return value.first < tooOldThreshold;
-      }),
+                                                 {
+                                                    return value.first < tooOldThreshold;
+                                                 }),
                                   m_recentlySeenDevices.end());
    }
 
@@ -28,14 +37,14 @@ bool CCurrentEnergyFilter::isValid(const std::string& deviceName)
    std::for_each(m_recentlySeenDevices.begin(),
                  m_recentlySeenDevices.end(),
                  [&](std::pair<boost::posix_time::ptime, std::string> value)
-   {
-      if (value.second == deviceName)
-      {
-         ++nbOccurences;
-         if (nbOccurences >= NbOccurencesToBeValid)
-            isValid = true;
-      }
-   });
+                 {
+                    if (value.second == deviceName)
+                    {
+                       ++nbOccurences;
+                       if (nbOccurences >= m_minTimesPerPeriod)
+                          isValid = true;
+                    }
+                 });
 
    // If found, remove elements corresponding to deviceName before return
    if (isValid)
@@ -43,9 +52,9 @@ bool CCurrentEnergyFilter::isValid(const std::string& deviceName)
       m_recentlySeenDevices.erase(std::remove_if(m_recentlySeenDevices.begin(),
                                                  m_recentlySeenDevices.end(),
                                                  [&](std::pair<boost::posix_time::ptime, std::string> value)
-      {
-         return value.second == deviceName;
-      }),
+                                                 {
+                                                    return value.second == deviceName;
+                                                 }),
                                   m_recentlySeenDevices.end());
    }
 
