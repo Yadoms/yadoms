@@ -40,17 +40,20 @@
       
       var d = new $.Deferred();
 
+      clearInterval(Yadoms.periodicDashboardTask);
       //we check if there is at least one plugin instantiated that handle manual creation
       PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation()
          .done(function (list) {
             refreshDeviceList()
                .done(function() {
                   //we use the periodic task of the dashboard
-                  clearInterval(Yadoms.periodicDashboardTask);
                   Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                   d.resolve();
                })
-               .fail(d.reject);
+               .fail(function() {
+                  Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+                  d.reject();
+               });
          })
          .fail(function (error) {
             notifyError($.t("modals.pluginInstance.errorGettingManuallyDeviceCreation"), error);
@@ -179,7 +182,6 @@
       //we bind event on the different actions
       $deviceRow.find("button.btn-configure").unbind('click').bind('click', function (e) { 
             e.stopPropagation();
-            
             // Stop periodic task before the deletion and refresh
             // This disabled the periodic refresh during the deletion and wrong display
             clearInterval(Yadoms.periodicDashboardTask);       
@@ -196,13 +198,7 @@
 
       $deviceRow.find("button.btn-restore").unbind('click').bind('click', function (e) { 
             e.stopPropagation();
-            // Stop periodic task before the deletion and refresh
-            // This disabled the periodic refresh during the deletion and wrong display
-            clearInterval(Yadoms.periodicDashboardTask);             
-            restoreDevice(device);
-            
-            // Restart the periodic refresh
-            Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);            
+            restoreDevice(device);           
       });
       
       $deviceRow.unbind('click').bind('click', function () { clickDevice(device); });
@@ -497,16 +493,24 @@
    }
 
    function restoreDevice(device) {
+      // Stop periodic task before the deletion and refresh
+      // This disabled the periodic refresh during the deletion and wrong display
+      clearInterval(Yadoms.periodicDashboardTask);
       //device represent the device concerned
       DeviceManager.restoreDevice(device)
       .done(function () {
          //force a device and associated keyword refresh
          DeviceManager.getKeywords(device, true)
          .always(function () {   
-            refreshDeviceList();
+            refreshDeviceList()
+            .always(function () {
+               // Restart the periodic refresh
+               Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+            });
          });
       })
       .fail(function (error) {
+         Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
          notifyError($.t("modals.dashboard.sub-windows.devices.errorDeletingDevice", { device: device.friendlyName }), error);
       });
    }
