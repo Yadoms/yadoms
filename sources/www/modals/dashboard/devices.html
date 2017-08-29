@@ -33,10 +33,7 @@
             Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
          });
       });
-      $("#btn-add-new-device").unbind("click").bind("click", function ()
-      {
-         addNewDevice(); 
-      });
+      $("#btn-add-new-device").unbind("click").bind("click", function () {addNewDevice();});
       
       var d = new $.Deferred();
 
@@ -201,7 +198,7 @@
             restoreDevice(device);           
       });
       
-      $deviceRow.unbind('click').bind('click', function () { clickDevice(device); });
+      $deviceRow.unbind('click').unbind('click').bind('click', function () { clickDevice(device); });
 
       $deviceRow.i18n();
 
