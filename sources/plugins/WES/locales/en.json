@@ -96,7 +96,8 @@
 			"noConnection": "Could not connect to the equipment",
 			"noInformation": "The equipment is connected. No information returned. Please check the apikey",
 			"updateConfiguration": "Configuration updating...",
-         "kAtLeastOneConnectionFaulty": "At least one connection is faulty"
+         "kAtLeastOneConnectionFaulty": "At least one connection is faulty",
+         "manuallyCreationError": "The manual creation of the device have failed"
 		}
 	}
 }

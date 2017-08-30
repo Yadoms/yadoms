@@ -31,6 +31,7 @@ public:
    bool isTempIndividualKeywordsEnabled() const override;
    bool isAstronomyEnabled() const override;
    bool isForecast10DaysEnabled() const override;
+   bool isConditionsForecastIndividualKeywordsEnabled() const override;
    // [END] IWUConfiguration implementation
 
 private:

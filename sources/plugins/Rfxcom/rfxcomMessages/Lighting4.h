@@ -3,6 +3,7 @@
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
+#include "../IUnsecuredProtocolFilter.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -41,16 +42,23 @@ namespace rfxcomMessages
                  const shared::CDataContainer& manuallyDeviceCreationConfiguration);
 
       //--------------------------------------------------------------
+      /// \brief	Filter
+      //--------------------------------------------------------------
+      static boost::shared_ptr<IUnsecuredProtocolFilter> createFilter();
+
+      //--------------------------------------------------------------
       /// \brief	                        Constructor
       /// \param[in] api                  Yadoms APi context
       /// \param[in] rbuf                 The received buffer
       /// \param[in] rbufSize             Message size, received from Rfxcom
+      /// \param[in] messageFilter        The filter for unsecured protocols
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
       CLighting4(boost::shared_ptr<yApi::IYPluginApi> api,
                  const RBUF& rbuf,
-                 size_t rbufSize);
+                 size_t rbufSize,
+                 boost::shared_ptr<IUnsecuredProtocolFilter> messageFilter);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -92,6 +100,11 @@ namespace rfxcomMessages
       /// \brief	The device id
       //--------------------------------------------------------------
       unsigned int m_id;
+
+      //--------------------------------------------------------------
+      /// \brief	The filter for unsecured protocols
+      //--------------------------------------------------------------
+      boost::shared_ptr<IUnsecuredProtocolFilter> m_messageFilter;
 
       //--------------------------------------------------------------
       /// \brief	The device name

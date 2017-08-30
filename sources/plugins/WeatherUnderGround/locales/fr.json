@@ -50,7 +50,12 @@
               {				 
                  "name": "Prévisions de température",
                  "description": "Les données de prévision de températures sont enregistrées séparément pour pouvoir être utilisées par les règles d'automatisation."
-              }
+              },
+              "individualConditionsForecast" :
+              {				 
+                 "name": "Prévisions de l'état global météorologique",
+                 "description": "Les données de prévision de l'état météorologique sont enregistrés séparément pour pouvoir être utilisées par les règles d'automatisation."
+              }               
            }
       }      
 	},

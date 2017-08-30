@@ -29,7 +29,12 @@
          //we clear pluginInstance array
          pluginInstanceList = [];
 
-         $("#btn-add-new-plugin").unbind("click").bind("click", function () { addNewPlugin(); });
+         $("#btn-add-new-plugin").unbind("click").bind("click", function () 
+         {
+            clearInterval(Yadoms.periodicDashboardTask);
+            addNewPlugin(); 
+            Yadoms.periodicDashboardTask = setInterval(periodicDashboardPluginTask, 2000); 
+         });
 
          //we dynamically ask for plugins (async)
          PluginInstanceManager.getAll().done(function (allInstances) {
@@ -240,6 +245,7 @@
    }
    
    function configurePlugin(pi) {
+      clearInterval(periodicDashboardPluginTask);
       //pi represent the pluginInstance concerned
       //we get package.json
       PluginInstanceManager.downloadPackage(pi).done(function () {
@@ -275,9 +281,11 @@
 					 else{ // Change only the name
 					    $row.find("td.plugin-displayName").html(pi.displayName);
 					 }
+                Yadoms.periodicDashboardTask = setInterval(periodicDashboardPluginTask, 2000); 
                   })
                   .fail(function (error) {
                      notifyError($.t("modals.configure-plugin.pluginFailToConfigure", { pluginName: pi.displayName }), error);
+                     Yadoms.periodicDashboardTask = setInterval(periodicDashboardPluginTask, 2000);
                   });
             });
          });
@@ -285,6 +293,7 @@
    }
 
    function deletePlugin(pi) {
+      clearInterval(periodicDashboardPluginTask);
       //pi represent the pluginInstance concerned
       Yadoms.modals.confirmation.loadAsync()
       .done(function () {
@@ -305,12 +314,16 @@
 
                //we remove pi from dom
                getPluginDomRow(pi).remove();
+               
+               // Restart the periodic task after the action
+               Yadoms.periodicDashboardTask = setInterval(periodicDashboardPluginTask, 2000); 
             });
 
             //if it fails, restore button access
             deletePromise.fail(function (error) {
                notifyError($.t("modals.configure-plugin.pluginFailToDelete", { pluginName: pi.displayName }), error);
                getPluginDomRow(pi).find("button").prop('disabled', false);
+               Yadoms.periodicDashboardTask = setInterval(periodicDashboardPluginTask, 2000); 
             });
          });
       });

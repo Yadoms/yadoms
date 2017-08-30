@@ -11,6 +11,8 @@
 
 namespace http
 {
+   boost::posix_time::time_duration CHttpMethods::httpRequestDefaultTimeout(boost::posix_time::time_duration(boost::posix_time::seconds(45)));
+
    bool CHttpMethods::SendGetRequest(const std::string& url,
                                      const shared::CDataContainer& credentials,
                                      const shared::CDataContainer& parameters,
@@ -42,6 +44,7 @@ namespace http
          session.sendRequest(request);
          session.receiveResponse(response);
 
+         // Retry for protected equipements
          std::string buffer;
          if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED)
          {
@@ -66,17 +69,18 @@ namespace http
                return true;
             }
 
-            if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED)
-            {
-               auto message = "HTTP : unauthorized access";
-               YADOMS_LOG(error) << message;
-               throw shared::exception::CException(message);
-            }
-
             auto message = (boost::format("content not yet managed : %1%") % response.getContentType()).str();
             YADOMS_LOG(error) << message;
             throw shared::exception::CException(message);
          }
+         else if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED)
+         {
+            auto message = "HTTP : unauthorized access";
+            YADOMS_LOG(error) << message;
+            throw shared::exception::CException(message);
+         }
+         else
+         { }
 
          auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
          YADOMS_LOG(error) << message;
