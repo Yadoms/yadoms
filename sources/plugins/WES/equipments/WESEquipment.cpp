@@ -351,6 +351,7 @@ namespace equipments
       catch (std::exception& e)
       {
          YADOMS_LOG(error) << e.what();
+         throw e;
       }
    }
 
