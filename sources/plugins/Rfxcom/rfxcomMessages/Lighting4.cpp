@@ -75,7 +75,7 @@ namespace rfxcomMessages
    boost::shared_ptr<IUnsecuredProtocolFilter> CLighting4::createFilter()
    {
       return boost::make_shared<CRareDeviceIdFilter>(3,
-                                                     boost::posix_time::hours(12));
+                                                     boost::posix_time::hours(1));
    }
 
    void CLighting4::buildDeviceDetails()
@@ -99,7 +99,8 @@ namespace rfxcomMessages
       if (!api->deviceExists(m_deviceName))
       {
          if (!m_messageFilter->isValid(m_deviceName))
-            throw std::invalid_argument("Receive unknown device for unsecured protocol, may be a transmission error : ignored");
+            throw std::invalid_argument((boost::format("Receive unknown device (id %1%) for unsecured protocol (LIGHTING4 / %2%), may be a transmission error : ignored")
+               % m_id % m_deviceModel).str());
 
          api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
          YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
