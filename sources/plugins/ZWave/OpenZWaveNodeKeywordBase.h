@@ -198,7 +198,14 @@ template <>
 inline bool COpenZWaveNodeKeywordBase::extractLastValue()
 {
    bool value;
-   OpenZWave::Manager::Get()->GetValueAsBool(m_valueId, &value);
+   if (m_valueId.GetType() == OpenZWave::ValueID::ValueType_Bool)
+      OpenZWave::Manager::Get()->GetValueAsBool(m_valueId, &value);
+   else
+   {
+      YADOMS_LOG(warning) << "COpenZWaveNodeKeywordBase::extractLastValue cannot convert from OpenZWave::ValueID::ValueType =" << (int)(m_valueId.GetType()) << " to Bool";
+      //set default value. This avoid exception and don't make code fail
+      value = false;
+   }
    return value;
 }
 
@@ -206,7 +213,14 @@ template <>
 inline Poco::UInt8 COpenZWaveNodeKeywordBase::extractLastValue()
 {
    Poco::UInt8 value;
-   OpenZWave::Manager::Get()->GetValueAsByte(m_valueId, &value);
+   if (m_valueId.GetType() == OpenZWave::ValueID::ValueType_Byte)
+      OpenZWave::Manager::Get()->GetValueAsByte(m_valueId, &value);
+   else
+   {
+      YADOMS_LOG(warning) << "COpenZWaveNodeKeywordBase::extractLastValue cannot convert from OpenZWave::ValueID::ValueType =" << (int)(m_valueId.GetType()) << " to Byte";
+      //set default value. This avoid exception and don't make code fail
+      value = 0;
+   }
    return value;
 }
 
@@ -214,7 +228,14 @@ template <>
 inline float COpenZWaveNodeKeywordBase::extractLastValue()
 {
    float value;
-   OpenZWave::Manager::Get()->GetValueAsFloat(m_valueId, &value);
+   if (m_valueId.GetType() == OpenZWave::ValueID::ValueType_Decimal)
+      OpenZWave::Manager::Get()->GetValueAsFloat(m_valueId, &value);
+   else
+   {
+      YADOMS_LOG(warning) << "COpenZWaveNodeKeywordBase::extractLastValue cannot convert from OpenZWave::ValueID::ValueType =" << (int)(m_valueId.GetType()) << " to Float";
+      //set default value. This avoid exception and don't make code fail
+      value = 0.0f;
+   }
    return value;
 }
 
@@ -223,7 +244,14 @@ template <>
 inline double COpenZWaveNodeKeywordBase::extractLastValue()
 {
    float value;
-   OpenZWave::Manager::Get()->GetValueAsFloat(m_valueId, &value);
+   if (m_valueId.GetType() == OpenZWave::ValueID::ValueType_Decimal)
+      OpenZWave::Manager::Get()->GetValueAsFloat(m_valueId, &value);
+   else
+   {
+      YADOMS_LOG(warning) << "COpenZWaveNodeKeywordBase::extractLastValue cannot convert from OpenZWave::ValueID::ValueType =" << (int)(m_valueId.GetType()) << " to Double";
+      //set default value. This avoid exception and don't make code fail
+      value = 0.0f;
+   }
    return value;
 }
 
@@ -232,7 +260,14 @@ template <>
 inline Poco::Int32 COpenZWaveNodeKeywordBase::extractLastValue()
 {
    Poco::Int32 value;
-   OpenZWave::Manager::Get()->GetValueAsInt(m_valueId, &value);
+   if(m_valueId.GetType() == OpenZWave::ValueID::ValueType_Int)
+      OpenZWave::Manager::Get()->GetValueAsInt(m_valueId, &value);
+   else
+   {
+      YADOMS_LOG(warning) << "COpenZWaveNodeKeywordBase::extractLastValue cannot convert from OpenZWave::ValueID::ValueType =" << (int)(m_valueId.GetType()) << " to Int32";
+      //set default value. This avoid exception and don't make code fail
+      value = 0;
+   }
    return value;
 }
 
@@ -241,7 +276,14 @@ template <>
 inline Poco::Int16 COpenZWaveNodeKeywordBase::extractLastValue()
 {
    Poco::Int16 value;
-   OpenZWave::Manager::Get()->GetValueAsShort(m_valueId, &value);
+   if (m_valueId.GetType() == OpenZWave::ValueID::ValueType_Short)
+      OpenZWave::Manager::Get()->GetValueAsShort(m_valueId, &value);
+   else
+   {
+      YADOMS_LOG(warning) << "COpenZWaveNodeKeywordBase::extractLastValue cannot convert from OpenZWave::ValueID::ValueType =" << (int)(m_valueId.GetType()) << " to Short";
+      //set default value. This avoid exception and don't make code fail
+      value = 0;
+   }
    return value;
 }
 
