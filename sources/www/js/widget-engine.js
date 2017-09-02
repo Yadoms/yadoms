@@ -111,8 +111,9 @@ function tabClick(pageId) {
 
     if ((currentPage != null) && (currentPage.id === pageId))
         return;
-
+     
     var page = PageManager.getPage(pageId);
+    
     assert(page != null, "page Id doesn't exit");
     if (page) {
         //and if it's not loaded for the moment
@@ -127,8 +128,9 @@ function tabClick(pageId) {
         }
         //debounce
         setTimeout(function () {
-			PageManager.refreshWidgets(page);
+			   PageManager.refreshWidgets(page);
             PageManager.updateWidgetLayout(page);
+            updateWebSocketFilter();
             page.$grid.packery("layout");
         }, 10);
     }
