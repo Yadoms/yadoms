@@ -45,6 +45,7 @@
 
 
    var subWindowList = [];
+   enableAllDashboardButtons();
 
    function asyncLoad(subWindowPath) {
       assert(!isNullOrUndefined(subWindowPath), "subWindowPath must be defined");
@@ -100,11 +101,34 @@
       $("li#" + btnId).addClass("active");
    }
 
+   function disableAllDashboardButtons() {
+      $("#btn-dashboard-summary").off('click');
+      $("#btn-dashboard-system-configuration").off('click');
+      $("#btn-dashboard-plugins").off('click');
+      $("#btn-dashboard-devices").off('click');
+      $("#btn-dashboard-automatisation").off('click');
+      $("#btn-dashboard-recipients").off('click');
+      $("#btn-dashboard-install-update").off('click');
+      $("#btn-dashboard-maintenance").off('click');
+      $("#btn-dashboard-about").off('click');
+   }
+   
+   function enableAllDashboardButtons() {
+      $("#btn-dashboard-summary").on('click', showDashboardTabSummary);
+      $("#btn-dashboard-system-configuration").on('click', showDashboardTabSystemConfiguration);
+      $("#btn-dashboard-plugins").on('click', showDashboardTabPlugin);
+      $("#btn-dashboard-devices").on('click', showDashboardTabDevice);
+      $("#btn-dashboard-automatisation").on('click', showDashboardTabAutomation);
+      $("#btn-dashboard-recipients").on('click', showDashboardTabRecipient);
+      $("#btn-dashboard-install-update").on('click', showDashboardTabUpdate);
+      $("#btn-dashboard-maintenance").on('click', showDashboardTabMaintenance);
+      $("#btn-dashboard-about").on('click', showDashboardTabAbout);
+   }
 
    function showDashboardTabSummary() {
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
-      $("#btn-dashboard-summary").unbind('click');
+      disableAllDashboardButtons();
       clearInterval(Yadoms.periodicDashboardTask);
       asyncLoad("modals/dashboard/summary.html")
       .done(function() {
@@ -113,16 +137,13 @@
                setBtnActive(this.id);
             })
             .always(function () {
-               $("#btn-dashboard-summary").bind('click', showDashboardTabSummary);
-            });         
+               enableAllDashboardButtons();
+            });
       })
-      .always(function() {
-         $("#btn-dashboard-summary").bind('click', showDashboardTabSummary);
+      .fail(function() {
+         enableAllDashboardButtons();
       });
    }
-   $("#btn-dashboard-summary").bind('click', showDashboardTabSummary);
-
-
 
    function showDashboardTabUserManagement() {
       //Has the page change is realized on an "li" element, we can't use disabled property.
@@ -144,7 +165,7 @@
    function showDashboardTabSystemConfiguration() {
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
-      $("#btn-dashboard-system-configuration").unbind('click');
+      disableAllDashboardButtons();
       clearInterval(Yadoms.periodicDashboardTask);
       asyncLoad("modals/dashboard/system-configuration.html")
       .done(function() {
@@ -153,15 +174,13 @@
             setBtnActive(this.id);
          })
          .always(function () {
-            $("#btn-dashboard-system-configuration").bind('click', showDashboardTabSystemConfiguration);
+            enableAllDashboardButtons();
          });
       })
       .fail(function() {
-         $("#btn-dashboard-system-configuration").bind('click', showDashboardTabSystemConfiguration);
+         enableAllDashboardButtons();
       });
    }
-   $("#btn-dashboard-system-configuration").bind('click', showDashboardTabSystemConfiguration);
-
 
    function showDashboardTabUserConfiguration() {
       //Has the page change is realized on an "li" element, we can't use disabled property.
@@ -183,7 +202,7 @@
    function showDashboardTabPlugin() {
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
-      $("#btn-dashboard-plugins").unbind('click');
+      disableAllDashboardButtons();
       clearInterval(Yadoms.periodicDashboardTask);
       asyncLoad("modals/dashboard/plugins.html")
       .done(function() {
@@ -192,21 +211,18 @@
             setBtnActive(this.id);
          })
          .always(function () {
-            $("#btn-dashboard-plugins").bind('click', showDashboardTabPlugin);
+            enableAllDashboardButtons();
          });
       })
       .fail(function() {
-         $("#btn-dashboard-plugins").bind('click', showDashboardTabPlugin);
+         enableAllDashboardButtons();
       });
    }
-   $("#btn-dashboard-plugins").bind('click', showDashboardTabPlugin);
-
-
 
    function showDashboardTabDevice() {
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
-      $("#btn-dashboard-devices").unbind('click');
+      disableAllDashboardButtons();
       clearInterval(Yadoms.periodicDashboardTask);
       asyncLoad("modals/dashboard/devices.html")
       .done(function() {
@@ -215,21 +231,18 @@
             setBtnActive(this.id);
          })
          .always(function () {
-            $("#btn-dashboard-devices").bind('click', showDashboardTabDevice);
+            enableAllDashboardButtons();
          });
       })
       .fail(function() {
-         $("#btn-dashboard-devices").bind('click', showDashboardTabDevice);
+         enableAllDashboardButtons();
       });
    }
-   $("#btn-dashboard-devices").bind('click', showDashboardTabDevice);
-
-
 
    function showDashboardTabAutomation() {
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
-      $("#btn-dashboard-automatisation").unbind('click');
+      disableAllDashboardButtons();
       clearInterval(Yadoms.periodicDashboardTask);
       asyncLoad("modals/dashboard/automation-center.html")
       .done(function() {
@@ -238,21 +251,18 @@
             setBtnActive(this.id);
          })
          .always(function () {
-            $("#btn-dashboard-automatisation").bind('click', showDashboardTabAutomation);
+            enableAllDashboardButtons();
          });
       })
       .fail(function() {
-         $("#btn-dashboard-automatisation").bind('click', showDashboardTabAutomation);
+         enableAllDashboardButtons();
       });
    }
-   $("#btn-dashboard-automatisation").bind('click', showDashboardTabAutomation);
-
-
 
    function showDashboardTabRecipient() {
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
-      $("#btn-dashboard-recipients").unbind('click');
+      disableAllDashboardButtons();
       clearInterval(Yadoms.periodicDashboardTask);
       asyncLoad("modals/dashboard/recipients.html")
       .done(function() {
@@ -261,20 +271,18 @@
             setBtnActive(this.id);
          })
          .always(function () {
-            $("#btn-dashboard-recipients").bind('click', showDashboardTabRecipient);
+            enableAllDashboardButtons();
          });
       })
       .fail(function() {
-         $("#btn-dashboard-recipients").bind('click', showDashboardTabRecipient);
+         enableAllDashboardButtons();
       });
    }
-   $("#btn-dashboard-recipients").bind('click', showDashboardTabRecipient);
-
 
    function showDashboardTabUpdate() {
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
-      $("#btn-dashboard-install-update").unbind('click');
+      disableAllDashboardButtons();
       clearInterval(Yadoms.periodicDashboardTask);
       asyncLoad("modals/dashboard/install-update.html")
       .done(function() {
@@ -283,20 +291,18 @@
             setBtnActive(this.id);
          })
          .always(function () {
-            $("#btn-dashboard-install-update").bind('click', showDashboardTabUpdate);
+            enableAllDashboardButtons();
          });
       })
       .fail(function() {
-         $("#btn-dashboard-install-update").bind('click', showDashboardTabUpdate);
+         enableAllDashboardButtons();
       });
    }
-   $("#btn-dashboard-install-update").bind('click', showDashboardTabUpdate);
-
    
    function showDashboardTabMaintenance() {
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
-      $("#btn-dashboard-maintenance").unbind('click');
+      disableAllDashboardButtons();
       clearInterval(Yadoms.periodicDashboardTask);
       asyncLoad("modals/dashboard/maintenance.html")
       .done(function() {
@@ -305,22 +311,18 @@
             setBtnActive(this.id);
          })
          .always(function () {
-            $("#btn-dashboard-maintenance").bind('click', showDashboardTabMaintenance);
+            enableAllDashboardButtons();
          });
       })
       .fail(function() {
-         $("#btn-dashboard-maintenance").bind('click', showDashboardTabMaintenance);
+         enableAllDashboardButtons();
       });
    }
-   $("#btn-dashboard-maintenance").bind('click', showDashboardTabMaintenance);
-
-   
-   
    
    function showDashboardTabAbout() {
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
-      $("#btn-dashboard-about").unbind('click');
+      disableAllDashboardButtons();
       clearInterval(Yadoms.periodicDashboardTask);
       asyncLoad("modals/dashboard/about.html")
       .done(function() {
@@ -329,16 +331,13 @@
             setBtnActive(this.id);
          })
 		 .always(function() {
-		    $("#btn-dashboard-about").bind('click', showDashboardTabAbout);
+		    enableAllDashboardButtons();
 		 });		 
       })
-      .always(function() {
-         $("#btn-dashboard-about").bind('click', showDashboardTabAbout);
+      .fail(function() {
+         enableAllDashboardButtons();
       });
    }
-   $("#btn-dashboard-about").bind('click', showDashboardTabAbout);
-
-
 
    //we async load some libraries
    asyncLoadJSLibs([
