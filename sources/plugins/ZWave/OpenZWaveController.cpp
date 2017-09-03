@@ -269,7 +269,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    // Must do this inside a critical section to avoid conflicts with the main thread
    boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-   //get all glocbal informations (for all notifications)
+   //get all global informations (for all notifications)
    auto vID = _notification->GetValueID();
    ECommandClass commandClass(static_cast<int>(vID.GetCommandClassId()));
 
