@@ -15,32 +15,16 @@ namespace shared
                                  const EKeywordAccessMode& accessMode,
                                  const EMeasureType& measureType,
                                  typeInfo::CIntTypeInfo& additionalInfo)
-               : m_keywordName(keywordName),
-                 m_switchLevel(0),
-                 m_measureType(measureType),
-                 m_accessMode(accessMode),
-                 m_additionalInfo(additionalInfo)
-            {
-            }
+               : CSingleHistorizableData<int>(keywordName,
+                                              CStandardCapacities::Dimmable(),
+                                              accessMode,
+                                              0,
+                                              measureType,
+                                              additionalInfo)
+            {}
 
             CDimmable::~CDimmable()
-            {
-            }
-
-            const std::string& CDimmable::getKeyword() const
-            {
-               return m_keywordName;
-            }
-
-            const CStandardCapacity& CDimmable::getCapacity() const
-            {
-               return CStandardCapacities::Dimmable();
-            }
-
-            const EKeywordAccessMode& CDimmable::getAccessMode() const
-            {
-               return m_accessMode;
-            }
+            {}
 
             void CDimmable::set(const std::string& yadomsCommand)
             {
@@ -49,17 +33,15 @@ namespace shared
 
             void CDimmable::set(bool isOn)
             {
-               m_switchLevel = isOn ? 100 : 0;
+               if (isOn)
+                  set(100);
+               else
+                  set(0);
             }
 
             void CDimmable::set(int switchLevel)
             {
-               m_switchLevel = NormalizeLevel(switchLevel);
-            }
-
-            std::string CDimmable::formatValue() const
-            {
-               return boost::lexical_cast<std::string>(switchLevel());
+               CSingleHistorizableData<int>::set(NormalizeLevel(switchLevel));
             }
 
             int CDimmable::NormalizeLevel(int level)
@@ -73,26 +55,14 @@ namespace shared
 
             int CDimmable::switchLevel() const
             {
-               return m_switchLevel;
+               return CSingleHistorizableData<int>::get();
             }
 
             bool CDimmable::isOn() const
             {
-               return (m_switchLevel >= 50) ? true : false;
-            }
-
-            const EMeasureType& CDimmable::getMeasureType() const
-            {
-               return m_measureType;
-            }
-
-            CDataContainer CDimmable::getTypeInfo() const
-            {
-               return m_additionalInfo.serialize();
+               return (CSingleHistorizableData<int>::get() >= 50) ? true : false;
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

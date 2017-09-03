@@ -1,8 +1,7 @@
 #pragma once
 #include <shared/Export.h>
-#include <shared/DataContainer.h>
-#include "IHistorizable.h"
 #include "typeInfo/IntTypeInfo.h"
+#include "SingleHistorizableData.hpp"
 
 namespace shared
 {
@@ -15,7 +14,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief A dimmable switch historizable object
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CDimmable : public IHistorizable
+            class YADOMS_SHARED_EXPORT CDimmable : public CSingleHistorizableData<int>
             {
             public:
                //-----------------------------------------------------
@@ -33,15 +32,6 @@ namespace shared
                ///\brief                     Destructor
                //-----------------------------------------------------
                virtual ~CDimmable();
-
-               // IHistorizable implementation
-               const std::string& getKeyword() const override;
-               const CStandardCapacity& getCapacity() const override;
-               const EKeywordAccessMode& getAccessMode() const override;
-               std::string formatValue() const override;
-               const EMeasureType& getMeasureType() const override;
-               CDataContainer getTypeInfo() const override;
-               // [END] IHistorizable implementation
 
                //-----------------------------------------------------
                ///\brief                     Set value from Yadoms command
@@ -84,34 +74,8 @@ namespace shared
                static int NormalizeLevel(int level);
 
             private:
-               //-----------------------------------------------------
-               ///\brief                     The keyword name
-               //-----------------------------------------------------
-               const std::string m_keywordName;
-
-               //-----------------------------------------------------
-               ///\brief                     The switch level (0-100)
-               //-----------------------------------------------------
-               int m_switchLevel;
-
-               //-----------------------------------------------------
-               ///\brief                     The measure type
-               //-----------------------------------------------------
-               const EMeasureType m_measureType;
-
-               //-----------------------------------------------------
-               ///\brief                     The access mode
-               //-----------------------------------------------------
-               const EKeywordAccessMode& m_accessMode;
-
-               //-----------------------------------------------------
-               ///\brief                     The additionnal type info
-               //-----------------------------------------------------
-               const typeInfo::CIntTypeInfo m_additionalInfo;
             };
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-
