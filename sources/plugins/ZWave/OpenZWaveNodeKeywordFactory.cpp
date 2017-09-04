@@ -102,7 +102,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
             << " [Units= " << units << "]"
             << " [Awake= " << awake << "]"
             << " [Failed= " << failed << "]"
-            << " [ZWave+= " << zwavePlus << "]" ;
+            << " [ZWave+= " << zwavePlus << "]";
 
          shared::plugin::yPluginApi::EKeywordAccessMode accessMode = shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet;
          if (readOnly)
@@ -116,11 +116,11 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
    }
    catch (OpenZWave::OZWException& ex)
    {
-      YADOMS_LOG(error) << "OpenZWave::OZWException : " << ex.what() ;
+      YADOMS_LOG(error) << "OpenZWave::OZWException : " << ex.what();
    }
    catch (...)
    {
-      YADOMS_LOG(error) << "Unknown exception" ;
+      YADOMS_LOG(error) << "Unknown exception";
    }
 
    return boost::shared_ptr<IOpenZWaveNodeKeyword>();
@@ -147,9 +147,12 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
       }
       break;
    case ECommandClass::kColorValue:
+      //Color command class always provide a color value and a color index (which could be fake)
+      if (vLabel != "Color Index")
       {
          return boost::make_shared<COpenZWaveNodeKeywordColor>(vID, vLabel, accessMode);
       }
+      //the color index must be managed as an enum
       break;
 
    case ECommandClass::kMeterValue:
@@ -351,64 +354,64 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
    switch (vID.GetType())
    {
    case OpenZWave::ValueID::ValueType_Bool: // Boolean, true or false
-      {
-         CBoolTypeInfo ti(vID);
-         return COpenZWaveNodeKeywordGeneric<bool>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kBool, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
-      }
+   {
+      CBoolTypeInfo ti(vID);
+      return COpenZWaveNodeKeywordGeneric<bool>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kBool, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
+   }
 
    case OpenZWave::ValueID::ValueType_Byte: // 8-bit unsigned value
-      {
-         CIntegerTypeInfo ti(vID);
-         return COpenZWaveNodeKeywordGeneric<Poco::UInt8>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kNumeric, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
-      }
+   {
+      CIntegerTypeInfo ti(vID);
+      return COpenZWaveNodeKeywordGeneric<Poco::UInt8>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kNumeric, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
+   }
 
    case OpenZWave::ValueID::ValueType_Decimal: // Represents a non-integer value as a string, to avoid floating point accuracy issues
-      {
-         CIntegerTypeInfo ti(vID);
-         return COpenZWaveNodeKeywordGeneric<double>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kNumeric, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
-      }
+   {
+      CIntegerTypeInfo ti(vID);
+      return COpenZWaveNodeKeywordGeneric<double>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kNumeric, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
+   }
 
    case OpenZWave::ValueID::ValueType_Int: // 32-bit signed value
-      {
-         CIntegerTypeInfo ti(vID);
-         return COpenZWaveNodeKeywordGeneric<Poco::Int32>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kNumeric, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
-      }
+   {
+      CIntegerTypeInfo ti(vID);
+      return COpenZWaveNodeKeywordGeneric<Poco::Int32>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kNumeric, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
+   }
 
    case OpenZWave::ValueID::ValueType_List: // List from which one item can be selected
-      {
-         CEnumTypeInfo ti(vID);
-         return COpenZWaveNodeKeywordGeneric<COpenZWaveEnumHandler>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kEnum, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
-      }
+   {
+      CEnumTypeInfo ti(vID);
+      return COpenZWaveNodeKeywordGeneric<COpenZWaveEnumHandler>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kEnum, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
+   }
 
    case OpenZWave::ValueID::ValueType_Schedule: // Complex type used with the Climate Control Schedule command class
-      {
-         YADOMS_LOG(information) << "Value Schedule : " ;
-         break;
-      }
+   {
+      YADOMS_LOG(information) << "Value Schedule : ";
+      break;
+   }
 
    case OpenZWave::ValueID::ValueType_Short: // 16-bit signed value
-      {
-         CIntegerTypeInfo ti(vID);
-         return COpenZWaveNodeKeywordGeneric<Poco::Int16>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kNumeric, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
-      }
+   {
+      CIntegerTypeInfo ti(vID);
+      return COpenZWaveNodeKeywordGeneric<Poco::Int16>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kNumeric, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
+   }
 
    case OpenZWave::ValueID::ValueType_String: // Text string
-      {
-         CStringTypeInfo ti(vID);
-         return COpenZWaveNodeKeywordGeneric<std::string>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kString, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
-      }
+   {
+      CStringTypeInfo ti(vID);
+      return COpenZWaveNodeKeywordGeneric<std::string>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kString, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
+   }
 
    case OpenZWave::ValueID::ValueType_Button: // A write-only value that is the equivalent of pressing a button to send a command to a device
-      {
-         CBoolTypeInfo ti(vID);
-         return COpenZWaveNodeKeywordGeneric<bool>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kBool, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
-      }
+   {
+      CBoolTypeInfo ti(vID);
+      return COpenZWaveNodeKeywordGeneric<bool>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kBool, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
+   }
 
    case OpenZWave::ValueID::ValueType_Raw: // A collection of bytes
-      {
-         CStringTypeInfo ti(vID);
-         return COpenZWaveNodeKeywordGeneric<std::string>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kString, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
-      }
+   {
+      CStringTypeInfo ti(vID);
+      return COpenZWaveNodeKeywordGeneric<std::string>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kString, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
+   }
    }
    return boost::shared_ptr<IOpenZWaveNodeKeyword>();
 }
