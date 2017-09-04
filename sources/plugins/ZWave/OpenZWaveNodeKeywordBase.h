@@ -71,7 +71,8 @@ inline bool COpenZWaveNodeKeywordBase::realSendCommand(const T& data)
 {
    try
    {
-      return OpenZWave::Manager::Get()->SetValue(m_valueId, data);
+      std::string s = (boost::format("%1%") % data).str();
+      return OpenZWave::Manager::Get()->SetValue(m_valueId, s);
    }
    catch (OpenZWave::OZWException& ex)
    {
@@ -358,12 +359,6 @@ inline bool COpenZWaveNodeKeywordBase::realSendCommand(const Poco::Int64& data)
 }
 
 template <>
-inline bool COpenZWaveNodeKeywordBase::realSendCommand(const double& data)
-{
-   return realSendCommand<float>(static_cast<float>(data));
-}
-
-template <>
 inline bool COpenZWaveNodeKeywordBase::realSendCommand(const float& data)
 {
    try
@@ -487,6 +482,7 @@ inline bool COpenZWaveNodeKeywordBase::extractLastValue()
       value = false;
       break;
    }
+   return value;
 }
 
 template <>
