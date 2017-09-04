@@ -67,6 +67,9 @@
                    preventSubmit: true,
                    submitError: function($form, event, errors) {
                        console.warn("Unable to validate form: " + errors);
+                       
+                       // Scroll to the wrong element, if the element is out of the display
+                       $form.find("input,select,textarea[aria-invalid='true']")[0].scrollIntoView(false);                       
                    },
                    submitSuccess: function($form, event) {
                        event.preventDefault();
