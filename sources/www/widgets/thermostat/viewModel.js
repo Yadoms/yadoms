@@ -14,6 +14,8 @@ function thermostatViewModel() {
     this.isTemperatureVisible = ko.observable(true);
     //
 
+    this.thermostatStateType = "";
+    
     /**
      * Initialization method
      * @param widget widget class object
@@ -46,12 +48,22 @@ function thermostatViewModel() {
     
     this.configurationChanged = function () {
         var self = this;
+        var defferedKeywordInformation = [];
+        var d = new $.Deferred();
 
         //we get the unit of the keyword
-        self.widgetApi.getKeywordInformation(self.widget.configuration.LivetemperatureSection.content.temperatureDevice.keywordId).done(function (keyword) {
+        var deffered1 = self.widgetApi.getKeywordInformation(self.widget.configuration.LivetemperatureSection.content.temperatureDevice.keywordId).done(function (keyword) {
             self.unit($.t(keyword.units));
         });
 
+        defferedKeywordInformation.push( deffered1 );
+        
+        var deffered2 = self.widgetApi.getKeywordInformation(self.widget.configuration.thermostatStateSection.content.state.keywordId).done(function (keyword) {
+            thermostatStateType = keyword.type;
+        });
+        
+        defferedKeywordInformation.push( deffered2 );
+        
         //we register keyword new acquisition
         self.widgetApi.registerKeywordAcquisitions([self.widget.configuration.LivetemperatureSection.content.temperatureDevice.keywordId,
                                                     self.widget.configuration.controlSection.content.temperatureSet.keywordId,
@@ -67,6 +79,15 @@ function thermostatViewModel() {
         
         // Visibility of the temperature
         self.isTemperatureVisible(self.widget.configuration.LivetemperatureSection.checkbox);
+        
+        $.whenAll(defferedKeywordInformation).done(function () {
+           d.resolve();
+        })
+        .fail(function() {
+           d.reject();
+        });
+        
+        return d.promise();
     }
 
     this.resized = function () {
@@ -122,13 +143,26 @@ function thermostatViewModel() {
         } 
         else if (keywordId === self.widget.configuration.thermostatStateSection.content.state.keywordId) {
            
+            console.log ("State :", data.value);
             //it is the right device
             if (data.value !=="")
             {
-               if (!parseBool(data.value))
-                  this.widgetApi.find(".icon-div").css("visibility", "hidden");
-               else 
-                  this.widgetApi.find(".icon-div").css("visibility", "visible");
+               if (self.thermostatStateType === "bool") {
+                  if (!parseBool(data.value))
+                     this.widgetApi.find(".icon-div").css("visibility", "hidden");
+                  else 
+                     this.widgetApi.find(".icon-div").css("visibility", "visible");
+                  else {}
+               }
+               else if (self.thermostatStateType === "String") {
+                  if (data.value === "Idle")
+                     this.widgetApi.find(".icon-div").css("visibility", "hidden");
+                  else if (data.value === "Heat")
+                     this.widgetApi.find(".icon-div").css("visibility", "visible");
+                  else {}
+                     
+               }
+               else {}
             }
             else 
                this.widgetApi.find(".icon-div").css("visibility", "hidden");
