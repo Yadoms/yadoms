@@ -23,6 +23,7 @@ enum EWESPluginState
    kReady,
    kupdateConfiguration,
    kAtLeastOneConnectionFaulty,
+   kmanuallyCreationDeviceFailed,
    kRunning
 };
 

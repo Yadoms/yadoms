@@ -269,7 +269,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    // Must do this inside a critical section to avoid conflicts with the main thread
    boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-   //get all glocbal informations (for all notifications)
+   //get all global informations (for all notifications)
    auto vID = _notification->GetValueID();
    ECommandClass commandClass(static_cast<int>(vID.GetCommandClassId()));
 
@@ -290,7 +290,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    case OpenZWave::Notification::Type_ValueChanged:
    {
       auto node = getNode(_notification);
-      setupValue(node, vID);
+      //setupValue(node, vID);
       if (node)
       {
          auto kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());

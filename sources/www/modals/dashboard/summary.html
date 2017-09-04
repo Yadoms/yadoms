@@ -32,31 +32,47 @@
 
 <script>
    
+   Yadoms.initializeSummaryDashboard = function () {
+      var d = new $.Deferred();
+      var arrayOfDeffered = [];
+      
+      //we update all fields
+      $("tr.line-developer-mode").hide();
 
-   //we update all fields
-   $("tr.line-developer-mode").hide();
-
-   RestEngine.getJson("rest/configuration/Database/Version")
-   .done(function(data) {
-      $("td#dashboard-summary-database-version").text(data.value);
-   })
-   .fail(function(error) {
-         notifyError($.t("modals.dashboard.sub-windows.summary.errorRequestingDatabaseVersion"), error);
-   });
-
-   YadomsInformationManager.getList()
-      .done(function(data) {
-
-         $("td#dashboard-summary-platform").text(data.runningPlatform);
-         $("td#dashboard-summary-software-version").text(data.yadoms.version);
-         $("td#dashboard-summary-started-from").text(DateTimeFormatter.isoDateToDate(data.startupTime).fromNow());
-
-         if (data.developerMode) {
-            $("tr.line-developer-mode").show();
-         }
+      var deffered = RestEngine.getJson("rest/configuration/Database/Version");
+      
+      deffered.done(function(data) {
+         $("td#dashboard-summary-database-version").text(data.value);
       })
-      .fail(function (error) {
-         notifyError($.t("objects.generic.errorGetting", { objectName: $.t("core.yadoms.information") }), error);
+      .fail(function(error) {
+            notifyError($.t("modals.dashboard.sub-windows.summary.errorRequestingDatabaseVersion"), error);
       });
 
+      arrayOfDeffered.push(deffered);
+      
+      var deffered2 = YadomsInformationManager.getList();
+      arrayOfDeffered.push(deffered2);
+      deffered2.done(function(data) {
+
+            $("td#dashboard-summary-platform").text(data.runningPlatform);
+            $("td#dashboard-summary-software-version").text(data.yadoms.version);
+            $("td#dashboard-summary-started-from").text(DateTimeFormatter.isoDateToDate(data.startupTime).fromNow());
+
+            if (data.developerMode) {
+               $("tr.line-developer-mode").show();
+            }
+         })
+         .fail(function (error) {
+            notifyError($.t("objects.generic.errorGetting", { objectName: $.t("core.yadoms.information") }), error);
+         });
+      
+      $.whenAll(arrayOfDeffered).done(function () {
+         d.resolve();
+      })
+      .fail(function (error) {
+         d.reject();
+      });           
+           
+      return d.promise();      
+   }
 </script>

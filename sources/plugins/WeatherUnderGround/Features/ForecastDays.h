@@ -90,6 +90,11 @@ private:
    boost::shared_ptr<yApi::historization::CTemperature> m_hightemp[NB_INDIVIDUAL_FORECAST_KEYWORDS];
 
    //--------------------------------------------------------------
+   /// \brief	    the weather condition for 3 next day
+   //--------------------------------------------------------------
+   boost::shared_ptr<yApi::historization::CWeatherCondition> m_weatherCondition[NB_INDIVIDUAL_FORECAST_KEYWORDS];
+
+   //--------------------------------------------------------------
    /// \brief  Keywords list
    //--------------------------------------------------------------
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;

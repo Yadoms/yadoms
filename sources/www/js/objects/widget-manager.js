@@ -310,7 +310,6 @@ WidgetManager.loadWidgets = function (widgetList, pageWhereToAdd) {
     //then create widgets on page
     $.when.apply($, arrayOfDeffered)
        .done(function () {
-           d.resolve();
            var arrayOfLoadingWidgetDeferred = [];
            $.each(widgetList, function (index, widget) {
                arrayOfLoadingWidgetDeferred.push(WidgetManager.loadWidget(widget, pageWhereToAdd));

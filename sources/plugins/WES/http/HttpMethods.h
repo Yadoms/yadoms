@@ -7,16 +7,16 @@
 namespace http
 {
    //--------------------------------------------------------------
-   /// \brief	default value for HTTP Request default timeout
-   //--------------------------------------------------------------
-   static boost::posix_time::time_duration httpRequestDefaultTimeout(boost::posix_time::time_duration(boost::posix_time::seconds(45)));
-
-   //--------------------------------------------------------------
    /// \brief	Base class for threads
    //--------------------------------------------------------------
    class CHttpMethods
    {
    public:
+
+      //--------------------------------------------------------------
+      /// \brief	default value for HTTP Request default timeout
+      //--------------------------------------------------------------
+      static boost::posix_time::time_duration httpRequestDefaultTimeout;
 
       //--------------------------------------------------------------
       /// \brief	    SendGetRequest

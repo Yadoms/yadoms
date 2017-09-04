@@ -91,7 +91,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
             break;
          }
 
-         YADOMS_LOG(information) << "[" << homeId << "." << nodeId << "] " << vLabel << ":" << commandClass.toString()
+         YADOMS_LOG(information) << "[" << homeId << "." << static_cast<int>(nodeId) << "] " << vLabel << ":" << commandClass.toString()
             << " [Genre=" << genre << "]"
             << " [CommandClass=" << static_cast<int>(commandClassInt) << "]"
             << " [Instance=" << static_cast<int>(instance) << "]"

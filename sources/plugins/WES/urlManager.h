@@ -3,6 +3,7 @@
 #include <shared/DataContainer.h>
 #include <Poco/Net/NetworkInterface.h>
 #include <Poco/Net/Socket.h>
+#include "http/HttpMethods.h"
 
 //--------------------------------------------------------------
 /// \brief	All url handling
@@ -10,6 +11,9 @@
 class urlManager
 {
 public:
+
+   static boost::posix_time::time_duration httpRequestCreationTimeout;
+   static boost::posix_time::time_duration httpRequestWESTimeout;
 
    //--------------------------------------------------------------
    /// \brief	    read files Status from the WES
@@ -20,7 +24,8 @@ public:
    //--------------------------------------------------------------
    static shared::CDataContainer readFileState(Poco::Net::SocketAddress socket,
                                                const shared::CDataContainer& credentials,
-                                               const std::string &file);
+                                               const std::string &file,
+                                               const boost::posix_time::time_duration& timeout = http::CHttpMethods::httpRequestDefaultTimeout);
 
    //--------------------------------------------------------------
    /// \brief	    set relays state to the WES

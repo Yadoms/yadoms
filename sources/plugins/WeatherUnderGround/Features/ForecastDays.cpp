@@ -22,7 +22,7 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (shared::exception::CException& e)
    {
-      YADOMS_LOG(information) << "Configuration or initialization error of the forecast module :" << e.what() ;
+      YADOMS_LOG(error) << "Configuration or initialization error of the forecast module :" << e.what() ;
       throw;
    }
 }
@@ -116,6 +116,42 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
                }
             }
          }
+
+         try {
+            if (wuConfiguration.isConditionsForecastIndividualKeywordsEnabled())
+            {
+               for (auto counter = 0; counter < NB_INDIVIDUAL_FORECAST_KEYWORDS; ++counter)
+               {
+                  std::string TempString;
+                  TempString = "WeatherConditions_" + boost::lexical_cast<std::string>(counter);
+                  m_weatherCondition[counter] = boost::make_shared<yApi::historization::CWeatherCondition>(TempString);
+               }
+            }
+            else
+            {
+               if (api->deviceExists(m_deviceName))
+               {
+                  // reset all weatherCondition keywords
+                  for (auto counter = 0; counter < NB_INDIVIDUAL_FORECAST_KEYWORDS; ++counter)
+                  {
+                     std::string TempString;
+                     TempString = "WeatherConditions_" + boost::lexical_cast<std::string>(counter);
+                     if (m_weatherCondition[counter])
+                     {
+                        if (api->keywordExists(m_deviceName, m_weatherCondition[counter]))
+                        {
+                           api->removeKeyword(m_deviceName, TempString);
+                           m_weatherCondition[counter].reset();
+                        }
+                     }
+                  }
+               }
+            }
+         }
+         catch (shared::exception::CException& e)
+         {
+            YADOMS_LOG(trace) << "This keyword doesn't exist yet ! : " << e.what();
+         }
       }
 
       // Declare keywords
@@ -138,7 +174,7 @@ void CForecastDays::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (std::exception& e)
    {
-      YADOMS_LOG(information) << "Configuration or initialization error in the forecast module :" << e.what() ;
+      YADOMS_LOG(error) << "Configuration or initialization error in the forecast module :" << e.what() ;
       throw;
    }
 }
@@ -149,6 +185,8 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    try
    {
+      dataToParse.printToLog(YADOMS_LOG(trace));
+
       if (wuConfiguration.isForecast10DaysEnabled())
       {
          auto result = dataToParse.get<std::vector<shared::CDataContainer> >("forecast.simpleforecast.forecastday");
@@ -198,6 +236,19 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
                      m_hightemp[counter]->set(temp);
                }
             }
+            try {
+               if (wuConfiguration.isConditionsForecastIndividualKeywordsEnabled())
+               {
+                  if (counter == 0)
+                  {
+                     m_weatherCondition[counter]->set((*i).get<yApi::historization::EWeatherCondition>("icon"));
+                  }
+               }
+            }
+            catch (shared::exception::CException& e)
+            {
+               YADOMS_LOG(trace) << "This keyword doesn't exist yet ! : " << e.what();
+            }
 
             ++counter;
          }
@@ -208,7 +259,7 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (shared::exception::CException& e)
    {
-      YADOMS_LOG(information) << "Error during parsing the element ! : " << e.what() ;
+      YADOMS_LOG(error) << "Error during parsing the element ! : " << e.what() ;
    }
 }
 
