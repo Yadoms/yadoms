@@ -4,11 +4,10 @@ widgetViewModelCtor =
  * Create a colorPicker ViewModel
  * @constructor
  */
-function colorPickerViewModel() {
+function RGBWcolorPickerViewModel() {
      this.colorpicker = null;
      this.WidgetWidth  = 156;
      this.WidgetHeight = 120;
-     this.capacity = "";
      
     /**
      * Initialization method
@@ -79,10 +78,10 @@ function colorPickerViewModel() {
            return function (e) {
             console.log ("color changed ! :", e.color.toHex());
                
-            if (self.capacity === "colorrgb")
-               KeywordManager.sendCommand(self.widget.configuration.device.keywordId, e.color.toHex().toString());
-            else if (self.capacity === "colorrgbw")
-            {
+            //if (self.capacity === "colorrgb")
+            //   KeywordManager.sendCommand(self.widget.configuration.device.keywordId, e.color.toHex().toString());
+            //else if (self.capacity === "colorrgbw")
+            //{
                var temp = e.color.toHex().toString();
                var red = temp.substring(0, 2);
                var green = temp.substring(2, 4);
@@ -94,9 +93,9 @@ function colorPickerViewModel() {
                var RGBWString = rgbw.red.toString(16)+rgbw.green.toString(16)+rgbw.blue.toString(16)+rgbw.white.toString(16);
                console.log (RGBWString);
                KeywordManager.sendCommand(self.widget.configuration.device.keywordId, RGBWString);
-            }
-            else
-               console.warn("This capacity is not supported !");
+            //}
+            //else
+            //   console.warn("This capacity is not supported !");
         };
     };
     
@@ -104,7 +103,7 @@ function colorPickerViewModel() {
     // http://219.223.223.150/ldm/images/papers/Advanced_RGBW_OLED_Display_System_with_Novel_RGB-to-RGBW_and_Subpixel_Rendering_Algorithm.pdf
     // Algorithm of Kwon and Kim
     //
-    
+    /*
     this.convertRGBtoRGBW = function (red, green, blue) {
        
        var Q = 255;
@@ -132,7 +131,7 @@ function colorPickerViewModel() {
        value["blue"]  = Math.floor (((K*blue/Q)-W0)*Q);
        
        return value;
-    };
+    };*/
     
     this.configurationChanged = function () {
        var self = this;
@@ -143,12 +142,6 @@ function colorPickerViewModel() {
        
        //we register keyword new acquisition
        self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);       
-       
-       //we ask the capacity Name
-       var deffered2 = self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId);
-       deffered2.done(function (keyword) {
-          self.capacity = keyword.capacityName;
-       });
        
        // destroy the precedent colorPicker if any
        // it's the only solution, to create/delete preselected colors
@@ -218,13 +211,10 @@ function colorPickerViewModel() {
           
           // unbind the changeColor, otherwise, firea 'changeColor'
           self.colorpicker.unbind('changeColor');
-          if (self.capacity === "colorrgb")
-             self.colorpicker.colorpicker('setValue', data.value);
-          else if (self.capacity === "colorrgbw")
-          { // TODO : To be finalize RGBW -> RGB conversion to be write
-          }
-          else
-            console.warn("This capacity is not supported !");          
+             
+          // TODO : To be finalize RGBW -> RGB conversion to be write
+          //self.colorpicker.colorpicker('setValue', data.value);
+
           self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
         }
     };

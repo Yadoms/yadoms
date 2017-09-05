@@ -1,0 +1,25 @@
+{
+	"name": "Sélecteur de couleur RGBW",
+	"description": "Ce widget permet de choisir une couleur sur une palette de couleur ou régler la température du blanc entre blanc froid et blanc chaud",
+	"configurationSchema": {
+		"device": {
+			"name": "Donnée à afficher",
+			"description": "Selectionnez ici la donnée que vous souhaitez visualiser"
+		},
+      "colorsSelection": {
+        "name": "Sélecteur de couleurs pré-définies",
+        "description": "Ajoute une couleur au pré-sélecteur (5 couleurs maximum)",
+        "item": {
+          "name": "",
+          "content": {
+            "name": {
+               "name": "Alias de la couleur"
+            },          
+            "color": {
+               "name": "Couleur"
+            }
+          }
+        }
+      }
+	}
+}

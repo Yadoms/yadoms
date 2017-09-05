@@ -1,0 +1,14 @@
+.widget-colorpicker .inline-main-div {
+    display: inline-block;
+    height:100%;
+    width:100%;
+}
+
+/*
+  this css is for hide border at top and left of the color picker
+*/
+
+.widget-colorpicker .colorpicker{
+   top:-1px;
+   left:0px;
+}
