@@ -4,27 +4,36 @@ widgetViewModelCtor =
  * Create a colorPicker ViewModel
  * @constructor
  */
-function colorPickerViewModel() {
+function RGBWcolorPickerViewModel() {
      this.colorpicker = null;
+     this.slider = null;
      this.WidgetWidth  = 156;
      this.WidgetHeight = 120;
-     this.capacity = "";
      
     /**
      * Initialization method
      * @param widget widget class object
      */     
     this.initialize = function () {
-        self = this;
-       
-        console.log (self.widget);
-        self.createWidgetPickerStyle(self.widget.id);
+        var self = this;
        
         //we configure the toolbar
         this.widgetApi.toolbar({
             activated: true,
             displayTitle: true,
             batteryItem: false
+        });
+       
+        self.createWidgetPickerStyle(self.widget.id);
+        this.slider = this.widgetApi.find("#whiteSlide")[0];
+        
+        console.log (this.widgetApi.find("#whiteSlide"));
+        
+        // callback when the slide accept a new value
+        this.widgetApi.find("#whiteSlide").on('change',function(e){
+            var RGBValue = self.slider.value;
+            console.log (RGBValue);
+            KeywordManager.sendCommand(self.widget.configuration.device.keywordId, RGBValue.toString());           
         });
     };
     
@@ -44,6 +53,7 @@ function colorPickerViewModel() {
     };
     
     this.createPicker = function (preselectedColor) {
+        var self = this;
         self.colorpicker = this.widgetApi.find(".picker-canvas").colorpicker({
             customClass: 'colorpicker-size-'+self.widget.id,
             hexNumberSignPrefix: false,
@@ -77,61 +87,17 @@ function colorPickerViewModel() {
     this.changeColorButtonClick = function () {
            var self = this;
            return function (e) {
-            console.log ("color changed ! :", e.color.toHex());
-               
-            if (self.capacity === "colorrgb")
-               KeywordManager.sendCommand(self.widget.configuration.device.keywordId, e.color.toHex().toString());
-            else if (self.capacity === "colorrgbw")
-            {
-               var temp = e.color.toHex().toString();
-               var red = temp.substring(0, 2);
-               var green = temp.substring(2, 4);
-               var blue = temp.substring(4, 6);
-               rgbw = self.convertRGBtoRGBW(parseInt(red, 16), 
-                                            parseInt(green, 16),
-                                            parseInt(blue, 16));
-               console.log (rgbw);
-               var RGBWString = rgbw.red.toString(16)+rgbw.green.toString(16)+rgbw.blue.toString(16)+rgbw.white.toString(16);
-               console.log (RGBWString);
-               KeywordManager.sendCommand(self.widget.configuration.device.keywordId, RGBWString);
-            }
-            else
-               console.warn("This capacity is not supported !");
+            var temp = e.color.toHex().toString();
+            var red = temp.substring(0, 2);
+            var green = temp.substring(2, 4);
+            var blue = temp.substring(4, 6);
+            self.slider.value = 0;
+            var RGBValue = parseInt(red, 16)*256*256*256+parseInt(green, 16)*256*256+parseInt(blue, 16)*256;
+            console.log (RGBValue);
+            KeywordManager.sendCommand(self.widget.configuration.device.keywordId, RGBValue.toString());
+            //self.colorpicker.colorpicker('disable');
+            //self.colorpicker.unbind('changeColor');
         };
-    };
-    
-    //
-    // http://219.223.223.150/ldm/images/papers/Advanced_RGBW_OLED_Display_System_with_Novel_RGB-to-RGBW_and_Subpixel_Rendering_Algorithm.pdf
-    // Algorithm of Kwon and Kim
-    //
-    
-    this.convertRGBtoRGBW = function (red, green, blue) {
-       
-       var Q = 255;
-       
-      console.log ("red:",red);
-      console.log ("green",green);
-      console.log ("blue",blue);
-       
-       var max = Math.max(red/Q, green/Q, blue/Q);
-       var min = Math.min(red/Q, green/Q, blue/Q);
-       
-       console.log ("min",min);
-       console.log ("max",max);
-       
-       var W0 = -min*min*min+min*min+min;
-       console.log ("W0", W0);
-       
-       var K = 1+W0/max;
-       console.log ("K", K);
-       
-       var value = {};
-       value["white"] = Math.floor (W0*Q);
-       value["red"]   = Math.floor (((K*red/Q)-W0)*Q);
-       value["green"] = Math.floor (((K*green/Q)-W0)*Q);
-       value["blue"]  = Math.floor (((K*blue/Q)-W0)*Q);
-       
-       return value;
     };
     
     this.configurationChanged = function () {
@@ -143,12 +109,6 @@ function colorPickerViewModel() {
        
        //we register keyword new acquisition
        self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);       
-       
-       //we ask the capacity Name
-       var deffered2 = self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId);
-       deffered2.done(function (keyword) {
-          self.capacity = keyword.capacityName;
-       });
        
        // destroy the precedent colorPicker if any
        // it's the only solution, to create/delete preselected colors
@@ -166,11 +126,10 @@ function colorPickerViewModel() {
        
        self.createPicker(preselectedColor);
        self.resized();
-       
-       return deffered2.promise();
     };
     
     this.changeCss = function(width, height) {
+       var self = this;
       this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-saturation").css('height', height+'px');
       this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-saturation").css('width', width+'px');
       this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-saturation").css('background-size', width+'px '+height+'px');
@@ -190,9 +149,9 @@ function colorPickerViewModel() {
       
       // If no colors preselected, we use all the space
       if (isNullOrUndefined(self.colorpicker.data('colorpicker').options.colorSelectors))
-         self.WidgetHeight = this.widget.getHeight()-57;
+         self.WidgetHeight = this.widget.getHeight()-92;
       else
-         self.WidgetHeight = this.widget.getHeight()-90;
+         self.WidgetHeight = this.widget.getHeight()-125;
       
       // Update sliders values
       self.colorpicker.data('colorpicker').options.sliders.saturation.maxLeft = self.WidgetWidth;
@@ -204,7 +163,7 @@ function colorPickerViewModel() {
       self.changeCss(self.WidgetWidth, self.WidgetHeight);
       
       self.colorpicker.colorpicker('update');
-   };
+   }; 
     
     /**
     * New acquisition handler
@@ -217,15 +176,13 @@ function colorPickerViewModel() {
         if (keywordId === self.widget.configuration.device.keywordId) {
           
           // unbind the changeColor, otherwise, firea 'changeColor'
+          console.log ("onNewAcquisition : ", data.value % 255);
           self.colorpicker.unbind('changeColor');
-          if (self.capacity === "colorrgb")
-             self.colorpicker.colorpicker('setValue', data.value);
-          else if (self.capacity === "colorrgbw")
-          { // TODO : To be finalize RGBW -> RGB conversion to be write
-          }
-          else
-            console.warn("This capacity is not supported !");          
+          self.colorpicker.colorpicker('setValue', parseInt(data.value)/255);
+          self.slider.value = data.value % 255;
+
           self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
+          //self.colorpicker.colorpicker('enable');
         }
     };
 };
