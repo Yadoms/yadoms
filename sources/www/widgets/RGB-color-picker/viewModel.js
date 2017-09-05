@@ -14,7 +14,7 @@ function RGBcolorPickerViewModel() {
      * @param widget widget class object
      */     
     this.initialize = function () {
-        self = this;
+        var self = this;
        
         self.createWidgetPickerStyle(self.widget.id);
        
@@ -42,6 +42,7 @@ function RGBcolorPickerViewModel() {
     };
     
     this.createPicker = function (preselectedColor) {
+       var self = this;
         self.colorpicker = this.widgetApi.find(".picker-canvas").colorpicker({
             customClass: 'colorpicker-size-'+self.widget.id,
             hexNumberSignPrefix: false,
@@ -79,6 +80,8 @@ function RGBcolorPickerViewModel() {
             
             // TODO : Check the possibility to disable new click to avoid floaded of the plugin
             KeywordManager.sendCommand(self.widget.configuration.device.keywordId, e.color.toHex().toString());
+            //self.colorpicker.colorpicker('disable');
+            //self.colorpicker.unbind('changeColor');
         };
     };
     
@@ -108,11 +111,10 @@ function RGBcolorPickerViewModel() {
        
        self.createPicker(preselectedColor);
        self.resized();
-       
-       return deffered2.promise();
     };
     
     this.changeCss = function(width, height) {
+       var self = this;
       this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-saturation").css('height', height+'px');
       this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-saturation").css('width', width+'px');
       this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-saturation").css('background-size', width+'px '+height+'px');
@@ -157,11 +159,13 @@ function RGBcolorPickerViewModel() {
         var self = this;
         
         if (keywordId === self.widget.configuration.device.keywordId) {
+          console.log ("onNewAcquisition : ", data.value);
           
           // unbind the changeColor, otherwise, firea 'changeColor'
           self.colorpicker.unbind('changeColor');
           self.colorpicker.colorpicker('setValue', data.value);
           self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
+          //self.colorpicker.colorpicker('enable');
         }
     };
 };
