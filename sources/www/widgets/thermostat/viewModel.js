@@ -12,6 +12,7 @@ function thermostatViewModel() {
     this.unit = ko.observable("");
     this.step = ko.observable(0.1).extend({ numeric: 1 });
     this.isTemperatureVisible = ko.observable(true);
+    this.disableStateTemperature = ko.observable(false);
     //
 
     this.thermostatStateType = "";
@@ -77,7 +78,9 @@ function thermostatViewModel() {
            keywordRegistered.push(self.widget.configuration.thermostatStateSection.content.state.keywordId);
         
         if (parseBool(self.widget.configuration.LivetemperatureSection.checkbox))
+        {
            keywordRegistered.push(self.widget.configuration.LivetemperatureSection.content.temperatureDevice.keywordId);
+        }
         
         //we register keyword new acquisition
         self.widgetApi.registerKeywordAcquisitions(keywordRegistered);
@@ -90,7 +93,12 @@ function thermostatViewModel() {
         self.step(self.widget.configuration.controlSection.content.stepValue);
         
         // Visibility of the temperature
-        self.isTemperatureVisible(self.widget.configuration.LivetemperatureSection.checkbox);
+        self.isTemperatureVisible(parseBool(self.widget.configuration.LivetemperatureSection.checkbox));
+        
+        if (!parseBool(self.widget.configuration.LivetemperatureSection.checkbox) && !parseBool(self.widget.configuration.thermostatStateSection.checkbox))
+           self.disableStateTemperature(true);
+        else
+           self.disableStateTemperature(false);
         
         $.whenAll(defferedKeywordInformation).done(function () {
            d.resolve();

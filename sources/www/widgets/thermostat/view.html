@@ -1,6 +1,6 @@
 <script type="text/html" id="thermostat-template">
     <div class="textfit-in-parent main-div">
-       <div class="textfit-in-parent thermostat-info">
+       <div class="textfit-in-parent thermostat-info" data-bind="css: { hidden: disableStateTemperature()}, disable : disableStateTemperature()">
           <div class="glyphicon glyphicon-fire icon-div textfit"></div>
           <div class="textfit-in-parent textfit value" style="color: #cccccc;" data-bind="text: temperature() + unit(), css: { hidden: !isTemperatureVisible()}"></div>
        </div>
