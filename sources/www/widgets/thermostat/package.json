@@ -55,7 +55,7 @@
          "content": {
             "state":{
                "type": "keyword",
-               "expectedCapacity": ["Switch","Operating State"],
+               "expectedCapacity": ["switch","Operating State"],
                "expectedKeywordAccess": "get"      
             }
          }

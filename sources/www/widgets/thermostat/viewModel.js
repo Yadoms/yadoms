@@ -58,17 +58,29 @@ function thermostatViewModel() {
 
         defferedKeywordInformation.push( deffered1 );
         
-        var deffered2 = self.widgetApi.getKeywordInformation(self.widget.configuration.thermostatStateSection.content.state.keywordId).done(function (keyword) {
-            thermostatStateType = keyword.type;
-        });
+        if (parseBool(self.widget.configuration.thermostatStateSection.checkbox))
+        {
+           var deffered2 = self.widgetApi.getKeywordInformation(self.widget.configuration.thermostatStateSection.content.state.keywordId).done(function (keyword) {
+               thermostatStateType = keyword.type;
+           });
+           
+           defferedKeywordInformation.push( deffered2 );
+        }
+        else  // the widget hide the fire icon, if we don't use this
+           this.widgetApi.find(".icon-div").css("visibility", "hidden");
         
-        defferedKeywordInformation.push( deffered2 );
+        var keywordRegistered = [];
+        
+        keywordRegistered.push(self.widget.configuration.controlSection.content.temperatureSet.keywordId);
+        
+        if (parseBool(self.widget.configuration.thermostatStateSection.checkbox))
+           keywordRegistered.push(self.widget.configuration.thermostatStateSection.content.state.keywordId);
+        
+        if (parseBool(self.widget.configuration.LivetemperatureSection.checkbox))
+           keywordRegistered.push(self.widget.configuration.LivetemperatureSection.content.temperatureDevice.keywordId);
         
         //we register keyword new acquisition
-        self.widgetApi.registerKeywordAcquisitions([self.widget.configuration.LivetemperatureSection.content.temperatureDevice.keywordId,
-                                                    self.widget.configuration.controlSection.content.temperatureSet.keywordId,
-                                                    self.widget.configuration.thermostatStateSection.content.state.keywordId
-                                                   ]);
+        self.widgetApi.registerKeywordAcquisitions(keywordRegistered);
         
         //we fill the deviceId of the battery indicator
         //TODO : handle all keywords
@@ -96,16 +108,16 @@ function thermostatViewModel() {
         if (self.widget.getHeight() == 200)
         {
            self.widgetApi.find(".btn").addClass("btn-md");
-           self.widgetApi.find(".btn").removeClass("btn-lg btn-xs");
+           self.widgetApi.find(".btn").removeClass("btn-lg btn-th");
         }
         else if (self.widget.getHeight() == 300)
         {
            self.widgetApi.find(".btn").addClass("btn-lg");
-           self.widgetApi.find(".btn").removeClass("btn-xs btn-md");
+           self.widgetApi.find(".btn").removeClass("btn-th btn-md");
         }
         else if (self.widget.getHeight() == 100)
         {
-           self.widgetApi.find(".btn").addClass("btn-xs");
+           self.widgetApi.find(".btn").addClass("btn-th");
            self.widgetApi.find(".btn").removeClass("btn-lg btn-md");
         }
         else{}      
@@ -152,7 +164,6 @@ function thermostatViewModel() {
                      this.widgetApi.find(".icon-div").css("visibility", "hidden");
                   else 
                      this.widgetApi.find(".icon-div").css("visibility", "visible");
-                  else {}
                }
                else if (self.thermostatStateType === "String") {
                   if (data.value === "Idle")

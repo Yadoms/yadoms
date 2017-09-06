@@ -26,7 +26,6 @@
    width : 20px;
 }
 
-
 .widget-thermostat .value {
     margin:auto;
     text-align: center;
@@ -38,4 +37,13 @@
 
 .widget-thermostat .thermostatButton {
     background-color: #cccccc;
+}
+
+/* TODO*/
+.btn-th,
+.btn-group-th > .btn {
+  padding: 2px 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  border-radius: 3px;
 }
