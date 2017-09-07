@@ -176,7 +176,7 @@ function thermostatViewModel() {
                else if (self.thermostatStateType === "String") {
                   if (data.value === "Idle")
                      this.widgetApi.find(".icon-div").css("visibility", "hidden");
-                  else if (data.value === "Heat")
+                  else if (data.value === "Heating")
                      this.widgetApi.find(".icon-div").css("visibility", "visible");
                   else {}
                      
