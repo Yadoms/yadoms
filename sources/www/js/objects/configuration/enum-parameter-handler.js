@@ -51,7 +51,7 @@ EnumParameterHandler.prototype.getDOMObject = function () {
                         "class=\"form-control enable-validation\" " +
                         "id=\"" + this.uuid + "\" " +
                         "data-content=\"" + this.description + "\"" +
-                        "required ";
+                        "required " + "value=\""+"\"";
    var i18NData = " data-i18n=\"";
 
    var self = this;
@@ -105,8 +105,13 @@ EnumParameterHandler.prototype.updateValues = function () {
        translatedValues[key] = newValue;
    });
 
-    //we iterate through the values collection
-   $.each(EnumParameterHandler.arrangeCollection(translatedValues, self.sort), function (key, value) {
+   //we iterate through the values collection
+   var collection =  EnumParameterHandler.arrangeCollection(translatedValues, self.sort);
+   
+   if (collection.length == 0)
+      $select.append("<option value=\"" + "\"/>");
+   
+   $.each(collection, function (key, value) {
       //key contains the index in array
       //value contains [languageCode, languageDisplayName]
       var languageCode = value[0];
