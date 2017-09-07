@@ -51,13 +51,6 @@ function thermostatViewModel() {
         var self = this;
         var defferedKeywordInformation = [];
         var d = new $.Deferred();
-
-        //we get the unit of the keyword
-        var deffered1 = self.widgetApi.getKeywordInformation(self.widget.configuration.LivetemperatureSection.content.temperatureDevice.keywordId).done(function (keyword) {
-            self.unit($.t(keyword.units));
-        });
-
-        defferedKeywordInformation.push( deffered1 );
         
         if (parseBool(self.widget.configuration.thermostatStateSection.checkbox))
         {
@@ -78,12 +71,17 @@ function thermostatViewModel() {
            keywordRegistered.push(self.widget.configuration.thermostatStateSection.content.state.keywordId);
         
         if (parseBool(self.widget.configuration.LivetemperatureSection.checkbox))
-        {
            keywordRegistered.push(self.widget.configuration.LivetemperatureSection.content.temperatureDevice.keywordId);
-        }
         
         //we register keyword new acquisition
         self.widgetApi.registerKeywordAcquisitions(keywordRegistered);
+        
+        //we get the unit of the keyword
+        var deffered1 = self.widgetApi.getKeywordInformation(self.widget.configuration.controlSection.content.temperatureSet.keywordId).done(function (keyword) {
+            self.unit($.t(keyword.units));
+        });
+        
+        defferedKeywordInformation.push( deffered1 );
         
         //we fill the deviceId of the battery indicator
         //TODO : handle all keywords
