@@ -43,13 +43,14 @@
          .done(function (list) {
             refreshDeviceList()
                .done(function() {
-                  //we use the periodic task of the dashboard
-                  Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                   d.resolve();
                })
                .fail(function() {
-                  Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                   d.reject();
+               })
+               .always(function() {
+                  //we use the periodic task of the dashboard
+                  Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                });
          })
          .fail(function (error) {
@@ -178,14 +179,8 @@
      
       //we bind event on the different actions
       $deviceRow.find("button.btn-configure").unbind('click').bind('click', function (e) { 
-            e.stopPropagation();
-            // Stop periodic task before the deletion and refresh
-            // This disabled the periodic refresh during the deletion and wrong display
-            clearInterval(Yadoms.periodicDashboardTask);       
-            updateDeviceConfiguration(device); 
-            
-            // Restart the periodic refresh
-            Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);            
+            e.stopPropagation();       
+            updateDeviceConfiguration(device);
       });
 
       $deviceRow.find("button.btn-delete").unbind('click').bind('click', function (e) {
@@ -283,6 +278,9 @@
    }
 
    function updateDeviceConfiguration(device) {
+      // Stop periodic task before the deletion and refresh
+      // This disabled the periodic refresh during the deletion and wrong display
+      clearInterval(Yadoms.periodicDashboardTask);
       if (PluginInstanceManager.isSystemCategory(device.attachedPlugin)) {
          // Virtual device
          Yadoms.modals.virtualDeviceConfigure.loadAsync()
@@ -293,6 +291,10 @@
                device.configuration = configuration;
                recordNewDeviceConfiguration(device);
             });
+         })
+         .always(function() {
+            // Restart the periodic refresh
+            Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);  
          });
       } else {
          // Manually plugin-related device creation
@@ -301,20 +303,34 @@
          //we just ask for the friendly name
          Yadoms.modals.deviceConfigure.loadAsync()
             .done(function () {
-
                DeviceManager.getConfigurationSchema(device)
                .done(function(schemaConfig) {
                   Yadoms.showConfigurationDeviceModal(device, schemaConfig, function () {
                      recordNewDeviceConfiguration(device);
+                     
+                     // get the keyword list for equipments : some equipments change dynamically the keyword list.
+                     DeviceManager.getKeywords(device)
+                     .done(function () {
+                        var i = deviceList.map(function (e) { return e.id; }).indexOf(device.id);
+                        if (i !== -1)
+                        {
+                           deviceList[i] = device; // update the device
+                        }
+                        Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+                     });
                   });
                })
                .fail(function (error) {
-                     notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
+                  Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+                  notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
                });
+            })
+            .fail(function() {
+               // Restart the periodic refresh
+               Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
             });
       }
    }
-
 
    function clickDevice(device) {
       //device represent the device concerned
@@ -701,6 +717,7 @@
 
             //we get the device
             var device = getDeviceFromId($deviceDetailsTable.attr("device-id"));
+            
             if (device && device.keywords) {
                AcquisitionManager.getLastValues(device.keywords)
                .done(function (data) {
