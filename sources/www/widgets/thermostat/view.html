@@ -1,0 +1,15 @@
+<script type="text/html" id="thermostat-template">
+    <div class="textfit-in-parent main-div">
+       <div class="textfit-in-parent thermostat-info" data-bind="css: { hidden: disableStateTemperature()}, disable : disableStateTemperature()">
+          <div class="glyphicon glyphicon-fire icon-div textfit"></div>
+          <div class="textfit-in-parent textfit value" style="color: #cccccc;" data-bind="text: temperature() + unit(), css: { hidden: !isTemperatureVisible()}"></div>
+       </div>
+       <div class="textfit-in-parent values-div">
+          <div class="textfit textfit-in-parent" data-bind="text: temperatureSet() + unit()" min-font="6"></div>
+          <div class="btn-group-vertical btn-toggle buttonGroup" role="group">
+             <button class="btn btn-default thermostatButton btn-th" data-bind="event: {click: commandClickPlus}"><span class="glyphicon glyphicon-plus"></span></button>
+             <button class="btn btn-default thermostatButton btn-th" data-bind="event: {click: commandClickMinus}"><span class="glyphicon glyphicon-minus"></span></button>
+          </div>             
+       </div>
+    </div>
+</script>

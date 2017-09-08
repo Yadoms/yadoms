@@ -1,0 +1,64 @@
+{
+	"type": "thermostat",
+	"version": "1.0.0-rc.1",
+	"author": "jean-Michel BERHAULT",
+	"url": "https://github.com/Yadoms/yadoms/wiki/thermostat",
+	"credits": "",
+  "dimensions": {
+    "min": {
+      "x": 1,
+      "y": 1
+    },
+    "max": {
+      "x": 4,
+      "y": 4
+    },
+    "default": {
+      "x": 1,
+      "y": 1
+    }
+  },
+  "hasTitle" :  true,
+	"configurationSchema": {
+      "LivetemperatureSection" : {
+			"type": "section",
+			"defaultValue": "true",
+			"enableWithCheckBox": "true",
+			"enableWithCheckBoxDefaultValue": "true",
+         "content": {
+		      "temperatureDevice": {
+			      "type": "keyword",
+			      "expectedCapacity": ["temperature"],
+			      "expectedKeywordAccess": "get"
+		      }
+         }
+      },
+      "controlSection" : {
+			"type": "section",
+         "content": {         
+		      "temperatureSet": {
+			   "type": "keyword",
+			   "expectedCapacity": ["temperature", "Heating 1"],
+			   "expectedKeywordAccess": "get"
+            },
+            "stepValue": {
+               "type": "decimal",
+               "defaultValue": "0.2"
+            }
+         }
+		},
+      "thermostatStateSection" : {
+			"type": "section",
+			"defaultValue": "true",
+			"enableWithCheckBox": "true",
+			"enableWithCheckBoxDefaultValue": "true",
+         "content": {
+            "state":{
+               "type": "keyword",
+               "expectedCapacity": ["switch","Operating State"],
+               "expectedKeywordAccess": "get"      
+            }
+         }
+      }
+	}
+}

@@ -647,7 +647,7 @@ WidgetManager.createGridWidget = function (widget) {
 
     //the configuration button is visible only if there is a custom title or a confgiuration for this widget
     if ((parseBool(widget.package.hasTitle)) || (widget.package.configurationSchema)) {
-        domWidget += "<div class=\"customizationButton widgetCustomizationButton btn-configure-widget\"><i class=\"fa fa-cog\"></i></div>\n";
+        domWidget += "<div class=\"customizationButton widgetCustomizationButton btn-configure-widget\"><i class=\"fa fa-lg fa-cog\"></i></div>\n";
     }
 
     var type = widget.type;
@@ -655,7 +655,7 @@ WidgetManager.createGridWidget = function (widget) {
         type = WidgetManager.DeactivatedWidgetPackageName;
     }
 
-    domWidget += "<div class=\"customizationButton widgetCustomizationButton btn-delete-widget\"><i class=\"fa fa-trash-o\"></i></div>\n" +
+    domWidget += "<div class=\"customizationButton widgetCustomizationButton btn-delete-widget\"><i class=\"fa fa-lg fa-trash-o\"></i></div>\n" +
              "</div>\n" +
         "</div>\n" +
         "<div class=\"panel panel-primary panel-widget widget-" + type + "\" >" +
