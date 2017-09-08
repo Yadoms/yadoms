@@ -386,13 +386,24 @@
 		"EBlyss": {
 			"name": "",
 			"values": {
-				"Off": "",
-				"On": "",
-				"Dim": "",
-				"AllOff": "",
-				"AllOn": "",
-				"Assoc": ""
+				"OFF": "",
+				"ON": "",
+				"DIM": "",
+				"ALL_OFF": "",
+				"ALL_ON": "",
+				"ASSOC": ""
 			}
-		}
+		},
+		"ERts": {
+			"name": "",
+			"values": {
+				"OFF": "",
+				"ON": "",
+				"DIM": "",
+				"ALL_OFF": "",
+				"ALL_ON": "",
+				"ASSOC": ""
+			}
+		}      
 	}
 }

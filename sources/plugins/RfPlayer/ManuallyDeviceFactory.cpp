@@ -150,9 +150,18 @@ void CManuallyDeviceFactory::createDeviceManually(boost::shared_ptr<shared::plug
 
    if (request.getDeviceType() == "rts")
    {
+      request.getConfiguration().printToLog(YADOMS_LOG(information));
       auto keyword = boost::make_shared<specificHistorizers::outgoing::CRtsKeyword>("command");
       shared::CDataContainer details;
-      details.set("identififer", request.getConfiguration().get<int>("identififer"));
+      if (request.getConfiguration().get<std::string>("identifier.activeSection") == "id32")
+      {
+         details.set("identifier", request.getConfiguration().get<int>("identifier.content.id32.content.id"));
+      }
+      else if (request.getConfiguration().get<std::string>("identifier.activeSection") == "idx10form")
+      {
+         details.set("groupCode", request.getConfiguration().get<std::string>("identifier.content.idx10form.content.groupCode"));
+         details.set("unitCode", request.getConfiguration().get<int>("identifier.content.idx10form.content.unitCode"));
+      }
       details.set("frequency", 433);
       details.set("protocol", "rts");
       details.set("burst", request.getConfiguration().getWithDefault<std::string>("burst", ""));
