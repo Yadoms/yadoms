@@ -1,5 +1,5 @@
 {
-	"name": "Sélecteur de couleur RGB",
+	"name": "Palette RGB",
 	"description": "Ce widget permet de choisir une couleur sur une palette de couleur",
 	"configurationSchema": {
 		"device": {

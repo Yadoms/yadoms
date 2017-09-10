@@ -1,5 +1,5 @@
 {
-	"name": "Sélecteur de couleur RGBW",
+	"name": "Palette RGBW",
 	"description": "Ce widget permet de choisir une couleur sur une palette de couleur ou régler la température du blanc entre blanc froid et blanc chaud",
 	"configurationSchema": {
 		"device": {

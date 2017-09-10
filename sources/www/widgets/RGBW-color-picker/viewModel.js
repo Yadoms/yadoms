@@ -27,14 +27,8 @@ function RGBWcolorPickerViewModel() {
         self.createWidgetPickerStyle(self.widget.id);
         this.slider = this.widgetApi.find("#whiteSlide")[0];
         
-        console.log (this.widgetApi.find("#whiteSlide"));
-        
         // callback when the slide accept a new value
-        this.widgetApi.find("#whiteSlide").on('change',function(e){
-            var RGBValue = self.slider.value;
-            console.log (RGBValue);
-            KeywordManager.sendCommand(self.widget.configuration.device.keywordId, RGBValue.toString());           
-        });
+        this.widgetApi.find("#whiteSlide").on('change', self.changeSlideClick());
     };
     
     this.createWidgetPickerStyle = function(widgetId) {
@@ -83,22 +77,50 @@ function RGBWcolorPickerViewModel() {
         self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
     };
     
-    // function called when the color changed
-    this.changeColorButtonClick = function () {
-           var self = this;
-           return function (e) {
-            var temp = e.color.toHex().toString();
-            var red = temp.substring(0, 2);
-            var green = temp.substring(2, 4);
-            var blue = temp.substring(4, 6);
-            self.slider.value = 0;
-            var RGBValue = parseInt(red, 16)*256*256*256+parseInt(green, 16)*256*256+parseInt(blue, 16)*256;
-            console.log (RGBValue);
-            KeywordManager.sendCommand(self.widget.configuration.device.keywordId, RGBValue.toString());
-            //self.colorpicker.colorpicker('disable');
-            //self.colorpicker.unbind('changeColor');
+    this.changeSlideClick = function () {
+       var self = this;
+       return function(e){
+          var RGBValue = self.slider.value;
+          console.log ("Slide : ", RGBValue);
+          KeywordManager.sendCommand(self.widget.configuration.device.keywordId, RGBValue.toString());           
         };
     };
+    
+    // function called when the color changed
+    this.changeColorButtonClick = function () {
+       var self = this;
+       return function (e) {
+          self.colorpicker.colorpicker('disable');
+          //self.colorpicker.unbind('changeColor');
+          //self.colorpicker.unbind('changeColor');*/
+          console.log (self.colorpicker.find('b'));
+          self.colorpicker.find('b').css('disable', true);
+          var temp = e.color.toHex().toString();
+          var red = temp.substring(0, 2);
+          var green = temp.substring(2, 4);
+          var blue = temp.substring(4, 6);
+          self.slider.value = 0;
+          var RGBValue = parseInt(red, 16)*256*256*256+parseInt(green, 16)*256*256+parseInt(blue, 16)*256;
+          console.log (RGBValue);
+          KeywordManager.sendCommand(self.widget.configuration.device.keywordId, RGBValue.toString())
+          //self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
+          //self.colorpicker.colorpicker('disable');
+       };
+    };
+
+    function stopPropagation(id, event) {
+    $(id).on(event, function(e) {
+        e.stopPropagation();
+        return false;
+    });
+    };
+    
+    function enablePropagation(id, event) {
+    $(id).off(event, function(e) {
+        e.stopPropagation();
+        return false;
+    });
+    };    
     
     this.configurationChanged = function () {
        var self = this;
@@ -174,14 +196,19 @@ function RGBWcolorPickerViewModel() {
         var self = this;
         
         if (keywordId === self.widget.configuration.device.keywordId) {
-          
+          //enablePropagation(self.colorpicker, 'mousedown');  
+          //self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
+          //self.widgetApi.find("#whiteSlide").on('change', self.changeSlideClick());
+          self.colorpicker.colorpicker('enable');
+          console.log ("onNewAcquisition : ", data.value);
+          /*
           // unbind the changeColor, otherwise, firea 'changeColor'
-          console.log ("onNewAcquisition : ", data.value % 255);
           self.colorpicker.unbind('changeColor');
+          self.widgetApi.find("#whiteSlide").off('change');
           self.colorpicker.colorpicker('setValue', parseInt(data.value)/255);
           self.slider.value = data.value % 255;
 
-          self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
+          */
           //self.colorpicker.colorpicker('enable');
         }
     };
