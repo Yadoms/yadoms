@@ -397,14 +397,25 @@
 		"EBlyss": {
 			"name": "",
 			"values": {
-				"Off": "OFF",
-				"On": "ON",
-				"Dim": "DIM",
-				"AllOff": "All ON",
-				"AllOn": "All OFF",
-				"Assoc": "Peering frame"
+				"OFF": "OFF",
+				"ON": "ON",
+				"DIM": "DIM",
+				"ALL_OFF": "All ON",
+				"ALL_ON": "All OFF",
+				"ASSOC": "Peering frame"
 			}
-		}
+		},
+		"ERts": {
+			"name": "",
+			"values": {
+				"OFF": "OFF",
+				"ON": "ON",
+				"DIM": "DIM",
+				"ALL_OFF": "All ON",
+				"ALL_ON": "All OFF",
+				"ASSOC": "Peering frame"
+			}
+		}      
 	}
 
 }

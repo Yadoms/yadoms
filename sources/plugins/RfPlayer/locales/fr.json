@@ -397,13 +397,24 @@
 		"EBlyss": {
 			"name": "",
 			"values": {
-				"Off": "OFF",
-				"On": "ON",
-				"Dim": "DIM",
-				"AllOff": "Tous ON",
-				"AllOn": "Tous OFF",
-				"Assoc": "Trame d'appairage"
+				"OFF": "OFF",
+				"ON": "ON",
+				"DIM": "DIM",
+				"ALL_OFF": "Tous ON",
+				"ALL_ON": "Tous OFF",
+				"ASSOC": "Trame d'appairage"
 			}
-		}
+		},
+		"ERts": {
+			"name": "",
+			"values": {
+				"OFF": "OFF",
+				"ON": "ON",
+				"DIM": "DIM",
+				"ALL_OFF": "Tous ON",
+				"ALL_ON": "Tous OFF",
+				"ASSOC": "Trame d'appairage"
+			}
+		}      
 	}
 }
