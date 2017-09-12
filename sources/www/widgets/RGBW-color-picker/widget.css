@@ -11,7 +11,7 @@
 
 input[type=range] {
   -webkit-appearance: none;
-  margin: 10px 0;
+  margin: 5px 0;
   width: 95%;
 }
 input[type=range]:focus {

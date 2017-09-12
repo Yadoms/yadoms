@@ -33,12 +33,14 @@ function RGBcolorPickerViewModel() {
              html: '.colorpicker-size-'+widgetId+' .colorpicker-saturation { width: 150px; height: 150px; background-size: 150px 135px;}'
           })
        );
-       $('widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-hue, .colorpicker-size .colorpicker-alpha {width: 15px;height: 150px;background-size: 15px 135px;} ');
-       $('widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-color, .colorpicker-size .colorpicker-color div {height: 14px;background-size: 14px 150px;} ');
-       $('widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-selectors{display: none;height: 35px;width: 150px;margin-top: 4px;clear: both;} ');
-       $('widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-selectors i{cursor: pointer;float: left;height: 30px;width: 30px;} ');
-       $('widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-selectors i + i{margin-left: 3px;} ');
-       $('widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-selectors-color{height: 30px;width: 30px;background-size: 30px 30px;} ');
+       $('#widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-hue, .colorpicker-size .colorpicker-alpha {width: 15px;height: 150px;background-size: 15px 135px;} ');
+       $('#widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-color, .colorpicker-size .colorpicker-color div {height: 14px;background-size: 14px 150px;} ');
+       $('#widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-selectors{display: none;height: 35px;width: 150px;margin-top: 4px;clear: both;} ');
+       $('#widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-selectors i{cursor: pointer;float: left;height: 30px;width: 30px;} ');
+       $('#widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-selectors i + i{margin-left: 3px;} ');
+       $('#widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-selectors-color{height: 30px;width: 30px;background-size: 30px 30px;} ');
+       
+       console.log( $('#widget-picker-' + widgetId) );
     };
     
     this.createPicker = function (preselectedColor) {
@@ -122,8 +124,10 @@ function RGBcolorPickerViewModel() {
       this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-hue").css('background-size', '15px '+height+'px');
       this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-alpha").css('height', height+'px');
       this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-alpha").css('background-size', '14px '+height+'px');
+      
       this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-color").css('background-size', '14px '+height+'px');
       this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-color div").css('background-size', '14px '+height+'px');
+      this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-color div").css('height', '14px');
       this.widgetApi.find(".colorpicker-size-"+self.widget.id+" .colorpicker-selectors").css('width', width+15+'px');
     };
 
