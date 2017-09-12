@@ -415,6 +415,134 @@
 				"ALL_ON": "All OFF",
 				"ASSOC": "Peering frame"
 			}
+		},
+		"EDomia": {
+			"name": "",
+			"values": {
+				"OFF": "OFF",
+				"ON": "ON",
+				"DIM": "DIM",
+				"ASSOC": "Peering frame"
+			}
+		},
+		"EKd101": {
+			"name": "",
+			"values": {
+				"OFF": "OFF",
+				"ON": "ON",
+				"DIM": "DIM",
+				"ASSOC": "Peering frame"
+			}
+		},
+		"EParrot": {
+			"name": "",
+			"values": {
+				"OFF": "OFF",
+				"ON": "ON",
+				"DIM": "DIM",
+				"ALL_OFF": "All OFF",
+				"ALL_ON": "All ON",
+				"ASSOC": "Peering frame"
+			}
+		},
+		"EVisonic": {
+			"name": "",
+			"values": {
+				"OFF": "OFF",
+				"ON": "ON",
+				"DIM": "DIM",
+				"ASSOC": "Peering frame"
+			}
+		},
+		"EX2D": {
+			"name": "",
+			"values": {
+				"OFF": "OFF",
+				"ON": "ON",
+				"DIM": "DIM",
+				"ALL_OFF": "All OFF",
+				"ALL_ON": "All ON",
+				"ASSOC": "Peering frame"
+			}
+		},
+		"EX10": {
+			"name": "",
+			"values": {
+				"OFF": "OFF",
+				"ON": "ON",
+				"DIM": "DIM",
+				"ALL_OFF": "All OFF",
+				"ALL_ON": "All ON",
+				"ASSOC": "Peering frame"
+			}
+		},
+		"EType0StateValues": {
+			"name": "",
+			"values": {
+				"OFF": "OFF",
+				"ON": "ON",
+            "BRIGHT": "Bright",
+				"DIM": "DIM",
+				"ALL_OFF": "All OFF",
+				"ALL_ON": "All ON"
+			}
+		},
+		"EType1StateValues": {
+			"name": "",
+			"values": {
+				"OFF": "OFF",
+				"ON/Alert": "ON/Alert",
+				"ALL_OFF": "All OFF",
+				"ALL_ON": "All ON"
+			}
+		},
+		"EType2KeyCodeValues": {
+			"name": "",
+			"values": {
+				"Button1": "Button 1",
+				"Button2": "Button 2",
+				"Button3": "Button 3",
+				"Button4": "Button 4"
+			}
+		},
+		"EType3RemoteCodeValues": {
+			"name": "",
+			"values": {
+				"Left": "Left",
+				"Right": "Right"
+			}
+		},
+		"EType3ShutterCodeValues": {
+			"name": "",
+			"values": {
+				"DownOff": "Down/Off",
+				"My": "My",
+            "UpOn": "Up/On",
+            "Assoc": "Peering frame"
+			}
+		},
+		"EType10OperatingModeValues": {
+			"name": "",
+			"values": {
+				"Eco": "Eco",
+				"Moderate": "Moderate",
+            "Medio": "Medio",
+            "Comfort": "Comfort",
+            "Stop": "Stop",
+            "OutOfFrost": "Out of frost",
+            "Special": "Special",
+            "Auto": "Auto",
+            "Centralised": "Centralised"
+			}
+		},
+		"EType11Statealues": {
+			"name": "",
+			"values": {
+				"DownOff": "Down/off",
+				"My": "My",
+            "UpOn": "Up/On",
+            "Assoc": "Peering frame"
+			}
 		}      
 	}
 

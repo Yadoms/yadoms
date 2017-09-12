@@ -381,29 +381,5 @@
 				}
 			}
 		}
-	},
-	"enumerations": {
-		"EBlyss": {
-			"name": "",
-			"values": {
-				"OFF": "",
-				"ON": "",
-				"DIM": "",
-				"ALL_OFF": "",
-				"ALL_ON": "",
-				"ASSOC": ""
-			}
-		},
-		"ERts": {
-			"name": "",
-			"values": {
-				"OFF": "",
-				"ON": "",
-				"DIM": "",
-				"ALL_OFF": "",
-				"ALL_ON": "",
-				"ASSOC": ""
-			}
-		}      
 	}
 }

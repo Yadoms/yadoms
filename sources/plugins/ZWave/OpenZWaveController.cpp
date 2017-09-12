@@ -290,7 +290,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    case OpenZWave::Notification::Type_ValueChanged:
    {
       auto node = getNode(_notification);
-      //setupValue(node, vID);
+      setupValue(node, vID);
       if (node)
       {
          auto kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
