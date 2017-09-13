@@ -8,10 +8,8 @@
 .widget-thermostat .thermostat-info{
     display: flex;
     flex-direction: row;
-    /*margin: auto;*/
     flex : 0 0 30%;
     width: 70%;
-    /*height: 100%;*/
 }
 
 .widget-thermostat .values-div {
@@ -39,7 +37,6 @@
     background-color: #cccccc;
 }
 
-/* TODO*/
 .btn-th,
 .btn-group-th > .btn {
   padding: 2px 8px;
