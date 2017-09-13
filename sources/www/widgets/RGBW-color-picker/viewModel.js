@@ -97,7 +97,6 @@ function RGBWcolorPickerViewModel() {
           var blue = temp.substring(4, 6);
           self.slider.value = 0;
           var RGBValue = parseInt(red, 16)*256*256*256+parseInt(green, 16)*256*256+parseInt(blue, 16)*256;
-          console.log (RGBValue);
           KeywordManager.sendCommand(self.widget.configuration.device.keywordId, RGBValue.toString())
           self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
        };

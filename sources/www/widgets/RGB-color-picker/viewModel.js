@@ -39,8 +39,6 @@ function RGBcolorPickerViewModel() {
        $('#widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-selectors i{cursor: pointer;float: left;height: 30px;width: 30px;} ');
        $('#widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-selectors i + i{margin-left: 3px;} ');
        $('#widget-picker-' + widgetId).append('.colorpicker-size-'+widgetId+' .colorpicker-selectors-color{height: 30px;width: 30px;background-size: 30px 30px;} ');
-       
-       console.log( $('#widget-picker-' + widgetId) );
     };
     
     this.createPicker = function (preselectedColor) {
@@ -78,12 +76,9 @@ function RGBcolorPickerViewModel() {
     this.changeColorButtonClick = function () {
            var self = this;
            return function (e) {
-            console.log ("color changed ! :", e.color.toHex());
-            
-            // TODO : Check the possibility to disable new click to avoid floaded of the plugin
+            self.colorpicker.unbind('changeColor')
             KeywordManager.sendCommand(self.widget.configuration.device.keywordId, e.color.toHex().toString());
-            //self.colorpicker.colorpicker('disable');
-            //self.colorpicker.unbind('changeColor');
+            self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
         };
     };
     
@@ -163,13 +158,9 @@ function RGBcolorPickerViewModel() {
         var self = this;
         
         if (keywordId === self.widget.configuration.device.keywordId) {
-          console.log ("onNewAcquisition : ", data.value);
-          
-          // unbind the changeColor, otherwise, firea 'changeColor'
           self.colorpicker.unbind('changeColor');
           self.colorpicker.colorpicker('setValue', data.value);
           self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
-          //self.colorpicker.colorpicker('enable');
         }
     };
 };
