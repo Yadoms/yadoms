@@ -107,9 +107,9 @@ body {
 }
 
 .pageCustomizationToolbar {
-    margin-top: 2px;
     margin-right: 2px;
     cursor: default;
+    font-size: 2em;
 }
 
 .customizationButton {
