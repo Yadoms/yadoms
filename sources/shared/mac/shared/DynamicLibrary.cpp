@@ -8,12 +8,12 @@ namespace shared
 {
    const std::string CDynamicLibrary::Extension() 
    { 
-      return "so"; 
+      return "dylib"; 
    }
 
    const std::string CDynamicLibrary::DotExtension() 
    { 
-      return ".so"; 
+      return ".dylib"; 
    }
 
    const std::string CDynamicLibrary::ToFileName(const std::string& libName)

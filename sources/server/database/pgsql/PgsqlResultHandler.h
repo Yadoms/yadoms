@@ -1,49 +1,56 @@
 #pragma once
 
-#include "libpq-fe.h"
 #include "database/common/IResultHandler.h"
+#include "PgsqlLibrary.h"
 
-namespace database { namespace pgsql {
-
-   class CPgsqlResultHandler : public database::common::IResultHandler
+namespace database
+{
+   namespace pgsql
    {
-   public:
-      explicit CPgsqlResultHandler(PGresult *res);
-      virtual ~CPgsqlResultHandler();
+      class CPgsqlResultHandler : public common::IResultHandler
+      {
+      public:
+         CPgsqlResultHandler(boost::shared_ptr<CPgsqlLibrary> pgsqlLibrary, PGresult* res);
+         virtual ~CPgsqlResultHandler();
 
-      // database::common::IResultHandler implementation
-      virtual int getColumnCount();
-      virtual std::string getColumnName(const int columnIndex);
-      virtual bool next_step();
-      virtual std::string extractValueAsString(const int columnIndex);
-      virtual int extractValueAsInt(const int columnIndex);
-      virtual float extractValueAsFloat(const int columnIndex);
-      virtual double extractValueAsDouble(const int columnIndex);
-      virtual unsigned char* extractValueAsBlob(const int columnIndex);
-      virtual bool extractValueAsBool(const int columnIndex);
-      virtual bool isValueNull(const int columnIndex);
-      virtual boost::posix_time::ptime extractValueAsBoostTime(const int columnIndex);
-      virtual Poco::DateTime extractValueAsPocoTime(const int columnIndex);
-      virtual shared::CDataContainer extractValueAsDataContainer(const int columnIndex);
-      // [END] - database::common::IResultHandler implementation
+         // database::common::IResultHandler implementation
+         int getColumnCount() override;
+         std::string getColumnName(const int columnIndex) override;
+         bool next_step() override;
+         std::string extractValueAsString(const int columnIndex) override;
+         int extractValueAsInt(const int columnIndex) override;
+         float extractValueAsFloat(const int columnIndex) override;
+         double extractValueAsDouble(const int columnIndex) override;
+         unsigned char* extractValueAsBlob(const int columnIndex) override;
+         bool extractValueAsBool(const int columnIndex) override;
+         bool isValueNull(const int columnIndex) override;
+         boost::posix_time::ptime extractValueAsBoostTime(const int columnIndex) override;
+         Poco::DateTime extractValueAsPocoTime(const int columnIndex) override;
+         shared::CDataContainer extractValueAsDataContainer(const int columnIndex) override;
+         // [END] - database::common::IResultHandler implementation
 
-   private:
-      //--------------------------------------------------------------
-      /// \Brief		database statement
-      //--------------------------------------------------------------
-      PGresult *m_res;
+      private:
+         //--------------------------------------------------------------
+         /// \Brief		Dynamic loaded library instance
+         //--------------------------------------------------------------
+         boost::shared_ptr<CPgsqlLibrary> m_pgsqlLibrary;
 
-      //--------------------------------------------------------------
-      /// \Brief		Current result index (n° row)
-      //--------------------------------------------------------------
-      int m_currentResultIndex;     
-      
-      //--------------------------------------------------------------
-      /// \Brief		Current result row count
-      //--------------------------------------------------------------
-      int m_currentResultRowCount;
-   };
+         //--------------------------------------------------------------
+         /// \Brief		database statement
+         //--------------------------------------------------------------
+         PGresult* m_res;
 
-} //namespace pgsql
+         //--------------------------------------------------------------
+         /// \Brief		Current result index (n° row)
+         //--------------------------------------------------------------
+         int m_currentResultIndex;
+
+         //--------------------------------------------------------------
+         /// \Brief		Current result row count
+         //--------------------------------------------------------------
+         int m_currentResultRowCount;
+      };
+   } //namespace pgsql
 } //namespace database 
+
 

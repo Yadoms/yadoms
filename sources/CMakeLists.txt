@@ -803,6 +803,8 @@ IF(USE_PGSQL_DATABASE)
       message(STATUS "Found postgresql ${PostgreSQL_VERSION_STRING}")
 
       set(YADOMS_SRC ${YADOMS_SRC}
+			server/database/pgsql/PgsqlLibrary.h
+			server/database/pgsql/PgsqlLibrary.cpp
 			server/database/pgsql/PgsqlQuery.h
 			server/database/pgsql/PgsqlQuery.cpp
 			server/database/pgsql/PgsqlRequester.h
@@ -846,7 +848,6 @@ IF(USE_PGSQL_DATABASE)
          ENDIF()
       ENDIF(WIN32)
    
-      set(YADOMS_EXTERNAL_LINK ${YADOMS_EXTERNAL_LINK} ${PostgreSQL_LIBRARY})
       set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${PostgreSQL_INCLUDE_DIRS})
    else()
       message(WARNING "PostgreSQL not found. Only SQLite will be available")
