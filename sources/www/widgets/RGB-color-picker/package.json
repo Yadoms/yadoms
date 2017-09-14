@@ -1,0 +1,47 @@
+{
+	"type": "RGB-color-picker",
+	"version": "1.0.0-rc.1",
+	"author": "Jean-Michel BERHAULT",
+	"url": "https://github.com/Yadoms/yadoms/wiki/RGB-color-picker",
+	"credits": "",
+  "dimensions": {
+    "min": {
+      "x": 2,
+      "y": 2
+    },
+    "max": {
+      "x": 4,
+      "y": 4
+    },
+    "default": {
+      "x": 2,
+      "y": 2
+    }
+  },
+  "hasTitle" :  true,
+	"configurationSchema": {
+		"device": {
+			"type": "keyword",
+			"expectedCapacity": ["colorrgb"],
+			"expectedKeywordAccess": "get"
+		},
+      "colorsSelection": {
+        "type": "list",
+        "nbItemsMin": "0",
+        "nbItemsMax": "5",
+        "allowDuplication": "true",
+        "item": {
+          "type": "section",
+          "content": {
+            "name": {
+               "type": "string"
+            },          
+            "color": {
+              "type": "color",
+              "defaultValue": "#FF0000"
+            }
+          }
+        }
+      }
+	}
+}

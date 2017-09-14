@@ -1,0 +1,25 @@
+{
+	"name": "RGB color picker",
+	"description": "This widget allow to choose a color (Red/Green/Blue)",
+	"configurationSchema": {
+		"device": {
+			"name": "Data to display",
+			"description": "Select the data that you want to display"
+		},
+      "colorsSelection": {
+         "name": "Color selector",
+         "description": "Add a color to the selector (5 colors maximum)",
+        "item": {
+          "name": "",
+          "content": {
+            "name": {
+               "name": "Alias of the color"
+            },
+            "color": {
+               "name": "Color"
+            }
+          }
+        }
+      }
+	}
+}
