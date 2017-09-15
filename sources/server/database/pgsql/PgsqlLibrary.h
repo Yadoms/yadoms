@@ -44,74 +44,74 @@ namespace database
          boost::dll::shared_library m_lib;
 
          // PostgreSql library Functions
-         typedef PGconn* (*PQconnectdbFctType)(const char* conninfo);
-         PQconnectdbFctType m_PQconnectdbFct;
+         typedef PGconn* (PQconnectdbFctType)(const char* conninfo);
+         PQconnectdbFctType* m_PQconnectdbFct;
 
-         typedef ConnStatusType (*PQstatusFctType)(const PGconn* conn);
-         PQstatusFctType m_PQstatusFct;
+         typedef ConnStatusType (PQstatusFctType)(const PGconn* conn);
+         PQstatusFctType* m_PQstatusFct;
 
-         typedef void (*PQfinishFctType)(PGconn* conn);
-         PQfinishFctType m_PQfinishFct;
+         typedef void (PQfinishFctType)(PGconn* conn);
+         PQfinishFctType* m_PQfinishFct;
 
-         typedef char* (*PQerrorMessageFctType)(const PGconn* conn);
-         PQerrorMessageFctType m_PQerrorMessageFct;
+         typedef char* (PQerrorMessageFctType)(const PGconn* conn);
+         PQerrorMessageFctType* m_PQerrorMessageFct;
 
-         typedef PGPing (*PQpingFctType)(const char* conninfo);
-         PQpingFctType m_PQpingFct;
+         typedef PGPing (PQpingFctType)(const char* conninfo);
+         PQpingFctType* m_PQpingFct;
 
-         typedef int (*PQserverVersionFctType)(const PGconn* conn);
-         PQserverVersionFctType m_PQserverVersionFct;
+         typedef int (PQserverVersionFctType)(const PGconn* conn);
+         PQserverVersionFctType* m_PQserverVersionFct;
 
-         typedef char* (*PQhostFctType)(const PGconn* conn);
-         PQhostFctType m_PQhostFct;
+         typedef char* (PQhostFctType)(const PGconn* conn);
+         PQhostFctType* m_PQhostFct;
 
-         typedef char* (*PQportFctType)(const PGconn* conn);
-         PQportFctType m_PQportFct;
+         typedef char* (PQportFctType)(const PGconn* conn);
+         PQportFctType* m_PQportFct;
 
-         typedef char* (*PQdbFctType)(const PGconn* conn);
-         PQdbFctType m_PQdbFct;
+         typedef char* (PQdbFctType)(const PGconn* conn);
+         PQdbFctType* m_PQdbFct;
 
-         typedef char* (*PQuserFctType)(const PGconn* conn);
-         PQuserFctType m_PQuserFct;
+         typedef char* (PQuserFctType)(const PGconn* conn);
+         PQuserFctType* m_PQuserFct;
 
-         typedef void* (*PQgetsslFctType)(PGconn* conn);
-         PQgetsslFctType m_PQgetsslFct;
+         typedef void* (PQgetsslFctType)(PGconn* conn);
+         PQgetsslFctType* m_PQgetsslFct;
 
-         typedef PGresult* (*PQexecFctType)(PGconn* conn, const char* query);
-         PQexecFctType m_PQexecFct;
+         typedef PGresult* (PQexecFctType)(PGconn* conn, const char* query);
+         PQexecFctType* m_PQexecFct;
 
-         typedef ExecStatusType (*PQresultStatusFctType)(const PGresult* res);
-         PQresultStatusFctType m_PQresultStatusFct;
+         typedef ExecStatusType (PQresultStatusFctType)(const PGresult* res);
+         PQresultStatusFctType* m_PQresultStatusFct;
 
-         typedef char* (*PQresultErrorFieldFctType)(const PGresult* res, int fieldcode);
-         PQresultErrorFieldFctType m_PQresultErrorFieldFct;
+         typedef char* (PQresultErrorFieldFctType)(const PGresult* res, int fieldcode);
+         PQresultErrorFieldFctType* m_PQresultErrorFieldFct;
 
-         typedef void (*PQclearFctType)(PGresult* res);
-         PQclearFctType m_PQclearFct;
+         typedef void (PQclearFctType)(PGresult* res);
+         PQclearFctType* m_PQclearFct;
 
-         typedef char* (*PQcmdTuplesFctType)(PGresult* res);
-         PQcmdTuplesFctType m_PQcmdTuplesFct;
+         typedef char* (PQcmdTuplesFctType)(PGresult* res);
+         PQcmdTuplesFctType* m_PQcmdTuplesFct;
 
-         typedef int (*PQntuplesFctType)(const PGresult* res);
-         PQntuplesFctType m_PQntuplesFct;
+         typedef int (PQntuplesFctType)(const PGresult* res);
+         PQntuplesFctType* m_PQntuplesFct;
 
-         typedef int (*PQnfieldsFctType)(const PGresult* res);
-         PQnfieldsFctType m_PQnfieldsFct;
+         typedef int (PQnfieldsFctType)(const PGresult* res);
+         PQnfieldsFctType* m_PQnfieldsFct;
 
-         typedef char* (*PQfnameFctType)(const PGresult* res, int field_num);
-         PQfnameFctType m_PQfnameFct;
+         typedef char* (PQfnameFctType)(const PGresult* res, int field_num);
+         PQfnameFctType* m_PQfnameFct;
 
-         typedef char* (*PQgetvalueFctType)(const PGresult* res, int tup_num, int field_num);
-         PQgetvalueFctType m_PQgetvalueFct;
+         typedef char* (PQgetvalueFctType)(const PGresult* res, int tup_num, int field_num);
+         PQgetvalueFctType* m_PQgetvalueFct;
 
-         typedef int (*PQbinaryTuplesFctType)(const PGresult* res);
-         PQbinaryTuplesFctType m_PQbinaryTuplesFct;
+         typedef int (PQbinaryTuplesFctType)(const PGresult* res);
+         PQbinaryTuplesFctType* m_PQbinaryTuplesFct;
 
-         typedef int (*PQgetisnullFctType)(const PGresult* res, int tup_num, int field_num);
-         PQgetisnullFctType m_PQgetisnullFct;
+         typedef int (PQgetisnullFctType)(const PGresult* res, int tup_num, int field_num);
+         PQgetisnullFctType* m_PQgetisnullFct;
 
-         typedef int (*PQfsizeType)(const PGresult* res, int field_num);
-         PQfsizeType m_PQfsizeFct;
+         typedef int (PQfsizeType)(const PGresult* res, int field_num);
+         PQfsizeType* m_PQfsizeFct;
          // [END] PostgreSql library Functions
       };
    } //namespace pgsql
