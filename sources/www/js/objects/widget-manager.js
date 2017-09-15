@@ -558,11 +558,10 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
                         widget.$gridWidget.find(".textfit").fitText();
 						
                         //we ask for widget refresh data
-                        updateWidgetPolling(widget);
-						
-						      widget.viewModel.widgetApi.manageRollingTitle();
-                        
-                        d.resolve();
+                        updateWidgetPolling(widget).always(function() {
+						         widget.viewModel.widgetApi.manageRollingTitle();
+                           d.resolve();                           
+                        });
                     });
                 });
             });
@@ -666,7 +665,7 @@ WidgetManager.createGridWidget = function (widget) {
             "<div class=\"panel-widget-body\" id=\"widget-" + widget.id + "\"  data-bind=\"template: { name: '" + type + "-template' }\"/>\n" +
         "</div>\n" +
     "</div>\n";
-
+    
     var $domWidget = $(domWidget);
     page.$grid.append($domWidget).packery("appended", $domWidget);
 
