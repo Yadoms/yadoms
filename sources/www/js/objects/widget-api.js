@@ -26,7 +26,7 @@ WidgetApi.prototype.find = function (pattern) {
  * @returns {} a promise that's return done when information grabbed from server
  */
 WidgetApi.prototype.getKeywordInformation = function (keywordId) {
-   assert(!isNullOrUndefined(keywordId), "keywordId must be defined");
+   assert(!isNullOrUndefinedOrEmpty(keywordId), "keywordId must be defined");
    return KeywordManager.get(keywordId);
 };
 
@@ -35,7 +35,7 @@ WidgetApi.prototype.getKeywordInformation = function (keywordId) {
  * @param {} keywordIds to register (can be a single value or an array of values)
  */
 WidgetApi.prototype.registerKeywordAcquisitions = function (keywordIds) {
-   assert(!isNullOrUndefined(keywordIds), "keywordIds must be defined");
+   assert(!isNullOrUndefinedOrEmpty(keywordIds), "keywordIds must be defined");
 
    var self = this;
 
