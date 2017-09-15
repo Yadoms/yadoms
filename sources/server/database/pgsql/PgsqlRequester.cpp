@@ -160,10 +160,9 @@ namespace database
          }
       }
 
-      // IDatabaseEngine implementation
-      common::CQuery CPgsqlRequester::newQuery() //TOFIX mais ça peut pas marcher ?
+      boost::shared_ptr<common::CQuery> CPgsqlRequester::newQuery()
       {
-         return CPgsqlQuery();
+         return boost::make_shared<CPgsqlQuery>();
       }
 
       void CPgsqlRequester::initialize()

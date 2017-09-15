@@ -69,12 +69,12 @@ namespace database
          {
             auto qUpdate = pRequester->newQuery();
 
-            qUpdate.Update(CConfigurationTable::getTableName())
+            qUpdate->Update(CConfigurationTable::getTableName())
                    .Set(CConfigurationTable::getValueColumnName(), newVersion.toString())
                    .Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "Database")
                    .And(CConfigurationTable::getNameColumnName(), CQUERY_OP_EQUAL, "Version");
 
-            pRequester->queryStatement(qUpdate);
+            pRequester->queryStatement(*qUpdate);
          }
 
          // [END] ISQLiteVersionUpgrade implementation
@@ -162,19 +162,19 @@ namespace database
 
                //set the database version
                auto qInsert = pRequester->newQuery();
-               qInsert.InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName()).
+               qInsert->InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName()).
                       Values("Database", "Version", Version.toString(), "Database version");
-               pRequester->queryStatement(qInsert);
+               pRequester->queryStatement(*qInsert);
 
                //set the developer mode
-               qInsert.Clear().InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDefaultValueColumnName(), CConfigurationTable::getDescriptionColumnName()).
+               qInsert->Clear().InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDefaultValueColumnName(), CConfigurationTable::getDescriptionColumnName()).
                       Values("system", "developerMode", "false", "false", "Developer mode");
-               pRequester->queryStatement(qInsert);
+               pRequester->queryStatement(*qInsert);
 
                //system plugin
-               qInsert.Clear().InsertInto(CPluginTable::getTableName(), CPluginTable::getDisplayNameColumnName(), CPluginTable::getTypeColumnName(), CPluginTable::getAutoStartColumnName(), CPluginTable::getCategoryColumnName()).
+               qInsert->Clear().InsertInto(CPluginTable::getTableName(), CPluginTable::getDisplayNameColumnName(), CPluginTable::getTypeColumnName(), CPluginTable::getAutoStartColumnName(), CPluginTable::getCategoryColumnName()).
                       Values("System", "System", true, database::entities::EPluginCategory::kSystem);
-               pRequester->queryStatement(qInsert);
+               pRequester->queryStatement(*qInsert);
 
                //commit transaction
                if (pRequester->transactionSupport())

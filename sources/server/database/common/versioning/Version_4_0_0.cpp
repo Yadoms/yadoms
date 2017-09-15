@@ -5,7 +5,6 @@
 #include <shared/versioning/Version.h>
 #include "VersionException.h"
 #include <shared/Log.h>
-#include "database/sqlite/SQLiteRequester.h"
 
 namespace database
 {
@@ -64,10 +63,10 @@ namespace database
                pRequester->addTableColumn(CDeviceTable::getTableName(), "type TEXT");
 
                auto qUpdate = pRequester->newQuery();
-               qUpdate.Update(CDeviceTable::getTableName()).
+               qUpdate->Update(CDeviceTable::getTableName()).
                   Set(CDeviceTable::getTypeColumnName(), CDeviceTable::getModelColumnName());
 
-               pRequester->queryStatement(qUpdate);
+               pRequester->queryStatement(*qUpdate);
 
                //set the database version
                updateDatabaseVersion(pRequester, Version);

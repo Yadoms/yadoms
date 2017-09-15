@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Factory.h"
-#include <shared/ServiceLocator.h>
 #include "startupOptions/IStartupOptions.h"
 #include "common/DataProvider.h"
 #include "sqlite/SQLiteRequester.h"
@@ -12,23 +11,32 @@
 
 namespace database
 {
-   boost::shared_ptr<IDataProvider> CFactory::create(const IPathProvider& pathProvider)
+   CFactory::CFactory(const IPathProvider& pathProvider,
+                      boost::shared_ptr<const startupOptions::IStartupOptions> startupOptions)
+      : m_pathProvider(pathProvider),
+        m_startupOptions(startupOptions)
    {
-      auto databaseEngine = createEngine(pathProvider);
-      return boost::make_shared<common::CDataProvider>(databaseEngine);
    }
 
-   boost::shared_ptr<IDatabaseRequester> CFactory::createEngine(const IPathProvider& pathProvider)
+   CFactory::~CFactory()
    {
-      const auto startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
-      const auto dbEngine = startupOptions->getDatabaseEngine();
+   }
+
+   boost::shared_ptr<IDataProvider> CFactory::createDataProvider() const
+   {
+      return boost::make_shared<common::CDataProvider>(createEngine());
+   }
+
+   boost::shared_ptr<IDatabaseRequester> CFactory::createEngine() const
+   {
+      const auto dbEngine = m_startupOptions->getDatabaseEngine();
 
       switch (dbEngine)
       {
       case startupOptions::EDatabaseEngine::kSqliteValue:
          {
-            return boost::make_shared<sqlite::CSQLiteRequester>(pathProvider.databaseSqliteFile().string(),
-                                                                pathProvider.databaseSqliteBackupFile().string());
+            return boost::make_shared<sqlite::CSQLiteRequester>(m_pathProvider.databaseSqliteFile().string(),
+                                                                m_pathProvider.databaseSqliteBackupFile().string());
          }
 #ifndef PGSQL_NOT_FOUND
       case startupOptions::EDatabaseEngine::kPostgresqlValue:

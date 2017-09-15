@@ -34,7 +34,6 @@ namespace database
       {
       }
 
-      // IDatabaseEngine implementation
       void CSQLiteRequester::initialize()
       {
          YADOMS_LOG(information) << "Initialize SQLite database";
@@ -126,13 +125,9 @@ namespace database
       }
 
 
-      // [END] IDatabaseEngine implementation
-
-
-      // IDatabaseProvider implementation
-      common::CQuery CSQLiteRequester::newQuery()
+      boost::shared_ptr<common::CQuery> CSQLiteRequester::newQuery()
       {
-         return CSQLiteQuery();
+         return boost::make_shared<CSQLiteQuery>();
       }
 
 
