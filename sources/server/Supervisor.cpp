@@ -58,7 +58,9 @@ void CSupervisor::run()
       auto startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
 
       //start database system
-      auto pDataProvider = database::CFactory::create(m_pathProvider);
+      auto databaseFactory = boost::make_shared<database::CFactory>(m_pathProvider,
+                                                                    startupOptions);
+      auto pDataProvider = databaseFactory->createDataProvider();
       if (!pDataProvider->load())
          throw shared::exception::CException("Fail to load database");
 

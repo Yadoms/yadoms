@@ -36,13 +36,13 @@ namespace database
             if (m_databaseRequester->checkTableExists(CConfigurationTable::getTableName()))
             {
                auto qVersion = m_databaseRequester->newQuery();
-               qVersion.Select(CConfigurationTable::getValueColumnName()).
-                       From(CConfigurationTable::getTableName()).
-                       Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "Database").
-                       And(CConfigurationTable::getNameColumnName(), CQUERY_OP_EQUAL, "Version");
+               qVersion->Select(CConfigurationTable::getValueColumnName()).
+                  From(CConfigurationTable::getTableName()).
+                  Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "Database").
+                  And(CConfigurationTable::getNameColumnName(), CQUERY_OP_EQUAL, "Version");
 
                adapters::CSingleValueAdapter<std::string> adapter;
-               m_databaseRequester->queryEntities(&adapter, qVersion);
+               m_databaseRequester->queryEntities(&adapter, *qVersion);
                auto results = adapter.getResults();
 
                if (results.size() >= 1)

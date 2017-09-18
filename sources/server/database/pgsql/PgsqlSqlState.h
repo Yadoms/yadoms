@@ -2,75 +2,74 @@
 
 #include <shared/enumeration/EnumHelpers.hpp>
 
-namespace database { 
-namespace pgsql { 
-
-   DECLARE_ENUM_HEADER(ESqlErrorClass, 
-      ((SuccessfulCompletion))
-      ((Warning))
-      ((NoData))
-      ((SQLStatementNotYetComplete))
-      ((ConnectionException))
-      ((TriggeredActionException))
-      ((FeatureNotSupported))
-      ((InvalidTransactionInitiation))
-      ((LocatorException))
-      ((InvalidGrantor))
-      ((InvalidRoleSpecification))
-      ((CaseNotFound))
-      ((CardinalityViolation))
-      ((DataException))
-      ((IntegrityConstraintViolation))
-      ((InvalidCursorState))
-      ((InvalidTransactionState))
-      ((InvalidSQLStatementName))
-      ((TriggeredDataChangeViolation))
-      ((InvalidAuthorizationSpecification))
-      ((DependentPrivilegeDescriptorsStillExist))
-      ((InvalidTransactionTermination))
-      ((SQLRoutineException))
-      ((InvalidCursorName))
-      ((ExternalRoutineException))
-      ((ExternalRoutineInvocationException))
-      ((SavepointException))
-      ((InvalidCatalogName))
-      ((InvalidSchemaName))
-      ((TransactionRollback))
-      ((SyntaxErrororAccessRuleViolation))
-      ((WITHCHECKOPTIONViolation))
-      ((InsufficientResources))
-      ((ProgramLimitExceeded))
-      ((ObjectNotInPrerequisiteState))
-      ((OperatorIntervention))
-      ((SystemError))
-      ((ConfigurationFileError))
-      ((ForeignDataWrapperError))
-      ((PLpgSQLError))
-      ((InternalError))
-   )
-
-   class CPgsqlSqlState
+namespace database
+{
+   namespace pgsql
    {
-   private:
-      explicit CPgsqlSqlState(const std::string & code, const std::string & description);
+      DECLARE_ENUM_HEADER(ESqlErrorClass,
+         ((SuccessfulCompletion))
+         ((Warning))
+         ((NoData))
+         ((SQLStatementNotYetComplete))
+         ((ConnectionException))
+         ((TriggeredActionException))
+         ((FeatureNotSupported))
+         ((InvalidTransactionInitiation))
+         ((LocatorException))
+         ((InvalidGrantor))
+         ((InvalidRoleSpecification))
+         ((CaseNotFound))
+         ((CardinalityViolation))
+         ((DataException))
+         ((IntegrityConstraintViolation))
+         ((InvalidCursorState))
+         ((InvalidTransactionState))
+         ((InvalidSQLStatementName))
+         ((TriggeredDataChangeViolation))
+         ((InvalidAuthorizationSpecification))
+         ((DependentPrivilegeDescriptorsStillExist))
+         ((InvalidTransactionTermination))
+         ((SQLRoutineException))
+         ((InvalidCursorName))
+         ((ExternalRoutineException))
+         ((ExternalRoutineInvocationException))
+         ((SavepointException))
+         ((InvalidCatalogName))
+         ((InvalidSchemaName))
+         ((TransactionRollback))
+         ((SyntaxErrororAccessRuleViolation))
+         ((WITHCHECKOPTIONViolation))
+         ((InsufficientResources))
+         ((ProgramLimitExceeded))
+         ((ObjectNotInPrerequisiteState))
+         ((OperatorIntervention))
+         ((SystemError))
+         ((ConfigurationFileError))
+         ((ForeignDataWrapperError))
+         ((PLpgSQLError))
+         ((InternalError))
+      )
 
-   public:
-      static const CPgsqlSqlState & Parse(char * state);
+      class CPgsqlSqlState
+      {
+      public:
+         static const CPgsqlSqlState& Parse(char* state);
 
-      virtual ~CPgsqlSqlState();
+         virtual ~CPgsqlSqlState();
 
-      const std::string & GetCode() const;
-      const std::string & GetDescription() const;
-      const ESqlErrorClass GetClass() const;
-   private:
-      std::string m_code;
-      std::string m_description;
+         const std::string& GetCode() const;
+         const std::string& GetDescription() const;
+         ESqlErrorClass GetClass() const;
 
-   private:
-      static std::map<std::string, CPgsqlSqlState> m_internalCodes;
-   };
+      private:
+         explicit CPgsqlSqlState(const std::string& code, const std::string& description);
 
+         std::string m_code;
+         std::string m_description;
 
-} //namespace pgsql
+         static std::map<std::string, CPgsqlSqlState> m_internalCodes;
+      };
+   } //namespace pgsql
 } //namespace database 
+
 

@@ -62,14 +62,14 @@ namespace database
                auto qUpdateKeyword = pRequester->newQuery();
 
                // Change the name from rssi to signalStrength
-               qUpdateKeyword.Update(CKeywordTable::getTableName()).
-                              Set(  CKeywordTable::getNameColumnName(), "signalPower",
-                                    CKeywordTable::getFriendlyNameColumnName(), "signalPower",
-                                    CKeywordTable::getCapacityNameColumnName(), "signalPower").
-                              Where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, "rssi");
+               qUpdateKeyword->Update(CKeywordTable::getTableName()).
+                  Set(CKeywordTable::getNameColumnName(), "signalPower",
+                      CKeywordTable::getFriendlyNameColumnName(), "signalPower",
+                      CKeywordTable::getCapacityNameColumnName(), "signalPower").
+                  Where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, "rssi");
 
-               pRequester->queryStatement(qUpdateKeyword);
-               
+               pRequester->queryStatement(*qUpdateKeyword);
+
                //set the database version
                updateDatabaseVersion(pRequester, Version);
 
@@ -92,3 +92,5 @@ namespace database
       } //namespace versioning
    } //namespace common
 } //namespace database 
+
+
