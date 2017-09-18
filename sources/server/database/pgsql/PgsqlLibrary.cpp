@@ -11,7 +11,8 @@ namespace database
       // - libpq.so under Linux
       // - libpq.dylib under Mac
       CPgsqlLibrary::CPgsqlLibrary()
-         : m_lib(std::string("libpq") + shared::CDynamicLibrary::DotExtension())
+         : m_lib(std::string("libpq") + shared::CDynamicLibrary::DotExtension(),
+                 boost::dll::load_mode::search_system_folders)
       {
          loadSymbols();
       }
