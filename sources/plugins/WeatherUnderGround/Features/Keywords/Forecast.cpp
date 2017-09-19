@@ -3,6 +3,7 @@
 #include <boost/lexical_cast.hpp>
 #include "KeywordException.hpp"
 #include "KeywordHelpers.h"
+#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -44,9 +45,16 @@ void CForecast::addPeriod(const shared::CDataContainer& valueContainer,
 {
    std::string weatherIconTemp;
 
-   auto it = weatherunderground::helper::EEnumTypeNames.find(valueContainer.get<std::string>(weatherCondition));
+   std::string iconName = valueContainer.get<std::string>(weatherCondition);
+   boost::algorithm::to_lower(iconName);
+
+   auto it = weatherunderground::helper::EEnumTypeNames.find(iconName);
    if (it != weatherunderground::helper::EEnumTypeNames.end())
+   {
+      YADOMS_LOG(information) << "it->first : " << it->first;
+      YADOMS_LOG(information) << "it->second : " << it->second;
       weatherIconTemp = static_cast<yApi::historization::EWeatherCondition>(it->second).toString();
+   }
    else
       throw CKeywordException("Value [" + valueContainer.get<std::string>(weatherCondition) + "] could not be set");
 
