@@ -74,6 +74,40 @@ namespace shared
       }
    }
 
+   //https://stackoverflow.com/questions/1499086/poco-c-net-ssl-how-to-post-https-request
+   /*
+   try
+   {
+   const Poco::URI uri( "https://localhost.com" );
+   const Poco::Net::Context::Ptr context( new Poco::Net::Context( Poco::Net::Context::CLIENT_USE, "", "", "rootcert.pem" ) );
+   Poco::Net::HTTPSClientSession session(uri.getHost(), uri.getPort(), context );
+   Poco::Net::HTTPRequest req(Poco::Net::HTTPRequest::HTTP_POST, "/login.php" );
+   req.setContentType("application/x-www-form-urlencoded\r\n");
+   req.setKeepAlive(true);
+
+   std::string reqBody("username=???&password=???&action_login=Log+In\r\n\r\n");
+   req.setContentLength( reqBody.length() );
+
+   //Poco::Net::HTTPBasicCredentials cred("???", "???");
+   //cred.authenticate(req);
+   session.sendRequest(req) << reqBody;
+   Poco::Net::HTTPResponse res;
+   std::istream& rs = session.receiveResponse(res);
+   std::string resp;
+
+   std::vector<Poco::Net::HTTPCookie> cookies;
+   res.getCookies( cookies );
+   }
+   catch( const Poco::Net::SSLException& e )
+   {
+   std::cerr << e.what() << ": " << e.message() << std::endl;
+   }
+   catch( const std::exception& e )
+   {
+   std::cerr << e.what() << std::endl;;
+   }
+   */
+
    CDataContainer CHttpMethods::SendGetRequest(const std::string& url,
                                                const CDataContainer& parameters,
                                                const boost::posix_time::time_duration& timeout)

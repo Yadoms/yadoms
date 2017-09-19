@@ -6,7 +6,7 @@ boost::posix_time::time_duration urlManager::httpRequestCreationTimeout(boost::p
 boost::posix_time::time_duration urlManager::httpRequestWESTimeout(boost::posix_time::time_duration(boost::posix_time::seconds(25)));
 
 urlManager::urlManager():
-   m_url("http://liveobjects.orange-business.com/api/v0")
+   m_url("https://liveobjects.orange-business.com/api/v0") //liveobjects
 {
 }
 
@@ -20,7 +20,7 @@ shared::CDataContainer urlManager::getAllregisteredEquipments(const std::string 
    headerParameters.set("Host", "liveobjects.orange-business.com");
    headerParameters.set("X-API-Key", apikey);
 
-   shared::CHttpMethods::SendGetRequest("/api/v0/vendors/lora/devices",
+   shared::CHttpMethods::SendGetRequest("https://liveobjects.orange-business.com/api/v0/assets",//vendors/lora/devices
                                         headerParameters,
                                         shared::CDataContainer(), // no parameters
                                         [&](shared::CDataContainer& data)
