@@ -14,6 +14,7 @@ namespace shared
    }
 
    bool CHttpMethods::SendGetRequest(const std::string& url,
+                                     const CDataContainer& headerParameters,
                                      const CDataContainer& parameters,
                                      boost::function1<void, CDataContainer&> onReceive,
                                      const boost::posix_time::time_duration& timeout)
@@ -21,6 +22,7 @@ namespace shared
       try
       {
          auto mapParameters = parameters.getAsMap();
+         auto mapheaderParameters = headerParameters.getAsMap();
          Poco::URI uri(url);
 
          if (!parameters.empty())
@@ -33,6 +35,12 @@ namespace shared
          Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET,
                                         uri.getPathAndQuery(),
                                         Poco::Net::HTTPMessage::HTTP_1_1);
+
+         if (!headerParameters.empty())
+         {
+            for (const auto& headerparametersIterator : mapheaderParameters)
+               request.add(headerparametersIterator.first, headerparametersIterator.second);
+         }
 
          session.setTimeout(Poco::Timespan(timeout.seconds(), 0));
          session.sendRequest(request);
@@ -73,6 +81,7 @@ namespace shared
       CDataContainer responseData;
 
       SendGetRequest(url,
+                     CDataContainer(), // no header parameters
                      parameters,
                      [&](CDataContainer& data)
                      {

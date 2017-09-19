@@ -26,8 +26,9 @@ void CLiveStations::processLookUp(boost::shared_ptr<yApi::IYPluginApi> api,
       //send a new lookup only if different of the last one
       if (m_location->latitude() != m_lastSearchLocation->latitude() || m_location->longitude() != m_lastSearchLocation->longitude())
       {
-         shared::CDataContainer noParameters;
+         shared::CDataContainer noParameters, noheaderParameter;
          shared::CHttpMethods::SendGetRequest("http://api.wunderground.com/api/" + apikey + "/geolookup/q/" + std::to_string(m_location->latitude()) + "," + std::to_string(m_location->longitude()) + ".json",
+                                              noheaderParameter,
                                               noParameters,
                                               [&](shared::CDataContainer& data)
                                               {

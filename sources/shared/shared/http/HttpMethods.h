@@ -39,12 +39,14 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    SendGetRequest
       /// \param[in]  url                 the url to send the request
+      /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
       /// \param[in]  onReceive           function called on received data
       /// \param[in]  timeout             timeout for the request
       /// \return     false if the time has expired. In this case the onReceived is not executed
       //--------------------------------------------------------------
-      static bool SendGetRequest(const std::string & url, 
+      static bool SendGetRequest(const std::string & url,
+                                 const CDataContainer& headerParameters,
                                  const CDataContainer& parameters,
                                  boost::function1<void, CDataContainer&> onReceive,
                                  const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);

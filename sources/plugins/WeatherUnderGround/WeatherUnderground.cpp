@@ -238,9 +238,10 @@ shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yAp
    try
    {
       shared::CDataContainer returnData;
-      shared::CDataContainer noParameters;
+      shared::CDataContainer noParameters, noheaderParameter;
 
       shared::CHttpMethods::SendGetRequest(url,
+                                           noheaderParameter,
                                            noParameters,
                                            [&](shared::CDataContainer& data)
                                            {
