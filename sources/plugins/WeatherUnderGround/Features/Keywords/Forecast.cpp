@@ -3,7 +3,6 @@
 #include <boost/lexical_cast.hpp>
 #include "KeywordException.hpp"
 #include "KeywordHelpers.h"
-#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -51,8 +50,6 @@ void CForecast::addPeriod(const shared::CDataContainer& valueContainer,
    auto it = weatherunderground::helper::EEnumTypeNames.find(iconName);
    if (it != weatherunderground::helper::EEnumTypeNames.end())
    {
-      YADOMS_LOG(information) << "it->first : " << it->first;
-      YADOMS_LOG(information) << "it->second : " << it->second;
       weatherIconTemp = static_cast<yApi::historization::EWeatherCondition>(it->second).toString();
    }
    else
