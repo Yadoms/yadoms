@@ -193,10 +193,10 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
          std::vector<shared::CDataContainer>::iterator i;
 
          m_forecast->clearAllPeriods();
-
          m_forecast->setCityName(m_localisation);
-
          unsigned char counter = 0;
+
+         dataToParse.printToLog(YADOMS_LOG(trace));
 
          for (i = result.begin(); i != result.end(); ++i)
          {
