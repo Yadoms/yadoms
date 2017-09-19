@@ -4,11 +4,11 @@
 	"configurationSchema": {
 		"APIKey": {
 			"name": "API Key",
-			"description": "La clé API est obtenue à cette adresse: <a href=\"https://www.wunderground.com/weather/api/\" target=\"_blank\">https://www.wunderground.com/weather/api/</a>"
+			"description": "La clé API est obtenue à [cette adresse](https://www.wunderground.com/weather/api/)"
 		},
 		"location": {
 			"name": "Localisation",
-			"description": "Entrer ci-dessous les coordonnées de votre ville(<a href=\"http://www.latlong.net/\" target=\"_blank\">site web latlong</a>). Si non activé, le plugin utilisera les coordonnées système.",
+			"description": "Entrer ci-dessous les coordonnées de votre ville([Site web latlong](http://www.latlong.net/)). Si non activé, le plugin utilisera les coordonnées système.",
          "content": {        
             "longitude": {
 			      "name": "Longitude",
