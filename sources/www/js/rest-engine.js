@@ -154,7 +154,6 @@ RestEngine.restCall_ = function(type, url, data){
 	var ajaxOptions = data || {};
     ajaxOptions.type = type;
 	ajaxOptions.url = url;
-   ajaxOptions.timeout = 45000;
       
    //We send request to server
    $.ajax(ajaxOptions)
