@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "HttpMethods.h"
 #include <Poco/Net/HTTPRequest.h>
+#include <Poco/Net/HTTPSClientSession.h>
+#include <Poco/Net/Context.h>
 #include <Poco/URI.h>
 #include <shared/exception/Exception.hpp>
 #include <shared/Log.h>
@@ -32,6 +34,68 @@ namespace shared
          }
 
          Poco::Net::HTTPClientSession session(uri.getHost(), uri.getPort());
+         Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET,
+                                        uri.getPathAndQuery(),
+                                        Poco::Net::HTTPMessage::HTTP_1_1);
+
+         if (!headerParameters.empty())
+         {
+            for (const auto& headerparametersIterator : mapheaderParameters)
+               request.add(headerparametersIterator.first, headerparametersIterator.second);
+         }
+
+         session.setTimeout(Poco::Timespan(timeout.seconds(), 0));
+         session.sendRequest(request);
+
+         Poco::Net::HTTPResponse response;
+
+         if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK)
+         {
+            CDataContainer data;
+
+            if (JsonResponseReader(session, response, data))
+            {
+               onReceive(data);
+               return true;
+            }
+
+            auto message = (boost::format("content not yet managed : %1%") % response.getContentType()).str();
+            YADOMS_LOG(error) << message;
+            throw exception::CException(message);
+         }
+
+         auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
+         YADOMS_LOG(error) << message;
+         throw exception::CException(message);
+      }
+      catch (Poco::Exception& e)
+      {
+         auto message = (boost::format("Fail to send get http request \"%1%\" : %2%") % url % e.message()).str();
+         YADOMS_LOG(error) << message;
+         throw exception::CException(message);
+      }
+   }
+
+   bool CHttpMethods::SendGetSecureRequest(const std::string& url,
+                                           const CDataContainer& headerParameters,
+                                           const CDataContainer& parameters,
+                                           boost::function1<void, CDataContainer&> onReceive,
+                                           const boost::posix_time::time_duration& timeout)
+   {
+      try
+      {
+         auto mapParameters = parameters.getAsMap();
+         auto mapheaderParameters = headerParameters.getAsMap();
+         Poco::URI uri(url);
+
+         if (!parameters.empty())
+         {
+            for (const auto& parametersIterator : mapParameters)
+               uri.addQueryParameter(parametersIterator.first, parametersIterator.second);
+         }
+
+         const Poco::Net::Context::Ptr context(new Poco::Net::Context(Poco::Net::Context::CLIENT_USE, "", "", "rootcert.pem"));
+         Poco::Net::HTTPSClientSession session(uri.getHost(), uri.getPort(), context);
          Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET,
                                         uri.getPathAndQuery(),
                                         Poco::Net::HTTPMessage::HTTP_1_1);

@@ -12,9 +12,6 @@ class urlManager
 {
 public:
 
-   static boost::posix_time::time_duration httpRequestCreationTimeout;
-   static boost::posix_time::time_duration httpRequestWESTimeout;
-
    urlManager();
 
    //--------------------------------------------------------------
@@ -33,4 +30,5 @@ private:
    /// \brief	    The url link to access properly the web site
    //--------------------------------------------------------------
    std::stringstream m_url;
+   std::stringstream m_baseUrl;
 };
