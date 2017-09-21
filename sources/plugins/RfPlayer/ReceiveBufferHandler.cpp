@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ReceiveBufferHandler.h"
+#define IS_PACKED
 #include "rfplayerApi/usb_frame_api.h"
 
 CReceiveBufferHandler::CReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler)
