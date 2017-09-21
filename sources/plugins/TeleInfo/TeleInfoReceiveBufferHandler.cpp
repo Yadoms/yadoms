@@ -76,15 +76,6 @@ boost::shared_ptr<std::map<std::string, std::string>> CTeleInfoReceiveBufferHand
    if (m_content.empty())
       return noMessages;
 
-   // In this case kSTX or kStartMessage are not correct, we suppress the first one, to restart a frame
-   if (m_content[1] != kStartMessage)
-   {
-      m_content.erase(m_content.begin());
-
-      while (!m_content.empty() && m_content[0] != kSTX)
-         m_content.erase(m_content.begin());
-   }
-
    auto etxIterator = std::find(m_content.rbegin(), m_content.rend(), kETX);
    if (etxIterator == m_content.rend())
    {
@@ -95,6 +86,8 @@ boost::shared_ptr<std::map<std::string, std::string>> CTeleInfoReceiveBufferHand
    }
 
    size_t etxPosition = std::distance(std::begin(m_content), etxIterator.base()) - 1;
+
+   m_logger->logReceived(shared::communication::CByteBuffer(m_content));
 
    // The message is complete
    auto frame = boost::make_shared<std::vector<unsigned char>>(m_content.begin(), m_content.begin() + etxPosition + 1);
