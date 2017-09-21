@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ReceiveBufferHandler.h"
-#include <shared/communication/StringBuffer.h>
+#include "rfplayerApi/rfplayerApi.h"
 
 CReceiveBufferHandler::CReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler)
    : m_messageHandler(messageHandler)
@@ -40,7 +40,7 @@ bool CReceiveBufferHandler::syncToStartOfFrame()
 
    for (unsigned int i = 0; i < m_content.size()-1; ++i)
    {
-      if (m_content[i] == 0x5A && m_content[i + 1] == 0x49) //Z and I
+      if (m_content[i] == SYNC1_CONTAINER_CONSTANT && m_content[i + 1] == SYNC2_CONTAINER_CONSTANT) //Z and I
       {
          //ZI found,
          //if the buffer contains any data before ZI, remove it
