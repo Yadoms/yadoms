@@ -89,7 +89,7 @@ ConfigurationHelper.createParameterHandler = function (i18nCtxt, i18nKey, paramN
    if (content.show !== undefined && content.show.result === "false")
       return null;
 
-   let i18nContext = i18nCtxt;
+   var i18nContext = i18nCtxt;
    if(content.i18nBasePath)
       i18nContext = content.i18nBasePath;
    

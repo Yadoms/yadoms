@@ -192,14 +192,14 @@ DeviceManager.getConfigurationSchema = function(device) {
 
                         //find all static configurations matching the device model
                         var staticConfigMatchingDevice= {};
-                        for(let k in deviceConfig.staticConfigurationSchema.schemas) {
+                        for(var k in deviceConfig.staticConfigurationSchema.schemas) {
                             if(_.some(deviceConfig.staticConfigurationSchema.schemas[k].types, function(typeContent, model) { 
                               return model == "*" || model == device.type;
                             }))  {
                                //add it to resulting schema
-                               let config = deviceConfig.staticConfigurationSchema.schemas[k];
+                               var config = deviceConfig.staticConfigurationSchema.schemas[k];
                                if(config && config.content) {
-                                  for(let l in config.content) {
+                                  for(var l in config.content) {
                                      config.content[l].i18nBasePath = "plugins/" + device.attachedPlugin.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".content.";
                                   }                            
                                   schema = _.merge(schema, config.content);
