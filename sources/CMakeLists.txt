@@ -527,8 +527,8 @@ set(YADOMS_SRC
    server/task/TaskFactory.cpp
    server/task/TaskStatus.h
    server/task/TaskStatus.cpp
-   server/task/backup/Database.h
-   server/task/backup/Database.cpp
+   server/task/backup/Backup.h
+   server/task/backup/Backup.cpp
    server/task/plugins/ExtraQuery.h
    server/task/plugins/ExtraQuery.cpp
    

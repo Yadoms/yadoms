@@ -69,13 +69,20 @@
         $(".lastBackup").hide();
 
         MaintenanceManager.lastBackupInformation()
-        .done(function (info) {
-            if (info && info.url && info.path && info.size && info.modificationDate) {
-                $(".lastBackupLink").attr("href", info.url);
-                $(".lastBackupFile").html(info.path);
-                $(".lastBackupSize").html(humanFileSize(info.size));
-                $(".lastBackupDate").html(DateTimeFormatter.isoDateToString(info.modificationDate));
-                $(".lastBackup").show();
+        .done(function (infos) {
+            debugger;
+            if(infos.backups) {
+               $.each(infos.backups, function(index, info) {
+                  if (info && info.url && info.path && info.size && info.modificationDate) {
+                      $(".lastBackupLink").attr("href", "backups/" + info.url);
+                      $(".lastBackupFile").html(info.path);
+                      $(".lastBackupSize").html(humanFileSize(info.size));
+                      $(".lastBackupDate").html(DateTimeFormatter.isoDateToString(info.modificationDate));
+                      $(".lastBackup").show();
+                  }
+               });
+            } else {
+               //no backups found
             }
         });
     }

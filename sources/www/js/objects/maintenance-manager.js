@@ -25,14 +25,14 @@ MaintenanceManager.startBackup = function() {
  * Get the last database backup information
  */
 MaintenanceManager.lastBackupInformation = function() {
-	return RestEngine.getJson("rest/maintenance/lastBackup");
+	return RestEngine.getJson("rest/maintenance/backup");
 };
 
 /**
  * Delete the last database backup
  */
-MaintenanceManager.deleteLastBackup = function() {
-	return RestEngine.deleteJson("rest/maintenance/lastBackup");
+MaintenanceManager.deleteLastBackup = function(name) {
+	return RestEngine.deleteJson("rest/maintenance/backup/" + name);
 };
 
 
