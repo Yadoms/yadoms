@@ -209,7 +209,7 @@ BOOST_AUTO_TEST_CASE(extraCharactersbetweenCRetx)
 }
 
 BOOST_AUTO_TEST_CASE(extraCharactersbetweenstxLF)
-{                                         //*******//                                                                                                                                                                                                
+{                                                               //*******//                                                                                                                                                                                                
 	const auto frame = serialTeleInfoMessage::normalizeFrame("<stx>D4R } $<lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
 	const std::map<std::string, std::string> expectedMap = {
 		{ "ADCO", "031428097115" },
@@ -229,7 +229,9 @@ BOOST_AUTO_TEST_CASE(extraCharactersbetweenstxLF)
                                                boost::make_shared<BufferLoggerMock>(),
                                                false);
 	bufferHandler.push(shared::communication::CByteBuffer(frame));
-	BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
+   const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
+   BOOST_CHECK_EQUAL(*out == expectedMap, true);
 }
 
 BOOST_AUTO_TEST_CASE(extraCharactersbeforestx)
@@ -504,6 +506,42 @@ BOOST_AUTO_TEST_CASE(LF_Change_to_STX2)
                                                boost::make_shared<BufferLoggerMock>(),
                                                false);
    bufferHandler.push(shared::communication::CByteBuffer(frame));
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
+   const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
+   BOOST_CHECK_EQUAL(*out == expectedMap, true);
+}
+
+BOOST_AUTO_TEST_CASE(Last_Default)
+{
+   //<stx>F<cr><lf>PAPP 00280 +<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 008453671 -<cr><lf>PTEC TH.. $<cr><lf>IINST 001 X<cr><lf>IMAX 025 F<cr><lf>PAPP 00280 +<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 008453671 -<cr><lf>PTEC TH.. $<cr><lf>IINST 001 X<cr><lf>IMAX 025 F<cr><lf>PAPP 00270 *<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 008453671 -<cr><lf>PTEC TH.. $<cr><lf>IINST 001 X<cr><lf>IMAX 025 F<cr><lf>PAPP 00270 *<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @
+   const auto frame = serialTeleInfoMessage::normalizeFrame("@<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 008718847 6<cr><lf>PTEC TH.. $<cr><lf>IINST 001 X<cr><lf>IMAX 025 F<cr><lf>PAPP 00270 *<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 008718847 6<cr><lf>PTEC TH.. $<cr><lf>IINST 001 X<cr><lf>IMAX 025 F<cr><lf>PAPP 00270 *<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>");
+   const std::map<std::string, std::string> expectedMap = {
+      { "ADCO", "031428097115" },
+      { "OPTARIF", "BASE" },
+      { "ISOUSC", "30" },
+      { "BASE", "008718847" },
+      { "PTEC", "TH.." },
+      { "IINST", "001" },
+      { "IMAX", "025" },
+      { "PAPP", "00270" },
+      { "MOTDETAT", "000000" } };
+
+   shared::event::CEventHandler evtHandler;
+   CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
+                                               shared::event::kUserFirstId,
+                                               boost::posix_time::seconds(0),
+                                               boost::make_shared<BufferLoggerMock>(),
+                                               false);
+   // First frame
+   bufferHandler.push(shared::communication::CByteBuffer(serialTeleInfoMessage::normalizeFrame("<etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BAS")));
+
+   //push after all last characters individually
+   for (int counter = 0; counter < frame.size(); ++counter)
+   {
+      std::vector<unsigned char> vect;
+      vect.push_back(frame[counter]);
+      bufferHandler.push(shared::communication::CByteBuffer(vect));
+   }
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
    const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
    BOOST_CHECK_EQUAL(*out == expectedMap, true);

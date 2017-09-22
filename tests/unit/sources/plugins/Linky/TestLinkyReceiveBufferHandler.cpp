@@ -200,7 +200,7 @@ BOOST_AUTO_TEST_CASE(getMessages)
    }
 
    BOOST_AUTO_TEST_CASE(extraCharactersbetweenstxLF)
-   {                                        //*******//                                                                                                                                                                                                
+   {                                                                           //*******//                                                                                                                                                                                                
 	   const auto frame = testCommon::serialTeleInfoMessage::normalizeFrame("<stx>D4R } $<lf>ADSC<ht>041067003463<ht>/<cr><lf>VTIC<ht>01<ht>I<cr><lf>DATE<ht>h150101150844<ht><ht>_<cr><lf>NGTF<ht>       HC       <ht>,<cr><lf>LTARF<ht>       BASE     <ht>F<cr><lf>EAST<ht>000046245<ht>$<cr><lf>SMAXN-1<ht>h141230000000<ht>00000<ht>C<cr><etx>");
       const std::map<std::string, std::vector<std::string> > expectedMap = {
          { "ADSC",{ "041067003463" } },
@@ -218,7 +218,9 @@ BOOST_AUTO_TEST_CASE(getMessages)
 												           boost::make_shared<BufferLoggerMock>(),
                                                false);
 	   bufferHandler.push(shared::communication::CByteBuffer(frame));
-	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
+      BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
+      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string> > > >();
+      BOOST_CHECK_EQUAL(*out == expectedMap, true);
    }
 
    BOOST_AUTO_TEST_CASE(extraCharactersbeforestx)
