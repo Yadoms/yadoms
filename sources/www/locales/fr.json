@@ -181,7 +181,8 @@
       "text": "Cette opération va supprimer la page __pageName__ ainsi que tous les widgets qu'elle contient. Continuer tout de même ?",
       "pageSuccessfullyDeleted": "Page supprimée avec succès",
       "errorDuringDeletingPage": "Erreur pendant la suppression de la page",
-      "errorDuringDeletingPageNamed": "Erreur pendant la suppression de la page __pageName__"
+      "errorDuringDeletingPageNamed": "Erreur pendant la suppression de la page __pageName__",
+      "deletingLastPageNotAllowed": "La suppression de la dernière page n'est pas autorisé"
     },
     "modify-page": {
       "renamePageTitle": "Renommer une page",

@@ -242,10 +242,15 @@ PageManager.addToDom = function (page) {
     //we listen click event on delete click
     page.$tab.find('div.delete-page').bind('click', function (e) {
         var pageId = $(e.currentTarget).parents("li.tabPagePills").attr("page-id");
-        Yadoms.modals.pageDelete.loadAsync()
-           .done(function () {
-               Yadoms.showDeletePageModal(pageId);
-           });
+        
+        if($("ul.page-tabs").find("li.tabPagePills").length === 1) {
+           notifyWarning($.t("modals.delete-page.deletingLastPageNotAllowed"));
+        } else {
+           Yadoms.modals.pageDelete.loadAsync()
+              .done(function () {
+                  Yadoms.showDeletePageModal(pageId);
+              });
+        }
     });
 
     //we listen click event on move left click

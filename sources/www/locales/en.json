@@ -181,7 +181,8 @@
       "text": "This operation will delete page __pageName__ and all of its widgets. Continue anyway ?",
       "pageSuccessfullyDeleted": "Page successfully deleted",
       "errorDuringDeletingPage": "Error during deleting page",
-      "errorDuringDeletingPageNamed": "Error during deleting page __pageName__"
+      "errorDuringDeletingPageNamed": "Error during deleting page __pageName__",
+      "deletingLastPageNotAllowed": "Deleting last page is not allowed"
     },
     "modify-page": {
       "renamePageTitle": "Rename Page",
