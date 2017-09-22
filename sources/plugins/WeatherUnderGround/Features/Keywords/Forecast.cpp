@@ -44,9 +44,14 @@ void CForecast::addPeriod(const shared::CDataContainer& valueContainer,
 {
    std::string weatherIconTemp;
 
-   auto it = weatherunderground::helper::EEnumTypeNames.find(valueContainer.get<std::string>(weatherCondition));
+   std::string iconName = valueContainer.get<std::string>(weatherCondition);
+   boost::algorithm::to_lower(iconName);
+
+   auto it = weatherunderground::helper::EEnumTypeNames.find(iconName);
    if (it != weatherunderground::helper::EEnumTypeNames.end())
+   {
       weatherIconTemp = static_cast<yApi::historization::EWeatherCondition>(it->second).toString();
+   }
    else
       throw CKeywordException("Value [" + valueContainer.get<std::string>(weatherCondition) + "] could not be set");
 

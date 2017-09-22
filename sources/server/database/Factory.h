@@ -3,9 +3,8 @@
 #include "IDataProvider.h"
 #include "IDatabaseRequester.h"
 #include <IPathProvider.h>
+#include <startupOptions/IStartupOptions.h>
 
-
-class IPathProvider;
 
 namespace database
 {
@@ -15,18 +14,17 @@ namespace database
    class CFactory
    {
    public:
-      //--------------------------------------------------------------
-      /// \Brief		   Create the Database engine
-      /// \param[in] pathProvider   The application path provider
-      //--------------------------------------------------------------
-      static boost::shared_ptr<IDataProvider> create(const IPathProvider& pathProvider);
+      CFactory(const IPathProvider& pathProvider,
+               boost::shared_ptr<const startupOptions::IStartupOptions> startupOptions);
+      virtual ~CFactory();
+
+      boost::shared_ptr<IDataProvider> createDataProvider() const;
 
    private:
-      //--------------------------------------------------------------
-      /// \Brief		   Create the Database engine
-      /// \param[in] pathProvider   The application path provider
-      //--------------------------------------------------------------
-      static boost::shared_ptr<IDatabaseRequester> createEngine(const IPathProvider& pathProvider);
+      boost::shared_ptr<IDatabaseRequester> createEngine() const;
+
+      const IPathProvider& m_pathProvider;
+      boost::shared_ptr<const startupOptions::IStartupOptions> m_startupOptions;
    };
 } //namespace database 
 

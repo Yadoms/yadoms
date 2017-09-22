@@ -1,6 +1,7 @@
 #pragma once
 
 #include <shared/enumeration/EnumHelpers.hpp>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 namespace weatherunderground
 {
@@ -18,9 +19,7 @@ namespace weatherunderground
       //--------------------------------------------------------------
       /// \brief	The map of returned icons from the web site
       //--------------------------------------------------------------
-      typedef std::map<std::string, unsigned int> EnumValuesNames;
-
+      typedef std::map<std::string, std::string> EnumValuesNames;
       extern const EnumValuesNames EEnumTypeNames;
    }
 }
-

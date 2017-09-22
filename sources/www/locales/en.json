@@ -386,7 +386,15 @@
           "startedFrom": "Started from",
           "developerMode": "Developer mode",
           "errorRequestingDatabaseVersion": "Error requesting Database Version",
-		  "errorRequestingSystemInformation" : "Error requesting system information"
+          "errorRequestingSystemInformation" : "Error requesting system information",
+          "type": "Database engine",
+          "size": "Database size",
+          "version": "Version of database engine",
+          "host": "Host",
+          "port": "Port",
+          "name": "Database",
+          "user": "Database user",
+          "secured": "Secured mode"          
         },
         "user-management": {
           "title": "User management"
@@ -602,26 +610,17 @@
         },
         "maintenance": {
           "title": "Maintenance",
-          "database": {
-            "title": "Database"
-          },
-          "type": "Database engine",
-          "size": "Database size",
-          "version": "Version",
-          "host": "Host",
-          "port": "Port",
-          "name": "Database",
-          "user": "User",
-          "secured": "Secured mode",
           "backup": "Start a database backup",
-          "lastBackup": "Last backup",
-          "lastBackupDate": "Realized on ",
-          "lastBackupSize": "File size : ",
-          "lastBackupDownload": "Download",
-          "lastBackupDelete": "Delete",
-          "lastBackupLocation": "Location : ",
-          "lastBackupDeleteConfirmTitle": "Confirm delete",
-          "lastBackupDeleteConfirm": "Delete the last backup ?"
+          "backuplist" : {
+            "date" : "Date",
+            "size" : "File size",
+            "location" : "Location",
+            "actions" : "Actions",
+            "download" : "Download",
+            "delete" : "Delete",
+            "deleteConfirmTitle" : "Confirm delete",
+            "deleteConfirm" : "Delete the last backup ?"
+          }
         },
         "about": {
           "title": "About",

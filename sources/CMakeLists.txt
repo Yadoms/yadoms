@@ -797,12 +797,15 @@ ENDIF()
 ################################################
 
 IF(USE_PGSQL_DATABASE)
-   find_package(PostgreSQL)
+   # Be careful updating PostgreSQL version : you maybe have to update ssleay32.dll dependency (MSVCRxxx.DLL)
+   find_package(PostgreSQL 9.6 EXACT)
 
    if(PostgreSQL_FOUND)
       message(STATUS "Found postgresql ${PostgreSQL_VERSION_STRING}")
 
       set(YADOMS_SRC ${YADOMS_SRC}
+			server/database/pgsql/PgsqlLibrary.h
+			server/database/pgsql/PgsqlLibrary.cpp
 			server/database/pgsql/PgsqlQuery.h
 			server/database/pgsql/PgsqlQuery.cpp
 			server/database/pgsql/PgsqlRequester.h
@@ -827,6 +830,7 @@ IF(USE_PGSQL_DATABASE)
          
          IF(EXISTS "${PostgreSQL_ROOT}/bin/ssleay32.dll")
             SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/ssleay32.dll")
+            SET(PostgreSqlDepends ${PostgreSqlDepends} "${CMAKE_SOURCE_DIR}/external-libs/msvcr120.dll")
          ENDIF()
          
          IF(EXISTS "${PostgreSQL_ROOT}/bin/libeay32.dll")
@@ -846,7 +850,6 @@ IF(USE_PGSQL_DATABASE)
          ENDIF()
       ENDIF(WIN32)
    
-      set(YADOMS_EXTERNAL_LINK ${YADOMS_EXTERNAL_LINK} ${PostgreSQL_LIBRARY})
       set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${PostgreSQL_INCLUDE_DIRS})
    else()
       message(WARNING "PostgreSQL not found. Only SQLite will be available")
@@ -1133,13 +1136,15 @@ endif()
    
 
 #add depends
-FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
-   if (DEFINED CMAKE_CONFIGURATION_TYPES)
-      install(FILES ${PostgreSqlDepend} CONFIGURATIONS Debug;Release;RelWithDebInfo;MinSizeRel RUNTIME DESTINATION ${INSTALL_BINDIR})
-   else()
-      install(FILES ${PostgreSqlDepend} RUNTIME DESTINATION ${INSTALL_BINDIR})
-   endif()
-ENDFOREACH(PostgreSqlDepend)
+if(USE_PGSQL_DATABASE AND PostgreSQL_FOUND)
+   FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
+      if (DEFINED CMAKE_CONFIGURATION_TYPES)
+         install(FILES ${PostgreSqlDepend} CONFIGURATIONS Debug;Release;RelWithDebInfo;MinSizeRel RUNTIME DESTINATION ${INSTALL_BINDIR})
+      else()
+         install(FILES ${PostgreSqlDepend} RUNTIME DESTINATION ${INSTALL_BINDIR})
+      endif()
+   ENDFOREACH(PostgreSqlDepend)
+endif()
 
 
 #add www directory

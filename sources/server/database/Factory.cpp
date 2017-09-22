@@ -1,35 +1,47 @@
 #include "stdafx.h"
 #include "Factory.h"
-#include <shared/ServiceLocator.h>
 #include "startupOptions/IStartupOptions.h"
 #include "common/DataProvider.h"
 #include "sqlite/SQLiteRequester.h"
 
 #ifndef PGSQL_NOT_FOUND
 #  include "pgsql/PgsqlRequester.h"
+#  include "pgsql/PgsqlLibrary.h"
 #endif
 
 namespace database
 {
-   boost::shared_ptr<IDataProvider> CFactory::create(const IPathProvider& pathProvider)
+   CFactory::CFactory(const IPathProvider& pathProvider,
+                      boost::shared_ptr<const startupOptions::IStartupOptions> startupOptions)
+      : m_pathProvider(pathProvider),
+        m_startupOptions(startupOptions)
    {
-      auto databaseEngine = createEngine(pathProvider);
-      return boost::make_shared<common::CDataProvider>(databaseEngine);
    }
 
-   boost::shared_ptr<IDatabaseRequester> CFactory::createEngine(const IPathProvider& pathProvider)
+   CFactory::~CFactory()
    {
-      auto startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
+   }
 
-      startupOptions::EDatabaseEngine dbEngine = startupOptions->getDatabaseEngine();
+   boost::shared_ptr<IDataProvider> CFactory::createDataProvider() const
+   {
+      return boost::make_shared<common::CDataProvider>(createEngine());
+   }
+
+   boost::shared_ptr<IDatabaseRequester> CFactory::createEngine() const
+   {
+      const auto dbEngine = m_startupOptions->getDatabaseEngine();
 
       switch (dbEngine)
       {
       case startupOptions::EDatabaseEngine::kSqliteValue:
-         return boost::make_shared<sqlite::CSQLiteRequester>(pathProvider.databaseSqliteFile().string());
+         return boost::make_shared<sqlite::CSQLiteRequester>(m_pathProvider.databaseSqliteFile().string());
 #ifndef PGSQL_NOT_FOUND
       case startupOptions::EDatabaseEngine::kPostgresqlValue:
-         return boost::make_shared<pgsql::CPgsqlRequester>();
+         {
+            // PostgreSql library is dynamically loaded to avoid depandancy on it as it us rarely used (and depandancy to MSVCRT under Windows)
+            const auto pqsqlLibrary = boost::make_shared<pgsql::CPgsqlLibrary>();
+            return boost::make_shared<pgsql::CPgsqlRequester>(pqsqlLibrary);
+         }
 #endif
       default:
          throw CDatabaseException("Unsupported database engine");

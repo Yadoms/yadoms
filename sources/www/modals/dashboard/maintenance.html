@@ -4,64 +4,26 @@
         <span data-i18n="modals.dashboard.sub-windows.maintenance.title"></span>
     </h1>
 
-    <div class="panel-group" id="maintenance-accordion" role="tablist" aria-multiselectable="true">
+    <button type="button" class="btn btn-default btn-info backupButton" data-i18n="modals.dashboard.sub-windows.maintenance.backup" aria-expanded="false" />
 
-        <!--accordion database-->
-        <div class="panel panel-default with-overflow-visible">
-            <div class="panel-heading" role="tab" id="maintenance-database-heading-panel" data-toggle="collapse" data-parent="#maintenance-database-accordion" aria-expanded="true" aria-controls="maintenance-database-heading-panel" data-target="#maintenance-database-panel">
-                <h4 class="panel-title  accordion-title">
-                    <span data-i18n="modals.dashboard.sub-windows.maintenance.database.title"></span>
-                </h4>
-            </div>
-            <div id="maintenance-database-panel" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="maintenance-database-heading-panel">
-                <div class="panel-body">
-                    <div class="table-responsive summary-table">
-                        <table class="table table-striped table-hover table-bordered toCompleteTable"><tbody></tbody></table>
-                        </div>
-                        <div class="backupSection">
-
-                            <button type="button" class="btn btn-default btn-info backupButton" data-i18n="modals.dashboard.sub-windows.maintenance.backup" aria-expanded="false" />
-
-                            <div class="action-progression" style="width: 340px; margin-top: 10px;">
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
-                                        <span class="hidden">60% Complete</span>
-                                    </div>
-                                </div>
-                                <span class="message"></span>
-                            </div>
-
-                            <div class="bs-callout bs-callout-info lastBackup" style="margin-top: 10px;">
-                                <h4 data-i18n="modals.dashboard.sub-windows.maintenance.lastBackup"></h4>
-
-                                <div class="btn-group">
-                                    <a class="btn btn-info lastBackupLink" data-i18n="[title]modals.dashboard.sub-windows.maintenance.lastBackupDownload">
-                                        <span class="glyphicon glyphicon-save "></span>
-                                    </a>
-                                    <button type="button" class="btn btn-danger btnDeleteLastBackup" data-i18n="[title]modals.dashboard.sub-windows.maintenance.lastBackupDelete">
-                                        <span class="fa fa-trash"></span>
-                                    </button>
-                                </div>
-
-                                <p>
-                                    <em>
-                                        <span data-i18n="modals.dashboard.sub-windows.maintenance.lastBackupDate"></span>
-                                        <span class="lastBackupDate"></span>
-                                        <br />
-                                        <span data-i18n="modals.dashboard.sub-windows.maintenance.lastBackupSize"></span>
-                                        <span class="lastBackupSize"></span>
-                                        <br />
-                                        <span data-i18n="modals.dashboard.sub-windows.maintenance.lastBackupLocation"></span>
-                                        <span class="lastBackupFile"></span>
-                                    </em>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+    <div class="action-progression" style="width: 340px; margin-top: 10px;">
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
+                <span class="hidden">60% Complete</span>
             </div>
         </div>
+        <span class="message"></span>
     </div>
 
+    <!-- Historique des sauvegardes -->
+    <table id="backup-list" class="table table-bordered table-striped dashboard-list">
+        <tr>
+            <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.date"></td>
+            <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.size"></td>
+            <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.location" class="hidden-xs hidden-sm"></td>
+            <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.actions"></td>
+        </tr>
+    </table>
 </div>
 
 <script>
@@ -70,15 +32,54 @@
 
         MaintenanceManager.lastBackupInformation()
         .done(function (infos) {
-            debugger;
+            
+            //we remove all rows except header
+            $("table#backup-list").find("tr:gt(0)").remove();
+            
             if(infos.backups) {
                $.each(infos.backups, function(index, info) {
                   if (info && info.url && info.path && info.size && info.modificationDate) {
-                      $(".lastBackupLink").attr("href", "backups/" + info.url);
-                      $(".lastBackupFile").html(info.path);
-                      $(".lastBackupSize").html(humanFileSize(info.size));
-                      $(".lastBackupDate").html(DateTimeFormatter.isoDateToString(info.modificationDate));
-                      $(".lastBackup").show();
+                  
+                     var id = info.url.replace(/\./g, '_'); //replace all "." to "_"
+                     
+                     var actionsBtns = '<div class="btn-group">' +
+                                          '<a class="btn btn-info lastBackupLink" href="backups/' + info.url + '" data-i18n="[title]modals.dashboard.sub-windows.maintenance.backuplist.download">' +
+                                          '    <span class="glyphicon glyphicon-save "></span>' +
+                                          '</a>' +
+                                          '<button type="button" class="btn btn-danger btn-delete" id="' + id + '" data-i18n="[title]modals.dashboard.sub-windows.maintenance.backuplist.delete"><span class="fa fa-trash"></span></button>' +
+                                       '</div>';
+                                       
+                     var line = '<tr>' + 
+                                   '<td>' + DateTimeFormatter.isoDateToString(info.modificationDate) + '</td>' +
+                                   '<td>' + humanFileSize(info.size) + '</td>' +
+                                   '<td class="hidden-xs hidden-sm">' + info.path + '</td>' +
+                                   '<td>' + actionsBtns + '</td>' +
+                                '</tr>';
+                                
+                      $("table#backup-list").append(line);
+                      
+                      $("#" + id).unbind('click').bind('click', function () { 
+                         Yadoms.modals.confirmation.loadAsync()
+                         .done(function () {
+                             Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
+                                $.t("modals.dashboard.sub-windows.maintenance.backuplist.deleteConfirmTitle"),
+                                $.t("modals.dashboard.sub-windows.maintenance.backuplist.deleteConfirm"),
+                                function () {
+                                    MaintenanceManager.deleteBackup(info.url)
+                                    .done(function(f) {
+                                       console.log("Backup of " + DateTimeFormatter.isoDateToString(info.modificationDate) + " deleted with success");
+                                    })
+                                    .fail(function(err) {
+                                       console.error("Fail to delete the backup");
+                                       console.error(err);
+                                    })
+                                    .always(function () {
+                                       //refresh list
+                                       showLastBackupInformation();
+                                    });
+                                });
+                         });                      
+                      });
                   }
                });
             } else {
@@ -90,26 +91,6 @@
     function enableBackupSection() {
         $(".backupSection").show();
         $(".action-progression").hide();
-
-        $(".btnDeleteLastBackup").unbind('click').bind('click', function () {
-
-
-            Yadoms.modals.confirmation.loadAsync()
-             .done(function () {
-                 Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
-                       $.t("modals.dashboard.sub-windows.maintenance.lastBackupDeleteConfirmTitle"),
-                       $.t("modals.dashboard.sub-windows.maintenance.lastBackupDeleteConfirm"),
-                       function () {
-                           //the user has confirmed the action
-                           MaintenanceManager.deleteLastBackup()
-                           .always(function () {
-                               showLastBackupInformation();
-                           });
-                       });
-             });
-
-
-        });
 
         $(".backupButton").unbind('click').bind('click', function () {
             MaintenanceManager.startBackup()

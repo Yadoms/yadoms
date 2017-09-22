@@ -153,27 +153,27 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         if (m_databaseRequester->backupSupported())
+         if (parameters.size() > 2)
          {
-            auto backup = m_pathProvider.backupPath();
+            std::string urlToDelete = parameters[2];
 
-            if (boost::filesystem::exists(backup))
+            auto backup = m_pathProvider.backupPath();
+            if (boost::filesystem::exists(backup / urlToDelete))
             {
                boost::system::error_code ec;
-               if (boost::filesystem::remove(backup, ec))
+               if (boost::filesystem::remove(backup / urlToDelete, ec))
                   return web::rest::CResult::GenerateSuccess();
                return web::rest::CResult::GenerateError(ec.message());
             }
             else
             {
                //backup do not exists
-               return web::rest::CResult::GenerateError();
+               return web::rest::CResult::GenerateError("file do not exists");
             }
+
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("backup not supported");
-         }
+
+         return CResult::GenerateError("invalid parameter. Can not retreive file to delete");
       }
       catch (std::exception &ex)
       {
@@ -181,7 +181,7 @@ namespace web { namespace rest { namespace service {
       }
       catch (...)
       {
-         return CResult::GenerateError("unknown exception in deleting last backup data");
+         return CResult::GenerateError("unknown exception in deleting backup data");
       }
 
    }
