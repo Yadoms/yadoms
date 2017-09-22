@@ -31,7 +31,7 @@ namespace task
 
       void CBackup::OnProgressionUpdatedInternal(int remaining, int total, float currentPart, float totalPart, const std::string& message)
       {
-         float progression = currentPart + (total != 0 ? ((float)(total - remaining) * (float)totalPart / (float)total) : 0);
+         float progression = currentPart + (total != 0 ? ((float)(total - remaining) * (float)(totalPart - currentPart) / (float)total) : 0);
 
          if (m_reportRealProgress)
             m_reportRealProgress(true, progression, message, std::string(), shared::CDataContainer::EmptyContainer);

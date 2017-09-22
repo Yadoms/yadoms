@@ -103,19 +103,28 @@
                 $(document).on("taskupdatenotification." + data.taskId, function (e, taskInformation) {
 
                     $line.find("div.progress-bar").css("width", taskInformation.progression + "%");
-                    $line.find("span.message").text($.t("core." + taskInformation.message));
+                    
+                    if(taskInformation.message) {
+                       $line.find("span.message").text($.t("core." + taskInformation.message));
+                    } else {
+                       $line.find("span.message").text("");
+                    }
 
                     var taskFinished = false;
                     //we manage the end of the task
                     if (taskInformation.taskState) {
                         if (taskInformation.taskState.toLowerCase() === "fail") {
                             console.error("Unable to install : " + taskInformation.exception);
-                            notifyError($.t("core." + taskInformation.message));
+                            if(taskInformation.message) {
+                              notifyError($.t("core." + taskInformation.message));
+                            }
                             taskFinished = true;
                         }
 
                         if (taskInformation.taskState.toLowerCase() === "success") {
-                            notifySuccess($.t("core." + taskInformation.message));
+                            if(taskInformation.message) {
+                              notifySuccess($.t("core." + taskInformation.message));
+                            }
                             taskFinished = true;
                             showLastBackupInformation();
                         }
@@ -138,37 +147,8 @@
     Yadoms.initializeMaintenanceDashboard = function () {
         var d = new $.Deferred();
 
-        MaintenanceManager.getDatabaseDetails()
-        .done(function (data) {
-
-            var $table = $("table.toCompleteTable");
-
-            $(".backupSection").hide();
-
-            $table.find("tr").remove();
-
-            $.each(data, function (index, value) {
-                if (index !== "backupSupport") {
-                    if (index !== "size") {
-                        $table.append("<tr><td class=\"header\" data-i18n=\"modals.dashboard.sub-windows.maintenance." + index + "\"></td><td>" + value + "</td></tr>");
-                    } else {
-                        $table.append("<tr><td class=\"header\" data-i18n=\"modals.dashboard.sub-windows.maintenance." + index + "\"></td><td>" + humanFileSize(value) + "</td></tr>");
-                    }
-                } else {
-                    if (parseBool(value)) {
-                        enableBackupSection();
-                    }
-                }
-            });
-
-            $table.i18n();
-
-            d.resolve();
-        })
-        .fail(function (error) {
-            $("#dashboard-maintenance > h1").append("<div>Error : " + error + "</div>");
-            d.reject(error);
-        });
+        enableBackupSection();
+        showLastBackupInformation();
 
         return d.promise();
     };
