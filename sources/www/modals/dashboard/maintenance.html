@@ -148,8 +148,8 @@
         var d = new $.Deferred();
 
         enableBackupSection();
-        showLastBackupInformation();
 
+        d.resolve();
         return d.promise();
     };
 
