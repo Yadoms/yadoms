@@ -356,9 +356,11 @@ PageManager.enableCustomization = function (page, enable) {
     if (enable) {
         $(".customization-item").removeClass("hidden");
         page.$tab.find("a").first().addClass("pageCustomizationPill");
+        $("ul.page-tabs").removeClass("nav-justified");
     } else {
         $(".customization-item").addClass("hidden");
         page.$tab.find("a").first().removeClass("pageCustomizationPill");
+        $("ul.page-tabs").addClass("nav-justified");
     }
 };
 
