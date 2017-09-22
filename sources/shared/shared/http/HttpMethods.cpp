@@ -94,7 +94,9 @@ namespace shared
                uri.addQueryParameter(parametersIterator.first, parametersIterator.second);
          }
 
-         const Poco::Net::Context::Ptr context(new Poco::Net::Context(Poco::Net::Context::CLIENT_USE, "", "", "rootcert.pem"));
+         Poco::Crypto::OpenSSLInitializer::initialize();
+
+         const Poco::Net::Context::Ptr context(new Poco::Net::Context(Poco::Net::Context::CLIENT_USE, "", "", "", Poco::Net::Context::VERIFY_NONE, 9, false, "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH"));
          Poco::Net::HTTPSClientSession session(uri.getHost(), uri.getPort(), context);
          Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET,
                                         uri.getPathAndQuery(),
