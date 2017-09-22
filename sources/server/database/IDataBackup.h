@@ -24,16 +24,10 @@ namespace database {
 
       //---------------------------------
       ///\brief Backup the data provider to a file
+      ///\param [in] backupFolder : the backup folder
       ///\param [in] reporter : a function pointer for reporting progression
       //---------------------------------
-      virtual void backupData(ProgressFunc reporter) = 0;
-
-
-      //---------------------------------
-      ///\brief Get the last backup file path
-      ///\return The last backup file path
-      //---------------------------------
-      virtual boost::filesystem::path lastBackupData() = 0;
+      virtual void backupData(const std::string & backupFolder, ProgressFunc reporter) = 0;
 
       //--------------------------------------------------------------
       /// \brief       Destructor

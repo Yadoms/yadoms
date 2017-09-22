@@ -38,6 +38,9 @@ set(RFPLAYER_PLUGIN_SOURCES
    frames/outgoing/Factory.cpp
    frames/outgoing/OutgoingFrame.h
    frames/outgoing/OutgoingFrame.cpp
+   
+   rfplayerApi/rfplayerApi.h
+   rfplayerApi/usb_frame_api.h
 
    specificHistorizers/incoming/Type0State.h
    specificHistorizers/incoming/Type0State.cpp
@@ -78,6 +81,7 @@ source_group(sources ./*.*)
 source_group(sources\\frames ./frames/*.*)
 source_group(sources\\frames\\incoming ./frames/incoming/*.*)
 source_group(sources\\frames\\outgoing ./frames/outgoing/*.*)
+source_group(sources\\rfplayerApi ./rfplayerApi/*.*)
 source_group(sources\\specificHistorizers ./specificHistorizers/*.*)
 source_group(sources\\specificHistorizers\\incoming ./specificHistorizers/incoming/*.*)
 source_group(sources\\specificHistorizers\\outgoing ./specificHistorizers/outgoing/*.*)

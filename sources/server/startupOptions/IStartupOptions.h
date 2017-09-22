@@ -249,6 +249,12 @@ namespace startupOptions {
       virtual std::string getUpdateSiteUri() const = 0;
 
       //--------------------------------------------------------------
+      /// \brief	    Get the backup folder
+      /// \return     The backup folder
+      //--------------------------------------------------------------
+      virtual std::string getBackupPath() const = 0;
+
+      //--------------------------------------------------------------
       /// \brief	    Get the acquisition lifetime
       /// \return     The acquisition lifetime
       //--------------------------------------------------------------

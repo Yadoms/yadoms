@@ -612,15 +612,10 @@ namespace database
          return false;
       }
 
-      void CPgsqlRequester::backupData(ProgressFunc reporter)
-      {
-         throw CDatabaseException("Unsupported backup for PostgreSQL");
-      }
-
-      boost::filesystem::path CPgsqlRequester::lastBackupData()
-      {
-         throw CDatabaseException("Unsupported backup for PostgreSQL");
-      }
+   void CPgsqlRequester::backupData(const std::string & backupFolder, IDataBackup::ProgressFunc reporter)
+   {
+      throw database::CDatabaseException("Unsupported backup for PostgreSQL");
+   }
 
       bool CPgsqlRequester::supportInsertOrUpdateStatement()
       {

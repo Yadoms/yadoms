@@ -181,7 +181,8 @@
       "text": "Cette opération va supprimer la page __pageName__ ainsi que tous les widgets qu'elle contient. Continuer tout de même ?",
       "pageSuccessfullyDeleted": "Page supprimée avec succès",
       "errorDuringDeletingPage": "Erreur pendant la suppression de la page",
-      "errorDuringDeletingPageNamed": "Erreur pendant la suppression de la page __pageName__"
+      "errorDuringDeletingPageNamed": "Erreur pendant la suppression de la page __pageName__",
+      "deletingLastPageNotAllowed": "La suppression de la dernière page n'est pas autorisé"
     },
     "modify-page": {
       "renamePageTitle": "Renommer une page",
@@ -386,7 +387,15 @@
           "startedFrom": "Démarré depuis",
           "developerMode": "Mode développeur",
           "errorRequestingDatabaseVersion": "Erreur lors de la récupération de la version de la base de donnée",
-          "errorRequestingSystemInformation": "Erreur lors de la récupération de la version logicielle"
+          "errorRequestingSystemInformation": "Erreur lors de la récupération de la version logicielle",
+          "type" : "Moteur de base de données",
+          "size" : "Taille de base de données",
+          "version" : "Version du moteur de base de données",
+          "host" : "Hôte",
+          "port" : "Port",
+          "name" : "Base de donnée",
+          "user" : "Utilisateur de la base de données",
+          "secured" : "Mode sécurisé"
         },
         "user-management": {
           "title": "Gestion des utilisateurs"
@@ -602,26 +611,17 @@
         },
         "maintenance": {
           "title": "Maintenance",
-  		  "database": {
-			 "title": "Base de données"
-		  },		  
-          "type" : "Moteur de base de données",
-          "size" : "Taille",
-          "version" : "Version",
-          "host" : "Hôte",
-          "port" : "Port",
-          "name" : "Base",
-          "user" : "Utilisateur",
-          "secured" : "Mode sécurisé",
-          "backup" : "Démarrer une sauvegarde de la base de données",
-          "lastBackup" : "Dernière sauvegarde",
-          "lastBackupDate" : "Effectuée le ",
-          "lastBackupSize" : "Taille : ",
-          "lastBackupDownload" : "Télécharger",
-          "lastBackupDelete" : "Supprimer",
-          "lastBackupLocation" : "Emplacement : ",
-          "lastBackupDeleteConfirmTitle" : "Confirmer la suppression",
-          "lastBackupDeleteConfirm" : "Supprimer la dernière sauvegarde ?"
+          "backup" : "Démarrer une nouvelle sauvegarde",
+          "backuplist" : {
+            "date" : "Date",
+            "size" : "Taille",
+            "location" : "Emplacement",
+            "actions" : "Actions",
+            "download" : "Télécharger",
+            "delete" : "Supprimer",
+            "deleteConfirmTitle" : "Confirmer la suppression",
+            "deleteConfirm" : "Supprimer la sauvegarde ?"
+          }
         },
         "about": {
           "title": "A propos",

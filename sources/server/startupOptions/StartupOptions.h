@@ -76,6 +76,7 @@ namespace startupOptions
       bool getNoPasswordFlag() const override;
       bool getIsRunningAsService() const override;
       std::string getUpdateSiteUri() const override;
+      std::string getBackupPath() const override;
       int getDatabaseAcquisitionLifetime() const override;
       bool getDeveloperMode() const override;
 

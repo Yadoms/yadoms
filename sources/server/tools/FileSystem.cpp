@@ -73,6 +73,61 @@ namespace tools
             throw Poco::FileException("The folder to copy do not exists or is not a directory");
          }
       }      
+      
+      bool CFileSystem::copyDirectoryRecursivelyTo(boost::filesystem::path const & source, boost::filesystem::path const & destination)
+      {
+         try
+         {
+            // Check whether the function call is valid
+            if (!boost::filesystem::exists(source) || !boost::filesystem::is_directory(source))
+            {
+               YADOMS_LOG(error) << "[CFileSystem::copyDir] : Source directory " << source.string() << " does not exist or is not a directory.";
+               return false;
+            }
+            if (boost::filesystem::exists(destination))
+            {
+               YADOMS_LOG(error) << "[CFileSystem::copyDir] : Destination directory " << destination.string() << " already exists.";
+               return false;
+            }
+            // Create the destination directory
+            if (!boost::filesystem::create_directory(destination))
+            {
+               YADOMS_LOG(error) << "[CFileSystem::copyDir] : Unable to create destination directory" << destination.string();
+               return false;
+            }
+         }
+         catch (boost::filesystem::filesystem_error const & e)
+         {
+            YADOMS_LOG(error) << "[CFileSystem::copyDir] : " << e.what();
+            return false;
+         }
+         // Iterate through the source directory
+         for (boost::filesystem::directory_iterator file(source); file != boost::filesystem::directory_iterator(); ++file)
+         {
+            try
+            {
+               boost::filesystem::path current(file->path());
+               if (boost::filesystem::is_directory(current))
+               {
+                  // Found directory: Recursion
+                  if (!copyDirectoryRecursivelyTo(current, destination / current.filename()))
+                  {
+                     return false;
+                  }
+               }
+               else
+               {
+                  // Found file: Copy
+                  boost::filesystem::copy_file(current, destination / current.filename());
+               }
+            }
+            catch (boost::filesystem::filesystem_error const & e)
+            {
+               YADOMS_LOG(error) << "[CFileSystem::copyDir] : " << e.what();
+            }
+         }
+         return true;
+      }
 
       void CFileSystem::remove(const Poco::Path & path, bool recursive)
       {

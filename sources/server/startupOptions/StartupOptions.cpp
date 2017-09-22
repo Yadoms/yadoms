@@ -515,6 +515,11 @@ namespace startupOptions
       return m_configContainer.getString("server.updateSite", "http://www.yadoms.com/downloads/update/");
    }
 
+   std::string CStartupOptions::getBackupPath() const
+   {
+      return m_configContainer.getString("server.backupPath", "backups");
+   }
+
    int CStartupOptions::getDatabaseAcquisitionLifetime() const
    {
       return m_configContainer.getInt("server.acquisitionLifetime", 30);
