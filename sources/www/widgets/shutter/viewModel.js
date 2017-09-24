@@ -44,6 +44,8 @@ widgetViewModelCtor =
                  else
                      return "widgets/shutter/icons/" + self.kind() + "-open.png";
               }
+              else 
+                 return "widgets/shutter/icons/window-open.png"; // default value
           });
 
           /**

@@ -107,15 +107,15 @@ body {
 }
 
 .pageCustomizationToolbar {
-    margin-top: 2px;
     margin-right: 2px;
     cursor: default;
+    font-size: 2em;
 }
 
 .customizationButton {
     float: left;
-    margin-left: 4px;
-    margin-right: 4px;
+    margin-left: 6px;
+    margin-right: 6px;
     cursor: pointer;
 }
 
@@ -129,6 +129,7 @@ body {
     background-image: url("../img/roadworks-pill.png");
     background-repeat: no-repeat;
     background-position: right center;
+    width: 250px;
 }
 
 .navbar {

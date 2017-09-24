@@ -45,6 +45,7 @@ public:
    virtual bool isConditionsIndividualKeywordsEnabled(void) const = 0;
    virtual bool isRainIndividualKeywordsEnabled(void) const = 0;
    virtual bool isTempIndividualKeywordsEnabled(void) const = 0;
+   virtual bool isConditionsForecastIndividualKeywordsEnabled(void) const = 0;
    virtual bool isAstronomyEnabled(void) const = 0;
    virtual bool isForecast10DaysEnabled(void) const = 0;
 };

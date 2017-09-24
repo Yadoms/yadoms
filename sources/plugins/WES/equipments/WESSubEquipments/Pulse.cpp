@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Pulse.h"
+#include "shared/plugin/yPluginApi/historization/MeasureType.h"
 #include <shared/Log.h>
 
 namespace equipments
@@ -24,6 +25,9 @@ namespace equipments
       {
          switch (m_unitName)
          {
+         case undefined:
+            YADOMS_LOG(information) << "this input (" << m_keywordName << ") is not used. It is desactivated";
+            break;
          case Wh:
          case KWh:
             m_pulseEnergy = boost::make_shared<yApi::historization::CEnergy>(keywordName,
@@ -33,7 +37,8 @@ namespace equipments
          case litre:
          case m3:
             m_pulseVolume = boost::make_shared<yApi::historization::CVolume>(keywordName,
-                                                                             yApi::EKeywordAccessMode::kGet);
+                                                                             yApi::EKeywordAccessMode::kGet,
+                                                                             yApi::historization::EMeasureType::kCumulative);
             keywordsToDeclare.push_back(m_pulseVolume);
             break;
          default:
@@ -49,6 +54,9 @@ namespace equipments
 
          switch (unitName)
          {
+         case undefined:
+            YADOMS_LOG(trace) << "this input (" << m_keywordName << ") is desactivated";
+            break;
          case Wh:
          case KWh:
             if (!m_pulseEnergy)
@@ -99,6 +107,9 @@ namespace equipments
 
          switch (unitName)
          {
+         case undefined:
+            YADOMS_LOG(trace) << "this input (" << m_keywordName << ") is desactivated";
+            break;
          case Wh:
             m_pulseEnergy->set(boost::lexical_cast<Poco::Int64>(total));
             keywordsToHistorize.push_back(m_pulseEnergy);

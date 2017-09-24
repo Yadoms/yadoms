@@ -381,18 +381,5 @@
 				}
 			}
 		}
-	},
-	"enumerations": {
-		"EBlyss": {
-			"name": "",
-			"values": {
-				"Off": "",
-				"On": "",
-				"Dim": "",
-				"AllOff": "",
-				"AllOn": "",
-				"Assoc": ""
-			}
-		}
 	}
 }

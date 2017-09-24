@@ -25,26 +25,26 @@ namespace database
 
          // IRuleRequester implementation
 
-         std::vector<boost::shared_ptr<entities::CRule> > CRule::getRules() const
+         std::vector<boost::shared_ptr<entities::CRule>> CRule::getRules() const
          {
             auto qSelect = m_databaseRequester->newQuery();
-            qSelect.Select().
-                   From(CRuleTable::getTableName());
+            qSelect->Select().
+               From(CRuleTable::getTableName());
 
             adapters::CRuleAdapter adapter;
-            m_databaseRequester->queryEntities(&adapter, qSelect);
+            m_databaseRequester->queryEntities(&adapter, *qSelect);
             return adapter.getResults();
          }
 
-         std::vector<boost::shared_ptr<entities::CRule> > CRule::getRules(const std::string& interpreterName) const
+         std::vector<boost::shared_ptr<entities::CRule>> CRule::getRules(const std::string& interpreterName) const
          {
             auto qSelect = m_databaseRequester->newQuery();
-            qSelect.Select().
-                   From(CRuleTable::getTableName()).
-                   Where(CRuleTable::getInterpreterColumnName(), CQUERY_OP_EQUAL, interpreterName);
+            qSelect->Select().
+               From(CRuleTable::getTableName()).
+               Where(CRuleTable::getInterpreterColumnName(), CQUERY_OP_EQUAL, interpreterName);
 
             adapters::CRuleAdapter adapter;
-            m_databaseRequester->queryEntities(&adapter, qSelect);
+            m_databaseRequester->queryEntities(&adapter, *qSelect);
             return adapter.getResults();
          }
 
@@ -54,11 +54,11 @@ namespace database
 
             auto qSelect = m_databaseRequester->newQuery();
 
-            qSelect.Select().
-                   From(CRuleTable::getTableName()).
-                   Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleId);
+            qSelect->Select().
+               From(CRuleTable::getTableName()).
+               Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleId);
 
-            m_databaseRequester->queryEntities(&adapter, qSelect);
+            m_databaseRequester->queryEntities(&adapter, *qSelect);
             if (adapter.getResults().empty())
             {
                // Rule not found
@@ -71,36 +71,36 @@ namespace database
          {
             auto qInsert = m_databaseRequester->newQuery();
 
-            qInsert.InsertInto(CRuleTable::getTableName(),
-                               CRuleTable::getNameColumnName(),
-                               CRuleTable::getDescriptionColumnName(),
-                               CRuleTable::getInterpreterColumnName(),
-                               CRuleTable::getEditorColumnName(),
-                               CRuleTable::getModelColumnName(),
-                               CRuleTable::getContentColumnName(),
-                               CRuleTable::getConfigurationColumnName(),
-                               CRuleTable::getStateColumnName()).
-                   Values(ruleData->Name(),
-                          ruleData->Description(),
-                          ruleData->Interpreter(),
-                          ruleData->Editor(),
-                          ruleData->Model(),
-                          ruleData->Content(),
-                          ruleData->Configuration(),
-                          ruleData->State.isDefined() ? ruleData->State() : entities::ERuleState::kStopped);
+            qInsert->InsertInto(CRuleTable::getTableName(),
+                                CRuleTable::getNameColumnName(),
+                                CRuleTable::getDescriptionColumnName(),
+                                CRuleTable::getInterpreterColumnName(),
+                                CRuleTable::getEditorColumnName(),
+                                CRuleTable::getModelColumnName(),
+                                CRuleTable::getContentColumnName(),
+                                CRuleTable::getConfigurationColumnName(),
+                                CRuleTable::getStateColumnName()).
+               Values(ruleData->Name(),
+                      ruleData->Description(),
+                      ruleData->Interpreter(),
+                      ruleData->Editor(),
+                      ruleData->Model(),
+                      ruleData->Content(),
+                      ruleData->Configuration(),
+                      ruleData->State.isDefined() ? ruleData->State() : entities::ERuleState::kStopped);
 
-            if (m_databaseRequester->queryStatement(qInsert) <= 0)
+            if (m_databaseRequester->queryStatement(*qInsert) <= 0)
                throw shared::exception::CEmptyResult("No lines affected");
 
 
             auto qSelect = m_databaseRequester->newQuery();
-            qSelect.Select(CRuleTable::getIdColumnName()).
-                   From(CRuleTable::getTableName()).
-                   Where(CRuleTable::getNameColumnName(), CQUERY_OP_EQUAL, ruleData->Name()).
-                   OrderBy(CRuleTable::getIdColumnName(), CQuery::kDesc);
+            qSelect->Select(CRuleTable::getIdColumnName()).
+               From(CRuleTable::getTableName()).
+               Where(CRuleTable::getNameColumnName(), CQUERY_OP_EQUAL, ruleData->Name()).
+               OrderBy(CRuleTable::getIdColumnName(), CQuery::kDesc);
 
             adapters::CSingleValueAdapter<int> adapter;
-            m_databaseRequester->queryEntities(&adapter, qSelect);
+            m_databaseRequester->queryEntities(&adapter, *qSelect);
             if (adapter.getResults().size() >= 1)
             {
                //search for inserted rule
@@ -112,33 +112,33 @@ namespace database
                //update error message
                if (ruleData->ErrorMessage.isDefined())
                {
-                  qUpdate.Clear().Update(CRuleTable::getTableName()).
-                         Set(CRuleTable::getErrorMessageColumnName(), ruleData->ErrorMessage()).
-                         Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, createdId);
+                  qUpdate->Clear().Update(CRuleTable::getTableName()).
+                     Set(CRuleTable::getErrorMessageColumnName(), ruleData->ErrorMessage()).
+                     Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, createdId);
 
-                  if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+                  if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                      throw CDatabaseException("Failed to update error message field");
                }
 
                //update start date
                if (ruleData->StartDate.isDefined())
                {
-                  qUpdate.Clear().Update(CRuleTable::getTableName()).
-                         Set(CRuleTable::getStartDateColumnName(), ruleData->StartDate()).
-                         Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, createdId);
+                  qUpdate->Clear().Update(CRuleTable::getTableName()).
+                     Set(CRuleTable::getStartDateColumnName(), ruleData->StartDate()).
+                     Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, createdId);
 
-                  if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+                  if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                      throw CDatabaseException("Failed to update start date field");
                }
 
                //update stop date
                if (ruleData->StopDate.isDefined())
                {
-                  qUpdate.Clear().Update(CRuleTable::getTableName()).
-                         Set(CRuleTable::getStopDateColumnName(), ruleData->StopDate()).
-                         Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, createdId);
+                  qUpdate->Clear().Update(CRuleTable::getTableName()).
+                     Set(CRuleTable::getStopDateColumnName(), ruleData->StopDate()).
+                     Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, createdId);
 
-                  if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+                  if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                      throw CDatabaseException("Failed to update stop date field");
                }
 
@@ -158,121 +158,121 @@ namespace database
             //update name
             if (ruleData->Name.isDefined())
             {
-               qUpdate.Clear().Update(CRuleTable::getTableName()).
-                      Set(CRuleTable::getNameColumnName(), ruleData->Name()).
-                      Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
+               qUpdate->Clear().Update(CRuleTable::getTableName()).
+                  Set(CRuleTable::getNameColumnName(), ruleData->Name()).
+                  Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
 
-               if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+               if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                   throw CDatabaseException("Failed to update name");
             }
 
             //update configuration
             if (ruleData->Description.isDefined())
             {
-               qUpdate.Clear().Update(CRuleTable::getTableName()).
-                      Set(CRuleTable::getDescriptionColumnName(), ruleData->Description()).
-                      Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
+               qUpdate->Clear().Update(CRuleTable::getTableName()).
+                  Set(CRuleTable::getDescriptionColumnName(), ruleData->Description()).
+                  Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
 
-               if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+               if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                   throw CDatabaseException("Failed to update description");
             }
 
             //update interpreter
             if (ruleData->Interpreter.isDefined())
             {
-               qUpdate.Clear().Update(CRuleTable::getTableName()).
-                      Set(CRuleTable::getInterpreterColumnName(), ruleData->Interpreter()).
-                      Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
+               qUpdate->Clear().Update(CRuleTable::getTableName()).
+                  Set(CRuleTable::getInterpreterColumnName(), ruleData->Interpreter()).
+                  Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
 
-               if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+               if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                   throw CDatabaseException("Failed to update interpreter");
             }
 
             //update editor
             if (ruleData->Editor.isDefined())
             {
-               qUpdate.Clear().Update(CRuleTable::getTableName()).
-                      Set(CRuleTable::getEditorColumnName(), ruleData->Editor()).
-                      Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
+               qUpdate->Clear().Update(CRuleTable::getTableName()).
+                  Set(CRuleTable::getEditorColumnName(), ruleData->Editor()).
+                  Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
 
-               if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+               if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                   throw CDatabaseException("Failed to update editor");
             }
 
             //update content
             if (ruleData->Content.isDefined())
             {
-               qUpdate.Clear().Update(CRuleTable::getTableName()).
-                      Set(CRuleTable::getContentColumnName(), ruleData->Content()).
-                      Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
+               qUpdate->Clear().Update(CRuleTable::getTableName()).
+                  Set(CRuleTable::getContentColumnName(), ruleData->Content()).
+                  Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
 
-               if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+               if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                   throw CDatabaseException("Failed to update content field");
             }
 
             //update configuration
             if (ruleData->Configuration.isDefined())
             {
-               qUpdate.Clear().Update(CRuleTable::getTableName()).
-                      Set(CRuleTable::getConfigurationColumnName(), ruleData->Configuration()).
-                      Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
+               qUpdate->Clear().Update(CRuleTable::getTableName()).
+                  Set(CRuleTable::getConfigurationColumnName(), ruleData->Configuration()).
+                  Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
 
-               if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+               if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                   throw CDatabaseException("Failed to update Configuration field");
             }
 
             //update autoStart flag
             if (ruleData->AutoStart.isDefined())
             {
-               qUpdate.Clear().Update(CRuleTable::getTableName()).
-                      Set(CRuleTable::getAutoStartColumnName(), ruleData->AutoStart()).
-                      Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
+               qUpdate->Clear().Update(CRuleTable::getTableName()).
+                  Set(CRuleTable::getAutoStartColumnName(), ruleData->AutoStart()).
+                  Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
 
-               if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+               if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                   throw CDatabaseException("Failed to update autoStart flag field");
             }
 
             //update state flag
             if (ruleData->State.isDefined())
             {
-               qUpdate.Clear().Update(CRuleTable::getTableName()).
-                      Set(CRuleTable::getStateColumnName(), ruleData->State()).
-                      Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
+               qUpdate->Clear().Update(CRuleTable::getTableName()).
+                  Set(CRuleTable::getStateColumnName(), ruleData->State()).
+                  Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
 
-               if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+               if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                   throw CDatabaseException("Failed to update state flag field");
             }
 
             //update error message
             if (ruleData->ErrorMessage.isDefined())
             {
-               qUpdate.Clear().Update(CRuleTable::getTableName()).
-                      Set(CRuleTable::getErrorMessageColumnName(), ruleData->ErrorMessage()).
-                      Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
+               qUpdate->Clear().Update(CRuleTable::getTableName()).
+                  Set(CRuleTable::getErrorMessageColumnName(), ruleData->ErrorMessage()).
+                  Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
 
-               if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+               if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                   throw CDatabaseException("Failed to update error message field");
             }
 
             //update start date
             if (ruleData->StartDate.isDefined())
             {
-               qUpdate.Clear().Update(CRuleTable::getTableName()).
-                      Set(CRuleTable::getStartDateColumnName(), ruleData->StartDate()).
-                      Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
+               qUpdate->Clear().Update(CRuleTable::getTableName()).
+                  Set(CRuleTable::getStartDateColumnName(), ruleData->StartDate()).
+                  Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
 
-               if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+               if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                   throw CDatabaseException("Failed to update start date field");
             }
 
             //update stop date
             if (ruleData->StopDate.isDefined())
             {
-               qUpdate.Clear().Update(CRuleTable::getTableName()).
-                      Set(CRuleTable::getStopDateColumnName(), ruleData->StopDate()).
-                      Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
+               qUpdate->Clear().Update(CRuleTable::getTableName()).
+                  Set(CRuleTable::getStopDateColumnName(), ruleData->StopDate()).
+                  Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
 
-               if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+               if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                   throw CDatabaseException("Failed to update stop date field");
             }
          }
@@ -280,10 +280,10 @@ namespace database
          void CRule::deleteRule(int ruleId)
          {
             auto qUpdate = m_databaseRequester->newQuery();
-            qUpdate.DeleteFrom(CRuleTable::getTableName()).
-                   Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleId);
+            qUpdate->DeleteFrom(CRuleTable::getTableName()).
+               Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleId);
 
-            if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+            if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                throw shared::exception::CEmptyResult("No lines affected");
          }
 

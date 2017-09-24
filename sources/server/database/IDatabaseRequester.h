@@ -31,7 +31,7 @@ namespace database
       /// \Brief  Create a new CQuery object
       /// \return The created CQuery
       //--------------------------------------------------------------
-      virtual common::CQuery newQuery() = 0;
+      virtual boost::shared_ptr<common::CQuery> newQuery() = 0;
 
       //--------------------------------------------------------------
       /// \Brief		    query for entities (the result is a vector of typed objects, accessible by a call to pAdapter->GetResult())
@@ -132,7 +132,7 @@ namespace database
       // [END] ITransactionalProvider implementation
 
       // IDataBackup implementation
-      void backupData(ProgressFunc reporter) override = 0;
+      void backupData(const std::string & backupFolder, ProgressFunc reporter) override = 0;
       // [END] IDataBackup implementation
 
       // IDatabaseEngine implementation

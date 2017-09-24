@@ -109,6 +109,10 @@ namespace web
                   {
                      auto list = content.get<std::vector<int> >("keywords");
 
+                     // erase all duplicates, if any
+                     sort(list.begin(), list.end());
+                     list.erase(unique(list.begin(), list.end()), list.end());
+
                      shared::CDataContainer result;
                      for (auto i = list.begin(); i != list.end(); ++i)
                      {

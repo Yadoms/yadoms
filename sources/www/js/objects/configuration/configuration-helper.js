@@ -89,7 +89,7 @@ ConfigurationHelper.createParameterHandler = function (i18nCtxt, i18nKey, paramN
    if (content.show !== undefined && content.show.result === "false")
       return null;
 
-   let i18nContext = i18nCtxt;
+   var i18nContext = i18nCtxt;
    if(content.i18nBasePath)
       i18nContext = content.i18nBasePath;
    
@@ -186,10 +186,12 @@ ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, 
       case "enum":
          var enumValues = {};
          if (obj.values) {
-            for(var i in obj.values) { //don't use for(.. of obj.values) because it fails when values is less than 2 elements
-               var item = obj.values[i]; 
-               if(item) {
+            for(var i in obj.values) { // don't use for(.. of obj.values) because it fails when values is less than 2 elements
+               if (obj.values.hasOwnProperty(i))
+               {
+                  var item = obj.values[i]; 
                   enumValues[item]=item;
+                  console.log (enumValues);
                }
             }
          }

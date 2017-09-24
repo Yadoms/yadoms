@@ -1,28 +1,31 @@
 #include "stdafx.h"
 #include "IOManager.h"
 #include "InitializationException.hpp"
+#include "SPIException.hpp"
 #include "pifacedigital.h"
 #include <mcp23s17.h>
 #include "eventDefinitions.h"
+#include <shared/Log.h>
 
 CIOManager::CIOManager(const std::string& device)
    : m_InterruptEventHandler(nullptr),
      m_deviceName (device),
-     m_inputValue(0)
+     m_inputValue(0),
+     m_initializationOk(false)
 {
+   int returnValue = pifacedigital_open(0);
+
    // Open the connection
-   if (pifacedigital_open(0) == -1)
-      throw CInitializationException("Initialization error - Configuration of the SPI in raspi-config ?");
+   if (returnValue == -2)
+      throw CSPIException("Initialization error - SPI is not present - Configuration of the SPI in raspi-config ?");
+   else if (returnValue == -1)
+      throw CInitializationException("Initialization error - SPI is present - Board is not detected");
 
-   //TODO : clean-up when another Piface2
    if (pifacedigital_enable_interrupts()<0)
-   //  boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
-   
-   // if the first initialization doesn't work
-   //int ret = pifacedigital_enable_interrupts();
-
-   //if (ret != 0)
       throw CInitializationException("interrupt initialization error");
+
+   // At this time, it's not possible to detect a missing board with theses libraries
+   m_initializationOk = true;
 }
 
 void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api, 
@@ -50,7 +53,7 @@ void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                            boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
-   std::cout << "Command received :" << yApi::IDeviceCommand::toString(command) << std::endl;
+   YADOMS_LOG(trace) << "Command received :" << yApi::IDeviceCommand::toString(command);
 
    auto search = m_mapKeywordsName.find(command->getKeyword());
 
@@ -61,7 +64,7 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
       api->historizeData(m_deviceName, search->second->historizable());
    }
    else
-      std::cerr << "Cannot find keyword : " << command->getKeyword();
+      YADOMS_LOG(error) << "Cannot find keyword : " << command->getKeyword();
 }
 
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -69,7 +72,7 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    m_keywordsToDeclare.clear();
 
-   std::cout << "Value received :" << std::hex << receivedValue << std::endl;
+   YADOMS_LOG(trace) << "Value received :" << std::hex << receivedValue;
 
    for (int counter = 0; counter<NB_INPUTS; ++counter)
    {
@@ -90,7 +93,7 @@ void CIOManager::interruptReceiverThreaded(const std::string& keywordName) const
 {
    try
    {
-      std::cout << "### Start interruptReceiverThread ###" << std::endl;
+      YADOMS_LOG(trace) << "### Start interruptReceiverThread ###";
 
       while (true)
       {
@@ -122,11 +125,11 @@ void CIOManager::interruptReceiverThreaded(const std::string& keywordName) const
    }
    catch (boost::thread_interrupted&)
    {
-      std::cout << "### Stop interruptReceiverThread ###" << std::endl;
+      YADOMS_LOG(trace) << "### Stop interruptReceiverThread ###";
    }
    catch (...)
    {
-      std::cout << "### Unknown error ###" << std::endl;
+      YADOMS_LOG(error) << "### Unknown error ###";
    }
 }
 
@@ -135,8 +138,9 @@ CIOManager::~CIOManager()
    m_interruptReceiverThread.interrupt();
 
    if (!m_interruptReceiverThread.timed_join(boost::posix_time::seconds(20)))
-      std::cerr << "Thread interruptReceiverThread join time out" << std::endl;
+      YADOMS_LOG(error) << "Thread interruptReceiverThread join time out";
 
    // Close de connection
-   pifacedigital_close(0);
+   if (m_initializationOk)
+      pifacedigital_close(0);
 }

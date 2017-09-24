@@ -81,13 +81,12 @@ add_definitions(-DBOOST_SPIRIT_THREADSAFE)
 # define all needed boost libraries
 set(BOOST_LIBS 
    atomic
-	system 
-	filesystem 
-	thread 
-	date_time 
-	chrono 
-	regex
-   
+   system 
+   filesystem 
+   thread 
+   date_time 
+   chrono 
+   regex
    unit_test_framework 
 )
 
@@ -159,13 +158,16 @@ set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Po
 
 # Yadoms Tests sources
 set(YADOMS_TESTS_SRC
-	stdafx.cpp
-	stdafx.h
+   stdafx.cpp
+   stdafx.h
 
-	testMain.cpp
+   testMain.cpp
    
    testCommon/fileSystem.h
    testCommon/fileSystem.cpp
+
+   testCommon/serialTeleInfoMessage.h
+   testCommon/serialTeleInfoMessage.cpp
 )
 
 

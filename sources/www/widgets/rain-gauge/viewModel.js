@@ -10,10 +10,6 @@ function rainGaugeDisplayViewModel() {
     this.rate_24h = ko.observable("-");
     this.unit = ko.observable("");
     
-    //observable data - titles
-    this.title1 = ko.observable("");
-    this.title2 = ko.observable("");
-    
     //observable data - last receive information
     this.shouldBeVisible = ko.observable(false);
     this.lastReceiveDate = ko.observable($.t("widgets/rain-gauge:loadingData"));
@@ -35,10 +31,6 @@ function rainGaugeDisplayViewModel() {
             batteryItem: true
         });
       
-      // Display traductions
-      self.title1($.t("widgets/rain-gauge:title1"));
-      self.title2($.t("widgets/rain-gauge:title2"));      
-      
       return this.widgetApi.askServerLocalTime(function (serverLocalTime) {
          self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
       });
@@ -46,8 +38,6 @@ function rainGaugeDisplayViewModel() {
   
     this.getValues = function (keywordId) {
        self = this;
-       
-       console.log (self.acquisitionData);
        
        // When all values are outside the range, only 1 value is sent.
        if (self.acquisitionData.length == 1)

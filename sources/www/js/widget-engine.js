@@ -11,8 +11,6 @@ var OfflineServerNotification = null;
 
 var LastEventLogId = null;
 
-var failGetEventCounter = 0;
-
 function initializeWidgetEngine() {
 
     //we ask all widgets packages
@@ -111,26 +109,32 @@ function tabClick(pageId) {
 
     if ((currentPage != null) && (currentPage.id === pageId))
         return;
-
+     
     var page = PageManager.getPage(pageId);
+    
     assert(page != null, "page Id doesn't exit");
     if (page) {
         //and if it's not loaded for the moment
         if (!page.loaded) {
             requestWidgets(page).done(function () {
                 //we poll all widget data
-                updateWidgetsPolling();
+                updateWidgetsPolling().always(function()
+                {
+			          PageManager.refreshWidgets(page);
+                   PageManager.updateWidgetLayout(page);
+                   page.$grid.packery("layout");                   
+                });
             });
         } else {
             //we poll all widget data
-            updateWidgetsPolling();
+            updateWidgetsPolling().always(function()
+            {
+			      PageManager.refreshWidgets(page);
+               PageManager.updateWidgetLayout(page);
+               page.$grid.packery("layout");               
+               updateWebSocketFilter();
+             });
         }
-        //debounce
-        setTimeout(function () {
-			PageManager.refreshWidgets(page);
-            PageManager.updateWidgetLayout(page);
-            page.$grid.packery("layout");
-        }, 10);
     }
 }
 
@@ -139,9 +143,6 @@ function periodicUpdateTask() {
     //to do that we ask event message
     EventLoggerManager.getFrom(LastEventLogId)
     .done(function (data) {
-        //we reset the fail event counter
-        failGetEventCounter = 0;
-
         //if we were offline we go back to online status
         if (!serverIsOnline) {
             serverIsOnline = true;
@@ -225,21 +226,18 @@ function periodicUpdateTask() {
     })
     .fail(function (error) {
         if (serverIsOnline) {
-            failGetEventCounter++;
-            if (failGetEventCounter >= 3) {
-                //we indicate that *server has passed offline
-                serverIsOnline = false;
-                OfflineServerNotification = notifyError($.t("mainPage.errors.youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline"), error, false);
-                //we change the interval period
-                clearInterval(widgetUpdateInterval);
-                widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateIntervalInOfflineMode);
-                failGetEventCounter = 0;
-                //we close the dashboard if shown
-                $('#main-dashboard-modal').modal('hide');
-                //we stop refresh timer of the dashboard if set
-                if (Yadoms.periodicDashboardTask)
-                    clearInterval(Yadoms.periodicDashboardTask);
-            }
+          //we indicate that *server has passed offline
+          serverIsOnline = false;
+          OfflineServerNotification = notifyError($.t("mainPage.errors.youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline"), error, false);
+          //we change the interval period
+          clearInterval(widgetUpdateInterval);
+          widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateIntervalInOfflineMode);
+          failGetEventCounter = 0;
+          //we close the dashboard if shown
+          $('#main-dashboard-modal').modal('hide');
+          //we stop refresh timer of the dashboard if set
+          if (Yadoms.periodicDashboardTask)
+              clearInterval(Yadoms.periodicDashboardTask);
         }
         //if we are again offline there is nothing to do
     });
@@ -328,20 +326,35 @@ function updateWebSocketFilter() {
 }
 
 function updateWidgetsPolling() {
+    var d = new $.Deferred();
+
     //we browse each widget instance
     var page = PageManager.getCurrentPage();
-    if (page == null)
-        return;
-
-    $.each(page.widgets, function (widgetIndex, widget) {
-        //we ask which devices are needed for this widget instance
-        updateWidgetPolling(widget);
-    });
+    if (page == null) {
+        d.resolve();
+    } else {
+      var arrayOfDeffered = [];
+        
+       $.each(page.widgets, function (widgetIndex, widget) {
+           
+           //we ask which devices are needed for this widget instance
+           var deffered = updateWidgetPolling(widget);
+           arrayOfDeffered.push(deffered);
+       });
+       
+       $.whenAll(arrayOfDeffered).done(function () {
+          d.resolve();
+       })
+       .fail(function (error) {
+          d.reject();
+        });
+    }    
+    return d.promise();
 }
 
 function updateWidgetPolling(widget) {
     if (!isNullOrUndefined(widget.listenedKeywords)) {
-        AcquisitionManager.getLastValues(widget.listenedKeywords)
+        var d = AcquisitionManager.getLastValues(widget.listenedKeywords)
         .done(function (data) {
             if (data) {
                 $.each(data, function (index, acquisition) {
@@ -355,4 +368,6 @@ function updateWidgetPolling(widget) {
             notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for widget = " + widget.id }), error);
         });
     }
+    
+    return d.promise();
 }

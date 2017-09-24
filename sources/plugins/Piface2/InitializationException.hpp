@@ -9,7 +9,6 @@ class CInitializationException : public shared::exception::CException
 public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
-   /// \param[in]  message             Exception message
    //--------------------------------------------------------------
    explicit CInitializationException(const std::string& message)
       :CException(message)

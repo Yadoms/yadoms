@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CurrentEnergy.h"
 #include <shared/exception/InvalidParameter.hpp>
-#include "../IUnsecuredProtocolFilter.h"
+#include "RareDeviceIdFilter.h"
 #include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
@@ -62,7 +62,8 @@ namespace rfxcomMessages
 
    boost::shared_ptr<IUnsecuredProtocolFilter> CCurrentEnergy::createFilter()
    {
-      return boost::make_shared<CCurrentEnergyFilter>();
+      return boost::make_shared<CRareDeviceIdFilter>(3,
+                                                     boost::posix_time::hours(12));
    }
 
    void CCurrentEnergy::Init(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -75,7 +76,8 @@ namespace rfxcomMessages
       if (!api->deviceExists(m_deviceName))
       {
          if (!m_messageFilter->isValid(m_deviceName))
-            throw std::invalid_argument("Receive unknown device for unsecured protocol, may be a transmission error : ignored");
+            throw std::invalid_argument((boost::format("Receive unknown device (id %1%) for unsecured protocol (CURRENTENERGY / %2%), may be a transmission error : ignored")
+               % m_id % m_deviceModel).str());
 
          shared::CDataContainer details;
          details.set("type", pTypeCURRENTENERGY);

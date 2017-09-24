@@ -31,3 +31,4 @@ tests/unit/builds
 *~
 
 .scannerwork
+sources/www/.vscode

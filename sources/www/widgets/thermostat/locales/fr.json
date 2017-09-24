@@ -1,0 +1,42 @@
+{
+	"name": "Thermostat",
+	"description": "Un widget qui affiche les paramètres(température ambiante, consignes, état) d'un chauffage",
+   "title1": "température",
+   "title2": "consigne",      
+	"configurationSchema": {
+      "LivetemperatureSection" : {
+			"name": "Température ambiante",
+			"description": "",
+         "content": {        
+		      "temperatureDevice": {
+			      "name": "température ambiante",
+			      "description": "température de la pièce, de la maison, ..."
+		      }
+         }
+      },
+      "controlSection" : {
+			"name": "Consigne",
+			"description": "",
+         "content": {      
+		      "temperatureSet": {
+			      "name": "consigne de température",
+			      "description": ""
+            },
+            "stepValue":{
+			      "name": "Pas",
+			      "description": "Entrer le pas d'incrément"
+            }
+         }
+		},
+      "thermostatStateSection" : {
+			"name": "Etat de l'équipement",
+			"description": "",
+         "content": {
+            "state":{
+			      "name": "Etat de l'équipement (chauffage, réfrigération, ...)",
+			      "description": ""   
+            }
+         }
+      }
+	}
+}

@@ -28,16 +28,12 @@ CSigfox::~CSigfox()
 // Event IDs
 enum
 {
-   kEvtTimerRefreshCPULoad = yApi::IYPluginApi::kPluginFirstEventId, // Always start from shared::event::CEventHandler::kUserFirstId
-   kRefreshStatesReceived,
-   kConnectionRetryTimer,
-   kAnswerTimeout
+   kConnectionRetryTimer = yApi::IYPluginApi::kPluginFirstEventId // Always start from shared::event::CEventHandler::kUserFirstId
 };
 
 void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    YADOMS_LOG(information) << "Sigfox is starting...";
-
    m_configuration.initializeWith(api->getConfiguration());
       
    try {

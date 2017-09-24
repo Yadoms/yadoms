@@ -310,7 +310,6 @@ WidgetManager.loadWidgets = function (widgetList, pageWhereToAdd) {
     //then create widgets on page
     $.when.apply($, arrayOfDeffered)
        .done(function () {
-           d.resolve();
            var arrayOfLoadingWidgetDeferred = [];
            $.each(widgetList, function (index, widget) {
                arrayOfLoadingWidgetDeferred.push(WidgetManager.loadWidget(widget, pageWhereToAdd));
@@ -559,11 +558,10 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
                         widget.$gridWidget.find(".textfit").fitText();
 						
                         //we ask for widget refresh data
-                        updateWidgetPolling(widget);
-						
-						      widget.viewModel.widgetApi.manageRollingTitle();
-                        
-                        d.resolve();
+                        updateWidgetPolling(widget).always(function() {
+						         widget.viewModel.widgetApi.manageRollingTitle();
+                           d.resolve();                           
+                        });
                     });
                 });
             });
@@ -648,7 +646,7 @@ WidgetManager.createGridWidget = function (widget) {
 
     //the configuration button is visible only if there is a custom title or a confgiuration for this widget
     if ((parseBool(widget.package.hasTitle)) || (widget.package.configurationSchema)) {
-        domWidget += "<div class=\"customizationButton widgetCustomizationButton btn-configure-widget\"><i class=\"fa fa-cog\"></i></div>\n";
+        domWidget += "<div class=\"customizationButton widgetCustomizationButton btn-configure-widget\"><i class=\"fa fa-lg fa-cog\"></i></div>\n";
     }
 
     var type = widget.type;
@@ -656,7 +654,7 @@ WidgetManager.createGridWidget = function (widget) {
         type = WidgetManager.DeactivatedWidgetPackageName;
     }
 
-    domWidget += "<div class=\"customizationButton widgetCustomizationButton btn-delete-widget\"><i class=\"fa fa-trash-o\"></i></div>\n" +
+    domWidget += "<div class=\"customizationButton widgetCustomizationButton btn-delete-widget\"><i class=\"fa fa-lg fa-trash-o\"></i></div>\n" +
              "</div>\n" +
         "</div>\n" +
         "<div class=\"panel panel-primary panel-widget widget-" + type + "\" >" +
@@ -667,7 +665,7 @@ WidgetManager.createGridWidget = function (widget) {
             "<div class=\"panel-widget-body\" id=\"widget-" + widget.id + "\"  data-bind=\"template: { name: '" + type + "-template' }\"/>\n" +
         "</div>\n" +
     "</div>\n";
-
+    
     var $domWidget = $(domWidget);
     page.$grid.append($domWidget).packery("appended", $domWidget);
 

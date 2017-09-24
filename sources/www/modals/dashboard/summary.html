@@ -1,7 +1,7 @@
 <div id="dashboard-summary">
    <h1 class="page-header" data-i18n="modals.dashboard.sub-windows.summary.title"></h1>
    <div class="summary-table">
-      <table class="table table-striped table-hover table-bordered dashboard-list">
+      <table class="table table-striped table-hover table-bordered dashboard-list table-summary">
          <tr>
             <td class="header" data-i18n="modals.dashboard.sub-windows.summary.connectedUser"></td>
             <td id="dashboard-summary-connected-user">None</td>
@@ -26,37 +26,70 @@
             <td class="header" data-i18n="modals.dashboard.sub-windows.summary.developerMode"></td>
             <td id="dashboard-summary-developerMode"><input type="checkbox" disabled readonly checked/></td>
          </tr>
+        
       </table>
    </div>
 </div>
 
 <script>
    
+   Yadoms.initializeSummaryDashboard = function () {
+      var d = new $.Deferred();
+      var arrayOfDeffered = [];
+      
+      //we update all fields
+      $("tr.line-developer-mode").hide();
 
-   //we update all fields
-   $("tr.line-developer-mode").hide();
+      var deffered = RestEngine.getJson("rest/configuration/Database/Version");
+      arrayOfDeffered.push(deffered);
+      deffered.done(function(data) {
+         $("td#dashboard-summary-database-version").text(data.value);
+      })
+      .fail(function(error) {
+            notifyError($.t("modals.dashboard.sub-windows.summary.errorRequestingDatabaseVersion"), error);
+      });
 
-   RestEngine.getJson("rest/configuration/Database/Version")
-   .done(function(data) {
-      $("td#dashboard-summary-database-version").text(data.value);
-   })
-   .fail(function(error) {
-         notifyError($.t("modals.dashboard.sub-windows.summary.errorRequestingDatabaseVersion"), error);
-   });
+      var deffered2 = YadomsInformationManager.getList();
+      arrayOfDeffered.push(deffered2);
+      deffered2.done(function(data) {
 
-   YadomsInformationManager.getList()
-      .done(function(data) {
+            $("td#dashboard-summary-platform").text(data.runningPlatform);
+            $("td#dashboard-summary-software-version").text(data.yadoms.version);
+            $("td#dashboard-summary-started-from").text(DateTimeFormatter.isoDateToDate(data.startupTime).fromNow());
 
-         $("td#dashboard-summary-platform").text(data.runningPlatform);
-         $("td#dashboard-summary-software-version").text(data.yadoms.version);
-         $("td#dashboard-summary-started-from").text(DateTimeFormatter.isoDateToDate(data.startupTime).fromNow());
-
-         if (data.developerMode) {
-            $("tr.line-developer-mode").show();
-         }
+            if (data.developerMode) {
+               $("tr.line-developer-mode").show();
+            }
+         })
+         .fail(function (error) {
+            notifyError($.t("objects.generic.errorGetting", { objectName: $.t("core.yadoms.information") }), error);
+         });
+      
+      var deffered3 = MaintenanceManager.getDatabaseDetails();
+      arrayOfDeffered.push(deffered3);
+      deffered3.done(function (databaseDetails) {
+         $.each(databaseDetails, function (index, value) {
+            if (index !== "backupSupport") {
+               var txt = value;
+               if (index === "size") {
+                  txt = humanFileSize(value);
+               }
+               $(".table-summary").append('<tr><td class="header" data-i18n="modals.dashboard.sub-windows.summary.' + index + '"></td><td>' + txt + '</td></tr>');
+            }
+         });
       })
       .fail(function (error) {
          notifyError($.t("objects.generic.errorGetting", { objectName: $.t("core.yadoms.information") }), error);
-      });
-
+      });      
+      
+      $.whenAll(arrayOfDeffered).done(function () {
+         $(".summary-table").i18n();
+         d.resolve();
+      })
+      .fail(function (error) {
+         d.reject();
+      });           
+           
+      return d.promise();      
+   }
 </script>

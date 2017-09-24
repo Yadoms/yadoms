@@ -18,12 +18,14 @@ enum
 CTeleInfoReceiveBufferHandler::CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
                                                              int receiveDataEventId,
                                                              const boost::posix_time::time_duration suspendDelay,
-															 boost::shared_ptr<shared::communication::IBufferLogger> logger)
+                                                             boost::shared_ptr<shared::communication::IBufferLogger> logger,
+                                                             const bool isdeveloperMode)
    : m_receiveDataEventHandler(receiveDataEventHandler),
      m_receiveDataEventId(receiveDataEventId),
      m_logger (logger),
      m_nextSendMessageDate(shared::currentTime::Provider().now()),
-     m_suspendDelay (suspendDelay)
+     m_suspendDelay (suspendDelay),
+   m_isDeveloperMode(isdeveloperMode)
 {
 }
 
@@ -39,15 +41,17 @@ void CTeleInfoReceiveBufferHandler::push(const shared::communication::CByteBuffe
    for (size_t idx = 0; idx < buffer.size(); ++idx)
 	   m_content.push_back(buffer[idx]);
 
+   if (m_isDeveloperMode) m_logger->logReceived(buffer);
+
    // Send message if complete (separate aggregated messages)
    while (true)
    {
-      m_logger->logReceived(shared::communication::CByteBuffer(m_content));
-
       const auto messages = getCompleteMessage();
       if (messages->empty())
          break;
       notifyEventHandler(messages);
+
+      m_logger->logReceived(shared::communication::CByteBuffer(m_content));
 
       m_nextSendMessageDate = shared::currentTime::Provider().now() + m_suspendDelay;
    }
@@ -72,9 +76,6 @@ boost::shared_ptr<std::map<std::string, std::string>> CTeleInfoReceiveBufferHand
    if (m_content.empty())
       return noMessages;
 
-   if (m_content[1] != kStartMessage)
-	   return noMessages;
-
    auto etxIterator = std::find(m_content.rbegin(), m_content.rend(), kETX);
    if (etxIterator == m_content.rend())
    {
@@ -85,6 +86,8 @@ boost::shared_ptr<std::map<std::string, std::string>> CTeleInfoReceiveBufferHand
    }
 
    size_t etxPosition = std::distance(std::begin(m_content), etxIterator.base()) - 1;
+
+   m_logger->logReceived(shared::communication::CByteBuffer(m_content));
 
    // The message is complete
    auto frame = boost::make_shared<std::vector<unsigned char>>(m_content.begin(), m_content.begin() + etxPosition + 1);

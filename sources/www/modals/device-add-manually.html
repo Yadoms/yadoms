@@ -39,7 +39,7 @@
             schema,
             null,
             "modals.add-manually-device.",
-            $modalBody);   
+            $modalBody);
 
          //i18n
          $modalBody.i18n();
@@ -50,7 +50,7 @@
          //validation form
          //erase previous jqBootstrapValidation
          $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
-            preventSubmit: false,
+            preventSubmit: true,
             submitError: function ($form, event, errors) {
                console.warn("Unable to validate form: " + errors);
                event.preventDefault();
@@ -64,6 +64,7 @@
                   
                   if (config.addManuallyDeviceSection.activeSection === "attachedToPlugin") {
                      var pluginId = config.addManuallyDeviceSection.content.attachedToPlugin.content.plugins;
+                     
                      var pluginInstance = $.grep(availablePlugins, function(e) { return e.id === pluginId; });
                      callback(pluginInstance[0]);
                   } else {

@@ -1,0 +1,42 @@
+{
+	"name": "Thermostat",
+	"description": "A widget to display parameters about a boiler/heater",
+   "title1": "temperature",
+   "title2": "temperature set",   
+	"configurationSchema": {
+      "LivetemperatureSection" : {
+			"name": "Live temperature",
+			"description": "",
+         "content": {        
+		      "temperatureDevice": {
+			      "name": "Live temperature",
+			      "description": "Temperature of your room, house, ..."
+		      }
+         }
+      },
+      "controlSection" : {
+			"name": "Temperature control",
+			"description": "",
+         "content": {      
+		      "temperatureSet": {
+			   "name": "Temperature set",
+			   "description": "Temperature set for the place"
+            },
+            "stepValue":{
+			      "name": "Step",
+			      "description": "set the incremental step"      
+            }
+         }
+		},
+      "thermostatStateSection" : {
+			"name": "State display",
+			"description": "",
+         "content": {
+            "state":{
+			      "name": "State of the boiler/heater",
+			      "description": ""   
+            }
+         }
+      }
+	}
+}

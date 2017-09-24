@@ -88,6 +88,11 @@
 }
 
 .panel-widget-customization-overlay {
+    font-size: 2em;
+    background-color: rgba(128,128,128,0.4);
+    border-color: rgba(128,128,128,1);
+    border-style: dashed;
+    border-width: 1px;
     position: absolute;
     left: 0;
     right: 0;
@@ -108,7 +113,7 @@
     border-right: 0;
     border-top: 0;
     border-bottom: 0;
-    margin-top: 3px;
+    margin-top: 25px;
 }
 
 .widgetCustomizationButton {

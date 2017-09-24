@@ -269,7 +269,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    // Must do this inside a critical section to avoid conflicts with the main thread
    boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-   //get all glocbal informations (for all notifications)
+   //get all global informations (for all notifications)
    auto vID = _notification->GetValueID();
    ECommandClass commandClass(static_cast<int>(vID.GetCommandClassId()));
 
@@ -298,11 +298,8 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          {
             auto historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
             auto d(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), historizedData));
-
-            YADOMS_LOG(debug) << "===================================";
-            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : instance=" << static_cast<int>(vID.GetInstance());
-            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : node=" << static_cast<int>(vID.GetNodeId());
-            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : valeur=" << historizedData->formatValue();
+            std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
+            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : node.instance=" << static_cast<int>(vID.GetNodeId()) << "." << static_cast<int>(vID.GetInstance()) << " => " << vLabel << "=" << historizedData->formatValue();
 
             if (m_handler != nullptr)
             {
@@ -327,11 +324,9 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          {
             auto historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
             auto d(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), historizedData));
+            std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
 
-            YADOMS_LOG(debug) << "===================================";
-            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : instance=" << static_cast<int>(vID.GetInstance());
-            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : node=" << static_cast<int>(vID.GetNodeId());
-            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : valeur=" << historizedData->formatValue();
+            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : node.instance=" << static_cast<int>(vID.GetNodeId()) << "." << static_cast<int>(vID.GetInstance()) << " => " << vLabel << "=" << historizedData->formatValue() ;
 
             if (m_handler != nullptr)
             {

@@ -86,7 +86,7 @@
     },
     "CerticiatePassphrase": {
       "name": "Mot de passe du certificat (optionnel)",
-      "description": "Mot de passe (passphrase) du certiciat SSL"
+      "description": "Mot de passe (passphrase) du certificat SSL"
     }
   }
 }

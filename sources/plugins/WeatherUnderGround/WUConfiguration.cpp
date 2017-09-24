@@ -72,3 +72,8 @@ bool CWUConfiguration::isTempIndividualKeywordsEnabled() const
 {
    return m_data.get<bool>("Forecast10Days.content.individualTempForecast");
 }
+
+bool CWUConfiguration::isConditionsForecastIndividualKeywordsEnabled() const
+{
+   return m_data.get<bool>("Forecast10Days.content.individualConditionsForecast");
+}

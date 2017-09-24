@@ -12,7 +12,7 @@ namespace database
       class CSQLiteRequester : public IDatabaseRequester
       {
       public:
-         explicit CSQLiteRequester(const std::string& dbFile, const std::string& dbBackupFile);
+         explicit CSQLiteRequester(const std::string& dbFile);
          virtual ~CSQLiteRequester();
 
          // IDatabaseEngine implementation
@@ -22,7 +22,7 @@ namespace database
          // [END] IDatabaseEngine implementation
 
          // IDatabaseRequester implementation
-         common::CQuery newQuery() override;
+         boost::shared_ptr<common::CQuery> newQuery() override;
          void queryEntities(common::adapters::IResultAdapter* pAdapter, const common::CQuery& querytoExecute) override;
          int queryStatement(const common::CQuery& querytoExecute, bool throwIfFails = true) override;
          int queryCount(const common::CQuery& querytoExecute) override;
@@ -48,8 +48,7 @@ namespace database
 
          // IDataBackup implementation
          bool backupSupported() override;
-         void backupData(ProgressFunc reporter) override;
-         boost::filesystem::path lastBackupData() override;
+         void backupData(const std::string & backupFolder, ProgressFunc reporter) override;
          // [END] IDataBackup implementation
 
       protected:
@@ -70,11 +69,6 @@ namespace database
          /// \Brief		Database path
          //--------------------------------------------------------------
          const std::string m_dbFile;
-
-         //--------------------------------------------------------------
-         /// \Brief		Backup database path
-         //--------------------------------------------------------------
-         const std::string m_dbBackupFile;
 
          //--------------------------------------------------------------
          /// \Brief		true if a transaction is already begin

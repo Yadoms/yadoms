@@ -29,14 +29,17 @@ namespace web
          catch (shared::exception::CInvalidParameter&)
          {
             YADOMS_LOG(debug) << "Fail to parse JSON : " << frameAsString;
+            throw;
          }
          catch (shared::exception::COutOfRange&)
          {
             YADOMS_LOG(debug) << "Fail to parse frame. Unknown type : " << frameAsString;
+            throw;
          }
          catch (std::exception&)
          {
             YADOMS_LOG(debug) << "Fail to parse frame. Unknown error : " << frameAsString;
+            throw;
          }
 
          //if something fail return null

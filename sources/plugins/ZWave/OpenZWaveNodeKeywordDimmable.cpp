@@ -14,12 +14,12 @@ COpenZWaveNodeKeywordDimmable::~COpenZWaveNodeKeywordDimmable()
 bool COpenZWaveNodeKeywordDimmable::sendCommand(const std::string& commandData)
 {
    m_keyword->set(commandData);
-   return realSendCommand<int>(m_keyword->switchLevel());
+   return realSendCommand<Poco::Int32>(m_keyword->switchLevel());
 }
 
 boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> COpenZWaveNodeKeywordDimmable::getLastKeywordValue()
 {
-   m_keyword->set(extractLastValue<int>());
+   m_keyword->set(extractLastValue<Poco::Int32>());
    return m_keyword;
 }
 
@@ -27,4 +27,3 @@ shared::CDataContainer COpenZWaveNodeKeywordDimmable::serialize()
 {
    return m_keyword->getTypeInfo();
 }
-

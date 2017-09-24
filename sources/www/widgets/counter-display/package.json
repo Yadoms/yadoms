@@ -1,6 +1,6 @@
 {
   "type": "counter-display",
-  "version": "1.0.0-beta",
+  "version": "1.0.0-rc.1",
   "author": "Jean-Michel BERHAULT",
   "url": "https://github.com/Yadoms/yadoms/wiki/counter-display",
   "credits": "[Odometer v0.4.6](http://github.hubspot.com/odometer/docs/welcome/)",
@@ -22,7 +22,7 @@
   "configurationSchema": {
     "device": {
       "type": "keyword",
-      "expectedCapacity": [ "voltage", "energy", "current", "power", "apparentpower", "weight", "pressure", "load", "count" ],
+      "expectedKeywordType": "numeric",
       "expectedKeywordAccess": "get"
     }
   }

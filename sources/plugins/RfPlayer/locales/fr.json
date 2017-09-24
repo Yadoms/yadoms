@@ -184,7 +184,7 @@
 				},
 				"lbt": {
 					"name": "Listen Before Talk",
-					"description": "Lorsqu'il est activé, l'émetteur <i>écoute</i> l'activité actuelle sur la même fréquence et attend un silence avant d'emettre. Les trames envoyées ne peuvent pas être retardés de plus de 3 secondes.",
+					"description": "Lorsqu'il est activé, l'émetteur écoute l'activité actuelle sur la même fréquence et attend un silence avant d'emettre. Les trames envoyées ne peuvent pas être retardés de plus de 3 secondes.",
 					"content": {
 						"lbtvalue": {
 							"name": "Déclencheur",
@@ -397,13 +397,152 @@
 		"EBlyss": {
 			"name": "",
 			"values": {
-				"Off": "OFF",
-				"On": "ON",
-				"Dim": "DIM",
-				"AllOff": "Tous ON",
-				"AllOn": "Tous OFF",
-				"Assoc": "Trame d'appairage"
+				"OFF": "OFF",
+				"ON": "ON",
+				"DIM": "DIM",
+				"ALL_OFF": "Tous ON",
+				"ALL_ON": "Tous OFF",
+				"ASSOC": "Trame d'appairage"
 			}
-		}
+		},
+		"ERts": {
+			"name": "",
+			"values": {
+				"OFF": "OFF",
+				"ON": "ON",
+				"DIM": "DIM",
+				"ALL_OFF": "Tous ON",
+				"ALL_ON": "Tous OFF",
+				"ASSOC": "Trame d'appairage"
+			}
+		},
+		"EDomia": {
+			"name": "",
+			"values": {
+				"OFF": "OFF",
+				"ON": "ON",
+				"DIM": "DIM",
+				"ASSOC": "Trame d'appairage"
+			}
+		},
+		"EKd101": {
+			"name": "",
+			"values": {
+				"OFF": "OFF",
+				"ON": "ON",
+				"DIM": "DIM",
+				"ASSOC": "Trame d'appairage"
+			}
+		},
+		"EParrot": {
+			"name": "",
+			"values": {
+				"OFF": "OFF",
+				"ON": "ON",
+				"DIM": "DIM",
+				"ALL_OFF": "Tous OFF",
+				"ALL_ON": "Tous ON",
+				"ASSOC": "Trame d'appairage"
+			}
+		},
+		"EVisonic": {
+			"name": "",
+			"values": {
+				"OFF": "OFF",
+				"ON": "ON",
+				"DIM": "DIM",
+				"ASSOC": "Trame d'appairage"
+			}
+		},
+		"EX2D": {
+			"name": "",
+			"values": {
+				"OFF": "OFF",
+				"ON": "ON",
+				"DIM": "DIM",
+				"ALL_OFF": "Tous OFF",
+				"ALL_ON": "Tous ON",
+				"ASSOC": "Trame d'appairage"
+			}
+		},
+		"EX10": {
+			"name": "",
+			"values": {
+				"OFF": "OFF",
+				"ON": "ON",
+				"DIM": "DIM",
+				"ALL_OFF": "Tous OFF",
+				"ALL_ON": "Tous ON",
+				"ASSOC": "Trame d'appairage"
+			}
+		},
+		"EType0StateValues": {
+			"name": "",
+			"values": {
+				"OFF": "OFF",
+				"ON": "ON",
+            "BRIGHT": "Brillant",
+				"DIM": "DIM",
+				"ALL_OFF": "Tous OFF",
+				"ALL_ON": "Tous ON"
+			}
+		},
+		"EType1StateValues": {
+			"name": "",
+			"values": {
+				"OFF": "OFF",
+				"ON/Alert": "ON/Alerte",
+				"ALL_OFF": "Tous OFF",
+				"ALL_ON": "Tous ON"
+			}
+		},
+		"EType2KeyCodeValues": {
+			"name": "",
+			"values": {
+				"Button1": "Bouton 1",
+				"Button2": "Bouton 2",
+				"Button3": "Bouton 3",
+				"Button4": "Bouton 4"
+			}
+		},
+		"EType3RemoteCodeValues": {
+			"name": "",
+			"values": {
+				"Left": "Gauche",
+				"Right": "Droite"
+			}
+		},
+		"EType3ShutterCodeValues": {
+			"name": "",
+			"values": {
+				"DownOff": "Descendre/Eteindre",
+				"My": "My",
+            "UpOn": "Monter/Allumer",
+            "Assoc": "Trame d'appairage"
+			}
+		},
+		"EType10OperatingModeValues": {
+			"name": "",
+			"values": {
+				"Eco": "Eco",
+				"Moderate": "Modéré",
+            "Medio": "Mediane",
+            "Comfort": "Confort",
+            "Stop": "Arrêt",
+            "OutOfFrost": "Plus de froid",
+            "Special": "Spécial",
+            "Auto": "Auto",
+            "Centralised": "Centralisé"
+			}
+		},
+		"EType11Statealues": {
+			"name": "",
+			"values": {
+				"DownOff": "Descendre/Eteindre",
+				"My": "My",
+            "UpOn": "Monter/Allumer",
+            "Assoc": "Trame d'appairage"
+			}
+		}      
 	}
 }

@@ -126,7 +126,8 @@ namespace equipments
          std::string CGXfileName = "WESVERSION.CGX";
          auto results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
                                                   credentials,
-                                                  CGXfileName);
+                                                  CGXfileName,
+                                                  urlManager::httpRequestCreationTimeout);
 
          // get the revision, for E/S numbers
          m_version = results.get<int>("version");
@@ -146,7 +147,8 @@ namespace equipments
             CGXfileName = "WESNAMES" + boost::lexical_cast<std::string>(m_version) + ".CGX";
             results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
                                                 credentials,
-                                                CGXfileName);
+                                                CGXfileName,
+                                                urlManager::httpRequestCreationTimeout);
 
             contract[0] = results.get<subdevices::ContractAvailable>("CPT1_abo_name");
             contract[1] = results.get<subdevices::ContractAvailable>("CPT2_abo_name");
@@ -334,18 +336,22 @@ namespace equipments
          details.printToLog(YADOMS_LOG(information));
 
          //Déclaration of all IOs
+         if (api->deviceExists(m_deviceName))
+         {
+            auto existingModel = api->getDeviceModel(m_deviceName);
+            if (existingModel.empty())
+               api->updateDeviceModel(m_deviceName, "WES");
 
-         auto existingModel = api->getDeviceModel(m_deviceName);
-         if (existingModel.empty())
-            api->updateDeviceModel(m_deviceName, "WES");
-
-         api->updateDeviceDetails(m_deviceName, details);
-
-         api->declareKeywords(m_deviceName, keywordsToDeclare);
+            api->updateDeviceDetails(m_deviceName, details);
+            api->declareKeywords(m_deviceName, keywordsToDeclare);
+         }
+         else
+            api->declareDevice(m_deviceName, "WES", "WES", keywordsToDeclare, details);
       }
       catch (std::exception& e)
       {
          YADOMS_LOG(error) << e.what();
+         throw e;
       }
    }
 
@@ -378,7 +384,8 @@ namespace equipments
 
          shared::CDataContainer results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
                                                                     credentials,
-                                                                    CGXfileName);
+                                                                    CGXfileName,
+                                                                    urlManager::httpRequestWESTimeout);
 
          results.printToLog(YADOMS_LOG(trace));
 

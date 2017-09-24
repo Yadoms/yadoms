@@ -26,7 +26,7 @@ WidgetApi.prototype.find = function (pattern) {
  * @returns {} a promise that's return done when information grabbed from server
  */
 WidgetApi.prototype.getKeywordInformation = function (keywordId) {
-   assert(!isNullOrUndefined(keywordId), "keywordId must be defined");
+   assert(!isNullOrUndefinedOrEmpty(keywordId), "keywordId must be defined");
    return KeywordManager.get(keywordId);
 };
 
@@ -35,7 +35,7 @@ WidgetApi.prototype.getKeywordInformation = function (keywordId) {
  * @param {} keywordIds to register (can be a single value or an array of values)
  */
 WidgetApi.prototype.registerKeywordAcquisitions = function (keywordIds) {
-   assert(!isNullOrUndefined(keywordIds), "keywordIds must be defined");
+   assert(!isNullOrUndefinedOrEmpty(keywordIds), "keywordIds must be defined");
 
    var self = this;
 
@@ -240,23 +240,22 @@ WidgetApi.prototype.notify = function(message, gravity, timeout) {
  
 WidgetApi.prototype.manageRollingTitle = function () {
 	var self = this;
-	
-	if (self.widget.displayTitle)
+   
+	if (self.widget.displayTitle && self.widget.toolbarActivated)
 	{
-		 
-		if ( $("[widget-id=" + self.widget.id + "]").find(".panel-widget-title-toolbar")[0].scrollWidth < 15 )
+		if ( self.widget.$toolbar[0].scrollWidth < 15 )
 			toolbarSize = 0;
 		else
-			toolbarSize = $("[widget-id=" + self.widget.id + "]").find(".panel-widget-title-toolbar")[0].scrollWidth;
+			toolbarSize = self.widget.$toolbar[0].scrollWidth;
 		 
 		//Calculate the overflow ! Theses values could be obtain, only after the application !
 		var overflow = toolbarSize +
-					   $("[widget-id=" + self.widget.id + "]").find(".panel-widget-title")[0].scrollWidth -
-					   $("[widget-id=" + self.widget.id + "]").find(".panel-widget-header")[0].scrollWidth; 
+					   self.widget.$header.find(".panel-widget-title")[0].scrollWidth -
+					   self.widget.$header[0].scrollWidth; 
 					   
 		if (overflow > 0) {
 			
-			if ($("[widget-id=" + self.widget.id + "]").find(".panel-widget-title-" + self.widget.id).length !== 0)
+			if (self.widget.$header.find(".panel-widget-title-" + self.widget.id).length !== 0)
 			{ 
 				 rule = getRule ( "panel-widget-title-marquee-" + self.widget.id );
                  
@@ -272,14 +271,14 @@ WidgetApi.prototype.manageRollingTitle = function () {
 				$("<style type='text/css'> .panel-widget-title-" + self.widget.id + "{margin: 0 auto; overflow: hidden; white-space: nowrap; box-sizing: border-box; animation: panel-widget-title-marquee-" + self.widget.id +
 				  " 10s steps(150) infinite;-webkit-animation-play-state: running; animation-play-state: running;}</style>").appendTo("head");	//html > //ease-in-out
 				$("<style type='text/css'> @keyframes panel-widget-title-marquee-" + self.widget.id + " { 0%   { text-indent: 0px; } 50% { text-indent: " + -overflow + "px;}  100%  { text-indent: 0px; } }</style>").appendTo("head");
-				$("[widget-id=" + self.widget.id + "]").find(".panel-widget-title").addClass("panel-widget-title-" + self.widget.id);
+				self.widget.$header.find(".panel-widget-title").addClass("panel-widget-title-" + self.widget.id);
 			}
 		}
 		else
 		{
 			// If exist, remove the class associated to the div
-			$("[widget-id=" + self.widget.id + "]").find(".panel-widget-title").removeClass("panel-widget-title-" + self.widget.id);
-		}		
+			self.widget.$header.find(".panel-widget-title").removeClass("panel-widget-title-" + self.widget.id);
+		}
 	}
 }
 

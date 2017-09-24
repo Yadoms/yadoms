@@ -3,7 +3,7 @@
 #include "IRfxcomMessage.h"
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include "CurrentEnergyFilter.h"
+#include "../IUnsecuredProtocolFilter.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -20,14 +20,14 @@ namespace rfxcomMessages
       /// \param[in] api                  Yadoms APi context
       /// \param[in] rbuf                 The received buffer
       /// \param[in] rbufSize             Message size, received from Rfxcom
-      /// \param[in] unsecuredProtocolFilter The filter for unsecured protocols
+      /// \param[in] messageFilter        The filter for unsecured protocols
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
       CCurrentEnergy(boost::shared_ptr<yApi::IYPluginApi> api,
                      const RBUF& rbuf,
                      size_t rbufSize,
-                     boost::shared_ptr<IUnsecuredProtocolFilter> unsecuredProtocolFilter);
+                     boost::shared_ptr<IUnsecuredProtocolFilter> messageFilter);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

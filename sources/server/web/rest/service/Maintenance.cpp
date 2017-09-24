@@ -4,7 +4,7 @@
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/RestDispatcher.h"
 #include "web/rest/Result.h"
-#include "task/backup/Database.h"
+#include "task/backup/Backup.h"
 #include <shared/Log.h>
 #include <boost/date_time/local_time_adjustor.hpp>
 #include <boost/date_time/c_local_time_adjustor.hpp>
@@ -13,8 +13,8 @@ namespace web { namespace rest { namespace service {
 
    std::string CMaintenance::m_restKeyword= std::string("maintenance");
 
-   CMaintenance::CMaintenance(boost::shared_ptr<database::IDatabaseRequester> databaseRequester, boost::shared_ptr<task::CScheduler> taskScheduler)
-      :m_databaseRequester(databaseRequester), m_taskScheduler(taskScheduler)
+   CMaintenance::CMaintenance(const IPathProvider& pathProvider, boost::shared_ptr<database::IDatabaseRequester> databaseRequester, boost::shared_ptr<task::CScheduler> taskScheduler)
+      :m_pathProvider(pathProvider), m_databaseRequester(databaseRequester), m_taskScheduler(taskScheduler)
    {
    }
 
@@ -27,9 +27,9 @@ namespace web { namespace rest { namespace service {
    void CMaintenance::configureDispatcher(CRestDispatcher & dispatcher)
    {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CMaintenance::getDatabaseInformation);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("lastBackup"), CMaintenance::getLastDatabaseBackup);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("backup"), CMaintenance::startDatabaseBackup);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("lastBackup"), CMaintenance::deleteLastDatabaseBackup);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("backup"), CMaintenance::getBackups);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("backup"), CMaintenance::startBackup);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("backup")("*"), CMaintenance::deleteBackup);
    }
 
 
@@ -56,13 +56,13 @@ namespace web { namespace rest { namespace service {
       }      
    }
    
-   shared::CDataContainer CMaintenance::startDatabaseBackup(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CMaintenance::startBackup(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
          if (m_databaseRequester->backupSupported())
          {
-            boost::shared_ptr<task::ITask> task(new task::backup::CDatabase(m_databaseRequester));
+            boost::shared_ptr<task::ITask> task(new task::backup::CBackup(m_pathProvider, m_databaseRequester));
 
             std::string taskUid;
             if (m_taskScheduler->runTask(task, taskUid))
@@ -86,31 +86,44 @@ namespace web { namespace rest { namespace service {
       }
       catch (...)
       {
-         return CResult::GenerateError("unknown exception in starting database backup");
+         return CResult::GenerateError("unknown exception in starting backup");
       }
       
    }
 
-   shared::CDataContainer CMaintenance::getLastDatabaseBackup(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CMaintenance::getBackups(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
          if (m_databaseRequester->backupSupported())
          {
-            auto backup = m_databaseRequester->lastBackupData();
+            auto backup = m_pathProvider.backupPath();
 
-            if (boost::filesystem::exists(backup))
+            if (!backup.empty() && boost::filesystem::exists(backup) && boost::filesystem::is_directory(backup))
             {
-               auto filesize = boost::filesystem::file_size(backup);
-            
-               auto lastWriteTimeT = boost::filesystem::last_write_time(backup);
-               auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::utc_to_local(boost::posix_time::from_time_t(lastWriteTimeT));
+               std::vector<shared::CDataContainer> files;
+               // Check all subdirectories in plugin path
+               for (boost::filesystem::directory_iterator i(backup); i != boost::filesystem::directory_iterator(); ++i)
+               {
+                  if (boost::filesystem::is_regular_file(i->path()))
+                  {
+                     auto filesize = boost::filesystem::file_size(i->path());
+
+                     auto lastWriteTimeT = boost::filesystem::last_write_time(i->path());
+                     auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::utc_to_local(boost::posix_time::from_time_t(lastWriteTimeT));
+
+                     shared::CDataContainer file;
+                     file.set("size", filesize);
+                     file.set("modificationDate", lastWriteTimePosix);
+                     file.set("path", i->path().string());
+                     file.set("url", i->path().filename().string());
+
+                     files.push_back(file);
+                  }
+               }
 
                shared::CDataContainer result;
-               result.set("size", filesize);
-               result.set("modificationDate", lastWriteTimePosix);
-               result.set("path", backup.string());
-               result.set("url", backup.filename().string());
+               result.set("backups", files);
                return web::rest::CResult::GenerateSuccess(result);
             }
             else
@@ -136,30 +149,31 @@ namespace web { namespace rest { namespace service {
 
    }
 
-   shared::CDataContainer CMaintenance::deleteLastDatabaseBackup(const std::vector<std::string> & parameters, const std::string & requestContent)
+   shared::CDataContainer CMaintenance::deleteBackup(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
-         if (m_databaseRequester->backupSupported())
+         if (parameters.size() > 2)
          {
-            auto backup = m_databaseRequester->lastBackupData();
-            if (boost::filesystem::exists(backup))
+            std::string urlToDelete = parameters[2];
+
+            auto backup = m_pathProvider.backupPath();
+            if (boost::filesystem::exists(backup / urlToDelete))
             {
                boost::system::error_code ec;
-               if (boost::filesystem::remove(backup, ec))
+               if (boost::filesystem::remove(backup / urlToDelete, ec))
                   return web::rest::CResult::GenerateSuccess();
                return web::rest::CResult::GenerateError(ec.message());
             }
             else
             {
                //backup do not exists
-               return web::rest::CResult::GenerateError();
+               return web::rest::CResult::GenerateError("file do not exists");
             }
+
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("backup not supported");
-         }
+
+         return CResult::GenerateError("invalid parameter. Can not retreive file to delete");
       }
       catch (std::exception &ex)
       {
@@ -167,7 +181,7 @@ namespace web { namespace rest { namespace service {
       }
       catch (...)
       {
-         return CResult::GenerateError("unknown exception in deleting last backup data");
+         return CResult::GenerateError("unknown exception in deleting backup data");
       }
 
    }

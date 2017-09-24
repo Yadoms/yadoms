@@ -22,10 +22,9 @@ namespace database
       int CSQLiteRequester::m_maxTries = 3;
 
 
-      CSQLiteRequester::CSQLiteRequester(const std::string& dbFile, const std::string& dbBackupFile)
+      CSQLiteRequester::CSQLiteRequester(const std::string& dbFile)
          : m_pDatabaseHandler(nullptr),
            m_dbFile(dbFile),
-           m_dbBackupFile(dbBackupFile),
            m_bOneTransactionActive(false)
       {
       }
@@ -34,7 +33,6 @@ namespace database
       {
       }
 
-      // IDatabaseEngine implementation
       void CSQLiteRequester::initialize()
       {
          YADOMS_LOG(information) << "Initialize SQLite database";
@@ -126,13 +124,9 @@ namespace database
       }
 
 
-      // [END] IDatabaseEngine implementation
-
-
-      // IDatabaseProvider implementation
-      common::CQuery CSQLiteRequester::newQuery()
+      boost::shared_ptr<common::CQuery> CSQLiteRequester::newQuery()
       {
-         return CSQLiteQuery();
+         return boost::make_shared<CSQLiteQuery>();
       }
 
 
@@ -402,56 +396,39 @@ namespace database
          return true;
       }
 
-      void CSQLiteRequester::backupData(ProgressFunc reporter)
+      void CSQLiteRequester::backupData(const std::string & backupFolder, ProgressFunc reporter)
       {
          sqlite3* pFile; /* Database connection opened on zFilename */
 
+         std::string backpfile = backupFolder + "/" + "yadoms.backup.db3";
+
          /* Open the database file identified by zFilename. */
-         int rc = sqlite3_open(m_dbBackupFile.c_str(), &pFile);
+         int rc = sqlite3_open(backpfile.c_str(), &pFile);
          if (rc == SQLITE_OK)
          {
             /* Open the sqlite3_backup object used to accomplish the transfer */
             sqlite3_backup* pBackup = sqlite3_backup_init(pFile, "main", m_pDatabaseHandler, "main");
             if (pBackup)
             {
-               /* Each iteration of this loop copies 20 database pages from database
-               ** pDb to the backup database. If the return value of backup_step()
-               ** indicates that there are still further pages to copy, sleep for
-               ** 250 ms before repeating. */
-               do
-               {
-                  rc = sqlite3_backup_step(pBackup, 5);
-                  if (reporter)
-                  {
-                     reporter(sqlite3_backup_remaining(pBackup), sqlite3_backup_pagecount(pBackup), i18n::CClientStrings::DatabaseBackupInProgress, "");
-                  }
-
-                  if (rc == SQLITE_OK || rc == SQLITE_BUSY || rc == SQLITE_LOCKED)
-                  {
-                     sqlite3_sleep(250);
-                  }
-               }
-               while (rc == SQLITE_OK || rc == SQLITE_BUSY || rc == SQLITE_LOCKED);
-
-               //report
-               if (reporter)
-               {
-                  if (rc == SQLITE_OK || rc == SQLITE_DONE)
-                  {
-                     reporter(sqlite3_backup_remaining(pBackup), sqlite3_backup_pagecount(pBackup), i18n::CClientStrings::DatabaseBackupSuccess, "");
-                  }
-                  else
-                  {
-                     reporter(sqlite3_backup_remaining(pBackup), sqlite3_backup_pagecount(pBackup), i18n::CClientStrings::DatabaseBackupFail, sqlite3_errstr(rc));
-                  }
-               }
-
-               /* Release resources allocated by backup_init(). */
+               //do the backup
+               (void)sqlite3_backup_step(pBackup, -1);
                (void)sqlite3_backup_finish(pBackup);
-
-
             }
             rc = sqlite3_errcode(pFile);
+
+            //report
+            if (reporter)
+            {
+               if (rc == SQLITE_OK || rc == SQLITE_DONE)
+               {
+                  reporter(sqlite3_backup_remaining(pBackup), sqlite3_backup_pagecount(pBackup), i18n::CClientStrings::DatabaseBackupSuccess, "");
+               }
+               else
+               {
+                  reporter(sqlite3_backup_remaining(pBackup), sqlite3_backup_pagecount(pBackup), i18n::CClientStrings::DatabaseBackupFail, sqlite3_errstr(rc));
+               }
+            }
+
          }
 
          /* Close the database connection opened on database file zFilename
@@ -465,11 +442,6 @@ namespace database
                reporter(0, 100, i18n::CClientStrings::DatabaseBackupFail, sqlite3_errstr(rc));
             throw shared::exception::CException(sqlite3_errstr(rc));
          }
-      }
-
-      boost::filesystem::path CSQLiteRequester::lastBackupData()
-      {
-         return boost::filesystem::path(m_dbBackupFile);
       }
 
       CDatabaseException::EDatabaseReturnCodes CSQLiteRequester::fromSQLiteReturnCode(int rc)

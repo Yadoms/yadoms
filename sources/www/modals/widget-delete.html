@@ -54,6 +54,7 @@
              page.$grid.packery("remove", widgetToDelete.$gridWidget);
              page.$grid.packery("layout");
              page.widgets.splice($.inArray(widgetToDelete, page.widgets), 1);
+             updateWebSocketFilter();
          } else {
             console.error("page Id doesn't exit");
          }

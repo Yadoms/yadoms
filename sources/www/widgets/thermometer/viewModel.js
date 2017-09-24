@@ -45,7 +45,7 @@ function thermometerViewModel()
 		  {
 			 //it is the good device
           if (data.value !== "")
-			    self.data = data.value;
+			    self.data = parseFloat(data.value).toFixed(1).toString();
           else 
              self.data = "-";
 			 
