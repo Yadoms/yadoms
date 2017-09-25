@@ -9,6 +9,7 @@
 		<Product type="1e12" id="015e" name="CT30 Thermostat" config="2gig/ct30.xml"/>
 		<Product type="6401" id="0105" name="CT100 Thermostat" config="2gig/ct100.xml"/>
 		<Product type="6401" id="0107" name="CT100 Thermostat USA" config="2gig/ct100.xml"/>
+		<Product type="6402" id="0100" name="CT100 Plus Thermostat" config="2gig/ct100.xml"/>
 		<Product type="6402" id="0001" name="CT100 Plus Thermostat" config="2gig/ct100.xml"/>
 		<Product type="6501" id="000c" name="CT101 Thermostat (Iris)" config="2gig/ct101.xml"/>
 		<Product type="6501" id="000d" name="CT101 Thermostat" config="2gig/ct101.xml"/>
@@ -312,6 +313,9 @@
 	</Manufacturer>
 	<Manufacturer id="0050" name="Digital 5">
 	</Manufacturer>
+	<Manufacturer id="021f" name="Dome">
+		<Product type="0003" id="0101" name="Door/Window Sensor" config="dome/0101.xml"/>
+	</Manufacturer>
 	<Manufacturer id="020e" name="Domitech">
 		<Product type="4c42" id="3134" name="Smart LED Retrofit Kit ZE27EU" config="domitech/ze27eu.xml"/>
 		<Product type="4c42" id="3135" name="Smart LED Light Bulb ZB22UK" config="domitech/zb22uk.xml"/>
@@ -547,9 +551,11 @@
 		<Product type="4944" id="3034" name="12730 Fan Control Switch" config="ge/12724-dimmer.xml"/>
 		<Product type="4944" id="3131" name="14287 Fan Control Switch" config="ge/12724-dimmer.xml"/>
 		<Product type="4944" id="3038" name="14294 In-Wall Smart Dimmer" config="ge/14294-dimmer.xml"/>
+		<Product type="4944" id="3130" name="14295 In-Wall Smart Toggle Dimmer" config="ge/14295-dimmer-toggle.xml"/>
 		<Product type="494d" id="3032" name="26931 Smart Motion Switch" config="ge/26931-motion-switch.xml"/>
 		<Product type="494d" id="3034" name="26933 Smart Motion Dimmer" config="ge/26933-motion-dimmer.xml"/>
 		<Product type="4952" id="3036" name="14291 In-Wall Smart Switch" config="ge/14291-switch.xml"/>
+		<Product type="4952" id="3037" name="14292 In-Wall Smart Toggle Switch" config="ge/14292-toggle-switch.xml"/>
 		<Product type="5250" id="3030" name="45603 Plugin Appliance Module"/>
 		<Product type="5250" id="3130" name="45604 Outdoor Module"/>
 		<Product type="4f50" id="3031" name="12720 Outdoor Smart Switch"/>
@@ -735,6 +741,7 @@
 		<Product type="4450" id="3030" name="PD300Z-2 Plug-in Dimmer Module" config="linear/PD300Z-2.xml"/>
 		<Product type="4457" id="3034" name="WD500Z-1 Wall Dimmer Switch" config="linear/WD500Z-1.xml"/>
 		<Product type="4457" id="3331" name="WD1000Z-1 Wall Dimmer Switch"/>
+		<Product type="4744" id="3030" name="GD00Z-4 Garage Door Opener Remote Controller"/>
 		<Product type="4754" id="3038" name="LB60Z-1 Dimmable LED Light Bulb" config="linear/LB60Z-1.xml"/>
 		<Product type="5246" id="3133" name="FS20Z Isolated Contact Fixture Module"/>
 		<Product type="5250" id="3030" name="PS15Z-2 Plug-in Appliance Module"/>
@@ -816,6 +823,8 @@
 		<Product type="0003" id="6085" name="Water Leakage Detector" config="shenzen_neo/nas-ws02z.xml"/>
 		<Product type="0003" id="0088" name="Siren Alarm" config="shenzen_neo/nas-ab01z.xml"/>
 		<Product type="0003" id="1088" name="Siren Alarm" config="shenzen_neo/nas-ab01z.xml"/>
+		<Product type="0003" id="108b" name="Wall Switch (2 channels)" config="shenzen_neo/ls02ch.xml"/>
+		<Product type="0003" id="108c" name="Wall Switch (1 channel)" config="shenzen_neo/ls01ch.xml"/>
 	</Manufacturer>
 	<Manufacturer id="0178" name="Nexia">
 		<!-- full name in Z-wave database: Ingersoll Rand - Nexia Home Intelligence -->
@@ -1080,6 +1089,7 @@
 		<Product type="2003" id="0301" name="ZS5101 Shock and Vibration Sensor" config="vision/zs5101eu.xml"/>
 		<Product type="2003" id="0302" name="ZS5101 Shock and Vibration Sensor" config="vision/zs5101eu.xml"/>
 		<Product type="2003" id="0306" name="ZS5101 Shock and Vibration Sensor" config="vision/zs5101eu.xml"/>
+		<Product type="2003" id="0307" name="ZS5101 Shock and Vibration Sensor" config="vision/zs5101eu.xml"/>
 		<Product type="2004" id="0403" name="ZS6101 Smoke Detector"/>
 		<Product type="2005" id="0503" name="ZM1601 Battery Operated Siren" config="vision/zm1601eu.xml"/>
 		<Product type="2005" id="0505" name="ZM1601 Battery Operated Siren" config="vision/zm1601eu.xml"/>
@@ -1193,15 +1203,22 @@
 	<Manufacturer id="027a" name="Zooz">
 		<Product type="0003" id="0082" name="ZSE08 Contact Sensor" config="zooz/zse08.xml" />
 		<Product type="0003" id="0083" name="ZSE09 Mini Sensor" config="zooz/zse09.xml" />
+		<Product type="b112" id="1f1c" name="ZEN22 Dimmer V2" config="zooz/zen22v2.xml"/>
 		<Product type="0003" id="0085" name="ZSE30 Water Sensor" config="zooz/zse30.xml" />
 		<Product type="0003" id="0087" name="ZEN07 Mini Plug" config="zooz/zen07.xml" />
 		<Product type="2021" id="2101" name="ZSE40 4-in-1 sensor" config="zooz/zse40.xml" />
 		<Product type="0003" id="0088" name="ZSE33 Smart Chime" config="zooz/zse33.xml" />
+		<Product type="0101" id="000a" name="ZEN06" config="zooz/zen06.xml"/>
 	</Manufacturer>
 	<Manufacturer id="015d" name="Zooz">
 		<Product type="0651" id="f51c" name="ZEN20 Power Strip" config="zooz/zen20.xml" />
+		<Product type="0111" id="231c" name="ZEN21 Switch" config="zooz/zen21.xml"/>
+		<Product type="0112" id="241c" name="ZEN22 Dimmer" config="zooz/zen22.xml"/>
 		<Product type="1111" id="1e1c" name="ZEN23 Toggle Switch" config="zooz/zen23.xml" />
 		<Product type="0111" id="1f1c" name="ZEN24 Dimmer Switch" config="zooz/zen24.xml" />
+	</Manufacturer>
+	<Manufacturer id="0315" name="Z Wave Products Inc.">
+    		<Product type="4447" id="3034" name="WD-100" config="zwp/WD-100.xml"/>
 	</Manufacturer>
 	<Manufacturer id="0021" name="Zykronix">
 	</Manufacturer>
