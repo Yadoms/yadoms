@@ -172,6 +172,9 @@ namespace shared
          //--------------------------------------------------------------
          boost::posix_time::time_duration m_writeTimeout;
          bool m_writeTimeouted;
+
+         static unsigned int IdInstanceCounter; // TODO virer
+         unsigned int m_idInstance; // TODO virer
       };
    }
 } // namespace shared::communication
