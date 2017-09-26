@@ -110,12 +110,7 @@ void CSupervisor::run()
 
       webServer->getConfigurator()->websiteHandlerAddAlias("plugins", m_pathProvider.pluginsPath().string());
       webServer->getConfigurator()->websiteHandlerAddAlias("scriptInterpreters", scriptInterpretersPath);
-
-      if (pDataProvider->getDatabaseRequester()->backupSupported())
-      {
-         auto filename = m_pathProvider.databaseSqliteBackupFile().filename().string();
-         webServer->getConfigurator()->websiteHandlerAddAlias(filename, m_pathProvider.databaseSqliteBackupFile().string());
-      }
+      webServer->getConfigurator()->websiteHandlerAddAlias("backups", m_pathProvider.backupPath().string());
 
       webServer->getConfigurator()->configureAuthentication(boost::make_shared<authentication::CBasicAuthentication>(dal->getConfigurationManager(), startupOptions->getNoPasswordFlag()));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CPlugin>(pDataProvider, pluginManager, *pluginGateway));
@@ -131,7 +126,7 @@ void CSupervisor::run()
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CTask>(taskManager));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CRecipient>(pDataProvider));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CUpdate>(updateManager));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CMaintenance>(pDataProvider->getDatabaseRequester(), taskManager));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CMaintenance>(m_pathProvider, pDataProvider->getDatabaseRequester(), taskManager));
 
       webServer->start();
 

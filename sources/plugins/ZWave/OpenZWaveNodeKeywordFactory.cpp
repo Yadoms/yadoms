@@ -392,6 +392,11 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
    case OpenZWave::ValueID::ValueType_Short: // 16-bit signed value
    {
       CIntegerTypeInfo ti(vID);
+
+      int max = OpenZWave::Manager::Get()->GetValueMax(vID);
+      
+      if(max > 32767)
+         return COpenZWaveNodeKeywordGeneric<Poco::UInt16>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kNumeric, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
       return COpenZWaveNodeKeywordGeneric<Poco::Int16>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kNumeric, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
    }
 

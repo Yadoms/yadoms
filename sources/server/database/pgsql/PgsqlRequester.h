@@ -45,11 +45,10 @@ namespace database
          bool transactionIsAlreadyCreated() override;
          // [END] ITransactionalProvider implementation
 
-         // IDataBackup implementation
-         bool backupSupported() override;
-         void backupData(ProgressFunc reporter) override;
-         boost::filesystem::path lastBackupData() override;
-         // [END] IDataBackup implementation
+      // IDataBackup implementation
+      bool backupSupported() override;
+      void backupData(const std::string & backupFolder, IDataBackup::ProgressFunc reporter) override;
+      // [END] IDataBackup implementation
 
       private:
          void queryEntities(common::adapters::IResultAdapter* pAdapter, const common::CQuery& querytoExecute, PGconn* pConnection);

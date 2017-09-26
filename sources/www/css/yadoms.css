@@ -129,6 +129,7 @@ body {
     background-image: url("../img/roadworks-pill.png");
     background-repeat: no-repeat;
     background-position: right center;
+    width: 250px;
 }
 
 .navbar {

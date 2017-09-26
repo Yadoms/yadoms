@@ -326,28 +326,29 @@ function updateWebSocketFilter() {
 }
 
 function updateWidgetsPolling() {
+    var d = new $.Deferred();
+
     //we browse each widget instance
     var page = PageManager.getCurrentPage();
-    if (page == null)
-        return;
-
-    var d = new $.Deferred();
-    var arrayOfDeffered = [];
-     
-    $.each(page.widgets, function (widgetIndex, widget) {
+    if (page == null) {
+        d.resolve();
+    } else {
+      var arrayOfDeffered = [];
         
-        //we ask which devices are needed for this widget instance
-        var deffered = updateWidgetPolling(widget);
-        arrayOfDeffered.push(deffered);
-    });
-    
-    $.whenAll(arrayOfDeffered).done(function () {
-       d.resolve();
-    })
-    .fail(function (error) {
-       d.reject();
-     });
-    
+       $.each(page.widgets, function (widgetIndex, widget) {
+           
+           //we ask which devices are needed for this widget instance
+           var deffered = updateWidgetPolling(widget);
+           arrayOfDeffered.push(deffered);
+       });
+       
+       $.whenAll(arrayOfDeffered).done(function () {
+          d.resolve();
+       })
+       .fail(function (error) {
+          d.reject();
+        });
+    }    
     return d.promise();
 }
 
