@@ -55,13 +55,19 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
     }
     if(window.WebSocket) {
         //the protocol of the web socket depends on the http or https protocol
-        var protocol = "";
-        if (window.location.protocol.indexOf("https") !== -1)
-           protocol = "wss://";
-        else
-           protocol = "ws://";
-        
-        WebSocketEngine.webSocket_ = new WebSocket(protocol + window.location.host + '/ws');
+         var websocketEndpoint = '';
+         var protocol = "";
+         if(!isNullOrUndefinedOrEmpty(Yadoms.baseUrl)) {
+            websocketEndpoint = concatenateUrl(Yadoms.baseUrl.replace("http", "ws"), '/ws');
+         } else {
+            if (window.location.protocol.indexOf("https") !== -1)
+               protocol = "wss://";
+            else
+               protocol = "ws://";
+            websocketEndpoint = protocol + window.location.host + '/ws';
+         }
+              
+        WebSocketEngine.webSocket_ = new WebSocket(websocketEndpoint);
 
         WebSocketEngine.webSocket_.onopen = function() {
             console.debug('Web socket opened');
