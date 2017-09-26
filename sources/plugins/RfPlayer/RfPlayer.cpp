@@ -286,7 +286,6 @@ void CRfPlayer::processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginA
 
 void CRfPlayer::errorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   YADOMS_LOG(debug) << "CRfPlayer::errorProcess() : destroyConnection...";//TODO virer
    destroyConnection();
    m_protocolErrorRetryTimer = api->getEventHandler().createTimer(kProtocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
 }
@@ -333,17 +332,13 @@ void CRfPlayer::initZiBlue(boost::shared_ptr<yApi::IYPluginApi> api)
                                },
                                [&](boost::shared_ptr<const frames::incoming::CFrame> frame)
                                {
-                                  YADOMS_LOG(debug) << "RfPlayer says <<< " << frame->getAscii()->getContent();//TODO virer
                                   m_dongle = CDongle::create(frame->getAscii()->getContent());
 
                                   if (m_dongle)
-                                  {
                                      YADOMS_LOG(information) << "Dongle :" << m_dongle->getType() << " " << m_dongle->getModel() << " v" << m_dongle->getFirmwareVersion();
-                                  }
                                   else
-                                  {
                                      YADOMS_LOG(information) << "Unknown dongle, or not fully supported firmware";
-                                  }
+
                                   evtHandler.postEvent(kSendFinished);
                                }))
       throw shared::exception::CException("Unable to send HELLO request, timeout waiting acknowledge");
