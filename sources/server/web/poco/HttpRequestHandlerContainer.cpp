@@ -18,6 +18,11 @@ namespace web { namespace poco {
       if (!m_requestHandler)
          throw shared::exception::CNullReference("requestHandler must be defined in CHttpRequestHandlerContainer");
 
+      response.add("Access-Control-Allow-Origin", "*");
+      response.add("Access-Control-Allow-Credentials", "true");
+      response.add("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS, POST, PUT, DELETE");
+      response.add("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Access-Control-Allow-Methods, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Allow-Origin, Access-Control-Request-Methods, Access-Control-Request-Method, Access-Control-Request-Headers");
+
       m_requestHandler->handleRequest(request, response);
    }
 
