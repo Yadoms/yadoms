@@ -74,6 +74,7 @@ std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter>> CTransceiver::createU
    std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter>> filters;
    filters[pTypeCURRENTENERGY] = rfxcomMessages::CCurrentEnergy::createFilter();
    filters[pTypeLighting4] = rfxcomMessages::CLighting4::createFilter();
+   filters[pTypeSecurity1] = rfxcomMessages::CSecurity1::createFilter();
    return filters;
 }
 
@@ -319,7 +320,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
          break;
       case pTypeRFXSensor: message = boost::make_shared<rfxcomMessages::CRFXSensor>(api, *buf, bufSize);
          break;
-      case pTypeSecurity1: message = boost::make_shared<rfxcomMessages::CSecurity1>(api, *buf, bufSize);
+      case pTypeSecurity1: message = boost::make_shared<rfxcomMessages::CSecurity1>(api, *buf, bufSize, m_unsecuredProtocolFilters.at(pTypeSecurity1));
          break;
       case pTypeSecurity2: message = boost::make_shared<rfxcomMessages::CSecurity2>(api, *buf, bufSize);
          break;
