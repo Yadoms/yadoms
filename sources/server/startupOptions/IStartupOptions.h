@@ -52,6 +52,12 @@ namespace startupOptions {
       virtual std::string getWebServerInitialPath() const = 0;
 
       //--------------------------------------------------------------
+      /// \brief	    Determine if external access of webserver is allowed (only if mobile apps are querying this server)
+      /// \return     true if external access are allowed
+      //--------------------------------------------------------------
+      virtual bool getWebServerAllowExternalAccess() const = 0;
+
+      //--------------------------------------------------------------
       /// \brief	    Get the database engine to use
       /// \return     The database engine (sqlite|postgresql)
       //--------------------------------------------------------------

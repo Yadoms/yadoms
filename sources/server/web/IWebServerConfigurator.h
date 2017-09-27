@@ -57,6 +57,12 @@ namespace web {
       //-----------------------------------------
       virtual void configureAuthentication(boost::shared_ptr<authentication::IAuthentication> authenticator) = 0;
 
+      //-----------------------------------------
+      ///\brief      Allow external access
+      ///\param [in] allowExternalAccess  true if externals access are allowed (android app for example)
+      //-----------------------------------------
+      virtual void allowExternalAccess(bool allowExternalAccess) =0;
+
    };
 
 } //namespace web
