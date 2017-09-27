@@ -238,6 +238,7 @@ namespace automation
 
          // subscriber must leave until function exits
          // ReSharper disable once CppEntityAssignedButNoRead
+         // ReSharper disable once CppJoinDeclarationAndAssignment
          boost::shared_ptr<notification::CHelpers::CCustomSubscriber> subscriber;
          if (!keywordIdList.empty())
          {
@@ -252,6 +253,7 @@ namespace automation
             observer->resetKeywordIdFilter(keywordIdList);
 
             //register the observer
+            // ReSharper disable once CppJoinDeclarationAndAssignment
             subscriber = boost::make_shared<notification::CHelpers::CCustomSubscriber>(observer);
          }
 

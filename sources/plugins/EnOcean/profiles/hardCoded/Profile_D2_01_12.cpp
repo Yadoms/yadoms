@@ -125,6 +125,7 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
+                                                      false,
                                                       defaultState,
                                                       0.0,
                                                       0.0,

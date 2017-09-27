@@ -336,9 +336,6 @@ void CEnOcean::processDeviceConfiguration(const std::string& deviceId,
 {
    try
    {
-      // TODO virer
-      configuration.printToLog(YADOMS_LOG(trace));
-
       auto selectedProfile = CProfileHelper(configuration.get<std::string>("profile.activeSection"));
       auto manufacturer = configuration.get<std::string>("manufacturer");
 
@@ -781,7 +778,10 @@ void CEnOcean::requestDongleVersion()
    if (!m_messageHandler->send(sendMessage,
                                [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
                             {
-                               return esp3Packet->header().packetType() == message::RESPONSE;
+                               if (esp3Packet->header().packetType() == message::RESPONSE)
+                                  return true;
+                               YADOMS_LOG(warning) << "Unexpected message received : wrong packet type : " << esp3Packet->header().packetType();
+                               return false;
                             },
                                [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
                             {
