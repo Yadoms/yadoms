@@ -71,6 +71,7 @@ public:
                                            bool localControl,
                                            bool taughtInAllDevices,
                                            bool userInterfaceDayMode,
+                                           bool powerFailureDetection,
                                            const EDefaultState& defaultState,
                                            double dimTimer1,
                                            double dimTimer2,
@@ -86,11 +87,16 @@ public:
                                                                bool switchingStateToggle);
 
    // CMD 0x5 - Actuator Set Measurement
+   enum
+   {
+      kAllOutputChannels = 0x1E
+   };
+
    static void sendActuatorSetMeasurementCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                                  const std::string& senderId,
                                                  const std::string& targetId,
                                                  bool powerMeasurement,
-                                                 bool outputChannels,
+                                                 unsigned char outputChannel, // kAllOutputChannels to configure all output channels in one time
                                                  double minEnergyMeasureRefreshTime,
                                                  double maxEnergyMeasureRefreshTime);
 };

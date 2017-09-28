@@ -25,6 +25,7 @@ void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessa
                                                         bool localControl,
                                                         bool taughtInAllDevices,
                                                         bool userInterfaceDayMode,
+                                                        bool powerFailureDetection,
                                                         const EDefaultState& defaultState,
                                                         double dimTimer1,
                                                         double dimTimer2,
@@ -43,6 +44,7 @@ void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessa
    bitset_insert(data, 16, 4, static_cast<unsigned int>(lround(dimTimer2 / 0.5)));
    bitset_insert(data, 20, 4, static_cast<unsigned int>(lround(dimTimer3 / 0.5)));
    bitset_insert(data, 24, !userInterfaceDayMode);
+   bitset_insert(data, 25, powerFailureDetection);
    bitset_insert(data, 26, 2, defaultState);
    bitset_insert(data, 28, 4, static_cast<unsigned int>(lround(dimTimer1 / 0.5)));
 
@@ -51,19 +53,19 @@ void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessa
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!messageHandler->send(command,
                              [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
+                          {
+                             return esp3Packet->header().packetType() == message::RESPONSE;
+                          },
                              [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
-      YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set Local command" ;
+                          {
+                             answer = esp3Packet;
+                          }))
+   YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set Local command";
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
 
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-      YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : Actuator Set Local command returns " << response->returnCode() ;
+   YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : Actuator Set Local command returns " << response->returnCode();
 }
 
 void CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(boost::shared_ptr<IMessageHandler> messageHandler,
@@ -92,26 +94,26 @@ void CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(boos
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!messageHandler->send(command,
                              [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
+                          {
+                             return esp3Packet->header().packetType() == message::RESPONSE;
+                          },
                              [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
-      YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set External Interface Settings command" ;
+                          {
+                             answer = esp3Packet;
+                          }))
+   YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set External Interface Settings command";
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
 
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-      YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : Actuator Set External Interface Settings command returns " << response->returnCode() ;
+   YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : Actuator Set External Interface Settings command returns " << response->returnCode();
 }
 
 void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                                               const std::string& senderId,
                                                               const std::string& targetId,
                                                               bool powerMeasurement,
-                                                              bool outputChannels,
+                                                              unsigned char outputChannel,
                                                               double minEnergyMeasureRefreshTime,
                                                               double maxEnergyMeasureRefreshTime)
 {
@@ -122,14 +124,14 @@ void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<
    boost::dynamic_bitset<> data(7 * 8);
 
    bitset_insert(data, 4, 4, kActuatorSetMeasurement);
-   bitset_insert(data, 8, 1, 1); // support only auto reporting
-   bitset_insert(data, 9, 1, 1); // reset measurement not (yet ?) available
-   bitset_insert(data, 10, 1, powerMeasurement);
-   bitset_insert(data, 11, 5, outputChannels ? 0x1E : 0x1F); // 0x1E : all output channels, 0x1F : input channel
+   bitset_insert(data, 8, true); // Report on query + auto reporting
+   bitset_insert(data, 9, false); // reset measurement not (yet ?) available
+   bitset_insert(data, 10, powerMeasurement);
+   bitset_insert(data, 11, 5, outputChannel); // 0x1E : all output channels, 0x1F : input channel
    bitset_insert(data, 16, 4, 0); // No measurement delta
    bitset_insert(data, 21, 3, powerMeasurement ? kPowerW : kEnergyWh); // Hard-coded for now
    bitset_insert(data, 24, 8, 0); // No measurement delta
-   bitset_insert(data, 32, 8, static_cast<unsigned char>(minEnergyMeasureRefreshTime / 10));
+   bitset_insert(data, 32, 8, static_cast<unsigned char>(minEnergyMeasureRefreshTime / 10.0));
    bitset_insert(data, 40, 8, static_cast<unsigned char>(maxEnergyMeasureRefreshTime));
 
    command.userData(bitset_to_bytes(data));
@@ -137,17 +139,17 @@ void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!messageHandler->send(command,
                              [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
+                          {
+                             return esp3Packet->header().packetType() == message::RESPONSE;
+                          },
                              [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
-      YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set Measurement command" ;
+                          {
+                             answer = esp3Packet;
+                          }))
+   YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set Measurement command";
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
 
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-      YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : Actuator Set Measurement command returns " << response->returnCode() ;
+   YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : Actuator Set Measurement command returns " << response->returnCode();
 }
