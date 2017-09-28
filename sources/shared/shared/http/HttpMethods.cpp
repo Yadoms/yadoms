@@ -3,6 +3,7 @@
 #include <Poco/Net/HTTPRequest.h>
 #include <Poco/Net/HTTPSClientSession.h>
 #include <Poco/Net/Context.h>
+#include <Poco/Net/SSLException.h>
 #include <Poco/URI.h>
 #include <shared/exception/Exception.hpp>
 #include <shared/Log.h>
@@ -131,6 +132,10 @@ namespace shared
          auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
          YADOMS_LOG(error) << message;
          throw exception::CException(message);
+      }
+      catch (const Poco::Net::SSLException& e)
+      {
+         std::cerr << e.what() << ": " << e.message() << std::endl;
       }
       catch (Poco::Exception& e)
       {

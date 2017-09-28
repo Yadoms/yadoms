@@ -26,6 +26,8 @@ IF(NOT DISABLE_TEST_PLUGIN_FAKEPLUGIN)
       shared/shared/plugin/yPluginApi/historization/Switch.h
       shared/shared/plugin/yPluginApi/historization/Temperature.cpp
       shared/shared/plugin/yPluginApi/historization/Temperature.h
+      shared/shared/plugin/yPluginApi/historization/Text.cpp
+      shared/shared/plugin/yPluginApi/historization/Text.h
       
       shared/shared/plugin/yPluginApi/historization/typeInfo/ITypeInfo.h
       shared/shared/plugin/yPluginApi/historization/typeInfo/EmptyTypeInfo.h

@@ -187,6 +187,8 @@ source_group(plugins\\FakePlugin plugins/dev-FakePlugin/*.*)
 source_group(plugins\\Rfxcom plugins/Rfxcom/*.*)
 source_group(plugins\\EnOcean plugins/EnOcean/*.*)
 source_group(plugins\\TeleInfo plugins/TeleInfo/*.*)
+source_group(plugins\\Linky plugins/Linky/*.*)
+source_group(plugins\\OrangeBusiness plugins/OrangeBusiness/*.*)
 
 source_group(server server/*.*)
 source_group(server\\automation server/automation/*.*)

@@ -3,6 +3,7 @@
 #include <shared/event/EventTimer.h>
 #include "OrangeBusinessConfiguration.h"
 #include "urlManager.h"
+#include "Decoder.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -32,7 +33,14 @@ public:
    /// \param[in] api                   pointer to the API
    /// \param[in] neMessage             The new message to be processed
    //--------------------------------------------------------------
-   void processRetreiveData(boost::shared_ptr<yApi::IYPluginApi> api);
+   void registerAllDevices(boost::shared_ptr<yApi::IYPluginApi> api);
+
+   //--------------------------------------------------------------
+   /// \brief Update the configuration of the plugin after a change
+   /// \param[in] api                   pointer to the API
+   /// \param[in] neMessage             The new message to be processed
+   //--------------------------------------------------------------
+   void registerActivatedDevices(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief Update the configuration of the plugin after a change
@@ -45,18 +53,18 @@ public:
 private:
 
    //--------------------------------------------------------------
-   /// \brief Update the configuration of the plugin after a change
-   /// \param[in] api                   pointer to the API
-   /// \param[in] neMessage             The new message to be processed
-   //--------------------------------------------------------------
-   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceName) const;
-
-   //--------------------------------------------------------------
    /// \brief Configuration of the device
    //--------------------------------------------------------------
    COrangeBusinessConfiguration m_configuration;
 
+   //--------------------------------------------------------------
+   /// \brief	Wait for answer timer
+   //--------------------------------------------------------------
+   boost::shared_ptr<shared::event::CEventTimer> m_waitForAnswerTimer;
+
    urlManager m_frameManager;
+
+   boost::shared_ptr<CDecoder> m_decoder;
 
    //--------------------------------------------------------------
    /// \brief developer mode for logs

@@ -10,7 +10,10 @@
 	"extraQueries" : {
 		"retreiveData" : {
 			"name" : "Récupérer l'ensemble des équipements du site Orange"
-		}
+		},
+		"onlyActivated" : {
+			"name" : "Récupérer l'ensemble des équipements activés du site Orange"
+		}				
    },   
 	"customLabels": {
 		"pluginState": {

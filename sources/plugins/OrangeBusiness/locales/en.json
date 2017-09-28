@@ -9,8 +9,11 @@
 	},
 	"extraQueries" : {
 		"retreiveData" : {
-			"name" : "Retreive all data from the Orange business web site"
-		}
+			"name" : "Retreive all devices from the Orange business web site"
+		},
+		"onlyActivated" : {
+			"name" : "Retreive all activated devices from the Orange business web site"
+		}		
    },
 	"customLabels": {
 		"pluginState": {

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "OrangeBusiness.h"
+#include "Decoder.h"
 #include <shared/event/EventTimer.h>
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/plugin/yPluginApi/IExtraQuery.h>
@@ -37,6 +38,12 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       m_isDeveloperMode = api->getYadomsInformation()->developperMode();
 
+      m_decoder = boost::make_shared<CDecoder>(api);
+
+      m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
+                                                                shared::event::CEventTimer::kOneShot,
+                                                                boost::posix_time::minutes(15));
+
       api->setPluginState(yApi::historization::EPluginState::kRunning);
       YADOMS_LOG(information) << "Orange Business plugin is running..." ;
    }
@@ -70,6 +77,24 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
          break;
       }
+      case kRefreshStatesReceived:
+      {
+         try {
+            std::vector<boost::shared_ptr<equipments::IEquipment>> m_equipmentList = m_decoder->getDevices();
+            std::vector<boost::shared_ptr<equipments::IEquipment>>::iterator iteratorEquipment;
+
+            for (iteratorEquipment = m_equipmentList.begin(); iteratorEquipment != m_equipmentList.end(); ++iteratorEquipment)
+            {
+               shared::CDataContainer response = m_frameManager.getDeviceInformation(m_configuration.getAPIKey(), (*iteratorEquipment)->getEUI());
+               
+            }
+         }
+         catch (std::exception &e)
+         {
+            YADOMS_LOG(error) << "exception : " << e.what();
+         }
+         break;
+      }
       case yApi::IYPluginApi::kEventExtraQuery:
       {
          // Command was received from Yadoms
@@ -78,7 +103,10 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             if (extraQuery->getData()->query() == "retreiveData")
             {
-               processRetreiveData(api);
+               registerAllDevices(api); 
+            } else if (extraQuery->getData()->query() == "onlyActivated")
+            {
+               registerActivatedDevices(api); 
             }
          }
          extraQuery->sendSuccess(shared::CDataContainer());
@@ -98,10 +126,44 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void COrangeBusiness::processRetreiveData(boost::shared_ptr<yApi::IYPluginApi> api)
+void COrangeBusiness::registerAllDevices(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   shared::CDataContainer response = m_frameManager.getAllregisteredEquipments(m_configuration.getAPIKey()); //http://liveobjects.orange-business.com
-   response.printToLog(YADOMS_LOG(information));
+   try
+   {
+      int page = 0;
+      shared::CDataContainer response;
+
+      do {
+         response = m_frameManager.getRegisteredEquipments(m_configuration.getAPIKey(), page, false); //http://liveobjects.orange-business.com
+         m_decoder->decodeDevicesMessage(api, response);
+         response.printToLog(YADOMS_LOG(information));
+         ++page;
+      } while (!m_decoder->isFrameComplete(response));
+   }
+   catch (std::exception &e)
+   {
+      YADOMS_LOG(error) << "exception : " << e.what();
+   }
+}
+
+void COrangeBusiness::registerActivatedDevices(boost::shared_ptr<yApi::IYPluginApi> api)
+{
+   try
+   {
+      int page = 0;
+      shared::CDataContainer response;
+
+      do {
+         response = m_frameManager.getRegisteredEquipments(m_configuration.getAPIKey(), page, true); //http://liveobjects.orange-business.com
+         m_decoder->decodeDevicesMessage(api, response);
+         response.printToLog(YADOMS_LOG(information));
+         ++page;
+      } while (!m_decoder->isFrameComplete(response));;
+   }
+   catch (std::exception &e)
+   {
+      YADOMS_LOG(error) << "exception : " << e.what();
+   }
 }
 
 void COrangeBusiness::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData)
@@ -112,16 +174,4 @@ void COrangeBusiness::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi>
 
    // Update configuration
    m_configuration.initializeWith(newConfigurationData);
-}
-
-void COrangeBusiness::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceName) const
-{
-   // keywords list for declaration
-   //std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywordsDeclaration({ m_messageKeyword, m_rssi, m_batteryLevel, m_snr, m_signalPower });
-
-   if (api->deviceExists(deviceName))
-      return;
-
-   std::string m_model = "";
-   //api->declareDevice(deviceName, deviceName, m_model, m_keywordsDeclaration);
 }
