@@ -41,7 +41,9 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_0B::states(unsigned char rorg,
                                                                                                    const boost::dynamic_bitset<>& data,
-                                                                                                   const boost::dynamic_bitset<>& status) const
+                                                                                                   const boost::dynamic_bitset<>& status,
+                                                                                                   const std::string& senderId,
+                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    // This device supports several RORG messages
    // We just use the VLD telegram
@@ -118,6 +120,9 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                case CProfile_D2_01_Common::kPowerKW:
                   m_loadPower->set(powerValueW);
                   historizers.push_back(m_loadPower);
+
+                  sendActuatorMeasurementQuery(senderId,
+                                               messageHandler);
                   break;
                default:
                   YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported unit value for output channel" << unit;
@@ -125,7 +130,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                }
                break;
             }
-         case 0x1F: // Input channel
+         case 0x1F: // Input channel //TODO utile ?
             switch (unit)
             {
             case CProfile_D2_01_Common::kEnergyWs:
@@ -225,6 +230,7 @@ void CProfile_D2_01_0B::sendConfiguration(const shared::CDataContainer& deviceCo
    }
 
    // Configure for automatic power measure
+   // At each power measure receive, we ask for energy measure
    CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
                                                             senderId,
                                                             m_deviceId,
@@ -232,4 +238,35 @@ void CProfile_D2_01_0B::sendConfiguration(const shared::CDataContainer& deviceCo
                                                             0, // TODO corriger les autres appels à sendActuatorSetMeasurementCommand
                                                             minEnergyMeasureRefreshTime,
                                                             maxEnergyMeasureRefreshTime);
+}
+
+void CProfile_D2_01_0B::sendActuatorMeasurementQuery(const std::string& senderId,
+                                                     boost::shared_ptr<IMessageHandler> messageHandler) const
+{
+   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
+                                          senderId,
+                                          m_deviceId,
+                                          0);
+
+   boost::dynamic_bitset<> userData(2 * 8);
+   bitset_insert(userData, 4, 4, CProfile_D2_01_Common::kActuatorMeasurementQuery);
+
+   command.userData(bitset_to_bytes(userData));
+
+   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
+   if (!messageHandler->send(command,
+                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                          {
+                             return esp3Packet->header().packetType() == message::RESPONSE;
+                          },
+                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                          {
+                             answer = esp3Packet;
+                          }))
+   YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : no answer to Actuator Measurement Query";
+
+   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
+
+   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
+   YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : Actuator Measurement Query returns " << response->returnCode();
 }

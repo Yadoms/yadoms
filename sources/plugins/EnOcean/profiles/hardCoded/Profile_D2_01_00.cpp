@@ -37,7 +37,9 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_00::states(unsigned char rorg,
                                                                                                    const boost::dynamic_bitset<>& data,
-                                                                                                   const boost::dynamic_bitset<>& status) const
+                                                                                                   const boost::dynamic_bitset<>& status,
+                                                                                                   const std::string& senderId,
+                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    // This device supports several RORG messages
    // We just use the VLD telegram
@@ -59,7 +61,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       historizers.push_back(m_channel);
       break;
    default:
-      YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel ;
+      YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel;
       break;
    }
    return historizers;
@@ -85,19 +87,19 @@ void CProfile_D2_01_00::sendCommand(const std::string& keyword,
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!messageHandler->send(command,
                              [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
+                          {
+                             return esp3Packet->header().packetType() == message::RESPONSE;
+                          },
                              [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
-      YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : no answer to Actuator Set Output command" ;
+                          {
+                             answer = esp3Packet;
+                          }))
+   YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : no answer to Actuator Set Output command";
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
 
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-      YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : Actuator Set Output command returns " << response->returnCode() ;
+   YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : Actuator Set Output command returns " << response->returnCode();
 
    return;
 }

@@ -43,7 +43,9 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_09::states(unsigned char rorg,
                                                                                                    const boost::dynamic_bitset<>& data,
-                                                                                                   const boost::dynamic_bitset<>& status) const
+                                                                                                   const boost::dynamic_bitset<>& status,
+                                                                                                   const std::string& senderId,
+                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    // This device supports several RORG messages
    // We just use the VLD telegram
