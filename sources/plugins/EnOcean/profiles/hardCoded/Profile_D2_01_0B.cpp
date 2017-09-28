@@ -14,7 +14,8 @@ CProfile_D2_01_0B::CProfile_D2_01_0B(const std::string& deviceId,
      m_inputPower(boost::make_shared<yApi::historization::CPower>("Input power")), //TODO dispo ?
      m_loadEnergy(boost::make_shared<yApi::historization::CEnergy>("Load energy")),
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),
-     m_historizers({m_channel, m_inputEnergy, m_inputPower,m_loadEnergy,m_loadPower})
+     m_powerFailure(boost::make_shared<yApi::historization::CSwitch>("Power failure", yApi::EKeywordAccessMode::kGet)),
+     m_historizers({m_channel, m_inputEnergy, m_inputPower, m_loadEnergy, m_loadPower, m_powerFailure })
 {
 }
 
@@ -59,11 +60,19 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
          auto ioChannel = bitset_extract(data, 11, 5);
          auto state = bitset_extract(data, 17, 1) ? true : false;
+         auto powerFailureSupported = bitset_extract(data, 0, 1) ? true : false;;
+         auto powerFailureState = bitset_extract(data, 1, 1) ? true : false;;
+
          switch (ioChannel)
          {
          case 0:
             m_channel->set(state);
             historizers.push_back(m_channel);
+            if (powerFailureSupported)
+            {
+               m_powerFailure->set(powerFailureState);
+               historizers.push_back(m_powerFailure);
+            }
             break;
          default:
             YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel;
@@ -121,8 +130,12 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                   m_loadPower->set(powerValueW);
                   historizers.push_back(m_loadPower);
 
-                  sendActuatorMeasurementQuery(senderId,
-                                               messageHandler);
+                  // Power is configured to be received automaticaly.
+                  // As we can not receive both data (power + energy) automaticaly,
+                  // we ask for Energy just after receiving Power.
+                  CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
+                                                                      senderId,
+                                                                      m_deviceId); //TODO voir s'il faut le faire dans les autres profils
                   break;
                default:
                   YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported unit value for output channel" << unit;
@@ -203,7 +216,7 @@ void CProfile_D2_01_0B::sendConfiguration(const shared::CDataContainer& deviceCo
    auto taughtInAllDevices = deviceConfiguration.get<std::string>("taughtIn") == "allDevices";
    auto userInterfaceDayMode = deviceConfiguration.get<std::string>("userInterfaceMode") == "dayMode";
    auto defaultState = deviceConfiguration.get<CProfile_D2_01_Common::EDefaultState>("defaultState");
-   auto powerFailureDetection = deviceConfiguration.get<std::string>("powerFailureDetection") == "enable"; //TODO pas de KW sur le power failure (voir également les autres profils concernés)
+   auto powerFailureDetection = deviceConfiguration.get<std::string>("powerFailureDetection") == "enable";
 
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
@@ -238,35 +251,4 @@ void CProfile_D2_01_0B::sendConfiguration(const shared::CDataContainer& deviceCo
                                                             0, // TODO corriger les autres appels à sendActuatorSetMeasurementCommand
                                                             minEnergyMeasureRefreshTime,
                                                             maxEnergyMeasureRefreshTime);
-}
-
-void CProfile_D2_01_0B::sendActuatorMeasurementQuery(const std::string& senderId,
-                                                     boost::shared_ptr<IMessageHandler> messageHandler) const
-{
-   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
-                                          senderId,
-                                          m_deviceId,
-                                          0);
-
-   boost::dynamic_bitset<> userData(2 * 8);
-   bitset_insert(userData, 4, 4, CProfile_D2_01_Common::kActuatorMeasurementQuery);
-
-   command.userData(bitset_to_bytes(userData));
-
-   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
-   if (!messageHandler->send(command,
-                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                          {
-                             return esp3Packet->header().packetType() == message::RESPONSE;
-                          },
-                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                          {
-                             answer = esp3Packet;
-                          }))
-   YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : no answer to Actuator Measurement Query";
-
-   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
-
-   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-   YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : Actuator Measurement Query returns " << response->returnCode();
 }

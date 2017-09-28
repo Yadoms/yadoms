@@ -32,14 +32,12 @@ public:
    // [END] IType implementation
 
 private:
-   void sendActuatorMeasurementQuery(const std::string& senderId,
-                                     boost::shared_ptr<IMessageHandler> messageHandler) const;
-
    const std::string m_deviceId;
    boost::shared_ptr<yApi::historization::CSwitch> m_channel;
    boost::shared_ptr<yApi::historization::CEnergy> m_inputEnergy;
    boost::shared_ptr<yApi::historization::CPower> m_inputPower;
    boost::shared_ptr<yApi::historization::CEnergy> m_loadEnergy;
    boost::shared_ptr<yApi::historization::CPower> m_loadPower;
+   boost::shared_ptr<yApi::historization::CSwitch> m_powerFailure;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
 };

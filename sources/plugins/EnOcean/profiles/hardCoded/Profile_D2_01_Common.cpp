@@ -153,3 +153,35 @@ void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
    YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : Actuator Set Measurement command returns " << response->returnCode();
 }
+
+void CProfile_D2_01_Common::sendActuatorMeasurementQuery(boost::shared_ptr<IMessageHandler> messageHandler,
+                                                         const std::string& senderId,
+                                                         const std::string& targetId)
+{
+   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
+                                          senderId,
+                                          targetId,
+                                          0);
+
+   boost::dynamic_bitset<> userData(2 * 8);
+   bitset_insert(userData, 4, 4, CProfile_D2_01_Common::kActuatorMeasurementQuery);
+
+   command.userData(bitset_to_bytes(userData));
+
+   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
+   if (!messageHandler->send(command,
+                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                          {
+                             return esp3Packet->header().packetType() == message::RESPONSE;
+                          },
+                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                          {
+                             answer = esp3Packet;
+                          }))
+   YADOMS_LOG(error) << "Fail to send state to " << targetId << " : no answer to Actuator Measurement Query";
+
+   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
+
+   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
+   YADOMS_LOG(error) << "Fail to send state to " << targetId << " : Actuator Measurement Query returns " << response->returnCode();
+}
