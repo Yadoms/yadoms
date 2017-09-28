@@ -25,6 +25,7 @@ namespace web { namespace poco {
 
 
    CHttpRequestHandlerFactory::CHttpRequestHandlerFactory()
+      :m_allowExternalAccess(false)
    {
    }
 
@@ -62,6 +63,10 @@ namespace web { namespace poco {
       m_authenticator = authenticator;
    }
    
+   void CHttpRequestHandlerFactory::allowExternalAccess(bool allowExternalAccess)
+   {
+      m_allowExternalAccess = allowExternalAccess;
+   }
    
    Poco::Net::HTTPRequestHandler* CHttpRequestHandlerFactory::createRequestHandler(const Poco::Net::HTTPServerRequest& request)
    {
@@ -107,7 +112,7 @@ namespace web { namespace poco {
             m_restRequestHandlerWithAuthentication = boost::make_shared<CAuthenticationRequestHandler>(m_authenticator, m_restRequestHandler, false);
          realRequestHandler = m_restRequestHandlerWithAuthentication;
       }
-      return new CHttpRequestHandlerContainer(realRequestHandler);
+      return new CHttpRequestHandlerContainer(realRequestHandler, m_allowExternalAccess);
    }
 
    Poco::Net::HTTPRequestHandler* CHttpRequestHandlerFactory::createHttpRequestHandler()
@@ -127,7 +132,7 @@ namespace web { namespace poco {
          realRequestHandler = m_httpRequestHandlerWithAuthentication;
       }
 
-      return new CHttpRequestHandlerContainer(realRequestHandler);
+      return new CHttpRequestHandlerContainer(realRequestHandler, m_allowExternalAccess);
    }
 
 } //namespace poco

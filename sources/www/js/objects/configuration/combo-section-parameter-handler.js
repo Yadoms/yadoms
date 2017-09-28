@@ -139,9 +139,7 @@ ComboSectionParameterHandler.prototype.afterI18n = function() {
       let aTxt = $(a).find("a span").first().text();
       let bTxt = $(b).find("a span").first().text();
       
-      if (aTxt > bTxt) return 1;
-      else if (aTxt < bTxt) return -1;
-      else return 0;
+      return aTxt.toLowerCase().localeCompare(bTxt.toLowerCase());
    });
    $ul.append($li);
    

@@ -27,7 +27,7 @@ function IntParameterHandler(i18nContext, i18nKey, paramName, content, currentVa
    //handle disable check spec (in some cases, the value checking could be bypassed (don't verify min an dmax values))
    this.disableCheck = parseBool(content.disableCheck, false);
    
-   if(content.disableCheck === false) {
+   if(this.disableCheck === false) {
       //we search min and max value
       this.minValue = parseInt(content.minimumValue);
       this.maxValue = parseInt(content.maximumValue);

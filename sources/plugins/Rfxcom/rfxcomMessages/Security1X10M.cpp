@@ -52,7 +52,7 @@ namespace rfxcomMessages
 
    unsigned long CSecurity1X10M::idFromProtocol(const RBUF& rbuf) const
    {
-      return (unsigned long)(rbuf.SECURITY1.id1);
+      return static_cast<unsigned long>(rbuf.SECURITY1.id1);
    }
 
 } // namespace rfxcomMessages

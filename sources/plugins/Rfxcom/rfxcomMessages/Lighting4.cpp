@@ -98,7 +98,7 @@ namespace rfxcomMessages
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
       {
-         if (!m_messageFilter->isValid(m_deviceName))
+         if (m_messageFilter && !m_messageFilter->isValid(m_deviceName))
             throw std::invalid_argument((boost::format("Receive unknown device (id %1%) for unsecured protocol (LIGHTING4 / %2%), may be a transmission error : ignored")
                % m_id % m_deviceModel).str());
 

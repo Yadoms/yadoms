@@ -94,7 +94,7 @@ namespace rfxcomMessages
 
    unsigned long CSecurity1Meiantech::idFromProtocol(const RBUF& rbuf) const
    {
-      return (unsigned long)(rbuf.SECURITY1.id1 << 16) + (rbuf.SECURITY1.id2 << 8) + (rbuf.SECURITY1.id3);
+      return static_cast<unsigned long>((rbuf.SECURITY1.id1 << 16) + (rbuf.SECURITY1.id2 << 8) + rbuf.SECURITY1.id3);
    }
 } // namespace rfxcomMessages
 

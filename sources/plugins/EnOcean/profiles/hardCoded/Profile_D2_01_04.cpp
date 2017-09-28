@@ -151,6 +151,7 @@ void CProfile_D2_01_04::sendConfiguration(const shared::CDataContainer& deviceCo
                                                       localControl,
                                                       taughtInAllDevices,
                                                       false,
+                                                      false,
                                                       CProfile_D2_01_Common::EDefaultState::knotUsed,
                                                       dimTimer1,
                                                       dimTimer2,

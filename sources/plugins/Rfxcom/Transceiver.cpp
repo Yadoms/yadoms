@@ -74,6 +74,7 @@ std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter>> CTransceiver::createU
    std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter>> filters;
    filters[pTypeCURRENTENERGY] = rfxcomMessages::CCurrentEnergy::createFilter();
    filters[pTypeLighting4] = rfxcomMessages::CLighting4::createFilter();
+   filters[pTypeSecurity1] = rfxcomMessages::CSecurity1::createFilter();
    return filters;
 }
 
@@ -319,7 +320,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
          break;
       case pTypeRFXSensor: message = boost::make_shared<rfxcomMessages::CRFXSensor>(api, *buf, bufSize);
          break;
-      case pTypeSecurity1: message = boost::make_shared<rfxcomMessages::CSecurity1>(api, *buf, bufSize);
+      case pTypeSecurity1: message = boost::make_shared<rfxcomMessages::CSecurity1>(api, *buf, bufSize, m_unsecuredProtocolFilters.at(pTypeSecurity1));
          break;
       case pTypeSecurity2: message = boost::make_shared<rfxcomMessages::CSecurity2>(api, *buf, bufSize);
          break;
@@ -509,8 +510,10 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
          msg = boost::make_shared<rfxcomMessages::CHomeConfort>(api, sTypeHomeConfortTEL010, data.getDeviceName(), data.getConfiguration());
 
       // Security1
-      else if (deviceType == "x10SecurityR")
+      else if (deviceType == "x10SecurityRemote")
          msg = boost::make_shared<rfxcomMessages::CSecurity1>(api, sTypeSecX10R, data.getDeviceName(), data.getConfiguration());
+      else if (deviceType == "meiantech")
+         msg = boost::make_shared<rfxcomMessages::CSecurity1>(api, sTypeMeiantech, data.getDeviceName(), data.getConfiguration());
 
       // Security2
       else if (deviceType == "keeLoq")

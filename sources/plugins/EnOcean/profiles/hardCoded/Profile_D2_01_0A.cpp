@@ -110,6 +110,7 @@ void CProfile_D2_01_0A::sendConfiguration(const shared::CDataContainer& deviceCo
    auto taughtInAllDevices = deviceConfiguration.get<std::string>("taughtIn") == "allDevices";
    auto userInterfaceDayMode = deviceConfiguration.get<std::string>("userInterfaceMode") == "dayMode";
    auto defaultState = deviceConfiguration.get<CProfile_D2_01_Common::EDefaultState>("defaultState");
+   auto powerFailureDetection = deviceConfiguration.get<std::string>("powerFailureDetection") == "enable";
 
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
@@ -117,6 +118,7 @@ void CProfile_D2_01_0A::sendConfiguration(const shared::CDataContainer& deviceCo
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
+                                                      powerFailureDetection,
                                                       defaultState,
                                                       0.0,
                                                       0.0,
