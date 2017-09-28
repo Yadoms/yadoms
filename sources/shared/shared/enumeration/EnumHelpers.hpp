@@ -705,8 +705,8 @@ CCurtain::ECommand::ECommand()
    void _fullClassifiedEnumName::logEnum() const {                                                                                              \
       const std::multimap<int, std::string> allValues = getAllValuesAndStrings();                                                               \
       YADOMS_LOG(information) << "_fullClassifiedEnumName content : ";                                                                          \
-      for(std::multimap<int, std::string>::const_iterator i=allValues.begin();i!=allValues.begin();++i) {                                       \
-         YADOMS_LOG(information) << "    " << i->first << " : " << i-> second;                                                                  \
+      for(std::multimap<int, std::string>::const_iterator i=allValues.begin();i!=allValues.end();++i) {                                       \
+         YADOMS_LOG(information) << "    " << i->first << " : " << i->second;                                                                  \
       }                                                                                                                                         \
    }                                                                                                                                            \
    _fullClassifiedEnumName::operator std::string() const { return toString(); }                                                                 \
