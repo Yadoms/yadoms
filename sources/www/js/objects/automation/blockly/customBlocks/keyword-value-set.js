@@ -15,8 +15,8 @@ Blockly.Blocks["keyword-value-set"] = {
     init: function () {
 		this.setHelpUrl(Blockly.Yadoms.GenerateHelpUrl(this.type));
         this.setInputsInline(true);
-        this.setPreviousStatement(true, "null");
-        this.setNextStatement(true, "null");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
         this.setTooltip($.t("blockly.blocks.keyword-value-set.tooltip", { defaultValue: "" }));
         this.setColour(Blockly.Yadoms.blockColour.HUE);
 

@@ -97,6 +97,10 @@ shared::CDataContainer CConfigurationSchemaFactory::generateForInteger(shared::C
    if (zwaveTypeInfo.containsValue("max"))
       options.set("maximumValue", zwaveTypeInfo.get<std::string>("max"));
 
+   //disable verification. workaround for #248
+   options.set("disableCheck", true);
+   
+
    return options;
 }
 shared::CDataContainer CConfigurationSchemaFactory::generateForBool(shared::CDataContainer zwaveTypeInfo)
