@@ -270,7 +270,7 @@ namespace pluginSystem
 
       auto instance = m_runningInstances.find(id);
       if (instance == m_runningInstances.end())
-         throw CPluginException((boost::format("Instance #%1% is not running") % id).str());
+         throw CPluginException((boost::format("Plugin instance #%1% is not running") % id).str());
 
       return instance->second;
    }

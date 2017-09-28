@@ -4,45 +4,46 @@
 #include "database/IAcquisitionRequester.h"
 #include "database/IDatabaseRequester.h"
 
-namespace database { 
-namespace common {
-
-   class CPurgeTask : public Poco::Util::TimerTask
+namespace database
+{
+   namespace common
    {
-   public:
-      //--------------------------------------------------------------
-      /// \brief	Constructor
-      /// \param [in]	acquisitionRequester the acquisition requester 
-      /// \param [in]	sqlRequester         the sql requester 
-      //--------------------------------------------------------------
-      CPurgeTask(boost::shared_ptr<IAcquisitionRequester> acquisitionRequester, boost::shared_ptr<IDatabaseRequester> sqlRequester);
+      class CPurgeTask : public Poco::Util::TimerTask
+      {
+      public:
+         //--------------------------------------------------------------
+         /// \brief	Constructor
+         /// \param [in]	acquisitionRequester the acquisition requester 
+         /// \param [in]	sqlRequester         the sql requester 
+         //--------------------------------------------------------------
+         CPurgeTask(boost::shared_ptr<IAcquisitionRequester> acquisitionRequester, boost::shared_ptr<IDatabaseRequester> sqlRequester);
 
-      //--------------------------------------------------------------
-      /// \brief	Destructor
-      //--------------------------------------------------------------
-      virtual ~CPurgeTask();
+         //--------------------------------------------------------------
+         /// \brief	Destructor
+         //--------------------------------------------------------------
+         virtual ~CPurgeTask();
 
-      // BEGIN Poco::Util::TimerTask implementation 
-      virtual void run();
-      // END Poco::Util::TimerTask implementation 
+         // Poco::Util::TimerTask implementation 
+         void run() override;
+         // [END] Poco::Util::TimerTask implementation 
 
-private:
-      //--------------------------------------------------------------
-      /// \Brief		   Acquisition requester
-      //--------------------------------------------------------------
-      boost::shared_ptr<IAcquisitionRequester> m_acquisitionRequester;
+      private:
+         //--------------------------------------------------------------
+         /// \Brief		   Acquisition requester
+         //--------------------------------------------------------------
+         boost::shared_ptr<IAcquisitionRequester> m_acquisitionRequester;
 
-      //--------------------------------------------------------------
-      /// \Brief		   Sql requester
-      //--------------------------------------------------------------
-      boost::shared_ptr<IDatabaseRequester> m_sqlRequester;
+         //--------------------------------------------------------------
+         /// \Brief		   Sql requester
+         //--------------------------------------------------------------
+         boost::shared_ptr<IDatabaseRequester> m_sqlRequester;
 
-      //--------------------------------------------------------------
-      /// \Brief		   Acquisition lifetime (in days)
-      //--------------------------------------------------------------
-      int m_acquisitionLifetimeDays;
-   };
-
-} //namespace common
+         //--------------------------------------------------------------
+         /// \Brief		   Acquisition lifetime (in days)
+         //--------------------------------------------------------------
+         int m_acquisitionLifetimeDays;
+      };
+   } //namespace common
 } //namespace database 
+
 
