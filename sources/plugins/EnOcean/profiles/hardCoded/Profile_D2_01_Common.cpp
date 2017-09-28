@@ -127,12 +127,12 @@ void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<
    bitset_insert(data, 8, true); // Report on query + auto reporting
    bitset_insert(data, 9, false); // reset measurement not (yet ?) available
    bitset_insert(data, 10, powerMeasurement);
-   bitset_insert(data, 11, 5, outputChannel); // 0x1E : all output channels, 0x1F : input channel
+   bitset_insert(data, 11, 5, outputChannel); // Specific channel, or 0x1E for all output channels, or 0x1F for input channel
    bitset_insert(data, 16, 4, 0); // No measurement delta
    bitset_insert(data, 21, 3, powerMeasurement ? kPowerW : kEnergyWh); // Hard-coded for now
    bitset_insert(data, 24, 8, 0); // No measurement delta
-   bitset_insert(data, 32, 8, static_cast<unsigned char>(minEnergyMeasureRefreshTime / 10.0));
-   bitset_insert(data, 40, 8, static_cast<unsigned char>(maxEnergyMeasureRefreshTime));
+   bitset_insert(data, 32, 8, static_cast<unsigned char>(maxEnergyMeasureRefreshTime / 10.0));
+   bitset_insert(data, 40, 8, static_cast<unsigned char>(minEnergyMeasureRefreshTime));
 
    command.userData(bitset_to_bytes(data));
 
