@@ -66,20 +66,23 @@ shared::CDataContainer urlManager::getDeviceInformation(const std::string &apike
 
 shared::CDataContainer urlManager::listDeviceCommands(const std::string &apikey,
                                                       const std::string &devEUI,
+                                                      const int page,
                                                       const boost::posix_time::time_duration& timeout)
 {
    shared::CDataContainer response;
    shared::CDataContainer headerParameters;
-   shared::CDataContainer noParameters;
+   shared::CDataContainer parameters;
 
    // define some header parameters
    headerParameters.set("Host", m_baseUrl.str());
    headerParameters.set("X-API-Key", apikey);
    headerParameters.set("Accept", "application/json");
 
+   parameters.set("page", boost::lexical_cast<std::string>(page));
+
    shared::CHttpMethods::SendGetSecureRequest("https://liveobjects.orange-business.com/api/v0/vendors/lora/devices/" + devEUI + "/commands",
                                               headerParameters,
-                                              noParameters,
+                                              parameters,
                                               [&](shared::CDataContainer& data)
                                               {
                                                  response = data;

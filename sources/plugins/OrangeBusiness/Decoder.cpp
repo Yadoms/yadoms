@@ -56,9 +56,34 @@ bool CDecoder::isFrameComplete(shared::CDataContainer message)
    int page = message.get<int>("page");
    int pageSize = message.get<int>("size");
 
-
    if (message.get<int>("totalCount") > (page * pageSize))
       return true;
    else
       return false;
+}
+
+std::string CDecoder::getLastData(shared::CDataContainer message)
+{
+   auto commands = message.get<std::vector<shared::CDataContainer> >("data");
+
+   if (commands.size() > 0)
+   {
+      std::string data = commands[commands.size() - 1].get<std::string>("data");
+      std::string date = commands[commands.size() - 1].get<std::string>("creationTs");
+
+      // TODO : Read and keep the unique id of the command
+
+      //boost::shared_ptr<equipments::CDefaultEquipment> newEquipment(boost::make_shared<equipments::CDefaultEquipment>(name, devEUI));
+      //m_equipments.push_back(newEquipment);
+      //YADOMS_LOG(information) << "create device name = " << name << " devEUI = " << devEUI;
+      return data;
+   }
+   else
+      return ""; // TODO : Throw something
+}
+
+//TODO : To be deleted and integrated to the precedent function
+std::string CDecoder::getLastDataReceivedDate(shared::CDataContainer message)
+{
+   return "";
 }

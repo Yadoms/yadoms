@@ -28,6 +28,9 @@ namespace equipments
       std::string getName() const override;
       std::string getEUI() const override;
       void createDevice(boost::shared_ptr<yApi::IYPluginApi> api) override;
+      void updateData(boost::shared_ptr<yApi::IYPluginApi> api,
+                      int batteryLevel,
+                      std::string& data) override;
       // [END] IEquipment implementation
 
       //-----------------------------------------------------

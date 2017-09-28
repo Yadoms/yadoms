@@ -37,4 +37,16 @@ public:
    /// \param [in] message         the received message
    //--------------------------------------------------------------
    virtual bool isFrameComplete(shared::CDataContainer message) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	                    return if we need to ask the server for new frames
+   /// \param [in] message         the received message
+   //--------------------------------------------------------------
+   virtual std::string getLastData(shared::CDataContainer message) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	                    return if we need to ask the server for new frames
+   /// \param [in] message         the received message
+   //--------------------------------------------------------------
+   virtual std::string getLastDataReceivedDate(shared::CDataContainer message) = 0;
 };

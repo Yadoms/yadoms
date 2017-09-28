@@ -36,4 +36,16 @@ namespace equipments
 
       api->declareDevice(m_name, "Orange Business", "Orange Business", keywordsToDeclare, details);
    }
+
+   void CDefaultEquipment::updateData(boost::shared_ptr<yApi::IYPluginApi> api,
+                                      int batteryLevel,
+                                      std::string& data)
+   {
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToHistorize = { m_batteryLevel, m_messageKeyword };
+
+      m_batteryLevel->set(batteryLevel);
+      m_messageKeyword->set(data);
+
+      api->historizeData(m_name, keywordsToHistorize);
+   }
 }

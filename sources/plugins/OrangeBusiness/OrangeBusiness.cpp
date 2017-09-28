@@ -40,10 +40,14 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       m_decoder = boost::make_shared<CDecoder>(api);
 
-      m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
-                                                                shared::event::CEventTimer::kOneShot,
-                                                                boost::posix_time::minutes(15));
+      if (m_decoder->getDevices().size() > 0)
+      {
+         m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout, // TODO : rename many things
+                                                                   shared::event::CEventTimer::kOneShot,
+                                                                   boost::posix_time::minutes(15));
+      }
 
+      // TODO : create others plugin state : ready, if no devices exists, for example, no connexion to the server, ...
       api->setPluginState(yApi::historization::EPluginState::kRunning);
       YADOMS_LOG(information) << "Orange Business plugin is running..." ;
    }
@@ -85,8 +89,34 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             for (iteratorEquipment = m_equipmentList.begin(); iteratorEquipment != m_equipmentList.end(); ++iteratorEquipment)
             {
-               shared::CDataContainer response = m_frameManager.getDeviceInformation(m_configuration.getAPIKey(), (*iteratorEquipment)->getEUI());
-               
+               int page = 0;
+
+               try {
+                  // reading of the battery level
+                  shared::CDataContainer response = m_frameManager.getDeviceInformation(m_configuration.getAPIKey(), (*iteratorEquipment)->getEUI());
+                  response.printToLog(YADOMS_LOG(information));
+                  int batteryLevel = response.get<int>("lastBatteryLevel");
+
+                  // Todo : Reading of the last communication date. If the date is too old for battery level > 1 week - do not integrate it
+
+                  //Todo : Enter a date to limit the number of frames
+                  // Reading all commands for an equipment. Go to the last page if necessary
+                  do {
+                     response = m_frameManager.listDeviceCommands(m_configuration.getAPIKey(), (*iteratorEquipment)->getEUI(), page);
+                     response.printToLog(YADOMS_LOG(information));
+                     ++page;
+                  } while (!m_decoder->isFrameComplete(response));
+
+                  // get last data from this last frame
+                  m_decoder->getLastData(response);
+
+                  // Todo : Reading of the last communication date. If the date is too old for data > 15mn - do not integrate it
+
+               }
+               catch (std::exception &e)
+               {
+                  YADOMS_LOG(error) << "exception : " << e.what();
+               }
             }
          }
          catch (std::exception &e)

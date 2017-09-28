@@ -8,7 +8,22 @@ BOOST_AUTO_TEST_SUITE(TestOrangeBusiness)
   
 namespace yApi = shared::plugin::yPluginApi;
 
-   BOOST_AUTO_TEST_CASE(DecoderDeviceFrame)
+   BOOST_AUTO_TEST_CASE(DecoderDeviceFrameEmpty)
+   {
+      auto api(boost::make_shared<CDefaultYPluginApiMock>());
+      CDecoder decoder(api);
+
+      shared::CDataContainer messageRecu;
+
+      BOOST_CHECK_EQUAL(decoder.isFrameComplete(messageRecu), true);
+
+      std::vector<boost::shared_ptr<equipments::IEquipment>> devicesRegistered;
+      devicesRegistered = decoder.getDevices();
+
+      BOOST_CHECK_EQUAL(devicesRegistered.size(), 0);
+   }
+
+   BOOST_AUTO_TEST_CASE(DecoderDeviceFrameNominal)
    {
       auto api(boost::make_shared<CDefaultYPluginApiMock>());
       CDecoder decoder(api);
@@ -66,6 +81,15 @@ namespace yApi = shared::plugin::yPluginApi;
       devicesRegistered = decoder.getDevices();
 
       BOOST_CHECK_EQUAL(devicesRegistered.size(), 2);
+      BOOST_CHECK_EQUAL(devicesRegistered[0]->getName(),"DeviceTest2");
+      BOOST_CHECK_EQUAL(devicesRegistered[0]->getEUI(), "0018B20000000272");
+
+      BOOST_CHECK_EQUAL(devicesRegistered[1]->getName(), "DeviceTest1");
+      BOOST_CHECK_EQUAL(devicesRegistered[1]->getEUI(), "0018B20000000274");
+   }
+
+   BOOST_AUTO_TEST_CASE(DecoderDeviceFrameNominal1)
+   {
    }
 
    BOOST_AUTO_TEST_SUITE_END()

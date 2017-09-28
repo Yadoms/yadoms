@@ -31,6 +31,13 @@ namespace equipments
       virtual void createDevice(boost::shared_ptr<yApi::IYPluginApi> api) = 0;
 
       //--------------------------------------------------------------
+      /// \brief	                     Create the Device with the counter Id
+      //-----------------------------------------------------
+      virtual void updateData(boost::shared_ptr<yApi::IYPluginApi> api,
+                              int batteryLevel,
+                              std::string& data) = 0;
+
+      //--------------------------------------------------------------
       /// \brief	    Destructor
       //--------------------------------------------------------------
       virtual ~IEquipment()
