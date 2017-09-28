@@ -61,14 +61,12 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
          auto writeOnly = OpenZWave::Manager::Get()->IsValueWriteOnly(vID);
          auto polled = OpenZWave::Manager::Get()->IsValuePolled(vID);
          auto valueSet = OpenZWave::Manager::Get()->IsValueSet(vID);
-         auto units = OpenZWave::Manager::Get()->GetValueUnits(vID);
          auto awake = OpenZWave::Manager::Get()->IsNodeAwake(homeId, nodeId);
          auto failed = OpenZWave::Manager::Get()->IsNodeFailed(homeId, nodeId);
          auto zwavePlus = OpenZWave::Manager::Get()->IsNodeZWavePlus(homeId, nodeId);
          auto instance = vID.GetInstance();
 
-         if (units.empty())
-            units = shared::plugin::yPluginApi::CStandardUnits::NoUnit();
+         std::string units = COpenZWaveHelpers::IdentifyUnits(vID);
 
          std::string genre = "";
 
