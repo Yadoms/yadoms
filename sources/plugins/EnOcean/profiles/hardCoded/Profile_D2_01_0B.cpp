@@ -60,24 +60,25 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
          auto ioChannel = bitset_extract(data, 11, 5);
          auto state = bitset_extract(data, 17, 1) ? true : false;
-         auto powerFailureSupported = bitset_extract(data, 0, 1) ? true : false;;
-         auto powerFailureState = bitset_extract(data, 1, 1) ? true : false;;
-
          switch (ioChannel)
          {
          case 0:
             m_channel->set(state);
             historizers.push_back(m_channel);
-            if (powerFailureSupported)
-            {
-               m_powerFailure->set(powerFailureState);
-               historizers.push_back(m_powerFailure);
-            }
             break;
          default:
             YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel;
             break;
          }
+
+         auto powerFailureSupported = bitset_extract(data, 0, 1) ? true : false;
+         auto powerFailureState = bitset_extract(data, 1, 1) ? true : false;
+         if (powerFailureSupported)
+         {
+            m_powerFailure->set(powerFailureState);
+            historizers.push_back(m_powerFailure);
+         }
+
          return historizers;
       }
    case CProfile_D2_01_Common::kActuatorMeasurementResponse:

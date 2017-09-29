@@ -10,7 +10,8 @@ CProfile_D2_01_0A::CProfile_D2_01_0A(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_deviceId(deviceId),
      m_channel(boost::make_shared<yApi::historization::CSwitch>("Channel", yApi::EKeywordAccessMode::kGetSet)),
-     m_historizers({m_channel})
+   m_powerFailure(boost::make_shared<yApi::historization::CSwitch>("Power failure", yApi::EKeywordAccessMode::kGet)),
+     m_historizers({m_channel, m_powerFailure })
 {
 }
 
@@ -64,6 +65,15 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel;
       break;
    }
+
+   auto powerFailureSupported = bitset_extract(data, 0, 1) ? true : false;
+   auto powerFailureState = bitset_extract(data, 1, 1) ? true : false;
+   if (powerFailureSupported)
+   {
+      m_powerFailure->set(powerFailureState);
+      historizers.push_back(m_powerFailure);
+   }
+
    return historizers;
 }
 
