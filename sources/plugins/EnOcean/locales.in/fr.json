@@ -304,7 +304,6 @@
       }
     },
     "D2-01-0F": {
-      "type": "section",
       "content": {
         "localControl": {
           "name": "Contrôle local",
@@ -346,7 +345,6 @@
         },
         "switchingState": {
           "name": "Comportement des interrupteurs",
-          "type": "enum",
           "values": {
             "tooggle": "Chaque changement inverse la sortie",
             "specific": "Positions ON/OFF Etats spécifiques (ON lorsque le contact est fermé, OFF lorsqu'il est ouvert)"

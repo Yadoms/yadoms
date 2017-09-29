@@ -98,7 +98,7 @@ void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessa
    boost::dynamic_bitset<> data(4 * 8);
 
    bitset_insert(data, 4, 4, kActuatorSetLocal);
-   bitset_insert(data, 0, !taughtInAllDevices);
+   bitset_insert(data, 0, taughtInAllDevices);
    bitset_insert(data, 10, localControl);
    bitset_insert(data, 11, 5, outputChannel);
    bitset_insert(data, 16, 4, static_cast<unsigned int>(lround(dimTimer2 / 0.5)));
@@ -307,8 +307,6 @@ void CProfile_D2_01_Common::sendMessage(boost::shared_ptr<IMessageHandler> messa
 // - over current
 // - voir ce que c'est que le "Measurement Auto Scaling"
 // - voir si on peut factoriser la fonction state
-// - Devices à 2 canaux : distinguer la conf pour chaque canal
-// - mesure de conso de l'entrée
 // - initialiser toutes les valeurs au démarrage :
 //   - tout ce qui est états doit être lu dans l'équipement
 //   - tout ce qui est configuration doit être lu dans la base et envoyé au device
