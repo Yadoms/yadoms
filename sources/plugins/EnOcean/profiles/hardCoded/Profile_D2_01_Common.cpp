@@ -305,7 +305,7 @@ void CProfile_D2_01_Common::sendMessage(boost::shared_ptr<IMessageHandler> messa
 
 //TODO refactoring D2-01-XX, RAF :
 // - over current
-// - mesure d'énergy/power fonctionnelle pour tous les profils qui sont censés le supporter
 // - voir ce que c'est que le "Measurement Auto Scaling"
 // - voir si on peut factoriser la fonction state
 // - Devices à 2 canaux : distinguer la conf pour chaque canal
+// - mesure de conso de l'entrée

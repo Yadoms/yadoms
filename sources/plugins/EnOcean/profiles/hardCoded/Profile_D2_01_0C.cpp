@@ -121,6 +121,14 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                case CProfile_D2_01_Common::kPowerKW:
                   m_loadPower->set(powerValueW);
                   historizers.push_back(m_loadPower);
+
+                  // Power is configured to be received automaticaly.
+                  // As we can not receive both data (power + energy) automaticaly,
+                  // we ask for Energy just after receiving Power.
+                  CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
+                                                                      senderId,
+                                                                      m_deviceId,
+                                                                      CProfile_D2_01_Common::kOutputChannel1);
                   break;
                default:
                   YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported unit value for output channel" << unit;
@@ -254,15 +262,9 @@ void CProfile_D2_01_0C::sendConfiguration(const shared::CDataContainer& deviceCo
       throw std::logic_error(oss.str());
    }
 
-   // Configure for both power and energy measure
+   // Configure for automatic power measure
+   // At each power measure receive, we ask for energy measure
    CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
-                                                            senderId,
-                                                            m_deviceId,
-                                                            CProfile_D2_01_Common::kOutputChannel1,
-                                                            false,
-                                                            minEnergyMeasureRefreshTime,
-                                                            maxEnergyMeasureRefreshTime);
-   CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,//TODO
                                                             senderId,
                                                             m_deviceId,
                                                             CProfile_D2_01_Common::kOutputChannel1,

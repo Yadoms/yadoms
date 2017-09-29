@@ -127,7 +127,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                   CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
                                                                       senderId,
                                                                       m_deviceId,
-                                                                      CProfile_D2_01_Common::kOutputChannel1); //TODO voir s'il faut le faire dans les autres profils
+                                                                      CProfile_D2_01_Common::kOutputChannel1);
                   break;
                default:
                   YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported unit value for output channel" << unit;
