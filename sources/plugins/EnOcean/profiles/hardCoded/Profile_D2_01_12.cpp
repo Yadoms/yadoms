@@ -76,13 +76,28 @@ void CProfile_D2_01_12::sendCommand(const std::string& keyword,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
+   bool value;
+   CProfile_D2_01_Common::EOutputChannel channel;
+   if (keyword == m_channel1->getKeyword())
+   {
+      m_channel1->setCommand(commandBody);
+      value = m_channel1->get();
+      channel = CProfile_D2_01_Common::kOutputChannel1;
+   }
+   else if (keyword == m_channel2->getKeyword())
+   {
+      m_channel2->setCommand(commandBody);
+      value = m_channel2->get();
+      channel = CProfile_D2_01_Common::kOutputChannel2;
+   }
+   else
+      return;
+
    CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
                                                                 senderId,
                                                                 m_deviceId,
-                                                                keyword == m_channel1->getKeyword()
-                                                                   ? CProfile_D2_01_Common::kOutputChannel1
-                                                                   : CProfile_D2_01_Common::kOutputChannel2,
-                                                                commandBody == "1");
+                                                                channel,
+                                                                value);
 }
 
 void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceConfiguration,

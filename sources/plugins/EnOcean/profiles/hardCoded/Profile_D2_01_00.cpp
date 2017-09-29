@@ -71,11 +71,16 @@ void CProfile_D2_01_00::sendCommand(const std::string& keyword,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
+   if (keyword != m_channel->getKeyword())
+      return;
+
+   m_channel->setCommand(commandBody);
+
    CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
                                                                 senderId,
                                                                 m_deviceId,
                                                                 CProfile_D2_01_Common::kOutputChannel1,
-                                                                commandBody == "1");
+                                                                m_channel->get());
 }
 
 void CProfile_D2_01_00::sendConfiguration(const shared::CDataContainer& deviceConfiguration,

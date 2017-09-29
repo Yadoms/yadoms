@@ -172,27 +172,24 @@ void CProfile_D2_01_09::sendCommand(const std::string& keyword,
 {
    if (keyword == m_dimmer->getKeyword())
    {
+      m_dimmer->setCommand(commandBody);
    }
-   else if (keyword == m_dimmer->getKeyword())
+   else if (keyword == m_dimmerMode->getKeyword())
    {
-      // Nothing to do, this keyword is at internal-usage only.
+      m_dimmerMode->setCommand(commandBody);
+      // Nothing to do more, this keyword is at internal-usage only.
       // It will be used at next dimmer value change.
       return;
    }
    else
-   {
-      std::ostringstream oss;
-      oss << "Device " << m_deviceId << " (" << profile() << ") : send command on unsupported keyword " << keyword;
-      YADOMS_LOG(information) << oss.str();
-      throw std::logic_error(oss.str());
-   }
+      return;
 
    CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(messageHandler,
                                                               senderId,
                                                               m_deviceId,
                                                               CProfile_D2_01_Common::kOutputChannel1,
                                                               m_dimmerMode->get(),
-                                                              std::stoul(commandBody));//TODO utiliser m_dimmer->get() ? (et vérifier tous les appels à CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming
+                                                              m_dimmer->get());
 }
 
 void CProfile_D2_01_09::sendConfiguration(const shared::CDataContainer& deviceConfiguration,

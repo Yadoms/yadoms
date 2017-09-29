@@ -71,12 +71,17 @@ void CProfile_D2_01_03::sendCommand(const std::string& keyword,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
+   if (keyword != m_dimmer->getKeyword())
+      return;
+
+   m_dimmer->setCommand(commandBody);
+
    CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(messageHandler,
                                                               senderId,
                                                               m_deviceId,
                                                               CProfile_D2_01_Common::kOutputChannel1,
                                                               specificHistorizers::EDimmerMode::kSwitchToValue,
-                                                              std::stoul(commandBody));
+                                                              m_dimmer->get());
 }
 
 void CProfile_D2_01_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration,

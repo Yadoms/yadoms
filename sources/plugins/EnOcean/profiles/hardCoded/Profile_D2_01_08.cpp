@@ -13,7 +13,7 @@ CProfile_D2_01_08::CProfile_D2_01_08(const std::string& deviceId,
      m_inputPower(boost::make_shared<yApi::historization::CPower>("Input power")),
      m_loadEnergy(boost::make_shared<yApi::historization::CEnergy>("Load energy")),
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),
-     m_historizers({m_channel, m_inputEnergy, m_inputPower,m_loadEnergy,m_loadPower})
+     m_historizers({m_channel, m_inputEnergy, m_inputPower, m_loadEnergy, m_loadPower})
 {
 }
 
@@ -169,11 +169,16 @@ void CProfile_D2_01_08::sendCommand(const std::string& keyword,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
+   if (keyword != m_channel->getKeyword())
+      return;
+
+   m_channel->setCommand(commandBody);
+
    CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
                                                                 senderId,
                                                                 m_deviceId,
                                                                 CProfile_D2_01_Common::kOutputChannel1,
-                                                                commandBody == "1");
+                                                                m_channel->get());
 }
 
 void CProfile_D2_01_08::sendConfiguration(const shared::CDataContainer& deviceConfiguration,

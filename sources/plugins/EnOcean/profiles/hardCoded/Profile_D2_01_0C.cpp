@@ -206,25 +206,20 @@ void CProfile_D2_01_0C::sendCommand(const std::string& keyword,
 {
    if (keyword == m_channel->getKeyword())
    {
+      m_channel->setCommand(commandBody);
       CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
                                                                    senderId,
                                                                    m_deviceId,
                                                                    CProfile_D2_01_Common::kOutputChannel1,
-                                                                   commandBody == "1");//TODO remplacer par m_channel->get() ? A tester
+                                                                   m_channel->get());
    }
    else if (keyword == m_pilotWire->getKeyword())
    {
+      m_pilotWire->setCommand(commandBody);
       CProfile_D2_01_Common::sendActuatorSetPilotWireModeCommand(messageHandler,
                                                                  senderId,
                                                                  m_deviceId,
                                                                  m_pilotWire->get());
-   }
-   else
-   {
-      std::ostringstream oss;
-      oss << "Device " << m_deviceId << " (" << profile() << ") : send command on unsupported keyword " << keyword;
-      YADOMS_LOG(information) << oss.str();
-      throw std::logic_error(oss.str());
    }
 }
 
