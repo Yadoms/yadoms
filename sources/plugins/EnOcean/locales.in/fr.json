@@ -349,7 +349,7 @@
           "type": "enum",
           "values": {
             "tooggle": "Chaque changement inverse la sortie",
-            "specific": "Etats spécifiques (Sortie active lorsque les contacts sont fermés)"
+            "specific": "Positions ON/OFF Etats spécifiques (ON lorsque le contact est fermé, OFF lorsqu'il est ouvert)"
           }
         },
         "autoOffTimer": {

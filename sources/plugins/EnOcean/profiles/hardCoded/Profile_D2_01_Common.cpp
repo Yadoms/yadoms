@@ -140,7 +140,7 @@ void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<
                                           senderId,
                                           targetId,
                                           0);
-   boost::dynamic_bitset<> data(7 * 8);
+   boost::dynamic_bitset<> data(6 * 8);
 
    bitset_insert(data, 4, 4, kActuatorSetMeasurement);
    bitset_insert(data, 8, true); // Report on query + auto reporting
@@ -309,3 +309,7 @@ void CProfile_D2_01_Common::sendMessage(boost::shared_ptr<IMessageHandler> messa
 // - voir si on peut factoriser la fonction state
 // - Devices à 2 canaux : distinguer la conf pour chaque canal
 // - mesure de conso de l'entrée
+// - initialiser toutes les valeurs au démarrage :
+//   - tout ce qui est états doit être lu dans l'équipement
+//   - tout ce qui est configuration doit être lu dans la base et envoyé au device
+// - Implémenter "Measurement delta to be reported (MSB)"
