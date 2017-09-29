@@ -87,7 +87,7 @@ namespace rfxcomMessages
    boost::shared_ptr<IUnsecuredProtocolFilter> CSecurity1::createFilter()
    {
       return boost::make_shared<CRareDeviceIdFilter>(3,
-                                                     boost::posix_time::hours(1));
+                                                     boost::posix_time::minutes(10));
    }
 
    void CSecurity1::buildDeviceDetails()

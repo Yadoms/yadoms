@@ -110,8 +110,6 @@ void CProfile_D2_01_0A::sendCommand(const std::string& keyword,
 
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
    YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : Actuator Set Output command returns " << response->returnCode();
-
-   return;
 }
 
 void CProfile_D2_01_0A::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
