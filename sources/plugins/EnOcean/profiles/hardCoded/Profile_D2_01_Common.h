@@ -2,6 +2,7 @@
 #include <shared/enumeration/EnumHelpers.hpp>
 #include "../../IMessageHandler.h"
 #include <specificHistorizers/PilotWireHistorizer.h>
+#include <specificHistorizers/DimmerModeHistorizer.h>
 
 
 class CProfile_D2_01_Common
@@ -46,7 +47,7 @@ public:
       kPowerKW = 0x04
    };
 
-   enum E_D2_01_DimValue
+   enum E_D2_01_DimMode
    {
       kSwitchToValue = 0x00,
       kDimToValueWithTimer1 = 0x01,
@@ -74,6 +75,7 @@ public:
    static void sendActuatorSetOutputCommandDimming(boost::shared_ptr<IMessageHandler> messageHandler,
                                                    const std::string& senderId,
                                                    const std::string& targetId,
+                                                   const specificHistorizers::EDimmerMode& mode,
                                                    unsigned int dimValue);
 
    // CMD 0x2 - Actuator Set Local

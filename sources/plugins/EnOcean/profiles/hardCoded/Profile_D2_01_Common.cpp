@@ -40,11 +40,33 @@ void CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(boost::shared_
 void CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(boost::shared_ptr<IMessageHandler> messageHandler,
                                                                 const std::string& senderId,
                                                                 const std::string& targetId,
+                                                                const specificHistorizers::EDimmerMode& mode,
                                                                 unsigned int dimValue)
 {
    boost::dynamic_bitset<> userData(3 * 8);
    bitset_insert(userData, 4, 4, kActuatorSetOutput);
-   bitset_insert(userData, 8, 3, dimValue);
+   E_D2_01_DimMode dimMode;
+   switch (mode)
+   {
+   case specificHistorizers::EDimmerMode::kSwitchToValueValue: dimMode = kSwitchToValue;
+      break;
+   case specificHistorizers::EDimmerMode::kDimToValueWithTimer1Value: dimMode = kDimToValueWithTimer1;
+      break;
+   case specificHistorizers::EDimmerMode::kDimToValueWithTimer2Value: dimMode = kDimToValueWithTimer2;
+      break;
+   case specificHistorizers::EDimmerMode::kDimToValueWithTimer3Value: dimMode = kDimToValueWithTimer3;
+      break;
+   case specificHistorizers::EDimmerMode::kStopDimmingValue: dimMode = kStopDimming;
+      break;
+   default:
+      {
+         std::ostringstream oss;
+         oss << "Device " << targetId << " : send Actuator Set Pilot Wire Mode command with unsupported value " << mode;
+         YADOMS_LOG(information) << oss.str();
+         throw std::logic_error(oss.str());
+      }
+   }
+   bitset_insert(userData, 8, 3, dimMode);
    bitset_insert(userData, 11, 5, 0);
    bitset_insert(userData, 17, 7, dimValue);
 
@@ -274,4 +296,13 @@ void CProfile_D2_01_Common::sendMessage(boost::shared_ptr<IMessageHandler> messa
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
    YADOMS_LOG(error) << "Fail to send message to " << targetId << " : \"" << commandName << "\" returns " << response->returnCode();
 }
+
+//TODO refactoring D2-01-XX, RAF :
+// - over current
+// - auto-off timer
+// - delay-off timer
+// - mesure d'énergy/power fonctionnelle pour tous les profils qui sont censés le supporter
+// - voir ce que c'est que le "Measurement Auto Scaling"
+// - voir si on peut factoriser la fonction state
+
 

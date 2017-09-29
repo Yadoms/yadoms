@@ -2,7 +2,6 @@
 #include "Profile_D2_01_05.h"
 #include "../bitsetHelpers.hpp"
 #include "../../message/RadioErp1SendMessage.h"
-#include "../../message/ResponseReceivedMessage.h"
 #include "Profile_D2_01_Common.h"
 #include <shared/Log.h>
 
@@ -13,10 +12,9 @@ CProfile_D2_01_05::CProfile_D2_01_05(const std::string& deviceId,
      m_inputPower(boost::make_shared<yApi::historization::CPower>("Input power")),
      m_loadEnergy(boost::make_shared<yApi::historization::CEnergy>("Load energy")),
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),
-     m_dimAtSpeed1(boost::make_shared<yApi::historization::CDimmable>("Dim at speed 1", yApi::EKeywordAccessMode::kGetSet)),
-     m_dimAtSpeed2(boost::make_shared<yApi::historization::CDimmable>("Dim at speed 2", yApi::EKeywordAccessMode::kGetSet)),
-     m_dimAtSpeed3(boost::make_shared<yApi::historization::CDimmable>("Dim at speed 3", yApi::EKeywordAccessMode::kGetSet)),
-     m_historizers({m_inputEnergy, m_inputPower, m_loadEnergy, m_loadPower, m_dimAtSpeed1 , m_dimAtSpeed2 , m_dimAtSpeed3})
+     m_dimmerMode(boost::make_shared<specificHistorizers::CDimmerModeHistorizer>("DimmerMode")),
+     m_dimmer(boost::make_shared<yApi::historization::CDimmable>("Dimmer", yApi::EKeywordAccessMode::kGetSet)),
+     m_historizers({m_inputEnergy, m_inputPower, m_loadEnergy, m_loadPower, m_dimmer , m_dimmerMode})
 {
 }
 
@@ -60,16 +58,12 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
          std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
          auto ioChannel = bitset_extract(data, 11, 5);
-         auto state = bitset_extract(data, 17, 1) ? true : false;
+         int dimValue = bitset_extract(data, 17, 7);
          switch (ioChannel)
          {
          case 0:
-            m_dimAtSpeed1->set(state);
-            m_dimAtSpeed2->set(state);
-            m_dimAtSpeed3->set(state);
-            historizers.push_back(m_dimAtSpeed1);
-            historizers.push_back(m_dimAtSpeed2);
-            historizers.push_back(m_dimAtSpeed3);
+            m_dimmer->set(dimValue);
+            historizers.push_back(m_dimmer);
             break;
          default:
             YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel;
@@ -126,6 +120,13 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                case CProfile_D2_01_Common::kPowerKW:
                   m_loadPower->set(powerValueW);
                   historizers.push_back(m_loadPower);
+
+                  // Power is configured to be received automaticaly.
+                  // As we can not receive both data (power + energy) automaticaly,
+                  // we ask for Energy just after receiving Power.
+                  CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
+                                                                      senderId,
+                                                                      m_deviceId); //TODO voir s'il faut le faire dans les autres profils
                   break;
                default:
                   YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported unit value for output channel" << unit;
@@ -133,7 +134,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                }
                break;
             }
-         case 0x1F: // Input channel
+         case 0x1F: // Input channel //TODO utile ?
             switch (unit)
             {
             case CProfile_D2_01_Common::kEnergyWs:
@@ -168,24 +169,14 @@ void CProfile_D2_01_05::sendCommand(const std::string& keyword,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   CProfile_D2_01_Common::E_D2_01_DimValue dimValue;
-   if (keyword == m_dimAtSpeed1->getKeyword())
+   if (keyword == m_dimmer->getKeyword())
    {
-      dimValue = CProfile_D2_01_Common::kDimToValueWithTimer1;
-      m_dimAtSpeed2->set(m_dimAtSpeed1->switchLevel());
-      m_dimAtSpeed3->set(m_dimAtSpeed1->switchLevel());
    }
-   else if (keyword == m_dimAtSpeed2->getKeyword())
+   else if (keyword == m_dimmer->getKeyword())
    {
-      dimValue = CProfile_D2_01_Common::kDimToValueWithTimer2;
-      m_dimAtSpeed1->set(m_dimAtSpeed2->switchLevel());
-      m_dimAtSpeed3->set(m_dimAtSpeed2->switchLevel());
-   }
-   else if (keyword == m_dimAtSpeed3->getKeyword())
-   {
-      dimValue = CProfile_D2_01_Common::kDimToValueWithTimer3;
-      m_dimAtSpeed1->set(m_dimAtSpeed3->switchLevel());
-      m_dimAtSpeed2->set(m_dimAtSpeed3->switchLevel());
+      // Nothing to do, this keyword is at internal-usage only.
+      // It will be used at next dimmer value change.
+      return;
    }
    else
    {
@@ -195,17 +186,11 @@ void CProfile_D2_01_05::sendCommand(const std::string& keyword,
       throw std::logic_error(oss.str());
    }
 
-   boost::dynamic_bitset<> userData(3 * 8);
-   bitset_insert(userData, 4, 4, CProfile_D2_01_Common::kActuatorSetOutput);
-   bitset_insert(userData, 8, 3, dimValue);
-   bitset_insert(userData, 11, 5, 0);
-   bitset_insert(userData, 17, 7, std::stoul(commandBody));
-
-   CProfile_D2_01_Common::sendMessage(messageHandler,
-                                      senderId,
-                                      m_deviceId,
-                                      userData,
-                                      "Actuator Set Output");
+   CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(messageHandler,
+                                                              senderId,
+                                                              m_deviceId,
+                                                              m_dimmerMode->get(),
+                                                              std::stoul(commandBody));//TODO utiliser m_dimmer->get() ? (et vérifier tous les appels à CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming
 }
 
 void CProfile_D2_01_05::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
@@ -245,19 +230,14 @@ void CProfile_D2_01_05::sendConfiguration(const shared::CDataContainer& deviceCo
       throw std::logic_error(oss.str());
    }
 
-   // Configure for both power and energy measure
-   CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
-                                                            senderId,
-                                                            m_deviceId,
-                                                            false,
-                                                            CProfile_D2_01_Common::kAllOutputChannels,
-                                                            minEnergyMeasureRefreshTime,
-                                                            maxEnergyMeasureRefreshTime);
+   // Configure for automatic power measure
+   // At each power measure receive, we ask for energy measure
    CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
                                                             senderId,
                                                             m_deviceId,
                                                             true,
-                                                            CProfile_D2_01_Common::kAllOutputChannels,
+                                                            0,
                                                             minEnergyMeasureRefreshTime,
                                                             maxEnergyMeasureRefreshTime);
 }
+

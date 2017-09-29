@@ -2,6 +2,7 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <boost/dynamic_bitset.hpp>
 #include "../IType.h"
+#include "specificHistorizers/DimmerModeHistorizer.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -37,8 +38,7 @@ private:
    boost::shared_ptr<yApi::historization::CPower> m_inputPower;
    boost::shared_ptr<yApi::historization::CEnergy> m_loadEnergy;
    boost::shared_ptr<yApi::historization::CPower> m_loadPower;
-   boost::shared_ptr<yApi::historization::CDimmable> m_dimAtSpeed1;
-   boost::shared_ptr<yApi::historization::CDimmable> m_dimAtSpeed2;
-   boost::shared_ptr<yApi::historization::CDimmable> m_dimAtSpeed3;
+   boost::shared_ptr<specificHistorizers::CDimmerModeHistorizer> m_dimmerMode;
+   boost::shared_ptr<yApi::historization::CDimmable> m_dimmer;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
 };
