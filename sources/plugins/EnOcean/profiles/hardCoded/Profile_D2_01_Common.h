@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/enumeration/EnumHelpers.hpp>
 #include "../../IMessageHandler.h"
+#include <specificHistorizers/PilotWireHistorizer.h>
 
 
 class CProfile_D2_01_Common
@@ -88,15 +89,6 @@ public:
                                            double dimTimer2,
                                            double dimTimer3);
 
-   // CMD 0xB - Actuator Set External Interface Settings
-   static void sendActuatorSetExternalInterfaceSettingsCommand(boost::shared_ptr<IMessageHandler> messageHandler,
-                                                               const std::string& senderId,
-                                                               const std::string& targetId,
-                                                               const EConnectedSwitchsType& connectedSwitchsType,
-                                                               double autoOffTimerSeconds,
-                                                               double delayRadioOffTimerSeconds,
-                                                               bool switchingStateToggle);
-
    // CMD 0x5 - Actuator Set Measurement
    enum
    {
@@ -111,9 +103,30 @@ public:
                                                  double minEnergyMeasureRefreshTime,
                                                  double maxEnergyMeasureRefreshTime);
 
-
+   // CMD 0x6 - Actuator Measurement Query
    static void sendActuatorMeasurementQuery(boost::shared_ptr<IMessageHandler> messageHandler,
                                             const std::string& senderId,
                                             const std::string& targetId);
+
+   // CMD 0x8 - Actuator Set Pilot Wire Mode
+   static void sendActuatorSetPilotWireModeCommand(boost::shared_ptr<IMessageHandler> messageHandler,
+                                                   const std::string& senderId,
+                                                   const std::string& targetId,
+                                                   const specificHistorizers::EPilotWire& mode);
+
+   // CMD 0xB - Actuator Set External Interface Settings
+   static void sendActuatorSetExternalInterfaceSettingsCommand(boost::shared_ptr<IMessageHandler> messageHandler,
+                                                               const std::string& senderId,
+                                                               const std::string& targetId,
+                                                               const EConnectedSwitchsType& connectedSwitchsType,
+                                                               double autoOffTimerSeconds,
+                                                               double delayRadioOffTimerSeconds,
+                                                               bool switchingStateToggle);
+
+   static void sendMessage(boost::shared_ptr<IMessageHandler> messageHandler,
+                           const std::string& senderId,
+                           const std::string& targetId,
+                           const boost::dynamic_bitset<>& userData,
+                           const std::string& commandName);
 };
 

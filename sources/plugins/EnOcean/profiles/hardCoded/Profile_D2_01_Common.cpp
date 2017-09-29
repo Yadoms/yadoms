@@ -25,34 +25,16 @@ void CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(boost::shared_
                                                                   bool state,
                                                                   unsigned char outputChannel)
 {
-   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
-                                          senderId,
-                                          targetId,
-                                          0);
-
    boost::dynamic_bitset<> userData(3 * 8);
    bitset_insert(userData, 4, 4, kActuatorSetOutput);
    bitset_insert(userData, 11, 5, outputChannel);
    bitset_insert(userData, 17, 7, state ? 100 : 0);
 
-   command.userData(bitset_to_bytes(userData));
-
-   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
-   if (!messageHandler->send(command,
-                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
-                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
-   YADOMS_LOG(error) << "Fail to send Actuator Set Output command to " << targetId << " : no answer";
-
-   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
-
-   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-   YADOMS_LOG(error) << "Fail to send Actuator Set Output command to " << targetId << " : command returns " << response->returnCode();
+   sendMessage(messageHandler,
+               senderId,
+               targetId,
+               userData,
+               "Actuator Set Output");
 }
 
 void CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(boost::shared_ptr<IMessageHandler> messageHandler,
@@ -60,35 +42,17 @@ void CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(boost::shared_pt
                                                                 const std::string& targetId,
                                                                 unsigned int dimValue)
 {
-   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
-                                          senderId,
-                                          targetId,
-                                          0);
-
    boost::dynamic_bitset<> userData(3 * 8);
    bitset_insert(userData, 4, 4, kActuatorSetOutput);
    bitset_insert(userData, 8, 3, dimValue);
    bitset_insert(userData, 11, 5, 0);
    bitset_insert(userData, 17, 7, dimValue);
 
-   command.userData(bitset_to_bytes(userData));
-
-   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
-   if (!messageHandler->send(command,
-                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
-                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
-   YADOMS_LOG(error) << "Fail to send dim value to " << targetId << " : no answer to Actuator Set Output command";
-
-   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
-
-   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-   YADOMS_LOG(error) << "Fail to send dim value to " << targetId << " : Actuator Set Output command returns " << response->returnCode();
+   sendMessage(messageHandler,
+               senderId,
+               targetId,
+               userData,
+               "Actuator Set Output");
 }
 
 void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessageHandler> messageHandler,
@@ -140,47 +104,6 @@ void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessa
    YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : Actuator Set Local command returns " << response->returnCode();
 }
 
-void CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(boost::shared_ptr<IMessageHandler> messageHandler,
-                                                                            const std::string& senderId,
-                                                                            const std::string& targetId,
-                                                                            const EConnectedSwitchsType& connectedSwitchsType,
-                                                                            double autoOffTimerSeconds,
-                                                                            double delayRadioOffTimerSeconds,
-                                                                            bool switchingStateToggle)
-{
-   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
-                                          senderId,
-                                          targetId,
-                                          0);
-   boost::dynamic_bitset<> data(7 * 8);
-
-   bitset_insert(data, 4, 4, kActuatorSetExternalInterfaceSettings);
-   bitset_insert(data, 11, 5, 0x1E); // Use all output channels supported by the device
-   bitset_insert(data, 16, 16, static_cast<unsigned int>(autoOffTimerSeconds * 10));
-   bitset_insert(data, 32, 16, static_cast<unsigned int>(delayRadioOffTimerSeconds * 10));
-   bitset_insert(data, 48, 2, connectedSwitchsType);
-   bitset_insert(data, 50, !switchingStateToggle);
-
-   command.userData(bitset_to_bytes(data));
-
-   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
-   if (!messageHandler->send(command,
-                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
-                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
-   YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set External Interface Settings command";
-
-   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
-
-   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-   YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : Actuator Set External Interface Settings command returns " << response->returnCode();
-}
-
 void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                                               const std::string& senderId,
                                                               const std::string& targetId,
@@ -230,13 +153,107 @@ void CProfile_D2_01_Common::sendActuatorMeasurementQuery(boost::shared_ptr<IMess
                                                          const std::string& senderId,
                                                          const std::string& targetId)
 {
+   boost::dynamic_bitset<> userData(2 * 8);
+   bitset_insert(userData, 4, 4, kActuatorMeasurementQuery);
+
+   sendMessage(messageHandler,
+               senderId,
+               targetId,
+               userData,
+               "Actuator Measurement Query");
+}
+
+void CProfile_D2_01_Common::sendActuatorSetPilotWireModeCommand(boost::shared_ptr<IMessageHandler> messageHandler,
+                                                                const std::string& senderId,
+                                                                const std::string& targetId,
+                                                                const specificHistorizers::EPilotWire& mode)
+{
+   boost::dynamic_bitset<> userData(3 * 8);
+
+   bitset_insert(userData, 4, 4, kActuatorSetPilotWireMode);
+   EPilotWireMode pilotWireMode;
+   switch (mode)
+   {
+   case specificHistorizers::EPilotWire::kOffValue: pilotWireMode = kOff;
+      break;
+   case specificHistorizers::EPilotWire::kComfortValue: pilotWireMode = kComfort;
+      break;
+   case specificHistorizers::EPilotWire::kComfort2Value: pilotWireMode = kComfort_1;
+      break;
+   case specificHistorizers::EPilotWire::kComfort3Value: pilotWireMode = kComfort_2;
+      break;
+   case specificHistorizers::EPilotWire::kEcoValue: pilotWireMode = kEco;
+      break;
+   case specificHistorizers::EPilotWire::kAntiFreezeValue: pilotWireMode = kAntiFreeze;
+      break;
+   default:
+      {
+         std::ostringstream oss;
+         oss << "Device " << targetId << " : send Actuator Set Pilot Wire Mode command with unsupported value " << mode;
+         YADOMS_LOG(information) << oss.str();
+         throw std::logic_error(oss.str());
+      }
+   }
+   bitset_insert(userData, 13, 3, pilotWireMode);
+
+   sendMessage(messageHandler,
+               senderId,
+               targetId,
+               userData,
+               "Actuator Set Pilot Wire Mode");
+}
+
+void CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(boost::shared_ptr<IMessageHandler> messageHandler,
+                                                                            const std::string& senderId,
+                                                                            const std::string& targetId,
+                                                                            const EConnectedSwitchsType& connectedSwitchsType,
+                                                                            double autoOffTimerSeconds,
+                                                                            double delayRadioOffTimerSeconds,
+                                                                            bool switchingStateToggle)
+{
    message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
                                           senderId,
                                           targetId,
                                           0);
+   boost::dynamic_bitset<> data(7 * 8);
 
-   boost::dynamic_bitset<> userData(2 * 8);
-   bitset_insert(userData, 4, 4, CProfile_D2_01_Common::kActuatorMeasurementQuery);
+   bitset_insert(data, 4, 4, kActuatorSetExternalInterfaceSettings);
+   bitset_insert(data, 11, 5, 0x1E); // Use all output channels supported by the device
+   bitset_insert(data, 16, 16, static_cast<unsigned int>(autoOffTimerSeconds * 10));
+   bitset_insert(data, 32, 16, static_cast<unsigned int>(delayRadioOffTimerSeconds * 10));
+   bitset_insert(data, 48, 2, connectedSwitchsType);
+   bitset_insert(data, 50, !switchingStateToggle);
+
+   command.userData(bitset_to_bytes(data));
+
+   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
+   if (!messageHandler->send(command,
+                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                             {
+                                return esp3Packet->header().packetType() == message::RESPONSE;
+                             },
+                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                             {
+                                answer = esp3Packet;
+                             }))
+   YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set External Interface Settings command";
+
+   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
+
+   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
+   YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : Actuator Set External Interface Settings command returns " << response->returnCode();
+}
+
+void CProfile_D2_01_Common::sendMessage(boost::shared_ptr<IMessageHandler> messageHandler,
+                                        const std::string& senderId,
+                                        const std::string& targetId,
+                                        const boost::dynamic_bitset<>& userData,
+                                        const std::string& commandName)
+{
+   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
+                                          senderId,
+                                          targetId,
+                                          0);
 
    command.userData(bitset_to_bytes(userData));
 
@@ -250,11 +267,11 @@ void CProfile_D2_01_Common::sendActuatorMeasurementQuery(boost::shared_ptr<IMess
                              {
                                 answer = esp3Packet;
                              }))
-   YADOMS_LOG(error) << "Fail to send Actuator Measurement Query to " << targetId << " : no answer";
+   YADOMS_LOG(error) << "Fail to send message to " << targetId << " : no answer to \"" << commandName << "\"";
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
 
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-   YADOMS_LOG(error) << "Fail to send Actuator Measurement Query to " << targetId << " : query returns " << response->returnCode();
+   YADOMS_LOG(error) << "Fail to send message to " << targetId << " : \"" << commandName << "\" returns " << response->returnCode();
 }
 

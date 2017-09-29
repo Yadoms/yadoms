@@ -7,6 +7,8 @@ namespace specificHistorizers
    DECLARE_ENUM_IMPLEMENTATION(EPilotWire,
       ((Off))
       ((Comfort))
+      ((Comfort2))
+      ((Comfort3))
       ((Eco))
       ((AntiFreeze))
    );
