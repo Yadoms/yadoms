@@ -9,7 +9,7 @@
 CProfile_D2_01_09::CProfile_D2_01_09(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_deviceId(deviceId),
-     m_inputEnergy(boost::make_shared<yApi::historization::CEnergy>("Input energy")),
+     m_inputEnergy(boost::make_shared<yApi::historization::CEnergy>("Input energy")), //TODO manque les KW switch et dimming...
      m_inputPower(boost::make_shared<yApi::historization::CPower>("Input power")),
      m_loadEnergy(boost::make_shared<yApi::historization::CEnergy>("Load energy")),
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),

@@ -19,6 +19,41 @@ DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_01_Common::EConnectedSwitchsType,
 );
 
 
+void CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(boost::shared_ptr<IMessageHandler> messageHandler,
+                                                                  const std::string& senderId,
+                                                                  const std::string& targetId,
+                                                                  bool state)
+{
+   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
+                                          senderId,
+                                          targetId,
+                                          0);
+
+   boost::dynamic_bitset<> userData(3 * 8);
+   bitset_insert(userData, 4, 4, kActuatorSetOutput);
+   bitset_insert(userData, 11, 5, 0);
+   bitset_insert(userData, 17, 7, state ? 100 : 0);
+
+   command.userData(bitset_to_bytes(userData));
+
+   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
+   if (!messageHandler->send(command,
+                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                             {
+                                return esp3Packet->header().packetType() == message::RESPONSE;
+                             },
+                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                             {
+                                answer = esp3Packet;
+                             }))
+   YADOMS_LOG(error) << "Fail to send Actuator Set Output command to " << targetId << " : no answer";
+
+   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
+
+   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
+   YADOMS_LOG(error) << "Fail to send Actuator Set Output command to " << targetId << " : command returns " << response->returnCode();
+}
+
 void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                                         const std::string& senderId,
                                                         const std::string& targetId,
@@ -53,13 +88,13 @@ void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessa
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!messageHandler->send(command,
                              [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                          {
-                             return esp3Packet->header().packetType() == message::RESPONSE;
-                          },
+                             {
+                                return esp3Packet->header().packetType() == message::RESPONSE;
+                             },
                              [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                          {
-                             answer = esp3Packet;
-                          }))
+                             {
+                                answer = esp3Packet;
+                             }))
    YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set Local command";
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
@@ -94,13 +129,13 @@ void CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(boos
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!messageHandler->send(command,
                              [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                          {
-                             return esp3Packet->header().packetType() == message::RESPONSE;
-                          },
+                             {
+                                return esp3Packet->header().packetType() == message::RESPONSE;
+                             },
                              [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                          {
-                             answer = esp3Packet;
-                          }))
+                             {
+                                answer = esp3Packet;
+                             }))
    YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set External Interface Settings command";
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
@@ -139,13 +174,13 @@ void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!messageHandler->send(command,
                              [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                          {
-                             return esp3Packet->header().packetType() == message::RESPONSE;
-                          },
+                             {
+                                return esp3Packet->header().packetType() == message::RESPONSE;
+                             },
                              [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                          {
-                             answer = esp3Packet;
-                          }))
+                             {
+                                answer = esp3Packet;
+                             }))
    YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set Measurement command";
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
@@ -171,17 +206,18 @@ void CProfile_D2_01_Common::sendActuatorMeasurementQuery(boost::shared_ptr<IMess
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!messageHandler->send(command,
                              [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                          {
-                             return esp3Packet->header().packetType() == message::RESPONSE;
-                          },
+                             {
+                                return esp3Packet->header().packetType() == message::RESPONSE;
+                             },
                              [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                          {
-                             answer = esp3Packet;
-                          }))
-   YADOMS_LOG(error) << "Fail to send state to " << targetId << " : no answer to Actuator Measurement Query";
+                             {
+                                answer = esp3Packet;
+                             }))
+   YADOMS_LOG(error) << "Fail to send Actuator Measurement Query to " << targetId << " : no answer";
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
 
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-   YADOMS_LOG(error) << "Fail to send state to " << targetId << " : Actuator Measurement Query returns " << response->returnCode();
+   YADOMS_LOG(error) << "Fail to send Actuator Measurement Query to " << targetId << " : query returns " << response->returnCode();
 }
+

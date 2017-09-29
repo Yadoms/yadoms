@@ -77,6 +77,7 @@ void CProfile_D2_01_11::sendCommand(const std::string& keyword,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
+   //TODO et le channel 2 ?
    message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
                                           senderId,
                                           m_deviceId,

@@ -11,13 +11,13 @@ public:
       ((on)(1))
       ((previousState)(2))
       ((notUsed)(3))
-   );
+   ) ;
 
    DECLARE_ENUM_HEADER(EConnectedSwitchsType,
       ((switch)(1))
       ((pushButton)(2))
       ((autodetection)(3))
-   );
+   ) ;
 
    enum E_D2_01_Command
    {
@@ -64,6 +64,12 @@ public:
       kComfort_2 = 0x05
    };
 
+   // CMD 0x1 - Actuator Set Output
+   static void sendActuatorSetOutputCommandSwitching(boost::shared_ptr<IMessageHandler> messageHandler,
+                                                     const std::string& senderId,
+                                                     const std::string& targetId,
+                                                     bool state);
+
    // CMD 0x2 - Actuator Set Local
    static void sendActuatorSetLocalCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                            const std::string& senderId,
@@ -105,3 +111,4 @@ public:
                                             const std::string& senderId,
                                             const std::string& targetId);
 };
+
