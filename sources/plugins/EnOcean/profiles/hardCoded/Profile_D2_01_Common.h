@@ -66,15 +66,30 @@ public:
       kComfort_2 = 0x05
    };
 
+   enum EOutputChannel
+   {
+      kOutputChannel1 = 0,
+      kOutputChannel2 = 1,
+      kAllOutputChannels = 0x1E,
+      kInputChannel = 0x1F,
+   };
+
+   enum
+   {
+      kQueryEnergy = 0,
+      kQueryPower = 1
+   };
+
    // CMD 0x1 - Actuator Set Output
    static void sendActuatorSetOutputCommandSwitching(boost::shared_ptr<IMessageHandler> messageHandler,
                                                      const std::string& senderId,
                                                      const std::string& targetId,
-                                                     bool state,
-                                                     unsigned char outputChannel = 0);
+                                                     EOutputChannel outputChannel,
+                                                     bool state);
    static void sendActuatorSetOutputCommandDimming(boost::shared_ptr<IMessageHandler> messageHandler,
                                                    const std::string& senderId,
                                                    const std::string& targetId,
+                                                   EOutputChannel outputChannel,
                                                    const specificHistorizers::EDimmerMode& mode,
                                                    unsigned int dimValue);
 
@@ -82,6 +97,7 @@ public:
    static void sendActuatorSetLocalCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                            const std::string& senderId,
                                            const std::string& targetId,
+                                           EOutputChannel outputChannel,
                                            bool localControl,
                                            bool taughtInAllDevices,
                                            bool userInterfaceDayMode,
@@ -92,23 +108,19 @@ public:
                                            double dimTimer3);
 
    // CMD 0x5 - Actuator Set Measurement
-   enum
-   {
-      kAllOutputChannels = 0x1E
-   };
-
    static void sendActuatorSetMeasurementCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                                  const std::string& senderId,
                                                  const std::string& targetId,
+                                                 EOutputChannel outputChannel,
                                                  bool powerMeasurement,
-                                                 unsigned char outputChannel, // kAllOutputChannels to configure all output channels in one time
                                                  double minEnergyMeasureRefreshTime,
                                                  double maxEnergyMeasureRefreshTime);
 
    // CMD 0x6 - Actuator Measurement Query
    static void sendActuatorMeasurementQuery(boost::shared_ptr<IMessageHandler> messageHandler,
                                             const std::string& senderId,
-                                            const std::string& targetId);
+                                            const std::string& targetId,
+                                            EOutputChannel outputChannel);
 
    // CMD 0x8 - Actuator Set Pilot Wire Mode
    static void sendActuatorSetPilotWireModeCommand(boost::shared_ptr<IMessageHandler> messageHandler,
@@ -120,6 +132,7 @@ public:
    static void sendActuatorSetExternalInterfaceSettingsCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                                                const std::string& senderId,
                                                                const std::string& targetId,
+                                                               EOutputChannel outputChannel,
                                                                const EConnectedSwitchsType& connectedSwitchsType,
                                                                double autoOffTimerSeconds,
                                                                double delayRadioOffTimerSeconds,
@@ -131,4 +144,3 @@ public:
                            const boost::dynamic_bitset<>& userData,
                            const std::string& commandName);
 };
-

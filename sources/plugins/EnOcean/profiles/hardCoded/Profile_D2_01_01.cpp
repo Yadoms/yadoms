@@ -74,6 +74,7 @@ void CProfile_D2_01_01::sendCommand(const std::string& keyword,
    CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
                                                                 senderId,
                                                                 m_deviceId,
+                                                                CProfile_D2_01_Common::kOutputChannel1,
                                                                 commandBody == "1");
 }
 

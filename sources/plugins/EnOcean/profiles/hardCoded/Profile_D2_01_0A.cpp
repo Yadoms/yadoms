@@ -84,6 +84,7 @@ void CProfile_D2_01_0A::sendCommand(const std::string& keyword,
    CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
                                                                 senderId,
                                                                 m_deviceId,
+                                                                CProfile_D2_01_Common::kOutputChannel1,
                                                                 commandBody == "1");
 }
 
@@ -100,6 +101,7 @@ void CProfile_D2_01_0A::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
+                                                      CProfile_D2_01_Common::kOutputChannel1,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
@@ -109,4 +111,3 @@ void CProfile_D2_01_0A::sendConfiguration(const shared::CDataContainer& deviceCo
                                                       0.0,
                                                       0.0);
 }
-

@@ -80,8 +80,10 @@ void CProfile_D2_01_10::sendCommand(const std::string& keyword,
    CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
                                                                 senderId,
                                                                 m_deviceId,
-                                                                commandBody == "1",
-                                                                keyword == m_channel1->getKeyword() ? 0 : 1);
+                                                                keyword == m_channel1->getKeyword()
+                                                                   ? CProfile_D2_01_Common::kOutputChannel1
+                                                                   : CProfile_D2_01_Common::kOutputChannel2,
+                                                                commandBody == "1");
 }
 
 void CProfile_D2_01_10::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
@@ -90,4 +92,3 @@ void CProfile_D2_01_10::sendConfiguration(const shared::CDataContainer& deviceCo
 {
    // Device supports no configuration
 }
-

@@ -201,6 +201,7 @@ void CProfile_D2_01_0C::sendCommand(const std::string& keyword,
       CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
                                                                    senderId,
                                                                    m_deviceId,
+                                                                   CProfile_D2_01_Common::kOutputChannel1,
                                                                    commandBody == "1");//TODO remplacer par m_channel->get() ? A tester
    }
    else if (keyword == m_pilotWire->getKeyword())
@@ -231,6 +232,7 @@ void CProfile_D2_01_0C::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
+                                                      CProfile_D2_01_Common::kOutputChannel1,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
@@ -256,16 +258,15 @@ void CProfile_D2_01_0C::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
                                                             senderId,
                                                             m_deviceId,
+                                                            CProfile_D2_01_Common::kOutputChannel1,
                                                             false,
-                                                            CProfile_D2_01_Common::kAllOutputChannels,
                                                             minEnergyMeasureRefreshTime,
                                                             maxEnergyMeasureRefreshTime);
-   CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
+   CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,//TODO
                                                             senderId,
                                                             m_deviceId,
+                                                            CProfile_D2_01_Common::kOutputChannel1,
                                                             true,
-                                                            CProfile_D2_01_Common::kAllOutputChannels,
                                                             minEnergyMeasureRefreshTime,
                                                             maxEnergyMeasureRefreshTime);
 }
-

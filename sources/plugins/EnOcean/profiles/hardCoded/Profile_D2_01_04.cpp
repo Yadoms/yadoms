@@ -92,6 +92,7 @@ void CProfile_D2_01_04::sendCommand(const std::string& keyword,
    CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(messageHandler,
                                                               senderId,
                                                               m_deviceId,
+                                                              CProfile_D2_01_Common::kOutputChannel1,
                                                               m_dimmerMode->get(),
                                                               std::stoul(commandBody));//TODO utiliser m_dimmer->get() ? (et vérifier tous les appels à CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming
 }
@@ -110,6 +111,7 @@ void CProfile_D2_01_04::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
+                                                      CProfile_D2_01_Common::kOutputChannel1,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       false,
@@ -119,4 +121,3 @@ void CProfile_D2_01_04::sendConfiguration(const shared::CDataContainer& deviceCo
                                                       dimTimer2,
                                                       dimTimer3);
 }
-

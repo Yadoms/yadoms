@@ -74,6 +74,7 @@ void CProfile_D2_01_0F::sendCommand(const std::string& keyword,
    CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
                                                                 senderId,
                                                                 m_deviceId,
+                                                                CProfile_D2_01_Common::kOutputChannel1,
                                                                 commandBody == "1");
 }
 
@@ -85,10 +86,19 @@ void CProfile_D2_01_0F::sendConfiguration(const shared::CDataContainer& deviceCo
    auto taughtInAllDevices = deviceConfiguration.get<std::string>("taughtIn") == "allDevices";
    auto userInterfaceDayMode = deviceConfiguration.get<std::string>("userInterfaceMode") == "dayMode";
    auto defaultState = deviceConfiguration.get<CProfile_D2_01_Common::EDefaultState>("defaultState");
+   auto connectedSwitchsType = deviceConfiguration.get<CProfile_D2_01_Common::EConnectedSwitchsType>("connectedSwitchsType");
+   auto switchingStateToggle = deviceConfiguration.get<std::string>("switchingState") == "tooggle";
+   auto autoOffTimerValue = deviceConfiguration.get<bool>("autoOffTimer.checkbox")
+                               ? deviceConfiguration.get<double>("autoOffTimer.content.value")
+                               : 0;
+   auto delayOffTimer = deviceConfiguration.get<bool>("delayOffTimer.checkbox")
+                           ? deviceConfiguration.get<double>("delayOffTimer.content.value")
+                           : 0;
 
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
+                                                      CProfile_D2_01_Common::kOutputChannel1,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
@@ -97,5 +107,13 @@ void CProfile_D2_01_0F::sendConfiguration(const shared::CDataContainer& deviceCo
                                                       0.0,
                                                       0.0,
                                                       0.0);
-}
 
+   CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(messageHandler,
+                                                                          senderId,
+                                                                          m_deviceId,
+                                                                          CProfile_D2_01_Common::kOutputChannel1,
+                                                                          connectedSwitchsType,
+                                                                          autoOffTimerValue,
+                                                                          delayOffTimer,
+                                                                          switchingStateToggle);
+}

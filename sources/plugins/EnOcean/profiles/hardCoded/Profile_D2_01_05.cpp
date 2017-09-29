@@ -126,7 +126,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                   // we ask for Energy just after receiving Power.
                   CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
                                                                       senderId,
-                                                                      m_deviceId); //TODO voir s'il faut le faire dans les autres profils
+                                                                      m_deviceId,
+                                                                      CProfile_D2_01_Common::kOutputChannel1); //TODO voir s'il faut le faire dans les autres profils
                   break;
                default:
                   YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported unit value for output channel" << unit;
@@ -189,6 +190,7 @@ void CProfile_D2_01_05::sendCommand(const std::string& keyword,
    CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(messageHandler,
                                                               senderId,
                                                               m_deviceId,
+                                                              CProfile_D2_01_Common::kOutputChannel1,
                                                               m_dimmerMode->get(),
                                                               std::stoul(commandBody));//TODO utiliser m_dimmer->get() ? (et vérifier tous les appels à CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming
 }
@@ -209,6 +211,7 @@ void CProfile_D2_01_05::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
+                                                      CProfile_D2_01_Common::kOutputChannel1,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
@@ -235,9 +238,8 @@ void CProfile_D2_01_05::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
                                                             senderId,
                                                             m_deviceId,
+                                                            CProfile_D2_01_Common::kOutputChannel1,
                                                             true,
-                                                            0,
                                                             minEnergyMeasureRefreshTime,
                                                             maxEnergyMeasureRefreshTime);
 }
-

@@ -74,6 +74,7 @@ void CProfile_D2_01_02::sendCommand(const std::string& keyword,
    CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(messageHandler,
                                                               senderId,
                                                               m_deviceId,
+                                                              CProfile_D2_01_Common::kOutputChannel1,
                                                               specificHistorizers::EDimmerMode::kSwitchToValue,
                                                               std::stoul(commandBody));
 }
