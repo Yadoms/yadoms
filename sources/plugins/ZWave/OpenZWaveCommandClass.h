@@ -1,6 +1,9 @@
 #pragma once
 
 #include <shared/enumeration/EnumHelpers.hpp>
+/*
+Ensure the OpenZWave command classes cpp\src\command_classes are all defined in the enumeration
+*/
 
    DECLARE_ENUM_HEADER(ECommandClass,
       ((NoOperation)(0x00))
@@ -34,8 +37,13 @@
       ((ThermostatFanState)(0x45))
       ((ClimateControlSchedule)(0x46))
       ((ThermostatSetback)(0x47))
+      ((DoorLockLogging)(0x4c))
       ((BasicWindowCovering)(0x50))
       ((MtpWindowCovering)(0x51))
+      ((CRC16Encap)(0x56))
+      ((DeviceResetLocally)(0x5a))
+      ((CentralScene)(0x5b))
+      ((ZWavePlusInfo)(0x5e))
       ((MultiInstance)(0x60))
       ((DoorLock)(0x62))
       ((UserCode)(0x63))
