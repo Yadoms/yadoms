@@ -68,7 +68,12 @@ public:
    static void sendActuatorSetOutputCommandSwitching(boost::shared_ptr<IMessageHandler> messageHandler,
                                                      const std::string& senderId,
                                                      const std::string& targetId,
-                                                     bool state);
+                                                     bool state,
+                                                     unsigned char outputChannel = 0);
+   static void sendActuatorSetOutputCommandDimming(boost::shared_ptr<IMessageHandler> messageHandler,
+                                                   const std::string& senderId,
+                                                   const std::string& targetId,
+                                                   unsigned int dimValue);
 
    // CMD 0x2 - Actuator Set Local
    static void sendActuatorSetLocalCommand(boost::shared_ptr<IMessageHandler> messageHandler,

@@ -22,7 +22,8 @@ DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_01_Common::EConnectedSwitchsType,
 void CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(boost::shared_ptr<IMessageHandler> messageHandler,
                                                                   const std::string& senderId,
                                                                   const std::string& targetId,
-                                                                  bool state)
+                                                                  bool state,
+                                                                  unsigned char outputChannel)
 {
    message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
                                           senderId,
@@ -31,7 +32,7 @@ void CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(boost::shared_
 
    boost::dynamic_bitset<> userData(3 * 8);
    bitset_insert(userData, 4, 4, kActuatorSetOutput);
-   bitset_insert(userData, 11, 5, 0);
+   bitset_insert(userData, 11, 5, outputChannel);
    bitset_insert(userData, 17, 7, state ? 100 : 0);
 
    command.userData(bitset_to_bytes(userData));
@@ -52,6 +53,42 @@ void CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(boost::shared_
 
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
    YADOMS_LOG(error) << "Fail to send Actuator Set Output command to " << targetId << " : command returns " << response->returnCode();
+}
+
+void CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(boost::shared_ptr<IMessageHandler> messageHandler,
+                                                                const std::string& senderId,
+                                                                const std::string& targetId,
+                                                                unsigned int dimValue)
+{
+   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
+                                          senderId,
+                                          targetId,
+                                          0);
+
+   boost::dynamic_bitset<> userData(3 * 8);
+   bitset_insert(userData, 4, 4, kActuatorSetOutput);
+   bitset_insert(userData, 8, 3, dimValue);
+   bitset_insert(userData, 11, 5, 0);
+   bitset_insert(userData, 17, 7, dimValue);
+
+   command.userData(bitset_to_bytes(userData));
+
+   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
+   if (!messageHandler->send(command,
+                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                             {
+                                return esp3Packet->header().packetType() == message::RESPONSE;
+                             },
+                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                             {
+                                answer = esp3Packet;
+                             }))
+   YADOMS_LOG(error) << "Fail to send dim value to " << targetId << " : no answer to Actuator Set Output command";
+
+   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
+
+   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
+   YADOMS_LOG(error) << "Fail to send dim value to " << targetId << " : Actuator Set Output command returns " << response->returnCode();
 }
 
 void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessageHandler> messageHandler,
