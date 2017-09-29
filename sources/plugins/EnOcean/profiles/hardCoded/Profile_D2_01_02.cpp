@@ -52,11 +52,11 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
    auto ioChannel = bitset_extract(data, 11, 5);
-   int state = bitset_extract(data, 17, 7);
+   int dimValue = bitset_extract(data, 17, 7);
    switch (ioChannel)
    {
    case 0:
-      m_dimmer->set(state);
+      m_dimmer->set(dimValue);
       historizers.push_back(m_dimmer);
       break;
    default:
