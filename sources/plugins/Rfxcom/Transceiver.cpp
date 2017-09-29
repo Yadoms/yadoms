@@ -510,8 +510,10 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
          msg = boost::make_shared<rfxcomMessages::CHomeConfort>(api, sTypeHomeConfortTEL010, data.getDeviceName(), data.getConfiguration());
 
       // Security1
-      else if (deviceType == "x10SecurityR")
+      else if (deviceType == "x10SecurityRemote")
          msg = boost::make_shared<rfxcomMessages::CSecurity1>(api, sTypeSecX10R, data.getDeviceName(), data.getConfiguration());
+      else if (deviceType == "meiantech")
+         msg = boost::make_shared<rfxcomMessages::CSecurity1>(api, sTypeMeiantech, data.getDeviceName(), data.getConfiguration());
 
       // Security2
       else if (deviceType == "keeLoq")

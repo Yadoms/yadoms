@@ -19,7 +19,9 @@ public:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> allHistorizers() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> states(unsigned char rorg,
                                                                                    const boost::dynamic_bitset<>& data,
-                                                                                   const boost::dynamic_bitset<>& status) const override;
+                                                                                   const boost::dynamic_bitset<>& status,
+                                                                                   const std::string& senderId,
+                                                                                   boost::shared_ptr<IMessageHandler> messageHandler) const override;
    void sendCommand(const std::string& keyword,
                     const std::string& commandBody,
                     const std::string& senderId,
@@ -36,5 +38,6 @@ private:
    boost::shared_ptr<yApi::historization::CPower> m_inputPower;
    boost::shared_ptr<yApi::historization::CEnergy> m_loadEnergy;
    boost::shared_ptr<yApi::historization::CPower> m_loadPower;
+   boost::shared_ptr<yApi::historization::CSwitch> m_powerFailure;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
 };

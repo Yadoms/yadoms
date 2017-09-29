@@ -10,7 +10,8 @@ CProfile_D2_01_0A::CProfile_D2_01_0A(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_deviceId(deviceId),
      m_channel(boost::make_shared<yApi::historization::CSwitch>("Channel", yApi::EKeywordAccessMode::kGetSet)),
-     m_historizers({m_channel})
+   m_powerFailure(boost::make_shared<yApi::historization::CSwitch>("Power failure", yApi::EKeywordAccessMode::kGet)),
+     m_historizers({m_channel, m_powerFailure })
 {
 }
 
@@ -37,7 +38,9 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_0A::states(unsigned char rorg,
                                                                                                    const boost::dynamic_bitset<>& data,
-                                                                                                   const boost::dynamic_bitset<>& status) const
+                                                                                                   const boost::dynamic_bitset<>& status,
+                                                                                                   const std::string& senderId,
+                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    // This device supports several RORG messages
    // We just use the VLD telegram
@@ -59,9 +62,18 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       historizers.push_back(m_channel);
       break;
    default:
-      YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel ;
+      YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel;
       break;
    }
+
+   auto powerFailureSupported = bitset_extract(data, 0, 1) ? true : false;
+   auto powerFailureState = bitset_extract(data, 1, 1) ? true : false;
+   if (powerFailureSupported)
+   {
+      m_powerFailure->set(powerFailureState);
+      historizers.push_back(m_powerFailure);
+   }
+
    return historizers;
 }
 
@@ -85,21 +97,19 @@ void CProfile_D2_01_0A::sendCommand(const std::string& keyword,
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!messageHandler->send(command,
                              [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
+                          {
+                             return esp3Packet->header().packetType() == message::RESPONSE;
+                          },
                              [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
-      YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : no answer to Actuator Set Output command" ;
+                          {
+                             answer = esp3Packet;
+                          }))
+   YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : no answer to Actuator Set Output command";
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
 
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-      YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : Actuator Set Output command returns " << response->returnCode() ;
-
-   return;
+   YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : Actuator Set Output command returns " << response->returnCode();
 }
 
 void CProfile_D2_01_0A::sendConfiguration(const shared::CDataContainer& deviceConfiguration,

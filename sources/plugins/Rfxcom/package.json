@@ -227,7 +227,7 @@
            }
          },
          "id0_16777215": {
-           "types": { "pt2262": { "canBeCreatedManually" : "true" } , "mcz1PelletStove": { "canBeCreatedManually" : "true" } , "mcz2PelletStove": { "canBeCreatedManually" : "true" } , "mcz3PelletStove" : { "canBeCreatedManually" : "true" } },
+           "types": { "pt2262": { "canBeCreatedManually" : "true" } , "mcz1PelletStove": { "canBeCreatedManually" : "true" } , "mcz2PelletStove": { "canBeCreatedManually" : "true" } , "mcz3PelletStove" : { "canBeCreatedManually" : "true" } , "meiantech" : { "canBeCreatedManually" : "true" } },
            "content": {
              "id": {
                "type": "int",
@@ -312,7 +312,7 @@
            }
          },
          "id0_65535": {
-           "types": { "byronMp001": { "canBeCreatedManually" : "true" } , "envivo": { "canBeCreatedManually" : "true" } , "x10SecurityR": { "canBeCreatedManually" : "true" } , "digimax": { "canBeCreatedManually" : "true" } , "digimaxShort" : { "canBeCreatedManually" : "true" } },
+           "types": { "byronMp001": { "canBeCreatedManually" : "true" } , "envivo": { "canBeCreatedManually" : "true" } , "x10SecurityRemote": { "canBeCreatedManually" : "true" } , "digimax": { "canBeCreatedManually" : "true" } , "digimaxShort" : { "canBeCreatedManually" : "true" } },
            "content": {
              "id": {
                "type": "int",

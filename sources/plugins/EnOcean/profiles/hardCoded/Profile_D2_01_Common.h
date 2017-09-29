@@ -99,4 +99,9 @@ public:
                                                  unsigned char outputChannel, // kAllOutputChannels to configure all output channels in one time
                                                  double minEnergyMeasureRefreshTime,
                                                  double maxEnergyMeasureRefreshTime);
+
+
+   static void sendActuatorMeasurementQuery(boost::shared_ptr<IMessageHandler> messageHandler,
+                                            const std::string& senderId,
+                                            const std::string& targetId);
 };

@@ -10,11 +10,12 @@ CProfile_D2_01_0B::CProfile_D2_01_0B(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_deviceId(deviceId),
      m_channel(boost::make_shared<yApi::historization::CSwitch>("Channel", yApi::EKeywordAccessMode::kGetSet)),
-     m_inputEnergy(boost::make_shared<yApi::historization::CEnergy>("Input energy")),
-     m_inputPower(boost::make_shared<yApi::historization::CPower>("Input power")),
+     m_inputEnergy(boost::make_shared<yApi::historization::CEnergy>("Input energy")), //TODO dispo ?
+     m_inputPower(boost::make_shared<yApi::historization::CPower>("Input power")), //TODO dispo ?
      m_loadEnergy(boost::make_shared<yApi::historization::CEnergy>("Load energy")),
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),
-     m_historizers({m_channel, m_inputEnergy, m_inputPower,m_loadEnergy,m_loadPower})
+     m_powerFailure(boost::make_shared<yApi::historization::CSwitch>("Power failure", yApi::EKeywordAccessMode::kGet)),
+     m_historizers({m_channel, m_inputEnergy, m_inputPower, m_loadEnergy, m_loadPower, m_powerFailure })
 {
 }
 
@@ -41,7 +42,9 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_0B::states(unsigned char rorg,
                                                                                                    const boost::dynamic_bitset<>& data,
-                                                                                                   const boost::dynamic_bitset<>& status) const
+                                                                                                   const boost::dynamic_bitset<>& status,
+                                                                                                   const std::string& senderId,
+                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    // This device supports several RORG messages
    // We just use the VLD telegram
@@ -67,6 +70,15 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
             YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel;
             break;
          }
+
+         auto powerFailureSupported = bitset_extract(data, 0, 1) ? true : false;
+         auto powerFailureState = bitset_extract(data, 1, 1) ? true : false;
+         if (powerFailureSupported)
+         {
+            m_powerFailure->set(powerFailureState);
+            historizers.push_back(m_powerFailure);
+         }
+
          return historizers;
       }
    case CProfile_D2_01_Common::kActuatorMeasurementResponse:
@@ -118,6 +130,13 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                case CProfile_D2_01_Common::kPowerKW:
                   m_loadPower->set(powerValueW);
                   historizers.push_back(m_loadPower);
+
+                  // Power is configured to be received automaticaly.
+                  // As we can not receive both data (power + energy) automaticaly,
+                  // we ask for Energy just after receiving Power.
+                  CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
+                                                                      senderId,
+                                                                      m_deviceId); //TODO voir s'il faut le faire dans les autres profils
                   break;
                default:
                   YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported unit value for output channel" << unit;
@@ -125,7 +144,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                }
                break;
             }
-         case 0x1F: // Input channel
+         case 0x1F: // Input channel //TODO utile ?
             switch (unit)
             {
             case CProfile_D2_01_Common::kEnergyWs:
@@ -198,7 +217,7 @@ void CProfile_D2_01_0B::sendConfiguration(const shared::CDataContainer& deviceCo
    auto taughtInAllDevices = deviceConfiguration.get<std::string>("taughtIn") == "allDevices";
    auto userInterfaceDayMode = deviceConfiguration.get<std::string>("userInterfaceMode") == "dayMode";
    auto defaultState = deviceConfiguration.get<CProfile_D2_01_Common::EDefaultState>("defaultState");
-   auto powerFailureDetection = deviceConfiguration.get<std::string>("powerFailureDetection") == "enable"; //TODO pas de KW sur le power failure (voir également les autres profils concernés)
+   auto powerFailureDetection = deviceConfiguration.get<std::string>("powerFailureDetection") == "enable";
 
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
@@ -224,16 +243,8 @@ void CProfile_D2_01_0B::sendConfiguration(const shared::CDataContainer& deviceCo
       throw std::logic_error(oss.str());
    }
 
-   // Configure for both power and energy measure
-
-   //TODO virer ?
-   //CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
-   //                                                         senderId,
-   //                                                         m_deviceId,
-   //                                                         false,
-   //                                                         0, // TODO corriger les autres appels à sendActuatorSetMeasurementCommand
-   //                                                         minEnergyMeasureRefreshTime,
-   //                                                         maxEnergyMeasureRefreshTime);
+   // Configure for automatic power measure
+   // At each power measure receive, we ask for energy measure
    CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
                                                             senderId,
                                                             m_deviceId,
