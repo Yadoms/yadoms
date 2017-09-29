@@ -285,11 +285,11 @@ namespace shared
                      {
                         //force a cast to int (without int cast, lexicalcast take the ascii value of int: "1" => 49, instead of 1)
                         int v = boost::lexical_cast<int>(value);
-                        return std::max(0, std::min(255, v));
+                        return (unsigned char)(std::max(0, std::min(255, v)));
                      }
                      catch (boost::bad_lexical_cast&)
                      {
-                        return std::max(0, std::min(255, static_cast<int>(boost::lexical_cast<float>(value))));
+                        return (unsigned char)(std::max(0, std::min(255, static_cast<int>(boost::lexical_cast<float>(value)))));
                      }
                   }
 
