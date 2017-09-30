@@ -28,6 +28,8 @@ std::string COpenZWaveHelpers::IdentifyUnits(OpenZWave::ValueID& value)
       units = shared::plugin::yPluginApi::CStandardUnits::DegreesFarenheit();
    else if(boost::iequals(units, "cubic meters"))
       units = shared::plugin::yPluginApi::CStandardUnits::CubicMetre();
+   else if (boost::iequals(units, "%"))
+	  units = shared::plugin::yPluginApi::CStandardUnits::Percent();
    return units;
 }
 
