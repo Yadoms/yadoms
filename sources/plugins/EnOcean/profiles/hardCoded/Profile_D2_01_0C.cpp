@@ -121,6 +121,14 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                case CProfile_D2_01_Common::kPowerKW:
                   m_loadPower->set(powerValueW);
                   historizers.push_back(m_loadPower);
+
+                  // Power is configured to be received automaticaly.
+                  // As we can not receive both data (power + energy) automaticaly,
+                  // we ask for Energy just after receiving Power.
+                  CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
+                                                                      senderId,
+                                                                      m_deviceId,
+                                                                      CProfile_D2_01_Common::kOutputChannel1);
                   break;
                default:
                   YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported unit value for output channel" << unit;
@@ -198,24 +206,20 @@ void CProfile_D2_01_0C::sendCommand(const std::string& keyword,
 {
    if (keyword == m_channel->getKeyword())
    {
+      m_channel->setCommand(commandBody);
       CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
                                                                    senderId,
                                                                    m_deviceId,
-                                                                   commandBody == "1");//TODO remplacer par m_channel->get() ? A tester
+                                                                   CProfile_D2_01_Common::kOutputChannel1,
+                                                                   m_channel->get());
    }
    else if (keyword == m_pilotWire->getKeyword())
    {
+      m_pilotWire->setCommand(commandBody);
       CProfile_D2_01_Common::sendActuatorSetPilotWireModeCommand(messageHandler,
                                                                  senderId,
                                                                  m_deviceId,
                                                                  m_pilotWire->get());
-   }
-   else
-   {
-      std::ostringstream oss;
-      oss << "Device " << m_deviceId << " (" << profile() << ") : send command on unsupported keyword " << keyword;
-      YADOMS_LOG(information) << oss.str();
-      throw std::logic_error(oss.str());
    }
 }
 
@@ -231,6 +235,7 @@ void CProfile_D2_01_0C::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
+                                                      CProfile_D2_01_Common::kOutputChannel1,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
@@ -252,20 +257,13 @@ void CProfile_D2_01_0C::sendConfiguration(const shared::CDataContainer& deviceCo
       throw std::logic_error(oss.str());
    }
 
-   // Configure for both power and energy measure
+   // Configure for automatic power measure
+   // At each power measure receive, we ask for energy measure
    CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
                                                             senderId,
                                                             m_deviceId,
-                                                            false,
-                                                            CProfile_D2_01_Common::kAllOutputChannels,
-                                                            minEnergyMeasureRefreshTime,
-                                                            maxEnergyMeasureRefreshTime);
-   CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
-                                                            senderId,
-                                                            m_deviceId,
+                                                            CProfile_D2_01_Common::kOutputChannel1,
                                                             true,
-                                                            CProfile_D2_01_Common::kAllOutputChannels,
                                                             minEnergyMeasureRefreshTime,
                                                             maxEnergyMeasureRefreshTime);
 }
-

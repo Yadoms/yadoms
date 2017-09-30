@@ -2,7 +2,6 @@
 #include "Profile_D2_01_12.h"
 #include "../bitsetHelpers.hpp"
 #include "../../message/RadioErp1SendMessage.h"
-#include "../../message/ResponseReceivedMessage.h"
 #include "Profile_D2_01_Common.h"
 #include <shared/Log.h>
 
@@ -77,11 +76,28 @@ void CProfile_D2_01_12::sendCommand(const std::string& keyword,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
+   bool value;
+   CProfile_D2_01_Common::EOutputChannel channel;
+   if (keyword == m_channel1->getKeyword())
+   {
+      m_channel1->setCommand(commandBody);
+      value = m_channel1->get();
+      channel = CProfile_D2_01_Common::kOutputChannel1;
+   }
+   else if (keyword == m_channel2->getKeyword())
+   {
+      m_channel2->setCommand(commandBody);
+      value = m_channel2->get();
+      channel = CProfile_D2_01_Common::kOutputChannel2;
+   }
+   else
+      return;
+
    CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
                                                                 senderId,
                                                                 m_deviceId,
-                                                                commandBody == "1",
-                                                                keyword == m_channel1->getKeyword() ? 0 : 1);
+                                                                channel,
+                                                                value);
 }
 
 void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
@@ -93,14 +109,18 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
    auto userInterfaceDayMode = deviceConfiguration.get<std::string>("userInterfaceMode") == "dayMode";
    auto defaultState = deviceConfiguration.get<CProfile_D2_01_Common::EDefaultState>("defaultState");
    auto connectedSwitchsType = deviceConfiguration.get<CProfile_D2_01_Common::EConnectedSwitchsType>("connectedSwitchsType");
-   auto autoOffTimerSeconds = deviceConfiguration.get<double>("autoOffTimer");
-   auto delayRadioOffTimerSeconds = deviceConfiguration.get<double>("delayRadioOffTimer");
    auto switchingStateToggle = deviceConfiguration.get<std::string>("switchingState") == "tooggle";
+   auto autoOffTimerValue = deviceConfiguration.get<bool>("autoOffTimer.checkbox")
+                               ? deviceConfiguration.get<double>("autoOffTimer.content.value")
+                               : 0;
+   auto delayOffTimer = deviceConfiguration.get<bool>("delayOffTimer.checkbox")
+                           ? deviceConfiguration.get<double>("delayOffTimer.content.value")
+                           : 0;
 
-   // CMD 0x2 - Actuator Set Local
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
+                                                      CProfile_D2_01_Common::kOutputChannel1,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
@@ -110,13 +130,12 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
                                                       0.0,
                                                       0.0);
 
-   // CMD 0xB - Actuator Set External Interface Settings
    CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(messageHandler,
                                                                           senderId,
                                                                           m_deviceId,
+                                                                          CProfile_D2_01_Common::kOutputChannel1,
                                                                           connectedSwitchsType,
-                                                                          autoOffTimerSeconds,
-                                                                          delayRadioOffTimerSeconds,
+                                                                          autoOffTimerValue,
+                                                                          delayOffTimer,
                                                                           switchingStateToggle);
 }
-

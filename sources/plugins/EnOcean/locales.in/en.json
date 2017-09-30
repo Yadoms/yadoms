@@ -304,9 +304,6 @@
       }
     },
     "D2-01-0F": {
-      "sameAs": "D2-01-0D"
-    },
-    "D2-01-12": {
       "content": {
         "localControl": {
           "name": "Local control",
@@ -348,19 +345,35 @@
         },
         "switchingState": {
           "name": "Switching behaviour",
-          "type": "enum",
           "values": {
             "tooggle": "Each change on switch toogles output",
             "specific": "Specific ON/OFF positions (ON when contacts closed)"
           }
         },
         "autoOffTimer": {
-          "name": "Auto-off timer (seconds), 0 to disable timer"
+          "name": "Timer to automatically set OFF output when it is set ON",
+          "description": "When output is set to ON (from local switch or radio command), this timer is applied before to set output back OFF",
+          "content": {
+            "value": {
+              "name": "Timer value",
+              "description": "seconds"
+            }
+          }
         },
-        "delayRadioOffTimer": {
-          "name": "Radio-off delay (seconds), 0 to disable timer"
+        "delayOffTimer": {
+          "name": "Delay timer before setting output channel to OFF value received by radio cmd",
+          "description": "When output is set to ON (only from radio command), this timer is applied before to set output back OFF",
+          "content": {
+            "value": {
+              "name": "Timer value",
+              "description": "seconds"
+            }
+          }
         }
       }
+    },
+    "D2-01-12": {
+      "sameAs": "D2-01-0F"
     }
   }
 }

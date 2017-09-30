@@ -22,8 +22,8 @@ DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_01_Common::EConnectedSwitchsType,
 void CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(boost::shared_ptr<IMessageHandler> messageHandler,
                                                                   const std::string& senderId,
                                                                   const std::string& targetId,
-                                                                  bool state,
-                                                                  unsigned char outputChannel)
+                                                                  EOutputChannel outputChannel,
+                                                                  bool state)
 {
    boost::dynamic_bitset<> userData(3 * 8);
    bitset_insert(userData, 4, 4, kActuatorSetOutput);
@@ -40,6 +40,7 @@ void CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(boost::shared_
 void CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(boost::shared_ptr<IMessageHandler> messageHandler,
                                                                 const std::string& senderId,
                                                                 const std::string& targetId,
+                                                                EOutputChannel outputChannel,
                                                                 const specificHistorizers::EDimmerMode& mode,
                                                                 unsigned int dimValue)
 {
@@ -67,7 +68,7 @@ void CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(boost::shared_pt
       }
    }
    bitset_insert(userData, 8, 3, dimMode);
-   bitset_insert(userData, 11, 5, 0);
+   bitset_insert(userData, 11, 5, outputChannel);
    bitset_insert(userData, 17, 7, dimValue);
 
    sendMessage(messageHandler,
@@ -80,6 +81,7 @@ void CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(boost::shared_pt
 void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                                         const std::string& senderId,
                                                         const std::string& targetId,
+                                                        EOutputChannel outputChannel,
                                                         bool localControl,
                                                         bool taughtInAllDevices,
                                                         bool userInterfaceDayMode,
@@ -96,9 +98,9 @@ void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessa
    boost::dynamic_bitset<> data(4 * 8);
 
    bitset_insert(data, 4, 4, kActuatorSetLocal);
-   bitset_insert(data, 0, !taughtInAllDevices);
+   bitset_insert(data, 0, taughtInAllDevices);
    bitset_insert(data, 10, localControl);
-   bitset_insert(data, 11, 5, 0x1E); // Use all output channels supported by the device
+   bitset_insert(data, 11, 5, outputChannel);
    bitset_insert(data, 16, 4, static_cast<unsigned int>(lround(dimTimer2 / 0.5)));
    bitset_insert(data, 20, 4, static_cast<unsigned int>(lround(dimTimer3 / 0.5)));
    bitset_insert(data, 24, !userInterfaceDayMode);
@@ -111,13 +113,13 @@ void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessa
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!messageHandler->send(command,
                              [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
+                          {
+                             return esp3Packet->header().packetType() == message::RESPONSE;
+                          },
                              [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
+                          {
+                             answer = esp3Packet;
+                          }))
    YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set Local command";
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
@@ -129,8 +131,8 @@ void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessa
 void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                                               const std::string& senderId,
                                                               const std::string& targetId,
+                                                              EOutputChannel outputChannel,
                                                               bool powerMeasurement,
-                                                              unsigned char outputChannel,
                                                               double minEnergyMeasureRefreshTime,
                                                               double maxEnergyMeasureRefreshTime)
 {
@@ -138,7 +140,7 @@ void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<
                                           senderId,
                                           targetId,
                                           0);
-   boost::dynamic_bitset<> data(7 * 8);
+   boost::dynamic_bitset<> data(6 * 8);
 
    bitset_insert(data, 4, 4, kActuatorSetMeasurement);
    bitset_insert(data, 8, true); // Report on query + auto reporting
@@ -156,13 +158,13 @@ void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!messageHandler->send(command,
                              [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
+                          {
+                             return esp3Packet->header().packetType() == message::RESPONSE;
+                          },
                              [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
+                          {
+                             answer = esp3Packet;
+                          }))
    YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set Measurement command";
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
@@ -173,10 +175,13 @@ void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<
 
 void CProfile_D2_01_Common::sendActuatorMeasurementQuery(boost::shared_ptr<IMessageHandler> messageHandler,
                                                          const std::string& senderId,
-                                                         const std::string& targetId)
+                                                         const std::string& targetId,
+                                                         EOutputChannel outputChannel)
 {
    boost::dynamic_bitset<> userData(2 * 8);
    bitset_insert(userData, 4, 4, kActuatorMeasurementQuery);
+   bitset_insert(userData, 10, 1, kQueryEnergy);
+   bitset_insert(userData, 11, 5, outputChannel);
 
    sendMessage(messageHandler,
                senderId,
@@ -228,6 +233,7 @@ void CProfile_D2_01_Common::sendActuatorSetPilotWireModeCommand(boost::shared_pt
 void CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                                                             const std::string& senderId,
                                                                             const std::string& targetId,
+                                                                            EOutputChannel outputChannel,
                                                                             const EConnectedSwitchsType& connectedSwitchsType,
                                                                             double autoOffTimerSeconds,
                                                                             double delayRadioOffTimerSeconds,
@@ -240,7 +246,7 @@ void CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(boos
    boost::dynamic_bitset<> data(7 * 8);
 
    bitset_insert(data, 4, 4, kActuatorSetExternalInterfaceSettings);
-   bitset_insert(data, 11, 5, 0x1E); // Use all output channels supported by the device
+   bitset_insert(data, 11, 5, outputChannel);
    bitset_insert(data, 16, 16, static_cast<unsigned int>(autoOffTimerSeconds * 10));
    bitset_insert(data, 32, 16, static_cast<unsigned int>(delayRadioOffTimerSeconds * 10));
    bitset_insert(data, 48, 2, connectedSwitchsType);
@@ -251,13 +257,13 @@ void CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(boos
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!messageHandler->send(command,
                              [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
+                          {
+                             return esp3Packet->header().packetType() == message::RESPONSE;
+                          },
                              [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
+                          {
+                             answer = esp3Packet;
+                          }))
    YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set External Interface Settings command";
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
@@ -282,13 +288,13 @@ void CProfile_D2_01_Common::sendMessage(boost::shared_ptr<IMessageHandler> messa
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!messageHandler->send(command,
                              [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
+                          {
+                             return esp3Packet->header().packetType() == message::RESPONSE;
+                          },
                              [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
+                          {
+                             answer = esp3Packet;
+                          }))
    YADOMS_LOG(error) << "Fail to send message to " << targetId << " : no answer to \"" << commandName << "\"";
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
@@ -299,10 +305,9 @@ void CProfile_D2_01_Common::sendMessage(boost::shared_ptr<IMessageHandler> messa
 
 //TODO refactoring D2-01-XX, RAF :
 // - over current
-// - auto-off timer
-// - delay-off timer
-// - mesure d'énergy/power fonctionnelle pour tous les profils qui sont censés le supporter
 // - voir ce que c'est que le "Measurement Auto Scaling"
 // - voir si on peut factoriser la fonction state
-
-
+// - initialiser toutes les valeurs au démarrage :
+//   - tout ce qui est états doit être lu dans l'équipement
+//   - tout ce qui est configuration doit être lu dans la base et envoyé au device
+// - Implémenter "Measurement delta to be reported (MSB)"
