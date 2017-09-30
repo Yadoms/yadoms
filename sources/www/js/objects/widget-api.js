@@ -142,12 +142,13 @@ WidgetApi.prototype.manageBatteryConfiguration = function () {
         //we clear the div that will contain the battery indicator
         $battery.empty();
         var deviceId = $battery.attr("deviceId");
-        if (deviceId) {
+        if (!isNullOrUndefinedOrEmpty(deviceId)) {
             //we check for the device to look if it has battery keyword
             DeviceManager.getKeywordsByDeviceId(deviceId)
             .done(function (keywords) {
                 var batteryLevel = keywords.find(function (element) { return element.capacityName === "batteryLevel"; });
                 if (batteryLevel) {
+					$battery.removeClass("hidden");
                     //it has capacity
                     $battery.append("<span class=\"\"/>");
                     $battery.attr("keywordId", batteryLevel.id);
@@ -165,13 +166,18 @@ WidgetApi.prototype.manageBatteryConfiguration = function () {
                 }
                 else {
                     //we can hide the div to prevent margin spaces before the title
-                    $battery.hide();
+					$battery.addClass("hidden");
                 }
             })
             .fail(function (error) {
                 notifyError($.t("objects.generic.errorGetting", { objectName: "keyword for device = " + deviceId }), error);
             });
         }
+		else
+		{
+			//we can hide the div to prevent margin spaces before the title
+			$battery.addClass("hidden");
+		}
     }
 }
 
@@ -251,8 +257,9 @@ WidgetApi.prototype.manageRollingTitle = function () {
 		//Calculate the overflow ! Theses values could be obtain, only after the application !
 		var overflow = toolbarSize +
 					   self.widget.$header.find(".panel-widget-title")[0].scrollWidth -
-					   self.widget.$header[0].scrollWidth; 
-					   
+					   self.widget.$header[0].scrollWidth +
+					   2.5; // padding-right of the panel-widget-title-toolbar
+		
 		if (overflow > 0) {
 			
 			if (self.widget.$header.find(".panel-widget-title-" + self.widget.id).length !== 0)
