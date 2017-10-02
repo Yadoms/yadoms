@@ -191,7 +191,6 @@ ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, 
                {
                   var item = obj.values[i]; 
                   enumValues[item]=item;
-                  console.log (enumValues);
                }
             }
          }
