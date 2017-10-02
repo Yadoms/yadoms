@@ -7,6 +7,8 @@ namespace specificHistorizers
    DECLARE_ENUM_IMPLEMENTATION(EPilotWire,
       ((Off))
       ((Comfort))
+      ((Comfort2))
+      ((Comfort3))
       ((Eco))
       ((AntiFreeze))
    );
@@ -16,7 +18,7 @@ namespace specificHistorizers
       : CSingleHistorizableData<EPilotWire>(keywordName,
                                             shared::plugin::yPluginApi::CStandardCapacity("PilotWire",
                                                                                           shared::plugin::yPluginApi::CStandardUnits::NoUnit(),
-                                                                                          shared::plugin::yPluginApi::EKeywordDataType::kNoData),
+                                                                                          shared::plugin::yPluginApi::EKeywordDataType::kEnum),
                                             shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
    {
    }

@@ -1,13 +1,13 @@
 {
-	"name": "Graphique",
-	"description": "Un widget qui permet d'afficher un graphe d'historisation de données",
-	"errorDuringGettingDeviceData": "Erreur lors de la récupération des données",
+   "name": "Graphique",
+   "description": "Un widget qui permet d'afficher un graphe d'historisation de données",
+   "errorDuringGettingDeviceData": "Erreur lors de la récupération des données",
    "errorInitialization" : "Erreur lors de l'initialisation du widget chart",
    "incompatibilityDifferential": "L'affichage différentiel n'est pas compatible avec l'affichage min/max",  
-	"loadingData": "Chargement des données",
-	"RangeTooBroad" : "Echelle trop large",
-  "noAvailableData": "Données indisponibles",
-  "formatNotSupported": "Le format __format__ n'est pas supporté",
+   "loadingData": "Chargement des données",
+   "RangeTooBroad" : "Echelle trop large",
+   "noAvailableData": "Aucune donnée pour l'échelle sélectionnée",
+   "formatNotSupported": "Le format __format__ n'est pas supporté",
 	"configurationSchema": {
 		"interval": {
 			"name": "Période d'affichage du graphique",

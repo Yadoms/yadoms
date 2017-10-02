@@ -304,9 +304,6 @@
       }
     },
     "D2-01-0F": {
-      "sameAs": "D2-01-0D"
-    },
-    "D2-01-12": {
       "content": {
         "localControl": {
           "name": "Contrôle local",
@@ -348,19 +345,35 @@
         },
         "switchingState": {
           "name": "Comportement des interrupteurs",
-          "type": "enum",
           "values": {
             "tooggle": "Chaque changement inverse la sortie",
-            "specific": "Etats spécifiques (Sortie active lorsque les contacts sont fermés)"
+            "specific": "Positions ON/OFF Etats spécifiques (ON lorsque le contact est fermé, OFF lorsqu'il est ouvert)"
           }
         },
         "autoOffTimer": {
-          "name": "Temporisation d'arrêt automatique (en secondes), 0 pour désactiver la temporisation"
+          "name": "Délai de remise de la sortie à OFF après une mise à ON",
+          "description": "Lors d'une activation de la sortie (via l'interrupteur local ou par radio), ce délai est appliqué puis la sortie est désactivée",
+          "content": {
+            "value": {
+              "name": "Délai à appliquer",
+              "description": "En secondes"
+            }
+          }
         },
-        "delayRadioOffTimer": {
-          "name": "Temporisation d'arrêt après réception message (en secondes), 0 pour désactiver la temporisation"
+        "delayOffTimer": {
+          "name": "Délai de remise de la sortie à OFF après une mise à ON par radio",
+          "description": "Lors d'une activation de la sortie (uniquement par radio), ce délai est appliqué puis la sortie est désactivée",
+          "content": {
+            "value": {
+              "name": "Délai à appliquer",
+              "description": "En secondes"
+            }
+          }
         }
       }
+    },
+    "D2-01-12": {
+      "sameAs": "D2-01-0F"
     }
   }
 }

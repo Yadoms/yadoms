@@ -2,7 +2,6 @@
 #include "Profile_D2_01_0F.h"
 #include "../bitsetHelpers.hpp"
 #include "../../message/RadioErp1SendMessage.h"
-#include "../../message/ResponseReceivedMessage.h"
 #include "Profile_D2_01_Common.h"
 #include <shared/Log.h>
 
@@ -72,36 +71,16 @@ void CProfile_D2_01_0F::sendCommand(const std::string& keyword,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
-                                          senderId,
-                                          m_deviceId,
-                                          0);
+   if (keyword != m_channel->getKeyword())
+      return;
 
-   boost::dynamic_bitset<> userData(3 * 8);
-   bitset_insert(userData, 4, 4, CProfile_D2_01_Common::kActuatorSetOutput);
-   bitset_insert(userData, 11, 5, 0);
-   bitset_insert(userData, 17, 7, commandBody == "1" ? 100 : 0);
+   m_channel->setCommand(commandBody);
 
-   command.userData(bitset_to_bytes(userData));
-
-   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
-   if (!messageHandler->send(command,
-                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                          {
-                             return esp3Packet->header().packetType() == message::RESPONSE;
-                          },
-                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                          {
-                             answer = esp3Packet;
-                          }))
-   YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : no answer to Actuator Set Output command";
-
-   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
-
-   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-   YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : Actuator Set Output command returns " << response->returnCode();
-
-   return;
+   CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
+                                                                senderId,
+                                                                m_deviceId,
+                                                                CProfile_D2_01_Common::kOutputChannel1,
+                                                                m_channel->get());
 }
 
 void CProfile_D2_01_0F::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
@@ -112,10 +91,19 @@ void CProfile_D2_01_0F::sendConfiguration(const shared::CDataContainer& deviceCo
    auto taughtInAllDevices = deviceConfiguration.get<std::string>("taughtIn") == "allDevices";
    auto userInterfaceDayMode = deviceConfiguration.get<std::string>("userInterfaceMode") == "dayMode";
    auto defaultState = deviceConfiguration.get<CProfile_D2_01_Common::EDefaultState>("defaultState");
+   auto connectedSwitchsType = deviceConfiguration.get<CProfile_D2_01_Common::EConnectedSwitchsType>("connectedSwitchsType");
+   auto switchingStateToggle = deviceConfiguration.get<std::string>("switchingState") == "tooggle";
+   auto autoOffTimerValue = deviceConfiguration.get<bool>("autoOffTimer.checkbox")
+                               ? deviceConfiguration.get<double>("autoOffTimer.content.value")
+                               : 0;
+   auto delayOffTimer = deviceConfiguration.get<bool>("delayOffTimer.checkbox")
+                           ? deviceConfiguration.get<double>("delayOffTimer.content.value")
+                           : 0;
 
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
+                                                      CProfile_D2_01_Common::kOutputChannel1,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
@@ -124,4 +112,13 @@ void CProfile_D2_01_0F::sendConfiguration(const shared::CDataContainer& deviceCo
                                                       0.0,
                                                       0.0,
                                                       0.0);
+
+   CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(messageHandler,
+                                                                          senderId,
+                                                                          m_deviceId,
+                                                                          CProfile_D2_01_Common::kOutputChannel1,
+                                                                          connectedSwitchsType,
+                                                                          autoOffTimerValue,
+                                                                          delayOffTimer,
+                                                                          switchingStateToggle);
 }

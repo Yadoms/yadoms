@@ -33,8 +33,6 @@ public:
 
 private:
    const std::string m_deviceId;
-   boost::shared_ptr<yApi::historization::CDimmable> m_dimAtSpeed1;
-   boost::shared_ptr<yApi::historization::CDimmable> m_dimAtSpeed2;
-   boost::shared_ptr<yApi::historization::CDimmable> m_dimAtSpeed3;
+   boost::shared_ptr<yApi::historization::CDimmable> m_dimmer;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
 };

@@ -8,9 +8,11 @@ namespace specificHistorizers
    DECLARE_ENUM_HEADER(EPilotWire,
       ((Off)(0))
       ((Comfort)(1))
-      ((Eco)(2))
-      ((AntiFreeze)(3))
-   );
+      ((Comfort2)(2))
+      ((Comfort3)(3))
+      ((Eco)(4))
+      ((AntiFreeze)(5))
+   ) ;
 
    class CPilotWireHistorizer : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EPilotWire>
    {
@@ -19,3 +21,5 @@ namespace specificHistorizers
       virtual ~CPilotWireHistorizer();
    };
 } // namespace specificHistorizers
+
+
