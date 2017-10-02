@@ -63,7 +63,7 @@ namespace rfxcomMessages
    boost::shared_ptr<IUnsecuredProtocolFilter> CCurrentEnergy::createFilter()
    {
       return boost::make_shared<CRareDeviceIdFilter>(3,
-                                                     boost::posix_time::hours(12));
+                                                     boost::posix_time::minutes(10));
    }
 
    void CCurrentEnergy::Init(boost::shared_ptr<yApi::IYPluginApi> api)

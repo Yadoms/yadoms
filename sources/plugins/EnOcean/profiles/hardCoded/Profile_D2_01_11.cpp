@@ -38,7 +38,9 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_11::states(unsigned char rorg,
                                                                                                    const boost::dynamic_bitset<>& data,
-                                                                                                   const boost::dynamic_bitset<>& status) const
+                                                                                                   const boost::dynamic_bitset<>& status,
+                                                                                                   const std::string& senderId,
+                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    // This device supports several RORG messages
    // We just use the VLD telegram
@@ -64,7 +66,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       historizers.push_back(m_channel2);
       break;
    default:
-      YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel ;
+      YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel;
       break;
    }
    return historizers;
@@ -75,34 +77,28 @@ void CProfile_D2_01_11::sendCommand(const std::string& keyword,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
-                                          senderId,
-                                          m_deviceId,
-                                          0);
+   bool value;
+   CProfile_D2_01_Common::EOutputChannel channel;
+   if (keyword == m_channel1->getKeyword())
+   {
+      m_channel1->setCommand(commandBody);
+      value = m_channel1->get();
+      channel = CProfile_D2_01_Common::kOutputChannel1;
+   }
+   else if (keyword == m_channel2->getKeyword())
+   {
+      m_channel2->setCommand(commandBody);
+      value = m_channel2->get();
+      channel = CProfile_D2_01_Common::kOutputChannel2;
+   }
+   else
+      return;
 
-   boost::dynamic_bitset<> userData(3 * 8);
-   bitset_insert(userData, 4, 4, CProfile_D2_01_Common::kActuatorSetOutput);
-   bitset_insert(userData, 11, 5, (keyword == m_channel1->getKeyword()) ? 0 : 1);
-   bitset_insert(userData, 17, 7, commandBody == "1" ? 100 : 0);
-
-   command.userData(bitset_to_bytes(userData));
-
-   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
-   if (!messageHandler->send(command,
-                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
-                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
-      YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : no answer to Actuator Set Output command" ;
-
-   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
-
-   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-      YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : Actuator Set Output command returns " << response->returnCode() ;
+   CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
+                                                                senderId,
+                                                                m_deviceId,
+                                                                channel,
+                                                                value);
 }
 
 void CProfile_D2_01_11::sendConfiguration(const shared::CDataContainer& deviceConfiguration,

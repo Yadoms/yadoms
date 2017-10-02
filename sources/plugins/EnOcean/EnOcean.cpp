@@ -564,7 +564,9 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
 
       auto keywordsToHistorize = device->states(static_cast<unsigned char>(erp1Message.rorg()),
                                                 erp1UserData,
-                                                erp1Status);
+                                                erp1Status,
+                                                m_senderId,
+                                                m_messageHandler);
       if (keywordsToHistorize.empty())
       {
          YADOMS_LOG(information) << "Received message for id#" << deviceId << ", but nothing to historize";

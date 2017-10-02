@@ -858,12 +858,9 @@ widgetViewModelCtor =
 
        this.onTime = function (serverLocalTime) {
          var self = this;
-         var dateServerLocalTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
-         
-         console.log ("cleaning chart");
-         
          var cleanValue;
          var prefix;
+		 self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime); // Update the serverTime
          
          // Cleaning ranges switch
          switch (self.interval) {
@@ -897,8 +894,54 @@ widgetViewModelCtor =
                  break;
          }
          
-         var dateTo = DateTimeFormatter.dateToIsoDate(moment(dateServerLocalTime).startOf(prefix).subtract(1, 'seconds'));
-         
+         var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(prefix).subtract(1, 'seconds'));
+
+	     $.each(self.widget.configuration.devices, function (index, device) {
+		   var serie = self.chart.get(self.seriesUuid[index]);
+		   
+		   // If a serie is available
+		   if (!isNullOrUndefined(serie)){
+		     var time = moment(self.serverTime)._d.getTime().valueOf();
+			 var lastDate = 0;
+			 console.log ("serie.points : ", serie.points);
+			 
+			 if (serie.points.length>0)
+			    lastDate = serie.points[serie.points.length - 1].x;
+			 
+			 /*
+			 console.log ("x : ", serie.points[serie.points.length - 1].x);
+			 var registerDate = moment(self.serverTime)._d.getTime().valueOf(); //
+			 console.log (registerDate);
+			 serie.addPoint([registerDate, null], true, false, true);
+		     console.log ("x : ", serie.points[serie.points.length - 1].x);
+		 */
+			 switch (self.interval) {
+			   case "DAY":
+				   if ((serie.points.length > 0) && ((time - lastDate) > (3600000 * 2 + 60000)))
+					   self.DisplaySummary(index, 1, device, "hours", "hour");
+				   break;
+			   case "WEEK":
+				   if ((serie.points.length > 0) && ((time - lastDate) > (3600000 * 2 + 60000)))
+					   self.DisplaySummary(index, 1, device, "hours", "hour");
+				   break;
+			   case "MONTH":
+				   if ((serie.points.length > 0) && ((time - lastDate) > (3600000 * 24 * 2 + 60000)))
+					   self.DisplaySummary(index, 1, device, "days", "day");
+				   break;
+			   case "HALF_YEAR":
+				   if ((serie.points.length > 0) && ((time - lastDate) > (3600000 * 24 * 2 + 60000)))
+					   self.DisplaySummary(index, 6, device, "days", "day");
+				   break;
+			   case "YEAR":
+				   if ((serie.points.length > 0) && ((time - lastDate) > (3600000 * 24 * 2 + 60000)))
+					   self.DisplaySummary(index, 1, device, "days", "day");
+				   break;
+			   default:
+				   break;
+			 }
+		   }
+		 });
+		 
          $.each(self.seriesUuid, function (index, value) {
          
             var serie = self.chart.get(value);
@@ -923,42 +966,47 @@ widgetViewModelCtor =
                
                var dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf(prefix).subtract(1, 'seconds'));
                var dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(nb, range).startOf(prefix));
-
+			   
                RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + "/" + prefix + "/" + dateFrom + "/" + dateTo)
                   .done(function (data) {
                       try {
+						  console.log ("date :", DateTimeFormatter.dateToIsoDate(moment(self.serverTime)));
+						  console.log ("valeur :", data.data[data.data.length-1]);
+						  
+						  var serie = self.chart.get(self.seriesUuid[index]);
                           if (data.data[data.data.length-1] != undefined) {
                               self.chart.hideLoading(); // If a text was displayed before
 							  
-                              var serie = self.chart.get(self.seriesUuid[index]);
                               var serieRange = self.chart.get('range_' + self.seriesUuid[index]);
                               var registerDate = DateTimeFormatter.isoDateToDate(data.data[data.data.length-1].date)._d.getTime().valueOf();
-                              
+                              var valueToDisplay = parseFloat(data.data[data.data.length-1][self.periodValueType[index]]);
+							  
                               if (self.differentialDisplay[index])
                               {
                                   if (!isNullOrUndefined(self.chartLastValue[index]))
                                   {
-                                     serie.addPoint([registerDate, parseFloat(data.data[data.data.length-1][self.periodValueType[index]])-self.chartLastValue[index]], 
-                                                    true, 
-                                                    false, 
-                                                    true);
+                                     serie.addPoint([registerDate, valueToDisplay-self.chartLastValue[index]], 
+                                                    true,  // redraw. When more than 1 => false.
+                                                    false, // shift if true, one point at left is remove
+                                                    true); // animation.
                                   }
-                                  
-                                  self.chartLastValue[index] = parseFloat(data.data[data.data.length-1][self.periodValueType[index]]);
+                                  self.chartLastValue[index] = valueToDisplay;
                               }
                               else                              
-                                 serie.addPoint([registerDate, parseFloat(data.data[data.data.length-1][self.periodValueType[index]])], true, false, true);
+                                 serie.addPoint([registerDate, valueToDisplay], true, false, true);
 						      
                               //Add also for ranges if any
                               if (serieRange && !self.differentialDisplay[index])
-                              {                           
                                  serieRange.addPoint([registerDate, parseFloat(data.data[data.data.length-1].min), parseFloat(data.data[data.data.length-1].max)], true, false, true);
-                              }
                           }
+						  else{ // Add null for this date
+							  var registerDate = moment(self.serverTime).subtract(1, 'hours').startOf(prefix)._d.getTime().valueOf();
+							  console.log ("registerDate : ", registerDate);
+							  serie.addPoint([registerDate, null], true, false, true);
+						  }
                       } catch (err) {
                           console.error(err.message);
                       }
-
                   });
            } catch (err) {
                console.error(err.message);
@@ -990,7 +1038,8 @@ widgetViewModelCtor =
                               // date received in iso format to compare
                               var isolastdate = DateTimeFormatter.isoDateToDate(data.date)._d.getTime().valueOf();
                            
-                               // Add new point depending of the interval
+                               // Add new point only for HOUR interval
+							   // others points are treated into the onTime function
                                switch (self.interval) {
                                    case "HOUR":
                                        if (!isNullOrUndefined(serie)) {
@@ -1008,33 +1057,6 @@ widgetViewModelCtor =
                                                  serie.addPoint([data.date.valueOf(), parseFloat(data.value)], true, false, true);
                                            }
                                        }
-                                       break;
-                                   case "DAY":
-                                       if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 2))
-                                           self.DisplaySummary(index, 1, device, "hours", "hour");
-                                       break;
-
-                                   case "WEEK":
-                                       if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 2))
-                                           self.DisplaySummary(index, 1, device, "hours", "hour");
-
-                                       break;
-                                   case "MONTH":
-                                       if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
-                                           self.DisplaySummary(index, 1, device, "days", "day");
-
-                                       break;
-                                   case "HALF_YEAR":
-
-                                       if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
-                                           self.DisplaySummary(index, 6, device, "days", "day");
-
-                                       break;
-                                   case "YEAR":
-
-                                       if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
-                                           self.DisplaySummary(index, 1, device, "days", "day");
-
                                        break;
                                    default:
                                        break;

@@ -19,21 +19,23 @@
   "supportDeviceRemovedNotification": "true",
   "deviceConfiguration": {
     "staticConfigurationSchema": {
-      "schemas" : {
-         "all" : {
-           "types": { "*" : {
-                  "canBeCreatedManually" : "true"
-               } },
-           "content": {
-             "manufacturer": {
-               "type": "string"
-             },
-             "profile": {
-               "type": "comboSection",
-               "content": ""
-             }
-           }
-         }
+      "schemas": {
+        "all": {
+          "types": {
+            "*": {
+              "canBeCreatedManually": "true"
+            }
+          },
+          "content": {
+            "manufacturer": {
+              "type": "string"
+            },
+            "profile": {
+              "type": "comboSection",
+              "content": ""
+            }
+          }
+        }
       }
     }
   },
@@ -273,7 +275,56 @@
       }
     },
     "D2-01-0A": {
-      "sameAs": "D2-01-08"
+      "type": "section",
+      "content": {
+        "localControl": {
+          "name": "Local control",
+          "type": "enum",
+          "values": {
+            "enable": "enable",
+            "disable": "disable"
+          },
+          "defaultValue": "enable"
+        },
+        "taughtIn": {
+          "name": "Taught In",
+          "type": "enum",
+          "values": {
+            "allDevices": "All devices",
+            "yadomsOnly": "Yadoms only"
+          },
+          "defaultValue": "allDevices"
+        },
+        "userInterfaceMode": {
+          "name": "User Interface Mode",
+          "type": "enum",
+          "values": {
+            "dayMode": "Day (led on)",
+            "nightMode": "Night (led off)"
+          },
+          "defaultValue": "dayMode"
+        },
+        "defaultState": {
+          "name": "Default state",
+          "type": "enum",
+          "values": {
+            "off": "Off",
+            "on": "On",
+            "previousState": "Previous state",
+            "notUsed": "Not Used"
+          },
+          "defaultValue": "off"
+        },
+        "powerFailureDetection": {
+          "name": "Power failure detection",
+          "type": "enum",
+          "values": {
+            "enable": "enable",
+            "disable": "disable"
+          },
+          "defaultValue": "disable"
+        }
+      }
     },
     "D2-01-0B": {
       "type": "section",
@@ -445,9 +496,6 @@
       }
     },
     "D2-01-0F": {
-      "sameAs": "D2-01-0D"
-    },
-    "D2-01-12": {
       "type": "section",
       "content": {
         "localControl": {
@@ -507,22 +555,39 @@
           }
         },
         "autoOffTimer": {
-          "name": "Auto-off timer",
-          "type": "decimal",
-          "minimumValue": "0.0",
-          "maximumValue": "6553.4",
-          "precision": "1",
-          "defaultValue": "0.0"
+          "name": "Auto off timer",
+          "type": "section",
+          "enableWithCheckBox": "true",
+          "enableWithCheckBoxDefaultValue": "false",
+          "content": {
+            "value": {
+              "name": "value",
+              "type": "decimal",
+              "minimumValue": "0.1",
+              "maximumValue": "6553.4",
+              "defaultValue": "60"
+            }
+          }
         },
-        "delayRadioOffTimer": {
-          "name": "Radio-off delay",
-          "type": "decimal",
-          "minimumValue": "0.0",
-          "maximumValue": "6553.4",
-          "precision": "1",
-          "defaultValue": "0.0"
+        "delayOffTimer": {
+          "name": "Delay off timer",
+          "type": "section",
+          "enableWithCheckBox": "true",
+          "enableWithCheckBoxDefaultValue": "false",
+          "content": {
+            "value": {
+              "name": "value",
+              "type": "decimal",
+              "minimumValue": "0.1",
+              "maximumValue": "6553.4",
+              "defaultValue": "60"
+            }
+          }
         }
       }
+    },
+    "D2-01-12": {
+      "sameAs": "D2-01-0F"
     }
   }
 }

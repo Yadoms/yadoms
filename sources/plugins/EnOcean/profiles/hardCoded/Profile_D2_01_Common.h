@@ -1,6 +1,8 @@
 #pragma once
 #include <shared/enumeration/EnumHelpers.hpp>
 #include "../../IMessageHandler.h"
+#include <specificHistorizers/PilotWireHistorizer.h>
+#include <specificHistorizers/DimmerModeHistorizer.h>
 
 
 class CProfile_D2_01_Common
@@ -11,13 +13,13 @@ public:
       ((on)(1))
       ((previousState)(2))
       ((notUsed)(3))
-   );
+   ) ;
 
    DECLARE_ENUM_HEADER(EConnectedSwitchsType,
       ((switch)(1))
       ((pushButton)(2))
       ((autodetection)(3))
-   );
+   ) ;
 
    enum E_D2_01_Command
    {
@@ -45,7 +47,7 @@ public:
       kPowerKW = 0x04
    };
 
-   enum E_D2_01_DimValue
+   enum E_D2_01_DimMode
    {
       kSwitchToValue = 0x00,
       kDimToValueWithTimer1 = 0x01,
@@ -64,10 +66,38 @@ public:
       kComfort_2 = 0x05
    };
 
+   enum EOutputChannel
+   {
+      kOutputChannel1 = 0,
+      kOutputChannel2 = 1,
+      kAllOutputChannels = 0x1E,
+      kInputChannel = 0x1F,
+   };
+
+   enum
+   {
+      kQueryEnergy = 0,
+      kQueryPower = 1
+   };
+
+   // CMD 0x1 - Actuator Set Output
+   static void sendActuatorSetOutputCommandSwitching(boost::shared_ptr<IMessageHandler> messageHandler,
+                                                     const std::string& senderId,
+                                                     const std::string& targetId,
+                                                     EOutputChannel outputChannel,
+                                                     bool state);
+   static void sendActuatorSetOutputCommandDimming(boost::shared_ptr<IMessageHandler> messageHandler,
+                                                   const std::string& senderId,
+                                                   const std::string& targetId,
+                                                   EOutputChannel outputChannel,
+                                                   const specificHistorizers::EDimmerMode& mode,
+                                                   unsigned int dimValue);
+
    // CMD 0x2 - Actuator Set Local
    static void sendActuatorSetLocalCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                            const std::string& senderId,
                                            const std::string& targetId,
+                                           EOutputChannel outputChannel,
                                            bool localControl,
                                            bool taughtInAllDevices,
                                            bool userInterfaceDayMode,
@@ -77,26 +107,40 @@ public:
                                            double dimTimer2,
                                            double dimTimer3);
 
+   // CMD 0x5 - Actuator Set Measurement
+   static void sendActuatorSetMeasurementCommand(boost::shared_ptr<IMessageHandler> messageHandler,
+                                                 const std::string& senderId,
+                                                 const std::string& targetId,
+                                                 EOutputChannel outputChannel,
+                                                 bool powerMeasurement,
+                                                 double minEnergyMeasureRefreshTime,
+                                                 double maxEnergyMeasureRefreshTime);
+
+   // CMD 0x6 - Actuator Measurement Query
+   static void sendActuatorMeasurementQuery(boost::shared_ptr<IMessageHandler> messageHandler,
+                                            const std::string& senderId,
+                                            const std::string& targetId,
+                                            EOutputChannel outputChannel);
+
+   // CMD 0x8 - Actuator Set Pilot Wire Mode
+   static void sendActuatorSetPilotWireModeCommand(boost::shared_ptr<IMessageHandler> messageHandler,
+                                                   const std::string& senderId,
+                                                   const std::string& targetId,
+                                                   const specificHistorizers::EPilotWire& mode);
+
    // CMD 0xB - Actuator Set External Interface Settings
    static void sendActuatorSetExternalInterfaceSettingsCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                                                const std::string& senderId,
                                                                const std::string& targetId,
+                                                               EOutputChannel outputChannel,
                                                                const EConnectedSwitchsType& connectedSwitchsType,
                                                                double autoOffTimerSeconds,
                                                                double delayRadioOffTimerSeconds,
                                                                bool switchingStateToggle);
 
-   // CMD 0x5 - Actuator Set Measurement
-   enum
-   {
-      kAllOutputChannels = 0x1E
-   };
-
-   static void sendActuatorSetMeasurementCommand(boost::shared_ptr<IMessageHandler> messageHandler,
-                                                 const std::string& senderId,
-                                                 const std::string& targetId,
-                                                 bool powerMeasurement,
-                                                 unsigned char outputChannel, // kAllOutputChannels to configure all output channels in one time
-                                                 double minEnergyMeasureRefreshTime,
-                                                 double maxEnergyMeasureRefreshTime);
+   static void sendMessage(boost::shared_ptr<IMessageHandler> messageHandler,
+                           const std::string& senderId,
+                           const std::string& targetId,
+                           const boost::dynamic_bitset<>& userData,
+                           const std::string& commandName);
 };

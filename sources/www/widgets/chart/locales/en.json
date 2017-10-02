@@ -6,7 +6,7 @@
   "incompatibilityDifferential": "Differential display and range configuration are incompatible",  
   "loadingData": "Loading data",
   "RangeTooBroad": "Range is too broad",
-  "noAvailableData": "No available data",
+  "noAvailableData": "No available data for the selected range",
   "formatNotSupported": "This format __format__ is not supported",
   "configurationSchema": {
     "interval": {
