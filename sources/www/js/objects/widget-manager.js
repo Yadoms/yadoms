@@ -251,8 +251,9 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
             defferedResult = defferedResult || new $.Deferred().resolve();
             defferedResult.done(function () {
                 //we manage the toolbar api specific icons
-                widget.viewModel.widgetApi.manageBatteryConfiguration();
-                d.resolve();
+                widget.viewModel.widgetApi.manageBatteryConfiguration().always(function(){
+					d.resolve();
+				});
             });
         } else {
             d.resolve();
@@ -559,7 +560,7 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
 						
                         //we ask for widget refresh data
                         updateWidgetPolling(widget).always(function() {
-						         widget.viewModel.widgetApi.manageRollingTitle();
+                           widget.viewModel.widgetApi.manageRollingTitle();
                            d.resolve();                           
                         });
                     });
@@ -712,7 +713,9 @@ WidgetManager.createGridWidget = function (widget) {
                 try {
                     if (widget.viewModel.resized !== undefined)
 					{
-                        widget.viewModel.resized();
+                        widget.viewModel.resized().always(function() {
+                           widget.viewModel.widgetApi.manageRollingTitle();
+                        });
 					}
                 }
                 catch (e) {
@@ -721,8 +724,6 @@ WidgetManager.createGridWidget = function (widget) {
                 }
                 page.$grid.packery("layout");
             }, 10);
-			
-			widget.viewModel.widgetApi.manageRollingTitle();
         }
     });
 
