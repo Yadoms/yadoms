@@ -237,9 +237,14 @@ bool CEnOcean::connectionsAreEqual(const CConfiguration& conf1,
 boost::shared_ptr<IType> CEnOcean::createDevice(const std::string& deviceId,
                                                 const CProfileHelper& profileHelper) const
 {
-   return CRorgs::createRorg(profileHelper.rorg())->createFunc(profileHelper.func())->createType(profileHelper.type(),
-                                                                                                 deviceId,
-                                                                                                 m_api);
+   auto device = CRorgs::createRorg(profileHelper.rorg())->createFunc(profileHelper.func())->createType(profileHelper.type(),
+                                                                                                        deviceId,
+                                                                                                        m_api);
+
+   device->readInitialState(m_senderId,
+                            m_messageHandler);
+
+   return device;
 }
 
 std::string CEnOcean::generateModel(const std::string& model,

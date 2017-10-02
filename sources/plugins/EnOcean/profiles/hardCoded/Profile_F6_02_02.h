@@ -14,6 +14,8 @@ public:
    const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> allHistorizers() const override;
+   void readInitialState(const std::string& senderId,
+                         boost::shared_ptr<IMessageHandler> messageHandler) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> states(unsigned char rorg,
                                                                                    const boost::dynamic_bitset<>& data,
                                                                                    const boost::dynamic_bitset<>& status,

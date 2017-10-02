@@ -76,7 +76,7 @@ public:
       kInputChannel = 0x1F,
    };
 
-   enum
+   enum EPowerQueryType
    {
       kQueryEnergy = 0,
       kQueryPower = 1
@@ -109,6 +109,12 @@ public:
                                            double dimTimer2,
                                            double dimTimer3);
 
+   // CMD 0x04 - Actuator Status Query
+   static void sendActuatorStatusQuery(boost::shared_ptr<IMessageHandler> messageHandler,
+                                       const std::string& senderId,
+                                       const std::string& targetId,
+                                       EOutputChannel outputChannel);
+
    // CMD 0x04 - Actuator Status Response
    static const boost::shared_ptr<yApi::historization::CSwitch> noChannel1;
    static const boost::shared_ptr<yApi::historization::CSwitch> noChannel2;
@@ -136,7 +142,8 @@ public:
    static void sendActuatorMeasurementQuery(boost::shared_ptr<IMessageHandler> messageHandler,
                                             const std::string& senderId,
                                             const std::string& targetId,
-                                            EOutputChannel outputChannel);
+                                            EOutputChannel outputChannel,
+                                            EPowerQueryType queryType);
 
    // CMD 0x07 - Actuator Measurement Response
    static const boost::shared_ptr<yApi::historization::CEnergy> noInputEnergy;
@@ -155,6 +162,11 @@ public:
                                                    const std::string& senderId,
                                                    const std::string& targetId,
                                                    const specificHistorizers::EPilotWire& mode);
+
+   // CMD 0x9 - Actuator Pilot Wire Mode Query
+   static void sendActuatorPilotWireModeQuery(boost::shared_ptr<IMessageHandler> messageHandler,
+                                              const std::string& senderId,
+                                              const std::string& targetId);
 
    // CMD 0xA - Actuator Pilot Wire Mode Response
    static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorPilotWireModeResponse(unsigned char rorg,
