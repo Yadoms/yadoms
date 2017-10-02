@@ -43,6 +43,8 @@ set(ZWAVE_PLUGIN_SOURCES
    OpenZWaveSingleHistorizableData.h
    historizers/Temperature.h
    historizers/Temperature.cpp
+   historizers/BatteryLevel.h
+   historizers/BatteryLevel.cpp
    historizers/Energy.h
    historizers/Energy.cpp
    historizers/Counter.h

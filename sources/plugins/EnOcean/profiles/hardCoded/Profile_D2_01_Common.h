@@ -1,9 +1,11 @@
 #pragma once
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/enumeration/EnumHelpers.hpp>
 #include "../../IMessageHandler.h"
 #include <specificHistorizers/PilotWireHistorizer.h>
 #include <specificHistorizers/DimmerModeHistorizer.h>
 
+namespace yApi = shared::plugin::yPluginApi;
 
 class CProfile_D2_01_Common
 {
@@ -107,6 +109,18 @@ public:
                                            double dimTimer2,
                                            double dimTimer3);
 
+   // CMD 0x04 - Actuator Status Response
+   static const boost::shared_ptr<yApi::historization::CSwitch> noChannel1;
+   static const boost::shared_ptr<yApi::historization::CSwitch> noChannel2;
+   static const boost::shared_ptr<yApi::historization::CDimmable> noDimmable;
+   static const boost::shared_ptr<yApi::historization::CSwitch> noPowerFailure;
+   static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorStatusResponse(unsigned char rorg,
+                                                                                                                 const boost::dynamic_bitset<>& data,
+                                                                                                                 boost::shared_ptr<yApi::historization::CSwitch> channel1,
+                                                                                                                 boost::shared_ptr<yApi::historization::CSwitch> channel2,
+                                                                                                                 boost::shared_ptr<yApi::historization::CDimmable> dimmer,
+                                                                                                                 boost::shared_ptr<yApi::historization::CSwitch> powerFailure);
+
    // CMD 0x5 - Actuator Set Measurement
    static void sendActuatorSetMeasurementCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                                  const std::string& senderId,
@@ -122,11 +136,28 @@ public:
                                             const std::string& targetId,
                                             EOutputChannel outputChannel);
 
+   // CMD 0x07 - Actuator Measurement Response
+   static const boost::shared_ptr<yApi::historization::CEnergy> noInputEnergy;
+   static const boost::shared_ptr<yApi::historization::CPower> noInputPower;
+   static const boost::shared_ptr<yApi::historization::CEnergy> noLoadEnergy;
+   static const boost::shared_ptr<yApi::historization::CPower> noLoadPower;
+   static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorMeasurementResponse(unsigned char rorg,
+                                                                                                                      const boost::dynamic_bitset<>& data,
+                                                                                                                      boost::shared_ptr<yApi::historization::CEnergy> inputEnergy,
+                                                                                                                      boost::shared_ptr<yApi::historization::CPower> inputPower,
+                                                                                                                      boost::shared_ptr<yApi::historization::CEnergy> loadEnergy,
+                                                                                                                      boost::shared_ptr<yApi::historization::CPower> loadPower);
+
    // CMD 0x8 - Actuator Set Pilot Wire Mode
    static void sendActuatorSetPilotWireModeCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                                    const std::string& senderId,
                                                    const std::string& targetId,
                                                    const specificHistorizers::EPilotWire& mode);
+
+   // CMD 0xA - Actuator Pilot Wire Mode Response
+   static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorPilotWireModeResponse(unsigned char rorg,
+                                                                                                                        const boost::dynamic_bitset<>& data,
+                                                                                                                        boost::shared_ptr<specificHistorizers::CPilotWireHistorizer> pilotWire);
 
    // CMD 0xB - Actuator Set External Interface Settings
    static void sendActuatorSetExternalInterfaceSettingsCommand(boost::shared_ptr<IMessageHandler> messageHandler,
@@ -143,4 +174,11 @@ public:
                            const std::string& targetId,
                            const boost::dynamic_bitset<>& userData,
                            const std::string& commandName);
+
+   static Poco::Int64 extractEnergyWh(E_D2_01_MeasurementUnit unit,
+                                      unsigned int rawValue);
+
+   static double extractPowerValueW(E_D2_01_MeasurementUnit unit,
+                                    unsigned int rawValue);
 };
+

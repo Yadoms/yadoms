@@ -1,10 +1,6 @@
 #pragma once
-#include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <boost/dynamic_bitset.hpp>
 #include "../IType.h"
 #include "../../IMessageHandler.h"
-
-namespace yApi = shared::plugin::yPluginApi;
 
 
 class CProfile_F6_02_01 : public IType

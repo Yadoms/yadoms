@@ -54,110 +54,33 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    {
    case CProfile_D2_01_Common::kActuatorStatusResponse:
       {
-         // Return only the concerned historizer
-         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
-
-         auto ioChannel = bitset_extract(data, 11, 5);
-         int dimValue = bitset_extract(data, 17, 7);
-         switch (ioChannel)
-         {
-         case 0:
-            m_dimmer->set(dimValue);
-            historizers.push_back(m_dimmer);
-            break;
-         default:
-            YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel;
-            break;
-         }
-         return historizers;
+         return CProfile_D2_01_Common::extractActuatorStatusResponse(rorg,
+                                                                     data,
+                                                                     CProfile_D2_01_Common::noChannel1,
+                                                                     CProfile_D2_01_Common::noChannel2,
+                                                                     m_dimmer,
+                                                                     CProfile_D2_01_Common::noPowerFailure);
       }
    case CProfile_D2_01_Common::kActuatorMeasurementResponse:
       {
-         // Return only the concerned historizer
-         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
+         auto historizers = CProfile_D2_01_Common::extractActuatorMeasurementResponse(rorg,
+                                                                                      data,
+                                                                                      m_inputEnergy,
+                                                                                      m_inputPower,
+                                                                                      m_loadEnergy,
+                                                                                      m_loadPower);
 
-         auto ioChannel = bitset_extract(data, 11, 5);
-         auto unit = static_cast<CProfile_D2_01_Common::E_D2_01_MeasurementUnit>(bitset_extract(data, 8, 3));
-         auto rawValue = bitset_extract(data, 16, 32);
-
-         Poco::Int64 energyValueWh = 0;
-         auto powerValueW = 0.0;
-         switch (unit)
+         if (std::find(historizers.begin(), historizers.end(), m_loadPower) != historizers.end())//TODO à faire pour l'inputPower ?
          {
-         case CProfile_D2_01_Common::kEnergyWs:
-            energyValueWh = static_cast<Poco::Int64>(rawValue) * 3600;
-            break;
-         case CProfile_D2_01_Common::kEnergyWh:
-            energyValueWh = static_cast<Poco::Int64>(rawValue);
-            break;
-         case CProfile_D2_01_Common::kEnergyKWh:
-            energyValueWh = static_cast<Poco::Int64>(rawValue) * 1000;
-            break;
-         case CProfile_D2_01_Common::kPowerW:
-            powerValueW = static_cast<double>(rawValue);
-            break;
-         case CProfile_D2_01_Common::kPowerKW:
-            powerValueW = static_cast<double>(rawValue) * 1000;
-            break;
-         default:
-            YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported unit value" << unit;
-            break;
+            // Power is configured to be received automaticaly.
+            // As we can not receive both data (power + energy) automaticaly,
+            // we ask for Energy just after receiving Power.
+            CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
+                                                                senderId,
+                                                                m_deviceId,
+                                                                CProfile_D2_01_Common::kOutputChannel1);
          }
 
-         switch (ioChannel)
-         {
-         case 0: // Output channel
-            {
-               switch (unit)
-               {
-               case CProfile_D2_01_Common::kEnergyWs:
-               case CProfile_D2_01_Common::kEnergyWh:
-               case CProfile_D2_01_Common::kEnergyKWh:
-                  m_loadEnergy->set(energyValueWh);
-                  historizers.push_back(m_loadEnergy);
-                  break;
-               case CProfile_D2_01_Common::kPowerW:
-               case CProfile_D2_01_Common::kPowerKW:
-                  m_loadPower->set(powerValueW);
-                  historizers.push_back(m_loadPower);
-
-                  // Power is configured to be received automaticaly.
-                  // As we can not receive both data (power + energy) automaticaly,
-                  // we ask for Energy just after receiving Power.
-                  CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
-                                                                      senderId,
-                                                                      m_deviceId,
-                                                                      CProfile_D2_01_Common::kOutputChannel1);
-                  break;
-               default:
-                  YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported unit value for output channel" << unit;
-                  break;
-               }
-               break;
-            }
-         case 0x1F: // Input channel //TODO utile ?
-            switch (unit)
-            {
-            case CProfile_D2_01_Common::kEnergyWs:
-            case CProfile_D2_01_Common::kEnergyWh:
-            case CProfile_D2_01_Common::kEnergyKWh:
-               m_inputEnergy->set(energyValueWh);
-               historizers.push_back(m_inputEnergy);
-               break;
-            case CProfile_D2_01_Common::kPowerW:
-            case CProfile_D2_01_Common::kPowerKW:
-               m_inputPower->set(powerValueW);
-               historizers.push_back(m_inputPower);
-               break;
-            default:
-               YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported unit value for input channel" << unit;
-               break;
-            }
-            break;
-         default:
-            YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel;
-            break;
-         }
          return historizers;
       }
    default:
@@ -240,3 +163,4 @@ void CProfile_D2_01_05::sendConfiguration(const shared::CDataContainer& deviceCo
                                                             minEnergyMeasureRefreshTime,
                                                             maxEnergyMeasureRefreshTime);
 }
+

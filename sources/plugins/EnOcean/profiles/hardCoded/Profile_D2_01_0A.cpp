@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "Profile_D2_01_0A.h"
-#include "../bitsetHelpers.hpp"
-#include "../../message/RadioErp1SendMessage.h"
 #include "Profile_D2_01_Common.h"
-#include <shared/Log.h>
 
 CProfile_D2_01_0A::CProfile_D2_01_0A(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
@@ -41,39 +38,12 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                                                    const std::string& senderId,
                                                                                                    boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   // This device supports several RORG messages
-   // We just use the VLD telegram
-   if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
-      return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
-
-   if (bitset_extract(data, 4, 4) != CProfile_D2_01_Common::kActuatorStatusResponse)
-      return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
-
-   // Return only the concerned historizer
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
-
-   auto ioChannel = bitset_extract(data, 11, 5);
-   auto state = bitset_extract(data, 17, 1) ? true : false;
-   switch (ioChannel)
-   {
-   case 0:
-      m_channel->set(state);
-      historizers.push_back(m_channel);
-      break;
-   default:
-      YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel;
-      break;
-   }
-
-   auto powerFailureSupported = bitset_extract(data, 0, 1) ? true : false;
-   auto powerFailureState = bitset_extract(data, 1, 1) ? true : false;
-   if (powerFailureSupported)
-   {
-      m_powerFailure->set(powerFailureState);
-      historizers.push_back(m_powerFailure);
-   }
-
-   return historizers;
+   return CProfile_D2_01_Common::extractActuatorStatusResponse(rorg,
+                                                               data,
+                                                               m_channel,
+                                                               CProfile_D2_01_Common::noChannel2,
+                                                               CProfile_D2_01_Common::noDimmable,
+                                                               m_powerFailure);
 }
 
 void CProfile_D2_01_0A::sendCommand(const std::string& keyword,
@@ -116,3 +86,4 @@ void CProfile_D2_01_0A::sendConfiguration(const shared::CDataContainer& deviceCo
                                                       0.0,
                                                       0.0);
 }
+

@@ -385,8 +385,9 @@ namespace plugin_cpp_api
       {
          send(req);
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : setPluginState(" << state << ", " << customMessageId << ", { ";
          std::for_each(customMessageDataParams.begin(),
                        customMessageDataParams.end(),
@@ -417,8 +418,9 @@ namespace plugin_cpp_api
       {
          send(req);
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : declareDevice(" << device << ", " << model << ", " << keyword->getKeyword() << ", " << details.serialize() << ")" << std::endl;
          throw;
       }
@@ -443,8 +445,9 @@ namespace plugin_cpp_api
       {
          send(req);
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : declareDevice(" << device << ", " << model << ", {";
          std::for_each(keywords.begin(),
                        keywords.end(),
@@ -475,8 +478,9 @@ namespace plugin_cpp_api
                  std::copy(ans.alldevicesanswer().devices().begin(), ans.alldevicesanswer().devices().end(), std::back_inserter(allDevices));
               });
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : getAllDevices()" << std::endl;
          throw;
       }
@@ -502,8 +506,9 @@ namespace plugin_cpp_api
                  exists = ans.deviceexists().exists();
               });
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : deviceExists(" << device << ")" << std::endl;
          throw;
       }
@@ -530,8 +535,9 @@ namespace plugin_cpp_api
                  configuration.deserialize(ans.deviceconfigurationanswer().configuration());
               });
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : getDeviceConfiguration(" << device << ")" << std::endl;
          throw;
       }
@@ -549,8 +555,9 @@ namespace plugin_cpp_api
       {
          send(req);
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : updateDeviceConfiguration(" << device << ", " << configuration.serialize() << ")" << std::endl;
          throw;
       }
@@ -575,8 +582,9 @@ namespace plugin_cpp_api
                  details.deserialize(ans.devicedetails().details());
               });
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : getDeviceDetails(" << device << ")" << std::endl;
          throw;
       }
@@ -594,8 +602,9 @@ namespace plugin_cpp_api
       {
          send(req);
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : updateDeviceDetails(" << device << ", " << details.serialize() << ")" << std::endl;
          throw;
       }
@@ -620,8 +629,9 @@ namespace plugin_cpp_api
                  model = ans.devicemodelanswer().model();
               });
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : getDeviceModel(" << device << ")" << std::endl;
          throw;
       }
@@ -639,8 +649,9 @@ namespace plugin_cpp_api
       {
          send(req);
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : updateDeviceModel(" << device << ", " << model << ")" << std::endl;
          throw;
       }
@@ -665,8 +676,9 @@ namespace plugin_cpp_api
                  type = ans.devicetypeanswer().type();
               });
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : getDeviceType(" << device << ")" << std::endl;
          throw;
       }
@@ -683,8 +695,9 @@ namespace plugin_cpp_api
       {
          send(req);
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : updateDeviceType(" << device << ", " << type << ")" << std::endl;
          throw;
       }
@@ -720,8 +733,9 @@ namespace plugin_cpp_api
       {
          send(req);
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : updateDeviceState(" << state << ", " << customMessageId << ", { ";
          std::for_each(customMessageDataParams.begin(),
             customMessageDataParams.end(),
@@ -744,8 +758,9 @@ namespace plugin_cpp_api
       {
          send(req);
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : removeDevice(" << device << ")" << std::endl;
          throw;
       }
@@ -764,8 +779,9 @@ namespace plugin_cpp_api
       {
          send(req);
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : declareKeywords(" << device << ", {";
          std::for_each(keywords.begin(),
                        keywords.end(),
@@ -792,8 +808,9 @@ namespace plugin_cpp_api
       {
          send(req);
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : declareKeyword(" << device << ", " << keyword << ", " << details.serialize() << ")" << std::endl;
          throw;
       }
@@ -821,8 +838,9 @@ namespace plugin_cpp_api
                  exists = ans.keywordexists().exists();
               });
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : keywordExists(" << device << ", " << keyword << ")" << std::endl;
          throw;
       }
@@ -854,8 +872,9 @@ namespace plugin_cpp_api
                  std::copy(ans.allkeywordsanswer().keywords().begin(), ans.allkeywordsanswer().keywords().end(), std::back_inserter(keywords));
               });
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : getAllKeywords(" << device << ")" << std::endl;
          throw;
       }
@@ -875,8 +894,9 @@ namespace plugin_cpp_api
       {
          send(req);
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : removeKeyword(" << keyword << ")" << std::endl;
          throw;
       }
@@ -923,8 +943,9 @@ namespace plugin_cpp_api
                  value = ans.recipientvalue().value();
               });
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : getRecipientValue(" << recipientId << ", " << fieldName << ")" << std::endl;
          throw;
       }
@@ -953,8 +974,9 @@ namespace plugin_cpp_api
                  std::copy(ans.findrecipientsfromfieldanswer().recipientids().begin(), ans.findrecipientsfromfieldanswer().recipientids().end(), std::back_inserter(recipientIds));
               });
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : findRecipientsFromField(" << fieldName << ", " << expectedFieldValue << ")" << std::endl;
          throw;
       }
@@ -981,8 +1003,9 @@ namespace plugin_cpp_api
                  exists = ans.keywordexists().exists();
               });
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : recipientFieldExists(" << fieldName << ")" << std::endl;
          throw;
       }
@@ -1003,8 +1026,9 @@ namespace plugin_cpp_api
       {
          send(msg);
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : historizeData(" << device << ", { " << data->getKeyword() << ", " << data->formatValue() << " } )" << std::endl;
          throw;
       }
@@ -1026,8 +1050,9 @@ namespace plugin_cpp_api
       {
          send(msg);
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : historizeData(" << device << ", { ";
          std::for_each(dataVect.begin(),
                        dataVect.end(),
@@ -1066,8 +1091,9 @@ namespace plugin_cpp_api
                  configuration.deserialize(ans.configurationanswer().configuration());
               });
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : getConfiguration" << std::endl;
          throw;
       }
@@ -1122,8 +1148,9 @@ namespace plugin_cpp_api
                  info = boost::make_shared<CYadomsInformation>(ans.yadomsinformationanswer());
               });
       }
-      catch (std::exception&)
+      catch (std::exception& e)
       {
+         std::cerr << "Exception " << e.what() << std::endl;
          std::cerr << "Call was : getYadomsInformation" << std::endl;
          throw;
       }
