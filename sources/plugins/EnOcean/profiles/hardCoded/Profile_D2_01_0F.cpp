@@ -42,7 +42,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                m_channel,
                                                                CProfile_D2_01_Common::noChannel2,
                                                                CProfile_D2_01_Common::noDimmable,
-                                                               CProfile_D2_01_Common::noPowerFailure);
+                                                               CProfile_D2_01_Common::noPowerFailure,
+                                                               CProfile_D2_01_Common::noOverCurrent);
 }
 
 void CProfile_D2_01_0F::sendCommand(const std::string& keyword,
@@ -101,4 +102,3 @@ void CProfile_D2_01_0F::sendConfiguration(const shared::CDataContainer& deviceCo
                                                                           delayOffTimer,
                                                                           switchingStateToggle);
 }
-

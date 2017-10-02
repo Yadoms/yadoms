@@ -42,7 +42,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                CProfile_D2_01_Common::noChannel1,
                                                                CProfile_D2_01_Common::noChannel2,
                                                                m_dimmer,
-                                                               CProfile_D2_01_Common::noPowerFailure);
+                                                               CProfile_D2_01_Common::noPowerFailure,
+                                                               CProfile_D2_01_Common::noOverCurrent);
 }
 
 void CProfile_D2_01_03::sendCommand(const std::string& keyword,

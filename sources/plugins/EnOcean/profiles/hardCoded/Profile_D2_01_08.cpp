@@ -13,7 +13,8 @@ CProfile_D2_01_08::CProfile_D2_01_08(const std::string& deviceId,
      m_inputPower(boost::make_shared<yApi::historization::CPower>("Input power")),
      m_loadEnergy(boost::make_shared<yApi::historization::CEnergy>("Load energy")),
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),
-     m_historizers({m_channel, m_inputEnergy, m_inputPower, m_loadEnergy, m_loadPower})
+     m_overCurrent(boost::make_shared<yApi::historization::CSwitch>("OverCurrent", yApi::EKeywordAccessMode::kGetSet)),
+     m_historizers({m_channel, m_inputEnergy, m_inputPower, m_loadEnergy, m_loadPower, m_overCurrent})
 {
 }
 
@@ -58,7 +59,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                      m_channel,
                                                                      CProfile_D2_01_Common::noChannel2,
                                                                      CProfile_D2_01_Common::noDimmable,
-                                                                     CProfile_D2_01_Common::noPowerFailure);
+                                                                     CProfile_D2_01_Common::noPowerFailure,
+                                                                     m_overCurrent);
       }
    case CProfile_D2_01_Common::kActuatorMeasurementResponse:
       {
@@ -148,4 +150,3 @@ void CProfile_D2_01_08::sendConfiguration(const shared::CDataContainer& deviceCo
                                                             minEnergyMeasureRefreshTime,
                                                             maxEnergyMeasureRefreshTime);
 }
-

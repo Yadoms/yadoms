@@ -36,5 +36,6 @@ private:
    boost::shared_ptr<yApi::historization::CPower> m_loadPower;
    boost::shared_ptr<specificHistorizers::CDimmerModeHistorizer> m_dimmerMode;
    boost::shared_ptr<yApi::historization::CDimmable> m_dimmer;
+   boost::shared_ptr<yApi::historization::CSwitch> m_overCurrent;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
 };

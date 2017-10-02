@@ -58,7 +58,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                      m_channel,
                                                                      CProfile_D2_01_Common::noChannel2,
                                                                      CProfile_D2_01_Common::noDimmable,
-                                                                     CProfile_D2_01_Common::noPowerFailure);
+                                                                     CProfile_D2_01_Common::noPowerFailure,
+                                                                     CProfile_D2_01_Common::noOverCurrent);
       }
    case CProfile_D2_01_Common::kActuatorMeasurementResponse:
       {
@@ -148,4 +149,3 @@ void CProfile_D2_01_0E::sendConfiguration(const shared::CDataContainer& deviceCo
                                                             minEnergyMeasureRefreshTime,
                                                             maxEnergyMeasureRefreshTime);
 }
-

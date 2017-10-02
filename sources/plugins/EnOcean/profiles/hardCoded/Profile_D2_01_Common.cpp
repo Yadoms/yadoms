@@ -99,6 +99,7 @@ void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessa
 
    bitset_insert(data, 4, 4, kActuatorSetLocal);
    bitset_insert(data, 0, taughtInAllDevices);
+   bitset_insert(data, 8, true); // Over-current shut-down : automatic restart
    bitset_insert(data, 10, localControl);
    bitset_insert(data, 11, 5, outputChannel);
    bitset_insert(data, 16, 4, static_cast<unsigned int>(lround(dimTimer2 / 0.5)));
@@ -133,13 +134,15 @@ const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noC
 const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noChannel2 = boost::shared_ptr<yApi::historization::CSwitch>();
 const boost::shared_ptr<yApi::historization::CDimmable> CProfile_D2_01_Common::noDimmable = boost::shared_ptr<yApi::historization::CDimmable>();
 const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noPowerFailure = boost::shared_ptr<yApi::historization::CSwitch>();
+const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noOverCurrent = boost::shared_ptr<yApi::historization::CSwitch>();
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorStatusResponse(unsigned char rorg,
                                                                                                                               const boost::dynamic_bitset<>& data,
                                                                                                                               boost::shared_ptr<yApi::historization::CSwitch> channel1,
                                                                                                                               boost::shared_ptr<yApi::historization::CSwitch> channel2,
                                                                                                                               boost::shared_ptr<yApi::historization::CDimmable> dimmer,
-                                                                                                                              boost::shared_ptr<yApi::historization::CSwitch> powerFailure)
+                                                                                                                              boost::shared_ptr<yApi::historization::CSwitch> powerFailure,
+                                                                                                                              boost::shared_ptr<yApi::historization::CSwitch> overCurrent)
 {
    // This device supports several RORG messages
    // We just use the VLD telegram
@@ -155,6 +158,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    auto ioChannel = bitset_extract(data, 11, 5);
    int dimValue = bitset_extract(data, 17, 7);
    auto state = dimValue == 0 ? false : true;
+   auto overCurrentState = bitset_extract(data, 8, 1) != 0;
    switch (ioChannel)
    {
    case 0:
@@ -167,6 +171,11 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       {
          dimmer->set(dimValue);
          historizers.push_back(dimmer);
+      }
+      else if (!!overCurrent)
+      {
+         overCurrent->set(overCurrentState);
+         historizers.push_back(overCurrent);
       }
       else
       {
@@ -535,12 +544,9 @@ double CProfile_D2_01_Common::extractPowerValueW(E_D2_01_MeasurementUnit unit,
 }
 
 //TODO refactoring D2-01-XX, RAF :
-// - over current
 // - voir ce que c'est que le "Measurement Auto Scaling"
-// - voir si on peut factoriser la fonction state
 // - initialiser toutes les valeurs au démarrage :
 //   - tout ce qui est états doit être lu dans l'équipement
 //   - tout ce qui est configuration doit être lu dans la base et envoyé au device
-// - Implémenter "Measurement delta to be reported (MSB)"
 
 

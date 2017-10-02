@@ -7,7 +7,8 @@ CProfile_D2_01_04::CProfile_D2_01_04(const std::string& deviceId,
    : m_deviceId(deviceId),
      m_dimmerMode(boost::make_shared<specificHistorizers::CDimmerModeHistorizer>("DimmerMode")),
      m_dimmer(boost::make_shared<yApi::historization::CDimmable>("Dimmer", yApi::EKeywordAccessMode::kGetSet)),
-     m_historizers({m_dimmer , m_dimmerMode})
+     m_overCurrent(boost::make_shared<yApi::historization::CSwitch>("OverCurrent", yApi::EKeywordAccessMode::kGetSet)),
+     m_historizers({m_dimmer , m_dimmerMode, m_overCurrent})
 {
 }
 
@@ -43,7 +44,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                CProfile_D2_01_Common::noChannel1,
                                                                CProfile_D2_01_Common::noChannel2,
                                                                m_dimmer,
-                                                               CProfile_D2_01_Common::noPowerFailure);
+                                                               CProfile_D2_01_Common::noPowerFailure,
+                                                               m_overCurrent);
 }
 
 void CProfile_D2_01_04::sendCommand(const std::string& keyword,
