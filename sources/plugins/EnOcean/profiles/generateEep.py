@@ -449,7 +449,6 @@ with codecs.open(os.path.join(outputPath, 'eep.h'), 'w', 'utf_8') as cppHeaderFi
       with codecs.open(os.path.join(outputPath, dependency.name() + '.h'), 'w', 'utf_8') as cppHeaderSubFile:
          cppHeaderSubFile.write('// Generated file, don\'t modify\n')
          cppHeaderSubFile.write('#pragma once\n')
-         cppHeaderSubFile.write('#include <boost/dynamic_bitset.hpp>\n')
          cppHeaderSubFile.write('#include <shared/plugin/yPluginApi/IYPluginApi.h>\n')
          cppHeaderSubFile.write('#include "profiles/IRorg.h"\n')
          cppHeaderSubFile.write('\n')

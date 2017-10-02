@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "Profile_D2_01_12.h"
-#include "../bitsetHelpers.hpp"
-#include "../../message/RadioErp1SendMessage.h"
 #include "Profile_D2_01_Common.h"
-#include <shared/Log.h>
 
 CProfile_D2_01_12::CProfile_D2_01_12(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
@@ -41,34 +38,12 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                                                    const std::string& senderId,
                                                                                                    boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   // This device supports several RORG messages
-   // We just use the VLD telegram
-   if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
-      return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
-
-   if (bitset_extract(data, 4, 4) != CProfile_D2_01_Common::kActuatorStatusResponse)
-      return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
-
-   // Return only the concerned historizer
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
-
-   auto ioChannel = bitset_extract(data, 11, 5);
-   auto state = bitset_extract(data, 17, 1) ? true : false;
-   switch (ioChannel)
-   {
-   case 0:
-      m_channel1->set(state);
-      historizers.push_back(m_channel1);
-      break;
-   case 1:
-      m_channel2->set(state);
-      historizers.push_back(m_channel2);
-      break;
-   default:
-      YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel;
-      break;
-   }
-   return historizers;
+   return CProfile_D2_01_Common::extractActuatorStatusResponse(rorg,
+                                                               data,
+                                                               m_channel1,
+                                                               m_channel1,
+                                                               CProfile_D2_01_Common::noDimmable,
+                                                               CProfile_D2_01_Common::noPowerFailure);
 }
 
 void CProfile_D2_01_12::sendCommand(const std::string& keyword,
