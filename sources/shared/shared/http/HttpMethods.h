@@ -4,6 +4,10 @@
 #include <Poco/Net/HTTPClientSession.h>
 #include <Poco/Net/HTTPResponse.h>
 
+#include "IHttpSession.h"
+#include <Poco/URI.h>
+#include <Poco/Net/HTTPSClientSession.h>
+
 namespace shared
 {
    //--------------------------------------------------------------
@@ -38,6 +42,7 @@ namespace shared
 
       //--------------------------------------------------------------
       /// \brief	    SendGetRequest
+	  /// \param[in]  session             the session created for this request
       /// \param[in]  url                 the url to send the request
       /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
@@ -45,26 +50,11 @@ namespace shared
       /// \param[in]  timeout             timeout for the request
       /// \return     false if the time has expired. In this case the onReceived is not executed
       //--------------------------------------------------------------
-      static bool SendGetRequest(const std::string & url,
+      static bool SendGetRequest(const boost::shared_ptr<IHTTPSession> session,
                                  const CDataContainer& headerParameters,
                                  const CDataContainer& parameters,
                                  boost::function1<void, CDataContainer&> onReceive,
                                  const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
-
-      //--------------------------------------------------------------
-      /// \brief	    SendGet Request with HTTPS
-      /// \param[in]  url                 the url to send the request
-      /// \param[in]  headerParameters    parameters included into the frame
-      /// \param[in]  parameters          parameters at the end of the url
-      /// \param[in]  onReceive           function called on received data
-      /// \param[in]  timeout             timeout for the request
-      /// \return     false if the time has expired. In this case the onReceived is not executed
-      //--------------------------------------------------------------
-      static bool SendGetSecureRequest(const std::string& url,
-                                       const CDataContainer& headerParameters,
-                                       const CDataContainer& parameters,
-                                       boost::function1<void, CDataContainer&> onReceive,
-                                       const boost::posix_time::time_duration& timeout);
 
       //--------------------------------------------------------------
       /// \brief	    SendPostRequest
@@ -88,7 +78,7 @@ namespace shared
       /// \param[in]  response            the response
       /// \return     true if the response is Json, otherwise false
       //--------------------------------------------------------------
-      static bool JsonResponseReader(Poco::Net::HTTPClientSession& session,
+      static bool JsonResponseReader(const boost::shared_ptr<IHTTPSession> session,
                                      Poco::Net::HTTPResponse& httpresponse,
                                      CDataContainer& response);
    };

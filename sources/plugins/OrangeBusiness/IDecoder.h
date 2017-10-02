@@ -23,7 +23,7 @@ public:
    /// \param [in] api             Plugin execution context (Yadoms API)
    /// \param [in] message         the received message
    //--------------------------------------------------------------
-   virtual void decodeDevicesMessage(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer message) = 0;
+   virtual void decodeDevicesMessage(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& message) = 0;
    
    //--------------------------------------------------------------
    /// \brief	                    Decode Devices message
@@ -36,17 +36,11 @@ public:
    /// \brief	                    return if we need to ask the server for new frames
    /// \param [in] message         the received message
    //--------------------------------------------------------------
-   virtual bool isFrameComplete(shared::CDataContainer message) = 0;
+   virtual bool isFrameComplete(shared::CDataContainer& message) = 0;
 
    //--------------------------------------------------------------
    /// \brief	                    return if we need to ask the server for new frames
    /// \param [in] message         the received message
    //--------------------------------------------------------------
-   virtual std::string getLastData(shared::CDataContainer message) = 0;
-
-   //--------------------------------------------------------------
-   /// \brief	                    return if we need to ask the server for new frames
-   /// \param [in] message         the received message
-   //--------------------------------------------------------------
-   virtual std::string getLastDataReceivedDate(shared::CDataContainer message) = 0;
+   virtual shared::CDataContainer getLastData(shared::CDataContainer& message) = 0;
 };

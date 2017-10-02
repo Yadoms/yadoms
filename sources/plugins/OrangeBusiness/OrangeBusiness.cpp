@@ -5,6 +5,7 @@
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include <shared/Log.h>
+#include <shared/currentTime/Provider.h>
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -22,7 +23,7 @@ COrangeBusiness::~COrangeBusiness()
 // Event IDs
 enum
 {
-   kEvtTimerRefreshCPULoad = yApi::IYPluginApi::kPluginFirstEventId, // Always start from shared::event::CEventHandler::kUserFirstId
+   kEvtTimerRefreshDevices = yApi::IYPluginApi::kPluginFirstEventId, // Always start from shared::event::CEventHandler::kUserFirstId
    kRefreshStatesReceived,
    kConnectionRetryTimer,
    kAnswerTimeout
@@ -42,9 +43,15 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       if (m_decoder->getDevices().size() > 0)
       {
-         m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout, // TODO : rename many things
-                                                                   shared::event::CEventTimer::kOneShot,
+		 // read values of devices every 15mn.
+         m_waitForAnswerTimer = api->getEventHandler().createTimer(kEvtTimerRefreshDevices,
+                                                                   shared::event::CEventTimer::kPeriodic,
                                                                    boost::posix_time::minutes(15));
+
+		 // fire immediately a event to read devices values
+		 m_waitForAnswerTimer = api->getEventHandler().createTimer(kEvtTimerRefreshDevices,
+																   shared::event::CEventTimer::kOneShot,
+																   boost::posix_time::seconds(0));
       }
 
       // TODO : create others plugin state : ready, if no devices exists, for example, no connexion to the server, ...
@@ -96,8 +103,13 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   shared::CDataContainer response = m_frameManager.getDeviceInformation(m_configuration.getAPIKey(), (*iteratorEquipment)->getEUI());
                   response.printToLog(YADOMS_LOG(information));
                   int batteryLevel = response.get<int>("lastBatteryLevel");
+				  boost::posix_time::ptime receivedTime(response.get<boost::posix_time::ptime>("updateTs"));
+				  boost::posix_time::time_duration td = shared::currentTime::Provider().now() - receivedTime;
 
                   // Todo : Reading of the last communication date. If the date is too old for battery level > 1 week - do not integrate it
+				  if (td.total_seconds() < (3600 * 24 * 7))
+				  {
+				  }
 
                   //Todo : Enter a date to limit the number of frames
                   // Reading all commands for an equipment. Go to the last page if necessary
