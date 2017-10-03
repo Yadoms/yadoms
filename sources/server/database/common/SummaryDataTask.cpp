@@ -2,15 +2,11 @@
 
 #include "SummaryDataTask.h"
 #include "database/entities/Entities.h"
-#include "database/IDataProvider.h"
-#include "database/common/DatabaseTables.h"
-#include "database/common/Query.h"
 #include <shared/plugin/yPluginApi/KeywordDataType.h>
 #include <shared/currentTime/Provider.h>
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
 
-#include "notification/acquisition/Notification.hpp"
 #include "notification/summary/Notification.hpp"
 #include "notification/Helpers.hpp"
 
@@ -54,7 +50,7 @@ namespace common {
    }
 
 
-   void CSummaryDataTask::executeFirstRunPass()
+   void CSummaryDataTask::executeFirstRunPass() const
    {
       /*
 
@@ -88,7 +84,7 @@ namespace common {
          {
             try
             {
-               boost::shared_ptr<entities::CAcquisition> lastData = m_acquisitionRequester->getKeywordLastData(i->get()->Id);
+               boost::shared_ptr<entities::CAcquisition> lastData = m_keywordRequester->getKeywordLastAcquisition(i->get()->Id);
 
                //if current day
                //    if NOT same hour

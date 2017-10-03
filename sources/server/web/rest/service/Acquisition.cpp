@@ -77,7 +77,7 @@ namespace web
                if (parameters.size() > 2)
                {
                   auto keywordId = boost::lexical_cast<int>(parameters[2]);
-                  auto acq = m_dataProvider->getAcquisitionRequester()->getKeywordLastData(keywordId);
+                  auto acq = m_dataProvider->getKeywordRequester()->getKeywordLastAcquisition(keywordId);
                   return CResult::GenerateSuccess(acq);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive acquisitionId in url");
@@ -118,7 +118,7 @@ namespace web
                      {
                         try
                         {
-                           auto lastData = m_dataProvider->getAcquisitionRequester()->getKeywordLastData(*i, false);
+                           auto lastData = m_dataProvider->getKeywordRequester()->getKeywordLastAcquisition(*i, false);
                            if (lastData)
                            {
                               result.set(boost::lexical_cast<std::string>(*i),

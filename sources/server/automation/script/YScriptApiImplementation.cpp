@@ -91,8 +91,7 @@ namespace automation
       std::string CYScriptApiImplementation::readKeyword(int keywordId) const
       {
          assertExistingKeyword(keywordId);
-
-         return m_dbAcquisitionRequester->getKeywordLastData(keywordId)->Value;
+         return m_keywordAccessLayer->getKeywordLastData(keywordId);
       }
 
       boost::shared_ptr<notification::acquisition::CNotification> CYScriptApiImplementation::waitForAction(boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification>> action,
