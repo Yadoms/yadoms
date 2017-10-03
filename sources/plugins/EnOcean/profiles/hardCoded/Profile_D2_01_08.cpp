@@ -9,12 +9,10 @@ CProfile_D2_01_08::CProfile_D2_01_08(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_deviceId(deviceId),
      m_channel(boost::make_shared<yApi::historization::CSwitch>("Channel", yApi::EKeywordAccessMode::kGetSet)),
-     m_inputEnergy(boost::make_shared<yApi::historization::CEnergy>("Input energy")),
-     m_inputPower(boost::make_shared<yApi::historization::CPower>("Input power")),
      m_loadEnergy(boost::make_shared<yApi::historization::CEnergy>("Load energy")),
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),
      m_overCurrent(boost::make_shared<yApi::historization::CSwitch>("OverCurrent", yApi::EKeywordAccessMode::kGetSet)),
-     m_historizers({m_channel, m_inputEnergy, m_inputPower, m_loadEnergy, m_loadPower, m_overCurrent})
+     m_historizers({m_channel, m_loadEnergy, m_loadPower, m_overCurrent})
 {
 }
 
@@ -80,8 +78,6 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       {
          auto historizers = CProfile_D2_01_Common::extractActuatorMeasurementResponse(rorg,
                                                                                       data,
-                                                                                      m_inputEnergy,
-                                                                                      m_inputPower,
                                                                                       m_loadEnergy,
                                                                                       m_loadPower);
 

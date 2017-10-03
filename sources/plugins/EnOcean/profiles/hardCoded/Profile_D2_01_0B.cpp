@@ -12,7 +12,7 @@ CProfile_D2_01_0B::CProfile_D2_01_0B(const std::string& deviceId,
      m_loadEnergy(boost::make_shared<yApi::historization::CEnergy>("Load energy")),
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),
      m_powerFailure(boost::make_shared<yApi::historization::CSwitch>("Power failure", yApi::EKeywordAccessMode::kGet)),
-     m_historizers({m_channel, m_inputEnergy, m_inputPower, m_loadEnergy, m_loadPower, m_powerFailure})
+     m_historizers({m_channel, m_loadEnergy, m_loadPower, m_powerFailure})
 {
 }
 
@@ -78,8 +78,6 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       {
          auto historizers = CProfile_D2_01_Common::extractActuatorMeasurementResponse(rorg,
                                                                                       data,
-                                                                                      m_inputEnergy,
-                                                                                      m_inputPower,
                                                                                       m_loadEnergy,
                                                                                       m_loadPower);
 

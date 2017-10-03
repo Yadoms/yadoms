@@ -152,8 +152,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                                                                               boost::shared_ptr<yApi::historization::CSwitch> powerFailure,
                                                                                                                               boost::shared_ptr<yApi::historization::CSwitch> overCurrent)
 {
-   // This device supports several RORG messages
-   // We just use the VLD telegram
+   // Some devices supports several RORG telegrams, ignore non-VLD telegrams
    if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
 
@@ -274,11 +273,13 @@ const boost::shared_ptr<yApi::historization::CPower> CProfile_D2_01_Common::noLo
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorMeasurementResponse(unsigned char rorg,
                                                                                                                                    const boost::dynamic_bitset<>& data,
-                                                                                                                                   boost::shared_ptr<yApi::historization::CEnergy> inputEnergy,
-                                                                                                                                   boost::shared_ptr<yApi::historization::CPower> inputPower,
                                                                                                                                    boost::shared_ptr<yApi::historization::CEnergy> loadEnergy,
                                                                                                                                    boost::shared_ptr<yApi::historization::CPower> loadPower)
 {
+   // Some devices supports several RORG telegrams, ignore non-VLD telegrams
+   if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
+      return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
+
    // Return only the concerned historizer
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
@@ -383,6 +384,10 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                                                                                      const boost::dynamic_bitset<>& data,
                                                                                                                                      boost::shared_ptr<specificHistorizers::CPilotWireHistorizer> pilotWire)
 {
+   // Some devices supports several RORG telegrams, ignore non-VLD telegrams
+   if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
+      return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
+
    // Return only the concerned historizer
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
