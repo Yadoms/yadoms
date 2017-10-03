@@ -35,6 +35,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 void CProfile_D2_01_11::readInitialState(const std::string& senderId,
                                          boost::shared_ptr<IMessageHandler> messageHandler) const
 {
+   // Need to wait a bit between outgoing messages, to be sure to receive answer
+   boost::this_thread::sleep(boost::posix_time::milliseconds(500));
    CProfile_D2_01_Common::sendActuatorStatusQuery(messageHandler,
                                                   senderId,
                                                   m_deviceId,
