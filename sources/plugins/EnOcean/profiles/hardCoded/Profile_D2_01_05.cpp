@@ -14,7 +14,8 @@ CProfile_D2_01_05::CProfile_D2_01_05(const std::string& deviceId,
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),
      m_dimmerMode(boost::make_shared<specificHistorizers::CDimmerModeHistorizer>("DimmerMode")),
      m_dimmer(boost::make_shared<yApi::historization::CDimmable>("Dimmer", yApi::EKeywordAccessMode::kGetSet)),
-     m_historizers({m_inputEnergy, m_inputPower, m_loadEnergy, m_loadPower, m_dimmer , m_dimmerMode})
+     m_overCurrent(boost::make_shared<yApi::historization::CSwitch>("OverCurrent", yApi::EKeywordAccessMode::kGetSet)),
+     m_historizers({m_inputEnergy, m_inputPower, m_loadEnergy, m_loadPower, m_dimmer , m_dimmerMode, m_overCurrent})
 {
 }
 
@@ -39,6 +40,20 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return m_historizers;
 }
 
+void CProfile_D2_01_05::readInitialState(const std::string& senderId,
+                                         boost::shared_ptr<IMessageHandler> messageHandler) const
+{
+   CProfile_D2_01_Common::sendActuatorStatusQuery(messageHandler,
+                                                  senderId,
+                                                  m_deviceId,
+                                                  CProfile_D2_01_Common::kOutputChannel1);
+   CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
+                                                       senderId,
+                                                       m_deviceId,
+                                                       CProfile_D2_01_Common::kOutputChannel1,
+                                                       CProfile_D2_01_Common::kQueryPower);
+}
+
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_05::states(unsigned char rorg,
                                                                                                    const boost::dynamic_bitset<>& data,
                                                                                                    const boost::dynamic_bitset<>& status,
@@ -59,7 +74,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                      CProfile_D2_01_Common::noChannel1,
                                                                      CProfile_D2_01_Common::noChannel2,
                                                                      m_dimmer,
-                                                                     CProfile_D2_01_Common::noPowerFailure);
+                                                                     CProfile_D2_01_Common::noPowerFailure,
+                                                                     m_overCurrent);
       }
    case CProfile_D2_01_Common::kActuatorMeasurementResponse:
       {
@@ -78,7 +94,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
             CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
                                                                 senderId,
                                                                 m_deviceId,
-                                                                CProfile_D2_01_Common::kOutputChannel1);
+                                                                CProfile_D2_01_Common::kOutputChannel1,
+                                                                CProfile_D2_01_Common::kQueryEnergy);
          }
 
          return historizers;
@@ -163,4 +180,3 @@ void CProfile_D2_01_05::sendConfiguration(const shared::CDataContainer& deviceCo
                                                             minEnergyMeasureRefreshTime,
                                                             maxEnergyMeasureRefreshTime);
 }
-

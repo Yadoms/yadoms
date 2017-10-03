@@ -99,6 +99,7 @@ void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessa
 
    bitset_insert(data, 4, 4, kActuatorSetLocal);
    bitset_insert(data, 0, taughtInAllDevices);
+   bitset_insert(data, 8, true); // Over-current shut-down : automatic restart
    bitset_insert(data, 10, localControl);
    bitset_insert(data, 11, 5, outputChannel);
    bitset_insert(data, 16, 4, static_cast<unsigned int>(lround(dimTimer2 / 0.5)));
@@ -108,24 +109,32 @@ void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessa
    bitset_insert(data, 26, 2, defaultState);
    bitset_insert(data, 28, 4, static_cast<unsigned int>(lround(dimTimer1 / 0.5)));
 
-   command.userData(bitset_to_bytes(data));
+   sendMessage(messageHandler,
+               senderId,
+               targetId,
+               data,
+               "Actuator Set Local");
+}
 
-   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
-   if (!messageHandler->send(command,
-                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
-                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
-   YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set Local command";
+void CProfile_D2_01_Common::sendActuatorStatusQuery(boost::shared_ptr<IMessageHandler> messageHandler,
+                                                    const std::string& senderId,
+                                                    const std::string& targetId,
+                                                    EOutputChannel outputChannel)
+{
+   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
+                                          senderId,
+                                          targetId,
+                                          0);
+   boost::dynamic_bitset<> data(2 * 8);
 
-   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
+   bitset_insert(data, 4, 4, kActuatorStatusQuery);
+   bitset_insert(data, 11, 5, outputChannel);
 
-   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-   YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : Actuator Set Local command returns " << response->returnCode();
+   sendMessage(messageHandler,
+               senderId,
+               targetId,
+               data,
+               "Actuator Status Query");
 }
 
 
@@ -133,13 +142,15 @@ const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noC
 const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noChannel2 = boost::shared_ptr<yApi::historization::CSwitch>();
 const boost::shared_ptr<yApi::historization::CDimmable> CProfile_D2_01_Common::noDimmable = boost::shared_ptr<yApi::historization::CDimmable>();
 const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noPowerFailure = boost::shared_ptr<yApi::historization::CSwitch>();
+const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noOverCurrent = boost::shared_ptr<yApi::historization::CSwitch>();
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorStatusResponse(unsigned char rorg,
                                                                                                                               const boost::dynamic_bitset<>& data,
                                                                                                                               boost::shared_ptr<yApi::historization::CSwitch> channel1,
                                                                                                                               boost::shared_ptr<yApi::historization::CSwitch> channel2,
                                                                                                                               boost::shared_ptr<yApi::historization::CDimmable> dimmer,
-                                                                                                                              boost::shared_ptr<yApi::historization::CSwitch> powerFailure)
+                                                                                                                              boost::shared_ptr<yApi::historization::CSwitch> powerFailure,
+                                                                                                                              boost::shared_ptr<yApi::historization::CSwitch> overCurrent)
 {
    // This device supports several RORG messages
    // We just use the VLD telegram
@@ -155,6 +166,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    auto ioChannel = bitset_extract(data, 11, 5);
    int dimValue = bitset_extract(data, 17, 7);
    auto state = dimValue == 0 ? false : true;
+   auto overCurrentState = bitset_extract(data, 8, 1) != 0;
    switch (ioChannel)
    {
    case 0:
@@ -167,6 +179,11 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       {
          dimmer->set(dimValue);
          historizers.push_back(dimmer);
+      }
+      else if (!!overCurrent)
+      {
+         overCurrent->set(overCurrentState);
+         historizers.push_back(overCurrent);
       }
       else
       {
@@ -225,34 +242,22 @@ void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<
    bitset_insert(data, 32, 8, static_cast<unsigned char>(maxEnergyMeasureRefreshTime / 10.0));
    bitset_insert(data, 40, 8, static_cast<unsigned char>(minEnergyMeasureRefreshTime));
 
-   command.userData(bitset_to_bytes(data));
-
-   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
-   if (!messageHandler->send(command,
-                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
-                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
-   YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set Measurement command";
-
-   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
-
-   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-   YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : Actuator Set Measurement command returns " << response->returnCode();
+   sendMessage(messageHandler,
+               senderId,
+               targetId,
+               data,
+               "Actuator Set Measurement");
 }
 
 void CProfile_D2_01_Common::sendActuatorMeasurementQuery(boost::shared_ptr<IMessageHandler> messageHandler,
                                                          const std::string& senderId,
                                                          const std::string& targetId,
-                                                         EOutputChannel outputChannel)
+                                                         EOutputChannel outputChannel,
+                                                         EPowerQueryType queryType)
 {
    boost::dynamic_bitset<> userData(2 * 8);
    bitset_insert(userData, 4, 4, kActuatorMeasurementQuery);
-   bitset_insert(userData, 10, 1, kQueryEnergy);
+   bitset_insert(userData, 10, 1, queryType);
    bitset_insert(userData, 11, 5, outputChannel);
 
    sendMessage(messageHandler,
@@ -386,6 +391,21 @@ void CProfile_D2_01_Common::sendActuatorSetPilotWireModeCommand(boost::shared_pt
                "Actuator Set Pilot Wire Mode");
 }
 
+void CProfile_D2_01_Common::sendActuatorPilotWireModeQuery(boost::shared_ptr<IMessageHandler> messageHandler,
+                                                           const std::string& senderId,
+                                                           const std::string& targetId)
+{
+   boost::dynamic_bitset<> userData(1 * 8);
+
+   bitset_insert(userData, 4, 4, kActuatorPilotWireModeQuery);
+
+   sendMessage(messageHandler,
+               senderId,
+               targetId,
+               userData,
+               "Actuator Pilot Wire Mode Query");
+}
+
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorPilotWireModeResponse(unsigned char rorg,
                                                                                                                                      const boost::dynamic_bitset<>& data,
                                                                                                                                      boost::shared_ptr<specificHistorizers::CPilotWireHistorizer> pilotWire)
@@ -449,24 +469,11 @@ void CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(boos
    bitset_insert(data, 48, 2, connectedSwitchsType);
    bitset_insert(data, 50, !switchingStateToggle);
 
-   command.userData(bitset_to_bytes(data));
-
-   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
-   if (!messageHandler->send(command,
-                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
-                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
-   YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set External Interface Settings command";
-
-   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
-
-   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-   YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : Actuator Set External Interface Settings command returns " << response->returnCode();
+   sendMessage(messageHandler,
+               senderId,
+               targetId,
+               data,
+               "Actuator Set External Interface Settings");
 }
 
 void CProfile_D2_01_Common::sendMessage(boost::shared_ptr<IMessageHandler> messageHandler,
@@ -485,13 +492,13 @@ void CProfile_D2_01_Common::sendMessage(boost::shared_ptr<IMessageHandler> messa
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!messageHandler->send(command,
                              [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
+                          {
+                             return esp3Packet->header().packetType() == message::RESPONSE;
+                          },
                              [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
+                          {
+                             answer = esp3Packet;
+                          }))
    YADOMS_LOG(error) << "Fail to send message to " << targetId << " : no answer to \"" << commandName << "\"";
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
@@ -533,14 +540,4 @@ double CProfile_D2_01_Common::extractPowerValueW(E_D2_01_MeasurementUnit unit,
       return 0;
    }
 }
-
-//TODO refactoring D2-01-XX, RAF :
-// - over current
-// - voir ce que c'est que le "Measurement Auto Scaling"
-// - voir si on peut factoriser la fonction state
-// - initialiser toutes les valeurs au démarrage :
-//   - tout ce qui est états doit être lu dans l'équipement
-//   - tout ce qui est configuration doit être lu dans la base et envoyé au device
-// - Implémenter "Measurement delta to be reported (MSB)"
-
 

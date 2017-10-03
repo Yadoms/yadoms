@@ -31,6 +31,15 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return m_historizers;
 }
 
+void CProfile_D2_01_03::readInitialState(const std::string& senderId,
+                                         boost::shared_ptr<IMessageHandler> messageHandler) const
+{
+   CProfile_D2_01_Common::sendActuatorStatusQuery(messageHandler,
+                                                  senderId,
+                                                  m_deviceId,
+                                                  CProfile_D2_01_Common::kOutputChannel1);
+}
+
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_03::states(unsigned char rorg,
                                                                                                    const boost::dynamic_bitset<>& data,
                                                                                                    const boost::dynamic_bitset<>& status,
@@ -42,7 +51,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                CProfile_D2_01_Common::noChannel1,
                                                                CProfile_D2_01_Common::noChannel2,
                                                                m_dimmer,
-                                                               CProfile_D2_01_Common::noPowerFailure);
+                                                               CProfile_D2_01_Common::noPowerFailure,
+                                                               CProfile_D2_01_Common::noOverCurrent);
 }
 
 void CProfile_D2_01_03::sendCommand(const std::string& keyword,
