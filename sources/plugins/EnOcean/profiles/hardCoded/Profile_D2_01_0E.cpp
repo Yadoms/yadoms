@@ -84,7 +84,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                                       m_loadEnergy,
                                                                                       m_loadPower);
 
-         if (std::find(historizers.begin(), historizers.end(), m_loadPower) != historizers.end())//TODO à faire pour l'inputPower ?
+         if (std::find(historizers.begin(), historizers.end(), m_loadPower) != historizers.end())
          {
             // Power is configured to be received automaticaly.
             // As we can not receive both data (power + energy) automaticaly,

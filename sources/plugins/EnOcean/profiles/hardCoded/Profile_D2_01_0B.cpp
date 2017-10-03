@@ -9,8 +9,6 @@ CProfile_D2_01_0B::CProfile_D2_01_0B(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_deviceId(deviceId),
      m_channel(boost::make_shared<yApi::historization::CSwitch>("Channel", yApi::EKeywordAccessMode::kGetSet)),
-     m_inputEnergy(boost::make_shared<yApi::historization::CEnergy>("Input energy")), //TODO dispo ?
-     m_inputPower(boost::make_shared<yApi::historization::CPower>("Input power")), //TODO dispo ?
      m_loadEnergy(boost::make_shared<yApi::historization::CEnergy>("Load energy")),
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),
      m_powerFailure(boost::make_shared<yApi::historization::CSwitch>("Power failure", yApi::EKeywordAccessMode::kGet)),
@@ -85,7 +83,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                                       m_loadEnergy,
                                                                                       m_loadPower);
 
-         if (std::find(historizers.begin(), historizers.end(), m_loadPower) != historizers.end())//TODO à faire pour l'inputPower ?
+         if (std::find(historizers.begin(), historizers.end(), m_loadPower) != historizers.end())
          {
             // Power is configured to be received automaticaly.
             // As we can not receive both data (power + energy) automaticaly,

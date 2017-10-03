@@ -317,33 +317,6 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
          }
          break;
       }
-   case 0x1F: // Input channel //TODO utile ?
-      switch (unit)
-      {
-      case kEnergyWs:
-      case kEnergyWh:
-      case kEnergyKWh:
-         if (!!inputEnergy)
-         {
-            inputEnergy->set(extractEnergyWh(unit,
-                                             rawValue));
-            historizers.push_back(inputEnergy);
-         }
-         break;
-      case kPowerW:
-      case kPowerKW:
-         if (!!inputPower)
-         {
-            inputPower->set(extractPowerValueW(unit,
-                                               rawValue));
-            historizers.push_back(inputPower);
-         }
-         break;
-      default:
-         YADOMS_LOG(warning) << "ActuatorMeasurementResponse : received unsupported unit value " << unit;
-         break;
-      }
-      break;
    default:
       YADOMS_LOG(warning) << "ActuatorMeasurementResponse : received unsupported channel value " << ioChannel;
       break;
