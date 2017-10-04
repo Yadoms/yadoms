@@ -3,41 +3,16 @@
 #include <shared/Log.h>
 #include "DefaultEquipment.h"
 
-CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
-{
-   std::vector<std::string> devices = api->getAllDevices();
-   std::vector<std::string>::iterator devicesIterator;
-
-   // Create all extensions devices
-   for (devicesIterator = devices.begin(); devicesIterator != devices.end(); ++devicesIterator)
-   {
-      std::string devEUI = "";
-
-      // plugin state have no type
-      try
-      {
-         devEUI = api->getDeviceDetails(*devicesIterator).get<std::string>("devEUI");
-      }
-      catch (...)
-      {
-      }
-
-      if (devEUI != "")
-         m_equipments.push_back(boost::make_shared<equipments::CDefaultEquipment>(*devicesIterator, devEUI));
-   }
-}
-
-std::vector<boost::shared_ptr<equipments::IEquipment>> CDecoder::getDevices()
-{
-   return m_equipments;
-}
+CDecoder::CDecoder()
+{}
 
 CDecoder::~CDecoder()
 {}
 
-void CDecoder::decodeDevicesMessage(boost::shared_ptr<yApi::IYPluginApi> api, 
-                                    shared::CDataContainer message)
+std::map<std::string, boost::shared_ptr<equipments::IEquipment>> CDecoder::decodeDevicesMessage(boost::shared_ptr<yApi::IYPluginApi> api,
+                                    shared::CDataContainer& message)
 {
+	std::map<std::string, boost::shared_ptr<equipments::IEquipment>> equipmentList;
    auto equipments = message.get<std::vector<shared::CDataContainer> >("data");
    std::vector<shared::CDataContainer>::iterator equipmentIterator;
 
@@ -46,12 +21,14 @@ void CDecoder::decodeDevicesMessage(boost::shared_ptr<yApi::IYPluginApi> api,
       std::string name = (*equipmentIterator).get<std::string>("name");
       std::string devEUI = (*equipmentIterator).get<std::string>("devEUI");
       boost::shared_ptr<equipments::CDefaultEquipment> newEquipment(boost::make_shared<equipments::CDefaultEquipment>(name, devEUI));
-      m_equipments.push_back(newEquipment);
+	  equipmentList.insert(std::pair<std::string, boost::shared_ptr<equipments::IEquipment>>(name, newEquipment));
       YADOMS_LOG(information) << "create device name = " << name << " devEUI = " << devEUI;
    }
+
+   return equipmentList;
 }
 
-bool CDecoder::isFrameComplete(shared::CDataContainer message)
+bool CDecoder::isFrameComplete(shared::CDataContainer& message)
 {
    int page = message.get<int>("page");
    int pageSize = message.get<int>("size");
@@ -62,28 +39,15 @@ bool CDecoder::isFrameComplete(shared::CDataContainer message)
       return false;
 }
 
-std::string CDecoder::getLastData(shared::CDataContainer message)
+shared::CDataContainer CDecoder::getLastData(shared::CDataContainer& message)
 {
    auto commands = message.get<std::vector<shared::CDataContainer> >("data");
+   shared::CDataContainer response;
 
    if (commands.size() > 0)
    {
-      std::string data = commands[commands.size() - 1].get<std::string>("data");
-      std::string date = commands[commands.size() - 1].get<std::string>("creationTs");
-
-      // TODO : Read and keep the unique id of the command
-
-      //boost::shared_ptr<equipments::CDefaultEquipment> newEquipment(boost::make_shared<equipments::CDefaultEquipment>(name, devEUI));
-      //m_equipments.push_back(newEquipment);
-      //YADOMS_LOG(information) << "create device name = " << name << " devEUI = " << devEUI;
-      return data;
+      response.set("data", commands[commands.size() - 1].get<std::string>("data"));
+	  response.set("date", commands[commands.size() - 1].get<std::string>("creationTs"));
    }
-   else
-      return ""; // TODO : Throw something
-}
-
-//TODO : To be deleted and integrated to the precedent function
-std::string CDecoder::getLastDataReceivedDate(shared::CDataContainer message)
-{
-   return "";
+   return response;
 }

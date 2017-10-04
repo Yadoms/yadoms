@@ -39,9 +39,10 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       m_isDeveloperMode = api->getYadomsInformation()->developperMode();
 
-      m_decoder = boost::make_shared<CDecoder>(api);
+      m_decoder = boost::make_shared<CDecoder>(); // TODO : create it directly at the constructor ?
+	  m_equipmentManager = boost::make_shared<CEquipmentManager>(api);
 
-      if (m_decoder->getDevices().size() > 0)
+      if (m_equipmentManager->size() > 0)
       {
 		 // read values of devices every 15mn.
          m_waitForAnswerTimer = api->getEventHandler().createTimer(kEvtTimerRefreshDevices,
@@ -90,52 +91,14 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       }
       case kRefreshStatesReceived:
       {
-         try {
-            std::vector<boost::shared_ptr<equipments::IEquipment>> m_equipmentList = m_decoder->getDevices();
-            std::vector<boost::shared_ptr<equipments::IEquipment>>::iterator iteratorEquipment;
-
-            for (iteratorEquipment = m_equipmentList.begin(); iteratorEquipment != m_equipmentList.end(); ++iteratorEquipment)
-            {
-               int page = 0;
-
-               try {
-                  // reading of the battery level
-                  shared::CDataContainer response = m_frameManager.getDeviceInformation(m_configuration.getAPIKey(), (*iteratorEquipment)->getEUI());
-                  response.printToLog(YADOMS_LOG(information));
-                  int batteryLevel = response.get<int>("lastBatteryLevel");
-				  boost::posix_time::ptime receivedTime(response.get<boost::posix_time::ptime>("updateTs"));
-				  boost::posix_time::time_duration td = shared::currentTime::Provider().now() - receivedTime;
-
-                  // Todo : Reading of the last communication date. If the date is too old for battery level > 1 week - do not integrate it
-				  if (td.total_seconds() < (3600 * 24 * 7))
-				  {
-				  }
-
-                  //Todo : Enter a date to limit the number of frames
-                  // Reading all commands for an equipment. Go to the last page if necessary
-                  do {
-                     response = m_frameManager.listDeviceCommands(m_configuration.getAPIKey(), (*iteratorEquipment)->getEUI(), page);
-                     response.printToLog(YADOMS_LOG(information));
-                     ++page;
-                  } while (!m_decoder->isFrameComplete(response));
-
-                  // get last data from this last frame
-                  m_decoder->getLastData(response);
-
-                  // Todo : Reading of the last communication date. If the date is too old for data > 15mn - do not integrate it
-
-               }
-               catch (std::exception &e)
-               {
-                  YADOMS_LOG(error) << "exception : " << e.what();
-               }
-            }
-         }
-         catch (std::exception &e)
-         {
-            YADOMS_LOG(error) << "exception : " << e.what();
-         }
-         break;
+		  try {
+			  m_equipmentManager->refreshEquipments(m_frameManager, m_configuration.getAPIKey(), m_decoder);
+		  }
+		  catch (std::exception &e)
+		  {
+			  YADOMS_LOG(error) << "exception : " << e.what();
+		  }
+		  break;
       }
       case yApi::IYPluginApi::kEventExtraQuery:
       {
@@ -177,7 +140,7 @@ void COrangeBusiness::registerAllDevices(boost::shared_ptr<yApi::IYPluginApi> ap
 
       do {
          response = m_frameManager.getRegisteredEquipments(m_configuration.getAPIKey(), page, false); //http://liveobjects.orange-business.com
-         m_decoder->decodeDevicesMessage(api, response);
+		 m_equipmentManager = boost::make_shared<CEquipmentManager>(m_decoder->decodeDevicesMessage(api, response));
          response.printToLog(YADOMS_LOG(information));
          ++page;
       } while (!m_decoder->isFrameComplete(response));

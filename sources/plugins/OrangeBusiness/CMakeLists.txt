@@ -8,6 +8,8 @@ include("../YadomsPluginsCommon.cmake")
 set(ORANGE_BUSINESS_PLUGIN_SOURCES
    Decoder.cpp
    Decoder.h
+   deviceManager.cpp
+   deviceManager.h
    DefaultEquipment.cpp
    DefaultEquipment.h
    IDecoder.h

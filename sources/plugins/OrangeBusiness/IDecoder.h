@@ -23,14 +23,7 @@ public:
    /// \param [in] api             Plugin execution context (Yadoms API)
    /// \param [in] message         the received message
    //--------------------------------------------------------------
-   virtual void decodeDevicesMessage(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& message) = 0;
-   
-   //--------------------------------------------------------------
-   /// \brief	                    Decode Devices message
-   /// \param [in] api             Plugin execution context (Yadoms API)
-   /// \param [in] message         the received message
-   //--------------------------------------------------------------
-   virtual std::vector<boost::shared_ptr<equipments::IEquipment>> getDevices() = 0;
+   virtual std::map<std::string, boost::shared_ptr<equipments::IEquipment>> decodeDevicesMessage(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& message) = 0;
 
    //--------------------------------------------------------------
    /// \brief	                    return if we need to ask the server for new frames

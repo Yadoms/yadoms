@@ -2,6 +2,7 @@
 #include <boost/test/unit_test.hpp>
 #include "../../../../sources/plugins/OrangeBusiness/Decoder.h"
 #include "../../mock/server/pluginSystem/DefaultYPluginApiMock.hpp"
+#include <shared/exception/OutOfRange.hpp>
 
 
 BOOST_AUTO_TEST_SUITE(TestOrangeBusiness)
@@ -11,22 +12,17 @@ namespace yApi = shared::plugin::yPluginApi;
    BOOST_AUTO_TEST_CASE(DecoderDeviceFrameEmpty)
    {
       auto api(boost::make_shared<CDefaultYPluginApiMock>());
-      CDecoder decoder(api);
+      CDecoder decoder;
 
       shared::CDataContainer messageRecu;
 
-      BOOST_CHECK_EQUAL(decoder.isFrameComplete(messageRecu), true);
-
-      std::vector<boost::shared_ptr<equipments::IEquipment>> devicesRegistered;
-      devicesRegistered = decoder.getDevices();
-
-      BOOST_CHECK_EQUAL(devicesRegistered.size(), 0);
+	  BOOST_REQUIRE_THROW(decoder.isFrameComplete(messageRecu), shared::exception::CInvalidParameter);
    }
 
    BOOST_AUTO_TEST_CASE(DecoderDeviceFrameNominal)
    {
       auto api(boost::make_shared<CDefaultYPluginApiMock>());
-      CDecoder decoder(api);
+      CDecoder decoder;
 
       shared::CDataContainer messageRecu;
       messageRecu.set("page", "0");
@@ -74,18 +70,14 @@ namespace yApi = shared::plugin::yPluginApi;
       equipments.push_back(device2);
       messageRecu.set("data", equipments);
 
-      decoder.decodeDevicesMessage(api, messageRecu);
+	  std::map<std::string, boost::shared_ptr<equipments::IEquipment>> devicesRegistered = decoder.decodeDevicesMessage(api, messageRecu);
       BOOST_CHECK_EQUAL(decoder.isFrameComplete(messageRecu), true);
 
-      std::vector<boost::shared_ptr<equipments::IEquipment>> devicesRegistered;
-      devicesRegistered = decoder.getDevices();
-
       BOOST_CHECK_EQUAL(devicesRegistered.size(), 2);
-      BOOST_CHECK_EQUAL(devicesRegistered[0]->getName(),"DeviceTest2");
-      BOOST_CHECK_EQUAL(devicesRegistered[0]->getEUI(), "0018B20000000272");
-
-      BOOST_CHECK_EQUAL(devicesRegistered[1]->getName(), "DeviceTest1");
-      BOOST_CHECK_EQUAL(devicesRegistered[1]->getEUI(), "0018B20000000274");
+	  BOOST_CHECK_NO_THROW(devicesRegistered.at("DeviceTest1")); // If present, no exception std::out_of_range
+	  BOOST_CHECK_NO_THROW(devicesRegistered.at("DeviceTest2"));
+      BOOST_CHECK_EQUAL(devicesRegistered.at("DeviceTest2")->getEUI(), "0018B20000000272");
+      BOOST_CHECK_EQUAL(devicesRegistered.at("DeviceTest1")->getEUI(), "0018B20000000274");
    }
 
    BOOST_AUTO_TEST_CASE(DecoderDeviceFrameNominal1)

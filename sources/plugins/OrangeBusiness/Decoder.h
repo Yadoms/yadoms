@@ -16,7 +16,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	                           Constructor
    //--------------------------------------------------------------
-   explicit CDecoder(boost::shared_ptr<yApi::IYPluginApi> api);
+   explicit CDecoder();
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
@@ -24,14 +24,11 @@ public:
    virtual ~CDecoder();
 
    // IDecoder implementation
-   void decodeDevicesMessage(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer message) override;
-   bool isFrameComplete(shared::CDataContainer message) override;
-   std::vector<boost::shared_ptr<equipments::IEquipment>> getDevices() override;
-   std::string getLastData(shared::CDataContainer message) override;
-   std::string getLastDataReceivedDate(shared::CDataContainer message) override;
+   std::map<std::string, boost::shared_ptr<equipments::IEquipment>> decodeDevicesMessage(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& message) override;
+   bool isFrameComplete(shared::CDataContainer& message) override;
+   shared::CDataContainer getLastData(shared::CDataContainer& message) override;
    // [END] IDecoder implementation
 
 private:
 
-   std::vector<boost::shared_ptr<equipments::IEquipment>> m_equipments; // TODO : to create with a map
 };
