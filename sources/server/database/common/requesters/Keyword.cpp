@@ -215,7 +215,7 @@ namespace database
          std::string CKeyword::getKeywordLastData(const int keywordId, bool throwIfNotExists)
          {
             auto qSelect = m_databaseRequester->newQuery();
-            qSelect->Select(CKeywordTable::getLastAcquisitionDateColumnName()).
+            qSelect->Select(CKeywordTable::getLastAcquisitionValueColumnName()).
                From(CKeywordTable::getTableName()).
                Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
 
