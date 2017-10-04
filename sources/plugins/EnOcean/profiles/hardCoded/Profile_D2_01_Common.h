@@ -76,7 +76,7 @@ public:
       kInputChannel = 0x1F,
    };
 
-   enum
+   enum EPowerQueryType
    {
       kQueryEnergy = 0,
       kQueryPower = 1
@@ -109,17 +109,25 @@ public:
                                            double dimTimer2,
                                            double dimTimer3);
 
+   // CMD 0x04 - Actuator Status Query
+   static void sendActuatorStatusQuery(boost::shared_ptr<IMessageHandler> messageHandler,
+                                       const std::string& senderId,
+                                       const std::string& targetId,
+                                       EOutputChannel outputChannel);
+
    // CMD 0x04 - Actuator Status Response
    static const boost::shared_ptr<yApi::historization::CSwitch> noChannel1;
    static const boost::shared_ptr<yApi::historization::CSwitch> noChannel2;
    static const boost::shared_ptr<yApi::historization::CDimmable> noDimmable;
    static const boost::shared_ptr<yApi::historization::CSwitch> noPowerFailure;
+   static const boost::shared_ptr<yApi::historization::CSwitch> noOverCurrent;
    static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorStatusResponse(unsigned char rorg,
                                                                                                                  const boost::dynamic_bitset<>& data,
                                                                                                                  boost::shared_ptr<yApi::historization::CSwitch> channel1,
                                                                                                                  boost::shared_ptr<yApi::historization::CSwitch> channel2,
                                                                                                                  boost::shared_ptr<yApi::historization::CDimmable> dimmer,
-                                                                                                                 boost::shared_ptr<yApi::historization::CSwitch> powerFailure);
+                                                                                                                 boost::shared_ptr<yApi::historization::CSwitch> powerFailure,
+                                                                                                                 boost::shared_ptr<yApi::historization::CSwitch> overCurrent);
 
    // CMD 0x5 - Actuator Set Measurement
    static void sendActuatorSetMeasurementCommand(boost::shared_ptr<IMessageHandler> messageHandler,
@@ -134,7 +142,8 @@ public:
    static void sendActuatorMeasurementQuery(boost::shared_ptr<IMessageHandler> messageHandler,
                                             const std::string& senderId,
                                             const std::string& targetId,
-                                            EOutputChannel outputChannel);
+                                            EOutputChannel outputChannel,
+                                            EPowerQueryType queryType);
 
    // CMD 0x07 - Actuator Measurement Response
    static const boost::shared_ptr<yApi::historization::CEnergy> noInputEnergy;
@@ -143,8 +152,6 @@ public:
    static const boost::shared_ptr<yApi::historization::CPower> noLoadPower;
    static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorMeasurementResponse(unsigned char rorg,
                                                                                                                       const boost::dynamic_bitset<>& data,
-                                                                                                                      boost::shared_ptr<yApi::historization::CEnergy> inputEnergy,
-                                                                                                                      boost::shared_ptr<yApi::historization::CPower> inputPower,
                                                                                                                       boost::shared_ptr<yApi::historization::CEnergy> loadEnergy,
                                                                                                                       boost::shared_ptr<yApi::historization::CPower> loadPower);
 
@@ -153,6 +160,11 @@ public:
                                                    const std::string& senderId,
                                                    const std::string& targetId,
                                                    const specificHistorizers::EPilotWire& mode);
+
+   // CMD 0x9 - Actuator Pilot Wire Mode Query
+   static void sendActuatorPilotWireModeQuery(boost::shared_ptr<IMessageHandler> messageHandler,
+                                              const std::string& senderId,
+                                              const std::string& targetId);
 
    // CMD 0xA - Actuator Pilot Wire Mode Response
    static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorPilotWireModeResponse(unsigned char rorg,
@@ -181,4 +193,3 @@ public:
    static double extractPowerValueW(E_D2_01_MeasurementUnit unit,
                                     unsigned int rawValue);
 };
-

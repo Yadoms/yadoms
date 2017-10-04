@@ -237,9 +237,11 @@ bool CEnOcean::connectionsAreEqual(const CConfiguration& conf1,
 boost::shared_ptr<IType> CEnOcean::createDevice(const std::string& deviceId,
                                                 const CProfileHelper& profileHelper) const
 {
-   return CRorgs::createRorg(profileHelper.rorg())->createFunc(profileHelper.func())->createType(profileHelper.type(),
-                                                                                                 deviceId,
-                                                                                                 m_api);
+   auto device = CRorgs::createRorg(profileHelper.rorg())->createFunc(profileHelper.func())->createType(profileHelper.type(),
+                                                                                                        deviceId,
+                                                                                                        m_api);
+
+   return device;
 }
 
 std::string CEnOcean::generateModel(const std::string& model,
@@ -293,6 +295,12 @@ void CEnOcean::processConnectionEvent()
    try
    {
       requestDongleVersion();
+
+      for (const auto& device : m_devices)
+      {
+         device.second->readInitialState(m_senderId,
+                                         m_messageHandler);
+      }
    }
    catch (CProtocolException& e)
    {
@@ -480,9 +488,12 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
             }
             else
             {
-               declareDevice(deviceId,
-                             profile,
-                             manufacturerName);
+               const auto& device = declareDevice(deviceId,
+                                                  profile,
+                                                  manufacturerName);
+
+               device->readInitialState(m_senderId,
+                                        m_messageHandler);
             }
 
             m_api->updateDeviceConfiguration(deviceId,
@@ -526,6 +537,9 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
 
             processDeviceConfiguration(deviceId,
                                        deviceConfiguration.configuration());
+
+            m_devices[deviceId]->readInitialState(m_senderId,
+                                                  m_messageHandler);
 
             return;
          }
@@ -727,6 +741,11 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
       if (returnCode != message::CResponseReceivedMessage::RET_OK)
       YADOMS_LOG(error) << "TeachIn response not successfully acknowledged : " << returnCode;
    }
+
+   // Need to wait a bit before ask initial state (while EnOcean chip record his new association ?)
+   boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+   m_devices[deviceId]->readInitialState(m_senderId,
+                                         m_messageHandler);
 }
 
 boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,

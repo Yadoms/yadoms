@@ -32,6 +32,17 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return m_historizers;
 }
 
+void CProfile_D2_01_11::readInitialState(const std::string& senderId,
+                                         boost::shared_ptr<IMessageHandler> messageHandler) const
+{
+   // Need to wait a bit between outgoing messages, to be sure to receive answer
+   boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+   CProfile_D2_01_Common::sendActuatorStatusQuery(messageHandler,
+                                                  senderId,
+                                                  m_deviceId,
+                                                  CProfile_D2_01_Common::kAllOutputChannels);
+}
+
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_11::states(unsigned char rorg,
                                                                                                    const boost::dynamic_bitset<>& data,
                                                                                                    const boost::dynamic_bitset<>& status,
@@ -41,9 +52,10 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return CProfile_D2_01_Common::extractActuatorStatusResponse(rorg,
                                                                data,
                                                                m_channel1,
-                                                               m_channel1,
+                                                               m_channel2,
                                                                CProfile_D2_01_Common::noDimmable,
-                                                               CProfile_D2_01_Common::noPowerFailure);
+                                                               CProfile_D2_01_Common::noPowerFailure,
+                                                               CProfile_D2_01_Common::noOverCurrent);
 }
 
 void CProfile_D2_01_11::sendCommand(const std::string& keyword,

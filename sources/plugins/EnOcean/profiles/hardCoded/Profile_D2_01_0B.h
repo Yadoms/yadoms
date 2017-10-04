@@ -13,6 +13,8 @@ public:
    const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> allHistorizers() const override;
+   void readInitialState(const std::string& senderId,
+                         boost::shared_ptr<IMessageHandler> messageHandler) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> states(unsigned char rorg,
                                                                                    const boost::dynamic_bitset<>& data,
                                                                                    const boost::dynamic_bitset<>& status,
@@ -30,8 +32,6 @@ public:
 private:
    const std::string m_deviceId;
    boost::shared_ptr<yApi::historization::CSwitch> m_channel;
-   boost::shared_ptr<yApi::historization::CEnergy> m_inputEnergy;
-   boost::shared_ptr<yApi::historization::CPower> m_inputPower;
    boost::shared_ptr<yApi::historization::CEnergy> m_loadEnergy;
    boost::shared_ptr<yApi::historization::CPower> m_loadPower;
    boost::shared_ptr<yApi::historization::CSwitch> m_powerFailure;
