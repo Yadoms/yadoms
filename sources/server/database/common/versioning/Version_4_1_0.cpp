@@ -55,7 +55,7 @@ namespace database
          {
             try
             {
-               YADOMS_LOG(information) << "Upgrading database (4.0.1 -> 4.1.0)";
+               YADOMS_LOG(information) << "Upgrading database (4.0.1 -> 4.1.0)...";
 
                // Create transaction if supported
                if (pRequester->transactionSupport())
