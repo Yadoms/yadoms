@@ -679,7 +679,7 @@ CCurtain::ECommand::ECommand()
 
 #define CHECK_VALUE(val)      if(!isDefined(val)) {                                                                                                                  \
                                  logEnum();                                                                                                                          \
-                                 YADOMS_LOG(error) << "_fullClassifiedEnumName : Invalid value : " << val << " is not defined";                                      \
+                                 YADOMS_LOG(error) << "_fullClassifiedEnumName(" << m_name << ") : Invalid value : " << val << " is not defined";                                      \
                                  throw shared::exception::COutOfRange((boost::format("Invalid enum value. Value =  %1%") % val).str());                              \
                               }
 
@@ -740,7 +740,7 @@ CCurtain::ECommand::ECommand()
 		   ENUM_DECLARE_GETASSTRING_IMPL(_seq)                                                                                                    \
 		   default :                                                                                                                              \
                logEnum();                                                                                                                       \
-               YADOMS_LOG(error) << "_fullClassifiedEnumName::toString : Invalid value : " << m_value << " is not known";                       \
+               YADOMS_LOG(error) << "_fullClassifiedEnumName(" << m_name << ")::toString : Invalid value : " << m_value << " is not known";                       \
                throw shared::exception::COutOfRange((boost::format("Invalid enum value. Value = %1%") % m_value).str());                        \
             }                                                                                                                                   \
       }                                                                                                                                         \
@@ -749,7 +749,7 @@ CCurtain::ECommand::ECommand()
 		ENUM_DECLARE_SETFROMSTRING_IMPL(_seq)                                                                                                     \
          {                                                                                                                                      \
             logEnum();                                                                                                                          \
-            YADOMS_LOG(error) << "_fullClassifiedEnumName::fromString : Invalid value : " << val << " is not known";                            \
+            YADOMS_LOG(error) << "_fullClassifiedEnumName(" << m_name << ")::fromString : Invalid value : " << val << " is not known";                            \
             throw shared::exception::COutOfRange((boost::format("Invalid enum string value. Value =  %1%") % val).str());                       \
          }                                                                                                                                      \
    	}                                                                                                                                         \
