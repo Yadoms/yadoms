@@ -57,14 +57,6 @@ namespace database
             {
                YADOMS_LOG(information) << "Upgrading database (4.0.1 -> 4.1.0)";
 
-               // List all keywords from acquisition table for later use
-               auto getKeywordListQuery = pRequester->newQuery();
-               getKeywordListQuery->Select(getKeywordListQuery->distinct(CAcquisitionTable::getKeywordIdColumnName()))
-                  .From(CAcquisitionTable::getTableName());
-               std::vector<int> keywordList;
-               adapters::CSingleValueAdapterWithContainer<int> intVectorAdapter(keywordList);
-               pRequester->queryEntities(&intVectorAdapter, *getKeywordListQuery);
-
                // Create transaction if supported
                if (pRequester->transactionSupport())
                   pRequester->transactionBegin();
@@ -75,31 +67,30 @@ namespace database
 
                // Populate these columns with last acquisition date/value from acquisition table.
                // Do it for each keyword ID.
-               for (const auto& keywordId : keywordList)
-               {
-                  auto qSelect = pRequester->newQuery();
-                  qSelect->Select().
+               // Request is like :
+               // UPDATE Keyword
+               // SET lastAcquisitionDate = (SELECT date FROM Acquisition WHERE keywordId = id ORDER BY date DESC LIMIT 1),
+               //     lastAcquisitionValue = (SELECT value FROM Acquisition WHERE keywordId = id ORDER BY date DESC LIMIT 1)
+               auto sub1 = pRequester->newQuery();
+               sub1->Select(CAcquisitionTable::getDateColumnName()).
                      From(CAcquisitionTable::getTableName()).
-                     Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
-                     OrderBy(CAcquisitionTable::getDateColumnName(), CQuery::kDesc).
+                     Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, CKeywordTable::getIdColumnName()).
+                     OrderBy(CAcquisitionTable::getDateColumnName(), CQuery::E_OrderWay::kDesc).
                      Limit(1);
 
-                  adapters::CAcquisitionAdapter adapter;
-                  pRequester->queryEntities(&adapter, *qSelect);
+               auto sub2 = pRequester->newQuery();
+               sub2->Select(CAcquisitionTable::getValueColumnName()).
+                     From(CAcquisitionTable::getTableName()).
+                     Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, CKeywordTable::getIdColumnName()).
+                     OrderBy(CAcquisitionTable::getDateColumnName(), CQuery::E_OrderWay::kDesc).
+                     Limit(1);
 
-                  if (adapter.getResults().size() >= 1)
-                  {
-                     auto lastAcquisition = adapter.getResults()[0];
+               auto qUpdate = pRequester->newQuery();
+               qUpdate->Update(CKeywordTable::getTableName()).
+                        Set(CKeywordTable::getLastAcquisitionDateColumnName(), *sub1, 
+                            CKeywordTable::getLastAcquisitionValueColumnName(), *sub2);
 
-                     auto qUpdate = pRequester->newQuery();
-                     qUpdate->Update(CKeywordTable::getTableName())
-                        .Set(CKeywordTable::getLastAcquisitionDateColumnName(), lastAcquisition->Date(),
-                           CKeywordTable::getLastAcquisitionValueColumnName(), lastAcquisition->Value())
-                        .Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
-
-                     pRequester->queryStatement(*qUpdate);
-                  }
-               }
+               pRequester->queryStatement(*qUpdate);
 
                // Set the database version
                updateDatabaseVersion(pRequester, Version);
@@ -113,7 +104,7 @@ namespace database
             }
             catch (CVersionException& ex)
             {
-               YADOMS_LOG(fatal) << "Failed to upgrade database (4.0.1 -> 4.0.2) : " << ex.what();
+               YADOMS_LOG(fatal) << "Failed to upgrade database (4.0.1 -> 4.1.0) : " << ex.what();
                YADOMS_LOG(fatal) << "Rollback transaction";
                if (pRequester->transactionSupport())
                   pRequester->transactionRollback();
