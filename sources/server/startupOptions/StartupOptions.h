@@ -44,6 +44,7 @@ namespace startupOptions
       bool getIsWebServerUseSSL() const override;
       std::string getWebServerIPAddress() const override;
       std::string getWebServerInitialPath() const override;
+      bool getWebServerAllowExternalAccess() const override;
       EDatabaseEngine getDatabaseEngine() const override;
       std::string getDatabaseSqliteFile() const override;
       std::string getDatabaseSqliteBackupFile() const override;

@@ -91,6 +91,8 @@ namespace database
             ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType)(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute)(std::string))
             ((Details)(shared::CDataContainer)(shared::CDataContainer()))
             ((Blacklist)(bool)(false))
+            ((LastAcquisitionValue)(std::string)(""))
+            ((LastAcquisitionDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
          );
 
 

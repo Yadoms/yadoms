@@ -68,13 +68,14 @@
       var deffered3 = MaintenanceManager.getDatabaseDetails();
       arrayOfDeffered.push(deffered3);
       deffered3.done(function (databaseDetails) {
+         $(".table-summary-advanced-parameter").remove();
          $.each(databaseDetails, function (index, value) {
             if (index !== "backupSupport") {
                var txt = value;
                if (index === "size") {
                   txt = humanFileSize(value);
                }
-               $(".table-summary").append('<tr><td class="header" data-i18n="modals.dashboard.sub-windows.summary.' + index + '"></td><td>' + txt + '</td></tr>');
+               $(".table-summary").append('<tr class="table-summary-advanced-parameter"><td class="header" data-i18n="modals.dashboard.sub-windows.summary.' + index + '"></td><td>' + txt + '</td></tr>');
             }
          });
       })

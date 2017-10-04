@@ -31,7 +31,7 @@ void onGlobalNotification(OpenZWave::Notification const* _notification, void* _c
    try
    {
       YADOMS_LOG_CONFIGURE("ZWave");
-      YADOMS_LOG(information) << "OpenZWave notification : " << _notification->GetAsString();
+      YADOMS_LOG(trace) << "OpenZWave notification : " << _notification->GetAsString();
 
       auto pPlugin = static_cast<COpenZWaveController *>(_context);
       if (pPlugin != nullptr)
@@ -87,9 +87,9 @@ IZWaveController::E_StartResult COpenZWaveController::start()
       }
 
       OpenZWave::Options::Create(folder.string(), dataFolder.string(), "");
-      OpenZWave::Options::Get()->AddOptionInt("SaveLogLevel", OpenZWave::LogLevel_Info);
-      OpenZWave::Options::Get()->AddOptionInt("QueueLogLevel", OpenZWave::LogLevel_Info);
-      OpenZWave::Options::Get()->AddOptionInt("DumpTriggerLevel", OpenZWave::LogLevel_Info);
+      OpenZWave::Options::Get()->AddOptionInt("SaveLogLevel", OpenZWave::LogLevel_Debug);
+      OpenZWave::Options::Get()->AddOptionInt("QueueLogLevel", OpenZWave::LogLevel_Debug);
+      OpenZWave::Options::Get()->AddOptionInt("DumpTriggerLevel", OpenZWave::LogLevel_Debug);
       OpenZWave::Options::Get()->AddOptionInt("PollInterval", 30000); // 30 seconds (can easily poll 30 values in this time; ~120 values is the effective limit for 30 seconds)
       OpenZWave::Options::Get()->AddOptionBool("IntervalBetweenPolls", true);
       OpenZWave::Options::Get()->AddOptionBool("ValidateValueChanges", true);

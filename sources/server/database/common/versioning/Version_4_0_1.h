@@ -11,7 +11,7 @@ namespace database
       namespace versioning
       {
          //
-         /// \brief Database version 3.0.1 update manager
+         /// \brief Database version 4.0.1 update manager
          //
          class CVersion_4_0_1 : public CVersion_4_0_0
          {

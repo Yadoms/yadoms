@@ -89,6 +89,8 @@ namespace common {
       ((Measure)("measure"))
       ((Details)("details"))
       ((Blacklist)("blacklist"))
+      ((LastAcquisitionValue)("lastAcquisitionValue"))
+      ((LastAcquisitionDate)("lastAcquisitionDate"))
    )
 
    DECLARE_TABLE_COLUMN_NAMES(Acquisition, "Acquisition",

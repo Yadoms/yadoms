@@ -15,7 +15,7 @@ namespace shared
                : CSingleHistorizableData<boost::posix_time::time_duration>(keywordName,
                                                                            CStandardCapacities::Duration(),
                                                                            accessMode,
-                                                                           boost::date_time::not_a_date_time,
+                                                                           boost::posix_time::time_duration(),
                                                                            EMeasureType::kAbsolute)
             {
             }

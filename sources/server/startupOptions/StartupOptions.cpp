@@ -48,6 +48,13 @@ namespace startupOptions
          .binding("server.www", &m_configContainer));
 
       options.addOption(
+         Poco::Util::Option("allowExternalAccess", "ex", "Allow external access (required for mobile app access)")
+         .required(false)
+         .repeatable(false)
+         .noArgument()
+         .binding("server.allowExternalAccess", &m_configContainer));
+
+      options.addOption(
          Poco::Util::Option("logLevel", "l", "set log level, accepted values are : none, fatal, critical, error, warning, notice, information, debug, trace")
          .required(false)
          .repeatable(false)
@@ -313,6 +320,11 @@ namespace startupOptions
    std::string CStartupOptions::getWebServerInitialPath() const
    {
       return m_configContainer.getString("server.www", "www");
+   }
+
+   bool CStartupOptions::getWebServerAllowExternalAccess() const
+   {
+      return m_configContainer.getBool("server.allowExternalAccess", false);
    }
 
    EDatabaseEngine CStartupOptions::getDatabaseEngine() const

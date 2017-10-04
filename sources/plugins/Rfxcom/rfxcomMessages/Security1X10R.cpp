@@ -9,7 +9,7 @@ namespace rfxcomMessages
    CSecurity1X10R::CSecurity1X10R()
       : m_statusByte(0),
       m_panic(boost::make_shared<yApi::historization::CSwitch>("panic")),
-      m_armAlarm(boost::make_shared<yApi::historization::CArmingAlarm>("armAlarm")),
+      m_armAlarm(boost::make_shared<yApi::historization::CArmingAlarm>("armAlarm", yApi::EKeywordAccessMode::kGetSet)),
       m_light1(boost::make_shared<yApi::historization::CSwitch>("light1")),
       m_light2(boost::make_shared<yApi::historization::CSwitch>("light2")),
       m_keywords({ m_panic, m_armAlarm, m_light1, m_light2 })

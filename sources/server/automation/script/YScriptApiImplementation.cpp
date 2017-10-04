@@ -91,8 +91,7 @@ namespace automation
       std::string CYScriptApiImplementation::readKeyword(int keywordId) const
       {
          assertExistingKeyword(keywordId);
-
-         return m_dbAcquisitionRequester->getKeywordLastData(keywordId)->Value;
+         return m_keywordAccessLayer->getKeywordLastData(keywordId);
       }
 
       boost::shared_ptr<notification::acquisition::CNotification> CYScriptApiImplementation::waitForAction(boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification>> action,
@@ -238,6 +237,7 @@ namespace automation
 
          // subscriber must leave until function exits
          // ReSharper disable once CppEntityAssignedButNoRead
+         // ReSharper disable once CppJoinDeclarationAndAssignment
          boost::shared_ptr<notification::CHelpers::CCustomSubscriber> subscriber;
          if (!keywordIdList.empty())
          {
@@ -252,6 +252,7 @@ namespace automation
             observer->resetKeywordIdFilter(keywordIdList);
 
             //register the observer
+            // ReSharper disable once CppJoinDeclarationAndAssignment
             subscriber = boost::make_shared<notification::CHelpers::CCustomSubscriber>(observer);
          }
 

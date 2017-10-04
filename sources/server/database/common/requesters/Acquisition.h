@@ -48,8 +48,6 @@ namespace database
             void removeKeywordData(const int keywordId) override;
             boost::shared_ptr<entities::CAcquisition> getAcquisitionByKeywordAndDate(const int keywordId,
                                                                                      boost::posix_time::ptime time) override;
-            boost::shared_ptr<entities::CAcquisition> getKeywordLastData(const int keywordId,
-                                                                         bool throwIfNotExists = true) override;
             std::vector<boost::tuple<boost::posix_time::ptime, std::string> > getKeywordData(int keywordId,
                                                                                              boost::posix_time::ptime timeFrom,
                                                                                              boost::posix_time::ptime timeTo) override;

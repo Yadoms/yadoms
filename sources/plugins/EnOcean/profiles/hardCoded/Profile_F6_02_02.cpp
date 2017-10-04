@@ -37,9 +37,17 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return m_historizers;
 }
 
+void CProfile_F6_02_02::readInitialState(const std::string& senderId,
+                                         boost::shared_ptr<IMessageHandler> messageHandler) const
+{
+   // Read-only device
+}
+
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_F6_02_02::states(unsigned char rorg,
                                                                                                    const boost::dynamic_bitset<>& data,
-                                                                                                   const boost::dynamic_bitset<>& status) const
+                                                                                                   const boost::dynamic_bitset<>& status,
+                                                                                                   const std::string& senderId,
+                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    // Return only the concerned historizer
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
@@ -50,12 +58,12 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    if (!T21)
    {
       YADOMS_LOG(error) << "Unsupported message received for profile " << profile() <<
-         " : T21=" << (T21 ? "1" : "0") ;
+         " : T21=" << (T21 ? "1" : "0");
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
    if (!NU)
    {
-      YADOMS_LOG(information) << "Message received for profile " << profile() << " with NU=0 : this message contains nothing useful, will be ignored" ;
+      YADOMS_LOG(information) << "Message received for profile " << profile() << " with NU=0 : this message contains nothing useful, will be ignored";
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
 
@@ -83,7 +91,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       historizers.push_back(m_buttonB);
       break;
    default:
-      YADOMS_LOG(error) << "Profile F6_02_02 : receive unsupported rocker first action value " << rocker1stAction ;
+      YADOMS_LOG(error) << "Profile F6_02_02 : receive unsupported rocker first action value " << rocker1stAction;
       break;
    }
 
@@ -114,7 +122,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
          historizers.push_back(m_buttonB2ndAction);
          break;
       default:
-         YADOMS_LOG(error) << "Profile F6_02_02 : receive unsupported rocker second action value " << rocker2ndAction ;
+         YADOMS_LOG(error) << "Profile F6_02_02 : receive unsupported rocker second action value " << rocker2ndAction;
          break;
       }
    }

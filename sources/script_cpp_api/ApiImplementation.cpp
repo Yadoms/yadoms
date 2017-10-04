@@ -291,9 +291,8 @@ void CYScriptApiImplementation::writeKeyword(int keywordId,
    receiveAnswer(answer);
 
    if (!answer.error().empty())
-      throw std::out_of_range(std::string("yScriptApiWrapper::writeKeyword returned error : ") + answer.error());
-
-   if (!answer.has_writekeyword())
+      std::cerr << std::string("yScriptApiWrapper::writeKeyword returned error : ") + answer.error() << std::endl;
+   else if (!answer.has_writekeyword())
       throw std::out_of_range("yScriptApiWrapper::writeKeyword, wrong message received");
 }
 
@@ -312,9 +311,8 @@ void CYScriptApiImplementation::sendNotification(int keywordId,
    receiveAnswer(answer);
 
    if (!answer.error().empty())
-      throw std::out_of_range(std::string("yScriptApiWrapper::sendNotification returned error : ") + answer.error());
-
-   if (!answer.has_sendnotification())
+      std::cerr << std::string("yScriptApiWrapper::sendNotification returned error : ") + answer.error() << std::endl;
+   else if (!answer.has_sendnotification())
       throw std::out_of_range("yScriptApiWrapper::sendNotification, wrong message received");
 }
 

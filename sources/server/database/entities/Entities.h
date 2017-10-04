@@ -138,6 +138,8 @@ namespace database
          ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType))
          ((Details)(shared::CDataContainer))
          ((Blacklist)(bool))
+         ((LastAcquisitionValue)(std::string))
+         ((LastAcquisitionDate)(boost::posix_time::ptime))
       )
 
       DECLARE_ENTITY_CLASS_HEADER(Acquisition,

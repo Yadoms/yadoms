@@ -59,13 +59,16 @@ namespace database
                      }
                   }
 
+                  // Update also last value in keyword table
+                  m_keywordRequester->updateLastValue(keywordId,
+                                                      dataTime,
+                                                      data);
+
                   return getAcquisitionByKeywordAndDate(keywordId, dataTime);
                }
-               else
-               {
-                  //blacklisted keyword
-                  return boost::shared_ptr<entities::CAcquisition>();
-               }
+
+               //blacklisted keyword
+               return boost::shared_ptr<entities::CAcquisition>();
             }
             throw shared::exception::CEmptyResult("The keyword do not exists, cannot add data");
          }
@@ -109,7 +112,14 @@ namespace database
                   throw shared::exception::CEmptyResult("Fail to insert new incremental data");
             }
 
-            return getAcquisitionByKeywordAndDate(keywordId, dataTime);
+            auto newData = getAcquisitionByKeywordAndDate(keywordId, dataTime);
+
+            // Update also last value in keyword table
+            m_keywordRequester->updateLastValue(keywordId,
+                                                dataTime,
+                                                newData->Value());
+
+            return newData;
          }
 
          void CAcquisition::removeKeywordData(const int keywordId)
@@ -150,29 +160,6 @@ namespace database
             }
 
             throw shared::exception::CEmptyResult((boost::format("Cannot retrieve acquisition for KeywordId=%1% and date=%2%  in database") % keywordId % time).str());
-         }
-
-         boost::shared_ptr<entities::CAcquisition> CAcquisition::getKeywordLastData(const int keywordId, bool throwIfNotExists)
-         {
-            auto qSelect = m_databaseRequester->newQuery();
-            qSelect->Select().
-               From(CAcquisitionTable::getTableName()).
-               Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
-               OrderBy(CAcquisitionTable::getDateColumnName(), CQuery::kDesc).
-               Limit(1);
-
-            adapters::CAcquisitionAdapter adapter;
-            m_databaseRequester->queryEntities(&adapter, *qSelect);
-
-            if (adapter.getResults().size() >= 1)
-            {
-               return adapter.getResults()[0];
-            }
-            if (throwIfNotExists)
-            {
-               throw shared::exception::CEmptyResult((boost::format("Cannot retrieve any acquisition for the keyword id=%1% in database") % keywordId).str());
-            }
-            return boost::shared_ptr<entities::CAcquisition>();
          }
 
          std::vector<boost::tuple<boost::posix_time::ptime, std::string>> CAcquisition::getKeywordData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
@@ -339,12 +326,12 @@ namespace database
                .Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, timeFrom)
                .And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF, timeTo);
 
-            database::common::adapters::CSingleValueAdapterWithContainer<int> intVectorAdapter(results);
+            adapters::CSingleValueAdapterWithContainer<int> intVectorAdapter(results);
             m_databaseRequester->queryEntities(&intVectorAdapter, *q);
          }
 
 
-         boost::shared_ptr<entities::CAcquisitionSummary> CAcquisition::saveSummaryData(const int keywordId, database::entities::EAcquisitionSummaryType curType, boost::posix_time::ptime& dataTime)
+         boost::shared_ptr<entities::CAcquisitionSummary> CAcquisition::saveSummaryData(const int keywordId, entities::EAcquisitionSummaryType curType, boost::posix_time::ptime& dataTime)
          {
             /* 
             INSERT OR REPLACE INTO AcquisitionSummary (type, date, keywordId, mean, min, max)
@@ -383,7 +370,7 @@ namespace database
                   //Hour summary data are commputed from raw acquisitions
                   //Other ones, are taken from summarydata (really simplify calculous, and queries)
 
-                  if (curType == database::entities::EAcquisitionSummaryType::kHour)
+                  if (curType == entities::EAcquisitionSummaryType::kHour)
                   {
                      fromDate = boost::posix_time::ptime(dataTime.date(), boost::posix_time::hours(pt_tm.tm_hour));
                      toDate = boost::posix_time::ptime(dataTime.date(), boost::posix_time::hours(pt_tm.tm_hour) + boost::posix_time::minutes(59) + boost::posix_time::seconds(59));
@@ -450,19 +437,19 @@ namespace database
                   }
                   else
                   {
-                     database::entities::EAcquisitionSummaryType toQuery;
+                     entities::EAcquisitionSummaryType toQuery;
 
                      //all types but Hour
                      switch (curType)
                      {
-                     case database::entities::EAcquisitionSummaryType::kDayValue:
+                     case entities::EAcquisitionSummaryType::kDayValue:
                         fromDate = boost::posix_time::ptime(dataTime.date());
                         toDate = boost::posix_time::ptime(dataTime.date(),
                                                           boost::posix_time::hours(23) + boost::posix_time::minutes(59) + boost::posix_time::seconds(59));
-                        toQuery = database::entities::EAcquisitionSummaryType::kHour;
+                        toQuery = entities::EAcquisitionSummaryType::kHour;
                         break;
 
-                     case database::entities::EAcquisitionSummaryType::kMonthValue:
+                     case entities::EAcquisitionSummaryType::kMonthValue:
                         fromDate = boost::posix_time::ptime(boost::gregorian::date(dataTime.date().year(),
                                                                                    dataTime.date().month(),
                                                                                    1));
@@ -471,10 +458,10 @@ namespace database
                                                                                  boost::gregorian::gregorian_calendar::end_of_month_day(dataTime.date().year(),
                                                                                                                                         dataTime.date().month())),
                                                           boost::posix_time::hours(23) + boost::posix_time::minutes(59) + boost::posix_time::seconds(59));
-                        toQuery = database::entities::EAcquisitionSummaryType::kDay;
+                        toQuery = entities::EAcquisitionSummaryType::kDay;
                         break;
 
-                     case database::entities::EAcquisitionSummaryType::kYearValue:
+                     case entities::EAcquisitionSummaryType::kYearValue:
                         fromDate = boost::posix_time::ptime(boost::gregorian::date(dataTime.date().year(),
                                                                                    1,
                                                                                    1));
@@ -482,7 +469,7 @@ namespace database
                                                                                  12,
                                                                                  boost::gregorian::gregorian_calendar::end_of_month_day(dataTime.date().year(), 12)),
                                                           boost::posix_time::hours(23) + boost::posix_time::minutes(59) + boost::posix_time::seconds(59));
-                        toQuery = database::entities::EAcquisitionSummaryType::kMonth;
+                        toQuery = entities::EAcquisitionSummaryType::kMonth;
                         break;
                      }
 
@@ -554,19 +541,19 @@ namespace database
                   std::vector<boost::shared_ptr<entities::CAcquisitionSummary>> all;
                   switch (curType)
                   {
-                  case database::entities::EAcquisitionSummaryType::kHourValue:
+                  case entities::EAcquisitionSummaryType::kHourValue:
                      all = getKeywordDataByHour(keywordId, fromDate, toDate);
                      break;
 
-                  case database::entities::EAcquisitionSummaryType::kDayValue:
+                  case entities::EAcquisitionSummaryType::kDayValue:
                      all = getKeywordDataByDay(keywordId, fromDate, toDate);
                      break;
 
-                  case database::entities::EAcquisitionSummaryType::kMonthValue:
+                  case entities::EAcquisitionSummaryType::kMonthValue:
                      all = getKeywordDataByMonth(keywordId, fromDate, toDate);
                      break;
 
-                  case database::entities::EAcquisitionSummaryType::kYearValue:
+                  case entities::EAcquisitionSummaryType::kYearValue:
                      all = getKeywordDataByYear(keywordId, fromDate, toDate);
                      break;
                   }
@@ -584,11 +571,11 @@ namespace database
             //determine the real date of summary data 
             boost::posix_time::ptime fromDate;
             auto pt_tm = boost::posix_time::to_tm(dataTime);
-            if (curType == database::entities::EAcquisitionSummaryType::kHour)
+            if (curType == entities::EAcquisitionSummaryType::kHour)
             {
                fromDate = boost::posix_time::ptime(dataTime.date(), boost::posix_time::hours(pt_tm.tm_hour));
             }
-            else if (curType == database::entities::EAcquisitionSummaryType::kDay)
+            else if (curType == entities::EAcquisitionSummaryType::kDay)
             {
                fromDate = boost::posix_time::ptime(dataTime.date());
             }

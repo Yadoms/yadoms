@@ -64,6 +64,8 @@ set(ENOCEAN_SOURCES
    message/UTE_ReceivedMessage.h
    message/UTE_ReceivedMessage.cpp
    
+   specificHistorizers/DimmerModeHistorizer.h
+   specificHistorizers/DimmerModeHistorizer.cpp
    specificHistorizers/PilotWireHistorizer.h
    specificHistorizers/PilotWireHistorizer.cpp
    )

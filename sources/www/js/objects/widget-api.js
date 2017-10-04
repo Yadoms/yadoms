@@ -137,17 +137,20 @@ WidgetApi.prototype.toolbar = function (options) {
 WidgetApi.prototype.manageBatteryConfiguration = function () {
 
     var self = this;
+	
+	var d = new $.Deferred();
     var $battery = self.widget.$toolbar.find("." + self.widgetBatteryClass);
     if ($battery.length > 0) {
         //we clear the div that will contain the battery indicator
         $battery.empty();
         var deviceId = $battery.attr("deviceId");
-        if (deviceId) {
+        if (!isNullOrUndefinedOrEmpty(deviceId)) {
             //we check for the device to look if it has battery keyword
             DeviceManager.getKeywordsByDeviceId(deviceId)
             .done(function (keywords) {
                 var batteryLevel = keywords.find(function (element) { return element.capacityName === "batteryLevel"; });
                 if (batteryLevel) {
+					$battery.removeClass("hidden");
                     //it has capacity
                     $battery.append("<span class=\"\"/>");
                     $battery.attr("keywordId", batteryLevel.id);
@@ -158,21 +161,33 @@ WidgetApi.prototype.manageBatteryConfiguration = function () {
                     AcquisitionManager.getLastValue(batteryLevel.id)
                     .done(function (lastValue) {
                         self.widget.viewModel.widgetApi.updateBatteryLevel(lastValue.value);
+						d.resolve();
                     })
                     .fail(function (error) {
                         notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + batteryLevel.id }), error);
+						d.reject();
                     });
                 }
                 else {
                     //we can hide the div to prevent margin spaces before the title
-                    $battery.hide();
+					$battery.addClass("hidden");
+					d.resolve();
                 }
             })
             .fail(function (error) {
                 notifyError($.t("objects.generic.errorGetting", { objectName: "keyword for device = " + deviceId }), error);
+				d.reject();
             });
         }
+		else
+		{
+			//we can hide the div to prevent margin spaces before the title
+			$battery.addClass("hidden");
+			d.resolve();
+		}
     }
+	
+	return d.promise();
 }
 
 /**
@@ -243,16 +258,17 @@ WidgetApi.prototype.manageRollingTitle = function () {
    
 	if (self.widget.displayTitle && self.widget.toolbarActivated)
 	{
-		if ( self.widget.$toolbar[0].scrollWidth < 15 )
+
+		if (self.widget.$toolbar[0].scrollWidth <= 3) // Round size of the padding-right of the panel-widget-title-toolbar
 			toolbarSize = 0;
 		else
 			toolbarSize = self.widget.$toolbar[0].scrollWidth;
-		 
-		//Calculate the overflow ! Theses values could be obtain, only after the application !
+		
+		//Calculate the overflow ! Theses values could be obtain, only after the drawing of all elements !
 		var overflow = toolbarSize +
 					   self.widget.$header.find(".panel-widget-title")[0].scrollWidth -
-					   self.widget.$header[0].scrollWidth; 
-					   
+					   self.widget.$header[0].scrollWidth;
+		
 		if (overflow > 0) {
 			
 			if (self.widget.$header.find(".panel-widget-title-" + self.widget.id).length !== 0)

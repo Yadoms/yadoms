@@ -42,11 +42,6 @@ namespace rfxcomMessages
                  const shared::CDataContainer& manuallyDeviceCreationConfiguration);
 
       //--------------------------------------------------------------
-      /// \brief	Filter
-      //--------------------------------------------------------------
-      static boost::shared_ptr<IUnsecuredProtocolFilter> createFilter();
-
-      //--------------------------------------------------------------
       /// \brief	                        Constructor
       /// \param[in] api                  Yadoms APi context
       /// \param[in] rbuf                 The received buffer
@@ -64,6 +59,11 @@ namespace rfxcomMessages
       /// \brief	Destructor
       //--------------------------------------------------------------
       virtual ~CLighting4();
+
+      //--------------------------------------------------------------
+      /// \brief	Filter
+      //--------------------------------------------------------------
+      static boost::shared_ptr<IUnsecuredProtocolFilter> createFilter();
 
       // IRfxcomMessage implementation
       boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const override;

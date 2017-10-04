@@ -270,7 +270,7 @@ namespace pluginSystem
 
       auto instance = m_runningInstances.find(id);
       if (instance == m_runningInstances.end())
-         throw CPluginException((boost::format("Instance #%1% is not running") % id).str());
+         throw CPluginException((boost::format("Plugin instance #%1% is not running") % id).str());
 
       return instance->second;
    }
@@ -557,7 +557,7 @@ namespace pluginSystem
          try
          {
             auto stateKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "state");
-            shared::plugin::yPluginApi::historization::EPluginState state(m_dataProvider->getAcquisitionRequester()->getKeywordLastData(stateKw->Id)->Value());
+            shared::plugin::yPluginApi::historization::EPluginState state(m_dataProvider->getKeywordRequester()->getKeywordLastData(stateKw->Id));
             if (state == shared::plugin::yPluginApi::historization::EPluginState::kError)
             {
                // In error state
@@ -567,14 +567,14 @@ namespace pluginSystem
 
                try
                {
-                  shared::CDataContainer dc(m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
+                  shared::CDataContainer dc(m_dataProvider->getKeywordRequester()->getKeywordLastData(customMessageIdKw->Id));
                   defaultState.set("messageId", dc.getWithDefault("messageId", std::string()));
                   defaultState.set("messageData", dc.getWithDefault("messageData", std::string()));
                }
                catch (shared::exception::CJSONParse& jsonerror)
                {
                   YADOMS_LOG(debug) << "Fail to parser JSON in pluginState id=" << id << " error=" << jsonerror.what();
-                  defaultState.set("messageId", m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
+                  defaultState.set("messageId", m_dataProvider->getKeywordRequester()->getKeywordLastData(customMessageIdKw->Id));
                }
                return defaultState;
             }
@@ -613,18 +613,18 @@ namespace pluginSystem
          auto stateKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "state");
          auto customMessageIdKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "customMessageId");
          shared::CDataContainer defaultState;
-         defaultState.set("state", m_dataProvider->getAcquisitionRequester()->getKeywordLastData(stateKw->Id)->Value());
+         defaultState.set("state", m_dataProvider->getKeywordRequester()->getKeywordLastData(stateKw->Id));
 
          try
          {
-            shared::CDataContainer dc(m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
+            shared::CDataContainer dc(m_dataProvider->getKeywordRequester()->getKeywordLastData(customMessageIdKw->Id));
             defaultState.set("messageId", dc.getWithDefault("messageId", std::string()));
             defaultState.set("messageData", dc.getWithDefault("messageData", std::string()));
          }
          catch (shared::exception::CJSONParse& jsonerror)
          {
             YADOMS_LOG(debug) << "Fail to parser JSON in pluginState id=" << id << " error=" << jsonerror.what();
-            defaultState.set("messageId", m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
+            defaultState.set("messageId", m_dataProvider->getKeywordRequester()->getKeywordLastData(customMessageIdKw->Id));
          }
 
          return defaultState;
@@ -655,7 +655,7 @@ namespace pluginSystem
       instance->postDeviceCommand(command);
    }
 
-   const std::string CManager::postExtraQuery(int id, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query) const
+   std::string CManager::postExtraQuery(int id, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query) const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       auto instance(getRunningInstance(id));
