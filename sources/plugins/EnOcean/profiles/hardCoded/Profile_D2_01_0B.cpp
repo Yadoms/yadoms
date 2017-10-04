@@ -9,12 +9,10 @@ CProfile_D2_01_0B::CProfile_D2_01_0B(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_deviceId(deviceId),
      m_channel(boost::make_shared<yApi::historization::CSwitch>("Channel", yApi::EKeywordAccessMode::kGetSet)),
-     m_inputEnergy(boost::make_shared<yApi::historization::CEnergy>("Input energy")), //TODO dispo ?
-     m_inputPower(boost::make_shared<yApi::historization::CPower>("Input power")), //TODO dispo ?
      m_loadEnergy(boost::make_shared<yApi::historization::CEnergy>("Load energy")),
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),
      m_powerFailure(boost::make_shared<yApi::historization::CSwitch>("Power failure", yApi::EKeywordAccessMode::kGet)),
-     m_historizers({m_channel, m_inputEnergy, m_inputPower, m_loadEnergy, m_loadPower, m_powerFailure})
+     m_historizers({m_channel, m_loadEnergy, m_loadPower, m_powerFailure})
 {
 }
 
@@ -42,10 +40,15 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 void CProfile_D2_01_0B::readInitialState(const std::string& senderId,
                                          boost::shared_ptr<IMessageHandler> messageHandler) const
 {
+   // Need to wait a bit between outgoing messages, to be sure to receive answer
+   boost::this_thread::sleep(boost::posix_time::milliseconds(500));
    CProfile_D2_01_Common::sendActuatorStatusQuery(messageHandler,
                                                   senderId,
                                                   m_deviceId,
                                                   CProfile_D2_01_Common::kOutputChannel1);
+
+   // Need to wait a bit between outgoing messages, to be sure to receive answer
+   boost::this_thread::sleep(boost::posix_time::milliseconds(500));
    CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
                                                        senderId,
                                                        m_deviceId,
@@ -80,12 +83,10 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       {
          auto historizers = CProfile_D2_01_Common::extractActuatorMeasurementResponse(rorg,
                                                                                       data,
-                                                                                      m_inputEnergy,
-                                                                                      m_inputPower,
                                                                                       m_loadEnergy,
                                                                                       m_loadPower);
 
-         if (std::find(historizers.begin(), historizers.end(), m_loadPower) != historizers.end())//TODO à faire pour l'inputPower ?
+         if (std::find(historizers.begin(), historizers.end(), m_loadPower) != historizers.end())
          {
             // Power is configured to be received automaticaly.
             // As we can not receive both data (power + energy) automaticaly,

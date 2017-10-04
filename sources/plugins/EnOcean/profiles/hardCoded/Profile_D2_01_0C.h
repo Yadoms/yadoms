@@ -33,8 +33,6 @@ public:
 private:
    const std::string m_deviceId;
    boost::shared_ptr<yApi::historization::CSwitch> m_channel;
-   boost::shared_ptr<yApi::historization::CEnergy> m_inputEnergy;
-   boost::shared_ptr<yApi::historization::CPower> m_inputPower;
    boost::shared_ptr<yApi::historization::CEnergy> m_loadEnergy;
    boost::shared_ptr<yApi::historization::CPower> m_loadPower;
    boost::shared_ptr<specificHistorizers::CPilotWireHistorizer> m_pilotWire;

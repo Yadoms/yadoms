@@ -152,8 +152,6 @@ public:
    static const boost::shared_ptr<yApi::historization::CPower> noLoadPower;
    static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorMeasurementResponse(unsigned char rorg,
                                                                                                                       const boost::dynamic_bitset<>& data,
-                                                                                                                      boost::shared_ptr<yApi::historization::CEnergy> inputEnergy,
-                                                                                                                      boost::shared_ptr<yApi::historization::CPower> inputPower,
                                                                                                                       boost::shared_ptr<yApi::historization::CEnergy> loadEnergy,
                                                                                                                       boost::shared_ptr<yApi::historization::CPower> loadPower);
 
