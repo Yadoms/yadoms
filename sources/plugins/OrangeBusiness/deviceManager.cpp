@@ -35,7 +35,10 @@ const int CEquipmentManager::size() const
 	return m_deviceList.size();
 }
 
-void CEquipmentManager::refreshEquipments(urlManager& frameManager, std::string& apikey, boost::shared_ptr<CDecoder> decoder)
+void CEquipmentManager::refreshEquipments(boost::shared_ptr<yApi::IYPluginApi> api,
+                                          urlManager& frameManager, 
+                                          const std::string& apikey, 
+                                          boost::shared_ptr<CDecoder> decoder)
 {
 	for (const auto& pair : m_deviceList)
 	{
@@ -52,6 +55,7 @@ void CEquipmentManager::refreshEquipments(urlManager& frameManager, std::string&
 			// Todo : Reading of the last communication date. If the date is too old for battery level > 1 week - do not integrate it
 			if (td.total_seconds() < (3600 * 24 * 7)) // A améliorer
 			{
+            m_deviceList.at(pair.first)->updateBatteryLevel(api, batteryLevel);
 			}
 
 			//Todo : Enter a date to limit the number of frames

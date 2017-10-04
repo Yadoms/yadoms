@@ -42,8 +42,7 @@ namespace shared
 
       //--------------------------------------------------------------
       /// \brief	    SendGetRequest
-	  /// \param[in]  session             the session created for this request
-      /// \param[in]  url                 the url to send the request
+      /// \param[in]  session             the session created for this request
       /// \param[in]  headerParameters    parameters included into the frame
       /// \param[in]  parameters          parameters at the end of the url
       /// \param[in]  onReceive           function called on received data

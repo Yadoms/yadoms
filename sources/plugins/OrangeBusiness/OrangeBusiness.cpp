@@ -92,7 +92,7 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kRefreshStatesReceived:
       {
 		  try {
-			  m_equipmentManager->refreshEquipments(m_frameManager, m_configuration.getAPIKey(), m_decoder);
+			  m_equipmentManager->refreshEquipments(api, m_frameManager, m_configuration.getAPIKey(), m_decoder);
 		  }
 		  catch (std::exception &e)
 		  {

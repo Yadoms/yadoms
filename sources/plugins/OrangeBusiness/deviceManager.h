@@ -23,7 +23,10 @@ public:
     //-----------------------------------------------------
 	CEquipmentManager(boost::shared_ptr<yApi::IYPluginApi> api);
 	CEquipmentManager(const std::map<std::string, boost::shared_ptr<equipments::IEquipment>>& deviceList);
-	void refreshEquipments(urlManager& frameManager, std::string& apikey, boost::shared_ptr<CDecoder> decoder);
+	void refreshEquipments(boost::shared_ptr<yApi::IYPluginApi> api,
+                          urlManager& frameManager, 
+                          const std::string& apikey, 
+                          boost::shared_ptr<CDecoder> decoder);
 	const int size() const;
 
     //-----------------------------------------------------

@@ -6,11 +6,11 @@ namespace equipments
 {
    CDefaultEquipment::CDefaultEquipment(const std::string& name,
                                         const std::string& devEUID) :
-      m_name(name),
-      m_devEUI(devEUID),
+	   m_messageKeyword(boost::make_shared<yApi::historization::CText>("message",
+                                                                      yApi::EKeywordAccessMode::kGetSet)),
       m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_messageKeyword(boost::make_shared<yApi::historization::CText>("message",
-                                                                      yApi::EKeywordAccessMode::kGetSet))
+	   m_name(name),
+      m_devEUI(devEUID)
    {}
 
    std::string CDefaultEquipment::getName() const

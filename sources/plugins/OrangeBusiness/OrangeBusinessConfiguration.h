@@ -21,7 +21,7 @@ public:
 
    // ISigfoxConfiguration implementation
    void initializeWith(const shared::CDataContainer& data) override;
-   std::string getAPIKey() const override;
+   const std::string getAPIKey() const override;
    // [END] ISigfoxConfiguration implementation
 
 private:

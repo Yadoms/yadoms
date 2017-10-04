@@ -18,7 +18,7 @@ public:
    /// \brief	    Get the API Key from the configuration
    /// \return     The API Key String
    //--------------------------------------------------------------
-   virtual std::string getAPIKey() const = 0;
+   virtual const std::string getAPIKey() const = 0;
 
    //--------------------------------------------------------------
    /// \brief		   Load configuration data

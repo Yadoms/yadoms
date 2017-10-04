@@ -74,14 +74,48 @@ namespace yApi = shared::plugin::yPluginApi;
       BOOST_CHECK_EQUAL(decoder.isFrameComplete(messageRecu), true);
 
       BOOST_CHECK_EQUAL(devicesRegistered.size(), 2);
-	  BOOST_CHECK_NO_THROW(devicesRegistered.at("DeviceTest1")); // If present, no exception std::out_of_range
-	  BOOST_CHECK_NO_THROW(devicesRegistered.at("DeviceTest2"));
+      BOOST_CHECK_NO_THROW(devicesRegistered.at("DeviceTest1")); // If present, no exception std::out_of_range
+      BOOST_CHECK_NO_THROW(devicesRegistered.at("DeviceTest2"));
       BOOST_CHECK_EQUAL(devicesRegistered.at("DeviceTest2")->getEUI(), "0018B20000000272");
       BOOST_CHECK_EQUAL(devicesRegistered.at("DeviceTest1")->getEUI(), "0018B20000000274");
    }
 
-   BOOST_AUTO_TEST_CASE(DecoderDeviceFrameNominal1)
+   BOOST_AUTO_TEST_CASE(DecoderCommandListEmpty)
    {
+   }
+
+   BOOST_AUTO_TEST_CASE(DecoderCommandeListNominal)
+   {
+      shared::CDataContainer deviceInformation;
+      CDecoder decoder;
+
+      deviceInformation.set("page", 0);
+      deviceInformation.set("size", 20);
+      deviceInformation.set("totalCount", 2);
+
+      std::vector<shared::CDataContainer> data;
+
+      shared::CDataContainer command1, command2;
+/*  TODO : Create SENT type
+      command1.set("id", "5703cfa9e4b0b24cd6862865");
+      command1.set("data", "01");
+      command1.set("port", 1);
+      command1.set("confirmed", true);
+      command1.set("commandStatus", SENT);
+      command1.set("creationTs", "2016-06-03T15:50:39.669Z");
+
+      command2.set("id", "5703cfa9e4b0b24cd6862866");
+      command2.set("data", "01");
+      command2.set("port", 1);
+      command2.set("confirmed", true);
+      command2.set("commandStatus", SENT);
+      command2.set("creationTs", "2016-06-03T15:50:39.669Z");
+
+      data.push_back(command1);
+      data.push_back(command2);
+      deviceInformation.set("data", data);
+*/
+      decoder.getLastData(deviceInformation);
    }
 
    BOOST_AUTO_TEST_SUITE_END()

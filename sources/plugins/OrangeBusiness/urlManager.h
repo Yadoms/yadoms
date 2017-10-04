@@ -45,10 +45,10 @@ public:
    /// \param[in]  timeout             optional, the timeout of the request
    /// \return     the json response
    //--------------------------------------------------------------
-   shared::CDataContainer urlManager::listDeviceCommands(const std::string &apikey,
-                                                         const std::string &devEUI,
-                                                         const int page,
-                                                         const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout);
+   shared::CDataContainer listDeviceCommands(const std::string &apikey,
+                                             const std::string &devEUI,
+                                             const int page,
+                                             const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout);
 
 private:
 
