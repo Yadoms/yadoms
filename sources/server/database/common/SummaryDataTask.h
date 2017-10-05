@@ -29,7 +29,7 @@ namespace common {
       //--------------------------------------------------------------
       /// \Brief		   Method for implementing first run process
       //--------------------------------------------------------------
-      void executeFirstRunPass();
+      void executeFirstRunPass() const;
 
       //--------------------------------------------------------------
       /// \Brief		   Method for implementing common process (not first run)

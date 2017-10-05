@@ -9,7 +9,7 @@ widgetViewModelCtor =
           //observable data
           this.command = ko.observable(1);
           this.kind = ko.observable("simple");
-          this.invert = false;
+          this.invert = ko.observable(false);
           this.icon = ko.observable("");
           this.readonly = ko.observable(true);
 
@@ -33,7 +33,8 @@ widgetViewModelCtor =
           self.shutterIcon = ko.computed(function () {
               
               var displayValue = self.command();
-              if (self.invert) {
+              
+              if (self.invert()) {
                   displayValue = !displayValue;
               }
               
@@ -99,7 +100,7 @@ widgetViewModelCtor =
               }
 
               if (!isNullOrUndefined(this.widget.configuration.invert)) {
-                  this.invert = this.widget.configuration.invert;
+                  this.invert(parseBool(this.widget.configuration.invert));
               }
           };
 

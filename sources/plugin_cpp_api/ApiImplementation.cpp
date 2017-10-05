@@ -437,8 +437,8 @@ namespace plugin_cpp_api
       request->set_device(device);
       request->set_type(type);
       request->set_model(model);
-      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
-         fillHistorizable(*keyword, request->add_keywords());
+      for (const auto& keyword : keywords)
+         fillHistorizable(keyword, request->add_keywords());
       if (!details.empty())
          request->set_details(details.serialize());
       try

@@ -44,27 +44,27 @@ namespace database
       /// \return                         The list of found keywords
       /// \throw                          shared::exception::CEmptyResult if none found
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CKeyword> > getKeywordIdFromFriendlyName(int deviceId, const std::string& friendlyName) const = 0;
+      virtual std::vector<boost::shared_ptr<entities::CKeyword>> getKeywordIdFromFriendlyName(int deviceId, const std::string& friendlyName) const = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all keywords 
       /// \return          List of registered keywords
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CKeyword> > getAllKeywords() const = 0;
+      virtual std::vector<boost::shared_ptr<entities::CKeyword>> getAllKeywords() const = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all keywords for a device
       /// \param [in]      deviceId   the device which own the keyword
       /// \return          List of registered keywords
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CKeyword> > getKeywords(int deviceId) const = 0;
+      virtual std::vector<boost::shared_ptr<entities::CKeyword>> getKeywords(int deviceId) const = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all keywords which match a capacity
       /// \param [in]      capacity   the capacity
       /// \return          List of registered keywords
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CKeyword> > getKeywordsMatchingCapacity(const std::string& capacity) const = 0;
+      virtual std::vector<boost::shared_ptr<entities::CKeyword>> getKeywordsMatchingCapacity(const std::string& capacity) const = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all keywords which match capacity for a device
@@ -73,8 +73,27 @@ namespace database
       /// \param [in]      capacityAccessMode   the capacity acces mode
       /// \return          List of registered keywords
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getDeviceKeywordsWithCapacity(int deviceId, const std::string& capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const = 0;
+      virtual std::vector<boost::shared_ptr<entities::CKeyword>> getDeviceKeywordsWithCapacity(int deviceId, const std::string& capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const = 0;
 
+      //-----------------------------------------
+      ///\brief      Get the last acquisition of a keyword
+      ///\param [in] keywordId  The keyword id
+      ///\param [in] throwIfNotExists  true to throw exception if keyword have no data, false to get an empty shared_ptr
+      ///\return     the last acquisition for the keyword
+      ///\throw      CEmptyResult if no data is available
+      //-----------------------------------------
+      virtual boost::shared_ptr<entities::CAcquisition> getKeywordLastAcquisition(const int keywordId,
+                                                                                  bool throwIfNotExists = true) = 0;
+
+      //-----------------------------------------
+      ///\brief      Get the last data of a keyword
+      ///\param [in] keywordId  The keyword id
+      ///\param [in] throwIfNotExists  true to throw exception if keyword have no data, false to get an empty shared_ptr
+      ///\return     the last acquisition for the keyword
+      ///\throw      CEmptyResult if no data is available
+      //-----------------------------------------
+      virtual std::string getKeywordLastData(const int keywordId,
+                                             bool throwIfNotExists = true) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Update the keyword blacklist state
@@ -98,6 +117,14 @@ namespace database
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void updateKeywordFriendlyName(int keywordId, const std::string& newFriendlyName) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                          Update the last value of a keyword
+      /// \param [in] keywordId           the keyword id to update
+      /// \param [in] valueDatetime       The new value date time
+      /// \param [in] value               The new value
+      //--------------------------------------------------------------
+      virtual void updateLastValue(int keywordId, const boost::posix_time::ptime& valueDatetime, const std::string& value) = 0;
    };
 } //namespace database 
 
