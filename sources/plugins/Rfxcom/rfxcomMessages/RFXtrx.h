@@ -9,7 +9,7 @@
 
 /*
                                                                    
-Copyright 2011-2016, RFXCOM
+Copyright 2011-2017, RFXCOM
 
 ALL RIGHTS RESERVED. This code is owned by RFXCOM, and is protected under
 Netherlands Copyright Laws and Treaties and shall be subject to the 
@@ -333,19 +333,6 @@ SDK version 4.9
 #define cmdSAVE		0x06 // save receiving modes of the receiver/transceiver in non-volatile memory
 #define cmdStartRec	0x07 // start RFXtrx receiver
 
-#define cmd310		0x50 // select 310MHz in the 310/315 transceiver
-#define cmd315		0x51 // select 315MHz in the 310/315 transceiver
-#define cmd800		0x55 // select 868.00MHz ASK in the 868 transceiver
-#define cmd800F		0x56 // select 868.00MHz FSK in the 868 transceiver
-#define cmd830		0x57 // select 868.30MHz ASK in the 868 transceiver
-#define cmd830F		0x58 // select 868.30MHz FSK in the 868 transceiver
-#define cmd835		0x59 // select 868.35MHz ASK in the 868 transceiver
-#define cmd835F		0x5A // select 868.35MHz FSK in the 868 transceiver
-#define cmd895		0x5B // select 868.95MHz in the 868 transceiver
-#define cmd830F_P	0x5C // select 868.30MHz FSK PKT in the 868 transceiver
-#define cmd835F_P	0x5D // select 868.35MHz FSK PKT in the 868 transceiver
-#define cmd840F_P	0x5E // select 868.40MHz FSK PKT in the 868 transceiver
-
 #define pTypeInterfaceMessage 0x01
 #define sTypeInterfaceResponse 0x00
 #define sTypeUnknownRFYremote 0x01
@@ -354,21 +341,13 @@ SDK version 4.9
 #define sTypeASAremoteList 0x04
 #define sTypeRecStarted 0x07
 #define sTypeInterfaceWrongCommand 0xFF
-#define recType310 0x50
-#define recType315 0x51
+#define trxType310 0x50
+#define trxType315 0x51
 #define recType43392 0x52
 #define trxType43392 0x53
-#define recType86800 0x55
-#define recType86800FSK 0x56
-#define recType86830 0x57
-#define recType86830FSK 0x58
-#define recType86835 0x59
-#define recType86835FSK 0x5A
-#define recType86895 0x5B
-#define recType86830FSK_PKT 0x5C
-#define recType86835FSK_PKT 0x5D
-#define recType86840FSK_PKT 0x5E
-#define trxType43450 0x5F
+#define trxType868 0x55
+#define trxTypeIOT433 0x56
+#define trxTypeIOT868 0x57
 
 #define msg3_AE 0x01			//AE Blyss
 #define msg3_RUBICSON 0x02		//Rubicson,Lacrosse, Banggood
