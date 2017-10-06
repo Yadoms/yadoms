@@ -61,6 +61,12 @@ private:
    bool m_isDeveloperMode;
 
    //--------------------------------------------------------------
+   /// \brief  Retry timer after error
+   //--------------------------------------------------------------
+   boost::shared_ptr<shared::event::CEventTimer> m_protocolErrorRetryTimer;
+
+
+   //--------------------------------------------------------------
    /// \brief	                     Create the connection to the RfPlayer RFP1000
    /// \param [in] eventHandler     Event handler to be notified on events on the connection
    //--------------------------------------------------------------
@@ -81,7 +87,7 @@ private:
 
    void processZiBlueConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
    void errorProcess(boost::shared_ptr<yApi::IYPluginApi> api);
-   void processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
+   static void processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
    void processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::incoming::CBinaryFrame> data) const;
    void processZiBlueAsciiFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::incoming::CAsciiFrame> data) const;
    void initZiBlue(boost::shared_ptr<yApi::IYPluginApi> api);
