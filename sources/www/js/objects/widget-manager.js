@@ -713,7 +713,10 @@ WidgetManager.createGridWidget = function (widget) {
                 try {
                     if (widget.viewModel.resized !== undefined)
 					{
-                        widget.viewModel.resized().always(function() {
+                        var defferedResult = widget.viewModel.resized();
+                        //we manage answer if it is a promise or not
+                        defferedResult = defferedResult || new $.Deferred().resolve();
+                        defferedResult.always(function() {
                            widget.viewModel.widgetApi.manageRollingTitle();
                         });
 					}

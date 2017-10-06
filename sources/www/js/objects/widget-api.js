@@ -126,6 +126,9 @@ WidgetApi.prototype.toolbar = function (options) {
                 console.error("Unknown item type: " + index);
             }
         });
+        
+        //i18n of page tab
+        self.widget.$toolbar.i18n();
     } else {
         self.find(".panel-widget-header").addClass("hidden");
     }
@@ -165,7 +168,7 @@ WidgetApi.prototype.manageBatteryConfiguration = function () {
                     })
                     .fail(function (error) {
                         notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + batteryLevel.id }), error);
-						d.reject();
+                        d.reject();
                     });
                 }
                 else {
