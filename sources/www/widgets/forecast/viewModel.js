@@ -125,7 +125,7 @@ function forecastViewModel() {
     */
    this.onNewAcquisition = function (keywordId, data) {
       var self = this;
-
+      
       if (keywordId === self.widget.configuration.device.keywordId) {
          if (data.value && data.value !== "") {
             var obj = jQuery.parseJSON(data.value);
@@ -169,8 +169,8 @@ function forecastViewModel() {
                self.TempPeriod.push({
                   WeatherCondition: obj.forecast[i].WeatherCondition,
                   TimeDate: timeString,
-                  TempMax: obj.forecast[i].TempMax + $.t(obj.Units.temperature), //  ° obj.Units.temperature.substring(0, obj.Units.temperature.length - 1),
-                  TempMin: obj.forecast[i].TempMin + $.t(obj.Units.temperature), //obj.Units.temperature.substring(0, obj.Units.temperature.length - 1),
+                  TempMax: obj.forecast[i].TempMax + $.t(obj.Units.temperature),
+                  TempMin: obj.forecast[i].TempMin + $.t(obj.Units.temperature),
                   MaxWind: Convertmstokmh(parseFloat(obj.forecast[i].MaxWind, 10)).toFixed(0),
                   AveWind: Convertmstokmh(parseFloat(obj.forecast[i].AveWind, 10)).toFixed(0),
                   AveWindDegrees: obj.forecast[i].AveWindDegrees,
