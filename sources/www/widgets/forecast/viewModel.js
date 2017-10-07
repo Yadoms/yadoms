@@ -130,9 +130,6 @@ function forecastViewModel() {
          if (data.value && data.value !== "") {
             var obj = jQuery.parseJSON(data.value);
             
-            console.log (obj.city);
-            console.log ("receive information : ", obj);
-            
             var decodedCity = decodeURI(obj.city);
             //We only keep the city name
             var res = decodedCity.split(",");
