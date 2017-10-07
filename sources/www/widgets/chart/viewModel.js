@@ -916,7 +916,6 @@ widgetViewModelCtor =
              var lastDate = 0;
              
              if (!isNullOrUndefined(serie)){             
-                console.log ("serie.points : ", serie.points);
                 
                 if (serie.points.length>0)
                    lastDate = serie.points[serie.points.length - 1].x;
