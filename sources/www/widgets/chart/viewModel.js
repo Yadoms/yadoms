@@ -231,6 +231,47 @@ widgetViewModelCtor =
            }
        };
 
+       this.chartParametersConfiguration = function () {
+         var self = this;
+         
+         // Cleaning ranges switch
+         switch (self.interval) {
+             case "HOUR":
+                 self.cleanValue = 3600000;
+                 self.prefix = "minute";
+                 break;
+             case "DAY":
+                 self.cleanValue = 3600000 * 24;
+                 self.prefix = "hour";
+                 break;
+             case "WEEK":
+                 self.cleanValue = 3600000 * 24 * 7;
+                 self.prefix = "hour";
+                 break;
+             case "MONTH":
+                 self.cleanValue = 3600000 * 24 * 30;
+                 self.prefix = "day";
+                 break;
+             case "HALF_YEAR":
+                 self.cleanValue = 3600000 * 24 * 182;
+                 self.prefix = "day";
+                 break;
+             case "YEAR":
+                 self.cleanValue = 3600000 * 24 * 365;
+                 self.prefix = "day";
+                 break;
+             default:
+                 self.cleanValue = 3600000;
+                 self.prefix = "hour";
+                 break;
+         }
+         
+         if (self.prefix === "hour")
+            self.summaryTimeBetweenNewPoint = 3600000 * 2 + 60000;
+         else if (self.prefix === "day")
+            self.summaryTimeBetweenNewPoint = 3600000 * 24 * 2 + 60000;
+       };
+       
        this.configurationChanged = function () {
            var self = this;
            
@@ -244,44 +285,9 @@ widgetViewModelCtor =
 
 
            self.interval = self.widget.configuration.interval;
-            
-            // Cleaning ranges switch
-            switch (self.interval) {
-                case "HOUR":
-                    self.cleanValue = 3600000;
-                    self.prefix = "minute";
-                    break;
-                case "DAY":
-                    self.cleanValue = 3600000 * 24;
-                    self.prefix = "hour";
-                    break;
-                case "WEEK":
-                    self.cleanValue = 3600000 * 24 * 7;
-                    self.prefix = "hour";
-                    break;
-                case "MONTH":
-                    self.cleanValue = 3600000 * 24 * 30;
-                    self.prefix = "day";
-                    break;
-                case "HALF_YEAR":
-                    self.cleanValue = 3600000 * 24 * 182;
-                    self.prefix = "day";
-                    break;
-                case "YEAR":
-                    self.cleanValue = 3600000 * 24 * 365;
-                    self.prefix = "day";
-                    break;
-                default:
-                    self.cleanValue = 3600000;
-                    self.prefix = "hour";
-                    break;
-            }
-            
-            if (self.prefix === "hour")
-               self.summaryTimeBetweenNewPoint = 3600000 * 2 + 60000;
-            else if (self.prefix === "day")
-               self.summaryTimeBetweenNewPoint = 3600000 * 24 * 2 + 60000;
-            
+           
+           self.chartParametersConfiguration();
+           
            //Desactivate the old button
            self.widgetApi.find(".range-btn[interval='" + self.interval + "']").removeClass("widget-toolbar-pressed-button");
 
@@ -371,7 +377,7 @@ widgetViewModelCtor =
            });
 
            $.whenAll(arrayOfDeffered).done(function () {
-               self.refreshData(self.widget.configuration.interval).done(function () {
+                  self.refreshData(self.widget.configuration.interval).done(function () {
                   d.resolve();
                })
                .fail(function (error) {
@@ -392,6 +398,10 @@ widgetViewModelCtor =
            return function (e) {
                //we manage activation
                var interval = $(e.currentTarget).attr("interval");
+               
+               self.interval = interval;
+               
+               self.chartParametersConfiguration();
 
                //we manage button inversion
                self.widgetApi.find(".range-btn[interval='" + interval + "']").addClass("widget-toolbar-pressed-button");
@@ -924,13 +934,19 @@ widgetViewModelCtor =
                 {
                    switch (self.interval) {
                      case "DAY":
+                        self.DisplaySummary(index, 1, device, "days", "hour");
+                        break;
                      case "WEEK":
-                        self.DisplaySummary(index, 1, device, "hours", "hour");
+                        self.DisplaySummary(index, 1, device, "weeks", "hour");
                         break;
                      case "MONTH":
+                        self.DisplaySummary(index, 1, device, "months", "day");
+                        break;
                      case "HALF_YEAR":
+                        self.DisplaySummary(index, 6, device, "months", "day");
+                        break
                      case "YEAR":
-                        self.DisplaySummary(index, 1, device, "days", "day");
+                        self.DisplaySummary(index, 1, device, "years", "day");
                         break;
                      default:
                         break;
@@ -953,7 +969,7 @@ widgetViewModelCtor =
          
             var serie = self.chart.get(value);
             var serieRange = self.chart.get('range_' + value);
-             
+            
             // If a serie is available  // Clean points > cleanValue for serie
             if (!isNullOrUndefined(serie))
                self.cleanUpChart(serie, dateTo, self.cleanValue);
@@ -977,10 +993,7 @@ widgetViewModelCtor =
                RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + "/" + prefix + "/" + dateFrom + "/" + dateTo)
                   .done(function (data) {
                       try {
-						  console.log ("date :", DateTimeFormatter.dateToIsoDate(moment(self.serverTime)));
-						  console.log ("valeur :", data.data[data.data.length-1]);
-						  
-						  var serie = self.chart.get(self.seriesUuid[index]);
+						        var serie = self.chart.get(self.seriesUuid[index]);
                           if (data.data[data.data.length-1] != undefined) {
                               self.chart.hideLoading(); // If a text was displayed before
 							  
@@ -1001,14 +1014,16 @@ widgetViewModelCtor =
                               }
                               else                              
                                  serie.addPoint([registerDate, valueToDisplay], true, false, true);
-						      
+                        
                               //Add also for ranges if any
                               if (serieRange && !self.differentialDisplay[index])
-                                 serieRange.addPoint([registerDate, parseFloat(data.data[data.data.length-1].min), parseFloat(data.data[data.data.length-1].max)], true, false, true);
+                              {
+                                 serieRange.addPoint([registerDate, parseFloat(data.data[data.data.length-1].min), parseFloat(data.data[data.data.length-1].max)], 
+                                                     true, false, true);
+                              }
                           }
 						  else{ // Add null for this date
 							  var registerDate = moment(self.serverTime).subtract(1, 'hours').startOf(prefix)._d.getTime().valueOf();
-							  console.log ("registerDate : ", registerDate);
 							  serie.addPoint([registerDate, null], true, false, true);
 						  }
                       } catch (err) {
