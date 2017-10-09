@@ -666,8 +666,8 @@ shared::CDataContainer COpenZWaveController::getNodeInfo(const uint32 homeId, co
    YADOMS_LOG(information) << "ZWave : NodeInfo : productName = " << sNodeProductName;
    YADOMS_LOG(information) << "ZWave : NodeInfo : productType = " << sNodeProductType;
    YADOMS_LOG(information) << "ZWave : NodeInfo : productId = " << sNodeProductId;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : version = " << (int)sNodeVersion;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : ZWave+ = " << iszwplus?"true":"false";
+   YADOMS_LOG(information) << "ZWave : NodeInfo : version = " << static_cast<int>(sNodeVersion);
+   YADOMS_LOG(information) << "ZWave : NodeInfo : ZWave+ = " << (iszwplus ? "true" : "false");
    if(iszwplus)
       YADOMS_LOG(information) << "ZWave : NodeInfo : ZWave+type = " << sNodePlusType;
    YADOMS_LOG(information) << "ZWave : NodeInfo : Device type = " << sNodeDeviceTypeString;
