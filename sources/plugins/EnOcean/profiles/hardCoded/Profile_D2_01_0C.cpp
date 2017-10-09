@@ -46,14 +46,14 @@ void CProfile_D2_01_0C::readInitialState(const std::string& senderId,
    CProfile_D2_01_Common::sendActuatorStatusQuery(messageHandler,
                                                   senderId,
                                                   m_deviceId,
-                                                  CProfile_D2_01_Common::kOutputChannel1);
+                                                  CProfile_D2_01_Common::kAllOutputChannels);
 
    // Need to wait a bit between outgoing messages, to be sure to receive answer
    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
    CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
                                                        senderId,
                                                        m_deviceId,
-                                                       CProfile_D2_01_Common::kOutputChannel1,
+                                                       CProfile_D2_01_Common::kAllOutputChannels,
                                                        CProfile_D2_01_Common::kQueryPower);
 
    // Need to wait a bit between outgoing messages, to be sure to receive answer
@@ -81,7 +81,6 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
          return CProfile_D2_01_Common::extractActuatorStatusResponse(rorg,
                                                                      data,
                                                                      m_channel,
-                                                                     CProfile_D2_01_Common::noChannel2,
                                                                      CProfile_D2_01_Common::noDimmable,
                                                                      CProfile_D2_01_Common::noPowerFailure,
                                                                      m_overCurrent);
@@ -101,7 +100,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
             CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
                                                                 senderId,
                                                                 m_deviceId,
-                                                                CProfile_D2_01_Common::kOutputChannel1,
+                                                                CProfile_D2_01_Common::kAllOutputChannels,
                                                                 CProfile_D2_01_Common::kQueryEnergy);
          }
 
@@ -129,7 +128,7 @@ void CProfile_D2_01_0C::sendCommand(const std::string& keyword,
       CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
                                                                    senderId,
                                                                    m_deviceId,
-                                                                   CProfile_D2_01_Common::kOutputChannel1,
+                                                                   CProfile_D2_01_Common::kAllOutputChannels,
                                                                    m_channel->get());
    }
    else if (keyword == m_pilotWire->getKeyword())
@@ -154,7 +153,7 @@ void CProfile_D2_01_0C::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
-                                                      CProfile_D2_01_Common::kOutputChannel1,
+                                                      CProfile_D2_01_Common::kAllOutputChannels,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
@@ -181,7 +180,7 @@ void CProfile_D2_01_0C::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
                                                             senderId,
                                                             m_deviceId,
-                                                            CProfile_D2_01_Common::kOutputChannel1,
+                                                            CProfile_D2_01_Common::kAllOutputChannels,
                                                             true,
                                                             minEnergyMeasureRefreshTime,
                                                             maxEnergyMeasureRefreshTime);
