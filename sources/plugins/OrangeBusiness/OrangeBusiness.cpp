@@ -140,7 +140,7 @@ void COrangeBusiness::registerAllDevices(boost::shared_ptr<yApi::IYPluginApi> ap
 
       do {
          response = m_frameManager.getRegisteredEquipments(m_configuration.getAPIKey(), page, false); //http://liveobjects.orange-business.com
-		 m_equipmentManager = boost::make_shared<CEquipmentManager>(m_decoder->decodeDevicesMessage(api, response));
+         m_equipmentManager = boost::make_shared<CEquipmentManager>(m_decoder->decodeDevicesMessage(api, response));
          response.printToLog(YADOMS_LOG(information));
          ++page;
       } while (!m_decoder->isFrameComplete(response));

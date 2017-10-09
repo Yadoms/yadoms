@@ -6,7 +6,6 @@
 
 #include "IHttpSession.h"
 #include <Poco/URI.h>
-#include <Poco/Net/HTTPSClientSession.h>
 
 namespace shared
 {

@@ -43,6 +43,8 @@ IF(NOT DISABLE_TEST_PLUGIN_ORANGE_BUSINESS)
       plugins/OrangeBusiness/DefaultEquipment.cpp
       plugins/OrangeBusiness/Decoder.h
       plugins/OrangeBusiness/Decoder.cpp
+      plugins/OrangeBusiness/deviceManager.h
+      plugins/OrangeBusiness/deviceManager.cpp
       plugins/OrangeBusiness/IDecoder.h
       plugins/OrangeBusiness/IEquipment.h
    )
@@ -51,6 +53,8 @@ IF(NOT DISABLE_TEST_PLUGIN_ORANGE_BUSINESS)
    
    ADD_SOURCES(
       TestOrangeBusinessDecoder.cpp
+      TestOrangeBusinessDefaultEquipment.cpp
+      TestOrangeBusinessEquipmentManager.cpp
    )
    
 ENDIF()

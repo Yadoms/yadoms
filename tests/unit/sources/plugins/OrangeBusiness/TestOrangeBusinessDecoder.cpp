@@ -126,7 +126,7 @@ namespace yApi = shared::plugin::yPluginApi;
 
       shared::CDataContainer response = decoder.getLastData(deviceInformation);
 
-      BOOST_CHECK_EQUAL(boost::equal(response.get<std::string>("data"), "01"), true);
+      BOOST_CHECK_EQUAL(response.get<std::string>("data") == "01", true);
    }
 
    BOOST_AUTO_TEST_SUITE_END()

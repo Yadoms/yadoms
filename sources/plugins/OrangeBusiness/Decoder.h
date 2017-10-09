@@ -31,7 +31,6 @@ public:
    std::map<std::string, boost::shared_ptr<equipments::IEquipment>> decodeDevicesMessage(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& message) override;
    bool isFrameComplete(shared::CDataContainer& message) override;
    shared::CDataContainer getLastData(shared::CDataContainer& message) override;
-   int getBatteryLevel(shared::CDataContainer& message) override;
    // [END] IDecoder implementation
 
 private:
