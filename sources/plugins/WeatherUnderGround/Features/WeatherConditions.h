@@ -48,8 +48,15 @@ private:
    //--------------------------------------------------------------
    /// \brief	  Initialise LiveConditions keywords
    /// \param[in] api                    pointer to the API
+   /// \param[in] wuConfiguration        configuration of the plugin
    //--------------------------------------------------------------
    void initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration);
+
+   //--------------------------------------------------------------
+   /// \brief	  clean up all keywords
+   /// \param[in] api                    pointer to the API
+   //--------------------------------------------------------------
+   void cleanUpKeywords(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site

@@ -54,26 +54,6 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
             m_keywords.push_back(m_forecastRain[counter]);
          }
       }
-      else
-      {
-         if (api->deviceExists(m_deviceName))
-         {
-            // reset all forecast rain keywords
-            for (auto counter = 0; counter < NB_INDIVIDUAL_FORECAST_KEYWORDS; ++counter)
-            {
-               std::string TempString;
-               TempString = "Rain_Day_" + boost::lexical_cast<std::string>(counter);
-               if (m_forecastRain[counter])
-               {
-                  if (api->keywordExists(m_deviceName, m_forecastRain[counter]))
-                  {
-                     api->removeKeyword(m_deviceName, TempString);
-                     m_forecastRain[counter].reset();
-                  }
-               }
-            }
-         }
-      }
 
       if (wuConfiguration.isTempIndividualKeywordsEnabled())
       {
@@ -88,70 +68,22 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
             m_keywords.push_back(m_hightemp[counter]);
          }
       }
-      else
-      {
-         if (api->deviceExists(m_deviceName))
+
+      // in a separate try/catch to work with old configurations
+      try {
+         if (wuConfiguration.isConditionsForecastIndividualKeywordsEnabled())
          {
-         // reset all temp keywords
             for (auto counter = 0; counter < NB_INDIVIDUAL_FORECAST_KEYWORDS; ++counter)
             {
                std::string TempString;
-               TempString = "lowtemp_Day_" + boost::lexical_cast<std::string>(counter);
-               if (m_lowtemp[counter])
-               {
-                  if (api->keywordExists(m_deviceName, m_lowtemp[counter]))
-                  {
-                     api->removeKeyword(m_deviceName, TempString);
-                     m_lowtemp[counter].reset();
-                  }
-               }
-               TempString = "hightemp_Day_" + boost::lexical_cast<std::string>(counter);
-               if (m_hightemp[counter])
-               {
-                  if (api->keywordExists(m_deviceName, m_hightemp[counter]))
-                  {
-                     api->removeKeyword(m_deviceName, TempString);
-                     m_hightemp[counter].reset();
-                  }
-               }
+               TempString = "WeatherConditions_" + boost::lexical_cast<std::string>(counter);
+               m_weatherCondition[counter] = boost::make_shared<yApi::historization::CWeatherCondition>(TempString);
             }
          }
-
-         try {
-            if (wuConfiguration.isConditionsForecastIndividualKeywordsEnabled())
-            {
-               for (auto counter = 0; counter < NB_INDIVIDUAL_FORECAST_KEYWORDS; ++counter)
-               {
-                  std::string TempString;
-                  TempString = "WeatherConditions_" + boost::lexical_cast<std::string>(counter);
-                  m_weatherCondition[counter] = boost::make_shared<yApi::historization::CWeatherCondition>(TempString);
-               }
-            }
-            else
-            {
-               if (api->deviceExists(m_deviceName))
-               {
-                  // reset all weatherCondition keywords
-                  for (auto counter = 0; counter < NB_INDIVIDUAL_FORECAST_KEYWORDS; ++counter)
-                  {
-                     std::string TempString;
-                     TempString = "WeatherConditions_" + boost::lexical_cast<std::string>(counter);
-                     if (m_weatherCondition[counter])
-                     {
-                        if (api->keywordExists(m_deviceName, m_weatherCondition[counter]))
-                        {
-                           api->removeKeyword(m_deviceName, TempString);
-                           m_weatherCondition[counter].reset();
-                        }
-                     }
-                  }
-               }
-            }
-         }
-         catch (shared::exception::CException& e)
-         {
-            YADOMS_LOG(trace) << "This keyword doesn't exist yet ! : " << e.what();
-         }
+      }
+      catch (shared::exception::CException& e)
+      {
+         YADOMS_LOG(trace) << "This keyword doesn't exist yet ! : " << e.what();
       }
 
       // Declare keywords
@@ -159,6 +91,81 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
       shared::CDataContainer details;
       details.set("type", m_type);
       api->declareDevice(m_deviceName, m_type, m_type, m_keywords, details);
+   }
+}
+
+void CForecastDays::cleanUpKeywords(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration)
+{
+   if (!wuConfiguration.isRainIndividualKeywordsEnabled())
+   {
+      if (api->deviceExists(m_deviceName))
+      {
+         // reset all forecast rain keywords
+         for (auto counter = 0; counter < NB_INDIVIDUAL_FORECAST_KEYWORDS; ++counter)
+         {
+            if (m_forecastRain[counter])
+            {
+               if (api->keywordExists(m_deviceName, m_forecastRain[counter]))
+               {
+                  api->removeKeyword(m_deviceName, m_forecastRain[counter]->getKeyword());
+                  m_forecastRain[counter].reset();
+               }
+            }
+         }
+      }
+   }
+
+   if (!wuConfiguration.isTempIndividualKeywordsEnabled())
+   {
+      if (api->deviceExists(m_deviceName))
+      {
+         // reset all temp keywords
+         for (auto counter = 0; counter < NB_INDIVIDUAL_FORECAST_KEYWORDS; ++counter)
+         {
+            if (m_lowtemp[counter])
+            {
+               if (api->keywordExists(m_deviceName, m_lowtemp[counter]))
+               {
+                  api->removeKeyword(m_deviceName, m_lowtemp[counter]->getKeyword());
+                  m_lowtemp[counter].reset();
+               }
+            }
+            if (m_hightemp[counter])
+            {
+               if (api->keywordExists(m_deviceName, m_hightemp[counter]))
+               {
+                  api->removeKeyword(m_deviceName, m_hightemp[counter]->getKeyword());
+                  m_hightemp[counter].reset();
+               }
+            }
+         }
+      }
+   }
+
+   // In a separate try/catch to work with old configurations
+   try {
+      if (!wuConfiguration.isConditionsForecastIndividualKeywordsEnabled())
+      {
+         if (api->deviceExists(m_deviceName))
+         {
+            // reset all weatherCondition keywords
+            for (auto counter = 0; counter < NB_INDIVIDUAL_FORECAST_KEYWORDS; ++counter)
+            {
+               if (m_weatherCondition[counter])
+               {
+                  if (api->keywordExists(m_deviceName, m_weatherCondition[counter]))
+                  {
+                     api->removeKeyword(m_deviceName, m_weatherCondition[counter]->getKeyword());
+                     m_weatherCondition[counter].reset();
+                  }
+               }
+            }
+         }
+      }
+   }
+   catch (shared::exception::CException& e)
+   {
+      YADOMS_LOG(trace) << "This keyword doesn't exist yet ! : " << e.what();
    }
 }
 
@@ -171,6 +178,7 @@ void CForecastDays::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
       m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/forecast/q/" << boost::lexical_cast<std::string>(m_location->latitude()) << "," << boost::lexical_cast<std::string>(m_location->longitude()) << ".json";
 
       InitializeForecastDays(api, wuConfiguration);
+      cleanUpKeywords(api, wuConfiguration);
    }
    catch (std::exception& e)
    {

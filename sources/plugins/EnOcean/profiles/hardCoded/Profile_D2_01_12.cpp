@@ -107,7 +107,7 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
-                                                      CProfile_D2_01_Common::kAllOutputChannels,//TODO à restester
+                                                      CProfile_D2_01_Common::kAllOutputChannels,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
@@ -120,7 +120,7 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(messageHandler,
                                                                           senderId,
                                                                           m_deviceId,
-                                                                          CProfile_D2_01_Common::kAllOutputChannels,//TODO à restester
+                                                                          CProfile_D2_01_Common::kAllOutputChannels,
                                                                           connectedSwitchsType,
                                                                           autoOffTimerValue,
                                                                           delayOffTimer,

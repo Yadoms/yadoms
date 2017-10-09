@@ -4,7 +4,7 @@
 #include <Poco/Net/HTTPServerResponse.h>
 #include <Poco/Net/HTTPBasicCredentials.h>
 #include "MimeType.h"
-
+#include <shared/encryption/Md5.h>
 
 namespace web { namespace poco {
 
@@ -57,6 +57,12 @@ namespace web { namespace poco {
             extension = fullpath.substr(last_dot_pos + 1);
          }
 
+         //allow browser to cache ressource
+         // public : allow any intermediate proxies (not only the browser)
+         // max-age : keep in memory for two months
+         // etag : the md5 hash of each file. Computed at each requests, it ensure that the file hasn't changed. This is a browser behavior (etag change detection)
+         response.set("Cache-Control", "public, max-age=5259477"); //2 months
+         response.set("ETag", shared::encryption::CMd5::digestFile(fullpath));
 
          std::ifstream is(fullpath.c_str(), std::ios::in | std::ios::binary);
          if (is)

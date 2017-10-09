@@ -102,6 +102,7 @@ build:
   
 notifications:
   - provider: Email
+    subject: Build {{status}}: {{projectName}} {{buildVersion}} (branch {{branch}})
     to:
       - '{{commitAuthorEmail}}'
     on_build_status_changed: true
