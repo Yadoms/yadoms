@@ -41,7 +41,7 @@ void CProfile_D2_01_04::readInitialState(const std::string& senderId,
    CProfile_D2_01_Common::sendActuatorStatusQuery(messageHandler,
                                                   senderId,
                                                   m_deviceId,
-                                                  CProfile_D2_01_Common::kOutputChannel1);
+                                                  CProfile_D2_01_Common::kAllOutputChannels);
 }
 
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_04::states(unsigned char rorg,
@@ -53,7 +53,6 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return CProfile_D2_01_Common::extractActuatorStatusResponse(rorg,
                                                                data,
                                                                CProfile_D2_01_Common::noChannel1,
-                                                               CProfile_D2_01_Common::noChannel2,
                                                                m_dimmer,
                                                                CProfile_D2_01_Common::noPowerFailure,
                                                                m_overCurrent);
@@ -81,7 +80,7 @@ void CProfile_D2_01_04::sendCommand(const std::string& keyword,
    CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(messageHandler,
                                                               senderId,
                                                               m_deviceId,
-                                                              CProfile_D2_01_Common::kOutputChannel1,
+                                                              CProfile_D2_01_Common::kAllOutputChannels,
                                                               m_dimmerMode->get(),
                                                               m_dimmer->get());
 }
@@ -100,7 +99,7 @@ void CProfile_D2_01_04::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
-                                                      CProfile_D2_01_Common::kOutputChannel1,
+                                                      CProfile_D2_01_Common::kAllOutputChannels,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       false,

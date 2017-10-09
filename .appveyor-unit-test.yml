@@ -70,8 +70,10 @@ test_script:
   - ps: pushd tests/unit/builds/$env:configuration/
   - cmd: yadomsTests.exe
   - ps: popd
-  
-on_finish:
-  # Block to help debug with RDP (60 min max)
-  #TODO - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
+notifications:
+  - provider: Email
+    subject: 'Build {{status}}: {{projectName}}, branch {{branch}}, {{buildVersion}}'
+    to:
+      - '{{commitAuthorEmail}}'
+    on_build_status_changed: true

@@ -81,7 +81,7 @@ void COpenZWaveHelpers::GetEnumValueInfo(OpenZWave::ValueID& value, std::string 
    OpenZWave::Manager::Get()->GetValueListItems(value, &valuesList);
    
    values.clear();
-   for (int i = 0; i < valuesList.size(); ++i)
+   for (auto i = 0; i < valuesList.size(); ++i)
    {
       values[keys[i]] = valuesList[i];
    }
