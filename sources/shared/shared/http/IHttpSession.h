@@ -13,7 +13,7 @@ namespace shared
       /// \brief	    set the time out time for the request reponse
       /// \param[in]  timeout             the timeout for the request
       //--------------------------------------------------------------
-	   virtual void setTimeout(const Poco::Timespan& timeout) = 0;  // TODO : to be converted to boost posix ...
+	   virtual void setTimeout(const boost::posix_time::time_duration& timeout) = 0;
 
       //--------------------------------------------------------------
       /// \brief	    send the request

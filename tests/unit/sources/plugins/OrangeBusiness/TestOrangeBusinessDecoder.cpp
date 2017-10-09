@@ -9,14 +9,20 @@ BOOST_AUTO_TEST_SUITE(TestOrangeBusiness)
   
 namespace yApi = shared::plugin::yPluginApi;
 
+   BOOST_AUTO_TEST_CASE(DecoderisFrameCompleteEmpty)
+   {
+      CDecoder decoder;
+      shared::CDataContainer messageRecu;
+      BOOST_REQUIRE_THROW(decoder.isFrameComplete(messageRecu), shared::exception::CInvalidParameter);
+   }
+
    BOOST_AUTO_TEST_CASE(DecoderDeviceFrameEmpty)
    {
-      auto api(boost::make_shared<CDefaultYPluginApiMock>());
       CDecoder decoder;
+      auto api(boost::make_shared<CDefaultYPluginApiMock>());
 
       shared::CDataContainer messageRecu;
-
-	  BOOST_REQUIRE_THROW(decoder.isFrameComplete(messageRecu), shared::exception::CInvalidParameter);
+      BOOST_REQUIRE_THROW(decoder.decodeDevicesMessage(api, messageRecu), shared::exception::CInvalidParameter);
    }
 
    BOOST_AUTO_TEST_CASE(DecoderDeviceFrameNominal)
@@ -82,6 +88,9 @@ namespace yApi = shared::plugin::yPluginApi;
 
    BOOST_AUTO_TEST_CASE(DecoderCommandListEmpty)
    {
+      CDecoder decoder;
+      shared::CDataContainer messageRecu;
+      BOOST_REQUIRE_THROW(decoder.getLastData(messageRecu), shared::exception::CInvalidParameter);
    }
 
    BOOST_AUTO_TEST_CASE(DecoderCommandeListNominal)
@@ -96,7 +105,7 @@ namespace yApi = shared::plugin::yPluginApi;
       std::vector<shared::CDataContainer> data;
 
       shared::CDataContainer command1, command2;
-/*  TODO : Create SENT type
+
       command1.set("id", "5703cfa9e4b0b24cd6862865");
       command1.set("data", "01");
       command1.set("port", 1);
@@ -114,8 +123,10 @@ namespace yApi = shared::plugin::yPluginApi;
       data.push_back(command1);
       data.push_back(command2);
       deviceInformation.set("data", data);
-*/
-      decoder.getLastData(deviceInformation);
+
+      shared::CDataContainer response = decoder.getLastData(deviceInformation);
+
+      BOOST_CHECK_EQUAL(boost::equal(response.get<std::string>("data"), "01"), true);
    }
 
    BOOST_AUTO_TEST_SUITE_END()

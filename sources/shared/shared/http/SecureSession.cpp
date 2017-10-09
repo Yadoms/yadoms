@@ -14,9 +14,9 @@ namespace shared
 		m_session = boost::make_shared<Poco::Net::HTTPSClientSession>(uri.getHost(), uri.getPort(), context);
 	}
 
-	void SecureSession::setTimeout(const Poco::Timespan& timeout)
+	void SecureSession::setTimeout(const boost::posix_time::time_duration& timeout)
 	{
-		m_session->setTimeout(timeout);
+		m_session->setTimeout(Poco::Timespan(timeout.seconds(), 0));
 	}
 
 	std::ostream& SecureSession::sendRequest(Poco::Net::HTTPRequest& request)

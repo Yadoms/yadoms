@@ -7,8 +7,12 @@
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
+enum commandState { //TODO : to be completed with other possible status
+   SENT = 0
+};
+
 //--------------------------------------------------------------
-/// \brief	This class implement the TeleInfo protocol
+/// \brief	This class implement the json message
 //--------------------------------------------------------------
 class CDecoder : public IDecoder
 {
@@ -27,6 +31,7 @@ public:
    std::map<std::string, boost::shared_ptr<equipments::IEquipment>> decodeDevicesMessage(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& message) override;
    bool isFrameComplete(shared::CDataContainer& message) override;
    shared::CDataContainer getLastData(shared::CDataContainer& message) override;
+   int getBatteryLevel(shared::CDataContainer& message) override;
    // [END] IDecoder implementation
 
 private:

@@ -42,7 +42,7 @@ namespace shared
                request.add(headerparametersIterator.first, headerparametersIterator.second);
          }
 
-         session->setTimeout(Poco::Timespan(timeout.seconds(), 0));
+         session->setTimeout(timeout);
          session->sendRequest(request);
 
          Poco::Net::HTTPResponse response;

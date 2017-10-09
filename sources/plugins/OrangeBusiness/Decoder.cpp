@@ -51,3 +51,8 @@ shared::CDataContainer CDecoder::getLastData(shared::CDataContainer& message)
    }
    return response;
 }
+
+int CDecoder::getBatteryLevel(shared::CDataContainer& message)
+{
+   return 0;
+}
