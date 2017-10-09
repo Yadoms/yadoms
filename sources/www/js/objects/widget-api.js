@@ -126,6 +126,9 @@ WidgetApi.prototype.toolbar = function (options) {
                 console.error("Unknown item type: " + index);
             }
         });
+        
+        //i18n of page tab
+        self.widget.$toolbar.i18n();
     } else {
         self.find(".panel-widget-header").addClass("hidden");
     }
@@ -161,11 +164,11 @@ WidgetApi.prototype.manageBatteryConfiguration = function () {
                     AcquisitionManager.getLastValue(batteryLevel.id)
                     .done(function (lastValue) {
                         self.widget.viewModel.widgetApi.updateBatteryLevel(lastValue.value);
-						d.resolve();
+						      d.resolve();
                     })
                     .fail(function (error) {
                         notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + batteryLevel.id }), error);
-						d.reject();
+                        d.reject();
                     });
                 }
                 else {
@@ -176,7 +179,7 @@ WidgetApi.prototype.manageBatteryConfiguration = function () {
             })
             .fail(function (error) {
                 notifyError($.t("objects.generic.errorGetting", { objectName: "keyword for device = " + deviceId }), error);
-				d.reject();
+                d.reject();
             });
         }
 		else
@@ -186,8 +189,14 @@ WidgetApi.prototype.manageBatteryConfiguration = function () {
 			d.resolve();
 		}
     }
+    else
+    {
+       //we can hide the div to prevent margin spaces before the title
+       $battery.addClass("hidden");
+       d.resolve();
+    }    
 	
-	return d.promise();
+	 return d.promise();
 }
 
 /**

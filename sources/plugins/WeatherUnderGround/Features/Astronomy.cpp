@@ -19,7 +19,7 @@ CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (shared::exception::CException& e)
    {
-      YADOMS_LOG(information) << "Configuration or initialization error of Astronomy module :" << e.what() ;
+      YADOMS_LOG(error) << "Configuration or initialization error of Astronomy module :" << e.what() ;
       throw;
    }
 }

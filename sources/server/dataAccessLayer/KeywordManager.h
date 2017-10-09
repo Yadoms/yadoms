@@ -28,6 +28,8 @@ namespace dataAccessLayer
       std::vector<boost::shared_ptr<database::entities::CKeyword> > getKeywords(int deviceId) const override;
       std::vector<boost::shared_ptr<database::entities::CKeyword> > getKeywordsMatchingCapacity(const std::string& capacity) const override;
       std::vector<boost::shared_ptr<database::entities::CKeyword> > getDeviceKeywordsWithCapacity(int deviceId, const std::string& capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const override;
+      boost::shared_ptr<database::entities::CAcquisition> getKeywordLastAcquisition(const int keywordId, bool throwIfNotExists = true) override;
+      std::string getKeywordLastData(const int keywordId, bool throwIfNotExists = true) override;
       void addKeyword(int deviceId, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
       void addKeywords(int deviceId, const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& keywords) override;
       void updateKeywordFriendlyName(int deviceId, const std::string& keyword, const std::string& newFriendlyName) override;

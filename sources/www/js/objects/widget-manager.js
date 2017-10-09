@@ -252,8 +252,8 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
             defferedResult.done(function () {
                 //we manage the toolbar api specific icons
                 widget.viewModel.widgetApi.manageBatteryConfiguration().always(function(){
-					d.resolve();
-				});
+					   d.resolve();
+				   });
             });
         } else {
             d.resolve();
@@ -381,39 +381,22 @@ WidgetManager.loadWidget = function (widget, pageWhereToAdd, ensureVisible) {
     assert(!isNullOrUndefined(widget), "widget must be defined");
     assert(!isNullOrUndefined(pageWhereToAdd), "pageWhereToAdd must be defined");
 
-    var d = $.Deferred();
-
     if (!WidgetPackageManager.packageExists(widget.type)) {
-        WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, "package do not exists", ensureVisible);
-        d.reject();
-
+        return WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, "package do not exists", ensureVisible);
     } else {
 
         if (!WidgetPackageManager.packageList[widget.type].viewAnViewModelHaveBeenDownloaded) {
             WidgetManager.downloadWidgetViewAndVieWModel_(widget.type, true)
             .done(function () {
-                WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible).done(function(){
-                  d.resolve();
-               })
-               .fail(function(){
-                  d.reject();
-               });
+                return WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible);
             })
             .fail(function (errorMessage) {
-                WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, errorMessage, ensureVisible);
-                d.reject(errorMessage);
+                return WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, errorMessage, ensureVisible);
             });
         } else {
-            WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible).done(function(){
-               d.resolve();
-            })
-            .fail(function(){
-               d.reject();
-            });
+            return WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible);
         }
-
     }
-    return d.promise();
 };
 
 
@@ -448,6 +431,7 @@ WidgetManager.instanciateWidgetToPage_ = function (pageWhereToAdd, widget, widge
         } else {
             console.error("Fail to load deactivated widget");
         }
+        d.reject();
     }
     
     return d.promise();
@@ -469,7 +453,7 @@ WidgetManager.instanciateDowngradedWidgetToPage_ = function (pageWhereToAdd, wid
     widget.downgraded = true;
 
     //load downgraded widget instead
-    WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, WidgetManager.DeactivatedWidgetPackageName, ensureVisible);
+    return WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, WidgetManager.DeactivatedWidgetPackageName, ensureVisible);
 }
 
 /**
@@ -713,7 +697,10 @@ WidgetManager.createGridWidget = function (widget) {
                 try {
                     if (widget.viewModel.resized !== undefined)
 					{
-                        widget.viewModel.resized().always(function() {
+                        var defferedResult = widget.viewModel.resized();
+                        //we manage answer if it is a promise or not
+                        defferedResult = defferedResult || new $.Deferred().resolve();
+                        defferedResult.always(function() {
                            widget.viewModel.widgetApi.manageRollingTitle();
                         });
 					}
@@ -734,7 +721,6 @@ WidgetManager.createGridWidget = function (widget) {
  * Update the layout of the widget
  */
 WidgetManager.updateWidgetLayout = function (widget) {
-	console.log ("updateWidgetLayout");
     widget.$gridWidget.find(".textfit").fitText();
 };
 

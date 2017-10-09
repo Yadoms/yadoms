@@ -295,6 +295,13 @@ namespace pluginSystem
 
          api->declareKeyword(deviceName,
                              keyword);
+
+         if (standardCapacity != yApi::CStandardCapacities::Event().getName())
+         {
+            // Historize the default value (already set in historizer), except for event (event has no value)
+            api->historizeData(deviceName,
+                               keyword);
+         }
       }
 
       void CInstance::createCustomEnumCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -312,6 +319,10 @@ namespace pluginSystem
 
          api->declareKeyword(deviceName,
                              keyword);
+
+         // Historize the default value (already set in historizer)
+         api->historizeData(deviceName,
+                            keyword);
       }
    }
 } // namespace pluginSystem::internalPlugin
