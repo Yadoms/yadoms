@@ -49,7 +49,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                                                    const std::string& senderId,
                                                                                                    boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   return CProfile_D2_01_Common::extractActuatorStatusResponse(rorg,
+   return CProfile_D2_01_Common::extractActuatorStatusResponse2Channels(rorg,
                                                                data,
                                                                m_channel1,
                                                                m_channel2,

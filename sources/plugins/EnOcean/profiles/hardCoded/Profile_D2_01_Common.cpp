@@ -147,10 +147,71 @@ const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noO
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorStatusResponse(unsigned char rorg,
                                                                                                                               const boost::dynamic_bitset<>& data,
                                                                                                                               boost::shared_ptr<yApi::historization::CSwitch> channel1,
-                                                                                                                              boost::shared_ptr<yApi::historization::CSwitch> channel2,
                                                                                                                               boost::shared_ptr<yApi::historization::CDimmable> dimmer,
                                                                                                                               boost::shared_ptr<yApi::historization::CSwitch> powerFailure,
                                                                                                                               boost::shared_ptr<yApi::historization::CSwitch> overCurrent)
+{
+   // Some devices supports several RORG telegrams, ignore non-VLD telegrams
+   if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
+      return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
+
+   if (bitset_extract(data, 4, 4) != kActuatorStatusResponse)
+      return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
+
+   // Return only the concerned historizers
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
+
+   auto ioChannel = bitset_extract(data, 11, 5);
+   int dimValue = bitset_extract(data, 17, 7);
+   auto state = dimValue == 0 ? false : true;
+   auto overCurrentState = bitset_extract(data, 8, 1) != 0;
+
+   // Sometimes ioChannel is not well set by device (ex NODON ASP-2-1-00 set ioChannel to 1 instead of 0),
+   // so ignore ioChannel value (juste verify that is not input channel)
+   if (ioChannel == kInputChannel)
+      YADOMS_LOG(warning) << "ActuatorStatusResponse : received unsupported ioChannel value " << ioChannel;
+   else
+   {
+      if (!!channel1)
+      {
+         channel1->set(state);
+         historizers.push_back(channel1);
+      }
+      else if (!!dimmer)
+      {
+         dimmer->set(dimValue);
+         historizers.push_back(dimmer);
+      }
+      else
+      {
+         YADOMS_LOG(warning) << "ActuatorStatusResponse : received unsupported ioChannel value " << ioChannel;
+      }      
+   }
+
+   if (!!overCurrent)
+   {
+      overCurrent->set(overCurrentState);
+      historizers.push_back(overCurrent);
+   }
+
+   auto powerFailureSupported = bitset_extract(data, 0, 1) ? true : false;
+   auto powerFailureState = bitset_extract(data, 1, 1) ? true : false;
+   if (powerFailureSupported && !!powerFailure)
+   {
+      powerFailure->set(powerFailureState);
+      historizers.push_back(powerFailure);
+   }
+
+   return historizers;
+}
+
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorStatusResponse2Channels(unsigned char rorg,
+                                                                                                                                       const boost::dynamic_bitset<>& data,
+                                                                                                                                       boost::shared_ptr<yApi::historization::CSwitch> channel1,
+                                                                                                                                       boost::shared_ptr<yApi::historization::CSwitch> channel2,
+                                                                                                                                       boost::shared_ptr<yApi::historization::CDimmable> dimmer,
+                                                                                                                                       boost::shared_ptr<yApi::historization::CSwitch> powerFailure,
+                                                                                                                                       boost::shared_ptr<yApi::historization::CSwitch> overCurrent)
 {
    // Some devices supports several RORG telegrams, ignore non-VLD telegrams
    if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
@@ -179,11 +240,6 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
          dimmer->set(dimValue);
          historizers.push_back(dimmer);
       }
-      else if (!!overCurrent)
-      {
-         overCurrent->set(overCurrentState);
-         historizers.push_back(overCurrent);
-      }
       else
       {
          YADOMS_LOG(warning) << "ActuatorStatusResponse : received unsupported ioChannel value " << ioChannel;
@@ -203,6 +259,12 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    default:
       YADOMS_LOG(warning) << "ActuatorStatusResponse : received unsupported ioChannel value " << ioChannel;
       break;
+   }
+
+   if (!!overCurrent)
+   {
+      overCurrent->set(overCurrentState);
+      historizers.push_back(overCurrent);
    }
 
    auto powerFailureSupported = bitset_extract(data, 0, 1) ? true : false;
@@ -518,4 +580,3 @@ double CProfile_D2_01_Common::extractPowerValueW(E_D2_01_MeasurementUnit unit,
       return 0;
    }
 }
-
