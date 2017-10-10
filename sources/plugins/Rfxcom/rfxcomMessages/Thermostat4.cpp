@@ -19,7 +19,7 @@ namespace rfxcomMessages
         m_fan2AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 2 auto mode")),
         m_fan3(boost::make_shared<yApi::historization::CDimmable>("fan 3")),
         m_fan3AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 3 auto mode")),
-        m_keywords({m_onOff, m_flame, m_fan1, m_fan1AutoMode, m_fan2, m_fan2AutoMode, m_fan3, m_fan3AutoMode })
+        m_keywords({m_onOff, m_flame, m_fan1, m_fan1AutoMode, m_fan2, m_fan2AutoMode, m_fan3, m_fan3AutoMode})
    {
       if (boost::iequals(keyword, m_onOff->getKeyword()))
       {
@@ -33,7 +33,7 @@ namespace rfxcomMessages
       }
       else
       {
-         YADOMS_LOG(error) << "Unsupported keyword \"" << keyword << "\" for CThermostat4 device " ;
+         YADOMS_LOG(error) << "Unsupported keyword \"" << keyword << "\" for CThermostat4 device ";
          return;
       }
 
@@ -44,18 +44,18 @@ namespace rfxcomMessages
 
    CThermostat4::CThermostat4(boost::shared_ptr<yApi::IYPluginApi> api,
                               unsigned int subType,
-      const std::string& name,
+                              const std::string& name,
                               const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
-      m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
+        m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
         m_flame(boost::make_shared<yApi::historization::CDimmable>("flame")),
-      m_fan1(boost::make_shared<yApi::historization::CDimmable>("fan 1")),
-      m_fan1AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 1 auto mode")),
-      m_fan2(boost::make_shared<yApi::historization::CDimmable>("fan 2")),
-      m_fan2AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 2 auto mode")),
-      m_fan3(boost::make_shared<yApi::historization::CDimmable>("fan 3")),
-      m_fan3AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 3 auto mode")),
-        m_keywords({m_onOff, m_flame, m_fan1, m_fan1AutoMode })
+        m_fan1(boost::make_shared<yApi::historization::CDimmable>("fan 1")),
+        m_fan1AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 1 auto mode")),
+        m_fan2(boost::make_shared<yApi::historization::CDimmable>("fan 2")),
+        m_fan2AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 2 auto mode")),
+        m_fan3(boost::make_shared<yApi::historization::CDimmable>("fan 3")),
+        m_fan3AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 3 auto mode")),
+        m_keywords({m_onOff, m_flame, m_fan1, m_fan1AutoMode})
    {
       m_onOff->set(false);
       m_flame->set(0);
@@ -67,7 +67,7 @@ namespace rfxcomMessages
          m_keywords.push_back(m_fan2);
          m_keywords.push_back(m_fan2AutoMode);
       }
-         
+
       if (m_subType != sTypeMCZ3)
       {
          m_keywords.push_back(m_fan3);
@@ -89,12 +89,12 @@ namespace rfxcomMessages
                               size_t rbufSize)
       : m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
         m_flame(boost::make_shared<yApi::historization::CDimmable>("flame")),
-      m_fan1(boost::make_shared<yApi::historization::CDimmable>("fan 1")),
-      m_fan1AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 1 auto mode")),
-      m_fan2(boost::make_shared<yApi::historization::CDimmable>("fan 2")),
-      m_fan2AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 2 auto mode")),
-      m_fan3(boost::make_shared<yApi::historization::CDimmable>("fan 3")),
-      m_fan3AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 3 auto mode")),
+        m_fan1(boost::make_shared<yApi::historization::CDimmable>("fan 1")),
+        m_fan1AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 1 auto mode")),
+        m_fan2(boost::make_shared<yApi::historization::CDimmable>("fan 2")),
+        m_fan2AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 2 auto mode")),
+        m_fan3(boost::make_shared<yApi::historization::CDimmable>("fan 3")),
+        m_fan3AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 3 auto mode")),
         m_keywords({m_onOff, m_flame})
    {
       m_subType = 0;
@@ -130,7 +130,7 @@ namespace rfxcomMessages
       {
          api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
          YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));         
+         m_deviceDetails.printToLog(YADOMS_LOG(information));
       }
    }
 
@@ -166,6 +166,11 @@ namespace rfxcomMessages
    const std::string& CThermostat4::getDeviceName() const
    {
       return m_deviceName;
+   }
+
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CThermostat4::keywords()
+   {
+      return m_keywords;
    }
 
    void CThermostat4::buildDeviceName()

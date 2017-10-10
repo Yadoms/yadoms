@@ -13,7 +13,7 @@ namespace rfxcomMessages
                   const std::string& command,
                   const shared::CDataContainer& deviceDetails)
       : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_signalPower })
+        m_keywords({m_signalPower})
    {
       m_signalPower->set(0);
 
@@ -26,11 +26,11 @@ namespace rfxcomMessages
 
    CChime::CChime(boost::shared_ptr<yApi::IYPluginApi> api,
                   unsigned int subType,
-      const std::string& name,
+                  const std::string& name,
                   const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_signalPower })
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_signalPower})
    {
       m_signalPower->set(0);
 
@@ -48,7 +48,7 @@ namespace rfxcomMessages
                   const RBUF& rbuf,
                   size_t rbufSize)
       : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_signalPower })
+        m_keywords({m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -119,7 +119,7 @@ namespace rfxcomMessages
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CChime::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CChime::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF rbuf;
       MEMCLEAR(rbuf.CHIME);
@@ -145,6 +145,11 @@ namespace rfxcomMessages
    const std::string& CChime::getDeviceName() const
    {
       return m_deviceName;
+   }
+
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CChime::keywords()
+   {
+      return m_keywords;
    }
 
    void CChime::buildDeviceName()

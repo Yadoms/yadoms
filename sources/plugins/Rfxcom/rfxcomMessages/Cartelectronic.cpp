@@ -14,8 +14,8 @@ namespace rfxcomMessages
                                     const RBUF& rbuf,
                                     size_t rbufSize)
       : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_keywords({ m_signalPower, m_batteryLevel })
+        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+        m_keywords({m_signalPower, m_batteryLevel})
    {
       createSubType(rbuf.TIC.subtype, rbuf, rbufSize);
 
@@ -67,7 +67,7 @@ namespace rfxcomMessages
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CCartelectronic::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CCartelectronic::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("Cartelectronic is a read-only message, can not be encoded");
    }
@@ -80,5 +80,10 @@ namespace rfxcomMessages
    const std::string& CCartelectronic::getDeviceName() const
    {
       return m_id;
+   }
+
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CCartelectronic::keywords()
+   {
+      return m_keywords;
    }
 } // namespace rfxcomMessages

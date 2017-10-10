@@ -21,7 +21,7 @@ enum
 
 
 CRfxcom::CRfxcom()
-   : m_logger(),
+   : m_logger("debug"),
      m_configurationUpdated(false),
      m_lastRequest(sizeof(RBUF))
 {
@@ -35,7 +35,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-   YADOMS_LOG(information) << "CRfxcom is starting...";
+   YADOMS_LOG(information) << "RFXCom is starting...";
 
    m_configurationUpdated = false;
 
@@ -199,7 +199,7 @@ void CRfxcom::send(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<s
 void CRfxcom::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                         boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
-   YADOMS_LOG(information) << "Command received :" << yApi::IDeviceCommand::toString(command);
+   YADOMS_LOG(information) << "Send command : " << yApi::IDeviceCommand::toString(command);
 
    if (!m_port)
    {
@@ -301,10 +301,7 @@ void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> api
    auto message = m_transceiver->decodeRfxcomMessage(api, data);
 
    if (!message)
-   {
-      YADOMS_LOG(information) << "Unable to decode received message";
       return;
-   }
 
    // Message was recognized, stop timeout
    m_waitForAnswerTimer->stop();

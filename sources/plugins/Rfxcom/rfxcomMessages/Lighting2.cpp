@@ -153,6 +153,11 @@ namespace rfxcomMessages
       return m_deviceName;
    }
 
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CLighting2::keywords()
+   {
+      return m_keywords;
+   }
+
    void CLighting2::buildDeviceName()
    {
       std::ostringstream ssdeviceName;

@@ -82,7 +82,7 @@ namespace rfxcomMessages
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
-      {         
+      {
          api->declareDevice(m_deviceName,
                             m_deviceModel,
                             m_deviceModel,
@@ -120,6 +120,12 @@ namespace rfxcomMessages
       return m_deviceName;
    }
 
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CCurtain1::keywords()
+   {
+      // Nothing to historize (transmitter-only device)
+      return NoKeywords;
+   }
+
    void CCurtain1::buildDeviceName()
    {
       std::ostringstream ssdeviceName;
@@ -154,5 +160,3 @@ namespace rfxcomMessages
       }
    }
 } // namespace rfxcomMessages
-
-
