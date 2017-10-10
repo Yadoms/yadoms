@@ -2,7 +2,6 @@
 #include "Profile_D2_01_08.h"
 #include "../bitsetHelpers.hpp"
 #include "../../message/RadioErp1SendMessage.h"
-#include "Profile_D2_01_Common.h"
 #include <shared/Log.h>
 
 CProfile_D2_01_08::CProfile_D2_01_08(const std::string& deviceId,
@@ -12,7 +11,8 @@ CProfile_D2_01_08::CProfile_D2_01_08(const std::string& deviceId,
      m_loadEnergy(boost::make_shared<yApi::historization::CEnergy>("Load energy")),
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),
      m_overCurrent(boost::make_shared<yApi::historization::CSwitch>("OverCurrent", yApi::EKeywordAccessMode::kGet)),
-     m_historizers({m_channel, m_loadEnergy, m_loadPower, m_overCurrent})
+     m_historizers({m_channel, m_loadEnergy, m_loadPower, m_overCurrent}),
+     outputChannel(CProfile_D2_01_Common::kAllOutputChannels)
 {
 }
 
@@ -40,12 +40,24 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 void CProfile_D2_01_08::readInitialState(const std::string& senderId,
                                          boost::shared_ptr<IMessageHandler> messageHandler) const
 {
+   // Be careful : manufacturers implementation of EnOcean EEP specifications differs :
+   // some support only kAllOutputChannels (0x1E) to drive output (like Nodon alias ID_RF), some other support only
+   // kOutputChannel1 to drive output (0x00) to drive output (like GIGA-concept).
+   // So send the 2 messages and memorize the one device responds to.
+
    // Need to wait a bit between outgoing messages, to be sure to receive answer
    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
    CProfile_D2_01_Common::sendActuatorStatusQuery(messageHandler,
                                                   senderId,
                                                   m_deviceId,
+                                                  CProfile_D2_01_Common::kOutputChannel1);
+
+   boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+   CProfile_D2_01_Common::sendActuatorStatusQuery(messageHandler,
+                                                  senderId,
+                                                  m_deviceId,
                                                   CProfile_D2_01_Common::kAllOutputChannels);
+
 
    // Need to wait a bit between outgoing messages, to be sure to receive answer
    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
@@ -71,6 +83,11 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    {
    case CProfile_D2_01_Common::kActuatorStatusResponse:
       {
+         // Learn output channel to use
+         auto receiveOutputChannel = bitset_extract(data, 11, 5);
+         if (receiveOutputChannel != CProfile_D2_01_Common::kInputChannel)
+            outputChannel = static_cast<CProfile_D2_01_Common::EOutputChannel>(receiveOutputChannel);
+
          return CProfile_D2_01_Common::extractActuatorStatusResponse(rorg,
                                                                      data,
                                                                      m_channel,
@@ -117,7 +134,7 @@ void CProfile_D2_01_08::sendCommand(const std::string& keyword,
    CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
                                                                 senderId,
                                                                 m_deviceId,
-                                                                CProfile_D2_01_Common::kAllOutputChannels,
+                                                                outputChannel,
                                                                 m_channel->get());
 }
 
@@ -133,7 +150,7 @@ void CProfile_D2_01_08::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
-                                                      CProfile_D2_01_Common::kAllOutputChannels,
+                                                      outputChannel,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
@@ -160,7 +177,7 @@ void CProfile_D2_01_08::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
                                                             senderId,
                                                             m_deviceId,
-                                                            CProfile_D2_01_Common::kAllOutputChannels,
+                                                            outputChannel,
                                                             true,
                                                             minEnergyMeasureRefreshTime,
                                                             maxEnergyMeasureRefreshTime);
