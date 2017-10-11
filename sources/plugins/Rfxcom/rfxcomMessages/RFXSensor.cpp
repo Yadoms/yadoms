@@ -109,6 +109,11 @@ namespace rfxcomMessages
       return m_deviceName;
    }
 
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CRFXSensor::keywords()
+   {
+      return m_keywords;
+   }
+
    void CRFXSensor::buildDeviceName()
    {
       std::ostringstream ssdeviceName;

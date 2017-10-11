@@ -74,8 +74,8 @@ namespace rfxcomMessages
          m_keywords.push_back(m_t3);
          m_keywords.push_back(m_t4);
          m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id") |
-            ((manuallyDeviceCreationConfiguration.get<bool>("sw2-1") ? 0x80 : 0x00) |
-               (manuallyDeviceCreationConfiguration.get<bool>("sw2-2") ? 0x40 : 0x00) << 16);
+         ((manuallyDeviceCreationConfiguration.get<bool>("sw2-1") ? 0x80 : 0x00) |
+            (manuallyDeviceCreationConfiguration.get<bool>("sw2-2") ? 0x40 : 0x00) << 16);
          break;
       default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
@@ -122,7 +122,7 @@ namespace rfxcomMessages
       {
          api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
          YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));         
+         m_deviceDetails.printToLog(YADOMS_LOG(information));
       }
    }
 
@@ -152,6 +152,11 @@ namespace rfxcomMessages
    const std::string& CFan::getDeviceName() const
    {
       return m_deviceName;
+   }
+
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CFan::keywords()
+   {
+      return m_keywords;
    }
 
    void CFan::buildDeviceName()
@@ -213,5 +218,3 @@ namespace rfxcomMessages
       }
    }
 } // namespace rfxcomMessages
-
-

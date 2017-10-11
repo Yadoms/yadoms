@@ -9,7 +9,7 @@ namespace rfxcomMessages
 {
    CLighting2OnOff::CLighting2OnOff(const std::string& model)
       : m_model(model),
-      m_keyword(boost::make_shared<yApi::historization::CSwitch>("state"))
+        m_keyword(boost::make_shared<yApi::historization::CSwitch>("state"))
    {
    }
 
@@ -82,5 +82,3 @@ namespace rfxcomMessages
       levelByte = 0;
    }
 } // namespace rfxcomMessages
-
-

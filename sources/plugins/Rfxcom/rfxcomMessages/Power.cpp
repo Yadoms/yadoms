@@ -12,13 +12,13 @@ namespace rfxcomMessages
                   const RBUF& rbuf,
                   size_t rbufSize)
       : m_voltage(boost::make_shared<yApi::historization::CVoltage>("voltage")),
-      m_current(boost::make_shared<yApi::historization::CCurrent>("current")),
-      m_instantPower(boost::make_shared<yApi::historization::CPower>("instant")),
-      m_totalPower(boost::make_shared<yApi::historization::CPower>("total")),
-      m_powerFactor(boost::make_shared<yApi::historization::CPowerFactor>("powerFactor")),
-      m_frequency(boost::make_shared<yApi::historization::CFrequency>("frequency")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_voltage , m_current , m_instantPower , m_totalPower , m_powerFactor , m_frequency , m_signalPower })
+        m_current(boost::make_shared<yApi::historization::CCurrent>("current")),
+        m_instantPower(boost::make_shared<yApi::historization::CPower>("instant")),
+        m_totalPower(boost::make_shared<yApi::historization::CPower>("total")),
+        m_powerFactor(boost::make_shared<yApi::historization::CPowerFactor>("powerFactor")),
+        m_frequency(boost::make_shared<yApi::historization::CFrequency>("frequency")),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_voltage , m_current , m_instantPower , m_totalPower , m_powerFactor , m_frequency , m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -71,7 +71,7 @@ namespace rfxcomMessages
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CPower::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CPower::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("Power is a read-only message, can not be encoded");
    }
@@ -84,6 +84,11 @@ namespace rfxcomMessages
    const std::string& CPower::getDeviceName() const
    {
       return m_deviceName;
+   }
+
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CPower::keywords()
+   {
+      return m_keywords;
    }
 
    void CPower::buildDeviceName()
@@ -108,5 +113,3 @@ namespace rfxcomMessages
       m_deviceModel = ssModel.str();
    }
 } // namespace rfxcomMessages
-
-

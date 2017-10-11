@@ -10,8 +10,8 @@ namespace rfxcomMessages
    CCartelectronicTIC::CCartelectronicTIC(const RBUF& rbuf,
                                           size_t rbufSize)
       : m_id(0),
-      m_teleInfoStatus(boost::make_shared<teleInfo::specificHistorizers::CTeleInfoStatus>("TeleInfoStatus")), // Read-only keyword
-      m_keywords({ m_teleInfoStatus })
+        m_teleInfoStatus(boost::make_shared<teleInfo::specificHistorizers::CTeleInfoStatus>("TeleInfoStatus")), // Read-only keyword
+        m_keywords({m_teleInfoStatus})
    {
       std::string NameCounter1;
       std::string NameCounter2;
@@ -71,6 +71,8 @@ namespace rfxcomMessages
                NameCounter1 = "LowCostRED";
                NameCounter2 = "NormalCostRED";
                break;
+            default:
+               break;
             }
             break;
          default:
@@ -115,21 +117,20 @@ namespace rfxcomMessages
    {
    }
 
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CCartelectronicTIC::keywords() const
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CCartelectronicTIC::keywords() const
    {
       return m_keywords;
    }
 
    std::string CCartelectronicTIC::idFromProtocol(const RBUF& rbuf) const
    {
-      unsigned long long i_id;
       std::stringstream s_id;
 
-      i_id = (static_cast<unsigned long long>(rbuf.TIC.id1) << 32) + 
-             (static_cast<unsigned long long>(rbuf.TIC.id2) << 24) + 
-             (static_cast<unsigned long long>(rbuf.TIC.id3) << 16) + 
-             (static_cast<unsigned long long>(rbuf.TIC.id4) << 8) + 
-             static_cast<unsigned long long>(rbuf.TIC.id5);
+      auto i_id = (static_cast<unsigned long long>(rbuf.TIC.id1) << 32) +
+         (static_cast<unsigned long long>(rbuf.TIC.id2) << 24) +
+         (static_cast<unsigned long long>(rbuf.TIC.id3) << 16) +
+         (static_cast<unsigned long long>(rbuf.TIC.id4) << 8) +
+         static_cast<unsigned long long>(rbuf.TIC.id5);
 
       s_id << std::setfill('0') << std::setw(12) << i_id;
 
