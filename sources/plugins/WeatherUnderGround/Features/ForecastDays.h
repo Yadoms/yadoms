@@ -51,8 +51,16 @@ private:
    //--------------------------------------------------------------
    /// \brief	  Initialise Forecast 10 Days variables
    /// \param[in] api                    pointer to the API
+   /// \param[in] wuConfiguration        configuration of th plugin
    //--------------------------------------------------------------
    void InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration);
+
+   //--------------------------------------------------------------
+   /// \brief	  clean up all keywords
+   /// \param[in] api                    pointer to the API
+   /// \param[in] wuConfiguration        configuration of th plugin
+   //--------------------------------------------------------------
+   void cleanUpKeywords(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site

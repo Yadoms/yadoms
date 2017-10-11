@@ -60,6 +60,7 @@ namespace rfxcomMessages
       boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const override;
       void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
       const std::string& getDeviceName() const override;
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords() override;
       // [END] IRfxcomMessage implementation
 
    protected:
@@ -121,6 +122,11 @@ namespace rfxcomMessages
       /// \brief	The keyword associated with state
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CCurtain> m_state;
+
+      //--------------------------------------------------------------
+      /// \brief	The keywords list to historize in one step for better performances
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };
 } // namespace rfxcomMessages
 

@@ -8,6 +8,7 @@
 #include <shared/communication/BufferLogger.h>
 #include <shared/DataContainer.h>
 #include <shared/event/EventTimer.h>
+#include <shared/communication/AsyncPortConnectionNotification.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -76,8 +77,9 @@ protected:
    //--------------------------------------------------------------
    /// \brief	                     Called when the RFXCom becomes unconnected
    /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \param [in] notification     The connection notification data
    //--------------------------------------------------------------
-   void processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
+   void processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification = boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>());
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the data are received by the RFXCom

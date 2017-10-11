@@ -387,6 +387,9 @@
 		}
 	},
 	"customLabels": {
+      "pluginState" : {
+         "rfp1000NotFound" : "Le RfPlayer ne répond pas. Vérifiez qu'il est connecté et que la configuration est correcte."
+      },
 		"firmwareUpdate": {
 			"fail": "Impossible de mettre à jour le microcode",
 			"writeFile": "Envoi du microcode",

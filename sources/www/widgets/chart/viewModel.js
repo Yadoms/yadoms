@@ -37,7 +37,6 @@ widgetViewModelCtor =
         * Initialization method
         */
        this.initialize = function () {
-
            var self = this;
            var d = new $.Deferred();
            
@@ -157,6 +156,7 @@ widgetViewModelCtor =
                self.widgetApi.toolbar({
                    activated: true,
                    displayTitle: true,
+                   batteryItem: false,
                    items: [
                    { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"widgets/chart:navigator.hour\"/></div>" },
                    { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"widgets/chart:navigator.day\"/></div>"},
@@ -231,9 +231,50 @@ widgetViewModelCtor =
            }
        };
 
+       this.chartParametersConfiguration = function () {
+         var self = this;
+         
+         // Cleaning ranges switch
+         switch (self.interval) {
+             case "HOUR":
+                 self.cleanValue = 3600000;
+                 self.prefix = "minute";
+                 break;
+             case "DAY":
+                 self.cleanValue = 3600000 * 24;
+                 self.prefix = "hour";
+                 break;
+             case "WEEK":
+                 self.cleanValue = 3600000 * 24 * 7;
+                 self.prefix = "hour";
+                 break;
+             case "MONTH":
+                 self.cleanValue = 3600000 * 24 * 30;
+                 self.prefix = "day";
+                 break;
+             case "HALF_YEAR":
+                 self.cleanValue = 3600000 * 24 * 182;
+                 self.prefix = "day";
+                 break;
+             case "YEAR":
+                 self.cleanValue = 3600000 * 24 * 365;
+                 self.prefix = "day";
+                 break;
+             default:
+                 self.cleanValue = 3600000;
+                 self.prefix = "hour";
+                 break;
+         }
+         
+         if (self.prefix === "hour")
+            self.summaryTimeBetweenNewPoint = 3600000 * 2 + 60000;
+         else if (self.prefix === "day")
+            self.summaryTimeBetweenNewPoint = 3600000 * 24 * 2 + 60000;
+       };
+       
        this.configurationChanged = function () {
            var self = this;
-           
+
            // Reset of some values
            self.periodValueType = [];
            self.seriesUuid = [];
@@ -244,44 +285,9 @@ widgetViewModelCtor =
 
 
            self.interval = self.widget.configuration.interval;
-            
-            // Cleaning ranges switch
-            switch (self.interval) {
-                case "HOUR":
-                    self.cleanValue = 3600000;
-                    self.prefix = "minute";
-                    break;
-                case "DAY":
-                    self.cleanValue = 3600000 * 24;
-                    self.prefix = "hour";
-                    break;
-                case "WEEK":
-                    self.cleanValue = 3600000 * 24 * 7;
-                    self.prefix = "hour";
-                    break;
-                case "MONTH":
-                    self.cleanValue = 3600000 * 24 * 30;
-                    self.prefix = "day";
-                    break;
-                case "HALF_YEAR":
-                    self.cleanValue = 3600000 * 24 * 182;
-                    self.prefix = "day";
-                    break;
-                case "YEAR":
-                    self.cleanValue = 3600000 * 24 * 365;
-                    self.prefix = "day";
-                    break;
-                default:
-                    self.cleanValue = 3600000;
-                    self.prefix = "hour";
-                    break;
-            }
-            
-            if (self.prefix === "hour")
-               self.summaryTimeBetweenNewPoint = 3600000 * 2 + 60000;
-            else if (self.prefix === "day")
-               self.summaryTimeBetweenNewPoint = 3600000 * 24 * 2 + 60000;
-            
+           
+           self.chartParametersConfiguration();
+           
            //Desactivate the old button
            self.widgetApi.find(".range-btn[interval='" + self.interval + "']").removeClass("widget-toolbar-pressed-button");
 
@@ -371,7 +377,7 @@ widgetViewModelCtor =
            });
 
            $.whenAll(arrayOfDeffered).done(function () {
-               self.refreshData(self.widget.configuration.interval).done(function () {
+                  self.refreshData(self.widget.configuration.interval).done(function () {
                   d.resolve();
                })
                .fail(function (error) {
@@ -392,6 +398,10 @@ widgetViewModelCtor =
            return function (e) {
                //we manage activation
                var interval = $(e.currentTarget).attr("interval");
+               
+               self.interval = interval;
+               
+               self.chartParametersConfiguration();
 
                //we manage button inversion
                self.widgetApi.find(".range-btn[interval='" + interval + "']").addClass("widget-toolbar-pressed-button");
@@ -440,19 +450,19 @@ widgetViewModelCtor =
                        self.refreshingData = true;
                        //we compute the date from the configuration
                        var dateFrom = "";
-                       var dateTo = "";
                        var prefixUri = "";
                        var timeBetweenTwoConsecutiveValues;
                        var isSummaryData;
                        var deviceIsSummary = [];
 					        var ChartIndex = 0;
-
+                       var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
+                       
                        switch (interval) {
                            case "HOUR":
 
                                //The goal is to ask to the server the elapsed time only. Example : 22h00 -> 22h59mn59s.
                                //If you ask 22h00 -> 23h00, the system return also the average for 23h. If 23h is not complete, the value will be wrong.
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
+                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime)); // rewriting the final time
                                dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'hours').startOf('minute'));
                                //we request all data
                                timeBetweenTwoConsecutiveValues = undefined;
@@ -460,7 +470,6 @@ widgetViewModelCtor =
                                break;
                            default:
                            case "DAY":
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf('hour').subtract(1, 'seconds'));
                                dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'days').startOf('hour'));
                                //we request hour summary data
                                prefixUri = "/hour";
@@ -468,7 +477,6 @@ widgetViewModelCtor =
                                isSummaryData = true;
                                break;
                            case "WEEK":
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf('hour').subtract(1, 'seconds'));
                                dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'weeks').startOf('hour'));
                                //we request hour summary data
                                prefixUri = "/hour";
@@ -476,7 +484,6 @@ widgetViewModelCtor =
                                isSummaryData = true;
                                break;
                            case "MONTH":
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf('day').subtract(1, 'seconds'));
                                dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'months').startOf('day'));
                                //we request day summary data
                                prefixUri = "/day";
@@ -484,7 +491,6 @@ widgetViewModelCtor =
                                isSummaryData = true;
                                break;
                            case "HALF_YEAR":
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf('day').subtract(1, 'seconds'));
                                dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(6, 'months').startOf('day'));
                                //we request day summary data
                                prefixUri = "/day";
@@ -492,7 +498,6 @@ widgetViewModelCtor =
                                isSummaryData = true;
                                break;
                            case "YEAR":
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf('day').subtract(1, 'seconds'));
                                dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'years').startOf('day'));
                                //we request day summary data
                                prefixUri = "/day";
@@ -630,6 +635,21 @@ widgetViewModelCtor =
                                               plot.push([d, vplot]);                                                   
                                            }
                                        });
+                                       
+                                       // Add here missing last data at the end
+                                       if (!isNullOrUndefinedOrEmpty(data.data))
+                                       {
+                                          d = DateTimeFormatter.isoDateToDate(data.data[data.data.length-1].date)._d.getTime();
+                                          var time = moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds')._d.getTime().valueOf();
+                                          
+                                          if ((time - d) > self.summaryTimeBetweenNewPoint)
+                                          {
+                                              if (device.content.PlotType === "arearange")
+                                                   range.push([time, null, null]);
+
+                                               plot.push([time, null]);                                             
+                                          }
+                                       }
                                    }
                                    var color = "#606060"; // default color
                                    var colorAxis = "#606060"; // default color
@@ -881,10 +901,6 @@ widgetViewModelCtor =
            }
 
            self.chart.redraw(false); //without animation
-		   
-           // call this function to add a null point if no acquisition summary registered recently
-           // shift the chart if no recent acquisition
-           self.addContinuousSummaryPoint();		   
        };
 	   
        this.cleanUpChart = function (serie, finaldate, dateInMilliSecondes) {
@@ -916,29 +932,34 @@ widgetViewModelCtor =
              var lastDate = 0;
              
              if (!isNullOrUndefined(serie)){             
-                console.log ("serie.points : ", serie.points);
                 
                 if (serie.points.length>0)
                    lastDate = serie.points[serie.points.length - 1].x;
-
+                
                 if ((serie.points.length > 0) && ((time - lastDate) > (self.summaryTimeBetweenNewPoint)))
                 {
                    switch (self.interval) {
                      case "DAY":
+                        self.DisplaySummary(index, 1, device, "days", "hour");
+                        break;
                      case "WEEK":
-                        self.DisplaySummary(index, 1, device, "hours", "hour");
+                        self.DisplaySummary(index, 1, device, "weeks", "hour");
                         break;
                      case "MONTH":
+                        self.DisplaySummary(index, 1, device, "months", "day");
+                        break;
                      case "HALF_YEAR":
+                        self.DisplaySummary(index, 6, device, "months", "day");
+                        break
                      case "YEAR":
-                        self.DisplaySummary(index, 1, device, "days", "day");
+                        self.DisplaySummary(index, 1, device, "years", "day");
                         break;
                      default:
                         break;
                    }
                 }
              }
-         });          
+         });
        };
        
        this.onTime = function (serverLocalTime) {
@@ -954,7 +975,7 @@ widgetViewModelCtor =
          
             var serie = self.chart.get(value);
             var serieRange = self.chart.get('range_' + value);
-             
+            
             // If a serie is available  // Clean points > cleanValue for serie
             if (!isNullOrUndefined(serie))
                self.cleanUpChart(serie, dateTo, self.cleanValue);
@@ -974,24 +995,21 @@ widgetViewModelCtor =
                
                var dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf(prefix).subtract(1, 'seconds'));
                var dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(nb, range).startOf(prefix));
-			   
+            
                RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + "/" + prefix + "/" + dateFrom + "/" + dateTo)
                   .done(function (data) {
                       try {
-						  console.log ("date :", DateTimeFormatter.dateToIsoDate(moment(self.serverTime)));
-						  console.log ("valeur :", data.data[data.data.length-1]);
-						  
-						  var serie = self.chart.get(self.seriesUuid[index]);
+						        var serie = self.chart.get(self.seriesUuid[index]);
                           if (data.data[data.data.length-1] != undefined) {
                               self.chart.hideLoading(); // If a text was displayed before
 							  
                               var serieRange = self.chart.get('range_' + self.seriesUuid[index]);
                               var registerDate = DateTimeFormatter.isoDateToDate(data.data[data.data.length-1].date)._d.getTime().valueOf();
                               var valueToDisplay = parseFloat(data.data[data.data.length-1][self.periodValueType[index]]);
-							  
+                       
                               if (self.differentialDisplay[index])
                               {
-                                  if (!isNullOrUndefined(self.chartLastValue[index]))
+                                  if (serie && !isNullOrUndefined(self.chartLastValue[index]))
                                   {
                                      serie.addPoint([registerDate, valueToDisplay-self.chartLastValue[index]], 
                                                     true,  // redraw. When more than 1 => false.
@@ -1002,16 +1020,18 @@ widgetViewModelCtor =
                               }
                               else                              
                                  serie.addPoint([registerDate, valueToDisplay], true, false, true);
-						      
+                        
                               //Add also for ranges if any
                               if (serieRange && !self.differentialDisplay[index])
-                                 serieRange.addPoint([registerDate, parseFloat(data.data[data.data.length-1].min), parseFloat(data.data[data.data.length-1].max)], true, false, true);
+                              {
+                                 serieRange.addPoint([registerDate, parseFloat(data.data[data.data.length-1].min), parseFloat(data.data[data.data.length-1].max)], 
+                                                     true, false, true);
+                              }
                           }
-						  else{ // Add null for this date
-							  var registerDate = moment(self.serverTime).subtract(1, 'hours').startOf(prefix)._d.getTime().valueOf();
-							  console.log ("registerDate : ", registerDate);
-							  serie.addPoint([registerDate, null], true, false, true);
-						  }
+						        else{ // Add null for this date
+							        var registerDate = moment(self.serverTime).subtract(1, 'hours').startOf(prefix)._d.getTime().valueOf();
+							        serie.addPoint([registerDate, null], true, false, true);
+						        }
                       } catch (err) {
                           console.error(err.message);
                       }

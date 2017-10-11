@@ -73,6 +73,11 @@ namespace rfxcomMessages
       return m_deviceName;
    }
 
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CHumidity::keywords()
+   {
+      return m_keywords;
+   }
+
    void CHumidity::buildDeviceName()
    {
       std::ostringstream ssdeviceName;

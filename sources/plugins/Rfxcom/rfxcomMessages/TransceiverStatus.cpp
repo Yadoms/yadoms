@@ -149,6 +149,11 @@ namespace rfxcomMessages
       return emptyString;
    }
 
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CTransceiverStatus::keywords()
+   {
+      return NoKeywords;
+   }
+
    void CTransceiverStatus::traceEnabledProtocols() const
    {
       YADOMS_LOG(information) << "RFXCom configured protocols :";

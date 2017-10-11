@@ -12,9 +12,9 @@ namespace rfxcomMessages
                             const RBUF& rbuf,
                             size_t rbufSize)
       : m_pressure(boost::make_shared<yApi::historization::CPressure>("pressure")),
-      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_pressure , m_batteryLevel , m_signalPower })
+        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_pressure , m_batteryLevel , m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -62,7 +62,7 @@ namespace rfxcomMessages
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CBarometric::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CBarometric::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("Barometric is a read-only message, can not be encoded");
    }
@@ -70,6 +70,11 @@ namespace rfxcomMessages
    void CBarometric::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       api->historizeData(m_deviceName, m_keywords);
+   }
+
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CBarometric::keywords()
+   {
+      return m_keywords;
    }
 
    const std::string& CBarometric::getDeviceName() const
@@ -88,5 +93,4 @@ namespace rfxcomMessages
    {
       m_deviceModel = "Barometric sensor";
    }
-
 } // namespace rfxcomMessages

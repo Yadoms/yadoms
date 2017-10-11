@@ -148,10 +148,12 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kEvtPortConnection:
          {
-            if (api->getEventHandler().getEventData<bool>())
+            auto notif = api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>>();
+
+            if (notif && notif->isConnected())
                processConnectionEvent(api);
             else
-               processUnConnectionEvent(api);
+               processUnConnectionEvent(api, notif);
 
             break;
          }
@@ -304,10 +306,13 @@ void CMegatecUps::protocolErrorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
    api->getEventHandler().createTimer(kProtocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
 }
 
-void CMegatecUps::processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
+void CMegatecUps::processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification)
 {
    YADOMS_LOG(information) << "UPS connection was lost" ;
-   api->setPluginState(yApi::historization::EPluginState::kError, "connectionFailed");
+   if (notification)
+      api->setPluginState(yApi::historization::EPluginState::kError, notification->getErrorMessageI18n(), notification->getErrorMessageI18nParameters());
+   else
+      api->setPluginState(yApi::historization::EPluginState::kError, "connectionFailed");
 
    destroyConnection();
 }

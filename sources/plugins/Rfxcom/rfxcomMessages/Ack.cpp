@@ -36,4 +36,9 @@ namespace rfxcomMessages
       static const std::string emptyString;
       return emptyString;
    }
+
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CAck::keywords()
+   {
+      return NoKeywords;
+   }
 } // namespace rfxcomMessages

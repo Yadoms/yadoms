@@ -207,12 +207,11 @@ WidgetManager.updateToServer = function (widget) {
      .done(function () {
          //we notify that configuration has changed
          try {
-             WidgetManager.updateWidgetConfiguration_(widget);
-
-             //we ask for a refresh of widget data
-             updateWidgetPolling(widget);
-
-             d.resolve();
+             WidgetManager.updateWidgetConfiguration_(widget).always(function(){
+                //we ask for a refresh of widget data
+                updateWidgetPolling(widget);
+                d.resolve();
+             });
          }
          catch (e) {
              notifyWarning($.t("objects.widgetManager.exceptionDuringCallConfigurationChanged", { "widgetType": widget.type }));
@@ -242,8 +241,7 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
         else
             widget.$gridWidget.find('div.panel-widget-title').text("");
         //we clear the listened device list before call the configuration
-        widget.listenedKeywords = [];	
-		
+        widget.listenedKeywords = [];
         // Update widget specific values
         if (!isNullOrUndefined(widget.viewModel.configurationChanged)) {
             var defferedResult = widget.viewModel.configurationChanged();
@@ -252,8 +250,8 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
             defferedResult.done(function () {
                 //we manage the toolbar api specific icons
                 widget.viewModel.widgetApi.manageBatteryConfiguration().always(function(){
-					d.resolve();
-				});
+					   d.resolve();
+				   });
             });
         } else {
             d.resolve();
@@ -381,39 +379,22 @@ WidgetManager.loadWidget = function (widget, pageWhereToAdd, ensureVisible) {
     assert(!isNullOrUndefined(widget), "widget must be defined");
     assert(!isNullOrUndefined(pageWhereToAdd), "pageWhereToAdd must be defined");
 
-    var d = $.Deferred();
-
     if (!WidgetPackageManager.packageExists(widget.type)) {
-        WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, "package do not exists", ensureVisible);
-        d.reject();
-
+        return WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, "package do not exists", ensureVisible);
     } else {
 
         if (!WidgetPackageManager.packageList[widget.type].viewAnViewModelHaveBeenDownloaded) {
             WidgetManager.downloadWidgetViewAndVieWModel_(widget.type, true)
             .done(function () {
-                WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible).done(function(){
-                  d.resolve();
-               })
-               .fail(function(){
-                  d.reject();
-               });
+                return WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible);
             })
             .fail(function (errorMessage) {
-                WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, errorMessage, ensureVisible);
-                d.reject(errorMessage);
+                return WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, errorMessage, ensureVisible);
             });
         } else {
-            WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible).done(function(){
-               d.resolve();
-            })
-            .fail(function(){
-               d.reject();
-            });
+            return WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible);
         }
-
     }
-    return d.promise();
 };
 
 
@@ -448,6 +429,7 @@ WidgetManager.instanciateWidgetToPage_ = function (pageWhereToAdd, widget, widge
         } else {
             console.error("Fail to load deactivated widget");
         }
+        d.reject();
     }
     
     return d.promise();
@@ -469,7 +451,7 @@ WidgetManager.instanciateDowngradedWidgetToPage_ = function (pageWhereToAdd, wid
     widget.downgraded = true;
 
     //load downgraded widget instead
-    WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, WidgetManager.DeactivatedWidgetPackageName, ensureVisible);
+    return WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, WidgetManager.DeactivatedWidgetPackageName, ensureVisible);
 }
 
 /**
@@ -737,7 +719,6 @@ WidgetManager.createGridWidget = function (widget) {
  * Update the layout of the widget
  */
 WidgetManager.updateWidgetLayout = function (widget) {
-	console.log ("updateWidgetLayout");
     widget.$gridWidget.find(".textfit").fitText();
 };
 

@@ -12,9 +12,9 @@ namespace rfxcomMessages
                         const RBUF& rbuf,
                         size_t rbufSize)
       : m_dateTime(boost::make_shared<yApi::historization::CDateTime>("datetime")),
-      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_dateTime, m_batteryLevel , m_signalPower })
+        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_dateTime, m_batteryLevel , m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -63,7 +63,7 @@ namespace rfxcomMessages
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CDateTime::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CDateTime::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("Temp is a read-only message, can not be encoded");
    }
@@ -76,6 +76,11 @@ namespace rfxcomMessages
    const std::string& CDateTime::getDeviceName() const
    {
       return m_deviceName;
+   }
+
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CDateTime::keywords()
+   {
+      return m_keywords;
    }
 
    void CDateTime::buildDeviceName()
@@ -100,5 +105,3 @@ namespace rfxcomMessages
       m_deviceModel = ssModel.str();
    }
 } // namespace rfxcomMessages
-
-

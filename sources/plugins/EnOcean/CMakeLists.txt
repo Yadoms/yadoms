@@ -71,8 +71,12 @@ set(ENOCEAN_SOURCES
    )
    
    
-source_group(message message/*.*)
-source_group(specificHistorizers specificHistorizers/*.*)
+#########################################
+## Place here all additional groups (solution folder)
+#########################################
+source_group(sources ./*.*)
+source_group(sources\\message message/*.*)
+source_group(sources\\specificHistorizers specificHistorizers/*.*)
 
 
 #########################################

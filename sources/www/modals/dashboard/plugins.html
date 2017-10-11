@@ -429,6 +429,7 @@
 
             PluginInstanceManager.getState(pluginInstance)
             .done(function (status) {
+            
                var $row = getPluginDomRow(pluginInstance);
                
                if (status) {
@@ -493,6 +494,12 @@
    }
 
    function getCustomMessage(pluginInstance, messageId, messageData, defaultMessage) {
+      //Strategy to get the message:
+      //1. try plugin translation
+      //2. try general translation
+      //3. use default message
+   
+   
       var i18nOpt ={}; //ensure i18nOpt is not undefined
       if(messageData) {
          try {
@@ -502,9 +509,11 @@
          }
       }
        
-      i18nOpt.defaultValue = $.t(defaultMessage); //define default value parameter
+      i18nOpt.defaultValue = $.t(defaultMessage); //define default value parameter (for step 3)
+      i18nOpt.defaultValue = $.t(messageId, i18nOpt); //define default value parameter (for step 2)
+      
       if(messageId && messageId !== "") {
-         return $.t("plugins/" + pluginInstance.type + ":customLabels.pluginState." + messageId, i18nOpt);
+         return $.t("plugins/" + pluginInstance.type + ":customLabels.pluginState." + messageId, i18nOpt); //step 1
       }
       return i18nOpt.defaultValue;      
    }

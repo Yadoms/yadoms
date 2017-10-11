@@ -1,5 +1,6 @@
 #pragma once
 #include "../IType.h"
+#include "Profile_D2_01_Common.h"
 
 
 class CProfile_D2_01_08 : public IType
@@ -36,4 +37,6 @@ private:
    boost::shared_ptr<yApi::historization::CPower> m_loadPower;
    boost::shared_ptr<yApi::historization::CSwitch> m_overCurrent;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
+
+   mutable CProfile_D2_01_Common::EOutputChannel m_outputChannel;
 };

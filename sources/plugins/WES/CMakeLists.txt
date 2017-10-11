@@ -50,10 +50,14 @@ set(WES_PLUGIN_SOURCES
    http/timeOutException.hpp
 )
 
-source_group(equipments equipments/*.*)
-source_group(http http/*.*)
-source_group(equipments\\specificHistorizers equipments/specificHistorizers/*.*)
-source_group(equipments\\WESSubEquipments equipments/WESSubEquipments/*.*)
+#########################################
+## Place here all additional groups (solution folder)
+#########################################
+source_group(sources ./*.*)
+source_group(sources\\equipments equipments/*.*)
+source_group(sources\\http http/*.*)
+source_group(sources\\equipments\\specificHistorizers equipments/specificHistorizers/*.*)
+source_group(sources\\equipments\\WESSubEquipments equipments/WESSubEquipments/*.*)
 	
 #########################################
 ## Place here all additional include directories

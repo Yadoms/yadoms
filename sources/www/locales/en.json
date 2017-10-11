@@ -1050,6 +1050,20 @@
       "started": "Task started"
     }
   },
+  "asyncPort": {
+     "tcp": {
+        "connectionClosed" : "TCP connection closed",
+        "connectionError" : "TCP connection error",
+        "operationAborted" : "Operation cancelled (error)"
+     },
+     "serial" : {
+        "error" : "Error communicating with hardware",
+        "failToCommunicateWithHardware" : "Unable to communicate with hardware. Check the hardware and its configuration",
+        "connectionClosed" : "Connection with hardware closed (serial link)",
+        "connectionError" : "Hardware connection error (serial link)",
+        "failToOpen" : "Unable to open serial link __port__. Check hardware or configuration."
+     }
+  },
   "system": {
     "yadoms": "yadoms",
     "databaseBackup": "Database backup",

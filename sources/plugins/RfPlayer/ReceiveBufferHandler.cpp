@@ -18,7 +18,7 @@ void CReceiveBufferHandler::push(const shared::communication::CByteBuffer& buffe
 
    if (isComplete())
    {
-      boost::shared_ptr<frames::incoming::CFrame> bufferMessage = popNextMessage();
+      auto bufferMessage = popNextMessage();
       if (bufferMessage)
       {
          m_messageHandler->onReceived(bufferMessage);

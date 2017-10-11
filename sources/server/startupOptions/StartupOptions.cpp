@@ -48,6 +48,13 @@ namespace startupOptions
          .binding("server.www", &m_configContainer));
 
       options.addOption(
+         Poco::Util::Option("noWebServerCache", "N", "Disable the WebServer cache feature.")
+         .required(false)
+         .repeatable(false)
+         .noArgument()
+         .binding("server.noWebServerCache", &m_configContainer));
+
+      options.addOption(
          Poco::Util::Option("allowExternalAccess", "ex", "Allow external access (required for mobile app access)")
          .required(false)
          .repeatable(false)
@@ -505,6 +512,11 @@ namespace startupOptions
    bool CStartupOptions::getNoPasswordFlag() const
    {
       return m_configContainer.getBool("server.noPassword", false);
+   }  
+   
+   bool CStartupOptions::getNoWebServerCacheFlag() const
+   {
+      return m_configContainer.getBool("server.noWebServerCache", false);
    }
 
    std::string CStartupOptions::getPluginsPath() const

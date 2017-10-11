@@ -2,6 +2,7 @@
 #include <shared/Export.h>
 #include "IAsyncPort.h"
 #include "IReceiveBufferHandler.h"
+#include "AsyncPortConnectionNotification.h"
 
 namespace shared
 {
@@ -25,18 +26,27 @@ namespace shared
          /// \param[in] flushAtConnect       If true (default), flush serial port buffers before listening on port
          //--------------------------------------------------------------
          explicit CAsyncSerialPort(const std::string& port,
-                                   boost::asio::serial_port_base::baud_rate baudrate = boost::asio::serial_port_base::baud_rate(9600),
-                                   boost::asio::serial_port_base::parity parity = boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::none),
-                                   boost::asio::serial_port_base::character_size characterSize = boost::asio::serial_port_base::character_size(8),
-                                   boost::asio::serial_port_base::stop_bits stop_bits = boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
-                                   boost::asio::serial_port_base::flow_control flowControl = boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none),
-                                   boost::posix_time::time_duration connectRetryDelay = boost::posix_time::seconds(30),
+                                   const boost::asio::serial_port_base::baud_rate& baudrate = boost::asio::serial_port_base::baud_rate(9600),
+                                   const boost::asio::serial_port_base::parity& parity = boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::none),
+                                   const boost::asio::serial_port_base::character_size& characterSize = boost::asio::serial_port_base::character_size(8),
+                                   const boost::asio::serial_port_base::stop_bits& stop_bits = boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
+                                   const boost::asio::serial_port_base::flow_control& flowControl = boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none),
+                                   const boost::posix_time::time_duration& connectRetryDelay = boost::posix_time::seconds(30),
                                    bool flushAtConnect = true);
 
          //--------------------------------------------------------------
          /// \brief	Destructor
          //--------------------------------------------------------------
          virtual ~CAsyncSerialPort();
+
+         //--------------------------------------------------------------
+         /// \brief	Set a timeout for blocking send (if flow control is used). See note below.
+         /// \param[in] writeTimeout         The timeout to apply : should be inferior to plugin stop delay (10s), so 5s is recommended
+         /// \note                           Only useful if flow control is used : When flow control is used, write is a blocking operation,
+         ///                                 so may never return if slave doesn't answer (ie disconnected cable). Set a timeout to rise an error
+         ///                                 instead of permanently blocking.
+         //--------------------------------------------------------------
+         void setWriteTimeout(const boost::posix_time::time_duration& writeTimeout);
 
          // IAsyncPort Implementation
          void setReceiveBufferMaxSize(std::size_t size) override;
@@ -87,10 +97,23 @@ namespace shared
                             std::size_t bytesTransferred);
 
          //--------------------------------------------------------------
-         /// \brief	                     Notify the event handler for connection event
-         /// \param[in] isConnected       Connection state
+         /// \brief	                     Notify the event handler for connection event : SUCCESS
          //--------------------------------------------------------------
-         void notifyEventHandler(bool isConnected) const;
+         void notifyEventHandler() const;
+
+         //--------------------------------------------------------------
+         /// \brief	                           Notify the event handler for connection event : ERROR
+         /// \param[in] i18nErrorMessage        The i18n string representing the error : "serialport.failToOpen" -> "Impossible d'ouvrir le port série"
+         //--------------------------------------------------------------
+         void notifyEventHandler(const std::string & i18nErrorMessage) const;
+
+         //--------------------------------------------------------------
+         /// \brief	                           Notify the event handler for connection event : ERROR
+         /// \param[in] i18nErrorMessage        The i18n string representing the error : "serialport.failToOpen" -> "Impossible d'ouvrir le port série {{failPort}}"
+         /// \param[in] m_i18nMessageParameters The i18n string parameters : ie: ["failPort", "COM1"]
+         //--------------------------------------------------------------
+         void notifyEventHandler(const std::string & i18nErrorMessage, const std::map<std::string, std::string> & m_i18nMessageParameters) const;
+
 
          //--------------------------------------------------------------
          /// \brief	                     Send buffer content
@@ -157,6 +180,12 @@ namespace shared
          /// \brief	Flush serial port buffers before listening on port (just after connection)
          //--------------------------------------------------------------
          bool m_flushAtConnect;
+
+         //--------------------------------------------------------------
+         /// \brief	The write timeout (if flow control is used)
+         //--------------------------------------------------------------
+         boost::posix_time::time_duration m_writeTimeout;
+         bool m_writeTimeouted;
       };
    }
 } // namespace shared::communication

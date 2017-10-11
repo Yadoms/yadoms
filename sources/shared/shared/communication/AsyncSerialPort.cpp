@@ -10,12 +10,12 @@ namespace shared
    namespace communication
    {
       CAsyncSerialPort::CAsyncSerialPort(const std::string& port,
-                                         boost::asio::serial_port_base::baud_rate baudrate,
-                                         boost::asio::serial_port_base::parity parity,
-                                         boost::asio::serial_port_base::character_size characterSize,
-                                         boost::asio::serial_port_base::stop_bits stop_bits,
-                                         boost::asio::serial_port_base::flow_control flowControl,
-                                         boost::posix_time::time_duration connectRetryDelay,
+                                         const boost::asio::serial_port_base::baud_rate& baudrate,
+                                         const boost::asio::serial_port_base::parity& parity,
+                                         const boost::asio::serial_port_base::character_size& characterSize,
+                                         const boost::asio::serial_port_base::stop_bits& stop_bits,
+                                         const boost::asio::serial_port_base::flow_control& flowControl,
+                                         const boost::posix_time::time_duration& connectRetryDelay,
                                          bool flushAtConnect)
          : m_boostSerialPort(m_ioService),
            m_port(port),
@@ -29,13 +29,20 @@ namespace shared
            m_connectStateEventId(event::kNoEvent),
            m_connectRetryDelay(connectRetryDelay),
            m_connectRetryTimer(m_ioService),
-           m_flushAtConnect(flushAtConnect)
+           m_flushAtConnect(flushAtConnect),
+           m_writeTimeout(boost::date_time::pos_infin),
+           m_writeTimeouted(false)
       {
       }
 
       CAsyncSerialPort::~CAsyncSerialPort()
       {
          CAsyncSerialPort::stop();
+      }
+
+      void CAsyncSerialPort::setWriteTimeout(const boost::posix_time::time_duration& writeTimeout)
+      {
+         m_writeTimeout = writeTimeout;
       }
 
       void CAsyncSerialPort::setReceiveBufferMaxSize(std::size_t size)
@@ -50,7 +57,7 @@ namespace shared
 
          // Try to connect
          tryConnect();
-         m_asyncThread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &m_ioService)));
+         m_asyncThread = boost::make_shared<boost::thread>(boost::bind(&boost::asio::io_service::run, &m_ioService));
       }
 
       void CAsyncSerialPort::stop()
@@ -70,11 +77,14 @@ namespace shared
          // Open the port
          try
          {
+
+            YADOMS_LOG(debug) << " : m_boostSerialPort.open();";
             m_boostSerialPort.open(m_port);
          }
          catch (boost::system::system_error& e)
          {
-            YADOMS_LOG(error) << "Failed to open serial port : " << e.what();
+            notifyEventHandler("asyncPort.serial.failToOpen", {{ "port", m_port }});
+            YADOMS_LOG(error) << " : Failed to open serial port : " << e.what();
             return false;
          }
 
@@ -96,12 +106,13 @@ namespace shared
          // Close the port
          try
          {
+            m_boostSerialPort.cancel();
+            YADOMS_LOG(debug) << " : m_boostSerialPort.close();";
             m_boostSerialPort.close();
          }
          catch (boost::system::system_error& e)
          {
-            YADOMS_LOG(error) << "Failed to close serial port " << e.what();
-            return;
+            YADOMS_LOG(error) << " : Failed to close serial port " << e.what();
          }
       }
 
@@ -144,13 +155,13 @@ namespace shared
       {
          if (isConnected())
          {
-            YADOMS_LOG(warning) << "Already connected";
+            YADOMS_LOG(warning) << " : Already connected";
          }
          else
          {
             if (!connect())
             {
-               // Fail to reconnect, retry after a certain delay
+               YADOMS_LOG(debug) << " : Fail to reconnect, retry in a while...";
                m_connectRetryTimer.expires_from_now(m_connectRetryDelay);
                m_connectRetryTimer.async_wait(boost::bind(&CAsyncSerialPort::reconnectTimerHandler, this, boost::asio::placeholders::error));
                return;
@@ -160,8 +171,8 @@ namespace shared
             if (m_flushAtConnect)
                flush();
 
-            // Connected
-            notifyEventHandler(true);
+            //serial port opened
+            notifyEventHandler();
          }
 
          // Start listening on the port
@@ -171,22 +182,36 @@ namespace shared
       void CAsyncSerialPort::startRead()
       {
          // Start an asynchronous read and call readCompleted when it completes or fails 
-         m_boostSerialPort.async_read_some(boost::asio::buffer(m_asyncReadBuffer.begin(), m_asyncReadBuffer.size()),
-                                           boost::bind(&CAsyncSerialPort::readCompleted, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+         m_boostSerialPort.async_read_some(boost::asio::buffer(m_asyncReadBuffer.begin(),
+                                                               m_asyncReadBuffer.size()),
+                                           boost::bind(&CAsyncSerialPort::readCompleted,
+                                                       this,
+                                                       boost::asio::placeholders::error,
+                                                       boost::asio::placeholders::bytes_transferred));
       }
 
-      void CAsyncSerialPort::readCompleted(const boost::system::error_code& error, std::size_t bytesTransferred)
+      void CAsyncSerialPort::readCompleted(const boost::system::error_code& error,
+                                           std::size_t bytesTransferred)
       {
          if (error)
          {
             // boost::asio::error::operation_aborted is fired when stop is required
             if (error == boost::asio::error::operation_aborted)
+            {
+               if (m_writeTimeouted)
+                  // Read operation was cancelled because of stop async write operation on timeout ==> must be restarted
+                  startRead();
                return; // Normal stop
+            }
 
             // Error ==> disconnecting
-            YADOMS_LOG(error) << "Serial port read error : " << error.message();
+            YADOMS_LOG(error) << " : Serial port read error : " << error.message();
             disconnect();
-            notifyEventHandler(false);
+
+            if (error == boost::asio::error::bad_descriptor)
+               notifyEventHandler("asyncPort.serial.failToCommunicateWithHardware", { {"message", error.message() }, { "code" , (boost::format("%1%") % error.value()).str() } });
+            else
+               notifyEventHandler("asyncPort.serial.error", { { "message", error.message() },{ "code" , (boost::format("%1%") % error.value()).str() } });
             return;
          }
 
@@ -207,39 +232,104 @@ namespace shared
          sendBuffer(toSend);
       }
 
-      void CAsyncSerialPort::sendText(const std::string & content)
+      void CAsyncSerialPort::sendText(const std::string& content)
       {
          auto toSend = boost::asio::buffer(content);
          sendBuffer(toSend);
       }
 
-      void CAsyncSerialPort::sendBuffer(boost::asio::const_buffers_1 & buffer)
+      void CAsyncSerialPort::sendBuffer(boost::asio::const_buffers_1& buffer)
       {
          try
          {
-            m_boostSerialPort.write_some(buffer);
+            if (m_flowControl.value() == boost::asio::serial_port_base::flow_control::none
+               || m_writeTimeout == boost::date_time::pos_infin)
+            {
+               m_boostSerialPort.write_some(buffer);
+            }
+            else
+            {
+               // Flow control is used, so write can block.
+               // In this case, use async write and apply timeout
+               event::CEventHandler evtHandler;
+               enum
+                  {
+                     kSendFinished = event::kUserFirstId
+                  };
+               m_writeTimeouted = false;
+               m_boostSerialPort.async_write_some(buffer,
+                                                  [&evtHandler](const boost::system::error_code& ec,
+                                                     std::size_t bytes_transferred)
+                                                  {
+                                                     evtHandler.postEvent(kSendFinished, ec);
+                                                  });
+
+               switch (evtHandler.waitForEvents(m_writeTimeout))
+               {
+               case event::kTimeout:
+                  {
+                     m_writeTimeouted = true;
+                     auto rc = boost::system::error_code(boost::system::errc::timed_out,
+                                                         boost::asio::error::get_misc_category());
+                     // Stop async operation
+                     m_boostSerialPort.cancel(rc);
+                     evtHandler.waitForEvents(m_writeTimeout);
+
+                     // Fail to send data on serial port, timeout. Do as it was sent (should be handled by protocol)
+                     YADOMS_LOG(warning) << " : Fail to send data on serial port, timeout";
+                     return;
+                  }
+               case kSendFinished:
+                  m_writeTimeouted = false;
+                  return;
+               default:
+                  throw std::runtime_error("Unexpected event " + std::to_string(evtHandler.getEventId()));
+               }
+            }
          }
          catch (boost::system::system_error& e)
          {
             // boost::asio::error::eof is the normal stop
             if (e.code() != boost::asio::error::eof)
             {
-               YADOMS_LOG(error) << "Serial port write text error : " << e.what();
+               YADOMS_LOG(error) << " : Serial port send error : " << e.what();
                disconnect();
+               notifyEventHandler("asyncPort.serial.connectionError");
+               throw CPortException(CPortException::kConnectionError, e.what());
             }
 
-            notifyEventHandler(false);
-            throw CPortException((e.code() == boost::asio::error::eof) ? CPortException::kConnectionClosed : CPortException::kConnectionError, e.what());
+            notifyEventHandler("asyncPort.serial.connectionClosed");
+            throw CPortException(CPortException::kConnectionClosed, e.what());
          }
       }
 
-
-      void CAsyncSerialPort::notifyEventHandler(bool isConnected) const
+      void CAsyncSerialPort::notifyEventHandler() const
       {
          if (m_connectStateEventHandler)
-            m_connectStateEventHandler->postEvent(m_connectStateEventId,
-                                                  isConnected);
+         {
+            auto param = boost::make_shared<CAsyncPortConnectionNotification>();
+            m_connectStateEventHandler->postEvent(m_connectStateEventId, param);
+         }
       }
+
+      void CAsyncSerialPort::notifyEventHandler(const std::string & i18nErrorMessage) const
+      {
+         if (m_connectStateEventHandler)
+         {
+            auto param = boost::make_shared<CAsyncPortConnectionNotification>(i18nErrorMessage);
+            m_connectStateEventHandler->postEvent(m_connectStateEventId, param);
+         }
+      }
+
+      void CAsyncSerialPort::notifyEventHandler(const std::string & i18nErrorMessage, const std::map<std::string, std::string> & i18nMessageParameters) const
+      {
+         if (m_connectStateEventHandler)
+         {
+            auto param = boost::make_shared<CAsyncPortConnectionNotification>(i18nErrorMessage, i18nMessageParameters);
+            m_connectStateEventHandler->postEvent(m_connectStateEventId, param);
+         }
+      }
+
    }
 } // namespace shared::communication
 

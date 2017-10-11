@@ -40,11 +40,16 @@ set(IPX800_PLUGIN_SOURCES
 	specificHistorizers/counter.h	
 	specificHistorizers/inputOutput.cpp
 	specificHistorizers/inputOutput.h
-	)
+)
 
-source_group(equipments equipments/*.*)
-source_group(http http/*.*)
-source_group(specificHistorizers specificHistorizers/*.*)
+   
+#########################################
+## Place here all additional groups (solution folder)
+#########################################
+source_group(sources ./*.*)
+source_group(sources\\equipments equipments/*.*)
+source_group(sources\\http http/*.*)
+source_group(sources\\specificHistorizers specificHistorizers/*.*)
 	
 #########################################
 ## Place here all additional include directories
