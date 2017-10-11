@@ -8,6 +8,7 @@
 #include "Security1PowerCodeMotion.h"
 #include "Security1Meiantech.h"
 #include <shared/Log.h>
+#include "../MessageFilteredException.hpp"
 #include "RareDeviceIdFilter.h"
 
 // Shortcut to yPluginApi namespace
@@ -147,7 +148,7 @@ namespace rfxcomMessages
       if (!api->deviceExists(m_deviceName))
       {
          if (m_messageFilter && !m_messageFilter->isValid(m_deviceName))
-            throw std::invalid_argument((boost::format("Receive unknown device (id %1%) for unsecured protocol (SECURITY1 / %2%), may be a transmission error : ignored")
+            throw CMessageFilteredException((boost::format("Receive unknown device (id %1%) for unsecured protocol (SECURITY1 / %2%), may be a transmission error : ignored")
                % m_id % model).str());
 
          api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
@@ -181,6 +182,11 @@ namespace rfxcomMessages
    const std::string& CSecurity1::getDeviceName() const
    {
       return m_deviceName;
+   }
+
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CSecurity1::keywords()
+   {
+      return m_keywords;
    }
 
    void CSecurity1::buildDeviceName()

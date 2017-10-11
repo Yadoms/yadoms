@@ -74,5 +74,3 @@ namespace rfxcomMessages
       }
    }
 } // namespace rfxcomMessages
-
-

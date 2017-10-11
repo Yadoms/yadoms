@@ -17,14 +17,16 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~IRfxcomMessage() {}
+      virtual ~IRfxcomMessage()
+      {
+      }
 
       //--------------------------------------------------------------
       /// \brief	                        Encode messages for serial link
       /// \param[in] seqNumberProvider    The sequence number provider
       /// \return                         Buffers (a command can be parted in several messages)
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const = 0;
+      virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Historize message data to Yadoms
@@ -37,5 +39,12 @@ namespace rfxcomMessages
       /// \return                         Device name
       //--------------------------------------------------------------
       virtual const std::string& getDeviceName() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	                        Get keywords
+      /// \return                         Read-only keyword list, or NoKeywords if empty
+      //--------------------------------------------------------------
+      static const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> NoKeywords;
+      virtual const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords() = 0;
    };
 }

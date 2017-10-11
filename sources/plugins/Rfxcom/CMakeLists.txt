@@ -192,6 +192,7 @@ set(RFXCOM_SOURCES
    ITransceiver.h
    IUnsecuredProtocolFilter.h
    ManuallyDeviceCreationException.hpp
+   MessageFilteredException.hpp
    NullSequenceNumber.h
    ProtocolException.hpp
    Rfxcom.h
