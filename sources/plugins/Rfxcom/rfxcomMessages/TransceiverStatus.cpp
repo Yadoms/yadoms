@@ -271,8 +271,7 @@ namespace rfxcomMessages
          (configuration.isLWRFenabled() == m_LWRFenabled) &&
          (configuration.isHIDEKIenabled() == m_HIDEKIenabled) &&
          (configuration.isLACROSSEenabled() == m_LACROSSEenabled) &&
-         (configuration.isFS20enabled() == m_FS20enabled) &&
-         (configuration.isPROGUARDenabled() == m_PROGUARDenabled) &&
+         (configuration.isLEGRANDenabled() == m_FS20enabled) &&
          (configuration.isBLINDST0enabled() == m_BLINDST0enabled) &&
          (configuration.isBLINDST1enabled() == m_BLINDST1enabled) &&
          (configuration.isX10enabled() == m_X10enabled) &&
