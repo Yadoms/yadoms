@@ -38,5 +38,5 @@ private:
    boost::shared_ptr<yApi::historization::CSwitch> m_overCurrent;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
 
-   mutable CProfile_D2_01_Common::EOutputChannel outputChannel;
+   mutable CProfile_D2_01_Common::EOutputChannel m_outputChannel;
 };
