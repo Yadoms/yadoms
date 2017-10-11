@@ -5,12 +5,18 @@
 #include <Poco/Net/HTTPBasicCredentials.h>
 #include "MimeType.h"
 #include <shared/encryption/Md5.h>
+#include <shared/ServiceLocator.h>
+#include "startupOptions/IStartupOptions.h"
 
 namespace web { namespace poco {
 
       CWebsiteRequestHandler::CWebsiteRequestHandler(const std::string & documentRoot, const std::map<std::string, std::string> & alias)
          :m_documentRoot(documentRoot)
       {
+         //retrieve startup options
+         auto startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
+         m_cacheDisabled = startupOptions->getNoWebServerCacheFlag();
+
          std::map<std::string, std::string>::const_iterator i;
          for (i = alias.begin(); i != alias.end(); ++i)
             configureAlias(i->first, i->second);
@@ -57,12 +63,15 @@ namespace web { namespace poco {
             extension = fullpath.substr(last_dot_pos + 1);
          }
 
-         //allow browser to cache ressource
-         // public : allow any intermediate proxies (not only the browser)
-         // max-age : keep in memory for two months
-         // etag : the md5 hash of each file. Computed at each requests, it ensure that the file hasn't changed. This is a browser behavior (etag change detection)
-         response.set("Cache-Control", "public, max-age=5259477"); //2 months
-         response.set("ETag", shared::encryption::CMd5::digestFile(fullpath));
+         if (!m_cacheDisabled)
+         {
+            //allow browser to cache ressource
+            // public : allow any intermediate proxies (not only the browser)
+            // max-age : keep in memory for two months
+            // etag : the md5 hash of each file. Computed at each requests, it ensure that the file hasn't changed. This is a browser behavior (etag change detection)
+            response.set("Cache-Control", "public, max-age=5259477"); //2 months
+            response.set("ETag", shared::encryption::CMd5::digestFile(fullpath));
+         }
 
          std::ifstream is(fullpath.c_str(), std::ios::in | std::ios::binary);
          if (is)

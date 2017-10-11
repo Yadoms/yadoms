@@ -130,10 +130,12 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
          case kEvtPortConnection:
             {
-               if (m_api->getEventHandler().getEventData<bool>())
+               auto notif = m_api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>>();
+
+               if (notif && notif->isConnected())
                   processConnectionEvent();
                else
-                  processUnConnectionEvent();
+                  processUnConnectionEvent(notif);
 
                break;
             }
@@ -323,10 +325,13 @@ void CEnOcean::protocolErrorProcess()
                                         boost::posix_time::seconds(10));
 }
 
-void CEnOcean::processUnConnectionEvent()
+void CEnOcean::processUnConnectionEvent(boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification)
 {
    YADOMS_LOG(information) << "EnOcean connection was lost";
-   m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionFailed");
+   if(notification)
+      m_api->setPluginState(yApi::historization::EPluginState::kError, notification->getErrorMessageI18n(), notification->getErrorMessageI18nParameters());
+   else
+      m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionFailed");
 
    destroyConnection();
 }

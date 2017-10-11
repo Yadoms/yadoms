@@ -30,6 +30,8 @@ set(SHARED_LIB_SRC
    shared/ServiceLocator.h
    shared/ServiceLocator.cpp
    
+   shared/communication/AsyncPortConnectionNotification.h
+   shared/communication/AsyncPortConnectionNotification.cpp
    shared/communication/AsyncSerialPort.h
    shared/communication/AsyncSerialPort.cpp
    shared/communication/AsyncTcpClient.h

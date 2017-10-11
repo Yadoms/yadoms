@@ -7,6 +7,7 @@
 #include "frames/outgoing/Factory.h"
 #include "ManuallyDeviceFactory.h"
 
+
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
 // This macro also defines the static PluginInformations value that can be used by plugin to get information values
@@ -176,10 +177,12 @@ void CRfPlayer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
          case kEvtPortConnection:
             {
-               if (api->getEventHandler().getEventData<bool>())
+               auto notif = api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>>();
+
+               if (notif && notif->isConnected())
                   processZiBlueConnectionEvent(api);
                else
-                  processZiBlueUnConnectionEvent(api);
+                  processZiBlueUnConnectionEvent(api, notif);
 
                break;
             }
@@ -271,17 +274,23 @@ void CRfPlayer::processZiBlueConnectionEvent(boost::shared_ptr<yApi::IYPluginApi
    }
    catch (std::exception& e)
    {
-      YADOMS_LOG(error) << "Error resetting RfPlayer transceiver : " << e.what();
+      YADOMS_LOG(error) << "Error initializing RfPlayer transceiver : " << e.what();
 
       // Stop the communication, and try later
       errorProcess(api);
+
+      api->setPluginState(yApi::historization::EPluginState::kError, "rfp1000NotFound");
    }
 }
 
-void CRfPlayer::processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
+void CRfPlayer::processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification)
 {
    YADOMS_LOG(information) << "RfPlayer connection was lost";
-   api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionLost");
+   //if it is from notification, just resend error message to GUI
+   if(notification)
+      api->setPluginState(yApi::historization::EPluginState::kError, notification->getErrorMessageI18n(), notification->getErrorMessageI18nParameters());
+   else
+      api->setPluginState(yApi::historization::EPluginState::kError);
 }
 
 void CRfPlayer::errorProcess(boost::shared_ptr<yApi::IYPluginApi> api)

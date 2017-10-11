@@ -2,6 +2,7 @@
 #include <shared/Export.h>
 #include "IAsyncPort.h"
 #include "IReceiveBufferHandler.h"
+#include "AsyncPortConnectionNotification.h"
 
 namespace shared
 {
@@ -96,10 +97,23 @@ namespace shared
                             std::size_t bytesTransferred);
 
          //--------------------------------------------------------------
-         /// \brief	                     Notify the event handler for connection event
-         /// \param[in] isConnected       Connection state
+         /// \brief	                     Notify the event handler for connection event : SUCCESS
          //--------------------------------------------------------------
-         void notifyEventHandler(bool isConnected) const;
+         void notifyEventHandler() const;
+
+         //--------------------------------------------------------------
+         /// \brief	                           Notify the event handler for connection event : ERROR
+         /// \param[in] i18nErrorMessage        The i18n string representing the error : "serialport.failToOpen" -> "Impossible d'ouvrir le port série"
+         //--------------------------------------------------------------
+         void notifyEventHandler(const std::string & i18nErrorMessage) const;
+
+         //--------------------------------------------------------------
+         /// \brief	                           Notify the event handler for connection event : ERROR
+         /// \param[in] i18nErrorMessage        The i18n string representing the error : "serialport.failToOpen" -> "Impossible d'ouvrir le port série {{failPort}}"
+         /// \param[in] m_i18nMessageParameters The i18n string parameters : ie: ["failPort", "COM1"]
+         //--------------------------------------------------------------
+         void notifyEventHandler(const std::string & i18nErrorMessage, const std::map<std::string, std::string> & m_i18nMessageParameters) const;
+
 
          //--------------------------------------------------------------
          /// \brief	                     Send buffer content

@@ -83,6 +83,7 @@ namespace shared
          }
          catch (boost::system::system_error& e)
          {
+            notifyEventHandler("asyncPort.serial.failToOpen", {{ "port", m_port }});
             YADOMS_LOG(error) << " : Failed to open serial port : " << e.what();
             return false;
          }
@@ -170,8 +171,8 @@ namespace shared
             if (m_flushAtConnect)
                flush();
 
-            // Connected
-            notifyEventHandler(true);
+            //serial port opened
+            notifyEventHandler();
          }
 
          // Start listening on the port
@@ -206,7 +207,11 @@ namespace shared
             // Error ==> disconnecting
             YADOMS_LOG(error) << " : Serial port read error : " << error.message();
             disconnect();
-            notifyEventHandler(false);
+
+            if (error == boost::asio::error::bad_descriptor)
+               notifyEventHandler("asyncPort.serial.failToCommunicateWithHardware", { {"message", error.message() }, { "code" , (boost::format("%1%") % error.value()).str() } });
+            else
+               notifyEventHandler("asyncPort.serial.error", { { "message", error.message() },{ "code" , (boost::format("%1%") % error.value()).str() } });
             return;
          }
 
@@ -289,22 +294,42 @@ namespace shared
             {
                YADOMS_LOG(error) << " : Serial port send error : " << e.what();
                disconnect();
-               notifyEventHandler(false);
+               notifyEventHandler("asyncPort.serial.connectionError");
                throw CPortException(CPortException::kConnectionError, e.what());
             }
 
-            notifyEventHandler(false);
+            notifyEventHandler("asyncPort.serial.connectionClosed");
             throw CPortException(CPortException::kConnectionClosed, e.what());
          }
       }
 
-
-      void CAsyncSerialPort::notifyEventHandler(bool isConnected) const
+      void CAsyncSerialPort::notifyEventHandler() const
       {
          if (m_connectStateEventHandler)
-            m_connectStateEventHandler->postEvent(m_connectStateEventId,
-                                                  isConnected);
+         {
+            auto param = boost::make_shared<CAsyncPortConnectionNotification>();
+            m_connectStateEventHandler->postEvent(m_connectStateEventId, param);
+         }
       }
+
+      void CAsyncSerialPort::notifyEventHandler(const std::string & i18nErrorMessage) const
+      {
+         if (m_connectStateEventHandler)
+         {
+            auto param = boost::make_shared<CAsyncPortConnectionNotification>(i18nErrorMessage);
+            m_connectStateEventHandler->postEvent(m_connectStateEventId, param);
+         }
+      }
+
+      void CAsyncSerialPort::notifyEventHandler(const std::string & i18nErrorMessage, const std::map<std::string, std::string> & i18nMessageParameters) const
+      {
+         if (m_connectStateEventHandler)
+         {
+            auto param = boost::make_shared<CAsyncPortConnectionNotification>(i18nErrorMessage, i18nMessageParameters);
+            m_connectStateEventHandler->postEvent(m_connectStateEventId, param);
+         }
+      }
+
    }
 } // namespace shared::communication
 

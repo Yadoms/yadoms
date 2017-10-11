@@ -79,11 +79,13 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
             m_runningState = kConnecting;
 
-            if (api->getEventHandler().getEventData<bool>())
+            auto notif = api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>>();
+
+            if (notif && notif->isConnected())
                processLinkyConnectionEvent(api);
             else
             {
-               processLinkyUnConnectionEvent(api);
+               processLinkyUnConnectionEvent(api, notif);
 
                // attempt a new connection
                api->getEventHandler().createTimer(kErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
@@ -209,10 +211,13 @@ void CLinky::processLinkyConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> ap
    }
 }
 
-void CLinky::processLinkyUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
+void CLinky::processLinkyUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification)
 {
    YADOMS_LOG(information) << "Linky connection was lost" ;
-   api->setPluginState(yApi::historization::EPluginState::kError, "connectionLost");
+   if(notification)
+      api->setPluginState(yApi::historization::EPluginState::kError, notification->getErrorMessageI18n(), notification->getErrorMessageI18nParameters());
+   else
+      api->setPluginState(yApi::historization::EPluginState::kError, "connectionLost");
    m_runningState = kConnectionLost;
 
    destroyConnection();

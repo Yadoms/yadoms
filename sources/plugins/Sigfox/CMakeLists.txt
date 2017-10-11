@@ -17,7 +17,11 @@ set(SIGFOX_PLUGIN_SOURCES
    specificHistorizer/SNR.h
 )
 
-source_group(specificHistorizer specificHistorizer/*.*)
+#########################################
+## Place here all additional groups (solution folder)
+#########################################
+source_group(sources ./*.*)
+source_group(sources\\specificHistorizer specificHistorizer/*.*)
 	
 #########################################
 ## Place here all additional include directories

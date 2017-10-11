@@ -5,6 +5,7 @@
 #include "Transceiver.h"
 #include "IMessageHandler.h"
 #include "Dongle.h"
+#include <shared/communication/AsyncPortConnectionNotification.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -87,7 +88,7 @@ private:
 
    void processZiBlueConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
    void errorProcess(boost::shared_ptr<yApi::IYPluginApi> api);
-   static void processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
+   static void processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification);
    void processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::incoming::CBinaryFrame> data) const;
    void processZiBlueAsciiFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::incoming::CAsciiFrame> data) const;
    void initZiBlue(boost::shared_ptr<yApi::IYPluginApi> api);

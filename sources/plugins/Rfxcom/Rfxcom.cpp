@@ -102,10 +102,12 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
          case kEvtPortConnection:
             {
-               if (api->getEventHandler().getEventData<bool>())
+               auto notif = api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>>();
+
+               if (notif && notif->isConnected())
                   processRfxcomConnectionEvent(api);
                else
-                  processRfxcomUnConnectionEvent(api);
+                  processRfxcomUnConnectionEvent(api, notif);
 
                break;
             }
@@ -285,10 +287,13 @@ void CRfxcom::errorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
    api->getEventHandler().createTimer(kProtocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
 }
 
-void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
+void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification)
 {
    YADOMS_LOG(information) << "RFXCom connection was lost";
-   api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionLost");
+   if (notification)
+      api->setPluginState(yApi::historization::EPluginState::kError, notification->getErrorMessageI18n(), notification->getErrorMessageI18nParameters());
+   else 
+      api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionLost");
 
    errorProcess(api);
 }

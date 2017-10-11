@@ -208,9 +208,13 @@ set(RFXCOM_SOURCES
    ${RFXCOM_MESSAGES_SOURCES}
 )
 
-source_group(rfxcomMessages rfxcomMessages/*.*)
-source_group(rfxcomMessages\\specificHistorizers rfxcomMessages/specificHistorizers/*.*)
-source_group(rfxcomMessages\\Keywords rfxcomMessages/Keywords/*.*)
+#########################################
+## Place here all additional groups (solution folder)
+#########################################
+source_group(sources ./*.*)
+source_group(sources\\rfxcomMessages rfxcomMessages/*.*)
+source_group(sources\\rfxcomMessages\\specificHistorizers rfxcomMessages/specificHistorizers/*.*)
+source_group(sources\\rfxcomMessages\\Keywords rfxcomMessages/Keywords/*.*)
 
 #########################################
 ## Place here all additional include directories

@@ -16,7 +16,12 @@ set(MEGATECUPS_SOURCES
    MegatecUpsFactory.cpp
    MegatecUpsFactory.h
    ProtocolException.hpp
-   )
+)
+
+#########################################
+## Place here all additional groups (solution folder)
+#########################################
+source_group(sources ./*.*)
 
 #########################################
 ## Place here all additional include directories
