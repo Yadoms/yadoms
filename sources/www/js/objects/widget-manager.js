@@ -207,12 +207,11 @@ WidgetManager.updateToServer = function (widget) {
      .done(function () {
          //we notify that configuration has changed
          try {
-             WidgetManager.updateWidgetConfiguration_(widget);
-
-             //we ask for a refresh of widget data
-             updateWidgetPolling(widget);
-
-             d.resolve();
+             WidgetManager.updateWidgetConfiguration_(widget).always(function(){
+                //we ask for a refresh of widget data
+                updateWidgetPolling(widget);
+                d.resolve();
+             });
          }
          catch (e) {
              notifyWarning($.t("objects.widgetManager.exceptionDuringCallConfigurationChanged", { "widgetType": widget.type }));
@@ -242,8 +241,7 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
         else
             widget.$gridWidget.find('div.panel-widget-title').text("");
         //we clear the listened device list before call the configuration
-        widget.listenedKeywords = [];	
-		
+        widget.listenedKeywords = [];
         // Update widget specific values
         if (!isNullOrUndefined(widget.viewModel.configurationChanged)) {
             var defferedResult = widget.viewModel.configurationChanged();

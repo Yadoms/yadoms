@@ -123,7 +123,6 @@ function tabClick(pageId) {
                 //we poll all widget data
                 updateWidgetsPolling().always(function()
                 {
-			          PageManager.refreshWidgets(page);
                    PageManager.updateWidgetLayout(page);
                    page.$grid.packery("layout");                   
                 });
@@ -132,7 +131,6 @@ function tabClick(pageId) {
             //we poll all widget data
             updateWidgetsPolling().always(function()
             {
-			      PageManager.refreshWidgets(page);
                PageManager.updateWidgetLayout(page);
                page.$grid.packery("layout");               
                updateWebSocketFilter();
