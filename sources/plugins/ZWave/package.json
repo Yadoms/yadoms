@@ -28,9 +28,6 @@
 		"exclusionMode" : {
 			"iconClass" : "fa fa-minus"
 		},
-		"softReset" : {
-			"iconClass" : "fa fa-refresh"
-		},
 		"testNetwork" : {
 			"iconClass" : "fa fa-check",
 			"commandData" : {
