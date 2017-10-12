@@ -52,7 +52,7 @@ namespace rfxcomMessages
       m_voltage->set(rbuf.LINKY.av_voltage);
 
       // Power
-      m_power->set(rbuf.LINKY.power_H << 8 + rbuf.LINKY.power_L);
+      m_power->set((rbuf.LINKY.power_H << 8) + rbuf.LINKY.power_L);
 
       // Forecast
       static const BYTE ForecastMask = 0x18;
