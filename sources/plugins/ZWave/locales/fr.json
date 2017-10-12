@@ -14,17 +14,16 @@
 	},
 	"customLabels": {
 		"pluginState": {
-			"Waiting": "En attente...",
-			"WaitingInclusion": "En mode appairage. Veuillez associer un nouveau matériel...",
-			"WaitingExclusion": "En mode exclusion. Veuillez exclure un matériel...",
-			"Completed": "Terminé",
-			"DriverReady": "Contrôleur prêt",
-			"DriverFailed": "Erreur de driver",
-			"Initialization" : "Initialisation en cours",
-			"Configuring" : "Configuration",
+			"waiting": "En attente...",
+			"waitingInclusion": "En mode appairage. Veuillez associer un nouveau matériel...",
+			"waitingExclusion": "En mode exclusion. Veuillez exclure un matériel...",
+			"completed": "Terminé",
+			"driverReady": "Contrôleur prêt",
+			"driverFailed": "Erreur de driver",
+			"initialization" : "Initialisation du ZWave et analyse des équipements...",
 			"updateConfiguration" : "Mise à jour de la configuration",
-			"failToAccessSerialPort" : "Impossible d'accéder au port série",
-			"failToStartController" : "Impossible de démarrer le contrôlleur ZWave",
+			"failToAccessSerialPort" : "Impossible d'accéder au contrôleur ZWave. Vérifier qu'il est bien branché ainsi que sa configuration",
+			"failToStartController" : "Impossible de démarrer le contrôlleur ZWave. Vérifier qu'il est bien branché ainsi que sa configuration",
 			"failToStart" : "Impossible de démarrer"
 		}
 	},

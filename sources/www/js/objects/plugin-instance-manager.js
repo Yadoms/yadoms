@@ -131,6 +131,29 @@ PluginInstanceManager.getState = function (pluginInstance) {
     return d.promise();
 };
 
+
+/**
+ * Tells if the instance is running
+ * @param pluginInstance  The plugin instance
+ * @return {Promise} A promise for the result
+ */
+PluginInstanceManager.isRunning = function (pluginInstance) {
+    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
+
+    var d = new $.Deferred();
+    if (!pluginInstance.isSystemCategory()) {
+        RestEngine.getJson("/rest/plugin/" + pluginInstance.id + "/instanceRunning")
+            .done(d.resolve)
+            .fail(function () {
+                d.resolve({ isRunning: false });
+            });
+    } else {
+        d.resolve();
+    }
+    return d.promise();
+};
+
+
 /**
  * Start a plugin instance
  * @param pluginInstance The plugin instance to start

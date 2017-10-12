@@ -168,18 +168,25 @@
       assert(!isNullOrUndefined(pi), "pi must be defined");
       //we deactivate the button until next status will be acquired to prevent flooding
       getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', true);
-      if (pi.lastState === "Stopped" || pi.lastState === "Error") {
-         //we ask for start
-         PluginInstanceManager.start(pi).done(function () {
-            getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);
-         });
-      }
-      else {
-         //we ask for stop
-         PluginInstanceManager.stop(pi).done(function () {
-            getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);
-         });
-      }
+      
+      PluginInstanceManager.isRunning(pi)
+      .done(function(f) {
+         var isRunning = parseBool(f.isRunning);
+         if (isRunning === false && (pi.lastState === "Stopped" || pi.lastState === "Error")) {
+            //we ask for start
+            PluginInstanceManager.start(pi).done(function () {
+               getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);
+            });
+         }
+         else {
+            //we ask for stop
+            PluginInstanceManager.stop(pi).done(function () {
+               getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);
+            });
+         }
+      });
+      
+
    }
 
    function loadExtraQueries(pi) {
