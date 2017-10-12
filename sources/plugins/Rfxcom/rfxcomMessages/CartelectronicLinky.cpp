@@ -49,7 +49,7 @@ namespace rfxcomMessages
       m_keywords.push_back(counter);
 
       // Voltage
-      m_voltage->set(rbuf.LINKY.av_voltage);
+      m_voltage->set(rbuf.LINKY.av_voltage + 200);
 
       // Power
       m_power->set((rbuf.LINKY.power_H << 8) + rbuf.LINKY.power_L);
