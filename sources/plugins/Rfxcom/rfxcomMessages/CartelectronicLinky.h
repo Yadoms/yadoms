@@ -3,6 +3,8 @@
 #include "ICartelectronicSubtype.h"
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
+#include "specificHistorizers/TeleInfoStatus.h"
+#include "specificHistorizers/Color.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -30,7 +32,7 @@ namespace rfxcomMessages
       virtual ~CCartelectronicLinky();
 
       // ICartelectronicSubtype implementation
-      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override;
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords() const override;
       std::string idFromProtocol(const RBUF& rbuf) const override;
       char BatteryLevelFromProtocol(const RBUF& rbuf) override;
       char signalPowerFromProtocol(const RBUF& rbuf) override;
@@ -39,15 +41,15 @@ namespace rfxcomMessages
 
    private:
       unsigned int m_id;
-
-      boost::shared_ptr<yApi::historization::CCounter> m_run;
-      boost::shared_ptr<yApi::historization::CCounter> m_prod;
+      
+      boost::shared_ptr<teleInfo::specificHistorizers::CTeleInfoStatus> m_teleInfoStatus;
       boost::shared_ptr<yApi::historization::CVoltage> m_voltage;
       boost::shared_ptr<yApi::historization::CPower> m_power;
+      boost::shared_ptr<teleInfo::specificHistorizers::CColor> m_forecast;
 
       //TODO manque state et contract_type
 
-      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    };
 } // namespace rfxcomMessages
 

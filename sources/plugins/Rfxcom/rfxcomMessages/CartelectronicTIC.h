@@ -32,7 +32,7 @@ namespace rfxcomMessages
       virtual ~CCartelectronicTIC();
 
       // ICartelectronicSubtype implementation
-      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override;
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords() const override;
       std::string idFromProtocol(const RBUF& rbuf) const override;
       char BatteryLevelFromProtocol(const RBUF& rbuf) override;
       char signalPowerFromProtocol(const RBUF& rbuf) override;
@@ -71,7 +71,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The Apparent Power
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CApparentPower> m_apparentePower;
+      boost::shared_ptr<yApi::historization::CApparentPower> m_apparentPower;
 
       //--------------------------------------------------------------
       /// \brief	The Color for Tomorow if any
@@ -91,6 +91,8 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    };
 } // namespace rfxcomMessages
+
+
