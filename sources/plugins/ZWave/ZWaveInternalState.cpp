@@ -3,11 +3,11 @@
 
 
 DECLARE_ENUM_IMPLEMENTATION(EZWaveInteralState,
-   ((Running))
-   ((DriverReady))
-   ((DriverFailed))
-   ((Waiting))
-   ((WaitingInclusion))
-   ((WaitingExclusion))
-   ((Completed))
+   ((Running)("running"))
+   ((DriverReady)("driverReady"))
+   ((DriverFailed)("driverFailed"))
+   ((Waiting)("waiting"))
+   ((WaitingInclusion)("waitingInclusion"))
+   ((WaitingExclusion)("waitingExclusion"))
+   ((Completed)("completed"))
 )

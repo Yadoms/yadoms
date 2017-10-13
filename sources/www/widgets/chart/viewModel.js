@@ -288,6 +288,7 @@ widgetViewModelCtor =
 
                self.widgetApi.find(".print-command").unbind("click").bind("click", function () {
                    self.chart.print();
+                   window.location.reload(); //force page reload because after having displayed printing page, the widget disposition is erroneous
                });
 
                self.widgetApi.find(".export-command").unbind("click").bind("click", function (e) {

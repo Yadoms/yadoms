@@ -24,7 +24,7 @@ AutomationEditorManager.getAll = function() {
       var interpreterFound = false;
       //Code editor
       $.each(AutomationEditorCode.getSupportedInterpreters(), function (key, value) {
-         if(!isNullOrUndefined(interpreters) && !isNullOrUndefined(interpreters[value.toLowerCase()])) {
+         if(!isNullOrUndefined(interpreters) && !isNullOrUndefined(interpreters[value])) {
             interpreterFound = true;
          }            
       });
@@ -37,7 +37,7 @@ AutomationEditorManager.getAll = function() {
       interpreterFound = false;
       //Blockly editor
       $.each(AutomationEditorBlockly.getSupportedInterpreters(), function (key, value) {
-         if(!isNullOrUndefined(interpreters) && !isNullOrUndefined(interpreters[value.toLowerCase()])) {
+         if(!isNullOrUndefined(interpreters) && !isNullOrUndefined(interpreters[value])) {
             interpreterFound = true;
          }            
       });
@@ -87,7 +87,7 @@ AutomationEditorManager.getByName = function(name) {
       var editorFound = false;
       $.each(editors, function (key, value) {
          if (!editorFound) {
-            if (value.getName().toLowerCase() == name.toLowerCase()) {
+            if (value.getName() == name) {
                editorFound = value;
 			   AutomationEditorManager.loadRequiredFile_(value)
 			   .done(function() {

@@ -1,6 +1,6 @@
 {
 	"type": "ZWave",
-	"version": "1.0.0-beta",
+	"version": "1.0.0",
 	"author": "Jean-Michel DECORET",
    "url": "https://github.com/Yadoms/yadoms/wiki/Zwave",
 	"credits": "[openzwave](http://www.openzwave.com/)",
@@ -27,9 +27,6 @@
 		},
 		"exclusionMode" : {
 			"iconClass" : "fa fa-minus"
-		},
-		"softReset" : {
-			"iconClass" : "fa fa-refresh"
 		},
 		"testNetwork" : {
 			"iconClass" : "fa fa-check",
