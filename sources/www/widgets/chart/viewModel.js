@@ -760,7 +760,7 @@ widgetViewModelCtor =
                                          legendText = self.deviceInfo[index].friendlyName + "/" + self.keywordInfo[index].friendlyName;
                                    }catch(error)
                                    {
-                                      legendText = $.t("widgets/chart:keywordNotFound", device.content.source.keywordId);
+                                      legendText = $.t("widgets/chart:keywordNotFound", {Id: device.content.source.keywordId});
                                    }
                                    
                                    try {
