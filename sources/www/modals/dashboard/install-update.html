@@ -675,8 +675,14 @@
         assert(!isNullOrUndefined(objectType), "objectType must be defined");
         assert(!isNullOrUndefined(item), "item must be defined");
 
+        //determine the i8n base path (because scriptInterpreters have specific path)
+        item.i18nBasePath = objectType + "s/" + item.type;
+        if (objectType === "scriptInterpreter") {
+            item.i18nBasePath = objectType + "s/" + item.path;
+        }
+        
         var s = "<tr id=\"" + item.type + "\">" +
-                    "<td><span>" + $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }) + "</span>" +
+                    "<td><span>" + $.t(item.i18nBasePath + ":name", { defaultValue: item.package.name }) + "</span>" +
                     "<span class=\"update-available-label hidden label label-as-badge label-success\">!</span>" +
                     "</td>";
 
@@ -686,10 +692,11 @@
         }
 
         if (objectType === "scriptInterpreter") {
+        debugger;
             s += "<td><img src=\"" + (item.iconUrl ? item.iconUrl : "scriptInterpreters/" + item.path + "/icon.png") + "\" class=\"img-thumbnail dashboard-table-icon\"></td>";
         }
 
-        s += "<td><span>" + $.t(objectType + "s/" + item.type + ":description", { defaultValue: item.package.description }) + "</span></td>" +
+        s += "<td><span>" + $.t(item.i18nBasePath + ":description", { defaultValue: item.package.description }) + "</span></td>" +
                     "<td><em class=\"local-version\"></em></td>" +
                     "<td><em class=\"latest-version\"></em></td>" +
                     "<td>" +
