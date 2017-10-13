@@ -60,13 +60,13 @@ AutomationInterpreterManager.getAllDetailed = function () {
          //this thread will ask for synchronous package.json requests
          var value = interpreters[key];
 
-         var deferred = RestEngine.get("scriptInterpreters/" + value.path + "/package.json", { dataType: "json" });
+         var deferred = RestEngine.get("scriptInterpreters/" + value.type + "/package.json", { dataType: "json" });
          deferredArray.push(deferred);
 
          //we restore the resGetPath
          var d = new $.Deferred();
          deferredArray.push(d);
-         i18n.loadNamespace("scriptInterpreters/" + value.path, function() { d.resolve(); });
+         i18n.loadNamespace("scriptInterpreters/" + value.type, function() { d.resolve(); });
          
          deferred.done(function (data) {
              value.fillDetails(data);
@@ -90,7 +90,7 @@ AutomationInterpreterManager.getAllDetailed = function () {
 AutomationInterpreterManager.getInterpreterBaseUrl = function (interpreter) {
     assert(!isNullOrUndefined(interpreter), "interpreter must be defined");
 
-    var interpreterPath = AutomationInterpreterManager.factory(interpreter).path;
+    var interpreterPath = AutomationInterpreterManager.factory(interpreter).type;
     return "scriptInterpreters/" + interpreterPath ;
 };
 
