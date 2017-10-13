@@ -74,6 +74,8 @@ namespace rfxcomMessages
       default: m_forecast->set(teleInfo::specificHistorizers::EColor::kNOTDEFINED);
          break;
       }
+
+      //TODO what to do with prod counter ?
    }
 
    CCartelectronicLinky::~CCartelectronicLinky()

@@ -47,8 +47,6 @@ namespace rfxcomMessages
       boost::shared_ptr<yApi::historization::CPower> m_power;
       boost::shared_ptr<teleInfo::specificHistorizers::CColor> m_forecast;
 
-      //TODO manque state et contract_type
-
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    };
 } // namespace rfxcomMessages
