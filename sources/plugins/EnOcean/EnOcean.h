@@ -8,6 +8,7 @@
 #include "profiles/IType.h"
 #include "ProfileHelper.h"
 #include "IMessageHandler.h"
+#include <shared/communication/AsyncPortConnectionNotification.h>
 
 
 // Shortcut to yPluginApi namespace
@@ -52,8 +53,9 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	                     Called when dongle becomes unconnected
+   /// \param[in] deviceRemoved     The connection notification
    //--------------------------------------------------------------
-   void processUnConnectionEvent();
+   void processUnConnectionEvent(boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification = boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>());
 
    //--------------------------------------------------------------
    /// \brief	                     Called when device was removed

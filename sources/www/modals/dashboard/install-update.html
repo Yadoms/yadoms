@@ -110,6 +110,7 @@
                     <table id="widget-install-update-list" class="table table-bordered table-striped dashboard-list">
                         <tr>
                             <td data-i18n="modals.dashboard.sub-windows.install-update.generic.name"></td>
+                            <td class="col-md-1" data-i18n="modals.dashboard.sub-windows.install-update.generic.icon"></td>
                             <td data-i18n="modals.dashboard.sub-windows.install-update.generic.description"></td>
                             <td class="col-md-2" data-i18n="modals.dashboard.sub-windows.install-update.generic.actualVersion"></td>
                             <td class="col-md-2" data-i18n="modals.dashboard.sub-windows.install-update.generic.availableVersion"></td>
@@ -675,21 +676,21 @@
         assert(!isNullOrUndefined(objectType), "objectType must be defined");
         assert(!isNullOrUndefined(item), "item must be defined");
 
+        //determine the i8n base path (because scriptInterpreters have specific path)
+        item.i18nBasePath = objectType + "s/" + item.type;
+        
         var s = "<tr id=\"" + item.type + "\">" +
-                    "<td><span>" + $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }) + "</span>" +
+                    "<td><span>" + $.t(item.i18nBasePath + ":name", { defaultValue: item.package.name }) + "</span>" +
                     "<span class=\"update-available-label hidden label label-as-badge label-success\">!</span>" +
                     "</td>";
 
-        //depend on the objectType there is an icon
-        if (objectType === "plugin") {
-            s += "<td><img src=\"" + (item.iconUrl ? item.iconUrl : "plugins/" + item.type + "/icon.png") + "\" class=\"img-thumbnail dashboard-table-icon\"></td>";
-        }
+        var iconName = "icon.png";
+         if(objectType === "widget")
+            iconName = "preview.png";
+         
+         s += "<td><img a=\"" + (item.iconUrl ? item.iconUrl :  objectType + "s/" + item.type + "/" + iconName) + "\"  src=\"" + (item.iconUrl ? item.iconUrl :  objectType + "s/" + item.type + "/" + iconName) + "\" class=\"img-thumbnail dashboard-table-icon\"></td>";
 
-        if (objectType === "scriptInterpreter") {
-            s += "<td><img src=\"" + (item.iconUrl ? item.iconUrl : "scriptInterpreters/" + item.path + "/icon.png") + "\" class=\"img-thumbnail dashboard-table-icon\"></td>";
-        }
-
-        s += "<td><span>" + $.t(objectType + "s/" + item.type + ":description", { defaultValue: item.package.description }) + "</span></td>" +
+        s += "<td><span>" + $.t(item.i18nBasePath + ":description", { defaultValue: item.package.description }) + "</span></td>" +
                     "<td><em class=\"local-version\"></em></td>" +
                     "<td><em class=\"latest-version\"></em></td>" +
                     "<td>" +

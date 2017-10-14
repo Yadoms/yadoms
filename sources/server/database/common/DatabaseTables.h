@@ -89,6 +89,8 @@ namespace common {
       (Measure)
       (Details)
       (Blacklist)
+      (LastAcquisitionValue)
+      (LastAcquisitionDate)
    )
 
    DECLARE_TABLE(Acquisition,

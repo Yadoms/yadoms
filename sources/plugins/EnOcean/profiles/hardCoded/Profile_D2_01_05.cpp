@@ -12,7 +12,7 @@ CProfile_D2_01_05::CProfile_D2_01_05(const std::string& deviceId,
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),
      m_dimmerMode(boost::make_shared<specificHistorizers::CDimmerModeHistorizer>("DimmerMode")),
      m_dimmer(boost::make_shared<yApi::historization::CDimmable>("Dimmer", yApi::EKeywordAccessMode::kGetSet)),
-     m_overCurrent(boost::make_shared<yApi::historization::CSwitch>("OverCurrent", yApi::EKeywordAccessMode::kGetSet)),
+     m_overCurrent(boost::make_shared<yApi::historization::CSwitch>("OverCurrent", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_loadEnergy, m_loadPower, m_dimmer , m_dimmerMode, m_overCurrent})
 {
 }
@@ -46,14 +46,14 @@ void CProfile_D2_01_05::readInitialState(const std::string& senderId,
    CProfile_D2_01_Common::sendActuatorStatusQuery(messageHandler,
                                                   senderId,
                                                   m_deviceId,
-                                                  CProfile_D2_01_Common::kOutputChannel1);
+                                                  CProfile_D2_01_Common::kAllOutputChannels);
 
    // Need to wait a bit between outgoing messages, to be sure to receive answer
    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
    CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
                                                        senderId,
                                                        m_deviceId,
-                                                       CProfile_D2_01_Common::kOutputChannel1,
+                                                       CProfile_D2_01_Common::kAllOutputChannels,
                                                        CProfile_D2_01_Common::kQueryPower);
 }
 
@@ -75,7 +75,6 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
          return CProfile_D2_01_Common::extractActuatorStatusResponse(rorg,
                                                                      data,
                                                                      CProfile_D2_01_Common::noChannel1,
-                                                                     CProfile_D2_01_Common::noChannel2,
                                                                      m_dimmer,
                                                                      CProfile_D2_01_Common::noPowerFailure,
                                                                      m_overCurrent);
@@ -95,7 +94,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
             CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
                                                                 senderId,
                                                                 m_deviceId,
-                                                                CProfile_D2_01_Common::kOutputChannel1,
+                                                                CProfile_D2_01_Common::kAllOutputChannels,
                                                                 CProfile_D2_01_Common::kQueryEnergy);
          }
 
@@ -128,7 +127,7 @@ void CProfile_D2_01_05::sendCommand(const std::string& keyword,
    CProfile_D2_01_Common::sendActuatorSetOutputCommandDimming(messageHandler,
                                                               senderId,
                                                               m_deviceId,
-                                                              CProfile_D2_01_Common::kOutputChannel1,
+                                                              CProfile_D2_01_Common::kAllOutputChannels,
                                                               m_dimmerMode->get(),
                                                               m_dimmer->get());
 }
@@ -149,7 +148,7 @@ void CProfile_D2_01_05::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
-                                                      CProfile_D2_01_Common::kOutputChannel1,
+                                                      CProfile_D2_01_Common::kAllOutputChannels,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
@@ -176,7 +175,7 @@ void CProfile_D2_01_05::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
                                                             senderId,
                                                             m_deviceId,
-                                                            CProfile_D2_01_Common::kOutputChannel1,
+                                                            CProfile_D2_01_Common::kAllOutputChannels,
                                                             true,
                                                             minEnergyMeasureRefreshTime,
                                                             maxEnergyMeasureRefreshTime);

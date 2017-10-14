@@ -1,9 +1,6 @@
 #pragma once
 
-#include <shared/communication/StringBuffer.h>
 #include "Configuration.h"
-#include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/plugin/yPluginApi/IManuallyDeviceCreationData.h>
 
 class CTransceiver 
 {
@@ -22,41 +19,41 @@ public:
    /// \brief	                           Get the hello command
    /// \return                            The command as string
    //--------------------------------------------------------------
-   std::string buildHelloCmd() const;
+   static std::string buildHelloCmd();
 
    //--------------------------------------------------------------
    /// \brief	                           Get the start listening command
    /// \return                            The command as string
    //--------------------------------------------------------------
-   std::string buildStartListeningData() const;
+   static std::string buildStartListeningData();
 
    //--------------------------------------------------------------
    /// \brief	                           Get the receiver configiuration command
    /// \param [in] protocols              The activated protocols container
    /// \return                            The command as string
    //--------------------------------------------------------------
-   std::string buildReceiverConfigurationCommand(const CConfiguration::CProtocols & protocols) const;
+   static std::string buildReceiverConfigurationCommand(const CConfiguration::CProtocols & protocols);
 
    //--------------------------------------------------------------
    /// \brief	                           Get the repeater on/off command
    /// \param [in] repeaterActive         The repeater active status
    /// \return                            The command as string
    //--------------------------------------------------------------
-   std::string buildRepeaterActivationCommand(bool repeaterActive) const;
+   static std::string buildRepeaterActivationCommand(bool repeaterActive);
 
    //--------------------------------------------------------------
    /// \brief	                           Get the repeater configiuration command
    /// \param [in] protocols              The activated protocols container
    /// \return                            The command as string
    //--------------------------------------------------------------
-   std::string buildRepeaterConfigurationCommand(const CConfiguration::CProtocols & protocols) const;
+   static std::string buildRepeaterConfigurationCommand(const CConfiguration::CProtocols & protocols);
 
    //--------------------------------------------------------------
    /// \brief	                           Get the led activity command
    /// \param [in] ledActivity            The led activity status
    /// \return                            The command as string
    //--------------------------------------------------------------
-   std::string buildLedActivityCommand(bool ledActivity) const;
+   static std::string buildLedActivityCommand(bool ledActivity);
 
    //--------------------------------------------------------------
    /// \brief	                           Get the frequency command
@@ -73,7 +70,7 @@ public:
    /// \param [in] value                  The chosen selectivoty value (0 to 6)
    /// \return                            The command as string
    //--------------------------------------------------------------
-   std::string buildSelectivityCommand(bool for433MHz, int value) const;
+   static std::string buildSelectivityCommand(bool for433MHz, int value);
 
    //--------------------------------------------------------------
    /// \brief	                           Get the sensivity command
@@ -81,7 +78,7 @@ public:
    /// \param [in] value                  The chosen sensivity value (0 to 4)
    /// \return                            The command as string
    //--------------------------------------------------------------
-   std::string buildSensivityCommand(bool for433MHz, int value) const;
+   static std::string buildSensivityCommand(bool for433MHz, int value);
 
    //--------------------------------------------------------------
    /// \brief	                           Get the DSP trigger command
@@ -89,7 +86,7 @@ public:
    /// \param [in] value                  The chosen trigger value (4 to 20 dBm)
    /// \return                            The command as string
    //--------------------------------------------------------------
-   std::string buildDspTriggerCommand(bool for433MHz, int value) const;
+   static std::string buildDspTriggerCommand(bool for433MHz, int value);
 
    //--------------------------------------------------------------
    /// \brief	                           Get the RFLink trigger command
@@ -97,7 +94,7 @@ public:
    /// \param [in] value                  The chosen trigger value (4 to 20 dBm)
    /// \return                            The command as string
    //--------------------------------------------------------------
-   std::string buildRfLinkTriggerCommand(bool for433MHz, int value) const;
+   static std::string buildRfLinkTriggerCommand(bool for433MHz, int value);
 
    //--------------------------------------------------------------
    /// \brief	                           Get the ListenBeforeTalk command
@@ -105,7 +102,7 @@ public:
    /// \param [in] value                  The chosen lbt value (6 to 30 dBm)
    /// \return                            The command as string
    //--------------------------------------------------------------
-   std::string buildLBTCommand(bool enable, int value) const;
+   static std::string buildLBTCommand(bool enable, int value);
 
 };
 

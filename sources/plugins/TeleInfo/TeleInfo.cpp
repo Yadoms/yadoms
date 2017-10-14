@@ -79,11 +79,13 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
             m_runningState = kConnecting;
 
-            if (api->getEventHandler().getEventData<bool>())
+            auto notif = api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>>();
+
+            if (notif && notif->isConnected())
                processTeleInfoConnectionEvent(api);
             else
             {
-               processTeleInfoUnConnectionEvent(api);
+               processTeleInfoUnConnectionEvent(api, notif);
 
                // attempt a new connection
                api->getEventHandler().createTimer(kErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
@@ -218,10 +220,13 @@ void CTeleInfo::processTeleInfoConnectionEvent(boost::shared_ptr<yApi::IYPluginA
    }
 }
 
-void CTeleInfo::processTeleInfoUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
+void CTeleInfo::processTeleInfoUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification)
 {
    YADOMS_LOG(information) << "TeleInfo connection was lost" ;
-   api->setPluginState(yApi::historization::EPluginState::kError, "connectionLost");
+   if (notification)
+      api->setPluginState(yApi::historization::EPluginState::kError, notification->getErrorMessageI18n(), notification->getErrorMessageI18nParameters());
+   else
+      api->setPluginState(yApi::historization::EPluginState::kError, "connectionLost");
    m_runningState = kConnectionLost;
 
    destroyConnection();

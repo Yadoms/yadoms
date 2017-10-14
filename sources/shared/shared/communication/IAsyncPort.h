@@ -61,11 +61,10 @@ namespace shared
          /// \param [in] forEventHandler  The event handler to notify for these events
          /// \param [in] forId            The event id to send for these events (set kNoEvent to unsubscribe)
          /// \throw exception::CInvalidParameter if try to subscribe on event for which a subscription already exists (user must unsubscribe first)
-         /// \note The raised event contains a bool data : true if port was connected, false if port was disconnected
+         /// \note The raised event contains a boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> data
          /// \note Must be called before start
          //--------------------------------------------------------------
-         virtual void subscribeForConnectionEvents(event::CEventHandler& forEventHandler,
-                                                   int forId) = 0;
+         virtual void subscribeForConnectionEvents(event::CEventHandler& forEventHandler, int forId) = 0;
 
          //--------------------------------------------------------------
          /// \brief	                     Set the receive buffer handler (= received messages subscription)

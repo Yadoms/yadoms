@@ -47,6 +47,7 @@
 #include "rfxcomMessages/Wind.h"
 #include "IncrementSequenceNumber.h"
 #include "ManuallyDeviceCreationException.hpp"
+#include "MessageFilteredException.hpp"
 #include <shared/Log.h>
 
 //
@@ -58,6 +59,8 @@
 // - RFXtrx.h : version 9.13
 // =======================================================================
 //
+
+const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> rfxcomMessages::IRfxcomMessage::NoKeywords;
 
 CTransceiver::CTransceiver()
    : m_seqNumberProvider(boost::make_shared<CIncrementSequenceNumber>()),
@@ -240,8 +243,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiver::
    }
    catch (shared::exception::CException& e)
    {
-      std::string message = (boost::format("Invalid command \"%1%\" : %2%") % command->getBody() % e.what()).str();
-      throw shared::exception::CInvalidParameter(message);
+      throw shared::exception::CInvalidParameter((boost::format("Invalid command \"%1%\" : %2%") % command->getBody() % e.what()).str());
    }
 }
 
@@ -347,7 +349,15 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
             break;
          }
       }
+
+      logMessage(api, message);
       return message;
+   }
+   catch (CMessageFilteredException& exception)
+   {
+      YADOMS_LOG(warning) << exception.what();
+      YADOMS_LOG(warning) << "Message received, but filtered as protocol is unsecured and can create false devices. Device should be seen often enough to get out of filter.";
+      return boost::shared_ptr<rfxcomMessages::IRfxcomMessage>();
    }
    catch (std::exception& exception)
    {
@@ -582,4 +592,15 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
    }
 
    return msg->getDeviceName();
+}
+
+void CTransceiver::logMessage(boost::shared_ptr<yApi::IYPluginApi> api,
+                              const boost::shared_ptr<rfxcomMessages::IRfxcomMessage>& message)
+{
+   if (!message->getDeviceName().empty())
+   {
+      YADOMS_LOG(information) << "Receive data for " << message->getDeviceName();
+      for (const auto& keyword : message->keywords())
+         YADOMS_LOG(information) << "  - " << keyword->getKeyword() << " : " << keyword->formatValue();
+   }
 }

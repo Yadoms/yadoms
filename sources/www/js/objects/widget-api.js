@@ -126,6 +126,9 @@ WidgetApi.prototype.toolbar = function (options) {
                 console.error("Unknown item type: " + index);
             }
         });
+        
+        //i18n of page tab
+        self.widget.$toolbar.i18n();
     } else {
         self.find(".panel-widget-header").addClass("hidden");
     }
@@ -140,54 +143,51 @@ WidgetApi.prototype.manageBatteryConfiguration = function () {
 	
 	var d = new $.Deferred();
     var $battery = self.widget.$toolbar.find("." + self.widgetBatteryClass);
-    if ($battery.length > 0) {
-        //we clear the div that will contain the battery indicator
         $battery.empty();
         var deviceId = $battery.attr("deviceId");
         if (!isNullOrUndefinedOrEmpty(deviceId)) {
-            //we check for the device to look if it has battery keyword
-            DeviceManager.getKeywordsByDeviceId(deviceId)
-            .done(function (keywords) {
-                var batteryLevel = keywords.find(function (element) { return element.capacityName === "batteryLevel"; });
-                if (batteryLevel) {
-					$battery.removeClass("hidden");
-                    //it has capacity
-                    $battery.append("<span class=\"\"/>");
-                    $battery.attr("keywordId", batteryLevel.id);
-                    //we add it to the filter of keyword for websockets
-                    self.widget.viewModel.widgetApi.registerKeywordAcquisitions(batteryLevel.id);
+           //we check for the device to look if it has battery keyword
+           DeviceManager.getKeywordsBydeviceIdAndCapacity(deviceId, "Get", "batteryLevel")
+           .done(function (keyword) {
+               // We assume that we have only 1 batteryLevel keyword for one device, it's the first one
+               if (keyword.length>0) {
+                 $battery.removeClass("hidden");
+                 //it has capacity
+                 $battery.append("<span class=\"\"/>");
+                 $battery.attr("keywordId", keyword[0].id);
+                 //we add it to the filter of keyword for websockets
+                 self.widget.viewModel.widgetApi.registerKeywordAcquisitions(keyword[0].id);
 
-                    //we ask immediately for the battery value
-                    AcquisitionManager.getLastValue(batteryLevel.id)
-                    .done(function (lastValue) {
-                        self.widget.viewModel.widgetApi.updateBatteryLevel(lastValue.value);
-						d.resolve();
-                    })
-                    .fail(function (error) {
-                        notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + batteryLevel.id }), error);
-						d.reject();
-                    });
-                }
-                else {
-                    //we can hide the div to prevent margin spaces before the title
-					$battery.addClass("hidden");
-					d.resolve();
-                }
-            })
-            .fail(function (error) {
-                notifyError($.t("objects.generic.errorGetting", { objectName: "keyword for device = " + deviceId }), error);
-				d.reject();
-            });
-        }
-		else
-		{
-			//we can hide the div to prevent margin spaces before the title
-			$battery.addClass("hidden");
-			d.resolve();
-		}
+                 //we ask immediately for the battery value
+                 AcquisitionManager.getLastValue(keyword[0].id)
+                 .done(function (lastValue) {
+                     self.widget.viewModel.widgetApi.updateBatteryLevel(lastValue.value);
+                     d.resolve();
+                 })
+                 .fail(function (error) {
+                     notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + keyword[0].id }), error);
+                     d.reject();
+                 });
+             }
+             else {
+               //we can hide the div to prevent margin spaces before the title
+               $battery.addClass("hidden");
+               d.resolve();
+             }
+         })
+         .fail(function (error) {
+             notifyError($.t("objects.generic.errorGetting", { objectName: "keyword for device = " + deviceId }), error);
+             d.reject();
+         });
     }
+    else
+    {
+       //we can hide the div to prevent margin spaces before the title
+       $battery.addClass("hidden");
+       d.resolve();
+    }    
 	
-	return d.promise();
+	 return d.promise();
 }
 
 /**

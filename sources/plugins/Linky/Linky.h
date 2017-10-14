@@ -3,6 +3,7 @@
 #include "LinkyConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
 #include "IDecoder.h"
+#include <shared/communication/AsyncPortConnectionNotification.h>
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -65,8 +66,9 @@ protected:
    //--------------------------------------------------------------
    /// \brief	                     Called when the Linky Receiver becomes unconnected
    /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \param [in] notification     The connection notification data
    //--------------------------------------------------------------
-   void processLinkyUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
+   void processLinkyUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification = boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>());
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection to the Linky USB Reader

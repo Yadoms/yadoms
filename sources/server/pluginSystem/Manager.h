@@ -198,7 +198,7 @@ namespace pluginSystem
       /// \param [in] query      The query to post
       /// \return                The task id
       //--------------------------------------------------------------
-      const std::string postExtraQuery(int id, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query) const;
+      std::string postExtraQuery(int id, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post a manually device creation request to a plugin

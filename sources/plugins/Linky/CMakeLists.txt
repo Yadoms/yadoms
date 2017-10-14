@@ -26,7 +26,11 @@ set(LINKY_SOURCES
    specificHistorizer/Color.cpp
 )
 
-source_group(specificHistorizer specificHistorizer/*.*)
+#########################################
+## Place here all additional groups (solution folder)
+#########################################
+source_group(sources ./*.*)
+source_group(sources\\specificHistorizer specificHistorizer/*.*)
 
 #########################################
 ## Place here all additional include directories

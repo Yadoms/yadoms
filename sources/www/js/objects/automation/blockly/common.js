@@ -316,7 +316,7 @@ Blockly.Yadoms.GetResult = function (language, callback) {
 
    var generatedCode = "";
    switch (language) {
-      case "ypython27":
+      case "yPython27":
          generatedCode = Blockly.Yadoms.GetPythonOutput_();
          break;
 

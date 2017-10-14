@@ -84,16 +84,6 @@ namespace database
       virtual boost::shared_ptr<entities::CAcquisition> getAcquisitionByKeywordAndDate(const int keywordId,
                                                                                        boost::posix_time::ptime time) = 0;
 
-      //-----------------------------------------
-      ///\brief      Get the last data of a keyword
-      ///\param [in] keywordId  The keyword id
-      ///\param [in] throwIfNotExists  true to throw exception if keyword have no data, false to get an empty shared_ptr
-      ///\return     the last acquisition for the keyword
-      ///\throw      CEmptyResult if no data is available
-      //-----------------------------------------
-      virtual boost::shared_ptr<entities::CAcquisition> getKeywordLastData(const int keywordId,
-                                                                           bool throwIfNotExists = true) = 0;
-
       //--------------------------------------------------------------
       /// \brief                 Get the data
       /// \param [in] keywordId  keywordId Id

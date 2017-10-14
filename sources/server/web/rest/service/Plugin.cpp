@@ -47,6 +47,7 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("binding")("*"), CPlugin::getBinding);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("start"), CPlugin::startInstance);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("stop"), CPlugin::stopInstance);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("instanceRunning"), CPlugin::getInstanceRunning);
 
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CPlugin::createPlugin, CPlugin::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::transactionalMethod);
@@ -325,8 +326,7 @@ namespace web
             return CResult::GenerateSuccess();
          }
 
-         shared::CDataContainer CPlugin::getInstanceState(const std::vector<std::string>& parameters,
-                                                          const std::string& requestContent) const
+         shared::CDataContainer CPlugin::getInstanceState(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -350,6 +350,31 @@ namespace web
             catch (...)
             {
                return CResult::GenerateError("unknown exception in reading plugin instance status");
+            }
+         }
+
+         shared::CDataContainer CPlugin::getInstanceRunning(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         {
+            try
+            {
+               if (parameters.size() > 1)
+               {
+                  auto instanceId = boost::lexical_cast<int>(parameters[1]);
+
+                  bool instanceRunning = m_pluginManager->isInstanceRunning(instanceId);
+                  shared::CDataContainer result;
+                  result.set("isRunning", instanceRunning);
+                  return CResult::GenerateSuccess(result);
+               }
+               return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in reading plugin instance running");
             }
          }
 

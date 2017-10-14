@@ -77,6 +77,16 @@ namespace dataAccessLayer
       return m_keywordRequester->getDeviceKeywordsWithCapacity(deviceId, capacityName, capacityAccessMode);
    }
 
+   boost::shared_ptr<database::entities::CAcquisition> CKeywordManager::getKeywordLastAcquisition(const int keywordId, bool throwIfNotExists)
+   {
+      return m_keywordRequester->getKeywordLastAcquisition(keywordId, throwIfNotExists);
+   }
+
+   std::string CKeywordManager::getKeywordLastData(const int keywordId, bool throwIfNotExists)
+   {
+      return m_keywordRequester->getKeywordLastData(keywordId, throwIfNotExists);
+   }
+
    void CKeywordManager::addKeyword(const database::entities::CKeyword& newKeyword) const
    {
       return m_keywordRequester->addKeyword(newKeyword);

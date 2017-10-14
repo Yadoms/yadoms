@@ -4,6 +4,7 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include "PortException.hpp"
 #include "Buffer.hpp"
+#include "AsyncPortConnectionNotification.h"
 
 namespace shared { namespace communication {
 
@@ -136,7 +137,7 @@ void CAsyncTcpClient::handleTryConnect(const boost::system::error_code& error)
    }
 
    // Connected
-   notifyEventHandler(true);
+   notifyEventHandler();
 
    // Start listening on the port
    startRead();
@@ -160,7 +161,7 @@ void CAsyncTcpClient::readCompleted(const boost::system::error_code& error, std:
       // Error ==> disconnecting
       YADOMS_LOG(error) << "Socket read error : " << error.message();
       disconnect();
-      notifyEventHandler(false);
+      notifyEventHandler("asyncPort.tcp.operationAborted");
       return;
    }
 
@@ -202,18 +203,31 @@ void CAsyncTcpClient::sendBuffer(boost::asio::const_buffers_1 & buffer)
          disconnect();
       }
 
-      notifyEventHandler(false);
+      if(e.code() == boost::asio::error::eof)
+         notifyEventHandler("asyncPort.tcp.connectionClosed");
+      else
+         notifyEventHandler("asyncPort.tcp.connectionError");
 
-      throw CPortException(
-         (e.code() == boost::asio::error::eof) ? CPortException::kConnectionClosed : CPortException::kConnectionError,
-         e.what());
+      throw CPortException((e.code() == boost::asio::error::eof) ? CPortException::kConnectionClosed : CPortException::kConnectionError, e.what());
    }
 }
 
-void CAsyncTcpClient::notifyEventHandler(bool isConnected)
+void CAsyncTcpClient::notifyEventHandler()
 {
    if (m_connectStateEventHandler)
-      m_connectStateEventHandler->postEvent<bool>(m_connectStateEventId, isConnected);
+   {
+      auto param = boost::make_shared<CAsyncPortConnectionNotification>();
+      m_connectStateEventHandler->postEvent(m_connectStateEventId, param);
+   }
+}
+
+void CAsyncTcpClient::notifyEventHandler(const std::string & i18nErrorMessage)
+{
+   if (m_connectStateEventHandler)
+   {
+      auto param = boost::make_shared<CAsyncPortConnectionNotification>(i18nErrorMessage);
+      m_connectStateEventHandler->postEvent(m_connectStateEventId, param);
+   }
 }
 
 } } // namespace shared::communication

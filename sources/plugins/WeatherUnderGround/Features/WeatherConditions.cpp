@@ -34,7 +34,7 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (shared::exception::CException& e)
    {
-      YADOMS_LOG(information) << "Configuration or initialization error of weather module :" << e.what() ;
+      YADOMS_LOG(error) << "Configuration or initialization error of weather module :" << e.what() ;
       throw;
    }
 }
@@ -76,31 +76,33 @@ void CWeatherConditions::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi>
       m_keywords.push_back(m_feelsLike);
       m_keywords.push_back(m_windchill);
    }
-   else
-   {  // In case of configuration change, we delete no needed keywords
-      if (api->deviceExists(m_deviceName))
-      {
-         if (api->keywordExists(m_deviceName, m_temp)) api->removeKeyword(m_deviceName, "temperature");
-         if (api->keywordExists(m_deviceName, m_pressure)) api->removeKeyword(m_deviceName, "pressure");
-         if (api->keywordExists(m_deviceName, m_humidity)) api->removeKeyword(m_deviceName, "Humidity");
-         if (api->keywordExists(m_deviceName, m_visibility)) api->removeKeyword(m_deviceName, "Visibility");
-         if (api->keywordExists(m_deviceName, m_uv)) api->removeKeyword(m_deviceName, "UV");
-         if (api->keywordExists(m_deviceName, m_WindDirection)) api->removeKeyword(m_deviceName, "WindDirection");
-         if (api->keywordExists(m_deviceName, m_dewPoint)) api->removeKeyword(m_deviceName, "DewPoint");
-         if (api->keywordExists(m_deviceName, m_rain1hr)) api->removeKeyword(m_deviceName, "Rain_1hr");
-         if (api->keywordExists(m_deviceName, m_weatherConditionUrl->getHistorizable())) api->removeKeyword(m_deviceName, "Weather");
-         if (api->keywordExists(m_deviceName, m_windAverageSpeed)) api->removeKeyword(m_deviceName, "windAverageSpeed");
-         if (api->keywordExists(m_deviceName, m_windMaxSpeed)) api->removeKeyword(m_deviceName, "windMaxSpeed");
-         if (api->keywordExists(m_deviceName, m_feelsLike)) api->removeKeyword(m_deviceName, "FeelsLike");
-         if (api->keywordExists(m_deviceName, m_windchill)) api->removeKeyword(m_deviceName, "Windchill");
-      }
-   }
 
     // Declare keywords
     std::string m_type = "weather";
     shared::CDataContainer details;
     details.set("type", m_type);
     api->declareDevice(m_deviceName, m_type, m_type, m_keywords, details);
+}
+
+void CWeatherConditions::cleanUpKeywords(boost::shared_ptr<yApi::IYPluginApi> api)
+{
+   // In case of configuration change, we delete no needed keywords
+   if (api->deviceExists(m_deviceName))
+   {
+      if (api->keywordExists(m_deviceName, m_temp)) api->removeKeyword(m_deviceName, m_temp->getKeyword());
+      if (api->keywordExists(m_deviceName, m_pressure)) api->removeKeyword(m_deviceName, m_pressure->getKeyword());
+      if (api->keywordExists(m_deviceName, m_humidity)) api->removeKeyword(m_deviceName, m_humidity->getKeyword());
+      if (api->keywordExists(m_deviceName, m_visibility)) api->removeKeyword(m_deviceName, m_visibility->getKeyword());
+      if (api->keywordExists(m_deviceName, m_uv)) api->removeKeyword(m_deviceName, m_uv->getKeyword());
+      if (api->keywordExists(m_deviceName, m_WindDirection)) api->removeKeyword(m_deviceName, m_WindDirection->getKeyword());
+      if (api->keywordExists(m_deviceName, m_dewPoint)) api->removeKeyword(m_deviceName, m_dewPoint->getKeyword());
+      if (api->keywordExists(m_deviceName, m_rain1hr)) api->removeKeyword(m_deviceName, m_rain1hr->getKeyword());
+      if (api->keywordExists(m_deviceName, m_weatherConditionUrl->getHistorizable())) api->removeKeyword(m_deviceName, m_weatherConditionUrl->getHistorizable()->getKeyword());
+      if (api->keywordExists(m_deviceName, m_windAverageSpeed)) api->removeKeyword(m_deviceName, m_windAverageSpeed->getKeyword());
+      if (api->keywordExists(m_deviceName, m_windMaxSpeed)) api->removeKeyword(m_deviceName, m_windMaxSpeed->getKeyword());
+      if (api->keywordExists(m_deviceName, m_feelsLike)) api->removeKeyword(m_deviceName, m_feelsLike->getKeyword());
+      if (api->keywordExists(m_deviceName, m_windchill)) api->removeKeyword(m_deviceName, m_windchill->getKeyword());
+   }
 }
 
 void CWeatherConditions::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api, 
@@ -112,6 +114,9 @@ void CWeatherConditions::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api
       m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/conditions/q/" << boost::lexical_cast<std::string>(m_location->latitude()) << "," << boost::lexical_cast<std::string>(m_location->longitude()) << ".json";
 
       initializeKeywords(api, wuConfiguration);
+
+      if (!wuConfiguration.isConditionsIndividualKeywordsEnabled())
+         cleanUpKeywords(api);
    }
    catch (shared::exception::CException& e)
    {

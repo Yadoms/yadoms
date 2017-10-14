@@ -204,9 +204,9 @@
         
           PluginManager.getAll()
                .done (function (packageList){
-                   Object.keys(/*PluginManager.*/packageList).forEach(function(key) {
+                   Object.keys(packageList).forEach(function(key) {
                      if( (!data.developerMode && !key.startsWith("dev-")) || data.developerMode) {
-                        var value = /*PluginManager.*/packageList[key];
+                        var value = packageList[key];
                         
                         tabPlugins.push ( {plugin: value, friendlyName: $.t("plugins/" + value.type + ":name" ) });
                      }
@@ -217,9 +217,6 @@
                    
                    //foreach element of the array
                    $.each(tabPlugins, function(index, value) {
-                     
-                     console.log ( "package : ", value.plugin );
-                     
                      var result = "";
                      if ( !isNullOrUndefined ( value.plugin.package.credits ))
                         result = ConfigurationHelper.makdownIt( value.plugin.package.credits ); 

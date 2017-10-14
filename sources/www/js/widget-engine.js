@@ -68,13 +68,14 @@ function initializeWidgetEngine() {
 }
 
 function requestWidgets(page) {
+    var d = new $.Deferred();
     //we request widgets for the first page
     var loadWidgetsNotification = notifyInformation($.t("mainPage.actions.loadingWidgetsOfPage", { pageName: page.name }));
 
     //before making anything we empty the grid
     page.$grid.empty();
-
-    var d = WidgetManager.getWidgetOfPageFromServer(page)
+    
+    WidgetManager.getWidgetOfPageFromServer(page)
     .done(function (list) {
         if (list != null) {
             WidgetManager.loadWidgets(list, page)
@@ -88,10 +89,12 @@ function requestWidgets(page) {
 
                 //we update the filter of the websocket
                 updateWebSocketFilter();
+                d.resolve();
             })
             .fail(function (errorMessage) {
                 console.error(errorMessage);
                 notifyError($.t("objects.widgetManager.loadingWidgetsError"));
+                d.reject();
             });
         }
     });
@@ -120,7 +123,6 @@ function tabClick(pageId) {
                 //we poll all widget data
                 updateWidgetsPolling().always(function()
                 {
-			          PageManager.refreshWidgets(page);
                    PageManager.updateWidgetLayout(page);
                    page.$grid.packery("layout");                   
                 });
@@ -129,7 +131,6 @@ function tabClick(pageId) {
             //we poll all widget data
             updateWidgetsPolling().always(function()
             {
-			      PageManager.refreshWidgets(page);
                PageManager.updateWidgetLayout(page);
                page.$grid.packery("layout");               
                updateWebSocketFilter();

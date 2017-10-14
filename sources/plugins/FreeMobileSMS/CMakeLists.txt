@@ -14,6 +14,12 @@ set(FREEMOBILESMS_SOURCES
    SmsKeyword.cpp 
 )
 
+
+#########################################
+## Place here all additional groups (solution folder)
+#########################################
+source_group(sources ./*.*)
+
 #########################################
 ## Place here all additional include directories
 ## (by default yadoms-shared and boost are included)
