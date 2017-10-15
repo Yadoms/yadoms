@@ -387,6 +387,9 @@
 		}
 	},
 	"customLabels": {
+      "pluginState" : {
+         "rfp1000NotFound" : "The RfPlayer dongle doesn't respond. Please check it is connected and its configuration."
+      },
 		"firmwareUpdate": {
 			"fail": "Fail to upgrade firmware",
 			"writeFile": "Sending firmware",

@@ -25,11 +25,16 @@ if(CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
       Piface2Factory.h
       Piface2Factory.cpp
       SPIException.hpp
-      )
+   )
 
    ADD_SUBDIRECTORY(libmcp23s17)  
    ADD_SUBDIRECTORY(libpifacedigital)
     
+   #########################################
+   ## Place here all additional groups (solution folder)
+   #########################################
+   source_group(sources ./*.*)
+
    #########################################
    ## Place here all additional include directories
    ## (by default yadoms-shared and boost are included)

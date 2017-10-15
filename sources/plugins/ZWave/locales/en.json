@@ -14,17 +14,16 @@
 	},
 	"customLabels": {
 		"pluginState": {
-			"Waiting": "Waiting...",
-			"WaitingInclusion": "In inclusion mode. Waiting for user to include new device...",
-			"WaitingExclusion": "In exclusion mode. Waiting for user to exclude a device...",
-			"Completed": "Terminated",
-			"DriverReady": "Ready",
-			"DriverFailed": "Driver error",
-			"Initialization" : "Initialization",
-			"Configuring" : "Configuration",
+			"waiting": "Waiting...",
+			"waitingInclusion": "In inclusion mode. Waiting for user to include new device...",
+			"waitingExclusion": "In exclusion mode. Waiting for user to exclude a device...",
+			"completed": "Terminated",
+			"driverReady": "Ready",
+			"driverFailed": "Driver error",
+			"initialization" : "ZWave initialization and device analysis...",
 			"updateConfiguration" : "Update configuration",
-			"failToAccessSerialPort" : "Fail to access serial port",
-			"failToStartController" : "Fail to start ZWave controler",
+			"failToAccessSerialPort" : "Fail to access serial port. Please verify ZWave dongle is plugged or the plugin configuration",
+			"failToStartController" : "Fail to start ZWave controller. Please verify ZWave dongle is plugged or the plugin configuration",
 			"failToStart" : "Fail to start"
 		}
 	},

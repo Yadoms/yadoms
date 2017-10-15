@@ -91,6 +91,8 @@ widgetViewModelCtor =
               var readOnlyMode=false;
               var arrayOfDeffered = [];
 
+              var d = new $.Deferred();
+              
               if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
                   return;
 
@@ -164,12 +166,18 @@ widgetViewModelCtor =
                             self.state[index+1] = 0;
                       }
                   });
-				  
-                  // This variable is used only for the display
-                  $.whenAll(arrayOfDeffered).done(function () {
-                     self.readonly ( readOnlyMode );
-                  });				  
                }
+               
+            // This variable is used only for the display
+            $.whenAll(arrayOfDeffered).done(function () {
+               self.readonly ( readOnlyMode );
+               d.resolve();
+            })
+            .fail(function () {
+               d.reject();
+            });
+            
+            return d.promise();
           };
 
           /**

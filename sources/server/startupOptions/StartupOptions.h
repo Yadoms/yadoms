@@ -80,8 +80,7 @@ namespace startupOptions
       std::string getBackupPath() const override;
       int getDatabaseAcquisitionLifetime() const override;
       bool getDeveloperMode() const override;
-
-
+      bool getNoWebServerCacheFlag() const override;
       // [END] IStartupOptions implementation
       //--------------------------------------------------------------
 

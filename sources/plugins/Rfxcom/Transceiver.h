@@ -30,8 +30,8 @@ public:
    shared::communication::CByteBuffer buildSetModeCmd(unsigned char frequency,
                                                       const IRfxcomConfiguration& configuration) const override;
    shared::communication::CByteBuffer buildStartReceiverCmd() const override;
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                                                           boost::shared_ptr<const yApi::IDeviceCommand> command) const override;
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                                                          boost::shared_ptr<const yApi::IDeviceCommand> command) const override;
    boost::shared_ptr<rfxcomMessages::IRfxcomMessage> decodeRfxcomMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                                                                          const shared::communication::CByteBuffer& data) const override;
    std::string createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -40,7 +40,10 @@ public:
 
 private:
 
-   static std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter> > createUnsecuredProtocolFilters();
+   static void logMessage(boost::shared_ptr<yApi::IYPluginApi> api,
+                   const boost::shared_ptr<rfxcomMessages::IRfxcomMessage>& message);
+
+   static std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter>> createUnsecuredProtocolFilters();
 
    //--------------------------------------------------------------
    /// \brief  The message sequence number
@@ -50,6 +53,5 @@ private:
    //--------------------------------------------------------------
    /// \brief  The list of filters used for unsecured protocols, to filter bad receptions and avoid bad device creations
    //--------------------------------------------------------------
-   const std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter> > m_unsecuredProtocolFilters;
+   const std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter>> m_unsecuredProtocolFilters;
 };
-

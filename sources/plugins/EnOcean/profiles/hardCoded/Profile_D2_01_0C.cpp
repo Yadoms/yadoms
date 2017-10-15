@@ -12,7 +12,7 @@ CProfile_D2_01_0C::CProfile_D2_01_0C(const std::string& deviceId,
      m_loadEnergy(boost::make_shared<yApi::historization::CEnergy>("Load energy")),
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),
      m_pilotWire(boost::make_shared<specificHistorizers::CPilotWireHistorizer>("Pilot wire")),
-     m_overCurrent(boost::make_shared<yApi::historization::CSwitch>("OverCurrent", yApi::EKeywordAccessMode::kGetSet)),
+     m_overCurrent(boost::make_shared<yApi::historization::CSwitch>("OverCurrent", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_channel, m_loadEnergy, m_loadPower, m_pilotWire, m_overCurrent})
 {
 }

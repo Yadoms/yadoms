@@ -168,18 +168,25 @@
       assert(!isNullOrUndefined(pi), "pi must be defined");
       //we deactivate the button until next status will be acquired to prevent flooding
       getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', true);
-      if (pi.lastState === "Stopped" || pi.lastState === "Error") {
-         //we ask for start
-         PluginInstanceManager.start(pi).done(function () {
-            getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);
-         });
-      }
-      else {
-         //we ask for stop
-         PluginInstanceManager.stop(pi).done(function () {
-            getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);
-         });
-      }
+      
+      PluginInstanceManager.isRunning(pi)
+      .done(function(f) {
+         var isRunning = parseBool(f.isRunning);
+         if (isRunning === false && (pi.lastState === "Stopped" || pi.lastState === "Error")) {
+            //we ask for start
+            PluginInstanceManager.start(pi).done(function () {
+               getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);
+            });
+         }
+         else {
+            //we ask for stop
+            PluginInstanceManager.stop(pi).done(function () {
+               getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);
+            });
+         }
+      });
+      
+
    }
 
    function loadExtraQueries(pi) {
@@ -429,6 +436,7 @@
 
             PluginInstanceManager.getState(pluginInstance)
             .done(function (status) {
+            
                var $row = getPluginDomRow(pluginInstance);
                
                if (status) {
@@ -493,6 +501,12 @@
    }
 
    function getCustomMessage(pluginInstance, messageId, messageData, defaultMessage) {
+      //Strategy to get the message:
+      //1. try plugin translation
+      //2. try general translation
+      //3. use default message
+   
+   
       var i18nOpt ={}; //ensure i18nOpt is not undefined
       if(messageData) {
          try {
@@ -502,9 +516,11 @@
          }
       }
        
-      i18nOpt.defaultValue = $.t(defaultMessage); //define default value parameter
+      i18nOpt.defaultValue = $.t(defaultMessage); //define default value parameter (for step 3)
+      i18nOpt.defaultValue = $.t(messageId, i18nOpt); //define default value parameter (for step 2)
+      
       if(messageId && messageId !== "") {
-         return $.t("plugins/" + pluginInstance.type + ":customLabels.pluginState." + messageId, i18nOpt);
+         return $.t("plugins/" + pluginInstance.type + ":customLabels.pluginState." + messageId, i18nOpt); //step 1
       }
       return i18nOpt.defaultValue;      
    }

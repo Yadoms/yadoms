@@ -38,7 +38,7 @@ public:
    /// \brief	Start the controller
    /// \return The start result code
    //--------------------------------------------------------------
-   virtual E_StartResult start() = 0;
+   virtual E_StartResult start(boost::function0<void> checkStoprequested) = 0;
 
    //--------------------------------------------------------------
    /// \brief	Stop the controller

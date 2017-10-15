@@ -142,6 +142,11 @@ namespace rfxcomMessages
       return m_deviceName;
    }
 
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CThermostat1::keywords()
+   {
+      return m_keywords;
+   }
+
    void CThermostat1::buildDeviceName()
    {
       std::ostringstream ssdeviceName;

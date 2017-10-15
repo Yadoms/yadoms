@@ -61,7 +61,7 @@ void COpenZWaveController::configure(CZWaveConfiguration* configuration, shared:
    m_handler = handler;
 }
 
-IZWaveController::E_StartResult COpenZWaveController::start()
+IZWaveController::E_StartResult COpenZWaveController::start(boost::function0<void> checkStopRequested)
 {
    try
    {
@@ -87,9 +87,7 @@ IZWaveController::E_StartResult COpenZWaveController::start()
       }
 
       OpenZWave::Options::Create(folder.string(), dataFolder.string(), "");
-      OpenZWave::Options::Get()->AddOptionInt("SaveLogLevel", OpenZWave::LogLevel_Debug);
-      OpenZWave::Options::Get()->AddOptionInt("QueueLogLevel", OpenZWave::LogLevel_Debug);
-      OpenZWave::Options::Get()->AddOptionInt("DumpTriggerLevel", OpenZWave::LogLevel_Debug);
+      OpenZWave::Options::Get()->AddOptionInt("SaveLogLevel", OpenZWave::LogLevel_Info);
       OpenZWave::Options::Get()->AddOptionInt("PollInterval", 30000); // 30 seconds (can easily poll 30 values in this time; ~120 values is the effective limit for 30 seconds)
       OpenZWave::Options::Get()->AddOptionBool("IntervalBetweenPolls", true);
       OpenZWave::Options::Get()->AddOptionBool("ValidateValueChanges", true);
@@ -98,6 +96,8 @@ IZWaveController::E_StartResult COpenZWaveController::start()
       OpenZWave::Options::Get()->AddOptionBool("Logging", true);
       OpenZWave::Options::Get()->AddOptionString("LogFileName", "OZW.log", false);
       OpenZWave::Options::Get()->AddOptionBool("AppendLogFile", false);
+      OpenZWave::Options::Get()->AddOptionBool("ConsoleOutput", false); //disable console output
+      
 
       OpenZWave::Options::Get()->AddOptionBool("SuppressValueRefresh", false);
       OpenZWave::Options::Get()->AddOptionBool("EnableSIS", true);
@@ -133,17 +133,9 @@ IZWaveController::E_StartResult COpenZWaveController::start()
          }
          else
          {
-            //fail to open : then unlock mutex to allow configuration to be changed, then wait 1 sec
-            m_treeMutex.unlock();
-            remainingTries--;
-            if (remainingTries <= 0)
-            {
-               YADOMS_LOG(error) << "Fail to open serial port : " << m_configuration->getSerialPort();
-               return kSerialPortError;
-            }
-
-            YADOMS_LOG(information) << "Fail to open serial port : " << m_configuration->getSerialPort() << ". Attemps remaining : " << remainingTries;
-            boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
+            //fail to open : then unlock mutex to allow configuration to be changed, don't retry, OPenZWave have already a retry mechanism
+            YADOMS_LOG(error) << "Fail to open serial port : " << m_configuration->getSerialPort();
+            return kSerialPortError;
          }
       }
 
@@ -159,6 +151,7 @@ IZWaveController::E_StartResult COpenZWaveController::start()
       // been queried as well.)
       while (!m_nodesQueried && !m_initFailed)
       {
+         checkStopRequested();
          boost::this_thread::sleep(boost::posix_time::milliseconds(200));
       }
 

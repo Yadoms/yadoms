@@ -7,7 +7,7 @@ AutomationEditorBlockly.prototype = new IAutomationRuleEditor();
 AutomationEditorBlockly.prototype.constructor = AutomationEditorCode;
 
 AutomationEditorBlockly.getSupportedInterpreters = function() {
-   return ["ypython27", "dart", "javascript"];
+   return ["yPython27", "dart", "javascript"];
 };
 
 /**
@@ -22,8 +22,8 @@ function AutomationEditorBlockly(interpreters) {
    //we compare interpreters and getSupportedInterpreters() static method to keep only active supported interpreters
    self.activeSupportedInterpreters = [];
    $.each(AutomationEditorBlockly.getSupportedInterpreters(), function (key, value) {
-      if(!isNullOrUndefined(interpreters) && !isNullOrUndefined(interpreters[value.toLowerCase()])) {
-         self.activeSupportedInterpreters.push(interpreters[value.toLowerCase()]);
+      if(!isNullOrUndefined(interpreters) && !isNullOrUndefined(interpreters[value])) {
+         self.activeSupportedInterpreters.push(interpreters[value]);
       }
    });
 }
@@ -178,7 +178,7 @@ AutomationEditorBlockly.prototype.updateRule = function() {
    self.rule.content = "";
    self.rule.code = "";
 
-   Blockly.Yadoms.GetResult(self.rule.interpreter.toLowerCase(), function(xmlString,code){
+   Blockly.Yadoms.GetResult(self.rule.interpreter, function(xmlString,code){
       self.rule.content = encodeURIComponent(xmlString);
       self.rule.code = code;
 

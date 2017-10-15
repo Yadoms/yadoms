@@ -12,7 +12,7 @@ CProfile_D2_01_09::CProfile_D2_01_09(const std::string& deviceId,
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),
      m_dimmerMode(boost::make_shared<specificHistorizers::CDimmerModeHistorizer>("DimmerMode")),
      m_dimmer(boost::make_shared<yApi::historization::CDimmable>("Dimmer", yApi::EKeywordAccessMode::kGetSet)),
-     m_overCurrent(boost::make_shared<yApi::historization::CSwitch>("OverCurrent", yApi::EKeywordAccessMode::kGetSet)),
+     m_overCurrent(boost::make_shared<yApi::historization::CSwitch>("OverCurrent", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_loadEnergy, m_loadPower, m_dimmerMode, m_dimmer, m_overCurrent})
 {
 }

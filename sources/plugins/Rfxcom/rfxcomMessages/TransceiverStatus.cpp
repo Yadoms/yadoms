@@ -145,6 +145,11 @@ namespace rfxcomMessages
       return emptyString;
    }
 
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CTransceiverStatus::keywords()
+   {
+      return NoKeywords;
+   }
+
    void CTransceiverStatus::traceEnabledProtocols() const
    {
       YADOMS_LOG(information) << "RFXCom configured protocols :" ;
@@ -209,7 +214,7 @@ namespace rfxcomMessages
          (recType86835FSK, "868.35MHz FSK")
          (recType86895, "868.95MHz");
 
-      std::map<unsigned char, std::string>::const_iterator itRfxcomTypes = RfxcomTypes.find(m_rfxcomType);
+      auto itRfxcomTypes = RfxcomTypes.find(m_rfxcomType);
       if (itRfxcomTypes == RfxcomTypes.end())
          return boost::lexical_cast<std::string>(m_rfxcomType);
 

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CurrentEnergy.h"
 #include <shared/exception/InvalidParameter.hpp>
+#include "../MessageFilteredException.hpp"
 #include "RareDeviceIdFilter.h"
 #include <shared/Log.h>
 
@@ -76,7 +77,7 @@ namespace rfxcomMessages
       if (!api->deviceExists(m_deviceName))
       {
          if (!m_messageFilter->isValid(m_deviceName))
-            throw std::invalid_argument((boost::format("Receive unknown device (id %1%) for unsecured protocol (CURRENTENERGY / %2%), may be a transmission error : ignored")
+            throw CMessageFilteredException((boost::format("Receive unknown device (id %1%) for unsecured protocol (CURRENTENERGY / %2%), may be a transmission error : ignored")
                % m_id % m_deviceModel).str());
 
          shared::CDataContainer details;
@@ -102,6 +103,11 @@ namespace rfxcomMessages
    const std::string& CCurrentEnergy::getDeviceName() const
    {
       return m_deviceName;
+   }
+
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CCurrentEnergy::keywords()
+   {
+      return m_keywords;
    }
 
    void CCurrentEnergy::buildDeviceName()

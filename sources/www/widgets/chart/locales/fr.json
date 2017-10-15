@@ -8,6 +8,8 @@
    "RangeTooBroad" : "Echelle trop large",
    "noAvailableData": "Aucune donnée pour l'échelle sélectionnée",
    "formatNotSupported": "Le format __format__ n'est pas supporté",
+   "deviceNotFound": "Equipement Id __Id__ introuvable",
+   "keywordNotFound" : "Donnée Id __Id__ introuvable",
 	"configurationSchema": {
 		"interval": {
 			"name": "Période d'affichage du graphique",

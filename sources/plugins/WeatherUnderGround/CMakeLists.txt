@@ -62,9 +62,13 @@ set(WUNDERGROUND_SOURCES
    Features/Keywords/specificHistorizers/NoPeriodException.hpp
 )
 
-source_group(Features Features/*.*)
-source_group(Features\\Keywords Features/Keywords/*.*)
-source_group(Features\\Keywords\\specificHistorizers Features/Keywords/specificHistorizers/*.*)
+#########################################
+## Place here all additional groups (solution folder)
+#########################################
+source_group(sources ./*.*)
+source_group(sources\\Features Features/*.*)
+source_group(sources\\Features\\Keywords Features/Keywords/*.*)
+source_group(sources\\Features\\Keywords\\specificHistorizers Features/Keywords/specificHistorizers/*.*)
 
 #########################################
 ## Place here all additional include directories

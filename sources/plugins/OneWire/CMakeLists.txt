@@ -119,14 +119,18 @@ if (UNIX AND NOT APPLE)
       owfs/io/TemperatureIo.h
       owfs/io/TemperatureIo.cpp
       owfs/io/Voltage.hpp
-      )
+   )
 
-      source_group(ioInterfaces ioInterfaces/*.*)
-      source_group(device device/*.*)
-      source_group(kernel kernel/*.*)
-      source_group(kernel\\io kernel/io/*.*)
-      source_group(owfs owfs/*.*)
-      source_group(owfs\\io owfs/io/*.*)
+   #########################################
+   ## Place here all additional groups (solution folder)
+   #########################################
+   source_group(sources ./*.*)
+   source_group(sources\\ioInterfaces ioInterfaces/*.*)
+   source_group(sources\\device device/*.*)
+   source_group(sources\\kernel kernel/*.*)
+   source_group(sources\\kernel\\io kernel/io/*.*)
+   source_group(sources\\owfs owfs/*.*)
+   source_group(sources\\owfs\\io owfs/io/*.*)
 
 
    #########################################

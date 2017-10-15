@@ -34,8 +34,12 @@ set(TELEINFO_SOURCES
    specificHistorizer/Period.cpp
 )
 
-source_group(Keywords Keywords/*.*)
-source_group(specificHistorizer specificHistorizer/*.*)
+#########################################
+## Place here all additional groups (solution folder)
+#########################################
+source_group(sources ./*.*)
+source_group(sources\\Keywords Keywords/*.*)
+source_group(sources\\specificHistorizer specificHistorizer/*.*)
 
 #########################################
 ## Place here all additional include directories
