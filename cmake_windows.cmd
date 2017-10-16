@@ -13,6 +13,7 @@ setlocal & pushd .
 @echo.
 @echo v120_xp : platform toolset "Visual Studio 2013 - WindowsXP"
 @echo v140_xp : platform toolset "Visual Studio 2015 - WindowsXP"
+@echo v141_xp : platform toolset "Visual Studio 2017 - WindowsXP"
 @echo Leave empty to disable Windows XP compatibility
 @echo.
 @echo.
@@ -26,14 +27,22 @@ call:getCMakeExecutable cmake_executable
 cd /D %~dp0/projects
 
 if [%xp_compatibility%]==[] (
+   @echo Using default generator WITHOUT WindowsXP support
 	"%cmake_executable%" %~dp0/sources
    goto:eof
 )
 if [%xp_compatibility%]==["v120_xp"] (
+   @echo Generating using "Visual Studio 2013" with WindowsXP support
 	"%cmake_executable%" %~dp0/sources -T %input%
    goto:eof
 )
 if [%xp_compatibility%]==["v140_xp"] (
+   @echo Generating using "Visual Studio 2015" with WindowsXP support
+	"%cmake_executable%" %~dp0/sources -T %input%
+   goto:eof
+)
+if [%xp_compatibility%]==["v141_xp"] (
+   @echo Generating using "Visual Studio 2017" with WindowsXP support
 	"%cmake_executable%" %~dp0/sources -T %input%
    goto:eof
 )
