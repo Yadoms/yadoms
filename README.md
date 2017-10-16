@@ -1,16 +1,16 @@
-[![Build Status](https://travis-ci.org/Yadoms/yadoms.svg?branch=master)](https://travis-ci.org/Yadoms/yadoms)
+[![Build Status](https://travis-ci.org/Yadoms/yadoms.svg?branch=master)](https://travis-ci.org/Yadoms/yadoms) [![Build Status](https://ci.appveyor.com/api/projects/status/github/yadoms/yadoms-build-windows?branch=master&svg=true)](https://ci.appveyor.com/project/yadoms/yadoms)
 
 # yadoms
 Yadoms is an open source project. 
 
 It aims to publish a simple, powerfull, flexible and multiplatforms domotic solution.
 
-#Forum
+## Forum
 
 http://www.yadoms.com/forum
 
 
-#Features
+## Features
 * Edit
 * Many devices support
 * RfxCom
@@ -20,18 +20,18 @@ http://www.yadoms.com/forum
 * Widgets
 * Charts
 
-#Multiplatforms
+## Multiplatforms
 * Windows
 * Linux
 * Mac OSX
 * Raspberry PI 1,2&3
 * *probably most of unix based systems*
 
-#Licensing
+## Licensing
 
 [Refer to LICENSE.md file](LICENSE.md)
 
-#Downloads
+## Downloads
 
-[v1.0.0 Beta](https://github.com/Yadoms/yadoms/releases/tag/1_0_0_beta)
+[Go to download page](https://github.com/Yadoms/yadoms/releases/)
 
