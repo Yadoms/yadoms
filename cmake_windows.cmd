@@ -33,19 +33,20 @@ if [%xp_compatibility%]==[] (
 )
 if [%xp_compatibility%]==["v120_xp"] (
    @echo Generating using "Visual Studio 2013" with WindowsXP support
-	"%cmake_executable%" %~dp0/sources -T %input%
+	"%cmake_executable%" %~dp0/sources -T %xp_compatibility%
    goto:eof
 )
 if [%xp_compatibility%]==["v140_xp"] (
    @echo Generating using "Visual Studio 2015" with WindowsXP support
-	"%cmake_executable%" %~dp0/sources -T %input%
+	"%cmake_executable%" %~dp0/sources -T %xp_compatibility%
    goto:eof
 )
 if [%xp_compatibility%]==["v141_xp"] (
    @echo Generating using "Visual Studio 2017" with WindowsXP support
-	"%cmake_executable%" %~dp0/sources -T %input%
+	"%cmake_executable%" %~dp0/sources -T %xp_compatibility%
    goto:eof
 )
+echo Error: invalid toolset selected
 goto:eof
 
 :: Function to find cmake executable
