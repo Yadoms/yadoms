@@ -26,25 +26,19 @@ namespace rfxcomMessages
          return;
       }
 
-      static const BYTE ProductionCounterDisableMask = 0x40;
-      if (rbuf.LINKY.state & ProductionCounterDisableMask)
-      {
-         // TeleInfo counter desactivated
-         m_teleInfoStatus->set(teleInfo::specificHistorizers::EStatus::kDesactivated);
-         return;
-      }
-
       // TeleInfo reading ok
       m_teleInfoStatus->set(teleInfo::specificHistorizers::EStatus::kOk);
 
-      // Current counter
-      static const unsigned int NbMaxCounters = 10; // Linky max counters number
-      if (rbuf.LINKY.currentidx >= NbMaxCounters)
+      static const BYTE ProductionCounterDisableMask = 0x02;
+      if (~rbuf.LINKY.state & ProductionCounterDisableMask)
       {
-         // TeleInfo reading error
-         m_teleInfoStatus->set(teleInfo::specificHistorizers::EStatus::kError);
-         return;
+         // Prod counter is enabled
+         auto counter = boost::make_shared<yApi::historization::CCounter>("Production");
+         counter->set((rbuf.LINKY.prodidx1_0 << 24) + (rbuf.LINKY.prodidx1_1 << 16) + (rbuf.LINKY.prodidx1_2 << 8) + (rbuf.LINKY.prodidx1_3));
+         m_keywords.push_back(counter);
       }
+
+      // Current counter
       auto counter = boost::make_shared<yApi::historization::CCounter>("Counter" + std::to_string(rbuf.LINKY.currentidx));
       counter->set((rbuf.LINKY.runidx_0 << 24) + (rbuf.LINKY.runidx_1 << 16) + (rbuf.LINKY.runidx_2 << 8) + (rbuf.LINKY.runidx_3));
       m_keywords.push_back(counter);
@@ -89,8 +83,6 @@ namespace rfxcomMessages
       default: m_forecastColor->set(teleInfo::specificHistorizers::EColor::kNOTDEFINED);
          break;
       }
-
-      //TODO what to do with prod counter ?
    }
 
    CCartelectronicLinky::~CCartelectronicLinky()
