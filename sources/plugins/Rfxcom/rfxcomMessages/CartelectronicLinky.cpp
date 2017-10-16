@@ -116,7 +116,7 @@ namespace rfxcomMessages
 
    std::string CCartelectronicLinky::getModel() const
    {
-      return "Encoder Module";
+      return "Linky Module";
    }
 } // namespace rfxcomMessages
 
