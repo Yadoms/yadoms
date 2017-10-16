@@ -26,22 +26,22 @@ call:getCMakeExecutable cmake_executable
 ::Move to destination folder
 cd /D %~dp0/projects
 
-if [%xp_compatibility%]==[] (
+if "%xp_compatibility%" == "" (
    @echo Using default generator WITHOUT WindowsXP support
 	"%cmake_executable%" %~dp0/sources
    goto:eof
 )
-if [%xp_compatibility%]==["v120_xp"] (
+if "%xp_compatibility%" == "v120_xp" (
    @echo Generating using "Visual Studio 2013" with WindowsXP support
 	"%cmake_executable%" %~dp0/sources -T %xp_compatibility%
    goto:eof
 )
-if [%xp_compatibility%]==["v140_xp"] (
+if "%xp_compatibility%" == "v140_xp" (
    @echo Generating using "Visual Studio 2015" with WindowsXP support
 	"%cmake_executable%" %~dp0/sources -T %xp_compatibility%
    goto:eof
 )
-if [%xp_compatibility%]==["v141_xp"] (
+if "%xp_compatibility%" == "v141_xp" (
    @echo Generating using "Visual Studio 2017" with WindowsXP support
 	"%cmake_executable%" %~dp0/sources -T %xp_compatibility%
    goto:eof
