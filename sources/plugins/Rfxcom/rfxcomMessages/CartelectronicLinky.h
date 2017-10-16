@@ -45,7 +45,8 @@ namespace rfxcomMessages
       boost::shared_ptr<teleInfo::specificHistorizers::CTeleInfoStatus> m_teleInfoStatus;
       boost::shared_ptr<yApi::historization::CVoltage> m_voltage;
       boost::shared_ptr<yApi::historization::CPower> m_power;
-      boost::shared_ptr<teleInfo::specificHistorizers::CColor> m_forecast;
+      boost::shared_ptr<teleInfo::specificHistorizers::CColor> m_todayColor;
+      boost::shared_ptr<teleInfo::specificHistorizers::CColor> m_forecastColor;
 
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    };

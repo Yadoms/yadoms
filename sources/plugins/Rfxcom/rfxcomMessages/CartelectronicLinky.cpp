@@ -12,8 +12,9 @@ namespace rfxcomMessages
         m_teleInfoStatus(boost::make_shared<teleInfo::specificHistorizers::CTeleInfoStatus>("TeleInfoStatus")), // Read-only keyword
         m_voltage(boost::make_shared<yApi::historization::CVoltage>("Voltage")),
         m_power(boost::make_shared<yApi::historization::CPower>("Power")),
-        m_forecast(boost::make_shared<teleInfo::specificHistorizers::CColor>("Forecast")),
-        m_keywords({m_teleInfoStatus, m_voltage, m_power, m_forecast})
+        m_todayColor(boost::make_shared<teleInfo::specificHistorizers::CColor>("Today color")),
+        m_forecastColor(boost::make_shared<teleInfo::specificHistorizers::CColor>("Forecast color")),
+        m_keywords({m_teleInfoStatus, m_voltage, m_power, m_todayColor, m_forecastColor})
    {
       CheckReceivedMessage(rbuf, rbufSize, pTypeCARTELECTRONIC, sTypeLinky, GET_RBUF_STRUCT_SIZE(LINKY), DONT_CHECK_SEQUENCE_NUMBER);
 
@@ -55,23 +56,37 @@ namespace rfxcomMessages
       m_power->set((rbuf.LINKY.power_H << 8) + rbuf.LINKY.power_L);
 
       // Forecast
-      static const BYTE ForecastMask = 0x18;
+      static const BYTE TodayColorMask = 0x60;
+      static const BYTE TodayColorShift = 5;
+      static const BYTE ForecastColorMask = 0x18;
+      static const BYTE ForecastColorShift = 3;
       enum
          {
-            undefined = 0x00,
-            white = 0x08,
-            blue = 0x10,
-            red = 0x11
+            undefined = 0,
+            white = 1,
+            blue = 2,
+            red = 3
          };
-      switch (rbuf.LINKY.state & ForecastMask)
+      switch ((rbuf.LINKY.state & TodayColorMask) >> TodayColorShift)
       {
-      case white: m_forecast->set(teleInfo::specificHistorizers::EColor::kWHITE);
+      case white: m_todayColor->set(teleInfo::specificHistorizers::EColor::kWHITE);
          break;
-      case blue: m_forecast->set(teleInfo::specificHistorizers::EColor::kBLUE);
+      case blue: m_todayColor->set(teleInfo::specificHistorizers::EColor::kBLUE);
          break;
-      case red: m_forecast->set(teleInfo::specificHistorizers::EColor::kRED);
+      case red: m_todayColor->set(teleInfo::specificHistorizers::EColor::kRED);
          break;
-      default: m_forecast->set(teleInfo::specificHistorizers::EColor::kNOTDEFINED);
+      default: m_todayColor->set(teleInfo::specificHistorizers::EColor::kNOTDEFINED);
+         break;
+      }
+      switch ((rbuf.LINKY.state & ForecastColorMask) >> ForecastColorShift)
+      {
+      case white: m_forecastColor->set(teleInfo::specificHistorizers::EColor::kWHITE);
+         break;
+      case blue: m_forecastColor->set(teleInfo::specificHistorizers::EColor::kBLUE);
+         break;
+      case red: m_forecastColor->set(teleInfo::specificHistorizers::EColor::kRED);
+         break;
+      default: m_forecastColor->set(teleInfo::specificHistorizers::EColor::kNOTDEFINED);
          break;
       }
 
