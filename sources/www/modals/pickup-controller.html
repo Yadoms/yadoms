@@ -186,9 +186,6 @@ Yadoms.askPackages = function (elements, instanceManager, thumbnail, title, call
          * Callback to the click of the button to confirm an add of a new element
          */
         $("button#btn-confirm-add-element").unbind("click").bind("click", function () {
-            var currentPage = PageManager.getCurrentPage();
-            assert(!isNullOrUndefined(currentPage), "A page must be selected");
-
             $("button#btn-close-details").addClass("hidden");
             //we close the new modal and wait for the modal being closed before continuing
             $("div#new-pickup-modal").on("hidden.bs.modal", function () {
