@@ -26,7 +26,7 @@ init:
 
 # Add pre-compiled dependancies in cache
 cache:
-  - extra_libs\boost_1_61_0 -> '.appveyor.yml'
+  - extra_libs\boost_1_64_0 -> '.appveyor.yml'
   - extra_libs\poco-1.7.7-all -> '.appveyor.yml'
 
 # scripts that run after cloning repository
@@ -35,7 +35,7 @@ install:
   - ps: echo "Download extra libs..."
   - ps: if (!(Test-Path 'extra_libs')) { mkdir 'extra_libs' }
   - ps: pushd extra_libs
-  - ps: if (!(Test-Path 'boost_1_61_0')) { Invoke-WebRequest http://yadoms.com/appveyor_build/boost_1_61_0-build.7z -OutFile boost.7z; 7z x boost.7z -bso0 }
+  - ps: if (!(Test-Path 'boost_1_64_0')) { Invoke-WebRequest http://yadoms.com/appveyor_build/boost_1_64_0-build.7z -OutFile boost.7z; 7z x boost.7z -bso0 }
   - ps: if (!(Test-Path 'poco-1.7.7-all')) { Invoke-WebRequest http://yadoms.com/appveyor_build/poco-1.7.7-all-build.7z -OutFile poco.7z; 7z x poco.7z -bso0 }
   - ps: rm *.7z
   - ps: popd    
@@ -47,7 +47,7 @@ before_build:
   - ps: echo "Create Yadoms unit-test configuration file CMakeListsUserConfig.txt..."
   - ps: $cd_for_cmake="$pwd".Replace("\", "/")
   - ps: echo $cd_for_cmake
-  - ps: Set-Content 'tests/unit/sources/CMakeListsUserConfig.txt' ('set(BOOST_ROOT "' + $cd_for_cmake + '/extra_libs/boost_1_61_0")')
+  - ps: Set-Content 'tests/unit/sources/CMakeListsUserConfig.txt' ('set(BOOST_ROOT "' + $cd_for_cmake + '/extra_libs/boost_1_64_0")')
   - ps: Add-Content 'tests/unit/sources/CMakeListsUserConfig.txt' ('set(POCO_ROOT "' + $cd_for_cmake + '/extra_libs/poco-1.7.7-all")')
   - ps: cat 'tests/unit/sources/CMakeListsUserConfig.txt'
   
