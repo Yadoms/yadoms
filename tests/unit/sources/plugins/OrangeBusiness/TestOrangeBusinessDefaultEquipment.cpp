@@ -2,7 +2,6 @@
 #include <boost/test/unit_test.hpp>
 #include "../../../../sources/plugins/OrangeBusiness/DefaultEquipment.h"
 
-
 BOOST_AUTO_TEST_SUITE(TestOrangeBusiness)
   
 namespace yApi = shared::plugin::yPluginApi;
@@ -15,4 +14,4 @@ BOOST_AUTO_TEST_CASE(DefaultEquipementConstructor)
    BOOST_CHECK_EQUAL(equipment.getEUI() == "0018B20000000274", true);
 }
 
-   BOOST_AUTO_TEST_SUITE_END()
+BOOST_AUTO_TEST_SUITE_END()

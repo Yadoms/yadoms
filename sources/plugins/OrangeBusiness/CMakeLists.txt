@@ -15,6 +15,7 @@ set(ORANGE_BUSINESS_PLUGIN_SOURCES
    IDecoder.h
    IEquipment.h
    IOrangeBusinessConfiguration.h
+   IurlManager.h
    OrangeBusiness.cpp
    OrangeBusiness.h
    OrangeBusinessConfiguration.cpp

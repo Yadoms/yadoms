@@ -36,7 +36,7 @@ const int CEquipmentManager::size() const
 }
 
 void CEquipmentManager::refreshEquipments(boost::shared_ptr<yApi::IYPluginApi> api,
-                                          urlManager& frameManager, 
+                                          boost::shared_ptr<IurlManager> frameManager,
                                           const std::string& apikey, 
                                           boost::shared_ptr<CDecoder> decoder)
 {
@@ -46,7 +46,7 @@ void CEquipmentManager::refreshEquipments(boost::shared_ptr<yApi::IYPluginApi> a
 
 		try {
 			// reading of the battery level
-			shared::CDataContainer response = frameManager.getDeviceInformation(apikey, pair.second->getEUI());
+			shared::CDataContainer response = frameManager->getDeviceInformation(apikey, pair.second->getEUI());
 			response.printToLog(YADOMS_LOG(information));
 			int batteryLevel = response.get<int>("lastBatteryLevel");
 			boost::posix_time::ptime receivedTime(response.get<boost::posix_time::ptime>("updateTs"));
@@ -61,7 +61,7 @@ void CEquipmentManager::refreshEquipments(boost::shared_ptr<yApi::IYPluginApi> a
 			//Todo : Enter a date to limit the number of frames
 			// Reading all commands for an equipment. Go to the last page if necessary
 			do {
-				response = frameManager.listDeviceCommands(apikey, pair.second->getEUI(), page);
+				response = frameManager->listDeviceCommands(apikey, pair.second->getEUI(), page);
 				response.printToLog(YADOMS_LOG(information));
 				++page;
 			} while (!decoder->isFrameComplete(response));

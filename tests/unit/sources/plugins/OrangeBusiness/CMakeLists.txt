@@ -45,6 +45,7 @@ IF(NOT DISABLE_TEST_PLUGIN_ORANGE_BUSINESS)
       plugins/OrangeBusiness/Decoder.cpp
       plugins/OrangeBusiness/deviceManager.h
       plugins/OrangeBusiness/deviceManager.cpp
+      plugins/OrangeBusiness/IurlManager.h
       plugins/OrangeBusiness/IDecoder.h
       plugins/OrangeBusiness/IEquipment.h
    )
@@ -55,6 +56,8 @@ IF(NOT DISABLE_TEST_PLUGIN_ORANGE_BUSINESS)
       TestOrangeBusinessDecoder.cpp
       TestOrangeBusinessDefaultEquipment.cpp
       TestOrangeBusinessEquipmentManager.cpp
+      urlManagerMock.cpp
+      urlManagerMock.h
    )
    
 ENDIF()

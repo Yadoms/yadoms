@@ -2,16 +2,16 @@
 
 #include <shared/DataContainer.h>
 #include <shared/http/HttpMethods.h>
-#include "IurlManager.h"
+#include "../../plugins/OrangeBusiness/IurlManager.h"
 
 //--------------------------------------------------------------
 /// \brief	All url handling
 //--------------------------------------------------------------
-class urlManager : public IurlManager
+class urlManagerMock : public IurlManager
 {
 public:
 
-   urlManager();
+   urlManagerMock();
 
    //--------------------------------------------------------------
    /// \brief	    get all equipments from the website
@@ -50,10 +50,4 @@ public:
                                              const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout);
 
 private:
-
-   //--------------------------------------------------------------
-   /// \brief	    The url link to access properly the web site
-   //--------------------------------------------------------------
-   std::stringstream m_url;
-   std::stringstream m_baseUrl;
 };

@@ -38,9 +38,9 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    try {
 
       m_isDeveloperMode = api->getYadomsInformation()->developperMode();
-
+      m_frameManager = boost::make_shared<urlManager>();
       m_decoder = boost::make_shared<CDecoder>(); // TODO : create it directly at the constructor ?
-	  m_equipmentManager = boost::make_shared<CEquipmentManager>(api);
+	   m_equipmentManager = boost::make_shared<CEquipmentManager>(api);
 
       if (m_equipmentManager->size() > 0)
       {
@@ -139,7 +139,7 @@ void COrangeBusiness::registerAllDevices(boost::shared_ptr<yApi::IYPluginApi> ap
       shared::CDataContainer response;
 
       do {
-         response = m_frameManager.getRegisteredEquipments(m_configuration.getAPIKey(), page, false); //http://liveobjects.orange-business.com
+         response = m_frameManager->getRegisteredEquipments(m_configuration.getAPIKey(), page, false); //http://liveobjects.orange-business.com
          m_equipmentManager = boost::make_shared<CEquipmentManager>(m_decoder->decodeDevicesMessage(api, response));
          response.printToLog(YADOMS_LOG(information));
          ++page;
@@ -159,7 +159,7 @@ void COrangeBusiness::registerActivatedDevices(boost::shared_ptr<yApi::IYPluginA
       shared::CDataContainer response;
 
       do {
-         response = m_frameManager.getRegisteredEquipments(m_configuration.getAPIKey(), page, true); //http://liveobjects.orange-business.com
+         response = m_frameManager->getRegisteredEquipments(m_configuration.getAPIKey(), page, true); //http://liveobjects.orange-business.com
          m_decoder->decodeDevicesMessage(api, response);
          response.printToLog(YADOMS_LOG(information));
          ++page;

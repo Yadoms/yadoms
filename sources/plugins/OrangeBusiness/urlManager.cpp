@@ -6,8 +6,7 @@
 urlManager::urlManager():
    m_url("https://liveobjects.orange-business.com/api/v0"), //liveobjects
    m_baseUrl("liveobjects.orange-business.com")
-{
-}
+{}
 
 shared::CDataContainer urlManager::getRegisteredEquipments(const std::string &apikey,
                                                            const int page,

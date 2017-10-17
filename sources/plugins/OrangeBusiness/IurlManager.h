@@ -2,16 +2,13 @@
 
 #include <shared/DataContainer.h>
 #include <shared/http/HttpMethods.h>
-#include "IurlManager.h"
 
 //--------------------------------------------------------------
 /// \brief	All url handling
 //--------------------------------------------------------------
-class urlManager : public IurlManager
+class IurlManager
 {
 public:
-
-   urlManager();
 
    //--------------------------------------------------------------
    /// \brief	    get all equipments from the website
@@ -21,10 +18,10 @@ public:
    /// \param[in]  timeout             optional, the timeout of the request
    /// \return     the json response
    //--------------------------------------------------------------
-   shared::CDataContainer getRegisteredEquipments(const std::string &apikey,
-                                                  const int page,
-                                                  const bool activated,
-                                                  const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout);
+   virtual shared::CDataContainer getRegisteredEquipments(const std::string &apikey,
+                                                          const int page,
+                                                          const bool activated,
+                                                          const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout) = 0;
 
    //--------------------------------------------------------------
    /// \brief	    get information from a specific device
@@ -33,9 +30,9 @@ public:
    /// \param[in]  timeout             optional, the timeout of the request
    /// \return     the json response
    //--------------------------------------------------------------
-   shared::CDataContainer getDeviceInformation(const std::string &apikey, 
-                                               const std::string &devEUI,
-                                               const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout);
+   virtual shared::CDataContainer getDeviceInformation(const std::string &apikey,
+                                                       const std::string &devEUI,
+                                                       const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout) = 0;
 
    //--------------------------------------------------------------
    /// \brief	    list command information
@@ -44,16 +41,10 @@ public:
    /// \param[in]  timeout             optional, the timeout of the request
    /// \return     the json response
    //--------------------------------------------------------------
-   shared::CDataContainer listDeviceCommands(const std::string &apikey,
-                                             const std::string &devEUI,
-                                             const int page,
-                                             const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout);
+   virtual shared::CDataContainer listDeviceCommands(const std::string &apikey,
+                                                     const std::string &devEUI,
+                                                     const int page,
+                                                     const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout) = 0;
 
 private:
-
-   //--------------------------------------------------------------
-   /// \brief	    The url link to access properly the web site
-   //--------------------------------------------------------------
-   std::stringstream m_url;
-   std::stringstream m_baseUrl;
 };

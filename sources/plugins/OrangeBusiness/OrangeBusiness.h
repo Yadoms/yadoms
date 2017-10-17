@@ -63,7 +63,7 @@ private:
    //--------------------------------------------------------------
    boost::shared_ptr<shared::event::CEventTimer> m_waitForAnswerTimer;
 
-   urlManager m_frameManager;
+   boost::shared_ptr<urlManager> m_frameManager;
 
    boost::shared_ptr<CEquipmentManager> m_equipmentManager;
 
