@@ -24,7 +24,7 @@ configuration: Debug
 cache:  
   - extra_libs\boost_1_64_0 -> '.appveyor.yml'
   - extra_libs\poco-1.7.9-all -> '.appveyor.yml'
-  - extra_libs\OpenSSL-1.1.0d -> '.appveyor.yml'
+  - extra_libs\openssl -> '.appveyor.yml'
   - extra_libs\protobuf-3.4.1 -> '.appveyor.yml'
   - extra_libs\swig-3.0.12 -> '.appveyor.yml'
   #- extra_libs\pgsql-9.6.1 -> '.appveyor.yml'
@@ -57,7 +57,7 @@ install:
   - ps: pushd extra_libs
   - ps: if (!(Test-Path 'boost_1_64_0')) { Invoke-WebRequest http://yadoms.com/appveyor_build/boost_1_64_0-build.7z -OutFile boost.7z; 7z x boost.7z -bso0 }
   - ps: if (!(Test-Path 'poco-1.7.9-all')) { Invoke-WebRequest http://yadoms.com/appveyor_build/poco-1.7.9-all-build.7z -OutFile poco.7z; 7z x poco.7z -bso0 }
-  - ps: if (!(Test-Path 'OpenSSL-1.1.0d')) { Invoke-WebRequest http://yadoms.com/appveyor_build/OpenSSL-1.1.0d-build.7z -OutFile OpenSSL.7z; 7z x OpenSSL.7z -bso0 }
+  - ps: if (!(Test-Path 'openssl')) { Invoke-WebRequest http://yadoms.com/appveyor_build/openssl-build.7z -OutFile openssl.7z; 7z x openssl.7z -bso0 }
   - ps: if (!(Test-Path 'swig-3.0.12')) { Invoke-WebRequest http://yadoms.com/appveyor_build/swig-3.0.12-build.7z -OutFile swig.7z; 7z x swig.7z -bso0 }
   - ps: if (!(Test-Path 'protobuf-3.4.1')) { Invoke-WebRequest http://yadoms.com/appveyor_build/protobuf-3.4.1-build.7z -OutFile protobuf.7z; 7z x protobuf.7z -bso0 }
   - ps: if (!(Test-Path 'pgsql')) { Invoke-WebRequest http://yadoms.com/appveyor_build/postgresql-9.6.2-3-windows-binaries.zip -OutFile pgsql.zip; 7z x pgsql.zip -bso0 }
@@ -74,7 +74,7 @@ before_build:
   - ps: echo $cd_for_cmake
   - ps: Set-Content 'sources/CMakeListsUserConfig.txt' ('set(BOOST_ROOT "' + $cd_for_cmake + '/extra_libs/boost_1_64_0")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(POCO_ROOT "' + $cd_for_cmake + '/extra_libs/poco-1.7.9-all")')
-  - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(OPENSSL_ROOT "' + $cd_for_cmake + '/extra_libs/OpenSSL-1.1.0d")')
+  - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(OPENSSL_ROOT "' + $cd_for_cmake + '/extra_libs/openssl")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PROTOBUF_ROOT "' + $cd_for_cmake + '/extra_libs/protobuf-3.4.1")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(SWIG_ROOT "' + $cd_for_cmake + '/extra_libs/swig-3.0.12")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PostgreSQL_ROOT "' + $cd_for_cmake + '/extra_libs/pgsql")')
