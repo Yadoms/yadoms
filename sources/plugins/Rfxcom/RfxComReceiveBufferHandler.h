@@ -2,7 +2,6 @@
 #include <shared/event/EventHandler.hpp>
 #include <shared/communication/IReceiveBufferHandler.h>
 #include <shared/communication/Buffer.hpp>
-#include "shared/communication/IBufferLogger.h"
 
 //--------------------------------------------------------------
 /// \brief	Receive buffer handler for RFXCom

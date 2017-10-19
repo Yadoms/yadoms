@@ -105,6 +105,30 @@ DeviceManager.getKeywordsByDeviceId = function (deviceId) {
 };
 
 /**
+ * Get the keywords attached to a device id
+ * @param {Integer} deviceId The device id
+ * @ return {Promise}
+ */
+DeviceManager.getKeywordsBydeviceIdAndCapacity = function (deviceId, KeywordAccessMode, capacityName) {
+    assert(!isNullOrUndefined(deviceId), "deviceId must be defined");
+    assert(!isNullOrUndefined(KeywordAccessMode), "KeywordAccessMode must be defined");
+    assert(!isNullOrUndefined(capacityName), "capacity must be defined");
+
+    var d = new $.Deferred();
+    RestEngine.getJson("/rest/device/" + deviceId + "/" + KeywordAccessMode + "/" + capacityName)
+    .done(function (data) {
+        var list = [];
+        $.each(data.keyword, function (index, value) {
+            list.push(KeywordManager.factory(value));
+        });
+        d.resolve(list);
+    })
+    .fail(d.reject);
+
+    return d.promise();
+};
+
+/**
  * Get the keywords attached to a device
  * @param {Object} device The device
  * @param {boolean} forceReload if true force reloading keywords fro mserver
@@ -192,14 +216,14 @@ DeviceManager.getConfigurationSchema = function(device) {
 
                         //find all static configurations matching the device model
                         var staticConfigMatchingDevice= {};
-                        for(let k in deviceConfig.staticConfigurationSchema.schemas) {
+                        for(var k in deviceConfig.staticConfigurationSchema.schemas) {
                             if(_.some(deviceConfig.staticConfigurationSchema.schemas[k].types, function(typeContent, model) { 
                               return model == "*" || model == device.type;
                             }))  {
                                //add it to resulting schema
-                               let config = deviceConfig.staticConfigurationSchema.schemas[k];
+                               var config = deviceConfig.staticConfigurationSchema.schemas[k];
                                if(config && config.content) {
-                                  for(let l in config.content) {
+                                  for(var l in config.content) {
                                      config.content[l].i18nBasePath = "plugins/" + device.attachedPlugin.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".content.";
                                   }                            
                                   schema = _.merge(schema, config.content);

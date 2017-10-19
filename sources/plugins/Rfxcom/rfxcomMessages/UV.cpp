@@ -81,6 +81,11 @@ namespace rfxcomMessages
       return m_deviceName;
    }
 
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CUV::keywords()
+   {
+      return m_keywords;
+   }
+
    void CUV::buildDeviceName()
    {
       std::ostringstream ssdeviceName;

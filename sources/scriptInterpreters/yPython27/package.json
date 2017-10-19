@@ -1,6 +1,6 @@
 {
   "name": "Python 2.7",
-  "type": "ypython27",
+  "type": "yPython27",
   "description": "Python 2.7.x rules interpreter",
   "version": "0.1.0-beta",
   "author": "yadoms-team",

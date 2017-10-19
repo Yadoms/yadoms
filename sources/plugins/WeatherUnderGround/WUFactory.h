@@ -1,10 +1,8 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/event/EventHandler.hpp>
-#include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include "Features/IFeature.h"
 #include "IWUConfiguration.h"
-//#include "IdeviceConfiguration.h"
 #include "Features/LiveStations.h"
 
 // Shortcut to yPluginApi namespace
@@ -52,9 +50,9 @@ public:
    /// \brief	                     Retreive device
    /// \return                      The device
    //--------------------------------------------------------------
-   boost::shared_ptr<features::IFeature> getWeatherConditionsDevice();
-   boost::shared_ptr<features::IFeature> getAstronomyDevice();
-   boost::shared_ptr<features::IFeature> getForecastDevice();
+   boost::shared_ptr<features::IFeature> getWeatherConditionsDevice() const;
+   boost::shared_ptr<features::IFeature> getAstronomyDevice() const;
+   boost::shared_ptr<features::IFeature> getForecastDevice() const;
 
 private:
 
@@ -116,6 +114,4 @@ private:
    /// \brief
    //--------------------------------------------------------------
    boost::shared_ptr<CLiveStations> m_lookupInformation;
-
-   bool m_developerMode;
 };

@@ -70,10 +70,10 @@ public:
    virtual const boost::filesystem::path& databaseSqliteFile() const = 0;
 
    //--------------------------------------------------------------
-   /// \brief	    Get the path of the SQLite database backup file
-   /// \return     Database file path
-   /// \note       If not exist, Yadoms will create the backup file of overwrite it
+   /// \brief	    Get the path of the backups path (folder containing all backup archives)
+   /// \return     Backup path
+   /// \note       Each backup is stored into this folder.
    //--------------------------------------------------------------
-   virtual const boost::filesystem::path& databaseSqliteBackupFile() const = 0;
+   virtual const boost::filesystem::path& backupPath() const = 0;
 };
 

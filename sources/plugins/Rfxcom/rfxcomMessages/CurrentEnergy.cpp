@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CurrentEnergy.h"
 #include <shared/exception/InvalidParameter.hpp>
+#include "../MessageFilteredException.hpp"
 #include "RareDeviceIdFilter.h"
 #include <shared/Log.h>
 
@@ -14,13 +15,13 @@ namespace rfxcomMessages
                                   size_t rbufSize,
                                   boost::shared_ptr<IUnsecuredProtocolFilter> messageFilter)
       : m_messageFilter(messageFilter),
-      m_current1(boost::make_shared<yApi::historization::CCurrent>("channel_1")),
-      m_current2(boost::make_shared<yApi::historization::CCurrent>("channel_2")),
-      m_current3(boost::make_shared<yApi::historization::CCurrent>("channel_3")),
-      m_instantPower(boost::make_shared<yApi::historization::CPower>("instant")),
-      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_current1 , m_current2, m_current3, m_instantPower , m_batteryLevel, m_signalPower })
+        m_current1(boost::make_shared<yApi::historization::CCurrent>("channel_1")),
+        m_current2(boost::make_shared<yApi::historization::CCurrent>("channel_2")),
+        m_current3(boost::make_shared<yApi::historization::CCurrent>("channel_3")),
+        m_instantPower(boost::make_shared<yApi::historization::CPower>("instant")),
+        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_current1 , m_current2, m_current3, m_instantPower , m_batteryLevel, m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -63,7 +64,7 @@ namespace rfxcomMessages
    boost::shared_ptr<IUnsecuredProtocolFilter> CCurrentEnergy::createFilter()
    {
       return boost::make_shared<CRareDeviceIdFilter>(3,
-                                                     boost::posix_time::hours(12));
+                                                     boost::posix_time::minutes(10));
    }
 
    void CCurrentEnergy::Init(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -76,7 +77,7 @@ namespace rfxcomMessages
       if (!api->deviceExists(m_deviceName))
       {
          if (!m_messageFilter->isValid(m_deviceName))
-            throw std::invalid_argument((boost::format("Receive unknown device (id %1%) for unsecured protocol (CURRENTENERGY / %2%), may be a transmission error : ignored")
+            throw CMessageFilteredException((boost::format("Receive unknown device (id %1%) for unsecured protocol (CURRENTENERGY / %2%), may be a transmission error : ignored")
                % m_id % m_deviceModel).str());
 
          shared::CDataContainer details;
@@ -89,7 +90,7 @@ namespace rfxcomMessages
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CCurrentEnergy::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CCurrentEnergy::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("CurrentEnergy is a read-only message, can not be encoded");
    }
@@ -102,6 +103,11 @@ namespace rfxcomMessages
    const std::string& CCurrentEnergy::getDeviceName() const
    {
       return m_deviceName;
+   }
+
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CCurrentEnergy::keywords()
+   {
+      return m_keywords;
    }
 
    void CCurrentEnergy::buildDeviceName()

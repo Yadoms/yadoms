@@ -9,7 +9,7 @@ namespace rfxcomMessages
 {
    CLighting2Dimmable::CLighting2Dimmable(const std::string& model)
       : m_model(model),
-      m_keyword(boost::make_shared<yApi::historization::CDimmable>("state"))
+        m_keyword(boost::make_shared<yApi::historization::CDimmable>("state"))
    {
    }
 
@@ -71,14 +71,14 @@ namespace rfxcomMessages
       case light2_sOff: m_keyword->set(0);
          break;
       case light2_sSetLevel:
-      {
-         m_keyword->set(levelByte * 100 / 0x0F); // level needs to be from 0 to 100
-         break;
-      }
+         {
+            m_keyword->set(levelByte * 100 / 0x0F); // level needs to be from 0 to 100
+            break;
+         }
       default:
-      {
-         throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(cmdByte));
-      }
+         {
+            throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(cmdByte));
+         }
       }
    }
 
@@ -102,5 +102,3 @@ namespace rfxcomMessages
       }
    }
 } // namespace rfxcomMessages
-
-

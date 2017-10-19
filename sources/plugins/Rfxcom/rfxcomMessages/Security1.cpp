@@ -8,6 +8,8 @@
 #include "Security1PowerCodeMotion.h"
 #include "Security1Meiantech.h"
 #include <shared/Log.h>
+#include "../MessageFilteredException.hpp"
+#include "RareDeviceIdFilter.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -56,8 +58,10 @@ namespace rfxcomMessages
 
    CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYPluginApi> api,
                           const RBUF& rbuf,
-                          size_t rbufSize)
-      : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+                          size_t rbufSize,
+                          boost::shared_ptr<IUnsecuredProtocolFilter> messageFilter)
+      : m_messageFilter(messageFilter),
+        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_batteryLevel, m_signalPower})
    {
@@ -79,6 +83,12 @@ namespace rfxcomMessages
 
    CSecurity1::~CSecurity1()
    {
+   }
+
+   boost::shared_ptr<IUnsecuredProtocolFilter> CSecurity1::createFilter()
+   {
+      return boost::make_shared<CRareDeviceIdFilter>(3,
+                                                     boost::posix_time::minutes(10));
    }
 
    void CSecurity1::buildDeviceDetails()
@@ -137,9 +147,13 @@ namespace rfxcomMessages
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
       {
+         if (m_messageFilter && !m_messageFilter->isValid(m_deviceName))
+            throw CMessageFilteredException((boost::format("Receive unknown device (id %1%) for unsecured protocol (SECURITY1 / %2%), may be a transmission error : ignored")
+               % m_id % model).str());
+
          api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
          YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));         
+         m_deviceDetails.printToLog(YADOMS_LOG(information));
       }
    }
 
@@ -168,6 +182,11 @@ namespace rfxcomMessages
    const std::string& CSecurity1::getDeviceName() const
    {
       return m_deviceName;
+   }
+
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CSecurity1::keywords()
+   {
+      return m_keywords;
    }
 
    void CSecurity1::buildDeviceName()

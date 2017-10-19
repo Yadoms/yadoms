@@ -184,6 +184,55 @@ namespace database
             return adapter.getResults();
          }
 
+         boost::shared_ptr<entities::CAcquisition> CKeyword::getKeywordLastAcquisition(const int keywordId, bool throwIfNotExists)
+         {
+            auto qSelect = m_databaseRequester->newQuery();
+            qSelect->Select(CKeywordTable::getLastAcquisitionValueColumnName(), CKeywordTable::getLastAcquisitionDateColumnName()).
+               From(CKeywordTable::getTableName()).
+               Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
+
+            adapters::CKeywordAdapter adapter;
+            m_databaseRequester->queryEntities(&adapter, *qSelect);
+
+            if (adapter.getResults().size() >= 1)
+            {
+               auto result = adapter.getResults()[0];
+
+               // Map result to acquisition entity
+               auto acquisition = boost::make_shared<entities::CAcquisition>();
+               acquisition->KeywordId = keywordId;
+               acquisition->Date = result->LastAcquisitionDate();
+               acquisition->Value = result->LastAcquisitionValue();
+               return acquisition;
+            }
+            if (throwIfNotExists)
+            {
+               throw shared::exception::CEmptyResult((boost::format("Cannot retrieve any acquisition for the keyword id=%1% in database") % keywordId).str());
+            }
+            return boost::shared_ptr<entities::CAcquisition>();
+         }
+
+         std::string CKeyword::getKeywordLastData(const int keywordId, bool throwIfNotExists)
+         {
+            auto qSelect = m_databaseRequester->newQuery();
+            qSelect->Select(CKeywordTable::getLastAcquisitionValueColumnName()).
+               From(CKeywordTable::getTableName()).
+               Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
+
+            adapters::CKeywordAdapter adapter;
+            m_databaseRequester->queryEntities(&adapter, *qSelect);
+
+            if (adapter.getResults().size() >= 1)
+            {
+               return adapter.getResults()[0]->LastAcquisitionValue();
+            }
+            if (throwIfNotExists)
+            {
+               throw shared::exception::CEmptyResult((boost::format("Cannot retrieve any acquisition for the keyword id=%1% in database") % keywordId).str());
+            }
+            return std::string();
+         }
+
          void CKeyword::updateKeywordBlacklistState(int keywordId, const bool blacklist)
          {
             auto keywordToUpdate = getKeyword(keywordId);
@@ -229,6 +278,18 @@ namespace database
                if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
                   throw shared::exception::CEmptyResult("Fail to update keyword friendlyName");
             }
+         }
+
+         void CKeyword::updateLastValue(int keywordId, const boost::posix_time::ptime& valueDatetime, const std::string& value)
+         {
+            auto qUpdate = m_databaseRequester->newQuery();
+            qUpdate->Update(CKeywordTable::getTableName())
+               .Set(CKeywordTable::getLastAcquisitionDateColumnName(), valueDatetime,
+                    CKeywordTable::getLastAcquisitionValueColumnName(), value)
+               .Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
+
+            if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
+               throw shared::exception::CEmptyResult("Fail to update keyword last value");
          }
       } //namespace requesters
    } //namespace common

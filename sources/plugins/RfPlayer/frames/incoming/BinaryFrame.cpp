@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "BinaryFrame.h"
 
-#define IS_PACKED
-#include "../../rfplayerApi/usb_frame_api.h"
+#include "../../rfplayerApi/rfplayerApi.h"
 
 #include <shared/Log.h>
 #include <shared/exception/NotSupported.hpp>

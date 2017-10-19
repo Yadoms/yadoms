@@ -10,6 +10,7 @@
 #include "OpenZWaveNodeKeywordDimmable.h"
 #include "OpenZWaveNodeKeywordColor.h"
 
+#include "historizers/BatteryLevel.h"
 #include "historizers/Counter.h"
 #include "historizers/Current.h"
 #include "historizers/Direction.h"
@@ -61,14 +62,12 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
          auto writeOnly = OpenZWave::Manager::Get()->IsValueWriteOnly(vID);
          auto polled = OpenZWave::Manager::Get()->IsValuePolled(vID);
          auto valueSet = OpenZWave::Manager::Get()->IsValueSet(vID);
-         auto units = OpenZWave::Manager::Get()->GetValueUnits(vID);
          auto awake = OpenZWave::Manager::Get()->IsNodeAwake(homeId, nodeId);
          auto failed = OpenZWave::Manager::Get()->IsNodeFailed(homeId, nodeId);
          auto zwavePlus = OpenZWave::Manager::Get()->IsNodeZWavePlus(homeId, nodeId);
          auto instance = vID.GetInstance();
 
-         if (units.empty())
-            units = shared::plugin::yPluginApi::CStandardUnits::NoUnit();
+         std::string units = COpenZWaveHelpers::IdentifyUnits(vID);
 
          std::string genre = "";
 
@@ -144,6 +143,24 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
          CDecimalTypeInfo ti(vID);
          auto historizer(boost::make_shared<historizers::CEnergy>(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode, shared::plugin::yPluginApi::historization::EMeasureType::kCumulative, ti));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
+      }
+      break;
+   case ECommandClass::kThermostatSetpointValue:
+      if (vLabel == "Heating 1" || vLabel == "Cooling 1" || vLabel == "Furnace" || vLabel == "Dry Air" || vLabel == "Moist Air" 
+         || vLabel == "Auto Changeover" || vLabel == "Heating Econ" || vLabel == "Cooling Econ" || vLabel == "Away Heating")
+      {
+         CDecimalTypeInfo ti(vID);
+         auto historizer(boost::make_shared<historizers::CTemperature>(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode, ti));
+         return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
+      }
+      break;
+
+   case ECommandClass::kBatteryValue:
+      if (vLabel == "Battery Level")
+      {
+         CIntegerTypeInfo ti(vID);
+         auto historizer(boost::make_shared<historizers::CBatteryLevel>(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode, ti));
+         return COpenZWaveNodeKeywordGeneric<Poco::Int32>::create(historizer, vID);
       }
       break;
    case ECommandClass::kColorValue:
@@ -392,6 +409,11 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
    case OpenZWave::ValueID::ValueType_Short: // 16-bit signed value
    {
       CIntegerTypeInfo ti(vID);
+
+      int max = OpenZWave::Manager::Get()->GetValueMax(vID);
+      
+      if(max > 32767)
+         return COpenZWaveNodeKeywordGeneric<Poco::UInt16>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kNumeric, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
       return COpenZWaveNodeKeywordGeneric<Poco::Int16>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kNumeric, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
    }
 

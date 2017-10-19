@@ -184,7 +184,7 @@
 				},
 				"lbt": {
 					"name": "Listen Before Talk",
-					"description": "Lorsqu'il est activé, l'émetteur <i>écoute</i> l'activité actuelle sur la même fréquence et attend un silence avant d'emettre. Les trames envoyées ne peuvent pas être retardés de plus de 3 secondes.",
+					"description": "Lorsqu'il est activé, l'émetteur écoute l'activité actuelle sur la même fréquence et attend un silence avant d'emettre. Les trames envoyées ne peuvent pas être retardés de plus de 3 secondes.",
 					"content": {
 						"lbtvalue": {
 							"name": "Déclencheur",
@@ -387,6 +387,9 @@
 		}
 	},
 	"customLabels": {
+      "pluginState" : {
+         "rfp1000NotFound" : "Le RfPlayer ne répond pas. Vérifiez qu'il est connecté et que la configuration est correcte."
+      },
 		"firmwareUpdate": {
 			"fail": "Impossible de mettre à jour le microcode",
 			"writeFile": "Envoi du microcode",

@@ -126,6 +126,9 @@ WidgetApi.prototype.toolbar = function (options) {
                 console.error("Unknown item type: " + index);
             }
         });
+        
+        //i18n of page tab
+        self.widget.$toolbar.i18n();
     } else {
         self.find(".panel-widget-header").addClass("hidden");
     }
@@ -137,42 +140,54 @@ WidgetApi.prototype.toolbar = function (options) {
 WidgetApi.prototype.manageBatteryConfiguration = function () {
 
     var self = this;
+	
+	var d = new $.Deferred();
     var $battery = self.widget.$toolbar.find("." + self.widgetBatteryClass);
-    if ($battery.length > 0) {
-        //we clear the div that will contain the battery indicator
         $battery.empty();
         var deviceId = $battery.attr("deviceId");
-        if (deviceId) {
-            //we check for the device to look if it has battery keyword
-            DeviceManager.getKeywordsByDeviceId(deviceId)
-            .done(function (keywords) {
-                var batteryLevel = keywords.find(function (element) { return element.capacityName === "batteryLevel"; });
-                if (batteryLevel) {
-                    //it has capacity
-                    $battery.append("<span class=\"\"/>");
-                    $battery.attr("keywordId", batteryLevel.id);
-                    //we add it to the filter of keyword for websockets
-                    self.widget.viewModel.widgetApi.registerKeywordAcquisitions(batteryLevel.id);
+        if (!isNullOrUndefinedOrEmpty(deviceId)) {
+           //we check for the device to look if it has battery keyword
+           DeviceManager.getKeywordsBydeviceIdAndCapacity(deviceId, "Get", "batteryLevel")
+           .done(function (keyword) {
+               // We assume that we have only 1 batteryLevel keyword for one device, it's the first one
+               if (keyword.length>0) {
+                 $battery.removeClass("hidden");
+                 //it has capacity
+                 $battery.append("<span class=\"\"/>");
+                 $battery.attr("keywordId", keyword[0].id);
+                 //we add it to the filter of keyword for websockets
+                 self.widget.viewModel.widgetApi.registerKeywordAcquisitions(keyword[0].id);
 
-                    //we ask immediately for the battery value
-                    AcquisitionManager.getLastValue(batteryLevel.id)
-                    .done(function (lastValue) {
-                        self.widget.viewModel.widgetApi.updateBatteryLevel(lastValue.value);
-                    })
-                    .fail(function (error) {
-                        notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + batteryLevel.id }), error);
-                    });
-                }
-                else {
-                    //we can hide the div to prevent margin spaces before the title
-                    $battery.hide();
-                }
-            })
-            .fail(function (error) {
-                notifyError($.t("objects.generic.errorGetting", { objectName: "keyword for device = " + deviceId }), error);
-            });
-        }
+                 //we ask immediately for the battery value
+                 AcquisitionManager.getLastValue(keyword[0].id)
+                 .done(function (lastValue) {
+                     self.widget.viewModel.widgetApi.updateBatteryLevel(lastValue.value);
+                     d.resolve();
+                 })
+                 .fail(function (error) {
+                     notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + keyword[0].id }), error);
+                     d.reject();
+                 });
+             }
+             else {
+               //we can hide the div to prevent margin spaces before the title
+               $battery.addClass("hidden");
+               d.resolve();
+             }
+         })
+         .fail(function (error) {
+             notifyError($.t("objects.generic.errorGetting", { objectName: "keyword for device = " + deviceId }), error);
+             d.reject();
+         });
     }
+    else
+    {
+       //we can hide the div to prevent margin spaces before the title
+       $battery.addClass("hidden");
+       d.resolve();
+    }    
+	
+	 return d.promise();
 }
 
 /**
@@ -243,16 +258,17 @@ WidgetApi.prototype.manageRollingTitle = function () {
    
 	if (self.widget.displayTitle && self.widget.toolbarActivated)
 	{
-		if ( self.widget.$toolbar[0].scrollWidth < 15 )
+
+		if (self.widget.$toolbar[0].scrollWidth <= 3) // Round size of the padding-right of the panel-widget-title-toolbar
 			toolbarSize = 0;
 		else
 			toolbarSize = self.widget.$toolbar[0].scrollWidth;
-		 
-		//Calculate the overflow ! Theses values could be obtain, only after the application !
+		
+		//Calculate the overflow ! Theses values could be obtain, only after the drawing of all elements !
 		var overflow = toolbarSize +
 					   self.widget.$header.find(".panel-widget-title")[0].scrollWidth -
-					   self.widget.$header[0].scrollWidth; 
-					   
+					   self.widget.$header[0].scrollWidth;
+		
 		if (overflow > 0) {
 			
 			if (self.widget.$header.find(".panel-widget-title-" + self.widget.id).length !== 0)

@@ -12,7 +12,8 @@ namespace rfxcomMessages
    CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api,
               const std::string& command,
               const shared::CDataContainer& deviceDetails)
-      : m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
+      : m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
+        m_keywords{m_state}
    {
       m_state->setCommand(command);
 
@@ -28,7 +29,8 @@ namespace rfxcomMessages
               const std::string& name,
               const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
-        m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
+        m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
+        m_keywords{m_state}
    {
       m_state->set(yApi::historization::ECurtainCommand::kStop);
 
@@ -57,7 +59,8 @@ namespace rfxcomMessages
       : m_subType(0),
         m_unitCode(0),
         m_id(0),
-        m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
+        m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
+        m_keywords{m_state}
    {
       // Should not be called (transmitter-only device)
       throw std::logic_error("Constructing CRfy object from received buffer is not possible, CRfy is transmitter-only device");
@@ -90,7 +93,7 @@ namespace rfxcomMessages
       {
          api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_state, m_deviceDetails);
          YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));         
+         m_deviceDetails.printToLog(YADOMS_LOG(information));
       }
    }
 
@@ -125,6 +128,11 @@ namespace rfxcomMessages
    const std::string& CRfy::getDeviceName() const
    {
       return m_deviceName;
+   }
+
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CRfy::keywords()
+   {
+      return m_keywords;
    }
 
    void CRfy::buildDeviceName()
@@ -167,5 +175,3 @@ namespace rfxcomMessages
       }
    }
 } // namespace rfxcomMessages
-
-

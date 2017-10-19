@@ -106,11 +106,14 @@ set(RFXLANXPL_PLUGIN_SOURCES
 	${RFXLANXPL_RULES_SOURCES}
 )
 
-
-source_group(xplcore xplcore/*.*)
-source_group(xplrules xplrules/*.*)
-source_group(xplrules\\rfxLanXpl xplrules/rfxLanXpl/*.*)
-source_group(xplrules\\rfxLanXpl\\data xplrules/rfxLanXpl/data/*.*)
+#########################################
+## Place here all additional groups (solution folder)
+#########################################
+source_group(sources ./*.*)
+source_group(sources\\xplcore xplcore/*.*)
+source_group(sources\\xplrules xplrules/*.*)
+source_group(sources\\xplrules\\rfxLanXpl xplrules/rfxLanXpl/*.*)
+source_group(sources\\xplrules\\rfxLanXpl\\data xplrules/rfxLanXpl/data/*.*)
 
 
 #########################################

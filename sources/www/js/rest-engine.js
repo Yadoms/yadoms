@@ -146,16 +146,19 @@ RestEngine.makeJsonOptions_ = function(data) {
  * @private
  */
 RestEngine.restCall_ = function(type, url, data){
-    assert(!isNullOrUndefined(type), "type must be defined");
+   assert(!isNullOrUndefined(type), "type must be defined");
    assert(!isNullOrUndefined(url), "url must be defined");
    
 	var d = $.Deferred();
 
 	var ajaxOptions = data || {};
-    ajaxOptions.type = type;
-	ajaxOptions.url = url;
-   ajaxOptions.timeout = 45000;
-      
+   ajaxOptions.type = type;
+   
+   ajaxOptions.url = url;
+   if(!isNullOrUndefinedOrEmpty(Yadoms.baseUrl)) {
+      ajaxOptions.url = concatenateUrl(Yadoms.baseUrl, url);
+   }
+   
    //We send request to server
    $.ajax(ajaxOptions)
       .done(function (data) {

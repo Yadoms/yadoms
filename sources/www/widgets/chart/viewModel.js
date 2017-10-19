@@ -12,12 +12,21 @@ widgetViewModelCtor =
        //Keyword Id List !
        this.devicesList = [];
        this.interval = 0;
-       this.deviceInfo = [];
+       this.deviceInfo = [];       
        this.keywordInfo = [];
        this.differentialDisplay = [];
        this.incompatibility = false;
        this.serverTime = null;
        this.precision = 1;
+       this.ConfigurationLegendLabels="";
+       
+       // defined by the configuration of the widget chart for cleaning old points
+       this.cleanValue = 0;
+       this.prefix = "";
+       
+       //defined by the configuration of the widget chart for adding new summary points for continuous display
+       this.summaryTimeBetweenNewPoint = 0;
+       
        
        //This variable is used in differential display
        this.chartLastValue = [];
@@ -26,10 +35,106 @@ widgetViewModelCtor =
        this.periodValueType = [];
 
        /**
+        * Helpers
+        */       
+       
+       function isOdd(num) {return num % 2;}
+       
+       this.createAxis = function (index, configuration, device) {
+           self = this;
+           
+           var colorAxis = "#606060"; // default color
+           var yAxisName;
+           
+           // treat oneAxis configuration option => axis name and color
+           if (parseBool(configuration.oneAxis.checkbox)) {
+              yAxisName = 'axis' + self.seriesUuid[0];
+           }
+           else {
+              yAxisName = 'axis' + self.seriesUuid[index];
+              colorAxis = device.content.color;
+           }
+           
+           //create axis if needed
+           if (isNullOrUndefined(self.chart.get(yAxisName))) {
+               try {
+                   
+                   function getAxisTitle(){
+                      // create the structure
+                      var response= {
+                         text: null,
+                         style:{
+                            color: colorAxis
+                         }
+                      };
+                      return response;
+                   }
+
+                   var align = 'right';
+                   if (isOdd(index))
+                       align = 'left';
+
+                   var unit="";
+                   try {
+                      unit = $.t(self.keywordInfo[index].units);
+                   }
+                   catch(error)
+                   {
+                      console.log ("unit is empty for keyword ", device.content.source.keywordId);
+                   }
+
+                   self.chart.addAxis({
+                       // new axis
+                       id: yAxisName, //The same id as the serie with axis at the beginning
+                       reversedStacks: false,
+                       title: getAxisTitle(),
+                       labels: {
+                           align: align,
+                           format: '{value:.' + self.precision.toString() + 'f} ' + unit,
+                           style: {
+                               color: colorAxis
+                           }
+                       },
+                       opposite: isOdd(index)
+                   }, false, false, false);
+
+               } catch (error) {
+                   console.log('Fail to create axis (for index = ' + index + ') : ' + error);
+               }
+           } else {
+               console.log('Axis already exists (for index = ' + index + ')');
+           }
+
+           if ((parseBool(configuration.oneAxis.checkbox))) {
+
+               //Configure the min/max in this case
+               try {
+                   var yAxis = self.chart.get(yAxisName);
+
+                   // Avec un seul axe, pas de nom
+                   yAxis.setTitle({ text: "" });
+
+                   if (parseBool(configuration.oneAxis.content.customYAxisMinMax.checkbox)) {
+                       //we manage min and max scale y axis
+                       var min = parseFloat(configuration.oneAxis.content.customYAxisMinMax.content.minimumValue);
+                       var max = parseFloat(configuration.oneAxis.content.customYAxisMinMax.content.maximumValue);
+                       yAxis.setExtremes(min, max);
+                   } else {
+                       //we cancel previous extremes
+                       yAxis.setExtremes(null, null);
+                   }
+               } catch (error2) {
+                   console.log(error2);
+               }
+           }
+           
+           return yAxisName; // Return the name of the axis
+       };
+       
+       /**
         * Initialization method
         */
        this.initialize = function () {
-
            var self = this;
            var d = new $.Deferred();
            
@@ -149,6 +254,7 @@ widgetViewModelCtor =
                self.widgetApi.toolbar({
                    activated: true,
                    displayTitle: true,
+                   batteryItem: false,
                    items: [
                    { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"widgets/chart:navigator.hour\"/></div>" },
                    { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"widgets/chart:navigator.day\"/></div>"},
@@ -182,6 +288,7 @@ widgetViewModelCtor =
 
                self.widgetApi.find(".print-command").unbind("click").bind("click", function () {
                    self.chart.print();
+                   window.location.reload(); //force page reload because after having displayed printing page, the widget disposition is erroneous
                });
 
                self.widgetApi.find(".export-command").unbind("click").bind("click", function (e) {
@@ -223,9 +330,50 @@ widgetViewModelCtor =
            }
        };
 
+       this.chartParametersConfiguration = function () {
+         var self = this;
+         
+         // Cleaning ranges switch
+         switch (self.interval) {
+             case "HOUR":
+                 self.cleanValue = 3600000;
+                 self.prefix = "minute";
+                 break;
+             case "DAY":
+                 self.cleanValue = 3600000 * 24;
+                 self.prefix = "hour";
+                 break;
+             case "WEEK":
+                 self.cleanValue = 3600000 * 24 * 7;
+                 self.prefix = "hour";
+                 break;
+             case "MONTH":
+                 self.cleanValue = 3600000 * 24 * 30;
+                 self.prefix = "day";
+                 break;
+             case "HALF_YEAR":
+                 self.cleanValue = 3600000 * 24 * 182;
+                 self.prefix = "day";
+                 break;
+             case "YEAR":
+                 self.cleanValue = 3600000 * 24 * 365;
+                 self.prefix = "day";
+                 break;
+             default:
+                 self.cleanValue = 3600000;
+                 self.prefix = "hour";
+                 break;
+         }
+         
+         if (self.prefix === "hour")
+            self.summaryTimeBetweenNewPoint = 3600000 * 2 + 60000;
+         else if (self.prefix === "day")
+            self.summaryTimeBetweenNewPoint = 3600000 * 24 * 2 + 60000;
+       };
+       
        this.configurationChanged = function () {
            var self = this;
-           
+
            // Reset of some values
            self.periodValueType = [];
            self.seriesUuid = [];
@@ -234,34 +382,51 @@ widgetViewModelCtor =
            if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
                return;
 
-           //Desactivate the old button
-           self.widgetApi.find(".range-btn[interval='" + self.interval + "']").removeClass("widget-toolbar-pressed-button");
 
            self.interval = self.widget.configuration.interval;
+           
+           self.chartParametersConfiguration();
+           
+           //Desactivate the old button
+           self.widgetApi.find(".range-btn[interval='" + self.interval + "']").removeClass("widget-toolbar-pressed-button");
 
            //Activate the new button
            self.widgetApi.find(".range-btn[interval='" + self.interval + "']").addClass("widget-toolbar-pressed-button");
 
            //just update some viewmodel info
-           self.devicesList = self.widget.configuration.devices.slice(0);        
+           self.devicesList = self.widget.configuration.devices.slice(0);
+            
+           try{
+             self.ConfigurationLegendLabels = self.widget.configuration.legends.content.legendLabels;
+           }catch(error){ // If the configuration doesn't exist (migration, ...) -> default value
+             console.log ("default value for legend labels : device name + keyword name");
+           }            
            
            var arrayOfDeffered = [];
 
            //we create an uuid for each serie
            $.each(self.widget.configuration.devices, function (index, device) {
-
-               //we register keyword new acquisition
-               self.widgetApi.registerKeywordAcquisitions(device.content.source.keywordId);
-           
                //we update uuid if they don't exist
                if (isNullOrUndefined(self.seriesUuid[index]))
                    self.seriesUuid[index] = createUUID();
+               
+               // reading of the precision for the display of the value and the unit
+               if (!isNullOrUndefined(device.content.advancedConfiguration.content.precision))
+                  self.precision = parseInt(device.content.advancedConfiguration.content.precision, 10);
+               else
+                  self.precision = 1;
+               
+               self.chart.precision  = self.precision;
                
                // We ask the current device name
                var deffered = DeviceManager.get(device.content.source.deviceId);
                arrayOfDeffered.push(deffered);
                deffered.done(function (data) {
                    self.deviceInfo[index] = data;
+               })
+               .fail(function (error) {
+                  notifyError($.t("widgets/chart:deviceNotFound", {Id: device.content.source.deviceId}));
+                  //throw $.t("widgets/chart:errorInitialization");
                });
 
                //we ask the current value
@@ -294,7 +459,7 @@ widgetViewModelCtor =
                   }
                   catch(error)
                   {
-                     console.warn('exception detecting : automatic management');
+                     console.log('error detecting during defferential configuration display => automatic management.');
                      if (keyword.measure === "Cumulative"){
                         self.differentialDisplay[index] = true;
                         self.periodValueType[index] = "max";
@@ -314,29 +479,24 @@ widgetViewModelCtor =
                   else
                      self.incompatibility = false;
                   
-                  // reading of the precision for the display of the value and the unit
-                  if (!isNullOrUndefined(device.content.advancedConfiguration.content.precision))
-                     self.precision = parseInt(device.content.advancedConfiguration.content.precision, 10);
-                  else
-                     self.precision = 1;
-                  
-                  self.chart.precision  = self.precision;
-               });
+                   //we register the keyword for new acquisition if the device exist
+                   self.widgetApi.registerKeywordAcquisitions(device.content.source.keywordId);                  
+               })
+               .fail(function (error) {
+                  notifyError($.t("widgets/chart:keywordNotFound", {Id: device.content.source.keywordId}));
+                  //throw $.t("widgets/chart:errorInitialization");
+               });               
            });
-
+           
+           // fail function doesn't exist for whenAll
            $.whenAll(arrayOfDeffered).done(function () {
-               self.refreshData(self.widget.configuration.interval).done(function () {
+               self.refreshData(self.widget.configuration.interval).always(function () {
                   d.resolve();
                })
                .fail(function (error) {
                   d.reject();
                });
            })
-           .fail(function (error) {
-               notifyError($.t("widgets/chart:errorInitialization"), error);
-               throw $.t("widgets/chart:errorInitialization");
-               d.reject();
-           });           
            
            return d.promise();
        };
@@ -346,6 +506,10 @@ widgetViewModelCtor =
            return function (e) {
                //we manage activation
                var interval = $(e.currentTarget).attr("interval");
+               
+               self.interval = interval;
+               
+               self.chartParametersConfiguration();
 
                //we manage button inversion
                self.widgetApi.find(".range-btn[interval='" + interval + "']").addClass("widget-toolbar-pressed-button");
@@ -394,64 +558,41 @@ widgetViewModelCtor =
                        self.refreshingData = true;
                        //we compute the date from the configuration
                        var dateFrom = "";
-                       var dateTo = "";
-                       var prefixUri = "";
-                       var timeBetweenTwoConsecutiveValues;
-                       var isSummaryData;
+                       var isSummaryData = true; // by default
                        var deviceIsSummary = [];
-					   var ChartIndex = 0;
-
+					        var ChartIndex = 0;
+                       var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
+                       var prefixUri = "/" + self.prefix;
+                       var timeBetweenTwoConsecutiveValues = moment.duration(1, self.prefix).asMilliseconds();
+                       
+                       
                        switch (interval) {
                            case "HOUR":
 
                                //The goal is to ask to the server the elapsed time only. Example : 22h00 -> 22h59mn59s.
                                //If you ask 22h00 -> 23h00, the system return also the average for 23h. If 23h is not complete, the value will be wrong.
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'hours').startOf('minute'));
+                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime)); // rewriting the final time
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'hours').startOf(self.prefix));
                                //we request all data
                                timeBetweenTwoConsecutiveValues = undefined;
-                               isSummaryData = false;
+                               isSummaryData = false; // rewrite the isSummaryData
+                               prefixUri = ""; // rewrite the prefix
                                break;
                            default:
-                           case "DAY":
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf('hour').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'days').startOf('hour'));
-                               //we request hour summary data
-                               prefixUri = "/hour";
-                               timeBetweenTwoConsecutiveValues = 1000 * 3600;
-                               isSummaryData = true;
+                           case "DAY": //we request hour summary data
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'days').startOf(self.prefix));
                                break;
-                           case "WEEK":
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf('hour').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'weeks').startOf('hour'));
-                               //we request hour summary data
-                               prefixUri = "/hour";
-                               timeBetweenTwoConsecutiveValues = 1000 * 3600;
-                               isSummaryData = true;
+                           case "WEEK": //we request hour summary data
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'weeks').startOf(self.prefix));
                                break;
-                           case "MONTH":
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf('day').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'months').startOf('day'));
-                               //we request day summary data
-                               prefixUri = "/day";
-                               timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
-                               isSummaryData = true;
+                           case "MONTH": //we request day summary data
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'months').startOf(self.prefix));
                                break;
-                           case "HALF_YEAR":
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf('day').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(6, 'months').startOf('day'));
-                               //we request day summary data
-                               prefixUri = "/day";
-                               timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
-                               isSummaryData = true;
+                           case "HALF_YEAR": //we request day summary data
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(6, 'months').startOf(self.prefix));
                                break;
-                           case "YEAR":
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf('day').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'years').startOf('day'));
-                               //we request day summary data
-                               prefixUri = "/day";
-                               timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
-                               isSummaryData = true;
+                           case "YEAR": //we request day summary data
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'years').startOf(self.prefix));
                                break;
                        }
 
@@ -507,7 +648,6 @@ widgetViewModelCtor =
 
                                    var lastDate;
                                    var d;
-                                   var legendText = "";
 
                                    if (!(deviceIsSummary[index])) {
                                        //data comes from acquisition table
@@ -584,111 +724,45 @@ widgetViewModelCtor =
                                               plot.push([d, vplot]);                                                   
                                            }
                                        });
-                                   }
-                                   var color = "#606060"; // default color
-                                   var colorAxis = "#606060"; // default color
-                                   try {
-                                       color = device.content.color;
-                                       if (!parseBool(self.widget.configuration.oneAxis.checkbox))
-                                           colorAxis = device.content.color;
+                                       
+                                       // Add here missing last data at the end
+                                       if (!isNullOrUndefinedOrEmpty(data.data))
+                                       {
+                                          d = DateTimeFormatter.isoDateToDate(data.data[data.data.length-1].date)._d.getTime();
+                                          var time = moment(self.serverTime).startOf(self.prefix).subtract(1, self.prefix + 's')._d.getTime().valueOf(); // -1h
+                                          
+                                          if ((time - d) > self.summaryTimeBetweenNewPoint)
+                                          {
+                                              if (device.content.PlotType === "arearange")
+                                                   range.push([time, null, null]);
 
-                                   } catch (err) {
-                                       console.log(err);
-                                   }
-
-                                   //choose the axis id
-                                   var yAxisName = 'axis' + self.seriesUuid[index];
-
-                                   if (parseBool(self.widget.configuration.oneAxis.checkbox)) {
-                                       yAxisName = 'axis' + self.seriesUuid[0];
+                                               plot.push([time, null]);                                             
+                                          }
+                                       }
                                    }
                                    
-                                   // axes and series names
-                                   try {
-                                      if (self.widget.configuration.legends.content.legendLabels ==="Device")
+                                   var axisName;
+                                   try{
+                                      axisName = self.createAxis(index, self.widget.configuration, device);
+                                   }catch(error)
+                                   {
+                                      console.error (error);
+                                   }
+                                   
+                                   var legendText="";
+                                   try{
+                                      // series names
+                                      if (self.ConfigurationLegendLabels ==="Device")
                                          legendText = self.deviceInfo[index].friendlyName;
-                                      else if (self.widget.configuration.legends.content.legendLabels ==="Keyword")
+                                      else if (self.ConfigurationLegendLabels ==="Keyword")
                                          legendText = self.keywordInfo[index].friendlyName;                                       
                                       else
                                          legendText = self.deviceInfo[index].friendlyName + "/" + self.keywordInfo[index].friendlyName;
-                                   }catch(error){ // If the configuration doesn't exist (migration, ...) -> default value
-                                      legendText = self.deviceInfo[index].friendlyName + "/" + self.keywordInfo[index].friendlyName;
-                                   }                                   
+                                   }catch(error)
+                                   {
+                                      legendText = $.t("widgets/chart:keywordNotFound", {Id: device.content.source.keywordId});
+                                   }
                                    
-                                   //create axis if needed
-                                   if (isNullOrUndefined(self.chart.get(yAxisName))) {
-                                       try {
-                                           function isOdd(num) {
-                                               return num % 2;
-                                           }
-                                           
-                                           function getAxisTitle(){
-                                              
-                                              // create the structure
-                                              var response= {
-                                                 text: null,
-                                                 style:{
-                                                    color: colorAxis
-                                                 }
-                                              };
-                                              
-                                              return response;
-                                           }
-
-                                           var align = 'right';
-                                           if (isOdd(index))
-                                               align = 'left';
-
-                                           var unit = $.t(self.keywordInfo[index].units);
-
-                                           if (unit == undefined)
-                                               unit = "";
-
-                                           self.chart.addAxis({
-                                               // new axis
-                                               id: yAxisName, //The same id as the serie with axis at the beginning
-                                               reversedStacks: false,
-                                               title: getAxisTitle(),
-                                               labels: {
-                                                   align: align,
-                                                   format: '{value:.' + self.precision.toString() + 'f} ' + unit,
-                                                   style: {
-                                                       color: colorAxis
-                                                   }
-                                               },
-                                               opposite: isOdd(index)
-                                           }, false, false, false);
-
-                                       } catch (error) {
-                                           console.log('Fail to create axis (for index = ' + index + ') : ' + error);
-                                       }
-                                   } else {
-                                       console.log('Axis already exists (for index = ' + index + ')');
-                                   }
-
-                                   if ((parseBool(self.widget.configuration.oneAxis.checkbox))) {
-
-                                       //Configure the min/max in this case
-                                       try {
-                                           var yAxis = self.chart.get(yAxisName);
-
-                                           // Avec un seul axe, pas de nom
-                                           yAxis.setTitle({ text: "" });
-
-                                           if (parseBool(self.widget.configuration.oneAxis.content.customYAxisMinMax.checkbox)) {
-                                               //we manage min and max scale y axis
-                                               var min = parseFloat(self.widget.configuration.oneAxis.content.customYAxisMinMax.content.minimumValue);
-                                               var max = parseFloat(self.widget.configuration.oneAxis.content.customYAxisMinMax.content.maximumValue);
-                                               yAxis.setExtremes(min, max);
-                                           } else {
-                                               //we cancel previous extremes
-                                               yAxis.setExtremes(null, null);
-                                           }
-                                       } catch (error2) {
-                                           console.log(error2);
-                                       }
-                                   }
-
                                    try {
                                       
                                        // Standard options
@@ -706,8 +780,8 @@ widgetViewModelCtor =
                                              radius: 2,
                                              symbol: "circle"
                                           },
-                                          color: color,
-                                          yAxis: yAxisName,
+                                          color: device.content.color,
+                                          yAxis: axisName,
                                           lineWidth: 2,
                                           animation: false
                                        };
@@ -734,10 +808,10 @@ widgetViewModelCtor =
                                                    dataGrouping: {
                                                        enabled: false
                                                    },
-                                                   name: legendText + '(Min,Max)',
+                                                   name: legendText[index] + '(Min,Max)',
                                                    linkedTo: self.seriesUuid[index],
-                                                   color: color,
-                                                   yAxis: yAxisName,
+                                                   color: device.content.color,
+                                                   yAxis: axisName,
                                                    type: device.content.PlotType,
                                                    connectNulls: false,
                                                    lineWidth: 0,
@@ -751,18 +825,31 @@ widgetViewModelCtor =
 
                                                // Add Units for ranges
                                                if (serieRange)
-                                                   serieRange.units = $.t(self.keywordInfo[index].units);
+                                               {
+                                                  try{
+                                                     serieRange.units = $.t(self.keywordInfo[index].units);
+                                                  }
+                                                  catch(error)
+                                                  {
+                                                     serieRange.units="";
+                                                  }
+                                               }
                                            }
                                        }
                                    } catch (err2) {
-                                       console.log('Fail to create serie : ' + err2);
+                                       console.error('Fail to create serie : ' + err2);
                                    }
 
                                    var serie = self.chart.get(self.seriesUuid[index]);
 
                                    //we save the unit in the serie
                                    if (serie) {
-                                       serie.units = $.t(self.keywordInfo[index].units);
+                                      try{
+                                         serie.units = $.t(self.keywordInfo[index].units);
+                                      }catch(error)
+                                      {
+                                         serie.units = "";
+                                      }
 
                                        // If only one axis, we show the legend. In otherwise we destroy it
                                        try{
@@ -817,7 +904,7 @@ widgetViewModelCtor =
            var self = this;
 
            var noAvailableData = true;
-
+           
            $.each(self.chart.series, function (index, value) {
                if (value.xData.length !== 0)
                    noAvailableData = false;
@@ -856,109 +943,120 @@ widgetViewModelCtor =
            }
        };      
 
+       this.addContinuousSummaryPoint = function () {
+          var self = this;
+          
+         $.each(self.widget.configuration.devices, function (index, device) {
+            var serie = self.chart.get(self.seriesUuid[index]);
+            
+             var time = moment(self.serverTime)._d.getTime().valueOf();
+             var lastDate = 0;
+             
+             if (!isNullOrUndefined(serie)){
+                if ((serie.points.length > 0) && ((time - lastDate) > (self.summaryTimeBetweenNewPoint)))
+                {
+                   lastDate = serie.points[serie.points.length - 1].x;
+                   
+                   switch (self.interval) {
+                     case "DAY":
+                        self.DisplaySummary(index, 1, device, "days", "hour", lastDate);
+                        break;
+                     case "WEEK":
+                        self.DisplaySummary(index, 1, device, "weeks", "hour", lastDate);
+                        break;
+                     case "MONTH":
+                        self.DisplaySummary(index, 1, device, "months", "day", lastDate);
+                        break;
+                     case "HALF_YEAR":
+                        self.DisplaySummary(index, 6, device, "months", "day", lastDate);
+                        break
+                     case "YEAR":
+                        self.DisplaySummary(index, 1, device, "years", "day", lastDate);
+                        break;
+                     default:
+                        break;
+                   }
+                }
+             }
+         });
+       };
+       
        this.onTime = function (serverLocalTime) {
          var self = this;
-         var dateServerLocalTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
+         self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime); // Update the serverTime
          
-         console.log ("cleaning chart");
-         
-         var cleanValue;
-         var prefix;
-         
-         // Cleaning ranges switch
-         switch (self.interval) {
-             case "HOUR":
-                 cleanValue = 3600000;
-                 prefix = "minute";
-                 break;
-             case "DAY":
-                 cleanValue = 3600000 * 24;
-                 prefix = "hour";
-                 break;
-             case "WEEK":
-                 cleanValue = 3600000 * 24 * 7;
-                 prefix = "hour";
-                 break;
-             case "MONTH":
-                 cleanValue = 3600000 * 24 * 30;
-                 prefix = "day";
-                 break;
-             case "HALF_YEAR":
-                 cleanValue = 3600000 * 24 * 182;
-                 prefix = "day";
-                 break;
-             case "YEAR":
-                 cleanValue = 3600000 * 24 * 365;
-                 prefix = "day";
-                 break;
-             default:
-                 cleanValue = 3600000;
-                 prefix = "hour";
-                 break;
-         }
-         
-         var dateTo = DateTimeFormatter.dateToIsoDate(moment(dateServerLocalTime).startOf(prefix).subtract(1, 'seconds'));
-         
+         var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
+            
+         // If a serie is available
+         self.addContinuousSummaryPoint();
+		 
          $.each(self.seriesUuid, function (index, value) {
          
             var serie = self.chart.get(value);
             var serieRange = self.chart.get('range_' + value);
-             
+            
             // If a serie is available  // Clean points > cleanValue for serie
             if (!isNullOrUndefined(serie))
-               self.cleanUpChart(serie, dateTo, cleanValue);
+               self.cleanUpChart(serie, dateTo, self.cleanValue);
 
              // Clean points > cleanValue for ranges, if any
             if (!isNullOrUndefined(serieRange))
-               self.cleanUpChart(serieRange, dateTo, cleanValue);
+               self.cleanUpChart(serieRange, dateTo, self.cleanValue);
          });
        };
       
-       this.DisplaySummary = function (index, nb, device, range, prefix) {
+       this.DisplaySummary = function (index, nb, device, range, prefix, lastPointDate) {
            var self = this;
 
            try {
                //The goal is to ask to the server the elapsed time only. Example : 22h00 -> 22h59mn59s. 
                //If you ask 22h00 -> 23h00, the system return also the average for 23h. If 23h is not complete, the value will be wrong.
                
-               var dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf(prefix).subtract(1, 'seconds'));
-               var dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(nb, range).startOf(prefix));
-
+               var serie = self.chart.get(self.seriesUuid[index]);
+               var serieRange = self.chart.get('range_' + self.seriesUuid[index]);
+               
+               var dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf(prefix).subtract(1, prefix + 's'));
+               
+               // we ask only from the last point registered
+               var dateFrom = DateTimeFormatter.dateToIsoDate(moment(lastPointDate+1));
+            
                RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + "/" + prefix + "/" + dateFrom + "/" + dateTo)
                   .done(function (data) {
-                      try {
+                      try {                          
                           if (data.data[data.data.length-1] != undefined) {
                               self.chart.hideLoading(); // If a text was displayed before
-							  
-                              var serie = self.chart.get(self.seriesUuid[index]);
-                              var serieRange = self.chart.get('range_' + self.seriesUuid[index]);
+
                               var registerDate = DateTimeFormatter.isoDateToDate(data.data[data.data.length-1].date)._d.getTime().valueOf();
-                              
+                              var valueToDisplay = parseFloat(data.data[data.data.length-1][self.periodValueType[index]]);
+                       
                               if (self.differentialDisplay[index])
                               {
-                                  if (!isNullOrUndefined(self.chartLastValue[index]))
+                                  if (serie && !isNullOrUndefined(self.chartLastValue[index]))
                                   {
-                                     serie.addPoint([registerDate, parseFloat(data.data[data.data.length-1][self.periodValueType[index]])-self.chartLastValue[index]], 
-                                                    true, 
-                                                    false, 
-                                                    true);
+                                     serie.addPoint([registerDate, valueToDisplay-self.chartLastValue[index]], 
+                                                    true,  // redraw. When more than 1 => false.
+                                                    false, // shift if true, one point at left is remove
+                                                    true); // animation.
                                   }
-                                  
-                                  self.chartLastValue[index] = parseFloat(data.data[data.data.length-1][self.periodValueType[index]]);
+                                  self.chartLastValue[index] = valueToDisplay;
                               }
                               else                              
-                                 serie.addPoint([registerDate, parseFloat(data.data[data.data.length-1][self.periodValueType[index]])], true, false, true);
-						      
+                                 serie.addPoint([registerDate, valueToDisplay], true, false, true);
+                        
                               //Add also for ranges if any
                               if (serieRange && !self.differentialDisplay[index])
-                              {                           
-                                 serieRange.addPoint([registerDate, parseFloat(data.data[data.data.length-1].min), parseFloat(data.data[data.data.length-1].max)], true, false, true);
+                              {
+                                 serieRange.addPoint([registerDate, parseFloat(data.data[data.data.length-1].min), parseFloat(data.data[data.data.length-1].max)], 
+                                                     true, false, true);
                               }
                           }
+						        else{ // Add null for this date
+							        var registerDate = moment(self.serverTime).subtract(1, 'hours').startOf(prefix)._d.getTime().valueOf();
+							        serie.addPoint([registerDate, null], true, false, true);
+						        }
                       } catch (err) {
                           console.error(err.message);
                       }
-
                   });
            } catch (err) {
                console.error(err.message);
@@ -990,12 +1088,13 @@ widgetViewModelCtor =
                               // date received in iso format to compare
                               var isolastdate = DateTimeFormatter.isoDateToDate(data.date)._d.getTime().valueOf();
                            
-                               // Add new point depending of the interval
+                               // Add new point only for HOUR interval
+							          // others points are treated into the onTime function
                                switch (self.interval) {
                                    case "HOUR":
                                        if (!isNullOrUndefined(serie)) {
-                                          
-                                           if (self.serverTime - isolastdate < 3600000) // Only if the last value is in last hour
+                                           var time  = moment(self.serverTime)._d.getTime().valueOf();
+                                           if (time - isolastdate < 3600000) // Only if the last value is in last hour
                                            {
                                               self.chart.hideLoading(); // If a text was displayed before
                                               if (self.differentialDisplay[index])
@@ -1008,33 +1107,6 @@ widgetViewModelCtor =
                                                  serie.addPoint([data.date.valueOf(), parseFloat(data.value)], true, false, true);
                                            }
                                        }
-                                       break;
-                                   case "DAY":
-                                       if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 2))
-                                           self.DisplaySummary(index, 1, device, "hours", "hour");
-                                       break;
-
-                                   case "WEEK":
-                                       if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 2))
-                                           self.DisplaySummary(index, 1, device, "hours", "hour");
-
-                                       break;
-                                   case "MONTH":
-                                       if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
-                                           self.DisplaySummary(index, 1, device, "days", "day");
-
-                                       break;
-                                   case "HALF_YEAR":
-
-                                       if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
-                                           self.DisplaySummary(index, 6, device, "days", "day");
-
-                                       break;
-                                   case "YEAR":
-
-                                       if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
-                                           self.DisplaySummary(index, 1, device, "days", "day");
-
                                        break;
                                    default:
                                        break;

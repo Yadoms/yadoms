@@ -7,9 +7,7 @@
  * @constructor
  */
 function Version(versionAsText) {
-  assert(!isNullOrUndefined(versionAsText), "versionAsText must be defined");
-
-  var match = Version.regex.exec(versionAsText);
+  var match = Version.regex.exec(versionAsText || '0.0.0');
   if ((!match) || match.length < 4) 
     throw Error("Unable to parse semver version: " + versionAsText);
     
@@ -23,7 +21,7 @@ function Version(versionAsText) {
   if (match.length >= 6)
     this.buildMetadata_ = match[5];
 
-   this.versionAsText_ = versionAsText;
+   this.versionAsText_ = versionAsText || '0.0.0';
 }
 
 //Regex for Semver
@@ -87,11 +85,11 @@ Version.compare = function(A, B) {
   // compare major, minor and patch
   // if the same, the preRelease field (alphabetically ordered) make the precendence
   var first = A;
-  if (typeof A === "string") {
+  if (typeof A === "string" || !A) {
      first = new Version(A);
   }
   var second = B;
-  if (typeof B === "string") {
+  if (typeof B === "string" || !B) {
      second = new Version(B);
   }
   

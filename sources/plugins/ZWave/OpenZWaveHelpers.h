@@ -75,6 +75,13 @@ public:
    //-----------------------------------------------------------------------------
    static void GetEnumValueInfo(OpenZWave::ValueID& value, std::string & name, std::string & help, std::map<int, std::string> & values);
 
+   //-----------------------------------------------------------------------------
+   /// \brief	Get units (try to adapt OZW units in yadoms units)
+   /// \param [in] value   The valueID from OpenZWave library
+   /// \return The units
+   //-----------------------------------------------------------------------------
+   static std::string IdentifyUnits(OpenZWave::ValueID& value);
+
    //--------------------------------------------------------------
    /// \brief	   Retreive openzwave ids from yadoms data
    /// \param [in]    device	            the yadoms device

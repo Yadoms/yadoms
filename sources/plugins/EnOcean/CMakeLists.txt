@@ -64,13 +64,19 @@ set(ENOCEAN_SOURCES
    message/UTE_ReceivedMessage.h
    message/UTE_ReceivedMessage.cpp
    
+   specificHistorizers/DimmerModeHistorizer.h
+   specificHistorizers/DimmerModeHistorizer.cpp
    specificHistorizers/PilotWireHistorizer.h
    specificHistorizers/PilotWireHistorizer.cpp
    )
    
    
-source_group(message message/*.*)
-source_group(specificHistorizers specificHistorizers/*.*)
+#########################################
+## Place here all additional groups (solution folder)
+#########################################
+source_group(sources ./*.*)
+source_group(sources\\message message/*.*)
+source_group(sources\\specificHistorizers specificHistorizers/*.*)
 
 
 #########################################

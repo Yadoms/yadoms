@@ -11,8 +11,8 @@ Blockly.Blocks["yadoms_log"] = {
         this.setColour(Blockly.Blocks.texts.HUE);
         this.appendValueInput("LogContent")
             .appendField($.t("blockly.blocks.yadoms_log.title"));
-        this.setPreviousStatement(true, "null");
-        this.setNextStatement(true, "null");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
         this.setTooltip($.t("blockly.blocks.yadoms_log.tooltip", { defaultValue: "" }));
     }
 };

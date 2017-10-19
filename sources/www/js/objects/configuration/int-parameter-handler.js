@@ -24,12 +24,17 @@ function IntParameterHandler(i18nContext, i18nKey, paramName, content, currentVa
          this.value = 0;
    }
 
-   //we search min and max value
-   this.minValue = parseInt(content.minimumValue);
-   this.maxValue = parseInt(content.maximumValue);
+   //handle disable check spec (in some cases, the value checking could be bypassed (don't verify min an dmax values))
+   this.disableCheck = parseBool(content.disableCheck, false);
+   
+   if(this.disableCheck === false) {
+      //we search min and max value
+      this.minValue = parseInt(content.minimumValue);
+      this.maxValue = parseInt(content.maximumValue);
 
-   //we round the actual value with max and min
-   this.value = Math.max((isNaN(this.minValue)?-Infinity:this.minValue) , Math.min((isNaN(this.maxValue)?Infinity:this.maxValue), this.value));
+      //we round the actual value with max and min
+      this.value = Math.max((isNaN(this.minValue)?-Infinity:this.minValue) , Math.min((isNaN(this.maxValue)?Infinity:this.maxValue), this.value));
+   }
 
    this.name = content.name;
    this.uuid = createUUID();

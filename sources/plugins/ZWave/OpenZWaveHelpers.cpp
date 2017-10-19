@@ -2,6 +2,7 @@
 #include "OpenZWaveHelpers.h"
 #include <Manager.h>
 #include "OpenZWaveCommandClass.h"
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 std::string COpenZWaveHelpers::GenerateKeywordName(OpenZWave::ValueID& value)
 {
@@ -15,6 +16,22 @@ std::string COpenZWaveHelpers::GenerateDeviceName(Poco::UInt32 homeId, Poco::UIn
    return (boost::format("%1%.%2%") % homeId % static_cast<int>(nodeId)).str();
 }
 
+std::string COpenZWaveHelpers::IdentifyUnits(OpenZWave::ValueID& value)
+{
+   std::string units = OpenZWave::Manager::Get()->GetValueUnits(value);
+
+   if (units.empty())
+      units = shared::plugin::yPluginApi::CStandardUnits::NoUnit();
+   else if(boost::iequals(units, "C"))
+      units = shared::plugin::yPluginApi::CStandardUnits::DegreesCelcius();
+   else if(boost::iequals(units, "F"))
+      units = shared::plugin::yPluginApi::CStandardUnits::DegreesFarenheit();
+   else if(boost::iequals(units, "cubic meters"))
+      units = shared::plugin::yPluginApi::CStandardUnits::CubicMetre();
+   else if (boost::iequals(units, "%"))
+	  units = shared::plugin::yPluginApi::CStandardUnits::Percent();
+   return units;
+}
 
 void COpenZWaveHelpers::GetBooleanValueInfo(OpenZWave::ValueID& value, std::string & name, std::string & help)
 {
@@ -64,7 +81,7 @@ void COpenZWaveHelpers::GetEnumValueInfo(OpenZWave::ValueID& value, std::string 
    OpenZWave::Manager::Get()->GetValueListItems(value, &valuesList);
    
    values.clear();
-   for (int i = 0; i < valuesList.size(); ++i)
+   for (auto i = 0; i < valuesList.size(); ++i)
    {
       values[keys[i]] = valuesList[i];
    }

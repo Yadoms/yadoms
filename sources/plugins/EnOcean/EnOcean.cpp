@@ -130,10 +130,12 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
          case kEvtPortConnection:
             {
-               if (m_api->getEventHandler().getEventData<bool>())
+               auto notif = m_api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>>();
+
+               if (notif && notif->isConnected())
                   processConnectionEvent();
                else
-                  processUnConnectionEvent();
+                  processUnConnectionEvent(notif);
 
                break;
             }
@@ -224,6 +226,8 @@ void CEnOcean::createConnection()
 
 void CEnOcean::destroyConnection()
 {
+   if (!m_port)
+      return;
    m_port->setReceiveBufferHandler(boost::shared_ptr<shared::communication::IReceiveBufferHandler>());
    m_port.reset();
 }
@@ -237,9 +241,11 @@ bool CEnOcean::connectionsAreEqual(const CConfiguration& conf1,
 boost::shared_ptr<IType> CEnOcean::createDevice(const std::string& deviceId,
                                                 const CProfileHelper& profileHelper) const
 {
-   return CRorgs::createRorg(profileHelper.rorg())->createFunc(profileHelper.func())->createType(profileHelper.type(),
-                                                                                                 deviceId,
-                                                                                                 m_api);
+   auto device = CRorgs::createRorg(profileHelper.rorg())->createFunc(profileHelper.func())->createType(profileHelper.type(),
+                                                                                                        deviceId,
+                                                                                                        m_api);
+
+   return device;
 }
 
 std::string CEnOcean::generateModel(const std::string& model,
@@ -293,6 +299,12 @@ void CEnOcean::processConnectionEvent()
    try
    {
       requestDongleVersion();
+
+      for (const auto& device : m_devices)
+      {
+         device.second->readInitialState(m_senderId,
+                                         m_messageHandler);
+      }
    }
    catch (CProtocolException& e)
    {
@@ -312,13 +324,16 @@ void CEnOcean::protocolErrorProcess()
    processUnConnectionEvent();
    m_api->getEventHandler().createTimer(kProtocolErrorRetryTimer,
                                         shared::event::CEventTimer::kOneShot,
-                                        boost::posix_time::seconds(30));
+                                        boost::posix_time::seconds(10));
 }
 
-void CEnOcean::processUnConnectionEvent()
+void CEnOcean::processUnConnectionEvent(boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification)
 {
    YADOMS_LOG(information) << "EnOcean connection was lost";
-   m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionFailed");
+   if(notification)
+      m_api->setPluginState(yApi::historization::EPluginState::kError, notification->getErrorMessageI18n(), notification->getErrorMessageI18nParameters());
+   else
+      m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionFailed");
 
    destroyConnection();
 }
@@ -336,9 +351,6 @@ void CEnOcean::processDeviceConfiguration(const std::string& deviceId,
 {
    try
    {
-      // TODO virer
-      configuration.printToLog(YADOMS_LOG(trace));
-
       auto selectedProfile = CProfileHelper(configuration.get<std::string>("profile.activeSection"));
       auto manufacturer = configuration.get<std::string>("manufacturer");
 
@@ -483,9 +495,12 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
             }
             else
             {
-               declareDevice(deviceId,
-                             profile,
-                             manufacturerName);
+               const auto& device = declareDevice(deviceId,
+                                                  profile,
+                                                  manufacturerName);
+
+               device->readInitialState(m_senderId,
+                                        m_messageHandler);
             }
 
             m_api->updateDeviceConfiguration(deviceId,
@@ -530,6 +545,9 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
             processDeviceConfiguration(deviceId,
                                        deviceConfiguration.configuration());
 
+            m_devices[deviceId]->readInitialState(m_senderId,
+                                                  m_messageHandler);
+
             return;
          }
 
@@ -567,7 +585,9 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
 
       auto keywordsToHistorize = device->states(static_cast<unsigned char>(erp1Message.rorg()),
                                                 erp1UserData,
-                                                erp1Status);
+                                                erp1Status,
+                                                m_senderId,
+                                                m_messageHandler);
       if (keywordsToHistorize.empty())
       {
          YADOMS_LOG(information) << "Received message for id#" << deviceId << ", but nothing to historize";
@@ -728,6 +748,11 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
       if (returnCode != message::CResponseReceivedMessage::RET_OK)
       YADOMS_LOG(error) << "TeachIn response not successfully acknowledged : " << returnCode;
    }
+
+   // Need to wait a bit before ask initial state (while EnOcean chip record his new association ?)
+   boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+   m_devices[deviceId]->readInitialState(m_senderId,
+                                         m_messageHandler);
 }
 
 boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
@@ -781,7 +806,10 @@ void CEnOcean::requestDongleVersion()
    if (!m_messageHandler->send(sendMessage,
                                [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
                             {
-                               return esp3Packet->header().packetType() == message::RESPONSE;
+                               if (esp3Packet->header().packetType() == message::RESPONSE)
+                                  return true;
+                               YADOMS_LOG(warning) << "Unexpected message received : wrong packet type : " << esp3Packet->header().packetType();
+                               return false;
                             },
                                [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
                             {

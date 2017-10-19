@@ -48,6 +48,20 @@ namespace startupOptions
          .binding("server.www", &m_configContainer));
 
       options.addOption(
+         Poco::Util::Option("noWebServerCache", "N", "Disable the WebServer cache feature.")
+         .required(false)
+         .repeatable(false)
+         .noArgument()
+         .binding("server.noWebServerCache", &m_configContainer));
+
+      options.addOption(
+         Poco::Util::Option("allowExternalAccess", "ex", "Allow external access (required for mobile app access)")
+         .required(false)
+         .repeatable(false)
+         .noArgument()
+         .binding("server.allowExternalAccess", &m_configContainer));
+
+      options.addOption(
          Poco::Util::Option("logLevel", "l", "set log level, accepted values are : none, fatal, critical, error, warning, notice, information, debug, trace")
          .required(false)
          .repeatable(false)
@@ -315,6 +329,11 @@ namespace startupOptions
       return m_configContainer.getString("server.www", "www");
    }
 
+   bool CStartupOptions::getWebServerAllowExternalAccess() const
+   {
+      return m_configContainer.getBool("server.allowExternalAccess", false);
+   }
+
    EDatabaseEngine CStartupOptions::getDatabaseEngine() const
    {
       return EDatabaseEngine(m_configContainer.getString("server.databaseEngine", EDatabaseEngine::kSqlite.toString()));
@@ -493,6 +512,11 @@ namespace startupOptions
    bool CStartupOptions::getNoPasswordFlag() const
    {
       return m_configContainer.getBool("server.noPassword", false);
+   }  
+   
+   bool CStartupOptions::getNoWebServerCacheFlag() const
+   {
+      return m_configContainer.getBool("server.noWebServerCache", false);
    }
 
    std::string CStartupOptions::getPluginsPath() const
@@ -513,6 +537,11 @@ namespace startupOptions
    std::string CStartupOptions::getUpdateSiteUri() const
    {
       return m_configContainer.getString("server.updateSite", "http://www.yadoms.com/downloads/update/");
+   }
+
+   std::string CStartupOptions::getBackupPath() const
+   {
+      return m_configContainer.getString("server.backupPath", "backups");
    }
 
    int CStartupOptions::getDatabaseAcquisitionLifetime() const

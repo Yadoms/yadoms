@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Lighting4.h"
+#include "../MessageFilteredException.hpp"
 #include "RareDeviceIdFilter.h"
 #include <shared/Log.h>
 
@@ -75,7 +76,7 @@ namespace rfxcomMessages
    boost::shared_ptr<IUnsecuredProtocolFilter> CLighting4::createFilter()
    {
       return boost::make_shared<CRareDeviceIdFilter>(3,
-                                                     boost::posix_time::hours(1));
+                                                     boost::posix_time::minutes(1));
    }
 
    void CLighting4::buildDeviceDetails()
@@ -98,8 +99,8 @@ namespace rfxcomMessages
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
       {
-         if (!m_messageFilter->isValid(m_deviceName))
-            throw std::invalid_argument((boost::format("Receive unknown device (id %1%) for unsecured protocol (LIGHTING4 / %2%), may be a transmission error : ignored")
+         if (m_messageFilter && !m_messageFilter->isValid(m_deviceName))
+            throw CMessageFilteredException((boost::format("Receive unknown device (id %1%) for unsecured protocol (LIGHTING4 / %2%), may be a transmission error : ignored")
                % m_id % m_deviceModel).str());
 
          api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
@@ -139,6 +140,11 @@ namespace rfxcomMessages
       return m_deviceName;
    }
 
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CLighting4::keywords()
+   {
+      return m_keywords;
+   }
+
    void CLighting4::buildDeviceName()
    {
       std::ostringstream ssdeviceName;
@@ -161,5 +167,3 @@ namespace rfxcomMessages
       m_deviceModel = ssModel.str();
    }
 } // namespace rfxcomMessages
-
-

@@ -464,3 +464,9 @@
 .developerModeWarning {
    display: none;
 }
+
+@media (max-width: 920px) {
+   .onlyLargeScreen {
+      visibility: collapse;
+   }
+}

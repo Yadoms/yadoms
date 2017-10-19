@@ -31,7 +31,7 @@ public:
    const boost::filesystem::path& scriptInterpretersPath() const override;
    const boost::filesystem::path& scriptInterpretersLogPath() const override;
    const boost::filesystem::path& databaseSqliteFile() const override;
-   const boost::filesystem::path& databaseSqliteBackupFile() const override;
+   const boost::filesystem::path& backupPath() const override;
    // [END] IPathProvider implementation
 
 private:
@@ -50,6 +50,6 @@ private:
    const boost::filesystem::path m_scriptInterpretersLogPath;
 
    const boost::filesystem::path m_databaseSqliteFile;
-   const boost::filesystem::path m_databaseSqliteBackupFile;
+   const boost::filesystem::path m_backupPath;
 };
 

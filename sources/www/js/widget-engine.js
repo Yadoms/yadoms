@@ -11,8 +11,6 @@ var OfflineServerNotification = null;
 
 var LastEventLogId = null;
 
-var failGetEventCounter = 0;
-
 function initializeWidgetEngine() {
 
     //we ask all widgets packages
@@ -67,13 +65,14 @@ function initializeWidgetEngine() {
 }
 
 function requestWidgets(page) {
+    var d = new $.Deferred();
     //we request widgets for the first page
     var loadWidgetsNotification = notifyInformation($.t("mainPage.actions.loadingWidgetsOfPage", { pageName: page.name }));
 
     //before making anything we empty the grid
     page.$grid.empty();
-
-    var d = WidgetManager.getWidgetOfPageFromServer(page)
+    
+    WidgetManager.getWidgetOfPageFromServer(page)
     .done(function (list) {
         if (list != null) {
             WidgetManager.loadWidgets(list, page)
@@ -87,10 +86,12 @@ function requestWidgets(page) {
 
                 //we update the filter of the websocket
                 updateWebSocketFilter();
+                d.resolve();
             })
             .fail(function (errorMessage) {
                 console.error(errorMessage);
                 notifyError($.t("objects.widgetManager.loadingWidgetsError"));
+                d.reject();
             });
         }
     });
@@ -119,7 +120,6 @@ function tabClick(pageId) {
                 //we poll all widget data
                 updateWidgetsPolling().always(function()
                 {
-			          PageManager.refreshWidgets(page);
                    PageManager.updateWidgetLayout(page);
                    page.$grid.packery('layout');                   
                 });
@@ -128,7 +128,6 @@ function tabClick(pageId) {
             //we poll all widget data
             updateWidgetsPolling().always(function()
             {
-			      PageManager.refreshWidgets(page);
                PageManager.updateWidgetLayout(page);
                page.$grid.packery('reloadItems');
                updateWebSocketFilter();
@@ -142,9 +141,6 @@ function periodicUpdateTask() {
     //to do that we ask event message
     EventLoggerManager.getFrom(LastEventLogId)
     .done(function (data) {
-        //we reset the fail event counter
-        failGetEventCounter = 0;
-
         //if we were offline we go back to online status
         if (!serverIsOnline) {
             serverIsOnline = true;
@@ -228,21 +224,18 @@ function periodicUpdateTask() {
     })
     .fail(function (error) {
         if (serverIsOnline) {
-            failGetEventCounter++;
-            if (failGetEventCounter >= 3) {
-                //we indicate that *server has passed offline
-                serverIsOnline = false;
-                OfflineServerNotification = notifyError($.t("mainPage.errors.youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline"), error, false);
-                //we change the interval period
-                clearInterval(widgetUpdateInterval);
-                widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateIntervalInOfflineMode);
-                failGetEventCounter = 0;
-                //we close the dashboard if shown
-                $('#main-dashboard-modal').modal('hide');
-                //we stop refresh timer of the dashboard if set
-                if (Yadoms.periodicDashboardTask)
-                    clearInterval(Yadoms.periodicDashboardTask);
-            }
+          //we indicate that *server has passed offline
+          serverIsOnline = false;
+          OfflineServerNotification = notifyError($.t("mainPage.errors.youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline"), error, false);
+          //we change the interval period
+          clearInterval(widgetUpdateInterval);
+          widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateIntervalInOfflineMode);
+          failGetEventCounter = 0;
+          //we close the dashboard if shown
+          $('#main-dashboard-modal').modal('hide');
+          //we stop refresh timer of the dashboard if set
+          if (Yadoms.periodicDashboardTask)
+              clearInterval(Yadoms.periodicDashboardTask);
         }
         //if we are again offline there is nothing to do
     });
@@ -331,29 +324,29 @@ function updateWebSocketFilter() {
 }
 
 function updateWidgetsPolling() {
+    var d = new $.Deferred();
     
     //we browse each widget instance
     var page = PageManager.getCurrentPage();
-    if (page == null)
-        return;
-
-    var d = new $.Deferred();
-    var arrayOfDeffered = [];
-     
-    $.each(page.widgets, function (widgetIndex, widget) {
+    if (page == null) {
+        d.resolve();
+    } else {
+      var arrayOfDeffered = [];
         
-        //we ask which devices are needed for this widget instance
-        var deffered = updateWidgetPolling(widget);
-        arrayOfDeffered.push(deffered);
-    });
-    
-    $.whenAll(arrayOfDeffered).done(function () {
-       d.resolve();
-    })
-    .fail(function (error) {
-       d.reject();
-     });
-    
+       $.each(page.widgets, function (widgetIndex, widget) {
+           
+           //we ask which devices are needed for this widget instance
+           var deffered = updateWidgetPolling(widget);
+           arrayOfDeffered.push(deffered);
+       });
+       
+       $.whenAll(arrayOfDeffered).done(function () {
+          d.resolve();
+       })
+       .fail(function (error) {
+          d.reject();
+        });
+    }    
     return d.promise();
 }
 

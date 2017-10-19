@@ -184,7 +184,7 @@
 				},
 				"lbt": {
 					"name": "Listen Before Talk",
-					"description": "When enabled, the transmitter will “listen” the current activity on the same frequency and wait a silence before to “talk”. Sent frames cannot be delayed more than 3 seconds.",
+					"description": "When enabled, the transmitter will listen the current activity on the same frequency and wait a silence before to talk. Sent frames cannot be delayed more than 3 seconds.",
 					"content": {
 						"lbtvalue": {
 							"name": "Trigger",
@@ -387,6 +387,9 @@
 		}
 	},
 	"customLabels": {
+      "pluginState" : {
+         "rfp1000NotFound" : "The RfPlayer dongle doesn't respond. Please check it is connected and its configuration."
+      },
 		"firmwareUpdate": {
 			"fail": "Fail to upgrade firmware",
 			"writeFile": "Sending firmware",

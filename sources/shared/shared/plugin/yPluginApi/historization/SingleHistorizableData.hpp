@@ -274,6 +274,32 @@ namespace shared
                };
 
                //-----------------------------------------------------
+               ///\brief     Helpers specialization for unsigned char
+               //-----------------------------------------------------      
+               template <typename TData>
+               struct helper<TData, typename boost::enable_if<boost::is_same<unsigned char, TData> >::type>
+               {
+                  static unsigned char getInternal(const std::string& value)
+                  {
+                     try
+                     {
+                        //force a cast to int (without int cast, lexicalcast take the ascii value of int: "1" => 49, instead of 1)
+                        int v = boost::lexical_cast<int>(value);
+                        return (unsigned char)(std::max(0, std::min(255, v)));
+                     }
+                     catch (boost::bad_lexical_cast&)
+                     {
+                        return (unsigned char)(std::max(0, std::min(255, static_cast<int>(boost::lexical_cast<float>(value)))));
+                     }
+                  }
+
+                  static CDataContainer createDefaultTypeInfo()
+                  {
+                     return CDataContainer();
+                  }
+               };
+
+               //-----------------------------------------------------
                ///\brief     Helpers specialization for ExtendedEnum
                //-----------------------------------------------------      
                template <typename TData>

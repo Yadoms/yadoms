@@ -1,10 +1,6 @@
 #include "stdafx.h"
 #include "Profile_D2_01_0D.h"
-#include "../bitsetHelpers.hpp"
-#include "../../message/RadioErp1SendMessage.h"
-#include "../../message/ResponseReceivedMessage.h"
 #include "Profile_D2_01_Common.h"
-#include <shared/Log.h>
 
 CProfile_D2_01_0D::CProfile_D2_01_0D(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
@@ -35,34 +31,29 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return m_historizers;
 }
 
+void CProfile_D2_01_0D::readInitialState(const std::string& senderId,
+                                         boost::shared_ptr<IMessageHandler> messageHandler) const
+{
+   // Need to wait a bit between outgoing messages, to be sure to receive answer
+   boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+   CProfile_D2_01_Common::sendActuatorStatusQuery(messageHandler,
+                                                  senderId,
+                                                  m_deviceId,
+                                                  CProfile_D2_01_Common::kAllOutputChannels);
+}
+
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_0D::states(unsigned char rorg,
                                                                                                    const boost::dynamic_bitset<>& data,
-                                                                                                   const boost::dynamic_bitset<>& status) const
+                                                                                                   const boost::dynamic_bitset<>& status,
+                                                                                                   const std::string& senderId,
+                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   // This device supports several RORG messages
-   // We just use the VLD telegram
-   if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
-      return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
-
-   if (bitset_extract(data, 4, 4) != CProfile_D2_01_Common::kActuatorStatusResponse)
-      return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
-
-   // Return only the concerned historizer
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
-
-   auto ioChannel = bitset_extract(data, 11, 5);
-   auto state = bitset_extract(data, 17, 1) ? true : false;
-   switch (ioChannel)
-   {
-   case 0:
-      m_channel->set(state);
-      historizers.push_back(m_channel);
-      break;
-   default:
-      YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel ;
-      break;
-   }
-   return historizers;
+   return CProfile_D2_01_Common::extractActuatorStatusResponse(rorg,
+                                                               data,
+                                                               m_channel,
+                                                               CProfile_D2_01_Common::noDimmable,
+                                                               CProfile_D2_01_Common::noPowerFailure,
+                                                               CProfile_D2_01_Common::noOverCurrent);
 }
 
 void CProfile_D2_01_0D::sendCommand(const std::string& keyword,
@@ -70,36 +61,16 @@ void CProfile_D2_01_0D::sendCommand(const std::string& keyword,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
-                                          senderId,
-                                          m_deviceId,
-                                          0);
+   if (keyword != m_channel->getKeyword())
+      return;
 
-   boost::dynamic_bitset<> userData(3 * 8);
-   bitset_insert(userData, 4, 4, CProfile_D2_01_Common::kActuatorSetOutput);
-   bitset_insert(userData, 11, 5, 0);
-   bitset_insert(userData, 17, 7, commandBody == "1" ? 100 : 0);
+   m_channel->setCommand(commandBody);
 
-   command.userData(bitset_to_bytes(userData));
-
-   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
-   if (!messageHandler->send(command,
-                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
-                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
-      YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : no answer to Actuator Set Output command" ;
-
-   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
-
-   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-      YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : Actuator Set Output command returns " << response->returnCode() ;
-
-   return;
+   CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
+                                                                senderId,
+                                                                m_deviceId,
+                                                                CProfile_D2_01_Common::kAllOutputChannels,
+                                                                m_channel->get());
 }
 
 void CProfile_D2_01_0D::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
@@ -114,9 +85,11 @@ void CProfile_D2_01_0D::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
+                                                      CProfile_D2_01_Common::kAllOutputChannels,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
+                                                      false,
                                                       defaultState,
                                                       0.0,
                                                       0.0,

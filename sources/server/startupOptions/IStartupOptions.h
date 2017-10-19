@@ -52,6 +52,12 @@ namespace startupOptions {
       virtual std::string getWebServerInitialPath() const = 0;
 
       //--------------------------------------------------------------
+      /// \brief	    Determine if external access of webserver is allowed (only if mobile apps are querying this server)
+      /// \return     true if external access are allowed
+      //--------------------------------------------------------------
+      virtual bool getWebServerAllowExternalAccess() const = 0;
+
+      //--------------------------------------------------------------
       /// \brief	    Get the database engine to use
       /// \return     The database engine (sqlite|postgresql)
       //--------------------------------------------------------------
@@ -233,8 +239,14 @@ namespace startupOptions {
       /// \brief	    Get the no password flag
       /// \return     flag indicating if password check is disabled for this instance
       //--------------------------------------------------------------
-      virtual bool getNoPasswordFlag() const = 0;     
+      virtual bool getNoPasswordFlag() const = 0;   
       
+      //--------------------------------------------------------------
+      /// \brief	    Get the no webserver cache flag
+      /// \return     flag indicating if webserver cache should be disabled
+      //--------------------------------------------------------------
+      virtual bool getNoWebServerCacheFlag() const = 0;
+
       //--------------------------------------------------------------
       /// \brief	    Indicate if yadoms is runnings as a service
       /// \return     true if yadoms is runnings as a service
@@ -247,6 +259,12 @@ namespace startupOptions {
       /// \note       If not exist, it returns "http://www.yadoms.com/downloads/update/"
       //--------------------------------------------------------------
       virtual std::string getUpdateSiteUri() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the backup folder
+      /// \return     The backup folder
+      //--------------------------------------------------------------
+      virtual std::string getBackupPath() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the acquisition lifetime

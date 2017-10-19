@@ -24,8 +24,8 @@ Blockly.Blocks["yadoms_sleep"] = {
         this.appendDummyInput()
             .appendField(new Blockly.FieldDropdown(durationUnitsEnum), "timeUnit");
         this.setInputsInline(true);
-        this.setPreviousStatement(true, "null");
-        this.setNextStatement(true, "null");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
         this.setTooltip($.t("blockly.blocks.yadoms_sleep.tooltip", { defaultValue: "" }));
 
     }

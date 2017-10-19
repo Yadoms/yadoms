@@ -44,6 +44,7 @@ namespace startupOptions
       bool getIsWebServerUseSSL() const override;
       std::string getWebServerIPAddress() const override;
       std::string getWebServerInitialPath() const override;
+      bool getWebServerAllowExternalAccess() const override;
       EDatabaseEngine getDatabaseEngine() const override;
       std::string getDatabaseSqliteFile() const override;
       std::string getDatabaseSqliteBackupFile() const override;
@@ -76,10 +77,10 @@ namespace startupOptions
       bool getNoPasswordFlag() const override;
       bool getIsRunningAsService() const override;
       std::string getUpdateSiteUri() const override;
+      std::string getBackupPath() const override;
       int getDatabaseAcquisitionLifetime() const override;
       bool getDeveloperMode() const override;
-
-
+      bool getNoWebServerCacheFlag() const override;
       // [END] IStartupOptions implementation
       //--------------------------------------------------------------
 

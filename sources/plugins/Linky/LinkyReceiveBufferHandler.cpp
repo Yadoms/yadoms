@@ -76,15 +76,6 @@ boost::shared_ptr<std::map<std::string, std::vector<std::string> > > CLinkyRecei
    if (m_content.empty())
       return noMessages;
 
-   // In this case kSTX or kStartMessage are not correct, we suppress the first one, to restart a frame
-   if (m_content[1] != kStartMessage)
-   {
-      m_content.erase(m_content.begin());
-
-      while (!m_content.empty() && m_content[0] != kSTX)
-         m_content.erase(m_content.begin());
-   }
-
    auto etxIterator = std::find(m_content.rbegin(), m_content.rend(), kETX);
    if (etxIterator == m_content.rend())
    {

@@ -20,7 +20,7 @@ public:
 
    // IZWaveController implementation
    void configure(CZWaveConfiguration* configuration, shared::event::CEventHandler* handler) override;
-   E_StartResult start() override;
+   E_StartResult start(boost::function0<void> checkStoprequested) override;
    void stop() override;
    void sendCommand(const std::string& device, const std::string& keyword, const std::string& value) override;
    void startInclusionMode() override;

@@ -2,19 +2,17 @@
 #include "Profile_D2_01_08.h"
 #include "../bitsetHelpers.hpp"
 #include "../../message/RadioErp1SendMessage.h"
-#include "../../message/ResponseReceivedMessage.h"
-#include "Profile_D2_01_Common.h"
 #include <shared/Log.h>
 
 CProfile_D2_01_08::CProfile_D2_01_08(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_deviceId(deviceId),
      m_channel(boost::make_shared<yApi::historization::CSwitch>("Channel", yApi::EKeywordAccessMode::kGetSet)),
-     m_inputEnergy(boost::make_shared<yApi::historization::CEnergy>("Input energy")),
-     m_inputPower(boost::make_shared<yApi::historization::CPower>("Input power")),
      m_loadEnergy(boost::make_shared<yApi::historization::CEnergy>("Load energy")),
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),
-     m_historizers({m_channel, m_inputEnergy, m_inputPower,m_loadEnergy,m_loadPower})
+     m_overCurrent(boost::make_shared<yApi::historization::CSwitch>("OverCurrent", yApi::EKeywordAccessMode::kGet)),
+     m_historizers({m_channel, m_loadEnergy, m_loadPower, m_overCurrent}),
+     m_outputChannel(CProfile_D2_01_Common::kOutputChannel1)
 {
 }
 
@@ -39,9 +37,44 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return m_historizers;
 }
 
+void CProfile_D2_01_08::readInitialState(const std::string& senderId,
+                                         boost::shared_ptr<IMessageHandler> messageHandler) const
+{
+   // Be careful : manufacturers implementations of EnOcean EEP specifications differ :
+   // some support only kAllOutputChannels (0x1E) to drive output (like Nodon alias ID_RF), some other support only
+   // kOutputChannel1 to drive output (0x00) to drive output (like GIGA-concept).
+   // So send the 2 messages and try to memorize the one device responds to.
+   // Note also that som devices (like GIGA-concept DO21-12B smart-plug) doesn't return its channel state
+   // (never send kActuatorStatusResponse message), so default value must be kOutputChannel1.
+
+   // Need to wait a bit between outgoing messages, to be sure to receive answer
+   boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+   CProfile_D2_01_Common::sendActuatorStatusQuery(messageHandler,
+                                                  senderId,
+                                                  m_deviceId,
+                                                  CProfile_D2_01_Common::kAllOutputChannels);
+
+   boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+   CProfile_D2_01_Common::sendActuatorStatusQuery(messageHandler,
+                                                  senderId,
+                                                  m_deviceId,
+                                                  CProfile_D2_01_Common::kOutputChannel1);
+
+
+   // Need to wait a bit between outgoing messages, to be sure to receive answer
+   boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+   CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
+                                                       senderId,
+                                                       m_deviceId,
+                                                       CProfile_D2_01_Common::kAllOutputChannels,
+                                                       CProfile_D2_01_Common::kQueryPower);
+}
+
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_08::states(unsigned char rorg,
                                                                                                    const boost::dynamic_bitset<>& data,
-                                                                                                   const boost::dynamic_bitset<>& status) const
+                                                                                                   const boost::dynamic_bitset<>& status,
+                                                                                                   const std::string& senderId,
+                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    // This device supports several RORG messages
    // We just use the VLD telegram
@@ -52,102 +85,37 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    {
    case CProfile_D2_01_Common::kActuatorStatusResponse:
       {
-         // Return only the concerned historizer
-         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
+         // Learn output channel to use
+         auto receiveOutputChannel = bitset_extract(data, 11, 5);
+         if (receiveOutputChannel != CProfile_D2_01_Common::kInputChannel)
+            m_outputChannel = static_cast<CProfile_D2_01_Common::EOutputChannel>(receiveOutputChannel);
 
-         auto ioChannel = bitset_extract(data, 11, 5);
-         auto state = bitset_extract(data, 17, 1) ? true : false;
-         switch (ioChannel)
-         {
-         case 0:
-            m_channel->set(state);
-            historizers.push_back(m_channel);
-            break;
-         default:
-            YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel ;
-            break;
-         }
-         return historizers;
+         return CProfile_D2_01_Common::extractActuatorStatusResponse(rorg,
+                                                                     data,
+                                                                     m_channel,
+                                                                     CProfile_D2_01_Common::noDimmable,
+                                                                     CProfile_D2_01_Common::noPowerFailure,
+                                                                     m_overCurrent);
       }
    case CProfile_D2_01_Common::kActuatorMeasurementResponse:
       {
-         // Return only the concerned historizer
-         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
+         auto historizers = CProfile_D2_01_Common::extractActuatorMeasurementResponse(rorg,
+                                                                                      data,
+                                                                                      m_loadEnergy,
+                                                                                      m_loadPower);
 
-         auto ioChannel = bitset_extract(data, 11, 5);
-         auto unit = static_cast<CProfile_D2_01_Common::E_D2_01_MeasurementUnit>(bitset_extract(data, 8, 3));
-         auto rawValue = bitset_extract(data, 16, 32);
-
-         Poco::Int64 energyValueWh = 0;
-         auto powerValueW = 0.0;
-         switch (unit)
+         if (std::find(historizers.begin(), historizers.end(), m_loadPower) != historizers.end())
          {
-         case CProfile_D2_01_Common::kEnergyWs:
-            energyValueWh = static_cast<Poco::Int64>(rawValue) * 3600;
-            break;
-         case CProfile_D2_01_Common::kEnergyWh:
-            energyValueWh = static_cast<Poco::Int64>(rawValue);
-            break;
-         case CProfile_D2_01_Common::kEnergyKWh:
-            energyValueWh = static_cast<Poco::Int64>(rawValue) * 1000;
-            break;
-         case CProfile_D2_01_Common::kPowerW:
-            powerValueW = static_cast<double>(rawValue);
-            break;
-         case CProfile_D2_01_Common::kPowerKW:
-            powerValueW = static_cast<double>(rawValue) * 1000;
-            break;
-         default:
-            YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported unit value" << unit ;
-            break;
+            // Power is configured to be received automaticaly.
+            // As we can not receive both data (power + energy) automaticaly,
+            // we ask for Energy just after receiving Power.
+            CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
+                                                                senderId,
+                                                                m_deviceId,
+                                                                CProfile_D2_01_Common::kAllOutputChannels,
+                                                                CProfile_D2_01_Common::kQueryEnergy);
          }
 
-         switch (ioChannel)
-         {
-         case 0: // Output channel
-            {
-               switch (unit)
-               {
-               case CProfile_D2_01_Common::kEnergyWs:
-               case CProfile_D2_01_Common::kEnergyWh:
-               case CProfile_D2_01_Common::kEnergyKWh:
-                  m_loadEnergy->set(energyValueWh);
-                  historizers.push_back(m_loadEnergy);
-                  break;
-               case CProfile_D2_01_Common::kPowerW:
-               case CProfile_D2_01_Common::kPowerKW:
-                  m_loadPower->set(powerValueW);
-                  historizers.push_back(m_loadPower);
-                  break;
-               default:
-                  YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported unit value for output channel" << unit ;
-                  break;
-               }
-               break;
-            }
-         case 0x1F: // Input channel
-            switch (unit)
-            {
-            case CProfile_D2_01_Common::kEnergyWs:
-            case CProfile_D2_01_Common::kEnergyWh:
-            case CProfile_D2_01_Common::kEnergyKWh:
-               m_inputEnergy->set(energyValueWh);
-               historizers.push_back(m_inputEnergy);
-               break;
-            case CProfile_D2_01_Common::kPowerW:
-            case CProfile_D2_01_Common::kPowerKW:
-               m_inputPower->set(powerValueW);
-               historizers.push_back(m_inputPower);
-               break;
-            default:
-               YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported unit value for input channel" << unit ;
-               break;
-            }
-            break;
-         default:
-            YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel ;
-            break;
-         }
          return historizers;
       }
    default:
@@ -160,34 +128,16 @@ void CProfile_D2_01_08::sendCommand(const std::string& keyword,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
-                                          senderId,
-                                          m_deviceId,
-                                          0);
+   if (keyword != m_channel->getKeyword())
+      return;
 
-   boost::dynamic_bitset<> userData(3 * 8);
-   bitset_insert(userData, 4, 4, CProfile_D2_01_Common::kActuatorSetOutput);
-   bitset_insert(userData, 11, 5, 0);
-   bitset_insert(userData, 17, 7, commandBody == "1" ? 100 : 0);
+   m_channel->setCommand(commandBody);
 
-   command.userData(bitset_to_bytes(userData));
-
-   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
-   if (!messageHandler->send(command,
-                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
-                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                answer = esp3Packet;
-                             }))
-      YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : no answer to Actuator Set Output command" ;
-
-   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
-
-   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-      YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : Actuator Set Output command returns " << response->returnCode() ;
+   CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
+                                                                senderId,
+                                                                m_deviceId,
+                                                                m_outputChannel,
+                                                                m_channel->get());
 }
 
 void CProfile_D2_01_08::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
@@ -202,9 +152,11 @@ void CProfile_D2_01_08::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
+                                                      m_outputChannel,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
+                                                      false,
                                                       defaultState,
                                                       0.0,
                                                       0.0,
@@ -218,36 +170,16 @@ void CProfile_D2_01_08::sendConfiguration(const shared::CDataContainer& deviceCo
    {
       std::ostringstream oss;
       oss << "Min refresh time (" << minEnergyMeasureRefreshTime << ") is over max refresh time (" << maxEnergyMeasureRefreshTime << ") for device " << m_deviceId << " (" << profile() << ")";
-      YADOMS_LOG(error) << oss.str() ;
+      YADOMS_LOG(error) << oss.str();
       throw std::logic_error(oss.str());
    }
 
-   // Configure both input and ouput channels for both power and energy measure
+   // Configure for automatic power measure
+   // At each power measure receive, we ask for energy measure
    CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
                                                             senderId,
                                                             m_deviceId,
-                                                            false,
-                                                            false,
-                                                            minEnergyMeasureRefreshTime,
-                                                            maxEnergyMeasureRefreshTime);
-   CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
-                                                            senderId,
-                                                            m_deviceId,
-                                                            false,
-                                                            true,
-                                                            minEnergyMeasureRefreshTime,
-                                                            maxEnergyMeasureRefreshTime);
-   CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
-                                                            senderId,
-                                                            m_deviceId,
-                                                            true,
-                                                            false,
-                                                            minEnergyMeasureRefreshTime,
-                                                            maxEnergyMeasureRefreshTime);
-   CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
-                                                            senderId,
-                                                            m_deviceId,
-                                                            true,
+                                                            m_outputChannel,
                                                             true,
                                                             minEnergyMeasureRefreshTime,
                                                             maxEnergyMeasureRefreshTime);

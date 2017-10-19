@@ -84,10 +84,15 @@ namespace shared { namespace communication {
       void readCompleted(const boost::system::error_code& error, std::size_t bytesTransferred);
 
       //--------------------------------------------------------------
-      /// \brief	                     Notify the event handler for connection event
-      /// \param[in] isConnected       Connection state
+      /// \brief	                     Notify the event handler for connection event : SUCCESS
       //--------------------------------------------------------------
-      void notifyEventHandler(bool isConnected);
+      void notifyEventHandler();
+
+      //--------------------------------------------------------------
+      /// \brief	                           Notify the event handler for connection event : ERROR
+      /// \param[in] i18nErrorMessage        The i18n string representing the error : "serialport.failToOpen" -> "Impossible d'ouvrir le port ethernet"
+      //--------------------------------------------------------------
+      void notifyEventHandler(const std::string & i18nErrorMessage);
 
       //--------------------------------------------------------------
       /// \brief	                     Send buffer content

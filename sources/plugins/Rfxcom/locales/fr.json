@@ -154,11 +154,11 @@
                }
             },
             "id0_16777215": {
-               "types": { "pt2262" : { "title": "pt2262" } , "mcz1PelletStove" : { "title": "mcz1PelletStove" } , "mcz2PelletStove" : { "title": "mcz2PelletStove" } , "mcz3PelletStove" : { "title": "mcz3PelletStove" } },
+               "types": { "pt2262" : { "title": "pt2262" } , "mcz1PelletStove" : { "title": "mcz1PelletStove" } , "mcz2PelletStove" : { "title": "mcz2PelletStove" } , "mcz3PelletStove" : { "title": "mcz3PelletStove" } , "meiantech" : { "title": "meiantech" } },
                "content": {
                   "id": {
                      "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-16777215)"
+                     "description": "L'identifiant de l'équipement (0-16777215)"
                   }
                }
             },
@@ -229,7 +229,7 @@
                }
             },
             "id0_65535": {
-               "types": { "byronMp001" : { "title": "byronMp001" } , "envivo" : { "title": "envivo" } , "x10SecurityR" : { "title": "x10SecurityR" } , "digimax" : { "title": "digimax" } , "digimaxShort" : { "title": "digimaxShort" } },
+               "types": { "byronMp001" : { "title": "byronMp001" } , "envivo" : { "title": "envivo" } , "x10SecurityRemote" : { "title": "x10SecurityRemote" } , "digimax" : { "title": "digimax" } , "digimaxShort" : { "title": "digimaxShort" } },
                "content": {
                   "id": {
                      "name": "ID",

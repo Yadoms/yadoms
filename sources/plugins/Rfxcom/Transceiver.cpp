@@ -47,6 +47,7 @@
 #include "rfxcomMessages/Wind.h"
 #include "IncrementSequenceNumber.h"
 #include "ManuallyDeviceCreationException.hpp"
+#include "MessageFilteredException.hpp"
 #include <shared/Log.h>
 
 //
@@ -58,6 +59,8 @@
 // - RFXtrx.h : version 9.13
 // =======================================================================
 //
+
+const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> rfxcomMessages::IRfxcomMessage::NoKeywords;
 
 CTransceiver::CTransceiver()
    : m_seqNumberProvider(boost::make_shared<CIncrementSequenceNumber>()),
@@ -74,6 +77,7 @@ std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter>> CTransceiver::createU
    std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter>> filters;
    filters[pTypeCURRENTENERGY] = rfxcomMessages::CCurrentEnergy::createFilter();
    filters[pTypeLighting4] = rfxcomMessages::CLighting4::createFilter();
+   filters[pTypeSecurity1] = rfxcomMessages::CSecurity1::createFilter();
    return filters;
 }
 
@@ -239,8 +243,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiver::
    }
    catch (shared::exception::CException& e)
    {
-      std::string message = (boost::format("Invalid command \"%1%\" : %2%") % command->getBody() % e.what()).str();
-      throw shared::exception::CInvalidParameter(message);
+      throw shared::exception::CInvalidParameter((boost::format("Invalid command \"%1%\" : %2%") % command->getBody() % e.what()).str());
    }
 }
 
@@ -319,7 +322,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
          break;
       case pTypeRFXSensor: message = boost::make_shared<rfxcomMessages::CRFXSensor>(api, *buf, bufSize);
          break;
-      case pTypeSecurity1: message = boost::make_shared<rfxcomMessages::CSecurity1>(api, *buf, bufSize);
+      case pTypeSecurity1: message = boost::make_shared<rfxcomMessages::CSecurity1>(api, *buf, bufSize, m_unsecuredProtocolFilters.at(pTypeSecurity1));
          break;
       case pTypeSecurity2: message = boost::make_shared<rfxcomMessages::CSecurity2>(api, *buf, bufSize);
          break;
@@ -346,7 +349,15 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
             break;
          }
       }
+
+      logMessage(api, message);
       return message;
+   }
+   catch (CMessageFilteredException& exception)
+   {
+      YADOMS_LOG(warning) << exception.what();
+      YADOMS_LOG(warning) << "Message received, but filtered as protocol is unsecured and can create false devices. Device should be seen often enough to get out of filter.";
+      return boost::shared_ptr<rfxcomMessages::IRfxcomMessage>();
    }
    catch (std::exception& exception)
    {
@@ -509,8 +520,10 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
          msg = boost::make_shared<rfxcomMessages::CHomeConfort>(api, sTypeHomeConfortTEL010, data.getDeviceName(), data.getConfiguration());
 
       // Security1
-      else if (deviceType == "x10SecurityR")
+      else if (deviceType == "x10SecurityRemote")
          msg = boost::make_shared<rfxcomMessages::CSecurity1>(api, sTypeSecX10R, data.getDeviceName(), data.getConfiguration());
+      else if (deviceType == "meiantech")
+         msg = boost::make_shared<rfxcomMessages::CSecurity1>(api, sTypeMeiantech, data.getDeviceName(), data.getConfiguration());
 
       // Security2
       else if (deviceType == "keeLoq")
@@ -579,4 +592,15 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
    }
 
    return msg->getDeviceName();
+}
+
+void CTransceiver::logMessage(boost::shared_ptr<yApi::IYPluginApi> api,
+                              const boost::shared_ptr<rfxcomMessages::IRfxcomMessage>& message)
+{
+   if (!message->getDeviceName().empty())
+   {
+      YADOMS_LOG(information) << "Receive data for " << message->getDeviceName();
+      for (const auto& keyword : message->keywords())
+         YADOMS_LOG(information) << "  - " << keyword->getKeyword() << " : " << keyword->formatValue();
+   }
 }

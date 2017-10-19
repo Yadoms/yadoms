@@ -9,7 +9,7 @@ namespace rfxcomMessages
    CSecurity1Meiantech::CSecurity1Meiantech()
       : m_statusByte(0),
       m_panic(boost::make_shared<yApi::historization::CSwitch>("panic")),
-      m_armAlarm(boost::make_shared<yApi::historization::CArmingAlarm>("armAlarm")),
+      m_armAlarm(boost::make_shared<yApi::historization::CArmingAlarm>("armAlarm", yApi::EKeywordAccessMode::kGetSet)),
       m_keywords({ m_panic, m_armAlarm })
    {
    }
@@ -94,7 +94,7 @@ namespace rfxcomMessages
 
    unsigned long CSecurity1Meiantech::idFromProtocol(const RBUF& rbuf) const
    {
-      return (unsigned long)(rbuf.SECURITY1.id1 << 16) + (rbuf.SECURITY1.id2 << 8) + (rbuf.SECURITY1.id3);
+      return static_cast<unsigned long>((rbuf.SECURITY1.id1 << 16) + (rbuf.SECURITY1.id2 << 8) + rbuf.SECURITY1.id3);
    }
 } // namespace rfxcomMessages
 

@@ -4,6 +4,7 @@
 #include <shared/communication/IAsyncPort.h>
 #include <shared/communication/IBufferLogger.h>
 #include <shared/event/EventTimer.h>
+#include <shared/communication/AsyncPortConnectionNotification.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -66,8 +67,9 @@ protected:
    //--------------------------------------------------------------
    /// \brief	                     Called when the UPS becomes unconnected
    /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \param [in] notification     The connection notification data
    //--------------------------------------------------------------
-   void processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
+   void processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification = boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>());
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the data are received from the UPS

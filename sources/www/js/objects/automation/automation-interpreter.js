@@ -9,8 +9,7 @@ function AutomationInterpreter(name) {
 
    this.name = name;
    this.package = null;
-   this.type = name.toLowerCase();
-   this.path = name; // for path the type must not be used because in lowercase.
+   this.type = name;
 }
 
 /**

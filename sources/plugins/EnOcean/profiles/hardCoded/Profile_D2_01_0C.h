@@ -1,10 +1,6 @@
 #pragma once
-#include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <boost/dynamic_bitset.hpp>
 #include "../IType.h"
 #include "../../specificHistorizers/PilotWireHistorizer.h"
-
-namespace yApi = shared::plugin::yPluginApi;
 
 
 class CProfile_D2_01_0C : public IType
@@ -18,9 +14,13 @@ public:
    const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> allHistorizers() const override;
+   void readInitialState(const std::string& senderId,
+                         boost::shared_ptr<IMessageHandler> messageHandler) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> states(unsigned char rorg,
                                                                                    const boost::dynamic_bitset<>& data,
-                                                                                   const boost::dynamic_bitset<>& status) const override;
+                                                                                   const boost::dynamic_bitset<>& status,
+                                                                                   const std::string& senderId,
+                                                                                   boost::shared_ptr<IMessageHandler> messageHandler) const override;
    void sendCommand(const std::string& keyword,
                     const std::string& commandBody,
                     const std::string& senderId,
@@ -33,10 +33,9 @@ public:
 private:
    const std::string m_deviceId;
    boost::shared_ptr<yApi::historization::CSwitch> m_channel;
-   boost::shared_ptr<yApi::historization::CEnergy> m_inputEnergy;
-   boost::shared_ptr<yApi::historization::CPower> m_inputPower;
    boost::shared_ptr<yApi::historization::CEnergy> m_loadEnergy;
    boost::shared_ptr<yApi::historization::CPower> m_loadPower;
    boost::shared_ptr<specificHistorizers::CPilotWireHistorizer> m_pilotWire;
+   boost::shared_ptr<yApi::historization::CSwitch> m_overCurrent;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
 };
