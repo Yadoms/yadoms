@@ -17,7 +17,13 @@ namespace tools
       ///\param [in] eraseIfExists  If true the directory content is removed
       ///\return The temporary folder path
       //---------------------------------------------   
-      static Poco::Path getTemporaryFolder(const std::string & subFolderName = std::string(), bool eraseIfExists = false);
+      static Poco::Path createTemporaryFolder(const std::string & subFolderName = std::string(), bool eraseIfExists = false);
+   
+      //---------------------------------------------
+      ///\brief Get the log folder of the system if exists
+      ///\return The temporary folder path if exists, empty otherwise
+      //---------------------------------------------   
+      static Poco::Path getLogFolder();
 
       //---------------------------------------------
       ///\brief Check if a file/directory exists

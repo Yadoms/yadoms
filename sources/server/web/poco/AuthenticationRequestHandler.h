@@ -1,7 +1,6 @@
 #pragma once
 #include <Poco/Net/HTTPServer.h>
 #include <Poco/Net/HTTPRequestHandler.h>
-#include <Poco/Net/HTTPServerResponse.h>
 #include "authentication/IAuthentication.h"
 
 namespace web
@@ -18,7 +17,7 @@ namespace web
          ///\brief Constructor
          ///\param [in]    authenticator        The authenticator object which manage authentication
          ///\param [in]    baseRequestHandler   handle requests called after a successfull authentication
-         ///\param [in]    allowAuthentication  Indicate if the current request allow authentication (web only, should be false for rest and ws handlers)
+         ///\param [in]    allowAuthentication  Indicate if the current request allow authentication
          //-------------------------------------
          CAuthenticationRequestHandler(boost::shared_ptr<authentication::IAuthentication> authenticator, boost::shared_ptr<Poco::Net::HTTPRequestHandler> baseRequestHandler, bool allowAuthentication);
 
