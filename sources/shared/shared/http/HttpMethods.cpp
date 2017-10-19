@@ -60,21 +60,27 @@ namespace shared
             auto message = (boost::format("content not yet managed : %1%") % response.getContentType()).str();
             YADOMS_LOG(error) << message;
             throw exception::CException(message);
+
+            return false;
          }
 
          auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
          YADOMS_LOG(error) << message;
          throw exception::CException(message);
+
+         return false;
       }
 	  catch (const Poco::Net::SSLException& e)
 	  {
 		  std::cerr << e.what() << ": " << e.message() << std::endl;
+        return false;
 	  }
-      catch (Poco::Exception& e)
-      {
-         auto message = (boost::format("Fail to send get http request \"%1%\" : %2%") % session->getUrl() % e.message()).str();
-         YADOMS_LOG(error) << message;
-         throw exception::CException(message);
+     catch (Poco::Exception& e)
+     {
+        auto message = (boost::format("Fail to send get http request \"%1%\" : %2%") % session->getUrl() % e.message()).str();
+        YADOMS_LOG(error) << message;
+        throw exception::CException(message);
+        return false;
       }
    }
 

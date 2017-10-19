@@ -67,8 +67,8 @@ void CEquipmentManager::refreshEquipments(boost::shared_ptr<yApi::IYPluginApi> a
 			} while (!decoder->isFrameComplete(response));
 
 			// get last data from this last frame
-			decoder->getLastData(response);
-
+			response = decoder->getLastData(response);
+         m_deviceList.at(pair.first)->updateData(api, response);
 			// Todo : Reading of the last communication date. If the date is too old for data > 15mn - do not integrate it
 
 		}
