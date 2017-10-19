@@ -52,6 +52,11 @@ namespace web { namespace poco {
       ///\brief The aliases (alis, path to file)
       //-------------------------------------
       std::map<std::string, std::string> m_alias;
+      
+      //-------------------------------------
+      ///\brief Indicate if cache deature is disabled
+      //-------------------------------------
+      bool m_cacheDisabled;
    };
 
 

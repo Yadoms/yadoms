@@ -43,8 +43,8 @@ namespace web
                                                 const std::string& requestContent) const;
             shared::CDataContainer deleteAllPlugins(const std::vector<std::string>& parameters,
                                                     const std::string& requestContent) const;
-            shared::CDataContainer getInstanceState(const std::vector<std::string>& parameters,
-                                                    const std::string& requestContent) const;
+            shared::CDataContainer getInstanceState(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            shared::CDataContainer getInstanceRunning(const std::vector<std::string>& parameters, const std::string& requestContent) const;
             shared::CDataContainer getPluginDevices(const std::vector<std::string>& parameters,
                                                     const std::string& requestContent) const;
             shared::CDataContainer startInstance(const std::vector<std::string>& parameters,

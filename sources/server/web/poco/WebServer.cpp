@@ -13,14 +13,15 @@
 namespace web { namespace poco {
 
 
-   CWebServer::CWebServer(const std::string & address, const bool useSSL, const unsigned short port, const unsigned short securedPort, const std::string & doc_root, const std::string & restKeywordBase, const std::string & webSocketKeywordBase)
+   CWebServer::CWebServer(const std::string & address, const bool useSSL, const unsigned short port, const unsigned short securedPort, const std::string & doc_root, const std::string & restKeywordBase, const std::string & webSocketKeywordBase, bool allowExternalAccess)
       :m_httpRequestHandlerFactory(new CHttpRequestHandlerFactory())
    {
       //configure the factory
       m_httpRequestHandlerFactory->websiteHandlerConfigure(doc_root);
       m_httpRequestHandlerFactory->restHandlerConfigure(restKeywordBase);
       m_httpRequestHandlerFactory->webSocketConfigure(webSocketKeywordBase);
-
+      m_httpRequestHandlerFactory->allowExternalAccess(allowExternalAccess);
+      
       //setup HTTPServer Params (define name and version; to match common http server configuration)
       Poco::Net::HTTPServerParams::Ptr serverParams(new Poco::Net::HTTPServerParams());
       serverParams->setServerName("Yadoms");
