@@ -184,7 +184,8 @@ script:
 
 # Yadoms
 - echo 'Generating makefile'
-- sh cmake_linux.sh m
+#- sh cmake_linux.sh m
+- sh cmake_linux.sh r
 - cd projects
 - echo 'Building Yadoms'
 - make all_unity
