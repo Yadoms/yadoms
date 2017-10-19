@@ -1,0 +1,21 @@
+{
+   "name": "Orange Business Live objects",
+   "description": "This plugin synchronise data from Orange business live objects and Yadoms.",
+   "configurationSchema":{	
+      "APIKey": {
+         "name": "API Key",
+         "description": "The API key is obtained from the live object Orange web site"
+      }
+	},
+	"extraQueries" : {
+		"retreiveData" : {
+			"name" : "Retreive all data from the Orange business web site"
+		}
+   },
+	"customLabels": {
+		"pluginState": {
+			"initializationError": "Initialization error",
+			"updateConfiguration": "Configuration updating..."
+		}
+	}
+}

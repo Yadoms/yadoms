@@ -1,0 +1,21 @@
+﻿{
+   "name": "Orange business Live objects",
+   "description": "Ce plugin permets de synchroniser Yadoms avec le cloud Orange Business live object",
+   "configurationSchema":{
+      "APIKey": {
+         "name": "API Key",
+         "description": "La clé API est obtenue sur le site web Orange live business"
+      }
+   },
+	"extraQueries" : {
+		"retreiveData" : {
+			"name" : "Récupérer l'ensemble des équipements du site Orange"
+		}
+   },   
+	"customLabels": {
+		"pluginState": {
+         "initializationError": "Erreur d'initialisation",
+			"updateConfiguration": "Mise à jour de la configuration..."
+		}
+	}
+}

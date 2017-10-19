@@ -16,7 +16,6 @@ before_install:
 
 # deps
 - echo 'Installing some dependencies'
-#- sudo apt-get install libbz2-dev python-dev libudev-dev
 - sudo apt-get install libbz2-dev libudev-dev rpm
 
 #make dir
@@ -184,7 +183,6 @@ script:
 
 # Yadoms
 - echo 'Generating makefile'
-#- sh cmake_linux.sh m
 - sh cmake_linux.sh r
 - cd projects
 - echo 'Building Yadoms'
