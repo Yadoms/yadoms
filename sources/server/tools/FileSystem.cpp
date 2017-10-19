@@ -124,6 +124,7 @@ namespace tools
       }
       return true;
    }
+
    void CFileSystem::remove(const Poco::Path& path, bool recursive)
    {
       return remove(path.toString(), recursive);
