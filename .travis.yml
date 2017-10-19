@@ -191,3 +191,17 @@ script:
 - make all_unity
 - cd ..
 
+# Make Package => should not be executed if "make all_unity" is done before; 
+- cd projects
+- echo 'Building Yadoms Package'
+- make package/fast
+- cd ..
+
+after_failure:  # this will of course run only on failure
+# Package logs
+- echo 'Package logs'
+- tar cjf logs.`cat sources/server/Version.h | grep YadomsVersion | cut -d'"' -f2`.tar.bz2 logs
+- curl --ftp-create-dirs -T logs.`cat sources/server/Version.h | grep YadomsVersion | cut -d'"' -f2`.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}
+
+after_success: # and this only on success
+
