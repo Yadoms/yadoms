@@ -121,7 +121,7 @@ function tabClick(pageId) {
                 updateWidgetsPolling().always(function()
                 {
                    PageManager.updateWidgetLayout(page);
-                   page.$grid.packery("layout");                   
+                   page.$grid.packery('layout');                   
                 });
             });
         } else {
@@ -129,7 +129,7 @@ function tabClick(pageId) {
             updateWidgetsPolling().always(function()
             {
                PageManager.updateWidgetLayout(page);
-               page.$grid.packery("layout");               
+               page.$grid.packery('reloadItems');
                updateWebSocketFilter();
              });
         }
