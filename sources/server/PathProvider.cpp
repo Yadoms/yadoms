@@ -1,8 +1,9 @@
 ﻿#include "stdafx.h"
 #include "PathProvider.h"
+#include "tools/FileSystem.h"
 
 CPathProvider::CPathProvider(const boost::shared_ptr<startupOptions::IStartupOptions> startupOptions)
-   : m_logsPath("logs"),
+   : m_logsPath(tools::CFileSystem::getLogFolder().toString().empty() ? "logs" : tools::CFileSystem::getLogFolder().pushDirectory("yadoms").toString()),
      m_dataPath("data"),
      m_webServerPath(startupOptions->getWebServerInitialPath()),
      m_pluginsLogPath(m_logsPath / "plugins"),

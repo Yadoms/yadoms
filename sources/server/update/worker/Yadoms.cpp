@@ -28,7 +28,7 @@ namespace update
          //////////////////////////////////////////////////////////
          // STEP2 : download package file
          //////////////////////////////////////////////////////////
-         auto tempFolder = tools::CFileSystem::getTemporaryFolder();
+         auto tempFolder = tools::CFileSystem::createTemporaryFolder();
 
          YADOMS_LOG(information) << "Temporary update folder :" << tempFolder.toString();
 
