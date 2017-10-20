@@ -344,9 +344,9 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
          break;
       default:
          {
-            YADOMS_LOG(error) << "Invalid RfxCom message received, unknown packet type " << std::setfill('0')
+            YADOMS_LOG(warning) << "Invalid RfxCom message received, unknown packet type " << std::setfill('0')
                << std::setw(sizeof(unsigned char) * 2) << std::hex << static_cast<int>(buf->RXRESPONSE.packettype);
-            break;
+            return boost::shared_ptr<rfxcomMessages::IRfxcomMessage>();
          }
       }
 
