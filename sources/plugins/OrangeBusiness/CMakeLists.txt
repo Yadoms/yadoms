@@ -11,6 +11,8 @@ set(ORANGE_BUSINESS_PLUGIN_SOURCES
    OrangeBusiness.h
    OrangeBusinessConfiguration.cpp
    OrangeBusinessConfiguration.h
+   urlManager.cpp
+   urlManager.h
    stdafx.cpp
    stdafx.h
 )
