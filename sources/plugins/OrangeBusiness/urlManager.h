@@ -1,31 +1,53 @@
 #pragma once
 
 #include <shared/DataContainer.h>
-#include <Poco/Net/NetworkInterface.h>
-#include <Poco/Net/Socket.h>
 #include <shared/http/HttpMethods.h>
+#include "IurlManager.h"
 
 //--------------------------------------------------------------
 /// \brief	All url handling
 //--------------------------------------------------------------
-class urlManager
+class urlManager : public IurlManager
 {
 public:
-
-   static boost::posix_time::time_duration httpRequestCreationTimeout;
-   static boost::posix_time::time_duration httpRequestWESTimeout;
 
    urlManager();
 
    //--------------------------------------------------------------
-   /// \brief	    read files Status from the WES
-   /// \param[in]  socket              the IP adress with the socket where to send the frame
-   /// \param[in]  credentials         credentials (user, password) to access the WES
-   /// \param[in]  file                file we have to access
-   /// \return     the preprocess answer of the request
+   /// \brief	    get all equipments from the website
+   /// \param[in]  apikey              the apiKey to access the web site
+   /// \param[in]  page                the page of 20 equipments we want to read
+   /// \param[in]  activated           true, if we want to retreive only activated equipments
+   /// \param[in]  timeout             optional, the timeout of the request
+   /// \return     the json response
    //--------------------------------------------------------------
-   shared::CDataContainer getAllregisteredEquipments(const std::string &apikey,
-                                                     const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout);
+   shared::CDataContainer getRegisteredEquipments(const std::string &apikey,
+                                                  const int page,
+                                                  const bool activated,
+                                                  const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout);
+
+   //--------------------------------------------------------------
+   /// \brief	    get information from a specific device
+   /// \param[in]  apikey              the apiKey to access the web site
+   /// \param[in]  devEUI              the device unique ID
+   /// \param[in]  timeout             optional, the timeout of the request
+   /// \return     the json response
+   //--------------------------------------------------------------
+   shared::CDataContainer getDeviceInformation(const std::string &apikey, 
+                                               const std::string &devEUI,
+                                               const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout);
+
+   //--------------------------------------------------------------
+   /// \brief	    list command information
+   /// \param[in]  apikey              the apiKey to access the web site
+   /// \param[in]  devEUI              the device unique ID
+   /// \param[in]  timeout             optional, the timeout of the request
+   /// \return     the json response
+   //--------------------------------------------------------------
+   shared::CDataContainer listDeviceCommands(const std::string &apikey,
+                                             const std::string &devEUI,
+                                             const int page,
+                                             const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout);
 
 private:
 
@@ -33,4 +55,5 @@ private:
    /// \brief	    The url link to access properly the web site
    //--------------------------------------------------------------
    std::stringstream m_url;
+   std::stringstream m_baseUrl;
 };

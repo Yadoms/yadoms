@@ -14,7 +14,7 @@ void COrangeBusinessConfiguration::initializeWith(const shared::CDataContainer& 
    m_data.initializeWith(data);
 }
 
-std::string COrangeBusinessConfiguration::getAPIKey() const
+const std::string COrangeBusinessConfiguration::getAPIKey() const
 {
    return m_data.get<std::string>("APIKey");
 }

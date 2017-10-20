@@ -6,15 +6,24 @@ include("../YadomsPluginsCommon.cmake")
 ## Place here all the plugin source files
 #########################################
 set(ORANGE_BUSINESS_PLUGIN_SOURCES
+   Decoder.cpp
+   Decoder.h
+   deviceManager.cpp
+   deviceManager.h
+   DefaultEquipment.cpp
+   DefaultEquipment.h
+   IDecoder.h
+   IEquipment.h
    IOrangeBusinessConfiguration.h
+   IurlManager.h
    OrangeBusiness.cpp
    OrangeBusiness.h
    OrangeBusinessConfiguration.cpp
    OrangeBusinessConfiguration.h
-   urlManager.cpp
-   urlManager.h
    stdafx.cpp
    stdafx.h
+   urlManager.cpp
+   urlManager.h
 )
 	
 #########################################

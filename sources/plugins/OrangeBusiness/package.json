@@ -13,7 +13,10 @@
    },
 	"extraQueries" : {
 		"retreiveData" : {
-			"iconClass" : "glyphicon glyphicon-download-alt"
+			"iconClass" : "fa fa-cloud-download"
+		},
+		"onlyActivated" : {
+		   "iconClass" : "glyphicon glyphicon-download-alt"
 		}
    },
    "supportManuallyDeviceCreation": "false",

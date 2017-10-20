@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "OrangeBusiness.h"
+#include "Decoder.h"
 #include <shared/event/EventTimer.h>
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include <shared/Log.h>
+#include <shared/currentTime/Provider.h>
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -21,7 +23,7 @@ COrangeBusiness::~COrangeBusiness()
 // Event IDs
 enum
 {
-   kEvtTimerRefreshCPULoad = yApi::IYPluginApi::kPluginFirstEventId, // Always start from shared::event::CEventHandler::kUserFirstId
+   kEvtTimerRefreshDevices = yApi::IYPluginApi::kPluginFirstEventId, // Always start from shared::event::CEventHandler::kUserFirstId
    kRefreshStatesReceived,
    kConnectionRetryTimer,
    kAnswerTimeout
@@ -36,7 +38,24 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    try {
 
       m_isDeveloperMode = api->getYadomsInformation()->developperMode();
+      m_frameManager = boost::make_shared<urlManager>();
+      m_decoder = boost::make_shared<CDecoder>(); // TODO : create it directly at the constructor ?
+	   m_equipmentManager = boost::make_shared<CEquipmentManager>(api);
 
+      if (m_equipmentManager->size() > 0)
+      {
+		 // read values of devices every 15mn.
+         m_waitForAnswerTimer = api->getEventHandler().createTimer(kEvtTimerRefreshDevices,
+                                                                   shared::event::CEventTimer::kPeriodic,
+                                                                   boost::posix_time::minutes(15));
+
+		 // fire immediately a event to read devices values
+		 m_waitForAnswerTimer = api->getEventHandler().createTimer(kEvtTimerRefreshDevices,
+																   shared::event::CEventTimer::kOneShot,
+																   boost::posix_time::seconds(0));
+      }
+
+      // TODO : create others plugin state : ready, if no devices exists, for example, no connexion to the server, ...
       api->setPluginState(yApi::historization::EPluginState::kRunning);
       YADOMS_LOG(information) << "Orange Business plugin is running..." ;
    }
@@ -70,6 +89,17 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
          break;
       }
+      case kRefreshStatesReceived:
+      {
+		  try {
+			  m_equipmentManager->refreshEquipments(api, m_frameManager, m_configuration.getAPIKey(), m_decoder);
+		  }
+		  catch (std::exception &e)
+		  {
+			  YADOMS_LOG(error) << "exception : " << e.what();
+		  }
+		  break;
+      }
       case yApi::IYPluginApi::kEventExtraQuery:
       {
          // Command was received from Yadoms
@@ -78,7 +108,10 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             if (extraQuery->getData()->query() == "retreiveData")
             {
-               processRetreiveData(api);
+               registerAllDevices(api); 
+            } else if (extraQuery->getData()->query() == "onlyActivated")
+            {
+               registerActivatedDevices(api); 
             }
          }
          extraQuery->sendSuccess(shared::CDataContainer());
@@ -98,10 +131,44 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void COrangeBusiness::processRetreiveData(boost::shared_ptr<yApi::IYPluginApi> api)
+void COrangeBusiness::registerAllDevices(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   shared::CDataContainer response = m_frameManager.getAllregisteredEquipments(m_configuration.getAPIKey()); //http://liveobjects.orange-business.com
-   response.printToLog(YADOMS_LOG(information));
+   try
+   {
+      int page = 0;
+      shared::CDataContainer response;
+
+      do {
+         response = m_frameManager->getRegisteredEquipments(m_configuration.getAPIKey(), page, false); //http://liveobjects.orange-business.com
+         m_equipmentManager = boost::make_shared<CEquipmentManager>(m_decoder->decodeDevicesMessage(api, response));
+         response.printToLog(YADOMS_LOG(information));
+         ++page;
+      } while (!m_decoder->isFrameComplete(response));
+   }
+   catch (std::exception &e)
+   {
+      YADOMS_LOG(error) << "exception : " << e.what();
+   }
+}
+
+void COrangeBusiness::registerActivatedDevices(boost::shared_ptr<yApi::IYPluginApi> api)
+{
+   try
+   {
+      int page = 0;
+      shared::CDataContainer response;
+
+      do {
+         response = m_frameManager->getRegisteredEquipments(m_configuration.getAPIKey(), page, true); //http://liveobjects.orange-business.com
+         m_decoder->decodeDevicesMessage(api, response);
+         response.printToLog(YADOMS_LOG(information));
+         ++page;
+      } while (!m_decoder->isFrameComplete(response));;
+   }
+   catch (std::exception &e)
+   {
+      YADOMS_LOG(error) << "exception : " << e.what();
+   }
 }
 
 void COrangeBusiness::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData)
@@ -112,16 +179,4 @@ void COrangeBusiness::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi>
 
    // Update configuration
    m_configuration.initializeWith(newConfigurationData);
-}
-
-void COrangeBusiness::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceName) const
-{
-   // keywords list for declaration
-   //std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywordsDeclaration({ m_messageKeyword, m_rssi, m_batteryLevel, m_snr, m_signalPower });
-
-   if (api->deviceExists(deviceName))
-      return;
-
-   std::string m_model = "";
-   //api->declareDevice(deviceName, deviceName, m_model, m_keywordsDeclaration);
 }
