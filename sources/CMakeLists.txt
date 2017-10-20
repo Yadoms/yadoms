@@ -19,7 +19,7 @@ cmake_minimum_required (VERSION 3.2.0)
 ## Extract Yadoms version from Version.h
 ##################################################################################################
 include(cmake/version.cmake)
-message ("### Building Yadoms ${YADOMS_VERSION} ###\n")
+message (STATUS "### Building Yadoms ${YADOMS_VERSION} ###\n")
 
 
 ##################################################################################################

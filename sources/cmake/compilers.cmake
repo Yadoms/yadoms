@@ -1,6 +1,6 @@
 # Compilers/IDE specific configurations
 #
-message("System Name = ${CMAKE_SYSTEM_NAME}")
+message(STATUS "System Name = ${CMAKE_SYSTEM_NAME}")
 
 if(MSVC)
 
