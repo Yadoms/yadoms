@@ -128,17 +128,6 @@ before_install:
 
 # Python
 - sudo apt-get install python-dev
-#- echo 'Building Python'
-#- if [ ${GENERATE_PYTHON} != true ]; then wget -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/Python-2.7.13-build.tar.bz2; else wget https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz; fi
-#- if [ ${GENERATE_PYTHON} != true ]; then tar xjf Python-2.7.13-build.tar.bz2; else tar xzf Python-2.7.13.tgz; fi
-#- cd Python-2.7.13
-#- if [ ${GENERATE_PYTHON} != true ]; then echo "Bypass PYTHON/configure"; else ./configure --enable-shared --with-system-expat > $HOME/logs/yadoms_python.log; fi
-#- if [ ${GENERATE_PYTHON} != true ]; then echo "Bypass PYTHON/make"; else make > $HOME/logs/yadoms_python.log; fi
-#- sudo make install > $HOME/logs/yadoms_python.log
-#- cd ..
-#- if [ ${GENERATE_PYTHON} = true ]; then tar cjf Python-2.7.13-build.tar.bz2 Python-2.7.13; fi
-#- if [ ${GENERATE_PYTHON} = true ]; then curl --ftp-create-dirs -T Python-2.7.13-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-#- if [ ${GENERATE_PYTHON} = true ]; then rm -f Python-2.7.13-build.tar.bz2; fi
 
 # PostgreSQL
 - echo 'Building PostgreSQL'
@@ -156,7 +145,6 @@ before_install:
 script:
 # Yadoms configuration file
 - echo 'Configuring Yadoms CMakeListsUserConfig.txt'
-#- cp sources/CMakeListsUserConfig.sample.txt sources/CMakeListsUserConfig.txt 
 - echo 'set(BOOST_ROOT "'$PWD'/boost_1_65_1")' > sources/CMakeListsUserConfig.txt
 - echo 'set(POCO_ROOT "'$PWD'/poco-1.7.9-all")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PROTOBUF_ROOT "'$HOME'/depsBuild/protobuf")' >> sources/CMakeListsUserConfig.txt
@@ -166,11 +154,6 @@ script:
 - echo 'set(DEBUG_WITH_GCC OFF)' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PYTHON_USE_PKGCONFIG ON)' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PYTHON_USE_SOURCES OFF)' >> sources/CMakeListsUserConfig.txt
-#- echo 'set(PYTHON_ROOT "'$PWD'/Python-2.7.13")' >> sources/CMakeListsUserConfig.txt
-#- echo 'set(PYTHON_LIBRARIES "'$PWD'/Python-2.7.13/libpython2.7.so")' >> sources/CMakeListsUserConfig.txt
-#- echo 'set(PYTHON_INCLUDE_DIRS ' >> sources/CMakeListsUserConfig.txt
-#- echo '       "'$PWD'/Python-2.7.13"' >> sources/CMakeListsUserConfig.txt
-#- echo '       "'$PWD'/Python-2.7.13/Include")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PostgreSQL_ROOT ' >> sources/CMakeListsUserConfig.txt
 - echo '       "'$PWD'/postgresql-9.6.2/src/interfaces/libpq"' >> sources/CMakeListsUserConfig.txt
 - echo '       "'$PWD'/postgresql-9.6.2/src/include")' >> sources/CMakeListsUserConfig.txt
@@ -183,23 +166,10 @@ script:
 
 # Yadoms
 - echo 'Generating makefile'
-- sh cmake_linux.sh r
+- sh cmake_linux.sh m
 - cd projects
 - echo 'Building Yadoms'
 - make all_unity
 - cd ..
 
-# Make Package => should not be executed if "make all_unity" is done before; 
-- cd projects
-- echo 'Building Yadoms Package'
-- make package/fast
-- cd ..
-
-after_failure:  # this will of course run only on failure
-# Package logs
-- echo 'Package logs'
-- tar cjf logs.`cat sources/server/Version.h | grep YadomsVersion | cut -d'"' -f2`.tar.bz2 logs
-- curl --ftp-create-dirs -T logs.`cat sources/server/Version.h | grep YadomsVersion | cut -d'"' -f2`.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}
-
-after_success: # and this only on success
 
