@@ -2,6 +2,7 @@
 #include "LiveStations.h"
 #include <shared/exception/Exception.hpp>
 #include <shared/http/HttpMethods.h>
+#include <shared/http/StandardSession.h>
 #include "Location.h"
 #include "../RequestErrorException.hpp"
 #include "../webSiteErrorException.hpp"
@@ -26,8 +27,11 @@ void CLiveStations::processLookUp(boost::shared_ptr<yApi::IYPluginApi> api,
       //send a new lookup only if different of the last one
       if (m_location->latitude() != m_lastSearchLocation->latitude() || m_location->longitude() != m_lastSearchLocation->longitude())
       {
-         shared::CDataContainer noParameters;
-         shared::CHttpMethods::SendGetRequest("http://api.wunderground.com/api/" + apikey + "/geolookup/q/" + std::to_string(m_location->latitude()) + "," + std::to_string(m_location->longitude()) + ".json",
+         shared::CDataContainer noParameters, noheaderParameter;
+		 std::string url = "http://api.wunderground.com/api/" + apikey + "/geolookup/q/" + std::to_string(m_location->latitude()) + "," + std::to_string(m_location->longitude()) + ".json";
+		 boost::shared_ptr<shared::StandardSession> session = boost::make_shared<shared::StandardSession>(url);
+		 shared::CHttpMethods::SendGetRequest(session,
+                                              noheaderParameter,
                                               noParameters,
                                               [&](shared::CDataContainer& data)
                                               {

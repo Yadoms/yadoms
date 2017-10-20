@@ -3,6 +3,7 @@
 #include <shared/event/EventTimer.h>
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/http/HttpMethods.h>
+#include <shared/http/StandardSession.h>
 #include <shared/exception/Exception.hpp>
 #include "ErrorAnswerHandler.h"
 #include "RequestErrorException.hpp"
@@ -238,9 +239,11 @@ shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yAp
    try
    {
       shared::CDataContainer returnData;
-      shared::CDataContainer noParameters;
+      shared::CDataContainer noParameters, noheaderParameter;
+	  boost::shared_ptr<shared::StandardSession> session = boost::make_shared<shared::StandardSession>(url);
 
-      shared::CHttpMethods::SendGetRequest(url,
+      shared::CHttpMethods::SendGetRequest(session,
+                                           noheaderParameter,
                                            noParameters,
                                            [&](shared::CDataContainer& data)
                                            {
