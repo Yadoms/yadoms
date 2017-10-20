@@ -117,6 +117,8 @@ set(SHARED_LIB_SRC
    shared/http/IHttpSession.h
    shared/http/HttpMethods.h
    shared/http/HttpMethods.cpp
+   shared/http/SecureSession.h
+   shared/http/SecureSession.cpp
    shared/http/StandardSession.h
    shared/http/StandardSession.cpp
 

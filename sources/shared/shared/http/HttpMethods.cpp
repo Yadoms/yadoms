@@ -4,7 +4,7 @@
 #include <Poco/Net/SSLException.h>
 #include <shared/exception/Exception.hpp>
 #include <shared/Log.h>
-//#include "SecureSession.h"
+#include "SecureSession.h"
 #include "StandardSession.h"
 
 namespace shared
