@@ -50,9 +50,6 @@ function initializeWidgetEngine() {
                     widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateIntervalWithWebSocketDisabled);
                 else
                     widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateInterval);
-
-                //we update widget data
-                updateWidgetsPolling();
             })
             .fail(function (error) {
                 notifyError($.t("objects.generic.errorGetting", { objectName: $.t("core.event") }, error));
@@ -124,7 +121,7 @@ function tabClick(pageId) {
                 updateWidgetsPolling().always(function()
                 {
                    PageManager.updateWidgetLayout(page);
-                   page.$grid.packery("layout");                   
+                   page.$grid.packery('layout');                   
                 });
             });
         } else {
@@ -132,7 +129,7 @@ function tabClick(pageId) {
             updateWidgetsPolling().always(function()
             {
                PageManager.updateWidgetLayout(page);
-               page.$grid.packery("layout");               
+               page.$grid.packery('reloadItems');
                updateWebSocketFilter();
              });
         }
@@ -178,10 +175,10 @@ function periodicUpdateTask() {
 
                 //Maybe there is a lot of time between the turn off of the server and the turn on, so we must ask all widget
                 //data to be sure that all information displayed are fresh
-                updateWidgetsPolling();
-
-                //we update the filter of the websockets to receive only wanted data
-                updateWebSocketFilter();
+                updateWidgetsPolling().always(function() {
+                   //we update the filter of the websockets to receive only wanted data
+                   updateWebSocketFilter();                   
+                });
             });
         }
 
@@ -250,7 +247,7 @@ function dispatchNewAcquisitionsToWidgets(acq) {
     var page = PageManager.getCurrentPage();
     if (page == null)
         return;
-
+     
     $.each(page.widgets, function (widgetIndex, widget) {
         //we ask which devices are needed for this widget instance
         if (!isNullOrUndefined(widget.listenedKeywords)) {
@@ -328,7 +325,7 @@ function updateWebSocketFilter() {
 
 function updateWidgetsPolling() {
     var d = new $.Deferred();
-
+    
     //we browse each widget instance
     var page = PageManager.getCurrentPage();
     if (page == null) {

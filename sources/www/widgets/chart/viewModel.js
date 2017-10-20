@@ -147,6 +147,7 @@ widgetViewModelCtor =
                "libs/highstock/js/modules/exporting.js",
                "libs/highstock/js/modules/offline-exporting.js",
                "libs/highstock/js/modules/canvas-tools.js",
+               "libs/highstock/js/modules/boost.js",
                "libs/export-csv/js/export-csv.min.js",
                "libs/highcharts-export-clientside/js/highcharts-export-clientside.min.js"
            ]).done(function () {
@@ -155,6 +156,10 @@ widgetViewModelCtor =
                    chart: {
                        type: 'line',
                        marginTop: 10
+                   },
+                   boost: {
+                      allowForce: true,
+                      useGPUTranslations: true
                    },
                    legend: {
                        layout: 'horizontal',

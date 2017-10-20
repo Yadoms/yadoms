@@ -305,7 +305,6 @@ void CWES::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, EWESPluginSt
       case kmanuallyCreationDeviceFailed:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "manuallyCreationError");
          break;
-         break;
       case kRunning:
          api->setPluginState(yApi::historization::EPluginState::kRunning);
          break;
