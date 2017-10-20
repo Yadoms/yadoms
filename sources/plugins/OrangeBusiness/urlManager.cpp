@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "urlManager.h"
 #include <shared/Log.h>
-#include "shared/http/SecureSession.h"
+//#include "shared/http/SecureSession.h"
 
 urlManager::urlManager():
    m_url("https://liveobjects.orange-business.com/api/v0"), //liveobjects
@@ -28,15 +28,15 @@ shared::CDataContainer urlManager::getRegisteredEquipments(const std::string &ap
       parameters.set("status", "ACTIVATED");
 
    std::string deviceUrl = m_url.str() + "/vendors/lora/devices";
-   boost::shared_ptr<shared::SecureSession> session = boost::make_shared<shared::SecureSession>(deviceUrl);
-   shared::CHttpMethods::SendGetRequest(session,
-                                        headerParameters,
-                                        parameters,
-                                        [&](shared::CDataContainer& data)
-                                        {
-                                           response = data;
-                                        },
-                                        timeout);
+   //auto session = boost::make_shared<shared::CStandardSession>(deviceUrl);
+   //shared::CHttpMethods::SendGetRequest(session,
+   //                                     headerParameters,
+   //                                     parameters,
+   //                                     [&](shared::CDataContainer& data)
+   //                                     {
+   //                                        response = data;
+   //                                     },
+   //                                     timeout);
 
    return response;
 }
@@ -55,15 +55,15 @@ shared::CDataContainer urlManager::getDeviceInformation(const std::string &apike
    headerParameters.set("Accept", "application/json");
 
    std::string deviceUrl = "https://liveobjects.orange-business.com/api/v0/vendors/lora/devices/" + devEUI;
-   boost::shared_ptr<shared::SecureSession> session = boost::make_shared<shared::SecureSession>(deviceUrl);
-   shared::CHttpMethods::SendGetRequest(session,
-                                        headerParameters,
-                                        noParameters,
-                                        [&](shared::CDataContainer& data)
-                                        {
-                                           response = data;
-                                        },
-                                        timeout);
+   //boost::shared_ptr<shared::SecureSession> session = boost::make_shared<shared::SecureSession>(deviceUrl);
+   //shared::CHttpMethods::SendGetRequest(session,
+   //                                     headerParameters,
+   //                                     noParameters,
+   //                                     [&](shared::CDataContainer& data)
+   //                                     {
+   //                                        response = data;
+   //                                     },
+   //                                     timeout);
 
    return response;
 }
@@ -85,15 +85,15 @@ shared::CDataContainer urlManager::listDeviceCommands(const std::string &apikey,
    parameters.set("page", boost::lexical_cast<std::string>(page));
 
    std::string deviceUrl = "https://liveobjects.orange-business.com/api/v0/vendors/lora/devices/" + devEUI + "/commands";
-   boost::shared_ptr<shared::SecureSession> session = boost::make_shared<shared::SecureSession>(deviceUrl);
-   shared::CHttpMethods::SendGetRequest(session,
-                                        headerParameters,
-                                        parameters,
-                                        [&](shared::CDataContainer& data)
-                                        {
-                                           response = data;
-                                        },
-                                        timeout);
+   //boost::shared_ptr<shared::SecureSession> session = boost::make_shared<shared::SecureSession>(deviceUrl);
+   //shared::CHttpMethods::SendGetRequest(session,
+   //                                     headerParameters,
+   //                                     parameters,
+   //                                     [&](shared::CDataContainer& data)
+   //                                     {
+   //                                        response = data;
+   //                                     },
+   //                                     timeout);
 
    return response;
 }
