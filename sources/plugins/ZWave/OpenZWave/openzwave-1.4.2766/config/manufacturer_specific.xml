@@ -340,7 +340,6 @@
 	<Manufacturer id="014a" name="Ecolink">
 		<Product type="0001" id="0001" name="Motion Sensor" config="ecolink/sensor.xml"/>
 		<Product type="0001" id="0002" name="Door/Window Sensor" config="ecolink/doorwindow.xml"/>
-		<Product type="0004" id="0002" name="Door/Window Sensor" config="ecolink/doorwindow.xml"/>
 		<Product type="0001" id="0003" name="Tilt Sensor" config="ecolink/sensor.xml"/>
 		<Product type="0004" id="0001" name="Motion Detector" config="ecolink/motion.xml"/>
 		<Product type="0004" id="0002" name="Door/Window Sensor" config="ecolink/doorwindow.xml"/>
@@ -878,6 +877,7 @@
 		<Product type="0003" id="0002" name="Danalock Circle/Square" config="polycontrol/doorlock.xml"/>
 		<Product type="0001" id="0001" name="Polylock" config="polycontrol/polylock.xml"/>
 		<Product type="0008" id="0002" name="Danalock V2 BTZE" config="polycontrol/doorlock.xml"/>
+		<Product type="0009" id="0001" name="Danalock V3 BTZE" config="polycontrol/doorlockv3.xml"/>
 	</Manufacturer>
 	<Manufacturer id="0154" name="Popp">
 		<Product type="0001" id="0001" name="123658 Plug-in Switch plus Power Meter" config="popp/123658.xml"/>
@@ -970,6 +970,7 @@
 		<Product type="8000" id="0002" name="ZFM-80" config="remotec/zfm-80.xml" />
 		<Product type="0200" id="8031" name="ZTS-110" config="remotec/zts-110.xml" />
 		<Product type="0202" id="8031" name="ZTS-110" config="remotec/zts-110.xml" />
+		<Product type="0200" id="8170" name="ZTS-500US" config="remotec/zts-500.xml" />
 	</Manufacturer>
 	<Manufacturer id="0010" name="RCS">
 		<Product type="0001" id="0002" name="TZ43 Thermostat" config="rcs/therm0009.xml" />
@@ -1192,9 +1193,11 @@
 	<Manufacturer id="0131" name="Zipato">
 		<Product type="0002" id="0002" name="RGBW LED Bulb" config="zipato/RGBBulb.xml" />
 		<Product type="0002" id="0003" name="Bulb 2" config="zipato/RGBBulb2.xml"/>
+		<Product type="0002" id="000c" name="PST02-A 4 in 1 Multi-Sensor" config="philio/pst02.xml"/>
 		<Product type="6131" id="4501" name="Zipato Mini Keypad" config="zipato/MiniKeypad.xml" />
 		<Product type="2001" id="0106" name="VS-ZD2102 Door/Window Sensor" config="zipato/vszd2102.xml" />
 		<Product type="2002" id="0205" name="ZP3102-EU Multisensor Duo" config="zipato/zp3102.xml"/>
+		<Product type="201f" id="1f20" name="ZD2301 Multisensor 4in1" config="vision/zd2301.xml"/>
 		<Product type="8002" id="1000" name="Smart Smoke Sensor HS1SA-Z" config="heiman/HS1SA-Z.xml"/>
 		<Product type="8003" id="1000" name="Combustible Gas Sensor HS1CG-Z" config="heiman/HS1CG-Z.xml"/>
 		<Product type="8004" id="1000" name="Water Leakage Sensor HS1WL-Z" config="heiman/HS1WL-Z.xml"/>
@@ -1209,6 +1212,7 @@
 		<Product type="2021" id="2101" name="ZSE40 4-in-1 sensor" config="zooz/zse40.xml" />
 		<Product type="0003" id="0088" name="ZSE33 Smart Chime" config="zooz/zse33.xml" />
 		<Product type="0101" id="000a" name="ZEN06" config="zooz/zen06.xml"/>
+		<Product type="b111" id="251c" name="ZEN23 Toggle Switch V2" config="zooz/zen23.xml" />
 	</Manufacturer>
 	<Manufacturer id="015d" name="Zooz">
 		<Product type="0651" id="f51c" name="ZEN20 Power Strip" config="zooz/zen20.xml" />

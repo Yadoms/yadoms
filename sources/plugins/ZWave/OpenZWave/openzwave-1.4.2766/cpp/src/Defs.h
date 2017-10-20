@@ -146,7 +146,7 @@ static inline int version_cmp(struct ozwversion a, struct ozwversion b)
 }
 
 #include "OZWException.h"
-#define OPENZWAVE_DISABLE_EXCEPTIONS
+//#define OPENZWAVE_DISABLE_EXCEPTIONS
 #if defined(_MSC_VER)
 #  define __MYFUNCTION__ __FUNCTION__
 #else
