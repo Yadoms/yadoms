@@ -1,6 +1,5 @@
 #pragma once
 #include "IHttpSession.h"
-#include <Poco/Net/HTTPSClientSession.h>
 #include <boost/shared_ptr.hpp>
 
 namespace shared
@@ -23,7 +22,7 @@ namespace shared
       // [END] IHTTPSession implementation
 
 	private:
-		boost::shared_ptr<Poco::Net::HTTPSClientSession> m_session;
+		boost::shared_ptr<Poco::Net::HTTPClientSession> m_session;
 		std::string m_url;
 	};
 } // namespace shared

@@ -2,6 +2,7 @@
 #include "SecureSession.h"
 #include <Poco/Net/Context.h>
 #include <Poco/URI.h>
+#include <Poco/Net/HTTPSClientSession.h>
 
 namespace shared
 {
