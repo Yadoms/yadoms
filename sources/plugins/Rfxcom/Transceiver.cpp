@@ -597,7 +597,7 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
 void CTransceiver::logMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                               const boost::shared_ptr<rfxcomMessages::IRfxcomMessage>& message)
 {
-   if (!message->getDeviceName().empty())
+   if (!!message && !message->getDeviceName().empty())
    {
       YADOMS_LOG(information) << "Receive data for " << message->getDeviceName();
       for (const auto& keyword : message->keywords())
