@@ -387,13 +387,3 @@ PageManager.updateWidgetLayout = function (page) {
         WidgetManager.updateWidgetLayout(value);
     });
 };
-
-/**
- * Refresh all widgets on the page
- * @param {Object} page The page to update
- */
-PageManager.refreshWidgets = function (page) {
-    $.each(page.widgets, function (index, value) {
-        WidgetManager.refreshWidgets(value);
-    });
-};
