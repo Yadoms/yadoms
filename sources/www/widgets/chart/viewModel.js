@@ -40,8 +40,41 @@ widgetViewModelCtor =
        
        function isOdd(num) {return num % 2;}
        
+       this.changexAxisBound = function(dateMin){
+          var self = this;
+          
+          var datet = DateTimeFormatter.isoDateToDate(dateMin)._d.getTime();
+          self.chart.xAxis[0].setExtremes(datet, null);
+       };
+       
+       this.calculateBeginDate = function(interval, time, prefix) {
+        var dateValue;
+        switch (interval) {
+            case "HOUR":
+                dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'hours').startOf(prefix));
+                break;
+            default:
+            case "DAY": //we request hour summary data
+                dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'days').startOf(prefix));
+                break;
+            case "WEEK": //we request hour summary data
+                dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'weeks').startOf(prefix));
+                break;
+            case "MONTH": //we request day summary data
+                dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'months').startOf(prefix));
+                break;
+            case "HALF_YEAR": //we request day summary data
+                dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(6, 'months').startOf(prefix));
+                break;
+            case "YEAR": //we request day summary data
+                dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'years').startOf(prefix));
+                break;
+        }
+        return dateValue;
+       };
+       
        this.createAxis = function (index, configuration, device) {
-           self = this;
+           var self = this;
            
            var colorAxis = "#606060"; // default color
            var yAxisName;
@@ -173,19 +206,15 @@ widgetViewModelCtor =
                    rangeSelector: {
                        enabled: false
                    },
-
                    title: {
                        text: null
                    },
-
                    scrollbar: {
                        enabled: false
                    },
-
                    subtitle: {
                        text: ''
                    },
-
                    xAxis: {
                        ordinal: false, //axis is linear
                        events: {},
@@ -240,11 +269,9 @@ widgetViewModelCtor =
                        },
                        shared: true
                    },
-
                    exporting: {
                        enabled: false
                    },
-
                    series: []
                };
 
@@ -508,7 +535,6 @@ widgetViewModelCtor =
                var interval = $(e.currentTarget).attr("interval");
                
                self.interval = interval;
-               
                self.chartParametersConfiguration();
 
                //we manage button inversion
@@ -556,46 +582,26 @@ widgetViewModelCtor =
                    if (!self.refreshingData) {
                        self.chart.showLoading($.t("widgets/chart:loadingData"));
                        self.refreshingData = true;
+                       //debugger;
                        //we compute the date from the configuration
-                       var dateFrom = "";
+                       var dateFrom = self.calculateBeginDate(interval, self.serverTime, self.prefix);
+                       //debugger;
                        var isSummaryData = true; // by default
                        var deviceIsSummary = [];
 					        var ChartIndex = 0;
                        var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
                        var prefixUri = "/" + self.prefix;
                        var timeBetweenTwoConsecutiveValues = moment.duration(1, self.prefix).asMilliseconds();
-                       
-                       
-                       switch (interval) {
-                           case "HOUR":
 
-                               //The goal is to ask to the server the elapsed time only. Example : 22h00 -> 22h59mn59s.
-                               //If you ask 22h00 -> 23h00, the system return also the average for 23h. If 23h is not complete, the value will be wrong.
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime)); // rewriting the final time
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'hours').startOf(self.prefix));
-                               //we request all data
-                               timeBetweenTwoConsecutiveValues = undefined;
-                               isSummaryData = false; // rewrite the isSummaryData
-                               prefixUri = ""; // rewrite the prefix
-                               break;
-                           default:
-                           case "DAY": //we request hour summary data
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'days').startOf(self.prefix));
-                               break;
-                           case "WEEK": //we request hour summary data
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'weeks').startOf(self.prefix));
-                               break;
-                           case "MONTH": //we request day summary data
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'months').startOf(self.prefix));
-                               break;
-                           case "HALF_YEAR": //we request day summary data
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(6, 'months').startOf(self.prefix));
-                               break;
-                           case "YEAR": //we request day summary data
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'years').startOf(self.prefix));
-                               break;
+                       if (interval == "HOUR")
+                       {
+                         dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime)); // rewriting the final time
+                         //we request all data
+                         timeBetweenTwoConsecutiveValues = undefined;
+                         isSummaryData = false; // rewrite the isSummaryData
+                         prefixUri = ""; // rewrite the prefix                          
                        }
-
+                       
                        //ensure all series and axis are removed (may cause some crash if not done)
                        while (self.chart.series.length > 0)
                            self.chart.series[0].remove(false);
@@ -740,7 +746,6 @@ widgetViewModelCtor =
                                           }
                                        }
                                    }
-                                   
                                    var axisName;
                                    try{
                                       axisName = self.createAxis(index, self.widget.configuration, device);
@@ -868,9 +873,7 @@ widgetViewModelCtor =
                                           self.chart.legend.renderItem(serie);
                                        }                                       
                                        self.chart.legend.render();
-
                                    }
-
                                    self.refreshingData = false;
                                })
                                .fail(function (error) {
@@ -879,7 +882,6 @@ widgetViewModelCtor =
                                });
                            }
                        });
-
                        $.whenAll(arrayOfDeffered).done(function () {
                            self.finalRefresh();
                            d.resolve();
@@ -895,7 +897,6 @@ widgetViewModelCtor =
                    d.reject();
                }
            }
-           
            return d.promise();
        };
 
@@ -923,25 +924,6 @@ widgetViewModelCtor =
 
            self.chart.redraw(false); //without animation
        };
-	   
-       this.cleanUpChart = function (serie, finaldate, dateInMilliSecondes) {
-           var ex = false;
-
-           var isofinaldate = DateTimeFormatter.isoDateToDate(finaldate)._d.getTime().valueOf();
-                      
-           while (!ex) {
-               if (!isNullOrUndefined(serie.points)) {
-                   if (!isNullOrUndefined(serie.points[0])) {
-                       if ((isofinaldate - serie.points[0].x) > dateInMilliSecondes)
-                           serie.removePoint(0, true); // If false, we never delete the point -> infinite loop
-                       else
-                           ex = true;
-                   } else
-                       ex = true;
-               } else
-                   ex = true;
-           }
-       };      
 
        this.addContinuousSummaryPoint = function () {
           var self = this;
@@ -981,15 +963,27 @@ widgetViewModelCtor =
          });
        };
        
+       this.cleanUpChart = function (serie, finaldate, dateInMilliSecondes) {
+          var self = this;
+                      
+            if (!isNullOrUndefined(serie.points)) {
+                if (!isNullOrUndefined(serie.points[0])) {
+                    if ((finaldate - serie.points[0].x) > dateInMilliSecondes)
+                        self.changexAxisBound(self.calculateBeginDate(self.interval, self.serverTime, self.prefix));
+                }
+            }
+       };
+       
        this.onTime = function (serverLocalTime) {
          var self = this;
          self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime); // Update the serverTime
          
          var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
+         var isofinaldate = DateTimeFormatter.isoDateToDate(dateTo)._d.getTime().valueOf();
             
          // If a serie is available
          self.addContinuousSummaryPoint();
-		 
+         
          $.each(self.seriesUuid, function (index, value) {
          
             var serie = self.chart.get(value);
@@ -997,12 +991,12 @@ widgetViewModelCtor =
             
             // If a serie is available  // Clean points > cleanValue for serie
             if (!isNullOrUndefined(serie))
-               self.cleanUpChart(serie, dateTo, self.cleanValue);
+               self.cleanUpChart(serie, isofinaldate, self.cleanValue);
 
              // Clean points > cleanValue for ranges, if any
             if (!isNullOrUndefined(serieRange))
-               self.cleanUpChart(serieRange, dateTo, self.cleanValue);
-         });
+               self.cleanUpChart(serieRange, isofinaldate, self.cleanValue);
+         });         
        };
       
        this.DisplaySummary = function (index, nb, device, range, prefix, lastPointDate) {
