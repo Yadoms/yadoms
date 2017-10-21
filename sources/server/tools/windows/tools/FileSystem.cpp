@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "../../FileSystem.h"
-#include <shared/Log.h>
-#include <Poco/File.h>
 
 namespace tools
 {
