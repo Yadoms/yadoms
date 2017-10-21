@@ -672,12 +672,6 @@ widgetViewModelCtor =
                                            } else {
                                                throw Error("Unable to parse answer");
                                            }
-
-                                           //we manage the missing data
-                                           if ((lastDate != undefined) && (timeBetweenTwoConsecutiveValues != undefined) &&
-                                           (lastDate + timeBetweenTwoConsecutiveValues < d)) {
-                                               plot.push([lastDate + 1, null]);
-                                           }
                                            
                                            // The differential display is disabled if the type of the data is enum or boolean
                                            if (self.differentialDisplay[index] && !self.isBoolVariable(index) && !self.isEnumVariable(index))
@@ -754,8 +748,7 @@ widgetViewModelCtor =
                                    var axisName;
                                    try{
                                       axisName = self.createAxis(index, self.widget.configuration, device);
-                                   }catch(error)
-                                   {
+                                   }catch(error){
                                       console.error (error);
                                    }
                                    
@@ -773,8 +766,8 @@ widgetViewModelCtor =
                                       legendText = $.t("widgets/chart:keywordNotFound", {Id: device.content.source.keywordId});
                                    }
                                    
+                                   var serie = null;
                                    try {
-                                      
                                        // Standard options
                                        var serieOption = {
                                           id: self.seriesUuid[index],
@@ -805,13 +798,15 @@ widgetViewModelCtor =
                                        }
                                        
                                        //Add plot
-                                       self.chart.addSeries( serieOption, false, false); // Do not redraw immediately
+                                       serie = self.chart.addSeries(serieOption, false, false); // Do not redraw immediately
 										         ChartIndex = ChartIndex + 1;
                                            
                                        if (device.content.PlotType === "arearange") {
                                            //Add Ranges
                                            if (deviceIsSummary[index]) {
-                                               self.chart.addSeries({
+                                               var serieRange = null;
+                                               
+                                               serieRange = self.chart.addSeries({
                                                    id: 'range_' + self.seriesUuid[index],
                                                    index: ChartIndex,
                                                    data: range,
@@ -831,8 +826,6 @@ widgetViewModelCtor =
 											   
                                                ChartIndex = ChartIndex + 1;
 
-                                               var serieRange = self.chart.get('range_' + self.seriesUuid[index]);
-
                                                // Add Units for ranges
                                                if (serieRange)
                                                {
@@ -850,17 +843,15 @@ widgetViewModelCtor =
                                        console.error('Fail to create serie : ' + err2);
                                    }
 
-                                   var serie = self.chart.get(self.seriesUuid[index]);
-
-                                   //we save the unit in the serie
                                    if (serie) {
+                                      
+                                      //we save the unit in the serie for tooltip formatting
                                       try{
                                          serie.units = $.t(self.keywordInfo[index].units);
-                                      }catch(error)
-                                      {
+                                      }catch(error){
                                          serie.units = "";
                                       }
-
+                                      
                                        // If only one axis, we show the legend. In otherwise we destroy it
                                        try{
                                           if (parseBool(self.widget.configuration.legends.checkbox)) {
@@ -894,10 +885,11 @@ widgetViewModelCtor =
                       .fail(function (error) {
                          notifyError($.t("widgets/chart:errorDuringGettingDeviceData"), error);
                          d.reject();
-                      });                       
+                      });
                    }
                } catch (err) {
                    console.error(err.message);
+                   notifyError(err.message);
                    self.refreshingData = false;
                    d.reject();
                }
