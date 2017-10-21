@@ -61,10 +61,7 @@ CMegatecUps::CMegatecUps()
         m_outputLoad ,
         m_inputFrequency ,
         m_batteryVoltage ,
-        m_temperature ,
-        m_acPowerHistorizer ,
-        m_batteryLowHistorizer ,
-        m_upsShutdown})
+        m_temperature})
 {
 }
 
@@ -306,13 +303,17 @@ void CMegatecUps::protocolErrorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
    api->getEventHandler().createTimer(kProtocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
 }
 
-void CMegatecUps::processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification)
+void CMegatecUps::processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api,
+                                           boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification)
 {
    YADOMS_LOG(information) << "UPS connection was lost" ;
    if (notification)
-      api->setPluginState(yApi::historization::EPluginState::kError, notification->getErrorMessageI18n(), notification->getErrorMessageI18nParameters());
+      api->setPluginState(yApi::historization::EPluginState::kError,
+                          notification->getErrorMessageI18n(),
+                          notification->getErrorMessageI18nParameters());
    else
-      api->setPluginState(yApi::historization::EPluginState::kError, "connectionFailed");
+      api->setPluginState(yApi::historization::EPluginState::kError,
+                          "connectionFailed");
 
    destroyConnection();
 }
@@ -335,7 +336,7 @@ void CMegatecUps::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
 
             // Count tokens
             unsigned int tokenCount = 0;
-            for (boost::tokenizer<boost::char_separator<char>>::const_iterator itToken = tokens.begin(); itToken != tokens.end(); ++itToken)
+            for (auto itToken = tokens.begin(); itToken != tokens.end(); ++itToken)
                ++tokenCount;
 
             if (tokenCount != 8)
@@ -446,7 +447,7 @@ void CMegatecUps::sendShtudownCmd()
       // No easy solution to format a decimal number without the '0' before the '.'
       std::ostringstream value;
       value << std::setw(2) << std::setprecision(1) << std::fixed << m_configuration.outputShutdownDelay();
-      std::string sValue = value.str();
+      auto sValue = value.str();
       cmd << sValue.substr(1, sValue.size() - 1);
    }
    else
@@ -491,10 +492,25 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> api
    auto shutdownActive = status[6] == '1';
    auto beeperOn = status[7] == '1';
 
-   m_batteryLowHistorizer->set(batteryLow);
-   m_acPowerHistorizer->set(!utilityFail);
+   // Only historize boolean states when necessary (at startup and on changes)
+   auto keywordsToHistorize = m_keywords;
 
-   api->historizeData(DeviceName, m_keywords);
+   if (!m_lastBatteryLowState || *m_lastBatteryLowState != batteryLow)
+   {
+      m_lastBatteryLowState = batteryLow;
+      m_batteryLowHistorizer->set(batteryLow);
+      keywordsToHistorize.push_back(m_batteryLowHistorizer);
+   }
+
+   auto acPower = !utilityFail;
+   if (!m_acPowerState || *m_acPowerState != acPower)
+   {
+      m_acPowerState = acPower;
+      m_acPowerHistorizer->set(acPower);
+      keywordsToHistorize.push_back(m_acPowerHistorizer);
+   }
+
+   api->historizeData(DeviceName, keywordsToHistorize);
 
    YADOMS_LOG(information) << "UPS current informations : inputVoltage=" << m_inputVoltage->get() <<
       ", inputfaultVoltage=" << m_inputfaultVoltage->get() <<
@@ -503,7 +519,7 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> api
       ", inputFrequency=" << m_inputFrequency->get() <<
       ", batteryVoltage=" << m_batteryVoltage->get() <<
       ", temperature=" << m_temperature->get() ;
-   YADOMS_LOG(information) << "UPS status : utilityFail=" << (utilityFail ? "YES" : "NO") <<
+   YADOMS_LOG(information) << "UPS status : acPower=" << (acPower ? "YES" : "NO") <<
       ", batteryLow=" << (batteryLow ? "YES" : "NO") <<
       ", bypassActive=" << (bypassActive ? "YES" : "NO") <<
       ", upsFailed=" << (upsFailed ? "YES" : "NO") <<
