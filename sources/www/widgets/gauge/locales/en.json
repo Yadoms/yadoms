@@ -1,6 +1,7 @@
 {
 	"name": "Gauge display",
 	"description": "A simple widget that display a gauge",
+   "errorInitialization" : "Error During widget gauge initialization",
 	"configurationSchema": {
 		"device": {
 			"name": "Data to display",

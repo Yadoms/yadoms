@@ -42,9 +42,18 @@ widgetViewModelCtor = function gaugeViewModel() {
             //we get the unit of the keyword
             self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
                 self.unit($.t(keyword.units));
+                d.resolve();
+            })
+            .fail(function (error) {
+               notifyError($.t("widgets/gauge:errorInitialization"), error);
+               throw $.t("widgets/gauge:errorInitialization");
+               d.reject();
             });
-
-            d.resolve();
+        })
+        .fail(function (error) {
+            notifyError($.t("widgets/gauge:errorInitialization"), error);
+            throw $.t("widgets/gauge:errorInitialization");
+            d.reject();
         });
         return d.promise();
     };
