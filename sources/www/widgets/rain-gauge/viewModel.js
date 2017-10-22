@@ -37,7 +37,7 @@ function rainGaugeDisplayViewModel() {
     };
   
     this.getValues = function (keywordId) {
-       self = this;
+       var self = this;
        
        // When all values are outside the range, only 1 value is sent.
        if (self.acquisitionData.length == 1)
