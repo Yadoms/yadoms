@@ -247,7 +247,6 @@ widgetViewModelCtor =
                    yAxis: {
                        // Default Axis
                    },
-
                    plotOptions: {
                        bar: {
                            pointPadding: 0.2
@@ -458,7 +457,6 @@ widgetViewModelCtor =
                })
                .fail(function (error) {
                   notifyError($.t("widgets/chart:deviceNotFound", {Id: device.content.source.deviceId}));
-                  //throw $.t("widgets/chart:errorInitialization");
                });
 
                //we ask the current value
@@ -733,14 +731,15 @@ widgetViewModelCtor =
                                        if (!isNullOrUndefinedOrEmpty(data.data))
                                        {
                                           d = DateTimeFormatter.isoDateToDate(data.data[data.data.length-1].date)._d.getTime();
-                                          var time = moment(self.serverTime).startOf(self.prefix).subtract(1, self.prefix + 's')._d.getTime().valueOf(); // -1h
+                                          var time = moment(self.serverTime).startOf(self.prefix)._d.getTime().valueOf();
+                                          var registerDate = moment(self.serverTime).startOf(self.prefix).subtract(1, self.prefix + 's')._d.getTime().valueOf();
                                           
                                           if ((time - d) > self.summaryTimeBetweenNewPoint)
                                           {
                                               if (device.content.PlotType === "arearange")
-                                                   range.push([time, null, null]);
+                                                   range.push([registerDate, null, null]);
 
-                                               plot.push([time, null]);                                             
+                                               plot.push([registerDate, null]);                                             
                                           }
                                        }
                                    }
@@ -797,10 +796,9 @@ widgetViewModelCtor =
                                       
                                        if (device.content.PlotType === "arearange") { // arearange
                                            serieOption.type = 'line';
-                                       }else {                                        // default option
+                                       }else {                                             // default option
                                            serieOption.step = self.isBoolVariable(index);  // For boolean values, create steps.
                                            serieOption.type = device.content.PlotType;
-                                           serieOption.marker.enabled = true;
                                        }
                                        
                                        //Add plot
@@ -893,7 +891,7 @@ widgetViewModelCtor =
 
            // If for all data, length == 0, we display no Data Available
            if (noAvailableData && !self.incompatibility) {
-               self.chart.showLoading($.t("widgets/chart:noAvailableData"));
+              self.chart.showLoading($.t("widgets/chart:noAvailableData"));
            }
            else if (self.incompatibility) {
               self.chart.showLoading($.t("widgets/chart:incompatibilityDifferential"));
@@ -901,7 +899,6 @@ widgetViewModelCtor =
            else {
                self.chart.hideLoading();
            }
-
            self.chart.redraw(false); //without animation
        };
 
