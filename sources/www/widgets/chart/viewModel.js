@@ -173,7 +173,7 @@ widgetViewModelCtor =
            
            // create the chart
            self.$chart = self.widgetApi.find("div.container");
-
+           
            self.widgetApi.loadLibrary([
                "libs/highstock/js/highstock.js",
                "libs/highstock/js/highcharts-more.js",
@@ -184,10 +184,10 @@ widgetViewModelCtor =
                "libs/export-csv/js/export-csv.min.js",
                "libs/highcharts-export-clientside/js/highcharts-export-clientside.min.js"
            ]).done(function () {
-
                self.chartOption = {
                    chart: {
                        type: 'line',
+                       animation: false,
                        marginTop: 10
                    },
                    boost: {
@@ -593,7 +593,6 @@ widgetViewModelCtor =
                        //debugger;
                        var isSummaryData = true; // by default
                        var deviceIsSummary = [];
-					        var ChartIndex = 0;
                        var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
                        var prefixUri = "/" + self.prefix;
                        var timeBetweenTwoConsecutiveValues = moment.duration(1, self.prefix).asMilliseconds();
@@ -778,7 +777,6 @@ widgetViewModelCtor =
                                        // Standard options
                                        var serieOption = {
                                           id: self.seriesUuid[index],
-                                          index: ChartIndex,
                                           data: plot,
                                           dataGrouping: {
                                              enabled: false
@@ -807,7 +805,6 @@ widgetViewModelCtor =
                                        
                                        //Add plot
                                        serie = self.chart.addSeries(serieOption, false, false); // Do not redraw immediately
-										         ChartIndex = ChartIndex + 1;
                                            
                                        if (device.content.PlotType === "arearange") {
                                            //Add Ranges
@@ -816,7 +813,6 @@ widgetViewModelCtor =
                                                
                                                serieRange = self.chart.addSeries({
                                                    id: 'range_' + self.seriesUuid[index],
-                                                   index: ChartIndex,
                                                    data: range,
                                                    dataGrouping: {
                                                        enabled: false
@@ -831,8 +827,6 @@ widgetViewModelCtor =
                                                    fillOpacity: 0.3,
                                                    zIndex: 0
                                                }, false, false); // Do not redraw immediately
-											   
-                                               ChartIndex = ChartIndex + 1;
 
                                                // Add Units for ranges
                                                if (serieRange)
@@ -1051,34 +1045,25 @@ widgetViewModelCtor =
        this.onNewAcquisition = function (keywordId, data) {
            var self = this;
            if (self.chart) {
-
-               if (self.seriesUuid.length === 0)
+               if (self.seriesUuid.length == 0)
                    return;
                 
                try {
                    $.each(self.widget.configuration.devices, function (index, device) {
                        if (keywordId === device.content.source.keywordId) {
-                           //we've found the device
-
                            var serie = self.chart.get(self.seriesUuid[index]);
-                           
                            // If a serie is available
                            if (!isNullOrUndefined(serie) && data.date!=="" & data.value!=="") {
-
-                              // date received in iso format to compare
-                              var isolastdate = DateTimeFormatter.isoDateToDate(data.date)._d.getTime().valueOf();
-                           
                                // Add new point only for HOUR interval
 							          // others points are treated into the onTime function
                                switch (self.interval) {
                                    case "HOUR":
                                        if (!isNullOrUndefined(serie)) {
                                            var time  = moment(self.serverTime)._d.getTime().valueOf();
-                                           if (time - isolastdate < 3600000) // Only if the last value is in last hour
-                                           {
+                                           var isolastdate = DateTimeFormatter.isoDateToDate(data.date)._d.getTime().valueOf();
+                                           if (time - isolastdate < 3600000){ // Only if the last value is in last hour
                                               self.chart.hideLoading(); // If a text was displayed before
-                                              if (self.differentialDisplay[index])
-                                              {
+                                              if (self.differentialDisplay[index]){
                                                  if (serie.points.length > 0 && !isNullOrUndefined(self.chartLastValue[index]))
                                                     serie.addPoint([data.date.valueOf(), parseFloat(data.value) - self.chartLastValue[index]], true, false, true);
                                                  self.chartLastValue[index] = parseFloat(data.value);                                                 
