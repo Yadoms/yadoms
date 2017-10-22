@@ -767,6 +767,13 @@ widgetViewModelCtor =
                                    }
                                    
                                    var serie = null;
+                                   var legendConfiguration;
+                                   try{
+                                      legendConfiguration = parseBool(self.widget.configuration.legends.checkbox);
+                                   }catch(err){
+                                      legendConfiguration = true;
+                                   }
+                                   
                                    try {
                                        // Standard options
                                        var serieOption = {
@@ -786,6 +793,7 @@ widgetViewModelCtor =
                                           color: device.content.color,
                                           yAxis: axisName,
                                           lineWidth: 2,
+                                          showInLegend: legendConfiguration,
                                           animation: false
                                        };
                                       
@@ -832,14 +840,13 @@ widgetViewModelCtor =
                                                   try{
                                                      serieRange.units = $.t(self.keywordInfo[index].units);
                                                   }
-                                                  catch(error)
-                                                  {
+                                                  catch(error){
                                                      serieRange.units="";
                                                   }
                                                }
                                            }
                                        }
-                                   } catch (err2) {
+                                   } catch (err2){
                                        console.error('Fail to create serie : ' + err2);
                                    }
 
@@ -851,24 +858,6 @@ widgetViewModelCtor =
                                       }catch(error){
                                          serie.units = "";
                                       }
-                                      
-                                       // If only one axis, we show the legend. In otherwise we destroy it
-                                       try{
-                                          if (parseBool(self.widget.configuration.legends.checkbox)) {
-                                              serie.options.showInLegend = true;
-                                              self.chart.legend.renderItem(serie);
-                                          } else {
-                                              serie.options.showInLegend = false;
-                                              serie.legendItem = null;
-                                              self.chart.legend.destroyItem(serie);
-                                          }
-                                       }
-                                       catch (err) {
-                                          // Default configuration
-                                          serie.options.showInLegend = true;
-                                          self.chart.legend.renderItem(serie);
-                                       }                                       
-                                       self.chart.legend.render();
                                    }
                                    self.refreshingData = false;
                                })
