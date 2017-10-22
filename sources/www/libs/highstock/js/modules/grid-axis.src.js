@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v5.0.9 (2017-03-08)
+ * @license Highcharts JS v6.0.2 (2017-10-20)
  * GridAxis
  *
  * (c) 2016 Lars A. V. Cabrera
@@ -167,8 +167,6 @@
                         align: textAlign
                     })
                     .addClass('highcharts-axis-title')
-
-                    .css(axisTitleOptions.style)
 
                     // Add to axisParent instead of axisGroup, to ignore the space
                     // it takes
