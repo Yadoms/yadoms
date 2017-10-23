@@ -1,6 +1,7 @@
 {
 	"name": "Jauge",
 	"description": "Un widget qui affiche une jauge",
+   "errorInitialization" : "Erreur lors de l'initialisation du widget gauge",
 	"configurationSchema": {
 		"device": {
 			"name": "Donnée à afficher",

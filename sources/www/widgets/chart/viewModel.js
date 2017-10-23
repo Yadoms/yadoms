@@ -40,8 +40,41 @@ widgetViewModelCtor =
        
        function isOdd(num) {return num % 2;}
        
+       this.changexAxisBound = function(dateMin){
+          var self = this;
+          
+          var datet = DateTimeFormatter.isoDateToDate(dateMin)._d.getTime();
+          self.chart.xAxis[0].setExtremes(datet, null);
+       };
+       
+       this.calculateBeginDate = function(interval, time, prefix) {
+        var dateValue;
+        switch (interval) {
+            case "HOUR":
+                dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'hours').startOf(prefix));
+                break;
+            default:
+            case "DAY": //we request hour summary data
+                dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'days').startOf(prefix));
+                break;
+            case "WEEK": //we request hour summary data
+                dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'weeks').startOf(prefix));
+                break;
+            case "MONTH": //we request day summary data
+                dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'months').startOf(prefix));
+                break;
+            case "HALF_YEAR": //we request day summary data
+                dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(6, 'months').startOf(prefix));
+                break;
+            case "YEAR": //we request day summary data
+                dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'years').startOf(prefix));
+                break;
+        }
+        return dateValue;
+       };
+       
        this.createAxis = function (index, configuration, device) {
-           self = this;
+           var self = this;
            
            var colorAxis = "#606060"; // default color
            var yAxisName;
@@ -140,7 +173,7 @@ widgetViewModelCtor =
            
            // create the chart
            self.$chart = self.widgetApi.find("div.container");
-
+           
            self.widgetApi.loadLibrary([
                "libs/highstock/js/highstock.js",
                "libs/highstock/js/highcharts-more.js",
@@ -151,10 +184,10 @@ widgetViewModelCtor =
                "libs/export-csv/js/export-csv.min.js",
                "libs/highcharts-export-clientside/js/highcharts-export-clientside.min.js"
            ]).done(function () {
-
                self.chartOption = {
                    chart: {
                        type: 'line',
+                       animation: false,
                        marginTop: 10
                    },
                    boost: {
@@ -178,19 +211,15 @@ widgetViewModelCtor =
                    rangeSelector: {
                        enabled: false
                    },
-
                    title: {
                        text: null
                    },
-
                    scrollbar: {
                        enabled: false
                    },
-
                    subtitle: {
                        text: ''
                    },
-
                    xAxis: {
                        ordinal: false, //axis is linear
                        events: {},
@@ -218,7 +247,6 @@ widgetViewModelCtor =
                    yAxis: {
                        // Default Axis
                    },
-
                    plotOptions: {
                        bar: {
                            pointPadding: 0.2
@@ -245,11 +273,9 @@ widgetViewModelCtor =
                        },
                        shared: true
                    },
-
                    exporting: {
                        enabled: false
                    },
-
                    series: []
                };
 
@@ -431,7 +457,6 @@ widgetViewModelCtor =
                })
                .fail(function (error) {
                   notifyError($.t("widgets/chart:deviceNotFound", {Id: device.content.source.deviceId}));
-                  //throw $.t("widgets/chart:errorInitialization");
                });
 
                //we ask the current value
@@ -513,7 +538,6 @@ widgetViewModelCtor =
                var interval = $(e.currentTarget).attr("interval");
                
                self.interval = interval;
-               
                self.chartParametersConfiguration();
 
                //we manage button inversion
@@ -561,46 +585,25 @@ widgetViewModelCtor =
                    if (!self.refreshingData) {
                        self.chart.showLoading($.t("widgets/chart:loadingData"));
                        self.refreshingData = true;
+                       //debugger;
                        //we compute the date from the configuration
-                       var dateFrom = "";
+                       var dateFrom = self.calculateBeginDate(interval, self.serverTime, self.prefix);
+                       //debugger;
                        var isSummaryData = true; // by default
                        var deviceIsSummary = [];
-					        var ChartIndex = 0;
                        var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
                        var prefixUri = "/" + self.prefix;
                        var timeBetweenTwoConsecutiveValues = moment.duration(1, self.prefix).asMilliseconds();
-                       
-                       
-                       switch (interval) {
-                           case "HOUR":
 
-                               //The goal is to ask to the server the elapsed time only. Example : 22h00 -> 22h59mn59s.
-                               //If you ask 22h00 -> 23h00, the system return also the average for 23h. If 23h is not complete, the value will be wrong.
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime)); // rewriting the final time
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'hours').startOf(self.prefix));
-                               //we request all data
-                               timeBetweenTwoConsecutiveValues = undefined;
-                               isSummaryData = false; // rewrite the isSummaryData
-                               prefixUri = ""; // rewrite the prefix
-                               break;
-                           default:
-                           case "DAY": //we request hour summary data
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'days').startOf(self.prefix));
-                               break;
-                           case "WEEK": //we request hour summary data
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'weeks').startOf(self.prefix));
-                               break;
-                           case "MONTH": //we request day summary data
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'months').startOf(self.prefix));
-                               break;
-                           case "HALF_YEAR": //we request day summary data
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(6, 'months').startOf(self.prefix));
-                               break;
-                           case "YEAR": //we request day summary data
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'years').startOf(self.prefix));
-                               break;
+                       if (interval == "HOUR")
+                       {
+                         dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime)); // rewriting the final time
+                         //we request all data
+                         timeBetweenTwoConsecutiveValues = undefined;
+                         isSummaryData = false; // rewrite the isSummaryData
+                         prefixUri = ""; // rewrite the prefix                          
                        }
-
+                       
                        //ensure all series and axis are removed (may cause some crash if not done)
                        while (self.chart.series.length > 0)
                            self.chart.series[0].remove(false);
@@ -666,12 +669,6 @@ widgetViewModelCtor =
                                            } else {
                                                throw Error("Unable to parse answer");
                                            }
-
-                                           //we manage the missing data
-                                           if ((lastDate != undefined) && (timeBetweenTwoConsecutiveValues != undefined) &&
-                                           (lastDate + timeBetweenTwoConsecutiveValues < d)) {
-                                               plot.push([lastDate + 1, null]);
-                                           }
                                            
                                            // The differential display is disabled if the type of the data is enum or boolean
                                            if (self.differentialDisplay[index] && !self.isBoolVariable(index) && !self.isEnumVariable(index))
@@ -734,23 +731,22 @@ widgetViewModelCtor =
                                        if (!isNullOrUndefinedOrEmpty(data.data))
                                        {
                                           d = DateTimeFormatter.isoDateToDate(data.data[data.data.length-1].date)._d.getTime();
-                                          var time = moment(self.serverTime).startOf(self.prefix).subtract(1, self.prefix + 's')._d.getTime().valueOf(); // -1h
+                                          var time = moment(self.serverTime).startOf(self.prefix)._d.getTime().valueOf();
+                                          var registerDate = moment(self.serverTime).startOf(self.prefix).subtract(1, self.prefix + 's')._d.getTime().valueOf();
                                           
                                           if ((time - d) > self.summaryTimeBetweenNewPoint)
                                           {
                                               if (device.content.PlotType === "arearange")
-                                                   range.push([time, null, null]);
+                                                   range.push([registerDate, null, null]);
 
-                                               plot.push([time, null]);                                             
+                                               plot.push([registerDate, null]);                                             
                                           }
                                        }
                                    }
-                                   
                                    var axisName;
                                    try{
                                       axisName = self.createAxis(index, self.widget.configuration, device);
-                                   }catch(error)
-                                   {
+                                   }catch(error){
                                       console.error (error);
                                    }
                                    
@@ -768,12 +764,18 @@ widgetViewModelCtor =
                                       legendText = $.t("widgets/chart:keywordNotFound", {Id: device.content.source.keywordId});
                                    }
                                    
+                                   var serie = null;
+                                   var legendConfiguration;
+                                   try{
+                                      legendConfiguration = parseBool(self.widget.configuration.legends.checkbox);
+                                   }catch(err){
+                                      legendConfiguration = true;
+                                   }
+                                   
                                    try {
-                                      
                                        // Standard options
                                        var serieOption = {
                                           id: self.seriesUuid[index],
-                                          index: ChartIndex,
                                           data: plot,
                                           dataGrouping: {
                                              enabled: false
@@ -788,27 +790,27 @@ widgetViewModelCtor =
                                           color: device.content.color,
                                           yAxis: axisName,
                                           lineWidth: 2,
+                                          showInLegend: legendConfiguration,
                                           animation: false
                                        };
                                       
                                        if (device.content.PlotType === "arearange") { // arearange
                                            serieOption.type = 'line';
-                                       }else {                                        // default option
+                                       }else {                                             // default option
                                            serieOption.step = self.isBoolVariable(index);  // For boolean values, create steps.
                                            serieOption.type = device.content.PlotType;
-                                           serieOption.marker.enabled = true;
                                        }
                                        
                                        //Add plot
-                                       self.chart.addSeries( serieOption, false, false); // Do not redraw immediately
-										         ChartIndex = ChartIndex + 1;
+                                       serie = self.chart.addSeries(serieOption, false, false); // Do not redraw immediately
                                            
                                        if (device.content.PlotType === "arearange") {
                                            //Add Ranges
                                            if (deviceIsSummary[index]) {
-                                               self.chart.addSeries({
+                                               var serieRange = null;
+                                               
+                                               serieRange = self.chart.addSeries({
                                                    id: 'range_' + self.seriesUuid[index],
-                                                   index: ChartIndex,
                                                    data: range,
                                                    dataGrouping: {
                                                        enabled: false
@@ -823,10 +825,6 @@ widgetViewModelCtor =
                                                    fillOpacity: 0.3,
                                                    zIndex: 0
                                                }, false, false); // Do not redraw immediately
-											   
-                                               ChartIndex = ChartIndex + 1;
-
-                                               var serieRange = self.chart.get('range_' + self.seriesUuid[index]);
 
                                                // Add Units for ranges
                                                if (serieRange)
@@ -834,48 +832,25 @@ widgetViewModelCtor =
                                                   try{
                                                      serieRange.units = $.t(self.keywordInfo[index].units);
                                                   }
-                                                  catch(error)
-                                                  {
+                                                  catch(error){
                                                      serieRange.units="";
                                                   }
                                                }
                                            }
                                        }
-                                   } catch (err2) {
+                                   } catch (err2){
                                        console.error('Fail to create serie : ' + err2);
                                    }
 
-                                   var serie = self.chart.get(self.seriesUuid[index]);
-
-                                   //we save the unit in the serie
                                    if (serie) {
+                                      
+                                      //we save the unit in the serie for tooltip formatting
                                       try{
                                          serie.units = $.t(self.keywordInfo[index].units);
-                                      }catch(error)
-                                      {
+                                      }catch(error){
                                          serie.units = "";
                                       }
-
-                                       // If only one axis, we show the legend. In otherwise we destroy it
-                                       try{
-                                          if (parseBool(self.widget.configuration.legends.checkbox)) {
-                                              serie.options.showInLegend = true;
-                                              self.chart.legend.renderItem(serie);
-                                          } else {
-                                              serie.options.showInLegend = false;
-                                              serie.legendItem = null;
-                                              self.chart.legend.destroyItem(serie);
-                                          }
-                                       }
-                                       catch (err) {
-                                          // Default configuration
-                                          serie.options.showInLegend = true;
-                                          self.chart.legend.renderItem(serie);
-                                       }                                       
-                                       self.chart.legend.render();
-
                                    }
-
                                    self.refreshingData = false;
                                })
                                .fail(function (error) {
@@ -884,7 +859,6 @@ widgetViewModelCtor =
                                });
                            }
                        });
-
                        $.whenAll(arrayOfDeffered).done(function () {
                            self.finalRefresh();
                            d.resolve();
@@ -892,15 +866,15 @@ widgetViewModelCtor =
                       .fail(function (error) {
                          notifyError($.t("widgets/chart:errorDuringGettingDeviceData"), error);
                          d.reject();
-                      });                       
+                      });
                    }
                } catch (err) {
                    console.error(err.message);
+                   notifyError(err.message);
                    self.refreshingData = false;
                    d.reject();
                }
            }
-           
            return d.promise();
        };
 
@@ -917,7 +891,7 @@ widgetViewModelCtor =
 
            // If for all data, length == 0, we display no Data Available
            if (noAvailableData && !self.incompatibility) {
-               self.chart.showLoading($.t("widgets/chart:noAvailableData"));
+              self.chart.showLoading($.t("widgets/chart:noAvailableData"));
            }
            else if (self.incompatibility) {
               self.chart.showLoading($.t("widgets/chart:incompatibilityDifferential"));
@@ -925,28 +899,8 @@ widgetViewModelCtor =
            else {
                self.chart.hideLoading();
            }
-
            self.chart.redraw(false); //without animation
        };
-	   
-       this.cleanUpChart = function (serie, finaldate, dateInMilliSecondes) {
-           var ex = false;
-
-           var isofinaldate = DateTimeFormatter.isoDateToDate(finaldate)._d.getTime().valueOf();
-                      
-           while (!ex) {
-               if (!isNullOrUndefined(serie.points)) {
-                   if (!isNullOrUndefined(serie.points[0])) {
-                       if ((isofinaldate - serie.points[0].x) > dateInMilliSecondes)
-                           serie.removePoint(0, true); // If false, we never delete the point -> infinite loop
-                       else
-                           ex = true;
-                   } else
-                       ex = true;
-               } else
-                   ex = true;
-           }
-       };      
 
        this.addContinuousSummaryPoint = function () {
           var self = this;
@@ -986,15 +940,27 @@ widgetViewModelCtor =
          });
        };
        
+       this.cleanUpChart = function (serie, finaldate, dateInMilliSecondes) {
+          var self = this;
+                      
+            if (!isNullOrUndefined(serie.points)) {
+                if (!isNullOrUndefined(serie.points[0])) {
+                    if ((finaldate - serie.points[0].x) > dateInMilliSecondes)
+                        self.changexAxisBound(self.calculateBeginDate(self.interval, self.serverTime, self.prefix));
+                }
+            }
+       };
+       
        this.onTime = function (serverLocalTime) {
          var self = this;
          self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime); // Update the serverTime
          
          var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
+         var isofinaldate = DateTimeFormatter.isoDateToDate(dateTo)._d.getTime().valueOf();
             
          // If a serie is available
          self.addContinuousSummaryPoint();
-		 
+         
          $.each(self.seriesUuid, function (index, value) {
          
             var serie = self.chart.get(value);
@@ -1002,12 +968,12 @@ widgetViewModelCtor =
             
             // If a serie is available  // Clean points > cleanValue for serie
             if (!isNullOrUndefined(serie))
-               self.cleanUpChart(serie, dateTo, self.cleanValue);
+               self.cleanUpChart(serie, isofinaldate, self.cleanValue);
 
              // Clean points > cleanValue for ranges, if any
             if (!isNullOrUndefined(serieRange))
-               self.cleanUpChart(serieRange, dateTo, self.cleanValue);
-         });
+               self.cleanUpChart(serieRange, isofinaldate, self.cleanValue);
+         });         
        };
       
        this.DisplaySummary = function (index, nb, device, range, prefix, lastPointDate) {
@@ -1076,34 +1042,25 @@ widgetViewModelCtor =
        this.onNewAcquisition = function (keywordId, data) {
            var self = this;
            if (self.chart) {
-
-               if (self.seriesUuid.length === 0)
+               if (self.seriesUuid.length == 0)
                    return;
                 
                try {
                    $.each(self.widget.configuration.devices, function (index, device) {
                        if (keywordId === device.content.source.keywordId) {
-                           //we've found the device
-
                            var serie = self.chart.get(self.seriesUuid[index]);
-                           
                            // If a serie is available
                            if (!isNullOrUndefined(serie) && data.date!=="" & data.value!=="") {
-
-                              // date received in iso format to compare
-                              var isolastdate = DateTimeFormatter.isoDateToDate(data.date)._d.getTime().valueOf();
-                           
                                // Add new point only for HOUR interval
 							          // others points are treated into the onTime function
                                switch (self.interval) {
                                    case "HOUR":
                                        if (!isNullOrUndefined(serie)) {
                                            var time  = moment(self.serverTime)._d.getTime().valueOf();
-                                           if (time - isolastdate < 3600000) // Only if the last value is in last hour
-                                           {
+                                           var isolastdate = DateTimeFormatter.isoDateToDate(data.date)._d.getTime().valueOf();
+                                           if (time - isolastdate < 3600000){ // Only if the last value is in last hour
                                               self.chart.hideLoading(); // If a text was displayed before
-                                              if (self.differentialDisplay[index])
-                                              {
+                                              if (self.differentialDisplay[index]){
                                                  if (serie.points.length > 0 && !isNullOrUndefined(self.chartLastValue[index]))
                                                     serie.addPoint([data.date.valueOf(), parseFloat(data.value) - self.chartLastValue[index]], true, false, true);
                                                  self.chartLastValue[index] = parseFloat(data.value);                                                 
