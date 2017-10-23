@@ -53,7 +53,7 @@ before_install:
 - if [ ${GENERATE_OPENSSL} != true ]; then wget -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/openssl-1.0.2k-build.tar.bz2; else wget https://www.openssl.org/source/openssl-1.0.2k.tar.gz; fi
 - if [ ${GENERATE_OPENSSL} != true ]; then tar xjf openssl-1.0.2k-build.tar.bz2; else tar xzf openssl-1.0.2k.tar.gz; fi
 - cd openssl-1.0.2k
-- if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/configure"; else ./config --prefix=$HOME/depsBuild/openssl > $HOME/logs/yadoms_openssl.log; fi
+- if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/configure"; else CFLAGS=-fPIC ./config shared --prefix=$HOME/depsBuild/openssl > $HOME/logs/yadoms_openssl.log; fi
 - if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/make"; else make > $HOME/logs/yadoms_openssl.log; fi
 - make install > $HOME/logs/yadoms_openssl.log
 - cd ..
