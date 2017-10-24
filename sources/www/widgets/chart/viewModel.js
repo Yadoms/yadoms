@@ -45,6 +45,22 @@ function chartViewModel() {
        self.chart.xAxis[0].setExtremes(datet, null);
     };
     
+    this.isBoolVariable = function (index) {
+        var self = this;
+        if ((self.keywordInfo[index]) && (self.keywordInfo[index].type === "Bool"))
+           return true;
+        else
+           return false;
+    };
+    
+    this.isEnumVariable = function (index) {
+        var self = this;
+        if ((self.keywordInfo[index]) && (self.keywordInfo[index].type === "enum"))
+           return true;
+        else
+           return false;
+    };
+    
     this.calculateBeginDate = function(interval, time, prefix) {
      var dateValue;
      switch (interval) {
@@ -219,29 +235,28 @@ function chartViewModel() {
                     text: ''
                 },
                 xAxis: {
-                    ordinal: false, //axis is linear
-                    events: {},
-                    labels: {
-                        formatter: function () {
-                            if (self.chart.interval) {
-                                switch (self.chart.interval) {
-                                    default:
-                                    case "HOUR":
-                                    case "DAY":
-                                        return DateTimeFormatter.dateToString(this.value, "LT");
+                   ordinal: false, //axis is linear
+                   events: {},
+                   labels: {
+                      formatter: function () {
+                         if (self.chart.interval) {
+                            switch (self.chart.interval) {
+                               default:
+                               case "HOUR":
+                               case "DAY":
+                                  return DateTimeFormatter.dateToString(this.value, "LT");
 
-                                    case "WEEK":
-                                    case "MONTH":
-                                    case "HALF_YEAR":
-                                    case "YEAR":
-                                        return DateTimeFormatter.dateToString(this.value, "L");
-                                }
-                            }
-                            return DateTimeFormatter.dateToString(this.value);
-                        }
-                    }
+                               case "WEEK":
+                               case "MONTH":
+                               case "HALF_YEAR":
+                               case "YEAR":
+                                  return DateTimeFormatter.dateToString(this.value, "L");
+                             }
+                         }
+                         return DateTimeFormatter.dateToString(this.value);
+                      }
+                   }
                 },
-
                 yAxis: {
                     // Default Axis
                 },
@@ -250,7 +265,6 @@ function chartViewModel() {
                         pointPadding: 0.2
                     }
                 },
-
                 tooltip: {
                     useHTML: true,
                     enabled: true,
@@ -311,7 +325,6 @@ function chartViewModel() {
             });
 
             //we manage toolbar buttons
-
             var $btns = self.widgetApi.find(".range-btn");
             $btns.unbind("click").bind("click", self.navigatorBtnClick());
 
@@ -354,7 +367,6 @@ function chartViewModel() {
         var self = this;
         if (!isNullOrUndefined(self.chart)) {
             this.chart.setSize(self.widget.getWidth() - 30, self.widget.getHeight() - 40, false);
-
             $(window).trigger("resize");
         }
     };
@@ -546,50 +558,18 @@ function chartViewModel() {
         };
     };
 
-    this.isBoolVariable = function (index) {
-        var self = this;
-        if ((self.keywordInfo[index]) && (self.keywordInfo[index].type === "Bool"))
-           return true;
-        else
-           return false;
-    }
-    
-    this.isEnumVariable = function (index) {
-        var self = this;
-        if ((self.keywordInfo[index]) && (self.keywordInfo[index].type === "enum"))
-           return true;
-        else
-           return false;
-    }       
-
     this.refreshData = function (interval) {
-        var self = this;
-        var d = new $.Deferred();
+       var self = this;
+       var d = new $.Deferred();
 
-        if (self.chart) {
+       if (self.chart) {
             self.interval = interval;
             //we save interval in the chart
             self.chart.interval = interval;
 
             try {
               self.chart.showLoading($.t("widgets/chart:loadingData"));
-              //we compute the date from the configuration
-              var dateFrom = self.calculateBeginDate(interval, self.serverTime, self.prefix);
-              //debugger;
-              var isSummaryData = true; // by default
               var deviceIsSummary = [];
-              var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
-              var prefixUri = "/" + self.prefix;
-              var timeBetweenTwoConsecutiveValues = moment.duration(1, self.prefix).asMilliseconds();
-
-              if (interval == "HOUR")
-              {
-                dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime)); // rewriting the final time
-                //we request all data
-                timeBetweenTwoConsecutiveValues = undefined;
-                isSummaryData = false; // rewrite the isSummaryData
-                prefixUri = ""; // rewrite the prefix                          
-              }
               
               //ensure all series and axis are removed (may cause some crash if not done)
               while (self.chart.series.length > 0)
@@ -603,27 +583,42 @@ function chartViewModel() {
               
               //for each plot in the configuration we request for data
               $.each(self.widget.configuration.devices, function (index, device) {
+                 
+                 //we compute the date from the configuration
+                 var dateFrom = self.calculateBeginDate(interval, self.serverTime, self.prefix);
+                 var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
+                 var prefixUri = "/" + self.prefix;
+                 var timeBetweenTwoConsecutiveValues = moment.duration(1, self.prefix).asMilliseconds();
+                 
                   //If the device is a bool, you have to modify
-                  if (self.isBoolVariable(index)) {
-                      switch (interval) {
-                          case "DAY":
-                          case "WEEK":
-                          case "MONTH":
-                              dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
-                              self.rangeTooLarge = false;
-                              break;
-                          case "HALF_YEAR":
-                          case "YEAR":
-                              // no display for theses elements
-                              break;
+                  if (self.isBoolVariable(index) || self.isEnumVariable(index)) {
+                     switch (interval) {
+                        case "HOUR":
+                        case "DAY":
+                        case "WEEK":
+                        case "MONTH":
+                           dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
+                           self.rangeTooLarge = false;
+                           break;
+                        case "HALF_YEAR":
+                        case "YEAR":
+                           // no display for theses elements
+                           break;
                       }
-                      //we request hour summary data
                       prefixUri = "";
-                      isSummaryData = false;
                       deviceIsSummary[index] = false; // We change the summary for the boolean device.
                   } else {
-                      self.rangeTooLarge = false;
-                      deviceIsSummary[index] = isSummaryData; // By default, it's the summary define above.
+                    if (interval == "HOUR")
+                    {
+                      dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime)); // rewriting the final time
+                      //we request all data
+                      timeBetweenTwoConsecutiveValues = undefined;
+                      deviceIsSummary[index] = false;
+                      prefixUri = ""; // rewrite the prefix                          
+                    }else {
+                       deviceIsSummary[index] = true; // By default, it's the summary define above.
+                    }
+                    self.rangeTooLarge = false;
                   }
 
                   if (!self.rangeTooLarge) {
@@ -719,7 +714,7 @@ function chartViewModel() {
                                      if (device.content.PlotType === "arearange")
                                           range.push([registerDate, null, null]);
 
-                                      plot.push([registerDate, null]);                                             
+                                     plot.push([registerDate, null]);                                             
                                  }
                               }
                           }
@@ -752,8 +747,8 @@ function chartViewModel() {
                           }
                           
                           try {
-                              // Standard options
-                              var serieOption = {
+                             // Standard options
+                             var serieOption = {
                                  id: self.seriesUuid[index],
                                  data: plot,
                                  dataGrouping: {
@@ -822,7 +817,6 @@ function chartViewModel() {
                           }
 
                           if (serie) {
-                             
                              //we save the unit in the serie for tooltip formatting
                              try{
                                 serie.units = $.t(self.keywordInfo[index].units);
@@ -841,40 +835,40 @@ function chartViewModel() {
                   }
               });
               $.whenAll(arrayOfDeffered).done(function () {
-                  self.finalRefresh();
-                  d.resolve();
+                 self.finalRefresh();
+                 d.resolve();
               })
              .fail(function (error) {
                 notifyError($.t("widgets/chart:errorDuringGettingDeviceData"), error);
                 d.reject();
              });
             } catch (err) {
-                console.error(err.message);
-                notifyError(err.message);
-                d.reject();
+               console.error(err.message);
+               notifyError(err.message);
+               d.reject();
             }
-         }
-        return d.promise();
+       }
+       return d.promise();
     };
 
     this.finalRefresh = function () {
-        var self = this;
-        var noAvailableData = true;
+       var self = this;
+       var noAvailableData = true;
         
-        $.each(self.chart.series, function (index, value) {
-            if (value.xData.length !== 0)
-                noAvailableData = false;
-        });
+       $.each(self.chart.series, function (index, value) {
+           if (value.xData.length !== 0)
+              noAvailableData = false;
+       });
 
-        // If for all data, length == 0, we display no Data Available
-        if (noAvailableData && !self.incompatibility && !self.rangeTooLarge) {
-           self.chart.showLoading($.t("widgets/chart:noAvailableData"));
-        }else if (self.incompatibility) {
-           self.chart.showLoading($.t("widgets/chart:incompatibilityDifferential"));
-        }else if (self.rangeTooLarge && noAvailableData) {
-           self.chart.showLoading($.t("widgets/chart:RangeTooBroad"));                  // Display that the range is too large
-        }else {
-            self.chart.hideLoading();
+       // If for all data, length == 0, we display no Data Available
+       if (noAvailableData && !self.incompatibility && !self.rangeTooLarge) {
+          self.chart.showLoading($.t("widgets/chart:noAvailableData"));
+       }else if (self.incompatibility) {
+          self.chart.showLoading($.t("widgets/chart:incompatibilityDifferential"));
+       }else if (self.rangeTooLarge && noAvailableData) {
+          self.chart.showLoading($.t("widgets/chart:RangeTooBroad"));                  // Display that the range is too large
+       }else {
+          self.chart.hideLoading();
         }
         self.chart.redraw(false); //without animation
     };
@@ -884,9 +878,8 @@ function chartViewModel() {
        
       $.each(self.widget.configuration.devices, function (index, device) {
          var serie = self.chart.get(self.seriesUuid[index]);
-         
-          var time = moment(self.serverTime)._d.getTime().valueOf();
-          var lastDate = 0;
+         var time = moment(self.serverTime)._d.getTime().valueOf();
+         var lastDate = 0;
           
           if (!isNullOrUndefined(serie)){
              if ((serie.points.length > 0) && ((time - lastDate) > (self.summaryTimeBetweenNewPoint)))
@@ -920,12 +913,12 @@ function chartViewModel() {
     this.cleanUpChart = function (serie, finaldate, dateInMilliSecondes) {
        var self = this;
                    
-         if (!isNullOrUndefined(serie.points)) {
-             if (!isNullOrUndefined(serie.points[0])) {
-                 if ((finaldate - serie.points[0].x) > dateInMilliSecondes)
-                     self.changexAxisBound(self.calculateBeginDate(self.interval, self.serverTime, self.prefix));
-             }
-         }
+       if (!isNullOrUndefined(serie.points)) {
+          if (!isNullOrUndefined(serie.points[0])) {
+             if ((finaldate - serie.points[0].x) > dateInMilliSecondes)
+                self.changexAxisBound(self.calculateBeginDate(self.interval, self.serverTime, self.prefix));
+          }
+       }
     };
     
     this.onTime = function (serverLocalTime) {
