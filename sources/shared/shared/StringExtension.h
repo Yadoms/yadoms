@@ -44,11 +44,13 @@ namespace shared
 
       static std::string removeEol(const std::string& line)
       {
-         auto len = line.size();
+         auto len = line.size();
+
          if (len > 1 && line[len - 2] == '\r' && line[len - 1] == '\n')
             return line.substr(0, len - 2);
          if (len > 0 && (line[len - 1] == '\r' || line[len - 1] == '\n'))
-            return line.substr(0, len - 1);
+            return line.substr(0, len - 1);
+
          return line;
       }
 
@@ -88,7 +90,7 @@ namespace shared
 	   static T parse(const char * s, std::ios_base& (*f)(std::ios_base&))
 	   {
 		   std::string str(s);
-		   return parse<T>(str);
+		   return parse<T>(str, f);
 	   }
 
    
