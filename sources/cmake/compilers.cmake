@@ -1,6 +1,6 @@
 # Compilers/IDE specific configurations
 #
-message("System Name = ${CMAKE_SYSTEM_NAME}")
+message(STATUS "System Name = ${CMAKE_SYSTEM_NAME}")
 
 if(MSVC)
 
@@ -92,8 +92,9 @@ endif()
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
    message("Using CLang")
 	add_definitions("-Wall -Wextra -pedantic")
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -stdlib=libc++")
+   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -stdlib=libc++")
    add_definitions("-Woverloaded-virtual")
+   add_definitions("-Wno-unused-parameter")
    add_definitions("-Wno-unused-variable")
    add_definitions("-Wno-extra-semi")
    add_definitions("-Wno-c++11-narrowing")

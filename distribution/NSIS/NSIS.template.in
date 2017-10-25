@@ -18,6 +18,7 @@
   Var ADD_TO_PATH_CURRENT_USER
   Var INSTALL_SERVICE
   Var INSTALL_DESKTOP
+  Var INSTALL_PYTHON
   Var IS_DEFAULT_INSTALLDIR
 ;--------------------------------
 ;Include Modern UI
@@ -58,6 +59,53 @@ BrandingText "@CPACK_NSIS_PACKAGE_NAME@"
 @CPACK_NSIS_DEFINES@
 
   !include Sections.nsh
+
+
+ var PythonExecutable
+ 
+/*
+ * Check if Python 2.7 is installed.
+ * Result: $PythonExecutable contains the python executable path; of is empty if python not found
+ *
+ */
+Function CheckPython27
+   ReadRegStr $1 HKEY_LOCAL_MACHINE "SOFTWARE\Python\PythonCore\2.7\InstallPath" ""
+   StrCmp $1 "" 0 done ;if $1 is not empty, then goto next line, else goto "done"
+   ReadRegStr $1 HKEY_LOCAL_MACHINE "SOFTWARE\WOW6432Node\Python\PythonCore\2.7\InstallPath" ""
+   StrCmp $1 "" 0 done ;if $1 is not empty, then goto next line, else goto "done"
+   ReadRegStr $1 HKEY_CURRENT_USER "SOFTWARE\Python\PythonCore\2.7\InstallPath" ""
+   StrCmp $1 "" 0 done ;if $1 is not empty, then goto next line, else goto "done"
+   ReadRegStr $1 HKEY_CURRENT_USER "SOFTWARE\WOW6432Node\Python\PythonCore\2.7\InstallPath" ""
+   StrCmp $1 "" end done ;if $1 is not empty, then goto next line, else goto "done"
+done:
+    StrCpy $PythonExecutable "$1\python.exe"
+end:
+FunctionEnd
+
+/*
+ * Install Python on system
+ */
+Function InstallPython
+  File /oname=$TEMP\python.msi "@CPACK_NSIS_PLUGINS_ROOT@\python-2.7.14.msi"
+
+  DetailPrint "Installing Python..."
+  SetDetailsPrint none
+  ExecWait '"$SYSDIR\msiexec.exe" /i "$TEMP\python.msi" /qb!"' $0
+  SetDetailsPrint both
+  DetailPrint "Python installation returned $0"
+
+  Delete =$TEMP\python.msi
+FunctionEnd
+
+/*
+ * Check if Python exists, and install it if required
+ */
+Function CheckAndInstallPython
+   Call CheckPython27
+   StrCmp $PythonExecutable "" 0 +2
+   Call InstallPython
+FunctionEnd
+
 
 ;--- Component support macros: ---
 ; The code for the add/remove functionality is from:
@@ -707,6 +755,7 @@ Section "-Core installation"
   ;Read a value from an InstallOptions INI file
   !insertmacro MUI_INSTALLOPTIONS_READ $INSTALL_DESKTOP "NSIS.InstallOptions.ini" "Field 1" "State"
   !insertmacro MUI_INSTALLOPTIONS_READ $INSTALL_SERVICE "NSIS.InstallOptions.ini" "Field 2" "State"
+  !insertmacro MUI_INSTALLOPTIONS_READ $INSTALL_PYTHON "NSIS.InstallOptions.ini" "Field 3" "State"
 
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
 
@@ -731,6 +780,10 @@ Section "-Core installation"
 @CPACK_NSIS_INSTALL_SERVICE@
   end_of_install_service:
   
+  IntCmp $INSTALL_PYTHON 0 end_of_install_python
+  DetailPrint "Checking Python 2.7 and install it if needed"
+  Call CheckAndInstallPython
+  end_of_install_python:
 
   
   
@@ -769,12 +822,15 @@ LangString TEXT_IO_OPTIONS_DESKTOP_ICON ${LANG_FRENCH} "Raccourci sur le Bureau"
 LangString TEXT_IO_OPTIONS_DESKTOP_ICON ${LANG_ENGLISH} "Desktop Icon"
 LangString TEXT_IO_OPTIONS_AS_SERVICE ${LANG_FRENCH} "Installer @CPACK_PACKAGE_NAME@ en tant que service Windows"
 LangString TEXT_IO_OPTIONS_AS_SERVICE ${LANG_ENGLISH} "Install @CPACK_PACKAGE_NAME@ as a service"
+LangString TEXT_IO_OPTIONS_PYTHON ${LANG_FRENCH} "Installer Python 2.7 (requis pour les scripts d'automatisation)"
+LangString TEXT_IO_OPTIONS_PYTHON ${LANG_ENGLISH} "Install Python 2.7 (required for automation rules)"
 
 
 Function InstallOptionsPage
   !insertmacro MUI_HEADER_TEXT $(TEXT_IO_OPTIONS_TITLE) $(TEXT_IO_OPTIONS_SUBTITLE)
   !insertmacro INSTALLOPTIONS_WRITE "NSIS.InstallOptions.ini" "Field 1" "Text" $(TEXT_IO_OPTIONS_DESKTOP_ICON)
   !insertmacro INSTALLOPTIONS_WRITE "NSIS.InstallOptions.ini" "Field 2" "Text" $(TEXT_IO_OPTIONS_AS_SERVICE)
+  !insertmacro INSTALLOPTIONS_WRITE "NSIS.InstallOptions.ini" "Field 3" "Text" $(TEXT_IO_OPTIONS_PYTHON)
   !insertmacro MUI_INSTALLOPTIONS_DISPLAY "NSIS.InstallOptions.ini"
 
 FunctionEnd

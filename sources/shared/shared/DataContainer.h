@@ -1069,7 +1069,7 @@ namespace shared
    template<>
    inline std::map<std::string, std::string> CDataContainer::get(const std::string& parameterName, const char pathChar) const
    {
-      return getAsMap();
+      return getAsMap(parameterName, pathChar);
    }
 
    template<>

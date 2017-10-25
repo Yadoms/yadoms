@@ -337,12 +337,12 @@
                              });
                      });
 
-                 if (bowser.name === "Internet Explorer") {
+                 if (bowser.name === "Internet Explorer" || /Edge/.test(navigator.userAgent)) {
                      console.log("incompatible browser !");
                      window.location.href = "browser.html";
                      return;
                  }
-
+                 
              });
 
              /**

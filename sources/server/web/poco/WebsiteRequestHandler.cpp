@@ -63,13 +63,18 @@ namespace web { namespace poco {
             extension = fullpath.substr(last_dot_pos + 1);
          }
 
-         if (!m_cacheDisabled)
+         if (m_cacheDisabled)
+         {
+            //disable cache, force reload
+            response.set("Cache-Control", "no-cache, no-store, must-revalidate");
+         }
+         else
          {
             //allow browser to cache ressource
             // public : allow any intermediate proxies (not only the browser)
             // max-age : keep in memory for two months
             // etag : the md5 hash of each file. Computed at each requests, it ensure that the file hasn't changed. This is a browser behavior (etag change detection)
-            response.set("Cache-Control", "public, max-age=5259477"); //2 months
+            response.set("Cache-Control", "private, max-age=5259477"); //2 months
             response.set("ETag", shared::encryption::CMd5::digestFile(fullpath));
          }
 

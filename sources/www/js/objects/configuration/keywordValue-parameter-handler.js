@@ -58,31 +58,37 @@ KeywordValueParameterHandler.prototype.onKeywordChange = function () {
             curVal = self.currentValue.value.toString();
          }
          
-         DeviceManager.get(keywordData.deviceId)
-         .done(function(deviceData) {
-            DeviceManager.getAttachedPlugin(deviceData)
-            .done(function() {
-               PluginInstanceManager.downloadPackage(deviceData.attachedPlugin)
+         if(keywordData.type !== "NoData") {
+            DeviceManager.get(keywordData.deviceId)
+            .done(function(deviceData) {
+               DeviceManager.getAttachedPlugin(deviceData)
                .done(function() {
-                  self.valuePH = ConfigurationHelper.createKeywordValueParameterHandler(self.i18nContext, undefined, "value", keywordData, curVal, deviceData.attachedPlugin);
-                  if(self.valuePH) {
-                     $("#" + self.uuidContainer).append(self.valuePH.getDOMObject());
-                     if ($.isFunction(self.valuePH.applyScript)) {
-                        self.valuePH.applyScript();
-                     }
-                     $("#" + self.uuidContainer).i18n();
-                     d.resolve();
-                  } else {
-                    d.reject("Cannot create parameter handler for keyword id=" + selectedKeywordId);
-                  }                  
+                  PluginInstanceManager.downloadPackage(deviceData.attachedPlugin)
+                  .done(function() {
+                     self.valuePH = ConfigurationHelper.createKeywordValueParameterHandler(self.i18nContext, undefined, "value", keywordData, curVal, deviceData.attachedPlugin);
+                     if(self.valuePH) {
+                        $("#" + self.uuidContainer).append(self.valuePH.getDOMObject());
+                        if ($.isFunction(self.valuePH.applyScript)) {
+                           self.valuePH.applyScript();
+                        }
+                        $("#" + self.uuidContainer).i18n();
+                        d.resolve();
+                     } else {
+                       d.reject("Cannot create parameter handler for keyword id=" + selectedKeywordId);
+                     }                  
+                  })
+                  .fail(d.reject);
                })
                .fail(d.reject);
             })
             .fail(d.reject);
-         })
-         .fail(d.reject);
-         
-      
+         } else {
+            //if this is a keyword without data (such as events : system/restart)
+            //just ensure value parameter handler is null
+            self.valuePH = null;
+            $("#" + self.uuidContainer).i18n();
+            d.resolve();
+         }
       })
       .fail(d.reject);
    } else {
@@ -140,14 +146,21 @@ KeywordValueParameterHandler.prototype.getCurrentConfiguration = function () {
    
    this.keywordPH.getCurrentConfiguration()
    .done(function(keySel) {
-      self.valuePH.getCurrentConfiguration()
-      .done(function(commandValue) {
+      if(self.valuePH) {
+         self.valuePH.getCurrentConfiguration()
+         .done(function(commandValue) {
+            var result = keySel;
+            result.value = commandValue;
+            self.value = result;
+            d.resolve(result);
+         })
+         .fail(d.reject);
+      } else {
          var result = keySel;
-         result.value = commandValue;
+         result.value = null;
          self.value = result;
          d.resolve(result);
-      })
-      .fail(d.reject);
+      }
    })
    .fail(d.reject);
    return d.promise();

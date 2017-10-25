@@ -69,7 +69,8 @@ protected:
    /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] notification     The connection notification data
    //--------------------------------------------------------------
-   void processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification = boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>());
+   void processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api,
+                                 boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification = boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>());
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the data are received from the UPS
@@ -136,7 +137,7 @@ protected:
    /// \param [in] tokens           Separated fields (input voltage, input fault voltage, output voltage, etc...)
    //--------------------------------------------------------------
    void processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> api,
-                              const boost::tokenizer<boost::char_separator<char> >& tokens);
+                              const boost::tokenizer<boost::char_separator<char>>& tokens);
 
    //--------------------------------------------------------------
    /// \brief	                     Process received information from UPS
@@ -144,13 +145,13 @@ protected:
    /// \param [in] tokens           Separated fields (company name, UPS model, version)
    //--------------------------------------------------------------
    void processReceivedInformation(boost::shared_ptr<yApi::IYPluginApi> api,
-                                   const boost::tokenizer<boost::char_separator<char> >& tokens) const;
+                                   const boost::tokenizer<boost::char_separator<char>>& tokens) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Process received rating information from UPS
    /// \param [in] tokens           Separated fields (voltage, current, battery voltage, frequency)
    //--------------------------------------------------------------
-   void processReceivedRatingInformation(const boost::tokenizer<boost::char_separator<char> >& tokens);
+   void processReceivedRatingInformation(const boost::tokenizer<boost::char_separator<char>>& tokens);
 
    //--------------------------------------------------------------
    /// \brief	                     Convert a string to a double, not depend on locale
@@ -278,6 +279,11 @@ private:
    //--------------------------------------------------------------
    /// \brief	The keywords list to historize in one step for better performances
    //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
+
+   //--------------------------------------------------------------
+   /// \brief	Boolean states cache
+   //--------------------------------------------------------------
+   boost::optional<bool> m_lastBatteryLowState, m_acPowerState;
 };
 
