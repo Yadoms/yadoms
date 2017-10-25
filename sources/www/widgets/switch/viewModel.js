@@ -69,7 +69,7 @@ widgetViewModelCtor =
            * @param widget widget class object
            */
           this.initialize = function () {
-             self = this;
+             var self = this;
              
              //we configure the toolbar
              self.widgetApi.toolbar({
@@ -258,7 +258,7 @@ widgetViewModelCtor =
           }
           
           this.toggleCommand = function () {
-              self = this;
+              var self = this;
 
               if (this.command() === 0)
                   self.command(1);
