@@ -63,3 +63,7 @@ std::string CScriptProcess::getError() const
    return m_process->getError();
 }
 
+void CScriptProcess::purgeLogFile() const
+{
+   m_scriptLogger->purgeLogFile();
+}

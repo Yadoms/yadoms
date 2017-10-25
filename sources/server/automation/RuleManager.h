@@ -40,6 +40,7 @@ namespace automation
       boost::shared_ptr<database::entities::CRule> getRule(int id) const override;
       std::string getRuleCode(int id) const override;
       std::string getRuleLog(int id) const override;
+      void deleteRuleLog(int id) const override;
       std::string getRuleTemplateCode(const std::string& interpreterName) const override;
       void updateRule(boost::shared_ptr<const database::entities::CRule> ruleData) override;
       void updateRuleCode(int id, const std::string& code) override;

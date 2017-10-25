@@ -25,6 +25,12 @@ namespace shared
          virtual void init() = 0;
 
          //-----------------------------------------------------
+         ///\brief               Delete log file(s)
+         ///\note Delete log files, even if currently used
+         //-----------------------------------------------------
+         virtual void purgeLogFile() = 0;
+
+         //-----------------------------------------------------
          ///\brief               Log a line
          ///\param[in] line      Line to log
          //-----------------------------------------------------

@@ -7,6 +7,7 @@
 #include "Information.h"
 #include "StartScript.h"
 #include "StopScript.h"
+#include "PurgeScriptLog.h"
 #include <shared/communication/SmallHeaderMessageCutter.h>
 
 namespace interpreter_cpp_api
@@ -183,6 +184,8 @@ namespace interpreter_cpp_api
          break;
       case interpreter_IPC::toInterpreter::msg::kStopScript: processStopScript(toInterpreterProtoBuffer.stopscript());
          break;
+      case interpreter_IPC::toInterpreter::msg::kPurgeScriptLog: processPurgeScriptLog(toInterpreterProtoBuffer.purgescriptlog());
+         break;
       default:
          throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toInterpreterProtoBuffer.OneOf_case()).str());
       }
@@ -288,6 +291,14 @@ namespace interpreter_cpp_api
       boost::shared_ptr<shared::script::yInterpreterApi::IStopScript> request = boost::make_shared<CStopScript>(msg);
 
       m_interpreterEventHandler.postEvent(kEventStopScript,
+                                          request);
+   }
+
+   void CApiImplementation::processPurgeScriptLog(const interpreter_IPC::toInterpreter::PurgeScriptLog& msg)
+   {
+      boost::shared_ptr<shared::script::yInterpreterApi::IPurgeScriptLog> request = boost::make_shared<CPurgeScriptLog>(msg);
+
+      m_interpreterEventHandler.postEvent(kEventPurgeScriptLog,
                                           request);
    }
 

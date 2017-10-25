@@ -67,6 +67,12 @@ namespace automation
          ///\param[in] scriptInstanceId   The script instance ID to stop
          //-----------------------------------------------------    
          virtual void stopScript(int scriptInstanceId) const = 0;
+
+         //-----------------------------------------------------
+         ///\brief               Purge the script log
+         ///\param[in] scriptInstanceId   The script instance ID to stop
+         //-----------------------------------------------------    
+         virtual void purgeScriptLog(int scriptInstanceId) const = 0;
       };
    }
 } // namespace automation::interpreter

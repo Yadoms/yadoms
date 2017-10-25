@@ -14,6 +14,7 @@
               </div>
               <div class="modal-footer">
                  <div class="form-actions">
+                    <button type="button" id="btn-clear-log" class="btn btn-danger" data-i18n="common.clear"></button>
                     <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.close"></button>
                  </div>
               </div>
@@ -32,6 +33,16 @@
       $logSlot.text("");
       
       getLog(rule);
+      
+      $("button#btn-clear-log").unbind('click').bind('click', function () {
+         AutomationRuleManager.deleteLog(rule)
+         .done(function () {
+            $('div#show-log-automation-rule-modal').modal('hide');
+         })
+         .fail(function (error) {
+            notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleDeleteLogError", { rule: rule.name }), error);
+         });
+      });
 
       //we display the modal
       $('div#show-log-automation-rule-modal').modal({ backdrop: 'static' });

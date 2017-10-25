@@ -142,7 +142,7 @@ namespace automation
 
          if (!cuttedMessage->empty())
          {
-            YADOMS_LOG(trace) << "[SEND] message " << pbMsg.OneOf_case() << " to interpreter #" << m_interpreterName;
+            YADOMS_LOG(trace) << "[SEND] message " << pbMsg.OneOf_case() << " to interpreter " << m_interpreterName;
             for (const auto& part : *cuttedMessage)
             {
                m_sendMessageQueue.send(part->formattedMessage(),
@@ -340,6 +340,15 @@ namespace automation
       {
          interpreter_IPC::toInterpreter::msg req;
          auto message = req.mutable_stopscript();
+         message->set_scriptinstanceid(request->getScriptInstanceId());
+
+         send(req);
+      }
+
+      void CIpcAdapter::postPurgeScriptLog(boost::shared_ptr<shared::script::yInterpreterApi::IPurgeScriptLog> request)
+      {
+         interpreter_IPC::toInterpreter::msg req;
+         auto message = req.mutable_purgescriptlog();
          message->set_scriptinstanceid(request->getScriptInstanceId());
 
          send(req);

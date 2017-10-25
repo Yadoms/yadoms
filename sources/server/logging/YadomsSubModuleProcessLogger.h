@@ -27,6 +27,7 @@ namespace logging
       void init() override;
       void information(const std::string& line) override;
       void error(const std::string& line) override;
+      void purgeLogFile() override;
       // [END] ILogger Implementation
 
    protected:

@@ -304,6 +304,8 @@ set(YADOMS_SRC
    server/automation/interpreter/LoadScriptContentRequest.cpp
    server/automation/interpreter/Manager.h
    server/automation/interpreter/Manager.cpp
+   server/automation/interpreter/PurgeScriptlog.h
+   server/automation/interpreter/PurgeScriptlog.cpp
    server/automation/interpreter/SaveScriptContentRequest.h
    server/automation/interpreter/SaveScriptContentRequest.cpp
    server/automation/interpreter/StartScript.h

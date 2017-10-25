@@ -16,9 +16,12 @@ namespace interpreter_cpp_api
       void init() override;
       void information(const std::string& line) override;
       void error(const std::string& line) override;
+      void purgeLogFile() override;
       // [END] IExternalProcessLogger Implementation
 
    private:
+      boost::recursive_mutex m_logMutex;
       Poco::Logger& m_logger;
+      const boost::filesystem::path m_scriptLogPath;
    };
 } // namespace interpreter_cpp_api	

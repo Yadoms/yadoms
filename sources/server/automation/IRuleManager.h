@@ -63,6 +63,13 @@ namespace automation
       virtual std::string getRuleLog(int id) const = 0;
 
       //--------------------------------------------------------------
+      /// \brief           Delete the log of the rule
+      /// \param[in] id    Rule Id
+      /// \throw           CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual void deleteRuleLog(int id) const = 0;
+
+      //--------------------------------------------------------------
       /// \brief           Get the code of the rule
       /// \param[in] id    Rule Id
       /// \return          The code of the rule, if available (empty string if not)

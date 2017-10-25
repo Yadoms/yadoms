@@ -39,6 +39,8 @@ public:
    std::string getError() const override;
    // [END] shared::process::IProcess Implementation
 
+   void purgeLogFile() const;
+
 protected:
    void start();
 

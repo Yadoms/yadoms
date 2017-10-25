@@ -43,6 +43,7 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordRule)("*"), CAutomationRule::getRule);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordRule)("*")("code"), CAutomationRule::getRuleCode);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordRule)("*")("log"), CAutomationRule::getRuleLog);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)(m_restSubKeywordRule)("*")("log"), CAutomationRule::deleteRuleLog);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordRule)("*")("start"), CAutomationRule::startRule);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordRule)("*")("stop"), CAutomationRule::stopRule);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeywordRule)("*"), CAutomationRule::updateRule, CAutomationRule::transactionalMethod);
@@ -186,6 +187,31 @@ namespace web
                shared::CDataContainer result;
                result.set("log", m_rulesManager->getRuleLog(boost::lexical_cast<int>(parameters[2])));
                return CResult::GenerateSuccess(result);
+            }
+            catch (CRuleException& e)
+            {
+               return CResult::GenerateError(std::string("Fail to retreive rule code : ") + e.what());
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in retreiving the rule");
+            }
+         }
+
+         shared::CDataContainer CAutomationRule::deleteRuleLog(const std::vector<std::string>& parameters,
+                                                               const std::string& requestContent) const
+         {
+            try
+            {
+               if (parameters.size() != 4)
+                  throw CRuleException("invalid parameter in URL");
+
+               m_rulesManager->deleteRuleLog(boost::lexical_cast<int>(parameters[2]));
+               return CResult::GenerateSuccess();
             }
             catch (CRuleException& e)
             {

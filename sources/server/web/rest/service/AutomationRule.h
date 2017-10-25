@@ -34,6 +34,8 @@ namespace web
                                                        const std::string& requestContent) const;
             shared::CDataContainer getRuleLog(const std::vector<std::string>& parameters,
                                               const std::string& requestContent) const;
+            shared::CDataContainer deleteRuleLog(const std::vector<std::string>& parameters,
+                                                 const std::string& requestContent) const;
             shared::CDataContainer startRule(const std::vector<std::string>& parameters,
                                              const std::string& requestContent) const;
             shared::CDataContainer stopRule(const std::vector<std::string>& parameters,

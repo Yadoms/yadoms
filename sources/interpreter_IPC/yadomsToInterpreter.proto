@@ -34,6 +34,10 @@ message StopScript {
 	int32 scriptInstanceId = 1;
 }
 
+message PurgeScriptLog {
+	int32 scriptInstanceId = 1;
+}
+
 
 message msg {
 	oneof OneOf {
@@ -45,6 +49,7 @@ message msg {
 		SaveScriptContentRequest saveScriptContentRequest = 6;
 		StartScript startScript = 7;
 		StopScript stopScript = 8;
+		PurgeScriptLog purgeScriptLog = 9;
    }
 }
 

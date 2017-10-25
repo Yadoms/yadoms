@@ -32,6 +32,7 @@ protected:
    void stopScript(int scriptInstanceId);
    void onScriptStopped(boost::shared_ptr<const IEventScriptStopped> eventStopped);
    void onStopRequested();
+   void deleteScriptLog(int scriptInstanceId);
 
 private:
    boost::shared_ptr<IFactory> m_factory;
@@ -41,3 +42,4 @@ private:
    mutable boost::recursive_mutex m_processesMutex;
    std::map<int, boost::shared_ptr<shared::process::IProcess>> m_scriptProcesses;
 };
+

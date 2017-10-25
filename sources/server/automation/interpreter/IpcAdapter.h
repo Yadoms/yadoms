@@ -42,6 +42,7 @@ namespace automation
          void postSaveScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ISaveScriptContentRequest> request) override;
          void postStartScript(boost::shared_ptr<shared::script::yInterpreterApi::IStartScript> request) override;
          void postStopScript(boost::shared_ptr<shared::script::yInterpreterApi::IStopScript> request) override;
+         void postPurgeScriptLog(boost::shared_ptr<shared::script::yInterpreterApi::IPurgeScriptLog> request) override;
          // [END] IIpcAdapter Implementation
 
          //--------------------------------------------------------------

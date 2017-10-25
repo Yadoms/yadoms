@@ -280,6 +280,7 @@ set(SHARED_LIB_SRC
    shared/script/yInterpreterApi/IAvalaibleRequest.h
    shared/script/yInterpreterApi/IInformation.h
    shared/script/yInterpreterApi/ILoadScriptContentRequest.h
+   shared/script/yInterpreterApi/IPurgeScriptLog.h
    shared/script/yInterpreterApi/ISaveScriptContentRequest.h
    shared/script/yInterpreterApi/IStartScript.h
    shared/script/yInterpreterApi/IStopScript.h

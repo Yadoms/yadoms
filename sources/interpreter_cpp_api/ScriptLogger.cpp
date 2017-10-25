@@ -12,7 +12,8 @@ namespace interpreter_cpp_api
 {
    CScriptLogger::CScriptLogger(int scriptInstanceId,
                                 const boost::filesystem::path& scriptLogPath)
-      : m_logger(Poco::Logger::get("Rule." + std::to_string(scriptInstanceId)))
+      : m_logger(Poco::Logger::get("Rule." + std::to_string(scriptInstanceId))),
+        m_scriptLogPath(scriptLogPath)
    {
       Poco::AutoPtr<Poco::PatternFormatter> patternFormatter(new Poco::PatternFormatter);
       Poco::AutoPtr<Poco::FormattingChannel> formattingFileChannel;
@@ -48,11 +49,30 @@ namespace interpreter_cpp_api
 
    void CScriptLogger::information(const std::string& line)
    {
+      boost::lock_guard<boost::recursive_mutex> lock(m_logMutex);
       m_logger.information(shared::CStringExtension::removeEol(line));
    }
 
    void CScriptLogger::error(const std::string& line)
    {
+      boost::lock_guard<boost::recursive_mutex> lock(m_logMutex);
       m_logger.error(shared::CStringExtension::removeEol(line));
    }
+
+   void CScriptLogger::purgeLogFile()
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_logMutex);
+
+      auto channel = m_logger.getChannel();
+
+      channel->close();
+
+      // Remove current and rotated files
+      for (auto& entry : boost::make_iterator_range(boost::filesystem::directory_iterator(m_scriptLogPath.parent_path()), {}))
+         boost::filesystem::remove_all(entry);
+
+      channel->open();
+   }
 } // namespace interpreter_cpp_api	
+
+

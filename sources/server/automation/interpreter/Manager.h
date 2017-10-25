@@ -41,6 +41,7 @@ namespace automation
                                const std::string& scriptPath,
                                bool doBackup = true) override;
          std::string getScriptLogContent(int ruleId) override;
+         void deleteLog(int ruleId) override;
          void setOnScriptStoppedFct(boost::function2<void, int, const std::string&> onScriptStoppedFct) override;
          // [END] IManager Implementation
 

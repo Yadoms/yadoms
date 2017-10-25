@@ -58,6 +58,7 @@ namespace interpreter_cpp_api
       void processSaveScriptContent(const interpreter_IPC::toInterpreter::SaveScriptContentRequest& msg);
       void processStartScript(const interpreter_IPC::toInterpreter::StartScript& msg);
       void processStopScript(const interpreter_IPC::toInterpreter::StopScript& msg);
+      void processPurgeScriptLog(const interpreter_IPC::toInterpreter::PurgeScriptLog& msg);
 
       void setInitialized();
 

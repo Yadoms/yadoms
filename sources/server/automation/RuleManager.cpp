@@ -296,6 +296,19 @@ namespace automation
       }
    }
 
+   void CRuleManager::deleteRuleLog(int id) const
+   {
+      try
+      {
+         m_interpreterManager->deleteLog(id);
+      }
+      catch (shared::exception::CException& e)
+      {
+         YADOMS_LOG(error) << "Unable to delete rule log (" << id << ") : " << e.what();
+         throw shared::exception::CInvalidParameter(boost::lexical_cast<std::string>(id));
+      }
+   }
+
    std::string CRuleManager::getRuleTemplateCode(const std::string& interpreterName) const
    {
       try
