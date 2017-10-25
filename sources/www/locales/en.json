@@ -548,6 +548,7 @@
           "delete": "Delete the rule",
           "confirmDeletion": "This action will delete the rule __name__. Continue anyway ?",
           "log": "View log",
+          "confirmLogDeletion": "This action will delete the __name__ rule log. Continue anyway ?",
           "ruleSuccessfullyCreated": "Rule successfully created",
           "ruleSuccessfullyUpdated": "Rule successfully updated",
           "ruleDeleted": "Rule successfully removed",

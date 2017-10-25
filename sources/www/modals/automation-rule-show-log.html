@@ -35,13 +35,22 @@
       getLog(rule);
       
       $("button#btn-clear-log").unbind('click').bind('click', function () {
-         AutomationRuleManager.deleteLog(rule)
+      
+         Yadoms.modals.confirmation.loadAsync()
          .done(function () {
-            $('div#show-log-automation-rule-modal').modal('hide');
-         })
-         .fail(function (error) {
-            notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleDeleteLogError", { rule: rule.name }), error);
-         });
+            Yadoms.showConfirmModal(Yadoms.btnKind.confirmCancel, null, $.t("modals.dashboard.sub-windows.automation-center.confirmLogDeletion", { name: rule.name }),
+            function () {
+               //deletion has been confirmed
+               AutomationRuleManager.deleteLog(rule)
+               .done(function () {
+                  $('div#show-log-automation-rule-modal').modal('hide');
+               })
+               .fail(function (error) {
+                  notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleDeleteLogError", { rule: rule.name }), error);
+               });
+            });
+         });       
+
       });
 
       //we display the modal
