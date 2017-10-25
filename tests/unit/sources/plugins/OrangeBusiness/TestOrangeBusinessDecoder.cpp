@@ -114,19 +114,21 @@ namespace yApi = shared::plugin::yPluginApi;
       command1.set("creationTs", "2016-06-03T15:50:39.669Z");
 
       command2.set("id", "5703cfa9e4b0b24cd6862866");
-      command2.set("data", "01");
+      command2.set("data", "02");
       command2.set("port", 1);
       command2.set("confirmed", true);
       command2.set("commandStatus", SENT);
       command2.set("creationTs", "2016-06-03T15:50:39.669Z");
 
+      data.push_back(command2); // the more recent command is pushed in the first place
       data.push_back(command1);
-      data.push_back(command2);
       deviceInformation.set("data", data);
 
       shared::CDataContainer response = decoder.getLastData(deviceInformation);
 
-      BOOST_CHECK_EQUAL(response.get<std::string>("data") == "01", true);
+      BOOST_CHECK_EQUAL(response.get<std::string>("data") == "02", true);
+      BOOST_CHECK_EQUAL(response.get<std::string>("id") == "5703cfa9e4b0b24cd6862866", true);
+      BOOST_CHECK_EQUAL(response.get<std::string>("date") == "2016-06-03T15:50:39.669Z", true);
    }
 
    BOOST_AUTO_TEST_SUITE_END()

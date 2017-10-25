@@ -32,6 +32,9 @@ namespace equipments
                       std::string& data) override;
 	  void updateBatteryLevel(boost::shared_ptr<yApi::IYPluginApi> api,
 					  int batteryLevel) override;
+     void updatelastMessageId(boost::shared_ptr<yApi::IYPluginApi> api,
+                              std::string& id) override;
+     std::string getlastMessageId(boost::shared_ptr<yApi::IYPluginApi> api) override;
       // [END] IEquipment implementation
 
       //-----------------------------------------------------
@@ -53,5 +56,6 @@ namespace equipments
 
       std::string m_name;
       std::string m_devEUI;
+      std::string m_lastMessageId;
    };
 } // namespace equipments

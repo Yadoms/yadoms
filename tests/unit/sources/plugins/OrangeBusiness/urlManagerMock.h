@@ -13,6 +13,8 @@ public:
 
    urlManagerMock();
 
+   void addRegisteredEquipmentsMessageReturned(shared::CDataContainer newMessage);
+
    //--------------------------------------------------------------
    /// \brief	    get all equipments from the website
    /// \param[in]  apikey              the apiKey to access the web site
@@ -50,4 +52,9 @@ public:
                                              const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout);
 
 private:
+
+   // All simulated messages
+   shared::CDataContainer RegisteredEquipments;
+   shared::CDataContainer DeviceInformation;
+   shared::CDataContainer DeviceCommands;
 };

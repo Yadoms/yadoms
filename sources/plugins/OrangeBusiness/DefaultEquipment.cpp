@@ -33,8 +33,23 @@ namespace equipments
       // Save names into details
       shared::CDataContainer details;
       details.set("devEUI", m_devEUI);
+      details.set("id", "");            // initial value -> no id defined
 
       api->declareDevice(m_name, "Orange Business", "Orange Business", keywordsToDeclare, details);
+   }
+
+   void CDefaultEquipment::updatelastMessageId(boost::shared_ptr<yApi::IYPluginApi> api,
+                                               std::string& id)
+   {
+      shared::CDataContainer details;
+      details.set("id", id);
+
+      api->updateDeviceDetails(m_name, details);
+   }
+
+   std::string CDefaultEquipment::getlastMessageId(boost::shared_ptr<yApi::IYPluginApi> api)
+   {
+      return api->getDeviceDetails(m_name).get<std::string>("id");
    }
 
    void CDefaultEquipment::updateData(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -45,9 +60,19 @@ namespace equipments
    }
 
    void CDefaultEquipment::updateBatteryLevel(boost::shared_ptr<yApi::IYPluginApi> api,
-									  int batteryLevel)
+									                   int batteryLevel)
    {
-	   m_batteryLevel->set(batteryLevel);
-	   api->historizeData(m_name, m_batteryLevel);
+      if (batteryLevel > 0 && batteryLevel < 255)
+      {
+         m_batteryLevel->set(batteryLevel);
+         api->historizeData(m_name, m_batteryLevel);
+      }
+      else
+      {
+         if (batteryLevel == 0)
+            YADOMS_LOG(trace) << "Equipment " << m_name << " is externally powered !";
+         if (batteryLevel == 255)
+            YADOMS_LOG(trace) << "This equipment " << m_name << " is not able to mesure the battery level !";
+      }
    }
 }

@@ -14,6 +14,11 @@ shared::CDataContainer urlManagerMock::getRegisteredEquipments(const std::string
    return response;
 }
 
+void urlManagerMock::addRegisteredEquipmentsMessageReturned(shared::CDataContainer newMessage)
+{
+   RegisteredEquipments = newMessage;
+}
+
 shared::CDataContainer urlManagerMock::getDeviceInformation(const std::string &apikey,
                                                             const std::string &devEUI,
                                                             const boost::posix_time::time_duration& timeout)

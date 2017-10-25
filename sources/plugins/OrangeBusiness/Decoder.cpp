@@ -46,8 +46,10 @@ shared::CDataContainer CDecoder::getLastData(shared::CDataContainer& message)
 
    if (commands.size() > 0)
    {
-      response.set("data", commands[commands.size() - 1].get<std::string>("data"));
-	  response.set("date", commands[commands.size() - 1].get<std::string>("creationTs"));
+      // // the lastest elements should be the first one presented
+      response.set("data", commands[0].get<std::string>("data"));
+	   response.set("date", commands[0].get<std::string>("creationTs"));
+      response.set("id", commands[0].get<std::string>("id"));
    }
    return response;
 }

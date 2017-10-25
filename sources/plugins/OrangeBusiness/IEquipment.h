@@ -36,6 +36,17 @@ namespace equipments
       virtual void updateData(boost::shared_ptr<yApi::IYPluginApi> api,
                               std::string& data) = 0;
 
+      //--------------------------------------------------------------
+      /// \brief	                     Update in the database for this equipment the last message id
+      //-----------------------------------------------------
+      virtual void updatelastMessageId(boost::shared_ptr<yApi::IYPluginApi> api,
+                                       std::string& id) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	                     Get last message id
+      //-----------------------------------------------------
+      virtual std::string getlastMessageId(boost::shared_ptr<yApi::IYPluginApi> api) = 0;
+
 	  //--------------------------------------------------------------
 	  /// \brief	                     Create the Device with the counter Id
 	  //-----------------------------------------------------

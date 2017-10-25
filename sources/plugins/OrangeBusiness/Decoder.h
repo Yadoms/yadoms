@@ -7,7 +7,7 @@
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-enum commandState { //TODO : to be completed with other possible status
+enum commandState { //TODO : to be completed with other possible status ERROR => But this one is already defined
    SENT = 0
 };
 
