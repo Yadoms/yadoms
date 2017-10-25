@@ -45,7 +45,7 @@ namespace update {
             packageName = "temp.zip";
 
          //determine local path
-         Poco::Path downloadedPackage(tools::CFileSystem::getTemporaryFolder());
+         Poco::Path downloadedPackage(tools::CFileSystem::createTemporaryFolder());
          downloadedPackage.setFileName(packageName);
 
          shared::web::CFileDownloader::downloadFile(toDownload, downloadedPackage, progressReporter);
@@ -62,7 +62,7 @@ namespace update {
             packageName = "temp.zip";
 
          //determine local path
-         auto downloadedPackage(tools::CFileSystem::getTemporaryFolder());
+         auto downloadedPackage(tools::CFileSystem::createTemporaryFolder());
          downloadedPackage.setFileName(packageName);
 
          shared::web::CFileDownloader::downloadFileAndVerify(toDownload, downloadedPackage, md5Hash, progressReporter);

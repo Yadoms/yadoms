@@ -226,6 +226,8 @@ void CEnOcean::createConnection()
 
 void CEnOcean::destroyConnection()
 {
+   if (!m_port)
+      return;
    m_port->setReceiveBufferHandler(boost::shared_ptr<shared::communication::IReceiveBufferHandler>());
    m_port.reset();
 }

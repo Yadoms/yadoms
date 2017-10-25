@@ -306,12 +306,12 @@ namespace startupOptions
 
    unsigned short CStartupOptions::getWebServerPortNumber() const
    {
-      return (unsigned short)m_configContainer.getUInt("server.port", 8080);
+      return static_cast<unsigned short>(m_configContainer.getUInt("server.port", 8080));
    }
 
    unsigned short CStartupOptions::getSSLWebServerPortNumber() const
    {
-      return (unsigned short)m_configContainer.getUInt("server.SSLport", 443);
+      return static_cast<unsigned short>(m_configContainer.getUInt("server.SSLport", 443));
    }
    
    bool CStartupOptions::getIsWebServerUseSSL() const
