@@ -33,14 +33,14 @@ namespace rfxcomMessages
       if (~rbuf.LINKY.state & ProductionCounterDisableMask)
       {
          // Prod counter is enabled
-         auto counter = boost::make_shared<yApi::historization::CCounter>("Production");
-         counter->set((rbuf.LINKY.prodidx1_0 << 24) + (rbuf.LINKY.prodidx1_1 << 16) + (rbuf.LINKY.prodidx1_2 << 8) + (rbuf.LINKY.prodidx1_3));
+         auto counter = boost::make_shared<yApi::historization::CEnergy>("Production");
+         counter->set(((rbuf.LINKY.prodidx1_0 << 24) + (rbuf.LINKY.prodidx1_1 << 16) + (rbuf.LINKY.prodidx1_2 << 8) + (rbuf.LINKY.prodidx1_3) ) * 1000);
          m_keywords.push_back(counter);
       }
 
       // Current counter
-      auto counter = boost::make_shared<yApi::historization::CCounter>("Counter" + std::to_string(rbuf.LINKY.currentidx));
-      counter->set((rbuf.LINKY.runidx_0 << 24) + (rbuf.LINKY.runidx_1 << 16) + (rbuf.LINKY.runidx_2 << 8) + (rbuf.LINKY.runidx_3));
+      auto counter = boost::make_shared<yApi::historization::CEnergy>("Counter" + std::to_string(rbuf.LINKY.currentidx));
+      counter->set(((rbuf.LINKY.runidx_0 << 24) + (rbuf.LINKY.runidx_1 << 16) + (rbuf.LINKY.runidx_2 << 8) + (rbuf.LINKY.runidx_3) ) * 1000);
       m_keywords.push_back(counter);
 
       // Voltage
