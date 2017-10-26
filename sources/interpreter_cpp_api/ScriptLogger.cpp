@@ -41,6 +41,7 @@ namespace interpreter_cpp_api
 
    CScriptLogger::~CScriptLogger()
    {
+      m_logger.destroy(m_logger.name());
    }
 
    void CScriptLogger::init()
@@ -67,11 +68,25 @@ namespace interpreter_cpp_api
 
       channel->close();
 
-      // Remove current and rotated files
-      for (auto& entry : boost::make_iterator_range(boost::filesystem::directory_iterator(m_scriptLogPath.parent_path()), {}))
-         boost::filesystem::remove_all(entry);
+      purgeLogFile(m_scriptLogPath.parent_path());
 
       channel->open();
+   }
+
+   void CScriptLogger::purgeLogFile(const boost::filesystem::path& scriptLogDirectory)
+   {
+      // Remove current and rotated files
+      for (auto& entry : boost::make_iterator_range(boost::filesystem::directory_iterator(scriptLogDirectory), {}))
+      {
+         try
+         {
+            boost::filesystem::remove_all(entry);
+         }
+         catch (std::exception& exception)
+         {
+            YADOMS_LOG(warning) << "CScriptLogger::purgeLogFile : Unable to delete " << entry << "file, " << exception.what();
+         }
+      }
    }
 } // namespace interpreter_cpp_api	
 

@@ -39,7 +39,7 @@ public:
    std::string getError() const override;
    // [END] shared::process::IProcess Implementation
 
-   void purgeLogFile() const;
+   boost::shared_ptr<shared::process::IExternalProcessLogger> logger() const;
 
 protected:
    void start();

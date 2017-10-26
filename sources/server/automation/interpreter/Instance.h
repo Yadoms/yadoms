@@ -35,7 +35,8 @@ namespace automation
                           const std::string& yScriptApiId,
                           const boost::filesystem::path& scriptLogPath) const override;
          void stopScript(int scriptInstanceId) const override;
-         void purgeScriptLog(int scriptInstanceId) const override;
+         void purgeScriptLog(int scriptInstanceId,
+                             const boost::filesystem::path& scriptLogPath) const override;
          // [END] IInstance Implementation
 
       protected:
@@ -51,3 +52,5 @@ namespace automation
       };
    }
 } // namespace automation::interpreter
+
+

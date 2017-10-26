@@ -63,7 +63,7 @@ std::string CScriptProcess::getError() const
    return m_process->getError();
 }
 
-void CScriptProcess::purgeLogFile() const
+boost::shared_ptr<shared::process::IExternalProcessLogger> CScriptProcess::logger() const
 {
-   m_scriptLogger->purgeLogFile();
+   return m_scriptLogger;
 }

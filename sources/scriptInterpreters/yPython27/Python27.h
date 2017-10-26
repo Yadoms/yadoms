@@ -32,7 +32,8 @@ protected:
    void stopScript(int scriptInstanceId);
    void onScriptStopped(boost::shared_ptr<const IEventScriptStopped> eventStopped);
    void onStopRequested();
-   void deleteScriptLog(int scriptInstanceId);
+   void deleteScriptLog(int scriptInstanceId,
+                        const boost::filesystem::path& scriptLogPath);
 
 private:
    boost::shared_ptr<IFactory> m_factory;

@@ -20,22 +20,22 @@ namespace automation
       {
       }
 
-      int CStartScript::getScriptInstanceId()
+      int CStartScript::getScriptInstanceId() const
       {
          return m_scriptInstanceId;
       }
 
-      const boost::filesystem::path& CStartScript::getScriptPath()
+      const boost::filesystem::path& CStartScript::getScriptPath() const
       {
          return m_scriptPath;
       }
 
-      const std::string& CStartScript::getScriptApiId()
+      const std::string& CStartScript::getScriptApiId() const
       {
          return m_scriptApiId;
       }
 
-      const boost::filesystem::path& CStartScript::getScriptLogPath()
+      const boost::filesystem::path& CStartScript::getScriptLogPath() const
       {
          return m_scriptLogPath;
       }

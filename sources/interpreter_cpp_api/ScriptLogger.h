@@ -19,6 +19,8 @@ namespace interpreter_cpp_api
       void purgeLogFile() override;
       // [END] IExternalProcessLogger Implementation
 
+      static void purgeLogFile(const boost::filesystem::path& scriptLogDirectory);
+
    private:
       boost::recursive_mutex m_logMutex;
       Poco::Logger& m_logger;

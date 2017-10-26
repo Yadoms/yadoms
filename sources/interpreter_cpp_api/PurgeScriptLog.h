@@ -12,10 +12,12 @@ namespace interpreter_cpp_api
 
       // IPurgeScriptLog Implementation
       int getScriptInstanceId() const override;
+      const boost::filesystem::path& getScriptLogPath() const override;
       // [END] IPurgeScriptLog Implementation
 
    private:
       const int m_scriptInstanceId;
+      const boost::filesystem::path m_scriptLogPath;
    };
 } // namespace interpreter_cpp_api	
 

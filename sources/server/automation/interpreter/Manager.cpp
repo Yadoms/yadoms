@@ -268,7 +268,8 @@ namespace automation
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
          for (const auto& runningInterpreter : m_loadedInterpreters)
-            runningInterpreter.second->purgeScriptLog(ruleId);
+            runningInterpreter.second->purgeScriptLog(ruleId,
+                                                      getScriptLogFilename(ruleId));
       }
 
       boost::filesystem::path CManager::getScriptLogFilename(int ruleId) const

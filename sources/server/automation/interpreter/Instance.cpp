@@ -149,9 +149,11 @@ namespace automation
          }
       }
 
-      void CInstance::purgeScriptLog(int scriptInstanceId) const
+      void CInstance::purgeScriptLog(int scriptInstanceId,
+                                     const boost::filesystem::path& scriptLogPath) const
       {
-         auto request(boost::make_shared<CPurgeScriptLog>(scriptInstanceId));
+         auto request(boost::make_shared<CPurgeScriptLog>(scriptInstanceId,
+                                                          scriptLogPath));
 
          try
          {
@@ -196,3 +198,5 @@ namespace automation
       }
    }
 } // namespace automation::interpreter
+
+

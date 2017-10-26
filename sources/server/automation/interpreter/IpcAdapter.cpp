@@ -350,6 +350,7 @@ namespace automation
          interpreter_IPC::toInterpreter::msg req;
          auto message = req.mutable_purgescriptlog();
          message->set_scriptinstanceid(request->getScriptInstanceId());
+         message->set_scriptlogpath(request->getScriptLogPath().string());
 
          send(req);
       }

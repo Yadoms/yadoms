@@ -36,6 +36,7 @@ message StopScript {
 
 message PurgeScriptLog {
 	int32 scriptInstanceId = 1;
+	string scriptLogPath = 2;
 }
 
 

@@ -21,10 +21,16 @@ namespace shared
             }
 
             //-----------------------------------------------------
-            ///\brief Call to say Yadoms that script is stopped
+            ///\brief Get the script instance ID (useful when script is running)
             ///\return The script instance ID
             //-----------------------------------------------------
             virtual int getScriptInstanceId() const = 0;
+
+            //-----------------------------------------------------
+            ///\brief Get the script log path (useful when script is not running)
+            ///\return The script log path
+            //-----------------------------------------------------
+            virtual const boost::filesystem::path& getScriptLogPath() const = 0;
          };
       }
    }
