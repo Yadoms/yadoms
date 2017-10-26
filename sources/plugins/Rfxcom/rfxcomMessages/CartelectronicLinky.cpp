@@ -8,8 +8,7 @@ namespace rfxcomMessages
 {
    CCartelectronicLinky::CCartelectronicLinky(const RBUF& rbuf,
                                               size_t rbufSize)
-      : m_id(0),
-        m_teleInfoStatus(boost::make_shared<teleInfo::specificHistorizers::CTeleInfoStatus>("TeleInfoStatus")), // Read-only keyword
+      : m_teleInfoStatus(boost::make_shared<teleInfo::specificHistorizers::CTeleInfoStatus>("TeleInfoStatus")), // Read-only keyword
         m_voltage(boost::make_shared<yApi::historization::CVoltage>("Voltage")),
         m_power(boost::make_shared<yApi::historization::CPower>("Power")),
         m_todayColor(boost::make_shared<teleInfo::specificHistorizers::CColor>("Today color")),

@@ -9,8 +9,7 @@ namespace rfxcomMessages
 {
    CCartelectronicTIC::CCartelectronicTIC(const RBUF& rbuf,
                                           size_t rbufSize)
-      : m_id(0),
-        m_teleInfoStatus(boost::make_shared<teleInfo::specificHistorizers::CTeleInfoStatus>("TeleInfoStatus")), // Read-only keyword
+      : m_teleInfoStatus(boost::make_shared<teleInfo::specificHistorizers::CTeleInfoStatus>("TeleInfoStatus")), // Read-only keyword
         m_keywords({m_teleInfoStatus})
    {
       std::string NameCounter1;

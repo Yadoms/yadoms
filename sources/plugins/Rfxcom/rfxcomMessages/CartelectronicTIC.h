@@ -54,11 +54,6 @@ namespace rfxcomMessages
       Contract m_subscribeContract;
 
       //--------------------------------------------------------------
-      /// \brief	The device id
-      //--------------------------------------------------------------
-      unsigned int m_id;
-
-      //--------------------------------------------------------------
       /// \brief	The keyword Counter 1
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CEnergy> m_counter1;

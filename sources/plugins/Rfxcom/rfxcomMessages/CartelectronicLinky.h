@@ -39,9 +39,7 @@ namespace rfxcomMessages
       std::string getModel() const override;
       // [END] ICartelectronicSubtype implementation
 
-   private:
-      unsigned int m_id;
-      
+   private:      
       boost::shared_ptr<teleInfo::specificHistorizers::CTeleInfoStatus> m_teleInfoStatus;
       boost::shared_ptr<yApi::historization::CVoltage> m_voltage;
       boost::shared_ptr<yApi::historization::CPower> m_power;
