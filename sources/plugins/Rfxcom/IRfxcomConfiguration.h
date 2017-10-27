@@ -58,8 +58,7 @@ public:
    virtual bool isLWRFenabled          () const = 0;
    virtual bool isHIDEKIenabled        () const = 0;
    virtual bool isLACROSSEenabled      () const = 0;
-   virtual bool isFS20enabled          () const = 0;
-   virtual bool isPROGUARDenabled      () const = 0;
+   virtual bool isLEGRANDenabled       () const = 0;
    virtual bool isBLINDST0enabled      () const = 0;
    virtual bool isBLINDST1enabled      () const = 0;
    virtual bool isX10enabled           () const = 0;

@@ -370,7 +370,7 @@ void CRfxcom::processRfxcomCommandResponseMessage(boost::shared_ptr<yApi::IYPlug
 void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                                          const rfxcomMessages::CTransceiverStatus& status)
 {
-   YADOMS_LOG(information) << "RFXCom status, type (" << status.rfxcomTypeToString() << "), firmware type (" << status.getFirmwareType() << "), firmware version (" << status.getFirmwareVersion() << ")";
+   YADOMS_LOG(information) << "RFXCom status, type (" << status.rfxcomTypeToString() << "), firmware type (" << status.getFirmwareType() << "), firmware version (" << status.getFirmwareVersion() << "), hardware version (" << status.getHardwareVersion() << ")";
    status.traceEnabledProtocols();
 
    if (m_configurationUpdated)
@@ -433,4 +433,3 @@ void CRfxcom::processRfxcomAckMessage(const rfxcomMessages::CAck& ack)
    else
    YADOMS_LOG(information) << "RFXCom Received acknowledge is KO";
 }
-
