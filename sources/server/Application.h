@@ -3,6 +3,8 @@
 #include <Poco/Util/OptionSet.h>
 #include "startupOptions/StartupOptions.h"
 #include "IRunningInformation.h"
+#include "IPathProvider.h"
+
 
 //-----------------------------
 ///\brief Yadoms application
@@ -38,6 +40,11 @@ private:
    ///\brief Startup options
    //-----------------------------
    boost::shared_ptr<startupOptions::CStartupOptions> m_startupOptions;
+   
+   //-----------------------------
+   ///\brief Path provider
+   //-----------------------------
+   boost::shared_ptr<const IPathProvider> m_pathProvider;
 
    //-----------------------------
    ///\brief Running information

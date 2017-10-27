@@ -14,7 +14,8 @@ namespace logging
    public:
       CLogConfigurationImpl();
       virtual ~CLogConfigurationImpl();
-      void configure(const std::string & logLevel);
+      void configure(const std::string& logLevel,
+                     const boost::filesystem::path& logPath);
    private:
       Poco::AutoPtr<Poco::ConsoleChannel> m_consoleChannel;
       Poco::AutoPtr<Poco::FileChannel> m_fileChannel;
@@ -29,3 +30,5 @@ namespace logging
       Poco::AutoPtr<Poco::SplitterChannel> m_splitterChannelPlugin;
    };
 } // namespace logging
+
+

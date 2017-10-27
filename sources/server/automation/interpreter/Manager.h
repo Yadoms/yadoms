@@ -17,7 +17,7 @@ namespace automation
          ///\brief               Constructor
          ///\param[in] pathProvider  Yadoms paths provider
          //-----------------------------------------------------
-         explicit CManager(const IPathProvider& pathProvider);
+         explicit CManager(boost::shared_ptr<const IPathProvider> pathProvider);
 
          //-----------------------------------------------------
          ///\brief               Destructor
@@ -71,7 +71,7 @@ namespace automation
          //-----------------------------------------------------
          ///\brief               The Yadoms paths provider
          //-----------------------------------------------------
-         const IPathProvider& m_pathProvider;
+         boost::shared_ptr<const IPathProvider> m_pathProvider;
 
          //-----------------------------------------------------
          ///\brief               The Interpreters factory

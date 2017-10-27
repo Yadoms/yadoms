@@ -11,7 +11,7 @@
 
 namespace database
 {
-   CFactory::CFactory(const IPathProvider& pathProvider,
+   CFactory::CFactory(boost::shared_ptr<const IPathProvider> pathProvider,
                       boost::shared_ptr<const startupOptions::IStartupOptions> startupOptions)
       : m_pathProvider(pathProvider),
         m_startupOptions(startupOptions)
@@ -34,7 +34,7 @@ namespace database
       switch (dbEngine)
       {
       case startupOptions::EDatabaseEngine::kSqliteValue:
-         return boost::make_shared<sqlite::CSQLiteRequester>(m_pathProvider.databaseSqliteFile().string());
+         return boost::make_shared<sqlite::CSQLiteRequester>(m_pathProvider->databaseSqliteFile().string());
 #ifndef PGSQL_NOT_FOUND
       case startupOptions::EDatabaseEngine::kPostgresqlValue:
          {

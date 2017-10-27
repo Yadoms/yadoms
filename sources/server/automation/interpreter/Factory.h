@@ -22,7 +22,7 @@ namespace automation
          /// \brief	Constructor
          /// \param[in] pathProvider      The path provider
          //--------------------------------------------------------------
-         explicit CFactory(const IPathProvider& pathProvider);
+         explicit CFactory(boost::shared_ptr<const IPathProvider> pathProvider);
 
          //--------------------------------------------------------------
          /// \brief	Destructor
@@ -30,9 +30,9 @@ namespace automation
          virtual ~CFactory();
 
          // IFactory Implementation
-         boost::shared_ptr<interpreter::IInstance> createInterpreterInstance(const std::string& interpreterFileName,
-                                                                             boost::function2<void, bool, const std::string&> onInstanceStateChangedFct,
-                                                                             boost::function2<void, int, const std::string&> onScriptStoppedFct) const override;
+         boost::shared_ptr<IInstance> createInterpreterInstance(const std::string& interpreterFileName,
+                                                                boost::function2<void, bool, const std::string&> onInstanceStateChangedFct,
+                                                                boost::function2<void, int, const std::string&> onScriptStoppedFct) const override;
          boost::filesystem::path interpreterLogFile(const std::string& interpreterFileName) const override;
          // [END] IFactory Implementation
 
@@ -51,7 +51,7 @@ namespace automation
                                                                             boost::shared_ptr<shared::process::IExternalProcessLogger> logger,
                                                                             boost::shared_ptr<interpreter::CInstanceStateHandler> instanceStateHandler) const;
       private:
-         const IPathProvider& m_pathProvider;
+         boost::shared_ptr<const IPathProvider> m_pathProvider;
       };
    }
 } // namespace automation::interpreter

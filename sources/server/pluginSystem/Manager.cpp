@@ -23,7 +23,7 @@
 
 namespace pluginSystem
 {
-   CManager::CManager(const IPathProvider& pathProvider,
+   CManager::CManager(boost::shared_ptr<const IPathProvider> pathProvider,
                       boost::shared_ptr<database::IDataProvider> dataProvider,
                       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                       boost::shared_ptr<shared::ILocation> location,

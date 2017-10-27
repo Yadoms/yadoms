@@ -20,7 +20,8 @@ POCO_SERVER_MAIN(CYadomsServer)
 
 CYadomsServer::CYadomsServer()
    : m_helpRequested(false),
-     m_startupOptions(boost::make_shared<startupOptions::CStartupOptions>(config()))
+     m_startupOptions(boost::make_shared<startupOptions::CStartupOptions>(config())),
+     m_pathProvider(boost::make_shared<CPathProvider>(m_startupOptions))
 {
    //define unixstyle for command line parsing
    //so in Windows platform we use --option and -o for options (instead of /option)
@@ -40,7 +41,8 @@ void CYadomsServer::initialize(Application& self)
    boost::filesystem::path workingDir(config().getString("application.path"));
    boost::filesystem::current_path(workingDir.parent_path());
 
-   logging::CLogConfiguration::configure(m_startupOptions->getLogLevel());
+   logging::CLogConfiguration::configure(m_startupOptions->getLogLevel(),
+                                         m_pathProvider->logsPath());
 }
 
 void CYadomsServer::uninitialize()
@@ -94,7 +96,6 @@ int CYadomsServer::main(const ArgVec& /*args*/)
    {
       auto executablePath = config().getString("application.path");
       m_runningInformation = boost::make_shared<CRunningInformation>(executablePath);
-      CPathProvider pathProvider(m_startupOptions);
 
 
       YADOMS_LOG_CONFIGURE("Main");
@@ -146,7 +147,10 @@ int CYadomsServer::main(const ArgVec& /*args*/)
       auto pOldEH = Poco::ErrorHandler::set(&eh);
 
       //configure stop handler
-      enum { kTerminationRequested = shared::event::kUserFirstId };
+      enum
+         {
+            kTerminationRequested = shared::event::kUserFirstId
+         };
       auto stopRequestEventHandler = boost::make_shared<shared::event::CEventHandler>();
       auto stopHandler = boost::make_shared<shared::process::CApplicationStopHandler>(m_startupOptions->getIsRunningAsService());
       stopHandler->setApplicationStopHandler([stopRequestEventHandler, stoppedEventHandler]() -> bool
@@ -156,12 +160,12 @@ int CYadomsServer::main(const ArgVec& /*args*/)
             stopRequestEventHandler->postEvent(kTerminationRequested);
             const auto stopSuccess = stoppedEventHandler->waitForEvents(boost::posix_time::seconds(30)) == kApplicationFullyStopped;
             if (!stopSuccess)
-               YADOMS_LOG(error) << "Fail to wait the app end event";
+            YADOMS_LOG(error) << "Fail to wait the app end event";
             return stopSuccess;
          });
 
       //create supervisor
-      CSupervisor supervisor(pathProvider);
+      CSupervisor supervisor(m_pathProvider);
       Poco::Thread supervisorThread("Supervisor");
       supervisorThread.start(supervisor);
 

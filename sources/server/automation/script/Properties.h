@@ -16,10 +16,8 @@ namespace automation
          //-----------------------------------------------------
          ///\brief                  Constructor
          ///\param[in] ruleData     Rule data
-         ///\param[in] pathProvider The path provider
          //-----------------------------------------------------
-         explicit CProperties(boost::shared_ptr<const database::entities::CRule> ruleData,
-                              const IPathProvider& pathProvider);
+         explicit CProperties(boost::shared_ptr<const database::entities::CRule> ruleData);
 
          //-----------------------------------------------------
          ///\brief               Destructor
