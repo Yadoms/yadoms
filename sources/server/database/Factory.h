@@ -14,7 +14,7 @@ namespace database
    class CFactory
    {
    public:
-      CFactory(const IPathProvider& pathProvider,
+      CFactory(boost::shared_ptr<const IPathProvider> pathProvider,
                boost::shared_ptr<const startupOptions::IStartupOptions> startupOptions);
       virtual ~CFactory();
 
@@ -23,7 +23,7 @@ namespace database
    private:
       boost::shared_ptr<IDatabaseRequester> createEngine() const;
 
-      const IPathProvider& m_pathProvider;
+      boost::shared_ptr<const IPathProvider> m_pathProvider;
       boost::shared_ptr<const startupOptions::IStartupOptions> m_startupOptions;
    };
 } //namespace database 

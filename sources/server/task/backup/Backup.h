@@ -16,17 +16,16 @@ namespace task
          //------------------------------------------
          ///\brief   Constructor
          //------------------------------------------
-         explicit CBackup(const IPathProvider& pathProvider, boost::shared_ptr<database::IDataBackup> dataBackupInterface);
+         explicit CBackup(boost::shared_ptr<const IPathProvider> pathProvider, boost::shared_ptr<database::IDataBackup> dataBackupInterface);
 
          //------------------------------------------
          ///\brief   Destructor
          //------------------------------------------
          virtual ~CBackup();
 
-      public:
          // ITask implementation
-         virtual const std::string& getName();
-         virtual void doWork(TaskProgressFunc pFunctor);
+         const std::string& getName() const override;
+         void doWork(TaskProgressFunc pFunctor) override;
          // [END] ITask implementation
 
       private:
@@ -37,12 +36,12 @@ namespace task
          ///\param [in] currentPart The current total progression
          ///\param [in] totalPart   The final progression when current operation ends
          //------------------------------------------
-         void OnProgressionUpdatedInternal(int remaining, int total, float currentPart, float totalPart, const std::string& message = std::string());
+         void OnProgressionUpdatedInternal(int remaining, int total, float currentPart, float totalPart, const std::string& message = std::string()) const;
 
          //------------------------------------------
          ///\brief   The path provider instance
          //------------------------------------------
-         const IPathProvider& m_pathProvider;
+         boost::shared_ptr<const IPathProvider> m_pathProvider;
 
          //------------------------------------------
          ///\brief   The task name

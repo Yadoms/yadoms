@@ -5,7 +5,7 @@
 CPathProvider::CPathProvider(const boost::shared_ptr<startupOptions::IStartupOptions> startupOptions)
    : m_logsPath(tools::CFileSystem::getLogFolder().toString().empty()
                    ? "logs"
-                   : tools::CFileSystem::getLogFolder().toString() / boost::filesystem::path("yadoms")),
+                   : tools::CFileSystem::getLogFolder().toString()),
      m_dataPath("data"),
      m_webServerPath(startupOptions->getWebServerInitialPath()),
      m_pluginsLogPath(m_logsPath / "plugins"),
@@ -19,25 +19,25 @@ CPathProvider::CPathProvider(const boost::shared_ptr<startupOptions::IStartupOpt
      m_backupPath(startupOptions->getBackupPath())
 {
    if (!boost::filesystem::exists(m_logsPath))
-      boost::filesystem::create_directory(m_logsPath);
+      boost::filesystem::create_directories(m_logsPath);
    if (!boost::filesystem::exists(m_dataPath))
-      boost::filesystem::create_directory(m_dataPath);
+      boost::filesystem::create_directories(m_dataPath);
    if (!boost::filesystem::exists(m_pluginsLogPath))
-      boost::filesystem::create_directory(m_pluginsLogPath);
+      boost::filesystem::create_directories(m_pluginsLogPath);
    if (!boost::filesystem::exists(m_pluginsDataPath))
-      boost::filesystem::create_directory(m_pluginsDataPath);
+      boost::filesystem::create_directories(m_pluginsDataPath);
    if (!boost::filesystem::exists(m_scriptsLogPath))
-      boost::filesystem::create_directory(m_scriptsLogPath);
+      boost::filesystem::create_directories(m_scriptsLogPath);
    if (!boost::filesystem::exists(m_pluginsPath))
-      boost::filesystem::create_directory(m_pluginsPath);
+      boost::filesystem::create_directories(m_pluginsPath);
    if (!boost::filesystem::exists(m_scriptsPath))
-      boost::filesystem::create_directory(m_scriptsPath);
+      boost::filesystem::create_directories(m_scriptsPath);
    if (!boost::filesystem::exists(m_scriptInterpretersPath))
-      boost::filesystem::create_directory(m_scriptInterpretersPath);
+      boost::filesystem::create_directories(m_scriptInterpretersPath);
    if (!boost::filesystem::exists(m_scriptInterpretersLogPath))
-      boost::filesystem::create_directory(m_scriptInterpretersLogPath);
+      boost::filesystem::create_directories(m_scriptInterpretersLogPath);
    if (!boost::filesystem::exists(m_backupPath))
-      boost::filesystem::create_directory(m_backupPath);
+      boost::filesystem::create_directories(m_backupPath);
 }
 
 CPathProvider::~CPathProvider()
@@ -99,3 +99,4 @@ const boost::filesystem::path& CPathProvider::backupPath() const
 {
    return m_backupPath;
 }
+

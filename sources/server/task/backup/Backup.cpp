@@ -13,7 +13,7 @@ namespace task
    {
       std::string CBackup::m_taskName = "backup";
 
-      CBackup::CBackup(const IPathProvider& pathProvider, boost::shared_ptr<database::IDataBackup> dataBackupInterface)
+      CBackup::CBackup(boost::shared_ptr<const IPathProvider> pathProvider, boost::shared_ptr<database::IDataBackup> dataBackupInterface)
          : m_pathProvider(pathProvider), m_dataBackupInterface(dataBackupInterface)
       {
          if (!m_dataBackupInterface)
@@ -24,14 +24,14 @@ namespace task
       {
       }
 
-      const std::string& CBackup::getName()
+      const std::string& CBackup::getName() const
       {
          return m_taskName;
       }
 
-      void CBackup::OnProgressionUpdatedInternal(int remaining, int total, float currentPart, float totalPart, const std::string& message)
+      void CBackup::OnProgressionUpdatedInternal(int remaining, int total, float currentPart, float totalPart, const std::string& message) const
       {
-         float progression = currentPart + (total != 0 ? ((float)(total - remaining) * (float)(totalPart - currentPart) / (float)total) : 0);
+         float progression = currentPart + (total != 0 ? static_cast<float>(total - remaining) * static_cast<float>(totalPart - currentPart) / static_cast<float>(total) : 0);
 
          if (m_reportRealProgress)
             m_reportRealProgress(true, progression, message, std::string(), shared::CDataContainer::EmptyContainer);
@@ -64,19 +64,19 @@ namespace task
          });
 
          //backup scripts (80 -> 85%)
-         tools::CFileSystem::copyDirectoryRecursivelyTo(m_pathProvider.scriptsPath(), backupTempFolder / "scripts");
+         tools::CFileSystem::copyDirectoryRecursivelyTo(m_pathProvider->scriptsPath(), backupTempFolder / "scripts");
          OnProgressionUpdatedInternal(0, 100, 80.0f, 85.0f, "");
 
          //backup plugins data  (85 -> 90%)
-         tools::CFileSystem::copyDirectoryRecursivelyTo(m_pathProvider.pluginsDataPath(), backupTempFolder / "data");
+         tools::CFileSystem::copyDirectoryRecursivelyTo(m_pathProvider->pluginsDataPath(), backupTempFolder / "data");
          boost::filesystem::copy_file("yadoms.ini", backupTempFolder / "yadoms.ini");
          OnProgressionUpdatedInternal(0, 100, 85.0f, 90.0f, "");
 
 
          //create if needed a backup folder
-         if (!boost::filesystem::exists(m_pathProvider.backupPath()))
+         if (!boost::filesystem::exists(m_pathProvider->backupPath()))
          {
-            boost::filesystem::create_directory(m_pathProvider.backupPath());
+            boost::filesystem::create_directory(m_pathProvider->backupPath());
          }
 
          
@@ -85,7 +85,7 @@ namespace task
          std::string dateAsIsoString = boost::posix_time::to_iso_string(shared::currentTime::Provider().now());
          boost::replace_all(dateAsIsoString, ",", "_");
 
-         std::ofstream out( (m_pathProvider.backupPath() / (boost::format("backup_%1%.zip") % dateAsIsoString).str() ).string(), std::ios::binary);
+         std::ofstream out( (m_pathProvider->backupPath() / (boost::format("backup_%1%.zip") % dateAsIsoString).str() ).string(), std::ios::binary);
          Poco::Zip::Compress c(out, true);
          c.addRecursive(backupTempFolder.string());
          c.close(); // MUST be done to finalize the Zip file

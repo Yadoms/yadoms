@@ -36,7 +36,7 @@ namespace pluginSystem
       /// \param [in]   dataAccessLayer         The database access layer
       /// \param [in]   locationProvider        The location provider
       //--------------------------------------------------------------
-      CManager(const IPathProvider& pathProvider,
+      CManager(boost::shared_ptr<const IPathProvider> pathProvider,
                boost::shared_ptr<database::IDataProvider> dataProvider,
                boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                boost::shared_ptr<shared::ILocation> locationProvider,

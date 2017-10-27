@@ -13,8 +13,10 @@ namespace logging
       //--------------------------------------------------------------
       /// \brief	                  configure the logger with one file per thread without rolling on size
       /// \param[in]  logLevel      The log level
+      /// \param[in]  logPath       The log path
       //--------------------------------------------------------------
-      static void configure(const std::string & logLevel);
+      static void configure(const std::string& logLevel,
+                            const boost::filesystem::path& logPath);
 
    private:
       //--------------------------------------------------------------
@@ -22,5 +24,6 @@ namespace logging
       //--------------------------------------------------------------
       static boost::shared_ptr<CLogConfigurationImpl> m_configurator;
    };
-
 } // namespace logging
+
+
