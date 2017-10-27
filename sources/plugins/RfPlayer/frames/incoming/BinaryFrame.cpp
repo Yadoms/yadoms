@@ -198,7 +198,7 @@ namespace incoming {
       }
    }
 
-   const char CBinaryFrame::getSourceDest() const
+   char CBinaryFrame::getSourceDest() const
    {
       return m_sourceDest;
    }

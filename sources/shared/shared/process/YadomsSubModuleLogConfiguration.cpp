@@ -32,6 +32,7 @@ namespace shared
          m_fileChannel->setProperty("archive", "timestamp");
          m_fileChannel->setProperty("compress", "true");
          m_fileChannel->setProperty("purgeCount", "7");
+         m_fileChannel->setProperty("rotateOnOpen", "true");
          m_formattingFileChannel.assign(new Poco::FormattingChannel(m_patternFormatter,
                                                                     m_fileChannel));
 
