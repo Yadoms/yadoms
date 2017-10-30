@@ -171,7 +171,7 @@ namespace update {
             /////////////////////////////////////////////
 
             //stop all rules using this scriptInterpreter
-            boost::shared_ptr<automation::IRuleManager> automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
+            auto automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
             if (automationRuleManager)
             {
                automationRuleManager->deleteAllRulesMatchingInterpreter(scriptInterpreterName);
@@ -180,7 +180,7 @@ namespace update {
             /////////////////////////////////////////////
             //2. remove scriptInterpreter folder
             /////////////////////////////////////////////
-            boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
+            auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
             Poco::Path scriptInterpreterPath(startupOptions->getScriptInterpretersPath());
             scriptInterpreterPath.append(scriptInterpreterName);
 

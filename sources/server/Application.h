@@ -39,7 +39,7 @@ private:
    //-----------------------------
    ///\brief Startup options
    //-----------------------------
-   boost::shared_ptr<startupOptions::CStartupOptions> m_startupOptions;
+   boost::shared_ptr<const startupOptions::CStartupOptions> m_startupOptions;
    
    //-----------------------------
    ///\brief Path provider

@@ -130,7 +130,7 @@ namespace web
                result.set("executablePath", m_runningInformation->getExecutablePath());
                result.set("serverReady", m_runningInformation->isServerFullyLoaded());
 
-               if (shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getDeveloperMode())
+               if (shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode())
                   result.set("developerMode", "true");
 
                return CResult::GenerateSuccess(result);

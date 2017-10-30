@@ -168,7 +168,7 @@ namespace update
             /////////////////////////////////////////////
             //2. remove plugin folder
             /////////////////////////////////////////////
-            boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
+            auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
             Poco::Path pluginPath(startupOptions->getPluginsPath());
             pluginPath.append(pluginName);
 

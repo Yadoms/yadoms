@@ -20,8 +20,7 @@ POCO_SERVER_MAIN(CYadomsServer)
 
 CYadomsServer::CYadomsServer()
    : m_helpRequested(false),
-     m_startupOptions(boost::make_shared<startupOptions::CStartupOptions>(config())),
-     m_pathProvider(boost::make_shared<CPathProvider>(m_startupOptions))
+     m_startupOptions(boost::make_shared<startupOptions::CStartupOptions>(config()))
 {
    //define unixstyle for command line parsing
    //so in Windows platform we use --option and -o for options (instead of /option)
@@ -36,6 +35,7 @@ CYadomsServer::~CYadomsServer()
 void CYadomsServer::initialize(Application& self)
 {
    loadConfiguration(); // load default configuration files, if present
+   m_pathProvider = boost::make_shared<CPathProvider>(m_startupOptions);
    ServerApplication::initialize(self);
 
    boost::filesystem::path workingDir(config().getString("application.path"));
@@ -110,7 +110,8 @@ int CYadomsServer::main(const ArgVec& /*args*/)
       }
 
       YADOMS_LOG(information) << "Startup options :";
-      YADOMS_LOG(information) << "\tlog level = " << m_startupOptions->getLogLevel();
+      YADOMS_LOG(information) << "\tLog level = " << m_startupOptions->getLogLevel();
+      YADOMS_LOG(information) << "\tLog path = " << m_startupOptions->getLogPath();
       YADOMS_LOG(information) << "\tWeb server port number = " << m_startupOptions->getWebServerPortNumber();
       YADOMS_LOG(information) << "\tSSL activated = " << m_startupOptions->getIsWebServerUseSSL();
       YADOMS_LOG(information) << "\tSSL Web server port number = " << m_startupOptions->getSSLWebServerPortNumber();
@@ -139,7 +140,7 @@ int CYadomsServer::main(const ArgVec& /*args*/)
       YADOMS_LOG(information) << "********************************************************************";
 
       //register Services in serviceLocator
-      shared::CServiceLocator::instance().push<startupOptions::IStartupOptions>(m_startupOptions);
+      shared::CServiceLocator::instance().push<const startupOptions::IStartupOptions>(m_startupOptions);
       shared::CServiceLocator::instance().push<IRunningInformation>(m_runningInformation);
 
       //configure the Poco ErrorHandler

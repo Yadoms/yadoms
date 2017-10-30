@@ -87,7 +87,7 @@ namespace database
 
       std::string CPgsqlRequester::createConnectionString(const EConnectionStringMode mode)
       {
-         const auto startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
+         const auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
 
          std::string result;
 
@@ -197,7 +197,7 @@ namespace database
                }
                else
                {
-                  const auto startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
+                  const auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
 
                   //list all databases
                   CPgsqlQuery dbList;

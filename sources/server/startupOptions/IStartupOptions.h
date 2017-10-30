@@ -6,20 +6,29 @@
 #include "DatabaseEngine.h"
 #include <Poco/Nullable.h>
 
-namespace startupOptions {
+namespace startupOptions
+{
    class IStartupOptions
    {
    public:
       //--------------------------------------------------------------
       /// \brief	    Destructor
       //--------------------------------------------------------------
-      virtual ~IStartupOptions() {}
+      virtual ~IStartupOptions()
+      {
+      }
 
       //--------------------------------------------------------------
       /// \brief	    Get the log level
       /// \return     Configured log level
       //--------------------------------------------------------------
       virtual std::string getLogLevel() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the log path
+      /// \return     Configured log path
+      //--------------------------------------------------------------
+      virtual boost::filesystem::path getLogPath() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the port number
@@ -44,7 +53,7 @@ namespace startupOptions {
       /// \return     Configured web server ip address
       //--------------------------------------------------------------
       virtual std::string getWebServerIPAddress() const = 0;
-      
+
       //--------------------------------------------------------------
       /// \brief	    Get the web server initial path
       /// \return     Configured web server initial path
@@ -226,8 +235,8 @@ namespace startupOptions {
       /// \return     The plugin path
       /// \note       If not exist, it returns "plugins"
       //--------------------------------------------------------------
-      virtual std::string getPluginsPath() const = 0;    
-      
+      virtual std::string getPluginsPath() const = 0;
+
       //--------------------------------------------------------------
       /// \brief	    Get the script interpreters path
       /// \return     The script interpreters path
@@ -239,8 +248,8 @@ namespace startupOptions {
       /// \brief	    Get the no password flag
       /// \return     flag indicating if password check is disabled for this instance
       //--------------------------------------------------------------
-      virtual bool getNoPasswordFlag() const = 0;   
-      
+      virtual bool getNoPasswordFlag() const = 0;
+
       //--------------------------------------------------------------
       /// \brief	    Get the no webserver cache flag
       /// \return     flag indicating if webserver cache should be disabled
@@ -278,5 +287,6 @@ namespace startupOptions {
       //--------------------------------------------------------------
       virtual bool getDeveloperMode() const = 0;
    };
-
 } // namespace startupOptions
+
+

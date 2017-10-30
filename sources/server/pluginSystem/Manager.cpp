@@ -384,23 +384,38 @@ namespace pluginSystem
       }
       catch (shared::exception::CEmptyResult& e)
       {
-         throw CPluginException((boost::format("Invalid plugin instance %1%, element not found in database : %2%") % id % e.what()).str());
+         std::ostringstream oss;
+         oss << "Invalid plugin instance " << id << ", element not found in database : " << e.what();
+         YADOMS_LOG(error) << oss.str();
+         throw CPluginException(oss.str());
       }
       catch (CInvalidPluginException& e)
       {
-         throw CPluginException((boost::format("Invalid plugin instance %1%, because of an invalid plugin : %2%") % id % e.what()).str());
+         std::ostringstream oss;
+         oss << "Invalid plugin instance " << id << ", because of an invalid plugin : " << e.what();
+         YADOMS_LOG(error) << oss.str();
+         throw CPluginException(oss.str());
       }
       catch (shared::exception::COutOfRange& e)
       {
-         throw CPluginException((boost::format("Invalid plugin instance %1% configuration, out of range : %2%") % id % e.what()).str());
+         std::ostringstream oss;
+         oss << "Invalid plugin instance " << id << "configuration, out of range : " << e.what();
+         YADOMS_LOG(error) << oss.str();
+         throw CPluginException(oss.str());
       }
       catch (std::exception& e)
       {
-         throw CPluginException((boost::format("Unable to start instance %1% %2%") % id % e.what()).str());
+         std::ostringstream oss;
+         oss << "Unable to start instance " << id << " : " << e.what();
+         YADOMS_LOG(error) << oss.str();
+         throw CPluginException(oss.str());
       }
       catch (...)
       {
-         throw CPluginException((boost::format("Unable to start instance %1%, unknown error") % id).str());
+         std::ostringstream oss;
+         oss << "Unable to start instance " << id << ", unknown error";
+         YADOMS_LOG(error) << oss.str();
+         throw CPluginException(oss.str());
       }
    }
 
@@ -431,7 +446,7 @@ namespace pluginSystem
          if (!m_runningInstances.empty())
          {
             for (const auto& instance : m_runningInstances)
-               instance.second->kill();         
+               instance.second->kill();
          }
       }
 
@@ -478,7 +493,8 @@ namespace pluginSystem
                break;
          }
          boost::this_thread::yield();
-      } while (shared::currentTime::Provider().now() < timeout);
+      }
+      while (shared::currentTime::Provider().now() < timeout);
 
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
@@ -498,7 +514,8 @@ namespace pluginSystem
                break;
          }
          boost::this_thread::yield();
-      } while (shared::currentTime::Provider().now() < timeout);
+      }
+      while (shared::currentTime::Provider().now() < timeout);
 
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
@@ -662,11 +679,11 @@ namespace pluginSystem
 
       YADOMS_LOG(debug) << "Send extra query " << query->getData()->query() << " to plugin " << instance->about()->DisplayName();
 
-      boost::shared_ptr<task::ITask> task(boost::make_shared<task::plugins::CExtraQuery>(instance, query)); 
+      boost::shared_ptr<task::ITask> task(boost::make_shared<task::plugins::CExtraQuery>(instance, query));
 
       std::string taskUid = "";
       bool result = m_taskScheduler->runTask(task, taskUid);
-      if(!result)
+      if (!result)
       {
          YADOMS_LOG(error) << "Fail to send extra query " << query->getData()->query() << " to plugin " << instance->about()->DisplayName();
          //ensure taskId is set to ""
@@ -750,3 +767,5 @@ namespace pluginSystem
       instance->postSetDeviceConfiguration(command);
    }
 } // namespace pluginSystem
+
+

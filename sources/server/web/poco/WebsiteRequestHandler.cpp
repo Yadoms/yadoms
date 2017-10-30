@@ -14,7 +14,7 @@ namespace web { namespace poco {
          :m_documentRoot(documentRoot)
       {
          //retrieve startup options
-         auto startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
+         auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
          m_cacheDisabled = startupOptions->getNoWebServerCacheFlag();
 
          std::map<std::string, std::string>::const_iterator i;
