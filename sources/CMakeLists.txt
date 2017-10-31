@@ -1290,6 +1290,7 @@ SET(CPACK_PACKAGE_EXECUTABLES "Yadoms" "Yadoms")
 # When calling "make package" it do not run "make all" 
 # So package can be realized with make all_unity call before make package
 set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
+set(CMAKE_SKIP_PACKAGE_ALL_DEPENDENCY ON)
 
 INCLUDE(CPack)
 
