@@ -23,12 +23,15 @@ public:
    virtual ~CYadomsServer();
 
 protected:
+   // Poco::Util::ServerApplication implementation
    void initialize(Poco::Util::Application& self) override;
    void uninitialize() override;
    void defineOptions(Poco::Util::OptionSet& options) override;
+   int main(const ArgVec& args) override;
+   // [END] Poco::Util::ServerApplication implementation
+
    void handleHelp(const std::string& name, const std::string& value);
    void displayHelp() const;
-   int main(const ArgVec& args) override;
 
 private:
    //-----------------------------
