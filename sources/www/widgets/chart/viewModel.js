@@ -41,6 +41,8 @@ function chartViewModel() {
     this.changexAxisBound = function(dateMin){
        var self = this;
        
+       //TODO : Changer seulement si date > la dernière valeur du graphique, sinon, ne rien faire
+       
        var datet = DateTimeFormatter.isoDateToDate(dateMin)._d.getTime();
        self.chart.xAxis[0].setExtremes(datet, null);
     };
@@ -401,7 +403,7 @@ function chartViewModel() {
               self.prefix = "day";
               break;
           default:
-              self.cleanValue = 3600000;
+              self.cleanValue = 3600000*24;
               self.prefix = "hour";
               break;
       }
@@ -422,8 +424,6 @@ function chartViewModel() {
 
         if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
             return;
-
-        self.chartParametersConfiguration();
         
         //Desactivate the old button
         self.widgetApi.find(".range-btn[interval='" + self.interval + "']").removeClass("widget-toolbar-pressed-button");
@@ -435,7 +435,8 @@ function chartViewModel() {
         self.widgetApi.find(".range-btn[interval='" + self.interval + "']").addClass("widget-toolbar-pressed-button");
 
         //just update some viewmodel info
-        self.devicesList = self.widget.configuration.devices.slice(0);
+        self.devicesList = self.widget.configuration.devices.slice(0); 
+        self.chartParametersConfiguration();
          
         try{
           self.ConfigurationLegendLabels = self.widget.configuration.legends.content.legendLabels;
@@ -943,7 +944,7 @@ function chartViewModel() {
           // Clean points > cleanValue for ranges, if any
          if (!isNullOrUndefined(serieRange))
             self.cleanUpChart(serieRange, isofinaldate, self.cleanValue);
-      });         
+      });
     };
    
     this.DisplaySummary = function (index, nb, device, range, prefix, lastPointDate) {
@@ -963,37 +964,47 @@ function chartViewModel() {
          
             RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + "/" + prefix + "/" + dateFrom + "/" + dateTo)
                .done(function (data) {
-                   try {                          
+                   try {
                        if (data.data[data.data.length-1] != undefined) {
-                           self.chart.hideLoading(); // If a text was displayed before
-
-                           var registerDate = DateTimeFormatter.isoDateToDate(data.data[data.data.length-1].date)._d.getTime().valueOf();
-                           var valueToDisplay = parseFloat(data.data[data.data.length-1][self.periodValueType[index]]);
-                    
-                           if (self.differentialDisplay[index])
-                           {
-                               if (serie && !isNullOrUndefined(self.chartLastValue[index]))
-                               {
-                                  serie.addPoint([registerDate, valueToDisplay-self.chartLastValue[index]], 
-                                                 true,  // redraw. When more than 1 => false.
-                                                 false, // shift if true, one point at left is remove
-                                                 true); // animation.
-                               }
-                               self.chartLastValue[index] = valueToDisplay;
-                           }
-                           else                              
-                              serie.addPoint([registerDate, valueToDisplay], true, false, true);
-                     
-                           //Add also for ranges if any
-                           if (serieRange && !self.differentialDisplay[index])
-                           {
-                              serieRange.addPoint([registerDate, parseFloat(data.data[data.data.length-1].min), parseFloat(data.data[data.data.length-1].max)], 
-                                                  true, false, true);
-                           }
+                          var registerDate = DateTimeFormatter.isoDateToDate(data.data[data.data.length-1].date)._d.getTime().valueOf();
+                          if (registerDate != serie.points[serie.points.length-1].x){
+                             console.log ("points !");
+                             self.chart.hideLoading(); // If a text was displayed before
+                              var valueToDisplay = parseFloat(data.data[data.data.length-1][self.periodValueType[index]]);
+                       
+                              if (self.differentialDisplay[index])
+                              {
+                                  if (serie && !isNullOrUndefined(self.chartLastValue[index]))
+                                  {
+                                     serie.addPoint([registerDate, valueToDisplay-self.chartLastValue[index]], 
+                                                    true,  // redraw. When more than 1 => false.
+                                                    false, // shift if true, one point at left is remove
+                                                    true); // animation.
+                                  }
+                                  self.chartLastValue[index] = valueToDisplay;
+                              }
+                              else                              
+                                 serie.addPoint([registerDate, valueToDisplay], true, false, true);
+                        
+                              //Add also for ranges if any
+                              if (serieRange && !self.differentialDisplay[index])
+                              {
+                                 serieRange.addPoint([registerDate, parseFloat(data.data[data.data.length-1].min), parseFloat(data.data[data.data.length-1].max)], 
+                                                     true, false, true);
+                              }
+                          }
                        }
                        else{ // Add null for this date
                           var registerDate = moment(self.serverTime).subtract(1, 'hours').startOf(prefix)._d.getTime().valueOf();
-                          serie.addPoint([registerDate, null], true, false, true);
+                          
+                          if ((registerDate - serie.points[serie.points.length-1].x) > self.cleanValue)
+                             serie.addPoint([registerDate, null], true, false, true);
+                          
+                          if (serieRange && !self.differentialDisplay[index])
+                          {
+                             if ((registerDate - serieRange.points[serie.points.length-1].x) > self.cleanValue)
+                                serieRange.addPoint([registerDate, null, null], true, false, true);
+                          }
                        }
                    } catch (err) {
                        console.error(err.message);
