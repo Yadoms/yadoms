@@ -40,9 +40,6 @@ function chartViewModel() {
     
     this.changexAxisBound = function(dateMin){
        var self = this;
-       
-       //TODO : Changer seulement si date > la dernière valeur du graphique, sinon, ne rien faire
-       
        var datet = DateTimeFormatter.isoDateToDate(dateMin)._d.getTime();
        self.chart.xAxis[0].setExtremes(datet, null);
     };
@@ -965,33 +962,32 @@ function chartViewModel() {
             RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + "/" + prefix + "/" + dateFrom + "/" + dateTo)
                .done(function (data) {
                    try {
-                       if (data.data[data.data.length-1] != undefined) {
+                       if (!isNullOrUndefinedOrEmpty(data.data[data.data.length-1])) {
                           var registerDate = DateTimeFormatter.isoDateToDate(data.data[data.data.length-1].date)._d.getTime().valueOf();
                           if (registerDate != serie.points[serie.points.length-1].x){
-                             console.log ("points !");
                              self.chart.hideLoading(); // If a text was displayed before
-                              var valueToDisplay = parseFloat(data.data[data.data.length-1][self.periodValueType[index]]);
+                             var valueToDisplay = parseFloat(data.data[data.data.length-1][self.periodValueType[index]]);
                        
-                              if (self.differentialDisplay[index])
-                              {
-                                  if (serie && !isNullOrUndefined(self.chartLastValue[index]))
-                                  {
-                                     serie.addPoint([registerDate, valueToDisplay-self.chartLastValue[index]], 
-                                                    true,  // redraw. When more than 1 => false.
-                                                    false, // shift if true, one point at left is remove
-                                                    true); // animation.
-                                  }
-                                  self.chartLastValue[index] = valueToDisplay;
-                              }
-                              else                              
-                                 serie.addPoint([registerDate, valueToDisplay], true, false, true);
+                             if (self.differentialDisplay[index])
+                             {
+                                if (serie && !isNullOrUndefined(self.chartLastValue[index]))
+                                {
+                                   serie.addPoint([registerDate, valueToDisplay-self.chartLastValue[index]], 
+                                                  true,  // redraw. When more than 1 => false.
+                                                  false, // shift if true, one point at left is remove
+                                                  true); // animation.
+                                }
+                                self.chartLastValue[index] = valueToDisplay;
+                             }
+                             else                              
+                                serie.addPoint([registerDate, valueToDisplay], true, false, true);
                         
-                              //Add also for ranges if any
-                              if (serieRange && !self.differentialDisplay[index])
-                              {
-                                 serieRange.addPoint([registerDate, parseFloat(data.data[data.data.length-1].min), parseFloat(data.data[data.data.length-1].max)], 
-                                                     true, false, true);
-                              }
+                             //Add also for ranges if any
+                             if (serieRange && !self.differentialDisplay[index])
+                             {
+                                serieRange.addPoint([registerDate, parseFloat(data.data[data.data.length-1].min), parseFloat(data.data[data.data.length-1].max)], 
+                                                    true, false, true);
+                             }
                           }
                        }
                        else{ // Add null for this date
