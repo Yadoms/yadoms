@@ -65,19 +65,29 @@ namespace automation
    bool CRuleManager::startRules(const std::vector<boost::shared_ptr<database::entities::CRule>>& rules)
    {
       auto allRulesStarted = true;
-      for (auto rule = rules.begin();
-           rule != rules.end();
-           ++rule)
+      for (const auto& rule : rules)
       {
          try
          {
             // Start only autoStarted rules if not in error state
-            if ((*rule)->AutoStart() && (*rule)->State() != database::entities::ERuleState::kError)
-               startRule((*rule)->Id);
+            if (rule->AutoStart())
+            {
+               if (rule->State() != database::entities::ERuleState::kError)
+                  startRule(rule->Id);
+            }
+            else
+            {
+               // If Yadoms was non-gracefully stopped, running rules are still in running state
+               // and will keep their running state even if not started because of non-AutoStart rules.
+               // So force stopped state
+               if (rule->State() != database::entities::ERuleState::kError &&
+                  rule->State() != database::entities::ERuleState::kStopped)
+                  recordRuleStopped(rule->Id);
+            }
          }
          catch (CRuleException&)
          {
-            YADOMS_LOG(error) << "Unable to start rule " << (*rule)->Name() << ", skipped";
+            YADOMS_LOG(error) << "Unable to start rule " << rule->Name() << ", skipped";
             allRulesStarted = false;
          }
       }
@@ -406,7 +416,7 @@ namespace automation
                                         const std::string& error) const
    {
       if (!error.empty())
-         YADOMS_LOG(error) << error;
+      YADOMS_LOG(error) << error;
 
       auto ruleData(boost::make_shared<database::entities::CRule>());
       ruleData->Id = ruleId;
@@ -422,3 +432,5 @@ namespace automation
                                  error);
    }
 } // namespace automation	
+
+
