@@ -129,7 +129,7 @@ function tabClick(pageId) {
             updateWidgetsPolling().always(function()
             {
                PageManager.updateWidgetLayout(page);
-               page.$grid.packery('reloadItems');
+               page.$grid.packery('layout');
                updateWebSocketFilter();
              });
         }

@@ -18,12 +18,6 @@ namespace tools
       ///\return The temporary folder path
       //---------------------------------------------   
       static Poco::Path createTemporaryFolder(const std::string & subFolderName = std::string(), bool eraseIfExists = false);
-   
-      //---------------------------------------------
-      ///\brief Get the log folder of the system if exists
-      ///\return The temporary folder path if exists, empty otherwise
-      //---------------------------------------------   
-      static Poco::Path getLogFolder();
 
       //---------------------------------------------
       ///\brief Check if a file/directory exists

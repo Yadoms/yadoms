@@ -39,6 +39,7 @@ namespace startupOptions
       //--------------------------------------------------------------
       // IStartupOptions implementation (see IStartupOptions declaration for details)
       std::string getLogLevel() const override;
+      boost::filesystem::path getLogPath() const override;
       unsigned short getWebServerPortNumber() const override;
       unsigned short getSSLWebServerPortNumber() const override;
       bool getIsWebServerUseSSL() const override;

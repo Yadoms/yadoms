@@ -59,7 +59,7 @@ namespace update
                                                             const std::string& displayLanguage,
                                                             const std::string& resultFieldToReturn)
       {
-         auto startupOptions(shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>());
+         auto startupOptions(shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>());
 
          //get the script address
          Poco::URI base(startupOptions->getUpdateSiteUri());
@@ -72,7 +72,7 @@ namespace update
             base.addQueryParameter(m_distantScriptParamArch, Poco::Environment::osArchitecture());
          }
          base.addQueryParameter(m_distantScriptParamLang, displayLanguage);
-         if (shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getDeveloperMode())
+         if (shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode())
             base.addQueryParameter(m_distantScriptParamDevMode);
 
          //call script

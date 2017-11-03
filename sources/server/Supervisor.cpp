@@ -55,7 +55,7 @@ void CSupervisor::run()
       shared::CServiceLocator::instance().push<notification::CNotificationCenter>(notificationCenter);
 
       //retrieve startup options
-      auto startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
+      auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
 
       //start database system
       auto databaseFactory = boost::make_shared<database::CFactory>(m_pathProvider,
