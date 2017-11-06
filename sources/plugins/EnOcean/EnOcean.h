@@ -9,6 +9,7 @@
 #include "ProfileHelper.h"
 #include "IMessageHandler.h"
 #include <shared/communication/AsyncPortConnectionNotification.h>
+#include "message/UTE_AnswerSendMessage.h"
 
 
 // Shortcut to yPluginApi namespace
@@ -104,6 +105,10 @@ protected:
                                      const message::CDongleVersionResponseReceivedMessage& dongleVersionResponse);
    static void processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
    void processUTE(message::CRadioErp1ReceivedMessage& erp1Message);
+   bool sendUTEAnswer(message::CUTE_AnswerSendMessage::EResponse response,
+                      boost::shared_ptr<const message::CUTE_ReceivedMessage> uteMessage,
+                      bool isReversed,
+                      const std::string& deviceId);
 
    //--------------------------------------------------------------
    /// \brief	                           Declare a device
@@ -209,4 +214,3 @@ private:
    //--------------------------------------------------------------
    boost::shared_ptr<shared::plugin::yPluginApi::historization::CSignalPower> m_signalPowerKeyword;
 };
-

@@ -330,7 +330,7 @@ void CEnOcean::protocolErrorProcess()
 void CEnOcean::processUnConnectionEvent(boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification)
 {
    YADOMS_LOG(information) << "EnOcean connection was lost";
-   if(notification)
+   if (notification)
       m_api->setPluginState(yApi::historization::EPluginState::kError, notification->getErrorMessageI18n(), notification->getErrorMessageI18nParameters());
    else
       m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionFailed");
@@ -689,7 +689,6 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
    auto profile = CProfileHelper(uteMessage->rorg(), uteMessage->func(), uteMessage->type());
    auto manufacturerName = CManufacturers::name(uteMessage->manufacturerId());
 
-   auto response = message::CUTE_AnswerSendMessage::kRequestAccepted;
    if (m_devices.find(deviceId) == m_devices.end())
    {
       try
@@ -705,54 +704,74 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
       catch (std::exception& e)
       {
          YADOMS_LOG(error) << "Fail to declare device (Universal teachin) : " << e.what();
-         response = message::CUTE_AnswerSendMessage::kRequestNotAccepted;
+         sendUTEAnswer(message::CUTE_AnswerSendMessage::kRequestNotAccepted,
+                       uteMessage,
+                       isReversed,
+                       deviceId);
+         return;
       }
    }
 
-   if (uteMessage->teachInResponseExpected())
-   {
-      auto sendMessage = isReversed
-                            ? boost::make_shared<message::CUTE_GigaConceptReversedAnswerSendMessage>(m_senderId,
-                                                                                                     deviceId,
-                                                                                                     static_cast<unsigned char>(0),
-                                                                                                     uteMessage->bidirectionalCommunication(),
-                                                                                                     response,
-                                                                                                     uteMessage->channelNumber(),
-                                                                                                     uteMessage->manufacturerId(),
-                                                                                                     uteMessage->type(),
-                                                                                                     uteMessage->func(),
-                                                                                                     uteMessage->rorg())
-                            : boost::make_shared<message::CUTE_AnswerSendMessage>(m_senderId,
-                                                                                  deviceId,
-                                                                                  static_cast<unsigned char>(0),
-                                                                                  uteMessage->bidirectionalCommunication(),
-                                                                                  response,
-                                                                                  uteMessage->channelNumber(),
-                                                                                  uteMessage->manufacturerId(),
-                                                                                  uteMessage->type(),
-                                                                                  uteMessage->func(),
-                                                                                  uteMessage->rorg());
-
-      message::CResponseReceivedMessage::EReturnCode returnCode;
-      if (!m_messageHandler->send(*sendMessage,
-                                  [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                               {
-                                  return esp3Packet->header().packetType() == message::RESPONSE;
-                               },
-                                  [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                               {
-                                  returnCode = message::CResponseReceivedMessage(esp3Packet).returnCode();
-                               }))
-         throw CProtocolException("Unable to send UTE response, timeout waiting acknowledge");
-
-      if (returnCode != message::CResponseReceivedMessage::RET_OK)
-      YADOMS_LOG(error) << "TeachIn response not successfully acknowledged : " << returnCode;
-   }
+   sendUTEAnswer(message::CUTE_AnswerSendMessage::kRequestAccepted,
+                 uteMessage,
+                 isReversed,
+                 deviceId);
 
    // Need to wait a bit before ask initial state (while EnOcean chip record his new association ?)
    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
    m_devices[deviceId]->readInitialState(m_senderId,
                                          m_messageHandler);
+}
+
+bool CEnOcean::sendUTEAnswer(message::CUTE_AnswerSendMessage::EResponse response,
+                             boost::shared_ptr<const message::CUTE_ReceivedMessage> uteMessage,
+                             bool isReversed,
+                             const std::string& deviceId)
+{
+   if (!uteMessage->teachInResponseExpected())
+      return true;
+
+   auto sendMessage = isReversed
+                         ? boost::make_shared<message::CUTE_GigaConceptReversedAnswerSendMessage>(m_senderId,
+                                                                                                  deviceId,
+                                                                                                  static_cast<unsigned char>(0),
+                                                                                                  uteMessage->bidirectionalCommunication(),
+                                                                                                  response,
+                                                                                                  uteMessage->channelNumber(),
+                                                                                                  uteMessage->manufacturerId(),
+                                                                                                  uteMessage->type(),
+                                                                                                  uteMessage->func(),
+                                                                                                  uteMessage->rorg())
+                         : boost::make_shared<message::CUTE_AnswerSendMessage>(m_senderId,
+                                                                               deviceId,
+                                                                               static_cast<unsigned char>(0),
+                                                                               uteMessage->bidirectionalCommunication(),
+                                                                               response,
+                                                                               uteMessage->channelNumber(),
+                                                                               uteMessage->manufacturerId(),
+                                                                               uteMessage->type(),
+                                                                               uteMessage->func(),
+                                                                               uteMessage->rorg());
+
+   message::CResponseReceivedMessage::EReturnCode returnCode;
+   if (!m_messageHandler->send(*sendMessage,
+                               [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                            {
+                               return esp3Packet->header().packetType() == message::RESPONSE;
+                            },
+                               [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                            {
+                               returnCode = message::CResponseReceivedMessage(esp3Packet).returnCode();
+                            }))
+      throw CProtocolException("Unable to send UTE response, timeout waiting acknowledge");
+
+   if (returnCode != message::CResponseReceivedMessage::RET_OK)
+   {
+      YADOMS_LOG(error) << "TeachIn response not successfully acknowledged : " << returnCode;
+      return false;
+   }
+
+   return true;
 }
 
 boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
