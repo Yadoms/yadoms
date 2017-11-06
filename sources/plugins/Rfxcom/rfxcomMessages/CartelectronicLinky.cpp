@@ -33,13 +33,13 @@ namespace rfxcomMessages
       {
          // Prod counter is enabled
          auto counter = boost::make_shared<yApi::historization::CEnergy>("Production");
-         counter->set(((rbuf.LINKY.prodidx1_0 << 24) + (rbuf.LINKY.prodidx1_1 << 16) + (rbuf.LINKY.prodidx1_2 << 8) + (rbuf.LINKY.prodidx1_3) ) * 1000);
+         counter->set(((rbuf.LINKY.prodidx1_0 << 24) + (rbuf.LINKY.prodidx1_1 << 16) + (rbuf.LINKY.prodidx1_2 << 8) + (rbuf.LINKY.prodidx1_3) ));
          m_keywords.push_back(counter);
       }
 
       // Current counter
       auto counter = boost::make_shared<yApi::historization::CEnergy>("Counter" + std::to_string(rbuf.LINKY.currentidx));
-      counter->set(((rbuf.LINKY.runidx_0 << 24) + (rbuf.LINKY.runidx_1 << 16) + (rbuf.LINKY.runidx_2 << 8) + (rbuf.LINKY.runidx_3) ) * 1000);
+      counter->set(((rbuf.LINKY.runidx_0 << 24) + (rbuf.LINKY.runidx_1 << 16) + (rbuf.LINKY.runidx_2 << 8) + (rbuf.LINKY.runidx_3) ));
       m_keywords.push_back(counter);
 
       // Voltage
@@ -97,7 +97,7 @@ namespace rfxcomMessages
    {
       std::stringstream s;
 
-      auto receivedId = static_cast<unsigned long>(rbuf.LINKY.id1 << 24) + (rbuf.LINKY.id2 << 16) + (rbuf.LINKY.id3 << 8) + rbuf.LINKY.id4;
+      auto receivedId = static_cast<unsigned long>(rbuf.LINKY.id4 << 24) + (rbuf.LINKY.id3 << 16) + (rbuf.LINKY.id2 << 8) + rbuf.LINKY.id1;
       
       //Construct the real counter id
       unsigned long long id = receivedId & 0x000FFFFF; // copy the serial number
@@ -116,11 +116,11 @@ namespace rfxcomMessages
          default: break;
       }
 
-      id += type * 10000000L;
-      id += year * 1000000000L;
-      id += constructorCode * 100000000000LL;
+      id += (type * 1000000LL);
+      id += (year * 100000000LL);
+      id += (constructorCode * 10000000000LL);
       //
-      s << id;
+      s << std::setfill('0') << std::setw(12) << id;
 
       return s.str();
    }
