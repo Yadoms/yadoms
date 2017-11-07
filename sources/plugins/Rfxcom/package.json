@@ -666,5 +666,16 @@
          }
       }
     }
-  }
+  },
+	"extraQueries": {
+		"firmwareUpdate": {
+			"iconClass": "fa  fa-upload",
+			"commandData": {
+				"fileContent": {
+					"type": "file",
+					"filter": ".hex"
+				}
+			}
+		}
+	}
 }

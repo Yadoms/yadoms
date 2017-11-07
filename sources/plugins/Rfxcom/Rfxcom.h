@@ -1,7 +1,7 @@
 #pragma once
 #include <plugin_cpp_api/IPlugin.h>
+#include "RfxcomFactory.h"
 #include "RfxcomConfiguration.h"
-#include "Transceiver.h"
 #include <shared/communication/IAsyncPort.h>
 #include "rfxcomMessages/Ack.h"
 #include "rfxcomMessages/TransceiverStatus.h"
@@ -49,8 +49,8 @@ protected:
    /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] buffers          Buffers to send
    //--------------------------------------------------------------
-   void send(boost::shared_ptr<yApi::IYPluginApi> api, 
-             boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > buffers);
+   void send(boost::shared_ptr<yApi::IYPluginApi> api,
+             boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> buffers);
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
@@ -88,6 +88,14 @@ protected:
    //--------------------------------------------------------------
    void processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
                                   const shared::communication::CByteBuffer& data);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Process the firmware update
+   /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \param [in] extraQuery       Extra query
+   //--------------------------------------------------------------
+   void processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                              boost::shared_ptr<yApi::IExtraQuery> extraQuery);
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection to the RFXCom
@@ -160,6 +168,8 @@ protected:
                                    const CRfxcomConfiguration& conf2);
 
 private:
+   CRfxcomFactory m_factory;
+
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------

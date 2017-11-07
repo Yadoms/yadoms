@@ -43,7 +43,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    m_configuration.initializeWith(api->getConfiguration());
 
    // Create the transceiver
-   m_transceiver = CRfxcomFactory::constructTransceiver();
+   m_transceiver = m_factory.constructTransceiver();
 
    m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
                                                              shared::event::CEventTimer::kOneShot,
@@ -100,6 +100,31 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
                break;
             }
+
+         case yApi::IYPluginApi::kEventExtraQuery:
+            {
+               // Command was received from Yadoms
+               auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
+               if (extraQuery)
+               {
+                  if (extraQuery->getData()->query() == "firmwareUpdate")
+                  {
+                     api->setPluginState(yApi::historization::EPluginState::kCustom, "updateFirmware");
+                     processFirmwareUpdate(api, extraQuery);
+                  }
+                  else
+                  {
+                     YADOMS_LOG(error) << "Unsupported query : " << extraQuery->getData()->query();
+                     extraQuery->sendError("customLabels.firmwareUpdate.ErrorInternal");
+                  }
+               }
+               else
+               {
+                  YADOMS_LOG(error) << "Invalid query";
+                  extraQuery->sendError("customLabels.firmwareUpdate.ErrorInternal");
+               }
+               break;
+            }
          case kEvtPortConnection:
             {
                auto notif = api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>>();
@@ -146,7 +171,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 void CRfxcom::createConnection(shared::event::CEventHandler& eventHandler)
 {
    // Create the port instance
-   m_port = CRfxcomFactory::constructPort(m_configuration, eventHandler, kEvtPortConnection, kEvtPortDataReceived);
+   m_port = m_factory.constructPort(m_configuration, eventHandler, kEvtPortConnection, kEvtPortDataReceived);
    m_port->setReceiveBufferMaxSize(RFXMESSAGE_maxSize);
    m_port->start();
 }
@@ -292,7 +317,7 @@ void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi
    YADOMS_LOG(information) << "RFXCom connection was lost";
    if (notification)
       api->setPluginState(yApi::historization::EPluginState::kError, notification->getErrorMessageI18n(), notification->getErrorMessageI18nParameters());
-   else 
+   else
       api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionLost");
 
    errorProcess(api);
@@ -328,6 +353,49 @@ void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> api
 
    // Sensor message, historize all data contained in the message
    message->historizeData(api);
+}
+
+void CRfxcom::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                                    boost::shared_ptr<yApi::IExtraQuery> extraQuery)
+{
+   boost::shared_ptr<IRfxcomFirmwareUpdater> updater;
+
+   // First step : initialization. No connection restart if fail.
+   try
+   {
+      if (m_configuration.comIsEthernet())
+         throw std::exception("customLabels.firmwareUpdate.ErrorOnlyAvailableForSerial");
+
+      if (!m_port)
+         throw std::exception("customLabels.firmwareUpdate.ErrorNotConnected"); //TODO vérifier si les messages d'erreur remontent à l'IHM
+
+      updater = m_factory.constructFirmwareUpdater(api,
+                                                   extraQuery,
+                                                   m_port);
+
+      extraQuery->sendSuccess(shared::CDataContainer::EmptyContainer);
+   }
+   catch (std::exception& e)
+   {
+      extraQuery->sendError(e.what());
+      return;
+   }
+
+   // Second step : do the update. Connection restart when success or fail.
+   try
+   {
+      updater->update();
+
+      extraQuery->sendSuccess(shared::CDataContainer::EmptyContainer);
+   }
+   catch (std::exception& e)
+   {
+      extraQuery->sendError(e.what());
+   }
+
+   // Restart connection
+   destroyConnection();
+   createConnection(api->getEventHandler());
 }
 
 void CRfxcom::initRfxcom(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -410,7 +478,7 @@ void CRfxcom::processRfxcomReceiverStartedMessage(boost::shared_ptr<yApi::IYPlug
 void CRfxcom::processRfxcomWrongCommandMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                                                const rfxcomMessages::CTransceiverStatus& status)
 {
-   const RBUF* const lastRequest = reinterpret_cast<const RBUF* const>(m_lastRequest.begin());
+   const auto lastRequest = reinterpret_cast<const RBUF* const>(m_lastRequest.begin());
 
    if (lastRequest->ICMND.packettype == pTypeInterfaceControl &&
       lastRequest->ICMND.subtype == sTypeInterfaceCommand &&
@@ -433,3 +501,4 @@ void CRfxcom::processRfxcomAckMessage(const rfxcomMessages::CAck& ack)
    else
    YADOMS_LOG(information) << "RFXCom Received acknowledge is KO";
 }
+

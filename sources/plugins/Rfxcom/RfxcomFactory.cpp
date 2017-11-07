@@ -4,6 +4,7 @@
 #include <shared/communication/AsyncTcpClient.h>
 #include "Transceiver.h"
 #include "RfxComReceiveBufferHandler.h"
+#include "RfxcomFirmwareUpdater.h"
 #include <shared/Log.h>
 
 CRfxcomFactory::~CRfxcomFactory()
@@ -14,7 +15,7 @@ CRfxcomFactory::~CRfxcomFactory()
 boost::shared_ptr<shared::communication::IAsyncPort> CRfxcomFactory::constructPort(const IRfxcomConfiguration& configuration,
                                                                                    shared::event::CEventHandler& eventHandler,
                                                                                    int evtPortConnectionId,
-                                                                                   int evtPortDataReceived)
+                                                                                   int evtPortDataReceived) const
 {
    boost::shared_ptr<shared::communication::IAsyncPort> port;
    if (configuration.comIsEthernet())
@@ -39,7 +40,17 @@ boost::shared_ptr<shared::communication::IAsyncPort> CRfxcomFactory::constructPo
    return port;
 }
 
-boost::shared_ptr<ITransceiver> CRfxcomFactory::constructTransceiver()
+boost::shared_ptr<ITransceiver> CRfxcomFactory::constructTransceiver() const
 {
    return boost::make_shared<CTransceiver>();
 }
+
+boost::shared_ptr<IRfxcomFirmwareUpdater> CRfxcomFactory::constructFirmwareUpdater(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                                                   boost::shared_ptr<yApi::IExtraQuery> extraQuery,
+                                                                                   boost::shared_ptr<shared::communication::IAsyncPort> port) const
+{
+   return boost::make_shared<CRfxcomFirmwareUpdater>(api,
+                                                     extraQuery,
+                                                     port);
+}
+

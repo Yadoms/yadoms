@@ -190,6 +190,7 @@ set(RFXCOM_SOURCES
    stdafx.cpp
    IncrementSequenceNumber.h
    IRfxcomConfiguration.h
+   IRfxcomFirmwareUpdater.h
    ISequenceNumber.h
    ITransceiver.h
    IUnsecuredProtocolFilter.h
@@ -205,6 +206,8 @@ set(RFXCOM_SOURCES
    RfxcomConfiguration.cpp
    RfxcomFactory.h
    RfxcomFactory.cpp
+   RfxcomFirmwareUpdater.h
+   RfxcomFirmwareUpdater.cpp
    Transceiver.h
    Transceiver.cpp
    ${SPECIFIC_HISTORIZERS_SOURCES}
