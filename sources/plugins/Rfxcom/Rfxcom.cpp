@@ -364,10 +364,10 @@ void CRfxcom::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
    try
    {
       if (m_configuration.comIsEthernet())
-         throw std::exception("customLabels.firmwareUpdate.ErrorOnlyAvailableForSerial");
+         throw std::runtime_error("customLabels.firmwareUpdate.ErrorOnlyAvailableForSerial");
 
       if (!m_port)
-         throw std::exception("customLabels.firmwareUpdate.ErrorNotConnected"); //TODO vérifier si les messages d'erreur remontent à l'IHM
+         throw std::runtime_error("customLabels.firmwareUpdate.ErrorNotConnected"); //TODO vérifier si les messages d'erreur remontent à l'IHM
 
       updater = m_factory.constructFirmwareUpdater(api,
                                                    extraQuery,

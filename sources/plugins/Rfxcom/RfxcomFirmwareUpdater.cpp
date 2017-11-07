@@ -12,7 +12,7 @@ CRfxcomFirmwareUpdater::CRfxcomFirmwareUpdater(boost::shared_ptr<yApi::IYPluginA
    if (!m_port)
    {
       YADOMS_LOG(error) << "CRfxcomFirmwareUpdater : m_port must exist";
-      throw std::exception("customLabels.firmwareUpdate.ErrorInternal");
+      throw std::runtime_error("customLabels.firmwareUpdate.ErrorInternal");
    }
 }
 
@@ -169,7 +169,7 @@ void CRfxcomFirmwareUpdater::checkFile(const std::string& fileContent) const
    catch (std::exception& e)
    {
       YADOMS_LOG(error) << "RfxcomFirmwareUpdater, invalid input file : " << e.what();
-      throw std::exception("customLabels.firmwareUpdate.ErrorInvalidInputFile");
+      throw std::runtime_error("customLabels.firmwareUpdate.ErrorInvalidInputFile");
    }
 }
 
@@ -186,9 +186,9 @@ unsigned int CRfxcomFirmwareUpdater::computeLineChecksum(const std::string& line
 {
    unsigned char sum = 0;
    // Ignore ':' first char and checksum byte itself
-   for (auto index = 1; index < line.size() - 2 - 1; index += 2)
+   for (size_t index = 1; index < line.size() - 2 - 1; index += 2)
       sum += static_cast<unsigned char>(hexStringToInt(line.substr(index, 2)));
 
-   return ~sum + 1 & 0x0FF;
+   return (~sum + 1) & 0x0FF;
 }
 
