@@ -15,7 +15,7 @@ class CRfxcomFirmwareUpdater : public IRfxcomFirmwareUpdater
 public:
    CRfxcomFirmwareUpdater(boost::shared_ptr<yApi::IYPluginApi> api,
                           boost::shared_ptr<yApi::IExtraQuery> extraQuery,
-                          boost::shared_ptr<shared::communication::IAsyncPort> port);
+                          const std::string& serialPort);
    virtual ~CRfxcomFirmwareUpdater();
 
    // IRfxcomFirmwareUpdate implementation
@@ -23,13 +23,18 @@ public:
    // [END] IRfxcomFirmwareUpdate implementation
 
 protected:
-   void checkFile(const std::string& fileContent) const;
-   static unsigned int hexStringToInt(const std::string& hexString);
+   void loadFile(const std::string& fileContent) const;
+   static unsigned int hexStringToUInt(const std::string& hexString);
    static unsigned int computeLineChecksum(const std::string& line);
+   void rfxcomSwitchToBootloaderMode();
+   void rfxcomClearMemory();
+   void rfxcomWritingMemory();
+   void rfxcomVerifyMemory();
+   void rfxcomReboot();
 
 private:
    const boost::shared_ptr<yApi::IYPluginApi> m_api;
    const boost::shared_ptr<yApi::IExtraQuery> m_extraQuery;
-   const boost::shared_ptr<shared::communication::IAsyncPort> m_port;
+   const std::string& m_serialPort;
 };
 

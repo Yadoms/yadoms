@@ -2,18 +2,22 @@
 #include "RfxcomFirmwareUpdater.h"
 #include <shared/encryption/Base64.h>
 
+//TODO doit-on appliquer ces décalages (code en provenance de domoticz)
+	//int AddressLow = PKT_pmrangelow;
+	//int AddressHigh = PKT_pmrangehigh;
+	//if (HwdType == HTYPE_RFXtrx868)
+	//{
+	//	AddressLow = PKT_pmrangelow868;
+	//	AddressHigh = PKT_pmrangehigh868;
+	//}
+
 CRfxcomFirmwareUpdater::CRfxcomFirmwareUpdater(boost::shared_ptr<yApi::IYPluginApi> api,
                                                boost::shared_ptr<yApi::IExtraQuery> extraQuery,
-                                               boost::shared_ptr<shared::communication::IAsyncPort> port)
+                                               const std::string& serialPort)
    : m_api(api),
      m_extraQuery(extraQuery),
-     m_port(port)
+     m_serialPort(serialPort)
 {
-   if (!m_port)
-   {
-      YADOMS_LOG(error) << "CRfxcomFirmwareUpdater : m_port must exist";
-      throw std::runtime_error("customLabels.firmwareUpdate.ErrorInternal");
-   }
 }
 
 CRfxcomFirmwareUpdater::~CRfxcomFirmwareUpdater()
@@ -24,104 +28,46 @@ void CRfxcomFirmwareUpdater::update()
 {
    YADOMS_LOG(information) << "Update RFXCom firmware...";
 
+   // Progress is like :
+   // - 0-5% : check input file
+   // - 5-10% : erase RFXCom
+   // - 10-90% : write RFXCom
+   // - 90-100% : verify
+
    const auto base64firmware = m_extraQuery->getData()->data().get<std::string>("fileContent");
    const auto firmwareContent = shared::encryption::CBase64::decode(base64firmware);
 
-   m_extraQuery->reportProgress(0.0f, "customLabels.firmwareUpdate.checkInputFile");//TODO traduire
-   checkFile(firmwareContent);
+   // Load input file
+   m_extraQuery->reportProgress(0.0f, "customLabels.firmwareUpdate.loadInputFile");//TODO traduire
+   loadFile(firmwareContent);
+   m_extraQuery->reportProgress(5.0f, "customLabels.firmwareUpdate.inputFileLoaded");//TODO traduire
 
-   //TODO
-   //const std::string stepi18nSendingFile = "customLabels.firmwareUpdate.writeFile"; //TODO utile ?
-   //m_messageHandler->sendFile(firmwareContent, [&](float progress)
-   //                           {
-   //                              //report progression
-   //                              m_extraQuery->reportProgress(progress * 75.0f / 100.0f, stepi18nSendingFile);
-   //                           });
-
-   ////send "HELLO" command until dongle answers
-   ////up to 2minutes timeout
-   //const std::string stepi18nWriting = "customLabels.firmwareUpdate.writeFile";
-   //m_extraQuery->reportProgress(75.0f, stepi18nWriting);
-
-
-   //boost::posix_time::ptime timeout = shared::currentTime::Provider().now() + boost::posix_time::minutes(2);
-
-   //shared::event::CEventHandler evtHandler;
-   //enum
-   //   {
-   //      kSendFinished = shared::event::kUserFirstId
-   //   };
-
-   //bool isReady = false;
-   //while (!isReady && shared::currentTime::Provider().now() < timeout)
-   //{
-   //   if (m_messageHandler->send(m_transceiver->buildHelloCmd(),
-   //                              [&](boost::shared_ptr<const frames::incoming::CFrame> frame)
-   //                              {
-   //                                 YADOMS_LOG(information) << "Something received";
-   //                                 YADOMS_LOG(information) << frame->getAscii()->getContent();
-
-   //                                 //expect restart of dongle
-   //                                 bool isRestartFrame = frame->isAscii() && boost::icontains(frame->getAscii()->getContent(), "Ziblue Dongle");
-
-   //                                 if (!isRestartFrame)
-   //                                    m_extraQuery->reportProgress(75.0f, frame->getAscii()->getContent());
-   //                                 return isRestartFrame;
-   //                              },
-   //                              [&](boost::shared_ptr<const frames::incoming::CFrame> frame)
-   //                              {
-   //                                 YADOMS_LOG(information) << "New dongle";
-
-   //                                 //apply the dongle configuration
-   //                                 m_dongle = CDongle::create(frame->getAscii()->getContent());
-
-   //                                 if (m_dongle)
-   //                                 {
-   //                                    YADOMS_LOG(information) << "Dongle :" << m_dongle->getType() << " " << m_dongle->getModel() << " v" << m_dongle->getFirmwareVersion();
-   //                                 }
-   //                                 else
-   //                                 {
-   //                                    YADOMS_LOG(information) << "Unknown dongle, or not fully supported firmware";
-   //                                 }
-
-   //                                 evtHandler.postEvent(kSendFinished);
-   //                              }))
-   //   {
-   //      switch (evtHandler.waitForEvents())
-   //      {
-   //      case kSendFinished:
-   //         api->setPluginState(yApi::historization::EPluginState::kRunning);
-   //         updateDongleConfiguration(api);
-   //         m_messageHandler->send(m_transceiver->buildStartListeningData());
-   //         isReady = true;
-   //         break;
-   //      default:
-   //         throw std::runtime_error("Unexpected event " + std::to_string(evtHandler.getEventId()));
-   //      }
-   //   }
-   //}
-
-
-   //const std::string stepi18nUpgradedFail = "customLabels.firmwareUpdate.fail";
-   //if (isReady)
-   //{
-   //   YADOMS_LOG(information) << "RFXCom firmware successufuly updated";
-   //   m_extraQuery->sendSuccess(shared::CDataContainer::EmptyContainer);
-   //}
-   //else
-   //{
-   //   YADOMS_LOG(error) << "RFXCom firmware update failed";
-   //   m_extraQuery->sendError(stepi18nUpgradedFail);
-   //}
+   try
+   {
+      rfxcomSwitchToBootloaderMode();
+      rfxcomClearMemory();
+      rfxcomWritingMemory();
+      rfxcomVerifyMemory();
+      rfxcomReboot();
+   }
+   catch (std::exception& exception)
+   {
+      YADOMS_LOG(error) << "Error flashing RFXCom, " << exception.what();
+      YADOMS_LOG(error) << "Will try to reboot RFXCom, but it may be broken...";
+      rfxcomReboot();
+      throw;
+   }
 }
 
-void CRfxcomFirmwareUpdater::checkFile(const std::string& fileContent) const
+void CRfxcomFirmwareUpdater::loadFile(const std::string& fileContent) const
 {
+   YADOMS_LOG(debug) << "Load input file...";
+
    // File is in Intel HEX 32 (I32HEX) format (see https://fr.wikipedia.org/wiki/HEX_(Intel))
    // Each line is like :
    // :BBAAAATTHHHHHH.....HHHHCC
    // With :
-   // - BB is the bytes count of the line
+   // - BB is the bytes count of the line (data field only)
    // - AAAA is the absolute address of line start
    // - TT is the line type, with :
    //    - 00 : 16-bits data/address
@@ -130,11 +76,31 @@ void CRfxcomFirmwareUpdater::checkFile(const std::string& fileContent) const
    // - HH...HHHH is the data
    // - CC is the checksum
 
+   enum EFieldPositions
+   {
+      kIdxStartLineChar = 0,
+      kIdxBytesCount = 1,
+      kIdxAddress = 3,
+      kIdxLineType = 7,
+      kIdxData = 9
+   };
+
+   enum ELineType
+   {
+      kData = 0,
+      kEOF = 1,
+      kExtendedAddress = 2,
+      kStartSegmentAddressRecord = 3,
+      kExtendedLinearAddressRecord = 4,
+      kStartLinearAddressRecord = 5
+   };
+
    try
    {
       std::istringstream ss(fileContent);
       std::string line;
       auto lineCount = 0;
+      unsigned int addressMostSignificantWordMask = 0;
       while (std::getline(ss, line))
       {
          // check for minimal line size (line without data)
@@ -143,37 +109,62 @@ void CRfxcomFirmwareUpdater::checkFile(const std::string& fileContent) const
             throw std::invalid_argument((boost::format("Line %1% : Invalid minimal line size %2% bytes, expected 11 bytes") % lineCount % line.size()).str());
 
          // Check line start character
-         if (line[0] != ':')
-            throw std::invalid_argument((boost::format("Line %1% : Invalid first character : '%2%', expected ':'") % lineCount % line[0]).str());
+         if (line[kIdxStartLineChar] != ':')
+            throw std::invalid_argument((boost::format("Line %1% : Invalid first character : '%2%', expected ':'") % lineCount % line[kIdxStartLineChar]).str());
 
          // Check data size
          // BB is the data size. So data size is line size minus (':' + BB + AAAA + TT + CC)
-         auto readDataSize = hexStringToInt(line.substr(1, 2));
+         const auto readDataSize = hexStringToUInt(line.substr(kIdxBytesCount, 2));
          if (readDataSize != (line.size() - 11) / 2)
             throw std::invalid_argument((boost::format("Line %1% : Invalid data size %2% bytes, expected %3% bytes ('BB' field)") % lineCount % (line.size() - 11) % readDataSize).str());
 
+         // Check the line type, only Extended Linear Address Record type is supported.
+         // The End Of File and Extended Linear Address Record will be tested later, so ignore it here.
+         const auto lineType = hexStringToUInt(line.substr(kIdxLineType, 2));
+         if (lineType != kEOF && lineType != kExtendedLinearAddressRecord && lineType != kData)
+            throw std::invalid_argument((boost::format("Line %1% : Invalid line type %2%, expected %3%") % lineCount % lineType % kData).str());
+
          // Check the line checksum
-         const auto readChecksum = hexStringToInt(line.substr(9 + (readDataSize * 2), 2));
+         const auto readChecksum = hexStringToUInt(line.substr(kIdxData + (readDataSize * 2), 2));
          const auto computedChecksum = computeLineChecksum(line);
          if (readChecksum != computedChecksum)
             throw std::invalid_argument((boost::format("Line %1% : Invalid line checksum %2%, expected %3%") % lineCount % computedChecksum % readChecksum).str());
+
+         if (lineCount == 0)
+         {
+            // Check the first line
+            if (lineType != kExtendedLinearAddressRecord)
+               throw std::invalid_argument((boost::format("Line %1% : Invalid first line type %2%, expected %3%") % lineCount % lineType % kExtendedLinearAddressRecord).str());
+            addressMostSignificantWordMask = hexStringToUInt(line.substr(kIdxData, 4)) << 16;
+         }
+         else
+         {
+            // Process other lines
+            if (lineType == kData)
+            {
+               const auto address = addressMostSignificantWordMask | hexStringToUInt(line.substr(kIdxAddress, 4));
+               //TODO finir de lire le fichier
+            }            
+         }
 
          ++lineCount;
       }
 
       // Check that last line is from End Of File type
-      const auto lineType = hexStringToInt(line.substr(7, 2));
-      if (lineType != 0x01)
-         throw std::invalid_argument((boost::format("Line %1% : Invalid line type 0x%2%, expected last line type 0x01") % lineCount % lineType).str());
+      const auto lineType = hexStringToUInt(line.substr(kIdxLineType, 2));
+      if (lineType != kEOF)
+         throw std::invalid_argument((boost::format("Line %1% : Invalid line type %2%, expected last line type %3%") % lineCount % lineType % kEOF).str());
    }
    catch (std::exception& e)
    {
       YADOMS_LOG(error) << "RfxcomFirmwareUpdater, invalid input file : " << e.what();
       throw std::runtime_error("customLabels.firmwareUpdate.ErrorInvalidInputFile");
    }
+
+   YADOMS_LOG(debug) << "Input file is loaded";
 }
 
-unsigned int CRfxcomFirmwareUpdater::hexStringToInt(const std::string& hexString)
+unsigned int CRfxcomFirmwareUpdater::hexStringToUInt(const std::string& hexString)
 {
    unsigned int x;
    std::stringstream ss;
@@ -187,8 +178,45 @@ unsigned int CRfxcomFirmwareUpdater::computeLineChecksum(const std::string& line
    unsigned char sum = 0;
    // Ignore ':' first char and checksum byte itself
    for (size_t index = 1; index < line.size() - 2 - 1; index += 2)
-      sum += static_cast<unsigned char>(hexStringToInt(line.substr(index, 2)));
+      sum += static_cast<unsigned char>(hexStringToUInt(line.substr(index, 2)));
 
    return (~sum + 1) & 0x0FF;
+}
+
+void CRfxcomFirmwareUpdater::rfxcomSwitchToBootloaderMode()
+{
+   YADOMS_LOG(debug) << "Switch to bootloader mode...";
+
+   //TODO basculer en bootloader
+   // TODO tracer version du bootloader
+
+   YADOMS_LOG(debug) << "RFXCom is in bootloader mode";
+}
+
+void CRfxcomFirmwareUpdater::rfxcomClearMemory()
+{
+   YADOMS_LOG(debug) << "Clear RFXCom memory...";
+   //TODO
+   YADOMS_LOG(debug) << "RFXCom memory cleared";
+}
+
+void CRfxcomFirmwareUpdater::rfxcomWritingMemory()
+{
+   YADOMS_LOG(debug) << "Write RFXCom memory...";
+   //TODO
+   YADOMS_LOG(debug) << "RFXCom memory written";
+}
+
+void CRfxcomFirmwareUpdater::rfxcomVerifyMemory()
+{
+   YADOMS_LOG(debug) << "Verify RFXCom memory...";
+   //TODO
+   YADOMS_LOG(debug) << "Verification is OK";
+}
+
+void CRfxcomFirmwareUpdater::rfxcomReboot()
+{
+   YADOMS_LOG(debug) << "Reset RFXCom...";
+   //TODO
 }
 

@@ -47,10 +47,10 @@ boost::shared_ptr<ITransceiver> CRfxcomFactory::constructTransceiver() const
 
 boost::shared_ptr<IRfxcomFirmwareUpdater> CRfxcomFactory::constructFirmwareUpdater(boost::shared_ptr<yApi::IYPluginApi> api,
                                                                                    boost::shared_ptr<yApi::IExtraQuery> extraQuery,
-                                                                                   boost::shared_ptr<shared::communication::IAsyncPort> port) const
+                                                                                   const std::string& serialPort) const
 {
    return boost::make_shared<CRfxcomFirmwareUpdater>(api,
                                                      extraQuery,
-                                                     port);
+                                                     serialPort);
 }
 

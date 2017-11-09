@@ -312,7 +312,8 @@ void CRfxcom::errorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
    api->getEventHandler().createTimer(kProtocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
 }
 
-void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification)
+void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api,
+                                             boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification)
 {
    YADOMS_LOG(information) << "RFXCom connection was lost";
    if (notification)
@@ -366,12 +367,12 @@ void CRfxcom::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
       if (m_configuration.comIsEthernet())
          throw std::runtime_error("customLabels.firmwareUpdate.ErrorOnlyAvailableForSerial");
 
-      if (!m_port)
-         throw std::runtime_error("customLabels.firmwareUpdate.ErrorNotConnected"); //TODO vérifier si les messages d'erreur remontent à l'IHM
+      if (m_port)
+         destroyConnection();
 
       updater = m_factory.constructFirmwareUpdater(api,
                                                    extraQuery,
-                                                   m_port);
+                                                   m_configuration.getSerialPort());
 
       extraQuery->sendSuccess(shared::CDataContainer::EmptyContainer);
    }
@@ -386,15 +387,16 @@ void CRfxcom::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       updater->update();
 
+      YADOMS_LOG(information) << "RFXCom firmware successufuly updated";
       extraQuery->sendSuccess(shared::CDataContainer::EmptyContainer);
    }
    catch (std::exception& e)
    {
+      YADOMS_LOG(error) << "RFXCom firmware update failed";
       extraQuery->sendError(e.what());
    }
 
    // Restart connection
-   destroyConnection();
    createConnection(api->getEventHandler());
 }
 

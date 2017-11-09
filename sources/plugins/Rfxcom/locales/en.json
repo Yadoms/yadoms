@@ -639,7 +639,6 @@
     "firmwareUpdate": {
       "ErrorInternal": "Unable to update firmware because of internal error",
       "ErrorOnlyAvailableForSerial": "Firmware updating is only available with serial connection",
-      "ErrorNotConnected": "Unable to update firmware, RFXCom is not connected",
       "ErrorInvalidInputFile": "Unable to update firmware, input file is invalid"
     }
   }

@@ -641,7 +641,6 @@
     "firmwareUpdate": {
       "ErrorInternal": "Impossible de mettre à jour le firmware, erreur interne",
       "ErrorOnlyAvailableForSerial": "La mise à jour du firmware n'est possible qu'en connexion directe par port série",
-      "ErrorNotConnected": "Impossible de mettre à jour le firmware, le RFXCom n'est pas connecté",
       "ErrorInvalidInputFile": "Impossible de mettre à jour le firmware, le fichier d'entrée est invalide"
     }
   }

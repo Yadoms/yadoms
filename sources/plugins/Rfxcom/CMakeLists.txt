@@ -197,6 +197,11 @@ set(RFXCOM_SOURCES
    ManuallyDeviceCreationException.hpp
    MessageFilteredException.hpp
    NullSequenceNumber.h
+   PicBoot.h
+   PicBoot.cpp
+   PicBootPacketControlCharacters.h
+   PicBootReceiveBufferHandler.h
+   PicBootReceiveBufferHandler.cpp
    ProtocolException.hpp
    Rfxcom.h
    Rfxcom.cpp
