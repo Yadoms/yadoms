@@ -34,15 +34,20 @@ CYadomsServer::~CYadomsServer()
 
 void CYadomsServer::initialize(Application& self)
 {
+   //[START] INITIALIZE POCO; DO NOT EDIT THIS CODE
    loadConfiguration(); // load default configuration files, if present
-   m_pathProvider = boost::make_shared<CPathProvider>(m_startupOptions);
    ServerApplication::initialize(self);
+   //[END] INITIALIZE POCO; DO NOT EDIT THIS CODE
 
+   //Do application initialization from here...
+   
+   //first of all, chng ethe working dir
+   //in daemon mode, poco change dir to '/', (path provider create logs, data, dirs => so fails if working dir is '/')
    boost::filesystem::path workingDir(config().getString("application.path"));
    boost::filesystem::current_path(workingDir.parent_path());
 
-   logging::CLogConfiguration::configure(m_startupOptions->getLogLevel(),
-                                         m_pathProvider->logsPath());
+   m_pathProvider = boost::make_shared<CPathProvider>(m_startupOptions);
+   logging::CLogConfiguration::configure(m_startupOptions->getLogLevel(), m_pathProvider->logsPath());
 }
 
 void CYadomsServer::uninitialize()
