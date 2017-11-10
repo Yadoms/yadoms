@@ -93,8 +93,13 @@ function requestWidgets(page) {
                 notifyError($.t("objects.widgetManager.loadingWidgetsError"));
                 d.reject();
             });
+        } else {
+          //we update the filter of the websocket
+          updateWebSocketFilter();
+          d.resolve();     
         }
-    });
+    })
+    .fail(d.resolve);
     return d.promise();
 }
 
@@ -116,22 +121,21 @@ function tabClick(pageId) {
     if (page) {
         //and if it's not loaded for the moment
         if (!page.loaded) {
-            requestWidgets(page).done(function () {
+            requestWidgets(page)
+            .always(function () {
                 //we poll all widget data
-                updateWidgetsPolling().always(function()
-                {
+                updateWidgetsPolling().always(function() {
                    PageManager.updateWidgetLayout(page);
                    page.$grid.packery('layout');                   
                 });
             });
         } else {
             //we poll all widget data
-            updateWidgetsPolling().always(function()
-            {
-               PageManager.updateWidgetLayout(page);
-               page.$grid.packery('layout');
-               updateWebSocketFilter();
-             });
+            updateWidgetsPolling().always(function() {
+              PageManager.updateWidgetLayout(page);
+              page.$grid.packery('layout');
+              updateWebSocketFilter();
+            });
         }
     }
 }
@@ -340,7 +344,8 @@ function updateWidgetsPolling() {
            arrayOfDeffered.push(deffered);
        });
        
-       $.whenAll(arrayOfDeffered).done(function () {
+       $.whenAll(arrayOfDeffered)
+       .done(function () {
           d.resolve();
        })
        .fail(function (error) {
