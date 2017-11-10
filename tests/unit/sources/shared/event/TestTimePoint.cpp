@@ -33,7 +33,7 @@ public:
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(Nominal)
 {
-   shared::currentTime::Provider().setProvider(boost::make_shared<CDefaultCurrentTimeMock>());
+   useTimeMock();
    const auto timePoint(shared::currentTime::Provider().now() + boost::posix_time::seconds(3));
    const auto evtId = 123456;
    CEventTimePointAccessProtectedMembers event(evtId, timePoint);
@@ -55,7 +55,7 @@ BOOST_AUTO_TEST_CASE(Nominal)
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(timePointInThePast)
 {
-   shared::currentTime::Provider().setProvider(boost::make_shared<CDefaultCurrentTimeMock>());
+   useTimeMock();
    const auto timePoint(shared::currentTime::Provider().now() - boost::posix_time::seconds(3));
    const auto evtId = 123456;
    BOOST_REQUIRE_THROW(shared::event::CEventTimePoint timer(evtId, timePoint), shared::exception::CInvalidParameter);
@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE(timePointInThePast)
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(NominalWithEventHandler)
 {
-   shared::currentTime::Provider().setProvider(boost::make_shared<CDefaultCurrentTimeMock>());
+   useTimeMock();
    const auto timePoint(shared::currentTime::Provider().now() + boost::posix_time::seconds(1));
    shared::event::CEventHandler evtHandler;
    const auto evtId1 = 123456;
@@ -83,8 +83,7 @@ BOOST_AUTO_TEST_CASE(NominalWithEventHandler)
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(TimePointBeforeAWait)
 {
-   auto timeProviderMock = boost::make_shared<CDefaultCurrentTimeMock>();
-   shared::currentTime::Provider().setProvider(timeProviderMock);
+   auto timeProviderMock = useTimeMock();
 
    shared::event::CEventHandler evtHandler;
    const auto timePoint(shared::currentTime::Provider().now() + boost::posix_time::seconds(1));

@@ -58,8 +58,7 @@ void postEventWithDataThreaded(shared::event::CEventHandler* receiver,
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(EventFromSameThread)
 {
-   boost::shared_ptr<CDefaultCurrentTimeMock> timeProviderMock;
-   shared::currentTime::Provider().setProvider(timeProviderMock);
+   useTimeMock();
 
    shared::event::CEventHandler evtHandler;
 

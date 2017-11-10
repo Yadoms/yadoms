@@ -60,11 +60,14 @@ boost::shared_ptr<const std::vector<unsigned char>> CPicBootReceiveBufferHandler
       return uncompleteMessage;
 
    // Remove first bytes if not start bytes (message must begin by 2 STX)
-   while (!m_content.empty() && m_content[0] != kSTX && m_content[1] != kSTX)
+   while (!m_content.empty() && (m_content[0] != kSTX || m_content[1] != kSTX))
       m_content.erase(m_content.begin());
 
+   if (m_content.size() < 2)
+      return uncompleteMessage;
+
    // Process the rest of the message
-   for (auto contentIterator = m_content.begin(); contentIterator != m_content.end(); ++contentIterator)
+   for (auto contentIterator = m_content.begin() + 2; contentIterator != m_content.end(); ++contentIterator)
    {
       if (m_nextCharacterIsEscaped)
       {
@@ -79,14 +82,19 @@ boost::shared_ptr<const std::vector<unsigned char>> CPicBootReceiveBufferHandler
             {
                // The message is complete
                const auto message = extractUsefulMessagePart(std::vector<unsigned char>(m_content.begin(),
-                                                                                        contentIterator));
-               if (!message->empty())
-                  return message;
+                                                                                        contentIterator + 1));
 
-               // Bad message (size, checksum...)
-               // Delete invalid data and retry with rest of data
-               m_content.erase(m_content.begin(), contentIterator);
-               return getCompleteMessage();
+               // Remove consumpted data
+               m_content.erase(m_content.begin(), contentIterator + 1);
+
+               if (!message)
+               {
+                  // Bad message (size, checksum...)
+                  // Retry with rest of data
+                  return getCompleteMessage();
+               }
+
+               return message;
             }
          case kDLE:
             {
@@ -117,8 +125,7 @@ boost::shared_ptr<const std::vector<unsigned char>> CPicBootReceiveBufferHandler
 {
    static const boost::shared_ptr<const std::vector<unsigned char>> uncompleteMessage;
 
-   // Extract message
-   if (fullMessage.size() < 3)
+   if (fullMessage.size() < 4)
    {
       YADOMS_LOG(error) << "CPicBootReceiveBufferHandler::extractUsefulMessagePart : invalid message size " << fullMessage.size();
       return uncompleteMessage;
@@ -132,6 +139,18 @@ boost::shared_ptr<const std::vector<unsigned char>> CPicBootReceiveBufferHandler
    // Remove the ETX
    message->pop_back();
 
+   // Remove the DLE
+   for (auto it = message->begin(); it != message->end(); ++it)
+   {
+      if (*it == kDLE)
+      {
+         // Remove the DLE and skip next byte (must always be accepted)
+         it = message->erase(it);
+         if (it != message->end())
+            ++it;
+      }   
+   }
+
    // Compute checksum
    unsigned long checksum = 0;
    for (const auto byte:*message)
@@ -142,6 +161,9 @@ boost::shared_ptr<const std::vector<unsigned char>> CPicBootReceiveBufferHandler
       YADOMS_LOG(error) << "CPicBootReceiveBufferHandler::extractUsefulMessagePart : bad checksum " << message->back();
       return uncompleteMessage;
    }
+
+   // Remove the checksum
+   message->pop_back();
 
    return message;
 }

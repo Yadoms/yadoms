@@ -386,7 +386,7 @@ BOOST_AUTO_TEST_CASE(final)
 
 BOOST_AUTO_TEST_CASE(threeImmediateframesTwoPushdelay30s)
 {
-	shared::currentTime::Provider().setProvider(boost::make_shared<CDefaultCurrentTimeMock>());
+	useTimeMock();
 
 	const auto frame1 = serialTeleInfoMessage::normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
 	const std::map<std::string, std::string> expectedMap = {
@@ -418,8 +418,7 @@ BOOST_AUTO_TEST_CASE(threeImmediateframesTwoPushdelay30s)
 
 BOOST_AUTO_TEST_CASE(threeframesat30sTwoPushdelay30s)
 {
-	auto timeMock = boost::make_shared<CDefaultCurrentTimeMock>();
-	shared::currentTime::Provider().setProvider(timeMock);
+	auto timeMock = useTimeMock();
 
 	const auto frame1 = serialTeleInfoMessage::normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
 	const std::map<std::string, std::string> expectedMap = {
