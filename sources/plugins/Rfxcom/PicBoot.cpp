@@ -49,7 +49,7 @@
 
 *******************************************************************************/
 #include "stdafx.h"
-#include "PICBOOT.h"
+#include "PicBoot.h"
 #include "PicBootReceiveBufferHandler.h"
 #include "PicBootPacketControlCharacters.h"
 #include <shared/Log.h>
