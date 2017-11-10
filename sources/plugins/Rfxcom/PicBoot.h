@@ -110,10 +110,11 @@ public:
    };
 
 
-   //Prototypes
+
    CPicBoot(const std::string& comPort,
             boost::posix_time::time_duration readTimeOut);
    virtual ~CPicBoot();
+
 
    /****************************************************************************
 

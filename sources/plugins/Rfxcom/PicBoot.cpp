@@ -57,8 +57,8 @@
 
 enum
 {
-   kEvtPortConnection = shared::event::kUserFirstId,
-   kEvtPortDataReceived
+   kEvtPicBootPortConnection = shared::event::kUserFirstId,
+   kEvtPicBootPortDataReceived
 };
 
 
@@ -67,16 +67,16 @@ CPicBoot::CPicBoot(const std::string& comPort,
 {
    m_port = boost::make_shared<shared::communication::CAsyncSerialPort>(comPort,
                                                                         boost::asio::serial_port_base::baud_rate(38400));
-   m_port->subscribeForConnectionEvents(m_eventHandler, kEvtPortConnection);
+   m_port->subscribeForConnectionEvents(m_eventHandler, kEvtPicBootPortConnection);
 
    auto receiveBufferHandler = boost::make_shared<CPicBootReceiveBufferHandler>(m_eventHandler,
-                                                                                kEvtPortDataReceived,
+                                                                                kEvtPicBootPortDataReceived,
                                                                                 readTimeOut);
    m_port->setReceiveBufferHandler(receiveBufferHandler);
 
    m_port->start();
 
-   if (m_eventHandler.waitForEvents(boost::posix_time::seconds(10)) != kEvtPortConnection)
+   if (m_eventHandler.waitForEvents(boost::posix_time::seconds(10)) != kEvtPicBootPortConnection)
       throw std::runtime_error("Unable to open serial port");
 
    receiveBufferHandler->flush();
@@ -89,7 +89,7 @@ CPicBoot::~CPicBoot()
 
 boost::shared_ptr<const std::vector<unsigned char>> CPicBoot::getPacket(unsigned int byteLimit)
 {
-   if (m_eventHandler.waitForEvents(boost::posix_time::seconds(2)) != kEvtPortDataReceived)
+   if (m_eventHandler.waitForEvents(boost::posix_time::seconds(2)) != kEvtPicBootPortDataReceived)
       throw std::runtime_error("Fail to get packet");
 
    auto message = boost::make_shared<const std::vector<unsigned char>>(m_eventHandler.getEventData<const std::vector<unsigned char>>());
@@ -122,13 +122,14 @@ void CPicBoot::sendPacket(boost::shared_ptr<const std::vector<unsigned char>> pa
       case kETX:
       case kDLE:
          buffer.push_back(kDLE);
+         break;
       }
       buffer.push_back(data);
       checksum += data;
    }
 
    // Insert checksum
-   checksum = ~checksum + 1 & 0xFF;
+   checksum = (~checksum + 1) & 0xFF;
    switch (checksum)
    {
    case kSTX:

@@ -3,13 +3,15 @@
 #include <shared/encryption/Base64.h>
 
 //TODO doit-on appliquer ces décalages (code en provenance de domoticz)
-	//int AddressLow = PKT_pmrangelow;
-	//int AddressHigh = PKT_pmrangehigh;
-	//if (HwdType == HTYPE_RFXtrx868)
-	//{
-	//	AddressLow = PKT_pmrangelow868;
-	//	AddressHigh = PKT_pmrangehigh868;
-	//}
+//int AddressLow = PKT_pmrangelow;
+//int AddressHigh = PKT_pmrangehigh;
+//if (HwdType == HTYPE_RFXtrx868)
+//{
+//	AddressLow = PKT_pmrangelow868;
+//	AddressHigh = PKT_pmrangehigh868;
+//}
+
+class CPicBoot;
 
 CRfxcomFirmwareUpdater::CRfxcomFirmwareUpdater(boost::shared_ptr<yApi::IYPluginApi> api,
                                                boost::shared_ptr<yApi::IExtraQuery> extraQuery,
@@ -40,21 +42,30 @@ void CRfxcomFirmwareUpdater::update()
    // Load input file
    m_extraQuery->reportProgress(0.0f, "customLabels.firmwareUpdate.loadInputFile");//TODO traduire
    loadFile(firmwareContent);
-   m_extraQuery->reportProgress(5.0f, "customLabels.firmwareUpdate.inputFileLoaded");//TODO traduire
 
+   boost::shared_ptr<CPicBoot> picBoot;
    try
    {
-      rfxcomSwitchToBootloaderMode();
-      rfxcomClearMemory();
-      rfxcomWritingMemory();
-      rfxcomVerifyMemory();
-      rfxcomReboot();
+      m_extraQuery->reportProgress(5.0f, "customLabels.firmwareUpdate.flash");//TODO traduire
+
+      picBoot = boost::make_shared<CPicBoot>(m_serialPort,
+                                             boost::posix_time::seconds(1));
+
+      rfxcomSwitchToBootloaderMode(picBoot);
+
+      rfxcomReadVersion(picBoot);
+      rfxcomClearMemory(picBoot);
+      rfxcomWritingMemory(picBoot);
+      m_extraQuery->reportProgress(5.0f, "customLabels.firmwareUpdate.verify");//TODO traduire
+      rfxcomVerifyMemory(picBoot);
+      rfxcomReboot(picBoot);
    }
    catch (std::exception& exception)
    {
       YADOMS_LOG(error) << "Error flashing RFXCom, " << exception.what();
       YADOMS_LOG(error) << "Will try to reboot RFXCom, but it may be broken...";
-      rfxcomReboot();
+      if (picBoot)
+         rfxcomReboot(picBoot);
       throw;
    }
 }
@@ -77,23 +88,23 @@ void CRfxcomFirmwareUpdater::loadFile(const std::string& fileContent) const
    // - CC is the checksum
 
    enum EFieldPositions
-   {
-      kIdxStartLineChar = 0,
-      kIdxBytesCount = 1,
-      kIdxAddress = 3,
-      kIdxLineType = 7,
-      kIdxData = 9
-   };
+      {
+         kIdxStartLineChar = 0,
+         kIdxBytesCount = 1,
+         kIdxAddress = 3,
+         kIdxLineType = 7,
+         kIdxData = 9
+      };
 
    enum ELineType
-   {
-      kData = 0,
-      kEOF = 1,
-      kExtendedAddress = 2,
-      kStartSegmentAddressRecord = 3,
-      kExtendedLinearAddressRecord = 4,
-      kStartLinearAddressRecord = 5
-   };
+      {
+         kData = 0,
+         kEOF = 1,
+         kExtendedAddress = 2,
+         kStartSegmentAddressRecord = 3,
+         kExtendedLinearAddressRecord = 4,
+         kStartLinearAddressRecord = 5
+      };
 
    try
    {
@@ -144,7 +155,7 @@ void CRfxcomFirmwareUpdater::loadFile(const std::string& fileContent) const
             {
                const auto address = addressMostSignificantWordMask | hexStringToUInt(line.substr(kIdxAddress, 4));
                //TODO finir de lire le fichier
-            }            
+            }
          }
 
          ++lineCount;
@@ -183,7 +194,7 @@ unsigned int CRfxcomFirmwareUpdater::computeLineChecksum(const std::string& line
    return (~sum + 1) & 0x0FF;
 }
 
-void CRfxcomFirmwareUpdater::rfxcomSwitchToBootloaderMode()
+void CRfxcomFirmwareUpdater::rfxcomSwitchToBootloaderMode(boost::shared_ptr<CPicBoot> picBoot)
 {
    YADOMS_LOG(debug) << "Switch to bootloader mode...";
 
@@ -193,28 +204,35 @@ void CRfxcomFirmwareUpdater::rfxcomSwitchToBootloaderMode()
    YADOMS_LOG(debug) << "RFXCom is in bootloader mode";
 }
 
-void CRfxcomFirmwareUpdater::rfxcomClearMemory()
+void CRfxcomFirmwareUpdater::rfxcomReadVersion(boost::shared_ptr<CPicBoot> picBoot)
+{
+   YADOMS_LOG(debug) << "Read RFXCom current version...";
+   //TODO
+   YADOMS_LOG(debug) << "RFXCom current version is " << "TODO";
+}
+
+void CRfxcomFirmwareUpdater::rfxcomClearMemory(boost::shared_ptr<CPicBoot> picBoot)
 {
    YADOMS_LOG(debug) << "Clear RFXCom memory...";
    //TODO
    YADOMS_LOG(debug) << "RFXCom memory cleared";
 }
 
-void CRfxcomFirmwareUpdater::rfxcomWritingMemory()
+void CRfxcomFirmwareUpdater::rfxcomWritingMemory(boost::shared_ptr<CPicBoot> picBoot)
 {
    YADOMS_LOG(debug) << "Write RFXCom memory...";
    //TODO
    YADOMS_LOG(debug) << "RFXCom memory written";
 }
 
-void CRfxcomFirmwareUpdater::rfxcomVerifyMemory()
+void CRfxcomFirmwareUpdater::rfxcomVerifyMemory(boost::shared_ptr<CPicBoot> picBoot)
 {
    YADOMS_LOG(debug) << "Verify RFXCom memory...";
    //TODO
    YADOMS_LOG(debug) << "Verification is OK";
 }
 
-void CRfxcomFirmwareUpdater::rfxcomReboot()
+void CRfxcomFirmwareUpdater::rfxcomReboot(boost::shared_ptr<CPicBoot> picBoot)
 {
    YADOMS_LOG(debug) << "Reset RFXCom...";
    //TODO

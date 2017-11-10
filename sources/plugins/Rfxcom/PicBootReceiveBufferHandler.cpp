@@ -156,7 +156,7 @@ boost::shared_ptr<const std::vector<unsigned char>> CPicBootReceiveBufferHandler
    for (const auto byte:*message)
       checksum += byte;
 
-   if (~checksum + 1 & 0xFF)
+   if ((~checksum + 1) & 0xFF)
    {
       YADOMS_LOG(error) << "CPicBootReceiveBufferHandler::extractUsefulMessagePart : bad checksum " << message->back();
       return uncompleteMessage;
