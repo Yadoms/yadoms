@@ -123,18 +123,21 @@ function tabClick(pageId) {
         if (!page.loaded) {
             requestWidgets(page)
             .always(function () {
-                //we poll all widget data
-                updateWidgetsPolling().always(function() {
-                   PageManager.updateWidgetLayout(page);
-                   page.$grid.packery('layout');                   
-                });
+               //we poll all widget data
+               updateWidgetsPolling().always(function() {
+                 var b = page.$grid.packery('reloadItems');
+                 updateWebSocketFilter();
+                 PageManager.updateWidgetLayout(page);
+               });
             });
         } else {
+           
             //we poll all widget data
             updateWidgetsPolling().always(function() {
-              PageManager.updateWidgetLayout(page);
-              page.$grid.packery('layout');
-              updateWebSocketFilter();
+               page.$grid.packery('destroy');
+               page.$grid.packery(PageManager.packeryOptions);
+               updateWebSocketFilter();
+               PageManager.updateWidgetLayout(page);
             });
         }
     }
@@ -338,26 +341,23 @@ function updateWidgetsPolling() {
       var arrayOfDeffered = [];
         
        $.each(page.widgets, function (widgetIndex, widget) {
-           
            //we ask which devices are needed for this widget instance
            var deffered = updateWidgetPolling(widget);
            arrayOfDeffered.push(deffered);
        });
        
        $.whenAll(arrayOfDeffered)
-       .done(function () {
-          d.resolve();
-       })
-       .fail(function (error) {
-          d.reject();
-        });
+       .done(d.resolve)
+       .fail(d.reject);
     }    
     return d.promise();
 }
 
 function updateWidgetPolling(widget) {
+    var d = new $.Deferred();
+
     if (!isNullOrUndefined(widget.listenedKeywords)) {
-        var d = AcquisitionManager.getLastValues(widget.listenedKeywords)
+        AcquisitionManager.getLastValues(widget.listenedKeywords)
         .done(function (data) {
             if (data) {
                 $.each(data, function (index, acquisition) {
@@ -366,11 +366,14 @@ function updateWidgetPolling(widget) {
                         widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
                 });
             }
+            d.resolve();
         })
         .fail(function (error) {
             notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for widget = " + widget.id }), error);
+            d.reject(error);
         });
+    } else {
+       d.resolve();
     }
-    
     return d.promise();
 }
