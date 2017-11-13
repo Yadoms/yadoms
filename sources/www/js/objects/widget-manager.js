@@ -209,8 +209,8 @@ WidgetManager.updateToServer = function (widget) {
          try {
              WidgetManager.updateWidgetConfiguration_(widget).always(function(){
                 //we ask for a refresh of widget data
-                updateWidgetPolling(widget);
-                d.resolve();
+                updateWidgetPolling(widget)
+                .always(d.resolve);
              });
          }
          catch (e) {
@@ -250,9 +250,8 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
             defferedResult
             .done(function () {
                 //we manage the toolbar api specific icons
-                widget.viewModel.widgetApi.manageBatteryConfiguration().always(function(){
-					   d.resolve();
-				   });
+                widget.viewModel.widgetApi.manageBatteryConfiguration()
+                .always(d.resolve);
             })
             .fail(d.resolve);
         } else {
@@ -310,17 +309,17 @@ WidgetManager.loadWidgets = function (widgetList, pageWhereToAdd) {
     //When all view/viewModel off all requested types of widgets are loaded, 
     //then create widgets on page
     $.when.apply($, arrayOfDeffered)
-       .done(function () {
-           var arrayOfLoadingWidgetDeferred = [];
-           $.each(widgetList, function (index, widget) {
-               arrayOfLoadingWidgetDeferred.push(WidgetManager.loadWidget(widget, pageWhereToAdd));
-           });
+    .done(function () {
+        var arrayOfLoadingWidgetDeferred = [];
+        $.each(widgetList, function (index, widget) {
+            arrayOfLoadingWidgetDeferred.push(WidgetManager.loadWidget(widget, pageWhereToAdd));
+        });
 
-           $.when.apply($, arrayOfLoadingWidgetDeferred)
-           .done(d.resolve)
-           .fail(d.reject);
-       })
-       .fail(d.reject);
+        $.when.apply($, arrayOfLoadingWidgetDeferred)
+        .done(d.resolve)
+        .fail(d.reject);
+    })
+    .fail(d.reject);
 
     return d.promise();
 };
@@ -535,7 +534,8 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
                         widget.$gridWidget.find(".textfit").fitText();
 						
                         //we ask for widget refresh data
-                        updateWidgetPolling(widget).always(function() {
+                        updateWidgetPolling(widget)
+                        .always(function() {
                            widget.viewModel.widgetApi.manageRollingTitle();
                            d.resolve();                           
                         });
