@@ -36,6 +36,9 @@ public:
    void flush() override;
    // [END] ITeleInfoReceiveBufferHandler implementation
 
+   void activate();
+   void desactivate();
+
 protected:
    //--------------------------------------------------------------
    /// \brief	                     Check if we got a complete message
@@ -84,11 +87,7 @@ private:
    //--------------------------------------------------------------
    boost::shared_ptr<shared::communication::IBufferLogger> m_logger;
 
-   //--------------------------------------------------------------
-   /// \brief	Management of suspend delay between 2 messages
-   //--------------------------------------------------------------
-   boost::posix_time::ptime m_nextSendMessageDate;
-   const boost::posix_time::time_duration m_suspendDelay;
    bool m_isDeveloperMode;
+   bool m_pushActivated;
 };
 

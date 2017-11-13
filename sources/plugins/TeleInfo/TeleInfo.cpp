@@ -31,7 +31,8 @@ enum
    kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId, // Always start from shared::event::CEventHandler::kUserFirstId
    kEvtPortDataReceived,
    kErrorRetryTimer,
-   kAnswerTimeout
+   kAnswerTimeout,
+   kSamplingTimer
 };
 
 void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -54,6 +55,10 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
                                                              shared::event::CEventTimer::kOneShot,
                                                              boost::posix_time::seconds(45));
+
+   m_periodicSamplingTimer = api->getEventHandler().createTimer(kSamplingTimer,
+                                                                shared::event::CEventTimer::kPeriodic,
+                                                                boost::posix_time::seconds(30));
 
    // Create the connection
    createConnection(api);
@@ -95,11 +100,10 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kEvtPortDataReceived:
          {
 			 m_waitForAnswerTimer->stop();
+          YADOMS_LOG(trace) << "TeleInfo plugin :  DataReceived";
 
-            if (m_isDeveloperMode) YADOMS_LOG(information) << "TeleInfo plugin :  DataReceived" ;
-
-            processDataReceived(api,
-                                api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::string>>>());
+          processDataReceived(api,
+                              api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::string>>>());
 
             if (m_decoder->isERDFCounterDesactivated())
             {
@@ -109,6 +113,8 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   m_runningState = kErDFCounterdesactivated;
                }
             }
+
+          m_receiveBufferHandler->desactivate();
 
 			//Lauch a new time the time out to detect connexion failure
 			m_waitForAnswerTimer->start();
@@ -127,6 +133,11 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kErrorRetryTimer:
          {
             createConnection(api);
+            break;
+         }
+      case kSamplingTimer:
+         {
+            m_receiveBufferHandler->activate();
             break;
          }
       case kAnswerTimeout:
@@ -228,6 +239,8 @@ void CTeleInfo::processTeleInfoUnConnectionEvent(boost::shared_ptr<yApi::IYPlugi
    else
       api->setPluginState(yApi::historization::EPluginState::kError, "connectionLost");
    m_runningState = kConnectionLost;
+
+   m_receiveBufferHandler->desactivate();
 
    destroyConnection();
 }

@@ -45,10 +45,5 @@ private:
    /// \brief	The map of returned value to the IHM
    //--------------------------------------------------------------
    typedef std::map<std::string, unsigned int> EnumColorMap;
-
-   //--------------------------------------------------------------
-   /// \brief	developer mode
-   //--------------------------------------------------------------
-   bool m_isDeveloperMode;
 };
 

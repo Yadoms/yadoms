@@ -40,12 +40,10 @@ CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
      m_TimePeriod(boost::make_shared<CRunningPeriod>(api, "RunningPeriod")),
      m_ForecastPeriod(boost::make_shared<CForecastTomorrow>(api, "ForecastColor")),
      m_api(api),
-     m_isdeveloperMode(false),
      m_teleinfoEnableInCounter(false),
      m_deviceCreated(false),
      m_optarif(OP_NOT_DEFINED)
 {
-   m_isdeveloperMode = api->getYadomsInformation()->developperMode();
    m_instantCurrentPhase[0] = boost::make_shared<yApi::historization::CCurrent>("InstantCurrentPhase1");
    m_instantCurrentPhase[1] = boost::make_shared<yApi::historization::CCurrent>("InstantCurrentPhase2");
    m_instantCurrentPhase[2] = boost::make_shared<yApi::historization::CCurrent>("InstantCurrentPhase3");
@@ -97,7 +95,7 @@ void CDecoder::decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> api,
 
 void CDecoder::createDeviceAndKeywords(const bool monoPhase)
 {
-   if (m_isdeveloperMode) YADOMS_LOG(information) << "Nb keywords : " << "=" << m_keywords.size() ;
+   YADOMS_LOG(trace) << "Nb keywords : " << "=" << m_keywords.size() ;
 
    if (monoPhase)
    {
@@ -190,7 +188,7 @@ void CDecoder::processMessage(const std::string& key,
 	{
 		if (key == m_tag_ADCO)
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "ADCO" << "=" << value ;
+			YADOMS_LOG(trace) << "ADCO" << "=" << value ;
 
 			static bool ADCOalreadyReceived = false;
 
@@ -202,98 +200,98 @@ void CDecoder::processMessage(const std::string& key,
 		}
 		else if (key == m_tag_OPTARIF)
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "OPTARIF" << "=" << value ;
+			YADOMS_LOG(trace) << "OPTARIF" << "=" << value ;
 			if (m_keywords.empty())
 				createKeywordList(value);
 		}
 		else if (key == m_tag_BASE)
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "BASE" << "=" << value ;
+			YADOMS_LOG(trace) << "BASE" << "=" << value ;
 			m_baseCounter->set(std::stoll(value));
 		}
 		else if (key == m_tag_HCHC)
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "HCHC" << "=" << value ;
+			YADOMS_LOG(trace) << "HCHC" << "=" << value ;
 			m_lowCostCounter->set(std::stoll(value));
 		}
 		else if (key == m_tag_HCHP)
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "HCHP" << "=" << value ;
+			YADOMS_LOG(trace) << "HCHP" << "=" << value ;
 			m_normalCostCounter->set(std::stoll(value));
 		}
 		else if (key == m_tag_EJPHPM)
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "EJPHPM" << "=" << value ;
+			YADOMS_LOG(trace) << "EJPHPM" << "=" << value ;
 			m_EJPPeakPeriod->set(std::stoll(value));
 		}
 		else if (key == m_tag_EJPHN)
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "EJPHN" << "=" << value ;
+			YADOMS_LOG(trace) << "EJPHN" << "=" << value ;
 			m_EJPNormalPeriod->set(std::stoll(value));
 		}
 		else if (key == m_tag_BBRHCJB)
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "BBRHCJB" << "=" << value ;
+			YADOMS_LOG(trace) << "BBRHCJB" << "=" << value ;
 			m_tempoBlueDaysLowCostPeriod->set(std::stoll(value));
 		}
 		else if (key == m_tag_BBRHPJB)
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "BBRHPJB" << "=" << value ;
+			YADOMS_LOG(trace) << "BBRHPJB" << "=" << value ;
 			m_tempoBlueDaysNormalCostPeriod->set(std::stoll(value));
 		}
 		else if (key == m_tag_BBRHCJW)
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "BBRHCJW" << "=" << value ;
+			YADOMS_LOG(trace) << "BBRHCJW" << "=" << value ;
 			m_tempoWhiteDaysLowCostPeriod->set(std::stoll(value));
 		}
 		else if (key == m_tag_BBRHPJW)
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "BBRHPJW" << "=" << value ;
+			YADOMS_LOG(trace) << "BBRHPJW" << "=" << value ;
 			m_tempoWhiteDaysNormalCostPeriod->set(std::stoll(value));
 		}
 		else if (key == m_tag_BBRHCJR)
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "BBRHCJR" << "=" << value ;
+			YADOMS_LOG(trace) << "BBRHCJR" << "=" << value ;
 			m_tempoRedDaysLowCostPeriod->set(std::stoll(value));
 		}
 		else if (key == m_tag_BBRHPJR)
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "BBRHPJR" << "=" << value ;
+			YADOMS_LOG(trace) << "BBRHPJR" << "=" << value ;
 			m_tempoRedDaysNormalCostPeriod->set(std::stoll(value));
 		}
 		else if (key == m_tag_PTEC)
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "PTEC" << "=" << value ;
+			YADOMS_LOG(trace) << "PTEC" << "=" << value ;
 			m_TimePeriod->set(value);
 		}
 		else if (key == m_tag_IINST)
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "IINST" << "=" << value ;
+			YADOMS_LOG(trace) << "IINST" << "=" << value ;
 			m_instantCurrent->set(std::stod(value));
 		}
       else if (key == m_tag_IINST1)
       {
-         if (m_isdeveloperMode) YADOMS_LOG(information) << "IINST1" << "=" << value;
+         YADOMS_LOG(trace) << "IINST1" << "=" << value;
          m_instantCurrentPhase[0]->set(std::stod(value));
       }
       else if (key == m_tag_IINST2)
       {
-         if (m_isdeveloperMode) YADOMS_LOG(information) << "IINST2" << "=" << value;
+         YADOMS_LOG(trace) << "IINST2" << "=" << value;
          m_instantCurrentPhase[1]->set(std::stod(value));
       }
       else if (key == m_tag_IINST3)
       {
-         if (m_isdeveloperMode) YADOMS_LOG(information) << "IINST3" << "=" << value;
+         YADOMS_LOG(trace) << "IINST3" << "=" << value;
          m_instantCurrentPhase[2]->set(std::stod(value));
       }
 		else if (key == m_tag_PAPP)
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "PAPP" << "=" << value ;
+			YADOMS_LOG(trace) << "PAPP" << "=" << value ;
 			m_apparentPower->set(std::stol(value));
 		}
 		else if (key == m_tag_DEMAIN)
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "DEMAIN" << "=" << value ;
+			YADOMS_LOG(trace) << "DEMAIN" << "=" << value ;
 			m_ForecastPeriod->set(value);
 		}
 		else

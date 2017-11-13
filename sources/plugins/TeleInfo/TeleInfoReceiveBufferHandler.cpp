@@ -23,10 +23,19 @@ CTeleInfoReceiveBufferHandler::CTeleInfoReceiveBufferHandler(shared::event::CEve
    : m_receiveDataEventHandler(receiveDataEventHandler),
      m_receiveDataEventId(receiveDataEventId),
      m_logger (logger),
-     m_nextSendMessageDate(shared::currentTime::Provider().now()),
-     m_suspendDelay (suspendDelay),
+   m_pushActivated(true),
    m_isDeveloperMode(isdeveloperMode)
 {
+}
+
+void CTeleInfoReceiveBufferHandler::activate()
+{
+   m_pushActivated = true;
+}
+
+void CTeleInfoReceiveBufferHandler::desactivate()
+{
+   m_pushActivated = false;
 }
 
 CTeleInfoReceiveBufferHandler::~CTeleInfoReceiveBufferHandler()
@@ -35,7 +44,7 @@ CTeleInfoReceiveBufferHandler::~CTeleInfoReceiveBufferHandler()
 
 void CTeleInfoReceiveBufferHandler::push(const shared::communication::CByteBuffer& buffer)
 {
-   if (shared::currentTime::Provider().now() < m_nextSendMessageDate)
+   if (!m_pushActivated)
       return;
 
    for (size_t idx = 0; idx < buffer.size(); ++idx)
@@ -52,8 +61,6 @@ void CTeleInfoReceiveBufferHandler::push(const shared::communication::CByteBuffe
       notifyEventHandler(messages);
 
       m_logger->logReceived(shared::communication::CByteBuffer(m_content));
-
-      m_nextSendMessageDate = shared::currentTime::Provider().now() + m_suspendDelay;
    }
 }
 

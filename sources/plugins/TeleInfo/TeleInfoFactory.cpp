@@ -32,9 +32,9 @@ boost::shared_ptr<shared::communication::IAsyncPort> CTeleInfoFactory::construct
    return port;
 }
 
-boost::shared_ptr<shared::communication::IReceiveBufferHandler> CTeleInfoFactory::GetBufferHandler(shared::event::CEventHandler& eventHandler,
-                                                                                                   int evtPortDataReceived,
-                                                                                                   const bool isDeveloperMode)
+boost::shared_ptr<CTeleInfoReceiveBufferHandler> CTeleInfoFactory::GetBufferHandler(shared::event::CEventHandler& eventHandler,
+                                                                                    int evtPortDataReceived,
+                                                                                    const bool isDeveloperMode)
 {
    boost::shared_ptr<shared::communication::IBufferLogger> logger;
 
