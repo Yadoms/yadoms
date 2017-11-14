@@ -85,7 +85,7 @@ public:
    };
 
    //PIC structure used for some functions
-   struct CPic
+   struct CPic //TODO passer en privé ?
    {
       // Bootloader command
       EBootLoaderCommand BootCmd;
@@ -110,89 +110,32 @@ public:
    };
 
 
-
    CPicBoot(const std::string& comPort,
             boost::posix_time::time_duration readTimeOut);
    virtual ~CPicBoot();
 
+   boost::shared_ptr<std::vector<unsigned char>> readPic(const CPic& pic);
+   std::string readPicVersion(unsigned int nRetry);
+   void writePic(const CPic& pic,
+                 boost::shared_ptr<std::vector<unsigned char>> packetData);
+   void erasePic(unsigned int PicAddr,
+                 unsigned int nBlock,
+                 unsigned int nRetry);
+   bool verifyPic(const CPic& pic,
+                  boost::shared_ptr<std::vector<unsigned char>> refPacketData);
+   void reBootPic() const;
+   void erasePicProgramMemory(unsigned int firstAddress,
+                              unsigned int lastAddress,
+                              unsigned int nRetry);
+private:
 
-   /****************************************************************************
-
-       FUNCTION:	getPacket
-
-       PURPOSE:	This function captures data from the opened source and 
-               strips out special control characters. The length of the 
-               packet is returned.
-
-   ****************************************************************************/
    boost::shared_ptr<const std::vector<unsigned char>> getPacket(unsigned int byteLimit);
-
-   /****************************************************************************
-
-       FUNCTION:	sendPacket
-
-       PURPOSE:	This function translates and transmitts a packet of data to 
-               communicate with the bootloader firmware on the PIC
-               microcontroller.
-
-   ****************************************************************************/
    void sendPacket(boost::shared_ptr<const std::vector<unsigned char>> packetData) const;
-
-   /****************************************************************************
-
-       FUNCTION:	SendGetPacket
-
-       PURPOSE:	This function is a combined function of the sendPacket and
-               getPacket functions. A retry option has been added to allow
-               retransmission and reception in the event of normal 
-               communications failure. 
-
-   ****************************************************************************/
    boost::shared_ptr<const std::vector<unsigned char>> sendGetPacket(boost::shared_ptr<const std::vector<unsigned char>> packetToSend,
                                                                      unsigned int receiveByteLimit,
                                                                      unsigned int numOfRetrys);
 
-   /****************************************************************************
 
-       FUNCTION:	readPIC
-
-       PURPOSE:	This is a simple read function. 
-
-   ****************************************************************************/
-   boost::shared_ptr<std::vector<unsigned char>> readPIC(const CPic& pic);
-
-   /****************************************************************************
-
-       FUNCTION:	
-
-       PURPOSE: 	This is a simple write function. 
-
-   ****************************************************************************/
-   void writePIC(const CPic& pic,
-                 boost::shared_ptr<std::vector<unsigned char>> packetData);
-
-   /****************************************************************************
-
-       FUNCTION:	ErasePIC
-
-       PURPOSE:	Simple erase function.
-
-   ****************************************************************************/
-   void erasePIC(unsigned int PicAddr,
-                 unsigned int nBlock,
-                 unsigned int nRetry);
-
-   /****************************************************************************
-
-       FUNCTION:	
-
-       PURPOSE:   Simple verify function
-
-   ****************************************************************************/
-   bool verifyPIC(const CPic& pic,
-                  boost::shared_ptr<std::vector<unsigned char>> refPacketData);
-
-private:
    boost::shared_ptr<shared::communication::CAsyncSerialPort> m_port;
    shared::event::CEventHandler m_eventHandler;
    boost::posix_time::ptime m_lastReceivedTime;

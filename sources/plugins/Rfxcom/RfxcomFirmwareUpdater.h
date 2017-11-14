@@ -27,15 +27,18 @@ protected:
    static unsigned int hexStringToUInt(const std::string& hexString);
    static unsigned int computeLineChecksum(const std::string& line);
    void rfxcomSwitchToBootloaderMode(boost::shared_ptr<CPicBoot> picBoot);
-   void rfxcomReadVersion(boost::shared_ptr<CPicBoot> picBoot);
-   void rfxcomClearMemory(boost::shared_ptr<CPicBoot> picBoot);
+   static void rfxcomReadBootloaderVersion(boost::shared_ptr<CPicBoot> picBoot);
+   static void rfxcomClearMemory(boost::shared_ptr<CPicBoot> picBoot);
    void rfxcomWritingMemory(boost::shared_ptr<CPicBoot> picBoot);
    void rfxcomVerifyMemory(boost::shared_ptr<CPicBoot> picBoot);
-   void rfxcomReboot(boost::shared_ptr<CPicBoot> picBoot);
+   static void rfxcomReboot(boost::shared_ptr<CPicBoot> picBoot);
+
+   static unsigned int ProgramMemoryFirstAddress();
+   static unsigned int ProgramMemoryLastAddress();
 
 private:
    const boost::shared_ptr<yApi::IYPluginApi> m_api;
    const boost::shared_ptr<yApi::IExtraQuery> m_extraQuery;
-   const std::string& m_serialPort;
+   const std::string m_serialPort;
 };
 

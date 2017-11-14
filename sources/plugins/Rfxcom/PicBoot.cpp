@@ -32,22 +32,6 @@
 * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
 \******************************************************************************/
 
-/****************************************************************************
-
-    PROGRAM:	PICBOOT.c
-
-    PURPOSE:	The purpose of this DLL is to provide a communications base for 
-            quick and easy higher level development.
-
-    FUNCTIONS:	HANDLE  OpenPIC(LPSTR, DWORD, DWORD)
-            INT  ClosePIC(HANDLE)
-            INT  getPacket(HANDLE, BYTE *, WORD)
-            INT  sendPacket(HANDLE, BYTE *, WORD)
-            INT  SendGetPacket(HANDLE, BYTE *, WORD, WORD, WORD)
-            DWORD  WritePIC(HANDLE, PIC *, BYTE *)
-            DWORD  readPIC(HANDLE, PIC *, BYTE *)     
-
-*******************************************************************************/
 #include "stdafx.h"
 #include "PicBoot.h"
 #include "PicBootReceiveBufferHandler.h"
@@ -59,6 +43,12 @@ enum
 {
    kEvtPicBootPortConnection = shared::event::kUserFirstId,
    kEvtPicBootPortDataReceived
+};
+
+// These constants are specific to RFXCom
+enum
+{
+   kNbBytesPerAddress = 2
 };
 
 
@@ -76,7 +66,8 @@ CPicBoot::CPicBoot(const std::string& comPort,
 
    m_port->start();
 
-   if (m_eventHandler.waitForEvents(boost::posix_time::seconds(10)) != kEvtPicBootPortConnection)
+   if (! (m_eventHandler.waitForEvents(boost::posix_time::seconds(10)) == kEvtPicBootPortConnection
+      && m_eventHandler.getEventData<boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>>()->isConnected()))
       throw std::runtime_error("Unable to open serial port");
 
    receiveBufferHandler->flush();
@@ -86,6 +77,187 @@ CPicBoot::~CPicBoot()
 {
 }
 
+boost::shared_ptr<std::vector<unsigned char>> CPicBoot::readPic(const CPic& pic)
+{
+   switch (pic.BootCmd)
+   {
+   case kCommandReadPm:
+   case kCommandReadEe:
+   case kCommandReadCfg:
+      break;
+   default:
+      throw std::invalid_argument((boost::format("CPicBoot::readPic : Invalid command %1%") % pic.BootCmd).str());
+   }
+
+   //Limit to 1 to 3 bytes per addr
+   if (!pic.BytesPerAddr)
+      throw std::invalid_argument((boost::format("CPicBoot::readPic : bytes per address value too small %1%") % pic.BytesPerAddr).str());
+   if (pic.BytesPerAddr > 3)
+      throw std::invalid_argument((boost::format("CPicBoot::readPic : bytes per address value too big %1%") % pic.BytesPerAddr).str());
+
+   if (pic.BootDatLen / pic.BytesPerBlock > kMAX_PACKET)
+      throw std::invalid_argument((boost::format("CPicBoot::readPic : packet too big %1%, expected %2% max") % (pic.BootDatLen / pic.BytesPerBlock) % kMAX_PACKET).str());
+
+   auto messageToSend = boost::make_shared<std::vector<unsigned char>>();
+
+   //Build header
+   messageToSend->push_back(pic.BootCmd);
+   messageToSend->push_back(static_cast<unsigned char>(pic.BootDatLen / pic.BytesPerBlock));
+   messageToSend->push_back(static_cast<unsigned char>(pic.BootAddr & 0xFF));
+   messageToSend->push_back(static_cast<unsigned char>((pic.BootAddr & 0xFF00) >> 8));
+   messageToSend->push_back(static_cast<unsigned char>((pic.BootAddr & 0xFF0000) >> 16));
+
+   const auto receivedMessage = sendGetPacket(messageToSend, kMAX_PACKET, pic.MaxRetrys);
+
+   // Remove header from answer
+   return boost::make_shared<std::vector<unsigned char>>(receivedMessage->begin() + 5,
+                                                         receivedMessage->end());
+}
+
+std::string CPicBoot::readPicVersion(unsigned int nRetry)
+{
+   auto messageToSend = boost::make_shared<std::vector<unsigned char>>();
+
+   //Build header
+   messageToSend->push_back(kCommandReadVer);
+   messageToSend->push_back(0x02);
+
+   const auto receivedMessage = sendGetPacket(messageToSend, kMAX_PACKET, nRetry);
+
+   if (receivedMessage->size() != 4)
+      throw std::runtime_error((boost::format("CPicBoot::readPicVersion : answer message has bad size (%1%), expected (%2%)") % receivedMessage->size() % 4).str());
+
+   if (receivedMessage->at(0) != kCommandReadVer || receivedMessage->at(1) != 0x02)
+      throw std::runtime_error("CPicBoot::readPicVersion : wrong message answer (inconsistent header)");
+
+   const auto verL = receivedMessage->at(2);
+   const auto verH = receivedMessage->at(3);
+
+   std::stringstream ss;
+   ss << static_cast<unsigned int>(verH) << "." << static_cast<unsigned int>(verL);
+   return ss.str();
+}
+
+void CPicBoot::writePic(const CPic& pic,
+                        boost::shared_ptr<std::vector<unsigned char>> packetData)
+{
+   switch (pic.BootCmd)
+   {
+   case kCommandWritePm:
+   case kCommandWriteEe:
+   case kCommandWriteCfg:
+      break;
+   default:
+      throw std::invalid_argument((boost::format("CPicBoot::writePic : Invalid command %1%") % pic.BootCmd).str());
+   }
+
+   //Limit to 1 to 3 bytes per addr
+   if (!pic.BytesPerAddr)
+      throw std::invalid_argument((boost::format("CPicBoot::writePic : bytes per address value too small %1%") % pic.BytesPerAddr).str());
+   if (pic.BytesPerAddr > 3)
+      throw std::invalid_argument((boost::format("CPicBoot::writePic : bytes per address value too big %1%") % pic.BytesPerAddr).str());
+
+   if (pic.BootDatLen / pic.BytesPerBlock > kMAX_PACKET - 6)
+      throw std::invalid_argument((boost::format("CPicBoot::writePic : packet too big %1%, expected %2% max") % (pic.BootDatLen / pic.BytesPerBlock) % (kMAX_PACKET - 6)).str());
+
+   if (pic.BootAddr * pic.BytesPerAddr % pic.BytesPerBlock)
+      throw std::invalid_argument((boost::format("CPicBoot::writePic : packet bad aligned, bytes number (%1%) is not a multiple of block size (%2%)") % (pic.BootAddr * pic.BytesPerAddr) % pic.BytesPerBlock).str());
+   if (pic.BootDatLen % pic.BytesPerBlock)
+      throw std::invalid_argument((boost::format("CPicBoot::writePic : packet bad aligned, data size (%1%) is not a multiple of block size (%2%)") % pic.BootDatLen % pic.BytesPerBlock).str());
+
+
+   auto messageToSend = boost::make_shared<std::vector<unsigned char>>();
+
+   //Build header
+   messageToSend->push_back(pic.BootCmd);
+   messageToSend->push_back(static_cast<unsigned char>(pic.BootDatLen / pic.BytesPerBlock));
+   messageToSend->push_back(static_cast<unsigned char>(pic.BootAddr & 0xFF));
+   messageToSend->push_back(static_cast<unsigned char>((pic.BootAddr & 0xFF00) >> 8));
+   messageToSend->push_back(static_cast<unsigned char>((pic.BootAddr & 0xFF0000) >> 16));
+
+   messageToSend->insert(messageToSend->end(), packetData->begin(), packetData->end());
+
+   const auto receivedMessage = sendGetPacket(messageToSend, kMAX_PACKET, pic.MaxRetrys);
+
+   if (receivedMessage->size() != 1 || receivedMessage->back() != pic.BootCmd)
+      throw std::runtime_error((boost::format("CPicBoot::writePic : answer message has bad size (%1%) or bad command value (%2%)") % receivedMessage->size() % receivedMessage->back()).str());
+}
+
+void CPicBoot::erasePic(unsigned int PicAddr,
+                        unsigned int nBlock,
+                        unsigned int nRetry)
+{
+   auto messageToSend = boost::make_shared<std::vector<unsigned char>>();
+
+   //Build header
+   messageToSend->push_back(kCommandErasePm);
+   messageToSend->push_back(static_cast<unsigned char>(nBlock));
+   messageToSend->push_back(static_cast<unsigned char>(PicAddr & 0xFF));
+   messageToSend->push_back(static_cast<unsigned char>((PicAddr & 0xFF00) >> 8));
+   messageToSend->push_back(static_cast<unsigned char>((PicAddr & 0xFF0000) >> 16));
+
+   const auto receivedMessage = sendGetPacket(messageToSend, kMAX_PACKET, nRetry);
+
+   if (receivedMessage->size() != 1 || receivedMessage->back() != kCommandErasePm)
+      throw std::runtime_error((boost::format("CPicBoot::erasePic : answer message has bad size (%1%) or bad command value (%2%)") % receivedMessage->size() % receivedMessage->back()).str());
+}
+
+void CPicBoot::reBootPic() const
+{
+   auto messageToSend = boost::make_shared<std::vector<unsigned char>>();
+
+   // To reset the Pic, send any command of 0 length
+   //Build header
+   messageToSend->push_back(kCommandReadVer);
+   messageToSend->push_back(0x00);
+
+   sendPacket(messageToSend);
+}
+
+void CPicBoot::erasePicProgramMemory(unsigned int firstAddress,
+                                     unsigned int lastAddress,
+                                     unsigned int nRetry)
+{
+   auto currentAddress = firstAddress;
+   while (currentAddress < lastAddress)
+   {
+      enum
+         {
+            kNbBytesPerInstructionBlock = 4,
+            kNbBlocksPerRow = 64,
+            kRowSize = kNbBlocksPerRow * kNbBytesPerInstructionBlock,
+            kNbRowsByPerPage = 8,
+            kPageSize = kNbRowsByPerPage * kRowSize
+         };
+      auto nbPagesToErase = (lastAddress - currentAddress + 1) / kPageSize;
+      if (nbPagesToErase > 255)
+         nbPagesToErase = 255;
+
+      erasePic(currentAddress,
+               nbPagesToErase,
+               nRetry);
+
+      currentAddress += nbPagesToErase * kPageSize;
+   }
+}
+
+bool CPicBoot::verifyPic(const CPic& pic,
+                         boost::shared_ptr<std::vector<unsigned char>> refPacketData)
+{
+   switch (pic.BootCmd)
+   {
+   case kCommandReadPm:
+   case kCommandReadEe:
+   case kCommandReadCfg:
+      break;
+   default:
+      throw std::invalid_argument((boost::format("CPicBoot::verifyPic : Invalid command %1%") % pic.BootCmd).str());
+   }
+
+   const auto readData = readPic(pic);
+
+   return std::equal(readData->begin(), readData->end(), refPacketData->begin());
+}
 
 boost::shared_ptr<const std::vector<unsigned char>> CPicBoot::getPacket(unsigned int byteLimit)
 {
@@ -167,138 +339,5 @@ boost::shared_ptr<const std::vector<unsigned char>> CPicBoot::sendGetPacket(boos
    while (--numOfRetrys);
 
    throw std::runtime_error("Fail to send/get packet");
-}
-
-boost::shared_ptr<std::vector<unsigned char>> CPicBoot::readPIC(const CPic& pic)
-{
-   switch (pic.BootCmd)
-   {
-   case kCommandReadPm:
-   case kCommandReadEe:
-   case kCommandReadCfg:
-      {
-         //Limit to 1 to 3 bytes per addr
-         if (!pic.BytesPerAddr)
-            throw std::invalid_argument((boost::format("CPicBoot::readPIC : bytes per address value too small %1%") % pic.BytesPerAddr).str());
-         if (pic.BytesPerAddr > 3)
-            throw std::invalid_argument((boost::format("CPicBoot::readPIC : bytes per address value too big %1%") % pic.BytesPerAddr).str());
-
-         if (pic.BootDatLen / pic.BytesPerBlock > kMAX_PACKET)
-            throw std::invalid_argument((boost::format("CPicBoot::readPIC : packet too big %1%, expected %2% max") % (pic.BootDatLen / pic.BytesPerBlock) % kMAX_PACKET).str());
-
-         auto messageToSend = boost::make_shared<std::vector<unsigned char>>();
-
-         //Build header
-         messageToSend->push_back(pic.BootCmd);
-         messageToSend->push_back(static_cast<unsigned char>(pic.BootDatLen / pic.BytesPerBlock));
-         messageToSend->push_back(static_cast<unsigned char>(pic.BootAddr & 0xFF));
-         messageToSend->push_back(static_cast<unsigned char>((pic.BootAddr & 0xFF00) >> 8));
-         messageToSend->push_back(static_cast<unsigned char>((pic.BootAddr & 0xFF0000) >> 16));
-
-         const auto receivedMessage = sendGetPacket(messageToSend, kMAX_PACKET, pic.MaxRetrys);
-
-         // Remove header from answer
-         return boost::make_shared<std::vector<unsigned char>>(receivedMessage->begin() + 5,
-                                                               receivedMessage->end());
-      }
-   case kCommandReadVer:
-      {
-         auto messageToSend = boost::make_shared<std::vector<unsigned char>>();
-
-         //Build header
-         messageToSend->push_back(pic.BootCmd);
-         messageToSend->push_back(0x02);
-
-         const auto receivedMessage = sendGetPacket(messageToSend, kMAX_PACKET, pic.MaxRetrys);
-
-         // Remove header from answer
-         return boost::make_shared<std::vector<unsigned char>>(receivedMessage->begin() + 2,
-                                                               receivedMessage->end());
-      }
-   default:
-      throw std::invalid_argument((boost::format("CPicBoot::readPIC : Invalid command %1%") % pic.BootCmd).str());
-   }
-}
-
-void CPicBoot::writePIC(const CPic& pic,
-                        boost::shared_ptr<std::vector<unsigned char>> packetData)
-{
-   switch (pic.BootCmd)
-   {
-   case kCommandWritePm:
-   case kCommandWriteEe:
-   case kCommandWriteCfg:
-      break;
-   default:
-      throw std::invalid_argument((boost::format("CPicBoot::writePIC : Invalid command %1%") % pic.BootCmd).str());
-   }
-
-   //Limit to 1 to 3 bytes per addr
-   if (!pic.BytesPerAddr)
-      throw std::invalid_argument((boost::format("CPicBoot::writePIC : bytes per address value too small %1%") % pic.BytesPerAddr).str());
-   if (pic.BytesPerAddr > 3)
-      throw std::invalid_argument((boost::format("CPicBoot::writePIC : bytes per address value too big %1%") % pic.BytesPerAddr).str());
-
-   if (pic.BootDatLen / pic.BytesPerBlock > kMAX_PACKET - 6)
-      throw std::invalid_argument((boost::format("CPicBoot::writePIC : packet too big %1%, expected %2% max") % (pic.BootDatLen / pic.BytesPerBlock) % (kMAX_PACKET - 6)).str());
-
-   if (pic.BootAddr * pic.BytesPerAddr % pic.BytesPerBlock)
-      throw std::invalid_argument((boost::format("CPicBoot::writePIC : packet bad aligned, bytes number (%1%) is not a multiple of block size (%2%)") % (pic.BootAddr * pic.BytesPerAddr) % pic.BytesPerBlock).str());
-   if (pic.BootDatLen % pic.BytesPerBlock)
-      throw std::invalid_argument((boost::format("CPicBoot::writePIC : packet bad aligned, data size (%1%) is not a multiple of block size (%2%)") % pic.BootDatLen % pic.BytesPerBlock).str());
-
-
-   auto messageToSend = boost::make_shared<std::vector<unsigned char>>();
-
-   //Build header
-   messageToSend->push_back(pic.BootCmd);
-   messageToSend->push_back(static_cast<unsigned char>(pic.BootDatLen / pic.BytesPerBlock));
-   messageToSend->push_back(static_cast<unsigned char>(pic.BootAddr & 0xFF));
-   messageToSend->push_back(static_cast<unsigned char>((pic.BootAddr & 0xFF00) >> 8));
-   messageToSend->push_back(static_cast<unsigned char>((pic.BootAddr & 0xFF0000) >> 16));
-
-   messageToSend->insert(messageToSend->end(), packetData->begin(), packetData->end());
-
-   const auto receivedMessage = sendGetPacket(messageToSend, kMAX_PACKET, pic.MaxRetrys);
-
-   if (receivedMessage->size() != 1 || receivedMessage->back() != pic.BootCmd)
-      throw std::runtime_error((boost::format("CPicBoot::writePIC : answer message has bad size (%1%) or bad command value (%2%)") % receivedMessage->size() % receivedMessage->back()).str());
-}
-
-void CPicBoot::erasePIC(unsigned int PicAddr,
-                        unsigned int nBlock,
-                        unsigned int nRetry)
-{
-   auto messageToSend = boost::make_shared<std::vector<unsigned char>>();
-
-   //Build header
-   messageToSend->push_back(kCommandErasePm);
-   messageToSend->push_back(static_cast<unsigned char>(nBlock));
-   messageToSend->push_back(static_cast<unsigned char>(PicAddr & 0xFF));
-   messageToSend->push_back(static_cast<unsigned char>((PicAddr & 0xFF00) >> 8));
-   messageToSend->push_back(static_cast<unsigned char>((PicAddr & 0xFF0000) >> 16));
-
-   const auto receivedMessage = sendGetPacket(messageToSend, kMAX_PACKET, nRetry);
-
-   if (receivedMessage->size() != 1 || receivedMessage->back() != kCommandErasePm)
-      throw std::runtime_error((boost::format("CPicBoot::erasePIC : answer message has bad size (%1%) or bad command value (%2%)") % receivedMessage->size() % receivedMessage->back()).str());
-}
-
-bool CPicBoot::verifyPIC(const CPic& pic,
-                         boost::shared_ptr<std::vector<unsigned char>> refPacketData)
-{
-   switch (pic.BootCmd)
-   {
-   case kCommandReadPm:
-   case kCommandReadEe:
-   case kCommandReadCfg:
-      break;
-   default:
-      throw std::invalid_argument((boost::format("CPicBoot::verifyPIC : Invalid command %1%") % pic.BootCmd).str());
-   }
-
-   const auto readData = readPIC(pic);
-
-   return std::equal(readData->begin(), readData->end(), refPacketData->begin());
 }
 

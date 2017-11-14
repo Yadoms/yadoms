@@ -2,16 +2,11 @@
 #include "RfxcomFirmwareUpdater.h"
 #include <shared/encryption/Base64.h>
 
-//TODO doit-on appliquer ces décalages (code en provenance de domoticz)
-//int AddressLow = PKT_pmrangelow;
-//int AddressHigh = PKT_pmrangehigh;
-//if (HwdType == HTYPE_RFXtrx868)
-//{
-//	AddressLow = PKT_pmrangelow868;
-//	AddressHigh = PKT_pmrangehigh868;
-//}
 
-class CPicBoot;
+enum
+{
+   kNbRetry=3
+};
 
 CRfxcomFirmwareUpdater::CRfxcomFirmwareUpdater(boost::shared_ptr<yApi::IYPluginApi> api,
                                                boost::shared_ptr<yApi::IExtraQuery> extraQuery,
@@ -53,7 +48,7 @@ void CRfxcomFirmwareUpdater::update()
 
       rfxcomSwitchToBootloaderMode(picBoot);
 
-      rfxcomReadVersion(picBoot);
+      rfxcomReadBootloaderVersion(picBoot);
       rfxcomClearMemory(picBoot);
       rfxcomWritingMemory(picBoot);
       m_extraQuery->reportProgress(5.0f, "customLabels.firmwareUpdate.verify");//TODO traduire
@@ -198,23 +193,35 @@ void CRfxcomFirmwareUpdater::rfxcomSwitchToBootloaderMode(boost::shared_ptr<CPic
 {
    YADOMS_LOG(debug) << "Switch to bootloader mode...";
 
-   //TODO basculer en bootloader
+   //TODO Code tiré de Domoticz, à vérifier
+
+   // This command is not a bootloader command, but a RFXCom application command
+   auto command = boost::make_shared<const std::vector<unsigned char>>(std::vector<unsigned char>
+      {
+         0x01, 0x01, 0x00, 0x00, 0xFF
+      });
+   //TODO
+   //picBoot->sendGetPacket(command);
+   //picBoot->sendGetPacket(command);
+
    // TODO tracer version du bootloader
 
    YADOMS_LOG(debug) << "RFXCom is in bootloader mode";
 }
 
-void CRfxcomFirmwareUpdater::rfxcomReadVersion(boost::shared_ptr<CPicBoot> picBoot)
+void CRfxcomFirmwareUpdater::rfxcomReadBootloaderVersion(boost::shared_ptr<CPicBoot> picBoot)
 {
-   YADOMS_LOG(debug) << "Read RFXCom current version...";
-   //TODO
-   YADOMS_LOG(debug) << "RFXCom current version is " << "TODO";
+   YADOMS_LOG(debug) << "Read RFXCom bootloader version...";
+   const auto picVersion = picBoot->readPicVersion(kNbRetry);
+   YADOMS_LOG(debug) << "RFXCom bootloader version is " << picVersion;
 }
 
 void CRfxcomFirmwareUpdater::rfxcomClearMemory(boost::shared_ptr<CPicBoot> picBoot)
 {
    YADOMS_LOG(debug) << "Clear RFXCom memory...";
-   //TODO
+   picBoot->erasePicProgramMemory(ProgramMemoryFirstAddress(),
+                                  ProgramMemoryLastAddress(),
+                                  kNbRetry);
    YADOMS_LOG(debug) << "RFXCom memory cleared";
 }
 
@@ -235,6 +242,27 @@ void CRfxcomFirmwareUpdater::rfxcomVerifyMemory(boost::shared_ptr<CPicBoot> picB
 void CRfxcomFirmwareUpdater::rfxcomReboot(boost::shared_ptr<CPicBoot> picBoot)
 {
    YADOMS_LOG(debug) << "Reset RFXCom...";
+   picBoot->reBootPic();
+}
+
+unsigned int CRfxcomFirmwareUpdater::ProgramMemoryFirstAddress()
+{
+   // TODO vérifier toutes ces données
+   static const unsigned int RfxComFirstProgramAddress = 0x001800;
+
+   // TODO A voir pour me RFXtrx868 (code en provenance de domoticz)
+//#define PKT_pmrangelow868	0x001000
+//#define PKT_pmrangehigh868 0x0147FF
+
    //TODO
+   return RfxComFirstProgramAddress;
+}
+
+unsigned int CRfxcomFirmwareUpdater::ProgramMemoryLastAddress()
+{
+   // TODO vérifier toutes ces données
+   static const unsigned int RfxComLastProgramAddress = 0x00A7FF;
+   //TODO
+   return RfxComLastProgramAddress;
 }
 

@@ -373,11 +373,10 @@ void CRfxcom::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
       updater = m_factory.constructFirmwareUpdater(api,
                                                    extraQuery,
                                                    m_configuration.getSerialPort());
-
-      extraQuery->sendSuccess(shared::CDataContainer::EmptyContainer);
    }
    catch (std::exception& e)
    {
+      YADOMS_LOG(error) << "RFXCom firmware update failed, unable to construct FirmwareUpdater object : " << e.what();
       extraQuery->sendError(e.what());
       return;
    }
@@ -392,7 +391,7 @@ void CRfxcom::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (std::exception& e)
    {
-      YADOMS_LOG(error) << "RFXCom firmware update failed";
+      YADOMS_LOG(error) << "RFXCom firmware update failed : " << e.what();
       extraQuery->sendError(e.what());
    }
 
