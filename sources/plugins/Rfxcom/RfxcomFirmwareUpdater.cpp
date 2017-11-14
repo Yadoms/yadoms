@@ -44,7 +44,8 @@ void CRfxcomFirmwareUpdater::update()
       m_extraQuery->reportProgress(5.0f, "customLabels.firmwareUpdate.flash");//TODO traduire
 
       picBoot = boost::make_shared<CPicBoot>(m_serialPort,
-                                             boost::posix_time::seconds(1));
+                                             boost::posix_time::seconds(1),
+                                             kNbRetry);
 
       rfxcomSwitchToBootloaderMode(picBoot);
 
@@ -212,16 +213,15 @@ void CRfxcomFirmwareUpdater::rfxcomSwitchToBootloaderMode(boost::shared_ptr<CPic
 void CRfxcomFirmwareUpdater::rfxcomReadBootloaderVersion(boost::shared_ptr<CPicBoot> picBoot)
 {
    YADOMS_LOG(debug) << "Read RFXCom bootloader version...";
-   const auto picVersion = picBoot->readPicVersion(kNbRetry);
+   const auto picVersion = picBoot->readPicVersion();
    YADOMS_LOG(debug) << "RFXCom bootloader version is " << picVersion;
 }
 
 void CRfxcomFirmwareUpdater::rfxcomClearMemory(boost::shared_ptr<CPicBoot> picBoot)
 {
    YADOMS_LOG(debug) << "Clear RFXCom memory...";
-   picBoot->erasePicProgramMemory(ProgramMemoryFirstAddress(),
-                                  ProgramMemoryLastAddress(),
-                                  kNbRetry);
+   picBoot->erasePicProgramMemory(getProgramMemoryFirstAddress(),
+                                  getProgramMemoryLastAddress());
    YADOMS_LOG(debug) << "RFXCom memory cleared";
 }
 
@@ -245,20 +245,20 @@ void CRfxcomFirmwareUpdater::rfxcomReboot(boost::shared_ptr<CPicBoot> picBoot)
    picBoot->reBootPic();
 }
 
-unsigned int CRfxcomFirmwareUpdater::ProgramMemoryFirstAddress()
+unsigned int CRfxcomFirmwareUpdater::getProgramMemoryFirstAddress()
 {
    // TODO vérifier toutes ces données
    static const unsigned int RfxComFirstProgramAddress = 0x001800;
 
    // TODO A voir pour me RFXtrx868 (code en provenance de domoticz)
-//#define PKT_pmrangelow868	0x001000
-//#define PKT_pmrangehigh868 0x0147FF
+   //#define PKT_pmrangelow868	0x001000
+   //#define PKT_pmrangehigh868 0x0147FF
 
    //TODO
    return RfxComFirstProgramAddress;
 }
 
-unsigned int CRfxcomFirmwareUpdater::ProgramMemoryLastAddress()
+unsigned int CRfxcomFirmwareUpdater::getProgramMemoryLastAddress()
 {
    // TODO vérifier toutes ces données
    static const unsigned int RfxComLastProgramAddress = 0x00A7FF;

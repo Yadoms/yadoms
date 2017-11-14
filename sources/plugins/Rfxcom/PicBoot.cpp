@@ -48,12 +48,19 @@ enum
 // These constants are specific to RFXCom
 enum
 {
-   kNbBytesPerAddress = 2
+   kNbBytesPerAddress = 2,
+   kNbBytesPerInstructionBlock = 4,
+   kNbBlocksPerRow = 64,
+   kRowSize = kNbBlocksPerRow * kNbBytesPerInstructionBlock,
+   kNbRowsByPerPage = 8,
+   kPageSize = kNbRowsByPerPage * kRowSize
 };
 
 
 CPicBoot::CPicBoot(const std::string& comPort,
-                   boost::posix_time::time_duration readTimeOut)
+                   boost::posix_time::time_duration readTimeOut,
+                   unsigned int maxRetrys)
+   : m_maxRetrys(maxRetrys)
 {
    m_port = boost::make_shared<shared::communication::CAsyncSerialPort>(comPort,
                                                                         boost::asio::serial_port_base::baud_rate(38400));
@@ -107,14 +114,15 @@ boost::shared_ptr<std::vector<unsigned char>> CPicBoot::readPic(const CPic& pic)
    messageToSend->push_back(static_cast<unsigned char>((pic.BootAddr & 0xFF00) >> 8));
    messageToSend->push_back(static_cast<unsigned char>((pic.BootAddr & 0xFF0000) >> 16));
 
-   const auto receivedMessage = sendGetPacket(messageToSend, kMAX_PACKET, pic.MaxRetrys);
+   const auto receivedMessage = sendGetPacket(messageToSend,
+                                              kMAX_PACKET);
 
    // Remove header from answer
    return boost::make_shared<std::vector<unsigned char>>(receivedMessage->begin() + 5,
                                                          receivedMessage->end());
 }
 
-std::string CPicBoot::readPicVersion(unsigned int nRetry)
+std::string CPicBoot::readPicVersion()
 {
    auto messageToSend = boost::make_shared<std::vector<unsigned char>>();
 
@@ -122,7 +130,8 @@ std::string CPicBoot::readPicVersion(unsigned int nRetry)
    messageToSend->push_back(kCommandReadVer);
    messageToSend->push_back(0x02);
 
-   const auto receivedMessage = sendGetPacket(messageToSend, kMAX_PACKET, nRetry);
+   const auto receivedMessage = sendGetPacket(messageToSend,
+                                              kMAX_PACKET);
 
    if (receivedMessage->size() != 4)
       throw std::runtime_error((boost::format("CPicBoot::readPicVersion : answer message has bad size (%1%), expected (%2%)") % receivedMessage->size() % 4).str());
@@ -177,15 +186,15 @@ void CPicBoot::writePic(const CPic& pic,
 
    messageToSend->insert(messageToSend->end(), packetData->begin(), packetData->end());
 
-   const auto receivedMessage = sendGetPacket(messageToSend, kMAX_PACKET, pic.MaxRetrys);
+   const auto receivedMessage = sendGetPacket(messageToSend,
+                                              kMAX_PACKET);
 
    if (receivedMessage->size() != 1 || receivedMessage->back() != pic.BootCmd)
       throw std::runtime_error((boost::format("CPicBoot::writePic : answer message has bad size (%1%) or bad command value (%2%)") % receivedMessage->size() % receivedMessage->back()).str());
 }
 
 void CPicBoot::erasePic(unsigned int PicAddr,
-                        unsigned int nBlock,
-                        unsigned int nRetry)
+                        unsigned int nBlock)
 {
    auto messageToSend = boost::make_shared<std::vector<unsigned char>>();
 
@@ -196,7 +205,8 @@ void CPicBoot::erasePic(unsigned int PicAddr,
    messageToSend->push_back(static_cast<unsigned char>((PicAddr & 0xFF00) >> 8));
    messageToSend->push_back(static_cast<unsigned char>((PicAddr & 0xFF0000) >> 16));
 
-   const auto receivedMessage = sendGetPacket(messageToSend, kMAX_PACKET, nRetry);
+   const auto receivedMessage = sendGetPacket(messageToSend,
+                                              kMAX_PACKET);
 
    if (receivedMessage->size() != 1 || receivedMessage->back() != kCommandErasePm)
       throw std::runtime_error((boost::format("CPicBoot::erasePic : answer message has bad size (%1%) or bad command value (%2%)") % receivedMessage->size() % receivedMessage->back()).str());
@@ -215,27 +225,17 @@ void CPicBoot::reBootPic() const
 }
 
 void CPicBoot::erasePicProgramMemory(unsigned int firstAddress,
-                                     unsigned int lastAddress,
-                                     unsigned int nRetry)
+                                     unsigned int lastAddress)
 {
    auto currentAddress = firstAddress;
    while (currentAddress < lastAddress)
    {
-      enum
-         {
-            kNbBytesPerInstructionBlock = 4,
-            kNbBlocksPerRow = 64,
-            kRowSize = kNbBlocksPerRow * kNbBytesPerInstructionBlock,
-            kNbRowsByPerPage = 8,
-            kPageSize = kNbRowsByPerPage * kRowSize
-         };
       auto nbPagesToErase = (lastAddress - currentAddress + 1) / kPageSize;
       if (nbPagesToErase > 255)
          nbPagesToErase = 255;
 
       erasePic(currentAddress,
-               nbPagesToErase,
-               nRetry);
+               nbPagesToErase);
 
       currentAddress += nbPagesToErase * kPageSize;
    }
@@ -320,8 +320,7 @@ void CPicBoot::sendPacket(boost::shared_ptr<const std::vector<unsigned char>> pa
 }
 
 boost::shared_ptr<const std::vector<unsigned char>> CPicBoot::sendGetPacket(boost::shared_ptr<const std::vector<unsigned char>> packetToSend,
-                                                                            unsigned int receiveByteLimit,
-                                                                            unsigned int numOfRetrys)
+                                                                            unsigned int receiveByteLimit)
 {
    do
    {
@@ -336,7 +335,7 @@ boost::shared_ptr<const std::vector<unsigned char>> CPicBoot::sendGetPacket(boos
          YADOMS_LOG(warning) << "Error receiveing packet, " << exception.what();
       }
    }
-   while (--numOfRetrys);
+   while (--m_maxRetrys);
 
    throw std::runtime_error("Fail to send/get packet");
 }

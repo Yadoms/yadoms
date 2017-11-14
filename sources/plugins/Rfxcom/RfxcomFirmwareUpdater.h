@@ -33,8 +33,8 @@ protected:
    void rfxcomVerifyMemory(boost::shared_ptr<CPicBoot> picBoot);
    static void rfxcomReboot(boost::shared_ptr<CPicBoot> picBoot);
 
-   static unsigned int ProgramMemoryFirstAddress();
-   static unsigned int ProgramMemoryLastAddress();
+   static unsigned int getProgramMemoryFirstAddress();
+   static unsigned int getProgramMemoryLastAddress();
 
 private:
    const boost::shared_ptr<yApi::IYPluginApi> m_api;

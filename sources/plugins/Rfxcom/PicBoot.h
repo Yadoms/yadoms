@@ -102,42 +102,38 @@ public:
       //Number of bytes per address
       unsigned int BytesPerAddr;
 
-      //Number of retries before failure
-      unsigned int MaxRetrys;
-
       // Device type
       EDeviceType DeviceType;
    };
 
 
    CPicBoot(const std::string& comPort,
-            boost::posix_time::time_duration readTimeOut);
+            boost::posix_time::time_duration readTimeOut,
+            unsigned int maxRetrys);
    virtual ~CPicBoot();
 
    boost::shared_ptr<std::vector<unsigned char>> readPic(const CPic& pic);
-   std::string readPicVersion(unsigned int nRetry);
+   std::string readPicVersion();
    void writePic(const CPic& pic,
                  boost::shared_ptr<std::vector<unsigned char>> packetData);
    void erasePic(unsigned int PicAddr,
-                 unsigned int nBlock,
-                 unsigned int nRetry);
+                 unsigned int nBlock);
    bool verifyPic(const CPic& pic,
                   boost::shared_ptr<std::vector<unsigned char>> refPacketData);
    void reBootPic() const;
    void erasePicProgramMemory(unsigned int firstAddress,
-                              unsigned int lastAddress,
-                              unsigned int nRetry);
+                              unsigned int lastAddress);
 private:
 
    boost::shared_ptr<const std::vector<unsigned char>> getPacket(unsigned int byteLimit);
    void sendPacket(boost::shared_ptr<const std::vector<unsigned char>> packetData) const;
    boost::shared_ptr<const std::vector<unsigned char>> sendGetPacket(boost::shared_ptr<const std::vector<unsigned char>> packetToSend,
-                                                                     unsigned int receiveByteLimit,
-                                                                     unsigned int numOfRetrys);
+                                                                     unsigned int receiveByteLimit);
 
 
    boost::shared_ptr<shared::communication::CAsyncSerialPort> m_port;
    shared::event::CEventHandler m_eventHandler;
    boost::posix_time::ptime m_lastReceivedTime;
+   unsigned int m_maxRetrys;
 };
 
