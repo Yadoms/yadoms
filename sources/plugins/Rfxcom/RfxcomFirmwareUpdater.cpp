@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "RfxcomFirmwareUpdater.h"
 #include <shared/encryption/Base64.h>
+#include "Rfx433PicConfiguration.h"
 
 
 enum
 {
-   kNbRetry=3
+   kNbRetry = 5
 };
 
 CRfxcomFirmwareUpdater::CRfxcomFirmwareUpdater(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -45,7 +46,8 @@ void CRfxcomFirmwareUpdater::update()
 
       picBoot = boost::make_shared<CPicBoot>(m_serialPort,
                                              boost::posix_time::seconds(1),
-                                             kNbRetry);
+                                             kNbRetry,
+                                             boost::make_shared<CRfx433PicConfiguration>()); //TODO gérer les autres types de RFXCom ?
 
       rfxcomSwitchToBootloaderMode(picBoot);
 
@@ -220,8 +222,7 @@ void CRfxcomFirmwareUpdater::rfxcomReadBootloaderVersion(boost::shared_ptr<CPicB
 void CRfxcomFirmwareUpdater::rfxcomClearMemory(boost::shared_ptr<CPicBoot> picBoot)
 {
    YADOMS_LOG(debug) << "Clear RFXCom memory...";
-   picBoot->erasePicProgramMemory(getProgramMemoryFirstAddress(),
-                                  getProgramMemoryLastAddress());
+   picBoot->erasePicProgramMemory();
    YADOMS_LOG(debug) << "RFXCom memory cleared";
 }
 
@@ -243,26 +244,5 @@ void CRfxcomFirmwareUpdater::rfxcomReboot(boost::shared_ptr<CPicBoot> picBoot)
 {
    YADOMS_LOG(debug) << "Reset RFXCom...";
    picBoot->reBootPic();
-}
-
-unsigned int CRfxcomFirmwareUpdater::getProgramMemoryFirstAddress()
-{
-   // TODO vérifier toutes ces données
-   static const unsigned int RfxComFirstProgramAddress = 0x001800;
-
-   // TODO A voir pour me RFXtrx868 (code en provenance de domoticz)
-   //#define PKT_pmrangelow868	0x001000
-   //#define PKT_pmrangehigh868 0x0147FF
-
-   //TODO
-   return RfxComFirstProgramAddress;
-}
-
-unsigned int CRfxcomFirmwareUpdater::getProgramMemoryLastAddress()
-{
-   // TODO vérifier toutes ces données
-   static const unsigned int RfxComLastProgramAddress = 0x00A7FF;
-   //TODO
-   return RfxComLastProgramAddress;
 }
 

@@ -189,6 +189,7 @@ set(RFXCOM_SOURCES
    stdafx.h
    stdafx.cpp
    IncrementSequenceNumber.h
+   IPicConfiguration.h
    IRfxcomConfiguration.h
    IRfxcomFirmwareUpdater.h
    ISequenceNumber.h
@@ -203,6 +204,8 @@ set(RFXCOM_SOURCES
    PicBootReceiveBufferHandler.h
    PicBootReceiveBufferHandler.cpp
    ProtocolException.hpp
+   Rfx433PicConfiguration.h
+   Rfx433PicConfiguration.cpp
    Rfxcom.h
    Rfxcom.cpp
    RfxComReceiveBufferHandler.h

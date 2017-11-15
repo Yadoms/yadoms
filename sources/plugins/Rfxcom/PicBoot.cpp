@@ -45,22 +45,13 @@ enum
    kEvtPicBootPortDataReceived
 };
 
-// These constants are specific to RFXCom
-enum
-{
-   kNbBytesPerAddress = 2,
-   kNbBytesPerInstructionBlock = 4,
-   kNbBlocksPerRow = 64,
-   kRowSize = kNbBlocksPerRow * kNbBytesPerInstructionBlock,
-   kNbRowsByPerPage = 8,
-   kPageSize = kNbRowsByPerPage * kRowSize
-};
-
 
 CPicBoot::CPicBoot(const std::string& comPort,
                    boost::posix_time::time_duration readTimeOut,
-                   unsigned int maxRetrys)
-   : m_maxRetrys(maxRetrys)
+                   unsigned int maxRetrys,
+                   boost::shared_ptr<IPicConfiguration> picConfiguration)
+   : m_maxRetrys(maxRetrys),
+     m_picConfiguration(picConfiguration)
 {
    m_port = boost::make_shared<shared::communication::CAsyncSerialPort>(comPort,
                                                                         boost::asio::serial_port_base::baud_rate(38400));
@@ -224,20 +215,23 @@ void CPicBoot::reBootPic() const
    sendPacket(messageToSend);
 }
 
-void CPicBoot::erasePicProgramMemory(unsigned int firstAddress,
-                                     unsigned int lastAddress)
+void CPicBoot::erasePicProgramMemory()
 {
-   auto currentAddress = firstAddress;
-   while (currentAddress < lastAddress)
+   //TODO à comparer avec les relevés d'un flashage officiel. Parce
+   auto nbBlocksToErase =
+      (m_picConfiguration->programAddressEnd() - m_picConfiguration->programAddressStart() + 1) * m_picConfiguration->bytesPerAddr()
+      / m_picConfiguration->eraseBlockSize();
+   auto currentAddress = m_picConfiguration->programAddressStart();
+   while (nbBlocksToErase > 0)
    {
-      auto nbPagesToErase = (lastAddress - currentAddress + 1) / kPageSize;
-      if (nbPagesToErase > 255)
-         nbPagesToErase = 255;
+      auto nbBlocksToEraseForThisLoop = nbBlocksToErase > 255 ? 255 : nbBlocksToErase;
 
       erasePic(currentAddress,
-               nbPagesToErase);
+               nbBlocksToEraseForThisLoop);
 
-      currentAddress += nbPagesToErase * kPageSize;
+      nbBlocksToErase -= nbBlocksToEraseForThisLoop;
+
+      currentAddress += m_picConfiguration->eraseBlockSize() / m_picConfiguration->bytesPerAddr() * nbBlocksToEraseForThisLoop;
    }
 }
 
@@ -256,7 +250,9 @@ bool CPicBoot::verifyPic(const CPic& pic,
 
    const auto readData = readPic(pic);
 
-   return std::equal(readData->begin(), readData->end(), refPacketData->begin());
+   return std::equal(readData->begin(),
+                     readData->end(),
+                     refPacketData->begin());
 }
 
 boost::shared_ptr<const std::vector<unsigned char>> CPicBoot::getPacket(unsigned int byteLimit)

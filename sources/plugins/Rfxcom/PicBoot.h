@@ -34,6 +34,7 @@
 #pragma once
 
 #include <shared/communication/AsyncSerialPort.h>
+#include "IPicConfiguration.h"
 
 class CPicBoot
 {
@@ -109,7 +110,8 @@ public:
 
    CPicBoot(const std::string& comPort,
             boost::posix_time::time_duration readTimeOut,
-            unsigned int maxRetrys);
+            unsigned int maxRetrys,
+      boost::shared_ptr<IPicConfiguration> picConfiguration);
    virtual ~CPicBoot();
 
    boost::shared_ptr<std::vector<unsigned char>> readPic(const CPic& pic);
@@ -121,8 +123,7 @@ public:
    bool verifyPic(const CPic& pic,
                   boost::shared_ptr<std::vector<unsigned char>> refPacketData);
    void reBootPic() const;
-   void erasePicProgramMemory(unsigned int firstAddress,
-                              unsigned int lastAddress);
+   void erasePicProgramMemory();
 private:
 
    boost::shared_ptr<const std::vector<unsigned char>> getPacket(unsigned int byteLimit);
@@ -135,5 +136,6 @@ private:
    shared::event::CEventHandler m_eventHandler;
    boost::posix_time::ptime m_lastReceivedTime;
    unsigned int m_maxRetrys;
+   boost::shared_ptr<IPicConfiguration> m_picConfiguration;
 };
 
