@@ -6,9 +6,11 @@
 
 CPicBootReceiveBufferHandler::CPicBootReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
                                                            int receiveDataEventId,
-                                                           boost::posix_time::time_duration readTimeOut)
+                                                           boost::posix_time::time_duration readTimeOut,
+                                                           shared::communication::CBufferLogger& logger)
    : m_receiveDataEventHandler(receiveDataEventHandler),
      m_receiveDataEventId(receiveDataEventId),
+     m_logger(logger),
      m_readTimeOut(readTimeOut),
      m_lastReceivedTime(shared::currentTime::Provider().now()),
      m_nextCharacterIsEscaped(false)
@@ -81,8 +83,10 @@ boost::shared_ptr<const std::vector<unsigned char>> CPicBootReceiveBufferHandler
          case kETX:
             {
                // The message is complete
-               const auto message = extractUsefulMessagePart(std::vector<unsigned char>(m_content.begin(),
-                                                                                        contentIterator + 1));
+               const auto& fullMessage = std::vector<unsigned char>(m_content.begin(),
+                                                                    contentIterator + 1);
+               m_logger.logReceived(shared::communication::CByteBuffer(fullMessage));
+               const auto message = extractUsefulMessagePart(fullMessage);
 
                // Remove consumpted data
                m_content.erase(m_content.begin(), contentIterator + 1);

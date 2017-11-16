@@ -58,7 +58,8 @@ CPicBoot::CPicBoot(const std::string& comPort,
 
    auto receiveBufferHandler = boost::make_shared<CPicBootReceiveBufferHandler>(m_eventHandler,
                                                                                 kEvtPicBootPortDataReceived,
-                                                                                readTimeOut);
+                                                                                readTimeOut,
+                                                                                m_logger);
    m_port->setReceiveBufferHandler(receiveBufferHandler);
 
    m_port->start();
@@ -297,8 +298,6 @@ boost::shared_ptr<const std::vector<unsigned char>> CPicBoot::getPacket(unsigned
    // Check message limit (TODO utile en C++ ?)
    if (message->size() > byteLimit)
       throw std::runtime_error("Reached read limit (received message too large)");
-
-   m_logger.logReceived(shared::communication::CByteBuffer(*message));
 
    return message;
 }

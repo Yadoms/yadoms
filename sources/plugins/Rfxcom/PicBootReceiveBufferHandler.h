@@ -2,6 +2,7 @@
 #include <shared/event/EventHandler.hpp>
 #include <shared/communication/IReceiveBufferHandler.h>
 #include <shared/communication/Buffer.hpp>
+#include <shared/communication/BufferLogger.h>
 
 
 class CPicBootReceiveBufferHandler : public shared::communication::IReceiveBufferHandler
@@ -9,7 +10,8 @@ class CPicBootReceiveBufferHandler : public shared::communication::IReceiveBuffe
 public:
    CPicBootReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
                                 int receiveDataEventId,
-                                boost::posix_time::time_duration readTimeOut);
+                                boost::posix_time::time_duration readTimeOut,
+                                shared::communication::CBufferLogger& logger);
    virtual ~CPicBootReceiveBufferHandler();
 
    // IReceiveBufferHandler implementation
@@ -28,6 +30,7 @@ private:
 
    shared::event::CEventHandler& m_receiveDataEventHandler;
    int m_receiveDataEventId;
+   shared::communication::CBufferLogger& m_logger;
    boost::posix_time::time_duration m_readTimeOut;
    boost::posix_time::ptime m_lastReceivedTime;
 
