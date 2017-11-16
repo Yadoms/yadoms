@@ -7,7 +7,7 @@
 CPicBootReceiveBufferHandler::CPicBootReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
                                                            int receiveDataEventId,
                                                            boost::posix_time::time_duration readTimeOut,
-                                                           shared::communication::CBufferLogger& logger)
+                                                           shared::communication::IBufferLogger& logger)
    : m_receiveDataEventHandler(receiveDataEventHandler),
      m_receiveDataEventId(receiveDataEventId),
      m_logger(logger),

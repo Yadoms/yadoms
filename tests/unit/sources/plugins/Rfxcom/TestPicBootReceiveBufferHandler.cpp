@@ -5,15 +5,18 @@
 #include "../../../../sources/plugins/Rfxcom/PicBootPacketControlCharacters.h"
 #include "../../../../sources/plugins/Rfxcom/PicBootReceiveBufferHandler.h"
 #include <../../../../sources/shared/shared/communication/Buffer.hpp>
+#include <../../../../sources/shared/shared/communication/NoBufferLogger.h>
 
 #include "../../mock/shared/currentTime/DefaultCurrentTimeMock.h"
+
+static shared::communication::CNoBufferLogger noLogger;
 
 
 void checkFilteredMessage(const std::vector<unsigned char>& txMessage)
 {
    auto timeProviderMock = useTimeMock();
    shared::event::CEventHandler evtHandler;
-   CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1));
+   CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1), noLogger);
    bufferHandler.push(shared::communication::CByteBuffer(txMessage));
 
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent) ;
@@ -25,7 +28,7 @@ void checkExpectedMessage(const std::vector<unsigned char>& txMessage,
                           const std::vector<unsigned char>& expectedMessage)
 {
    shared::event::CEventHandler evtHandler;
-   CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1));
+   CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1), noLogger);
    bufferHandler.push(shared::communication::CByteBuffer(txMessage));
 
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId) ;
@@ -40,7 +43,7 @@ void checkExpectedMessages(const std::vector<unsigned char>& txMessage,
                            const std::vector<std::vector<unsigned char>>& expectedMessages)
 {
    shared::event::CEventHandler evtHandler;
-   CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1));
+   CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1), noLogger);
    bufferHandler.push(shared::communication::CByteBuffer(txMessage));
 
    for (const auto& expectedMessage:expectedMessages)
@@ -179,7 +182,7 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
 
       auto timeProviderMock = useTimeMock();
       shared::event::CEventHandler evtHandler;
-      CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1));
+      CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1), noLogger);
 
       bufferHandler.push(shared::communication::CByteBuffer(txMessagePart1));
       timeProviderMock->sleep(boost::posix_time::milliseconds(500));
@@ -215,7 +218,7 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
 
       auto timeProviderMock = useTimeMock();
       shared::event::CEventHandler evtHandler;
-      CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1));
+      CPicBootReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId, boost::posix_time::seconds(1), noLogger);
 
       bufferHandler.push(shared::communication::CByteBuffer(txMessagePart1));
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent) ;

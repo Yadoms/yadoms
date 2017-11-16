@@ -225,15 +225,15 @@ void CRfxcomFirmwareUpdater::checkFileCompatibility(const unsigned deviceId,
    {
    case kRFXtrx:
    case kRFXtrxX:
-      if (!regex_match(fileName, boost::regex("^((RFXtrx)|(RFXrec)).*\.hex$")))
+      if (!regex_match(fileName, boost::regex("^((RFXtrx)|(RFXrec)).*\\.hex$")))
          throw std::invalid_argument((boost::format("Filename %1% can not be used to flash device ID %2%") % fileName % deviceId).str());
       break;
    case kRFXLAN:
-      if (!regex_match(fileName, boost::regex("^((RFXLAN)|(RFXxPL)).*\.hex$")))
+      if (!regex_match(fileName, boost::regex("^((RFXLAN)|(RFXxPL)).*\\.hex$")))
          throw std::invalid_argument((boost::format("Filename %1% can not be used to flash device ID %2%") % fileName % deviceId).str());
       break;
    case kRFXmtr:
-      if (!regex_match(fileName, boost::regex("^RFXmtr.*\.hex$")))
+      if (!regex_match(fileName, boost::regex("^RFXmtr.*\\.hex$")))
          throw std::invalid_argument((boost::format("Filename %1% can not be used to flash device ID %2%") % fileName % deviceId).str());
       break;
       //TODO implémenter les autres
