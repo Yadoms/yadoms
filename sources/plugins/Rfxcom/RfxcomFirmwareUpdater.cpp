@@ -9,6 +9,19 @@ enum
    kNbRetry = 5
 };
 
+enum EKnownDeviceIds
+{
+   kRFXtrx = 1095,
+   kRFXtrxX = 19538,
+   kRFXLAN = 4121,
+   kRFXsense = 16903,
+   kRFXmtr = 16911,
+   kRFXpan1 = 2817,
+   kRFXpan2 = 2819,
+   kRFXsense2 = 17673,
+};
+
+
 CRfxcomFirmwareUpdater::CRfxcomFirmwareUpdater(boost::shared_ptr<yApi::IYPluginApi> api,
                                                boost::shared_ptr<yApi::IExtraQuery> extraQuery,
                                                const std::string& serialPort)
@@ -33,6 +46,7 @@ void CRfxcomFirmwareUpdater::update()
    // - 90-100% : verify
 
    const auto base64firmware = m_extraQuery->getData()->data().get<std::string>("fileContent");
+   const auto fileName = "RFXtrx433_Type1_1022.hex"; // m_extraQuery->getData()->data().get<std::string>("fileName");   // TODO récupérer le fileName
    const auto firmwareContent = shared::encryption::CBase64::decode(base64firmware);
 
    // Load input file
@@ -49,6 +63,7 @@ void CRfxcomFirmwareUpdater::update()
                                              kNbRetry);
 
       const auto deviceId = rfxcomSwitchToBootloaderMode(picBoot);
+      checkFileCompatibility(deviceId, fileName);
       picBoot->setPicConfiguration(createPicConfiguration(deviceId));
 
       rfxcomReadBootloaderVersion(picBoot);
@@ -194,21 +209,33 @@ unsigned int CRfxcomFirmwareUpdater::computeLineChecksum(const std::string& line
 
 boost::shared_ptr<picConfigurations::IPicConfiguration> CRfxcomFirmwareUpdater::createPicConfiguration(const unsigned deviceId)
 {
-   enum
-      {
-         RFXtrx = 1095,
-         RFXtrxX = 19538,
-         RFXLAN = 4121,
-         RFXsense = 16903,
-         RFXmtr = 16911,
-         RFXpan1 = 2817,
-         RFXpan2 = 2819,
-         RFXsense2 = 17673,
-      };
-
    switch (deviceId)
    {
-   case RFXtrx: return boost::make_shared<picConfigurations::CRFXtrx>();
+   case kRFXtrx: return boost::make_shared<picConfigurations::CRFXtrx>();
+      //TODO implémenter les autres
+   default:
+      throw std::runtime_error((boost::format("Unsupported device (Unknown device ID %d)") % deviceId).str());
+   }
+}
+
+void CRfxcomFirmwareUpdater::checkFileCompatibility(const unsigned deviceId,
+                                                    const std::string& fileName)
+{
+   switch (deviceId)
+   {
+   case kRFXtrx:
+   case kRFXtrxX:
+      if (!regex_match(fileName, boost::regex("^((RFXtrx)|(RFXrec)).*\.hex$")))
+         throw std::invalid_argument((boost::format("Filename %1% can not be used to flash device ID %2%") % fileName % deviceId).str());
+      break;
+   case kRFXLAN:
+      if (!regex_match(fileName, boost::regex("^((RFXLAN)|(RFXxPL)).*\.hex$")))
+         throw std::invalid_argument((boost::format("Filename %1% can not be used to flash device ID %2%") % fileName % deviceId).str());
+      break;
+   case kRFXmtr:
+      if (!regex_match(fileName, boost::regex("^RFXmtr.*\.hex$")))
+         throw std::invalid_argument((boost::format("Filename %1% can not be used to flash device ID %2%") % fileName % deviceId).str());
+      break;
       //TODO implémenter les autres
    default:
       throw std::runtime_error((boost::format("Unsupported device (Unknown device ID %d)") % deviceId).str());
@@ -220,7 +247,7 @@ unsigned int CRfxcomFirmwareUpdater::rfxcomSwitchToBootloaderMode(boost::shared_
    YADOMS_LOG(debug) << "Switch to bootloader mode...";
 
    // Can look strange but confirmed by the RFXCom manufacturer :
-   // the "bootload command" as referenced in "RFXtrx SDK.pdf" used by
+   // the "bootload command" as referenced in "kRFXtrx SDK.pdf" used by
    // the RFXCom firmaware to switch on bootloader mode, looks like a ReadDeviceID bootloader frame :
    //
    // So we can use the dedicate function of picBoot
