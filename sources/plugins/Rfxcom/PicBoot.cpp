@@ -48,10 +48,9 @@ enum
 
 CPicBoot::CPicBoot(const std::string& comPort,
                    boost::posix_time::time_duration readTimeOut,
-                   unsigned int maxRetrys,
-                   boost::shared_ptr<IPicConfiguration> picConfiguration)
-   : m_maxRetrys(maxRetrys),
-     m_picConfiguration(picConfiguration)
+                   unsigned int maxRetrys)
+   : m_logger("debug"),
+     m_maxRetrys(maxRetrys)
 {
    m_port = boost::make_shared<shared::communication::CAsyncSerialPort>(comPort,
                                                                         boost::asio::serial_port_base::baud_rate(38400));
@@ -73,6 +72,11 @@ CPicBoot::CPicBoot(const std::string& comPort,
 
 CPicBoot::~CPicBoot()
 {
+}
+
+void CPicBoot::setPicConfiguration(boost::shared_ptr<picConfigurations::IPicConfiguration> picConfiguration)
+{
+   m_picConfiguration = picConfiguration;
 }
 
 boost::shared_ptr<std::vector<unsigned char>> CPicBoot::readPic(const CPic& pic)
@@ -111,6 +115,34 @@ boost::shared_ptr<std::vector<unsigned char>> CPicBoot::readPic(const CPic& pic)
    // Remove header from answer
    return boost::make_shared<std::vector<unsigned char>>(receivedMessage->begin() + 5,
                                                          receivedMessage->end());
+}
+
+unsigned int CPicBoot::readPicDeviceId()
+{
+   auto messageToSend = boost::make_shared<std::vector<unsigned char>>();
+
+   //Device ID is in program memory at 0xFF0000
+   static const auto deviceIdAddress = 0xFF0000;
+   messageToSend->push_back(kCommandReadPm);
+   messageToSend->push_back(0x01);
+   messageToSend->push_back(deviceIdAddress & 0xFF);
+   messageToSend->push_back(deviceIdAddress >> 8 & 0xFF);
+   messageToSend->push_back(deviceIdAddress >> 16 & 0xFF);
+
+   const auto receivedMessage = sendGetPacket(messageToSend,
+                                              kMAX_PACKET);
+
+   if (receivedMessage->size() != 9)
+      throw std::runtime_error((boost::format("CPicBoot::readPicDeviceId : answer message has bad size (%1%), expected (%2%)") % receivedMessage->size() % 9).str());
+
+   if (receivedMessage->at(0) != kCommandReadPm || receivedMessage->at(1) != 0x01)
+      throw std::runtime_error("CPicBoot::readPicDeviceId : wrong message answer (inconsistent header)");
+
+   const auto deviceIdAddressReceived = receivedMessage->at(2) + (receivedMessage->at(3) << 8) + (receivedMessage->at(4) << 16);
+   if (deviceIdAddressReceived != deviceIdAddress)
+      throw std::runtime_error((boost::format("CPicBoot::readPicDeviceId : wrong received address %1$#06x, expected %2$#06x") % deviceIdAddressReceived % deviceIdAddress).str());
+
+   return receivedMessage->at(5) + (receivedMessage->at(6) << 8);
 }
 
 std::string CPicBoot::readPicVersion()
@@ -203,7 +235,7 @@ void CPicBoot::erasePic(unsigned int PicAddr,
       throw std::runtime_error((boost::format("CPicBoot::erasePic : answer message has bad size (%1%) or bad command value (%2%)") % receivedMessage->size() % receivedMessage->back()).str());
 }
 
-void CPicBoot::reBootPic() const
+void CPicBoot::reBootPic()
 {
    auto messageToSend = boost::make_shared<std::vector<unsigned char>>();
 
@@ -266,10 +298,12 @@ boost::shared_ptr<const std::vector<unsigned char>> CPicBoot::getPacket(unsigned
    if (message->size() > byteLimit)
       throw std::runtime_error("Reached read limit (received message too large)");
 
+   m_logger.logReceived(shared::communication::CByteBuffer(*message));
+
    return message;
 }
 
-void CPicBoot::sendPacket(boost::shared_ptr<const std::vector<unsigned char>> packetData) const
+void CPicBoot::sendPacket(boost::shared_ptr<const std::vector<unsigned char>> packetData)
 {
    if (packetData->size() > kMAX_PACKET)
       throw std::runtime_error((boost::format("CPicBoot::sendPacket : packetData is too large : %1% bytes, %2% max expected") % packetData->size() % kMAX_PACKET).str());
@@ -312,7 +346,9 @@ void CPicBoot::sendPacket(boost::shared_ptr<const std::vector<unsigned char>> pa
    buffer.push_back(kETX);
 
    // Send
-   m_port->send(shared::communication::CByteBuffer(buffer));
+   const auto buf = shared::communication::CByteBuffer(buffer);
+   m_logger.logSent(buf);
+   m_port->send(buf);
 }
 
 boost::shared_ptr<const std::vector<unsigned char>> CPicBoot::sendGetPacket(boost::shared_ptr<const std::vector<unsigned char>> packetToSend,

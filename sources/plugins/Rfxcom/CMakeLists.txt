@@ -185,11 +185,16 @@ set(SPECIFIC_HISTORIZERS_SOURCES
    rfxcomMessages/specificHistorizers/TeleInfoStatus.cpp   
 )
 
+set(PIC_CONFIGURATIONS_SOURCES
+   picConfigurations/IPicConfiguration.h
+   picConfigurations/RFXtrx.h
+   picConfigurations/RFXtrx.cpp
+)
+
 set(RFXCOM_SOURCES
    stdafx.h
    stdafx.cpp
    IncrementSequenceNumber.h
-   IPicConfiguration.h
    IRfxcomConfiguration.h
    IRfxcomFirmwareUpdater.h
    ISequenceNumber.h
@@ -204,8 +209,6 @@ set(RFXCOM_SOURCES
    PicBootReceiveBufferHandler.h
    PicBootReceiveBufferHandler.cpp
    ProtocolException.hpp
-   Rfx433PicConfiguration.h
-   Rfx433PicConfiguration.cpp
    Rfxcom.h
    Rfxcom.cpp
    RfxComReceiveBufferHandler.h
@@ -219,6 +222,7 @@ set(RFXCOM_SOURCES
    Transceiver.h
    Transceiver.cpp
    ${SPECIFIC_HISTORIZERS_SOURCES}
+   ${PIC_CONFIGURATIONS_SOURCES}
    ${RFXCOM_MESSAGES_SOURCES}
 )
 
@@ -229,6 +233,7 @@ source_group(sources ./*.*)
 source_group(sources\\rfxcomMessages rfxcomMessages/*.*)
 source_group(sources\\rfxcomMessages\\specificHistorizers rfxcomMessages/specificHistorizers/*.*)
 source_group(sources\\rfxcomMessages\\Keywords rfxcomMessages/Keywords/*.*)
+source_group(sources\\picConfigurations picConfigurations/*.*)
 
 #########################################
 ## Place here all additional include directories

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "RfxcomFirmwareUpdater.h"
 #include <shared/encryption/Base64.h>
-#include "Rfx433PicConfiguration.h"
+#include "picConfigurations/RFXtrx.h"
 
 
 enum
@@ -46,10 +46,10 @@ void CRfxcomFirmwareUpdater::update()
 
       picBoot = boost::make_shared<CPicBoot>(m_serialPort,
                                              boost::posix_time::seconds(1),
-                                             kNbRetry,
-                                             boost::make_shared<CRfx433PicConfiguration>()); //TODO gérer les autres types de RFXCom ?
+                                             kNbRetry);
 
-      rfxcomSwitchToBootloaderMode(picBoot);
+      const auto deviceId = rfxcomSwitchToBootloaderMode(picBoot);
+      picBoot->setPicConfiguration(createPicConfiguration(deviceId));
 
       rfxcomReadBootloaderVersion(picBoot);
       rfxcomClearMemory(picBoot);
@@ -192,24 +192,43 @@ unsigned int CRfxcomFirmwareUpdater::computeLineChecksum(const std::string& line
    return (~sum + 1) & 0x0FF;
 }
 
-void CRfxcomFirmwareUpdater::rfxcomSwitchToBootloaderMode(boost::shared_ptr<CPicBoot> picBoot)
+boost::shared_ptr<picConfigurations::IPicConfiguration> CRfxcomFirmwareUpdater::createPicConfiguration(const unsigned deviceId)
+{
+   enum
+      {
+         RFXtrx = 1095,
+         RFXtrxX = 19538,
+         RFXLAN = 4121,
+         RFXsense = 16903,
+         RFXmtr = 16911,
+         RFXpan1 = 2817,
+         RFXpan2 = 2819,
+         RFXsense2 = 17673,
+      };
+
+   switch (deviceId)
+   {
+   case RFXtrx: return boost::make_shared<picConfigurations::CRFXtrx>();
+      //TODO implémenter les autres
+   default:
+      throw std::runtime_error((boost::format("Unsupported device (Unknown device ID %d)") % deviceId).str());
+   }
+}
+
+unsigned int CRfxcomFirmwareUpdater::rfxcomSwitchToBootloaderMode(boost::shared_ptr<CPicBoot> picBoot)
 {
    YADOMS_LOG(debug) << "Switch to bootloader mode...";
 
-   //TODO Code tiré de Domoticz, à vérifier
+   // Can look strange but confirmed by the RFXCom manufacturer :
+   // the "bootload command" as referenced in "RFXtrx SDK.pdf" used by
+   // the RFXCom firmaware to switch on bootloader mode, looks like a ReadDeviceID bootloader frame :
+   //
+   // So we can use the dedicate function of picBoot
+   const auto deviceId = picBoot->readPicDeviceId();
 
-   // This command is not a bootloader command, but a RFXCom application command
-   auto command = boost::make_shared<const std::vector<unsigned char>>(std::vector<unsigned char>
-      {
-         0x01, 0x01, 0x00, 0x00, 0xFF
-      });
-   //TODO
-   //picBoot->sendGetPacket(command);
-   //picBoot->sendGetPacket(command);
+   YADOMS_LOG(debug) << "RFXCom is in bootloader mode, detected device ID is " << deviceId;
 
-   // TODO tracer version du bootloader
-
-   YADOMS_LOG(debug) << "RFXCom is in bootloader mode";
+   return deviceId;
 }
 
 void CRfxcomFirmwareUpdater::rfxcomReadBootloaderVersion(boost::shared_ptr<CPicBoot> picBoot)

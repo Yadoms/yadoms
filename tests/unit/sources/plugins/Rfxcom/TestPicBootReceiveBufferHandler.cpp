@@ -245,6 +245,19 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
       };
       checkExpectedMessage(txMessage, expectedMessage);
    }
+
+   BOOST_AUTO_TEST_CASE(EscapedCharactersAtLastPosition)
+   {
+      std::vector<unsigned char> txMessage{
+         kSTX, kSTX, 0x01, 0x01, 0x00, 0x00, 0xFF, 0x47, kDLE
+      };
+      BOOST_CHECK_NO_THROW(checkFilteredMessage(txMessage));
+
+      std::vector<unsigned char> txMessage2{
+         kSTX, kSTX, 0x01, 0x01, 0x00, 0x00, 0xFF, 0x47, kDLE, kETX
+      };
+      BOOST_CHECK_NO_THROW(checkFilteredMessage(txMessage2));
+   }
    
    BOOST_AUTO_TEST_SUITE_END()
 

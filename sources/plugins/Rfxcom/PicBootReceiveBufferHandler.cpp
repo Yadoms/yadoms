@@ -140,16 +140,17 @@ boost::shared_ptr<const std::vector<unsigned char>> CPicBootReceiveBufferHandler
    message->pop_back();
 
    // Remove the DLE
-   for (auto it = message->begin(); it != message->end(); ++it)
+   auto it = message->begin();
+   while (it != message->end())
    {
+      // Remove DLE
       if (*it == kDLE)
-      {
-         // Remove the DLE and skip next byte (must always be accepted)
          it = message->erase(it);
-         if (it != message->end())
-            ++it;
-      }   
+
+      if (it != message->end())
+         ++it;
    }
+
 
    // Compute checksum
    unsigned long checksum = 0;

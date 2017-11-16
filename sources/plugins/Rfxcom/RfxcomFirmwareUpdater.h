@@ -26,7 +26,8 @@ protected:
    void loadFile(const std::string& fileContent) const;
    static unsigned int hexStringToUInt(const std::string& hexString);
    static unsigned int computeLineChecksum(const std::string& line);
-   void rfxcomSwitchToBootloaderMode(boost::shared_ptr<CPicBoot> picBoot);
+   static boost::shared_ptr<picConfigurations::IPicConfiguration> createPicConfiguration(const unsigned deviceId);
+   static unsigned int rfxcomSwitchToBootloaderMode(boost::shared_ptr<CPicBoot> picBoot);
    static void rfxcomReadBootloaderVersion(boost::shared_ptr<CPicBoot> picBoot);
    static void rfxcomClearMemory(boost::shared_ptr<CPicBoot> picBoot);
    void rfxcomWritingMemory(boost::shared_ptr<CPicBoot> picBoot);

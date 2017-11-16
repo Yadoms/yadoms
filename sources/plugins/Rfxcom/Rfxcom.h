@@ -186,7 +186,7 @@ private:
    boost::shared_ptr<shared::communication::IAsyncPort> m_port;
 
    //--------------------------------------------------------------
-   /// \brief  The communication port
+   /// \brief  The buffer logger use to log what is send and receive on serial link
    //--------------------------------------------------------------
    shared::communication::CBufferLogger m_logger;
 

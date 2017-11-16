@@ -2,13 +2,6 @@
 #include <shared/event/EventHandler.hpp>
 #include <shared/communication/IReceiveBufferHandler.h>
 #include <shared/communication/Buffer.hpp>
-#include <exception>
-#include <exception>
-#include <exception>
-#include <exception>
-#include <exception>
-#include <exception>
-#include <exception>
 
 
 class CPicBootReceiveBufferHandler : public shared::communication::IReceiveBufferHandler

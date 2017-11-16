@@ -34,7 +34,8 @@
 #pragma once
 
 #include <shared/communication/AsyncSerialPort.h>
-#include "IPicConfiguration.h"
+#include "picConfigurations/IPicConfiguration.h"
+#include <shared/communication/BufferLogger.h>
 
 class CPicBoot
 {
@@ -110,11 +111,14 @@ public:
 
    CPicBoot(const std::string& comPort,
             boost::posix_time::time_duration readTimeOut,
-            unsigned int maxRetrys,
-      boost::shared_ptr<IPicConfiguration> picConfiguration);
+            unsigned int maxRetrys);
    virtual ~CPicBoot();
 
+   void setPicConfiguration(boost::shared_ptr<picConfigurations::IPicConfiguration> picConfiguration);
+
+   // High level functions
    boost::shared_ptr<std::vector<unsigned char>> readPic(const CPic& pic);
+   unsigned int readPicDeviceId();
    std::string readPicVersion();
    void writePic(const CPic& pic,
                  boost::shared_ptr<std::vector<unsigned char>> packetData);
@@ -122,20 +126,23 @@ public:
                  unsigned int nBlock);
    bool verifyPic(const CPic& pic,
                   boost::shared_ptr<std::vector<unsigned char>> refPacketData);
-   void reBootPic() const;
+   void reBootPic();
    void erasePicProgramMemory();
-private:
 
+private:
+   // Low level functions
    boost::shared_ptr<const std::vector<unsigned char>> getPacket(unsigned int byteLimit);
-   void sendPacket(boost::shared_ptr<const std::vector<unsigned char>> packetData) const;
+   void sendPacket(boost::shared_ptr<const std::vector<unsigned char>> packetData);
    boost::shared_ptr<const std::vector<unsigned char>> sendGetPacket(boost::shared_ptr<const std::vector<unsigned char>> packetToSend,
                                                                      unsigned int receiveByteLimit);
+
 
 
    boost::shared_ptr<shared::communication::CAsyncSerialPort> m_port;
    shared::event::CEventHandler m_eventHandler;
    boost::posix_time::ptime m_lastReceivedTime;
+   shared::communication::CBufferLogger m_logger;
    unsigned int m_maxRetrys;
-   boost::shared_ptr<IPicConfiguration> m_picConfiguration;
+   boost::shared_ptr<picConfigurations::IPicConfiguration> m_picConfiguration;
 };
 
