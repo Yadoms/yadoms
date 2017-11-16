@@ -33,13 +33,13 @@ namespace rfxcomMessages
       {
          // Prod counter is enabled
          auto counter = boost::make_shared<yApi::historization::CEnergy>("Production");
-         counter->set(((rbuf.LINKY.prodidx1_0 << 24) + (rbuf.LINKY.prodidx1_1 << 16) + (rbuf.LINKY.prodidx1_2 << 8) + (rbuf.LINKY.prodidx1_3) ) * 1000);
+         counter->set(((rbuf.LINKY.prodidx1_0 << 24) + (rbuf.LINKY.prodidx1_1 << 16) + (rbuf.LINKY.prodidx1_2 << 8) + (rbuf.LINKY.prodidx1_3) ));
          m_keywords.push_back(counter);
       }
 
       // Current counter
       auto counter = boost::make_shared<yApi::historization::CEnergy>("Counter" + std::to_string(rbuf.LINKY.currentidx));
-      counter->set(((rbuf.LINKY.runidx_0 << 24) + (rbuf.LINKY.runidx_1 << 16) + (rbuf.LINKY.runidx_2 << 8) + (rbuf.LINKY.runidx_3) ) * 1000);
+      counter->set(((rbuf.LINKY.runidx_0 << 24) + (rbuf.LINKY.runidx_1 << 16) + (rbuf.LINKY.runidx_2 << 8) + (rbuf.LINKY.runidx_3) ));
       m_keywords.push_back(counter);
 
       // Voltage
@@ -97,8 +97,30 @@ namespace rfxcomMessages
    {
       std::stringstream s;
 
-      auto id = static_cast<unsigned long>(rbuf.LINKY.id1 << 24) + (rbuf.LINKY.id2 << 16) + (rbuf.LINKY.id3 << 8) + rbuf.LINKY.id4;
-      s << id;
+      auto receivedId = static_cast<unsigned long>(rbuf.LINKY.id1 << 24) + (rbuf.LINKY.id2 << 16) + (rbuf.LINKY.id3 << 8) + rbuf.LINKY.id4;
+      
+      //Construct the real counter id
+      unsigned long long id = receivedId & 0x000FFFFF; // copy the serial number
+      unsigned char type = (receivedId >> 20) & 0x07;
+      unsigned int year = (receivedId >> 23) & 0x1F;
+      unsigned char constructorCode = (receivedId >> 28) & 0x0F;
+
+      switch (type)
+      {
+         case 0: type = 61; break;
+         case 1: type = 62; break;
+         case 2: type = 64; break;
+         case 3: type = 67; break;
+         case 4: type = 70; break;
+         case 5: type = 75; break;
+         default: break;
+      }
+
+      id += (type * 1000000LL);
+      id += (year * 100000000LL);
+      id += (constructorCode * 10000000000LL);
+      //
+      s << std::setfill('0') << std::setw(12) << id;
 
       return s.str();
    }
