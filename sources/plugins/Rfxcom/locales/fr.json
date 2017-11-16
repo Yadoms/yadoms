@@ -1,634 +1,654 @@
 ﻿{
-  "name": "RFXCom",
-  "description": "Support du module radio RFXCom (voir http://rfxcom.com/)",
-  "configurationSchema": {
-    "SerialPort": {
-      "name": "Port série",
-      "description": "Le port série virtuel connecté au RFXCom"
-    },
-    "Protocols": {
-      "name": "Protocoles en écoute",
-      "description": "Protocoles à écouter, voir le manuel d'utilisation du RFXCom. Attention, certains protocoles ne sont pas compatibles entre eux, et ne doivent pas être activés simultanément.",
-      "content": {
-        "AE Blyss": { "name": "AE Blyss (Castorama)" },
-        "Rubicson": { "name": "Rubicson" },
-        "FineOffset/Viking": { "name": "FineOffset/Viking" },
-        "Lighting4": { "name": "Lighting4" },
-        "RSL": { "name": "RSL" },
-        "Byron SX": { "name": "Byron SX" },
-        "Imagintronix": { "name": "Imagintronix/Opus" },
-        "undecoded messages": { "name": "undecoded messages" },
-        "Mertik": { "name": "Mertik" },
-        "AD LightwaveRF": { "name": "AD LightwaveRF" },
-        "Hideki/UPM": { "name": "Hideki/UPM" },
-        "La Crosse": { "name": "La Crosse" },
-        "FS20": { "name": "Legrand CAD" },
-        "BlindsT0": { "name": "BlindsT0" },
-        "BlindsT1": { "name": "BlindsT1" },
-        "X10": { "name": "X10" },
-        "ARC": { "name": "ARC" },
-        "AC": { "name": "AC" },
-        "HomeEasy EU": { "name": "HomeEasy EU" },
-        "Meiantech": { "name": "Meiantech" },
-        "Oregon Scientific": { "name": "Oregon Scientific" },
-        "ATI": { "name": "ATI/Cartelectronic" },
-        "Visonic": { "name": "Visonic" },
-        "KeeLoq": { "name": "KeeLoq" },
-        "HomeConfort": { "name": "HomeConfort" }
+   "name": "RFXCom",
+   "description": "Support du module radio RFXCom (voir http://rfxcom.com/)",
+   "configurationSchema":
+   {
+      "SerialPort":
+      {
+         "name": "Port série",
+         "description": "Le port série virtuel connecté au RFXCom"
+      },
+      "Protocols":
+      {
+          "name" : "Protocoles en écoute",
+          "description" : "Protocoles à écouter, voir le manuel d'utilisation du RFXCom. Attention, certains protocoles ne sont pas compatibles entre eux, et ne doivent pas être activés simultanément.",
+          "content" :
+          {
+             "AE Blyss" : { "name" : "AE Blyss (Castorama)" },
+             "Rubicson" : { "name" : "Rubicson" },
+             "FineOffset/Viking" : { "name" : "FineOffset/Viking" },
+             "Lighting4" : { "name" : "Lighting4" },
+             "RSL" : { "name" : "RSL" },
+             "Byron SX" : { "name" : "Byron SX" },
+             "Imagintronix" : { "name" : "Imagintronix/Opus" },
+             "undecoded messages" : { "name" : "undecoded messages" },
+             "Mertik" : { "name" : "Mertik" },
+             "AD LightwaveRF" : { "name" : "AD LightwaveRF" },
+             "Hideki/UPM" : { "name" : "Hideki/UPM" },
+             "La Crosse" : { "name" : "La Crosse" },
+             "FS20": { "name": "Legrand CAD" },
+             "BlindsT0" : { "name" : "BlindsT0" },
+             "BlindsT1" : { "name" : "BlindsT1" },
+             "X10" : { "name" : "X10" },
+             "ARC" : { "name" : "ARC" },
+             "AC" : { "name" : "AC" },
+             "HomeEasy EU" : { "name" : "HomeEasy EU" },
+             "Meiantech" : { "name" : "Meiantech" },
+             "Oregon Scientific" : { "name" : "Oregon Scientific" },
+             "ATI" : { "name" : "ATI/Cartelectronic" },
+             "Visonic" : { "name" : "Visonic" },
+             "KeeLoq" : { "name" : "KeeLoq" },
+             "HomeConfort" : { "name" : "HomeConfort" }
+          }
       }
-    }
-  },
-  "enumerations": {
-    "EColor": {
-      "name": "Couleur de demain",
-      "values": {
-        "NOTDEFINED": "Pas définie",
-        "BLUE": "Bleu",
-        "WHITE": "Blanc",
-        "RED": "Rouge"
-      }
-    },
-    "EPeriod": {
-      "name": "Période tarifaire",
-      "values": {
-        "AllHours": "Toutes heures",
-        "LowCostHours": "Heures creuses",
-        "PeakCostHour": "Heures pleines",
-        "NormalCostHours": "Heures pleines",
-        "MobilePeakCostHours": "heures pointe mobile",
-        "LowCostBlueDays": "Heures creuses bleues",
-        "LowCostWhiteDays": "Heures creuses blanches",
-        "LowCostRedDays": "Heures creuses rouges",
-        "NormalCostBlueDays": "Heures pleines bleues",
-        "NormalCostWhiteDays": "Heures pleines blanches",
-        "NormalCostRedDays": "Heures pleines rouges"
-      }
-    }
-  },
-  "deviceConfiguration": {
-    "staticConfigurationSchema": {
-      "schemas": {
-        "hcA_P-uc1_16": {
-          "types": {
-            "x10": { "title": "x10" },
-            "arc": { "title": "arc" },
-            "ab400d": { "title": "ab400d" },
-            "waveman": { "title": "waveman" },
-            "emw200": { "title": "emw200" },
-            "impuls": { "title": "impuls" },
-            "risingSun": { "title": "risingSun" },
-            "philips": { "title": "philips" },
-            "energenie": { "title": "energenie" },
-            "energenie5": { "title": "energenie5" },
-            "harrisonCurtain": { "title": "harrisonCurtain" }
+   },
+	"enumerations": {
+		"EColor": {
+			"name" : "Couleur de demain",
+			"values" : {
+				"NOTDEFINED": "Pas définie",
+				"BLUE": "Bleu",
+				"WHITE": "Blanc",
+				"RED": "Rouge"
+			}
+		},
+		"EPeriod": {
+			"name" : "Période tarifaire",
+			"values" : {
+				"AllHours": "Toutes heures",
+				"LowCostHours": "Heures creuses",
+				"PeakCostHour": "Heures pleines",
+				"NormalCostHours": "Heures pleines",
+            "MobilePeakCostHours": "heures pointe mobile",
+            "LowCostBlueDays": "Heures creuses bleues",
+            "LowCostWhiteDays": "Heures creuses blanches",
+            "LowCostRedDays": "Heures creuses rouges",
+            "NormalCostBlueDays": "Heures pleines bleues",
+            "NormalCostWhiteDays": "Heures pleines blanches",
+            "NormalCostRedDays": "Heures pleines rouges"
+			}
+		}
+   },    
+   "deviceConfiguration": {
+      "staticConfigurationSchema": {
+        "schemas": {
+          "hcA_P-uc1_16": {
+            "types": {
+              "x10": { "title": "x10" },
+              "arc": { "title": "arc" },
+              "ab400d": { "title": "ab400d" },
+              "waveman": { "title": "waveman" },
+              "emw200": { "title": "emw200" },
+              "impuls": { "title": "impuls" },
+              "risingSun": { "title": "risingSun" },
+              "philips": { "title": "philips" },
+              "energenie": { "title": "energenie" },
+              "energenie5": { "title": "energenie5" },
+              "harrisonCurtain": { "title": "harrisonCurtain" }
+            },
+            "content": {
+              "houseCode": {
+                "name": "Bâtiment",
+                "description": "L'identifiant du bâtiment (A-P)",
+                "regexErrorMessage": "L'identifiant doit être entre A et P (inclus)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de l'équipement (1-16)"
+              }
+            }
           },
-          "content": {
-            "houseCode": {
-              "name": "Bâtiment",
-              "description": "L'identifiant du bâtiment (A-P)",
-              "regexErrorMessage": "L'identifiant doit être entre A et P (inclus)"
+          "hcA_D-uc1_4": {
+            "types": {
+              "gdr2": { "title": "gdr2" },
+              "hqCoco20": { "title": "hqCoco20" }
             },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de l'équipement (1-16)"
+            "content": {
+              "houseCode": {
+                "name": "Bâtiment",
+                "description": "L'identifiant du bâtiment (A-D)",
+                "regexErrorMessage": "L'identifiant doit être entre A et D (inclus)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de l'équipement (1-4)"
+              }
             }
-          }
-        },
-        "hcA_D-uc1_4": {
-          "types": {
-            "gdr2": { "title": "gdr2" },
-            "hqCoco20": { "title": "hqCoco20" }
           },
-          "content": {
-            "houseCode": {
-              "name": "Bâtiment",
-              "description": "L'identifiant du bâtiment (A-D)",
-              "regexErrorMessage": "L'identifiant doit être entre A et D (inclus)"
+          "id1_67108863-unitCode1_16": {
+            "types": {
+              "ac": { "title": "ac" },
+              "homeEasyEU": { "title": "homeEasyEU" },
+              "anslut": { "title": "anslut" },
+              "smartwares": { "title": "smartwares" }
             },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de l'équipement (1-4)"
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-67108863)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de la fonction de l'équipement (1-16)"
+              }
             }
-          }
-        },
-        "id1_67108863-unitCode1_16": {
-          "types": {
-            "ac": { "title": "ac" },
-            "homeEasyEU": { "title": "homeEasyEU" },
-            "anslut": { "title": "anslut" },
-            "smartwares": { "title": "smartwares" }
           },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-67108863)"
-            },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de la fonction de l'équipement (1-16)"
+          "id1_16777215-unitCode1_5": {
+            "types": { "kambrookRf3672": { "title": "kambrookRf3672" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-16777215)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de la fonction de l'équipement (1-5)"
+              }
             }
-          }
-        },
-        "id1_16777215-unitCode1_5": {
-          "types": { "kambrookRf3672": { "title": "kambrookRf3672" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-16777215)"
-            },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de la fonction de l'équipement (1-5)"
-            }
-          }
-        },
-        "id1_16777215-unitCode1_6": {
-          "types": { "sunperyBtx": { "title": "sunperyBtx" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-16777215)"
-            },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de la fonction de l'équipement (1-6)"
-            }
-          }
-        },
-        "s0_16-c0_1023": {
-          "types": { "koppla": { "title": "koppla" } },
-          "content": {
-            "system": {
-              "name": "Système",
-              "description": "Code système (1-16)"
-            },
-            "channel": {
-              "name": "Canal",
-              "description": "Canal (0-1023)"
-            }
-          }
-        },
-        "id0_16777215": {
-          "types": {
-            "pt2262": { "title": "pt2262" },
-            "mcz1PelletStove": { "title": "mcz1PelletStove" },
-            "mcz2PelletStove": { "title": "mcz2PelletStove" },
-            "mcz3PelletStove": { "title": "mcz3PelletStove" },
-            "meiantech": { "title": "meiantech" }
           },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (0-16777215)"
+          "id1_16777215-unitCode1_6": {
+            "types": { "sunperyBtx": { "title": "sunperyBtx" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-16777215)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de la fonction de l'équipement (1-6)"
+              }
             }
-          }
-        },
-        "id1_16777215-unitCode1_16": {
-          "types": {
-            "lightwaveRf": { "title": "lightwaveRf" },
-            "rsl": { "title": "rsl" }
           },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-16777215)"
-            },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de la fonction de l'équipement (1-16)"
+          "id1_16777215-unitCode0_14": {
+            "types": { "aOkAc114": { "title": "aOkAc114" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-16777215)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de la fonction de l'équipement (0-14)"
+              }
             }
-          }
-        },
-        "id1_16383-unitCode1_4": {
-          "types": { "emw100": { "title": "emw100" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-16383)"
-            },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de la fonction de l'équipement (1-4)"
-            }
-          }
-        },
-        "id1_524287-unitCode1_6": {
-          "types": { "bbsb": { "title": "bbsb" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-524287)"
-            },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de la fonction de l'équipement (1-6)"
-            }
-          }
-        },
-        "id0_16": {
-          "types": {
-            "lucciAir": { "title": "lucciAir" },
-            "westinghouse7226640": { "title": "westinghouse7226640" }
           },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (0-16)"
+          "s0_16-c0_1023": {
+            "types": { "koppla": { "title": "koppla" } },
+            "content": {
+              "system": {
+                "name": "Système",
+                "description": "Code système (1-16)"
+              },
+              "channel": {
+                "name": "Canal",
+                "description": "Canal (0-1023)"
+              }
             }
-          }
-        },
-        "id0_255": {
-          "types": { "byronSx": { "title": "byronSx" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (0-255)"
-            }
-          }
-        },
-        "id0_1023": {
-          "types": { "selectPlus": { "title": "selectPlus" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (0-1023)"
-            }
-          }
-        },
-        "id0_65535": {
-          "types": {
-            "byronMp001": { "title": "byronMp001" },
-            "envivo": { "title": "envivo" },
-            "x10SecurityRemote": { "title": "x10SecurityRemote" },
-            "digimax": { "title": "digimax" },
-            "digimaxShort": { "title": "digimaxShort" }
           },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (0-65535)"
+          "id0_16777215": {
+            "types": {
+              "pt2262": { "title": "pt2262" },
+              "mcz1PelletStove": { "title": "mcz1PelletStove" },
+              "mcz2PelletStove": { "title": "mcz2PelletStove" },
+              "mcz3PelletStove": { "title": "mcz3PelletStove" },
+              "meiantech": { "title": "meiantech" }
+            },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (0-16777215)"
+              }
             }
-          }
-        },
-        "id1_65535": {
-          "types": {
-            "mdRemote106": { "title": "mdRemote106" },
-            "livolo": { "title": "livolo" },
-            "aoke": { "title": "aoke" },
-            "rgb432w": { "title": "rgb432w" },
-            "mdremote107": { "title": "mdremote107" },
-            "legrandCad": { "title": "legrandCad" },
-            "it": { "title": "it" },
-            "mdRemote108": { "title": "mdRemote108" },
-            "kangtai": { "title": "kangtai" }
           },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-65535)"
+          "id1_16777215-unitCode1_16": {
+            "types": {
+              "lightwaveRf": { "title": "lightwaveRf" },
+              "rsl": { "title": "rsl" }
+            },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-16777215)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de la fonction de l'équipement (1-16)"
+              }
             }
-          }
-        },
-        "id1_1048575": {
-          "types": { "avantek": { "title": "avantek" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-1048575)"
-            }
-          }
-        },
-        "id1_16777215": {
-          "types": {
-            "trc02": { "title": "trc02" },
-            "aOkRf01": { "title": "aOkRf01" },
-            "aOkAc114": { "title": "aOkAc114" },
-            "mediaMount": { "title": "mediaMount" },
-            "raex": { "title": "raex" },
-            "dolatDlm1": { "title": "dolatDlm1" },
-            "asp": { "title": "asp" }
           },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-16777215)"
+          "id1_16383-unitCode1_4": {
+            "types": { "emw100": { "title": "emw100" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-16383)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de la fonction de l'équipement (1-4)"
+              }
             }
-          }
-        },
-        "id0_32767": {
-          "types": { "siemensSf01": { "title": "siemensSf01" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (0-32767)"
+          },
+          "id1_524287-unitCode1_6": {
+            "types": { "bbsb": { "title": "bbsb" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-524287)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de la fonction de l'équipement (1-6)"
+              }
             }
-          }
-        },
-        "id1_32767": {
-          "types": { "trc02_2": { "title": "trc02_2" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-32767)"
-            }
-          }
-        },
-        "id1_524287-unitCode1_4": {
-          "types": { "eurodomest": { "title": "eurodomest" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-524287)"
+          },
+          "id0_16": {
+            "types": {
+              "lucciAir": { "title": "lucciAir" },
+              "westinghouse7226640": { "title": "westinghouse7226640" }
             },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de la fonction de l'équipement (1-4)"
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (0-16)"
+              }
             }
-          }
-        },
-        "id1_32767-unitCode1_10": {
-          "types": { "livoloAppliance": { "title": "livoloAppliance" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-32767)"
-            },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de la fonction de l'équipement (1-10)"
+          },
+          "id0_255": {
+            "types": { "byronSx": { "title": "byronSx" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (0-255)"
+              }
             }
-          }
-        },
-        "id0_65535-gcA_P-uc1_5": {
-          "types": { "blyss": { "title": "blyss" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (0-65535)"
-            },
-            "groupCode": {
-              "name": "Groupe",
-              "description": "L'identifiant du groupe de l'équipement (A-P)",
-              "regexErrorMessage": "L'identifiant doit être entre A et P (inclus)"
-            },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de la fonction de l'équipement (1-5)"
+          },
+          "id0_1023": {
+            "types": { "selectPlus": { "title": "selectPlus" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (0-1023)"
+              }
             }
-          }
-        },
-        "seavTxs4": {
-          "types": { "seavTxs4": { "title": "seavTxs4" } },
-          "content": {
-            "sw2-1": {
-              "name": "sw2-1",
-              "description": "Position du micro-interrupteur sw2-1"
+          },
+          "id0_65535": {
+            "types": {
+              "byronMp001": { "title": "byronMp001" },
+              "envivo": { "title": "envivo" },
+              "x10SecurityRemote": { "title": "x10SecurityRemote" },
+              "digimax": { "title": "digimax" },
+              "digimaxShort": { "title": "digimaxShort" }
             },
-            "sw2-2": {
-              "name": "sw2-2",
-              "description": "Position du micro-interrupteur sw2-2"
-            },
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (0-32767)"
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (0-65535)"
+              }
             }
-          }
-        },
+          },
+          "id1_65535": {
+            "types": {
+              "mdRemote106": { "title": "mdRemote106" },
+              "livolo": { "title": "livolo" },
+              "aoke": { "title": "aoke" },
+              "rgb432w": { "title": "rgb432w" },
+              "mdremote107": { "title": "mdremote107" },
+              "legrandCad": { "title": "legrandCad" },
+              "it": { "title": "it" },
+              "mdRemote108": { "title": "mdRemote108" },
+              "kangtai": { "title": "kangtai" }
+            },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-65535)"
+              }
+            }
+          },
+          "id1_1048575": {
+            "types": { "avantek": { "title": "avantek" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-1048575)"
+              }
+            }
+          },
+          "id1_16777215": {
+            "types": {
+              "trc02": { "title": "trc02" },
+              "aOkRf01": { "title": "aOkRf01" },
+              "raex": { "title": "raex" },
+              "mediaMount": { "title": "mediaMount" },
+              "dolatDlm1": { "title": "dolatDlm1" },
+              "asp": { "title": "asp" }
+            },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-16777215)"
+              }
+            }
+          },
+          "id0_32767": {
+            "types": { "siemensSf01": { "title": "siemensSf01" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (0-32767)"
+              }
+            }
+          },
+          "id1_32767": {
+            "types": { "trc02_2": { "title": "trc02_2" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-32767)"
+              }
+            }
+          },
+          "id1_524287-unitCode1_4": {
+            "types": { "eurodomest": { "title": "eurodomest" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-524287)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de la fonction de l'équipement (1-4)"
+              }
+            }
+          },
+          "id1_32767-unitCode1_10": {
+            "types": { "livoloAppliance": { "title": "livoloAppliance" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-32767)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de la fonction de l'équipement (1-10)"
+              }
+            }
+          },
+          "id0_65535-gcA_P-uc1_5": {
+            "types": { "blyss": { "title": "blyss" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (0-65535)"
+              },
+              "groupCode": {
+                "name": "Groupe",
+                "description": "L'identifiant du groupe de l'équipement (A-P)",
+                "regexErrorMessage": "L'identifiant doit être entre A et P (inclus)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de la fonction de l'équipement (1-5)"
+              }
+            }
+          },
+          "seavTxs4": {
+            "types": { "seavTxs4": { "title": "seavTxs4" } },
+            "content": {
+              "sw2-1": {
+                "name": "sw2-1",
+                "description": "Position du micro-interrupteur sw2-1"
+              },
+              "sw2-2": {
+                "name": "sw2-2",
+                "description": "Position du micro-interrupteur sw2-2"
+              },
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (0-32767)"
+              }
+            }
+          },
 
-        "id1_65535-uc1_15": {
-          "types": {
-            "rollerTrolHastaNew": { "title": "rollerTrolHastaNew" },
-            "hastaOld": { "title": "hastaOld" },
-            "confexx": { "title": "confexx" }
+          "id1_65535-uc1_15": {
+            "types": {
+              "rollerTrolHastaNew": { "title": "rollerTrolHastaNew" },
+              "hastaOld": { "title": "hastaOld" }
+            },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-65535)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de la fonction de l'équipement (1-15)"
+              }
+            }
           },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-65535)"
-            },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de la fonction de l'équipement (1-15)"
-            }
-          }
-        },
 
-        "id1_65535-uc1_30": {
-          "types": { "kangtai": { "title": "kangtai" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "The device ID (1-65535)"
+          "id1_65535-uc0_14": {
+            "types": {
+              "confexx": { "title": "confexx" }
             },
-            "unitCode": {
-              "name": "Unit Code",
-              "description": "The unit code (1-30)"
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-65535)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de la fonction de l'équipement (0-14)"
+              }
             }
-          }
-        },
-
-        "id1_65535-uc1_99": {
-          "types": { "screenline": { "title": "screenline" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-65535)"
-            },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de la fonction de l'équipement (1-99)"
-            }
-          }
-        },
-
-        "id1_4294967295-uc1_15": {
-          "types": {
-            "dc106": { "title": "dc106" },
-            "forest": { "title": "forest" }
           },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-4294967295)"
-            },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de la fonction de l'équipement (1-15)"
-            }
-          }
-        },
 
-        "id1_4095-uc0_5": {
-          "types": { "chamberlaincs4330cn": { "title": "chamberlaincs4330cn" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-4095)"
-            },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de la fonction de l'équipement (0-5)"
+          "id1_65535-uc1_30": {
+            "types": { "kangtai": { "title": "kangtai" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "The device ID (1-65535)"
+              },
+              "unitCode": {
+                "name": "Unit Code",
+                "description": "The unit code (1-30)"
+              }
             }
-          }
-        },
-        "id1_1048575-uc0_4": {
-          "types": { "rfy": { "title": "rfy" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-1048575)"
-            },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de la fonction de l'équipement (0-4)"
-            }
-          }
-        },
-        "id1_1048575-uc1_5": {
-          "types": { "asa": { "title": "asa" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-1048575)"
-            },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de la fonction de l'équipement (1-5)"
-            }
-          }
-        },
-        "id1_1048575-uc0_15": {
-          "types": { "rfyExt": { "title": "rfyExt" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-1048575)"
-            },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de la fonction de l'équipement (1-15)"
-            }
-          }
-        },
-        "id1_524287-hcA_D-uc1_4": {
-          "types": { "homeConfort": { "title": "homeConfort" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (1-524287)"
-            },
-            "houseCode": {
-              "name": "Bâtiment",
-              "description": "L'identifiant du bâtiment (A-D)",
-              "regexErrorMessage": "L'identifiant doit être entre A et D (inclus)"
-            },
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de la fonction de l'équipement (1-4)"
-            }
-          }
-        },
-        "id0_268435456": {
-          "types": { "keeLoq": { "title": "keeLoq" } },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "L'identifiant de l'équipement (0-268435456)"
-            }
-          }
-        },
-        "uc0_31": {
-          "types": { "he105": { "title": "he105" } },
-          "content": {
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de l'équipement (0-31)"
-            }
-          }
-        },
-        "uc0_255": {
-          "types": {
-            "rts10": { "title": "rts10" },
-            "g6rH4t1": { "title": "g6rH4t1" }
           },
-          "content": {
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de l'équipement (0-255)"
-            }
-          }
-        },
-        "uc0_262143": {
-          "types": {
-            "g6rH4tb": { "title": "g6rH4tb" },
-            "g6rH4s": { "title": "g6rH4s" }
-          },
-          "content": {
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de l'équipement (0-262143)"
-            }
-          }
-        },
 
-        "uc0_65535": {
-          "types": { "g6rH4td": { "title": "g6rH4td" } },
-          "content": {
-            "unitCode": {
-              "name": "Unité",
-              "description": "L'identifiant de l'équipement (0-65535)"
+          "id1_65535-uc1_99": {
+            "types": { "screenline": { "title": "screenline" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-65535)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de la fonction de l'équipement (1-99)"
+              }
             }
-          }
-        },
-
-        "hcrx-garx-sarx": {
-          "types": {
-            "fs20": { "title": "fs20" },
-            "fht8v": { "title": "fht8v" },
-            "fht80": { "title": "fht80" }
           },
-          "content": {
-            "houseCode": {
-              "name": "Bâtiment",
-              "description": "L'identifiant du bâtiment (8 chiffres de 1 à 4 : 11111111 à 44444444)",
-              "regexErrorMessage": "L'identifiant doit contenir 8 chiffres entre 1 et 4 : exemple : 12341234"
+
+          "id1_4294967295-uc1_15": {
+            "types": {
+              "dc106": { "title": "dc106" },
+              "forest": { "title": "forest" }
             },
-            "groupAddress": {
-              "name": "Adresse du groupe",
-              "description": "L'adresse du groupe (2 chiffres de 1 à 4 : 11 à 44)",
-              "regexErrorMessage": "L'adresse doit contenir 2 chiffres entre 1 et 4 : exemple : 14"
-            },
-            "subAddress": {
-              "name": "Sous-adresse",
-              "description": "La sous-adresse (2 chiffres de 1 à 4 : 11 à 44)",
-              "regexErrorMessage": "La sous-adresse doit contenir 2 chiffres entre 1 et 4 : exemple : 14"
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-4294967295)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de la fonction de l'équipement (1-15)"
+              }
             }
-          }
-        },
-        "cameraX10Ninja": {
-          "types": { "cameraX10Ninja": { "title": "cameraX10Ninja" } },
-          "content": {
-            "houseCode": {
-              "name": "Bâtiment",
-              "description": "L'identifiant du bâtiment (A-P)",
-              "regexErrorMessage": "L'identifiant doit être entre A et P (inclus)"
+          },
+
+          "id1_4095-uc0_5": {
+            "types": { "chamberlaincs4330cn": { "title": "chamberlaincs4330cn" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-4095)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de la fonction de l'équipement (0-5)"
+              }
+            }
+          },
+          "id1_1048575-uc0_4": {
+            "types": { "rfy": { "title": "rfy" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-1048575)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de la fonction de l'équipement (0-4)"
+              }
+            }
+          },
+          "id1_1048575-uc1_5": {
+            "types": { "asa": { "title": "asa" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-1048575)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de la fonction de l'équipement (1-5)"
+              }
+            }
+          },
+          "id1_1048575-uc0_15": {
+            "types": { "rfyExt": { "title": "rfyExt" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-1048575)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de la fonction de l'équipement (1-15)"
+              }
+            }
+          },
+          "id1_524287-hcA_D-uc1_4": {
+            "types": { "homeConfort": { "title": "homeConfort" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (1-524287)"
+              },
+              "houseCode": {
+                "name": "Bâtiment",
+                "description": "L'identifiant du bâtiment (A-D)",
+                "regexErrorMessage": "L'identifiant doit être entre A et D (inclus)"
+              },
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de la fonction de l'équipement (1-4)"
+              }
+            }
+          },
+          "id0_268435456": {
+            "types": { "keeLoq": { "title": "keeLoq" } },
+            "content": {
+              "id": {
+                "name": "ID",
+                "description": "L'identifiant de l'équipement (0-268435456)"
+              }
+            }
+          },
+          "uc0_31": {
+            "types": { "he105": { "title": "he105" } },
+            "content": {
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de l'équipement (0-31)"
+              }
+            }
+          },
+          "uc0_255": {
+            "types": {
+              "rts10": { "title": "rts10" },
+              "g6rH4t1": { "title": "g6rH4t1" }
+            },
+            "content": {
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de l'équipement (0-255)"
+              }
+            }
+          },
+          "uc0_262143": {
+            "types": {
+              "g6rH4tb": { "title": "g6rH4tb" },
+              "g6rH4s": { "title": "g6rH4s" }
+            },
+            "content": {
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de l'équipement (0-262143)"
+              }
+            }
+          },
+
+          "uc0_65535": {
+            "types": { "g6rH4td": { "title": "g6rH4td" } },
+            "content": {
+              "unitCode": {
+                "name": "Unité",
+                "description": "L'identifiant de l'équipement (0-65535)"
+              }
+            }
+          },
+
+          "hcrx-garx-sarx": {
+            "types": {
+              "fs20": { "title": "fs20" },
+              "fht8v": { "title": "fht8v" },
+              "fht80": { "title": "fht80" }
+            },
+            "content": {
+              "houseCode": {
+                "name": "Bâtiment",
+                "description": "L'identifiant du bâtiment (8 chiffres de 1 à 4 : 11111111 à 44444444)",
+                "regexErrorMessage": "L'identifiant doit contenir 8 chiffres entre 1 et 4 : exemple : 12341234"
+              },
+              "groupAddress": {
+                "name": "Adresse du groupe",
+                "description": "L'adresse du groupe (2 chiffres de 1 à 4 : 11 à 44)",
+                "regexErrorMessage": "L'adresse doit contenir 2 chiffres entre 1 et 4 : exemple : 14"
+              },
+              "subAddress": {
+                "name": "Sous-adresse",
+                "description": "La sous-adresse (2 chiffres de 1 à 4 : 11 à 44)",
+                "regexErrorMessage": "La sous-adresse doit contenir 2 chiffres entre 1 et 4 : exemple : 14"
+              }
+            }
+          },
+          "cameraX10Ninja": {
+            "types": { "cameraX10Ninja": { "title": "cameraX10Ninja" } },
+            "content": {
+              "houseCode": {
+                "name": "Bâtiment",
+                "description": "L'identifiant du bâtiment (A-P)",
+                "regexErrorMessage": "L'identifiant doit être entre A et P (inclus)"
+              }
             }
           }
         }
       }
-    }
-  },
-  "extraQueries": {
-    "firmwareUpdate": {
-      "name": "Mise à jour firmware",
-      "commandData": {
-        "fileContent": {
-          "name": "Fichier",
-          "description": "Le nouveau firmware à utiliser"
-        }
-      }
-    }
-  },
+   },
   "customLabels": {
     "pluginState": {
       "connecting": "Connexion en cours...",

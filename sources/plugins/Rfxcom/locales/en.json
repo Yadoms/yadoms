@@ -155,6 +155,19 @@
             }
           }
         },
+        "id1_16777215-unitCode0_14": {
+          "types": { "aOkAc114": { "title": "aOkAc114" } },
+          "content": {
+            "id": {
+              "name": "ID",
+              "description": "The device ID (1-16777215)"
+            },
+            "unitCode": {
+              "name": "Unit Code",
+              "description": "The unit code (0-14)"
+            }
+          }
+        },
         "s0_16-c0_1023": {
           "types": { "koppla": { "title": "koppla" } },
           "content": {
@@ -301,9 +314,8 @@
           "types": {
             "trc02": { "title": "trc02" },
             "aOkRf01": { "title": "aOkRf01" },
-            "aOkAc114": { "title": "aOkAc114" },
-            "mediaMount": { "title": "mediaMount" },
             "raex": { "title": "raex" },
+            "mediaMount": { "title": "mediaMount" },
             "dolatDlm1": { "title": "dolatDlm1" },
             "asp": { "title": "asp" }
           },
@@ -397,8 +409,7 @@
         "id1_65535-uc1_15": {
           "types": {
             "rollerTrolHastaNew": { "title": "rollerTrolHastaNew" },
-            "hastaOld": { "title": "hastaOld" },
-            "confexx": { "title": "confexx" }
+            "hastaOld": { "title": "hastaOld" }
           },
           "content": {
             "id": {
@@ -408,6 +419,22 @@
             "unitCode": {
               "name": "Unit Code",
               "description": "The unit code (1-15)"
+            }
+          }
+        },
+
+        "id1_65535-uc0_14": {
+          "types": {
+            "confexx": { "title": "confexx" }
+          },
+          "content": {
+            "id": {
+              "name": "ID",
+              "description": "The device ID (1-65535)"
+            },
+            "unitCode": {
+              "name": "Unit Code",
+              "description": "The unit code (0-14)"
             }
           }
         },
@@ -625,21 +652,20 @@
           "description": "The firmware file to use"
         }
       }
-    }
-  },
-  "customLabels": {
-    "pluginState": {
-      "connecting": "Connecting...",
-      "initializing": "RFXCom initializing...",
-      "connectionLost": "RFXCom connection was lost",
-      "updateConfiguration": "Configuration updating...",
-      "updateFirmware": "Firmware updating...",
-      "failToConfigure": "Unable to set configuration as expected, maybe incompatible protocols were selected, see RFXCom manual"
     },
-    "firmwareUpdate": {
-      "ErrorInternal": "Unable to update firmware because of internal error",
-      "ErrorOnlyAvailableForSerial": "Firmware updating is only available with serial connection",
-      "ErrorInvalidInputFile": "Unable to update firmware, input file is invalid"
+    "customLabels": {
+      "pluginState": {
+        "connecting": "Connecting...",
+        "initializing": "RFXCom initializing...",
+        "connectionLost": "RFXCom connection was lost",
+        "updateConfiguration": "Configuration updating...",
+        "updateFirmware": "Firmware updating...",
+        "failToConfigure": "Unable to set configuration as expected, maybe incompatible protocols were selected, see RFXCom manual"
+      },
+      "firmwareUpdate": {
+        "ErrorInternal": "Unable to update firmware because of internal error",
+        "ErrorOnlyAvailableForSerial": "Firmware updating is only available with serial connection",
+        "ErrorInvalidInputFile": "Unable to update firmware, input file is invalid"
+      }
     }
   }
-}
