@@ -119,12 +119,14 @@ void CRfxcomFirmwareUpdater::loadFile(const std::string& fileContent) const
          kStartLinearAddressRecord = 5
       };
 
+
    try
    {
       std::istringstream ss(fileContent);
       std::string line;
       auto lineCount = 0;
       unsigned int addressMostSignificantWordMask = 0;
+      auto hexData = boost::make_shared<std::map<unsigned long /*address*/, std::vector<unsigned char> /*data*/>>();
       while (std::getline(ss, line))
       {
          // check for minimal line size (line without data)
@@ -167,6 +169,11 @@ void CRfxcomFirmwareUpdater::loadFile(const std::string& fileContent) const
             if (lineType == kData)
             {
                const auto address = addressMostSignificantWordMask | hexStringToUInt(line.substr(kIdxAddress, 4));
+               if (hexData->find(address) != hexData->end())
+                  throw std::invalid_argument((boost::format("Line %1% : Address %2% was already defined") % lineCount % address).str());
+
+               for (auto byteIndex = 0; byteIndex < readDataSize; ++byteIndex)
+                  (*hexData)[address].push_back(static_cast<unsigned char>(hexStringToUInt(line.substr(kIdxData + 2 * byteIndex, 2))));
                //TODO finir de lire le fichier
             }
          }
