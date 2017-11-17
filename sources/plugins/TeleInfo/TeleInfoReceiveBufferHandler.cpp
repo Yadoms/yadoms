@@ -17,7 +17,6 @@ enum
 
 CTeleInfoReceiveBufferHandler::CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
                                                              int receiveDataEventId,
-                                                             const boost::posix_time::time_duration suspendDelay,
                                                              boost::shared_ptr<shared::communication::IBufferLogger> logger,
                                                              const bool isdeveloperMode)
    : m_receiveDataEventHandler(receiveDataEventHandler),

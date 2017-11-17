@@ -17,12 +17,10 @@ public:
    /// \brief	                           Constructor
    /// \param[in] receiveDataEventHandler The event handler to notify for received data event
    /// \param[in] receiveDataEventId      The event id to notify for received data event
-   /// \param[in] suspendDelay            Mute delay, used to filter messages
    /// \param[in] logger                  logger in developer mode
    //--------------------------------------------------------------
    CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
                                  int receiveDataEventId,
-                                 const boost::posix_time::time_duration suspendDelay,
                                  boost::shared_ptr<shared::communication::IBufferLogger> logger,
                                  const bool isdeveloperMode);
 

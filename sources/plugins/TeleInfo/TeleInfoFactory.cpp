@@ -42,7 +42,6 @@ boost::shared_ptr<CTeleInfoReceiveBufferHandler> CTeleInfoFactory::GetBufferHand
 
    return boost::make_shared<CTeleInfoReceiveBufferHandler>(eventHandler,
                                                             evtPortDataReceived,
-                                                            boost::posix_time::seconds(30),
                                                             logger,
                                                             isDeveloperMode);
 }
@@ -51,4 +50,3 @@ boost::shared_ptr<IDecoder> CTeleInfoFactory::constructDecoder(boost::shared_ptr
 {
    return boost::make_shared<CDecoder>(api);
 }
-

@@ -3,6 +3,7 @@
 #include "ILinkyConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
 #include "IDecoder.h"
+#include "LinkyReceiveBufferHandler.h"
 
 //--------------------------------------------------------------
 /// \brief	General factory
@@ -42,7 +43,7 @@ public:
    /// \param [in] developerMode          running in developer mode
    /// \return                            The Buffer handler
    //--------------------------------------------------------------
-   static boost::shared_ptr<shared::communication::IReceiveBufferHandler> GetBufferHandler(shared::event::CEventHandler& eventHandler,
-                                                                                           int evtPortDataReceived,
-                                                                                           const bool isDeveloperMode);
+   static boost::shared_ptr<CLinkyReceiveBufferHandler> GetBufferHandler(shared::event::CEventHandler& eventHandler,
+                                                                         int evtPortDataReceived,
+                                                                         const bool isDeveloperMode);
 };

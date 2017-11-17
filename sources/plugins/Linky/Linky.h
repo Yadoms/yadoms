@@ -3,6 +3,7 @@
 #include "LinkyConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
 #include "IDecoder.h"
+#include "LinkyReceiveBufferHandler.h"
 #include <shared/communication/AsyncPortConnectionNotification.h>
 
 // Shortcut to yadomsApi namespace
@@ -93,6 +94,11 @@ private:
    boost::shared_ptr<shared::event::CEventTimer> m_waitForAnswerTimer;
 
    //--------------------------------------------------------------
+   /// \brief	Periodic sampling event
+   //--------------------------------------------------------------
+   boost::shared_ptr<shared::event::CEventTimer> m_periodicSamplingTimer;
+
+   //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
    CLinkyConfiguration m_configuration;
@@ -105,7 +111,7 @@ private:
    //--------------------------------------------------------------
    /// \brief  The receiver buffer
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::communication::IReceiveBufferHandler> m_receiveBufferHandler;
+   boost::shared_ptr<CLinkyReceiveBufferHandler> m_receiveBufferHandler;
 
    //--------------------------------------------------------------
    /// \brief  developerMode state
@@ -115,7 +121,6 @@ private:
    //-----------------------------------------------------
    ///\brief The plugin state
    //-----------------------------------------------------
-
    enum ELinkyPluginState
    {
       kUndefined = 0,
@@ -132,4 +137,3 @@ private:
    //--------------------------------------------------------------
    ELinkyPluginState m_runningState;
 };
-
