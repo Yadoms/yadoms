@@ -649,6 +649,17 @@
         }
       }
    },
+  "extraQueries": {
+    "firmwareUpdate": {
+      "name": "Mise à jour firmware",
+      "commandData": {
+        "fileContent": {
+          "name": "Fichier",
+          "description": "Le nouveau firmware à utiliser"
+        }
+      }
+    }
+  },
   "customLabels": {
     "pluginState": {
       "connecting": "Connexion en cours...",

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "RfxcomFirmwareUpdater.h"
-#include <shared/encryption/Base64.h>
+#include <shared/plugin/yPluginApi/configuration/File.h>
 #include "picConfigurations/RFXtrx.h"
 
 
@@ -44,14 +44,13 @@ void CRfxcomFirmwareUpdater::update()
    // - 5-10% : erase RFXCom
    // - 10-90% : write RFXCom
    // - 90-100% : verify
+   //TODO revérifier la progression
 
-   const auto base64firmware = m_extraQuery->getData()->data().get<std::string>("fileContent");
-   const auto fileName = "RFXtrx433_Type1_1022.hex"; // m_extraQuery->getData()->data().get<std::string>("fileName");   // TODO récupérer le fileName
-   const auto firmwareContent = shared::encryption::CBase64::decode(base64firmware);
+   const auto hexFile = m_extraQuery->getData()->data().get<yApi::configuration::CFile>("fileContent");
 
    // Load input file
    m_extraQuery->reportProgress(0.0f, "customLabels.firmwareUpdate.loadInputFile");//TODO traduire
-   loadFile(firmwareContent);
+   loadFile(hexFile.getContent());
 
    boost::shared_ptr<CPicBoot> picBoot;
    try
@@ -63,7 +62,7 @@ void CRfxcomFirmwareUpdater::update()
                                              kNbRetry);
 
       const auto deviceId = rfxcomSwitchToBootloaderMode(picBoot);
-      checkFileCompatibility(deviceId, fileName);
+      checkFileCompatibility(deviceId, hexFile.getFileName());
       picBoot->setPicConfiguration(createPicConfiguration(deviceId));
 
       rfxcomReadBootloaderVersion(picBoot);
@@ -71,6 +70,7 @@ void CRfxcomFirmwareUpdater::update()
       rfxcomWritingMemory(picBoot);
       m_extraQuery->reportProgress(5.0f, "customLabels.firmwareUpdate.verify");//TODO traduire
       rfxcomVerifyMemory(picBoot);
+      //TODO faut pas écrire le VerifyOK quelque part ?
       rfxcomReboot(picBoot);
    }
    catch (std::exception& exception)
@@ -225,7 +225,7 @@ boost::shared_ptr<picConfigurations::IPicConfiguration> CRfxcomFirmwareUpdater::
    }
 }
 
-void CRfxcomFirmwareUpdater::checkFileCompatibility(const unsigned deviceId,
+void CRfxcomFirmwareUpdater::checkFileCompatibility(const unsigned int deviceId,
                                                     const std::string& fileName)
 {
    switch (deviceId)

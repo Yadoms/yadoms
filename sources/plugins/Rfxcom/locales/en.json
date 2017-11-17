@@ -652,20 +652,21 @@
           "description": "The firmware file to use"
         }
       }
+    }
+  },
+  "customLabels": {
+    "pluginState": {
+      "connecting": "Connecting...",
+      "initializing": "RFXCom initializing...",
+      "connectionLost": "RFXCom connection was lost",
+      "updateConfiguration": "Configuration updating...",
+      "updateFirmware": "Firmware updating...",
+      "failToConfigure": "Unable to set configuration as expected, maybe incompatible protocols were selected, see RFXCom manual"
     },
-    "customLabels": {
-      "pluginState": {
-        "connecting": "Connecting...",
-        "initializing": "RFXCom initializing...",
-        "connectionLost": "RFXCom connection was lost",
-        "updateConfiguration": "Configuration updating...",
-        "updateFirmware": "Firmware updating...",
-        "failToConfigure": "Unable to set configuration as expected, maybe incompatible protocols were selected, see RFXCom manual"
-      },
-      "firmwareUpdate": {
-        "ErrorInternal": "Unable to update firmware because of internal error",
-        "ErrorOnlyAvailableForSerial": "Firmware updating is only available with serial connection",
-        "ErrorInvalidInputFile": "Unable to update firmware, input file is invalid"
-      }
+    "firmwareUpdate": {
+      "ErrorInternal": "Unable to update firmware because of internal error",
+      "ErrorOnlyAvailableForSerial": "Firmware updating is only available with serial connection",
+      "ErrorInvalidInputFile": "Unable to update firmware, input file is invalid"
     }
   }
+}
