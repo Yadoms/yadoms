@@ -2,6 +2,7 @@
 #include "LogConfigurationImpl.h"
 #include "LogConfigurationException.h"
 #include <Poco/Logger.h>
+#include "tools/FileSystem.h"
 
 namespace logging
 {
@@ -28,16 +29,8 @@ namespace logging
 
       m_formattingConsoleChannel.assign(new Poco::FormattingChannel(m_patternFormatter, m_consoleChannel));
       
-      //TOFIX delete this code ?
-      std::string Logpath("logs");
-      if (!boost::filesystem::exists( Logpath ))
-         if (!boost::filesystem::create_directories( Logpath ))
-            throw CLogConfigurationException( "Cannot create directory " + Logpath );
-      
-      m_fileChannel->setProperty("path", Logpath + "/yadoms.log");
-      //m_fileChannel->setProperty("path", boost::filesystem::path(logPath / "yadoms.log").string());
-      //[END]TOFIX
       m_fileChannel->setProperty("times", "local"); //use local datetime for rotation strategy
+      m_fileChannel->setProperty("path", boost::filesystem::path(logPath / "yadoms.log").string());
       m_fileChannel->setProperty("rotation", "daily");
       m_fileChannel->setProperty("archive", "timestamp");
       m_fileChannel->setProperty("compress", "true");

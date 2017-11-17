@@ -78,7 +78,7 @@ namespace shared
          try
          {
 
-            YADOMS_LOG(debug) << " : m_boostSerialPort.open();";
+            YADOMS_LOG(debug) << "Open " << m_port << "...";
             m_boostSerialPort.open(m_port);
          }
          catch (boost::system::system_error& e)

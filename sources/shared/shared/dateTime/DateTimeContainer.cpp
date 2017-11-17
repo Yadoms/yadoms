@@ -25,12 +25,12 @@ namespace shared { namespace dateTime {
    {
    }
 
-   boost::posix_time::ptime CDateTimeContainer::getBoostDateTime()
+   boost::posix_time::ptime CDateTimeContainer::getBoostDateTime() const
    {
       return m_time;
    }
 
-   Poco::DateTime CDateTimeContainer::getPocoDateTime()
+   Poco::DateTime CDateTimeContainer::getPocoDateTime() const
    {
       return Poco::DateTime(Poco::Timestamp::fromEpochTime(boost::posix_time::to_time_t(m_time)));
    }

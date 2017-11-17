@@ -110,13 +110,22 @@ FileParameterHandler.prototype.getCurrentConfiguration = function () {
       file = myFile[0];
       var ready = false;
       var result = null;
-      
+      debugger;
       var fr = new FileReader();
       fr.onload = function(evt) {
           // file is loaded
           var base64identifier = 'base64,';
           var contentBase64 = evt.target.result.substring(evt.target.result.indexOf(base64identifier) + base64identifier.length);
-          d.resolve(contentBase64);
+          
+          var fileResult = {
+             name: file.name,
+             size: file.size,
+             type: file.type,
+             lastModified: DateTimeFormatter.dateToIsoDate(file.lastModified),
+             content: contentBase64
+          };
+          
+          d.resolve(fileResult);
       };
       
       fr.onabort = function(evt) { d.reject(evt); }

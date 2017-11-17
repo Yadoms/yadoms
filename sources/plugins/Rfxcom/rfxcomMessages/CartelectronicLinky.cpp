@@ -97,7 +97,7 @@ namespace rfxcomMessages
    {
       std::stringstream s;
 
-      auto receivedId = static_cast<unsigned long>(rbuf.LINKY.id4 << 24) + (rbuf.LINKY.id3 << 16) + (rbuf.LINKY.id2 << 8) + rbuf.LINKY.id1;
+      auto receivedId = static_cast<unsigned long>(rbuf.LINKY.id1 << 24) + (rbuf.LINKY.id2 << 16) + (rbuf.LINKY.id3 << 8) + rbuf.LINKY.id4;
       
       //Construct the real counter id
       unsigned long long id = receivedId & 0x000FFFFF; // copy the serial number

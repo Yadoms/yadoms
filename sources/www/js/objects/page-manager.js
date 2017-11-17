@@ -14,6 +14,16 @@ function PageManager() { }
  */
 PageManager.pages = [];
 
+/**
+ * The packery options
+ */
+PageManager.packeryOptions = {
+   itemSelector: ".widget",
+   columnWidth: 100,
+   //transitionDuration: '0.6s',
+   gutter: 0
+};
+
 PageManager.factory = function (json) {
     assert(!isNullOrUndefined(json), "json must be defined");
     assert(!isNullOrUndefined(json.id), "json.id must be defined");
@@ -154,12 +164,7 @@ PageManager.addToDom = function (page) {
 
     page.$grid = page.$content.find(".grid");
     
-    page.$grid.packery({
-        itemSelector: ".widget",
-        columnWidth: 100,
-        //transitionDuration: '0.6s',
-        gutter: 0
-    });
+    page.$grid.packery(PageManager.packeryOptions);
 
     page.$grid.on('dragstop', function (event) {
         console.log(event.target);
@@ -227,8 +232,14 @@ PageManager.addToDom = function (page) {
     
     PageManager.enableCustomization(page, customization);
 
-    //we initialize page events
-
+    //manage all fitText classes
+    page.$tab.on('shown.bs.tab', function(e) {
+       var pid = $(e.currentTarget).attr("page-id");
+       var p = PageManager.getPage(pid);
+       p.$grid.find('.textfit').fitText();
+       p.$grid.packery('layout');
+    });
+   
     //we listen click event on tab click
     page.$tab.find("a").bind('click', function (e) {
         return tabClick($(e.currentTarget).parent().attr("page-id"));
