@@ -38,13 +38,13 @@ namespace shared { namespace dateTime {
       /// \brief	Get the date time as boost posix_time format
       /// \return	the date time as boost posix_time format
       //--------------------------------------------------------------
-      boost::posix_time::ptime getBoostDateTime();
+      boost::posix_time::ptime getBoostDateTime() const;
 
       //--------------------------------------------------------------
       /// \brief	Get the date time as Poco::DateTime format
       /// \return	the date time as boost posix_time format
       //--------------------------------------------------------------
-      Poco::DateTime getPocoDateTime();
+      Poco::DateTime getPocoDateTime() const;
 
    private:
       //--------------------------------------------------------------
