@@ -146,6 +146,9 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/StandardValues.h
    shared/plugin/yPluginApi/YPluginConfiguration.hpp
 
+   shared/plugin/yPluginApi/configuration/File.cpp
+   shared/plugin/yPluginApi/configuration/File.h
+
    shared/plugin/yPluginApi/historization/IHistorizable.h
    shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp
    shared/plugin/yPluginApi/historization/BatteryLevel.cpp
@@ -396,6 +399,7 @@ source_group(logInternal shared/logInternal/*.*)
 source_group(plugin shared/shared/plugin/*.* )	
 source_group(plugin\\information shared/shared/plugin/information/*.* )	
 source_group(plugin\\yPluginApi shared/shared/plugin/yPluginApi/*.* )	
+source_group(plugin\\yPluginApi\\configuration shared/shared/plugin/yPluginApi/configuration/*.* )	
 source_group(plugin\\yPluginApi\\historization shared/shared/plugin/yPluginApi/historization/*.* )	
 source_group(plugin\\yPluginApi\\historization\\typeInfo shared/shared/plugin/yPluginApi/historization/typeInfo/*.* )	
 source_group(process process/*.* )	
