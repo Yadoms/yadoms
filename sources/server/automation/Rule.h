@@ -22,7 +22,6 @@ namespace automation
    {
    public:
       CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
-            const IPathProvider& pathProvider,
             boost::shared_ptr<interpreter::IManager> interpreterManager,
             boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
             boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
@@ -58,7 +57,6 @@ namespace automation
                                                                                                boost::shared_ptr<script::IGeneralInfo> generalInfo) const;
 
    private:
-      const IPathProvider& m_pathProvider;
       boost::shared_ptr<const database::entities::CRule> m_ruleData;
       boost::shared_ptr<interpreter::IManager> m_interpreterManager;
 

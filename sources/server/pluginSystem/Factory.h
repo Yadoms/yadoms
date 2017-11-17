@@ -20,7 +20,7 @@ namespace pluginSystem
       /// \brief	Constructor
       /// \param[in] pathProvider      The path provider
       //--------------------------------------------------------------
-      CFactory(const IPathProvider& pathProvider,
+      CFactory(boost::shared_ptr<const IPathProvider> pathProvider,
                boost::shared_ptr<shared::ILocation> locationProvider);
 
       //--------------------------------------------------------------
@@ -82,7 +82,7 @@ namespace pluginSystem
       std::vector<boost::filesystem::path> findPluginDirectories() const;
 
 
-      const IPathProvider& m_pathProvider;
+      boost::shared_ptr<const IPathProvider> m_pathProvider;
       const boost::shared_ptr<const shared::ILocation> m_location;
    };
 } // namespace pluginSystem

@@ -18,7 +18,7 @@ namespace pluginSystem
 
    bool CYadomsInformation::developperMode() const
    {
-      return shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getDeveloperMode();
+      return shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode();
    }
 
    shared::versioning::CVersion CYadomsInformation::version() const

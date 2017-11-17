@@ -663,21 +663,18 @@ IF(WIN32)
 		# Add here server/tools/windows/tools/ sources
 		server/tools/windows/tools/OperatingSystem.h
 		server/tools/windows/tools/OperatingSystem.cpp
-      server/tools/windows/tools/FileSystem.cpp
 	)	
 ELSEIF(APPLE)
 	set(YADOMS_SRC ${YADOMS_SRC}
 		# Add here server/tools/mac/tools/ sources
 		server/tools/mac/tools/OperatingSystem.h
 		server/tools/mac/tools/OperatingSystem.cpp
-      server/tools/mac/tools/FileSystem.cpp
 	)	
 ELSE()
 	set(YADOMS_SRC ${YADOMS_SRC}
 		# Add here server/tools/linux/tools/ sources
 		server/tools/linux/tools/OperatingSystem.h
 		server/tools/linux/tools/OperatingSystem.cpp
-      server/tools/linux/tools/FileSystem.cpp
 	)	
 ENDIF()
 

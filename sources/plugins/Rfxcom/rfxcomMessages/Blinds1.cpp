@@ -64,7 +64,7 @@ namespace rfxcomMessages
       }
 
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
-      m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode", 0);
+      m_unitCode = manuallyDeviceCreationConfiguration.getWithDefault<unsigned char>("unitCode", 0);
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);

@@ -69,6 +69,13 @@ namespace startupOptions
          .validator(new Poco::Util::RegExpValidator("^\\b(none|trace|debug|notice|information|warning|error|fatal|critical)\\b$"))
          .binding("server.logLevel", &m_configContainer));
 
+      options.addOption(
+         Poco::Util::Option("logPath", "lp", "Use a specific path for logs")
+         .required(false)
+         .repeatable(false)
+         .argument("logPath")
+         .binding("server.logPath", &m_configContainer));
+
       //use separator as variable, because toAllString expect a reference
       std::string separator = ", ";
       std::string allDbEngines = EDatabaseEngine::toAllString(separator);
@@ -302,6 +309,11 @@ namespace startupOptions
    std::string CStartupOptions::getLogLevel() const
    {
       return m_configContainer.getString("server.logLevel", "information");
+   }
+
+   boost::filesystem::path CStartupOptions::getLogPath() const
+   {
+      return m_configContainer.getString("server.logPath", "logs");
    }
 
    unsigned short CStartupOptions::getWebServerPortNumber() const

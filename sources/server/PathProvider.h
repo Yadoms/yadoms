@@ -13,7 +13,7 @@ public:
    /// \param[in] startupOptions    Startup options
    /// \note                        Also create needed base folders if not exist (logs, plugins...)
    //-----------------------------------------------------------------------------
-   explicit CPathProvider(const boost::shared_ptr<startupOptions::IStartupOptions> startupOptions);
+   explicit CPathProvider(boost::shared_ptr<const startupOptions::IStartupOptions> startupOptions);
 
    //-----------------------------------------------------------------------------
    /// \brief		                     Destructor

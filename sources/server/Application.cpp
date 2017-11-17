@@ -34,13 +34,20 @@ CYadomsServer::~CYadomsServer()
 
 void CYadomsServer::initialize(Application& self)
 {
+   //[START] INITIALIZE POCO; DO NOT EDIT THIS CODE
    loadConfiguration(); // load default configuration files, if present
    ServerApplication::initialize(self);
+   //[END] INITIALIZE POCO; DO NOT EDIT THIS CODE
 
+   //Do application initialization from here...
+   
+   //first of all, chng ethe working dir
+   //in daemon mode, poco change dir to '/', (path provider create logs, data, dirs => so fails if working dir is '/')
    boost::filesystem::path workingDir(config().getString("application.path"));
    boost::filesystem::current_path(workingDir.parent_path());
 
-   logging::CLogConfiguration::configure(m_startupOptions->getLogLevel());
+   m_pathProvider = boost::make_shared<CPathProvider>(m_startupOptions);
+   logging::CLogConfiguration::configure(m_startupOptions->getLogLevel(), m_pathProvider->logsPath());
 }
 
 void CYadomsServer::uninitialize()
@@ -94,7 +101,6 @@ int CYadomsServer::main(const ArgVec& /*args*/)
    {
       auto executablePath = config().getString("application.path");
       m_runningInformation = boost::make_shared<CRunningInformation>(executablePath);
-      CPathProvider pathProvider(m_startupOptions);
 
 
       YADOMS_LOG_CONFIGURE("Main");
@@ -109,7 +115,8 @@ int CYadomsServer::main(const ArgVec& /*args*/)
       }
 
       YADOMS_LOG(information) << "Startup options :";
-      YADOMS_LOG(information) << "\tlog level = " << m_startupOptions->getLogLevel();
+      YADOMS_LOG(information) << "\tLog level = " << m_startupOptions->getLogLevel();
+      YADOMS_LOG(information) << "\tLog path = " << m_startupOptions->getLogPath();
       YADOMS_LOG(information) << "\tWeb server port number = " << m_startupOptions->getWebServerPortNumber();
       YADOMS_LOG(information) << "\tSSL activated = " << m_startupOptions->getIsWebServerUseSSL();
       YADOMS_LOG(information) << "\tSSL Web server port number = " << m_startupOptions->getSSLWebServerPortNumber();
@@ -138,7 +145,7 @@ int CYadomsServer::main(const ArgVec& /*args*/)
       YADOMS_LOG(information) << "********************************************************************";
 
       //register Services in serviceLocator
-      shared::CServiceLocator::instance().push<startupOptions::IStartupOptions>(m_startupOptions);
+      shared::CServiceLocator::instance().push<const startupOptions::IStartupOptions>(m_startupOptions);
       shared::CServiceLocator::instance().push<IRunningInformation>(m_runningInformation);
 
       //configure the Poco ErrorHandler
@@ -146,7 +153,10 @@ int CYadomsServer::main(const ArgVec& /*args*/)
       auto pOldEH = Poco::ErrorHandler::set(&eh);
 
       //configure stop handler
-      enum { kTerminationRequested = shared::event::kUserFirstId };
+      enum
+         {
+            kTerminationRequested = shared::event::kUserFirstId
+         };
       auto stopRequestEventHandler = boost::make_shared<shared::event::CEventHandler>();
       auto stopHandler = boost::make_shared<shared::process::CApplicationStopHandler>(m_startupOptions->getIsRunningAsService());
       stopHandler->setApplicationStopHandler([stopRequestEventHandler, stoppedEventHandler]() -> bool
@@ -156,12 +166,12 @@ int CYadomsServer::main(const ArgVec& /*args*/)
             stopRequestEventHandler->postEvent(kTerminationRequested);
             const auto stopSuccess = stoppedEventHandler->waitForEvents(boost::posix_time::seconds(30)) == kApplicationFullyStopped;
             if (!stopSuccess)
-               YADOMS_LOG(error) << "Fail to wait the app end event";
+            YADOMS_LOG(error) << "Fail to wait the app end event";
             return stopSuccess;
          });
 
       //create supervisor
-      CSupervisor supervisor(pathProvider);
+      CSupervisor supervisor(m_pathProvider);
       Poco::Thread supervisorThread("Supervisor");
       supervisorThread.start(supervisor);
 

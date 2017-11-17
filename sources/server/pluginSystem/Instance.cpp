@@ -45,7 +45,7 @@ namespace pluginSystem
       m_ipcAdapter->postInit(information,
                              dataPath,
                              logPath,
-                             shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getLogLevel());
+                             shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getLogLevel());
    }
 
    void CInstance::postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand)

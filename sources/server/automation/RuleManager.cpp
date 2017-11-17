@@ -11,14 +11,13 @@
 
 namespace automation
 {
-   CRuleManager::CRuleManager(const IPathProvider& pathProvider,
+   CRuleManager::CRuleManager(boost::shared_ptr<const IPathProvider> pathProvider,
                               boost::shared_ptr<database::IDataProvider> dataProvider,
                               boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                               boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                               boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
                               boost::shared_ptr<shared::ILocation> location)
-      : m_pathProvider(pathProvider),
-        m_pluginGateway(pluginGateway),
+      : m_pluginGateway(pluginGateway),
         m_dbAcquisitionRequester(dataProvider->getAcquisitionRequester()),
         m_dbDeviceRequester(dataProvider->getDeviceRequester()),
         m_keywordAccessLayer(keywordAccessLayer),
@@ -27,7 +26,7 @@ namespace automation
         m_generalInfo(boost::make_shared<script::CGeneralInfo>(location)),
         m_ruleRequester(dataProvider->getRuleRequester()),
         m_ruleEventHandler(boost::make_shared<shared::event::CEventHandler>()),
-        m_interpreterManager(boost::make_shared<interpreter::CManager>(m_pathProvider)),
+        m_interpreterManager(boost::make_shared<interpreter::CManager>(pathProvider)),
         m_yadomsShutdown(false)
    {
       m_interpreterManager->setOnScriptStoppedFct(
@@ -66,19 +65,29 @@ namespace automation
    bool CRuleManager::startRules(const std::vector<boost::shared_ptr<database::entities::CRule>>& rules)
    {
       auto allRulesStarted = true;
-      for (auto rule = rules.begin();
-           rule != rules.end();
-           ++rule)
+      for (const auto& rule : rules)
       {
          try
          {
             // Start only autoStarted rules if not in error state
-            if ((*rule)->AutoStart() && (*rule)->State() != database::entities::ERuleState::kError)
-               startRule((*rule)->Id);
+            if (rule->AutoStart())
+            {
+               if (rule->State() != database::entities::ERuleState::kError)
+                  startRule(rule->Id);
+            }
+            else
+            {
+               // If Yadoms was non-gracefully stopped, running rules are still in running state
+               // and will keep their running state even if not started because of non-AutoStart rules.
+               // So force stopped state
+               if (rule->State() != database::entities::ERuleState::kError &&
+                  rule->State() != database::entities::ERuleState::kStopped)
+                  recordRuleStopped(rule->Id);
+            }
          }
          catch (CRuleException&)
          {
-            YADOMS_LOG(error) << "Unable to start rule " << (*rule)->Name() << ", skipped";
+            YADOMS_LOG(error) << "Unable to start rule " << rule->Name() << ", skipped";
             allRulesStarted = false;
          }
       }
@@ -106,7 +115,6 @@ namespace automation
 
          boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
          auto newRule(boost::make_shared<CRule>(ruleData,
-                                                m_pathProvider,
                                                 m_interpreterManager,
                                                 m_pluginGateway,
                                                 m_dbAcquisitionRequester,
@@ -245,8 +253,7 @@ namespace automation
       auto ruleId = m_ruleRequester->addRule(ruleData);
 
       // Create script file
-      auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(ruleId),
-                                                                  m_pathProvider));
+      auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(ruleId)));
       m_interpreterManager->updateScriptFile(ruleProperties->interpreterName(),
                                              ruleProperties->scriptPath().string(),
                                              code);
@@ -266,8 +273,7 @@ namespace automation
    {
       try
       {
-         auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id),
-                                                                     m_pathProvider));
+         auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id)));
          return m_interpreterManager->getScriptContent(ruleProperties->interpreterName(),
                                                        ruleProperties->scriptPath().string());
       }
@@ -327,8 +333,7 @@ namespace automation
          stopRuleAndWaitForStopped(id);
 
       // Update script file
-      auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id),
-                                                                  m_pathProvider));
+      auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id)));
       m_interpreterManager->updateScriptFile(ruleProperties->interpreterName(),
                                              ruleProperties->scriptPath().string(),
                                              code);
@@ -351,8 +356,7 @@ namespace automation
          m_ruleRequester->deleteRule(id);
 
          // Remove script file
-         auto ruleProperties(boost::make_shared<script::CProperties>(ruleData,
-                                                                     m_pathProvider));
+         auto ruleProperties(boost::make_shared<script::CProperties>(ruleData));
          m_interpreterManager->deleteScriptFile(ruleProperties->interpreterName(),
                                                 ruleProperties->scriptPath().string());
       }
@@ -412,7 +416,7 @@ namespace automation
                                         const std::string& error) const
    {
       if (!error.empty())
-         YADOMS_LOG(error) << error;
+      YADOMS_LOG(error) << error;
 
       auto ruleData(boost::make_shared<database::entities::CRule>());
       ruleData->Id = ruleId;
@@ -428,3 +432,5 @@ namespace automation
                                  error);
    }
 } // namespace automation	
+
+

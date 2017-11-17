@@ -21,7 +21,7 @@ public:
    /// \brief		                        Constructor
    /// \param[in] pathProvider            The Yadoms paths provider
    //-----------------------------------------------------------------------------
-   explicit CSupervisor(const IPathProvider& pathProvider);
+   explicit CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider);
 
    //-----------------------------------------------------------------------------
    /// \brief		                     Destructor
@@ -47,6 +47,6 @@ private:
    //-----------------------------------------------------------------------------
    /// \brief		                     The Yadoms paths provider
    //-----------------------------------------------------------------------------
-   const IPathProvider& m_pathProvider;
+   boost::shared_ptr<const IPathProvider> m_pathProvider;
 };
 

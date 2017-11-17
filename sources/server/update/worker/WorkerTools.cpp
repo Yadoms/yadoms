@@ -158,7 +158,7 @@ namespace update {
       std::string CWorkerTools::getWidgetBasePath() //TODO récupérer du IPathProvider
       {
          //retreive startup options
-         boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
+         auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
          Poco::Path websiteFolder(startupOptions->getWebServerInitialPath());
          websiteFolder.append("widgets");
          return websiteFolder.toString();
@@ -167,14 +167,14 @@ namespace update {
       std::string CWorkerTools::getPluginBasePath() //TODO récupérer du IPathProvider
       {
          //retreive startup options
-         boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
+         auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
          return startupOptions->getPluginsPath();
       }
 
       std::string CWorkerTools::getScriptInterpreterBasePath() //TODO récupérer du IPathProvider
       {
          //retreive startup options
-         boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
+         auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
          return startupOptions->getScriptInterpretersPath();
       }
 

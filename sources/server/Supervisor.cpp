@@ -32,7 +32,7 @@
 #include "location/Location.h"
 #include "location/IpApiAutoLocation.h"
 
-CSupervisor::CSupervisor(const IPathProvider& pathProvider)
+CSupervisor::CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider)
    : m_pathProvider(pathProvider)
 {
 }
@@ -55,7 +55,7 @@ void CSupervisor::run()
       shared::CServiceLocator::instance().push<notification::CNotificationCenter>(notificationCenter);
 
       //retrieve startup options
-      auto startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
+      auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
 
       //start database system
       auto databaseFactory = boost::make_shared<database::CFactory>(m_pathProvider,
@@ -76,7 +76,11 @@ void CSupervisor::run()
       auto taskManager(boost::make_shared<task::CScheduler>(dal->getEventLogger()));
 
       // Create the Plugin manager
-      auto pluginManager(boost::make_shared<pluginSystem::CManager>(m_pathProvider, pDataProvider, dal, location, taskManager));
+      auto pluginManager(boost::make_shared<pluginSystem::CManager>(m_pathProvider,
+                                                                    pDataProvider,
+                                                                    dal,
+                                                                    location,
+                                                                    taskManager));
 
       // Start Task manager
       taskManager->start();
@@ -103,15 +107,15 @@ void CSupervisor::run()
       const auto webServerUseSSL = startupOptions->getIsWebServerUseSSL();
       const auto webServerPort = startupOptions->getWebServerPortNumber();
       const auto securedWebServerPort = startupOptions->getSSLWebServerPortNumber();
-      const auto webServerPath = m_pathProvider.webServerPath().string();
-      const auto scriptInterpretersPath = m_pathProvider.scriptInterpretersPath().string();
+      const auto webServerPath = m_pathProvider->webServerPath().string();
+      const auto scriptInterpretersPath = m_pathProvider->scriptInterpretersPath().string();
       bool allowExternalAccess = startupOptions->getWebServerAllowExternalAccess();
 
       auto webServer(boost::make_shared<web::poco::CWebServer>(webServerIp, webServerUseSSL, webServerPort, securedWebServerPort, webServerPath, "/rest/", "/ws", allowExternalAccess));
 
-      webServer->getConfigurator()->websiteHandlerAddAlias("plugins", m_pathProvider.pluginsPath().string());
+      webServer->getConfigurator()->websiteHandlerAddAlias("plugins", m_pathProvider->pluginsPath().string());
       webServer->getConfigurator()->websiteHandlerAddAlias("scriptInterpreters", scriptInterpretersPath);
-      webServer->getConfigurator()->websiteHandlerAddAlias("backups", m_pathProvider.backupPath().string());
+      webServer->getConfigurator()->websiteHandlerAddAlias("backups", m_pathProvider->backupPath().string());
 
       webServer->getConfigurator()->configureAuthentication(boost::make_shared<authentication::CBasicAuthentication>(dal->getConfigurationManager(), startupOptions->getNoPasswordFlag()));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CPlugin>(pDataProvider, pluginManager, *pluginGateway));
@@ -214,3 +218,4 @@ void CSupervisor::requestToStop()
 {
    m_EventHandler.postEvent(kStopRequested);
 }
+

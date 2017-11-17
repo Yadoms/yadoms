@@ -23,7 +23,7 @@ namespace automation
    class CRuleManager : public IRuleManager
    {
    public:
-      CRuleManager(const IPathProvider& pathProvider,
+      CRuleManager(boost::shared_ptr<const IPathProvider> pathProvider,
                    boost::shared_ptr<database::IDataProvider> dataProvider,
                    boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                    boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
@@ -102,7 +102,6 @@ namespace automation
                              const std::string& error = std::string()) const;
 
    private:
-      const IPathProvider& m_pathProvider;
       boost::shared_ptr<communication::ISendMessageAsync> m_pluginGateway;
       boost::shared_ptr<database::IAcquisitionRequester> m_dbAcquisitionRequester;
       boost::shared_ptr<database::IDeviceRequester> m_dbDeviceRequester;

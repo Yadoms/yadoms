@@ -25,7 +25,7 @@ namespace automation
       {
          m_ipcAdapter->postInit(m_interpreterInformation,
                                 logPath,
-                                shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getLogLevel());
+                                shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getLogLevel());
          m_avalaible = getAvalaibility();
       }
 

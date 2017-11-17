@@ -2,8 +2,8 @@
 
 #include <shared/DataContainer.h>
 
-namespace task {
-
+namespace task
+{
    //------------------------------
    ///\brief Interface for tasks
    //------------------------------
@@ -21,21 +21,20 @@ namespace task {
       //    -> param 4 : std::string               : the exception message (should not be i18n messages; only when param1 is false)
       //    -> param 5 : dashared::CDataContainerta: Some free data provided by task implementation (specific for each task)
       //---------------------------------
-      typedef boost::function5<void, bool, boost::optional<float>, std::string, std::string, shared::CDataContainer > TaskProgressFunc;
+      typedef boost::function5<void, bool, boost::optional<float>, std::string, std::string, shared::CDataContainer> TaskProgressFunc;
 
       //------------------------------
       ///\brief Get the task name
       ///\return the task name
       //------------------------------
-      virtual const std::string & getName() = 0;
-   
+      virtual const std::string& getName() const = 0;
+
       //------------------------------
       ///\brief Method called when task instance is ready to start
       ///\param [in] taskId : The taskid
       //------------------------------
-      virtual void onSetTaskId(const std::string & taskId)
+      virtual void onSetTaskId(const std::string& taskId)
       {
-
       }
 
       //------------------------------
@@ -47,7 +46,10 @@ namespace task {
       //------------------------------
       ///\brief public destructor
       //------------------------------
-      virtual ~ITask() {}
+      virtual ~ITask()
+      {
+      }
    };
-
 } //namespace task
+
+
