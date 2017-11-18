@@ -18,7 +18,7 @@
 
 namespace pluginSystem
 {
-   CFactory::CFactory(const IPathProvider& pathProvider,
+   CFactory::CFactory(boost::shared_ptr<const IPathProvider> pathProvider,
                       boost::shared_ptr<shared::ILocation> location)
       : m_pathProvider(pathProvider),
         m_location(location)
@@ -31,7 +31,7 @@ namespace pluginSystem
 
    boost::shared_ptr<const shared::plugin::information::IInformation> CFactory::createInformation(const std::string& pluginName) const
    {
-      return boost::make_shared<CInformation>(m_pathProvider.pluginsPath() / pluginName);
+      return boost::make_shared<CInformation>(m_pathProvider->pluginsPath() / pluginName);
    }
 
    boost::shared_ptr<IInstance> CFactory::createInstance(boost::shared_ptr<const database::entities::CPlugin> instanceData,
@@ -108,12 +108,12 @@ namespace pluginSystem
 
    boost::filesystem::path CFactory::pluginLogFile(int instanceId) const
    {
-      return m_pathProvider.pluginsLogPath() / std::to_string(instanceId) / "plugin.log";
+      return m_pathProvider->pluginsLogPath() / std::to_string(instanceId) / "plugin.log";
    }
 
    boost::filesystem::path CFactory::pluginDataPath(int instanceId) const
    {
-      auto pluginDataPath(m_pathProvider.pluginsDataPath() / std::to_string(instanceId));
+      auto pluginDataPath(m_pathProvider->pluginsDataPath() / std::to_string(instanceId));
 
       if (!boost::filesystem::exists(pluginDataPath))
          boost::filesystem::create_directory(pluginDataPath);
@@ -227,10 +227,10 @@ namespace pluginSystem
       // for example a subdirectory "fakePlugin" containing a "fakePlugin.dll|so" file
       std::vector<boost::filesystem::path> pluginDirectories;
 
-      if (boost::filesystem::exists(m_pathProvider.pluginsPath()) && boost::filesystem::is_directory(m_pathProvider.pluginsPath()))
+      if (boost::filesystem::exists(m_pathProvider->pluginsPath()) && boost::filesystem::is_directory(m_pathProvider->pluginsPath()))
       {
          // Check all subdirectories in plugin path
-         for (boost::filesystem::directory_iterator subDirIterator(m_pathProvider.pluginsPath());
+         for (boost::filesystem::directory_iterator subDirIterator(m_pathProvider->pluginsPath());
               subDirIterator != boost::filesystem::directory_iterator();
               ++subDirIterator)
          {

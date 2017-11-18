@@ -91,6 +91,13 @@ namespace automation
          virtual std::string getScriptLogContent(int ruleId) = 0;
 
          //-----------------------------------------------------
+         ///\brief               Delete the script log file
+         ///\param[in] ruleId    The rule ID
+         ///\throw CInvalidParameter if rule ID not found
+         //-----------------------------------------------------
+         virtual void deleteLog(int ruleId) = 0;
+
+         //-----------------------------------------------------
          ///\brief               Set the callback on rule stop notification
          ///\param[in] onScriptStoppedFct    The function to call when rule is notified as stopped
          //-----------------------------------------------------

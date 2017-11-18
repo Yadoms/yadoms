@@ -17,7 +17,7 @@ namespace automation
          ///\brief               Constructor
          ///\param[in] pathProvider  Yadoms paths provider
          //-----------------------------------------------------
-         explicit CManager(const IPathProvider& pathProvider);
+         explicit CManager(boost::shared_ptr<const IPathProvider> pathProvider);
 
          //-----------------------------------------------------
          ///\brief               Destructor
@@ -41,6 +41,7 @@ namespace automation
                                const std::string& scriptPath,
                                bool doBackup = true) override;
          std::string getScriptLogContent(int ruleId) override;
+         void deleteLog(int ruleId) override;
          void setOnScriptStoppedFct(boost::function2<void, int, const std::string&> onScriptStoppedFct) override;
          // [END] IManager Implementation
 
@@ -71,7 +72,7 @@ namespace automation
          //-----------------------------------------------------
          ///\brief               The Yadoms paths provider
          //-----------------------------------------------------
-         const IPathProvider& m_pathProvider;
+         boost::shared_ptr<const IPathProvider> m_pathProvider;
 
          //-----------------------------------------------------
          ///\brief               The Interpreters factory

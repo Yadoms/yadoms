@@ -209,8 +209,8 @@ WidgetManager.updateToServer = function (widget) {
          try {
              WidgetManager.updateWidgetConfiguration_(widget).always(function(){
                 //we ask for a refresh of widget data
-                updateWidgetPolling(widget);
-                d.resolve();
+                updateWidgetPolling(widget)
+                .always(d.resolve);
              });
          }
          catch (e) {
@@ -247,12 +247,13 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
             var defferedResult = widget.viewModel.configurationChanged();
             //we manage answer if it is a promise or not
             defferedResult = defferedResult || new $.Deferred().resolve();
-            defferedResult.done(function () {
+            defferedResult
+            .done(function () {
                 //we manage the toolbar api specific icons
-                widget.viewModel.widgetApi.manageBatteryConfiguration().always(function(){
-					   d.resolve();
-				   });
-            });
+                widget.viewModel.widgetApi.manageBatteryConfiguration()
+                .always(d.resolve);
+            })
+            .fail(d.resolve);
         } else {
             d.resolve();
         }
@@ -308,23 +309,17 @@ WidgetManager.loadWidgets = function (widgetList, pageWhereToAdd) {
     //When all view/viewModel off all requested types of widgets are loaded, 
     //then create widgets on page
     $.when.apply($, arrayOfDeffered)
-       .done(function () {
-           var arrayOfLoadingWidgetDeferred = [];
-           $.each(widgetList, function (index, widget) {
-               arrayOfLoadingWidgetDeferred.push(WidgetManager.loadWidget(widget, pageWhereToAdd));
-           });
+    .done(function () {
+        var arrayOfLoadingWidgetDeferred = [];
+        $.each(widgetList, function (index, widget) {
+            arrayOfLoadingWidgetDeferred.push(WidgetManager.loadWidget(widget, pageWhereToAdd));
+        });
 
-           $.when.apply($, arrayOfLoadingWidgetDeferred)
-           .done(function () {
-               d.resolve();
-           })
-           .fail(function (errorMessage) {
-               d.reject(errorMessage);
-           });
-       })
-       .fail(function (errorMessage) {
-           d.reject(errorMessage);
-       });
+        $.when.apply($, arrayOfLoadingWidgetDeferred)
+        .done(d.resolve)
+        .fail(d.reject);
+    })
+    .fail(d.reject);
 
     return d.promise();
 };
@@ -342,9 +337,7 @@ WidgetManager.downloadWidgetViewAndVieWModel_ = function (widgetType, canReject)
     WidgetManager.getViewFromServer_(widgetType)
     .done(function () {
         WidgetManager.getViewModelFromServer_(widgetType)
-        .done(function () {
-            d.resolve();
-        })
+        .done(d.resolve)
         .fail(function (error) {
             if (canReject) {
                 d.reject(error);
@@ -413,12 +406,9 @@ WidgetManager.instanciateWidgetToPage_ = function (pageWhereToAdd, widget, widge
     try {
         //we finalize the load of the widget
         WidgetManager.consolidate_(widget, WidgetPackageManager.packageList[widgetType]);
-        WidgetManager.addToDom_(widget, ensureVisible).done(function(){
-           d.resolve();
-        })
-        .fail(function(){
-           d.reject();
-        });
+        WidgetManager.addToDom_(widget, ensureVisible)
+        .done(d.resolve)
+        .fail(d.reject);
         //we add the widget to the collection
         pageWhereToAdd.addWidget(widget);
     }
@@ -513,9 +503,11 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
             var defferedResult = widget.viewModel.initialize();
             //we manage answer if it is a promise or not
             defferedResult = defferedResult || new $.Deferred().resolve();
-            defferedResult.done(function () {
+            defferedResult
+            .done(function () {
                 //we notify that configuration has changed
-                WidgetManager.updateWidgetConfiguration_(widget).done(function () {
+                WidgetManager.updateWidgetConfiguration_(widget)
+                .done(function () {
                     //we notify that widget has been resized
                     var defferedResized;
                     try {
@@ -530,7 +522,8 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
 
                     //we manage answer if it is a promise or not
                     defferedResized = defferedResized || new $.Deferred().resolve();
-                    defferedResized.done(function () {
+                    defferedResized
+                    .done(function () {
                         widget.$gridWidget.i18n();
 
                         if (ensureVisible === true) {
@@ -541,13 +534,17 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
                         widget.$gridWidget.find(".textfit").fitText();
 						
                         //we ask for widget refresh data
-                        updateWidgetPolling(widget).always(function() {
+                        updateWidgetPolling(widget)
+                        .always(function() {
                            widget.viewModel.widgetApi.manageRollingTitle();
                            d.resolve();                           
                         });
-                    });
-                });
-            });
+                    }).fail(d.reject);
+                }).fail(d.reject);
+            })
+            .fail(d.reject);
+        } else {
+           d.reject("view model do not implement 'initialize' method");
         }
     }
     catch (e) {

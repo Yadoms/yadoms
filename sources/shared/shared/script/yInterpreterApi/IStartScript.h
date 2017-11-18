@@ -23,22 +23,22 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Get the script instance ID
             //-----------------------------------------------------
-            virtual int getScriptInstanceId() = 0;
+            virtual int getScriptInstanceId() const = 0;
 
             //-----------------------------------------------------
             ///\brief Get the script path
             //-----------------------------------------------------
-            virtual const boost::filesystem::path& getScriptPath() = 0;
+            virtual const boost::filesystem::path& getScriptPath() const = 0;
 
             //-----------------------------------------------------
             ///\brief Get the script API instance ID
             //-----------------------------------------------------
-            virtual const std::string& getScriptApiId() = 0;
+            virtual const std::string& getScriptApiId() const = 0;
 
             //-----------------------------------------------------
             ///\brief Get the script log path
             //-----------------------------------------------------
-            virtual const boost::filesystem::path& getScriptLogPath() = 0;
+            virtual const boost::filesystem::path& getScriptLogPath() const = 0;
          };
       }
    }

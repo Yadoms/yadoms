@@ -10,7 +10,7 @@ namespace automation
 {
    namespace interpreter
    {
-      CManager::CManager(const IPathProvider& pathProvider)
+      CManager::CManager(boost::shared_ptr<const IPathProvider> pathProvider)
          : m_pathProvider(pathProvider),
            m_factory(boost::make_shared<CFactory>(m_pathProvider))
       {
@@ -94,7 +94,7 @@ namespace automation
          try
          {
             boost::filesystem::path packageFile;
-            packageFile = m_pathProvider.scriptInterpretersPath() / interpreterType / "package.json";
+            packageFile = m_pathProvider->scriptInterpretersPath() / interpreterType / "package.json";
             container.deserializeFromFile(packageFile.string());
          }
          catch (shared::exception::CException& e)
@@ -111,9 +111,9 @@ namespace automation
          // for example a subdirectory "Python" containing a "python.exe" file (Windows) / "python" (other platforms)
          std::vector<boost::filesystem::path> interpreters;
 
-         if (boost::filesystem::exists(m_pathProvider.scriptInterpretersPath()) && boost::filesystem::is_directory(m_pathProvider.scriptInterpretersPath()))
+         if (boost::filesystem::exists(m_pathProvider->scriptInterpretersPath()) && boost::filesystem::is_directory(m_pathProvider->scriptInterpretersPath()))
          {
-            for (boost::filesystem::directory_iterator subDirIterator(m_pathProvider.scriptInterpretersPath());
+            for (boost::filesystem::directory_iterator subDirIterator(m_pathProvider->scriptInterpretersPath());
                  subDirIterator != boost::filesystem::directory_iterator();
                  ++subDirIterator)
             {
@@ -264,9 +264,17 @@ namespace automation
          return std::string(std::istreambuf_iterator<char>(file), eos);
       }
 
+      void CManager::deleteLog(int ruleId)
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
+         for (const auto& runningInterpreter : m_loadedInterpreters)
+            runningInterpreter.second->purgeScriptLog(ruleId,
+                                                      getScriptLogFilename(ruleId));
+      }
+
       boost::filesystem::path CManager::getScriptLogFilename(int ruleId) const
       {
-         return m_pathProvider.scriptsLogPath() / std::to_string(ruleId) / "rule.log";
+         return m_pathProvider->scriptsLogPath() / std::to_string(ruleId) / "rule.log";
       }
 
       void CManager::setOnScriptStoppedFct(boost::function2<void, int, const std::string&> onScriptStoppedFct)
@@ -275,3 +283,5 @@ namespace automation
       }
    }
 } // namespace automation::interpreter
+
+

@@ -2,6 +2,7 @@
 #include "YadomsSubModuleProcessLogger.h"
 #include <shared/Log.h>
 #include <shared/StringExtension.h>
+#include <shared/exception/NotImplemented.hpp>
 
 
 namespace logging
@@ -33,6 +34,11 @@ namespace logging
    void CYadomsSubModuleProcessLogger::error(const std::string& line)
    {
       YADOMS_LOG(error) << shared::CStringExtension::removeEol(line);
+   }
+
+   void CYadomsSubModuleProcessLogger::purgeLogFile()
+   {
+      throw shared::exception::CNotImplemented("CYadomsSubModuleProcessLogger::purgeLogFile");
    }
 
    std::string CYadomsSubModuleProcessLogger::extractMessage(const std::string& line,

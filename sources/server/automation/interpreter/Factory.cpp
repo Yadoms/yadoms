@@ -15,7 +15,7 @@ namespace automation
 {
    namespace interpreter
    {
-      CFactory::CFactory(const IPathProvider& pathProvider)
+      CFactory::CFactory(boost::shared_ptr<const IPathProvider> pathProvider)
          : m_pathProvider(pathProvider)
       {
       }
@@ -53,12 +53,12 @@ namespace automation
 
       boost::filesystem::path CFactory::interpreterLogFile(const std::string& interpreterFileName) const
       {
-         return m_pathProvider.scriptInterpretersLogPath() / interpreterFileName / "interpreter.log";
+         return m_pathProvider->scriptInterpretersLogPath() / interpreterFileName / "interpreter.log";
       }
 
       boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> CFactory::createInterpreterInformation(const std::string& interpreterFileName) const
       {
-         return boost::make_shared<CInformation>(m_pathProvider.scriptInterpretersPath() / interpreterFileName);
+         return boost::make_shared<CInformation>(m_pathProvider->scriptInterpretersPath() / interpreterFileName);
       }
 
       boost::shared_ptr<shared::process::IExternalProcessLogger> CFactory::createInterpreterLogger(const std::string& interpreterFileName)

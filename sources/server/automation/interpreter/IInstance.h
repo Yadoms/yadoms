@@ -67,6 +67,16 @@ namespace automation
          ///\param[in] scriptInstanceId   The script instance ID to stop
          //-----------------------------------------------------    
          virtual void stopScript(int scriptInstanceId) const = 0;
+
+         //-----------------------------------------------------
+         ///\brief               Purge the script log
+         ///\param[in] scriptInstanceId   The script instance ID to purge log (needed when rule is running)
+         ///\param[in] scriptLogPath      The script instance ID to purge log (needed when rule is not running)
+         //-----------------------------------------------------    
+         virtual void purgeScriptLog(int scriptInstanceId,
+                                     const boost::filesystem::path& scriptLogPath) const = 0;
       };
    }
 } // namespace automation::interpreter
+
+

@@ -9,8 +9,7 @@ namespace rfxcomMessages
 {
    CCartelectronicTIC::CCartelectronicTIC(const RBUF& rbuf,
                                           size_t rbufSize)
-      : m_id(0),
-        m_teleInfoStatus(boost::make_shared<teleInfo::specificHistorizers::CTeleInfoStatus>("TeleInfoStatus")), // Read-only keyword
+      : m_teleInfoStatus(boost::make_shared<teleInfo::specificHistorizers::CTeleInfoStatus>("TeleInfoStatus")), // Read-only keyword
         m_keywords({m_teleInfoStatus})
    {
       std::string NameCounter1;
@@ -99,9 +98,9 @@ namespace rfxcomMessages
          // Creating and feeding this keyword only when this value is valid
          if ((rbuf.TIC.state & 0x02) != 0)
          {
-            m_apparentePower = boost::make_shared<yApi::historization::CApparentPower>("ApparentPower");
-            m_keywords.push_back(m_apparentePower);
-            m_apparentePower->set(boost::lexical_cast<double>((rbuf.TIC.power_H << 8) + rbuf.TIC.power_L));
+            m_apparentPower = boost::make_shared<yApi::historization::CApparentPower>("ApparentPower");
+            m_keywords.push_back(m_apparentPower);
+            m_apparentPower->set(boost::lexical_cast<double>((rbuf.TIC.power_H << 8) + rbuf.TIC.power_L));
          }
          //---------
 
@@ -152,3 +151,5 @@ namespace rfxcomMessages
       return "TeleInfo Module";
    }
 } // namespace rfxcomMessages
+
+

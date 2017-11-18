@@ -9,7 +9,7 @@
 
 /*
                                                                    
-Copyright 2011-2016, RFXCOM
+Copyright 2011-2017, RFXCOM
 
 ALL RIGHTS RESERVED. This code is owned by RFXCOM, and is protected under
 Netherlands Copyright Laws and Treaties and shall be subject to the 
@@ -27,6 +27,22 @@ portions of this file.
 */
 
 /*
+SDK version 9.17
+	RFXtrxIOT added
+	868 config bits added (changed)
+	Interface Control Freq commands removed (use freqsel instead)
+
+SDK version 9.16
+	RAIN8 and RAIN9 added
+	WIND8 added
+	Cartelectronic - Linky added
+
+SDK version 9.15
+	BlindsT13 - Screenline angle change added
+
+SDK version 9.14
+	Lighting5 - Kangtai added
+
 SDK version 9.13
 	BlindsT13 - Screenline added
 
@@ -333,19 +349,6 @@ SDK version 4.9
 #define cmdSAVE		0x06 // save receiving modes of the receiver/transceiver in non-volatile memory
 #define cmdStartRec	0x07 // start RFXtrx receiver
 
-#define cmd310		0x50 // select 310MHz in the 310/315 transceiver
-#define cmd315		0x51 // select 315MHz in the 310/315 transceiver
-#define cmd800		0x55 // select 868.00MHz ASK in the 868 transceiver
-#define cmd800F		0x56 // select 868.00MHz FSK in the 868 transceiver
-#define cmd830		0x57 // select 868.30MHz ASK in the 868 transceiver
-#define cmd830F		0x58 // select 868.30MHz FSK in the 868 transceiver
-#define cmd835		0x59 // select 868.35MHz ASK in the 868 transceiver
-#define cmd835F		0x5A // select 868.35MHz FSK in the 868 transceiver
-#define cmd895		0x5B // select 868.95MHz in the 868 transceiver
-#define cmd830F_P	0x5C // select 868.30MHz FSK PKT in the 868 transceiver
-#define cmd835F_P	0x5D // select 868.35MHz FSK PKT in the 868 transceiver
-#define cmd840F_P	0x5E // select 868.40MHz FSK PKT in the 868 transceiver
-
 #define pTypeInterfaceMessage 0x01
 #define sTypeInterfaceResponse 0x00
 #define sTypeUnknownRFYremote 0x01
@@ -354,22 +357,15 @@ SDK version 4.9
 #define sTypeASAremoteList 0x04
 #define sTypeRecStarted 0x07
 #define sTypeInterfaceWrongCommand 0xFF
-#define recType310 0x50
-#define recType315 0x51
+#define trxType310 0x50
+#define trxType315 0x51
 #define recType43392 0x52
 #define trxType43392 0x53
-#define recType86800 0x55
-#define recType86800FSK 0x56
-#define recType86830 0x57
-#define recType86830FSK 0x58
-#define recType86835 0x59
-#define recType86835FSK 0x5A
-#define recType86895 0x5B
-#define recType86830FSK_PKT 0x5C
-#define recType86835FSK_PKT 0x5D
-#define recType86840FSK_PKT 0x5E
-#define trxType43450 0x5F
+#define trxType868 0x55
+#define trxTypeIOT433 0x56
+#define trxTypeIOT868 0x57
 
+//433 config bits
 #define msg3_AE 0x01			//AE Blyss
 #define msg3_RUBICSON 0x02		//Rubicson,Lacrosse, Banggood
 #define msg3_FINEOFFSET 0x04	//Fineoffset,Viking
@@ -383,8 +379,8 @@ SDK version 4.9
 #define msg4_AD 0x02			//AD LightwaveRF
 #define msg4_HID 0x04			//Hideki
 #define msg4_LCROS 0x08			//LaCrosse
-#define msg4_FS20 0x10			//FS20,Legrand CAD
-#define msg4_PROGUARD 0x20
+#define msg4_LEGRAND 0x10		//Legrand CAD
+#define msg4_RFU 0x20
 #define msg4_BLINDST0 0x40
 #define msg4_BLINDST1 0x80
 
@@ -405,6 +401,43 @@ SDK version 4.9
 #define msg6_RFU5 0x20
 #define msg6_RFU6 0x40
 #define msg6_RFU7 0x80
+
+//868 config bits
+#define msg3_868_RFU0 0x01		//RFU
+#define msg3_868_RFU1 0x02		//RFU
+#define msg3_868_RFU2 0x04		//RFU
+#define msg3_868_DAVISEU 0x08	//Davis EU
+#define msg3_868_RFU4 0x10		//RFU
+#define msg3_868_LACROSSE 0x20	//laCrosse
+#define msg3_868_ALECTO 0x40	//Alecto ACH2010
+#define msg3_868_UNDEC 0x80		//Enable undecoded
+
+#define msg4_868_EDISIO 0x01	//Edisio
+#define msg4_868_AD 0x02		//AD LightwaveRF
+#define msg4_868_FS20 0x04		//FS20
+#define msg4_868_RFU3 0x08		//RFU
+#define msg4_868_RFU4 0x10		//Legrand CAD
+#define msg4_868_RFU5 0x20		//RFU
+#define msg4_868_RFU6 0x40		//RFU
+#define msg4_868_RFU7 0x80		//RFU
+
+#define msg5_868_RFU0 0x01		//RFU
+#define msg5_868_RFU1 0x02		//RFU
+#define msg5_868_RFU2 0x04		//RFU
+#define msg5_868_RFU3 0x08		//RFU
+#define msg5_868_PROGUARD 0x10	//Proguard
+#define msg5_868_KEELOQ 0x20	//Keeloq
+#define msg5_868_MEI 0x40		//Meiantech,Atlantic
+#define msg5_868_VISONIC 0x80	//Visonic
+
+#define msg6_868_RFU0 0x01		//RFU
+#define msg6_868_RFU1 0x02		//RFU
+#define msg6_868_RFU2 0x04		//RFU
+#define msg6_868_RFU3 0x08		//RFU
+#define msg6_868_RFU4 0x10		//RFU
+#define msg6_868_HONCHIME 0x20	//Honeywell Chime
+#define msg6_868_ITHOECO 0x40	//Itho CVE ECO RFT
+#define msg6_868_ITHO 0x80		//Itho CVE RFT
 
 #define pTypeRecXmitMessage 0x02
 #define sTypeReceiverLockError 0x00
@@ -672,6 +705,8 @@ SDK version 4.9
 #define blinds_s10LearnMaster 0x4
 #define blinds_s10EraseCurrentCh 0x5
 #define blinds_s10ChangeDirection 0x6
+#define blinds_s13anglePlus 0x4
+#define blinds_s13angleMinus 0x5
 
 //types for RFY
 #define pTypeRFY 0x1A
@@ -842,7 +877,7 @@ SDK version 4.9
 
 //types for temperature
 #define pTypeTEMP 0x50
-#define sTypeTEMP1 0x1  //THR128/138,THC138
+#define sTypeTEMP1 0x1  //THR128/138,THC138, Davis
 #define sTypeTEMP2 0x2  //THC238/268,THN132,THWR288,THRN122,THN122,AW129/131
 #define sTypeTEMP3 0x3  //THWR800
 #define sTypeTEMP4 0x4	//RTHN318
@@ -856,7 +891,7 @@ SDK version 4.9
 
 //types for humidity
 #define pTypeHUM 0x51
-#define sTypeHUM1 0x1  //LaCrosse TX3
+#define sTypeHUM1 0x1  //LaCrosse TX3, Davis
 #define sTypeHUM2 0x2  //LaCrosse WS2300
 #define sTypeHUM3 0x03  //Inovalley S80 plant humidity sensor
 
@@ -905,6 +940,8 @@ SDK version 4.9
 #define sTypeRAIN5 0x5   //WS2300
 #define sTypeRAIN6 0x6   //TX5
 #define sTypeRAIN7 0x7   //Alecto
+#define sTypeRAIN8 0x8   //Davis
+#define sTypeRAIN9 0x9   //Alecto WCH2010
 
 //types for wind
 #define pTypeWIND 0x56
@@ -912,13 +949,14 @@ SDK version 4.9
 #define sTypeWIND2 0x2   //WGR800
 #define sTypeWIND3 0x3   //STR918,WGR918
 #define sTypeWIND4 0x4   //TFA
-#define sTypeWIND5 0x5   //UPM
+#define sTypeWIND5 0x5   //UPM, Davis
 #define sTypeWIND6 0x6   //WS2300
 #define sTypeWIND7 0x7   //Alecto WS4500
+#define sTypeWIND8 0x8   //Alecto ACH2010
 
 //types for uv
 #define pTypeUV 0x57
-#define sTypeUV1 0x1   //UVN128,UV138
+#define sTypeUV1 0x1   //UVN128,UV138, Davis
 #define sTypeUV2 0x2   //UVN800
 #define sTypeUV3 0x3   //TFA
 
@@ -958,6 +996,7 @@ SDK version 4.9
 #define pTypeCARTELECTRONIC 0x60
 #define sTypeTIC 0x1
 #define sTypeCEencoder 0x2
+#define sTypeLinky 0x3
 
 //RFXSensor
 #define pTypeRFXSensor 0x70
@@ -2047,6 +2086,43 @@ typedef union tRBUF {
 		BYTE	rssi : 4;
 #endif
 	} CEENCODER;
+
+	struct {
+		BYTE packetlength;
+		BYTE packettype;
+		BYTE subtype;
+		BYTE seqnbr;
+		BYTE id1;
+		BYTE id2;
+		BYTE id3;
+		BYTE id4;
+		BYTE runidx_0;
+		BYTE runidx_1;
+		BYTE runidx_2;
+		BYTE runidx_3;
+		BYTE prodidx1_0;
+		BYTE prodidx1_1;
+		BYTE prodidx1_2;
+		BYTE prodidx1_3;
+#ifdef IS_BIG_ENDIAN
+		BYTE rfu : 4;
+		BYTE currentidx : 4;
+#else
+		BYTE currentidx : 4;
+		BYTE rfu : 4;
+#endif
+		BYTE av_voltage;
+		BYTE power_H;
+		BYTE power_L;
+		BYTE state;
+#ifdef IS_BIG_ENDIAN
+		BYTE	rssi : 4;
+		BYTE	battery_level : 4;
+#else
+		BYTE	battery_level : 4;
+		BYTE	rssi : 4;
+#endif
+	} LINKY;
 
 	struct {
 		BYTE	packetlength;

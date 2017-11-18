@@ -1,8 +1,8 @@
 #pragma once
 #include "ITask.h"
 
-namespace task {
-
+namespace task
+{
    //------------------------------
    ///\brief Class which handle generic task
    //------------------------------
@@ -20,16 +20,16 @@ namespace task {
       ///\param [in] name        The task name (ie: yadoms.update)
       ///\param [in] pFunctor    The function pointer to use (task real content)
       //------------------------------      
-      CGenericTask(const std::string & name, TaskFunc pFunctor);
+      CGenericTask(const std::string& name, TaskFunc pFunctor);
 
       //------------------------------
       ///\brief Destructor
       //------------------------------        
       virtual ~CGenericTask();
-      
+
       // ITask implementation
-      virtual const std::string & getName();
-      virtual void doWork(TaskProgressFunc pFunctor);
+      const std::string& getName() const override;
+      void doWork(TaskProgressFunc pFunctor) override;
       // ITask implementation
 
    private:
@@ -37,11 +37,12 @@ namespace task {
       ///\brief The task name (ie: yadoms.update)
       //------------------------------      
       std::string m_taskName;
-      
+
       //------------------------------
       ///\brief The function pointer to use (task real content)
       //------------------------------         
       TaskFunc m_pFunctor;
    };
-   
 } //namespace task
+
+

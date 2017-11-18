@@ -88,7 +88,8 @@
         "resetToDefault": "Restaurer les valeurs par défaut",
         "goBack": "Retour",
         "enabled": "Activé",
-        "disabled": "Désactivé"
+        "disabled": "Désactivé",
+        "clear": "Effacer"
     },
     "mainPage": {
         "menu": {
@@ -547,6 +548,7 @@
           "delete": "Supprimer la règle",
           "confirmDeletion": "Confirmez-vous la suppression de la règle __name__ ?",
           "log": "Consulter le journal",
+          "confirmLogDeletion": "Confirmez-vous la suppression du journal de la règle __name__ ?",
           "ruleSuccessfullyCreated": "Règle créée",
           "ruleSuccessfullyUpdated": "Règle mise à jour",
           "ruleDeleted": "Règle supprimée",
@@ -559,7 +561,8 @@
 		  "pluginListingError": "Impossible de lister les plugins.",
           "ruleListingError": "Impossible de lister les règles.",
           "ruleInterpreterListingError": "Impossible de lister les interpréteurs de règles.",
-          "ruleGetLogError": "Impossible d'obtenir le log de la règle __rule__.",
+          "ruleGetLogError": "Impossible d'obtenir le journal de la règle __rule__.",
+          "ruleDeleteLogError": "Impossible de supprimer le journal de la règle __rule__.",
           "editors": {
             "code": {
               "name": "Code"
@@ -727,7 +730,7 @@
             },
             "yadoms_log": {
                 "title": "Loguer",
-                "tooltip": "Ecrit une ligne dans le fichier de log du script"
+                "tooltip": "Ecrit une ligne dans le fichier de journal du script"
             },
             "infinite-loop": {
                 "title": "A l'infini",

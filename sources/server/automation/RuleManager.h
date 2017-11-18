@@ -23,7 +23,7 @@ namespace automation
    class CRuleManager : public IRuleManager
    {
    public:
-      CRuleManager(const IPathProvider& pathProvider,
+      CRuleManager(boost::shared_ptr<const IPathProvider> pathProvider,
                    boost::shared_ptr<database::IDataProvider> dataProvider,
                    boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                    boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
@@ -40,6 +40,7 @@ namespace automation
       boost::shared_ptr<database::entities::CRule> getRule(int id) const override;
       std::string getRuleCode(int id) const override;
       std::string getRuleLog(int id) const override;
+      void deleteRuleLog(int id) const override;
       std::string getRuleTemplateCode(const std::string& interpreterName) const override;
       void updateRule(boost::shared_ptr<const database::entities::CRule> ruleData) override;
       void updateRuleCode(int id, const std::string& code) override;
@@ -102,7 +103,6 @@ namespace automation
                              const std::string& error = std::string()) const;
 
    private:
-      const IPathProvider& m_pathProvider;
       boost::shared_ptr<communication::ISendMessageAsync> m_pluginGateway;
       boost::shared_ptr<database::IAcquisitionRequester> m_dbAcquisitionRequester;
       boost::shared_ptr<database::IDeviceRequester> m_dbDeviceRequester;

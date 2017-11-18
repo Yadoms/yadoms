@@ -7,9 +7,12 @@
 #include <shared/script/yInterpreterApi/ISaveScriptContentRequest.h>
 #include <shared/script/yInterpreterApi/IStartScript.h>
 #include <shared/script/yInterpreterApi/IStopScript.h>
+#include <shared/script/yInterpreterApi/IPurgeScriptLog.h>
 #include "Factory.h"
 #include "EventScriptStopped.h"
 #include <shared/Log.h>
+#include "ScriptProcess.h"
+#include <ScriptLogger.h>
 
 // Declare the script interpreter
 IMPLEMENT_INTERPRETER(CPython27)
@@ -100,6 +103,14 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
          {
             auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IStopScript>>();
             stopScript(request->getScriptInstanceId());
+            break;
+         }
+
+      case yApi::IYInterpreterApi::kEventPurgeScriptLog:
+         {
+            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IPurgeScriptLog>>();
+            deleteScriptLog(request->getScriptInstanceId(),
+                            request->getScriptLogPath());
             break;
          }
 
@@ -242,5 +253,25 @@ void CPython27::onStopRequested()
          break;
       }
    }
+}
+
+void CPython27::deleteScriptLog(int scriptInstanceId,
+                                const boost::filesystem::path& scriptLogPath)
+{
+   boost::lock_guard<boost::recursive_mutex> lock(m_processesMutex);
+
+   const auto scriptProcessIt = m_scriptProcesses.find(scriptInstanceId);
+   if (scriptProcessIt == m_scriptProcesses.end())
+   {
+      // Script is not running
+      interpreter_cpp_api::CScriptLogger::purgeLogFile(scriptLogPath.parent_path());
+      return;
+   }
+
+   const auto scriptProcess = boost::dynamic_pointer_cast<CScriptProcess>(scriptProcessIt->second);
+   if (!scriptProcess)
+      return;
+
+   scriptProcess->logger()->purgeLogFile();
 }
 

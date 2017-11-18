@@ -63,3 +63,7 @@ std::string CScriptProcess::getError() const
    return m_process->getError();
 }
 
+boost::shared_ptr<shared::process::IExternalProcessLogger> CScriptProcess::logger() const
+{
+   return m_scriptLogger;
+}

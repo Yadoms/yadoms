@@ -237,3 +237,13 @@ AutomationRuleManager.getLog = function(rule) {
    assert(!isNullOrUndefined(rule), "rule must be defined");
    return RestEngine.getJson("rest/automation/rule/" + rule.id + "/log");
 };
+
+/**
+ * Delete the log content of a rule
+ * @param {Object} rule The rule to delete the log content
+ * @return {Promise}
+ */
+AutomationRuleManager.deleteLog = function(rule) {
+   assert(!isNullOrUndefined(rule), "rule must be defined");
+   return RestEngine.deleteJson("rest/automation/rule/" + rule.id + "/log");
+};

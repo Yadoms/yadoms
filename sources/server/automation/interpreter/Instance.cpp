@@ -7,6 +7,7 @@
 #include "SaveScriptContentRequest.h"
 #include "StartScript.h"
 #include "StopScript.h"
+#include "PurgeScriptLog.h"
 #include <shared/ServiceLocator.h>
 #include "startupOptions/IStartupOptions.h"
 
@@ -25,7 +26,7 @@ namespace automation
       {
          m_ipcAdapter->postInit(m_interpreterInformation,
                                 logPath,
-                                shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getLogLevel());
+                                shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getLogLevel());
          m_avalaible = getAvalaibility();
       }
 
@@ -148,6 +149,23 @@ namespace automation
          }
       }
 
+      void CInstance::purgeScriptLog(int scriptInstanceId,
+                                     const boost::filesystem::path& scriptLogPath) const
+      {
+         auto request(boost::make_shared<CPurgeScriptLog>(scriptInstanceId,
+                                                          scriptLogPath));
+
+         try
+         {
+            m_ipcAdapter->postPurgeScriptLog(request);
+            YADOMS_LOG(debug) << "Send purgeScriptLog to interpreter " << m_interpreterInformation->getName();
+         }
+         catch (std::exception& e)
+         {
+            YADOMS_LOG(error) << "Error when purging script log from interpreter " << m_interpreterInformation->getName() << " : " << e.what();
+         }
+      }
+
       bool CInstance::getAvalaibility() const
       {
          communication::callback::CSynchronousCallback<bool> callback;
@@ -180,3 +198,5 @@ namespace automation
       }
    }
 } // namespace automation::interpreter
+
+

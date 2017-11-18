@@ -35,8 +35,7 @@ public:
    bool isLWRFenabled() const override;
    bool isHIDEKIenabled() const override;
    bool isLACROSSEenabled() const override;
-   bool isFS20enabled() const override;
-   bool isPROGUARDenabled() const override;
+   bool isLEGRANDenabled() const override;
    bool isBLINDST0enabled() const override;
    bool isBLINDST1enabled() const override;
    bool isX10enabled() const override;

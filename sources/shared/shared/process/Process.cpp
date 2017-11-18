@@ -29,8 +29,8 @@ namespace shared
          try
          {
             Poco::Process::Args args;
-            for (auto cmdLineArg = m_commandLine->args().begin(); cmdLineArg != m_commandLine->args().end(); ++cmdLineArg)
-               args.push_back(*cmdLineArg);
+            for (const auto& cmdLineArg : m_commandLine->args())
+               args.push_back(cmdLineArg);
 
 
             YADOMS_LOG(debug) << "Start process " << m_commandLine->executable() << " from " << m_commandLine->workingDirectory();
@@ -149,7 +149,7 @@ namespace shared
          logger->information("#### START ####");
 
          char line[1024];
-         while (moduleStdOut->getline(line, sizeof(line)))
+         while (moduleStdOut->getline(line, sizeof line))
          {
             logger->information(line);
          }
@@ -162,7 +162,7 @@ namespace shared
          logger->init();
 
          char line[1024];
-         while (moduleStdErr->getline(line, sizeof(line)))
+         while (moduleStdErr->getline(line, sizeof line))
          {
             if (!!lastError)
                *lastError += line;
