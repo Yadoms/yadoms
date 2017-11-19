@@ -39,7 +39,7 @@ namespace equipments
    }
 
    void CDefaultEquipment::updatelastMessageId(boost::shared_ptr<yApi::IYPluginApi> api,
-                                               std::string& id)
+                                               const std::string& id)
    {
       shared::CDataContainer details;
       details.set("id", id);
@@ -53,7 +53,7 @@ namespace equipments
    }
 
    void CDefaultEquipment::updateData(boost::shared_ptr<yApi::IYPluginApi> api,
-                                      std::string& data)
+                                      const std::string& data)
    {
       m_messageKeyword->set(data);
       api->historizeData(m_name, m_messageKeyword);
