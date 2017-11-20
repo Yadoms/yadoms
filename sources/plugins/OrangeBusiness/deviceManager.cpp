@@ -48,18 +48,17 @@ void CEquipmentManager::refreshEquipments(boost::shared_ptr<yApi::IYPluginApi> a
 			// reading of the battery level
 			shared::CDataContainer response = frameManager->getDeviceInformation(apikey, pair.second->getEUI());
 			response.printToLog(YADOMS_LOG(information));
-			int batteryLevel = response.get<int>("lastBatteryLevel");
 			boost::posix_time::ptime receivedTime(response.get<boost::posix_time::ptime>("updateTs"));
          boost::posix_time::ptime actualTime = shared::currentTime::Provider().now();
-			boost::posix_time::time_duration td = actualTime - receivedTime;
+			boost::posix_time::time_duration elapseTimeSinceLastBatteryMessage = actualTime - receivedTime;
+         const boost::posix_time::time_duration maxTimeForBatteryHistorization = boost::posix_time::hours(168);
 
-			// Todo : Reading of the last communication date. If the date is too old for battery level > 1 week - do not integrate it
-			if (td.total_seconds() < (3600 * 24 * 7)) // A améliorer
+			// Reading of the last communication date. If the date is too old for battery level > 1 week - do not historize it
+			if (elapseTimeSinceLastBatteryMessage < maxTimeForBatteryHistorization)
 			{
-            m_deviceList.at(pair.first)->updateBatteryLevel(api, batteryLevel);
+            m_deviceList.at(pair.first)->updateBatteryLevel(api, response.get<int>("lastBatteryLevel"));
 			}
 
-			//Todo : Enter a date to limit the number of frames
 			// Reading all commands for an equipment. lastest messages should be write first
          response = frameManager->listDeviceCommands(apikey, pair.second->getEUI(), 0);
 
@@ -70,10 +69,11 @@ void CEquipmentManager::refreshEquipments(boost::shared_ptr<yApi::IYPluginApi> a
          if (response.get<std::string>("id") != m_deviceList.at(pair.first)->getlastMessageId(api))
          {
             boost::posix_time::ptime receivedTime(response.get<boost::posix_time::ptime>("updateTs"));
-            boost::posix_time::time_duration td = actualTime - receivedTime;
+            boost::posix_time::time_duration elapseTimeSinceLastDataMessage = actualTime - receivedTime;
+            const boost::posix_time::time_duration maxTimeForDataHistorization = boost::posix_time::minutes(30);
 
-            // If the time is > 30mn, we do not integrate it
-            if (td.total_seconds() < (60 * 30))
+            // If the time is > 30mn, we do not historize it
+            if (elapseTimeSinceLastDataMessage < maxTimeForDataHistorization)
             {
                m_deviceList.at(pair.first)->updateData(api, response.get<std::string>("data"));
             }
