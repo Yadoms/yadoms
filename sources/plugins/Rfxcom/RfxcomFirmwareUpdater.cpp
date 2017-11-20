@@ -50,7 +50,7 @@ void CRfxcomFirmwareUpdater::update()
 
    // Load input file
    m_extraQuery->reportProgress(0.0f, "customLabels.firmwareUpdate.loadInputFile");//TODO traduire
-   loadFile(hexFile.getContent());
+   const auto hexData = loadFile(hexFile.getContent());
 
    boost::shared_ptr<CPicBoot> picBoot;
    try
@@ -67,7 +67,7 @@ void CRfxcomFirmwareUpdater::update()
 
       rfxcomReadBootloaderVersion(picBoot);
       rfxcomClearMemory(picBoot);
-      rfxcomWritingMemory(picBoot);
+      rfxcomWritingMemory(picBoot, hexData);
       m_extraQuery->reportProgress(5.0f, "customLabels.firmwareUpdate.verify");//TODO traduire
       rfxcomVerifyMemory(picBoot);
       //TODO faut pas écrire le VerifyOK quelque part ?
@@ -83,7 +83,7 @@ void CRfxcomFirmwareUpdater::update()
    }
 }
 
-void CRfxcomFirmwareUpdater::loadFile(const std::string& fileContent) const
+boost::shared_ptr<CRfxcomFirmwareUpdater::CHexData> CRfxcomFirmwareUpdater::loadFile(const std::string& fileContent) const
 {
    YADOMS_LOG(debug) << "Load input file...";
 
@@ -126,7 +126,7 @@ void CRfxcomFirmwareUpdater::loadFile(const std::string& fileContent) const
       std::string line;
       auto lineCount = 0;
       unsigned int addressMostSignificantWordMask = 0;
-      auto hexData = boost::make_shared<std::map<unsigned long /*address*/, std::vector<unsigned char> /*data*/>>();
+      auto hexData = boost::make_shared<CHexData>();
       while (std::getline(ss, line))
       {
          // check for minimal line size (line without data)
@@ -144,29 +144,24 @@ void CRfxcomFirmwareUpdater::loadFile(const std::string& fileContent) const
          if (readDataSize != (line.size() - 11) / 2)
             throw std::invalid_argument((boost::format("Line %1% : Invalid data size %2% bytes, expected %3% bytes ('BB' field)") % lineCount % (line.size() - 11) % readDataSize).str());
 
-         // Check the line type, only Extended Linear Address Record type is supported.
-         // The End Of File and Extended Linear Address Record will be tested later, so ignore it here.
-         const auto lineType = hexStringToUInt(line.substr(kIdxLineType, 2));
-         if (lineType != kEOF && lineType != kExtendedLinearAddressRecord && lineType != kData)
-            throw std::invalid_argument((boost::format("Line %1% : Invalid line type %2%, expected %3%") % lineCount % lineType % kData).str());
-
          // Check the line checksum
          const auto readChecksum = hexStringToUInt(line.substr(kIdxData + (readDataSize * 2), 2));
          const auto computedChecksum = computeLineChecksum(line);
          if (readChecksum != computedChecksum)
             throw std::invalid_argument((boost::format("Line %1% : Invalid line checksum %2%, expected %3%") % lineCount % computedChecksum % readChecksum).str());
 
-         if (lineCount == 0)
+         // Process line content
+         // Check the line type, only Extended Linear Address Record type is supported.
+         // The End Of File and Extended Linear Address Record will be tested later, so ignore it here.
+         const auto lineType = hexStringToUInt(line.substr(kIdxLineType, 2));
+         switch (lineType)
          {
-            // Check the first line
-            if (lineType != kExtendedLinearAddressRecord)
-               throw std::invalid_argument((boost::format("Line %1% : Invalid first line type %2%, expected %3%") % lineCount % lineType % kExtendedLinearAddressRecord).str());
-            addressMostSignificantWordMask = hexStringToUInt(line.substr(kIdxData, 4)) << 16;
-         }
-         else
-         {
-            // Process other lines
-            if (lineType == kData)
+         case kExtendedLinearAddressRecord:
+            {
+               addressMostSignificantWordMask = hexStringToUInt(line.substr(kIdxData, 4)) << 16;
+               break;
+            }
+         case kData:
             {
                const auto address = addressMostSignificantWordMask | hexStringToUInt(line.substr(kIdxAddress, 4));
                if (hexData->find(address) != hexData->end())
@@ -175,7 +170,12 @@ void CRfxcomFirmwareUpdater::loadFile(const std::string& fileContent) const
                for (auto byteIndex = 0; byteIndex < readDataSize; ++byteIndex)
                   (*hexData)[address].push_back(static_cast<unsigned char>(hexStringToUInt(line.substr(kIdxData + 2 * byteIndex, 2))));
                //TODO finir de lire le fichier
+               break;
             }
+         case kEOF: // The End Of File will be tested later, so ignore it here.
+            break;
+         default:
+            throw std::invalid_argument((boost::format("Line %1% : Unsupported line type %2%") % lineCount % lineType).str());
          }
 
          ++lineCount;
@@ -185,14 +185,15 @@ void CRfxcomFirmwareUpdater::loadFile(const std::string& fileContent) const
       const auto lineType = hexStringToUInt(line.substr(kIdxLineType, 2));
       if (lineType != kEOF)
          throw std::invalid_argument((boost::format("Line %1% : Invalid line type %2%, expected last line type %3%") % lineCount % lineType % kEOF).str());
+
+      YADOMS_LOG(debug) << "Input file is loaded";
+      return hexData;
    }
    catch (std::exception& e)
    {
       YADOMS_LOG(error) << "RfxcomFirmwareUpdater, invalid input file : " << e.what();
       throw std::runtime_error("customLabels.firmwareUpdate.ErrorInvalidInputFile");
    }
-
-   YADOMS_LOG(debug) << "Input file is loaded";
 }
 
 unsigned int CRfxcomFirmwareUpdater::hexStringToUInt(const std::string& hexString)
@@ -279,7 +280,8 @@ void CRfxcomFirmwareUpdater::rfxcomClearMemory(boost::shared_ptr<CPicBoot> picBo
    YADOMS_LOG(debug) << "RFXCom memory cleared";
 }
 
-void CRfxcomFirmwareUpdater::rfxcomWritingMemory(boost::shared_ptr<CPicBoot> picBoot)
+void CRfxcomFirmwareUpdater::rfxcomWritingMemory(boost::shared_ptr<CPicBoot> picBoot,
+                                                 boost::shared_ptr<CHexData> hexData)
 {
    YADOMS_LOG(debug) << "Write RFXCom memory...";
    //TODO
