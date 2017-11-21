@@ -231,7 +231,7 @@
             }
           }
         },
-        "id1_16777215-unitCode0_14": {
+        "id1_16777215-unitCode1_15": {
           "types": {
             "aOkAc114": { "canBeCreatedManually": "true" }
           },
@@ -243,8 +243,8 @@
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "14"
+              "minimumValue": "1",
+              "maximumValue": "15"
             }
           }
         },
@@ -512,7 +512,8 @@
         "id1_65535-uc1_15": {
           "types": {
             "rollerTrolHastaNew": { "canBeCreatedManually": "true" },
-            "hastaOld": { "canBeCreatedManually": "true" }
+            "hastaOld": { "canBeCreatedManually": "true" },
+            "confexx": { "canBeCreatedManually": "true" }
           },
           "content": {
             "id": {
@@ -524,24 +525,6 @@
               "type": "int",
               "minimumValue": "1",
               "maximumValue": "15"
-            }
-          }
-        },
-
-        "id1_65535-uc0_14": {
-          "types": {
-            "confexx": { "canBeCreatedManually": "true" }
-          },
-          "content": {
-            "id": {
-              "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "65535"
-            },
-            "unitCode": {
-              "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "14"
             }
           }
         },
@@ -597,7 +580,7 @@
           }
         },
 
-        "id1_4095-uc0_5": {
+        "id1_4095-uc1_6": {
           "types": { "chamberlaincs4330cn": { "canBeCreatedManually": "true" } },
           "content": {
             "id": {
@@ -607,8 +590,8 @@
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "5"
+              "minimumValue": "1",
+              "maximumValue": "6"
             }
           }
         },

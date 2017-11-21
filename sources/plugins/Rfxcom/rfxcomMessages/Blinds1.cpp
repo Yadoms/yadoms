@@ -44,27 +44,29 @@ namespace rfxcomMessages
       m_subType = static_cast<unsigned char>(subType);
       switch (m_subType)
       {
+      case sTypeBlindsT3:
+      case sTypeBlindsT8:
+      case sTypeBlindsT12:
+         m_unitCode = manuallyDeviceCreationConfiguration.getWithDefault<unsigned char>("unitCode", 0) - 1;
+         break;
       case sTypeBlindsT0:
       case sTypeBlindsT1:
       case sTypeBlindsT2:
-      case sTypeBlindsT3:
       case sTypeBlindsT4:
       case sTypeBlindsT5:
       case sTypeBlindsT6:
       case sTypeBlindsT7:
-      case sTypeBlindsT8:
       case sTypeBlindsT9:
       case sTypeBlindsT10:
       case sTypeBlindsT11:
-      case sTypeBlindsT12:
       case sTypeBlindsT13:
+         m_unitCode = manuallyDeviceCreationConfiguration.getWithDefault<unsigned char>("unitCode", 0);
          break;
       default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
       }
 
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
-      m_unitCode = manuallyDeviceCreationConfiguration.getWithDefault<unsigned char>("unitCode", 0);
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);

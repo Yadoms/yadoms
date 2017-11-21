@@ -155,7 +155,7 @@
             }
           }
         },
-        "id1_16777215-unitCode0_14": {
+        "id1_16777215-unitCode1_15": {
           "types": { "aOkAc114": { "title": "aOkAc114" } },
           "content": {
             "id": {
@@ -164,7 +164,7 @@
             },
             "unitCode": {
               "name": "Unit Code",
-              "description": "The unit code (0-14)"
+              "description": "The unit code (1-15)"
             }
           }
         },
@@ -409,22 +409,7 @@
         "id1_65535-uc1_15": {
           "types": {
             "rollerTrolHastaNew": { "title": "rollerTrolHastaNew" },
-            "hastaOld": { "title": "hastaOld" }
-          },
-          "content": {
-            "id": {
-              "name": "ID",
-              "description": "The device ID (1-65535)"
-            },
-            "unitCode": {
-              "name": "Unit Code",
-              "description": "The unit code (1-15)"
-            }
-          }
-        },
-
-        "id1_65535-uc0_14": {
-          "types": {
+            "hastaOld": { "title": "hastaOld" },
             "confexx": { "title": "confexx" }
           },
           "content": {
@@ -434,7 +419,7 @@
             },
             "unitCode": {
               "name": "Unit Code",
-              "description": "The unit code (0-14)"
+              "description": "The unit code (1-15)"
             }
           }
         },
@@ -484,7 +469,7 @@
           }
         },
 
-        "id1_4095-uc0_5": {
+        "id1_4095-uc1_6": {
           "types": { "chamberlaincs4330cn": { "title": "chamberlaincs4330cn" } },
           "content": {
             "id": {
@@ -493,7 +478,7 @@
             },
             "unitCode": {
               "name": "Unit Code",
-              "description": "The unit code (0-5)"
+              "description": "The unit code (1-6)"
             }
           }
         },
