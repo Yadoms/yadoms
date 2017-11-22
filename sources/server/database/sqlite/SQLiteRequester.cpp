@@ -426,7 +426,7 @@ namespace database
       {
          sqlite3* pFile; /* Database connection opened on zFilename */
 
-         std::string backpfile = backupFolder + "/" + "yadoms.backup.db3";
+         std::string backpfile = backupFolder + "/" + "yadoms.db3";
 
          //remove backup file if already exists
          if (boost::filesystem::exists(backpfile))
