@@ -56,6 +56,11 @@ namespace database
 
       private:
          //--------------------------------------------------------------
+         /// \Brief		Do the backup
+         //--------------------------------------------------------------
+         int doBackup(const std::string & backupFolder, ProgressFunc reporter);
+
+         //--------------------------------------------------------------
          /// \Brief		Inject C functions in sqlite engine
          //--------------------------------------------------------------
          void registerExtendedFunctions() const;
