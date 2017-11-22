@@ -398,15 +398,47 @@ namespace database
 
       void CSQLiteRequester::backupData(const std::string & backupFolder, ProgressFunc reporter)
       {
+         int rc = 0;
+         int currentTry = 0;
+
+         do
+         {
+            rc = doBackup(backupFolder, reporter);
+            if (rc == SQLITE_BUSY || rc == SQLITE_LOCKED)
+            {
+               YADOMS_LOG(warning) << "Database/table is locked. Waiting for 10 seconds and retry";
+               //sleep for 10 sec and retry
+               boost::this_thread::sleep(boost::posix_time::seconds(10)); 
+            }
+            currentTry++;
+         }
+         while(rc != SQLITE_OK && rc != SQLITE_DONE && currentTry<=3);
+
+         if (rc != SQLITE_OK && rc != SQLITE_DONE)
+         {
+            if (reporter)
+               reporter(0, 100, i18n::CClientStrings::DatabaseBackupFail, sqlite3_errstr(rc));
+            throw shared::exception::CException(sqlite3_errstr(rc));
+         }
+      }
+
+      int CSQLiteRequester::doBackup(const std::string & backupFolder, ProgressFunc reporter)
+      {
          sqlite3* pFile; /* Database connection opened on zFilename */
 
          std::string backpfile = backupFolder + "/" + "yadoms.backup.db3";
 
-         /* Open the database file identified by zFilename. */
+         //remove backup file if already exists
+         if (boost::filesystem::exists(backpfile))
+         {
+            boost::filesystem::remove(backpfile);
+         }
+
+         // Open the database file identified by zFilename.
          int rc = sqlite3_open(backpfile.c_str(), &pFile);
          if (rc == SQLITE_OK)
          {
-            /* Open the sqlite3_backup object used to accomplish the transfer */
+            // Open the sqlite3_backup object used to accomplish the transfer
             sqlite3_backup* pBackup = sqlite3_backup_init(pFile, "main", m_pDatabaseHandler, "main");
             if (pBackup)
             {
@@ -431,17 +463,11 @@ namespace database
 
          }
 
-         /* Close the database connection opened on database file zFilename
-         ** and return the result of this function. */
+         // Close the database connection opened on database file zFilename
+         // and return the result of this function.
          (void)sqlite3_close(pFile);
 
-
-         if (rc != SQLITE_OK)
-         {
-            if (reporter)
-               reporter(0, 100, i18n::CClientStrings::DatabaseBackupFail, sqlite3_errstr(rc));
-            throw shared::exception::CException(sqlite3_errstr(rc));
-         }
+         return rc;
       }
 
       CDatabaseException::EDatabaseReturnCodes CSQLiteRequester::fromSQLiteReturnCode(int rc)

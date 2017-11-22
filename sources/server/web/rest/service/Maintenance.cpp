@@ -115,7 +115,7 @@ namespace web
                            file.set("modificationDate", lastWriteTimePosix);
                            file.set("path", i->path().string());
                            file.set("url", i->path().filename().string());
-
+                           file.set("inprogress", boost::iends_with(i->path().filename().string(), ".inprogress"));
                            files.push_back(file);
                         }
                      }

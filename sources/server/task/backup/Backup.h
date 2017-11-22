@@ -2,6 +2,7 @@
 #include "task/ITask.h"
 #include "database/IDataBackup.h"
 #include "IPathProvider.h"
+#include <Poco/Zip/ZipLocalFileHeader.h>
 
 namespace task
 {
@@ -29,6 +30,12 @@ namespace task
          // [END] ITask implementation
 
       private:
+         void doWork(int currentTry = 0);
+         boost::filesystem::path prepareBackup();
+         bool backupFiles(boost::filesystem::path & tempPath);
+         boost::filesystem::path makeZipArchive(boost::filesystem::path & tempPath);
+         void cleanup(boost::filesystem::path & tempPath);
+
          //------------------------------------------
          ///\brief   Internal progress handler 
          ///\param [in] remaining   The remaining count (between 0 and total) for current operation
@@ -37,6 +44,13 @@ namespace task
          ///\param [in] totalPart   The final progression when current operation ends
          //------------------------------------------
          void OnProgressionUpdatedInternal(int remaining, int total, float currentPart, float totalPart, const std::string& message = std::string()) const;
+
+         //------------------------------------------
+         ///\brief   Report event
+         ///\param [in] pSender     The sender
+         ///\param [in] hdr         The event (Zip local file)
+         //------------------------------------------
+         void onZipEDone(const void* pSender, const Poco::Zip::ZipLocalFileHeader& hdr);
 
          //------------------------------------------
          ///\brief   The path provider instance

@@ -616,6 +616,7 @@
             "date" : "Date",
             "size" : "Taille",
             "location" : "Emplacement",
+            "state" : "Etat",
             "actions" : "Actions",
             "download" : "Télécharger",
             "delete" : "Supprimer",
