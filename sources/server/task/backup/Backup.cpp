@@ -64,15 +64,27 @@ namespace task
             {
                //fail to backup files, just cleanup and ends with error
                cleanup(backupTempFolder);
-               throw std::exception("Fail to backup after 3 tries");
+               std::string errorMessage = "fail to copy files to temp folder : ";
+               errorMessage += backupTempFolder.string();
+               throw shared::exception::CException(errorMessage);
             }
          }
          catch (std::exception &ex)
          {
+            std::string innerMessage = "Fail to backup after 3 tries : ";
+            innerMessage += ex.what();
+            
+
             if (currentTry == 3)
-               throw std::exception("Fail to backup after 3 tries");
+            {
+               YADOMS_LOG(error) << "Fail to realize backup 3 times. Abort...";
+               throw shared::exception::CException(innerMessage);
+            }
             else
+            {
+               YADOMS_LOG(warning) << "Fail to realize backup. Retry...";
                doWork(currentTry + 1);
+            }
          }
       }
 
@@ -98,7 +110,7 @@ namespace task
          if (!boost::filesystem::create_directory(backupTempFolder))
          {
             YADOMS_LOG(error) << "Fail to create folder " << backupTempFolder;
-            throw new std::exception("fail to create temp backup folder");
+            throw shared::exception::CException("fail to create temp backup folder");
          }
          return backupTempFolder;
       }
