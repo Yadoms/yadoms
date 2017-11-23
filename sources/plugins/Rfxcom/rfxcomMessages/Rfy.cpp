@@ -174,4 +174,30 @@ namespace rfxcomMessages
          throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(curtainState.get()()));
       }
    }
+
+   boost::shared_ptr<std::queue<shared::communication::CBuffer<unsigned char>>> CRfy::encodeProgramMessage(boost::shared_ptr<ISequenceNumber> seqNumberProvider,
+                                                                                                           const shared::communication::CByteBuffer& lastRequest)
+   {
+      const auto lastRfyRequest = &reinterpret_cast<const RBUF* const>(lastRequest.begin())->RFY;
+
+      RBUF rbuf;
+      MEMCLEAR(rbuf.RFY);
+
+      rbuf.RFY.packetlength = ENCODE_PACKET_LENGTH(RFY);
+      rbuf.RFY.packettype = pTypeRFY;
+      rbuf.RFY.subtype = lastRfyRequest->subtype;
+      rbuf.RFY.seqnbr = seqNumberProvider->next();
+      rbuf.RFY.id1 = lastRfyRequest->id1;
+      rbuf.RFY.id2 = lastRfyRequest->id2;
+      rbuf.RFY.id3 = lastRfyRequest->id3;
+      rbuf.RFY.unitcode = lastRfyRequest->unitcode;
+      rbuf.RFY.cmnd = rfy_sProgram;
+      rbuf.RFY.rfu1 = 0;
+      rbuf.RFY.rfu2 = 0;
+      rbuf.RFY.rfu3 = 0;
+      rbuf.RFY.rssi = 0;
+      rbuf.RFY.filler = 0;
+
+      return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(RFY));
+   }
 } // namespace rfxcomMessages

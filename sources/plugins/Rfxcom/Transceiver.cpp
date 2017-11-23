@@ -247,6 +247,12 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiver::
    }
 }
 
+boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiver::buildRfyProgramMessage(const shared::communication::CByteBuffer& lastRequest) const
+{
+   return rfxcomMessages::CRfy::encodeProgramMessage(m_seqNumberProvider,
+                                                     lastRequest);
+}
+
 boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                                                                                     const shared::communication::CByteBuffer& data) const
 {
@@ -601,6 +607,6 @@ void CTransceiver::logMessage(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       YADOMS_LOG(information) << "Receive data for " << message->getDeviceName();
       for (const auto& keyword : message->keywords())
-         YADOMS_LOG(information) << "  - " << keyword->getKeyword() << " : " << keyword->formatValue();
+      YADOMS_LOG(information) << "  - " << keyword->getKeyword() << " : " << keyword->formatValue();
    }
 }

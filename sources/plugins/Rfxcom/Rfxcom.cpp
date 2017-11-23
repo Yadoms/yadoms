@@ -292,7 +292,7 @@ void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi
    YADOMS_LOG(information) << "RFXCom connection was lost";
    if (notification)
       api->setPluginState(yApi::historization::EPluginState::kError, notification->getErrorMessageI18n(), notification->getErrorMessageI18nParameters());
-   else 
+   else
       api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionLost");
 
    errorProcess(api);
@@ -357,6 +357,8 @@ void CRfxcom::processRfxcomCommandResponseMessage(boost::shared_ptr<yApi::IYPlug
    {
    case rfxcomMessages::CTransceiverStatus::kStatus: processRfxcomStatusMessage(api, status);
       break;
+   case rfxcomMessages::CTransceiverStatus::kUnknownRfyRemote: processRfxcomUnknownRfyRemoteMessage(api, status);
+      break;
    case rfxcomMessages::CTransceiverStatus::kWrongCommand: processRfxcomWrongCommandMessage(api, status);
       break;
    case rfxcomMessages::CTransceiverStatus::kReceiverStarted: processRfxcomReceiverStartedMessage(api, status);
@@ -410,7 +412,7 @@ void CRfxcom::processRfxcomReceiverStartedMessage(boost::shared_ptr<yApi::IYPlug
 void CRfxcom::processRfxcomWrongCommandMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                                                const rfxcomMessages::CTransceiverStatus& status)
 {
-   const RBUF* const lastRequest = reinterpret_cast<const RBUF* const>(m_lastRequest.begin());
+   const auto lastRequest = reinterpret_cast<const RBUF* const>(m_lastRequest.begin());
 
    if (lastRequest->ICMND.packettype == pTypeInterfaceControl &&
       lastRequest->ICMND.subtype == sTypeInterfaceCommand &&
@@ -426,6 +428,23 @@ void CRfxcom::processRfxcomWrongCommandMessage(boost::shared_ptr<yApi::IYPluginA
    }
 }
 
+void CRfxcom::processRfxcomUnknownRfyRemoteMessage(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                   const rfxcomMessages::CTransceiverStatus& status)
+{
+   YADOMS_LOG(information) << "RFXCom doesn't know this RFY remote, try to send a program message...";
+
+   const auto lastRequest = reinterpret_cast<const RBUF* const>(m_lastRequest.begin());
+
+   if (lastRequest->RAW.packettype != pTypeRFY)
+   {
+      YADOMS_LOG(error) << "Last command was not a RFY command, can not send RFY program message";
+      return;
+   }
+
+   YADOMS_LOG(information) << "RFXCom doesn't know this RFY remote, send a program message...";
+   send(api, m_transceiver->buildRfyProgramMessage(m_lastRequest));
+}
+
 void CRfxcom::processRfxcomAckMessage(const rfxcomMessages::CAck& ack)
 {
    if (ack.isOk())
@@ -433,4 +452,3 @@ void CRfxcom::processRfxcomAckMessage(const rfxcomMessages::CAck& ack)
    else
    YADOMS_LOG(information) << "RFXCom Received acknowledge is KO";
 }
-

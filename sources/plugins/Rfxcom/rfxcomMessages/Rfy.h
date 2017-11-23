@@ -63,6 +63,11 @@ namespace rfxcomMessages
       const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords() override;
       // [END] IRfxcomMessage implementation
 
+      // Rfy-specific
+      static boost::shared_ptr<std::queue<shared::communication::CBuffer<unsigned char>>> encodeProgramMessage(boost::shared_ptr<ISequenceNumber> seqNumberProvider,
+                                                                                                               const shared::communication::CByteBuffer& lastRequest);
+
+
    protected:
       //--------------------------------------------------------------
       /// \brief	Global initialization method
@@ -126,8 +131,6 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    };
 } // namespace rfxcomMessages
-
-
