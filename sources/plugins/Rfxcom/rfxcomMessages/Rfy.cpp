@@ -20,8 +20,11 @@ namespace rfxcomMessages
       m_subType = deviceDetails.get<unsigned char>("subType");
       m_id = deviceDetails.get<unsigned int>("id");
       m_unitCode = deviceDetails.get<unsigned char>("unitCode");
-
-      Init(api);
+      
+      // Build device description
+      buildDeviceModel();
+      buildDeviceName();
+      buildDeviceDetails();
    }
 
    CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -78,22 +81,6 @@ namespace rfxcomMessages
          m_deviceDetails.set("subType", m_subType);
          m_deviceDetails.set("id", m_id);
          m_deviceDetails.set("unitCode", m_unitCode);
-      }
-   }
-
-   void CRfy::Init(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      // Build device description
-      buildDeviceModel();
-      buildDeviceName();
-      buildDeviceDetails();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_state, m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));
       }
    }
 
