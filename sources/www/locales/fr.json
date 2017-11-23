@@ -59,7 +59,14 @@
             "interrupted": "Tâche interrompue",
             "crash": "Tâche plantée",
             "unknownError": "Erreur inconnue",
-            "end": "Tâche arrétée"
+            "end": "Tâche arrétée",
+            "backup" : {
+               "prepare" : "Préparation de la sauvegarde...",
+               "copyfiles" : "Copie des fichiers...",
+               "compress" : "Compression des fichiers...",
+               "clean" : "Nettoyage...",
+               "success" : "Sauvegarde réussie"
+            }
         },
         "database" : {
             "backup" : {

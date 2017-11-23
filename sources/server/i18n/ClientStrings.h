@@ -55,6 +55,12 @@ namespace i18n
       static std::string DatabaseBackupInProgress;
       static std::string DatabaseBackupSuccess;
       static std::string DatabaseBackupFail;
+      
+      static std::string BackupPrepare;
+      static std::string BackupCopyFile;
+      static std::string BackupCompress;
+      static std::string BackupClean;
+      static std::string BackupSuccess;
 
       static std::string ExtraQuerySuccess;
       static std::string ExtraQueryFail;

@@ -59,7 +59,14 @@
       "interrupted": "Task interrupted",
       "crash": "Task crashed",
       "unknownError": "Unknown Task error",
-      "end": "Task end"
+      "end": "Task end",
+      "backup" : {
+         "prepare" : "Preparing backup...",
+         "copyfiles" : "Copying files...",
+         "compress" : "Compressing files...",
+         "clean" : "Clening...",
+         "success" : "Backup succeeded"
+      }
     },
     "database": {
       "backup": {
