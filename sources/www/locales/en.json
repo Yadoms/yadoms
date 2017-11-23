@@ -619,11 +619,12 @@
             "date" : "Date",
             "size" : "File size",
             "location" : "Location",
+            "state" : "State",
             "actions" : "Actions",
             "download" : "Download",
             "delete" : "Delete",
             "deleteConfirmTitle" : "Confirm delete",
-            "deleteConfirm" : "Delete the last backup ?"
+            "deleteConfirm" : "Delete the backup ?"
           }
         },
         "about": {
