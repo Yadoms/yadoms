@@ -612,6 +612,9 @@
         "maintenance": {
           "title": "Maintenance",
           "backup": "Start a database backup",
+          "deleteAll" : "Delete all backups ?",
+          "deleteAllConfirmTitle" : "Confirm delete",
+          "deleteAllConfirm" : "Are you sure you want to delete all backups ?",
           "backuplist" : {
             "date" : "Date",
             "size" : "File size",

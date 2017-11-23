@@ -28,6 +28,7 @@ namespace web
             shared::CDataContainer startBackup(const std::vector<std::string>& parameters, const std::string& requestContent);
             shared::CDataContainer getBackups(const std::vector<std::string>& parameters, const std::string& requestContent) const;
             shared::CDataContainer deleteBackup(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            shared::CDataContainer deleteAllBackups(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
          private:
             static std::string m_restKeyword;

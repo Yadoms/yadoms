@@ -612,6 +612,9 @@
         "maintenance": {
           "title": "Maintenance",
           "backup" : "Démarrer une nouvelle sauvegarde",
+          "deleteAll" : "Effacer toutes les sauvegardes",
+          "deleteAllConfirmTitle" : "Confirmer la suppression",
+          "deleteAllConfirm" : "Êtes vous sûr de vouloir effacer touts les sauvegardes ?",
           "backuplist" : {
             "date" : "Date",
             "size" : "Taille",
