@@ -90,6 +90,7 @@ namespace update
          callbackData.set("downloadUrl", downloadUrl);
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginUpdate, std::string(), callbackData);
+
          /////////////////////////////////////////////
          //1. download package
          /////////////////////////////////////////////
@@ -104,9 +105,7 @@ namespace update
             //2. stop any instance
             /////////////////////////////////////////////
             if (pluginManager)
-               pluginManager->stopAllInstancesOfPlugin(pluginName);
-
-            //TOFIX : wait for all instances stopped
+               pluginManager->stopAllInstancesOfPluginAndWaitForStopped(pluginName);
 
             /////////////////////////////////////////////
             //3. deploy package
@@ -165,7 +164,7 @@ namespace update
             //1. stop any instance
             /////////////////////////////////////////////
             if (pluginManager)
-               pluginManager->stopAllInstancesOfPlugin(pluginName);
+               pluginManager->stopAllInstancesOfPluginAndWaitForStopped(pluginName);
 
             /////////////////////////////////////////////
             //2. remove plugin folder
