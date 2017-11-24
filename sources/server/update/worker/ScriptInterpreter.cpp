@@ -30,7 +30,7 @@ namespace update {
             YADOMS_LOG(information) << "Downloading scriptInterpreter package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterDownload, std::string(), callbackData);
             Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
-            YADOMS_LOG(information) << "Downloading scriptInterpreter package with sucess";
+            YADOMS_LOG(information) << "Downloading scriptInterpreter package with success";
 
             /////////////////////////////////////////////
             //2. deploy package
@@ -98,7 +98,7 @@ namespace update {
             YADOMS_LOG(information) << "Downloading scriptInterpreter package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterDownload, std::string(), callbackData);
             Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
-            YADOMS_LOG(information) << "Downloading scriptInterpreter package with sucess";
+            YADOMS_LOG(information) << "Downloading scriptInterpreter package with success";
 
 
             /////////////////////////////////////////////

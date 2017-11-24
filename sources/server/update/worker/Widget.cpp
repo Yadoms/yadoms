@@ -25,7 +25,7 @@ namespace update {
 
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetDownload, std::string(), callbackData);
             Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateWidgetDownload, 0.0, 90.0);
-            YADOMS_LOG(information) << "Downloading widget package with sucess";
+            YADOMS_LOG(information) << "Downloading widget package with success";
 
 
             /////////////////////////////////////////////
@@ -80,7 +80,7 @@ namespace update {
             YADOMS_LOG(information) << "Downloading widget package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetDownload, std::string(), callbackData);
             Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateWidgetDownload, 0.0, 90.0);
-            YADOMS_LOG(information) << "Downloading widget package with sucess";
+            YADOMS_LOG(information) << "Downloading widget package with success";
 
 
 
