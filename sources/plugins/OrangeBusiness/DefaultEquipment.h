@@ -17,17 +17,26 @@ namespace equipments
 
       //-----------------------------------------------------
       ///\brief                          Constructor from restart (devices and keywords already registered)
-      ///\param[in]   api               Yadoms API
-      ///\param[in] device              The device name
-      ///\param[in] deviceConfiguration The device configuration
+      ///\param[in] name                 The device name
+      ///\param[in] devEUID              The EUID of the equipment
       //-----------------------------------------------------
       CDefaultEquipment(const std::string& name,
                         const std::string& devEUID);
 
+
+      //-----------------------------------------------------
+      ///\brief                          Constructor with creation (devices and keywords do not exist)
+      ///\param[in] name                 The device name
+      ///\param[in] devEUID              The EUID of the equipment
+      ///\param[in] api                  Yadoms API
+      //-----------------------------------------------------
+      CDefaultEquipment::CDefaultEquipment(const std::string& name,
+                                           const std::string& devEUID,
+                                           boost::shared_ptr<yApi::IYPluginApi> api);
+
       // IEquipment implementation
       std::string getName() const override;
       std::string getEUI() const override;
-      void createDevice(boost::shared_ptr<yApi::IYPluginApi> api) override;
       void updateData(boost::shared_ptr<yApi::IYPluginApi> api,
                       const std::string& data) override;
 	  void updateBatteryLevel(boost::shared_ptr<yApi::IYPluginApi> api,

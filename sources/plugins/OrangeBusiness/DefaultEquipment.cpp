@@ -13,6 +13,25 @@ namespace equipments
       m_devEUI(devEUID)
    {}
 
+   CDefaultEquipment::CDefaultEquipment(const std::string& name,
+                                        const std::string& devEUID,
+                                        boost::shared_ptr<yApi::IYPluginApi> api) :
+      m_messageKeyword(boost::make_shared<yApi::historization::CText>("message",
+                                                                      yApi::EKeywordAccessMode::kGetSet)),
+      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+      m_name(name),
+      m_devEUI(devEUID)
+   {
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToDeclare = { m_batteryLevel, m_messageKeyword };
+
+      // Save names into details
+      shared::CDataContainer details;
+      details.set("devEUI", m_devEUI);
+      details.set("id", "");            // initial value -> no id defined
+
+      api->declareDevice(m_name, "Orange Business", "Orange Business", keywordsToDeclare, details);
+   }
+
    std::string CDefaultEquipment::getName() const
    {
       return m_name;
@@ -25,18 +44,6 @@ namespace equipments
 
    CDefaultEquipment::~CDefaultEquipment()
    {}
-
-   void CDefaultEquipment::createDevice(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToDeclare = { m_batteryLevel, m_messageKeyword };
-
-      // Save names into details
-      shared::CDataContainer details;
-      details.set("devEUI", m_devEUI);
-      details.set("id", "");            // initial value -> no id defined
-
-      api->declareDevice(m_name, "Orange Business", "Orange Business", keywordsToDeclare, details);
-   }
 
    void CDefaultEquipment::updatelastMessageId(boost::shared_ptr<yApi::IYPluginApi> api,
                                                const std::string& id)

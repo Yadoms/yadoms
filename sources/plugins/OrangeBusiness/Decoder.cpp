@@ -13,6 +13,7 @@ std::map<std::string, boost::shared_ptr<equipments::IEquipment>> CDecoder::decod
                                     shared::CDataContainer& message)
 {
 	std::map<std::string, boost::shared_ptr<equipments::IEquipment>> equipmentList;
+   message.printToLog(YADOMS_LOG(trace));
    auto equipments = message.get<std::vector<shared::CDataContainer> >("data");
    std::vector<shared::CDataContainer>::iterator equipmentIterator;
 
@@ -20,8 +21,8 @@ std::map<std::string, boost::shared_ptr<equipments::IEquipment>> CDecoder::decod
    {
       std::string name = (*equipmentIterator).get<std::string>("name");
       std::string devEUI = (*equipmentIterator).get<std::string>("devEUI");
-      boost::shared_ptr<equipments::CDefaultEquipment> newEquipment(boost::make_shared<equipments::CDefaultEquipment>(name, devEUI));
-	  equipmentList.insert(std::pair<std::string, boost::shared_ptr<equipments::IEquipment>>(name, newEquipment));
+      boost::shared_ptr<equipments::CDefaultEquipment> newEquipment(boost::make_shared<equipments::CDefaultEquipment>(name, devEUI, api));
+	   equipmentList.insert(std::pair<std::string, boost::shared_ptr<equipments::IEquipment>>(name, newEquipment));
       YADOMS_LOG(information) << "create device name = " << name << " devEUI = " << devEUI;
    }
 

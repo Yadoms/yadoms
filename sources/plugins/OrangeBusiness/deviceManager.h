@@ -27,6 +27,13 @@ public:
                           boost::shared_ptr<IurlManager> frameManager, 
                           const std::string& apikey, 
                           boost::shared_ptr<CDecoder> decoder);
+
+   void refreshEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
+                         const std::string& name,
+                         const std::string& devEUID,
+                         boost::shared_ptr<IurlManager> frameManager,
+                         const std::string& apikey,
+                         boost::shared_ptr<CDecoder> decoder);
 	const int size() const;
 
     //-----------------------------------------------------

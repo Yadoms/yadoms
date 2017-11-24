@@ -82,17 +82,21 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
             onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
             api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
+            api->setPluginState(yApi::historization::EPluginState::kRunning);
          }
-         catch (...)
+         catch (std::exception &e)
          {
-            YADOMS_LOG(information) << "Wrong configuration update";
+            YADOMS_LOG(information) << "Wrong configuration update : " << e.what();
          }
          break;
       }
-      case kRefreshStatesReceived:
+      case kEvtTimerRefreshDevices:
       {
 		  try {
-			  m_equipmentManager->refreshEquipments(api, m_frameManager, m_configuration.getAPIKey(), m_decoder);
+           if (m_equipmentManager)
+           {
+              m_equipmentManager->refreshEquipments(api, m_frameManager, m_configuration.getAPIKey(), m_decoder);
+           }
 		  }
 		  catch (std::exception &e)
 		  {
@@ -108,13 +112,21 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             if (extraQuery->getData()->query() == "retreiveData")
             {
-               registerAllDevices(api); 
-            } else if (extraQuery->getData()->query() == "onlyActivated")
+               registerAllDevices(api);
+
+               // fire immediately a event to read devices values
+               m_waitForAnswerTimer = api->getEventHandler().createTimer(kEvtTimerRefreshDevices,
+                                                                         shared::event::CEventTimer::kOneShot,
+                                                                         boost::posix_time::seconds(0));
+
+            }
+            else if (extraQuery->getData()->query() == "onlyActivated") // TODO : This query has to be added !
             {
                registerActivatedDevices(api); 
             }
+
+            extraQuery->sendSuccess(shared::CDataContainer());
          }
-         extraQuery->sendSuccess(shared::CDataContainer());
          break;
       }
       case yApi::IYPluginApi::kEventDeviceCommand:

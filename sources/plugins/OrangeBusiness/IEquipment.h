@@ -28,11 +28,6 @@ namespace equipments
       //--------------------------------------------------------------
       /// \brief	                     Create the Device with the counter Id
       //-----------------------------------------------------
-      virtual void createDevice(boost::shared_ptr<yApi::IYPluginApi> api) = 0;
-
-      //--------------------------------------------------------------
-      /// \brief	                     Create the Device with the counter Id
-      //-----------------------------------------------------
       virtual void updateData(boost::shared_ptr<yApi::IYPluginApi> api,
                               const std::string& data) = 0;
 
