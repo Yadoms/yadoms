@@ -6,6 +6,9 @@
 #include "tools/FileSystem.h"
 #include <Poco/Zip/Compress.h>
 #include <shared/currentTime/Provider.h>
+#include <Poco/Zip/ZipException.h>
+#include <Poco/Delegate.h>
+#include "i18n/ClientStrings.h"
 
 namespace task
 {
@@ -37,65 +40,202 @@ namespace task
             m_reportRealProgress(true, progression, message, std::string(), shared::CDataContainer::EmptyContainer);
       }
 
-
       void CBackup::doWork(TaskProgressFunc pFunctor)
       {
          m_reportRealProgress = pFunctor;
+         doWork(0);
+      }
 
+      void CBackup::doWork(int currentTry)
+      {
+         try
+         {
+            boost::filesystem::path backupTempFolder = prepareBackup();
+            if (backupFiles(backupTempFolder))
+            {
+               boost::filesystem::path zipFile = makeZipArchive(backupTempFolder);
+               cleanup(backupTempFolder);
+               OnProgressionUpdatedInternal(0, 100, 99.0f, 100.0f, i18n::CClientStrings::BackupSuccess);
+            }
+            else
+            {
+               //fail to backup files, just cleanup and ends with error
+               cleanup(backupTempFolder);
+               std::string errorMessage = "fail to copy files to temp folder : ";
+               errorMessage += backupTempFolder.string();
+               throw shared::exception::CException(errorMessage);
+            }
+         }
+         catch (std::exception &ex)
+         {
+            std::string innerMessage = "Fail to backup after 3 tries : ";
+            innerMessage += ex.what();
+            
+
+            if (currentTry == 3)
+            {
+               YADOMS_LOG(error) << "Fail to realize backup 3 times. Abort...";
+               throw shared::exception::CException(innerMessage);
+            }
+            else
+            {
+               YADOMS_LOG(warning) << "Fail to realize backup. Retry...";
+               doWork(currentTry + 1);
+            }
+         }
+      }
+
+      boost::filesystem::path CBackup::prepareBackup()
+      {
          //create "backup temp" folder
-         auto backupTempFolder = boost::filesystem::temp_directory_path() / "yadomsBackup";
+         boost::filesystem::path backupTempFolder = boost::filesystem::temp_directory_path() / "yadomsBackup";
 
          //if folder exist, cleanup, else create if
          if (boost::filesystem::exists(backupTempFolder))
          {
+            YADOMS_LOG(debug) << "Deleting " << backupTempFolder << " and its content";
             boost::filesystem::remove_all(backupTempFolder);
             boost::filesystem::remove(backupTempFolder);
          }
+         else
+         {
+            YADOMS_LOG(debug) << "Folder " << backupTempFolder << " do not exist";
+         }
 
+         YADOMS_LOG(debug) << "Create " << backupTempFolder;
          if (!boost::filesystem::create_directory(backupTempFolder))
          {
-            OnProgressionUpdatedInternal(0, 100, 80.0f, 85.0f, "fail to create temp backup folder");
+            YADOMS_LOG(error) << "Fail to create folder " << backupTempFolder;
+            throw shared::exception::CException("fail to create temp backup folder");
+         }
+         OnProgressionUpdatedInternal(0, 100, 0.0f, 1.0f, i18n::CClientStrings::BackupPrepare);
+         return backupTempFolder;
+      }
+
+      bool CBackup::backupFiles(boost::filesystem::path & backupTempFolder)
+      {
+         //backup database (1 -> 40%)
+         if (m_dataBackupInterface->backupSupported())
+         {
+            m_dataBackupInterface->backupData(backupTempFolder.string(), [&](int remaining, int total, std::string i18nMessage, std::string error)
+            {
+               OnProgressionUpdatedInternal(remaining, total, 1.0f, 40.0f, i18n::CClientStrings::BackupCopyFile);
+            });
+         }
+         else
+         {
+            //database backup not supported
          }
 
-         //backup database (0 -> 80%)
-         m_dataBackupInterface->backupData(backupTempFolder.string(), [&](int remaining, int total, std::string i18nMessage, std::string error)
+         //backup scripts (40 -> 50%)
+         if (tools::CFileSystem::copyDirectoryRecursivelyTo(m_pathProvider->scriptsPath(), backupTempFolder / "scripts"))
          {
-            OnProgressionUpdatedInternal(remaining, total, 0.0f, 80.0f, i18nMessage);
-         });
+            OnProgressionUpdatedInternal(0, 100, 40.0f, 50.0f, i18n::CClientStrings::BackupCopyFile);
 
-         //backup scripts (80 -> 85%)
-         tools::CFileSystem::copyDirectoryRecursivelyTo(m_pathProvider->scriptsPath(), backupTempFolder / "scripts");
-         OnProgressionUpdatedInternal(0, 100, 80.0f, 85.0f, "");
-
-         //backup plugins data  (85 -> 90%)
-         tools::CFileSystem::copyDirectoryRecursivelyTo(m_pathProvider->pluginsDataPath(), backupTempFolder / "data");
-         boost::filesystem::copy_file("yadoms.ini", backupTempFolder / "yadoms.ini");
-         OnProgressionUpdatedInternal(0, 100, 85.0f, 90.0f, "");
+            //backup plugins data  (50 -> 60%)
+            if (tools::CFileSystem::copyDirectoryRecursivelyTo(m_pathProvider->pluginsDataPath(), backupTempFolder / "data"))
+            {
+               boost::system::error_code ec;
+               boost::filesystem::copy_file("yadoms.ini", backupTempFolder / "yadoms.ini", ec);
+               OnProgressionUpdatedInternal(0, 100, 50.0f, 60.0f, i18n::CClientStrings::BackupCopyFile);
 
 
-         //create if needed a backup folder
-         if (!boost::filesystem::exists(m_pathProvider->backupPath()))
-         {
-            boost::filesystem::create_directory(m_pathProvider->backupPath());
+               //create if needed a backup folder
+               if (!boost::filesystem::exists(m_pathProvider->backupPath()))
+               {
+                  boost::filesystem::create_directory(m_pathProvider->backupPath());
+               }
+               else
+               {
+                  YADOMS_LOG(debug) << "Folder " << m_pathProvider->backupPath().string() << " already exists. Do not create it";
+               }
+               return true;
+            }
+            else
+            {
+               YADOMS_LOG(error) << "Fail to copy plugins data to temp folder";
+            }
          }
+         else 
+         {
+            YADOMS_LOG(error) << "Fail to copy scripts to temp folder";
+         }
+         return false;
+      }
 
-         
+      boost::filesystem::path CBackup::makeZipArchive(boost::filesystem::path & backupTempFolder)
+      {
 
-         //zip folder content (90 -> 100)
+         //zip folder content (60 -> 99)
          std::string dateAsIsoString = boost::posix_time::to_iso_string(shared::currentTime::Provider().now());
          boost::replace_all(dateAsIsoString, ",", "_");
 
-         std::ofstream out( (m_pathProvider->backupPath() / (boost::format("backup_%1%.zip") % dateAsIsoString).str() ).string(), std::ios::binary);
-         Poco::Zip::Compress c(out, true);
-         c.addRecursive(backupTempFolder.string());
-         c.close(); // MUST be done to finalize the Zip file
-         OnProgressionUpdatedInternal(0, 100, 90, 100.0f, "");
+         boost::filesystem::path zipFilenameFinal = m_pathProvider->backupPath() / (boost::format("backup_%1%.zip") % dateAsIsoString).str();
+         boost::filesystem::path zipFilename = m_pathProvider->backupPath() / (boost::format("backup_%1%.zip.inprogress") % dateAsIsoString).str();
+         try
+         {
+            //count files
+            m_fileCountToZip = std::count_if(boost::filesystem::recursive_directory_iterator(backupTempFolder), boost::filesystem::recursive_directory_iterator(), static_cast<bool(*)(const boost::filesystem::path&)>(boost::filesystem::is_regular_file));
+            m_currentFileCount = 0;
 
+            std::ofstream out(zipFilename.string(), std::ios::binary);
+            Poco::Zip::Compress c(out, true);
+            c.EDone += Poco::Delegate<CBackup, const Poco::Zip::ZipLocalFileHeader>(this, &CBackup::onZipEDone);
+            c.addRecursive(backupTempFolder.string());
+            c.EDone -= Poco::Delegate<CBackup, const Poco::Zip::ZipLocalFileHeader>(this, &CBackup::onZipEDone);
+            c.close(); // MUST be done to finalize the Zip file
+            OnProgressionUpdatedInternal(0, 100, 60.0f, 98.0f, i18n::CClientStrings::BackupCompress);
+            out.close();
+
+            //rename file from "backup_date.zip.inprogress" to "backup_date.zip"
+            boost::filesystem::rename(zipFilename, zipFilenameFinal);
+
+            //validate the file
+            return zipFilenameFinal;
+         }
+         catch (Poco::Exception & zex)
+         {
+            YADOMS_LOG(error) << "Fail to create zip archive (Poco::Exception)";
+            YADOMS_LOG(error) << " class : " << zex.className();
+            YADOMS_LOG(error) << " message : " << zex.message();
+            YADOMS_LOG(error) << " text : " << zex.displayText();
+
+            //remove falsy zip file
+            boost::filesystem::remove(zipFilename);
+            throw zex;
+         }
+         catch (std::exception & ex)
+         {
+            YADOMS_LOG(error) << "Fail to create zip archive (unknown exception)";
+            YADOMS_LOG(error) << " message : " << ex.what();
+
+            //remove falsy zip file
+            boost::filesystem::remove(zipFilename);
+            throw ex;
+         }
+        
+      }
+
+      void CBackup::onZipEDone(const void* pSender, const Poco::Zip::ZipLocalFileHeader& hdr)
+      {
+         if (hdr.isFile())
+         {
+            //going from 60 to 98
+            m_currentFileCount++;
+            OnProgressionUpdatedInternal(m_fileCountToZip - m_currentFileCount, m_fileCountToZip, 60.0f, 98.0f, i18n::CClientStrings::BackupCompress);
+            YADOMS_LOG(debug) << " ZIP : " << hdr.getFileName();
+         }
+      }
+
+
+      void CBackup::cleanup(boost::filesystem::path & backupTempFolder)
+      {
+         OnProgressionUpdatedInternal(0, 100, 98.0f, 99.0f, i18n::CClientStrings::BackupClean);
          //remove "backup temp" folder
          boost::filesystem::remove_all(backupTempFolder);
          boost::filesystem::remove(backupTempFolder);
-         
       }
+
    } //namespace backup
 } //namespace task
 

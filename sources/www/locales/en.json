@@ -59,7 +59,14 @@
       "interrupted": "Task interrupted",
       "crash": "Task crashed",
       "unknownError": "Unknown Task error",
-      "end": "Task end"
+      "end": "Task end",
+      "backup" : {
+         "prepare" : "Preparing backup...",
+         "copyfiles" : "Copying files...",
+         "compress" : "Compressing files...",
+         "clean" : "Clening...",
+         "success" : "Backup succeeded"
+      }
     },
     "database": {
       "backup": {
@@ -615,15 +622,19 @@
         "maintenance": {
           "title": "Maintenance",
           "backup": "Start a database backup",
+          "deleteAll" : "Delete all backups ?",
+          "deleteAllConfirmTitle" : "Confirm delete",
+          "deleteAllConfirm" : "Are you sure you want to delete all backups ?",
           "backuplist" : {
             "date" : "Date",
             "size" : "File size",
             "location" : "Location",
+            "state" : "State",
             "actions" : "Actions",
             "download" : "Download",
             "delete" : "Delete",
             "deleteConfirmTitle" : "Confirm delete",
-            "deleteConfirm" : "Delete the last backup ?"
+            "deleteConfirm" : "Delete the backup ?"
           }
         },
         "about": {

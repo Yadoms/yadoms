@@ -32,6 +32,7 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("backup"), CMaintenance::getBackups);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("backup"), CMaintenance::startBackup);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("backup")("*"), CMaintenance::deleteBackup);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("backup"), CMaintenance::deleteAllBackups);
          }
 
 
@@ -115,7 +116,7 @@ namespace web
                            file.set("modificationDate", lastWriteTimePosix);
                            file.set("path", i->path().string());
                            file.set("url", i->path().filename().string());
-
+                           file.set("inprogress", boost::iends_with(i->path().filename().string(), ".inprogress"));
                            files.push_back(file);
                         }
                      }
@@ -160,6 +161,35 @@ namespace web
                }
 
                return CResult::GenerateError("invalid parameter. Can not retreive file to delete");
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in deleting backup data");
+            }
+         }
+
+         shared::CDataContainer CMaintenance::deleteAllBackups(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         {
+            try
+            {
+               auto backup = m_pathProvider->backupPath();
+
+               boost::system::error_code ec;
+               std::string errors = "";
+               for (boost::filesystem::directory_iterator end_dir_it, it(backup); it != end_dir_it; ++it) 
+               {
+                  if (!boost::filesystem::remove_all(it->path(), ec))
+                  {
+                     errors += ec.message() + '\n';
+                  }
+               }
+               if(errors.empty())
+                  return CResult::GenerateSuccess();
+               return CResult::GenerateError(errors);
             }
             catch (std::exception& ex)
             {

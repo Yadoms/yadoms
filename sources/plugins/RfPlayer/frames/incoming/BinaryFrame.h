@@ -33,7 +33,7 @@ namespace incoming {
       /// \brief	               Get the sourceDest of frame
       /// \return                The sourceDest byte of frame
       //--------------------------------------------------------------
-      const char getSourceDest() const;
+      char getSourceDest() const;
 
       //--------------------------------------------------------------
       /// \brief	               Get the binary content of frame
