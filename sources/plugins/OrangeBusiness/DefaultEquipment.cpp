@@ -82,4 +82,10 @@ namespace equipments
             YADOMS_LOG(trace) << "This equipment " << m_name << " is not able to mesure the battery level !";
       }
    }
+
+   void CDefaultEquipment::removeFromYadoms(boost::shared_ptr<yApi::IYPluginApi> api)
+   {
+      YADOMS_LOG(information) << "Delete device " << m_name;
+      api->removeDevice(m_name);
+   }
 }

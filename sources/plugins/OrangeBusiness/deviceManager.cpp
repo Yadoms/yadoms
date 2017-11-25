@@ -111,5 +111,17 @@ void CEquipmentManager::refreshEquipment(boost::shared_ptr<yApi::IYPluginApi> ap
    }
 }
 
+void CEquipmentManager::removeAllDevices(boost::shared_ptr<yApi::IYPluginApi> api)
+{
+   YADOMS_LOG(information) << "Delete all devices created in Yadoms";
+
+   for (const auto& pair : m_deviceList)
+   {
+      pair.second->removeFromYadoms(api);
+   }
+   m_deviceList.clear();
+
+}
+
 CEquipmentManager::~CEquipmentManager()
 {}

@@ -13,7 +13,10 @@
 		},
 		"onlyActivated" : {
 			"name" : "Récupérer l'ensemble des équipements activés du site Orange"
-		}				
+		},
+      "removeAllDevices" : {
+         "name" : "Supprimer tous les équipements enregistrés dans Yadoms"
+      }
    },   
 	"customLabels": {
 		"pluginState": {

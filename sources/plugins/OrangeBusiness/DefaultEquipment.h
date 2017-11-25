@@ -44,6 +44,7 @@ namespace equipments
      void updatelastMessageId(boost::shared_ptr<yApi::IYPluginApi> api,
                               const std::string& id) override;
      std::string getlastMessageId(boost::shared_ptr<yApi::IYPluginApi> api) override;
+     void removeFromYadoms(boost::shared_ptr<yApi::IYPluginApi> api) override;
       // [END] IEquipment implementation
 
       //-----------------------------------------------------

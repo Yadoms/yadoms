@@ -15,6 +15,8 @@ class CEquipmentManager
 {
 public:
 
+    //TODO : Apply all comments
+
     //-----------------------------------------------------
     ///\brief                          Constructor from restart (devices and keywords already registered)
     ///\param[in]   api               Yadoms API
@@ -33,6 +35,9 @@ public:
                          boost::shared_ptr<IurlManager> frameManager,
                          const std::string& apikey,
                          boost::shared_ptr<CDecoder> decoder);
+
+   void removeAllDevices(boost::shared_ptr<yApi::IYPluginApi> api);
+
 	const int size() const;
 
     //-----------------------------------------------------

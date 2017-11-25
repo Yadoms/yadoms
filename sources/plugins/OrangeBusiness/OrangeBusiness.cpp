@@ -124,6 +124,10 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                registerActivatedDevices(api); 
             }
+            else if (extraQuery->getData()->query() == "removeAllDevices")
+            {
+               m_equipmentManager->removeAllDevices(api);
+            }
 
             extraQuery->sendSuccess(shared::CDataContainer());
          }

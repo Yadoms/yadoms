@@ -17,7 +17,10 @@
 		},
 		"onlyActivated" : {
 		   "iconClass" : "glyphicon glyphicon-download-alt"
-		}
+		},
+      "removeAllDevices" : {
+         "iconClass" : "glyphicon glyphicon-trash"
+      }
    },
    "supportManuallyDeviceCreation": "false",
    "supportDeviceRemovedNotification": "false"

@@ -47,6 +47,12 @@ namespace equipments
 	  //-----------------------------------------------------
 	  virtual void updateBatteryLevel(boost::shared_ptr<yApi::IYPluginApi> api,
 							  int batteryLevel) = 0;
+
+     //--------------------------------------------------------------
+     /// \brief	                     Remove this device from Yadoms
+     //-----------------------------------------------------
+     virtual void removeFromYadoms(boost::shared_ptr<yApi::IYPluginApi> api) = 0;
+
       //--------------------------------------------------------------
       /// \brief	    Destructor
       //--------------------------------------------------------------

@@ -84,7 +84,7 @@ shared::CDataContainer urlManager::listDeviceCommands(const std::string &apikey,
 
    parameters.set("page", boost::lexical_cast<std::string>(page)); // Seulement une page donnée
    parameters.set("sort", "-creationTs"); // Get the newest command at the first page
-   parameters.set("timeRange", "2017-01-05T14:46:01.000Z,2017-11-05T14:00:01.000Z");
+   parameters.set("timeRange", "2017-01-01T14:46:01.000Z,2017-11-01T14:00:01.000Z"); // TODO : To be deleted
 
    std::string deviceUrl = "https://liveobjects.orange-business.com/api/v0/vendors/lora/devices/" + devEUI + "/commands";
    YADOMS_LOG(information) << deviceUrl;
