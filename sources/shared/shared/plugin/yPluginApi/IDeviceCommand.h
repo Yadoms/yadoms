@@ -53,7 +53,7 @@ namespace shared
             ///\brief                  Convert a numeric value to int
             ///\param[in] commandBody  The command body containing the numeric value (can be "75" or "75.0")
             ///\return                 The integer value
-            ///\throw                  boost::lexical_cast if not convertible
+            ///\throw                  boost::bad_lexical_cast if not convertible
             //-----------------------------------------------------
             static int simpleNumericCommandHelperToInt(const std::string& commandBody)
             {

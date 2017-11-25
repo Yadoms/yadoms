@@ -24,7 +24,7 @@ namespace rfxcomMessages
       // Build device description
       buildDeviceModel();
       buildDeviceName();
-      buildDeviceDetails();
+      m_deviceDetails = deviceDetails;
    }
 
    CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api,

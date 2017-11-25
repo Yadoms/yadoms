@@ -28,10 +28,12 @@ namespace rfxcomMessages
       m_signalPower->set(0);
 
       createSubType(deviceDetails.get<unsigned char>("subType"));
-      m_id = deviceDetails.get<unsigned int>("id");
-
-      declare(api);
       m_subTypeManager->set(keyword, command);
+      m_id = deviceDetails.get<unsigned int>("id");
+      
+      // Build device description
+      buildDeviceName();
+      m_deviceDetails = deviceDetails;
    }
 
    CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -78,7 +80,21 @@ namespace rfxcomMessages
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.SECURITY1.battery_level));
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.SECURITY1.rssi));
 
-      declare(api);
+      // Build device description
+      buildDeviceName();
+      auto model = m_subTypeManager->getModel();
+
+      // Create device and keywords if needed
+      if (!api->deviceExists(m_deviceName))
+      {
+         if (m_messageFilter && !m_messageFilter->isValid(m_deviceName))
+            throw CMessageFilteredException((boost::format("Receive unknown device (id %1%) for unsecured protocol (SECURITY1 / %2%), may be a transmission error : ignored")
+               % m_id % model).str());
+
+         api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
+         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
+         m_deviceDetails.printToLog(YADOMS_LOG(information));
+      }
    }
 
    CSecurity1::~CSecurity1()
@@ -135,28 +151,6 @@ namespace rfxcomMessages
       m_keywords.insert(m_keywords.end(), m_subTypeManager->keywords().begin(), m_subTypeManager->keywords().end());
    }
 
-   void CSecurity1::declare(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      if (!m_subTypeManager)
-         throw shared::exception::CException("m_subTypeManager must be initialized");
-
-      // Build device description
-      buildDeviceName();
-      auto model = m_subTypeManager->getModel();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         if (m_messageFilter && !m_messageFilter->isValid(m_deviceName))
-            throw CMessageFilteredException((boost::format("Receive unknown device (id %1%) for unsecured protocol (SECURITY1 / %2%), may be a transmission error : ignored")
-               % m_id % model).str());
-
-         api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));
-      }
-   }
-
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CSecurity1::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF rbuf;
@@ -196,5 +190,3 @@ namespace rfxcomMessages
       m_deviceName = ssdeviceName.str();
    }
 } // namespace rfxcomMessages
-
-

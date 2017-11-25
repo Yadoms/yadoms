@@ -21,7 +21,10 @@ namespace rfxcomMessages
       m_subType = deviceDetails.get<unsigned char>("subType");
       m_houseCode = deviceDetails.get<unsigned char>("houseCode");
 
-      Init(api);
+      // Build device description
+      buildDeviceModel();
+      buildDeviceName();
+      m_deviceDetails = deviceDetails;
    }
 
    CCamera1::CCamera1(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -66,7 +69,22 @@ namespace rfxcomMessages
       m_camera->set(fromProtocolState(rbuf.CAMERA1.cmnd));
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.CAMERA1.rssi));
 
-      Init(api);
+      // Build device description
+      buildDeviceModel();
+      buildDeviceName();
+      buildDeviceDetails();
+
+      // Create device and keywords if needed
+      if (!api->deviceExists(m_deviceName))
+      {
+         api->declareDevice(m_deviceName,
+                            m_deviceModel,
+                            m_deviceModel,
+                            m_keywords,
+                            m_deviceDetails);
+         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+         m_deviceDetails.printToLog(YADOMS_LOG(information));
+      }
    }
 
    CCamera1::~CCamera1()
@@ -81,24 +99,6 @@ namespace rfxcomMessages
          m_deviceDetails.set("subType", m_subType);
          m_deviceDetails.set("houseCode", m_houseCode);
       }
-   }
-
-   void CCamera1::Init(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      // Build device description
-      buildDeviceModel();
-      buildDeviceName();
-      buildDeviceDetails();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-         api->declareDevice(m_deviceName,
-                            m_deviceModel,
-                            m_deviceModel,
-                            m_keywords,
-                            m_deviceDetails);
-      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-      m_deviceDetails.printToLog(YADOMS_LOG(information));
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CCamera1::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
@@ -205,5 +205,3 @@ namespace rfxcomMessages
       }
    }
 } // namespace rfxcomMessages
-
-

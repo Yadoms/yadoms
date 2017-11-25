@@ -22,7 +22,10 @@ namespace rfxcomMessages
       m_houseCode = deviceDetails.get<char>("houseCode");
       m_unitCode = deviceDetails.get<unsigned char>("unitCode");
 
-      Init(api);
+      // Build device description
+      buildDeviceModel();
+      buildDeviceName();
+      m_deviceDetails = deviceDetails;
    }
 
    CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -70,8 +73,19 @@ namespace rfxcomMessages
       m_unitCode = rbuf.HOMECONFORT.unitcode;
       m_state->set(fromProtocolState(rbuf.HOMECONFORT.cmnd));
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.HOMECONFORT.rssi));
+      
+      // Build device description
+      buildDeviceModel();
+      buildDeviceName();
+      buildDeviceDetails();
 
-      Init(api);
+      // Create device and keywords if needed
+      if (!api->deviceExists(m_deviceName))
+      {
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
+         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+         m_deviceDetails.printToLog(YADOMS_LOG(information));         
+      }
    }
 
    CHomeConfort::~CHomeConfort()
@@ -87,22 +101,6 @@ namespace rfxcomMessages
          m_deviceDetails.set("id", m_id);
          m_deviceDetails.set("houseCode", m_houseCode);
          m_deviceDetails.set("unitCode", m_unitCode);
-      }
-   }
-
-   void CHomeConfort::Init(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      // Build device description
-      buildDeviceModel();
-      buildDeviceName();
-      buildDeviceDetails();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));         
       }
    }
 

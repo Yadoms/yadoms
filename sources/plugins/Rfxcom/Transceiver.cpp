@@ -195,7 +195,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiver::
       case pTypeLighting1:
          return rfxcomMessages::CLighting1(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeLighting2:
-         return rfxcomMessages::CLighting2(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting2(api, command, deviceDetails).encode(m_seqNumberProvider);
       case pTypeLighting3:
          return rfxcomMessages::CLighting3(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeLighting4:

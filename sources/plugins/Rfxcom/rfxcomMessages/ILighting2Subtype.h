@@ -29,13 +29,13 @@ namespace rfxcomMessages
       /// \brief	                        Get the keywords
       /// \return                         The keyword list
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<const yApi::historization::IHistorizable> keyword() const = 0;
+      virtual const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Set keyword state from Yadoms command
       /// \param[in] yadomsCommand        The command from Yadoms
       //--------------------------------------------------------------
-      virtual void set(const std::string& yadomsCommand) = 0;
+      virtual void set(boost::shared_ptr<const yApi::IDeviceCommand> yadomsCommand) = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Set keyword state from default value
