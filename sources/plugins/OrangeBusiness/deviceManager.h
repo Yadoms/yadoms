@@ -29,8 +29,7 @@ public:
                           boost::shared_ptr<CDecoder> decoder);
 
    void refreshEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
-                         const std::string& name,
-                         const std::string& devEUID,
+                         const boost::shared_ptr<equipments::IEquipment> equipment,
                          boost::shared_ptr<IurlManager> frameManager,
                          const std::string& apikey,
                          boost::shared_ptr<CDecoder> decoder);

@@ -83,9 +83,11 @@ shared::CDataContainer urlManager::listDeviceCommands(const std::string &apikey,
    headerParameters.set("Accept", "application/json");
 
    parameters.set("page", boost::lexical_cast<std::string>(page)); // Seulement une page donnée
-   parameters.set("sort", "-creationTs"); // Get the newest command at the first page 
+   parameters.set("sort", "-creationTs"); // Get the newest command at the first page
+   parameters.set("timeRange", "2017-01-05T14:46:01.000Z,2017-11-05T14:00:01.000Z");
 
    std::string deviceUrl = "https://liveobjects.orange-business.com/api/v0/vendors/lora/devices/" + devEUI + "/commands";
+   YADOMS_LOG(information) << deviceUrl;
    boost::shared_ptr<shared::SecureSession> session = boost::make_shared<shared::SecureSession>(deviceUrl);
    shared::CHttpMethods::SendGetRequest(session,
                                         headerParameters,
