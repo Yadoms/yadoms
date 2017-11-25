@@ -35,4 +35,11 @@ MaintenanceManager.deleteBackup = function(name) {
 	return RestEngine.deleteJson("rest/maintenance/backup/" + name);
 };
 
+/**
+ * Delete all backups
+ */
+MaintenanceManager.deleteAllBackups = function() {
+	return RestEngine.deleteJson("rest/maintenance/backup");
+};
+
 

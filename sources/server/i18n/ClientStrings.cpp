@@ -52,6 +52,12 @@ namespace i18n
    std::string CClientStrings::DatabaseBackupSuccess                        = "database.backup.success";
    std::string CClientStrings::DatabaseBackupFail                           = "database.backup.fail";
 
+   std::string CClientStrings::BackupPrepare                                = "task.backup.prepare";
+   std::string CClientStrings::BackupCopyFile                               = "task.backup.copyfiles";
+   std::string CClientStrings::BackupCompress                               = "task.backup.compress";
+   std::string CClientStrings::BackupClean                                  = "task.backup.clean";
+   std::string CClientStrings::BackupSuccess                                = "task.backup.success";
+
    std::string CClientStrings::ExtraQuerySuccess                            = "plugins.extraquery.success";
    std::string CClientStrings::ExtraQueryFail                               = "plugins.extraquery.fail";
 

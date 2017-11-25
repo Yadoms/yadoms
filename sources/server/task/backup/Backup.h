@@ -71,6 +71,16 @@ namespace task
          ///\brief   The function pointer for reporting progression
          //------------------------------------------
          TaskProgressFunc m_reportRealProgress;
+
+         //------------------------------------------
+         ///\brief   The file count to zip
+         //------------------------------------------
+         int m_fileCountToZip;
+
+         //------------------------------------------
+         ///\brief   The current count of zipped file
+         //------------------------------------------
+         int m_currentFileCount;
       };
    } //namespace backup
 } //namespace task

@@ -59,7 +59,14 @@
             "interrupted": "Tâche interrompue",
             "crash": "Tâche plantée",
             "unknownError": "Erreur inconnue",
-            "end": "Tâche arrétée"
+            "end": "Tâche arrétée",
+            "backup" : {
+               "prepare" : "Préparation de la sauvegarde...",
+               "copyfiles" : "Copie des fichiers...",
+               "compress" : "Compression des fichiers...",
+               "clean" : "Nettoyage...",
+               "success" : "Sauvegarde réussie"
+            }
         },
         "database" : {
             "backup" : {
@@ -615,6 +622,9 @@
         "maintenance": {
           "title": "Maintenance",
           "backup" : "Démarrer une nouvelle sauvegarde",
+          "deleteAll" : "Effacer toutes les sauvegardes",
+          "deleteAllConfirmTitle" : "Confirmer la suppression",
+          "deleteAllConfirm" : "Êtes vous sûr de vouloir effacer touts les sauvegardes ?",
           "backuplist" : {
             "date" : "Date",
             "size" : "Taille",
