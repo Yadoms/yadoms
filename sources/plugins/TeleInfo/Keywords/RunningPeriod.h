@@ -49,10 +49,5 @@ private:
    /// \brief	The map of returned value to the IHM
    //--------------------------------------------------------------
    typedef std::map<std::string, unsigned int> EnumPeriod;
-
-   //--------------------------------------------------------------
-   /// \brief	developer mode
-   //--------------------------------------------------------------
-   bool m_isDeveloperMode;
 };
 

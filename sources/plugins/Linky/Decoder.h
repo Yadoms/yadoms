@@ -70,6 +70,7 @@ private:
    static const std::string m_tag_ADSC;
    static const std::string m_tag_VTIC;
    static const std::string m_tag_LTARF;
+   static const std::string m_tag_NGTF;
    static const std::string m_tag_EASF;
    static const std::string m_tag_STGE;
    static const std::string m_tag_EAIT;

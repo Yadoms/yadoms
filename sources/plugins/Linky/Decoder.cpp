@@ -27,7 +27,8 @@ inline std::string& trim(std::string& s, const char* t = " \t\n\r\f\v")
 
 const std::string CDecoder::m_tag_ADSC = "ADSC";    // meter id
 const std::string CDecoder::m_tag_VTIC = "VTIC";    // Linky revision
-const std::string CDecoder::m_tag_LTARF = "LTARF";  // Running period
+const std::string CDecoder::m_tag_LTARF = "LTARF";  // Running period for v1
+const std::string CDecoder::m_tag_NGTF = "NGTF";  // Running period for v2
 const std::string CDecoder::m_tag_EASF = "EASF";    // counter ...
 const std::string CDecoder::m_tag_STGE = "STGE";    // Status 32 bits word
 const std::string CDecoder::m_tag_EAIT = "EAIT";    // counter active energy injected to the network
@@ -204,13 +205,6 @@ void CDecoder::processMessage(const std::string& key,
          YADOMS_LOG(trace) << "VTIC" << "=" << values[0];
          m_revision = boost::lexical_cast<int>(values[0]);
 		}
-      else if (key == m_tag_LTARF)
-      {
-         YADOMS_LOG(trace) << "LTARF" << "= <" << values[0]<< ">";
-         std::string value = values[0];
-
-         m_newPeriod = trim(value);
-      }
 		else if (key.find(m_tag_EASF)!= std::string::npos)
 		{
 			YADOMS_LOG(trace) << key << "=" << values[0];
@@ -276,13 +270,31 @@ void CDecoder::processMessage(const std::string& key,
       {
          YADOMS_LOG(trace) << "SINST1" << "=" << values[0];
          if (key == m_tag_SINST1)
+         {
             m_apparentPower[0]->set(boost::lexical_cast<double>(values[0]));
+         }
+         else if (key == m_tag_LTARF) // For v1 running period is reverse with the NGTF tag !!
+         {
+            YADOMS_LOG(trace) << "LTARF" << "= <" << values[0] << ">";
+            std::string value = values[0];
+
+            m_newPeriod = trim(value);
+         }
       }
       else if (m_revision == 2) // specific functions v2
       {
          YADOMS_LOG(trace) << "SINSTS" << "=" << values[0];
          if (key == m_tag_SINSTS)
+         {
             m_apparentPower[0]->set(boost::lexical_cast<double>(values[0]));
+         }
+         else if (key == m_tag_NGTF)
+         {
+            YADOMS_LOG(trace) << "NGTF" << "= <" << values[0] << ">";
+            std::string value = values[0];
+
+            m_newPeriod = trim(value);
+         }
       }
 		else
 		{

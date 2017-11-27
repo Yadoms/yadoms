@@ -7,8 +7,7 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CForecastTomorrow::CForecastTomorrow(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& KeyWordName)
-   : m_forecastPeriod(boost::make_shared<teleInfo::specificHistorizers::CColor>(KeyWordName)),
-     m_isDeveloperMode(api->getYadomsInformation()->developperMode())
+   : m_forecastPeriod(boost::make_shared<teleInfo::specificHistorizers::CColor>(KeyWordName))
 {
 }
 
@@ -26,8 +25,7 @@ void CForecastTomorrow::set(const std::string& Value) const
       if (it != EEnumColorMap.end())
       {
          m_forecastPeriod->set(static_cast<teleInfo::specificHistorizers::EColor>(it->second));
-
-         if (m_isDeveloperMode) YADOMS_LOG(information) << m_forecastPeriod->getKeyword() << "=" << m_forecastPeriod->get() ;
+         YADOMS_LOG(trace) << m_forecastPeriod->getKeyword() << "=" << m_forecastPeriod->get() ;
       }
       else
          throw CKeywordException("Keyword " + m_forecastPeriod->getKeyword() + " could not be set");

@@ -2,7 +2,6 @@
 #include "LinkyFactory.h"
 #include <shared/communication/AsyncSerialPort.h>
 #include <shared/communication/AsciiBufferLogger.h>
-#include "LinkyReceiveBufferHandler.h"
 #include "Decoder.h"
 #include <shared/Log.h>
 
@@ -32,9 +31,9 @@ boost::shared_ptr<shared::communication::IAsyncPort> CLinkyFactory::constructPor
    return port;
 }
 
-boost::shared_ptr<shared::communication::IReceiveBufferHandler> CLinkyFactory::GetBufferHandler(shared::event::CEventHandler& eventHandler,
-                                                                                                int evtPortDataReceived,
-                                                                                                const bool isDeveloperMode)
+boost::shared_ptr<CLinkyReceiveBufferHandler> CLinkyFactory::GetBufferHandler(shared::event::CEventHandler& eventHandler,
+                                                                              int evtPortDataReceived,
+                                                                              const bool isDeveloperMode)
 {
    boost::shared_ptr<shared::communication::IBufferLogger> logger;
 
@@ -42,7 +41,6 @@ boost::shared_ptr<shared::communication::IReceiveBufferHandler> CLinkyFactory::G
 
    return boost::make_shared<CLinkyReceiveBufferHandler>(eventHandler,
                                                          evtPortDataReceived,
-                                                         boost::posix_time::seconds(30),
                                                          logger,
                                                          isDeveloperMode);
 }

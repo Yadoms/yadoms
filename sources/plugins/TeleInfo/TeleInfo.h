@@ -4,6 +4,7 @@
 #include <shared/communication/IAsyncPort.h>
 #include "IDecoder.h"
 #include <shared/communication/AsyncPortConnectionNotification.h>
+#include "TeleInfoReceiveBufferHandler.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -93,6 +94,11 @@ private:
    boost::shared_ptr<shared::event::CEventTimer> m_waitForAnswerTimer;
 
    //--------------------------------------------------------------
+   /// \brief	Periodic sampling event
+   //--------------------------------------------------------------
+   boost::shared_ptr<shared::event::CEventTimer> m_periodicSamplingTimer;
+
+   //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
    CTeleInfoConfiguration m_configuration;
@@ -105,7 +111,7 @@ private:
    //--------------------------------------------------------------
    /// \brief  The receiver buffer
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::communication::IReceiveBufferHandler> m_receiveBufferHandler;
+   boost::shared_ptr<CTeleInfoReceiveBufferHandler> m_receiveBufferHandler;
 
    //--------------------------------------------------------------
    /// \brief  developerMode state

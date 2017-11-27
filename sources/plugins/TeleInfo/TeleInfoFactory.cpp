@@ -32,9 +32,9 @@ boost::shared_ptr<shared::communication::IAsyncPort> CTeleInfoFactory::construct
    return port;
 }
 
-boost::shared_ptr<shared::communication::IReceiveBufferHandler> CTeleInfoFactory::GetBufferHandler(shared::event::CEventHandler& eventHandler,
-                                                                                                   int evtPortDataReceived,
-                                                                                                   const bool isDeveloperMode)
+boost::shared_ptr<CTeleInfoReceiveBufferHandler> CTeleInfoFactory::GetBufferHandler(shared::event::CEventHandler& eventHandler,
+                                                                                    int evtPortDataReceived,
+                                                                                    const bool isDeveloperMode)
 {
    boost::shared_ptr<shared::communication::IBufferLogger> logger;
 
@@ -42,7 +42,6 @@ boost::shared_ptr<shared::communication::IReceiveBufferHandler> CTeleInfoFactory
 
    return boost::make_shared<CTeleInfoReceiveBufferHandler>(eventHandler,
                                                             evtPortDataReceived,
-                                                            boost::posix_time::seconds(30),
                                                             logger,
                                                             isDeveloperMode);
 }
@@ -51,4 +50,3 @@ boost::shared_ptr<IDecoder> CTeleInfoFactory::constructDecoder(boost::shared_ptr
 {
    return boost::make_shared<CDecoder>(api);
 }
-
