@@ -2,6 +2,7 @@
 #include "deviceManager.h"
 #include "DefaultEquipment.h"
 #include <shared/DataContainer.h>
+#include <shared/http/HttpException.hpp>
 #include <algorithm>
 
 CEquipmentManager::CEquipmentManager(const std::map<std::string, boost::shared_ptr<equipments::IEquipment>>& deviceList) :
@@ -77,9 +78,13 @@ void CEquipmentManager::refreshEquipment(boost::shared_ptr<yApi::IYPluginApi> ap
          YADOMS_LOG(information) << "no battery information for equipment " << equipment->getName();
       }
    }
+   catch (shared::CHttpException &e)
+   {
+      throw e;
+   }
    catch (std::exception &e)
    {
-      YADOMS_LOG(error) << "exception : " << e.what();
+      YADOMS_LOG(error) << "exception 1 : " << e.what();
    }
 
    try {
@@ -105,9 +110,13 @@ void CEquipmentManager::refreshEquipment(boost::shared_ptr<yApi::IYPluginApi> ap
          }
       }
    }
+   catch (shared::CHttpException &e)
+   {
+      throw e;
+   }
    catch (std::exception &e)
    {
-      YADOMS_LOG(error) << "exception : " << e.what();
+      YADOMS_LOG(error) << "exception 2 : " << e.what();
    }
 }
 

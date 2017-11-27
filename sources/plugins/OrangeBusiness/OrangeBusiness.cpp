@@ -6,6 +6,7 @@
 #include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include <shared/Log.h>
 #include <shared/currentTime/Provider.h>
+#include <shared/http/HttpException.hpp>
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -36,27 +37,31 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    m_configuration.initializeWith(api->getConfiguration());
       
    try {
-
-      m_isDeveloperMode = api->getYadomsInformation()->developperMode();
       m_frameManager = boost::make_shared<urlManager>();
-      m_decoder = boost::make_shared<CDecoder>(); // TODO : create it directly at the constructor ?
+      m_decoder = boost::make_shared<CDecoder>();
 	   m_equipmentManager = boost::make_shared<CEquipmentManager>(api);
 
       if (m_equipmentManager->size() > 0)
       {
-		 // read values of devices every 15mn.
+		   // read values of devices every 15mn.
          m_waitForAnswerTimer = api->getEventHandler().createTimer(kEvtTimerRefreshDevices,
                                                                    shared::event::CEventTimer::kPeriodic,
                                                                    boost::posix_time::minutes(15));
 
-		 // fire immediately a event to read devices values
-		 m_waitForAnswerTimer = api->getEventHandler().createTimer(kEvtTimerRefreshDevices,
-																   shared::event::CEventTimer::kOneShot,
-																   boost::posix_time::seconds(0));
+		   // fire immediately a event to read devices values
+		   m_waitForAnswerTimer = api->getEventHandler().createTimer(kEvtTimerRefreshDevices,
+			  													                   shared::event::CEventTimer::kOneShot,
+																                   boost::posix_time::seconds(0));
+
+         api->setPluginState(yApi::historization::EPluginState::kRunning);
+         YADOMS_LOG(trace) << "State Running : device(s) registered";
+      }
+      else
+      {  // If no equipment state is ready
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "ready");
+         YADOMS_LOG(trace) << "State Ready : no device registered";
       }
 
-      // TODO : create others plugin state : ready, if no devices exists, for example, no connexion to the server, ...
-      api->setPluginState(yApi::historization::EPluginState::kRunning);
       YADOMS_LOG(information) << "Orange Business plugin is running..." ;
    }
    catch (...)
@@ -95,12 +100,23 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 		  try {
            if (m_equipmentManager)
            {
-              m_equipmentManager->refreshEquipments(api, m_frameManager, m_configuration.getAPIKey(), m_decoder);
+              try {
+                 m_equipmentManager->refreshEquipments(api, m_frameManager, m_configuration.getAPIKey(), m_decoder);
+              }
+              catch (shared::CHttpException &e)
+              {
+                 api->setPluginState(yApi::historization::EPluginState::kCustom, "noConnection");
+                 YADOMS_LOG(error) << "Error during connection to the web site";
+              }
+              catch (std::exception &e)
+              {
+                 YADOMS_LOG(information) << "Error during equipment refresh : " << e.what();
+              }
            }
 		  }
 		  catch (std::exception &e)
 		  {
-			  YADOMS_LOG(error) << "exception : " << e.what();
+			  YADOMS_LOG(error) << "exception 3 : " << e.what();
 		  }
 		  break;
       }
@@ -110,23 +126,37 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery> >();
          if (extraQuery)
          {
-            if (extraQuery->getData()->query() == "retreiveData")
-            {
-               registerAllDevices(api);
+            try {
+               if (extraQuery->getData()->query() == "retreiveData")
+               {
+                  registerAllDevices(api);
 
-               // fire immediately a event to read devices values
-               m_waitForAnswerTimer = api->getEventHandler().createTimer(kEvtTimerRefreshDevices,
-                                                                         shared::event::CEventTimer::kOneShot,
-                                                                         boost::posix_time::seconds(0));
+                  // fire immediately a event to read devices values
+                  m_waitForAnswerTimer = api->getEventHandler().createTimer(kEvtTimerRefreshDevices,
+                                                                            shared::event::CEventTimer::kOneShot,
+                                                                            boost::posix_time::seconds(0));
 
+                  api->setPluginState(yApi::historization::EPluginState::kRunning);
+               }
+               else if (extraQuery->getData()->query() == "onlyActivated")
+               {
+                  registerActivatedDevices(api);
+                  api->setPluginState(yApi::historization::EPluginState::kRunning);
+               }
+               else if (extraQuery->getData()->query() == "removeAllDevices")
+               {
+                  m_equipmentManager->removeAllDevices(api);
+                  api->setPluginState(yApi::historization::EPluginState::kCustom, "ready"); // No more devices, so ready
+               }
             }
-            else if (extraQuery->getData()->query() == "onlyActivated") // TODO : This query has to be added !
+            catch (shared::CHttpException &e)
             {
-               registerActivatedDevices(api); 
+               api->setPluginState(yApi::historization::EPluginState::kCustom, "noConnection");
+               YADOMS_LOG(error) << "Error during connection to the web site";
             }
-            else if (extraQuery->getData()->query() == "removeAllDevices")
+            catch (std::exception &e)
             {
-               m_equipmentManager->removeAllDevices(api);
+               YADOMS_LOG(information) << "Error during extra query : " << e.what();
             }
 
             extraQuery->sendSuccess(shared::CDataContainer());
@@ -163,7 +193,7 @@ void COrangeBusiness::registerAllDevices(boost::shared_ptr<yApi::IYPluginApi> ap
    }
    catch (std::exception &e)
    {
-      YADOMS_LOG(error) << "exception : " << e.what();
+      YADOMS_LOG(error) << "exception 4 : " << e.what();
    }
 }
 
@@ -183,7 +213,7 @@ void COrangeBusiness::registerActivatedDevices(boost::shared_ptr<yApi::IYPluginA
    }
    catch (std::exception &e)
    {
-      YADOMS_LOG(error) << "exception : " << e.what();
+      YADOMS_LOG(error) << "exception 5 : " << e.what();
    }
 }
 

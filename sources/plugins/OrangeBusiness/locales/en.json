@@ -21,7 +21,9 @@
 	"customLabels": {
 		"pluginState": {
 			"initializationError": "Initialization error",
-			"updateConfiguration": "Configuration updating..."
+			"updateConfiguration": "Configuration updating...",
+			"ready": "Plugin ready",
+			"noConnection": "Could not connect to the equipment"         
 		}
 	}
 }

@@ -115,6 +115,7 @@ set(SHARED_LIB_SRC
    shared/exception/JSONParse.hpp
    
    shared/http/IHttpSession.h
+   shared/http/HttpException.hpp
    shared/http/HttpMethods.h
    shared/http/HttpMethods.cpp
    shared/http/SecureSession.h

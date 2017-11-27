@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "HttpMethods.h"
+#include "HttpException.hpp"
 #include <Poco/Net/HTTPRequest.h>
 #include <Poco/Net/SSLException.h>
 #include <shared/exception/Exception.hpp>
@@ -73,13 +74,14 @@ namespace shared
 	  catch (const Poco::Net::SSLException& e)
 	  {
 		  std::cerr << e.what() << ": " << e.message() << std::endl;
+        throw CHttpException(e.message());
         return false;
 	  }
      catch (Poco::Exception& e)
      {
         auto message = (boost::format("Fail to send get http request \"%1%\" : %2%") % session->getUrl() % e.message()).str();
         YADOMS_LOG(error) << message;
-        throw exception::CException(message);
+        throw CHttpException(message);
         return false;
       }
    }

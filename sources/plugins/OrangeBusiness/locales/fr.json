@@ -21,7 +21,9 @@
 	"customLabels": {
 		"pluginState": {
          "initializationError": "Erreur d'initialisation",
-			"updateConfiguration": "Mise à jour de la configuration..."
+			"updateConfiguration": "Mise à jour de la configuration...",
+         "ready": "plugin prêt",
+         "noConnection": "Erreur de connexion au site internet Orange Business"
 		}
 	}
 }
