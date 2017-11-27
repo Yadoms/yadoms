@@ -60,6 +60,11 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                                                                 shared::event::CEventTimer::kPeriodic,
                                                                 boost::posix_time::seconds(30));
 
+   // For immediat sampling
+   m_periodicSamplingTimer = api->getEventHandler().createTimer(kSamplingTimer,
+                                                                shared::event::CEventTimer::kOneShot,
+                                                                boost::posix_time::seconds(0));
+
    // Create the connection
    createConnection(api);
 
