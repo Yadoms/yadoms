@@ -22,8 +22,8 @@ CTeleInfoReceiveBufferHandler::CTeleInfoReceiveBufferHandler(shared::event::CEve
    : m_receiveDataEventHandler(receiveDataEventHandler),
      m_receiveDataEventId(receiveDataEventId),
      m_logger (logger),
+   m_isDeveloperMode(isdeveloperMode),
    m_pushActivated(true),
-   m_isDeveloperMode(isdeveloperMode)
 {
 }
 
