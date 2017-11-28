@@ -46,13 +46,11 @@ widgetViewModelCtor = function gaugeViewModel() {
             })
             .fail(function (error) {
                notifyError($.t("widgets/gauge:errorInitialization"), error);
-               throw $.t("widgets/gauge:errorInitialization");
                d.reject();
             });
         })
         .fail(function (error) {
             notifyError($.t("widgets/gauge:errorInitialization"), error);
-            throw $.t("widgets/gauge:errorInitialization");
             d.reject();
         });
         return d.promise();

@@ -16,7 +16,6 @@ function initializeWidgetEngine() {
     //we ask all widgets packages
     WidgetPackageManager.getAll()
     .done(function () {
-        console.timeStamp("entering WidgetPackageManager.getAll");
         //we show notification
         loadPagesNotification = notifyInformation($.t("mainPage.actions.loadingPages"));
         PageManager.getAll()
@@ -124,16 +123,15 @@ function tabClick(pageId) {
             requestWidgets(page)
             .always(function () {
                //we poll all widget data
-               updateWidgetsPolling().always(function() {
+               updateWidgetsPolling(page).always(function() {
                  var b = page.$grid.packery('reloadItems');
                  updateWebSocketFilter();
                  PageManager.updateWidgetLayout(page);
                });
             });
         } else {
-           
             //we poll all widget data
-            updateWidgetsPolling().always(function() {
+            updateWidgetsPolling(page).always(function() {
                page.$grid.packery('destroy');
                page.$grid.packery(PageManager.packeryOptions);
                updateWebSocketFilter();
@@ -308,8 +306,8 @@ function dispatchTimeToWidgets(timeData) {
 
 function updateWebSocketFilter() {
     if (WebSocketEngine.isActive()) {
-        var page = PageManager.getCurrentPage();
-        if (page == null)
+       var page = PageManager.getCurrentPage();
+       if (page == null)
             return;
 
         var collection = [];
@@ -331,15 +329,20 @@ function updateWebSocketFilter() {
 }
 
 function updateWidgetsPolling() {
+   
+   var page = PageManager.getCurrentPage();
+   updateWidgetsPolling(page);
+}
+
+function updateWidgetsPolling(page) {
     var d = new $.Deferred();
     
     //we browse each widget instance
-    var page = PageManager.getCurrentPage();
     if (page == null) {
         d.resolve();
     } else {
       var arrayOfDeffered = [];
-        
+       
        $.each(page.widgets, function (widgetIndex, widget) {
            //we ask which devices are needed for this widget instance
            var deffered = updateWidgetPolling(widget);

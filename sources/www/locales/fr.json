@@ -956,7 +956,8 @@
             "unableToGetWidgets": "Impossible d'obtenir les Widgets",
             "partOfWidgetIsMissing": "Impossible d'obtenir une partie du widget __widgetName__. Les widgets de ce type ont été désactivés.",
             "widgetHasGeneratedAnExceptionDuringCallingMethod": "Le widget __widgetName__ a généré une exception à l'appel de __methodName__()",
-            "errorDuringGettingDeviceInformation": "Erreur lors de la récupération des informations de l'équipement"
+            "errorDuringGettingDeviceInformation": "Erreur lors de la récupération des informations de l'équipement",
+            "loadingWidgetsError": "Erreur lors du chargement d'un widget"
         },
         "widgetPackageManager": {
             "incorrectPackage": "Le paquet du widget est incorrect",
