@@ -84,7 +84,10 @@ function notifyError(message, errorInfo) {
  * @returns {noty}
  */
 function notifyError(message, errorInfo, timeout) {
-   console.error(message, errorInfo);
+   if (errorInfo == undefined)
+      console.error(message);
+   else
+      console.error(message, errorInfo);
    return notify(message, 'error', timeout);
 }
 
