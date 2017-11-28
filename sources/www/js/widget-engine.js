@@ -88,7 +88,6 @@ function requestWidgets(page) {
                 d.resolve();
             })
             .fail(function (errorMessage) {
-                console.error(errorMessage);
                 notifyError($.t("objects.widgetManager.loadingWidgetsError"));
                 d.reject();
             });
