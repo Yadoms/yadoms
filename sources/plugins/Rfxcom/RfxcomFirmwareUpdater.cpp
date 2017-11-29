@@ -67,7 +67,8 @@ void CRfxcomFirmwareUpdater::update()
 
       rfxcomReadBootloaderVersion(picBoot);
       rfxcomClearMemory(picBoot);
-      rfxcomWritingMemory(picBoot, hexData);
+      const auto picData = convertData(hexData);
+      rfxcomWritingMemory(picBoot, picData);
       m_extraQuery->reportProgress(5.0f, "customLabels.firmwareUpdate.verify");//TODO traduire
       rfxcomVerifyMemory(picBoot);
       //TODO faut pas écrire le VerifyOK quelque part ?
@@ -193,6 +194,18 @@ boost::shared_ptr<CRfxcomFirmwareUpdater::CHexData> CRfxcomFirmwareUpdater::load
    {
       YADOMS_LOG(error) << "RfxcomFirmwareUpdater, invalid input file : " << e.what();
       throw std::runtime_error("customLabels.firmwareUpdate.ErrorInvalidInputFile");
+   }
+}
+
+void CRfxcomFirmwareUpdater::convertData(const boost::shared_ptr<CHexData> fileData) const
+{
+   // Init data array with 0xFF (init phantom byte to 0)
+   unsigned char rowData[255];
+   for (size_t i = 0; i < sizeof rowData; ++i)
+      rowData[i] = (i + 1) % 4 ? 255 : 0;
+
+   for (const auto& lineLine:fileData)
+   {
    }
 }
 

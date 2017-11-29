@@ -28,6 +28,7 @@ protected:
    };
 
    boost::shared_ptr<CHexData> loadFile(const std::string& fileContent) const;
+   void convertData(const boost::shared_ptr<CHexData> fileData) const;
    static unsigned int hexStringToUInt(const std::string& hexString);
    static unsigned int computeLineChecksum(const std::string& line);
    static boost::shared_ptr<picConfigurations::IPicConfiguration> createPicConfiguration(const unsigned deviceId);
