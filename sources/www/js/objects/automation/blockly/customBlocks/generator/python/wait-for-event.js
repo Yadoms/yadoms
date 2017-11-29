@@ -33,6 +33,8 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
     //get the output variable
     var outVar = block.generateVariable_("outVar");
     var endOfLoopVar = block.generateVariable_("endOfLoop");
+    block.setBreakVariableName(block.generateVariable_("wantToBreak"));
+    block.setContinueVariableName(block.generateVariable_("wantToContinue"));
     var waitForEventResultVar = block.generateVariable_("waitForEventResult");
     var keywordIdVar = block.generateVariable_("keywordId");
 
@@ -170,10 +172,17 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
     var loop = "# Wait for event block -------> START\n";
 
     loop += endOfLoopVar + " = False\n";
+    loop += block.getBreakVariableName() + " = False\n";
+    loop += block.getContinueVariableName() + " = False\n";
 
     code = Blockly.Python.prefixLines(code, Blockly.Python.INDENT) || Blockly.Python.PASS;
     loop += "while " + endOfLoopVar + " != True :\n" + code + "\n";
 
+    loop += "# Manage break/continue inside waitForEvents\n";
+    loop += "if " + block.getBreakVariableName() + ":\n";
+    loop += Blockly.Python.INDENT + 'break\n';
+    loop += "if " + block.getContinueVariableName() + ":\n";
+    loop += Blockly.Python.INDENT + 'continue\n';
     loop += "# Wait for event block -------> END\n";
 
     return loop;
