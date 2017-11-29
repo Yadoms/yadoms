@@ -12,17 +12,17 @@
       "content": {
         "AE Blyss": { "name": "AE Blyss" },
         "Rubicson": { "name": "Rubicson" },
-        "FineOffset/Viking": { "name": "FineOffset/Viking" },
+        "FineOffset/Viking": { "name": "FineOffset, Viking" },
         "Lighting4": { "name": "Lighting4" },
-        "RSL": { "name": "RSL" },
-        "Byron SX": { "name": "Byron SX" },
+        "RSL": { "name": "RSL, Revolt" },
+        "Byron SX": { "name": "Byron SX, SelectPlus" },
         "Imagintronix": { "name": "Imagintronix/Opus" },
         "undecoded messages": { "name": "undecoded messages" },
         "Mertik": { "name": "Mertik" },
         "AD LightwaveRF": { "name": "AD LightwaveRF" },
-        "Hideki/UPM": { "name": "Hideki/UPM" },
+        "Hideki/UPM": { "name": "Hideki, TFA, Cresta, UPM" },
         "La Crosse": { "name": "La Crosse" },
-        "FS20": { "name": "Legrand CAD" },
+        "LegrandCAD": { "name": "Legrand CAD" },
         "BlindsT0": { "name": "BlindsT0" },
         "BlindsT1": { "name": "BlindsT1" },
         "X10": { "name": "X10" },
@@ -71,7 +71,7 @@
         "hcA_P-uc1_16": {
           "types": {
             "x10": { "title": "x10" },
-            "arc": { "title": "arc" },
+            "ARC": { "title": "ARC" },
             "ab400d": { "title": "ab400d" },
             "waveman": { "title": "waveman" },
             "emw200": { "title": "emw200" },
@@ -113,9 +113,6 @@
         },
         "id1_67108863-unitCode1_16": {
           "types": {
-            "ac": { "title": "ac" },
-            "homeEasyEU": { "title": "homeEasyEU" },
-            "anslut": { "title": "anslut" },
             "smartwares": { "title": "smartwares" }
           },
           "content": {
@@ -126,6 +123,30 @@
             "unitCode": {
               "name": "Unit Code",
               "description": "The unit code (1-16)"
+            }
+          }
+        },
+        "id1_67108863-unitCode1_16-onOffOrDimmable": {
+          "types": {
+            "AC": { "title": "AC" },
+            "homeEasyEU": { "title": "homeEasyEU" },
+            "anslut": { "title": "anslut" }
+          },
+          "content": {
+            "id": {
+              "name": "ID",
+              "description": "The device ID (1-67108863)"
+            },
+            "unitCode": {
+              "name": "Unit Code",
+              "description": "The unit code (1-16)"
+            },
+            "type": {
+              "name": "Device type",
+              "values": {
+                "onOff": "on-off type (switch, light, dry contact...)",
+                "dimmable" : "dimmable type (light dimmer...)"
+              }
             }
           }
         },

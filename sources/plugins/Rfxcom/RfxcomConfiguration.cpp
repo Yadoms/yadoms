@@ -42,7 +42,7 @@ bool CRfxcomConfiguration::isMERTIKenabled() const { return m_configuration.get<
 bool CRfxcomConfiguration::isLWRFenabled() const { return m_configuration.get<bool>("Protocols.content.AD LightwaveRF"); }
 bool CRfxcomConfiguration::isHIDEKIenabled() const { return m_configuration.get<bool>("Protocols.content.Hideki/UPM"); }
 bool CRfxcomConfiguration::isLACROSSEenabled() const { return m_configuration.get<bool>("Protocols.content.La Crosse"); }
-bool CRfxcomConfiguration::isLEGRANDenabled() const { return m_configuration.get<bool>("Protocols.content.FS20"); }
+bool CRfxcomConfiguration::isLEGRANDenabled() const { return m_configuration.get<bool>("Protocols.content.LegrandCAD"); }
 bool CRfxcomConfiguration::isBLINDST0enabled() const { return m_configuration.get<bool>("Protocols.content.BlindsT0"); }
 bool CRfxcomConfiguration::isBLINDST1enabled() const { return m_configuration.get<bool>("Protocols.content.BlindsT1"); }
 bool CRfxcomConfiguration::isX10enabled() const { return m_configuration.get<bool>("Protocols.content.X10"); }

@@ -62,8 +62,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Lighting1.cpp
    rfxcomMessages/Lighting2.h
    rfxcomMessages/Lighting2.cpp
-   rfxcomMessages/Lighting2Dimmable.h
-   rfxcomMessages/Lighting2Dimmable.cpp
+   rfxcomMessages/Lighting2OnOffOrDimmable.h
+   rfxcomMessages/Lighting2OnOffOrDimmable.cpp
    rfxcomMessages/Lighting2OnOff.h
    rfxcomMessages/Lighting2OnOff.cpp
    rfxcomMessages/Lighting3.h

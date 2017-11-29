@@ -12,6 +12,13 @@ namespace rfxcomMessages
    class ILighting2Subtype
    {
    public:
+      enum EDeviceType
+      {
+         kUnknown = 0,
+         kOnOff,
+         kDimmable
+      };
+
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
