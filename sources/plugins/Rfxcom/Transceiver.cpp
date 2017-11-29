@@ -382,7 +382,7 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
       // Lighting1
       if (deviceType == "x10")
          msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeX10, data.getDeviceName(), data.getConfiguration());
-      else if (deviceType == "arc")
+      else if (deviceType == "ARC")
          msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeARC, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "ab400d")
          msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeAB400D, data.getDeviceName(), data.getConfiguration());
@@ -404,7 +404,7 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
          msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeGDR2, data.getDeviceName(), data.getConfiguration());
 
       // Lighting2
-      else if (deviceType == "ac")
+      else if (deviceType == "AC")
          msg = boost::make_shared<rfxcomMessages::CLighting2>(api, sTypeX10, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "homeEasyEU")
          msg = boost::make_shared<rfxcomMessages::CLighting2>(api, sTypeARC, data.getDeviceName(), data.getConfiguration());

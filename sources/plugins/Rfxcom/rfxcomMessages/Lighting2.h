@@ -69,9 +69,11 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	Set and create the subtype
       /// \param[in] subType              Device subType
+      /// \param[in] deviceType           Device subType
       /// \return                         Created sub type
       //--------------------------------------------------------------
-      boost::shared_ptr<ILighting2Subtype> createSubType(unsigned char subType) const;
+      boost::shared_ptr<ILighting2Subtype> createSubType(unsigned char subType,
+                                                         ILighting2Subtype::EDeviceType deviceType = ILighting2Subtype::kUnknown) const;
 
       //--------------------------------------------------------------
       /// \brief	                        Build the device infos
@@ -130,3 +132,5 @@ namespace rfxcomMessages
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    };
 } // namespace rfxcomMessages
+
+

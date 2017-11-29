@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Lighting2Dimmable.h"
+#include "Lighting2OnOffOrDimmable.h"
 #include "RFXtrxHelpers.h"
 #include <shared/exception/InvalidParameter.hpp>
 
@@ -7,28 +7,41 @@ namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
-   CLighting2Dimmable::CLighting2Dimmable(const std::string& model)
+   CLighting2OnOffOrDimmable::CLighting2OnOffOrDimmable(const std::string& model,
+      EDeviceType deviceType)
       : m_model(model),
         m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
         m_level(boost::make_shared<yApi::historization::CDimmable>("level"))
    {
+      switch(deviceType)
+      {
+      case kOnOff:
+         m_keywords.push_back(m_state);
+         break;
+      case kDimmable:
+         m_keywords.push_back(m_level);
+         break;
+      default:
+         // Will be autodetect
+         break;
+      }
    }
 
-   CLighting2Dimmable::~CLighting2Dimmable()
+   CLighting2OnOffOrDimmable::~CLighting2OnOffOrDimmable()
    {
    }
 
-   std::string CLighting2Dimmable::getModel() const
+   std::string CLighting2OnOffOrDimmable::getModel() const
    {
       return m_model;
    }
 
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CLighting2Dimmable::keywords() const
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CLighting2OnOffOrDimmable::keywords() const
    {
       return m_keywords;
    }
 
-   void CLighting2Dimmable::set(boost::shared_ptr<const yApi::IDeviceCommand> yadomsCommand)
+   void CLighting2OnOffOrDimmable::set(boost::shared_ptr<const yApi::IDeviceCommand> yadomsCommand)
    {
       if (yadomsCommand->getKeyword() == m_state->getKeyword())
       {
@@ -42,13 +55,13 @@ namespace rfxcomMessages
       }
    }
 
-   void CLighting2Dimmable::reset()
+   void CLighting2OnOffOrDimmable::reset()
    {
       m_state->set(false);
       m_level->set(0);
    }
 
-   void CLighting2Dimmable::idFromProtocol(unsigned char id1Byte,
+   void CLighting2OnOffOrDimmable::idFromProtocol(unsigned char id1Byte,
                                            unsigned char id2Byte,
                                            unsigned char id3Byte,
                                            unsigned char id4Byte,
@@ -59,7 +72,7 @@ namespace rfxcomMessages
       id = id1Byte << 24 | id2Byte << 16 | id3Byte << 8 | id4Byte;
    }
 
-   void CLighting2Dimmable::idToProtocol(unsigned char /*houseCode*/,
+   void CLighting2OnOffOrDimmable::idToProtocol(unsigned char /*houseCode*/,
                                          unsigned int id,
                                          unsigned char& id1Byte,
                                          unsigned char& id2Byte,
@@ -72,7 +85,7 @@ namespace rfxcomMessages
       id4Byte = static_cast<unsigned char>(0xFF & id);
    }
 
-   void CLighting2Dimmable::setFromProtocolState(unsigned char cmdByte,
+   void CLighting2OnOffOrDimmable::setFromProtocolState(unsigned char cmdByte,
                                                  unsigned char levelByte)
    {
       switch (cmdByte)
@@ -98,7 +111,7 @@ namespace rfxcomMessages
       }
    }
 
-   void CLighting2Dimmable::toProtocolState(unsigned char& cmdByte,
+   void CLighting2OnOffOrDimmable::toProtocolState(unsigned char& cmdByte,
                                             unsigned char& levelByte) const
    {
       if (std::find(m_keywords.begin(), m_keywords.end(), m_level) != m_keywords.end())
@@ -115,6 +128,6 @@ namespace rfxcomMessages
          return;
       }
 
-      throw std::invalid_argument("No keyword for CLighting2Dimmable::toProtocolState");
+      throw std::invalid_argument("No keyword for CLighting2OnOffOrDimmable::toProtocolState");
    }
 } // namespace rfxcomMessages
