@@ -1,47 +1,4 @@
 ﻿{
-<<<<<<< HEAD
-   "name": "RFXCom",
-   "description": "Support du module radio RFXCom (voir http://rfxcom.com/)",
-   "configurationSchema":
-   {
-      "SerialPort":
-      {
-         "name": "Port série",
-         "description": "Le port série virtuel connecté au RFXCom"
-      },
-      "Protocols":
-      {
-          "name" : "Protocoles en écoute",
-          "description" : "Protocoles à écouter, voir le manuel d'utilisation du RFXCom. Attention, certains protocoles ne sont pas compatibles entre eux, et ne doivent pas être activés simultanément.",
-          "content" :
-          {
-             "AE Blyss" : { "name" : "AE Blyss (Castorama)" },
-             "Rubicson" : { "name" : "Rubicson" },
-             "FineOffset/Viking" : { "name" : "FineOffset/Viking" },
-             "Lighting4" : { "name" : "Lighting4" },
-             "RSL" : { "name" : "RSL" },
-             "Byron SX" : { "name" : "Byron SX" },
-             "Imagintronix" : { "name" : "Imagintronix/Opus" },
-             "undecoded messages" : { "name" : "undecoded messages" },
-             "Mertik" : { "name" : "Mertik" },
-             "AD LightwaveRF" : { "name" : "AD LightwaveRF" },
-             "Hideki/UPM" : { "name" : "Hideki/UPM" },
-             "La Crosse" : { "name" : "La Crosse" },
-             "FS20": { "name": "Legrand CAD" },
-             "BlindsT0" : { "name" : "BlindsT0" },
-             "BlindsT1" : { "name" : "BlindsT1" },
-             "X10" : { "name" : "X10" },
-             "ARC" : { "name" : "ARC" },
-             "AC" : { "name" : "AC" },
-             "HomeEasy EU" : { "name" : "HomeEasy EU" },
-             "Meiantech" : { "name" : "Meiantech" },
-             "Oregon Scientific" : { "name" : "Oregon Scientific" },
-             "ATI" : { "name" : "ATI/Cartelectronic" },
-             "Visonic" : { "name" : "Visonic" },
-             "KeeLoq" : { "name" : "KeeLoq" },
-             "HomeConfort" : { "name" : "HomeConfort" }
-          }
-=======
   "name": "RFXCom",
   "description": "Support du module radio RFXCom (voir http://rfxcom.com/)",
   "configurationSchema": {
@@ -105,7 +62,6 @@
         "NormalCostBlueDays": "Heures pleines bleues",
         "NormalCostWhiteDays": "Heures pleines blanches",
         "NormalCostRedDays": "Heures pleines rouges"
->>>>>>> 2_0
       }
     }
   },
