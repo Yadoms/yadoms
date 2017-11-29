@@ -24,7 +24,10 @@ namespace rfxcomMessages
       m_id = deviceDetails.get<unsigned int>("id");
       m_unitCode = deviceDetails.get<unsigned char>("unitCode");
 
-      Init(api);
+      // Build device description
+      buildDeviceModel();
+      buildDeviceName();
+      m_deviceDetails = deviceDetails;
    }
 
    CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -148,7 +151,22 @@ namespace rfxcomMessages
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.BLINDS1.filler)); // filler is specified as battery level in RFXtrx SDF.pdf
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.BLINDS1.rssi));
 
-      Init(api);
+      // Build device description
+      buildDeviceModel();
+      buildDeviceName();
+      buildDeviceDetails();
+
+      // Create device and keywords if needed
+      if (!api->deviceExists(m_deviceName))
+      {
+         api->declareDevice(m_deviceName,
+                            m_deviceModel,
+                            m_deviceModel,
+                            m_keywords,
+                            m_deviceDetails);
+         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+         m_deviceDetails.printToLog(YADOMS_LOG(information));
+      }
    }
 
    CBlinds1::~CBlinds1()
@@ -164,24 +182,6 @@ namespace rfxcomMessages
          m_deviceDetails.set("id", m_id);
          m_deviceDetails.set("unitCode", m_unitCode);
       }
-   }
-
-   void CBlinds1::Init(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      // Build device description
-      buildDeviceModel();
-      buildDeviceName();
-      buildDeviceDetails();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-         api->declareDevice(m_deviceName,
-                            m_deviceModel,
-                            m_deviceModel,
-                            m_keywords,
-                            m_deviceDetails);
-      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-      m_deviceDetails.printToLog(YADOMS_LOG(information));
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CBlinds1::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const

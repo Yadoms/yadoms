@@ -426,6 +426,8 @@ void CRfxcom::processRfxcomCommandResponseMessage(boost::shared_ptr<yApi::IYPlug
    {
    case rfxcomMessages::CTransceiverStatus::kStatus: processRfxcomStatusMessage(api, status);
       break;
+   case rfxcomMessages::CTransceiverStatus::kUnknownRfyRemote: processRfxcomUnknownRfyRemoteMessage(api, status);
+      break;
    case rfxcomMessages::CTransceiverStatus::kWrongCommand: processRfxcomWrongCommandMessage(api, status);
       break;
    case rfxcomMessages::CTransceiverStatus::kReceiverStarted: processRfxcomReceiverStartedMessage(api, status);
@@ -493,6 +495,23 @@ void CRfxcom::processRfxcomWrongCommandMessage(boost::shared_ptr<yApi::IYPluginA
    {
       YADOMS_LOG(information) << "RFXCom wrong command response (is your firmware up-to-date ?)";
    }
+}
+
+void CRfxcom::processRfxcomUnknownRfyRemoteMessage(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                   const rfxcomMessages::CTransceiverStatus& status)
+{
+   YADOMS_LOG(information) << "RFXCom doesn't know this RFY remote, try to send a program message...";
+
+   const auto lastRequest = reinterpret_cast<const RBUF* const>(m_lastRequest.begin());
+
+   if (lastRequest->RAW.packettype != pTypeRFY)
+   {
+      YADOMS_LOG(error) << "Last command was not a RFY command, can not send RFY program message";
+      return;
+   }
+
+   YADOMS_LOG(information) << "RFXCom doesn't know this RFY remote, send a program message...";
+   send(api, m_transceiver->buildRfyProgramMessage(m_lastRequest));
 }
 
 void CRfxcom::processRfxcomAckMessage(const rfxcomMessages::CAck& ack)

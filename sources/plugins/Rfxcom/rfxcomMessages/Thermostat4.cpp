@@ -39,7 +39,10 @@ namespace rfxcomMessages
 
       m_unitCode = deviceDetails.get<unsigned int>("unitCode");
 
-      Init(api);
+      // Build device description
+      buildDeviceModel();
+      buildDeviceName();
+      m_deviceDetails = deviceDetails;
    }
 
    CThermostat4::CThermostat4(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -115,22 +118,6 @@ namespace rfxcomMessages
          m_deviceDetails.set("type", pTypeThermostat4);
          m_deviceDetails.set("subType", m_subType);
          m_deviceDetails.set("unitCode", m_unitCode);
-      }
-   }
-
-   void CThermostat4::Init(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      // Build device description
-      buildDeviceModel();
-      buildDeviceName();
-      buildDeviceDetails();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));
       }
    }
 

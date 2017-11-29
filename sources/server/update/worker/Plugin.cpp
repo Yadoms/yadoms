@@ -34,7 +34,7 @@ namespace update
             YADOMS_LOG(information) << "Downloading package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginDownload, std::string(), callbackData);
             Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdatePluginDownload, 0.0, 50.0);
-            YADOMS_LOG(information) << "Downloading package with sucess";
+            YADOMS_LOG(information) << "Downloading package with success";
 
             /////////////////////////////////////////////
             //2. deploy package
@@ -90,6 +90,7 @@ namespace update
          callbackData.set("downloadUrl", downloadUrl);
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginUpdate, std::string(), callbackData);
+
          /////////////////////////////////////////////
          //1. download package
          /////////////////////////////////////////////
@@ -98,13 +99,13 @@ namespace update
             YADOMS_LOG(information) << "Downloading package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginDownload, std::string(), callbackData);
             Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdatePluginDownload, 0.0, 50.0);
-            YADOMS_LOG(information) << "Downloading package with sucess";
+            YADOMS_LOG(information) << "Downloading package with success";
 
             /////////////////////////////////////////////
             //2. stop any instance
             /////////////////////////////////////////////
             if (pluginManager)
-               pluginManager->stopAllInstancesOfPlugin(pluginName);
+               pluginManager->stopAllInstancesOfPluginAndWaitForStopped(pluginName);
 
             /////////////////////////////////////////////
             //3. deploy package
@@ -163,7 +164,7 @@ namespace update
             //1. stop any instance
             /////////////////////////////////////////////
             if (pluginManager)
-               pluginManager->stopAllInstancesOfPlugin(pluginName);
+               pluginManager->stopAllInstancesOfPluginAndWaitForStopped(pluginName);
 
             /////////////////////////////////////////////
             //2. remove plugin folder

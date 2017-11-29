@@ -7,7 +7,7 @@ Blockly.Yadoms.GetPythonOutput_ = function() {
     //get python code
     Blockly.Yadoms.Python.clearAdditionalImports();
 
-    var pythonCode = Blockly.Python.workspaceToCode();
+    var pythonCode = Blockly.Python.workspaceToCode(Blockly.Yadoms.CurrentWorkspace);
     var pythonCodeIndented = Blockly.Python.prefixLines(pythonCode, "   ");
     var completedPythonCode = "# yMain is the script entry point, called by Yadoms\n";
 

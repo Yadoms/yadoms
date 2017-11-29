@@ -20,8 +20,11 @@ namespace rfxcomMessages
 
       m_subType = deviceDetails.get<unsigned char>("subType");
       m_id = deviceDetails.get<unsigned int>("id");
-
-      Init(api);
+      
+      // Build device description
+      buildDeviceModel();
+      buildDeviceName();
+      m_deviceDetails = deviceDetails;
    }
 
    CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -66,7 +69,22 @@ namespace rfxcomMessages
       m_id = rbuf.LIGHTING4.cmd1 << 16 | rbuf.LIGHTING4.cmd2 << 8 | rbuf.LIGHTING4.cmd3;
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING4.rssi));
 
-      Init(api);
+      // Build device description
+      buildDeviceModel();
+      buildDeviceName();
+      buildDeviceDetails();
+
+      // Create device and keywords if needed
+      if (!api->deviceExists(m_deviceName))
+      {
+         if (m_messageFilter && !m_messageFilter->isValid(m_deviceName))
+            throw CMessageFilteredException((boost::format("Receive unknown device (id %1%) for unsecured protocol (LIGHTING4 / %2%), may be a transmission error : ignored")
+               % m_id % m_deviceModel).str());
+
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
+         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+         m_deviceDetails.printToLog(YADOMS_LOG(information));
+      }
    }
 
    CLighting4::~CLighting4()
@@ -86,26 +104,6 @@ namespace rfxcomMessages
          m_deviceDetails.set("type", pTypeLighting4);
          m_deviceDetails.set("subType", m_subType);
          m_deviceDetails.set("id", m_id);
-      }
-   }
-
-   void CLighting4::Init(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      // Build device description
-      buildDeviceModel();
-      buildDeviceName();
-      buildDeviceDetails();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         if (m_messageFilter && !m_messageFilter->isValid(m_deviceName))
-            throw CMessageFilteredException((boost::format("Receive unknown device (id %1%) for unsecured protocol (LIGHTING4 / %2%), may be a transmission error : ignored")
-               % m_id % m_deviceModel).str());
-
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));
       }
    }
 

@@ -153,8 +153,16 @@ protected:
                                          const rfxcomMessages::CTransceiverStatus& status);
 
    //--------------------------------------------------------------
+   /// \brief	                     Process unknown RFY remote message
+   /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \param [in] status           Received status
+   //--------------------------------------------------------------
+   void processRfxcomUnknownRfyRemoteMessage(boost::shared_ptr<yApi::IYPluginApi> api,
+                                             const rfxcomMessages::CTransceiverStatus& status);
+
+   //--------------------------------------------------------------
    /// \brief	                     Process received ack message from RFXCom
-   /// \param [in] status           Received acknowledge
+   /// \param [in] ack              Received acknowledge
    //--------------------------------------------------------------
    static void processRfxcomAckMessage(const rfxcomMessages::CAck& ack);
 
@@ -205,4 +213,3 @@ private:
    //--------------------------------------------------------------
    shared::communication::CByteBuffer m_lastRequest;
 };
-
