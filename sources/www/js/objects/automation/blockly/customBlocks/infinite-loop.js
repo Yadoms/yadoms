@@ -14,3 +14,4 @@ Blockly.Blocks['infinite-loop'] = {
 	this.setHelpUrl(Blockly.Yadoms.GenerateHelpUrl(this.type));
   }
 };
+
