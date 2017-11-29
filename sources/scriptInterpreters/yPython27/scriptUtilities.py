@@ -8,10 +8,13 @@ import sys
 import datetime
 import time
 
-# Define some constant for wait4events results
+# Define some constants for waitForEvents results
 WAITFOREVENT_TIMEOUT = 0
 WAITFOREVENT_KEYWORD = 1
 WAITFOREVENT_DATETIME = 2
+
+# Define some constants for waitForNextAcquisitions results
+WAITFORNEXTACQUISITIONS_TIMEOUT = -1
 
 # Get the next weekday
 # If d is the weekday, then d is returned
@@ -52,12 +55,10 @@ def dateTimeToString(dateTimeObject):
    return dateTimeObject.strftime("%Y-%m-%d %H:%M:%S")
 
 # Convert a time delta to string HH:MM:SS
-# param [in] dateTimeObject The datetime delta object
+# param [in] timedeltaObject The time delta object
 # return A string
-def timeDeltaToString(dateTimeObject):
-   hours, remainder = divmod(dateTimeObject.total_seconds(), 3600)
-   minutes, seconds = divmod(remainder, 60)
-   return "{0}:{1}:{2}".format(hours, minutes, seconds)
+def timeDeltaToString(timedeltaObject):
+   return str(timedeltaObject).split('.', 2)[0]
 
 # Convert a datetime or timedelta to string
 # param [in] object The object to stringize

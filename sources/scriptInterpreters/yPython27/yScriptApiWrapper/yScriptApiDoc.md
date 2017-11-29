@@ -1,7 +1,7 @@
 # yScriptApi documentation
 
 ## Constants
-* scriptUtilities.WAITFOREVENT_TIMEOUT : constant returned by some methods in case of timeout occurs
+* scriptUtilities.WAITFORNEXTACQUISITIONS_TIMEOUT : constant returned by waitForNextAcquisitions case of timeout
 
 ## Types
 ### CWaitForEventResult
@@ -80,8 +80,7 @@ Wait for a new acquisition on a keyword
 ##### keywordId (in)
 The keyword ID to watch
 ##### timeout (in)
-Timeout to wait. Can be a duration (format \"hh:mm:ss\") or a dateTime (format \"YYYY-MM-DD hh:mm:ss\"). No timeout if empty (default).  
-If dateTime is used and specified in the past, the function will immediately return.
+Timeout to wait (duration at format \"hh:mm:ss\"). No timeout if empty (default).
 #### Return
 The keyword new state (empty if timeout)
 #### Throw
@@ -94,10 +93,9 @@ Wait for a new acquisition on a keyword list
 ##### keywordIdList (in)
 The keyword IDs list to watch
 ##### timeout (in)
-Timeout to wait. Can be a duration (format \"hh:mm:ss\") or a dateTime (format \"YYYY-MM-DD hh:mm:ss\"). No timeout if empty (default).  
-If dateTime is used and specified in the past, the function will immediately return.
+Timeout to wait (duration at format \"hh:mm:ss\"). No timeout if empty (default).
 #### Return
-Returned value is a pair of the keyword Id who changed, and its new value. The keyword Id is scriptUtilities.WAITFOREVENT_TIMEOUT if timeout.
+Returned value is a pair of the keyword Id who changed, and its new value. The keyword Id is scriptUtilities.WAITFORNEXTACQUISITIONS_TIMEOUT if timeout.
 #### Throw
 Error if at least one keyword was not found
 
