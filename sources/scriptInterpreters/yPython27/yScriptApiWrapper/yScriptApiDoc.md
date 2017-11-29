@@ -97,7 +97,7 @@ The keyword IDs list to watch
 Timeout to wait. Can be a duration (format \"hh:mm:ss\") or a dateTime (format \"YYYY-MM-DD hh:mm:ss\"). No timeout if empty (default).  
 If dateTime is used and specified in the past, the function will immediately return.
 #### Return
-Returned value is a pair of the keyword Id who changed, and its new value. The keyword Id is kTimeout if timeout.
+Returned value is a pair of the keyword Id who changed, and its new value. The keyword Id is scriptUtilities.WAITFOREVENT_TIMEOUT if timeout.
 #### Throw
 Error if at least one keyword was not found
 
