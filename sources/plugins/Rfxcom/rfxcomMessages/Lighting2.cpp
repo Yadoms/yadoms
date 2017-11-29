@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Lighting2.h"
-#include "Lighting2Dimmable.h"
+#include "Lighting2OnOffOrDimmable.h"
 #include "Lighting2OnOff.h"
 #include <shared/Log.h>
 // Shortcut to yPluginApi namespace
@@ -40,12 +40,14 @@ namespace rfxcomMessages
       m_houseCode = m_subType == sTypeKambrook ? (manuallyDeviceCreationConfiguration.get<char>("houseCode", 0) - 'A') : 0;
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
       m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
+      auto deviceType = manuallyDeviceCreationConfiguration.get<std::string>("type") == "onOff" ? ILighting2Subtype::kOnOff : ILighting2Subtype::kDimmable;
       m_deviceDetails = buildDeviceDetails(m_subType,
                                            m_houseCode,
                                            m_id,
                                            m_unitCode);
 
-      m_subTypeManager = createSubType(m_subType);
+      m_subTypeManager = createSubType(m_subType,
+                                       deviceType);
       m_subTypeManager->reset();
       m_keywords.insert(m_keywords.end(), m_subTypeManager->keywords().begin(), m_subTypeManager->keywords().end());
 
@@ -73,7 +75,7 @@ namespace rfxcomMessages
       m_subTypeManager->idFromProtocol(rbuf.LIGHTING2.id1, rbuf.LIGHTING2.id2, rbuf.LIGHTING2.id3, rbuf.LIGHTING2.id4, m_houseCode, m_id);
       m_unitCode = rbuf.LIGHTING2.unitcode;
       m_subTypeManager->setFromProtocolState(rbuf.LIGHTING2.cmnd, rbuf.LIGHTING2.level);
-      
+
       m_deviceName = buildDeviceName(m_subType,
                                      m_houseCode,
                                      m_id,
@@ -104,13 +106,14 @@ namespace rfxcomMessages
    {
    }
 
-   boost::shared_ptr<ILighting2Subtype> CLighting2::createSubType(unsigned char subType) const
+   boost::shared_ptr<ILighting2Subtype> CLighting2::createSubType(unsigned char subType,
+                                                                  ILighting2Subtype::EDeviceType deviceType) const
    {
       switch (subType)
       {
-      case sTypeAC: return boost::make_shared<CLighting2Dimmable>("AC");
-      case sTypeHEU: return boost::make_shared<CLighting2Dimmable>("HomeEasy EU");
-      case sTypeANSLUT: return boost::make_shared<CLighting2Dimmable>("ANSLUT");
+      case sTypeAC: return boost::make_shared<CLighting2OnOffOrDimmable>("AC", deviceType);
+      case sTypeHEU: return boost::make_shared<CLighting2OnOffOrDimmable>("HomeEasy EU", deviceType);
+      case sTypeANSLUT: return boost::make_shared<CLighting2OnOffOrDimmable>("ANSLUT", deviceType);
       case sTypeKambrook: return boost::make_shared<CLighting2OnOff>("Kambrook RF3672 (Australia)");
       default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
@@ -183,3 +186,5 @@ namespace rfxcomMessages
       return deviceDetails;
    }
 } // namespace rfxcomMessages
+
+

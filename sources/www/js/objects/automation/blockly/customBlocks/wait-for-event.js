@@ -762,7 +762,19 @@ Blockly.Blocks['yadoms_wait_for_event'] = {
 
  
 Blockly.Yadoms.YADOMS_WAIT_FOR_EVENT_PUBLIC_MIXIN = { 
-
+     setBreakVariableName: function(v) {
+        this.wantToBreak = v;
+     },
+     setContinueVariableName: function(v) {
+        this.wantToContinue = v;
+     },
+     getBreakVariableName: function() {
+        return this.wantToBreak;
+     },
+     getContinueVariableName: function() {
+        return this.wantToContinue ;
+     },
+     
     /**
      * Generate a unique variable name
      * @return {String} The variable name

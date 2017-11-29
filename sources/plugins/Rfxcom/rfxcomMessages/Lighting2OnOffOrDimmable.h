@@ -10,19 +10,21 @@ namespace rfxcomMessages
    //--------------------------------------------------------------
    /// \brief	The Lighting2 dimmable keyword
    //--------------------------------------------------------------
-   class CLighting2Dimmable : public ILighting2Subtype
+   class CLighting2OnOffOrDimmable : public ILighting2Subtype
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       /// \param[in] model                The device model
+      /// \param[in] deviceType           The device type
       //--------------------------------------------------------------
-      explicit CLighting2Dimmable(const std::string& model);
+      explicit CLighting2OnOffOrDimmable(const std::string& model,
+                                         EDeviceType deviceType);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CLighting2Dimmable();
+      virtual ~CLighting2OnOffOrDimmable();
 
       // ILighting2Subtype implementation
       std::string getModel() const override;

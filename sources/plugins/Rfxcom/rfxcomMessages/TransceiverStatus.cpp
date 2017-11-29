@@ -112,8 +112,7 @@ namespace rfxcomMessages
          m_LWRFenabled = rbuf.IRESPONSE.LWRFenabled;
          m_HIDEKIenabled = rbuf.IRESPONSE.HIDEKIenabled;
          m_LACROSSEenabled = rbuf.IRESPONSE.LACROSSEenabled;
-         m_FS20enabled = rbuf.IRESPONSE.FS20enabled;
-         m_PROGUARDenabled = rbuf.IRESPONSE.PROGUARDenabled;
+         m_LegrandCADenabled = rbuf.IRESPONSE.FS20enabled;
          m_BLINDST0enabled = rbuf.IRESPONSE.BLINDST0enabled;
          m_BLINDST1enabled = rbuf.IRESPONSE.BLINDST1enabled;
          m_X10enabled = rbuf.IRESPONSE.X10enabled;
@@ -160,19 +159,18 @@ namespace rfxcomMessages
 
       if (m_AEenabled) YADOMS_LOG(information) << "   - AE Blyss";
       if (m_RUBICSONenabled) YADOMS_LOG(information) << "   - Rubicson";
-      if (m_FINEOFFSETenabled) YADOMS_LOG(information) << "   - FineOffset/Viking";
+      if (m_FINEOFFSETenabled) YADOMS_LOG(information) << "   - FineOffset, Viking";
       if (m_LIGHTING4enabled) YADOMS_LOG(information) << "   - Lighting4";
-      if (m_RSLenabled) YADOMS_LOG(information) << "   - RSL";
-      if (m_SXenabled) YADOMS_LOG(information) << "   - Byron SX";
+      if (m_RSLenabled) YADOMS_LOG(information) << "   - RSL, Revolt";
+      if (m_SXenabled) YADOMS_LOG(information) << "   - Byron SX, SelectPlus";
       if (m_IMAGINTRONIXenabled) YADOMS_LOG(information) << "   - Imagintronix/Opus";
       if (m_UNDECODEDenabled) YADOMS_LOG(information) << "   - undecoded messages";
 
       if (m_MERTIKenabled) YADOMS_LOG(information) << "   - Mertik";
       if (m_LWRFenabled) YADOMS_LOG(information) << "   - AD LightwaveRF";
-      if (m_HIDEKIenabled) YADOMS_LOG(information) << "   - Hideki/UPM";
+      if (m_HIDEKIenabled) YADOMS_LOG(information) << "   - Hideki, TFA, Cresta, UPM";
       if (m_LACROSSEenabled) YADOMS_LOG(information) << "   - La Crosse";
-      if (m_FS20enabled) YADOMS_LOG(information) << "   - FS20";
-      if (m_PROGUARDenabled) YADOMS_LOG(information) << "   - ProGuard";
+      if (m_LegrandCADenabled) YADOMS_LOG(information) << "   - Legrand CAD";
       if (m_BLINDST0enabled) YADOMS_LOG(information) << "   - BlindsT0";
       if (m_BLINDST1enabled) YADOMS_LOG(information) << "   - BlindsT1";
 
@@ -259,31 +257,31 @@ namespace rfxcomMessages
          throw std::out_of_range("RFXCom configuration not available in this message");
 
       if (
-         (configuration.isAEenabled() == m_AEenabled) &&
-         (configuration.isRUBICSONenabled() == m_RUBICSONenabled) &&
-         (configuration.isFINEOFFSETenabled() == m_FINEOFFSETenabled) &&
-         (configuration.isLIGHTING4enabled() == m_LIGHTING4enabled) &&
-         (configuration.isRSLenabled() == m_RSLenabled) &&
-         (configuration.isSXenabled() == m_SXenabled) &&
-         (configuration.isIMAGINTRONIXenabled() == m_IMAGINTRONIXenabled) &&
-         (configuration.isUNDECODEDenabled() == m_UNDECODEDenabled) &&
-         (configuration.isMERTIKenabled() == m_MERTIKenabled) &&
-         (configuration.isLWRFenabled() == m_LWRFenabled) &&
-         (configuration.isHIDEKIenabled() == m_HIDEKIenabled) &&
-         (configuration.isLACROSSEenabled() == m_LACROSSEenabled) &&
-         (configuration.isLEGRANDenabled() == m_FS20enabled) &&
-         (configuration.isBLINDST0enabled() == m_BLINDST0enabled) &&
-         (configuration.isBLINDST1enabled() == m_BLINDST1enabled) &&
-         (configuration.isX10enabled() == m_X10enabled) &&
-         (configuration.isARCenabled() == m_ARCenabled) &&
-         (configuration.isACenabled() == m_ACenabled) &&
-         (configuration.isHEEUenabled() == m_HEEUenabled) &&
-         (configuration.isMEIANTECHenabled() == m_MEIANTECHenabled) &&
-         (configuration.isOREGONenabled() == m_OREGONenabled) &&
-         (configuration.isATIenabled() == m_ATIenabled) &&
-         (configuration.isVISONICenabled() == m_VISONICenabled) &&
-         (configuration.isKeeLoqenabled() == m_KeeLoqenabled) &&
-         (configuration.isHomeConfortenabled() == m_HomeConfortenabled)
+         configuration.isAEenabled() == m_AEenabled &&
+         configuration.isRUBICSONenabled() == m_RUBICSONenabled &&
+         configuration.isFINEOFFSETenabled() == m_FINEOFFSETenabled &&
+         configuration.isLIGHTING4enabled() == m_LIGHTING4enabled &&
+         configuration.isRSLenabled() == m_RSLenabled &&
+         configuration.isSXenabled() == m_SXenabled &&
+         configuration.isIMAGINTRONIXenabled() == m_IMAGINTRONIXenabled &&
+         configuration.isUNDECODEDenabled() == m_UNDECODEDenabled &&
+         configuration.isMERTIKenabled() == m_MERTIKenabled &&
+         configuration.isLWRFenabled() == m_LWRFenabled &&
+         configuration.isHIDEKIenabled() == m_HIDEKIenabled &&
+         configuration.isLACROSSEenabled() == m_LACROSSEenabled &&
+         configuration.isLEGRANDenabled() == m_LegrandCADenabled &&
+         configuration.isBLINDST0enabled() == m_BLINDST0enabled &&
+         configuration.isBLINDST1enabled() == m_BLINDST1enabled &&
+         configuration.isX10enabled() == m_X10enabled &&
+         configuration.isARCenabled() == m_ARCenabled &&
+         configuration.isACenabled() == m_ACenabled &&
+         configuration.isHEEUenabled() == m_HEEUenabled &&
+         configuration.isMEIANTECHenabled() == m_MEIANTECHenabled &&
+         configuration.isOREGONenabled() == m_OREGONenabled &&
+         configuration.isATIenabled() == m_ATIenabled &&
+         configuration.isVISONICenabled() == m_VISONICenabled &&
+         configuration.isKeeLoqenabled() == m_KeeLoqenabled &&
+         configuration.isHomeConfortenabled() == m_HomeConfortenabled
       )
          return false;
 

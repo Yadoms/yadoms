@@ -1,6 +1,6 @@
 {
   "type": "rfxcom",
-  "version": "1.0.3-beta.2",
+  "version": "1.0.3-beta.3",
   "author": "Sébastien GALLOU",
   "url": "https://github.com/Yadoms/yadoms/wiki/Rfxcom",
   "credits": "",
@@ -68,11 +68,7 @@
           "type": "bool",
           "defaultValue": "true"
         },
-        "FS20": {
-          "type": "bool",
-          "defaultValue": "false"
-        },
-        "ProGuard": {
+        "LegrandCAD": {
           "type": "bool",
           "defaultValue": "false"
         },
@@ -134,7 +130,7 @@
         "hcA_P-uc1_16": {
           "types": {
             "x10": { "canBeCreatedManually": "true" },
-            "arc": { "canBeCreatedManually": "true" },
+            "ARC": { "canBeCreatedManually": "true" },
             "ab400d": { "canBeCreatedManually": "true" },
             "waveman": { "canBeCreatedManually": "true" },
             "emw200": { "canBeCreatedManually": "true" },
@@ -178,9 +174,6 @@
         },
         "id1_67108863-unitCode1_16": {
           "types": {
-            "ac": { "canBeCreatedManually": "true" },
-            "homeEasyEU": { "canBeCreatedManually": "true" },
-            "anslut": { "canBeCreatedManually": "true" },
             "smartwares": { "canBeCreatedManually": "true" }
           },
           "content": {
@@ -193,6 +186,32 @@
               "type": "int",
               "minimumValue": "1",
               "maximumValue": "16"
+            }
+          }
+        },
+        "id1_67108863-unitCode1_16-onOffOrDimmable": {
+          "types": {
+            "AC": { "canBeCreatedManually": "true" },
+            "homeEasyEU": { "canBeCreatedManually": "true" },
+            "anslut": { "canBeCreatedManually": "true" }
+          },
+          "content": {
+            "id": {
+              "type": "int",
+              "minimumValue": "1",
+              "maximumValue": "67108863"
+            },
+            "unitCode": {
+              "type": "int",
+              "minimumValue": "1",
+              "maximumValue": "16"
+            },
+            "type": {
+              "type": "enum",
+              "values": {
+                "onOff": "on-off type (switch, light...)",
+                "dimmable": "dimmable type (light dimmer...)"
+              }
             }
           }
         },
