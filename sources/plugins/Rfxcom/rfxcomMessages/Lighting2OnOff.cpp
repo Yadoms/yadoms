@@ -9,7 +9,7 @@ namespace rfxcomMessages
 {
    CLighting2OnOff::CLighting2OnOff(const std::string& model)
       : m_model(model),
-        m_keyword(boost::make_shared<yApi::historization::CSwitch>("state"))
+        m_state(boost::make_shared<yApi::historization::CSwitch>("state"))
    {
    }
 
@@ -22,19 +22,20 @@ namespace rfxcomMessages
       return m_model;
    }
 
-   boost::shared_ptr<const yApi::historization::IHistorizable> CLighting2OnOff::keyword() const
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CLighting2OnOff::keywords() const
    {
-      return m_keyword;
+      return m_keywords;
    }
 
-   void CLighting2OnOff::set(const std::string& yadomsCommand)
+   void CLighting2OnOff::set(boost::shared_ptr<const yApi::IDeviceCommand> yadomsCommand)
    {
-      m_keyword->setCommand(yadomsCommand);
+      m_state->setCommand(yadomsCommand->getBody());
+      m_keywords.push_back(m_state);
    }
 
    void CLighting2OnOff::reset()
    {
-      m_keyword->set(false);
+      m_state->set(false);
    }
 
    void CLighting2OnOff::idFromProtocol(unsigned char id1Byte,
@@ -66,9 +67,9 @@ namespace rfxcomMessages
    {
       switch (cmdByte)
       {
-      case light2_sOn: m_keyword->set(true);
+      case light2_sOn: m_state->set(true);
          break;
-      case light2_sOff: m_keyword->set(false);
+      case light2_sOff: m_state->set(false);
          break;
       default:
          throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(cmdByte));
@@ -78,7 +79,7 @@ namespace rfxcomMessages
    void CLighting2OnOff::toProtocolState(unsigned char& cmdByte,
                                          unsigned char& levelByte) const
    {
-      cmdByte = m_keyword->get() ? light2_sOn : light2_sOff;
+      cmdByte = m_state->get() ? light2_sOn : light2_sOff;
       levelByte = 0;
    }
 } // namespace rfxcomMessages

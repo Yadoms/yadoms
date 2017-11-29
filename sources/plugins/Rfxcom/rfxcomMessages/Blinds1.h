@@ -66,12 +66,6 @@ namespace rfxcomMessages
 
    protected:
       //--------------------------------------------------------------
-      /// \brief	Global initialization method
-      /// \param[in] api                  Yadoms APi context
-      //--------------------------------------------------------------
-      void Init(boost::shared_ptr<yApi::IYPluginApi> api);
-
-      //--------------------------------------------------------------
       /// \brief	                        Build the device name
       //--------------------------------------------------------------
       void buildDeviceName();
@@ -85,7 +79,7 @@ namespace rfxcomMessages
 
       //--------------------------------------------------------------
       /// \brief	                        Convert protocol value to Yadoms state
-      /// \param[in] protocolState        The value known by the protocol
+      /// \param[in] protocolCmnd         The value known by the protocol
       /// \return                         The Yadoms compliant value
       /// \throw                          shared::exception::CInvalidParameter if fails to interpret command
       //--------------------------------------------------------------

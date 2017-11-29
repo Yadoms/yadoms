@@ -9,7 +9,8 @@ namespace rfxcomMessages
 {
    CLighting2Dimmable::CLighting2Dimmable(const std::string& model)
       : m_model(model),
-        m_keyword(boost::make_shared<yApi::historization::CDimmable>("state"))
+        m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
+        m_level(boost::make_shared<yApi::historization::CDimmable>("level"))
    {
    }
 
@@ -22,19 +23,29 @@ namespace rfxcomMessages
       return m_model;
    }
 
-   boost::shared_ptr<const yApi::historization::IHistorizable> CLighting2Dimmable::keyword() const
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CLighting2Dimmable::keywords() const
    {
-      return m_keyword;
+      return m_keywords;
    }
 
-   void CLighting2Dimmable::set(const std::string& yadomsCommand)
+   void CLighting2Dimmable::set(boost::shared_ptr<const yApi::IDeviceCommand> yadomsCommand)
    {
-      m_keyword->set(yadomsCommand);
+      if (yadomsCommand->getKeyword() == m_state->getKeyword())
+      {
+         m_state->setCommand(yadomsCommand->getBody());
+         m_keywords.push_back(m_state);
+      }
+      else if (yadomsCommand->getKeyword() == m_level->getKeyword())
+      {
+         m_level->set(yadomsCommand->getBody());
+         m_keywords.push_back(m_level);
+      }
    }
 
    void CLighting2Dimmable::reset()
    {
-      m_keyword->set(0);
+      m_state->set(false);
+      m_level->set(0);
    }
 
    void CLighting2Dimmable::idFromProtocol(unsigned char id1Byte,
@@ -66,13 +77,18 @@ namespace rfxcomMessages
    {
       switch (cmdByte)
       {
-      case light2_sOn: m_keyword->set(100);
+      case light2_sOn:
+         m_state->set(true);
+         m_keywords.push_back(m_state);
          break;
-      case light2_sOff: m_keyword->set(0);
+      case light2_sOff:
+         m_state->set(false);
+         m_keywords.push_back(m_state);
          break;
       case light2_sSetLevel:
          {
-            m_keyword->set(levelByte * 100 / 0x0F); // level needs to be from 0 to 100
+            m_level->set(levelByte * 100 / 0x0F); // level needs to be from 0 to 100
+            m_keywords.push_back(m_level);
             break;
          }
       default:
@@ -85,20 +101,20 @@ namespace rfxcomMessages
    void CLighting2Dimmable::toProtocolState(unsigned char& cmdByte,
                                             unsigned char& levelByte) const
    {
-      switch (m_keyword->switchLevel())
+      if (std::find(m_keywords.begin(), m_keywords.end(), m_level) != m_keywords.end())
       {
-      case 0:
-         cmdByte = light2_sOff;
-         levelByte = 0;
-         break;
-      case 100:
-         cmdByte = light2_sOn;
-         levelByte = 0;
-         break;
-      default:
          cmdByte = light2_sSetLevel;
-         levelByte = static_cast<unsigned char>(m_keyword->switchLevel() * 0x0F / 100); // switchLevel returns value from 0 to 100
-         break;
+         levelByte = static_cast<unsigned char>(m_level->switchLevel() * 0x0F / 100); // switchLevel returns value from 0 to 100
+         return;
       }
+
+      if (std::find(m_keywords.begin(), m_keywords.end(), m_state) != m_keywords.end())
+      {
+         cmdByte = m_state->get() ? light2_sOn : light2_sOff;
+         levelByte = 0;
+         return;
+      }
+
+      throw std::invalid_argument("No keyword for CLighting2Dimmable::toProtocolState");
    }
 } // namespace rfxcomMessages

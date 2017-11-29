@@ -241,8 +241,17 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief                 Stop all instances matching the plugin name
       /// \param [in] pluginName The plugin name
+      /// \return                The IDs of instances whos stop was requested
       //--------------------------------------------------------------
-      void stopAllInstancesOfPlugin(const std::string& pluginName);
+      std::vector<int> stopAllInstancesOfPlugin(const std::string& pluginName);
+
+      //--------------------------------------------------------------
+      /// \brief                 Stop all instances matching the plugin name
+      /// \param [in] pluginName The plugin name
+      /// \param [in] timeout    Timeout waiting plugin stop
+      //--------------------------------------------------------------
+      void stopAllInstancesOfPluginAndWaitForStopped(const std::string& pluginName,
+                                                     const boost::posix_time::time_duration& timeout = boost::posix_time::seconds(30));
 
       //--------------------------------------------------------------
       /// \brief                 Notify a plugin when a device is removed

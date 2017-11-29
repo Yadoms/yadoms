@@ -22,10 +22,10 @@ namespace rfxcomMessages
       m_signalPower->set(0);
 
       createSubType(deviceDetails.get<unsigned char>("subType"));
-      m_id = deviceDetails.get<unsigned int>("id");
-
-      declare(api);
       m_subTypeManager->set(command);
+      m_id = deviceDetails.get<unsigned int>("id");
+      
+      buildDeviceName();
    }
 
    CRemote::CRemote(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -46,8 +46,21 @@ namespace rfxcomMessages
       m_subTypeManager->setFromProtocolState(rbuf);
 
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.REMOTE.rssi));
+      
+      buildDeviceName();
 
-      declare(api);
+      // Create device and keywords if needed
+      if (!api->deviceExists(m_deviceName))
+      {
+         shared::CDataContainer details;
+         details.set("type", pTypeRemote);
+         details.set("subType", m_subType);
+         details.set("id", m_id);
+         auto model = m_subTypeManager->getModel();
+         api->declareDevice(m_deviceName, model, model, m_keywords, details);
+         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
+         details.printToLog(YADOMS_LOG(information));
+      }
    }
 
    CRemote::~CRemote()
@@ -73,28 +86,6 @@ namespace rfxcomMessages
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
       }
       m_keywords.insert(m_keywords.end(), m_subTypeManager->keywords().begin(), m_subTypeManager->keywords().end());
-   }
-
-   void CRemote::declare(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      if (!m_subTypeManager)
-         throw shared::exception::CException("m_subTypeManager must be initialized");
-
-      // Build device description
-      buildDeviceName();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypeRemote);
-         details.set("subType", m_subType);
-         details.set("id", m_id);
-         auto model = m_subTypeManager->getModel();
-         api->declareDevice(m_deviceName, model, model, m_keywords, details);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
-         details.printToLog(YADOMS_LOG(information));
-      }
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CRemote::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
