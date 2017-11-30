@@ -872,6 +872,8 @@ IF(USE_POCO_WEBSERVER)
 		server/web/poco/HttpRequestHandlerContainer.cpp
 		server/web/poco/RestRequestHandler.h
 		server/web/poco/RestRequestHandler.cpp
+		server/web/poco/WebsiteCacheManager.h
+		server/web/poco/WebsiteCacheManager.cpp
 		server/web/poco/WebsiteRequestHandler.h
 		server/web/poco/WebsiteRequestHandler.cpp
 		server/web/poco/WebSocketRequestHandler.h

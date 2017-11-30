@@ -4,6 +4,7 @@
 #include <Poco/Net/HTTPRequestHandler.h>
 #include <Poco/Net/HTTPRequest.h>
 #include <Poco/Net/HTTPServerResponse.h>
+#include "WebsiteCacheManager.h"
 
 namespace web { namespace poco {
 
@@ -38,10 +39,11 @@ namespace web { namespace poco {
       //-------------------------------------
       ///\brief Read and send file as request answer
       ///\param [in]    fullpath          The file path
+      ///\param [in]    request           The http request
       ///\param [in]    response          The http response
       ///\return true if file is found and sent, else false
       //-------------------------------------
-      bool readAndSendFile(std::string & fullpath, Poco::Net::HTTPServerResponse& response);
+      bool readAndSendFile(std::string & fullpath, Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response);
 
       //-------------------------------------
       ///\brief The base files path
@@ -54,9 +56,9 @@ namespace web { namespace poco {
       std::map<std::string, std::string> m_alias;
       
       //-------------------------------------
-      ///\brief Indicate if cache deature is disabled
+      ///\brief The cache manager
       //-------------------------------------
-      bool m_cacheDisabled;
+      CWebsiteCacheManager m_cacheManager;
    };
 
 
