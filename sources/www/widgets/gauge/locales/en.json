@@ -2,6 +2,7 @@
 	"name": "Gauge display",
 	"description": "A simple widget that display a gauge",
    "errorInitialization" : "Error During widget gauge initialization",
+   "deviceDisabled": "The widget have been disabled because of the configuration is not correct (deleted/missing equipment configured)",
 	"configurationSchema": {
 		"device": {
 			"name": "Data to display",

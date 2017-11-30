@@ -2,6 +2,7 @@
 	"name": "Jauge",
 	"description": "Un widget qui affiche une jauge",
    "errorInitialization" : "Erreur lors de l'initialisation du widget gauge",
+   "deviceDisabled": "Le widget a été désactivé car la configuration est incorrecte (équipement manquant ou supprimé)",
 	"configurationSchema": {
 		"device": {
 			"name": "Donnée à afficher",

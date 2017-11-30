@@ -109,6 +109,35 @@
     background-position: right top;
 }
 
+.panel-widget-desactivated {
+    font-size: 2em;
+    background-color: rgba(128,128,128,0.4);
+    border-color: rgba(128,128,128,1);
+    border-width: 1px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 18;
+    margin: 2.5px;
+    background-repeat: no-repeat;
+    -ms-border-top-left-radius: 4px;
+    border-top-left-radius: 4px;
+    -ms-border-top-right-radius: 4px;
+    border-top-right-radius: 4px;
+    background-position: right top;
+}
+
+.wigetConfigurationErrorIcon{
+   color:red;
+   font-size: 22px;
+   display: flex;
+   justify-content: flex-end;
+   margin-top: 2px;
+   margin-right: 3px;
+}
+
 .widgetCustomizationToolbar {
     border-right: 0;
     border-top: 0;

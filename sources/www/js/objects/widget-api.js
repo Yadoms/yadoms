@@ -1,7 +1,7 @@
 ﻿/**
  * Created by nicolasHILAIRE on 09/02/2016.
  */
-
+ 
 /**
  * Creates an instance of WidgetApi
  * @constructor
@@ -18,6 +18,24 @@ function WidgetApi(widget) {
  */
 WidgetApi.prototype.find = function (pattern) {
    return this.widget.$gridWidget.find(pattern);
+}
+
+/**
+ * Change the state of a widget
+ */
+WidgetApi.prototype.setState = function (newState, message) {
+   console.log (this.widget);
+   this.widget.setState(newState);
+   
+   if (newState == widgetStateEnum.InvalidConfiguration)
+   {
+      this.widget.$gridWidget.find(".panel-widget-desactivated").removeClass("hidden");
+      this.widget.$gridWidget.find(".fa-exclamation-triangle").attr("title", message);      
+   }
+   else if (newState == widgetStateEnum.OK)
+      this.widget.$gridWidget.find(".panel-widget-desactivated").addClass("hidden");
+   else
+   {}
 }
 
 /**

@@ -2,13 +2,10 @@
  * global viewModel object used to get the viewModelCtor of each kind of widget
  */
 var widgetViewModelCtor = null;
-
 var loadPagesNotification = null;
-
 var widgetUpdateInterval;
 var serverIsOnline;
 var OfflineServerNotification = null;
-
 var LastEventLogId = null;
 
 function initializeWidgetEngine() {
