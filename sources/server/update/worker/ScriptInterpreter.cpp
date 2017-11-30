@@ -30,7 +30,7 @@ namespace update {
             YADOMS_LOG(information) << "Downloading scriptInterpreter package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterDownload, std::string(), callbackData);
             Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
-            YADOMS_LOG(information) << "Downloading scriptInterpreter package with sucess";
+            YADOMS_LOG(information) << "Downloading scriptInterpreter package with success";
 
             /////////////////////////////////////////////
             //2. deploy package
@@ -79,7 +79,9 @@ namespace update {
 
       }
 
-      void CScriptInterpreter::update(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & scriptInterpreterName, const std::string & downloadUrl)
+      void CScriptInterpreter::update(CWorkerTools::WorkerProgressFunc progressCallback,
+         const std::string & scriptInterpreterName,
+         const std::string & downloadUrl)
       {
          YADOMS_LOG(information) << "Updating scriptInterpreter " << scriptInterpreterName << " from " << downloadUrl;
 
@@ -88,7 +90,6 @@ namespace update {
          callbackData.set("downloadUrl", downloadUrl);
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterUpdate, std::string(), callbackData);
-
          
          /////////////////////////////////////////////
          //1. download package
@@ -98,13 +99,13 @@ namespace update {
             YADOMS_LOG(information) << "Downloading scriptInterpreter package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterDownload, std::string(), callbackData);
             Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
-            YADOMS_LOG(information) << "Downloading scriptInterpreter package with sucess";
-
+            YADOMS_LOG(information) << "Downloading scriptInterpreter package with success";
 
             /////////////////////////////////////////////
             //2. stop any rule
             /////////////////////////////////////////////
 
+            //TOFIX must stop the interpreter itself and wait for stopped
             //stop all rules using this scriptInterpreter
             boost::shared_ptr<automation::IRuleManager> automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
             if (automationRuleManager)
@@ -169,7 +170,8 @@ namespace update {
             /////////////////////////////////////////////
             //1. stop any instance
             /////////////////////////////////////////////
-
+            
+            //TOFIX must stop the interpreter itself and wait for stopped
             //stop all rules using this scriptInterpreter
             auto automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
             if (automationRuleManager)

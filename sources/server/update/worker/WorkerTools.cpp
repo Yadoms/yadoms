@@ -87,6 +87,7 @@ namespace update {
          try
          {
             //extract to random pluginName location
+            YADOMS_LOG(debug) << "Unzip " << downloadedPackage.toString() << " to " << tempPluginFolder.toString() << "...";
             shared::compression::CExtract unZipper;
             unZipper.to(downloadedPackage, tempPluginFolder);
 
@@ -95,6 +96,8 @@ namespace update {
                //read package.json file and get the pluginname
                Poco::Path packageJsonPath(tempPluginFolder.toString());
                packageJsonPath.append("package.json");
+
+               YADOMS_LOG(debug) << "Read " << packageJsonPath.toString() << "...";
 
                shared::CDataContainer packageJson;
                std::string packageJsonPathString = packageJsonPath.toString();

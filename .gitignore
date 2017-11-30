@@ -32,3 +32,4 @@ tests/unit/builds
 
 .scannerwork
 sources/www/.vscode
+sources/www/.vs

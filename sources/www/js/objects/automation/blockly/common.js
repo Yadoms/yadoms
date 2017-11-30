@@ -129,7 +129,6 @@ Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) 
       Blockly.Yadoms.data = data;
       Blockly.Python.INDENT = "   ";
 
-	  
       Blockly.Yadoms.EnumerationsHelper.initialize();
 
       $domTarget.append("<div class=\"blockly-container\"></div>");
@@ -165,6 +164,8 @@ Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) 
             },
 			shadowMorph: true			
          });
+
+         Blockly.Constants.Loops.CONTROL_FLOW_IN_LOOP_CHECK_MIXIN.LOOP_TYPES.push('infinite-loop');
 
          Blockly.Yadoms.isLoadingFromXml = true;
          //load initial content if exists

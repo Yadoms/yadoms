@@ -24,7 +24,7 @@ namespace rfxcomMessages
       /// \note                           Use this constructor for command (to build RFXCom message)
       //--------------------------------------------------------------
       CLighting2(boost::shared_ptr<yApi::IYPluginApi> api,
-                 const std::string& command,
+                 boost::shared_ptr<const yApi::IDeviceCommand> command,
                  const shared::CDataContainer& deviceDetails);
 
       //--------------------------------------------------------------
@@ -69,21 +69,24 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	Set and create the subtype
       /// \param[in] subType              Device subType
+      /// \param[in] deviceType           Device subType
+      /// \return                         Created sub type
       //--------------------------------------------------------------
-      void createSubType(unsigned char subType);
+      boost::shared_ptr<ILighting2Subtype> createSubType(unsigned char subType,
+                                                         ILighting2Subtype::EDeviceType deviceType = ILighting2Subtype::kUnknown) const;
 
       //--------------------------------------------------------------
-      /// \brief	                        Build the device name
+      /// \brief	                        Build the device infos
       //--------------------------------------------------------------
-      void buildDeviceName();
+      static std::string buildDeviceName(unsigned char subType,
+                                         unsigned char houseCode,
+                                         unsigned int id,
+                                         unsigned char unitCode);
 
-      void buildDeviceDetails();
-
-      //--------------------------------------------------------------
-      /// \brief	Declare the device
-      /// \param[in] api                  Yadoms APi context
-      //--------------------------------------------------------------
-      void declare(boost::shared_ptr<yApi::IYPluginApi> api);
+      static shared::CDataContainer buildDeviceDetails(unsigned char subType,
+                                                       unsigned char houseCode,
+                                                       unsigned int id,
+                                                       unsigned char unitCode);
 
    private:
       //--------------------------------------------------------------

@@ -28,8 +28,8 @@ namespace rfxcomMessages
                 const std::string& command,
                 const shared::CDataContainer& deviceDetails)
       : m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_state , m_signalPower })
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_state , m_signalPower})
    {
       m_state->set(command);
       m_signalPower->set(0);
@@ -39,17 +39,20 @@ namespace rfxcomMessages
       m_groupAddress = deviceDetails.get<std::string>("groupAddress");
       m_subAddress = deviceDetails.get<std::string>("subAddress");
 
-      Init(api);
+      // Build device description
+      buildDeviceModel();
+      buildDeviceName();
+      m_deviceDetails = deviceDetails;
    }
 
    CFS20::CFS20(boost::shared_ptr<yApi::IYPluginApi> api,
                 unsigned int subType,
-      const std::string& name,
+                const std::string& name,
                 const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
-      m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_state , m_signalPower })
+        m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_state , m_signalPower})
    {
       m_state->set(0);
       m_signalPower->set(0);
@@ -78,8 +81,8 @@ namespace rfxcomMessages
                 const RBUF& rbuf,
                 size_t rbufSize)
       : m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_state , m_signalPower })
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_state , m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -115,68 +118,79 @@ namespace rfxcomMessages
       switch (m_subType)
       {
       case sTypeFS20:
-      {
-         static const unsigned int dimMaxIndex = 0x10;
-         static const int dimValues[dimMaxIndex + 1] = { 0, 6, 12, 19, 25, 31, 37, 44, 50, 56, 62, 69, 75, 81, 87, 94, 100 };
-         const unsigned int dimIndex = rbuf.FS20.cmd1 & 0x1F;
-         if (dimIndex > dimMaxIndex)
          {
-            YADOMS_LOG(information) << "FS20 unsupported command received (" << dimIndex << ")" ;
-            return;
+            static const unsigned int dimMaxIndex = 0x10;
+            static const int dimValues[dimMaxIndex + 1] = {0, 6, 12, 19, 25, 31, 37, 44, 50, 56, 62, 69, 75, 81, 87, 94, 100};
+            const unsigned int dimIndex = rbuf.FS20.cmd1 & 0x1F;
+            if (dimIndex > dimMaxIndex)
+            {
+               YADOMS_LOG(information) << "FS20 unsupported command received (" << dimIndex << ")";
+               return;
+            }
+            m_state->set(dimValues[dimIndex]);
+            break;
          }
-         m_state->set(dimValues[dimIndex]);
-         break;
-      }
       case sTypeFHT8V:
-      {
-         const unsigned int cmd = rbuf.FS20.cmd1 & 0x0F;
-         const unsigned int level = rbuf.FS20.cmd2;
-         switch (cmd)
          {
-         case FHT8V_SYNCRHONISE_NOW:
-         case FHT8V_OPEN_VALVE_AT_LEVEL:
-         case FHT8V_DECALCIFICATION_CYCLE:
-            m_state->set(static_cast<int>(level * 100 / 255));
+            const unsigned int cmd = rbuf.FS20.cmd1 & 0x0F;
+            const unsigned int level = rbuf.FS20.cmd2;
+            switch (cmd)
+            {
+            case FHT8V_SYNCRHONISE_NOW:
+            case FHT8V_OPEN_VALVE_AT_LEVEL:
+            case FHT8V_DECALCIFICATION_CYCLE:
+               m_state->set(static_cast<int>(level * 100 / 255));
+               break;
+            case FHT8V_OPEN_VALVE:
+               m_state->set(true);
+               break;
+            case FHT8V_CLOSE_VALVE:
+               m_state->set(false);
+               break;
+            default:
+               YADOMS_LOG(information) << "FS20/FHT8V unsupported command received (" << cmd << ")";
+               return;
+            }
             break;
-         case FHT8V_OPEN_VALVE:
-            m_state->set(true);
-            break;
-         case FHT8V_CLOSE_VALVE:
-            m_state->set(false);
-            break;
-         default:
-            YADOMS_LOG(information) << "FS20/FHT8V unsupported command received (" << cmd << ")" ;
-            return;
          }
-         break;
-      }
       case sTypeFHT80:
-      {
-         const unsigned int cmd = rbuf.FS20.cmd1 & 0x0F;
-         switch (cmd)
          {
-         case FHT80_SENSOR_OPENED:
-            m_state->set(true);
+            const unsigned int cmd = rbuf.FS20.cmd1 & 0x0F;
+            switch (cmd)
+            {
+            case FHT80_SENSOR_OPENED:
+               m_state->set(true);
+               break;
+            case FHT80_SENSOR_CLOSED:
+               m_state->set(false);
+               break;
+            default:
+               YADOMS_LOG(information) << "FS20/FHT8V unsupported command received (" << cmd << ")";
+               return;
+            }
             break;
-         case FHT80_SENSOR_CLOSED:
-            m_state->set(false);
-            break;
-         default:
-            YADOMS_LOG(information) << "FS20/FHT8V unsupported command received (" << cmd << ")" ;
+         }
+      default:
+         {
+            YADOMS_LOG(information) << "FS20 invalid received message (unknown subType " << m_subType << ")";
             return;
          }
-         break;
-      }
-      default:
-      {
-         YADOMS_LOG(information) << "FS20 invalid received message (unknown subType " << m_subType << ")" ;
-         return;
-      }
       }
 
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.FS20.rssi));
 
-      Init(api);
+      // Build device description
+      buildDeviceModel();
+      buildDeviceName();
+      buildDeviceDetails();
+
+      // Create device and keywords if needed
+      if (!api->deviceExists(m_deviceName))
+      {
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
+         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+         m_deviceDetails.printToLog(YADOMS_LOG(information));
+      }
    }
 
    CFS20::~CFS20()
@@ -195,23 +209,7 @@ namespace rfxcomMessages
       }
    }
 
-   void CFS20::Init(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      // Build device description
-      buildDeviceModel();
-      buildDeviceName();
-      buildDeviceDetails();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));         
-      }
-   }
-
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CFS20::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CFS20::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF rbuf;
       MEMCLEAR(rbuf.FS20);
@@ -223,10 +221,10 @@ namespace rfxcomMessages
 
       // See RFXtrx SDK specifications to address decode/encode
       if (!regex_match(m_houseCode, boost::regex("[1-4]{8}")) ||
-          !regex_match(m_groupAddress, boost::regex("[1-4]{2}")) ||
-          !regex_match(m_subAddress, boost::regex("[1-4]{2}")))
+         !regex_match(m_groupAddress, boost::regex("[1-4]{2}")) ||
+         !regex_match(m_subAddress, boost::regex("[1-4]{2}")))
       {
-         YADOMS_LOG(information) << "FS20 encoding : invalid house code(" << m_houseCode << "), group adress(" << m_groupAddress << ") or sub-address (" << m_subAddress << ")" ;
+         YADOMS_LOG(information) << "FS20 encoding : invalid house code(" << m_houseCode << "), group adress(" << m_groupAddress << ") or sub-address (" << m_subAddress << ")";
          throw shared::exception::CInvalidParameter("FS20 houseCode");
       }
       rbuf.FS20.hc1 =
@@ -250,106 +248,106 @@ namespace rfxcomMessages
       switch (m_subType)
       {
       case sTypeFS20:
-      {
-         if (m_state->switchLevel() == 0)
          {
-            rbuf.FS20.cmd1 = 0x20 | 0;
-         }
-         else if (m_state->switchLevel() < 7)
-         {
-            rbuf.FS20.cmd1 = 0x20 | 0x01;
-         }
-         else if (m_state->switchLevel() < 13)
-         {
-            rbuf.FS20.cmd1 = 0x20 | 0x02;
-         }
-         else if (m_state->switchLevel() < 19)
-         {
-            rbuf.FS20.cmd1 = 0x20 | 0x03;
-         }
-         else if (m_state->switchLevel() < 26)
-         {
-            rbuf.FS20.cmd1 = 0x20 | 0x04;
-         }
-         else if (m_state->switchLevel() < 32)
-         {
-            rbuf.FS20.cmd1 = 0x20 | 0x05;
-         }
-         else if (m_state->switchLevel() < 38)
-         {
-            rbuf.FS20.cmd1 = 0x20 | 0x06;
-         }
-         else if (m_state->switchLevel() < 44)
-         {
-            rbuf.FS20.cmd1 = 0x20 | 0x07;
-         }
-         else if (m_state->switchLevel() < 51)
-         {
-            rbuf.FS20.cmd1 = 0x20 | 0x08;
-         }
-         else if (m_state->switchLevel() < 57)
-         {
-            rbuf.FS20.cmd1 = 0x20 | 0x09;
-         }
-         else if (m_state->switchLevel() < 63)
-         {
-            rbuf.FS20.cmd1 = 0x20 | 0x0A;
-         }
-         else if (m_state->switchLevel() < 69)
-         {
-            rbuf.FS20.cmd1 = 0x20 | 0x0B;
-         }
-         else if (m_state->switchLevel() < 76)
-         {
-            rbuf.FS20.cmd1 = 0x20 | 0x0C;
-         }
-         else if (m_state->switchLevel() < 82)
-         {
-            rbuf.FS20.cmd1 = 0x20 | 0x0D;
-         }
-         else if (m_state->switchLevel() < 88)
-         {
-            rbuf.FS20.cmd1 = 0x20 | 0x0E;
-         }
-         else if (m_state->switchLevel() < 94)
-         {
-            rbuf.FS20.cmd1 = 0x20 | 0x0F;
-         }
-         else if (m_state->switchLevel() <= 100)
-         {
-            rbuf.FS20.cmd1 = 0x20 | 0x10;
-         }
-         else
-            throw shared::exception::CException("FS20 encoding : invalid switch level");
+            if (m_state->switchLevel() == 0)
+            {
+               rbuf.FS20.cmd1 = 0x20 | 0;
+            }
+            else if (m_state->switchLevel() < 7)
+            {
+               rbuf.FS20.cmd1 = 0x20 | 0x01;
+            }
+            else if (m_state->switchLevel() < 13)
+            {
+               rbuf.FS20.cmd1 = 0x20 | 0x02;
+            }
+            else if (m_state->switchLevel() < 19)
+            {
+               rbuf.FS20.cmd1 = 0x20 | 0x03;
+            }
+            else if (m_state->switchLevel() < 26)
+            {
+               rbuf.FS20.cmd1 = 0x20 | 0x04;
+            }
+            else if (m_state->switchLevel() < 32)
+            {
+               rbuf.FS20.cmd1 = 0x20 | 0x05;
+            }
+            else if (m_state->switchLevel() < 38)
+            {
+               rbuf.FS20.cmd1 = 0x20 | 0x06;
+            }
+            else if (m_state->switchLevel() < 44)
+            {
+               rbuf.FS20.cmd1 = 0x20 | 0x07;
+            }
+            else if (m_state->switchLevel() < 51)
+            {
+               rbuf.FS20.cmd1 = 0x20 | 0x08;
+            }
+            else if (m_state->switchLevel() < 57)
+            {
+               rbuf.FS20.cmd1 = 0x20 | 0x09;
+            }
+            else if (m_state->switchLevel() < 63)
+            {
+               rbuf.FS20.cmd1 = 0x20 | 0x0A;
+            }
+            else if (m_state->switchLevel() < 69)
+            {
+               rbuf.FS20.cmd1 = 0x20 | 0x0B;
+            }
+            else if (m_state->switchLevel() < 76)
+            {
+               rbuf.FS20.cmd1 = 0x20 | 0x0C;
+            }
+            else if (m_state->switchLevel() < 82)
+            {
+               rbuf.FS20.cmd1 = 0x20 | 0x0D;
+            }
+            else if (m_state->switchLevel() < 88)
+            {
+               rbuf.FS20.cmd1 = 0x20 | 0x0E;
+            }
+            else if (m_state->switchLevel() < 94)
+            {
+               rbuf.FS20.cmd1 = 0x20 | 0x0F;
+            }
+            else if (m_state->switchLevel() <= 100)
+            {
+               rbuf.FS20.cmd1 = 0x20 | 0x10;
+            }
+            else
+               throw shared::exception::CException("FS20 encoding : invalid switch level");
 
-         rbuf.FS20.cmd2 = 0;
-         break;
-      }
+            rbuf.FS20.cmd2 = 0;
+            break;
+         }
       case sTypeFHT8V:
-      {
-         if (m_state->switchLevel() == 0)
          {
-            rbuf.FS20.cmd1 = 0x30 | FHT8V_CLOSE_VALVE;
-            rbuf.FS20.cmd2 = 0;
+            if (m_state->switchLevel() == 0)
+            {
+               rbuf.FS20.cmd1 = 0x30 | FHT8V_CLOSE_VALVE;
+               rbuf.FS20.cmd2 = 0;
+            }
+            else if (m_state->switchLevel() <= 100)
+            {
+               rbuf.FS20.cmd1 = 0x30 | FHT8V_OPEN_VALVE;
+               rbuf.FS20.cmd2 = 0;
+            }
+            else
+            {
+               rbuf.FS20.cmd1 = 0x30 | FHT8V_OPEN_VALVE_AT_LEVEL;
+               rbuf.FS20.cmd2 = static_cast<BYTE>(m_state->switchLevel() * 0xFF / 100);
+            }
+            break;
          }
-         else if (m_state->switchLevel() <= 100)
-         {
-            rbuf.FS20.cmd1 = 0x30 | FHT8V_OPEN_VALVE;
-            rbuf.FS20.cmd2 = 0;
-         }
-         else
-         {
-            rbuf.FS20.cmd1 = 0x30 | FHT8V_OPEN_VALVE_AT_LEVEL;
-            rbuf.FS20.cmd2 = static_cast<BYTE>(m_state->switchLevel() * 0xFF / 100);
-         }
-         break;
-      }
       default:
-      {
-         // Note sTypeFHT80 is read-only
-         YADOMS_LOG(information) << "FS20 invalid received message (unknown subType " << m_subType << ")" ;
-         throw shared::exception::CInvalidParameter("FS20 subType");
-      }
+         {
+            // Note sTypeFHT80 is read-only
+            YADOMS_LOG(information) << "FS20 invalid received message (unknown subType " << m_subType << ")";
+            throw shared::exception::CInvalidParameter("FS20 subType");
+         }
       }
 
       rbuf.FS20.rssi = 0;
@@ -399,5 +397,3 @@ namespace rfxcomMessages
       m_deviceModel = ssModel.str();
    }
 } // namespace rfxcomMessages
-
-
