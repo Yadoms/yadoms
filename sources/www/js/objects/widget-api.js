@@ -276,7 +276,6 @@ WidgetApi.prototype.manageRollingTitle = function () {
    
 	if (self.widget.displayTitle && self.widget.toolbarActivated)
 	{
-
 		if (self.widget.$toolbar[0].scrollWidth <= 3) // Round size of the padding-right of the panel-widget-title-toolbar
 			toolbarSize = 0;
 		else

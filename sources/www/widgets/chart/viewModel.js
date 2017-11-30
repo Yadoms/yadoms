@@ -355,8 +355,8 @@ function chartViewModel() {
             });
         })
         .fail(function (error) {
+            self.widgetApi.setState (widgetStateEnum.InvalidConfiguration, $.t("widgets/chart:errorInitialization"));
             notifyError($.t("widgets/chart:errorInitialization"), error);
-            throw $.t("widgets/chart:errorInitialization");
             d.reject();
         });
         return d.promise();
@@ -462,6 +462,7 @@ function chartViewModel() {
                 self.deviceInfo[index] = data;
             })
             .fail(function (error) {
+               self.widgetApi.setState (widgetStateEnum.InvalidConfiguration, $.t("widgets/chart:deviceDisabled"));
                notifyError($.t("widgets/chart:deviceNotFound", {Id: device.content.source.deviceId}));
             });
 
@@ -519,6 +520,7 @@ function chartViewModel() {
                 self.widgetApi.registerKeywordAcquisitions(device.content.source.keywordId);                  
             })
             .fail(function (error) {
+               self.widgetApi.setState (widgetStateEnum.InvalidConfiguration, $.t("widgets/chart:deviceDisabled"));
                notifyError($.t("widgets/chart:keywordNotFound", {Id: device.content.source.keywordId}));
             });               
         });
@@ -733,6 +735,7 @@ function chartViewModel() {
                              else
                                 legendText = self.deviceInfo[index].friendlyName + "/" + self.keywordInfo[index].friendlyName;
                           }catch(error){
+                             self.widgetApi.setState (widgetStateEnum.InvalidConfiguration, $.t("widgets/chart:deviceDisabled"));
                              legendText = $.t("widgets/chart:keywordNotFound", {Id: device.content.source.keywordId});
                           }
                           

@@ -38,6 +38,7 @@ widgetViewModelCtor = function gaugeViewModel() {
                 displayTitle: true,
                 batteryItem: true
             });
+            d.resolve();
         })
         .fail(function (error) {
             self.widgetApi.setState (widgetStateEnum.InvalidConfiguration, $.t("widgets/gauge:deviceDisabled"));
@@ -67,29 +68,19 @@ widgetViewModelCtor = function gaugeViewModel() {
         }
         catch(error)
         {
-           
+           self.widgetApi.setState (widgetStateEnum.InvalidConfiguration, $.t("widgets/gauge:deviceDisabled"));
+           notifyError($.t("widgets/gauge:deviceDisable"));
         }
     };
 
     this.configurationChanged = function () {
         var self = this;
-
+        
         if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
             return;
 
         //we register keyword new acquisition
         self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
-
-        //we get the unit of the keyword
-        self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
-           self.unit($.t(keyword.units));
-           d.resolve();
-        })
-        .fail(function (error) {
-           self.widgetApi.setState (widgetStateEnum.InvalidConfiguration, $.t("widgets/gauge:deviceDisabled"));
-           notifyError($.t("widgets/gauge:errorInitialization"), error);
-           d.reject();
-        });        
         
         //we fill the deviceId of the battery indicator
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
@@ -122,7 +113,11 @@ widgetViewModelCtor = function gaugeViewModel() {
          //we get the unit of the keyword
          self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
              self.unit($.t(keyword.units));
-         });
+         })
+        .fail(function (error) {
+           self.widgetApi.setState (widgetStateEnum.InvalidConfiguration, $.t("widgets/gauge:deviceDisabled"));
+           notifyError($.t("widgets/gauge:errorInitialization"), error);
+        });         
 
         var minValue;
         var maxValue;
