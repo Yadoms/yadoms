@@ -5,18 +5,12 @@
 #include <Poco/Net/HTTPBasicCredentials.h>
 #include "MimeType.h"
 #include <shared/encryption/Md5.h>
-#include <shared/ServiceLocator.h>
-#include "startupOptions/IStartupOptions.h"
 
 namespace web { namespace poco {
 
       CWebsiteRequestHandler::CWebsiteRequestHandler(const std::string & documentRoot, const std::map<std::string, std::string> & alias)
          :m_documentRoot(documentRoot)
       {
-         //retrieve startup options
-         auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
-         m_cacheDisabled = startupOptions->getNoWebServerCacheFlag();
-
          std::map<std::string, std::string>::const_iterator i;
          for (i = alias.begin(); i != alias.end(); ++i)
             configureAlias(i->first, i->second);
@@ -52,7 +46,7 @@ namespace web { namespace poco {
          }
       }
 
-      bool CWebsiteRequestHandler::readAndSendFile(std::string & fullpath, Poco::Net::HTTPServerResponse& response)
+      bool CWebsiteRequestHandler::readAndSendFile(std::string & fullpath, Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response)
       {
          // Determine the file extension.
          std::size_t last_slash_pos = fullpath.find_last_of("/");
@@ -63,33 +57,30 @@ namespace web { namespace poco {
             extension = fullpath.substr(last_dot_pos + 1);
          }
 
-         if (m_cacheDisabled)
+
+         if (m_cacheManager.checkCache(fullpath, request, response) == CWebsiteCacheManager::kNothingChanged)
          {
-            //disable cache, force reload
-            response.set("Cache-Control", "no-cache, no-store, must-revalidate");
+            //etag has not changed, so just answer "not modified"
+            //(the browser is allowed to use local file from its cache and update expiration date)
+            response.setStatusAndReason(Poco::Net::HTTPResponse::HTTP_NOT_MODIFIED);
+            response.send();
+            return true;
          }
          else
          {
-            //allow browser to cache ressource
-            // public : allow any intermediate proxies (not only the browser)
-            // max-age : keep in memory for two months
-            // etag : the md5 hash of each file. Computed at each requests, it ensure that the file hasn't changed. This is a browser behavior (etag change detection)
-            response.set("Cache-Control", "private, max-age=5259477"); //2 months
-            response.set("ETag", shared::encryption::CMd5::digestFile(fullpath));
+            std::ifstream is(fullpath.c_str(), std::ios::in | std::ios::binary);
+            if (is)
+            {
+               response.setChunkedTransferEncoding(true);
+               response.setContentType(CMimeType::extension_to_type(extension));
+               std::ostream& ostr = response.send();
+               char buf[512];
+               while (is.read(buf, sizeof(buf)).gcount() > 0)
+                  ostr.write(buf, (unsigned int)is.gcount());
+               return true;
+            }
+            return false;
          }
-
-         std::ifstream is(fullpath.c_str(), std::ios::in | std::ios::binary);
-         if (is)
-         {
-            response.setChunkedTransferEncoding(true);
-            response.setContentType(CMimeType::extension_to_type(extension));
-            std::ostream& ostr = response.send();
-            char buf[512];
-            while (is.read(buf, sizeof(buf)).gcount() > 0)
-               ostr.write(buf, (unsigned int)is.gcount());
-            return true;
-         }
-         return false;
       }
 
       void CWebsiteRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response)
@@ -123,13 +114,13 @@ namespace web { namespace poco {
          }
          
          //try to send file
-         if (!readAndSendFile(full_path, response))
+         if (!readAndSendFile(full_path, request, response))
          {
             //the 404.html has not been found, just return a 404 hard coded message
             response.setStatusAndReason(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
 
             std::string html404 = m_documentRoot + "/404.html";
-            if (!readAndSendFile(html404, response))
+            if (!readAndSendFile(html404, request, response))
             {
                //the file is not found, try to send 404.html file
                response.setContentType("text/html");
