@@ -72,7 +72,7 @@
         "hcA_P-uc1_16": {
           "types": {
             "x10": { "title": "x10" },
-            "arc": { "title": "arc" },
+            "ARC": { "title": "ARC" },
             "ab400d": { "title": "ab400d" },
             "waveman": { "title": "waveman" },
             "emw200": { "title": "emw200" },
@@ -114,9 +114,6 @@
         },
         "id1_67108863-unitCode1_16": {
           "types": {
-            "ac": { "title": "ac" },
-            "homeEasyEU": { "title": "homeEasyEU" },
-            "anslut": { "title": "anslut" },
             "smartwares": { "title": "smartwares" }
           },
           "content": {
@@ -127,6 +124,30 @@
             "unitCode": {
               "name": "Unit Code",
               "description": "The unit code (1-16)"
+            }
+          }
+        },
+        "id1_67108863-unitCode1_16-onOffOrDimmable": {
+          "types": {
+            "AC": { "title": "AC" },
+            "homeEasyEU": { "title": "homeEasyEU" },
+            "anslut": { "title": "anslut" }
+          },
+          "content": {
+            "id": {
+              "name": "ID",
+              "description": "The device ID (1-67108863)"
+            },
+            "unitCode": {
+              "name": "Unit Code",
+              "description": "The unit code (1-16)"
+            },
+            "type": {
+              "name": "Device type",
+              "values": {
+                "onOff": "on-off type (switch, light, dry contact...)",
+                "dimmable" : "dimmable type (light dimmer...)"
+              }
             }
           }
         },

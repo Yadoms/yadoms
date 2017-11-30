@@ -6,7 +6,7 @@
 Blockly.Python["yadoms_wait_for_event"] = function (block) {
     var order = Blockly.Python.ORDER_RELATIONAL;
 
-	//specify that this pythonh generation will use "scriptUtilities.py"
+	//specify that this python generation will use "scriptUtilities.py"
 	Blockly.Yadoms.Python.AddUtilitiesFunctions();
 	
 	var code = "";
