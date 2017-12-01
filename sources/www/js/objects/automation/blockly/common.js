@@ -80,6 +80,7 @@ Blockly.Yadoms.BooleanOperators_ = [
     ["\u2260", "NEQ"]
 ];
 
+Blockly.Yadoms.InternalTemporaryVariable = [];
 
 /**
  * Load the blockly language file
@@ -124,6 +125,7 @@ Blockly.Yadoms.DefaultTemplate_ = "<xml xmlns=\"http://www.w3.org/1999/xhtml\"><
  * @constructor
  */
 Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) {
+   Blockly.Yadoms.InternalTemporaryVariable = [];
    Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_()
    .done(function (data) {
       Blockly.Yadoms.data = data;
@@ -368,3 +370,17 @@ Blockly.Yadoms.RemoveUnconnectedShadowBlocks = function(workspace) {
 		}
 	});
 };
+
+
+ 
+/**
+ * Erase all temp variables created by generators
+ * @this Blockly.Block
+ * @private
+*/     
+Blockly.Yadoms.RemoveInternalTempVariables = function() {
+  for(var v of Blockly.Yadoms.InternalTemporaryVariable) {
+     Blockly.Yadoms.CurrentWorkspace.deleteVariable(v);
+  }
+  Blockly.Yadoms.InternalTemporaryVariable = [];
+}
