@@ -355,7 +355,7 @@ function chartViewModel() {
             });
         })
         .fail(function (error) {
-            self.widgetApi.setState (widgetStateEnum.InvalidConfiguration, $.t("widgets/chart:errorInitialization"));
+            self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
             notifyError($.t("widgets/chart:errorInitialization"), error);
             d.reject();
         });
@@ -462,7 +462,7 @@ function chartViewModel() {
                 self.deviceInfo[index] = data;
             })
             .fail(function (error) {
-               self.widgetApi.setState (widgetStateEnum.InvalidConfiguration, $.t("widgets/chart:deviceDisabled"));
+               self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
                notifyError($.t("widgets/chart:deviceNotFound", {Id: device.content.source.deviceId}));
             });
 
@@ -520,7 +520,7 @@ function chartViewModel() {
                 self.widgetApi.registerKeywordAcquisitions(device.content.source.keywordId);                  
             })
             .fail(function (error) {
-               self.widgetApi.setState (widgetStateEnum.InvalidConfiguration, $.t("widgets/chart:deviceDisabled"));
+               self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
                notifyError($.t("widgets/chart:keywordNotFound", {Id: device.content.source.keywordId}));
             });               
         });
@@ -735,7 +735,7 @@ function chartViewModel() {
                              else
                                 legendText = self.deviceInfo[index].friendlyName + "/" + self.keywordInfo[index].friendlyName;
                           }catch(error){
-                             self.widgetApi.setState (widgetStateEnum.InvalidConfiguration, $.t("widgets/chart:deviceDisabled"));
+                             self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
                              legendText = $.t("widgets/chart:keywordNotFound", {Id: device.content.source.keywordId});
                           }
                           

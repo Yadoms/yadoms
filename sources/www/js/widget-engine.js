@@ -91,7 +91,7 @@ function requestWidgets(page) {
         } else {
           //we update the filter of the websocket
           updateWebSocketFilter();
-          d.resolve();     
+          d.resolve();
         }
     })
     .fail(d.resolve);

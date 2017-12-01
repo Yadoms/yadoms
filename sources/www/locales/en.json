@@ -958,7 +958,9 @@
       "partOfWidgetIsMissing": "Unable to get part of __widgetName__ widget. Widgets of this type have been deactivated.",
       "widgetHasGeneratedAnExceptionDuringCallingMethod": "The widget __widgetName__ has generated an exception calling __methodName__()",
       "errorDuringGettingDeviceInformation": "Error during getting device information",
-      "loadingWidgetsError": "Error during the loading of a widget"
+      "loadingWidgetsError": "Error during the loading of a widget",
+      "widgetDisabled": "The widget have been disabled because of the configuration is not correct (deleted/missing equipment configured)",
+      "unknownError" : "Unknow error"
     },
     "widgetPackageManager": {
       "incorrectPackage": "Incorrect package",

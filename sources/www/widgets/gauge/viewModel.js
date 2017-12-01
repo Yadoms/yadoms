@@ -41,7 +41,7 @@ widgetViewModelCtor = function gaugeViewModel() {
             d.resolve();
         })
         .fail(function (error) {
-            self.widgetApi.setState (widgetStateEnum.InvalidConfiguration, $.t("widgets/gauge:deviceDisabled"));
+            self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
             notifyError($.t("widgets/gauge:errorInitialization"), error);
             d.reject();
         });
@@ -68,7 +68,7 @@ widgetViewModelCtor = function gaugeViewModel() {
         }
         catch(error)
         {
-           self.widgetApi.setState (widgetStateEnum.InvalidConfiguration, $.t("widgets/gauge:deviceDisabled"));
+           self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
            notifyError($.t("widgets/gauge:deviceDisable"));
         }
     };
@@ -115,7 +115,7 @@ widgetViewModelCtor = function gaugeViewModel() {
              self.unit($.t(keyword.units));
          })
         .fail(function (error) {
-           self.widgetApi.setState (widgetStateEnum.InvalidConfiguration, $.t("widgets/gauge:deviceDisabled"));
+           self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
            notifyError($.t("widgets/gauge:errorInitialization"), error);
         });         
 
