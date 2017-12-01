@@ -166,6 +166,15 @@ Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) 
          });
 
          Blockly.Constants.Loops.CONTROL_FLOW_IN_LOOP_CHECK_MIXIN.LOOP_TYPES.push('infinite-loop');
+         
+         /* fix blockly issue 1364 */
+         Blockly.utils.uiMenu.getSize = function(menu) { 
+            var menuDom = menu.getElement(); 
+            var menuSize = goog.style.getSize(menuDom);
+            // Replaced scrollHeight with clientHeight 
+            menuSize.height = menuDom.clientHeight; 
+            return menuSize; 
+         };
 
          Blockly.Yadoms.isLoadingFromXml = true;
          //load initial content if exists
