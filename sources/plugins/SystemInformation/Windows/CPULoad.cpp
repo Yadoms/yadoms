@@ -2,6 +2,7 @@
 #include "CPULoad.h"
 #include <shared/exception/Exception.hpp>
 #include <shared/Log.h>
+#include "Helpers.h"
 
 CCPULoad::CCPULoad(const std::string& keywordName)
    : m_keyword(boost::make_shared<yApi::historization::CLoad>(keywordName))
@@ -52,7 +53,7 @@ float  CCPULoad::getCpuUsage()
    if ((sysKernelDiff + sysUserDiff) > 0)
       usage = ((sysKernelDiff + sysUserDiff - sysIdleDiff) * 100) / float(sysKernelDiff + sysUserDiff);
    else
-      shared::exception::CException("time too short between two execution");
+      shared::exception::CException("time too short between two executions");
 
    return usage;
 }
@@ -61,7 +62,7 @@ void CCPULoad::read()
 {
    try
    {
-      m_keyword->set(getCpuUsage());
+      m_keyword->set(valueRoundWithPrecision(getCpuUsage(),3));
       YADOMS_LOG(trace) << "CPU Load : " << m_keyword->get() ;
    }
    catch (shared::exception::CException& exception)

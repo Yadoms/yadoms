@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MemoryLoad.h"
 #include <shared/exception/Exception.hpp>
+#include "Helpers.h"
 
 CMemoryLoad::CMemoryLoad(const std::string& keywordName)
    : m_keyword(boost::make_shared<yApi::historization::CLoad>(keywordName))
@@ -27,6 +28,5 @@ void CMemoryLoad::read()
 
    float MemoryLoad = static_cast<float>(floor(float(statex.ullTotalPhys - statex.ullAvailPhys) * 100 / statex.ullTotalPhys * 10)) / 10;
 
-   m_keyword->set(MemoryLoad);
+   m_keyword->set(valueRoundWithPrecision(MemoryLoad,3));
 }
-

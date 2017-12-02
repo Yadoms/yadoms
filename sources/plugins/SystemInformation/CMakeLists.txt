@@ -8,6 +8,8 @@ include("../YadomsPluginsCommon.cmake")
 set(SYSTEMINFORMATION_PLUGIN_SOURCES
 	stdafx.h
 	stdafx.cpp
+        Helpers/Helpers.h
+        Helpers/Helpers.cpp
 	ILoad.h
         ISIConfiguration.h
         SIConfiguration.h
@@ -50,10 +52,10 @@ IF (UNIX AND NOT APPLE)
 	CommonLinux/DisksList.cpp
 	CommonLinux/DiskUsage.h
 	CommonLinux/DiskUsage.cpp
-    CommonLinux/LinuxHelpers.h
-    CommonLinux/LinuxHelpers.cpp
-    CommonLinux/MemoryLoad.h
-    CommonLinux/MemoryLoad.cpp	
+        CommonLinux/LinuxHelpers.h
+        CommonLinux/LinuxHelpers.cpp
+        CommonLinux/MemoryLoad.h
+        CommonLinux/MemoryLoad.cpp	
 	)
 	
 	source_group(CommonLinux CommonLinux/*.*)
@@ -79,7 +81,7 @@ ENDIF(APPLE)
 
 IF(CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
    set(SYSTEMINFORMATION_PLUGIN_SOURCES ${SYSTEMINFORMATION_PLUGIN_SOURCES}
-	# Add RaspberryPi Specific sources
+      # Add RaspberryPi Specific sources
       RaspberryPI/SystemFactory.h
       RaspberryPI/SystemFactory.cpp
       RaspberryPI/TemperatureSensor.cpp
@@ -97,19 +99,22 @@ ENDIF()
 IF(WIN32)
    set(SYSTEMINFORMATION_PLUGIN_INCLDIR
 	   ${CMAKE_CURRENT_SOURCE_DIR}/Windows
+           ${CMAKE_CURRENT_SOURCE_DIR}/Helpers
    )
 ENDIF()
 	
 IF (UNIX AND NOT APPLE)
    set(SYSTEMINFORMATION_PLUGIN_INCLDIR
-	   ${CMAKE_CURRENT_SOURCE_DIR}/CommonLinux
+      ${CMAKE_CURRENT_SOURCE_DIR}/CommonLinux
       ${CMAKE_CURRENT_SOURCE_DIR}/Linux
+      ${CMAKE_CURRENT_SOURCE_DIR}/Helpers
    )
 ENDIF()
 
 IF (APPLE)
    set(SYSTEMINFORMATION_PLUGIN_INCLDIR
       ${CMAKE_CURRENT_SOURCE_DIR}/Mac
+      ${CMAKE_CURRENT_SOURCE_DIR}/Helpers
    )
 ENDIF()
 
@@ -117,8 +122,8 @@ ENDIF()
 IF (CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
    set(SYSTEMINFORMATION_PLUGIN_INCLDIR
       ${CMAKE_CURRENT_SOURCE_DIR}/CommonLinux
-	   ${CMAKE_CURRENT_SOURCE_DIR}/RaspberryPI
-	   )
+      ${CMAKE_CURRENT_SOURCE_DIR}/RaspberryPI
+   )
 ENDIF()	
 
 #########################################
