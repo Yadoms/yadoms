@@ -33,7 +33,13 @@ function numericDisplayViewModel() {
 
         //we get the unit of the keyword
         self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
-            self.unit($.t(keyword.units));
+           self.unit($.t(keyword.units));
+           
+           // If no unit, we hide the unit display
+           if (keyword.units === "data.units.noUnit")
+              self.widgetApi.find(".unit").addClass("hidden");
+           else
+              self.widgetApi.find(".unit").removeClass("hidden");
         });
 
         //we register keyword new acquisition
