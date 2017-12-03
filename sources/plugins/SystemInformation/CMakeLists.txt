@@ -76,7 +76,7 @@ IF (APPLE)
       Mac/SystemFactory.cpp
       )
 
-    source_group(Mac Mac/*.*)
+   source_group(Mac Mac/*.*)
 ENDIF(APPLE)
 
 IF(CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
@@ -87,8 +87,8 @@ IF(CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
       RaspberryPI/TemperatureSensor.cpp
       RaspberryPI/TemperatureSensor.h
       )
-	
-	source_group(RaspberryPI RaspberryPI/*.*)
+
+   source_group(RaspberryPI RaspberryPI/*.*)
 ENDIF()
 
 #########################################
@@ -123,6 +123,7 @@ IF (CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
    set(SYSTEMINFORMATION_PLUGIN_INCLDIR
       ${CMAKE_CURRENT_SOURCE_DIR}/CommonLinux
       ${CMAKE_CURRENT_SOURCE_DIR}/RaspberryPI
+      ${CMAKE_CURRENT_SOURCE_DIR}/Helpers
    )
 ENDIF()	
 
