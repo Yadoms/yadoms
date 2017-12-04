@@ -282,7 +282,7 @@ goog.require('Blockly.Msg');
 /** @export */ Blockly.Msg.MATH_TRIG_TOOLTIP_SIN = "Renvoie le sinus d’un angle en degrés (pas en radians).";
 /** @export */ Blockly.Msg.MATH_TRIG_TOOLTIP_TAN = "Renvoie la tangente d’un angle en degrés (pas en radians).";
 /** @export */ Blockly.Msg.NEW_VARIABLE = "Créer une variable...";
-/** @export */ Blockly.Msg.NEW_VARIABLE_TITLE = "Nouveau nom de la variable :";
+/** @export */ Blockly.Msg.NEW_VARIABLE_TITLE = "Le nom de la nouvelle variable :";
 /** @export */ Blockly.Msg.ORDINAL_NUMBER_SUFFIX = "";  // untranslated
 /** @export */ Blockly.Msg.PROCEDURES_ALLOW_STATEMENTS = "autoriser les ordres";
 /** @export */ Blockly.Msg.PROCEDURES_BEFORE_PARAMS = "avec :";

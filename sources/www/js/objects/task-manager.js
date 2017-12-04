@@ -48,3 +48,62 @@ TaskManager.createTask = function(taskType) {
 
     return d.promise();
 };
+
+/**
+ * Create all tasks
+ */
+TaskManager.getAllTasks = function() {
+   var d = $.Deferred();
+
+   RestEngine.getJson("/rest/task/")
+    .done(function (data) {
+       var taskArray=[]
+       for(var t of data.task) {
+          taskArray.push(TaskManager.factory(t));
+       }
+       d.resolve(taskArray);
+    })
+    .fail(d.reject);
+
+    return d.promise();
+}
+
+/**
+ * Create all tasks matching a name
+ * @param {string} name The task type to filter. If param is undefined, all tasks are returned
+ */
+TaskManager.getTasksByName = function(name) {
+   var d = $.Deferred();
+
+   TaskManager.getAllTasks()
+   .done(function (taskArray) {
+       var filter = _.filter(taskArray, function(t) {
+           if(name)
+              return t.name === name;
+           return true;
+       });
+       d.resolve(filter);
+    })
+    .fail(d.reject);
+
+    return d.promise();
+}
+
+/**
+ * Create all tasks running matching a name
+ * @param {string} name The task type to filter. If param is undefined, all tasks are returned
+ */
+TaskManager.getTasksRunning = function(name) {
+   var d = $.Deferred();
+
+   TaskManager.getTasksByName(name)
+   .done(function (taskArray) {
+       var filter = _.filter(taskArray, function(t) {
+          return t.status === "Started";
+       });
+       d.resolve(filter);
+    })
+    .fail(d.reject);
+
+    return d.promise();
+}
