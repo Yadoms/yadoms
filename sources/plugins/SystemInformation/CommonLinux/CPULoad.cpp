@@ -7,6 +7,7 @@
 #include <boost/regex.hpp> 
 #include <boost/lexical_cast.hpp>
 #include <shared/Log.h>
+#include "Helpers.h"
 
 CCPULoad::CCPULoad(const std::string& keywordName)
    : m_keyword(boost::make_shared<yApi::historization::CLoad>(keywordName))
@@ -113,7 +114,7 @@ void CCPULoad::read()
       {
          percent /= total;
          percent *= 100;
-         m_keyword->set (percent);
+         m_keyword->set (valueRoundWithPrecision(percent,3));
          YADOMS_LOG(trace) << "CPU Load : " << m_keyword->get();
       }
       else 

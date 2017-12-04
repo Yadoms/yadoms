@@ -1,4 +1,5 @@
 .widget-clock .date-field {
+   margin-left:5px;
     flex: 0 1 5%;
     font-size: 1px;
     overflow-x: hidden;
