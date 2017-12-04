@@ -198,7 +198,6 @@ namespace web
                      clientSeemConnected = send(webSocket, ws::CTimeNotificationFrame(shared::currentTime::Provider().now()));
                      break;
                   }
-
                case kNewAcquisition:
                   {
                      auto notif = eventHandler->getEventData<boost::shared_ptr<notification::acquisition::CNotification>>();
@@ -211,14 +210,16 @@ namespace web
                      clientSeemConnected = send(webSocket, ws::CAcquisitionSummaryUpdateFrame(notif->getAcquisitionSummaries()));
                      break;
                   }
-
                case kNewDevice:
                   {
                      auto newDevice = eventHandler->getEventData<boost::shared_ptr<database::entities::CDevice>>();
                      clientSeemConnected = send(webSocket, ws::CNewDeviceFrame(newDevice));
                      break;
                   }
-
+               case kDeleteKeyword:
+                  {
+                     break;
+                  }
                case kNewLogEvent:
                   {
                      auto logEvent = eventHandler->getEventData<boost::shared_ptr<database::entities::CEventLogger>>();
