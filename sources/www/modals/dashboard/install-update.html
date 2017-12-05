@@ -6,14 +6,16 @@
     </h1>
     <div class="checkbox">
         <label>
-        <input type="checkbox" class="cb-release-type">&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.install-update.includePreRelease">Include pre-release versions</span>
+            <input type="checkbox" class="cb-release-type">&nbsp;&nbsp;
+            <span data-i18n="modals.dashboard.sub-windows.install-update.includePreRelease">Include pre-release versions</span>
         </label>
     </div>
 
     <div class="panel-group" id="install-update-accordion" role="tablist" aria-multiselectable="true">
         <!--accordion yadoms update-->
         <div class="panel panel-default with-overflow-visible">
-            <div class="panel-heading" role="tab" id="install-update-yadoms-heading-panel" data-toggle="collapse" data-parent="#install-update-accordion" aria-expanded="true" aria-controls="install-update-yadoms-heading-panel" data-target="#install-update-yadoms-panel">
+            <div class="panel-heading" role="tab" id="install-update-yadoms-heading-panel" data-toggle="collapse" data-parent="#install-update-accordion"
+                aria-expanded="true" aria-controls="install-update-yadoms-heading-panel" data-target="#install-update-yadoms-panel">
                 <h4 class="panel-title accordion-title">
                     <span data-i18n="modals.dashboard.sub-windows.install-update.yadoms.title"></span>
                     <span class="update-available-label label label-as-badge label-success hidden"></span>
@@ -75,7 +77,8 @@
         </div>
         <!--accordion plugin-->
         <div class="panel panel-default with-overflow-visible">
-            <div class="panel-heading collapsed" role="tab" id="install-update-plugin-heading-panel" data-toggle="collapse" data-parent="#install-update-accordion" aria-expanded="true" aria-controls="install-update-plugin-heading-panel" data-target="#install-update-plugin-panel">
+            <div class="panel-heading collapsed" role="tab" id="install-update-plugin-heading-panel" data-toggle="collapse" data-parent="#install-update-accordion"
+                aria-expanded="true" aria-controls="install-update-plugin-heading-panel" data-target="#install-update-plugin-panel">
                 <h4 class="panel-title accordion-title">
                     <span data-i18n="modals.dashboard.sub-windows.install-update.plugins.title"></span>
                     <span class="update-available-label label label-as-badge label-success hidden"></span>
@@ -99,7 +102,8 @@
         </div>
         <!--accordion widget-->
         <div class="panel panel-default with-overflow-visible">
-            <div class="panel-heading collapsed" role="tab" id="install-update-widget-heading-panel" data-toggle="collapse" data-parent="#install-update-accordion" aria-expanded="true" aria-controls="install-update-widget-heading-panel" data-target="#install-update-widget-panel">
+            <div class="panel-heading collapsed" role="tab" id="install-update-widget-heading-panel" data-toggle="collapse" data-parent="#install-update-accordion"
+                aria-expanded="true" aria-controls="install-update-widget-heading-panel" data-target="#install-update-widget-panel">
                 <h4 class="panel-title accordion-title">
                     <span data-i18n="modals.dashboard.sub-windows.install-update.widgets.title"></span>
                     <span class="update-available-label label label-as-badge label-success hidden"></span>
@@ -123,7 +127,9 @@
         </div>
         <!--accordion script interpreters-->
         <div class="panel panel-default with-overflow-visible">
-            <div class="panel-heading collapsed" role="tab" id="install-update-scriptInterpreter-heading-panel" data-toggle="collapse" data-parent="#install-update-accordion" aria-expanded="true" aria-controls="install-update-scriptInterpreter-heading-panel" data-target="#install-update-scriptInterpreter-panel">
+            <div class="panel-heading collapsed" role="tab" id="install-update-scriptInterpreter-heading-panel" data-toggle="collapse"
+                data-parent="#install-update-accordion" aria-expanded="true" aria-controls="install-update-scriptInterpreter-heading-panel"
+                data-target="#install-update-scriptInterpreter-panel">
                 <h4 class="panel-title accordion-title">
                     <span data-i18n="modals.dashboard.sub-windows.install-update.scriptInterpreters.title"></span>
                     <span class="update-available-label label label-as-badge label-success hidden"></span>
@@ -164,38 +170,38 @@
 </div>
 
 <script>
-
     var $cbIncludePreReleases = $("div#dashboard-install-update input.cb-release-type")
     var includePreReleases = false;
 
     var $asyncActionIndicator = $("div#dashboard-install-update i.making-async-action");
 
     Yadoms.initializeInstallUpdateDashboard = function () {
-       $cbIncludePreReleases.change(refreshAllData); 
-       return refreshAllData();
+        $cbIncludePreReleases.change(refreshAllData);
+        return refreshAllData();
     };
 
     YadomsInformationManager.getList()
-    .done(function (data) {
-      if(data.developerMode) {
-         $("#install-update-accordion").before('<h2><p class="bg-danger">' + $.t("modals.dashboard.sub-windows.install-update.developerModeWarning") + '</p></h2>');
-      }
-    })    
+        .done(function (data) {
+            if (data.developerMode) {
+                $("#install-update-accordion").before('<h2><p class="bg-danger">' + $.t(
+                    "modals.dashboard.sub-windows.install-update.developerModeWarning") + '</p></h2>');
+            }
+        })
 
     /**
-    * Permit to update includePreReleases from the checkbox
-    */
+     * Permit to update includePreReleases from the checkbox
+     */
     function updateReleaseType() {
         includePreReleases = $cbIncludePreReleases.prop("checked");
     }
 
     /**
-    * Permit to know if the version is wanted using pre release checkbox
-    */
+     * Permit to know if the version is wanted using pre release checkbox
+     */
     function isWanted(version) {
-        if(!version)
+        if (!version)
             return false;
-        if(includePreReleases)
+        if (includePreReleases)
             return true;
         return (version.preRelease() == undefined);
     }
@@ -218,11 +224,11 @@
         deferredArray.push(fillWidgetList());
         deferredArray.push(fillScriptInterpreterList());
         $.whenAll(deferredArray)
-        .done(function () {
-            $asyncActionIndicator.addClass("hidden");
-            d.resolve();
-        })
-        .fail(d.reject);
+            .done(function () {
+                $asyncActionIndicator.addClass("hidden");
+                d.resolve();
+            })
+            .fail(d.reject);
 
         return d.promise();
     }
@@ -244,154 +250,146 @@
         $line.find("span.update-available-label").addClass("hidden");
 
         YadomsUpdateInformationManager.getList()
-           .done(function (list) {
-               //list contains all version of yadoms available online. They are just json object not classes
-               if (!isNullOrUndefined(list)) {
+            .done(function (list) {
+                //list contains all versions of Yadoms available online. They are just json object not classes
+                if (!isNullOrUndefined(list)) {
 
-                   YadomsInformationManager.getList()
-                      .done(function (data) {
+                    YadomsInformationManager.getList()
+                        .done(function (data) {
 
-                          //we manage local version
-                          var currentYadomsVersion = new Version(data.yadoms.version);
-                          $line.find("em.local-version").text(currentYadomsVersion.toString());
+                            //we manage local version
+                            var currentYadomsVersion = new Version(data.yadoms.version);
+                            $line.find("em.local-version").text(currentYadomsVersion.toString());
 
-                          //we keep only wanted versions type
-                          var serverVersions = [];
-                          var latestVersion = undefined;
+                            //we keep only wanted versions type
+                            var availableVersions = [];
+                            var latestVersion = undefined;
 
-                          $.each(list, function (versionIndex, versionValue) {
-                              //if this releasetype is wanted and is not the current version we add it to the arrays of version for this item
-                              if (isWanted(versionValue.version)) {
-                                 if(Version.compare(versionValue.version, currentYadomsVersion) > 0)
-                                    serverVersions.push(versionValue);
-                                    
-                                   //we manage latest version even it lesser than actual or it is actual version
-                                  if (isNullOrUndefined(latestVersion)) {
-                                      //latestVersion hasn't defined for the moment we take the first one
-                                      latestVersion = versionValue;
-                                  }
-                                  else {
-                                      //we compare the version with the cumulated to take the latest
-                                      if (Version.compare(versionValue.version, latestVersion.version) > 0) {
-                                          latestVersion = versionValue;
-                                      }
-                                  }                                    
-                              }                              
-                          });
+                            $.each(list, function (versionIndex, versionValue) {
+                                //if this releasetype is wanted and is not the current version we add it to the arrays of versions for this item
+                                if (isWanted(versionValue.version)) {
+                                    if (Version.compare(versionValue.version, currentYadomsVersion) !=
+                                        0)
+                                        availableVersions.push(versionValue);
 
-                          //we can display the latest version
-                          if(latestVersion) {
-                             $line.find("em.latest-version").text(latestVersion.version.toString());
-                          }
+                                    //we manage latest version even it lesser than actual or it is actual version
+                                    if (isNullOrUndefined(latestVersion)) {
+                                        //latestVersion hasn't defined for the moment we take the first one
+                                        latestVersion = versionValue;
+                                    } else {
+                                        //we compare the version with the cumulated to take the latest
+                                        if (Version.compare(versionValue.version, latestVersion.version) >
+                                            0) {
+                                            latestVersion = versionValue;
+                                        }
+                                    }
+                                }
+                            });
 
-                          //we order the list
-                          serverVersions.sort(function (a, b) {
-                             return Version.compare(b.version, a.version); //invert versions
-                          });
-                          var canChooseVersion = false;
-                          var installUpdateAllowed = false;
+                            debugger;
 
-                          if (serverVersions.length > 0) {
-                              if (serverVersions.length > 1) {
-                                  //there is different versions visible
-                                  canChooseVersion = true;
-                              }
+                            //we order the list
+                            availableVersions.sort(function (a, b) {
+                                return Version.compare(b.version, a.version); //invert versions
+                            });
+                            var canChooseVersion = false;
+                            var installUpdateAllowed = false;
 
-                              //the main install button is allowed only if latest version and current version are different
-                              installUpdateAllowed = (Version.compare(currentYadomsVersion, latestVersion.version) !== 0);
+                            if (availableVersions.length > 0) {
 
-                              //we create a combo that have all available versions for install or update
-                              var $cbVersion = $line.find("ul.versions");
-                              $cbVersion.empty();
+                                //there is different versions visible
+                                canChooseVersion = true;
 
-                              $.each(serverVersions, function (index, value) {
+                                if (Version.compare(latestVersion.version, currentYadomsVersion) > 0) {
+                                    //we can display the latest version
+                                    $line.find("em.latest-version").text(latestVersion.version.toString());
+                                    installUpdateAllowed = true;
+                                }
 
-                                  $cbVersion.append("<li><a href=\"#\"><em>" + value.version.toString() + "</em></a></li>");
-                                  //we manage the click event on each version
-                                  $cbVersion.find("li").last().unbind('click').bind('click', function () {
-                                      Yadoms.modals.confirmation.loadAsync()
-                                      .done(function () {
-                                          askForYadomsUpdate(value);
-                                      });
-                                  });
-                              });
+                                //we create a combo that have all available versions for install or update
+                                var $cbVersion = $line.find("ul.versions");
+                                $cbVersion.empty();
 
-                              if (installUpdateAllowed) {
-                                  $line.find("div.btn-install button.main-btn").removeClass("disabled");
-                              }
-                              else {
-                                  $line.find("div.btn-install button.main-btn").addClass("disabled");
-                              }
-                          }
-                          else {
-                              //there is no interesting new version
-                              $line.find("button.btn-expand").addClass("disabled");
-                          }
+                                $.each(availableVersions, function (index, value) {
 
-                          if (installUpdateAllowed) {
-                              $line.find("div.btn-install button.main-btn").removeClass("disabled");
-                              //if the user can choose version we enable the list
-                              if (canChooseVersion)
-                                  $line.find("div.btn-install button.btn-expand").removeClass("disabled");
-                              else
-                                  $line.find("div.btn-install button.btn-expand").addClass("disabled");
+                                    $cbVersion.append("<li><a href=\"#\"><em>" + value.version.toString() +
+                                        "</em></a></li>");
+                                    //we manage the click event on each version
+                                    $cbVersion.find("li").last().unbind('click').bind('click', function () {
+                                        Yadoms.modals.confirmation.loadAsync()
+                                            .done(function () {
+                                                askForYadomsUpdate(value);
+                                            });
+                                    });
+                                });
 
-                              //we manage click events
-                              if (serverVersions.length > 0) {
-                                  $line.find("button.main-btn").unbind('click').bind('click', function () {
-                                      askForYadomsUpdate(serverVersions[0]);
-                                  });
-                              }
-                          }
-                          else {
-                              $line.find("div.btn-install button.main-btn").addClass("disabled");
-                              $line.find("div.btn-install button.btn-expand").addClass("disabled");
-                          }
+                                if (installUpdateAllowed) {
+                                    $line.find("div.btn-install button.main-btn").removeClass("disabled");
+                                    $line.find("button.main-btn").unbind('click').bind('click', function () {
+                                        askForYadomsUpdate(availableVersions[0]);
+                                    });
+                                } else {
+                                    $line.find("div.btn-install button.main-btn").addClass("disabled");
+                                }
 
-                          //we manage the ! label to show a new version is available
-                          if (installUpdateAllowed) {
-                              $line.find("span.update-available-label").removeClass("hidden");
-                          }
-                          else {
-                              $line.find("span.update-available-label").addClass("hidden");
-                          }
+                                if (canChooseVersion) {
+                                    $line.find("div.btn-install button.btn-expand").removeClass("disabled");
+                                } else {
+                                    $line.find("div.btn-install button.btn-expand").addClass("disabled");
+                                }
+                            } else {
+                                //there is no interesting new version
+                                $line.find("div.btn-install button.main-btn").addClass("disabled");
+                                $line.find("div.btn-install button.btn-expand").addClass("disabled");
+                            }
 
-                          //we make the line visible
-                          $line.removeClass("hidden");
+                            //we manage the ! label to show a new version is available
+                            if (installUpdateAllowed) {
+                                $line.find("span.update-available-label").removeClass("hidden");
+                            } else {
+                                $line.find("span.update-available-label").addClass("hidden");
+                            }
 
-                          //we update the header update availble label
-                          updateHeaderUpdateAvailableLabel("yadoms");
-                      })
-                      .fail(function (error) {
-                          notifyError($.t("objects.generic.errorGetting", { objectName: $.t("core.yadoms.information") }), error);
-                      });
-               }
-           })
-           .always(d.resolve);
+                            //we make the line visible
+                            $line.removeClass("hidden");
+
+                            //we update the header update availble label
+                            updateHeaderUpdateAvailableLabel("yadoms");
+                        })
+                        .fail(function (error) {
+                            notifyError($.t("objects.generic.errorGetting", {
+                                objectName: $.t("core.yadoms.information")
+                            }), error);
+                        });
+                }
+            })
+            .always(d.resolve);
 
         return d.promise();
     }
 
     function askForYadomsUpdate(versionContainer) {
         Yadoms.modals.confirmation.loadAsync()
-        .done(function () {
-            Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
-                  $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdateTitle"),
-                  $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdate", {
-                      objectName: $.t("core.yadoms.name"),
-                      version: versionContainer.version.toString()
-                  }),
-                  function () {
-                      //the user has confirmed the action
-                      YadomsUpdateInformationManager.update(versionContainer)
-                      .done(function (data) {
-                          yadomsUpdateCallback(data.taskId, versionContainer);
-                      })
-                      .fail(function (error) {
-                          notifyError($.t("objects.generic.errorUpdating", { objectName: "yadoms" }), error);
-                      });
-                  });
-        });
+            .done(function () {
+                Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
+                    $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdateTitle"),
+                    $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdate", {
+                        objectName: $.t("core.yadoms.name"),
+                        version: versionContainer.version.toString()
+                    }),
+                    function () {
+                        //the user has confirmed the action
+                        YadomsUpdateInformationManager.update(versionContainer)
+                            .done(function (data) {
+                                yadomsUpdateCallback(data.taskId, versionContainer);
+                            })
+                            .fail(function (error) {
+                                notifyError($.t("objects.generic.errorUpdating", {
+                                    objectName: "yadoms"
+                                }), error);
+                            });
+                    });
+            });
     }
 
     function yadomsUpdateCallback(taskId, item) {
@@ -474,17 +472,19 @@
         $splash.find("h1.updating").removeClass("hidden");
 
         //we try to get information from server loop until the server answer
-        EventLoggerManager.getLast({ timeout: 2000 })
-        .done(function () {
-            console.log("waitForYadomsReturn EventLoggerManager.getLast(true).done");
-            //we received an answer, the server is back
-            //we reload full page
-            location.reload();
-        })
-        .fail(function (error) {
-            console.log("waitForYadomsReturn EventLoggerManager.getLast(true).fail : " + error);
-            setTimeout(waitForYadomsReturn(), 500);
-        });
+        EventLoggerManager.getLast({
+                timeout: 2000
+            })
+            .done(function () {
+                console.log("waitForYadomsReturn EventLoggerManager.getLast(true).done");
+                //we received an answer, the server is back
+                //we reload full page
+                location.reload();
+            })
+            .fail(function (error) {
+                console.log("waitForYadomsReturn EventLoggerManager.getLast(true).fail : " + error);
+                setTimeout(waitForYadomsReturn(), 500);
+            });
 
     }
     /**
@@ -494,10 +494,10 @@
         var d = new $.Deferred();
         //we launch requests
         PluginManager.getAll()
-        .done(function (localList) {
-            buildList("plugin", localList).always(d.resolve);
-        })
-        .fail(d.reject);
+            .done(function (localList) {
+                buildList("plugin", localList).always(d.resolve);
+            })
+            .fail(d.reject);
         return d.promise();
     }
 
@@ -508,13 +508,13 @@
         var d = new $.Deferred();
         //we save the information that the load of objectType is in progress
         WidgetPackageManager.getAll()
-        .done(function () {
-            buildList("widget", WidgetPackageManager.packageList).always(d.resolve);
-        })
-        .fail(function (error) {
-            notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), error);
-            d.reject(error);
-        });
+            .done(function () {
+                buildList("widget", WidgetPackageManager.packageList).always(d.resolve);
+            })
+            .fail(function (error) {
+                notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), error);
+                d.reject(error);
+            });
         return d.promise();
     }
 
@@ -525,13 +525,13 @@
         var d = new $.Deferred();
         //we launch requests
         AutomationInterpreterManager.getAllDetailed()
-        .done(function (interpreters) {
-            buildList("scriptInterpreter", interpreters).always(d.resolve);
-        })
-        .fail(function (error) {
-            notifyError($.t("objects.interpreter.errorListingInterpreters"), error);
-            d.reject(error);
-        });
+            .done(function (interpreters) {
+                buildList("scriptInterpreter", interpreters).always(d.resolve);
+            })
+            .fail(function (error) {
+                notifyError($.t("objects.interpreter.errorListingInterpreters"), error);
+                d.reject(error);
+            });
         return d.promise();
     }
 
@@ -547,39 +547,40 @@
         //we remove all rows except header
         $("table#" + objectType + "-install-update-list").find("tr:gt(0)").remove();
         UpdateInformationManager.getList(objectType)
-        .done(function (serverList) {
-            //we get installed plugin List
-            if (!isNullOrUndefined(serverList)) {
-                mergeLists(localList, serverList, function (mergedList) {
-                    //we sort the list by name
-                    mergedList.sort(function (item1, item2) {
-                        return item2.type > item1.type;
+            .done(function (serverList) {
+                //we get installed plugin List
+                if (!isNullOrUndefined(serverList)) {
+                    mergeLists(localList, serverList, function (mergedList) {
+                        //we sort the list by name
+                        mergedList.sort(function (item1, item2) {
+                            return item2.type > item1.type;
+                        });
+
+                        YadomsInformationManager.getList()
+                            .done(function (data) {
+                                //we display the result
+                                Object.keys(mergedList).forEach(function (key) {
+                                    if (!key.startsWith("system-") && (data.developerMode || !
+                                            key.startsWith("dev-"))) {
+                                        //the actual item does nothing
+                                        mergedList[key].processing = false;
+                                        createInstallUpdateItemLine(objectType, mergedList[key]);
+                                        //we set the visibility to the allowed buttons
+                                        updateLine(objectType, mergedList[key]);
+                                    }
+                                });
+                                d.resolve();
+                            })
+                            .fail(d.reject);
                     });
-                    
-                    YadomsInformationManager.getList()
-                    .done(function (data) {
-                       //we display the result
-                       Object.keys(mergedList).forEach(function (key) {
-                            if (!key.startsWith("system-") && (data.developerMode || !key.startsWith("dev-"))) {
-                                //the actual item does nothing
-                                mergedList[key].processing = false;
-                                createInstallUpdateItemLine(objectType, mergedList[key]);
-                                //we set the visibility to the allowed buttons
-                                updateLine(objectType, mergedList[key]);
-                            }
-                       });     
-                       d.resolve();
-                    })
-                    .fail(d.reject);
-                });
-            } else {
-               d.resolve();
-            }
-        })
-        .fail(function (error) {
-            console.warn("Unable to get versions for " + objectType + " : " + error);
-            d.reject(error);
-        });
+                } else {
+                    d.resolve();
+                }
+            })
+            .fail(function (error) {
+                console.warn("Unable to get versions for " + objectType + " : " + error);
+                d.reject(error);
+            });
 
         return d.promise();
     }
@@ -632,9 +633,9 @@
 
                         //we order the list
                         serverValue.sort(function (a, b) {
-                           return Version.compare(b.version, a.version); //invert versions
+                            return Version.compare(b.version, a.version); //invert versions
                         });
-                        
+
                         var newItem = {};
 
                         //generic informations
@@ -678,47 +679,53 @@
 
         //determine the i8n base path (because scriptInterpreters have specific path)
         item.i18nBasePath = objectType + "s/" + item.type;
-        
+
         var s = "<tr id=\"" + item.type + "\">" +
-                    "<td><span>" + $.t(item.i18nBasePath + ":name", { defaultValue: item.package.name }) + "</span>" +
-                    "<span class=\"update-available-label hidden label label-as-badge label-success\">!</span>" +
-                    "</td>";
+            "<td><span>" + $.t(item.i18nBasePath + ":name", {
+                defaultValue: item.package.name
+            }) + "</span>" +
+            "<span class=\"update-available-label hidden label label-as-badge label-success\">!</span>" +
+            "</td>";
 
         var iconName = "icon.png";
-         if(objectType === "widget")
+        if (objectType === "widget")
             iconName = "preview.png";
-         
-         s += "<td><img a=\"" + (item.iconUrl ? item.iconUrl :  objectType + "s/" + item.type + "/" + iconName) + "\"  src=\"" + (item.iconUrl ? item.iconUrl :  objectType + "s/" + item.type + "/" + iconName) + "\" class=\"img-thumbnail dashboard-table-icon\"></td>";
 
-        s += "<td><span>" + $.t(item.i18nBasePath + ":description", { defaultValue: item.package.description }) + "</span></td>" +
-                    "<td><em class=\"local-version\"></em></td>" +
-                    "<td><em class=\"latest-version\"></em></td>" +
-                    "<td>" +
-                       "<div class=\"action-buttons btn-group\">" +
-                         "<div class=\"btn-group btn-install\">" +
-                             "<button type=\"button\" class=\"btn main-btn btn-primary\">" +
-                                "<span class=\"glyphicon glyphicon-save \"></span>" +
-                                "<span class=\"latest-installable-version\"></span>" +
-                             "</button>" +
-                             "<button type=\"button\" class=\"btn dropdown-toggle btn-expand btn-primary\" data-toggle=\"dropdown\" aria-expanded=\"false\">" +
-                                "<span class= \"caret\"></span>" +
-                                "<span class=\"sr-only\">Toggle Dropdown</span>" +
-                             "</button>" +
-                             "<ul class=\"dropdown-menu versions\" role=\"menu\">" +
-                             "</ul>" +
-                          "</div>" +
-                         "<button type=\"button\" class=\"btn btn-danger btn-uninstall\" data-i18n=\"[title]modals.dashboard.sub-windows.install-update.generic.uninstall\"><span class=\"fa fa-trash\"></span></button>" +
-                       "</div>" +
-                       "<div class=\"action-progression\">" +
-                          "<div class=\"progress\">" +
-                             "<div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" style=\"width: 0%\">" +
-                                "<span class=\"hidden\">60% Complete</span>" +
-                             "</div>" +
-                          "</div>" +
-                          "<span class=\"message\"></span>" +
-                        "</div>" +
-                    "</td>" +
-                "</tr>";
+        s += "<td><img a=\"" + (item.iconUrl ? item.iconUrl : objectType + "s/" + item.type + "/" + iconName) +
+            "\"  src=\"" + (item.iconUrl ? item.iconUrl : objectType + "s/" + item.type + "/" + iconName) +
+            "\" class=\"img-thumbnail dashboard-table-icon\"></td>";
+
+        s += "<td><span>" + $.t(item.i18nBasePath + ":description", {
+                defaultValue: item.package.description
+            }) + "</span></td>" +
+            "<td><em class=\"local-version\"></em></td>" +
+            "<td><em class=\"latest-version\"></em></td>" +
+            "<td>" +
+            "<div class=\"action-buttons btn-group\">" +
+            "<div class=\"btn-group btn-install\">" +
+            "<button type=\"button\" class=\"btn main-btn btn-primary\">" +
+            "<span class=\"glyphicon glyphicon-save \"></span>" +
+            "<span class=\"latest-installable-version\"></span>" +
+            "</button>" +
+            "<button type=\"button\" class=\"btn dropdown-toggle btn-expand btn-primary\" data-toggle=\"dropdown\" aria-expanded=\"false\">" +
+            "<span class= \"caret\"></span>" +
+            "<span class=\"sr-only\">Toggle Dropdown</span>" +
+            "</button>" +
+            "<ul class=\"dropdown-menu versions\" role=\"menu\">" +
+            "</ul>" +
+            "</div>" +
+            "<button type=\"button\" class=\"btn btn-danger btn-uninstall\" data-i18n=\"[title]modals.dashboard.sub-windows.install-update.generic.uninstall\"><span class=\"fa fa-trash\"></span></button>" +
+            "</div>" +
+            "<div class=\"action-progression\">" +
+            "<div class=\"progress\">" +
+            "<div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" style=\"width: 0%\">" +
+            "<span class=\"hidden\">60% Complete</span>" +
+            "</div>" +
+            "</div>" +
+            "<span class=\"message\"></span>" +
+            "</div>" +
+            "</td>" +
+            "</tr>";
 
         //we add the line to the right list
         $("table#" + objectType + "-install-update-list").append(s);
@@ -738,13 +745,13 @@
      */
     function updateHeaderUpdateAvailableLabel(objectType) {
         var $line = $("div#install-update-" + objectType + "-heading-panel .update-available-label");
-        var updateAvailableLabels = $("table#" + objectType + "-install-update-list span.update-available-label").not(".hidden");
+        var updateAvailableLabels = $("table#" + objectType + "-install-update-list span.update-available-label").not(
+            ".hidden");
         if (updateAvailableLabels.length > 0) {
             //there is at least one item that have an update available
             $line.removeClass("hidden");
             $line.text(updateAvailableLabels.length);
-        }
-        else {
+        } else {
             $line.addClass("hidden");
         }
     }
@@ -762,8 +769,7 @@
         if (!isNullOrUndefined(item.package.version)) {
             //we can display the local version
             $line.find("em.local-version").text(item.package.version.toString());
-        }
-        else {
+        } else {
             $line.find("em.local-version").text("");
         }
 
@@ -795,28 +801,29 @@
 
             if (!isNullOrUndefined(item.package.version)) {
                 //the plugin is already installed so the button is used to update
-                $line.find("div.btn-install button.main-btn").attr("data-i18n", "[title]modals.dashboard.sub-windows.install-update.generic.install");
+                $line.find("div.btn-install button.main-btn").attr("data-i18n",
+                    "[title]modals.dashboard.sub-windows.install-update.generic.install");
 
                 //the component is already installed so we can uninstall it
                 uninstallAllowed = true;
-            }
-            else {
-                $line.find("div.btn-install button.main-btn").attr("data-i18n", "[title]modals.dashboard.sub-windows.install-update.generic.update");
+            } else {
+                $line.find("div.btn-install button.main-btn").attr("data-i18n",
+                    "[title]modals.dashboard.sub-windows.install-update.generic.update");
             }
 
             if (availableVersions.length > 0) {
                 //we order the list
                 availableVersions.sort(function (a, b) {
-                   return Version.compare(b.version, a.version); //invert versions
+                    return Version.compare(b.version, a.version); //invert versions
                 });
 
                 // Update the last available version (if newer than installed version)
                 if (Version.compare(availableVersions[0].version, item.package.version) > 0) {
-                   $line.find("em.latest-version").text(availableVersions[0].version.toString());
-                   $line.find("ul.latest-installable-version").text(availableVersions[0].version.toString());
-                   updateAllowed = true;
+                    $line.find("em.latest-version").text(availableVersions[0].version.toString());
+                    $line.find("ul.latest-installable-version").text(availableVersions[0].version.toString());
+                    updateAllowed = true;
                 }
-                
+
                 // Can install every different version than actualy installed
                 $.each(availableVersions, function (index, availableVersion) {
                     if (Version.compare(availableVersion.version, item.package.version) != 0) {
@@ -833,36 +840,43 @@
 
                 $.each(availableVersions, function (index, value) {
 
-                    $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl + "\"><a href=\"#\"><em" + ((item.package.version && Version.compare(value.version, item.package.version) <0)?" class='text-muted small'":"") +">" + value.version.toString() + "</em></a></li>");
-                    
+                    $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl + "\"><a href=\"#\"><em" + ((
+                            item.package.version && Version.compare(value.version, item.package.version) <
+                            0) ? " class='text-muted small'" : "") + ">" + value.version.toString() +
+                        "</em></a></li>");
+
                     //we manage the click event on each version
                     if (!isNullOrUndefined(item.package.version)) {
                         //the item is already installed, we ask an update
-                        $cbVersion.find("li").last().unbind('click').bind('click', function () { askForUpdate(objectType, item, value); });
-                    }
-                    else {
+                        $cbVersion.find("li").last().unbind('click').bind('click', function () {
+                            askForUpdate(objectType, item, value);
+                        });
+                    } else {
                         //the item isn't installed so we make a new install
-                        $cbVersion.find("li").last().unbind('click').bind('click', function () { askForInstall(objectType, item, value); });
+                        $cbVersion.find("li").last().unbind('click').bind('click', function () {
+                            askForInstall(objectType, item, value);
+                        });
                     }
                 });
-            }
-            else {
+            } else {
                 //there is no interesting version
                 $line.find("button.btn-expand").addClass("disabled");
             }
 
-              
+
 
             if (uninstallAllowed) {
                 $line.find("button.btn-uninstall").removeClass("disabled");
                 $line.find("button.btn-uninstall")
                     .unbind('click')
-                    .bind('click', function() { askForRemove(objectType, item); });
+                    .bind('click', function () {
+                        askForRemove(objectType, item);
+                    });
             } else {
                 $line.find("button.btn-uninstall").addClass("disabled");
                 $line.find("button.btn-uninstall").unbind('click');
             }
-            
+
             //if the user can choose version we enable the list
             if (canChooseVersion)
                 $line.find("div.btn-install button.btn-expand").removeClass("disabled");
@@ -877,22 +891,23 @@
                 if (!isNullOrUndefined(item.package.version)) {
                     //the item is already installed, we ask an update if there is some available
                     if (availableVersions.length > 0) {
-                        $line.find("button.main-btn").unbind('click').bind('click', function () { askForUpdate(objectType, item, availableVersions[0]); });
+                        $line.find("button.main-btn").unbind('click').bind('click', function () {
+                            askForUpdate(objectType, item, availableVersions[0]);
+                        });
                     }
-                }
-                else {
+                } else {
                     //the item isn't installed so we make a new install if there is some available
                     if (availableVersions.length > 0)
-                        $line.find("button.main-btn").unbind('click').bind('click', function () { askForInstall(objectType, item, availableVersions[0]) });
+                        $line.find("button.main-btn").unbind('click').bind('click', function () {
+                            askForInstall(objectType, item, availableVersions[0])
+                        });
                     $line.find("span.update-available-label").addClass("hidden");
                 }
-            }
-            else {
+            } else {
                 $line.find("div.btn-install button.main-btn").addClass("disabled");
                 $line.find("span.update-available-label").addClass("hidden");
             }
-        }
-        else {
+        } else {
             //an action is in progress we show progression
             $line.find("div.action-buttons").addClass("hidden");
             $line.find("div.action-progression").removeClass("hidden");
@@ -911,24 +926,28 @@
         assert(!isNullOrUndefined(updateInformation), "updateInformation must be defined");
 
         Yadoms.modals.confirmation.loadAsync()
-           .done(function () {
-               Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
-                     $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstallTitle"),
-                     $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstall", {
-                         objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }),
-                         version: updateInformation.version.toString()
-                     }),
-                     function () {
-                         //the user has confirmed the action
-                         UpdateInformationManager.install(objectType, updateInformation.downloadUrl)
-                         .done(function (data) {
-                             installUpdateRemoveCallback(objectType, data.taskId, item);
-                         })
-                         .fail(function (error) {
-                             notifyError($.t("objects.generic.errorInstalling", { objectName: objectType }), error);
-                         });
-                     });
-           });
+            .done(function () {
+                Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
+                    $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstallTitle"),
+                    $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstall", {
+                        objectName: $.t(objectType + "s/" + item.type + ":name", {
+                            defaultValue: item.package.name
+                        }),
+                        version: updateInformation.version.toString()
+                    }),
+                    function () {
+                        //the user has confirmed the action
+                        UpdateInformationManager.install(objectType, updateInformation.downloadUrl)
+                            .done(function (data) {
+                                installUpdateRemoveCallback(objectType, data.taskId, item);
+                            })
+                            .fail(function (error) {
+                                notifyError($.t("objects.generic.errorInstalling", {
+                                    objectName: objectType
+                                }), error);
+                            });
+                    });
+            });
     }
 
     /**
@@ -940,24 +959,28 @@
         assert(!isNullOrUndefined(updateInformation), "updateInformation must be defined");
 
         Yadoms.modals.confirmation.loadAsync()
-        .done(function () {
-            Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
-                  $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdateTitle"),
-                  $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdate", {
-                      objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }),
-                      version: updateInformation.version.toString()
-                  }),
-                  function () {
-                      //the user has confirmed the action
-                      UpdateInformationManager.update(objectType, item.type, updateInformation.downloadUrl)
-                      .done(function (data) {
-                          installUpdateRemoveCallback(objectType, data.taskId, item);
-                      })
-                      .fail(function (error) {
-                          notifyError($.t("objects.generic.errorUpdating", { objectName: objectType }), error);
-                      });
-                  });
-        });
+            .done(function () {
+                Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
+                    $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdateTitle"),
+                    $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdate", {
+                        objectName: $.t(objectType + "s/" + item.type + ":name", {
+                            defaultValue: item.package.name
+                        }),
+                        version: updateInformation.version.toString()
+                    }),
+                    function () {
+                        //the user has confirmed the action
+                        UpdateInformationManager.update(objectType, item.type, updateInformation.downloadUrl)
+                            .done(function (data) {
+                                installUpdateRemoveCallback(objectType, data.taskId, item);
+                            })
+                            .fail(function (error) {
+                                notifyError($.t("objects.generic.errorUpdating", {
+                                    objectName: objectType
+                                }), error);
+                            });
+                    });
+            });
     }
 
     /**
@@ -968,21 +991,27 @@
         assert(!isNullOrUndefined(item), "item must be defined");
 
         Yadoms.modals.confirmation.loadAsync()
-         .done(function () {
-             Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
-                   $.t("modals.dashboard.sub-windows.install-update.generic.confirmRemoveTitle"),
-                   $.t("modals.dashboard.sub-windows.install-update.generic.confirmRemove", { objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }) }),
-                   function () {
-                       //the user has confirmed the action
-                       UpdateInformationManager.remove(objectType, item.type)
-                       .done(function (data) {
-                           installUpdateRemoveCallback(objectType, data.taskId, item);
-                       })
-                       .fail(function (error) {
-                           notifyError($.t("objects.generic.errorDeleting", { objectName: objectType }), error);
-                       });
-                   });
-         });
+            .done(function () {
+                Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
+                    $.t("modals.dashboard.sub-windows.install-update.generic.confirmRemoveTitle"),
+                    $.t("modals.dashboard.sub-windows.install-update.generic.confirmRemove", {
+                        objectName: $.t(objectType + "s/" + item.type + ":name", {
+                            defaultValue: item.package.name
+                        })
+                    }),
+                    function () {
+                        //the user has confirmed the action
+                        UpdateInformationManager.remove(objectType, item.type)
+                            .done(function (data) {
+                                installUpdateRemoveCallback(objectType, data.taskId, item);
+                            })
+                            .fail(function (error) {
+                                notifyError($.t("objects.generic.errorDeleting", {
+                                    objectName: objectType
+                                }), error);
+                            });
+                    });
+            });
     }
 
     function installUpdateRemoveCallback(objectType, taskId, item) {
@@ -1041,7 +1070,4 @@
             $btn.removeClass('btn-primary').addClass('btn-default');
         }
     }
-
-
-
 </script>
