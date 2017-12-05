@@ -804,6 +804,10 @@ Blockly.Yadoms.YADOMS_WAIT_FOR_EVENT_PUBLIC_MIXIN = {
 
         //create variable
         workspace.createVariable(name);
+        
+        Blockly.Yadoms.InternalTemporaryVariable.push(name);
+        
+        
         return name;
     },
 

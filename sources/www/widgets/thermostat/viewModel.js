@@ -160,8 +160,7 @@ function thermostatViewModel() {
                self.temperatureSet("-");
         } 
         else if (keywordId === self.widget.configuration.thermostatStateSection.content.state.keywordId) {
-           
-            console.log ("State :", data.value);
+
             //it is the right device
             if (data.value !=="")
             {

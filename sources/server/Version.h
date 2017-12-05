@@ -8,5 +8,5 @@
       shared::CServiceLocator::instance().get<IRunningInformation>().getSoftwareVersion()
    
 */
-const shared::versioning::CVersion YadomsVersion("2.0.0");
+const shared::versioning::CVersion YadomsVersion("2.0.1");
 
