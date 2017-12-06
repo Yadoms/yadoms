@@ -598,6 +598,8 @@ set(YADOMS_SRC
    server/web/ws/AcquisitionUpdateFrame.cpp
    server/web/ws/AcquisitionSummaryUpdateFrame.h
    server/web/ws/AcquisitionSummaryUpdateFrame.cpp
+   server/web/ws/KeywordDeletedFrame.h
+   server/web/ws/KeywordDeletedFrame.cpp
    server/web/ws/FrameBase.h
    server/web/ws/FrameBase.cpp
    server/web/ws/FrameFactory.h

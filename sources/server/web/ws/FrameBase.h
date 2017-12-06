@@ -30,6 +30,7 @@ namespace web
             ((TaskUpdateNotification))
             ((IsAlive))
             ((TimeNotification))
+            ((KeywordDeleted))
          ) ;
 
       protected:
