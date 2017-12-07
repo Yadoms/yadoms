@@ -180,6 +180,9 @@ AutomationEditorBlockly.prototype.updateRule = function() {
    self.rule.code = "";
 
    Blockly.Yadoms.GetResult(self.rule.interpreter, function(xmlString,code){
+      
+      Blockly.Yadoms.RemoveInternalTempVariables();
+      
       self.rule.content = encodeURIComponent(xmlString);
       self.rule.code = code;
 

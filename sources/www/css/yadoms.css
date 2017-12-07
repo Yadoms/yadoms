@@ -294,3 +294,8 @@ body {
 .modal-content {
     height: 100%;
 }
+
+/* fix blockly issue 1364 */
+.blocklyWidgetDiv .goog-menu { 
+   max-height: 215px; 
+}

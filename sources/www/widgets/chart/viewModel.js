@@ -355,8 +355,8 @@ function chartViewModel() {
             });
         })
         .fail(function (error) {
+            self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
             notifyError($.t("widgets/chart:errorInitialization"), error);
-            throw $.t("widgets/chart:errorInitialization");
             d.reject();
         });
         return d.promise();
@@ -462,6 +462,7 @@ function chartViewModel() {
                 self.deviceInfo[index] = data;
             })
             .fail(function (error) {
+               self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
                notifyError($.t("widgets/chart:deviceNotFound", {Id: device.content.source.deviceId}));
             });
 
@@ -516,9 +517,10 @@ function chartViewModel() {
                   self.incompatibility = false;
                
                 //we register the keyword for new acquisition if the device exist
-                self.widgetApi.registerKeywordAcquisitions(device.content.source.keywordId);                  
+                self.widgetApi.registerKeywordForNewAcquisitions(device.content.source.keywordId);                  
             })
             .fail(function (error) {
+               self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
                notifyError($.t("widgets/chart:keywordNotFound", {Id: device.content.source.keywordId}));
             });               
         });
@@ -640,7 +642,8 @@ function chartViewModel() {
                                   if (!isNullOrUndefined(value.key)) {
                                       v = parseFloat(value.key);
                                   } else {
-                                      throw Error("Unable to parse answer");
+                                     self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
+                                     notifyError($.t("widgets/chart:errorInitialization"));
                                   }
                                   
                                   // The differential display is disabled if the type of the data is enum or boolean
@@ -671,7 +674,8 @@ function chartViewModel() {
                                       vMin = parseFloat(value.min);
                                       vMax = parseFloat(value.max);
                                   } else {
-                                      throw Error("Unable to parse answer");
+                                     self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
+                                     notifyError($.t("widgets/chart:errorInitialization"));
                                   }
 
                                   //we manage the missing data
@@ -733,7 +737,7 @@ function chartViewModel() {
                              else
                                 legendText = self.deviceInfo[index].friendlyName + "/" + self.keywordInfo[index].friendlyName;
                           }catch(error){
-                             legendText = $.t("widgets/chart:keywordNotFound", {Id: device.content.source.keywordId});
+                             self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
                           }
                           
                           var serie = null;

@@ -7,14 +7,14 @@ namespace web
    namespace ws
    {
       //-----------------------------
-      ///\brief Frame which can be send to GUI to notify for new acquisitions
+      ///\brief Frame which can be send to GUI to notify for a new device created
       //-----------------------------
       class CNewDeviceFrame : public CFrameBase
       {
       public:
          //-----------------------------
          ///\brief Constructor
-         ///\param [in]    content     The acquisition to send to GUI (shared_ptr)
+         ///\param [in]    content     The information to send to GUI (shared_ptr)
          //-----------------------------
          explicit CNewDeviceFrame(boost::shared_ptr<const database::entities::CDevice> content);
 

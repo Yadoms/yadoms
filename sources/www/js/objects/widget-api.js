@@ -23,14 +23,17 @@ WidgetApi.prototype.find = function (pattern) {
 /**
  * Change the state of a widget
  */
-WidgetApi.prototype.setState = function (newState, message) {
-   console.log (this.widget);
+WidgetApi.prototype.setState = function (newState) {
    this.widget.setState(newState);
    
    if (newState == widgetStateEnum.InvalidConfiguration)
    {
+      var message = $.t("objects.widgetManager.widgetDisabled");
       this.widget.$gridWidget.find(".panel-widget-desactivated").removeClass("hidden");
-      this.widget.$gridWidget.find(".fa-exclamation-triangle").attr("title", message);      
+      this.widget.$gridWidget.find(".fa-exclamation-triangle").attr("title", message);
+      
+      //TODO : To be modified
+      //notifyError($.t("widgets/chart:errorInitialization"), error);
    }
    else if (newState == widgetStateEnum.OK)
       this.widget.$gridWidget.find(".panel-widget-desactivated").addClass("hidden");
@@ -49,14 +52,27 @@ WidgetApi.prototype.getKeywordInformation = function (keywordId) {
 };
 
 /**
- * Register keywords to receive notifications when a new acquisition triggers
+ * @deprecated Register keywords to receive notifications when a new acquisition triggers
  * @param {} keywordIds to register (can be a single value or an array of values)
  */
 WidgetApi.prototype.registerKeywordAcquisitions = function (keywordIds) {
    assert(!isNullOrUndefinedOrEmpty(keywordIds), "keywordIds must be defined");
-
+   
    var self = this;
+   console.warn("this function is deprecated and will be removed soon");
 
+   self.widget.viewModel.widgetApi.registerKeywordForNewAcquisitions (keywordIds);
+   self.widget.viewModel.widgetApi.getLastValue(keywordIds);
+};
+
+/**
+ * Register keywords to receive notifications when a new acquisition triggers (don't do a getLastValue)
+ * @param {} keywordIds to register (can be a single value or an array of values)
+ */
+WidgetApi.prototype.registerKeywordForNewAcquisitions = function (keywordIds) {
+   assert(!isNullOrUndefinedOrEmpty(keywordIds), "keywordIds must be defined");
+   
+   var self = this;
    if (!self.widget.listenedKeywords)
       self.widget.listenedKeywords = [];
    
@@ -66,6 +82,26 @@ WidgetApi.prototype.registerKeywordAcquisitions = function (keywordIds) {
       });
    } else {
       self.widget.listenedKeywords.push(keywordIds);
+   }
+};
+
+/**
+ * Register keywords to get the last value of the keywordId when the page is loaded
+ * @param {} keywordIds to register (can be a single value or an array of values)
+ */
+WidgetApi.prototype.getLastValue = function (keywordIds) {
+   assert(!isNullOrUndefinedOrEmpty(keywordIds), "keywordIds must be defined");
+   
+   var self = this;
+   if (!self.widget.getlastValue)
+      self.widget.getlastValue = [];
+   
+   if (Array.isArray(keywordIds)) {
+      $.each(keywordIds, function (index, value) {
+         self.widget.getlastValue.push(value);
+      });
+   } else {
+      self.widget.getlastValue.push(keywordIds);
    }
 };
 
@@ -276,7 +312,6 @@ WidgetApi.prototype.manageRollingTitle = function () {
    
 	if (self.widget.displayTitle && self.widget.toolbarActivated)
 	{
-
 		if (self.widget.$toolbar[0].scrollWidth <= 3) // Round size of the padding-right of the panel-widget-title-toolbar
 			toolbarSize = 0;
 		else
