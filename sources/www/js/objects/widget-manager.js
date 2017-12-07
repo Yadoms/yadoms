@@ -311,10 +311,11 @@ WidgetManager.loadWidgets = function (widgetList, pageWhereToAdd) {
     $.when.apply($, arrayOfDeffered)
     .done(function () {
         var arrayOfLoadingWidgetDeferred = [];
+        
         $.each(widgetList, function (index, widget) {
             arrayOfLoadingWidgetDeferred.push(WidgetManager.loadWidget(widget, pageWhereToAdd));
         });
-
+           
         $.when.apply($, arrayOfLoadingWidgetDeferred)
         .done(d.resolve)
         .fail(d.reject);
@@ -532,13 +533,9 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
                         }
 						
                         widget.$gridWidget.find(".textfit").fitText();
-						
-                        //we ask for widget refresh data
-                        updateWidgetPolling(widget)
-                        .always(function() {
-                           widget.viewModel.widgetApi.manageRollingTitle();
-                           d.resolve();                           
-                        });
+                        widget.viewModel.widgetApi.manageRollingTitle();
+                        d.resolve(); 
+                        
                     }).fail(d.reject);
                 }).fail(d.reject);
             })

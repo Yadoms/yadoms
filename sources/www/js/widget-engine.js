@@ -327,26 +327,34 @@ function updateWebSocketFilter() {
 function updateWidgetsPolling() {
    
    var page = PageManager.getCurrentPage();
-   updateWidgetsPolling(page);
+   updateWidgetsPolling(pageId = page);
 }
 
 function updateWidgetsPolling(page) {
     var d = new $.Deferred();
+    var getLastValuesKeywords = [];
     
     //we browse each widget instance
     if (page == null) {
         d.resolve();
     } else {
-      var arrayOfDeffered = [];
-       
        $.each(page.widgets, function (widgetIndex, widget) {
            //we ask which devices are needed for this widget instance
-           var deffered = updateWidgetPolling(widget);
-           arrayOfDeffered.push(deffered);
+           if (!isNullOrUndefinedOrEmpty(widget.listenedKeywords))
+              getLastValuesKeywords = getLastValuesKeywords.concat (widget.listenedKeywords);
        });
        
-       $.whenAll(arrayOfDeffered)
-       .done(d.resolve)
+       updateWidgetPollingByKeywordsId(duplicateRemoval(getLastValuesKeywords))
+       .done(function (data) {
+          $.each(data, function (index, acquisition) {
+             //we signal the new acquisition to the widget if the widget support the method
+             $.each(page.widgets, function (widgetIndex, widget) {
+                if (widget.viewModel.onNewAcquisition !== undefined)
+                   widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
+             });
+          });
+          d.resolve();
+       })
        .fail(d.reject);
     }    
     return d.promise();
@@ -354,23 +362,51 @@ function updateWidgetsPolling(page) {
 
 function updateWidgetPolling(widget) {
     var d = new $.Deferred();
-
+    
     if (!isNullOrUndefined(widget.listenedKeywords)) {
-        AcquisitionManager.getLastValues(widget.listenedKeywords)
-        .done(function (data) {
-            if (data) {
+       if (widget.listenedKeywords.length!=0) // only if this list is not empty
+       {
+          AcquisitionManager.getLastValues(widget.listenedKeywords)
+          .done(function (data) {
+             if (data) {
                 $.each(data, function (index, acquisition) {
-                    //we signal the new acquisition to the widget if the widget support the method
-                    if (widget.viewModel.onNewAcquisition !== undefined)
-                        widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
+                   //we signal the new acquisition to the widget if the widget support the method
+                   if (widget.viewModel.onNewAcquisition !== undefined)
+                      widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
                 });
-            }
-            d.resolve();
-        })
-        .fail(function (error) {
-            notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for widget = " + widget.id }), error);
-            d.reject(error);
-        });
+             }
+             d.resolve();
+          })
+          .fail(function (error) {
+             notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for widget = " + widget.id }), error);
+             d.reject(error);
+          });
+       }  
+    } else {
+       d.resolve();
+    }
+    return d.promise();
+}
+
+function updateWidgetPollingByKeywordsId(keywordIds) {
+    var d = new $.Deferred();
+    
+    debugger;
+    
+    console.log ("keywordIds : ", keywordIds);
+    if (!isNullOrUndefined(keywordIds)) {
+       if (keywordIds!=0) // only if this list is not empty
+       {
+          AcquisitionManager.getLastValues(keywordIds)
+          .done(function (data) {
+             d.resolve(data);
+          })
+          .fail(function (error) {
+             debugger;
+             notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for widget = " + keywordIds }), error);
+             d.reject(error);
+          });
+       }  
     } else {
        d.resolve();
     }

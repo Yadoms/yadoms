@@ -41,7 +41,6 @@ AcquisitionManager.getLastValue = function (keywordId) {
    return d.promise();
 };
 
-
 /**
  * Get the last values of the keyword list
  * @param {Array} keywords The keyword array

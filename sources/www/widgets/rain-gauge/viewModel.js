@@ -99,7 +99,7 @@ function rainGaugeDisplayViewModel() {
         });
 
         //we register keyword new acquisition
-        self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
+        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);
         
         //we fill the deviceId of the battery indicator
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);

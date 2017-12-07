@@ -53,8 +53,11 @@ function Widget(id, idPage, type, title, sizeX, sizeY, position, configuration) 
     //toolbar of the widget
     this.$toolbar = null;
 
-    //list of all devices {deviceId, keywordId} to listen
+    //list of all keywords {keywordId} to listen
     this.listenedKeywords = [];
+    
+    //list of all keywords {keywordId} to get the last value
+    this.getlastValue = [];
 }
 
 /**
