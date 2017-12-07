@@ -182,7 +182,7 @@ namespace pluginSystem
          }
          catch (shared::exception::CException& ex)
          {
-            YADOMS_LOG(fatal) << "The Yadoms Sytem plugin fails. Unknown expcetion : " << ex.what();
+            YADOMS_LOG(fatal) << "The Yadoms Sytem plugin fails. Unknown exception : " << ex.what();
          }
       }
 
