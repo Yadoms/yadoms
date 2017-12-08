@@ -257,7 +257,7 @@ void CPicBoot::erasePicProgramMemory()
    auto currentAddress = m_picConfiguration->programAddressStart();
    while (nbBlocksToErase > 0)
    {
-      auto nbBlocksToEraseForThisLoop = nbBlocksToErase > 255 ? 255 : nbBlocksToErase;
+      const auto nbBlocksToEraseForThisLoop = nbBlocksToErase > 255 ? 255 : nbBlocksToErase;
 
       erasePic(currentAddress,
                nbBlocksToEraseForThisLoop);
@@ -324,6 +324,8 @@ void CPicBoot::sendPacket(boost::shared_ptr<const std::vector<unsigned char>> pa
       case kDLE:
          buffer.push_back(kDLE);
          break;
+      default:
+         break;
       }
       buffer.push_back(data);
       checksum += data;
@@ -337,6 +339,8 @@ void CPicBoot::sendPacket(boost::shared_ptr<const std::vector<unsigned char>> pa
    case kETX:
    case kDLE:
       buffer.push_back(kDLE);
+      break;
+   default:
       break;
    }
    buffer.push_back(static_cast<unsigned char>(checksum));

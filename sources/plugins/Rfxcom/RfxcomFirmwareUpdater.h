@@ -28,7 +28,7 @@ protected:
    };
 
    boost::shared_ptr<CHexData> loadFile(const std::string& fileContent) const;
-   void convertData(const boost::shared_ptr<CHexData> fileData) const;
+   void convertData(const boost::shared_ptr<CHexData> fileData);
    static unsigned int hexStringToUInt(const std::string& hexString);
    static unsigned int computeLineChecksum(const std::string& line);
    static boost::shared_ptr<picConfigurations::IPicConfiguration> createPicConfiguration(const unsigned deviceId);
@@ -46,5 +46,9 @@ private:
    const boost::shared_ptr<yApi::IYPluginApi> m_api;
    const boost::shared_ptr<yApi::IExtraQuery> m_extraQuery;
    const std::string m_serialPort;
+
+   std::string m_programMemory;
+   std::string m_eepromMemory;
+   std::string m_configurationFlags;
 };
 

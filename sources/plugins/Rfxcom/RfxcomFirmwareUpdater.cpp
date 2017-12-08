@@ -11,19 +11,19 @@ enum
 
 enum EKnownDeviceIds
 {
-   kRFXtrx = 1095,
-   kRFXtrxX = 19538,
-   kRFXLAN = 4121,
-   kRFXsense = 16903,
-   kRFXmtr = 16911,
-   kRFXpan1 = 2817,
-   kRFXpan2 = 2819,
-   kRFXsense2 = 17673,
+   kRfXTrx = 1095,
+   kRfXTrxX = 19538,
+   kRfxLan = 4121,
+   kRfxSense = 16903,
+   kRfxMtr = 16911,
+   kRfxPan1 = 2817,
+   kRfxPan2 = 2819,
+   kRfxSense2 = 17673,
 };
 
 
-CRfxcomFirmwareUpdater::CRfxcomFirmwareUpdater(boost::shared_ptr<yApi::IYPluginApi> api,
-                                               boost::shared_ptr<yApi::IExtraQuery> extraQuery,
+CRfxcomFirmwareUpdater::CRfxcomFirmwareUpdater(const boost::shared_ptr<yApi::IYPluginApi> api,
+                                               const boost::shared_ptr<yApi::IExtraQuery> extraQuery,
                                                const std::string& serialPort)
    : m_api(api),
      m_extraQuery(extraQuery),
@@ -50,7 +50,11 @@ void CRfxcomFirmwareUpdater::update()
 
    // Load input file
    m_extraQuery->reportProgress(0.0f, "customLabels.firmwareUpdate.loadInputFile");//TODO traduire
-   const auto hexData = loadFile(hexFile.getContent());
+   CHexData programMemory, eepromMemory, configurationMemory;
+   prepareDataForWriteIntoPic(loadFile(hexFile.getContent()),
+                              programMemory,
+                              eepromMemory,
+                              configurationMemory);
 
    boost::shared_ptr<CPicBoot> picBoot;
    try
@@ -67,8 +71,10 @@ void CRfxcomFirmwareUpdater::update()
 
       rfxcomReadBootloaderVersion(picBoot);
       rfxcomClearMemory(picBoot);
-      const auto picData = convertData(hexData);
-      rfxcomWritingMemory(picBoot, picData);
+      rfxcomWritingMemory(picBoot,
+                          programMemory,
+                          eepromMemory,
+                          configurationMemory);
       m_extraQuery->reportProgress(5.0f, "customLabels.firmwareUpdate.verify");//TODO traduire
       rfxcomVerifyMemory(picBoot);
       //TODO faut pas écrire le VerifyOK quelque part ?
@@ -84,7 +90,8 @@ void CRfxcomFirmwareUpdater::update()
    }
 }
 
-boost::shared_ptr<CRfxcomFirmwareUpdater::CHexData> CRfxcomFirmwareUpdater::loadFile(const std::string& fileContent) const
+boost::shared_ptr<CRfxcomFirmwareUpdater::CHexData> CRfxcomFirmwareUpdater::loadFile(
+   const std::string& fileContent) const
 {
    YADOMS_LOG(debug) << "Load input file...";
 
@@ -102,23 +109,23 @@ boost::shared_ptr<CRfxcomFirmwareUpdater::CHexData> CRfxcomFirmwareUpdater::load
    // - CC is the checksum
 
    enum EFieldPositions
-      {
-         kIdxStartLineChar = 0,
-         kIdxBytesCount = 1,
-         kIdxAddress = 3,
-         kIdxLineType = 7,
-         kIdxData = 9
-      };
+   {
+      kIdxStartLineChar = 0,
+      kIdxBytesCount = 1,
+      kIdxAddress = 3,
+      kIdxLineType = 7,
+      kIdxData = 9
+   };
 
    enum ELineType
-      {
-         kData = 0,
-         kEOF = 1,
-         kExtendedAddress = 2,
-         kStartSegmentAddressRecord = 3,
-         kExtendedLinearAddressRecord = 4,
-         kStartLinearAddressRecord = 5
-      };
+   {
+      kData = 0,
+      kEof = 1,
+      kExtendedAddress = 2,
+      kStartSegmentAddressRecord = 3,
+      kExtendedLinearAddressRecord = 4,
+      kStartLinearAddressRecord = 5
+   };
 
 
    try
@@ -128,28 +135,36 @@ boost::shared_ptr<CRfxcomFirmwareUpdater::CHexData> CRfxcomFirmwareUpdater::load
       auto lineCount = 0;
       unsigned int addressMostSignificantWordMask = 0;
       auto hexData = boost::make_shared<CHexData>();
-      while (std::getline(ss, line))
+      while (getline(ss, line))
       {
          // check for minimal line size (line without data)
          // ':' + BB + AAAA + TT + CC
          if (line.size() < 11)
-            throw std::invalid_argument((boost::format("Line %1% : Invalid minimal line size %2% bytes, expected 11 bytes") % lineCount % line.size()).str());
+            throw std::invalid_argument(
+               (boost::format("Line %1% : Invalid minimal line size %2% bytes, expected 11 bytes") % lineCount % line.
+                  size()).str());
 
          // Check line start character
          if (line[kIdxStartLineChar] != ':')
-            throw std::invalid_argument((boost::format("Line %1% : Invalid first character : '%2%', expected ':'") % lineCount % line[kIdxStartLineChar]).str());
+            throw std::invalid_argument(
+               (boost::format("Line %1% : Invalid first character : '%2%', expected ':'") % lineCount % line[
+                  kIdxStartLineChar]).str());
 
          // Check data size
          // BB is the data size. So data size is line size minus (':' + BB + AAAA + TT + CC)
          const auto readDataSize = hexStringToUInt(line.substr(kIdxBytesCount, 2));
          if (readDataSize != (line.size() - 11) / 2)
-            throw std::invalid_argument((boost::format("Line %1% : Invalid data size %2% bytes, expected %3% bytes ('BB' field)") % lineCount % (line.size() - 11) % readDataSize).str());
+            throw std::invalid_argument(
+               (boost::format("Line %1% : Invalid data size %2% bytes, expected %3% bytes ('BB' field)") % lineCount % (
+                  line.size() - 11) % readDataSize).str());
 
          // Check the line checksum
          const auto readChecksum = hexStringToUInt(line.substr(kIdxData + (readDataSize * 2), 2));
          const auto computedChecksum = computeLineChecksum(line);
          if (readChecksum != computedChecksum)
-            throw std::invalid_argument((boost::format("Line %1% : Invalid line checksum %2%, expected %3%") % lineCount % computedChecksum % readChecksum).str());
+            throw std::invalid_argument(
+               (boost::format("Line %1% : Invalid line checksum %2%, expected %3%") % lineCount % computedChecksum %
+                  readChecksum).str());
 
          // Process line content
          // Check the line type, only Extended Linear Address Record type is supported.
@@ -166,17 +181,20 @@ boost::shared_ptr<CRfxcomFirmwareUpdater::CHexData> CRfxcomFirmwareUpdater::load
             {
                const auto address = addressMostSignificantWordMask | hexStringToUInt(line.substr(kIdxAddress, 4));
                if (hexData->find(address) != hexData->end())
-                  throw std::invalid_argument((boost::format("Line %1% : Address %2% was already defined") % lineCount % address).str());
+                  throw std::invalid_argument(
+                     (boost::format("Line %1% : Address %2% was already defined") % lineCount % address).str());
 
                for (auto byteIndex = 0; byteIndex < readDataSize; ++byteIndex)
-                  (*hexData)[address].push_back(static_cast<unsigned char>(hexStringToUInt(line.substr(kIdxData + 2 * byteIndex, 2))));
+                  (*hexData)[address].push_back(
+                     static_cast<unsigned char>(hexStringToUInt(line.substr(kIdxData + 2 * byteIndex, 2))));
                //TODO finir de lire le fichier
                break;
             }
-         case kEOF: // The End Of File will be tested later, so ignore it here.
+         case kEof: // The End Of File will be tested later, so ignore it here.
             break;
          default:
-            throw std::invalid_argument((boost::format("Line %1% : Unsupported line type %2%") % lineCount % lineType).str());
+            throw std::invalid_argument(
+               (boost::format("Line %1% : Unsupported line type %2%") % lineCount % lineType).str());
          }
 
          ++lineCount;
@@ -184,8 +202,10 @@ boost::shared_ptr<CRfxcomFirmwareUpdater::CHexData> CRfxcomFirmwareUpdater::load
 
       // Check that last line is from End Of File type
       const auto lineType = hexStringToUInt(line.substr(kIdxLineType, 2));
-      if (lineType != kEOF)
-         throw std::invalid_argument((boost::format("Line %1% : Invalid line type %2%, expected last line type %3%") % lineCount % lineType % kEOF).str());
+      if (lineType != kEof)
+         throw std::invalid_argument(
+            (boost::format("Line %1% : Invalid line type %2%, expected last line type %3%") % lineCount % lineType %
+               kEof).str());
 
       YADOMS_LOG(debug) << "Input file is loaded";
       return hexData;
@@ -197,15 +217,166 @@ boost::shared_ptr<CRfxcomFirmwareUpdater::CHexData> CRfxcomFirmwareUpdater::load
    }
 }
 
-void CRfxcomFirmwareUpdater::convertData(const boost::shared_ptr<CHexData> fileData) const
+void CRfxcomFirmwareUpdater::razRawDataFromTemplate(unsigned char (& rowData)[255])
 {
-   // Init data array with 0xFF (init phantom byte to 0)
-   unsigned char rowData[255];
    for (size_t i = 0; i < sizeof rowData; ++i)
       rowData[i] = (i + 1) % 4 ? 255 : 0;
+}
 
-   for (const auto& lineLine:fileData)
+void CRfxcomFirmwareUpdater::prepareDataForWriteIntoPic(const boost::shared_ptr<CHexData> fileData,
+                                                        CHexData& programMemory,
+                                                        CHexData& eepromMemory,
+                                                        CHexData& configurationMemory) const
+{
+   // Microchip AN1157 extract :
+   // Each instruction has three bytes of program data and one byte of zeroes, called the “phantom byte”, for a total of four bytes
+   // Write operations are performed in 64 instruction blocks called rows (256 bytes)
+   // Erase instructions are performed in blocks of 8 rows called pages (2048 bytes)
+
+   // Init data array with 0xFF (init phantom byte to 0)
+   unsigned char rowData[255];
+   razRawDataFromTemplate(rowData);
+
+   std::vector<unsigned char> overflowArray;
+
+   programMemory.clear();
+   eepromMemory.clear();
+   configurationMemory.clear();
+
+   static const unsigned int LowerByteMask = 0xFF;
+
+   static const unsigned int RowStartMask = 0xFFFF00;
+   const auto& firstLineAddress = fileData->begin()->first;
+   auto rowStartAddress = firstLineAddress & RowStartMask;
+   // TODO in original code (VB), the second line is used instead of first but I suspect it's a bug. To check, anyway...
+
+   static const unsigned int UpperByteMask2 = 0x1FF0000;
+
+   auto emptyRow = true;
+   for (auto& line : *fileData)
    {
+      const auto& lineAddress = line.first;
+      auto& lineData = line.second;
+      const auto lineAddrHigh = (lineAddress & UpperByteMask2) >> 16;
+      if (lineAddrHigh >= 0 && lineAddrHigh <= 253)
+      {
+         // Program memory
+
+         // Is all of current data in new row?
+         if (lineAddress - rowStartAddress > 255)
+         {
+            // Next data is in new Row, so write old row to memory if not empty
+            if (!emptyRow)
+            {
+               std::vector<unsigned char> outLine;
+               auto outAddr = rowStartAddress;
+               auto inAddr = 0;
+               while (inAddr < 256)
+               {
+                  // Built the data line
+                  if (inAddr % 16 == 0)
+                     outLine.clear();
+
+                  outLine.push_back(rowData[inAddr]);
+                  ++outAddr;
+                  ++inAddr;
+
+                  if (inAddr % 16 == 0 && inAddr != 0)
+                     programMemory[outAddr] = outLine;
+               }
+
+               emptyRow = true;
+            }
+
+            // Start new row
+            rowStartAddress = lineAddress & RowStartMask;
+            razRawDataFromTemplate(rowData);
+
+            // Initialize row with overflow of last line, if any
+            for (std::vector<unsigned char>::const_iterator overflowIterator = overflowArray.begin();
+                 overflowIterator < overflowArray.end();
+                 ++ overflowIterator)
+            {
+               const auto overflowIndex = overflowIterator - overflowArray.begin();
+               rowData[overflowIndex] = *overflowIterator;
+
+               // If non-erased data is present, row is not empty
+               if ((overflowIndex + 1) % 4 != 0)
+                  if (*overflowIterator != 0xFF)
+                     emptyRow = false;
+            }
+            overflowArray.clear();
+         }
+
+         // Is a portion of current data in new row ?
+         auto rowIndex = lineAddress & LowerByteMask;
+         if (lineAddress + lineData.size() - rowStartAddress > 255)
+         {
+            // Store data in temporary array to use in next row
+            const auto overflowLen = rowIndex + lineData.size() - 256;
+            copy(lineData.begin(), lineData.begin() + overflowLen, overflowArray.begin());
+            lineData.resize(lineData.size() - overflowLen);
+         }
+
+         // Get current data
+         for (std::vector<unsigned char>::const_iterator lineDataIterator = lineData.begin();
+              lineDataIterator < lineData.end();
+              ++ lineDataIterator)
+         {
+            const auto lineDataIndex = lineDataIterator - lineData.begin();
+
+            rowData[rowIndex] = *lineDataIterator;
+            ++rowIndex;
+
+            // If non-erased data is present, row is not empty
+            if ((lineDataIndex + 1) % 4 != 0)
+               if (*lineDataIterator != 0xFF)
+                  emptyRow = false;
+         }
+      }
+
+      else if (lineAddrHigh >= 254 && lineAddrHigh <= 255)
+      {
+         // EEProm memory
+         std::vector<unsigned char> outLine;
+         copy(lineData.begin(), lineData.end(), outLine.begin());
+         eepromMemory[lineAddress] = lineData;
+      }
+
+      else if (lineAddrHigh == 496)
+      {
+         // Configuration memory
+         std::vector<unsigned char> outLine;
+         copy(lineData.begin(), lineData.end(), outLine.begin());
+         configurationMemory[lineAddress] = lineData;
+      }
+
+      else
+      {
+         YADOMS_LOG(warning) << "Unsupported address (lineAddrHigh = " << lineAddrHigh << ", lineAddress = " <<
+            lineAddress << ", ignored";
+      }
+   }
+
+   // Write last row of PM if it isn't empty
+   if (!emptyRow)
+   {
+      std::vector<unsigned char> outLine;
+      auto outAddr = rowStartAddress;
+      auto inAddr = 0;
+      while (inAddr < 256)
+      {
+         // Built the data line
+         if (inAddr % 16 == 0)
+            outLine.clear();
+
+         outLine.push_back(rowData[inAddr]);
+         ++outAddr;
+         ++inAddr;
+
+         if (inAddr % 16 == 0 && inAddr != 0)
+            programMemory[outAddr] = outLine;
+      }
    }
 }
 
@@ -228,11 +399,12 @@ unsigned int CRfxcomFirmwareUpdater::computeLineChecksum(const std::string& line
    return (~sum + 1) & 0x0FF;
 }
 
-boost::shared_ptr<picConfigurations::IPicConfiguration> CRfxcomFirmwareUpdater::createPicConfiguration(const unsigned deviceId)
+boost::shared_ptr<picConfigurations::IPicConfiguration> CRfxcomFirmwareUpdater::createPicConfiguration(
+   const unsigned deviceId)
 {
    switch (deviceId)
    {
-   case kRFXtrx: return boost::make_shared<picConfigurations::CRFXtrx>();
+   case kRfXTrx: return boost::make_shared<picConfigurations::CRFXtrx>();
       //TODO implémenter les autres
    default:
       throw std::runtime_error((boost::format("Unsupported device (Unknown device ID %d)") % deviceId).str());
@@ -244,18 +416,21 @@ void CRfxcomFirmwareUpdater::checkFileCompatibility(const unsigned int deviceId,
 {
    switch (deviceId)
    {
-   case kRFXtrx:
-   case kRFXtrxX:
+   case kRfXTrx:
+   case kRfXTrxX:
       if (!regex_match(fileName, boost::regex("^((RFXtrx)|(RFXrec)).*\\.hex$")))
-         throw std::invalid_argument((boost::format("Filename %1% can not be used to flash device ID %2%") % fileName % deviceId).str());
+         throw std::invalid_argument(
+            (boost::format("Filename %1% can not be used to flash device ID %2%") % fileName % deviceId).str());
       break;
-   case kRFXLAN:
+   case kRfxLan:
       if (!regex_match(fileName, boost::regex("^((RFXLAN)|(RFXxPL)).*\\.hex$")))
-         throw std::invalid_argument((boost::format("Filename %1% can not be used to flash device ID %2%") % fileName % deviceId).str());
+         throw std::invalid_argument(
+            (boost::format("Filename %1% can not be used to flash device ID %2%") % fileName % deviceId).str());
       break;
-   case kRFXmtr:
+   case kRfxMtr:
       if (!regex_match(fileName, boost::regex("^RFXmtr.*\\.hex$")))
-         throw std::invalid_argument((boost::format("Filename %1% can not be used to flash device ID %2%") % fileName % deviceId).str());
+         throw std::invalid_argument(
+            (boost::format("Filename %1% can not be used to flash device ID %2%") % fileName % deviceId).str());
       break;
       //TODO implémenter les autres
    default:
@@ -294,7 +469,9 @@ void CRfxcomFirmwareUpdater::rfxcomClearMemory(boost::shared_ptr<CPicBoot> picBo
 }
 
 void CRfxcomFirmwareUpdater::rfxcomWritingMemory(boost::shared_ptr<CPicBoot> picBoot,
-                                                 boost::shared_ptr<CHexData> hexData)
+                                                 const CHexData& programMemory,
+                                                 const CHexData& eepromMemory,
+                                                 const CHexData& configurationMemory)
 {
    YADOMS_LOG(debug) << "Write RFXCom memory...";
    //TODO
@@ -313,4 +490,3 @@ void CRfxcomFirmwareUpdater::rfxcomReboot(boost::shared_ptr<CPicBoot> picBoot)
    YADOMS_LOG(debug) << "Reset RFXCom...";
    picBoot->reBootPic();
 }
-
