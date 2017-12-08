@@ -144,6 +144,8 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
          // For the signalStrength, we do a rule to normalize rssi to %.
          m_signalPower->set(boost::lexical_cast<int>((m_rssi->get() - m_configuration.getRssiMin()) * 100 / (m_configuration.getRssiMax() - m_configuration.getRssiMin())));
       }
+      else
+         YADOMS_LOG(error) << "frame unknown. The frame type is different from 'data' or 'service'";
 
       if (type.compare("data") == 0)
       {
