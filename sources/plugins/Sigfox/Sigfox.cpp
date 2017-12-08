@@ -110,8 +110,6 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
       std::string deviceName = newMessage.get<std::string>("device");
       std::string type = newMessage.get<std::string>("type");
 
-      declareDevice(api, deviceName);
-
       YADOMS_LOG(information) << "Message received for device " << deviceName;
 
 
@@ -138,6 +136,8 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
       // This part is common the two messages
       if ((type.compare("data") == 0) || (type.compare("service") == 0))
       {
+         declareDevice(api, deviceName);
+
          m_rssi->set(newMessage.get<double>("rssi"));
          m_snr->set(newMessage.get<double>("snr"));
 
