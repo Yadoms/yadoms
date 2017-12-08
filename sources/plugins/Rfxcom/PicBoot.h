@@ -43,30 +43,38 @@ public:
    //Error conditions
    enum EError
    {
-      kERROR_GEN_READWRITE = -1,
-      kERROR_READ_TIMEOUT = -2,
-      kERROR_READ_LIMIT = -3,
-      kERROR_BAD_CHKSUM = -4,
-      kERROR_RETRY_LIMIT = -5,
-      kERROR_INVALID_COMMAND = -6,
-      kERROR_BLOCK_TOO_SMALL = -7,
-      kERROR_PACKET_TOO_BIG = -8,
-      kERROR_OFF_BOUNDRY = -9,
-      kERROR_BPA_TOO_SMALL = -10,
-      kERROR_BPA_TOO_BIG = -11,
-      kERROR_VERIFY_FAILED = -12,
-      kERROR_OFF_BOUNDRY2 = -13
+      kErrorGenReadwrite = -1,
+      kErrorReadTimeout = -2,
+      kErrorReadLimit = -3,
+      kErrorBadChksum = -4,
+      kErrorRetryLimit = -5,
+      kErrorInvalidCommand = -6,
+      kErrorBlockTooSmall = -7,
+      kErrorPacketTooBig = -8,
+      kErrorOffBoundry = -9,
+      kErrorBpaTooSmall = -10,
+      kErrorBpaTooBig = -11,
+      kErrorVerifyFailed = -12,
+      kErrorOffBoundry2 = -13
    };
 
 
    //Limits
    enum ELimits
    {
-      kMAX_PACKET = 261
+      kMaxPacket = 261
+   };
+
+   // Memory type
+   enum EMemoryKind
+   {
+      kProgramMemory,
+      kEepromMemory,
+      kConfigurationFlagsMemory
    };
 
 
-   enum EBootLoaderCommand : unsigned char
+   enum EBootLoaderCommand : unsigned char //TODO passer en privé ?
    {
       kCommandReadVer= 0,
       kCommandReadPm = 1,
@@ -79,33 +87,26 @@ public:
       kCommandVerifyOk = 8
    };
 
-   enum EDeviceType
-   {
-      kUnknown = 0,
-      kPIC24F = 1,
-      kPIC24FJ = 2
-   };
-
    //PIC structure used for some functions
    struct CPic //TODO passer en privé ?
    {
       // Bootloader command
-      EBootLoaderCommand BootCmd;
+      EBootLoaderCommand bootCmd;
 
-      //Number of bytes to read/write
-      unsigned int BootDatLen;
+      //Number of bytes to read/write (for a block)
+      unsigned int bootDatLen;
 
       //24 bit memory address (Prog or EE)
-      unsigned int BootAddr;
+      unsigned int bootAddr;
 
       //Number of bytes in a command block (page, row, instruction, etc)
-      unsigned int BytesPerBlock;
+      unsigned int bytesPerBlock;
 
       //Number of bytes per address
-      unsigned int BytesPerAddr;
+      unsigned int bytesPerAddr;
 
       // Device type
-      EDeviceType DeviceType;
+      picConfigurations::IPicConfiguration::EDeviceType deviceType;
    };
 
 
@@ -117,15 +118,20 @@ public:
    void setPicConfiguration(boost::shared_ptr<picConfigurations::IPicConfiguration> picConfiguration);
 
    // High level functions
-   boost::shared_ptr<std::vector<unsigned char>> readPic(const CPic& pic);
+   boost::shared_ptr<std::vector<unsigned char>> readPic(const EMemoryKind memory,
+                                                         const unsigned long blockAddress,
+                                                         const unsigned int nbBytesToRead);
    unsigned int readPicDeviceId();
    std::string readPicVersion();
-   void writePic(const CPic& pic,
-                 boost::shared_ptr<std::vector<unsigned char>> packetData);
-   void erasePic(unsigned int PicAddr,
+   void writePic(const EMemoryKind memory,
+                 unsigned long blockAddress,
+                 const std::vector<unsigned char>& blockData);
+   void writePicVerifyOk();
+   void erasePic(unsigned int picAddr,
                  unsigned int nBlock);
-   bool verifyPic(const CPic& pic,
-                  boost::shared_ptr<std::vector<unsigned char>> refPacketData);
+   bool verifyPic(const EMemoryKind memory,
+                  const unsigned long blockAddress,
+                  const std::vector<unsigned char>& refPacketData);
    void reBootPic();
    void erasePicProgramMemory();
 
@@ -133,9 +139,9 @@ private:
    // Low level functions
    boost::shared_ptr<const std::vector<unsigned char>> getPacket(unsigned int byteLimit);
    void sendPacket(boost::shared_ptr<const std::vector<unsigned char>> packetData);
-   boost::shared_ptr<const std::vector<unsigned char>> sendGetPacket(boost::shared_ptr<const std::vector<unsigned char>> packetToSend,
-                                                                     unsigned int receiveByteLimit);
-
+   boost::shared_ptr<const std::vector<unsigned char>> sendGetPacket(
+      boost::shared_ptr<const std::vector<unsigned char>> packetToSend,
+      unsigned int receiveByteLimit);
 
 
    boost::shared_ptr<shared::communication::CAsyncSerialPort> m_port;
@@ -145,4 +151,3 @@ private:
    unsigned int m_maxRetrys;
    boost::shared_ptr<picConfigurations::IPicConfiguration> m_picConfiguration;
 };
-

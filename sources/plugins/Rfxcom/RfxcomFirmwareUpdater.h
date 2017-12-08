@@ -28,7 +28,11 @@ protected:
    };
 
    boost::shared_ptr<CHexData> loadFile(const std::string& fileContent) const;
-   void convertData(const boost::shared_ptr<CHexData> fileData);
+   static void razRawDataFromTemplate(unsigned char (&rowData)[255]);
+   void prepareDataForWriteIntoPic(const boost::shared_ptr<CHexData> fileData,
+                                   CHexData& programMemory,
+                                   CHexData& eepromMemory,
+                                   CHexData& configurationMemory) const;
    static unsigned int hexStringToUInt(const std::string& hexString);
    static unsigned int computeLineChecksum(const std::string& line);
    static boost::shared_ptr<picConfigurations::IPicConfiguration> createPicConfiguration(const unsigned deviceId);
@@ -38,7 +42,13 @@ protected:
    static void rfxcomReadBootloaderVersion(boost::shared_ptr<CPicBoot> picBoot);
    static void rfxcomClearMemory(boost::shared_ptr<CPicBoot> picBoot);
    void rfxcomWritingMemory(boost::shared_ptr<CPicBoot> picBoot,
-                            boost::shared_ptr<CHexData> hexData);
+                            const boost::shared_ptr<picConfigurations::IPicConfiguration> picConfiguration,
+                            const CHexData& programMemory,
+                            const CHexData& eepromMemory,
+                            const CHexData& configurationMemory) const;
+   static void rfxcomWritingMemory(boost::shared_ptr<CPicBoot> picBoot,
+                                   const CPicBoot::EMemoryKind memory,
+                                   const CHexData& data);
    void rfxcomVerifyMemory(boost::shared_ptr<CPicBoot> picBoot);
    static void rfxcomReboot(boost::shared_ptr<CPicBoot> picBoot);
 
@@ -46,9 +56,4 @@ private:
    const boost::shared_ptr<yApi::IYPluginApi> m_api;
    const boost::shared_ptr<yApi::IExtraQuery> m_extraQuery;
    const std::string m_serialPort;
-
-   std::string m_programMemory;
-   std::string m_eepromMemory;
-   std::string m_configurationFlags;
 };
-

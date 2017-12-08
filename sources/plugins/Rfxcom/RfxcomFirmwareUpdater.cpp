@@ -67,11 +67,13 @@ void CRfxcomFirmwareUpdater::update()
 
       const auto deviceId = rfxcomSwitchToBootloaderMode(picBoot);
       checkFileCompatibility(deviceId, hexFile.getFileName());
-      picBoot->setPicConfiguration(createPicConfiguration(deviceId));
+      const auto picConfiguration(createPicConfiguration(deviceId));
+      picBoot->setPicConfiguration(picConfiguration);
 
       rfxcomReadBootloaderVersion(picBoot);
       rfxcomClearMemory(picBoot);
       rfxcomWritingMemory(picBoot,
+                          picConfiguration,
                           programMemory,
                           eepromMemory,
                           configurationMemory);
@@ -404,7 +406,7 @@ boost::shared_ptr<picConfigurations::IPicConfiguration> CRfxcomFirmwareUpdater::
 {
    switch (deviceId)
    {
-   case kRfXTrx: return boost::make_shared<picConfigurations::CRFXtrx>();
+   case kRfXTrx: return boost::make_shared<picConfigurations::CRfXtrx>();
       //TODO implémenter les autres
    default:
       throw std::runtime_error((boost::format("Unsupported device (Unknown device ID %d)") % deviceId).str());
@@ -469,13 +471,50 @@ void CRfxcomFirmwareUpdater::rfxcomClearMemory(boost::shared_ptr<CPicBoot> picBo
 }
 
 void CRfxcomFirmwareUpdater::rfxcomWritingMemory(boost::shared_ptr<CPicBoot> picBoot,
+                                                 const boost::shared_ptr<picConfigurations::IPicConfiguration> picConfiguration,
                                                  const CHexData& programMemory,
                                                  const CHexData& eepromMemory,
-                                                 const CHexData& configurationMemory)
+                                                 const CHexData& configurationMemory) const
 {
    YADOMS_LOG(debug) << "Write RFXCom memory...";
-   //TODO
+
+   // Write program memory
+   rfxcomWritingMemory(picBoot,
+                       CPicBoot::kProgramMemory,
+                       programMemory);
+
+   // Write Device EEPROM if concerned
+   if (picConfiguration->deviceType() == picConfigurations::IPicConfiguration::kPic24F)
+      rfxcomWritingMemory(picBoot,
+                          CPicBoot::kEepromMemory,
+                          eepromMemory);
+
+   // Send VerifyOk Command to indicate bootloading finised successfully
+   picBoot->writePicVerifyOk();
+
    YADOMS_LOG(debug) << "RFXCom memory written";
+}
+
+void CRfxcomFirmwareUpdater::rfxcomWritingMemory(boost::shared_ptr<CPicBoot> picBoot,
+                                                 const CPicBoot::EMemoryKind memory,
+                                                 const CHexData& data)
+{
+   for (auto dataBlockIterator = data.begin();
+        dataBlockIterator != data.end();
+        ++dataBlockIterator)
+   {
+      // Write block
+      picBoot->writePic(memory,
+                        dataBlockIterator->first,
+                        dataBlockIterator->second);
+
+      // Verify block
+      if (!picBoot->verifyPic(memory,
+                              dataBlockIterator->first,
+                              dataBlockIterator->second))
+         throw std::runtime_error(
+            (boost::format("Error verifying written data at %1%") % dataBlockIterator->first).str());
+   }
 }
 
 void CRfxcomFirmwareUpdater::rfxcomVerifyMemory(boost::shared_ptr<CPicBoot> picBoot)

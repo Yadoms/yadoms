@@ -4,51 +4,51 @@
 
 namespace picConfigurations
 {
-   CRFXtrx::CRFXtrx()
+   CRfXtrx::CRfXtrx()
    {
    }
 
-   CRFXtrx::~CRFXtrx()
+   CRfXtrx::~CRfXtrx()
    {
    }
 
-   const std::string& CRFXtrx::device() const
+   const std::string& CRfXtrx::device() const
    {
-      static const std::string deviceName("PIC24FJ64GA002");
-      return deviceName;
+      static const std::string DeviceName("PIC24FJ64GA002");
+      return DeviceName;
    }
 
-   unsigned long CRFXtrx::deviceType() const
+   IPicConfiguration::EDeviceType CRfXtrx::deviceType() const
    {
-      return 2;
+      return kPic24Fj;
    }
 
-   unsigned long CRFXtrx::programAddressStart() const
+   unsigned long CRfXtrx::programAddressStart() const
    {
       return 0x001800;
    }
 
-   unsigned long CRFXtrx::programAddressEnd() const
+   unsigned long CRfXtrx::programAddressEnd() const
    {
       return 0x00A7FF;
    }
 
-   unsigned long CRFXtrx::bytesPerAddr() const
+   unsigned long CRfXtrx::bytesPerAddr() const
    {
       return 2;
    }
 
-   unsigned long CRFXtrx::eraseBlockSize() const
+   unsigned long CRfXtrx::eraseBlockSize() const
    {
       return 2048;
    }
 
-   unsigned long CRFXtrx::readBlockSize() const
+   unsigned long CRfXtrx::readBlockSize() const
    {
       return 4;
    }
 
-   unsigned long CRFXtrx::writeBlockSize() const
+   unsigned long CRfXtrx::writeBlockSize() const
    {
       return 256;
    }

@@ -4,21 +4,21 @@
 
 namespace picConfigurations
 {
-   class CRFXtrx : public IPicConfiguration
+   class CRfXtrx : public IPicConfiguration
    {
    public:
-      CRFXtrx();
-      virtual ~CRFXtrx();
+      CRfXtrx();
+      virtual ~CRfXtrx();
 
       // IPicConfiguration Implementation
-      virtual const std::string& device() const;
-      virtual unsigned long deviceType() const;
-      virtual unsigned long programAddressStart() const;
-      virtual unsigned long programAddressEnd() const;
-      virtual unsigned long bytesPerAddr() const;
-      virtual unsigned long eraseBlockSize() const;
-      virtual unsigned long readBlockSize() const;
-      virtual unsigned long writeBlockSize() const;
+      const std::string& device() const override;
+      EDeviceType deviceType() const override;
+      unsigned long programAddressStart() const override;
+      unsigned long programAddressEnd() const override;
+      unsigned long bytesPerAddr() const override;
+      unsigned long eraseBlockSize() const override;
+      unsigned long readBlockSize() const override;
+      unsigned long writeBlockSize() const override;
       // [END] IPicConfiguration Implementation
    };
 } // namespace picConfigurations
