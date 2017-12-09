@@ -100,7 +100,7 @@
                         "type" : "int",
                         "defaultValue" : "1",
                         "maximumValue" : "3",
-                        "minimumValue" : "1"
+                        "minimumValue" : "0"
                      },                  
                      "differentialDisplay": {
                         "type": "enum",
