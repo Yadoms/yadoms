@@ -55,4 +55,26 @@ BOOST_AUTO_TEST_SUITE(TestDayLightProvider)
       BOOST_CHECK_EQUAL(automation::script::CDayLightProvider::formatSunEventTime(dlp.sunsetTime()), "16:58");
    }
 
+   BOOST_AUTO_TEST_CASE(TestDayLightProviderFixBadRoundJVInstallation)
+   {
+      auto timeProviderMock = boost::make_shared<CDefaultCurrentTimeMock>("2017-12-06 00:01:00.000");
+      shared::currentTime::Provider().setProvider(timeProviderMock);
+
+      automation::script::CDayLightProvider dlp(boost::make_shared<CFakeLocation>(44.764499999999998, 4.9176000000000002));
+
+      BOOST_CHECK_EQUAL(automation::script::CDayLightProvider::formatSunEventTime(dlp.sunriseTime()), "08:02");
+      BOOST_CHECK_EQUAL(automation::script::CDayLightProvider::formatSunEventTime(dlp.sunsetTime()), "16:59");
+   }
+
+   BOOST_AUTO_TEST_CASE(TestDayLightProviderFixBadRoundJMBInstallation)
+   {
+      auto timeProviderMock = boost::make_shared<CDefaultCurrentTimeMock>("2017-12-03 00:01:00.000");
+      shared::currentTime::Provider().setProvider(timeProviderMock);
+
+      automation::script::CDayLightProvider dlp(boost::make_shared<CFakeLocation>(45.739257, 4.227351));
+
+      BOOST_CHECK_EQUAL(automation::script::CDayLightProvider::formatSunEventTime(dlp.sunriseTime()), "08:05");
+      BOOST_CHECK_EQUAL(automation::script::CDayLightProvider::formatSunEventTime(dlp.sunsetTime()), "16:59");
+   }
+
 BOOST_AUTO_TEST_SUITE_END()

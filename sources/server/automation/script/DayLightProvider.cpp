@@ -328,7 +328,7 @@ namespace automation
          // Use the Os settings to adjust to local time
          typedef boost::date_time::c_local_adjustor<boost::posix_time::ptime> local_adj;
          return local_adj::utc_to_local(boost::posix_time::ptime(date,
-                                                                 boost::posix_time::hours(static_cast<long>(floor(hours))) + boost::posix_time::minutes(lround(hours * 60) % 60)));
+                                                                 boost::posix_time::hours(static_cast<long>(floor(hours))) + boost::posix_time::minutes(static_cast<long>(floor(hours * 60)) % 60)));
       }
 
 
