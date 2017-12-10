@@ -23,6 +23,11 @@ namespace automation
          //-----------------------------------------------------
          virtual ~CDayLightProvider();
 
+         // IDayLightProvider Implementation
+         boost::posix_time::ptime sunriseTime() override;
+         boost::posix_time::ptime sunsetTime() override;
+         // [END] IDayLightProvider Implementation
+
          //-----------------------------------------------------
          ///\brief               Format a sun event time as "HH:MM"
          ///\param[in] sunEventTime The sun event time to format
@@ -31,11 +36,6 @@ namespace automation
          static std::string formatSunEventTime(const boost::posix_time::ptime& sunEventTime);
 
       protected:
-         // IDayLightProvider Implementation
-         boost::posix_time::ptime sunriseTime() override;
-         boost::posix_time::ptime sunsetTime() override;
-         // [END] IDayLightProvider Implementation
-
          //-----------------------------------------------------
          ///\brief               Sun event computation adapter
          ///\param[in] sunrise   true to compute sunrise, false to compute sunset
