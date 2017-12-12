@@ -9,6 +9,7 @@
 #include "i18n/ClientStrings.h"
 #include <shared/process/SoftwareStop.h>
 #include "tools/OperatingSystem.h"
+#include <boost/process/environment.hpp>
 
 namespace update
 {
@@ -134,8 +135,8 @@ namespace update
 
          //create the argument list
          Poco::Process::Args args;
-         Poco::Path p(runningInformation->getExecutablePath());
-         args.push_back(p.parent().toString());
+         args.push_back(std::to_string(boost::this_process::get_id()));
+         args.push_back(Poco::Path(runningInformation->getExecutablePath()).parent().toString());
 
          //run updater script
          auto handle = tools::COperatingSystem::launchNativeScript(executablePath.toString(), args);
