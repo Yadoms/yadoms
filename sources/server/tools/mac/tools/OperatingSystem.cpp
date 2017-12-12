@@ -80,5 +80,12 @@ namespace tools {
       shared::versioning::CVersion version(Poco::Environment::osVersion());
       return version;
    }
+
+   Poco::ProcessHandle COperatingSystem::launchNativeScript(const std::string& scriptPath,
+                                                            const Poco::Process::Args& args)
+   {
+      args.insert(args.begin(), scriptPath);
+      return Poco::Process::launch("sh", args);
+   }
    
 } //namespace tools

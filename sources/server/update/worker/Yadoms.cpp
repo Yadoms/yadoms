@@ -8,6 +8,7 @@
 #include "tools/FileSystem.h"
 #include "i18n/ClientStrings.h"
 #include <shared/process/SoftwareStop.h>
+#include "tools/OperatingSystem.h"
 
 namespace update
 {
@@ -137,7 +138,7 @@ namespace update
          args.push_back(p.parent().toString());
 
          //run updater script
-         auto handle = Poco::Process::launch(executablePath.toString(), args);
+         auto handle = tools::COperatingSystem::launchNativeScript(executablePath.toString(), args);
 
          //the update command is running, wait for 5 seconds and ensure it is always running
          boost::this_thread::sleep(boost::posix_time::seconds(5));
