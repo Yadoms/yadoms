@@ -16,14 +16,15 @@ namespace automation
                               boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                               boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                               boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
-                              boost::shared_ptr<shared::ILocation> location)
+                              boost::shared_ptr<shared::ILocation> location,
+                              boost::shared_ptr<dateTime::ITimeZoneProvider> timezoneProvider)
       : m_pluginGateway(pluginGateway),
         m_dbAcquisitionRequester(dataProvider->getAcquisitionRequester()),
         m_dbDeviceRequester(dataProvider->getDeviceRequester()),
         m_keywordAccessLayer(keywordAccessLayer),
         m_dbRecipientRequester(dataProvider->getRecipientRequester()),
         m_eventLogger(eventLogger),
-        m_generalInfo(boost::make_shared<script::CGeneralInfo>(location)),
+        m_generalInfo(boost::make_shared<script::CGeneralInfo>(location, timezoneProvider)),
         m_ruleRequester(dataProvider->getRuleRequester()),
         m_ruleEventHandler(boost::make_shared<shared::event::CEventHandler>()),
         m_interpreterManager(boost::make_shared<interpreter::CManager>(pathProvider)),
@@ -59,7 +60,7 @@ namespace automation
       boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
 
       if (!startRules(m_ruleRequester->getRules()))
-      YADOMS_LOG(error) << "One or more automation rules failed to start, check automation rules page for details";
+         YADOMS_LOG(error) << "One or more automation rules failed to start, check automation rules page for details";
    }
 
    bool CRuleManager::startRules(const std::vector<boost::shared_ptr<database::entities::CRule>>& rules)
@@ -126,19 +127,22 @@ namespace automation
       }
       catch (shared::exception::CEmptyResult& e)
       {
-         const auto error((boost::format("Invalid rule %1%, element not found in database : %2%") % ruleId % e.what()).str());
+         const auto error(
+            (boost::format("Invalid rule %1%, element not found in database : %2%") % ruleId % e.what()).str());
          recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }
       catch (shared::exception::CInvalidParameter& e)
       {
-         const auto error((boost::format("Invalid rule %1% configuration, invalid parameter : %2%") % ruleId % e.what()).str());
+         const auto error(
+            (boost::format("Invalid rule %1% configuration, invalid parameter : %2%") % ruleId % e.what()).str());
          recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }
       catch (shared::exception::COutOfRange& e)
       {
-         const auto error((boost::format("Invalid rule %1% configuration, out of range : %2%") % ruleId % e.what()).str());
+         const auto error(
+            (boost::format("Invalid rule %1% configuration, out of range : %2%") % ruleId % e.what()).str());
          recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }
@@ -371,7 +375,7 @@ namespace automation
    {
       // Start all rules associated with this interpreter (and start-able)
       if (!startRules(m_ruleRequester->getRules(interpreterName)))
-      YADOMS_LOG(error) << "One or more automation rules failed to start, check automation rules page for details";
+         YADOMS_LOG(error) << "One or more automation rules failed to start, check automation rules page for details";
    }
 
    void CRuleManager::stopAllRulesMatchingInterpreter(const std::string& interpreterName)
@@ -416,11 +420,13 @@ namespace automation
                                         const std::string& error) const
    {
       if (!error.empty())
-      YADOMS_LOG(error) << error;
+         YADOMS_LOG(error) << error;
 
       auto ruleData(boost::make_shared<database::entities::CRule>());
       ruleData->Id = ruleId;
-      ruleData->State = error.empty() ? database::entities::ERuleState::kStopped : database::entities::ERuleState::kError;
+      ruleData->State = error.empty()
+                           ? database::entities::ERuleState::kStopped
+                           : database::entities::ERuleState::kError;
       ruleData->StopDate = shared::currentTime::Provider().now();
       if (!error.empty())
          ruleData->ErrorMessage = error;
@@ -432,5 +438,3 @@ namespace automation
                                  error);
    }
 } // namespace automation	
-
-
