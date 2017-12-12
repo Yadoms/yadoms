@@ -39,6 +39,7 @@ while ps -p $yadomsCurrentPid > /dev/null; do
 done;
 
 # Kill Yadoms if not gracefully stopped
+waitedTime=0
 kill $yadomsCurrentPid > /dev/null
 while ps -p $yadomsCurrentPid > /dev/null; do 
    sleep 1; 
@@ -51,6 +52,7 @@ done;
 
 # Last chance : Kill it anyway
 kill -9 $yadomsCurrentPid > /dev/null
+waitedTime=0
 while ps -p $yadomsCurrentPid > /dev/null; do 
    sleep 1; 
    waitedTime=$((waitedTime+1))
