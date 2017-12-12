@@ -340,17 +340,25 @@ function updateWidgetsPolling(page) {
     } else {
        $.each(page.widgets, function (widgetIndex, widget) {
            //we ask which devices are needed for this widget instance
-           if (!isNullOrUndefinedOrEmpty(widget.listenedKeywords))
-              getLastValuesKeywords = getLastValuesKeywords.concat (widget.listenedKeywords);
+           if (!isNullOrUndefinedOrEmpty(widget.getlastValue))
+              getLastValuesKeywords = getLastValuesKeywords.concat (widget.getlastValue);
        });
        
        updateWidgetPollingByKeywordsId(duplicateRemoval(getLastValuesKeywords))
        .done(function (data) {
           $.each(data, function (index, acquisition) {
+             //debugger;
              //we signal the new acquisition to the widget if the widget support the method
              $.each(page.widgets, function (widgetIndex, widget) {
-                if (widget.viewModel.onNewAcquisition !== undefined)
-                   widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
+                if ($.inArray(acquisition.keywordId, widget.getlastValue)!=-1)
+                {
+                   if (isNullOrUndefined(acquisition.error)){
+                      if (widget.viewModel.onNewAcquisition !== undefined)
+                         widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
+                   }else{ // we desactivate the widget
+                      widget.viewModel.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
+                   }
+                }
              });
           });
           d.resolve();
@@ -391,14 +399,13 @@ function updateWidgetPolling(widget) {
 function updateWidgetPollingByKeywordsId(keywordIds) {
     var d = new $.Deferred();
     
-    debugger;
-    
     console.log ("keywordIds : ", keywordIds);
     if (!isNullOrUndefined(keywordIds)) {
        if (keywordIds!=0) // only if this list is not empty
        {
           AcquisitionManager.getLastValues(keywordIds)
           .done(function (data) {
+             console.log ("return of updateWidgetPollingByKeywordsId : ", data);
              d.resolve(data);
           })
           .fail(function (error) {

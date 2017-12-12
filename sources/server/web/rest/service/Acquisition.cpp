@@ -126,10 +126,25 @@ namespace web
                            }
                            else
                            {
-                              shared::CDataContainer emptyResult;
-                              emptyResult.set("keywordId", *i);
-                              result.set(boost::lexical_cast<std::string>(*i),
-                                         emptyResult);
+                              try {
+                                 auto keyword = m_dataProvider->getKeywordRequester()->getKeyword(*i);
+
+                                 if (keyword)
+                                 {
+                                    shared::CDataContainer emptyResult;
+                                    emptyResult.set("keywordId", *i);
+                                    result.set(boost::lexical_cast<std::string>(*i),
+                                               emptyResult);
+                                 }
+                              }
+                              catch(std::exception& /*nokeyword*/)
+                              {
+                                 shared::CDataContainer noKeyword;
+                                 noKeyword.set("keywordId", *i);
+                                 noKeyword.set("error", "keyword id doesn't exist");
+                                 result.set(boost::lexical_cast<std::string>(*i),
+                                            noKeyword);
+                              }
                            }
                         }
                         catch (std::exception& /*noData*/)

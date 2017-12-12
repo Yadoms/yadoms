@@ -10,8 +10,10 @@ function AcquisitionManager(){}
 
 AcquisitionManager.factory = function(json) {
    if (isNullOrUndefinedOrEmpty(json) || !json.date || !json.value) {
-      if(json && json.keywordId)
+      if(json && json.keywordId && !json.error)
          return new EmptyAcquisition(json.keywordId);
+      if(json && json.keywordId && json.error)
+         return new noKeyword(json.keywordId, json.error);
       return new EmptyAcquisition();
    }
 
