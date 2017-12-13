@@ -1,6 +1,7 @@
 #!/bin/bash
 
 #Manage script parameters
+baseDir=$(dirname $0)
 yadomsPath=$1
 yadomsCurrentPid=$2
 timeoutYadoms=${3:-60}
@@ -19,7 +20,8 @@ fi
 
 logFile="$yadomsPath/update.log"
 
-echo "Starting...." > $logFile 2>&1
+echo "Starting at $(date)...." > $logFile 2>&1
+echo "    baseDir : $baseDir" >> $logFile 2>&1
 echo "    Param : Path : $yadomsPath" >> $logFile 2>&1
 echo "    Param : currentPid : $yadomsCurrentPid" >> $logFile 2>&1
 echo "    Param : timeoutYadoms : $timeoutYadoms" >> $logFile 2>&1
@@ -68,10 +70,8 @@ echo "Process Yadoms is now stopped" >> $logFile 2>&1
 
 echo "Updating Yadoms ..." >> $logFile 2>&1
 
-BASEDIR=$(dirname $0)
-
-echo "Copy $BASEDIR/package/* to $yadomsPath..." >> $logFile 2>&1
-cp -R "$BASEDIR/package/"* "$yadomsPath"
+echo "Copy $baseDir/package/* to $yadomsPath..." >> $logFile 2>&1
+cp -R "$baseDir/package/"* "$yadomsPath/"
 
 echo "Yadoms updated successfully" >> $logFile 2>&1
 
