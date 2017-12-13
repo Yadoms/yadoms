@@ -52,6 +52,9 @@ namespace tools
                                                             const Poco::Process::Args& args)
    {
       args.insert(args.begin(), scriptPath);
+
+      YADOMS_LOG(debug) << "launchNativeScript sh with args " << boost::algorithm::join(args, ", ");
+
       return Poco::Process::launch("sh", args);
    }
    

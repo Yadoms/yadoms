@@ -42,7 +42,7 @@ done;
 
 # Kill Yadoms if not gracefully stopped
 waitedTime=0
-kill -SIGINT $yadomsCurrentPid > /dev/null
+kill -2 $yadomsCurrentPid > /dev/null
 while ps -p $yadomsCurrentPid > /dev/null; do 
    sleep 1; 
    waitedTime=$((waitedTime+1))
@@ -53,7 +53,7 @@ while ps -p $yadomsCurrentPid > /dev/null; do
 done;
 
 # Last chance : Kill it anyway
-kill -SIGKILL $yadomsCurrentPid > /dev/null
+kill -9 $yadomsCurrentPid > /dev/null
 waitedTime=0
 while ps -p $yadomsCurrentPid > /dev/null; do 
    sleep 1; 
@@ -77,10 +77,4 @@ echo "Yadoms updated successfully" >> $logFile 2>&1
 
 echo "Restarting Yadoms ..." >> $logFile 2>&1
 
-cd $yadomsPath
-./yadoms --daemon
-
-
-
-
-
+$yadomsPath/yadoms --daemon
