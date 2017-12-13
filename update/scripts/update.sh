@@ -2,8 +2,8 @@
 
 #Manage script parameters
 baseDir=$(dirname $0)
-yadomsPath=$1
-yadomsCurrentPid=$2
+yadomsCurrentPid=$1
+yadomsPath=$2
 timeoutYadoms=${3:-60}
 
 #check parameters
@@ -42,7 +42,7 @@ done;
 
 # Kill Yadoms if not gracefully stopped
 waitedTime=0
-kill $yadomsCurrentPid > /dev/null
+kill -SIGINT $yadomsCurrentPid > /dev/null
 while ps -p $yadomsCurrentPid > /dev/null; do 
    sleep 1; 
    waitedTime=$((waitedTime+1))
@@ -53,7 +53,7 @@ while ps -p $yadomsCurrentPid > /dev/null; do
 done;
 
 # Last chance : Kill it anyway
-kill -9 $yadomsCurrentPid > /dev/null
+kill -SIGKILL $yadomsCurrentPid > /dev/null
 waitedTime=0
 while ps -p $yadomsCurrentPid > /dev/null; do 
    sleep 1; 

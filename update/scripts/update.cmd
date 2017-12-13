@@ -21,8 +21,8 @@ SET YadomsExecutable=yadoms.exe
  
 set CurrentScriptDir=%~dp0
 
-SET YadomsPath=%~1
-SET YadomsCurrentPid=%~2
+SET YadomsCurrentPid=%~1
+SET YadomsPath=%~2
  
 ::Parse  command line arguments
 IF "%1"=="/?" (
