@@ -527,7 +527,7 @@
               });
               //we listen keyword Deletiono event
               $(document).on("keyworddeleted", function(e, websocketData) {
-                  dispatchkeywordDeletedToWidgets(websocketData.time);
+                  dispatchkeywordDeletedToWidgets(websocketData.data);
               });              
 
               //web socket opened

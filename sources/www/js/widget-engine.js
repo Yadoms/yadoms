@@ -307,20 +307,20 @@ function dispatchkeywordDeletedToWidgets(eventData){
    if (page == null)
       return;
 
-   console.debug("onKeywordDeletion : ", evenData);
+   console.debug("onKeywordDeletion : ", eventData);
    $.each(page.widgets, function (widgetIndex, widget) {
       try {
-          if ($.inArray(evenData.data.keyword.id, widget.getlastValue)!=-1)
+          if ($.inArray(eventData.keyword.id, widget.getlastValue)!=-1)
           {
              //we signal the time event to the widget if the widget supports the method
-             if (typeof widget.viewModel.onKeywordDeletion === 'function')
-                 widget.viewModel.onKeywordDeletion(evenData);
+             if (typeof widget.viewModel.onKeywordDeletion === 'function' && !isNullOrUndefined(widget.viewModel.onKeywordDeletion))
+                 widget.viewModel.onKeywordDeletion(eventData);
               else // by default, we disable the widget
                  widget.viewModel.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
           }
       }
       catch (e) {
-          console.error(widget.type + " has encouter an error in onTime() method:" + e.message);
+          console.error(widget.type + " has encouter an error in onKeywordDeletion() method:" + e.message);
       }
    });   
 }

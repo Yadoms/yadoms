@@ -244,16 +244,18 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
         widget.listenedKeywords = [];
         // Update widget specific values
         if (!isNullOrUndefined(widget.viewModel.configurationChanged)) {
+           
+            // default state is OK
+            widget.viewModel.widgetApi.setState(widgetStateEnum.OK);
             var defferedResult = widget.viewModel.configurationChanged();
             //we manage answer if it is a promise or not
             defferedResult = defferedResult || new $.Deferred().resolve();
             defferedResult
-            .done(function () {
+            .always(function () {
                 //we manage the toolbar api specific icons
                 widget.viewModel.widgetApi.manageBatteryConfiguration()
                 .always(d.resolve);
-            })
-            .fail(d.resolve);
+            });
         } else {
             d.resolve();
         }
