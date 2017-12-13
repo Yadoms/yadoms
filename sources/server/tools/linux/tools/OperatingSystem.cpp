@@ -51,10 +51,20 @@ namespace tools
    Poco::ProcessHandle COperatingSystem::launchNativeScript(const std::string& scriptPath,
                                                             const Poco::Process::Args& args)
    {
+      YADOMS_LOG(debug) << "launchNativeScript : convert script EOL if needed...";
+      // Script can have Windows EOL, so adapt to Unix EOL
+      std::ifstream infile(scriptPath);
+      std::stringstream buffer;
+      buffer << infile.rdbuf();
+      auto content = buffer.str();
+      boost::replace_all(content, "\r\n", "\n");
+      std::ofstream outfile(scriptPath);
+      outfile << content;
+      outfile.close();
+
+
       args.insert(args.begin(), scriptPath);
-
       YADOMS_LOG(debug) << "launchNativeScript sh with args " << boost::algorithm::join(args, ", ");
-
       return Poco::Process::launch("sh", args);
    }
    

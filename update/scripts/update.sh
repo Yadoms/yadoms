@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 #Manage script parameters
 baseDir=$(dirname $0)
