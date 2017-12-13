@@ -156,9 +156,6 @@ namespace dataAccessLayer
          throw shared::exception::CEmptyResult("Can not find keyword");
 
       removeKeyword(keywordToDelete->Id());
-
-      //post notification
-      notification::CHelpers::postChangeNotification(keywordToDelete, notification::change::EChangeType::kDelete);
    }
 
    void CKeywordManager::removeKeyword(int keywordId)

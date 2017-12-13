@@ -160,7 +160,7 @@ namespace dataAccessLayer
 
       auto keywords = m_keywordRequester->getKeywords(deviceId);
       for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
-         m_keywordRequester->removeKeyword((*keyword)->Id);
+         m_keywordManager->removeKeyword((*keyword)->Id);
 
       m_deviceRequester->removeDevice(deviceId);
    }
@@ -172,7 +172,9 @@ namespace dataAccessLayer
 
    void CDeviceManager::removeAllDeviceForPlugin(int pluginId)
    {
-      return m_deviceRequester->removeAllDeviceForPlugin(pluginId);
+      auto devicesToDelete = getDevicesForPluginInstance(pluginId);
+      for (auto device = devicesToDelete.begin(); device != devicesToDelete.end(); ++device)
+         removeDevice(pluginId, (*device));
    }
 
    void CDeviceManager::cleanupDevice(int deviceId)

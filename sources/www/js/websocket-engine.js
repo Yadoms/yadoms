@@ -79,22 +79,27 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
             if (!isNullOrUndefined(e)) {
                 var websocketData = JSON.parse(e.data);
                 if (!isNullOrUndefined(websocketData)) {
+                   console.log ("websocketData : ", websocketData);
+                   console.log ("type : ", websocketData.type.toLowerCase());
                     switch (websocketData.type.toLowerCase()) {
                         case "acquisitionupdate":
-                            $(document).trigger("acquisitionupdate", websocketData);
-                            break;
+                           $(document).trigger("acquisitionupdate", websocketData);
+                           break;
+                        case "keyworddeleted":
+                           $(document).trigger("keyworddeleted", websocketData);
+                           break;
                         case "devicenew":
-                            break;
+                           break;
                         case "taskupdatenotification":
-                            $(document).trigger("taskupdatenotification." + websocketData.uuid, websocketData);
-                            console.log("TaskUpdateNotification : " + JSON.stringify(websocketData));
-                            break;
+                           $(document).trigger("taskupdatenotification." + websocketData.uuid, websocketData);
+                           console.log("TaskUpdateNotification : " + JSON.stringify(websocketData));
+                           break;
                         case "isalive":
-                            $(document).trigger("isalive");
-                            break;
+                           $(document).trigger("isalive");
+                           break;
                         case "timenotification":
-                            $(document).trigger("timenotification", websocketData);
-                            break;
+                           $(document).trigger("timenotification", websocketData);
+                           break;
                     }
                 }
             }

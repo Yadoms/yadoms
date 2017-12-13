@@ -300,6 +300,31 @@ function dispatchTimeToWidgets(timeData) {
    });
 }
 
+function dispatchkeywordDeletedToWidgets(eventData){
+   assert(!isNullOrUndefined(eventData), "eventData must be defined");
+
+   var page = PageManager.getCurrentPage();
+   if (page == null)
+      return;
+
+   console.debug("onKeywordDeletion : ", evenData);
+   $.each(page.widgets, function (widgetIndex, widget) {
+      try {
+          if ($.inArray(evenData.data.keyword.id, widget.getlastValue)!=-1)
+          {
+             //we signal the time event to the widget if the widget supports the method
+             if (typeof widget.viewModel.onKeywordDeletion === 'function')
+                 widget.viewModel.onKeywordDeletion(evenData);
+              else // by default, we disable the widget
+                 widget.viewModel.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
+          }
+      }
+      catch (e) {
+          console.error(widget.type + " has encouter an error in onTime() method:" + e.message);
+      }
+   });   
+}
+
 function updateWebSocketFilter() {
     if (WebSocketEngine.isActive()) {
        var page = PageManager.getCurrentPage();
