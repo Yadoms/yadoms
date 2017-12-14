@@ -200,7 +200,7 @@ namespace rfxcomMessages
 
    std::string CTransceiverStatus::rfxcomTypeToString() const
    {
-      static const std::map<unsigned char, std::string> RfxcomTypes = boost::assign::map_list_of
+      static const std::map<unsigned int, std::string> RfxcomTypes = boost::assign::map_list_of
       (recType310, "310MHz")
          (recType315, "315MHz")
          (recType43392, "433.92MHz receiver only")
@@ -216,7 +216,7 @@ namespace rfxcomMessages
 
       auto itRfxcomTypes = RfxcomTypes.find(m_rfxcomType);
       if (itRfxcomTypes == RfxcomTypes.end())
-         return boost::lexical_cast<std::string>(m_rfxcomType);
+         return std::to_string(m_rfxcomType);
 
       return itRfxcomTypes->second;
    }
