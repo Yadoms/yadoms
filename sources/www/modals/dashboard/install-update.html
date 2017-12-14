@@ -4,14 +4,18 @@
         <span data-i18n="modals.dashboard.sub-windows.install-update.title"></span>
         <i class="making-async-action pull-right fa fa-circle-o-notch fa-spin hidden"></i>
     </h1>
-    <div class="checkbox">
-        <label>
-            <input type="checkbox" class="cb-release-type">&nbsp;&nbsp;
-            <span data-i18n="modals.dashboard.sub-windows.install-update.includePreRelease">Include pre-release versions</span>
-        </label>
-    </div>
+   <div class="checkbox">
+      <label>
+         <input type="checkbox" class="cb-release-type">&nbsp;&nbsp;
+         <span data-i18n="modals.dashboard.sub-windows.install-update.includePreRelease">Include pre-release versions</span>
+      </label>
+   </div>
+   
+   <h2 id="install-update-developerModeWarning" class="bg-danger hidden">
+      <span data-i18n="modals.dashboard.sub-windows.install-update.developerModeWarning"></span>
+   </h2>
 
-    <div class="panel-group" id="install-update-accordion" role="tablist" aria-multiselectable="true">
+   <div class="panel-group" id="install-update-accordion" role="tablist" aria-multiselectable="true">
         <!--accordion yadoms update-->
         <div class="panel panel-default with-overflow-visible">
             <div class="panel-heading" role="tab" id="install-update-yadoms-heading-panel" data-toggle="collapse" data-parent="#install-update-accordion"
@@ -181,11 +185,12 @@
     };
 
     YadomsInformationManager.getList()
-        .done(function (data) {
-            if (data.developerMode) {
-                $("#install-update-accordion").before('<h2><p class="bg-danger">' + $.t(
-                    "modals.dashboard.sub-windows.install-update.developerModeWarning") + '</p></h2>');
-            }
+       .done(function (data) {
+           if (data.developerMode) {
+              $("#install-update-developerModeWarning").removeClass("hidden");
+           } else {
+              $("#install-update-developerModeWarning").addClass("hidden");
+           }
         })
 
     /**
@@ -610,9 +615,9 @@
                     if (!isNullOrUndefined(localList[typeName])) {
                         //the item exist in a local context
                         itemFound = true;
-                        //we add informations of all version that user wants
+                        //we add informations of all versions that user wants
                         localList[typeName].serverVersions = [];
-                        //we browse all version of that item
+                        //we browse all versions of that item
                         $.each(serverValue,
                             function (versionIndex, versionValue) {
                                 //if this releasetype is wanted we add it to the arrays of version for this item
