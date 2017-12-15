@@ -62,10 +62,10 @@ namespace tools
       outfile << content;
       outfile.close();
 
-
-      args.insert(args.begin(), scriptPath);
-      YADOMS_LOG(debug) << "launchNativeScript sh with args " << boost::algorithm::join(args, ", ");
-      return Poco::Process::launch("sh", args);
+      Poco::Process::Args nativeArgs = args;
+      nativeArgs.insert(args.begin(), scriptPath);
+      YADOMS_LOG(debug) << "launchNativeScript sh with args " << boost::algorithm::join(nativeArgs, ", ");
+      return Poco::Process::launch("sh", nativeArgs);
    }
    
 } //namespace tools

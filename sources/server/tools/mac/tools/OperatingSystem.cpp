@@ -84,8 +84,10 @@ namespace tools {
    Poco::ProcessHandle COperatingSystem::launchNativeScript(const std::string& scriptPath,
                                                             const Poco::Process::Args& args)
    {
-      args.insert(args.begin(), scriptPath);
-      return Poco::Process::launch("sh", args);
+      Poco::Process::Args nativeArgs = args;
+      nativeArgs.insert(args.begin(), scriptPath);
+      YADOMS_LOG(debug) << "launchNativeScript sh with args " << boost::algorithm::join(nativeArgs, ", ");
+      return Poco::Process::launch("sh", nativeArgs);
    }
    
 } //namespace tools
