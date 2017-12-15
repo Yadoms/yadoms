@@ -33,7 +33,7 @@ namespace tools
       /// \param[in] args           The script args
       /// \return                   The started process handle
       //--------------------------------------------------------------
-      static Poco::ProcessHandle COperatingSystem::launchNativeScript(const std::string& scriptPath,
-                                                                      const Poco::Process::Args& args);
+      static Poco::ProcessHandle launchNativeScript(const std::string& scriptPath,
+                                                    const Poco::Process::Args& args);
    };
 } //namespace tools
