@@ -3,8 +3,8 @@
 
    var getSupportedLanguages = function() {
       return {
-         "en": "English",
-         "fr": "Français"
+         "fr": "Français",
+         "en": "English"
       };
    }
   

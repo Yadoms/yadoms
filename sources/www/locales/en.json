@@ -460,8 +460,7 @@
           "confirmResetToDefault": "This operation will restore all default configuration. Continue ?",
           "configurationSaved": "System configuration successfully saved",
           "defaultConfigurationRestored": "Default configuration restored",
-          "errorDuringSavingConfiguration": "An error has occurred during saving system configuration",
-          "errorDuringLoadingConfiguration": "An error has occurred during loading system configuration"
+          "errorDuringSavingConfiguration": "An error has occurred during saving system configuration"
         },
         "user-configuration": {
           "title": "User configuration"

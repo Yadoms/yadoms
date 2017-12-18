@@ -11,10 +11,9 @@ namespace automation
 {
    namespace script
    {
-      CGeneralInfo::CGeneralInfo(boost::shared_ptr<shared::ILocation> locationProvider,
-                                 boost::shared_ptr<dateTime::ITimeZoneProvider> timezoneProvider)
+      CGeneralInfo::CGeneralInfo(boost::shared_ptr<shared::ILocation> locationProvider)
          : m_locationProvider(locationProvider),
-           m_dayLightProvider(boost::make_shared<CDayLightProvider>(locationProvider, timezoneProvider))
+           m_dayLightProvider(boost::make_shared<CDayLightProvider>(locationProvider))
       {
       }
 
@@ -22,7 +21,7 @@ namespace automation
       {
       }
 
-      std::string CGeneralInfo::get(const shared::script::yScriptApi::IYScriptApi::EInfoKeys key) const
+      std::string CGeneralInfo::get(shared::script::yScriptApi::IYScriptApi::EInfoKeys key) const
       {
          try
          {
@@ -36,8 +35,7 @@ namespace automation
                   }
                   catch (shared::exception::CEmptyResult&)
                   {
-                     YADOMS_LOG(error) <<
-                        "General info, get sunrise : daylight is not available (do you set your location ?)";
+                     YADOMS_LOG(error) << "General info, get sunrise : daylight is not available (do you set your location ?)";
                      return std::string();
                   }
                }
@@ -49,21 +47,15 @@ namespace automation
                   }
                   catch (shared::exception::CEmptyResult&)
                   {
-                     YADOMS_LOG(error) <<
-                        "General info, get sunset : daylight is not available (do you set your location ?)";
+                     YADOMS_LOG(error) << "General info, get sunset : daylight is not available (do you set your location ?)";
                      return std::string();
                   }
                }
-            case shared::script::yScriptApi::IYScriptApi::kLatitude: return shared::CStringExtension::
-                  cultureInvariantToString(m_locationProvider->latitude());
-            case shared::script::yScriptApi::IYScriptApi::kLongitude: return shared::CStringExtension::
-                  cultureInvariantToString(m_locationProvider->longitude());
-            case shared::script::yScriptApi::IYScriptApi::kAltitude: return shared::CStringExtension::
-                  cultureInvariantToString(m_locationProvider->altitude());
-            case shared::script::yScriptApi::IYScriptApi::kYadomsServerOS: return shared::CServiceLocator::instance().
-                  get<IRunningInformation>()->getOperatingSystemName();
-            case shared::script::yScriptApi::IYScriptApi::kYadomsServerVersion: return shared::CServiceLocator::
-                  instance().get<IRunningInformation>()->getSoftwareVersion().serialize();
+            case shared::script::yScriptApi::IYScriptApi::kLatitude: return shared::CStringExtension::cultureInvariantToString(m_locationProvider->latitude());
+            case shared::script::yScriptApi::IYScriptApi::kLongitude: return shared::CStringExtension::cultureInvariantToString(m_locationProvider->longitude());
+            case shared::script::yScriptApi::IYScriptApi::kAltitude: return shared::CStringExtension::cultureInvariantToString(m_locationProvider->altitude());
+            case shared::script::yScriptApi::IYScriptApi::kYadomsServerOS: return shared::CServiceLocator::instance().get<IRunningInformation>()->getOperatingSystemName();
+            case shared::script::yScriptApi::IYScriptApi::kYadomsServerVersion: return shared::CServiceLocator::instance().get<IRunningInformation>()->getSoftwareVersion().serialize();
             default:
                throw shared::exception::COutOfRange((boost::format("Key %1% doesn't exist") % key).str());
             }
@@ -76,3 +68,5 @@ namespace automation
       }
    }
 } // namespace automation::script
+
+

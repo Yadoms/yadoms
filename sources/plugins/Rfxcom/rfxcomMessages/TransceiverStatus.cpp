@@ -204,11 +204,19 @@ namespace rfxcomMessages
 
    std::string CTransceiverStatus::rfxcomTypeToString() const
    {
-
+      static const std::map<unsigned int, std::string> RfxcomTypes = boost::assign::map_list_of
+         (trxType310, "RFXtrx315 operating at 310MHz")
+         (trxType315, "RFXtrx315 operating at 315MHz")
+         (recType43392, "RFXrec433 operating at 433.92MHz (receiver only)")
+         (trxType43392, "RFXtrx433 operating at 433.92MHz")
+         (0x54, "RFXtrx433 operating at 433.42MHz (internal use)") // No constant is defined in rfxtrx.h v9.17
+         (trxType868, "RFXtrx868X operating at 868MHz")
+         (trxTypeIOT433, "RFXtrxIOT operating at 433.92MHz")
+         (trxTypeIOT868, "RFXtrxIOT operating at 868MHz");
 
       auto itRfxcomTypes = RfxcomTypes.find(m_rfxcomType);
       if (itRfxcomTypes == RfxcomTypes.end())
-         return std::to_string(m_rfxcomType);
+         return boost::lexical_cast<std::string>(m_rfxcomType);
 
       return itRfxcomTypes->second;
    }

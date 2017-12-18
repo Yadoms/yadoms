@@ -1,9 +1,8 @@
 #pragma once
 #include <shared/versioning/Version.h>
-#include <Poco/Process.h>
 
-namespace tools
-{
+namespace tools {
+
    class COperatingSystem
    {
    public:
@@ -26,14 +25,6 @@ namespace tools
       /// \throw shared::exception::CException if error getting OS version
       //--------------------------------------------------------------
       static shared::versioning::CVersion getVersion();
-
-      //--------------------------------------------------------------
-      /// \brief	                  Launch native script (batch for Windows, bash for Linux)
-      /// \param[in] scriptPath     The script path (dir + filename + extension)
-      /// \param[in] args           The script args
-      /// \return                   The started process handle
-      //--------------------------------------------------------------
-      static Poco::ProcessHandle launchNativeScript(const std::string& scriptPath,
-                                                    const Poco::Process::Args& args);
    };
+
 } //namespace tools

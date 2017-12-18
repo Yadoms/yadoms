@@ -110,6 +110,8 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
       std::string deviceName = newMessage.get<std::string>("device");
       std::string type = newMessage.get<std::string>("type");
 
+      declareDevice(api, deviceName);
+
       YADOMS_LOG(information) << "Message received for device " << deviceName;
 
 
@@ -136,16 +138,12 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
       // This part is common the two messages
       if ((type.compare("data") == 0) || (type.compare("service") == 0))
       {
-         declareDevice(api, deviceName);
-
          m_rssi->set(newMessage.get<double>("rssi"));
          m_snr->set(newMessage.get<double>("snr"));
 
          // For the signalStrength, we do a rule to normalize rssi to %.
          m_signalPower->set(boost::lexical_cast<int>((m_rssi->get() - m_configuration.getRssiMin()) * 100 / (m_configuration.getRssiMax() - m_configuration.getRssiMin())));
       }
-      else
-         YADOMS_LOG(error) << "frame unknown. The frame type is different from 'data' or 'service'";
 
       if (type.compare("data") == 0)
       {

@@ -161,7 +161,7 @@ MACRO(PLUGIN_LINK _targetName)
          string(TOLOWER ${PLUGIN_NAME} PLUGIN_NAME_LOWER)
          
          #prepare version to be used in windows manifest (only 3 digits)
-         set(PLUGIN_VERSION_FOR_MANIFEST "${PLUGIN_VERSION_MAJOR}.${PLUGIN_VERSION_MINOR}.${PLUGIN_VERSION_PATCH}")
+         set(PLUGIN_VERSION_FOR_MANIFEST "${YADOMS_VERSION_MAJOR}.${YADOMS_VERSION_MINOR}.${YADOMS_VERSION_PATCH}")
 
          # apply templating to the manifest for setting the version
          configure_file(../common/resources/windows/plugin.exe.manifest.in
