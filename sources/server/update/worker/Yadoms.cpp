@@ -8,6 +8,8 @@
 #include "tools/FileSystem.h"
 #include "i18n/ClientStrings.h"
 #include <shared/process/SoftwareStop.h>
+#include "tools/OperatingSystem.h"
+#include <boost/process/environment.hpp>
 
 namespace update
 {
@@ -133,11 +135,12 @@ namespace update
 
          //create the argument list
          Poco::Process::Args args;
-         Poco::Path p(runningInformation->getExecutablePath());
-         args.push_back(p.parent().toString());
+         args.push_back(std::to_string(boost::this_process::get_id()));
+         args.push_back(Poco::Path(runningInformation->getExecutablePath()).parent().toString());
 
          //run updater script
-         auto handle = Poco::Process::launch(executablePath.toString(), args);
+         YADOMS_LOG(debug) << "Launch script \"" << executablePath.toString() << "\" with args " << boost::algorithm::join(args, ", ");
+         auto handle = tools::COperatingSystem::launchNativeScript(executablePath.toString(), args);
 
          //the update command is running, wait for 5 seconds and ensure it is always running
          boost::this_thread::sleep(boost::posix_time::seconds(5));

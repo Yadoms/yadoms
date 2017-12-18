@@ -200,7 +200,7 @@ WidgetManager.deleteWidget = function (widgetToDelete) {
 
 WidgetManager.updateToServer = function (widget) {
     assert(!isNullOrUndefined(widget), "widget must be defined");
-
+    
     var d = new $.Deferred();
 
     RestEngine.putJson("/rest/widget/" + widget.id, { data: JSON.stringify(widget) })
@@ -208,6 +208,9 @@ WidgetManager.updateToServer = function (widget) {
          //we notify that configuration has changed
          try {
              WidgetManager.updateWidgetConfiguration_(widget).always(function(){
+                // update the widget acquisition filter
+                updateWebSocketFilter();
+                
                 //we ask for a refresh of widget data
                 updateWidgetPolling(widget)
                 .always(d.resolve);
