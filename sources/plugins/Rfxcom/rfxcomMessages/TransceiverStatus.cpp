@@ -67,7 +67,7 @@ namespace rfxcomMessages
 
       if (m_statusType == kReceiverStarted)
       {
-         m_validMessage = reinterpret_cast<const char*>(&rbuf.IRESPONSE.msg1), 16;
+         m_validMessage = reinterpret_cast<const char*>(&rbuf.IRESPONSE.msg1);
       }
       else
       {
