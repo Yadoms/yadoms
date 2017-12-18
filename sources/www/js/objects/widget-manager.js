@@ -536,8 +536,7 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
 						
                         widget.$gridWidget.find(".textfit").fitText();
                         widget.viewModel.widgetApi.manageRollingTitle();
-                        d.resolve(); 
-                        
+                        d.resolve();
                     }).fail(d.reject);
                 }).fail(d.reject);
             })

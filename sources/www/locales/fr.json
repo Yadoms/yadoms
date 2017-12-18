@@ -959,7 +959,7 @@
       "widgetHasGeneratedAnExceptionDuringCallingMethod": "Le widget __widgetName__ a généré une exception à l'appel de __methodName__()",
       "errorDuringGettingDeviceInformation": "Erreur lors de la récupération des informations de l'équipement",
       "loadingWidgetsError": "Erreur lors du chargement d'un widget",
-      "widgetDisabled": "Le widget a été désactivé car la configuration est incorrecte (équipement manquant ou supprimé)",
+      "widgetDisabled": "Le widget __widgetName__ a été désactivé car la configuration est incorrecte (équipement manquant ou supprimé)",
       "unknownError" : "Erreur inconnue"
     },
     "widgetPackageManager": {

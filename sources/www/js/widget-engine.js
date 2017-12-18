@@ -302,7 +302,7 @@ function dispatchTimeToWidgets(timeData) {
 
 function dispatchkeywordDeletedToWidgets(eventData){
    assert(!isNullOrUndefined(eventData), "eventData must be defined");
-
+   
    var page = PageManager.getCurrentPage();
    if (page == null)
       return;
@@ -310,11 +310,11 @@ function dispatchkeywordDeletedToWidgets(eventData){
    console.debug("onKeywordDeletion : ", eventData);
    $.each(page.widgets, function (widgetIndex, widget) {
       try {
-          if ($.inArray(eventData.keyword.id, widget.getlastValue)!=-1)
+          if ($.inArray(eventData.keyword.id, widget.listenedKeywords)!=-1)
           {
              //we signal the time event to the widget if the widget supports the method
              if (typeof widget.viewModel.onKeywordDeletion === 'function' && !isNullOrUndefined(widget.viewModel.onKeywordDeletion))
-                 widget.viewModel.onKeywordDeletion(eventData);
+                 widget.viewModel.onKeywordDeletion(eventData.keyword);
               else // by default, we disable the widget
                  widget.viewModel.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
           }

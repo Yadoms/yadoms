@@ -28,7 +28,8 @@ WebSocketEngine.isActive = function() {
  * @param keywordCollectionToFilter The collection of keyword id to filter
  */
 WebSocketEngine.updateAcquisitionFilter = function(keywordCollectionToFilter) {
-    WebSocketEngine.webSocket_.send(JSON.stringify({"type" : "acquisitionFilter", "data" : keywordCollectionToFilter}));
+   
+   WebSocketEngine.webSocket_.send(JSON.stringify({"type" : "acquisitionFilter", "data" : keywordCollectionToFilter}));
 };
 
 
@@ -80,7 +81,6 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
                 var websocketData = JSON.parse(e.data);
                 if (!isNullOrUndefined(websocketData)) {
                    console.log ("websocketData : ", websocketData);
-                   console.log ("type : ", websocketData.type.toLowerCase());
                     switch (websocketData.type.toLowerCase()) {
                         case "acquisitionupdate":
                            $(document).trigger("acquisitionupdate", websocketData);

@@ -24,21 +24,21 @@ WidgetApi.prototype.find = function (pattern) {
  * Change the state of a widget
  */
 WidgetApi.prototype.setState = function (newState) {
-   this.widget.setState(newState);
-   
-   if (newState == widgetStateEnum.InvalidConfiguration)
-   {
-      var message = $.t("objects.widgetManager.widgetDisabled");
-      this.widget.$gridWidget.find(".panel-widget-desactivated").removeClass("hidden");
-      this.widget.$gridWidget.find(".fa-exclamation-triangle").attr("title", message);
+   if (this.widget.getState() != newState) {
+      this.widget.setState(newState);
       
-      //TODO : To be modified
-      //notifyError($.t("widgets/chart:errorInitialization"), error);
+      if (newState == widgetStateEnum.InvalidConfiguration)
+      {
+         this.widget.$gridWidget.find(".panel-widget-desactivated").removeClass("hidden");
+         var message = $.t("objects.widgetManager.widgetDisabled", {widgetName: this.widget.title});
+         this.widget.$gridWidget.find(".fa-exclamation-triangle").attr("title", message);
+         notifyWarning(message);
+      }
+      else if (newState == widgetStateEnum.OK)
+         this.widget.$gridWidget.find(".panel-widget-desactivated").addClass("hidden");
+      else
+      {}
    }
-   else if (newState == widgetStateEnum.OK)
-      this.widget.$gridWidget.find(".panel-widget-desactivated").addClass("hidden");
-   else
-   {}
 }
 
 /**
@@ -310,8 +310,7 @@ WidgetApi.prototype.notify = function(message, gravity, timeout) {
 WidgetApi.prototype.manageRollingTitle = function () {
 	var self = this;
    
-	if (self.widget.displayTitle && self.widget.toolbarActivated)
-	{
+	if (self.widget.displayTitle && self.widget.toolbarActivated){
 		if (self.widget.$toolbar[0].scrollWidth <= 3) // Round size of the padding-right of the panel-widget-title-toolbar
 			toolbarSize = 0;
 		else
@@ -323,9 +322,7 @@ WidgetApi.prototype.manageRollingTitle = function () {
 					   self.widget.$header[0].scrollWidth;
 		
 		if (overflow > 0) {
-			
-			if (self.widget.$header.find(".panel-widget-title-" + self.widget.id).length !== 0)
-			{ 
+			if (self.widget.$header.find(".panel-widget-title-" + self.widget.id).length !== 0){ 
 				 rule = getRule ( "panel-widget-title-marquee-" + self.widget.id );
                  
 				 //Delete the rule containing the overflow to scroll
@@ -334,8 +331,7 @@ WidgetApi.prototype.manageRollingTitle = function () {
 				 //Append the new overflow
 				 rule[0].appendRule("50% { text-indent: " + -overflow + "px;}");
 			}
-			else
-			{
+			else{
 				// Create completly the css rule
 				$("<style type='text/css'> .panel-widget-title-" + self.widget.id + "{margin: 0 auto; overflow: hidden; white-space: nowrap; box-sizing: border-box; animation: panel-widget-title-marquee-" + self.widget.id +
 				  " 10s steps(150) infinite;-webkit-animation-play-state: running; animation-play-state: running;}</style>").appendTo("head");	//html > //ease-in-out
@@ -343,8 +339,7 @@ WidgetApi.prototype.manageRollingTitle = function () {
 				self.widget.$header.find(".panel-widget-title").addClass("panel-widget-title-" + self.widget.id);
 			}
 		}
-		else
-		{
+		else{
 			// If exist, remove the class associated to the div
 			self.widget.$header.find(".panel-widget-title").removeClass("panel-widget-title-" + self.widget.id);
 		}

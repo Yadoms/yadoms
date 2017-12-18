@@ -8,7 +8,6 @@ function chartViewModel() {
     this.seriesUuid = [];
 
     //Keyword Id List !
-    this.devicesList = [];
     this.interval = 0;
     this.deviceInfo = [];       
     this.keywordInfo = [];
@@ -432,7 +431,6 @@ function chartViewModel() {
         self.widgetApi.find(".range-btn[interval='" + self.interval + "']").addClass("widget-toolbar-pressed-button");
 
         //just update some viewmodel info
-        self.devicesList = self.widget.configuration.devices.slice(0); 
         self.chartParametersConfiguration();
          
         try{
@@ -463,13 +461,13 @@ function chartViewModel() {
             })
             .fail(function (error) {
                self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
-               notifyError($.t("widgets/chart:deviceNotFound", {Id: device.content.source.deviceId}));
             });
 
             //we ask the current value
             var deffered2 = self.widgetApi.getKeywordInformation(device.content.source.keywordId);
             arrayOfDeffered.push(deffered2);
             deffered2.done(function (keyword) {
+               console.log ("keyword : ", keyword);
                 self.keywordInfo[index] = keyword;
                 try{
                    if (parseBool(device.content.advancedConfiguration.checkbox)){
@@ -521,7 +519,6 @@ function chartViewModel() {
             })
             .fail(function (error) {
                self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
-               notifyError($.t("widgets/chart:keywordNotFound", {Id: device.content.source.keywordId}));
             });               
         });
         
@@ -1014,6 +1011,27 @@ function chartViewModel() {
             console.error(err.message);
         }
     };
+    
+    /**
+    * event keyword deleted handler
+    * @param keywordId keyword Id removed from Yadoms
+    */    
+    this.onKeywordDeletion = function (keywordId) {
+       var self = this;
+       
+       if (self.chart){
+          $.each(self.keywordInfo, function (index, keyword) {
+             if (keywordId.id == keyword.id){ // we found the keyword associated, index to the corresponding series
+                var serie = self.chart.get(self.seriesUuid[index]);
+                var serieRange = self.chart.get('range_' + self.seriesUuid[index]);             
+                
+                // Remove corresponding series to the keyword
+                if (serie) serie.remove();
+                if (serieRange) serieRange.remove();
+             }
+          });
+       }
+    };       
 
     /**
     * New acquisition handler

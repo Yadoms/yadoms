@@ -42,7 +42,6 @@ widgetViewModelCtor = function gaugeViewModel() {
         })
         .fail(function (error) {
             self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
-            notifyError($.t("widgets/gauge:errorInitialization"), error);
             d.reject();
         });
         return d.promise();
@@ -69,7 +68,6 @@ widgetViewModelCtor = function gaugeViewModel() {
         catch(error)
         {
            self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
-           notifyError($.t("widgets/gauge:deviceDisable"));
         }
     };
 
@@ -116,7 +114,6 @@ widgetViewModelCtor = function gaugeViewModel() {
          })
         .fail(function (error) {
            self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
-           notifyError($.t("widgets/gauge:errorInitialization"), error);
         });         
 
         var minValue;
