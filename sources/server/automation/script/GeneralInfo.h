@@ -2,6 +2,7 @@
 #include "IGeneralInfo.h"
 #include "IDayLightProvider.h"
 #include <shared/ILocation.h>
+#include "dateTime/ITimeZoneProvider.h"
 
 namespace automation
 {
@@ -16,7 +17,8 @@ namespace automation
          //-----------------------------------------------------
          ///\brief               Constructor
          //-----------------------------------------------------
-         explicit CGeneralInfo(boost::shared_ptr<shared::ILocation> locationProvider);
+         CGeneralInfo(boost::shared_ptr<shared::ILocation> locationProvider,
+                      boost::shared_ptr<dateTime::ITimeZoneProvider> timezoneProvider);
 
          //-----------------------------------------------------
          ///\brief               Destructor
@@ -34,5 +36,3 @@ namespace automation
       };
    }
 } // namespace automation::script
-
-

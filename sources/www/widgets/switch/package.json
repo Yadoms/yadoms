@@ -1,6 +1,6 @@
 {
 	"type": "switch",
-	"version": "1.0.2-rc.3",
+	"version": "1.0.2",
 	"author": "Jean-Michel BERHAULT, Nicolas HILAIRE",
 	"url": "https://github.com/Yadoms/yadoms/wiki/switch",
 	"credits": "[bootstrap toogle](http://www.bootstraptoggle.com/)",
@@ -25,6 +25,10 @@
          "expectedCapacity": ["switch", "dimmable", "event"],
 			"expectedKeywordAccess": "get"
 		},
+      "invert": {
+         "type": "bool",
+         "defaultValue": "false"
+      },      
 		"additionalDevices": {
 			"type": "section",
 			"defaultValue": "false",

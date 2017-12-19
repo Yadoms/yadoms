@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DiskUsage.h"
 #include <shared/exception/Exception.hpp>
+#include "Helpers.h"
 
 CDiskUsage::CDiskUsage(const std::string& keywordName,
                        const std::string& driveName)
@@ -27,6 +28,5 @@ void CDiskUsage::read()
 
    float DiskUsage = static_cast<float>(floor((1 - static_cast<float>(FreeSpaceAvailable.QuadPart) / TotalSpace.QuadPart) * 1000)) / 10;
 
-   m_keyword->set(DiskUsage);
+   m_keyword->set(valueRoundWithPrecision(DiskUsage,3));
 }
-

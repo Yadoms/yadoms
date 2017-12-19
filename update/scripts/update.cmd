@@ -8,7 +8,7 @@
 ::/  
 ::/ 
 ::/ SYNTAX
-::/  update YadomsPath timeout (default 60)
+::/  update YadomsPath YadomsCurrentPid timeout(default 60)
 ::/ 
 ::/ DETAILED DESCRIPTION
 ::/  The update.cmd wait for the end of execution of yadoms, 
@@ -20,6 +20,9 @@ SETLOCAL ENABLEDELAYEDEXPANSION
 SET YadomsExecutable=yadoms.exe
  
 set CurrentScriptDir=%~dp0
+
+SET YadomsCurrentPid=%~1
+SET YadomsPath=%~2
  
 ::Parse  command line arguments
 IF "%1"=="/?" (
@@ -27,9 +30,12 @@ IF "%1"=="/?" (
     GOTO :END
 )
  
-SET YadomsPath=%~1
 IF NOT DEFINED YadomsPath (
     ECHO %~n0 : Cannot bind argument to parameter 'YadomsPath' because it is empty.
+    GOTO :END
+)
+IF NOT DEFINED YadomsCurrentPid (
+    ECHO %~n0 : Cannot bind argument to parameter 'YadomsCurrentPid' because it is empty.
     GOTO :END
 )
 

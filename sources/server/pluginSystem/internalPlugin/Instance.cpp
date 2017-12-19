@@ -182,7 +182,7 @@ namespace pluginSystem
          }
          catch (shared::exception::CException& ex)
          {
-            YADOMS_LOG(fatal) << "The Yadoms Sytem plugin fails. Unknown expcetion : " << ex.what();
+            YADOMS_LOG(fatal) << "The Yadoms Sytem plugin fails. Unknown exception : " << ex.what();
          }
       }
 
@@ -193,10 +193,9 @@ namespace pluginSystem
             throw std::invalid_argument("Wrong device type");
 
          std::string standardCapacity;
-         bool isStandardCapacity;
          try
          {
-            isStandardCapacity = data.getConfiguration().get<std::string>("capacity.activeSection") == "standardCapacity";
+            bool isStandardCapacity = data.getConfiguration().get<std::string>("capacity.activeSection") == "standardCapacity";
             boost::shared_ptr<const yApi::historization::IHistorizable> keyword;
             if (isStandardCapacity)
                createStandardCapacityDevice(api,

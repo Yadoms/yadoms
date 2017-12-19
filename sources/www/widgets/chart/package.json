@@ -1,6 +1,6 @@
 {
 	"type": "chart",
-	"version": "1.0.1-rc.4",
+	"version": "1.0.1",
 	"author": "Jean-Michel BERHAULT, Nicolas HILAIRE",
 	"url": "https://github.com/Yadoms/yadoms/wiki/chart",
 	"credits": "[Highstocks](http://www.highcharts.com/)",
@@ -77,7 +77,7 @@
 		"devices": {
 			"type": "list",
 			"nbItemsMin": "1",
-			"nbItemsMax": "3",
+			"nbItemsMax": "4",
 			"allowDuplication": "true",
 			"item": {
 				"type": "section",
@@ -100,7 +100,7 @@
                         "type" : "int",
                         "defaultValue" : "1",
                         "maximumValue" : "3",
-                        "minimumValue" : "1"
+                        "minimumValue" : "0"
                      },                  
                      "differentialDisplay": {
                         "type": "enum",

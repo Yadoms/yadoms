@@ -8,6 +8,10 @@
 			"name": "Device",
          "description": "Select below the device to drive"
 		},
+		"invert": {
+			"name": "Invert",
+			"description": "Invert state of this device"
+		},      
 		"additionalDevices": {
 			"name": "additional devices",
 			"description": "Switch widget is able to drive several devices simultaneously. Select below the devices list to drive",      

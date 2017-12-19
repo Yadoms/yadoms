@@ -89,6 +89,53 @@
             }
         });
     }
+    
+    function onTaskUpdate(taskInformation) {
+      var $line = $(".action-progression");
+      $line.find("div.progress-bar").css("width", taskInformation.progression + "%");
+
+      if(taskInformation.message) {
+        $line.find("span.message").text($.t("core." + taskInformation.message));
+      } else {
+        $line.find("span.message").text("");
+      }
+
+      var taskFinished = false;
+      //we manage the end of the task
+      var state = taskInformation.taskState || taskInformation.status; //from taskManager=>status, from webSocket notif)>taskState
+      
+      if (state) {
+         if (state.toLowerCase() === "fail") {
+             console.error("Unable to install : " + taskInformation.exception);
+             if(taskInformation.message) {
+               notifyError($.t("core." + taskInformation.message));
+             }
+             taskFinished = true;
+         }
+
+         if (state.toLowerCase() === "success") {
+             if(taskInformation.message) {
+               notifySuccess($.t("core." + taskInformation.message));
+             }
+             taskFinished = true;
+             showLastBackupInformation();
+         }
+
+         if (taskFinished) {
+             //we remove the progress information and restore buttons
+             $line.find("div.progress-bar").css("width", "0");
+             $line.hide();
+         }
+      }
+    }
+    
+    function registerNotificationForTask(taskId) {
+       $(".action-progression").show();
+       $(document).on("taskupdatenotification." + taskId, function (e, taskInformation) {
+           onTaskUpdate(taskInformation);
+       });    
+    }
+    
 
     function enableBackupSection() {
         $(".backupSection").show();
@@ -98,47 +145,7 @@
             MaintenanceManager.startBackup()
             .done(function (data) {
                 //data.taskId
-                var $line = $(".action-progression");
-
-                $line.show();
-
-                $(document).on("taskupdatenotification." + data.taskId, function (e, taskInformation) {
-
-                    $line.find("div.progress-bar").css("width", taskInformation.progression + "%");
-                    
-                    if(taskInformation.message) {
-                       $line.find("span.message").text($.t("core." + taskInformation.message));
-                    } else {
-                       $line.find("span.message").text("");
-                    }
-
-                    var taskFinished = false;
-                    //we manage the end of the task
-                    if (taskInformation.taskState) {
-                        if (taskInformation.taskState.toLowerCase() === "fail") {
-                            console.error("Unable to install : " + taskInformation.exception);
-                            if(taskInformation.message) {
-                              notifyError($.t("core." + taskInformation.message));
-                            }
-                            taskFinished = true;
-                        }
-
-                        if (taskInformation.taskState.toLowerCase() === "success") {
-                            if(taskInformation.message) {
-                              notifySuccess($.t("core." + taskInformation.message));
-                            }
-                            taskFinished = true;
-                            showLastBackupInformation();
-                        }
-
-                        if (taskFinished) {
-                            //we remove the progress information and restore buttons
-                            $line.find("div.progress-bar").css("width", "0");
-                            $line.hide();
-                        }
-                    }
-
-                });
+                registerNotificationForTask(data.taskId);
             });
         });
 
@@ -151,7 +158,17 @@
 
         enableBackupSection();
 
-        d.resolve();
+        //if running tasks, then just refresh
+        TaskManager.getTasksRunning("backup")
+        .done(function(tasks) {
+            $.each(tasks, function(index, task) {
+               registerNotificationForTask(task.uuid);
+               onTaskUpdate(task);
+            });
+        })
+        .always(function() {
+            d.resolve();
+        });
         return d.promise();
     };
 
