@@ -2,6 +2,7 @@
 #include "TemperatureSensor.h"
 #include <fstream>
 #include <shared/Log.h>
+#include "Helpers.h"
 
 CTemperatureSensor::CTemperatureSensor(const std::string & keywordName)
    :m_keyword(boost::make_shared<yApi::historization::CTemperature>(keywordName))
@@ -27,7 +28,7 @@ void CTemperatureSensor::read()
          }
       }
       temperatureFile.close();
-      m_keyword->set( atof(readValue.c_str()) / 1000.0 );
+      m_keyword->set( valueRoundWithPrecision(atof(readValue.c_str()) / 1000.0, 1));
    }
    catch(std::exception & ex)
    {

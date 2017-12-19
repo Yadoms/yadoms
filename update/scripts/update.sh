@@ -1,60 +1,80 @@
-#!/bin/bash
+#!/bin/sh
 
 #Manage script parameters
-yadomsPath=$1
-timeoutYadoms=${2:-60}
-appNameToWait=yadoms
+baseDir=$(dirname $0)
+yadomsCurrentPid=$1
+yadomsPath=$2
+timeoutYadoms=${3:-60}
 
-echo "Starting...."
-echo "    Param : Path : $yadomsPath"
-echo "    Param : timeoutYadoms : $timeoutYadoms"
-
-#check Yadoms path is provided
+#check parameters
 if [ -z "$yadomsPath" ]
 then
-    echo "$me the yadoms path is required as an argument" >&2
+    echo "The yadoms path is required as first argument"
+    exit 2
+fi
+if [ -z "$yadomsCurrentPid" ]
+then
+    echo "The current yadoms PID is required as second argument"
     exit 2
 fi
 
-#retreive the PID of the process
-pid=$(ps -ef | awk '$8=="'"$appNameToWait"'" {print $2}')
+logFile="$yadomsPath/update.log"
+
+echo "Starting at $(date)...." > $logFile 2>&1
+echo "    baseDir : $baseDir" >> $logFile 2>&1
+echo "    Param : Path : $yadomsPath" >> $logFile 2>&1
+echo "    Param : currentPid : $yadomsCurrentPid" >> $logFile 2>&1
+echo "    Param : timeoutYadoms : $timeoutYadoms" >> $logFile 2>&1
 
 
 #wait for the pid to end (manage a timeout in seconds)
-if [ ! -z $pid ]
-then
-   echo "Waiting for $appNameToWait to exit..."
+echo "Waiting for Yadoms to exit..." >> $logFile 2>&1
 
-   waitedTime=0
-   while ps -p $pid > /dev/null; do 
-      sleep 1; 
-      waitedTime=$((waitedTime+1))
-      if [ $waitedTime -ge $timeoutYadoms ] 
-      then
-         echo "$appNameToWait is still running after $timeoutYadoms seconds" >&2
-            echo "Could not apply script"
-         exit 1
-      fi
-   done;
+waitedTime=0
+while ps -p $yadomsCurrentPid > /dev/null; do 
+   sleep 1; 
+   waitedTime=$((waitedTime+1))
+   if [ $waitedTime -ge $timeoutYadoms ] 
+   then
+      break
+   fi
+done;
 
-   echo "Process $appNameToWait is now stopped"
-else
-    echo "$me failed to find process with name $appNameToWait" >&2
-fi
+# Kill Yadoms if not gracefully stopped
+waitedTime=0
+kill -2 $yadomsCurrentPid > /dev/null
+while ps -p $yadomsCurrentPid > /dev/null; do 
+   sleep 1; 
+   waitedTime=$((waitedTime+1))
+   if [ $waitedTime -ge $timeoutYadoms ] 
+   then
+      break
+   fi
+done;
 
-echo "Updating Yadoms ..."
+# Last chance : Kill it anyway
+kill -9 $yadomsCurrentPid > /dev/null
+waitedTime=0
+while ps -p $yadomsCurrentPid > /dev/null; do 
+   sleep 1; 
+   waitedTime=$((waitedTime+1))
+   if [ $waitedTime -ge $timeoutYadoms ] 
+   then
+      echo "Unable to stop Yadoms" >> $logFile 2>&1
+      echo "Could not apply script" >> $logFile 2>&1
+      exit 1
+   fi
+done;
 
-BASEDIR=$(dirname $0)
+echo "Process Yadoms is now stopped" >> $logFile 2>&1
 
-cp -R "$BASEDIR/package/*" "$yadomsPath"
+echo "Updating Yadoms ..." >> $logFile 2>&1
 
-echo "Yadoms updated successfully"
+echo "Copy $baseDir/package/* to $yadomsPath..." >> $logFile 2>&1
+cp -R "$baseDir/package/"* "$yadomsPath/"
 
-echo "Restarting Yadoms ..."
+echo "Yadoms updated successfully" >> $logFile 2>&1
 
-$yadomsPath/$appNameToWait &
+echo "Restarting Yadoms ..." >> $logFile 2>&1
 
-
-
-
-
+$yadomsPath/yadoms --daemon

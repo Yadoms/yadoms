@@ -200,7 +200,7 @@ WidgetManager.deleteWidget = function (widgetToDelete) {
 
 WidgetManager.updateToServer = function (widget) {
     assert(!isNullOrUndefined(widget), "widget must be defined");
-
+    
     var d = new $.Deferred();
 
     RestEngine.putJson("/rest/widget/" + widget.id, { data: JSON.stringify(widget) })
@@ -208,6 +208,9 @@ WidgetManager.updateToServer = function (widget) {
          //we notify that configuration has changed
          try {
              WidgetManager.updateWidgetConfiguration_(widget).always(function(){
+                // update the widget acquisition filter
+                updateWebSocketFilter();
+                
                 //we ask for a refresh of widget data
                 updateWidgetPolling(widget)
                 .always(d.resolve);
@@ -691,14 +694,16 @@ WidgetManager.createGridWidget = function (widget) {
             resizeTimeout = setTimeout(function () {
                 try {
                     if (widget.viewModel.resized !== undefined)
-					{
+                    {
                         var defferedResult = widget.viewModel.resized();
                         //we manage answer if it is a promise or not
                         defferedResult = defferedResult || new $.Deferred().resolve();
                         defferedResult.always(function() {
                            widget.viewModel.widgetApi.manageRollingTitle();
                         });
-					}
+                    }
+                    else // manage the rolling title anyway
+                       widget.viewModel.widgetApi.manageRollingTitle();
                 }
                 catch (e) {
                     notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'resized' }));

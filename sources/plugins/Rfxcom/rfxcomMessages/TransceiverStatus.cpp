@@ -214,7 +214,7 @@ namespace rfxcomMessages
 
       auto itRfxcomTypes = RfxcomTypes.find(m_rfxcomType);
       if (itRfxcomTypes == RfxcomTypes.end())
-         return boost::lexical_cast<std::string>(m_rfxcomType);
+         return std::to_string(m_rfxcomType);
 
       return itRfxcomTypes->second;
    }
