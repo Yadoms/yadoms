@@ -149,6 +149,7 @@ WidgetApi.prototype.manageBatteryConfiguration = function () {
            //we check for the device to look if it has battery keyword
            DeviceManager.getKeywordsBydeviceIdAndCapacity(deviceId, "Get", "batteryLevel")
            .done(function (keyword) {
+               console.log (keyword);
                // We assume that we have only 1 batteryLevel keyword for one device, it's the first one
                if (keyword.length>0) {
                  $battery.removeClass("hidden");
@@ -161,12 +162,17 @@ WidgetApi.prototype.manageBatteryConfiguration = function () {
                  //we ask immediately for the battery value
                  AcquisitionManager.getLastValue(keyword[0].id)
                  .done(function (lastValue) {
-                     self.widget.viewModel.widgetApi.updateBatteryLevel(lastValue.value);
+                    if (lasValue.value !== "")
+                        self.widget.viewModel.widgetApi.updateBatteryLevel(lastValue.value);
+                     else 
+                        $battery.addClass("hidden"); // if no value => we hide the icon
+                     
                      d.resolve();
                  })
                  .fail(function (error) {
-                     notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + keyword[0].id }), error);
-                     d.reject();
+                    $battery.addClass("hidden");
+                    notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + keyword[0].id }), error);
+                    d.reject();
                  });
              }
              else {
@@ -175,9 +181,10 @@ WidgetApi.prototype.manageBatteryConfiguration = function () {
                d.resolve();
              }
          })
-         .fail(function (error) {
-             notifyError($.t("objects.generic.errorGetting", { objectName: "keyword for device = " + deviceId }), error);
-             d.reject();
+         .fail(function (error){
+            $battery.addClass("hidden");
+            notifyError($.t("objects.generic.errorGetting", { objectName: "keyword for device = " + deviceId }), error);
+            d.reject();
          });
     }
     else
@@ -279,14 +286,14 @@ WidgetApi.prototype.manageRollingTitle = function () {
 				 rule[0].deleteRule("50%");
 				 
 				 //Append the new overflow
-				 rule[0].appendRule("50% { text-indent: " + -overflow + "px;}");
+				 rule[0].appendRule("50% { text-indent: " + -(overflow+5) + "px;}"); // Add 5 pixels to see properly the last letter of the title
 			}
 			else
 			{
 				// Create completly the css rule
 				$("<style type='text/css'> .panel-widget-title-" + self.widget.id + "{margin: 0 auto; overflow: hidden; white-space: nowrap; box-sizing: border-box; animation: panel-widget-title-marquee-" + self.widget.id +
 				  " 10s steps(150) infinite;-webkit-animation-play-state: running; animation-play-state: running;}</style>").appendTo("head");	//html > //ease-in-out
-				$("<style type='text/css'> @keyframes panel-widget-title-marquee-" + self.widget.id + " { 0%   { text-indent: 0px; } 50% { text-indent: " + -overflow + "px;}  100%  { text-indent: 0px; } }</style>").appendTo("head");
+				$("<style type='text/css'> @keyframes panel-widget-title-marquee-" + self.widget.id + " { 0%   { text-indent: 0px; } 50% { text-indent: " + -(overflow+5) + "px;}  100%  { text-indent: 0px; } }</style>").appendTo("head");
 				self.widget.$header.find(".panel-widget-title").addClass("panel-widget-title-" + self.widget.id);
 			}
 		}

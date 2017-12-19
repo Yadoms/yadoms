@@ -251,12 +251,11 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
             //we manage answer if it is a promise or not
             defferedResult = defferedResult || new $.Deferred().resolve();
             defferedResult
-            .done(function () {
+            .always(function () {
                 //we manage the toolbar api specific icons
                 widget.viewModel.widgetApi.manageBatteryConfiguration()
                 .always(d.resolve);
-            })
-            .fail(d.resolve);
+            });
         } else {
             d.resolve();
         }
