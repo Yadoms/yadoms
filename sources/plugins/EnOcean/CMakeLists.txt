@@ -155,7 +155,7 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
 
 add_custom_command(OUTPUT ${ENOCEAN_GENERATED_OUT_DIR}/manufacturers.h
                           ${ENOCEAN_GENERATED_OUT_DIR}/manufacturers.cpp
-                   COMMAND ${PYTHON_EXECUTABLE} -u ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateManufacturers.py 
+                   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateManufacturers.py 
                            ${CMAKE_CURRENT_SOURCE_DIR}/profiles/manufacturers.xml
                            ${ENOCEAN_GENERATED_OUT_DIR}
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/profiles/manufacturers.xml
@@ -173,7 +173,7 @@ add_custom_command(OUTPUT ${ENOCEAN_GENERATED_OUT_DIR}/package.json
                           ${ENOCEAN_GENERATED_OUT_DIR}/profiles/CRPSTelegram.h
                           ${ENOCEAN_GENERATED_OUT_DIR}/profiles/CVLDTelegram.cpp
                           ${ENOCEAN_GENERATED_OUT_DIR}/profiles/CVLDTelegram.h
-                   COMMAND ${PYTHON_EXECUTABLE} -u ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateEep.py
+                   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateEep.py
                           ${CMAKE_CURRENT_SOURCE_DIR}/profiles/eep${EEP_VERSION}.xml
                           ${ENOCEAN_GENERATED_OUT_DIR}/profiles
                           ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json
