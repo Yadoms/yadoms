@@ -16,13 +16,13 @@ widgetViewModelCtor =
           this.showDeviceName = ko.observable(true);
           this.readonly = ko.observable(true);
           this.update = ko.observable(false);
-          this.invert = ko.observable(false);
 		  
           /**
            * method to send command to Yadoms
            * @param newState to send
            */        
           this.commandClick = function (newState) {
+
               var self = this;
 
               if  (!isNullOrUndefined(this.widget.configuration)) {
@@ -36,14 +36,7 @@ widgetViewModelCtor =
                            case "event": cmd = 1; break;
                            default: cmd = newState; break;
                         }
-                        
-                        if (self.invert()) {
-                           if (cmd == 1)
-                              cmd = 0;
-                           else 
-                              cmd = 1;
-                        }
-                        
+
                         // We send the command only for Set and GetSet variables
                         if ( self.accessMode[0] === "GetSet" || self.accessMode[0] === "Set" )
                            KeywordManager.sendCommand(this.widget.configuration.device.keywordId, cmd.toString());
@@ -129,17 +122,9 @@ widgetViewModelCtor =
                   this.showDeviceName(parseBool(this.widget.configuration.showDeviceName));
               }
 
-              // register if the final state should be reversed
-              try{
-                 self.invert(self.widget.configuration.invert);
-              }
-              catch(error)
-              {
-                 self.invert(false);
-              }
-              
-              // we ask for the first device information
+              //we ask for the first device information
               if  (!isNullOrUndefined(this.widget.configuration.device.deviceId)) {
+                 
                 // Get the capacity of the keyword
                 var deffered = KeywordManager.get(this.widget.configuration.device.keywordId)
                 .done(function (keyword) {
@@ -148,6 +133,7 @@ widgetViewModelCtor =
 
                   if ( keyword.accessMode === "Get" )
                      readOnlyMode = true;
+
                 });
           
                 arrayOfDeffered.push(deffered);
@@ -217,13 +203,6 @@ widgetViewModelCtor =
                                   self.state[0] = 1;
                               else
                                   self.state[0] = 0;
-                              
-                              if (self.invert()) {
-                                 if (self.state[0] == 1)
-                                    self.state[0] = 0;
-                                 else 
-                                    self.state[0] = 1;
-                              }
                           }
                       }
                  }                 
@@ -254,12 +233,12 @@ widgetViewModelCtor =
                     self.update(true);
                     if (self.readonly())
                        this.widget.$content.find("input[type=checkbox]").prop('disabled', false);
-
+                    
                     if (self.command()==1)
                        this.widget.$content.find("input[type=checkbox]").prop('checked', true).change();
                     else
                         this.widget.$content.find("input[type=checkbox]").prop('checked', false).change();
-                    
+                     
                     self.update(false);
                     this.widget.$content.find("input[type=checkbox]").prop('disabled', self.readonly());
                   }
@@ -277,4 +256,16 @@ widgetViewModelCtor =
               average = average / this.state.length;
               self.command(average);
           }
+          
+          this.toggleCommand = function () {
+              var self = this;
+
+              if (this.command() === 0)
+                  self.command(1);
+              else
+                  self.command(0);
+
+              //Send the command
+              self.commandClick(self.command());
+          }          
       };

@@ -1,8 +1,6 @@
 #pragma once
 #include "IDayLightProvider.h"
-#include "dateTime/ITimeZoneProvider.h"
 #include <shared/ILocation.h>
-#include <boost/date_time/local_time/posix_time_zone.hpp>
 
 namespace automation
 {
@@ -17,20 +15,13 @@ namespace automation
          //-----------------------------------------------------
          ///\brief               Constructor
          ///\param[in] location  The current location
-         ///\param[in] timezoneProvider  The timezone provider
          //-----------------------------------------------------
-         CDayLightProvider(const boost::shared_ptr<shared::ILocation> location,
-                           const boost::shared_ptr<dateTime::ITimeZoneProvider> timezoneProvider);
+         explicit CDayLightProvider(boost::shared_ptr<shared::ILocation> location);
 
          //-----------------------------------------------------
          ///\brief               Destructor
          //-----------------------------------------------------
          virtual ~CDayLightProvider();
-
-         // IDayLightProvider Implementation
-         boost::posix_time::ptime sunriseTime() override;
-         boost::posix_time::ptime sunsetTime() override;
-         // [END] IDayLightProvider Implementation
 
          //-----------------------------------------------------
          ///\brief               Format a sun event time as "HH:MM"
@@ -40,6 +31,11 @@ namespace automation
          static std::string formatSunEventTime(const boost::posix_time::ptime& sunEventTime);
 
       protected:
+         // IDayLightProvider Implementation
+         boost::posix_time::ptime sunriseTime() override;
+         boost::posix_time::ptime sunsetTime() override;
+         // [END] IDayLightProvider Implementation
+
          //-----------------------------------------------------
          ///\brief               Sun event computation adapter
          ///\param[in] sunrise   true to compute sunrise, false to compute sunset
@@ -53,8 +49,8 @@ namespace automation
          ///\param[in] hours     Number of hours, as double
          ///\return local time composed by provided date and hour
          //-----------------------------------------------------
-         boost::posix_time::ptime hoursToLocalTime(const boost::gregorian::date& date,
-                                                   double hours) const;
+         static boost::posix_time::ptime hoursToLocalTime(const boost::gregorian::date& date,
+                                                          double hours);
 
       private:
          //-----------------------------------------------------
@@ -71,8 +67,6 @@ namespace automation
          ///\brief               Pre-calculed sun event times
          //-----------------------------------------------------
          boost::posix_time::ptime m_rise, m_set;
-
-         boost::shared_ptr<boost::local_time::posix_time_zone::base_type> m_timeZone;
       };
    }
 } // namespace automation::script

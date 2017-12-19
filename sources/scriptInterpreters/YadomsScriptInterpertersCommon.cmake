@@ -180,7 +180,7 @@ MACRO(SCRIPT_INTERPRETER_POST_BUILD_COPY_DIRECTORY _targetName _resource)
    if(COTIRE_USE)
       if(COTIRE_USE_UNITY)
          add_custom_command(TARGET ${_targetName}_unity POST_BUILD
-           COMMAND ${CMAKE_COMMAND} -E copy_directory ${resource} $<TARGET_FILE_DIR:${_targetName}_unity>/${where})
+           COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/${resource} $<TARGET_FILE_DIR:${_targetName}_unity>/${where})
 	  endif()	
    endif()		  
 ENDMACRO()

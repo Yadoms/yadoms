@@ -8,7 +8,6 @@ function chartViewModel() {
     this.seriesUuid = [];
 
     //Keyword Id List !
-    this.devicesList = [];
     this.interval = 0;
     this.deviceInfo = [];       
     this.keywordInfo = [];
@@ -355,8 +354,8 @@ function chartViewModel() {
             });
         })
         .fail(function (error) {
+            self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
             notifyError($.t("widgets/chart:errorInitialization"), error);
-            throw $.t("widgets/chart:errorInitialization");
             d.reject();
         });
         return d.promise();
@@ -432,7 +431,6 @@ function chartViewModel() {
         self.widgetApi.find(".range-btn[interval='" + self.interval + "']").addClass("widget-toolbar-pressed-button");
 
         //just update some viewmodel info
-        self.devicesList = self.widget.configuration.devices.slice(0); 
         self.chartParametersConfiguration();
          
         try{
@@ -462,13 +460,14 @@ function chartViewModel() {
                 self.deviceInfo[index] = data;
             })
             .fail(function (error) {
-               notifyError($.t("widgets/chart:deviceNotFound", {Id: device.content.source.deviceId}));
+               self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
             });
 
             //we ask the current value
             var deffered2 = self.widgetApi.getKeywordInformation(device.content.source.keywordId);
             arrayOfDeffered.push(deffered2);
             deffered2.done(function (keyword) {
+               console.log ("keyword : ", keyword);
                 self.keywordInfo[index] = keyword;
                 try{
                    if (parseBool(device.content.advancedConfiguration.checkbox)){
@@ -516,10 +515,10 @@ function chartViewModel() {
                   self.incompatibility = false;
                
                 //we register the keyword for new acquisition if the device exist
-                self.widgetApi.registerKeywordAcquisitions(device.content.source.keywordId);                  
+                self.widgetApi.registerKeywordForNewAcquisitions(device.content.source.keywordId);                  
             })
             .fail(function (error) {
-               notifyError($.t("widgets/chart:keywordNotFound", {Id: device.content.source.keywordId}));
+               self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
             });               
         });
         
@@ -640,7 +639,8 @@ function chartViewModel() {
                                   if (!isNullOrUndefined(value.key)) {
                                       v = parseFloat(value.key);
                                   } else {
-                                      throw Error("Unable to parse answer");
+                                     self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
+                                     notifyError($.t("widgets/chart:errorInitialization"));
                                   }
                                   
                                   // The differential display is disabled if the type of the data is enum or boolean
@@ -671,7 +671,8 @@ function chartViewModel() {
                                       vMin = parseFloat(value.min);
                                       vMax = parseFloat(value.max);
                                   } else {
-                                      throw Error("Unable to parse answer");
+                                     self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
+                                     notifyError($.t("widgets/chart:errorInitialization"));
                                   }
 
                                   //we manage the missing data
@@ -733,7 +734,7 @@ function chartViewModel() {
                              else
                                 legendText = self.deviceInfo[index].friendlyName + "/" + self.keywordInfo[index].friendlyName;
                           }catch(error){
-                             legendText = $.t("widgets/chart:keywordNotFound", {Id: device.content.source.keywordId});
+                             self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
                           }
                           
                           var serie = null;
@@ -1010,6 +1011,27 @@ function chartViewModel() {
             console.error(err.message);
         }
     };
+    
+    /**
+    * event keyword deleted handler
+    * @param keywordId keyword Id removed from Yadoms
+    */    
+    this.onKeywordDeletion = function (keywordId) {
+       var self = this;
+       
+       if (self.chart){
+          $.each(self.keywordInfo, function (index, keyword) {
+             if (keywordId.id == keyword.id){ // we found the keyword associated, index to the corresponding series
+                var serie = self.chart.get(self.seriesUuid[index]);
+                var serieRange = self.chart.get('range_' + self.seriesUuid[index]);             
+                
+                // Remove corresponding series to the keyword
+                if (serie) serie.remove();
+                if (serieRange) serieRange.remove();
+             }
+          });
+       }
+    };       
 
     /**
     * New acquisition handler

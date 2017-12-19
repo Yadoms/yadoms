@@ -39,3 +39,19 @@ EmptyAcquisition.prototype.toJSON = function () {
       value: this.value
    };
 };
+
+/**
+ * Creates an empty Acquisition
+ * @constructor
+ */
+function noKeyword(keywordId, error) {
+   this.keywordId = keywordId || "";
+   this.error = error || "";
+}
+
+noKeyword.prototype.toJSON = function () {
+   return {
+      keywordId: this.keywordId,
+      error: this.error
+   };
+};

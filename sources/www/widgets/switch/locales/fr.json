@@ -8,10 +8,6 @@
 			"name": "Equipement",
          "description": "Sélectionner ci-dessous l'équipement à piloter"
 		},
-		"invert": {
-			"name": "Inversion",
-			"description": "Inverse l'état de cet équipement"
-		},      
 		"additionalDevices": {
          "name": "Equipements complémentaires",
          "description": "Le widget interrupteur peut piloter simultanément plusieurs équipements. Sélectionner ici la liste des équipements complémentaires à piloter",      

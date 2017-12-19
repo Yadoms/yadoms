@@ -1,7 +1,7 @@
 ﻿/**
  * Created by nicolasHILAIRE on 09/02/2016.
  */
-
+ 
 /**
  * Creates an instance of WidgetApi
  * @constructor
@@ -21,6 +21,27 @@ WidgetApi.prototype.find = function (pattern) {
 }
 
 /**
+ * Change the state of a widget
+ */
+WidgetApi.prototype.setState = function (newState) {
+   if (this.widget.getState() != newState) {
+      this.widget.setState(newState);
+      
+      if (newState == widgetStateEnum.InvalidConfiguration)
+      {
+         this.widget.$gridWidget.find(".panel-widget-desactivated").removeClass("hidden");
+         var message = $.t("objects.widgetManager.widgetDisabled", {widgetName: this.widget.title});
+         this.widget.$gridWidget.find(".fa-exclamation-triangle").attr("title", message);
+         notifyWarning(message);
+      }
+      else if (newState == widgetStateEnum.OK)
+         this.widget.$gridWidget.find(".panel-widget-desactivated").addClass("hidden");
+      else
+      {}
+   }
+}
+
+/**
  * Obtain information about a keyword
  * @param {} keywordId to query
  * @returns {} a promise that's return done when information grabbed from server
@@ -31,14 +52,27 @@ WidgetApi.prototype.getKeywordInformation = function (keywordId) {
 };
 
 /**
- * Register keywords to receive notifications when a new acquisition triggers
+ * @deprecated Register keywords to receive notifications when a new acquisition triggers
  * @param {} keywordIds to register (can be a single value or an array of values)
  */
 WidgetApi.prototype.registerKeywordAcquisitions = function (keywordIds) {
    assert(!isNullOrUndefinedOrEmpty(keywordIds), "keywordIds must be defined");
-
+   
    var self = this;
+   console.warn("this function is deprecated and will be removed soon");
 
+   self.widget.viewModel.widgetApi.registerKeywordForNewAcquisitions (keywordIds);
+   self.widget.viewModel.widgetApi.getLastValue(keywordIds);
+};
+
+/**
+ * Register keywords to receive notifications when a new acquisition triggers (don't do a getLastValue)
+ * @param {} keywordIds to register (can be a single value or an array of values)
+ */
+WidgetApi.prototype.registerKeywordForNewAcquisitions = function (keywordIds) {
+   assert(!isNullOrUndefinedOrEmpty(keywordIds), "keywordIds must be defined");
+   
+   var self = this;
    if (!self.widget.listenedKeywords)
       self.widget.listenedKeywords = [];
    
@@ -48,6 +82,26 @@ WidgetApi.prototype.registerKeywordAcquisitions = function (keywordIds) {
       });
    } else {
       self.widget.listenedKeywords.push(keywordIds);
+   }
+};
+
+/**
+ * Register keywords to get the last value of the keywordId when the page is loaded
+ * @param {} keywordIds to register (can be a single value or an array of values)
+ */
+WidgetApi.prototype.getLastValue = function (keywordIds) {
+   assert(!isNullOrUndefinedOrEmpty(keywordIds), "keywordIds must be defined");
+   
+   var self = this;
+   if (!self.widget.getlastValue)
+      self.widget.getlastValue = [];
+   
+   if (Array.isArray(keywordIds)) {
+      $.each(keywordIds, function (index, value) {
+         self.widget.getlastValue.push(value);
+      });
+   } else {
+      self.widget.getlastValue.push(keywordIds);
    }
 };
 
@@ -256,9 +310,7 @@ WidgetApi.prototype.notify = function(message, gravity, timeout) {
 WidgetApi.prototype.manageRollingTitle = function () {
 	var self = this;
    
-	if (self.widget.displayTitle && self.widget.toolbarActivated)
-	{
-
+	if (self.widget.displayTitle && self.widget.toolbarActivated){
 		if (self.widget.$toolbar[0].scrollWidth <= 3) // Round size of the padding-right of the panel-widget-title-toolbar
 			toolbarSize = 0;
 		else
@@ -270,9 +322,7 @@ WidgetApi.prototype.manageRollingTitle = function () {
 					   self.widget.$header[0].scrollWidth;
 		
 		if (overflow > 0) {
-			
-			if (self.widget.$header.find(".panel-widget-title-" + self.widget.id).length !== 0)
-			{ 
+			if (self.widget.$header.find(".panel-widget-title-" + self.widget.id).length !== 0){ 
 				 rule = getRule ( "panel-widget-title-marquee-" + self.widget.id );
                  
 				 //Delete the rule containing the overflow to scroll
@@ -281,8 +331,7 @@ WidgetApi.prototype.manageRollingTitle = function () {
 				 //Append the new overflow
 				 rule[0].appendRule("50% { text-indent: " + -overflow + "px;}");
 			}
-			else
-			{
+			else{
 				// Create completly the css rule
 				$("<style type='text/css'> .panel-widget-title-" + self.widget.id + "{margin: 0 auto; overflow: hidden; white-space: nowrap; box-sizing: border-box; animation: panel-widget-title-marquee-" + self.widget.id +
 				  " 10s steps(150) infinite;-webkit-animation-play-state: running; animation-play-state: running;}</style>").appendTo("head");	//html > //ease-in-out
@@ -290,8 +339,7 @@ WidgetApi.prototype.manageRollingTitle = function () {
 				self.widget.$header.find(".panel-widget-title").addClass("panel-widget-title-" + self.widget.id);
 			}
 		}
-		else
-		{
+		else{
 			// If exist, remove the class associated to the div
 			self.widget.$header.find(".panel-widget-title").removeClass("panel-widget-title-" + self.widget.id);
 		}

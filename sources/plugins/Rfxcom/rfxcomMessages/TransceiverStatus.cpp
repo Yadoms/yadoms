@@ -67,7 +67,7 @@ namespace rfxcomMessages
 
       if (m_statusType == kReceiverStarted)
       {
-         m_validMessage = reinterpret_cast<const char*>(&rbuf.IRESPONSE.msg1), 16;
+         m_validMessage = reinterpret_cast<const char*>(&rbuf.IRESPONSE.msg1);
       }
       else
       {
@@ -216,7 +216,7 @@ namespace rfxcomMessages
 
       auto itRfxcomTypes = RfxcomTypes.find(m_rfxcomType);
       if (itRfxcomTypes == RfxcomTypes.end())
-         return std::to_string(m_rfxcomType);
+         return boost::lexical_cast<std::string>(m_rfxcomType);
 
       return itRfxcomTypes->second;
    }

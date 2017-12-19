@@ -66,7 +66,7 @@ function numericDisplayViewModel() {
           d.resolve();
        })
        .fail(function (error) {
-          notifyError($.t("widgets/chart:errorInitialization"), error);
+          self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
           d.reject();
        });
        

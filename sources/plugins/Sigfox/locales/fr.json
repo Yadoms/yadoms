@@ -31,10 +31,5 @@
          "initializationError": "Erreur d'initialisation",
 			"updateConfiguration": "Mise à jour de la configuration..."
 		}
-	},
-	"extraQueries": {
-		"sigfox": {
-			"name": "Réception d'un message Sigfox"
-		}
 	}
 }

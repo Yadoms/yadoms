@@ -1,5 +1,7 @@
 /** @module Widget class */
 
+var widgetStateEnum = Object.freeze({OK: 0, InvalidConfiguration: 1});
+
 /**
  * Create an instance of Widget
  * @param id database id of the widget
@@ -26,7 +28,8 @@ function Widget(id, idPage, type, title, sizeX, sizeY, position, configuration) 
     this.idPage = idPage;
     this.type = type;
     this.title = title;
-    this.toolbarActivated = true; //by default the toolbar is activated
+    this.toolbarActivated = true;     // by default the toolbar is activated
+    this.state = widgetStateEnum.OK;  // by default, the widget is ok
 
     //we save initial values that could change over the time
     this.initialValues = {};
@@ -50,8 +53,11 @@ function Widget(id, idPage, type, title, sizeX, sizeY, position, configuration) 
     //toolbar of the widget
     this.$toolbar = null;
 
-    //list of all devices {deviceId, keywordId} to listen
+    //list of all keywords {keywordId} to listen
     this.listenedKeywords = [];
+    
+    //list of all keywords {keywordId} to get the last value
+    this.getlastValue = [];
 }
 
 /**
@@ -109,7 +115,6 @@ Widget.prototype.setHeight = function (newHeight) {
 Widget.prototype.setWidth = function (newWidth) {
     if ((this.$gridWidget)) {
         this.$gridWidget.width(newWidth);
-        //this.$content.width(newWidth);
     }
 };
 
@@ -121,6 +126,13 @@ Widget.prototype.title = function () {
     return this.title;
 };
 
+Widget.prototype.setState = function (newState) {
+   this.state = newState;
+};
+
+Widget.prototype.getState = function() {
+   return this.state;
+};
 
 Widget.prototype.getBoundConfigurationSchema = function() {
    var d = new $.Deferred();

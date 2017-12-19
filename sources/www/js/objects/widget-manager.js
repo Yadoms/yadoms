@@ -200,7 +200,7 @@ WidgetManager.deleteWidget = function (widgetToDelete) {
 
 WidgetManager.updateToServer = function (widget) {
     assert(!isNullOrUndefined(widget), "widget must be defined");
-    
+
     var d = new $.Deferred();
 
     RestEngine.putJson("/rest/widget/" + widget.id, { data: JSON.stringify(widget) })
@@ -208,9 +208,6 @@ WidgetManager.updateToServer = function (widget) {
          //we notify that configuration has changed
          try {
              WidgetManager.updateWidgetConfiguration_(widget).always(function(){
-                // update the widget acquisition filter
-                updateWebSocketFilter();
-                
                 //we ask for a refresh of widget data
                 updateWidgetPolling(widget)
                 .always(d.resolve);
@@ -247,16 +244,18 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
         widget.listenedKeywords = [];
         // Update widget specific values
         if (!isNullOrUndefined(widget.viewModel.configurationChanged)) {
+           
+            // default state is OK
+            widget.viewModel.widgetApi.setState(widgetStateEnum.OK);
             var defferedResult = widget.viewModel.configurationChanged();
             //we manage answer if it is a promise or not
             defferedResult = defferedResult || new $.Deferred().resolve();
             defferedResult
-            .done(function () {
+            .always(function () {
                 //we manage the toolbar api specific icons
                 widget.viewModel.widgetApi.manageBatteryConfiguration()
                 .always(d.resolve);
-            })
-            .fail(d.resolve);
+            });
         } else {
             d.resolve();
         }
@@ -314,10 +313,11 @@ WidgetManager.loadWidgets = function (widgetList, pageWhereToAdd) {
     $.when.apply($, arrayOfDeffered)
     .done(function () {
         var arrayOfLoadingWidgetDeferred = [];
+        
         $.each(widgetList, function (index, widget) {
             arrayOfLoadingWidgetDeferred.push(WidgetManager.loadWidget(widget, pageWhereToAdd));
         });
-
+           
         $.when.apply($, arrayOfLoadingWidgetDeferred)
         .done(d.resolve)
         .fail(d.reject);
@@ -535,13 +535,8 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
                         }
 						
                         widget.$gridWidget.find(".textfit").fitText();
-						
-                        //we ask for widget refresh data
-                        updateWidgetPolling(widget)
-                        .always(function() {
-                           widget.viewModel.widgetApi.manageRollingTitle();
-                           d.resolve();                           
-                        });
+                        widget.viewModel.widgetApi.manageRollingTitle();
+                        d.resolve();
                     }).fail(d.reject);
                 }).fail(d.reject);
             })
@@ -624,6 +619,7 @@ WidgetManager.createGridWidget = function (widget) {
 
     domWidget += ">\n" +
         "<div class=\"grid-item-content\">\n" +
+          "<div class=\"panel-widget-desactivated hidden\"><div class=\"panel-widget-header\"><i class=\"fa fa-exclamation-triangle wigetConfigurationErrorIcon\" title=\""+ $.t("objects.widgetManager.unknownError") +"\"></i></div></div>\n" +
           "<div class=\"panel-widget-customization-overlay customization-item hidden\">\n" +
              "<div class=\"customizationToolbar widgetCustomizationToolbar\">";
 

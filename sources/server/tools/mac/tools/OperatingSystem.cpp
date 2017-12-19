@@ -80,14 +80,5 @@ namespace tools {
       shared::versioning::CVersion version(Poco::Environment::osVersion());
       return version;
    }
-
-   Poco::ProcessHandle COperatingSystem::launchNativeScript(const std::string& scriptPath,
-                                                            const Poco::Process::Args& args)
-   {
-      Poco::Process::Args nativeArgs = args;
-      nativeArgs.insert(args.begin(), scriptPath);
-      YADOMS_LOG(debug) << "launchNativeScript sh with args " << boost::algorithm::join(nativeArgs, ", ");
-      return Poco::Process::launch("sh", nativeArgs);
-   }
    
 } //namespace tools

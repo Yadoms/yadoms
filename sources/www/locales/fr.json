@@ -460,8 +460,7 @@
           "confirmResetToDefault": "Cette opération va restaurer la configuration par défaut. Continuer ?",
           "configurationSaved": "Configuration système sauvegardée",
           "defaultConfigurationRestored": "Configuration par défaut restaurée",
-          "errorDuringSavingConfiguration": "Erreur lors de la sauvegarde de la configuration système",
-          "errorDuringLoadingConfiguration": "Erreur lors du chargement de la configuration système"
+          "errorDuringSavingConfiguration": "Erreur lors de la sauvegarde de la configuration système"
         },
         "user-configuration": {
           "title": "Configuration utilisateur"
@@ -958,8 +957,10 @@
       "unableToGetWidgets": "Impossible d'obtenir les Widgets",
       "partOfWidgetIsMissing": "Impossible d'obtenir une partie du widget __widgetName__. Les widgets de ce type ont été désactivés.",
       "widgetHasGeneratedAnExceptionDuringCallingMethod": "Le widget __widgetName__ a généré une exception à l'appel de __methodName__()",
-            "errorDuringGettingDeviceInformation": "Erreur lors de la récupération des informations de l'équipement",
-            "loadingWidgetsError": "Erreur lors du chargement d'un widget"
+      "errorDuringGettingDeviceInformation": "Erreur lors de la récupération des informations de l'équipement",
+      "loadingWidgetsError": "Erreur lors du chargement d'un widget",
+      "widgetDisabled": "Le widget __widgetName__ a été désactivé car la configuration est incorrecte (équipement manquant ou supprimé)",
+      "unknownError" : "Erreur inconnue"
     },
     "widgetPackageManager": {
       "incorrectPackage": "Le paquet du widget est incorrect",

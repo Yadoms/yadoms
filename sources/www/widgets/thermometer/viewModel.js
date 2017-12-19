@@ -12,9 +12,6 @@ function thermometerViewModel()
    this.WidgetHeight = 175;
    this.WidgetWidth  = 95;
    
-   this.tempMax = 50;
-   this.tempMin = -40;
-   
    var isSmall = true;
 	 
 
@@ -58,7 +55,8 @@ function thermometerViewModel()
       }
    };
    
-   this.refresh = function(){
+   this.refresh = function()
+   {
 	   var self = this;
 
       var element = self.widgetApi.find(".thermometer-canvas");
@@ -81,6 +79,10 @@ function thermometerViewModel()
 		//dy : the height of the column. The final value y + dy should equal to 74 (in the colour ball).
 		// -40° -> 10 of height
 		// 50°  -> 60 of height
+		
+      // Value 
+      var tempMax = self.widget.configuration.customYAxisMinMax.content.maximumValue;
+      var tempMin = self.widget.configuration.customYAxisMinMax.content.minimumValue;
       
       // Value for the physical representation
       var posYMin = 10 * self.WidgetHeight / 99;
@@ -99,24 +101,24 @@ function thermometerViewModel()
       // We draw into the thermeter only if a value is present
       if (self.data !== "-")
       {
-         ctx.fillStyle = "rgb(" + Math.round(255 - (self.tempMax - self.data) * 255 / 90) + ",0," + Math.round(255 - (self.data - self.tempMin) * 255 / 90) + ")";
+         ctx.fillStyle = "rgb(" + Math.round(255 - (tempMax - self.data) * 255 / 90) + ",0," + Math.round(255 - (self.data - tempMin) * 255 / 90) + ")";
          ctx.fill();
          
          var lenghtColumn = posYBall - initialPositionY;		
          
-         if (self.data > self.tempMin && self.data < self.tempMax && (self.tempMax - self.tempMin!=0))
+         if (self.data > tempMin && self.data < tempMax)
          {
-            initialPositionY = posYMin + ( self.tempMax - self.data )*( posYMax - posYMin )/ ( self.tempMax - self.tempMin) ;
+            initialPositionY = posYMin + ( tempMax - self.data )*( posYMax - posYMin )/ ( tempMax - tempMin) ;
             lenghtColumn = posYBall - initialPositionY;
          }
          else
          {
-            if ( self.data <= self.tempMin )
+            if ( self.data <= tempMin )
             {
                initialPositionY = posYMax;
                lenghtColumn = posYBall - initialPositionY;
             }
-            if (self.data > self.tempMax )
+            if (self.data > tempMax )
             {
                initialPositionY = posYMin;
                lenghtColumn = posYBall - initialPositionY;
@@ -167,11 +169,6 @@ function thermometerViewModel()
 	   
       //we fill the deviceId of the battery indicator
        self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
-       
-      self.tempMax = self.widget.configuration.customYAxisMinMax.content.maximumValue;
-      self.tempMin = self.widget.configuration.customYAxisMinMax.content.minimumValue;
-      
-      self.refresh();
    };
 
    this.resized = function() 
@@ -182,37 +179,49 @@ function thermometerViewModel()
 	   {
 		   self.WidgetWidth  = 190;
 		   self.WidgetHeight = 170;
+		   
+		   self.refresh();
 		   isSmall = false;
 	   }
        else if ( this.widget.getHeight() == 200 && this.widget.getWidth() == 100 )
 	   {
 		   self.WidgetWidth  = 95;
 		   self.WidgetHeight = 170;
-
+		   
+		   //To be painted only one time
+		   self.refresh();
 	   }	   
        else if ( this.widget.getHeight() == 300 && this.widget.getWidth() == 100 )
 	   {
 		   self.WidgetWidth  = 95;
 		   self.WidgetHeight = 272;
+		   
+		   //To be painted only one time
+		   self.refresh();
 	   }  
        else if ( this.widget.getHeight() == 300 && this.widget.getWidth() == 200 )
 	   {
 		   self.WidgetWidth  = 190;
 		   self.WidgetHeight = 272;
+		   
+		   //To be painted only one time
+		   self.refresh();
 	   }
        else if (this.widget.getHeight() == 400 && this.widget.getWidth() == 200 )
 	   {
 		   self.WidgetWidth  = 190;
 		   self.WidgetHeight = 368;
+		   
+		   //To be painted only one time
+		   self.refresh();
 	   }	   
 	   else
 	   {
 		   self.WidgetWidth  = 95;
 		   self.WidgetHeight = 368;
+		   
+		   self.refresh();
 		   isSmall = true;
 	   }
-      
-      //To be painted only one time
-      self.refresh();
-   };
+   };	   
 };

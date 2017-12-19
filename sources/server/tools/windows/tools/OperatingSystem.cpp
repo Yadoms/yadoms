@@ -2,7 +2,6 @@
 #include "OperatingSystem.h"
 #include <windows.h>
 #include <shared/exception/Exception.hpp>
-#include <Poco/Process.h>
 
 namespace tools
 {
@@ -58,10 +57,6 @@ namespace tools
       shared::versioning::CVersion version(osvi.dwMajorVersion, osvi.dwMinorVersion, osvi.dwBuildNumber);
       return version;
    }
-
-   Poco::ProcessHandle COperatingSystem::launchNativeScript(const std::string& scriptPath,
-                                                            const Poco::Process::Args& args)
-   {
-      return Poco::Process::launch(scriptPath, args);
-   }
 } //namespace tools
+
+
