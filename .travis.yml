@@ -1,6 +1,6 @@
 language: cpp
 dist: trusty
-group: deprecated-2017Q4
+filter_secrets: false
 
 #limit to git depth to 1 because don't use any git command in this script
 git:
