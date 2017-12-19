@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <shared/DataContainer.h>
 #include <shared/Log.h>
+#include "Helpers.h"
 
 #define NB_LINE_TO_PARSE 10
 
@@ -80,7 +81,7 @@ void CMemoryLoad::read()
       // http://blog.guillaume.fenollar.fr/2013/11/comprendre-conso-memoire-vive-ram-linux.html
 
       float MemoryLoad = static_cast<float>(((memTotal-memFree)-memBuffer-memCached) * 100 / (float) memTotal );
-      m_keyword->set(MemoryLoad);
+      m_keyword->set(valueRoundWithPrecision(MemoryLoad,3));
    }
    else
       YADOMS_LOG(warning) << "the memory load could not be calculated";

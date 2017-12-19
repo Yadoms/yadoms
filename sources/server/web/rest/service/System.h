@@ -3,6 +3,7 @@
 #include "web/rest/RestDispatcher.h"
 #include "IRunningInformation.h"
 #include <shared/plugin/yPluginApi/StandardCapacity.h>
+#include "dateTime/TimeZoneDatabase.h"
 
 namespace web
 {
@@ -13,7 +14,7 @@ namespace web
          class CSystem : public IRestService
          {
          public:
-            explicit CSystem();
+            explicit CSystem(const boost::shared_ptr<dateTime::CTimeZoneDatabase> timezoneDatabase);
             virtual ~CSystem();
 
             // IRestService implementation
@@ -34,16 +35,19 @@ namespace web
 
          private:
             shared::CDataContainer getSerialPorts() const;
-            shared::CDataContainer getNetworkInterfaces(bool includeLoopback) const;
+            shared::CDataContainer getNetworkInterfaces(const bool includeLoopback) const;
             shared::CDataContainer platformIs(const std::string& refPlatform) const;
             static void addVirtualDevicesSupportedCapacity(const shared::plugin::yPluginApi::CStandardCapacity& capacity);
             static const shared::CDataContainer& getVirtualDevicesSupportedCapacities();
+            shared::CDataContainer getSupportedTimezones() const;
 
             static std::string m_restKeyword;
 
             boost::shared_ptr<IRunningInformation> m_runningInformation;
 
-            static shared::CDataContainer VirtualDevicesSupportedCapacities;
+            static shared::CDataContainer m_virtualDevicesSupportedCapacities;
+
+            boost::shared_ptr<dateTime::CTimeZoneDatabase> m_timezoneDatabase;
          };
       } //namespace service
    } //namespace rest

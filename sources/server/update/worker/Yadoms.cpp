@@ -8,6 +8,8 @@
 #include "tools/FileSystem.h"
 #include "i18n/ClientStrings.h"
 #include <shared/process/SoftwareStop.h>
+#include "tools/OperatingSystem.h"
+#include <boost/process/environment.hpp>
 
 namespace update
 {
@@ -28,9 +30,6 @@ namespace update
          //////////////////////////////////////////////////////////
          // STEP2 : download package file
          //////////////////////////////////////////////////////////
-         auto tempFolder = tools::CFileSystem::createTemporaryFolder();
-
-         YADOMS_LOG(information) << "Temporary update folder :" << tempFolder.toString();
 
          //check all needed parameters are included
          if (!versionToUpdate.containsValue("downloadUrl"))
@@ -57,17 +56,17 @@ namespace update
 
          try
          {
-            YADOMS_LOG(information) << "Downloading package" << downloadUrl;
+            YADOMS_LOG(information) << "Downloading package " << downloadUrl;
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateYadomsDownload, std::string(), versionToUpdate);
             auto downloadedPackage = CWorkerTools::downloadPackageAndVerify(downloadUrl, md5HashExpected, progressCallback, i18n::CClientStrings::UpdateYadomsDownload, 0.0, 50.0);
-            YADOMS_LOG(information) << "Package " << downloadUrl << " successfully downloaded";
+            YADOMS_LOG(information) << "Package successfully downloaded into " << downloadedPackage.toString();
 
             //////////////////////////////////////////////////////////
             // STEP3 : extract package
             //////////////////////////////////////////////////////////
             try
             {
-               YADOMS_LOG(information) << "Extracting downloaded package ";
+               YADOMS_LOG(information) << "Extracting downloaded package";
 
                progressCallback(true, 50.0f, i18n::CClientStrings::UpdateYadomsExtract, std::string(), versionToUpdate);
                shared::compression::CExtract unZipper;
@@ -130,17 +129,18 @@ namespace update
                                            const std::string& commandtoRun,
                                            boost::shared_ptr<IRunningInformation>& runningInformation)
       {
-         //append the command lien request to the extracted path
+         //append the command line request to the extracted path
          auto executablePath(extractedPackageLocation);
          executablePath.setFileName(commandtoRun);
 
          //create the argument list
          Poco::Process::Args args;
-         Poco::Path p(runningInformation->getExecutablePath());
-         args.push_back(p.parent().toString());
+         args.push_back(std::to_string(boost::this_process::get_id()));
+         args.push_back(Poco::Path(runningInformation->getExecutablePath()).parent().toString());
 
          //run updater script
-         auto handle = Poco::Process::launch(executablePath.toString(), args);
+         YADOMS_LOG(debug) << "Launch script \"" << executablePath.toString() << "\" with args " << boost::algorithm::join(args, ", ");
+         auto handle = tools::COperatingSystem::launchNativeScript(executablePath.toString(), args);
 
          //the update command is running, wait for 5 seconds and ensure it is always running
          boost::this_thread::sleep(boost::posix_time::seconds(5));

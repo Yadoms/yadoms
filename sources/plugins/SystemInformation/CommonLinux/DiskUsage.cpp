@@ -6,6 +6,7 @@
 #include <boost/regex.hpp> 
 #include <boost/lexical_cast.hpp>
 #include "LinuxHelpers.h"
+#include "Helpers.h"
 
 CDiskUsage::CDiskUsage(const std::string& keywordName,
                        const std::string& driveName)
@@ -35,7 +36,7 @@ void CDiskUsage::read()
              long long numblock    = boost::lexical_cast<long long>(match[2]);
              long long availblocks = boost::lexical_cast<long long>(match[4]);
 			 
-             m_keyword->set((numblock - availblocks)/double(numblock)*100);
+             m_keyword->set(valueRoundWithPrecision((numblock - availblocks)/double(numblock)*100,3));
          }
        }
    }
