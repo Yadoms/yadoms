@@ -219,7 +219,7 @@ boost::shared_ptr<CRfxcomFirmwareUpdater::CHexData> CRfxcomFirmwareUpdater::load
    }
 }
 
-void CRfxcomFirmwareUpdater::razRawDataFromTemplate(unsigned char (& rowData)[255])
+void CRfxcomFirmwareUpdater::razRawDataFromTemplate(unsigned char (& rowData)[256])
 {
    for (size_t i = 0; i < sizeof rowData; ++i)
       rowData[i] = (i + 1) % 4 ? 255 : 0;
@@ -236,7 +236,7 @@ void CRfxcomFirmwareUpdater::prepareDataForWriteIntoPic(const boost::shared_ptr<
    // Erase instructions are performed in blocks of 8 rows called pages (2048 bytes)
 
    // Init data array with 0xFF (init phantom byte to 0)
-   unsigned char rowData[255];
+   unsigned char rowData[256];
    razRawDataFromTemplate(rowData);
 
    std::vector<unsigned char> overflowArray;

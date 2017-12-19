@@ -28,7 +28,7 @@ protected:
    };
 
    boost::shared_ptr<CHexData> loadFile(const std::string& fileContent) const;
-   static void razRawDataFromTemplate(unsigned char (&rowData)[255]);
+   static void razRawDataFromTemplate(unsigned char (&rowData)[256]);
    void prepareDataForWriteIntoPic(const boost::shared_ptr<CHexData> fileData,
                                    CHexData& programMemory,
                                    CHexData& eepromMemory,
