@@ -544,8 +544,8 @@ void CRfxcomFirmwareUpdater::rfxcomWritingMemory(boost::shared_ptr<CPicBoot> pic
 
       // Verify block
       if (!picBoot->verifyPic(memory,
-                              dataBlockIterator->first,
-                              dataBlockIterator->second))
+                              writeBlockAddress,
+                              writeBlockData))
          throw std::runtime_error(
             (boost::format("Error verifying written data at %1%") % dataBlockIterator->first).str());
    }

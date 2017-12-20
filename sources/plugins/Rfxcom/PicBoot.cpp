@@ -131,6 +131,10 @@ boost::shared_ptr<std::vector<unsigned char>> CPicBoot::readPic(const EMemoryKin
                                               kMaxPacket);
 
    // Remove header from answer
+   if (receivedMessage->size() < 6)
+      throw std::invalid_argument(
+         (boost::format("CPicBoot::readPic : received message too small %1%, expected 6 min") % receivedMessage->size()).str());
+
    return boost::make_shared<std::vector<unsigned char>>(receivedMessage->begin() + 5,
                                                          receivedMessage->end());
 }
