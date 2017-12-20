@@ -479,7 +479,8 @@ void CRfxcomFirmwareUpdater::rfxcomClearMemory(boost::shared_ptr<CPicBoot> picBo
 }
 
 void CRfxcomFirmwareUpdater::rfxcomWritingMemory(boost::shared_ptr<CPicBoot> picBoot,
-                                                 const boost::shared_ptr<picConfigurations::IPicConfiguration> picConfiguration,
+                                                 const boost::shared_ptr<picConfigurations::IPicConfiguration>
+                                                 picConfiguration,
                                                  const CHexData& programMemory,
                                                  const CHexData& eepromMemory,
                                                  const CHexData& configurationMemory) const
@@ -489,12 +490,14 @@ void CRfxcomFirmwareUpdater::rfxcomWritingMemory(boost::shared_ptr<CPicBoot> pic
    // Write program memory
    rfxcomWritingMemory(picBoot,
                        CPicBoot::kProgramMemory,
+                       picConfiguration,
                        programMemory);
 
    // Write Device EEPROM if concerned
    if (picConfiguration->deviceType() == picConfigurations::IPicConfiguration::kPic24F)
       rfxcomWritingMemory(picBoot,
                           CPicBoot::kEepromMemory,
+                          picConfiguration,
                           eepromMemory);
 
    // Send VerifyOk Command to indicate bootloading finised successfully
@@ -505,16 +508,39 @@ void CRfxcomFirmwareUpdater::rfxcomWritingMemory(boost::shared_ptr<CPicBoot> pic
 
 void CRfxcomFirmwareUpdater::rfxcomWritingMemory(boost::shared_ptr<CPicBoot> picBoot,
                                                  const CPicBoot::EMemoryKind memory,
+                                                 const boost::shared_ptr<picConfigurations::IPicConfiguration>
+                                                 picConfiguration,
                                                  const CHexData& data)
 {
-   for (auto dataBlockIterator = data.begin();
-        dataBlockIterator != data.end();
-        ++dataBlockIterator)
+   const auto lineSize = data.begin()->second.size();
+
+   auto dataBlockIterator = data.begin();
+   while (dataBlockIterator != data.end())
    {
-      // Write block
+      const auto writeBlockAddress = dataBlockIterator->first / picConfiguration->bytesPerAddr();
+      std::vector<unsigned char> writeBlockData;
+      for (auto idxBlock = 0; idxBlock < picConfiguration->writeBlockSize() / lineSize; ++idxBlock)
+      {
+         if (dataBlockIterator != data.end())
+         {
+            writeBlockData.insert(writeBlockData.end(),
+                                  dataBlockIterator->second.begin(),
+                                  dataBlockIterator->second.end());
+            ++dataBlockIterator;
+         }
+         else
+         {
+            // No more data available, complete block with 0xFF data
+            writeBlockData.insert(writeBlockData.end(),
+                                  lineSize,
+                                  0xFF);
+         }
+      }
+
+      // We have now a full block, write it
       picBoot->writePic(memory,
-                        dataBlockIterator->first,
-                        dataBlockIterator->second);
+                        writeBlockAddress,
+                        writeBlockData);
 
       // Verify block
       if (!picBoot->verifyPic(memory,

@@ -48,6 +48,7 @@ protected:
                             const CHexData& configurationMemory) const;
    static void rfxcomWritingMemory(boost::shared_ptr<CPicBoot> picBoot,
                                    const CPicBoot::EMemoryKind memory,
+                                   const boost::shared_ptr<picConfigurations::IPicConfiguration> picConfiguration,
                                    const CHexData& data);
    void rfxcomVerifyMemory(boost::shared_ptr<CPicBoot> picBoot);
    static void rfxcomReboot(boost::shared_ptr<CPicBoot> picBoot);
