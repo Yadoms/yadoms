@@ -703,17 +703,16 @@ WidgetManager.createGridWidget = function (widget) {
 
             resizeTimeout = setTimeout(function () {
                 try {
-                    if (widget.viewModel.resized !== undefined)
-                    {
-                        var defferedResult = widget.viewModel.resized();
-                        //we manage answer if it is a promise or not
-                        defferedResult = defferedResult || new $.Deferred().resolve();
-                        defferedResult.always(function() {
-                           widget.viewModel.widgetApi.manageRollingTitle();
-                        });
+                   
+                    var defferedResult;
+                    if (widget.viewModel.resized !== undefined){
+                        defferedResult = widget.viewModel.resized();
                     }
-                    else // manage the rolling title anyway
+                    //we manage answer if it is a promise or not
+                    defferedResult = defferedResult || new $.Deferred().resolve();
+                    defferedResult.always(function() {
                        widget.viewModel.widgetApi.manageRollingTitle();
+                    });
                 }
                 catch (e) {
                     notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'resized' }));
