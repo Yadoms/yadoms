@@ -277,4 +277,16 @@ widgetViewModelCtor =
               average = average / this.state.length;
               self.command(average);
           }
+          
+          this.toggleCommand = function () {
+              var self = this;
+
+              if (this.command() === 0)
+                  self.command(1);
+              else
+                  self.command(0);
+
+              //Send the command
+              self.commandClick(self.command());
+          }          
       };
