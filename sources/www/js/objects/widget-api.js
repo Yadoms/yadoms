@@ -162,7 +162,7 @@ WidgetApi.prototype.manageBatteryConfiguration = function () {
                  //we ask immediately for the battery value
                  AcquisitionManager.getLastValue(keyword[0].id)
                  .done(function (lastValue) {
-                    if (lasValue.value !== "")
+                    if (lastValue.value !== "")
                         self.widget.viewModel.widgetApi.updateBatteryLevel(lastValue.value);
                      else 
                         $battery.addClass("hidden"); // if no value => we hide the icon
@@ -270,7 +270,7 @@ WidgetApi.prototype.manageRollingTitle = function () {
 			toolbarSize = 0;
 		else
 			toolbarSize = self.widget.$toolbar[0].scrollWidth;
-		
+      
 		//Calculate the overflow ! Theses values could be obtain, only after the drawing of all elements !
 		var overflow = toolbarSize +
 					   self.widget.$header.find(".panel-widget-title")[0].scrollWidth -
