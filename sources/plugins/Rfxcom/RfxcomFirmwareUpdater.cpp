@@ -272,19 +272,23 @@ void CRfxcomFirmwareUpdater::prepareDataForWriteIntoPic(const boost::shared_ptr<
             {
                std::vector<unsigned char> outLine;
                auto outAddr = rowStartAddress;
+               auto rowAddress = outAddr;
                auto inAddr = 0;
                while (inAddr < 256)
                {
                   // Built the data line
                   if (inAddr % 16 == 0)
+                  {
                      outLine.clear();
+                     rowAddress = outAddr;
+                  }
 
                   outLine.push_back(rowData[inAddr]);
                   ++outAddr;
                   ++inAddr;
 
                   if (inAddr % 16 == 0 && inAddr != 0)
-                     programMemory[outAddr] = outLine;
+                     programMemory[rowAddress] = outLine;
                }
 
                emptyRow = true;
@@ -365,19 +369,23 @@ void CRfxcomFirmwareUpdater::prepareDataForWriteIntoPic(const boost::shared_ptr<
    {
       std::vector<unsigned char> outLine;
       auto outAddr = rowStartAddress;
+      auto rowAddress = outAddr;
       auto inAddr = 0;
       while (inAddr < 256)
       {
          // Built the data line
          if (inAddr % 16 == 0)
+         {
             outLine.clear();
+            rowAddress = outAddr;
+         }
 
          outLine.push_back(rowData[inAddr]);
          ++outAddr;
          ++inAddr;
 
          if (inAddr % 16 == 0 && inAddr != 0)
-            programMemory[outAddr] = outLine;
+            programMemory[rowAddress] = outLine;
       }
    }
 }
