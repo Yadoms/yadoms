@@ -78,21 +78,26 @@ widgetViewModelCtor =
 
           this.configurationChanged = function () {
               var self = this;
+              var deffered;
 
               if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
                   return;
 
-              if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
+              if (!isNullOrUndefined(this.widget.configuration.device)) {
                   self.widgetApi.registerKeywordAcquisitions(this.widget.configuration.device.keywordId);
 
                   // Get the capacity of the keyword
-                  var deffered = KeywordManager.get(this.widget.configuration.device.keywordId)
+                  deffered = KeywordManager.get(this.widget.configuration.device.keywordId);
+                  
+                 deffered
                  .done(function (keyword) {
                      if (keyword.accessMode === "GetSet")
                          self.readonly(false);
                      else
                          self.readonly(true);
                  });
+              }else {
+                 deffered = new $.Deferred().resolve();
               }
 
               if (!isNullOrUndefined(this.widget.configuration.kind)) {
@@ -102,6 +107,7 @@ widgetViewModelCtor =
               if (!isNullOrUndefined(this.widget.configuration.invert)) {
                   this.invert(parseBool(this.widget.configuration.invert));
               }
+              return deffered.promise();
           };
 
           /**
