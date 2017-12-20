@@ -33,7 +33,7 @@ function initializeWidgetEngine() {
 
             //we ensure that one page is selected
             PageManager.ensureOnePageIsSelected();
-
+            
             //we ask for the last event to ask only those occurs after this one
             EventLoggerManager.getLast()
             .done(function (data) {
@@ -118,6 +118,7 @@ function tabClick(pageId) {
         if (!page.loaded) {
             requestWidgets(page)
             .always(function () {
+               debugger;
                //we poll all widget data
                updateWidgetsPolling(page).always(function() {
                  var b = page.$grid.packery('reloadItems');
@@ -127,6 +128,7 @@ function tabClick(pageId) {
             });
         } else {
             //we poll all widget data
+            debugger;
             updateWidgetsPolling(page).always(function() {
                page.$grid.packery('destroy');
                page.$grid.packery(PageManager.packeryOptions);
@@ -355,15 +357,15 @@ function updateWidgetsPolling() {
    updateWidgetsPolling(pageId = page);
 }
 
-function updateWidgetsPolling(page) {
+function updateWidgetsPolling(pageId) {
     var d = new $.Deferred();
     var getLastValuesKeywords = [];
     
     //we browse each widget instance
-    if (page == null) {
+    if (pageId == null) {
         d.resolve();
     } else {
-       $.each(page.widgets, function (widgetIndex, widget) {
+       $.each(pageId.widgets, function (widgetIndex, widget) {
            //we ask which devices are needed for this widget instance
            if (!isNullOrUndefinedOrEmpty(widget.getlastValue))
               getLastValuesKeywords = getLastValuesKeywords.concat (widget.getlastValue);
@@ -372,9 +374,8 @@ function updateWidgetsPolling(page) {
        updateWidgetPollingByKeywordsId(duplicateRemoval(getLastValuesKeywords))
        .done(function (data) {
           $.each(data, function (index, acquisition) {
-             //debugger;
              //we signal the new acquisition to the widget if the widget support the method
-             $.each(page.widgets, function (widgetIndex, widget) {
+             $.each(pageId.widgets, function (widgetIndex, widget) {
                 if ($.inArray(acquisition.keywordId, widget.getlastValue)!=-1)
                 {
                    if (isNullOrUndefined(acquisition.error)){
@@ -386,6 +387,11 @@ function updateWidgetsPolling(page) {
                 }
              });
           });
+          
+          $.each(pageId.widgets, function (widgetIndex, widget) {
+             widget.viewModel.widgetApi.manageRollingTitle();
+          });             
+          
           d.resolve();
        })
        .fail(d.reject);

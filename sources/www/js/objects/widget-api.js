@@ -210,7 +210,7 @@ WidgetApi.prototype.manageBatteryConfiguration = function () {
                  $battery.append("<span class=\"\"/>");
                  $battery.attr("keywordId", keyword[0].id);
                  //we add it to the filter of keyword for websockets
-                 self.widget.viewModel.widgetApi.registerKeywordAcquisitions(keyword[0].id);
+                 self.widget.viewModel.widgetApi.registerKeywordForNewAcquisitions(keyword[0].id);
 
                  //we ask immediately for the battery value
                  AcquisitionManager.getLastValue(keyword[0].id)
@@ -310,17 +310,25 @@ WidgetApi.prototype.notify = function(message, gravity, timeout) {
 WidgetApi.prototype.manageRollingTitle = function () {
 	var self = this;
    
+   //console.log ("widget !", self.widget);
+   
 	if (self.widget.displayTitle && self.widget.toolbarActivated){
 		if (self.widget.$toolbar[0].scrollWidth <= 3) // Round size of the padding-right of the panel-widget-title-toolbar
 			toolbarSize = 0;
 		else
 			toolbarSize = self.widget.$toolbar[0].scrollWidth;
 		
+      //console.log ("toolbarSize : ", toolbarSize);
+      //console.log ("self.widget.$header.find('.panel-widget-title')[0].scrollWidth : ", self.widget.$header.find(".panel-widget-title")[0].scrollWidth);
+      //console.log ("self.widget.$header[0].scrollWidth : ", self.widget.$header[0].scrollWidth);
+      
 		//Calculate the overflow ! Theses values could be obtain, only after the drawing of all elements !
 		var overflow = toolbarSize +
 					   self.widget.$header.find(".panel-widget-title")[0].scrollWidth -
 					   self.widget.$header[0].scrollWidth;
 		
+      //console.log ("overflow : ", overflow);
+      
 		if (overflow > 0) {
 			if (self.widget.$header.find(".panel-widget-title-" + self.widget.id).length !== 0){ 
 				 rule = getRule ( "panel-widget-title-marquee-" + self.widget.id );
