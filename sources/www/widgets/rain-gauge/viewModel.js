@@ -92,9 +92,15 @@ function rainGaugeDisplayViewModel() {
   
     this.configurationChanged = function () {
         var self = this;
+        var arrayOfDeffered = [];
+        var d = new $.Deferred();
         
         //we get the unit of the keyword
-        self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
+        var deffered1 = self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId);
+        arrayOfDeffered.push(deffered1);
+        
+        deffered1
+        .done(function (keyword) {
             self.unit($.t(keyword.units));
         });
 
@@ -111,10 +117,11 @@ function rainGaugeDisplayViewModel() {
        
        // Retrieve last values
        date24h = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'days').startOf('minute'));
-       var deffered = RestEngine.getJson("rest/acquisition/keyword/" + self.widget.configuration.device.keywordId + "/" + date24h);
+       var deffered2 = RestEngine.getJson("rest/acquisition/keyword/" + self.widget.configuration.device.keywordId + "/" + date24h);
+       arrayOfDeffered.push(deffered2);
        
-       deffered.done(function (data) {
-          
+       deffered2
+       .done(function (data) {
           if (data.data !==""){
              self.acquisitionData.splice(0, self.acquisitionData.length);
              Array.prototype.push.apply(self.acquisitionData, data.data);
@@ -128,7 +135,11 @@ function rainGaugeDisplayViewModel() {
          console.warn(message);
       });
       
-      return deffered.promise();
+      $.when.apply($, arrayOfDeffered) // The first failing array fail the when.apply
+      .done(d.resolve)
+      .fail(d.reject);
+      
+      return d.promise();
     }
 
     this.onTime = function (serverLocalTime) {

@@ -133,8 +133,7 @@ widgetViewModelCtor =
               try{
                  self.invert(self.widget.configuration.invert);
               }
-              catch(error)
-              {
+              catch(error){
                  self.invert(false);
               }
               
@@ -183,7 +182,8 @@ widgetViewModelCtor =
                }
                
             // This variable is used only for the display
-            $.whenAll(arrayOfDeffered).done(function () {
+            $.when.apply($, arrayOfDeffered)
+            .done(function () {
                self.readonly ( readOnlyMode );
                d.resolve();
             })

@@ -31,30 +31,19 @@ widgetViewModelCtor = function gaugeViewModel() {
             "libs/highstock/js/modules/exporting.js",
             "libs/highstock/js/modules/solid-gauge.js"
         ]).done(function () {
-            
+           
             //we configure the toolbar
             self.widgetApi.toolbar({
                 activated: true,
                 displayTitle: true,
                 batteryItem: true
             });
-            
-            //we get the unit of the keyword
-            self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
-                self.unit($.t(keyword.units));
-                d.resolve();
-            })
-            .fail(function (error) {
-               notifyError($.t("widgets/gauge:errorInitialization"), error);
-               throw $.t("widgets/gauge:errorInitialization");
-               d.reject();
-            });
+            d.resolve();
         })
         .fail(function (error) {
-            notifyError($.t("widgets/gauge:errorInitialization"), error);
-            throw $.t("widgets/gauge:errorInitialization");
             d.reject();
         });
+        
         return d.promise();
     };
 
@@ -88,8 +77,8 @@ widgetViewModelCtor = function gaugeViewModel() {
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
 
         // Delete all elements in stopsArray
-        self.stopsArray = [];
-
+        self.stopsArray = [];      
+        
         switch (self.widget.configuration.displayMode.activeSection) {
             case "solidColor":
                 self.stopsArray.push([0, self.widget.configuration.displayMode.content.solidColor.content.color]);
@@ -113,9 +102,12 @@ widgetViewModelCtor = function gaugeViewModel() {
         }
 
          //we get the unit of the keyword
-         self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
-             self.unit($.t(keyword.units));
-         });        
+         var deffered = self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId);
+         
+         deffered
+         .done(function (keyword) {
+            self.unit($.t(keyword.units));
+         });
 
         var minValue;
         var maxValue;
@@ -191,6 +183,8 @@ widgetViewModelCtor = function gaugeViewModel() {
         };
         self.$chart.highcharts(gaugeOptions);
         self.chart = self.$chart.highcharts();
+        
+        return deffered.promise();
     };
 
     this.resized = function () {
