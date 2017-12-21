@@ -77,6 +77,18 @@
     flex: 0 0 25px;
 }
 
+.panel-widget-header-desactivated{
+    text-align: center;
+    white-space: nowrap;
+    max-height: 25px;
+    -moz-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    padding: 1px 0;
+    width: 100%;
+    border-radius: 0;
+    flex: 0 0 25px;
+}
+
 .panel-widget-body {
     padding: 0;
     overflow: hidden;

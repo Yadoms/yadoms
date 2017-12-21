@@ -118,7 +118,6 @@ function tabClick(pageId) {
         if (!page.loaded) {
             requestWidgets(page)
             .always(function () {
-               debugger;
                //we poll all widget data
                updateWidgetsPolling(page).always(function() {
                  var b = page.$grid.packery('reloadItems');
@@ -387,11 +386,6 @@ function updateWidgetsPolling(pageId) {
                 }
              });
           });
-          
-          $.each(pageId.widgets, function (widgetIndex, widget) {
-             widget.viewModel.widgetApi.manageRollingTitle();
-          });             
-          
           d.resolve();
        })
        .fail(d.reject);

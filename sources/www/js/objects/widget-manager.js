@@ -540,6 +540,7 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
                         }
 						
                         widget.$gridWidget.find(".textfit").fitText();
+                        widget.viewModel.widgetApi.manageRollingTitle();
                         d.resolve();
                     }).fail(d.reject);
                 }).fail(function () {
@@ -551,6 +552,7 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
                    }
             
                    widget.$gridWidget.find(".textfit").fitText();
+                   widget.viewModel.widgetApi.manageRollingTitle();
                    d.reject();
                 });
             })
@@ -633,7 +635,7 @@ WidgetManager.createGridWidget = function (widget) {
 
     domWidget += ">\n" +
         "<div class=\"grid-item-content\">\n" +
-          "<div class=\"panel-widget-desactivated hidden\"><div class=\"panel-widget-header\"><i class=\"fa fa-exclamation-triangle wigetConfigurationErrorIcon\" title=\""+ $.t("objects.widgetManager.unknownError") +"\"></i></div></div>\n" +
+          "<div class=\"panel-widget-desactivated hidden\"><div class=\"panel-widget-header-desactivated\"><i class=\"fa fa-exclamation-triangle wigetConfigurationErrorIcon\" title=\""+ $.t("objects.widgetManager.unknownError") +"\"></i></div></div>\n" +
           "<div class=\"panel-widget-customization-overlay customization-item hidden\">\n" +
              "<div class=\"customizationToolbar widgetCustomizationToolbar\">";
 

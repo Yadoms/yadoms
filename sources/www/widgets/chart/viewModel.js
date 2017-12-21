@@ -355,7 +355,6 @@ function chartViewModel() {
         })
         .fail(function (error) {
             self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
-            notifyError($.t("widgets/chart:errorInitialization"), error);
             d.reject();
         });
         return d.promise();
@@ -412,7 +411,6 @@ function chartViewModel() {
     
     this.configurationChanged = function () {
         var self = this;
-
         // Reset of some values
         self.periodValueType = [];
         self.seriesUuid = [];
@@ -467,7 +465,6 @@ function chartViewModel() {
             var deffered2 = self.widgetApi.getKeywordInformation(device.content.source.keywordId);
             arrayOfDeffered.push(deffered2);
             deffered2.done(function (keyword) {
-               console.log ("keyword : ", keyword);
                 self.keywordInfo[index] = keyword;
                 try{
                    if (parseBool(device.content.advancedConfiguration.checkbox)){
@@ -522,15 +519,19 @@ function chartViewModel() {
             });               
         });
         
-        // fail function doesn't exist for whenAll
-        $.whenAll(arrayOfDeffered).done(function () {
-               self.refreshData(self.widget.configuration.interval).always(function () {
+        $.when.apply($, arrayOfDeffered) // The first failing array fail the when.apply
+        .done(function () {
+            self.refreshData(self.widget.configuration.interval).always(function () {
                d.resolve();
             })
             .fail(function (error) {
                d.reject();
             });
+        })
+        .fail(function() {
+           d.reject();
         });
+        
         return d.promise();
     };
 
@@ -833,7 +834,7 @@ function chartViewModel() {
                       });
                   }
               });
-              $.whenAll(arrayOfDeffered).done(function () {
+              $.when.apply($, arrayOfDeffered).done(function () {
                  self.finalRefresh();
                  d.resolve();
               })

@@ -203,7 +203,6 @@ WidgetApi.prototype.manageBatteryConfiguration = function () {
            //we check for the device to look if it has battery keyword
            DeviceManager.getKeywordsBydeviceIdAndCapacity(deviceId, "Get", "batteryLevel")
            .done(function (keyword) {
-               console.log (keyword);
                // We assume that we have only 1 batteryLevel keyword for one device, it's the first one
                if (keyword.length>0) {
                  $battery.removeClass("hidden");
@@ -325,16 +324,10 @@ WidgetApi.prototype.manageRollingTitle = function () {
 		else
 			toolbarSize = self.widget.$toolbar[0].scrollWidth;
       
-      //console.log ("toolbarSize : ", toolbarSize);
-      //console.log ("self.widget.$header.find('.panel-widget-title')[0].scrollWidth : ", self.widget.$header.find(".panel-widget-title")[0].scrollWidth);
-      //console.log ("self.widget.$header[0].scrollWidth : ", self.widget.$header[0].scrollWidth);
-      
 		//Calculate the overflow ! Theses values could be obtain, only after the drawing of all elements !
 		var overflow = toolbarSize +
 					   self.widget.$header.find(".panel-widget-title")[0].scrollWidth -
 					   self.widget.$header[0].scrollWidth;
-		
-      //console.log ("overflow : ", overflow);
       
 		if (overflow > 0) {
 			if (self.widget.$header.find(".panel-widget-title-" + self.widget.id).length !== 0){ 
