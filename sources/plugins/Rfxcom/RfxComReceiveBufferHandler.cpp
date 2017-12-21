@@ -3,7 +3,7 @@
 
 
 CRfxcomReceiveBufferHandler::CRfxcomReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
-                                                         int receiveDataEventId)
+                                                         const int receiveDataEventId)
    : m_lastReceivedTime(shared::currentTime::Provider().now()),
      m_receiveDataEventHandler(receiveDataEventHandler),
      m_receiveDataEventId(receiveDataEventId)
@@ -20,6 +20,7 @@ void CRfxcomReceiveBufferHandler::push(const shared::communication::CByteBuffer&
 
    // Manage timeout
    const auto now = shared::currentTime::Provider().now();
+   boost::lock_guard<boost::recursive_mutex> lock(m_contentMutex);
    if (m_content.size() != 0)
    {
       // Reset data if too old
@@ -34,7 +35,7 @@ void CRfxcomReceiveBufferHandler::push(const shared::communication::CByteBuffer&
    // Send message if complete (separate aggregated messages)
    while (true)
    {
-      auto completeMessage = getCompleteMessage();
+      const auto completeMessage = getCompleteMessage();
       if (!completeMessage)
          break;
       notifyEventHandler(completeMessage);
@@ -43,15 +44,17 @@ void CRfxcomReceiveBufferHandler::push(const shared::communication::CByteBuffer&
 
 void CRfxcomReceiveBufferHandler::flush()
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_contentMutex);
    m_content.clear();
 }
 
 boost::shared_ptr<const shared::communication::CByteBuffer> CRfxcomReceiveBufferHandler::getCompleteMessage()
 {
-   static const boost::shared_ptr<const shared::communication::CByteBuffer> uncompleteMessage;
-
+   static const boost::shared_ptr<const shared::communication::CByteBuffer> UncompleteMessage;
+   
+   boost::lock_guard<boost::recursive_mutex> lock(m_contentMutex);
    if (m_content.empty())
-      return uncompleteMessage;
+      return UncompleteMessage;
 
    // The message size is provided in the first byte of the message
    // (see RFXCom specifications). This value counts all bytes except itself.
@@ -59,7 +62,7 @@ boost::shared_ptr<const shared::communication::CByteBuffer> CRfxcomReceiveBuffer
    // in the first byte + 1.
    const size_t extractedMessageSize = m_content[0] + 1;
    if (m_content.size() < extractedMessageSize)
-      return uncompleteMessage;
+      return UncompleteMessage;
 
    // The message is complete
 
@@ -72,7 +75,7 @@ boost::shared_ptr<const shared::communication::CByteBuffer> CRfxcomReceiveBuffer
    return message;
 }
 
-void CRfxcomReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<const shared::communication::CByteBuffer> buffer) const
+void CRfxcomReceiveBufferHandler::notifyEventHandler(const boost::shared_ptr<const shared::communication::CByteBuffer> buffer) const
 {
    m_receiveDataEventHandler.postEvent<const shared::communication::CByteBuffer>(m_receiveDataEventId, *buffer);
 }

@@ -23,7 +23,7 @@ namespace shared
          /// \param[in] receiveDataEventId      The event id to notify for received data event
          /// \param[in] messageSize             The number of bytes expected for a message
          //--------------------------------------------------------------
-         CFixedSizeReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
+         CFixedSizeReceiveBufferHandler(event::CEventHandler& receiveDataEventHandler,
                                         int receiveDataEventId,
                                         size_t messageSize);
 
@@ -60,13 +60,13 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	Buffer content
          //--------------------------------------------------------------
-   //TODO :need a mutex here
+         mutable boost::recursive_mutex m_contentMutex;
          std::vector<unsigned char> m_content;
 
          //--------------------------------------------------------------
          /// \brief	The event handler to notify for received data event   
          //--------------------------------------------------------------
-         shared::event::CEventHandler& m_receiveDataEventHandler;
+         event::CEventHandler& m_receiveDataEventHandler;
 
          //--------------------------------------------------------------
          /// \brief	The event id to notify for received data event  

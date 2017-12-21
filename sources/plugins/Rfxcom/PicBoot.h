@@ -74,42 +74,6 @@ public:
    };
 
 
-   enum EBootLoaderCommand : unsigned char //TODO passer en privé ?
-   {
-      kCommandReadVer= 0,
-      kCommandReadPm = 1,
-      kCommandWritePm = 2,
-      kCommandErasePm = 3,
-      kCommandReadEe = 4,
-      kCommandWriteEe = 5,
-      kCommandReadCfg = 6,
-      kCommandWriteCfg = 7,
-      kCommandVerifyOk = 8
-   };
-
-   //PIC structure used for some functions
-   struct CPic //TODO passer en privé ?
-   {
-      // Bootloader command
-      EBootLoaderCommand bootCmd;
-
-      //Number of bytes to read/write (for a block)
-      unsigned int bootDatLen;
-
-      //24 bit memory address (Prog or EE)
-      unsigned int bootAddr;
-
-      //Number of bytes in a command block (page, row, instruction, etc)
-      unsigned int bytesPerBlock;
-
-      //Number of bytes per address
-      unsigned int bytesPerAddr;
-
-      // Device type
-      picConfigurations::IPicConfiguration::EDeviceType deviceType;
-   };
-
-
    CPicBoot(const std::string& comPort,
             boost::posix_time::time_duration readTimeOut,
             unsigned int maxRetrys);
@@ -137,11 +101,10 @@ public:
 
 private:
    // Low level functions
-   boost::shared_ptr<const std::vector<unsigned char>> getPacket(unsigned int byteLimit);
+   boost::shared_ptr<const std::vector<unsigned char>> getPacket();
    void sendPacket(boost::shared_ptr<const std::vector<unsigned char>> packetData);
    boost::shared_ptr<const std::vector<unsigned char>> sendGetPacket(
-      boost::shared_ptr<const std::vector<unsigned char>> packetToSend,
-      unsigned int receiveByteLimit);
+      boost::shared_ptr<const std::vector<unsigned char>> packetToSend);
 
 
    boost::shared_ptr<shared::communication::CAsyncSerialPort> m_port;

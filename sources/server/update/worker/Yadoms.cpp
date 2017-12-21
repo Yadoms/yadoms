@@ -51,8 +51,8 @@ namespace update
          }
 
 
-         auto downloadUrl = versionToUpdate.get<std::string>("downloadUrl");
-         auto md5HashExpected = versionToUpdate.get<std::string>("md5Hash");
+         const auto downloadUrl = versionToUpdate.get<std::string>("downloadUrl");
+         const auto md5HashExpected = versionToUpdate.get<std::string>("md5Hash");
 
          try
          {
@@ -79,7 +79,7 @@ namespace update
                {
                   YADOMS_LOG(information) << "Running updater";
                   progressCallback(true, 90.0f, i18n::CClientStrings::UpdateYadomsDeploy, std::string(), versionToUpdate);
-                  auto commandToRun = versionToUpdate.get<std::string>("commandToRun");
+                  const auto commandToRun = versionToUpdate.get<std::string>("commandToRun");
                   step4RunUpdaterProcess(extractedPackageLocation, commandToRun, runningInformation);
 
                   //////////////////////////////////////////////////////////
@@ -140,7 +140,7 @@ namespace update
 
          //run updater script
          YADOMS_LOG(debug) << "Launch script \"" << executablePath.toString() << "\" with args " << boost::algorithm::join(args, ", ");
-         auto handle = tools::COperatingSystem::launchNativeScript(executablePath.toString(), args);
+         const auto handle = tools::COperatingSystem::launchNativeScript(executablePath.toString(), args);
 
          //the update command is running, wait for 5 seconds and ensure it is always running
          boost::this_thread::sleep(boost::posix_time::seconds(5));

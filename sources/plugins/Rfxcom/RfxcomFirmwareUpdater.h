@@ -41,16 +41,16 @@ protected:
    static unsigned int rfxcomSwitchToBootloaderMode(boost::shared_ptr<CPicBoot> picBoot);
    static void rfxcomReadBootloaderVersion(boost::shared_ptr<CPicBoot> picBoot);
    static void rfxcomClearMemory(boost::shared_ptr<CPicBoot> picBoot);
-   void rfxcomWritingMemory(boost::shared_ptr<CPicBoot> picBoot,
-                            const boost::shared_ptr<picConfigurations::IPicConfiguration> picConfiguration,
-                            const CHexData& programMemory,
-                            const CHexData& eepromMemory,
-                            const CHexData& configurationMemory) const;
-   static void rfxcomWritingMemory(boost::shared_ptr<CPicBoot> picBoot,
-                                   const CPicBoot::EMemoryKind memory,
-                                   const boost::shared_ptr<picConfigurations::IPicConfiguration> picConfiguration,
-                                   const CHexData& data);
-   void rfxcomVerifyMemory(boost::shared_ptr<CPicBoot> picBoot);
+   void rfxcomWriteMemory(boost::shared_ptr<CPicBoot> picBoot,
+                          const boost::shared_ptr<picConfigurations::IPicConfiguration> picConfiguration,
+                          const CHexData& programMemory,
+                          const CHexData& eepromMemory,
+                          const boost::function1<void, const unsigned int> progressFunction) const;
+   static void rfxcomWriteMemory(boost::shared_ptr<CPicBoot> picBoot,
+                                 const CPicBoot::EMemoryKind memory,
+                                 const boost::shared_ptr<picConfigurations::IPicConfiguration> picConfiguration,
+                                 const CHexData& data,
+                                 const boost::function1<void, const unsigned int> progressFunction);
    static void rfxcomReboot(boost::shared_ptr<CPicBoot> picBoot);
 
 private:

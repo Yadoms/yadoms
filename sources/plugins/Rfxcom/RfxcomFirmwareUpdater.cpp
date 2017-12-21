@@ -40,10 +40,11 @@ void CRfxcomFirmwareUpdater::update()
    YADOMS_LOG(information) << "Update RFXCom firmware...";
 
    // Progress is like :
-   // - 0-5% : check input file
-   // - 5-10% : erase RFXCom
-   // - 10-90% : write RFXCom
-   // - 90-100% : verify
+   // - 0-4% : load input file
+   // - 5% : connect to RFXCom
+   // - 6-9% : erase RFXCom
+   // - 10-94% : write RFXCom
+   // - 95-100% : reboot RFXCom
    //TODO revérifier la progression
 
    const auto hexFile = m_extraQuery->getData()->data().get<yApi::configuration::CFile>("fileContent");
@@ -59,7 +60,7 @@ void CRfxcomFirmwareUpdater::update()
    boost::shared_ptr<CPicBoot> picBoot;
    try
    {
-      m_extraQuery->reportProgress(5.0f, "customLabels.firmwareUpdate.flash");//TODO traduire
+      m_extraQuery->reportProgress(5.0f, "customLabels.firmwareUpdate.connect");//TODO traduire
 
       picBoot = boost::make_shared<CPicBoot>(m_serialPort,
                                              boost::posix_time::seconds(1),
@@ -71,15 +72,23 @@ void CRfxcomFirmwareUpdater::update()
       picBoot->setPicConfiguration(picConfiguration);
 
       rfxcomReadBootloaderVersion(picBoot);
+
+      m_extraQuery->reportProgress(6.0f, "customLabels.firmwareUpdate.erase");//TODO traduire
       rfxcomClearMemory(picBoot);
-      rfxcomWritingMemory(picBoot,
-                          picConfiguration,
-                          programMemory,
-                          eepromMemory,
-                          configurationMemory);
-      m_extraQuery->reportProgress(5.0f, "customLabels.firmwareUpdate.verify");//TODO traduire
-      rfxcomVerifyMemory(picBoot);
-      //TODO faut pas écrire le VerifyOK quelque part ?
+
+      m_extraQuery->reportProgress(10.0f, "customLabels.firmwareUpdate.write");//TODO traduire
+      rfxcomWriteMemory(picBoot,
+                        picConfiguration,
+                        programMemory,
+                        eepromMemory,
+                        configurationMemory,
+                        [&m_extraQuery](const unsigned int writeProgress) -> void
+                        {
+                           m_extraQuery->reportProgress(10.0f + (95.0f - 10.0f) * 100 / writeProgress,
+                                                        "customLabels.firmwareUpdate.write");//TODO traduire
+                        });
+
+      m_extraQuery->reportProgress(95.0f, "customLabels.firmwareUpdate.reboot");//TODO traduire
       rfxcomReboot(picBoot);
    }
    catch (std::exception& exception)
@@ -189,7 +198,7 @@ boost::shared_ptr<CRfxcomFirmwareUpdater::CHexData> CRfxcomFirmwareUpdater::load
                for (auto byteIndex = 0; byteIndex < readDataSize; ++byteIndex)
                   (*hexData)[address].push_back(
                      static_cast<unsigned char>(hexStringToUInt(line.substr(kIdxData + 2 * byteIndex, 2))));
-               //TODO finir de lire le fichier
+
                break;
             }
          case kEof: // The End Of File will be tested later, so ignore it here.
@@ -250,7 +259,6 @@ void CRfxcomFirmwareUpdater::prepareDataForWriteIntoPic(const boost::shared_ptr<
    static const unsigned int RowStartMask = 0xFFFF00;
    const auto& firstLineAddress = fileData->begin()->first;
    auto rowStartAddress = firstLineAddress & RowStartMask;
-   // TODO in original code (VB), the second line is used instead of first but I suspect it's a bug. To check, anyway...
 
    static const unsigned int UpperByteMask2 = 0x1FF0000;
 
@@ -478,27 +486,31 @@ void CRfxcomFirmwareUpdater::rfxcomClearMemory(boost::shared_ptr<CPicBoot> picBo
    YADOMS_LOG(debug) << "RFXCom memory cleared";
 }
 
-void CRfxcomFirmwareUpdater::rfxcomWritingMemory(boost::shared_ptr<CPicBoot> picBoot,
-                                                 const boost::shared_ptr<picConfigurations::IPicConfiguration>
-                                                 picConfiguration,
-                                                 const CHexData& programMemory,
-                                                 const CHexData& eepromMemory,
-                                                 const CHexData& configurationMemory) const
+void CRfxcomFirmwareUpdater::rfxcomWriteMemory(boost::shared_ptr<CPicBoot> picBoot,
+                                               const boost::shared_ptr<picConfigurations::IPicConfiguration>
+                                               picConfiguration,
+                                               const CHexData& programMemory,
+                                               const CHexData& eepromMemory,
+                                               const boost::function1<void, const unsigned int> progressFunction) const
 {
    YADOMS_LOG(debug) << "Write RFXCom memory...";
 
    // Write program memory
-   rfxcomWritingMemory(picBoot,
-                       CPicBoot::kProgramMemory,
-                       picConfiguration,
-                       programMemory);
+   rfxcomWriteMemory(picBoot,
+                     CPicBoot::kProgramMemory,
+                     picConfiguration,
+                     programMemory,
+                     progressFunction);
 
    // Write Device EEPROM if concerned
    if (picConfiguration->deviceType() == picConfigurations::IPicConfiguration::kPic24F)
-      rfxcomWritingMemory(picBoot,
-                          CPicBoot::kEepromMemory,
-                          picConfiguration,
-                          eepromMemory);
+      rfxcomWriteMemory(picBoot,
+                        CPicBoot::kEepromMemory,
+                        picConfiguration,
+                        eepromMemory,
+                        [](const unsigned int writeProgress) -> void
+                        {
+                        });
 
    // Send VerifyOk Command to indicate bootloading finised successfully
    picBoot->writePicVerifyOk();
@@ -506,11 +518,12 @@ void CRfxcomFirmwareUpdater::rfxcomWritingMemory(boost::shared_ptr<CPicBoot> pic
    YADOMS_LOG(debug) << "RFXCom memory written";
 }
 
-void CRfxcomFirmwareUpdater::rfxcomWritingMemory(boost::shared_ptr<CPicBoot> picBoot,
-                                                 const CPicBoot::EMemoryKind memory,
-                                                 const boost::shared_ptr<picConfigurations::IPicConfiguration>
-                                                 picConfiguration,
-                                                 const CHexData& data)
+void CRfxcomFirmwareUpdater::rfxcomWriteMemory(boost::shared_ptr<CPicBoot> picBoot,
+                                               const CPicBoot::EMemoryKind memory,
+                                               const boost::shared_ptr<picConfigurations::IPicConfiguration>
+                                               picConfiguration,
+                                               const CHexData& data,
+                                               const boost::function1<void, const unsigned int> progressFunction)
 {
    const auto lineSize = data.begin()->second.size();
 
@@ -548,14 +561,9 @@ void CRfxcomFirmwareUpdater::rfxcomWritingMemory(boost::shared_ptr<CPicBoot> pic
                               writeBlockData))
          throw std::runtime_error(
             (boost::format("Error verifying written data at %1%") % dataBlockIterator->first).str());
-   }
-}
 
-void CRfxcomFirmwareUpdater::rfxcomVerifyMemory(boost::shared_ptr<CPicBoot> picBoot)
-{
-   YADOMS_LOG(debug) << "Verify RFXCom memory...";
-   //TODO
-   YADOMS_LOG(debug) << "Verification is OK";
+      progressFunction(12);//TODO
+   }
 }
 
 void CRfxcomFirmwareUpdater::rfxcomReboot(boost::shared_ptr<CPicBoot> picBoot)

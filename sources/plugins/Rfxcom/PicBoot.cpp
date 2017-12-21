@@ -39,6 +39,19 @@
 #include <shared/Log.h>
 
 
+enum EBootLoaderCommand : unsigned char
+{
+   kCommandReadVer= 0,
+   kCommandReadPm = 1,
+   kCommandWritePm = 2,
+   kCommandErasePm = 3,
+   kCommandReadEe = 4,
+   kCommandWriteEe = 5,
+   kCommandReadCfg = 6,
+   kCommandWriteCfg = 7,
+   kCommandVerifyOk = 8
+};
+
 enum
 {
    kEvtPicBootPortConnection = shared::event::kUserFirstId,
@@ -127,8 +140,7 @@ boost::shared_ptr<std::vector<unsigned char>> CPicBoot::readPic(const EMemoryKin
    messageToSend->push_back(static_cast<unsigned char>((blockAddress & 0xFF00) >> 8));
    messageToSend->push_back(static_cast<unsigned char>((blockAddress & 0xFF0000) >> 16));
 
-   const auto receivedMessage = sendGetPacket(messageToSend,
-                                              kMaxPacket);
+   const auto receivedMessage = sendGetPacket(messageToSend);
 
    // Remove header from answer
    if (receivedMessage->size() < 6)
@@ -152,8 +164,7 @@ unsigned int CPicBoot::readPicDeviceId()
    messageToSend->push_back(DeviceIdAddress >> 8 & 0xFF);
    messageToSend->push_back(DeviceIdAddress >> 16 & 0xFF);
 
-   const auto receivedMessage = sendGetPacket(messageToSend,
-                                              kMaxPacket);
+   const auto receivedMessage = sendGetPacket(messageToSend);
 
    if (receivedMessage->size() != 9)
       throw std::runtime_error(
@@ -181,8 +192,7 @@ std::string CPicBoot::readPicVersion()
    messageToSend->push_back(kCommandReadVer);
    messageToSend->push_back(0x02);
 
-   const auto receivedMessage = sendGetPacket(messageToSend,
-                                              kMaxPacket);
+   const auto receivedMessage = sendGetPacket(messageToSend);
 
    if (receivedMessage->size() != 4)
       throw std::runtime_error(
@@ -249,8 +259,7 @@ void CPicBoot::writePic(const EMemoryKind memory,
 
    messageToSend->insert(messageToSend->end(), blockData.begin(), blockData.end());
 
-   const auto receivedMessage = sendGetPacket(messageToSend,
-                                              kMaxPacket);
+   const auto receivedMessage = sendGetPacket(messageToSend);
 
    if (receivedMessage->size() != 1 || receivedMessage->back() != command)
       throw std::runtime_error(
@@ -265,8 +274,7 @@ void CPicBoot::writePicVerifyOk()
    //Build header
    messageToSend->push_back(kCommandVerifyOk);
 
-   const auto receivedMessage = sendGetPacket(messageToSend,
-                                              kMaxPacket);
+   const auto receivedMessage = sendGetPacket(messageToSend);
 
    if (receivedMessage->size() != 1)
       throw std::runtime_error(
@@ -289,8 +297,7 @@ void CPicBoot::erasePic(const unsigned int picAddr,
    messageToSend->push_back(static_cast<unsigned char>((picAddr & 0xFF00) >> 8));
    messageToSend->push_back(static_cast<unsigned char>((picAddr & 0xFF0000) >> 16));
 
-   const auto receivedMessage = sendGetPacket(messageToSend,
-                                              kMaxPacket);
+   const auto receivedMessage = sendGetPacket(messageToSend);
 
    if (receivedMessage->size() != 1 || receivedMessage->back() != kCommandErasePm)
       throw std::runtime_error(
@@ -312,7 +319,6 @@ void CPicBoot::reBootPic()
 
 void CPicBoot::erasePicProgramMemory()
 {
-   //TODO à comparer avec les relevés d'un flashage officiel. Parce
    auto nbBlocksToErase =
       (m_picConfiguration->programAddressEnd() - m_picConfiguration->programAddressStart() + 1) * m_picConfiguration->
       bytesPerAddr()
@@ -343,17 +349,13 @@ bool CPicBoot::verifyPic(const EMemoryKind memory,
    return *readData == refPacketData;
 }
 
-boost::shared_ptr<const std::vector<unsigned char>> CPicBoot::getPacket(const unsigned int byteLimit)
+boost::shared_ptr<const std::vector<unsigned char>> CPicBoot::getPacket()
 {
    if (m_eventHandler.waitForEvents(boost::posix_time::seconds(2)) != kEvtPicBootPortDataReceived)
       throw std::runtime_error("Fail to get packet, timeout");
 
    auto message = boost::make_shared<const std::vector<unsigned char>>(
       m_eventHandler.getEventData<const std::vector<unsigned char>>());
-
-   // Check message limit (TODO utile en C++ ?)
-   if (message->size() > byteLimit)
-      throw std::runtime_error("Reached read limit (received message too large)");
 
    return message;
 }
@@ -413,8 +415,7 @@ void CPicBoot::sendPacket(const boost::shared_ptr<const std::vector<unsigned cha
 }
 
 boost::shared_ptr<const std::vector<unsigned char>> CPicBoot::sendGetPacket(
-   const boost::shared_ptr<const std::vector<unsigned char>> packetToSend,
-   const unsigned int receiveByteLimit)
+   const boost::shared_ptr<const std::vector<unsigned char>> packetToSend)
 {
    do
    {
@@ -422,7 +423,7 @@ boost::shared_ptr<const std::vector<unsigned char>> CPicBoot::sendGetPacket(
 
       try
       {
-         return getPacket(receiveByteLimit);
+         return getPacket();
       }
       catch (std::exception& exception)
       {

@@ -18,7 +18,7 @@ public:
    /// \param[in] receiveDataEventId      The event id to notify for received data event
    //--------------------------------------------------------------
    CRfxcomReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
-                               int receiveDataEventId);
+                               const int receiveDataEventId);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
@@ -41,7 +41,7 @@ protected:
    /// \brief	                     Send a message to the target event handler
    /// \param[in] buffer            Buffer to send
    //--------------------------------------------------------------
-   void notifyEventHandler(boost::shared_ptr<const shared::communication::CByteBuffer> buffer) const;
+   void notifyEventHandler(const boost::shared_ptr<const shared::communication::CByteBuffer> buffer) const;
 
 private:
    //--------------------------------------------------------------
@@ -52,7 +52,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	Buffer content
    //--------------------------------------------------------------
-   //TODO :need a mutex here
+   mutable boost::recursive_mutex m_contentMutex;
    std::vector<unsigned char> m_content;
 
    //--------------------------------------------------------------
