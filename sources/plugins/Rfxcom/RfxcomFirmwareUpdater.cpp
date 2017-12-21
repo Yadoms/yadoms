@@ -81,10 +81,9 @@ void CRfxcomFirmwareUpdater::update()
                         picConfiguration,
                         programMemory,
                         eepromMemory,
-                        configurationMemory,
-                        [&m_extraQuery](const unsigned int writeProgress) -> void
+                        [&](const float writeProgress) -> void
                         {
-                           m_extraQuery->reportProgress(10.0f + (95.0f - 10.0f) * 100 / writeProgress,
+                           m_extraQuery->reportProgress(10.0f + ((95.0f - 10.0f) * 100.0f / writeProgress),
                                                         "customLabels.firmwareUpdate.write");//TODO traduire
                         });
 
@@ -491,7 +490,7 @@ void CRfxcomFirmwareUpdater::rfxcomWriteMemory(boost::shared_ptr<CPicBoot> picBo
                                                picConfiguration,
                                                const CHexData& programMemory,
                                                const CHexData& eepromMemory,
-                                               const boost::function1<void, const unsigned int> progressFunction) const
+                                               const boost::function1<void, const float> progressFunction) const
 {
    YADOMS_LOG(debug) << "Write RFXCom memory...";
 
@@ -508,7 +507,7 @@ void CRfxcomFirmwareUpdater::rfxcomWriteMemory(boost::shared_ptr<CPicBoot> picBo
                         CPicBoot::kEepromMemory,
                         picConfiguration,
                         eepromMemory,
-                        [](const unsigned int writeProgress) -> void
+                        [](const float writeProgress) -> void
                         {
                         });
 
@@ -523,7 +522,7 @@ void CRfxcomFirmwareUpdater::rfxcomWriteMemory(boost::shared_ptr<CPicBoot> picBo
                                                const boost::shared_ptr<picConfigurations::IPicConfiguration>
                                                picConfiguration,
                                                const CHexData& data,
-                                               const boost::function1<void, const unsigned int> progressFunction)
+                                               const boost::function1<void, const float> progressFunction)
 {
    const auto lineSize = data.begin()->second.size();
 
@@ -562,7 +561,7 @@ void CRfxcomFirmwareUpdater::rfxcomWriteMemory(boost::shared_ptr<CPicBoot> picBo
          throw std::runtime_error(
             (boost::format("Error verifying written data at %1%") % dataBlockIterator->first).str());
 
-      progressFunction(12);//TODO
+      progressFunction(45.0f);//TODO
    }
 }
 

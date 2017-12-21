@@ -45,12 +45,12 @@ protected:
                           const boost::shared_ptr<picConfigurations::IPicConfiguration> picConfiguration,
                           const CHexData& programMemory,
                           const CHexData& eepromMemory,
-                          const boost::function1<void, const unsigned int> progressFunction) const;
+                          const boost::function1<void, const float> progressFunction) const;
    static void rfxcomWriteMemory(boost::shared_ptr<CPicBoot> picBoot,
                                  const CPicBoot::EMemoryKind memory,
                                  const boost::shared_ptr<picConfigurations::IPicConfiguration> picConfiguration,
                                  const CHexData& data,
-                                 const boost::function1<void, const unsigned int> progressFunction);
+                                 const boost::function1<void, const float> progressFunction);
    static void rfxcomReboot(boost::shared_ptr<CPicBoot> picBoot);
 
 private:
