@@ -133,7 +133,8 @@ boost::shared_ptr<std::vector<unsigned char>> CPicBoot::readPic(const EMemoryKin
    // Remove header from answer
    if (receivedMessage->size() < 6)
       throw std::invalid_argument(
-         (boost::format("CPicBoot::readPic : received message too small %1%, expected 6 min") % receivedMessage->size()).str());
+         (boost::format("CPicBoot::readPic : received message too small %1%, expected 6 min") % receivedMessage->size())
+         .str());
 
    return boost::make_shared<std::vector<unsigned char>>(receivedMessage->begin() + 5,
                                                          receivedMessage->end());
@@ -339,9 +340,7 @@ bool CPicBoot::verifyPic(const EMemoryKind memory,
                                  blockAddress,
                                  refPacketData.size());
 
-   return equal(readData->begin(),
-                readData->end(),
-                refPacketData.begin());
+   return *readData == refPacketData;
 }
 
 boost::shared_ptr<const std::vector<unsigned char>> CPicBoot::getPacket(const unsigned int byteLimit)

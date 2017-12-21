@@ -127,12 +127,12 @@ boost::shared_ptr<const std::vector<unsigned char>> CPicBootReceiveBufferHandler
 
 boost::shared_ptr<const std::vector<unsigned char>> CPicBootReceiveBufferHandler::extractUsefulMessagePart(const std::vector<unsigned char>& fullMessage) const
 {
-   static const boost::shared_ptr<const std::vector<unsigned char>> uncompleteMessage;
+   static const boost::shared_ptr<const std::vector<unsigned char>> UncompleteMessage;
 
    if (fullMessage.size() < 4)
    {
       YADOMS_LOG(error) << "CPicBootReceiveBufferHandler::extractUsefulMessagePart : invalid message size " << fullMessage.size();
-      return uncompleteMessage;
+      return UncompleteMessage;
    }
 
    auto message = boost::make_shared<std::vector<unsigned char>>(fullMessage);
@@ -155,20 +155,25 @@ boost::shared_ptr<const std::vector<unsigned char>> CPicBootReceiveBufferHandler
          ++it;
    }
 
-
-   // Compute checksum
-   unsigned long checksum = 0;
-   for (const auto byte:*message)
-      checksum += byte;
-
-   if ((~checksum + 1) & 0xFF)
-   {
-      YADOMS_LOG(error) << "CPicBootReceiveBufferHandler::extractUsefulMessagePart : bad checksum " << message->back();
-      return uncompleteMessage;
-   }
+   const auto readChecksum = message->back();
 
    // Remove the checksum
    message->pop_back();
+
+   // Compute checksum
+   unsigned long computedChecksum = 0;
+   for (const auto byte:*message)
+      computedChecksum += byte;
+   computedChecksum = (~computedChecksum) + 1 & 0xFF;
+
+   if (readChecksum != computedChecksum)
+   {
+      YADOMS_LOG(error) << "CPicBootReceiveBufferHandler::extractUsefulMessagePart : bad checksum "
+         << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(readChecksum)
+         << ", expected "
+         << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(computedChecksum);
+      return UncompleteMessage;
+   }
 
    return message;
 }
