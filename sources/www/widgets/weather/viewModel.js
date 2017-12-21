@@ -35,7 +35,9 @@ widgetViewModelCtor = function weatherViewModel() {
             });
 
             d.resolve();
-        });
+        })
+        .fail(d.reject);
+        
         return d.promise();
     };
 

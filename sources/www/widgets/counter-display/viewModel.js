@@ -54,9 +54,18 @@ function counterDisplayViewModel() {
                         batteryItem: true
                     });
                     d.resolve();
+                })
+                .fail(function (error) {
+                   notifyError(error);
+                   d.reject();
                 });
-        });
-        return d.promise();
+        })
+       .fail(function (error) {
+          notifyError(error);
+          d.reject();
+       });        
+       
+       return d.promise();
     };
 
     this.configurationChanged = function () {
@@ -70,7 +79,9 @@ function counterDisplayViewModel() {
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
 
         //we get the unit of the keyword
-        self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId)
+        var deffered = self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId);
+        
+        deffered
         .done(function (keyword) {
             // Read the unit
             self.unit($.t(keyword.units));
@@ -80,6 +91,8 @@ function counterDisplayViewModel() {
 
             self.resizefont();
         });
+        
+        return deffered.promise();
     }
 
     /**

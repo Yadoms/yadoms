@@ -43,9 +43,7 @@ function numericDisplayViewModel() {
        if (!isNullOrUndefined(self.widget.configuration.precision))
           self.precision = parseInt(self.widget.configuration.precision, 10);
        else
-          self.precision = 1;             
-        
-       var d = new $.Deferred();
+          self.precision = 1;
         
        //we register keyword new acquisition
        self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
@@ -54,7 +52,10 @@ function numericDisplayViewModel() {
        self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);        
         
        //we get the unit of the keyword
-       self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
+       var deffered = self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId);
+       
+       deffered
+       .done(function (keyword) {
           self.unit($.t(keyword.units));
            
           // If no unit, we hide the unit display
@@ -62,15 +63,12 @@ function numericDisplayViewModel() {
              self.widgetApi.find(".unit").addClass("hidden");
           else
              self.widgetApi.find(".unit").removeClass("hidden");
-          
-          d.resolve();
        })
        .fail(function (error) {
           self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
-          d.reject();
        });
        
-       return d.promise();
+       return deffered.promise();
     }
 
     /**
