@@ -672,8 +672,13 @@
       "failToConfigure": "Impossible de configurer le RFXCom, des protocoles incompatibles ont propablement été sélectionnés. Voir le manuel du RFXCom."
     },
     "firmwareUpdate": {
+      "loadInputFile": "Chargement du fichier...",
+      "connect": "Connexion au RFXCom...",
+      "erase": "Effacement...",
+      "write": "Ecriture...",
+      "reboot": "Redémarrage du RFXCom",
       "ErrorInternal": "Impossible de mettre à jour le firmware, erreur interne",
-      "ErrorOnlyAvailableForSerial": "La mise à jour du firmware n'est possible qu'en connexion directe par port série",
+      "ErrorOnlyAvailableForSerial": "La mise à jour du firmware n'est possible qu'en connexion directe avec un câble série",
       "ErrorInvalidInputFile": "Impossible de mettre à jour le firmware, le fichier d'entrée est invalide"
     }
   }

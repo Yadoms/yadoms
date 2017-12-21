@@ -45,12 +45,11 @@ void CRfxcomFirmwareUpdater::update()
    // - 6-9% : erase RFXCom
    // - 10-94% : write RFXCom
    // - 95-100% : reboot RFXCom
-   //TODO revérifier la progression
 
    const auto hexFile = m_extraQuery->getData()->data().get<yApi::configuration::CFile>("fileContent");
 
    // Load input file
-   m_extraQuery->reportProgress(0.0f, "customLabels.firmwareUpdate.loadInputFile");//TODO traduire
+   m_extraQuery->reportProgress(0.0f, "customLabels.firmwareUpdate.loadInputFile");
    CHexData programMemory, eepromMemory, configurationMemory;
    prepareDataForWriteIntoPic(loadFile(hexFile.getContent()),
                               programMemory,
@@ -60,7 +59,7 @@ void CRfxcomFirmwareUpdater::update()
    boost::shared_ptr<CPicBoot> picBoot;
    try
    {
-      m_extraQuery->reportProgress(5.0f, "customLabels.firmwareUpdate.connect");//TODO traduire
+      m_extraQuery->reportProgress(5.0f, "customLabels.firmwareUpdate.connect");
 
       picBoot = boost::make_shared<CPicBoot>(m_serialPort,
                                              boost::posix_time::seconds(1),
@@ -73,21 +72,21 @@ void CRfxcomFirmwareUpdater::update()
 
       rfxcomReadBootloaderVersion(picBoot);
 
-      m_extraQuery->reportProgress(6.0f, "customLabels.firmwareUpdate.erase");//TODO traduire
+      m_extraQuery->reportProgress(6.0f, "customLabels.firmwareUpdate.erase");
       rfxcomClearMemory(picBoot);
 
-      m_extraQuery->reportProgress(10.0f, "customLabels.firmwareUpdate.write");//TODO traduire
+      m_extraQuery->reportProgress(10.0f, "customLabels.firmwareUpdate.write");
       rfxcomWriteMemory(picBoot,
                         picConfiguration,
                         programMemory,
                         eepromMemory,
                         [&](const float writeProgress) -> void
                         {
-                           m_extraQuery->reportProgress(10.0f + ((95.0f - 10.0f) * 100.0f / writeProgress),
-                                                        "customLabels.firmwareUpdate.write");//TODO traduire
+                           m_extraQuery->reportProgress(10.0f + writeProgress * ((95.0f - 10.0f) / 100.0f),
+                                                        "customLabels.firmwareUpdate.write");
                         });
 
-      m_extraQuery->reportProgress(95.0f, "customLabels.firmwareUpdate.reboot");//TODO traduire
+      m_extraQuery->reportProgress(95.0f, "customLabels.firmwareUpdate.reboot");
       rfxcomReboot(picBoot);
    }
    catch (std::exception& exception)
@@ -525,6 +524,8 @@ void CRfxcomFirmwareUpdater::rfxcomWriteMemory(boost::shared_ptr<CPicBoot> picBo
                                                const boost::function1<void, const float> progressFunction)
 {
    const auto lineSize = data.begin()->second.size();
+   const auto lineCount = data.size();
+   auto lineIndex = 0;
 
    auto dataBlockIterator = data.begin();
    while (dataBlockIterator != data.end())
@@ -539,6 +540,9 @@ void CRfxcomFirmwareUpdater::rfxcomWriteMemory(boost::shared_ptr<CPicBoot> picBo
                                   dataBlockIterator->second.begin(),
                                   dataBlockIterator->second.end());
             ++dataBlockIterator;
+
+            progressFunction(static_cast<float>(lineIndex * 100 / lineCount));
+            ++lineIndex;
          }
          else
          {
@@ -560,8 +564,6 @@ void CRfxcomFirmwareUpdater::rfxcomWriteMemory(boost::shared_ptr<CPicBoot> picBo
                               writeBlockData))
          throw std::runtime_error(
             (boost::format("Error verifying written data at %1%") % dataBlockIterator->first).str());
-
-      progressFunction(45.0f);//TODO
    }
 }
 
