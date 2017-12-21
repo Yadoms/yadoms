@@ -346,7 +346,7 @@ bool CPicBoot::verifyPic(const EMemoryKind memory,
 boost::shared_ptr<const std::vector<unsigned char>> CPicBoot::getPacket(const unsigned int byteLimit)
 {
    if (m_eventHandler.waitForEvents(boost::posix_time::seconds(2)) != kEvtPicBootPortDataReceived)
-      throw std::runtime_error("Fail to get packet");
+      throw std::runtime_error("Fail to get packet, timeout");
 
    auto message = boost::make_shared<const std::vector<unsigned char>>(
       m_eventHandler.getEventData<const std::vector<unsigned char>>());

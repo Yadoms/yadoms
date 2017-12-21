@@ -9,8 +9,8 @@ class CPicBootReceiveBufferHandler : public shared::communication::IReceiveBuffe
 {
 public:
    CPicBootReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
-                                int receiveDataEventId,
-                                boost::posix_time::time_duration readTimeOut,
+                                const int receiveDataEventId,
+                                const boost::posix_time::time_duration readTimeOut,
                                 shared::communication::IBufferLogger& logger);
    virtual ~CPicBootReceiveBufferHandler();
 
@@ -22,7 +22,7 @@ public:
 protected:
    boost::shared_ptr<const std::vector<unsigned char>> getCompleteMessage();
    boost::shared_ptr<const std::vector<unsigned char>> extractUsefulMessagePart(const std::vector<unsigned char>& fullMessage) const;
-   void notifyEventHandler(boost::shared_ptr<const std::vector<unsigned char>> buffer) const;
+   void notifyEventHandler(const boost::shared_ptr<const std::vector<unsigned char>> buffer) const;
 
 private:
    mutable boost::recursive_mutex m_contentMutex;

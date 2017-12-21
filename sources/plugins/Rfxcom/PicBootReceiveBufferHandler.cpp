@@ -5,8 +5,8 @@
 
 
 CPicBootReceiveBufferHandler::CPicBootReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
-                                                           int receiveDataEventId,
-                                                           boost::posix_time::time_duration readTimeOut,
+                                                           const int receiveDataEventId,
+                                                           const boost::posix_time::time_duration readTimeOut,
                                                            shared::communication::IBufferLogger& logger)
    : m_receiveDataEventHandler(receiveDataEventHandler),
      m_receiveDataEventId(receiveDataEventId),
@@ -41,7 +41,7 @@ void CPicBootReceiveBufferHandler::push(const shared::communication::CByteBuffer
    // Send message if complete (separate aggregated messages)
    while (true)
    {
-      auto completeMessage = getCompleteMessage();
+      const auto completeMessage = getCompleteMessage();
       if (!completeMessage)
          break;
       notifyEventHandler(completeMessage);
@@ -56,17 +56,17 @@ void CPicBootReceiveBufferHandler::flush()
 
 boost::shared_ptr<const std::vector<unsigned char>> CPicBootReceiveBufferHandler::getCompleteMessage()
 {
-   static const boost::shared_ptr<const std::vector<unsigned char>> uncompleteMessage;
+   static const boost::shared_ptr<const std::vector<unsigned char>> UncompleteMessage;
 
    if (m_content.size() < 2)
-      return uncompleteMessage;
+      return UncompleteMessage;
 
    // Remove first bytes if not start bytes (message must begin by 2 STX)
    while (!m_content.empty() && (m_content[0] != kSTX || m_content[1] != kSTX))
       m_content.erase(m_content.begin());
 
    if (m_content.size() < 2)
-      return uncompleteMessage;
+      return UncompleteMessage;
 
    // Process the rest of the message
    for (auto contentIterator = m_content.begin() + 2; contentIterator != m_content.end(); ++contentIterator)
@@ -122,7 +122,7 @@ boost::shared_ptr<const std::vector<unsigned char>> CPicBootReceiveBufferHandler
    }
 
    // STX not found
-   return uncompleteMessage;
+   return UncompleteMessage;
 }
 
 boost::shared_ptr<const std::vector<unsigned char>> CPicBootReceiveBufferHandler::extractUsefulMessagePart(const std::vector<unsigned char>& fullMessage) const
@@ -178,7 +178,7 @@ boost::shared_ptr<const std::vector<unsigned char>> CPicBootReceiveBufferHandler
    return message;
 }
 
-void CPicBootReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<const std::vector<unsigned char>> buffer) const
+void CPicBootReceiveBufferHandler::notifyEventHandler(const boost::shared_ptr<const std::vector<unsigned char>> buffer) const
 {
    m_receiveDataEventHandler.postEvent<const std::vector<unsigned char>>(m_receiveDataEventId, *buffer);
 }
