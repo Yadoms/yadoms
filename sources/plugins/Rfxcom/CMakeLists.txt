@@ -187,8 +187,14 @@ set(SPECIFIC_HISTORIZERS_SOURCES
 
 set(PIC_CONFIGURATIONS_SOURCES
    picConfigurations/IPicConfiguration.h
+   picConfigurations/RfxLan.h
+   picConfigurations/RfxLan.cpp
+   picConfigurations/RfxMtr.h
+   picConfigurations/RfxMtr.cpp
    picConfigurations/RFXtrx.h
    picConfigurations/RFXtrx.cpp
+   picConfigurations/RFXtrxX.h
+   picConfigurations/RFXtrxX.cpp
 )
 
 set(RFXCOM_SOURCES

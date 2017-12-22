@@ -2,6 +2,9 @@
 #include "RfxcomFirmwareUpdater.h"
 #include <shared/plugin/yPluginApi/configuration/File.h>
 #include "picConfigurations/RFXtrx.h"
+#include "picConfigurations/RFXtrxX.h"
+#include "picConfigurations/RfxLan.h"
+#include "picConfigurations/RfxMtr.h"
 
 
 enum
@@ -421,7 +424,9 @@ boost::shared_ptr<picConfigurations::IPicConfiguration> CRfxcomFirmwareUpdater::
    switch (deviceId)
    {
    case kRfXTrx: return boost::make_shared<picConfigurations::CRfXtrx>();
-      //TODO implémenter les autres
+   case kRfXTrxX: return boost::make_shared<picConfigurations::CRfXtrxX>();
+   case kRfxLan: return boost::make_shared<picConfigurations::CRfxLan>();
+   case kRfxMtr: return boost::make_shared<picConfigurations::CRfxMtr>();
    default:
       throw std::runtime_error((boost::format("Unsupported device (Unknown device ID %d)") % deviceId).str());
    }
@@ -448,7 +453,6 @@ void CRfxcomFirmwareUpdater::checkFileCompatibility(const unsigned int deviceId,
          throw std::invalid_argument(
             (boost::format("Filename %1% can not be used to flash device ID %2%") % fileName % deviceId).str());
       break;
-      //TODO implémenter les autres
    default:
       throw std::runtime_error((boost::format("Unsupported device (Unknown device ID %d)") % deviceId).str());
    }
