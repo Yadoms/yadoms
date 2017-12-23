@@ -208,14 +208,18 @@ function periodicUpdateTask() {
                     notify(DateTimeFormatter.isoDateToString(value.date) +
                         " " +
                         $.t(translation, { 
-                              "who": $.t(value.who, { 
+                              "who": $.t(value.who, { // structure sometimes : core.[who].name or core.[who]
                                  defaultValue: $.t('core.' + value.who + '.name', {
-                                    defaultValue: value.who
+                                    defaultValue: $.t('core.' + value.who, {
+                                       defaultValue: value.who
+                                    })
                                  })
                               }), 
-                              "what": $.t(value.what, { 
+                              "what": $.t(value.what, { // structure sometimes : core.[what].name or core.[what]
                                  defaultValue: $.t('core.' + value.what + '.name', {
-                                    defaultValue: value.what
+                                    defaultValue: $.t('core.' + value.what, {
+                                       defaultValue: value.what
+                                    })
                                  })
                               })
                         }),
