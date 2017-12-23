@@ -84,6 +84,21 @@ namespace web
             }
             catch (shared::exception::CEmptyResult& /*noData*/)
             {
+               try {
+                  auto keywordId = boost::lexical_cast<int>(parameters[2]);
+                  auto keyword = m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
+
+                  if (keyword)
+                  {
+                     shared::CDataContainer emptyResult;
+                     emptyResult.set("keywordId", keywordId);
+                     return CResult::GenerateSuccess(emptyResult);
+                  }
+               }
+               catch (shared::exception::CEmptyResult& ex)
+               {
+                  return CResult::GenerateError(ex);
+               }
                //if no data just return success
                return CResult::GenerateSuccess();
             }

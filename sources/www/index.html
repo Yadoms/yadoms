@@ -463,7 +463,10 @@
                          WidgetManager.loadWidget(w, currentPage, true)
                              .done(function() {
                                  //we update the filter for the websocket
-                                 updateWebSocketFilter();
+                                 updateWidgetPolling(w)
+                                 .always(function() {
+                                    updateWebSocketFilter();
+                                 });
                              })
                              .fail(function(errorMessage) {
                                  notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {
