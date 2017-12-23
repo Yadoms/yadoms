@@ -63,13 +63,12 @@ namespace rfxcomMessages
       const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords() override;
       // [END] IRfxcomMessage implementation
 
-   protected:
-      //--------------------------------------------------------------
-      /// \brief	Global initialization method
-      /// \param[in] api                  Yadoms APi context
-      //--------------------------------------------------------------
-      void Init(boost::shared_ptr<yApi::IYPluginApi> api);
+      // Rfy-specific
+      static boost::shared_ptr<std::queue<shared::communication::CBuffer<unsigned char>>> encodeProgramMessage(boost::shared_ptr<ISequenceNumber> seqNumberProvider,
+                                                                                                               const shared::communication::CByteBuffer& lastRequest);
 
+
+   protected:
       //--------------------------------------------------------------
       /// \brief	                        Build the device name
       //--------------------------------------------------------------
@@ -126,8 +125,6 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    };
 } // namespace rfxcomMessages
-
-

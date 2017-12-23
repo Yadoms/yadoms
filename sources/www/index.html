@@ -179,6 +179,7 @@
       $.ajaxSetup({
           contentType: "application/json; charset=utf-8",
           scriptCharset: "utf-8",
+          cache: true
       });
 
       $("#copyrightLabel").html("&copy; Yadoms " + new Date().getFullYear());
@@ -462,7 +463,10 @@
                          WidgetManager.loadWidget(w, currentPage, true)
                              .done(function() {
                                  //we update the filter for the websocket
-                                 updateWebSocketFilter();
+                                 updateWidgetPolling(w)
+                                 .always(function() {
+                                    updateWebSocketFilter();
+                                 });
                              })
                              .fail(function(errorMessage) {
                                  notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {
@@ -524,6 +528,10 @@
               $(document).on("timenotification", function(e, websocketData) {
                   dispatchTimeToWidgets(websocketData.time);
               });
+              //we listen keyword Deletiono event
+              $(document).on("keyworddeleted", function(e, websocketData) {
+                  dispatchkeywordDeletedToWidgets(websocketData.data);
+              });              
 
               //web socket opened
               initializeWidgetEngine();

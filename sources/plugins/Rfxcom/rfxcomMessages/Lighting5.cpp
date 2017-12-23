@@ -21,9 +21,11 @@ namespace rfxcomMessages
       createSubType(deviceDetails.get<unsigned char>("subType"));
       m_id = deviceDetails.get<unsigned int>("id");
       m_unitCode = deviceDetails.get<unsigned char>("unitCode");
-
-      declare(api);
       m_subTypeManager->set(command);
+      
+      // Build device description
+      buildDeviceName();
+      m_deviceDetails = deviceDetails;
    }
 
    CLighting5::CLighting5(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -67,7 +69,18 @@ namespace rfxcomMessages
       m_subTypeManager->setFromProtocolState(rbuf.LIGHTING5.cmnd, rbuf.LIGHTING5.level);
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING5.rssi));
 
-      declare(api);
+      // Build device description
+      buildDeviceName();
+      buildDeviceDetails();
+      auto model = m_subTypeManager->getModel();
+
+      // Create device and keywords if needed
+      if (!api->deviceExists(m_deviceName))
+      {         
+         api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
+         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
+         m_deviceDetails.printToLog(YADOMS_LOG(information));
+      }
    }
 
    CLighting5::~CLighting5()
@@ -130,25 +143,6 @@ namespace rfxcomMessages
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
       }
       m_keywords.push_back(m_subTypeManager->keyword());
-   }
-
-   void CLighting5::declare(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      if (!m_subTypeManager)
-         throw shared::exception::CException("m_subTypeManager must be initialized");
-
-      // Build device description
-      buildDeviceName();
-      buildDeviceDetails();
-      auto model = m_subTypeManager->getModel();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {         
-         api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));
-      }
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CLighting5::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const

@@ -54,7 +54,9 @@ function thermostatViewModel() {
         
         if (parseBool(self.widget.configuration.thermostatStateSection.checkbox))
         {
-           var deffered2 = self.widgetApi.getKeywordInformation(self.widget.configuration.thermostatStateSection.content.state.keywordId).done(function (keyword) {
+           var deffered2 = self.widgetApi.getKeywordInformation(self.widget.configuration.thermostatStateSection.content.state.keywordId);
+           deffered2
+           .done(function (keyword) {
                thermostatStateType = keyword.type;
            });
            
@@ -77,7 +79,10 @@ function thermostatViewModel() {
         self.widgetApi.registerKeywordAcquisitions(keywordRegistered);
         
         //we get the unit of the keyword
-        var deffered1 = self.widgetApi.getKeywordInformation(self.widget.configuration.controlSection.content.temperatureSet.keywordId).done(function (keyword) {
+        var deffered1 = self.widgetApi.getKeywordInformation(self.widget.configuration.controlSection.content.temperatureSet.keywordId);
+        
+        deffered1
+        .done(function (keyword) {
             self.unit($.t(keyword.units));
         });
         
@@ -98,7 +103,8 @@ function thermostatViewModel() {
         else
            self.disableStateTemperature(false);
         
-        $.whenAll(defferedKeywordInformation).done(function () {
+        $.when.apply($, defferedKeywordInformation)
+        .done(function () {
            d.resolve();
         })
         .fail(function() {
@@ -160,8 +166,7 @@ function thermostatViewModel() {
                self.temperatureSet("-");
         } 
         else if (keywordId === self.widget.configuration.thermostatStateSection.content.state.keywordId) {
-           
-            console.log ("State :", data.value);
+
             //it is the right device
             if (data.value !=="")
             {

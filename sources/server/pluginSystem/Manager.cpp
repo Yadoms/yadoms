@@ -196,7 +196,7 @@ namespace pluginSystem
 
          // Remove in database
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-         m_dataProvider->getDeviceRequester()->removeAllDeviceForPlugin(id);
+         m_dataAccessLayer->getDeviceManager()->removeAllDeviceForPlugin(id);
          m_pluginDBTable->removeInstance(id);
 
          // Remove logs
@@ -315,7 +315,7 @@ namespace pluginSystem
          startInstance(*instanceToStart);
    }
 
-   void CManager::stopAllInstancesOfPlugin(const std::string& pluginName)
+   std::vector<int> CManager::stopAllInstancesOfPlugin(const std::string& pluginName)
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
@@ -330,6 +330,49 @@ namespace pluginSystem
       // Stop all instances of this plugin
       for (std::vector<int>::const_iterator instanceToStop = instancesToStop.begin(); instanceToStop != instancesToStop.end(); ++instanceToStop)
          requestStopInstance(*instanceToStop);
+
+      return instancesToStop;
+   }
+
+   void CManager::stopAllInstancesOfPluginAndWaitForStopped(const std::string& pluginName,
+                                                            const boost::posix_time::time_duration& timeout)
+   {
+      YADOMS_LOG(debug) << "Stop all instances of " << pluginName << "...";
+      auto instancesToStop = stopAllInstancesOfPlugin(pluginName);
+
+      const auto endTime = shared::currentTime::Provider().now() + timeout;
+      auto someInstancesStillRunning = true;
+      while (someInstancesStillRunning && shared::currentTime::Provider().now() <= endTime)
+      {
+         someInstancesStillRunning = false;
+         for (const auto instance:instancesToStop)
+            if (isInstanceRunning(instance))
+               someInstancesStillRunning = true;
+
+         if (someInstancesStillRunning)
+            boost::this_thread::sleep(boost::posix_time::seconds(1));
+      }
+
+      if (someInstancesStillRunning)
+      {
+         YADOMS_LOG(error) << "Unable to stop all instances of plugin " << pluginName << ", try to kill...";
+         for (const auto instance:instancesToStop)
+            if (isInstanceRunning(instance))
+               killInstance(instance);
+
+         boost::this_thread::sleep(boost::posix_time::seconds(1));
+
+         // Check
+         someInstancesStillRunning = false;
+         for (const auto instance:instancesToStop)
+            if (isInstanceRunning(instance))
+               someInstancesStillRunning = true;
+
+         if (someInstancesStillRunning)
+            throw std::runtime_error((boost::format("Unable to stop all instances of plugin %1%") % pluginName).str());
+      }
+
+      YADOMS_LOG(debug) << "All instances of " << pluginName << " are stopped";
    }
 
    void CManager::notifyDeviceRemoved(int deviceId) const
@@ -530,9 +573,9 @@ namespace pluginSystem
          {
             boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
-            const auto interpreter = m_runningInstances.find(pluginInstanceId);
-            if (interpreter != m_runningInstances.end())
-               m_runningInstances.erase(interpreter);
+            const auto pluginInstance = m_runningInstances.find(pluginInstanceId);
+            if (pluginInstance != m_runningInstances.end())
+               m_runningInstances.erase(pluginInstance);
          });
    }
 

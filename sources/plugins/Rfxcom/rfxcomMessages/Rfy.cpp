@@ -20,8 +20,11 @@ namespace rfxcomMessages
       m_subType = deviceDetails.get<unsigned char>("subType");
       m_id = deviceDetails.get<unsigned int>("id");
       m_unitCode = deviceDetails.get<unsigned char>("unitCode");
-
-      Init(api);
+      
+      // Build device description
+      buildDeviceModel();
+      buildDeviceName();
+      m_deviceDetails = deviceDetails;
    }
 
    CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -78,22 +81,6 @@ namespace rfxcomMessages
          m_deviceDetails.set("subType", m_subType);
          m_deviceDetails.set("id", m_id);
          m_deviceDetails.set("unitCode", m_unitCode);
-      }
-   }
-
-   void CRfy::Init(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      // Build device description
-      buildDeviceModel();
-      buildDeviceName();
-      buildDeviceDetails();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_state, m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));
       }
    }
 
@@ -173,5 +160,31 @@ namespace rfxcomMessages
       default:
          throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(curtainState.get()()));
       }
+   }
+
+   boost::shared_ptr<std::queue<shared::communication::CBuffer<unsigned char>>> CRfy::encodeProgramMessage(boost::shared_ptr<ISequenceNumber> seqNumberProvider,
+                                                                                                           const shared::communication::CByteBuffer& lastRequest)
+   {
+      const auto lastRfyRequest = &reinterpret_cast<const RBUF* const>(lastRequest.begin())->RFY;
+
+      RBUF rbuf;
+      MEMCLEAR(rbuf.RFY);
+
+      rbuf.RFY.packetlength = ENCODE_PACKET_LENGTH(RFY);
+      rbuf.RFY.packettype = pTypeRFY;
+      rbuf.RFY.subtype = lastRfyRequest->subtype;
+      rbuf.RFY.seqnbr = seqNumberProvider->next();
+      rbuf.RFY.id1 = lastRfyRequest->id1;
+      rbuf.RFY.id2 = lastRfyRequest->id2;
+      rbuf.RFY.id3 = lastRfyRequest->id3;
+      rbuf.RFY.unitcode = lastRfyRequest->unitcode;
+      rbuf.RFY.cmnd = rfy_sProgram;
+      rbuf.RFY.rfu1 = 0;
+      rbuf.RFY.rfu2 = 0;
+      rbuf.RFY.rfu3 = 0;
+      rbuf.RFY.rssi = 0;
+      rbuf.RFY.filler = 0;
+
+      return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(RFY));
    }
 } // namespace rfxcomMessages

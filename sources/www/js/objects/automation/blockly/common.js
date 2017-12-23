@@ -80,6 +80,7 @@ Blockly.Yadoms.BooleanOperators_ = [
     ["\u2260", "NEQ"]
 ];
 
+Blockly.Yadoms.InternalTemporaryVariable = [];
 
 /**
  * Load the blockly language file
@@ -124,12 +125,12 @@ Blockly.Yadoms.DefaultTemplate_ = "<xml xmlns=\"http://www.w3.org/1999/xhtml\"><
  * @constructor
  */
 Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) {
+   Blockly.Yadoms.InternalTemporaryVariable = [];
    Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_()
    .done(function (data) {
       Blockly.Yadoms.data = data;
       Blockly.Python.INDENT = "   ";
 
-	  
       Blockly.Yadoms.EnumerationsHelper.initialize();
 
       $domTarget.append("<div class=\"blockly-container\"></div>");
@@ -165,6 +166,17 @@ Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) 
             },
 			shadowMorph: true			
          });
+
+         Blockly.Constants.Loops.CONTROL_FLOW_IN_LOOP_CHECK_MIXIN.LOOP_TYPES.push('infinite-loop');
+         
+         /* fix blockly issue 1364 */
+         Blockly.utils.uiMenu.getSize = function(menu) { 
+            var menuDom = menu.getElement(); 
+            var menuSize = goog.style.getSize(menuDom);
+            // Replaced scrollHeight with clientHeight 
+            menuSize.height = menuDom.clientHeight; 
+            return menuSize; 
+         };
 
          Blockly.Yadoms.isLoadingFromXml = true;
          //load initial content if exists
@@ -358,3 +370,17 @@ Blockly.Yadoms.RemoveUnconnectedShadowBlocks = function(workspace) {
 		}
 	});
 };
+
+
+ 
+/**
+ * Erase all temp variables created by generators
+ * @this Blockly.Block
+ * @private
+*/     
+Blockly.Yadoms.RemoveInternalTempVariables = function() {
+  for(var v of Blockly.Yadoms.InternalTemporaryVariable) {
+     Blockly.Yadoms.CurrentWorkspace.deleteVariable(v);
+  }
+  Blockly.Yadoms.InternalTemporaryVariable = [];
+}

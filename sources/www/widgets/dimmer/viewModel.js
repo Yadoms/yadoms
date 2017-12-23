@@ -48,7 +48,10 @@ widgetViewModelCtor = function dimmerViewModel() {
         var self = this;
 
         //we get the unit of the keyword
-        self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
+        var deffered = self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId);
+        
+        deffered
+        .done(function (keyword) {
             self.unit($.t(keyword.units));
         });
 
@@ -60,6 +63,8 @@ widgetViewModelCtor = function dimmerViewModel() {
 
         //Read the step
         self.step(self.widget.configuration.StepValue);
+        
+        return deffered.promise();
     };
 
     /**

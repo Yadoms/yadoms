@@ -80,12 +80,6 @@ namespace rfxcomMessages
 
       void buildDeviceDetails();
 
-      //--------------------------------------------------------------
-      /// \brief	Declare the device
-      /// \param[in] api                  Yadoms APi context
-      //--------------------------------------------------------------
-      void declare(boost::shared_ptr<yApi::IYPluginApi> api);
-
    private:
       //--------------------------------------------------------------
       /// \brief	The device sub-type

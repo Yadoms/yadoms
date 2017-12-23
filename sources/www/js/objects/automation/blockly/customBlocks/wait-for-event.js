@@ -3,21 +3,29 @@
  * @type {{init: Function}}
  */
  
- Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
-   // Block for boolean data type: true and false.
-  {
-    "type": "yadoms_wait_for_event",
-    "message0": $.t("blockly.blocks.yadoms_wait_for_event.title"),
-    "nextStatement": true,
-    "previousStatement": true,
-    "colour": Blockly.Yadoms.blockColour.HUE,
-    "tooltip": $.t("blockly.blocks.yadoms_wait_for_event.tooltip"),
-    "helpUrl": Blockly.Yadoms.GenerateHelpUrl("yadoms_wait_for_event"),
-    "mutator": "yadoms_wait_for_event_mutator",
-    "inputsInline" : false,
-    "extensions": ["yadoms_wait_for_event_extension"]
+ 
+Blockly.Blocks['yadoms_wait_for_event'] = {
+  /**
+   * Block for sorting a list.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.jsonInit({
+       "message0": $.t("blockly.blocks.yadoms_wait_for_event.title"),
+       "nextStatement": true,
+       "previousStatement": true,
+       "colour": Blockly.Yadoms.blockColour.HUE,
+       "tooltip": $.t("blockly.blocks.yadoms_wait_for_event.tooltip"),
+       "helpUrl": Blockly.Yadoms.GenerateHelpUrl("yadoms_wait_for_event"),
+       "mutator": "yadoms_wait_for_event_mutator",
+       "inputsInline" : false,
+       "extensions": ["yadoms_wait_for_event_extension"]       
+    });
+    
+    this.mutationData_ = { additionalBlocks: [] };
   }
- ]);
+}
+
 
  Blockly.Yadoms.YADOMS_WAIT_FOR_EVENT_MUTATOR_MIXIN = {
     mutationData_: { additionalBlocks: [] },   
@@ -754,7 +762,19 @@
 
  
 Blockly.Yadoms.YADOMS_WAIT_FOR_EVENT_PUBLIC_MIXIN = { 
-
+     setBreakVariableName: function(v) {
+        this.wantToBreak = v;
+     },
+     setContinueVariableName: function(v) {
+        this.wantToContinue = v;
+     },
+     getBreakVariableName: function() {
+        return this.wantToBreak;
+     },
+     getContinueVariableName: function() {
+        return this.wantToContinue ;
+     },
+     
     /**
      * Generate a unique variable name
      * @return {String} The variable name
@@ -784,6 +804,10 @@ Blockly.Yadoms.YADOMS_WAIT_FOR_EVENT_PUBLIC_MIXIN = {
 
         //create variable
         workspace.createVariable(name);
+        
+        Blockly.Yadoms.InternalTemporaryVariable.push(name);
+        
+        
         return name;
     },
 

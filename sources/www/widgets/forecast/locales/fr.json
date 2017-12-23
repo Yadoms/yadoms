@@ -1,6 +1,6 @@
 {
   "name": "Prévision Météo",
-  "description": "Ce widget permet d'afficher les prévisions météorologiques pour les prochains jours",
+  "description": "Ce widget permet d'afficher les prévisions météorologiques pour les prochains jours. Un plugin de récupération des prévisions météo doit être installé (ex : WeatherUnderGround).",
   "configurationSchema": {
     "device": {
       "name": "Prévision",

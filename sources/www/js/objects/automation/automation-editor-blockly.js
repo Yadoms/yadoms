@@ -73,6 +73,7 @@ AutomationEditorBlockly.prototype.getRequiredJsFiles = function() {
             "js/objects/automation/blockly/customBlocks/dates/yadoms_date_now.js",
             "js/objects/automation/blockly/customBlocks/dates/yadoms_date_sunrise.js",
             "js/objects/automation/blockly/customBlocks/dates/yadoms_date_sunset.js",
+            "js/objects/automation/blockly/customBlocks/generator/python/break-continue.js",
             "js/objects/automation/blockly/customBlocks/generator/python/enumeration.js",
             "js/objects/automation/blockly/customBlocks/generator/python/get-info.js",
             "js/objects/automation/blockly/customBlocks/generator/python/helper.js",
@@ -179,6 +180,9 @@ AutomationEditorBlockly.prototype.updateRule = function() {
    self.rule.code = "";
 
    Blockly.Yadoms.GetResult(self.rule.interpreter, function(xmlString,code){
+      
+      Blockly.Yadoms.RemoveInternalTempVariables();
+      
       self.rule.content = encodeURIComponent(xmlString);
       self.rule.code = code;
 

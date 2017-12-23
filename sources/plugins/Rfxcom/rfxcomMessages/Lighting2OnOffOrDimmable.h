@@ -10,24 +10,26 @@ namespace rfxcomMessages
    //--------------------------------------------------------------
    /// \brief	The Lighting2 dimmable keyword
    //--------------------------------------------------------------
-   class CLighting2Dimmable : public ILighting2Subtype
+   class CLighting2OnOffOrDimmable : public ILighting2Subtype
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       /// \param[in] model                The device model
+      /// \param[in] deviceType           The device type
       //--------------------------------------------------------------
-      explicit CLighting2Dimmable(const std::string& model);
+      explicit CLighting2OnOffOrDimmable(const std::string& model,
+                                         EDeviceType deviceType);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CLighting2Dimmable();
+      virtual ~CLighting2OnOffOrDimmable();
 
       // ILighting2Subtype implementation
       std::string getModel() const override;
-      boost::shared_ptr<const yApi::historization::IHistorizable> keyword() const override;
-      void set(const std::string& yadomsCommand) override;
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords() const override;
+      void set(boost::shared_ptr<const yApi::IDeviceCommand> yadomsCommand) override;
       void reset() override;
       void idFromProtocol(unsigned char id1Byte,
                           unsigned char id2Byte,
@@ -56,7 +58,10 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	                        The keyword
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CDimmable> m_keyword;
+      boost::shared_ptr<yApi::historization::CSwitch> m_state;
+      boost::shared_ptr<yApi::historization::CDimmable> m_level;
+
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    };
 } // namespace rfxcomMessages
 

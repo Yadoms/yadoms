@@ -1,6 +1,6 @@
 {
-	"name": "Weather forecast",
-	"description": "This widget display forecast for next days",
+  "name": "Weather forecast",
+  "description": "This widget display forecast for next days. A plugin getting weather forecast data must be installed (ex : WeatherUnderGround).",
   "configurationSchema": {
     "device": {
       "name": "forecast",
@@ -15,5 +15,5 @@
       }
     }
   },
-  "forecastUpdated" : "Forecast updated"
+  "forecastUpdated": "Forecast updated"
 }
