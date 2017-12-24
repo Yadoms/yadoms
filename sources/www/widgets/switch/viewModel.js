@@ -51,7 +51,6 @@ widgetViewModelCtor =
 
            if (self.state().length != 0){
               $.each(self.state(), function (index, value) {
-                 console.log ("index ", index, " :", value);
                  average = average + value;
               });
               average = average / self.state().length;
