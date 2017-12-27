@@ -108,7 +108,7 @@ WidgetManager.getWidgetOfPageFromServer = function (page) {
 WidgetManager.getViewFromServer_ = function (widgetType) {
     assert(!isNullOrUndefined(widgetType), "widgetType must be defined");
     var d = new $.Deferred();
-
+    
     //we try to download "widget.css" first if present
     asyncLoadCss("widgets/" + widgetType + "/widget.css")
         .always(function () {
@@ -128,6 +128,7 @@ WidgetManager.getViewFromServer_ = function (widgetType) {
                 d.reject(errorMessage);
             });
         });
+        
     return d.promise();
 };
 
@@ -338,24 +339,24 @@ WidgetManager.downloadWidgetViewAndVieWModel_ = function (widgetType, canReject)
 
     WidgetManager.getViewFromServer_(widgetType)
     .done(function () {
-        WidgetManager.getViewModelFromServer_(widgetType)
-        .done(d.resolve)
-        .fail(function (error) {
-            if (canReject) {
-                d.reject(error);
-            } else {
-                console.error(error);
-                d.resolve();
-            }
+       WidgetManager.getViewModelFromServer_(widgetType)
+       .done(d.resolve)
+       .fail(function (error) {
+          if (canReject) {
+             d.reject(error);
+          } else {
+             console.error(error);
+             d.resolve();
+          }
         });
     })
     .fail(function (error) {
-        if (canReject) {
-            d.reject(error);
-        } else {
-            console.error(error);
-            d.resolve();
-        }
+       if (canReject) {
+          d.reject(error);
+       } else {
+          console.error(error);
+          d.resolve();
+       }
     });
 
     return d.promise();
@@ -374,22 +375,31 @@ WidgetManager.loadWidget = function (widget, pageWhereToAdd, ensureVisible) {
     assert(!isNullOrUndefined(widget), "widget must be defined");
     assert(!isNullOrUndefined(pageWhereToAdd), "pageWhereToAdd must be defined");
 
+    var d = $.Deferred();
+    
     if (!WidgetPackageManager.packageExists(widget.type)) {
-        return WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, "package do not exists", ensureVisible);
+       return WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, "package do not exists", ensureVisible);
     } else {
-
-        if (!WidgetPackageManager.packageList[widget.type].viewAnViewModelHaveBeenDownloaded) {
-            WidgetManager.downloadWidgetViewAndVieWModel_(widget.type, true)
-            .done(function () {
-                return WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible);
-            })
-            .fail(function (errorMessage) {
-                return WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, errorMessage, ensureVisible);
-            });
-        } else {
-            return WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible);
-        }
+       if (!WidgetPackageManager.packageList[widget.type].viewAnViewModelHaveBeenDownloaded) {
+          WidgetManager.downloadWidgetViewAndVieWModel_(widget.type, true)
+          .done(function () {
+             WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible)
+             .done(d.resolve)
+             .fail(d.reject);
+          })
+          .fail(function (errorMessage) {
+             WidgetManager.instanciateDowngradedWidgetToPage_(pageWhereToAdd, widget, errorMessage, ensureVisible)
+             .done(d.resolve)
+             .fail(d.reject);             
+          });
+       }else {
+          WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible)
+          .done(d.resolve)
+          .fail(d.reject);
+       }
     }
+    
+    return d.promise();
 };
 
 
