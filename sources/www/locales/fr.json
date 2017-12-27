@@ -973,8 +973,8 @@
         },
         "mobile": {
           "name": "Mobile",
-          "description": "Le numéro de téléphone mobile du destinataire",
-          "regexErrorMessage": ""
+          "description": "Le numéro de téléphone mobile du destinataire : (format international : +33601020304)",
+          "regexErrorMessage": "Doit correspondre à un numéro de téléphone valide : commence par +, pas d'espace, de tiret, de ()"
         }
       }
     },
