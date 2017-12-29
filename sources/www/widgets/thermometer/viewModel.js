@@ -71,15 +71,15 @@ function thermometerViewModel(){
 		//y  : position y for the height of the column. 0 is the top of the frame
 		//dx : the thickness of the column. should not change
 		//dy : the height of the column. The final value y + dy should equal to 74 (in the colour ball).
-		// -40° -> 10 of height
-		// 50°  -> 60 of height
+		// min -> 0 of height
+		// max -> 60 of height
       
       // Value for the physical representation
-      var posYMin = 10 * self.WidgetHeight / 99;
-      var posYMax = 60 * self.WidgetHeight / 99;		
-      var posYBall = (90 - (self.WidgetWidth/100-1)*7) * (self.WidgetHeight / 99);
-      var posCenterBall = (91 - (self.WidgetWidth/100-1)*7) * (self.WidgetHeight / 99);
-       
+      var posYMin = 10 * self.WidgetHeight / 99;   // the highest position
+      var posYMax = 80 * self.WidgetHeight / 99;	// the lowest position	
+      var posYBall = (90 - (self.WidgetWidth*7/(100-1))) * (self.WidgetHeight/99);
+      var posCenterBall = (91 - (self.WidgetWidth*7/(100-1))) * (self.WidgetHeight/99);
+      
       //draw a circle
       ctx.beginPath();
                // position x         position y             diameter
@@ -90,24 +90,23 @@ function thermometerViewModel(){
       
       // We draw into the thermeter only if a value is present
       if (self.data !== "-"){
-         ctx.fillStyle = "rgb(" + Math.round(255 - (self.tempMax - self.data) * 255 / 90) + ",0," + Math.round(255 - (self.data - self.tempMin) * 255 / 90) + ")";
+         ctx.fillStyle = "rgb(" + Math.round(255-(self.tempMax-self.data)*255/90) + ",0," + Math.round(255-(self.data-self.tempMin)*255/90)+")";
          ctx.fill();
          
          var lenghtColumn = posYBall - initialPositionY;		
          
-         if (self.data > self.tempMin && self.data < self.tempMax && (self.tempMax - self.tempMin!=0)){
-            initialPositionY = posYMin + ( self.tempMax - self.data )*( posYMax - posYMin )/ ( self.tempMax - self.tempMin) ;
+         if ((self.data>self.tempMin) && (self.data<self.tempMax) && ((self.tempMax - self.tempMin)!=0)){
+            initialPositionY = posYMin + (self.tempMax-self.data)*(posYMax - posYMin)/(self.tempMax - self.tempMin);
+            console.log ("initialPositionY : ", initialPositionY);
             lenghtColumn = posYBall - initialPositionY;
          }
          else
          {
-            if ( self.data <= self.tempMin )
-            {
+            if ( self.data <= self.tempMin ){
                initialPositionY = posYMax;
                lenghtColumn = posYBall - initialPositionY;
             }
-            if (self.data > self.tempMax )
-            {
+            if (self.data > self.tempMax ){
                initialPositionY = posYMin;
                lenghtColumn = posYBall - initialPositionY;
             }			
