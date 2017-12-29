@@ -3,7 +3,7 @@
 #include "DefaultEquipment.h"
 #include <shared/DataContainer.h>
 #include <shared/http/HttpException.hpp>
-#include <algorithm>
+#include <boost/range/algorithm_ext/erase.hpp>
 
 CEquipmentManager::CEquipmentManager(const std::map<std::string, boost::shared_ptr<equipments::IEquipment>>& deviceList) :
 	m_deviceList (deviceList)
@@ -60,8 +60,9 @@ void CEquipmentManager::refreshEquipment(boost::shared_ptr<yApi::IYPluginApi> ap
       // reading of the battery level
       shared::CDataContainer response = frameManager->getDeviceInformation(apikey, equipment->getEUI());
       response.printToLog(YADOMS_LOG(trace));
-      boost::posix_time::ptime receivedTime;
-      receivedTime = boost::posix_time::time_from_string(response.get<std::string>("updateTs"));
+      std::string receivedTimeString = response.get<std::string>("updateTs");
+      boost::remove_erase_if(receivedTimeString, boost::is_any_of("Z-:."));
+      boost::posix_time::ptime receivedTime = boost::posix_time::from_iso_string(receivedTimeString);
 
       boost::posix_time::time_duration elapseTimeSinceLastBatteryMessage = actualTime - receivedTime;
       const boost::posix_time::time_duration maxTimeForBatteryHistorization = boost::posix_time::hours(168);
@@ -99,15 +100,15 @@ void CEquipmentManager::refreshEquipment(boost::shared_ptr<yApi::IYPluginApi> ap
       // Register the new data, only if it's a new id
       if (response.getWithDefault<std::string>("id","") != equipment->getlastMessageId(api))
       {
-         boost::posix_time::ptime receivedTime = boost::posix_time::from_iso_string(response.get<std::string>("updateTs"));
+         std::string receivedTimeString = response.get<std::string>("updateTs");
+         boost::remove_erase_if(receivedTimeString, boost::is_any_of("Z-:."));
+         boost::posix_time::ptime receivedTime = boost::posix_time::from_iso_string(receivedTimeString);
          boost::posix_time::time_duration elapseTimeSinceLastDataMessage = actualTime - receivedTime;
          const boost::posix_time::time_duration maxTimeForDataHistorization = boost::posix_time::minutes(30);
 
          // If the time is > 30mn, we do not historize it
          if (elapseTimeSinceLastDataMessage < maxTimeForDataHistorization)
-         {
             equipment->updateData(api, response.get<std::string>("data"));
-         }
       }
    }
    catch (shared::CHttpException &e)
@@ -125,9 +126,8 @@ void CEquipmentManager::removeAllDevices(boost::shared_ptr<yApi::IYPluginApi> ap
    YADOMS_LOG(information) << "Delete all devices created in Yadoms";
 
    for (const auto& pair : m_deviceList)
-   {
       pair.second->removeFromYadoms(api);
-   }
+
    m_deviceList.clear();
 
 }

@@ -1,6 +1,6 @@
 {
    "name": "Orange Business Live objects",
-   "description": "This plugin synchronise data from Orange business live objects and Yadoms.",
+   "description": "This plugin synchronize data from Orange business live objects and Yadoms.",
    "configurationSchema":{	
       "APIKey": {
          "name": "API Key",
@@ -23,7 +23,8 @@
 			"initializationError": "Initialization error",
 			"updateConfiguration": "Configuration updating...",
 			"ready": "Plugin ready",
-			"noConnection": "Could not connect to the equipment"         
+			"noConnection": "Could not connect to the equipment",
+         "unauthorizedAccess": "Unauthorized access, please check the APIKey"
 		}
 	}
 }

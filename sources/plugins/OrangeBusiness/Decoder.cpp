@@ -2,6 +2,7 @@
 #include "Decoder.h"
 #include <shared/Log.h>
 #include "DefaultEquipment.h"
+#include "UnauthorizedException.hpp"
 
 CDecoder::CDecoder()
 {}
@@ -14,6 +15,15 @@ std::map<std::string, boost::shared_ptr<equipments::IEquipment>> CDecoder::decod
 {
 	std::map<std::string, boost::shared_ptr<equipments::IEquipment>> equipmentList;
    message.printToLog(YADOMS_LOG(trace));
+
+   auto errorcode = message.getWithDefault<std::string>("code","");
+
+   if (errorcode == "UNAUTHORIZED")
+      throw CUnauthorizedException(message.get<std::string>("message"));
+
+   if (errorcode != "")
+      throw shared::exception::CException(message.get<std::string>("message"));
+
    auto equipments = message.get<std::vector<shared::CDataContainer> >("data");
    std::vector<shared::CDataContainer>::iterator equipmentIterator;
 

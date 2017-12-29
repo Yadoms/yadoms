@@ -22,6 +22,7 @@ set(ORANGE_BUSINESS_PLUGIN_SOURCES
    OrangeBusinessConfiguration.h
    stdafx.cpp
    stdafx.h
+   UnauthorizedException.hpp
    urlManager.cpp
    urlManager.h
 )

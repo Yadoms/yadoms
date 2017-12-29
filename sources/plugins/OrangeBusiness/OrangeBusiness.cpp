@@ -7,6 +7,7 @@
 #include <shared/Log.h>
 #include <shared/currentTime/Provider.h>
 #include <shared/http/HttpException.hpp>
+#include "UnauthorizedException.hpp"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -148,18 +149,26 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   m_equipmentManager->removeAllDevices(api);
                   api->setPluginState(yApi::historization::EPluginState::kCustom, "ready"); // No more devices, so ready
                }
+
+               extraQuery->sendSuccess(shared::CDataContainer());
             }
             catch (shared::CHttpException &e)
             {
                api->setPluginState(yApi::historization::EPluginState::kCustom, "noConnection");
                YADOMS_LOG(error) << "Error during connection to the web site";
+               extraQuery->sendError(e.what()); // TODO : Envoyer un message traduit
+            }
+            catch (CUnauthorizedException &e)
+            {
+               api->setPluginState(yApi::historization::EPluginState::kCustom, "unauthorizedAccess");
+               YADOMS_LOG(error) << e.what();
+               extraQuery->sendError(e.what()); // TODO : Envoyer un message traduit
             }
             catch (std::exception &e)
             {
                YADOMS_LOG(information) << "Error during extra query : " << e.what();
+               extraQuery->sendError(e.what()); // TODO : Envoyer un message traduit
             }
-
-            extraQuery->sendSuccess(shared::CDataContainer());
          }
          break;
       }
@@ -179,42 +188,28 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 void COrangeBusiness::registerAllDevices(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   try
-   {
-      int page = 0;
-      shared::CDataContainer response;
+   int page = 0;
+   shared::CDataContainer response;
 
-      do {
-         response = m_frameManager->getRegisteredEquipments(m_configuration.getAPIKey(), page, false); //http://liveobjects.orange-business.com
-         m_equipmentManager = boost::make_shared<CEquipmentManager>(m_decoder->decodeDevicesMessage(api, response));
-         response.printToLog(YADOMS_LOG(information));
-         ++page;
-      } while (!m_decoder->isFrameComplete(response));
-   }
-   catch (std::exception &e)
-   {
-      YADOMS_LOG(error) << "exception 4 : " << e.what();
-   }
+   do {
+      response = m_frameManager->getRegisteredEquipments(m_configuration.getAPIKey(), page, false); //http://liveobjects.orange-business.com
+      m_equipmentManager = boost::make_shared<CEquipmentManager>(m_decoder->decodeDevicesMessage(api, response));
+      response.printToLog(YADOMS_LOG(information));
+      ++page;
+   } while (!m_decoder->isFrameComplete(response));
 }
 
 void COrangeBusiness::registerActivatedDevices(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   try
-   {
-      int page = 0;
-      shared::CDataContainer response;
+   int page = 0;
+   shared::CDataContainer response;
 
-      do {
-         response = m_frameManager->getRegisteredEquipments(m_configuration.getAPIKey(), page, true); //http://liveobjects.orange-business.com
-         m_decoder->decodeDevicesMessage(api, response);
-         response.printToLog(YADOMS_LOG(information));
-         ++page;
-      } while (!m_decoder->isFrameComplete(response));;
-   }
-   catch (std::exception &e)
-   {
-      YADOMS_LOG(error) << "exception 5 : " << e.what();
-   }
+   do {
+      response = m_frameManager->getRegisteredEquipments(m_configuration.getAPIKey(), page, true); //http://liveobjects.orange-business.com
+      m_decoder->decodeDevicesMessage(api, response);
+      response.printToLog(YADOMS_LOG(information));
+      ++page;
+   } while (!m_decoder->isFrameComplete(response));;
 }
 
 void COrangeBusiness::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData)
