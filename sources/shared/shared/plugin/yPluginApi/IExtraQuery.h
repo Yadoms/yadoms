@@ -25,7 +25,7 @@ namespace shared
             ///\brief               Get the extra query data
             ///\return              The extra query data
             //-----------------------------------------------------
-            virtual boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> getData() const = 0;
+            virtual boost::shared_ptr<IExtraQueryData> getData() const = 0;
 
             //-----------------------------------------------------
             ///\brief Answer the request with success, providing query answer data

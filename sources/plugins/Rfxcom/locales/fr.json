@@ -12,17 +12,17 @@
       "content": {
         "AE Blyss": { "name": "AE Blyss (Castorama)" },
         "Rubicson": { "name": "Rubicson" },
-        "FineOffset/Viking": { "name": "FineOffset/Viking" },
+        "FineOffset/Viking": { "name": "FineOffset, Viking" },
         "Lighting4": { "name": "Lighting4" },
-        "RSL": { "name": "RSL" },
-        "Byron SX": { "name": "Byron SX" },
+        "RSL": { "name": "RSL, Revolt" },
+        "Byron SX": { "name": "Byron SX, SelectPlus" },
         "Imagintronix": { "name": "Imagintronix/Opus" },
         "undecoded messages": { "name": "undecoded messages" },
         "Mertik": { "name": "Mertik" },
         "AD LightwaveRF": { "name": "AD LightwaveRF" },
-        "Hideki/UPM": { "name": "Hideki/UPM" },
+        "Hideki/UPM": { "name": "Hideki, TFA, Cresta, UPM" },
         "La Crosse": { "name": "La Crosse" },
-        "FS20": { "name": "Legrand CAD" },
+        "LegrandCAD": { "name": "Legrand CAD" },
         "BlindsT0": { "name": "BlindsT0" },
         "BlindsT1": { "name": "BlindsT1" },
         "X10": { "name": "X10" },
@@ -651,13 +651,35 @@
       }
     }
   },
+  "extraQueries": {
+    "firmwareUpdate": {
+      "name": "Mise à jour firmware",
+      "commandData": {
+        "fileContent": {
+          "name": "Fichier",
+          "description": "Le nouveau firmware à utiliser"
+        }
+      }
+    }
+  },
   "customLabels": {
     "pluginState": {
       "connecting": "Connexion en cours...",
       "initializing": "Initialisation RFXCom...",
       "connectionLost": "Connexion perdue",
       "updateConfiguration": "Mise à jour de la configuration...",
+      "updateFirmware": "Mise à jour du firmware...",
       "failToConfigure": "Impossible de configurer le RFXCom, des protocoles incompatibles ont propablement été sélectionnés. Voir le manuel du RFXCom."
+    },
+    "firmwareUpdate": {
+      "loadInputFile": "Chargement du fichier...",
+      "connect": "Connexion au RFXCom...",
+      "erase": "Effacement...",
+      "write": "Ecriture...",
+      "reboot": "Redémarrage du RFXCom",
+      "ErrorInternal": "Impossible de mettre à jour le firmware, erreur interne",
+      "ErrorOnlyAvailableForSerial": "La mise à jour du firmware n'est possible qu'en connexion directe avec un câble série",
+      "ErrorInvalidInputFile": "Impossible de mettre à jour le firmware, le fichier d'entrée est invalide"
     }
   }
 }

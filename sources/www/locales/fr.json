@@ -95,8 +95,8 @@
     "resetToDefault": "Restaurer les valeurs par défaut",
     "goBack": "Retour",
     "enabled": "Activé",
-        "disabled": "Désactivé",
-        "clear": "Effacer"
+    "disabled": "Désactivé",
+    "clear": "Effacer"
   },
   "mainPage": {
     "menu": {
@@ -742,7 +742,7 @@
       },
       "yadoms_log": {
         "title": "Loguer",
-                "tooltip": "Ecrit une ligne dans le fichier de journal du script"
+        "tooltip": "Ecrit une ligne dans le fichier de journal du script"
       },
       "infinite-loop": {
         "title": "A l'infini",

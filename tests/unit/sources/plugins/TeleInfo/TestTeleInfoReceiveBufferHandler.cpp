@@ -371,11 +371,13 @@ BOOST_AUTO_TEST_CASE(final)
                                                shared::event::kUserFirstId,
                                                boost::make_shared<BufferLoggerMock>(),
                                                false);
+	useTimeMock();
 
    bufferHandler.activate();
 	bufferHandler.push(shared::communication::CByteBuffer(frame1));
 	BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
 	bufferHandler.push(shared::communication::CByteBuffer(frame2));
+	auto timeMock = useTimeMock();
 	BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 	const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
 	BOOST_CHECK_EQUAL(*out == expectedMap, true);
