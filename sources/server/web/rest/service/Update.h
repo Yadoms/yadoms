@@ -20,7 +20,8 @@ namespace web
             /// \brief  Constructor
             /// \param [in] updateManager   The update manager
             //-----------------------------------------------------------------------------      
-            explicit CUpdate(boost::shared_ptr<update::CUpdateManager> updateManager);
+            CUpdate(boost::shared_ptr<update::CUpdateManager> updateManager,
+                    boost::shared_ptr<pluginSystem::CManager> pluginManager);
 
             //-----------------------------------------------------------------------------
             /// \brief  Destructor
@@ -176,10 +177,16 @@ namespace web
                                                            const std::string& requestContent) const;
 
 
+            shared::CDataContainer buildPluginList(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
+                                                   const shared::CDataContainer& availableVersions,
+                                                   bool includePreleases) const;
+
+
             //-----------------------------------------------------------------------------
-            /// \brief  The update manager
+            /// \brief  The dependancies
             //-----------------------------------------------------------------------------         
             boost::shared_ptr<update::CUpdateManager> m_updateManager;
+            boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
 
             //-----------------------------------------------------------------------------
             /// \brief  The rest keyword
@@ -189,5 +196,3 @@ namespace web
       } //namespace service
    } //namespace rest
 } //namespace web 
-
-

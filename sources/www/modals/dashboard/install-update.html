@@ -549,7 +549,7 @@
 
         //we remove all rows except header
         $("table#" + objectType + "-install-update-list").find("tr:gt(0)").remove();
-        UpdateInformationManager.getList(objectType)
+        UpdateInformationManager.getList(objectType, includePreReleases)
             .done(function (serverList) {
                 //we get installed plugin List
                 if (!isNullOrUndefined(serverList)) {

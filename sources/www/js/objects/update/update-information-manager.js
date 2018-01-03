@@ -32,12 +32,13 @@ UpdateInformationManager.factory = function(json) {
  * @param objectType : "plugin", "widget", "scriptInterpreter"
  * @param sync
  */
-UpdateInformationManager.getList = function(objectType) {
+UpdateInformationManager.getList = function(objectType, includePreReleases) {
    assert(!isNullOrUndefined(objectType), "objectType must be defined");
 
    var d = new $.Deferred();
+   debugger;
 
-   RestEngine.getJson("rest/update/" + objectType + "/list/" + i18n.lng())
+   RestEngine.getJson("rest/update/" + objectType + "/list/" + (includePreReleases ? "includePreReleases/" : "releasesOnly/") + i18n.lng())
    .done(function(data) {
       var result = {};
       $.each(data, function(index, value) {

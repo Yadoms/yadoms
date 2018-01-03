@@ -158,7 +158,8 @@ void CSupervisor::run()
       webServer->getConfigurator()->restHandlerRegisterService(
          boost::make_shared<web::rest::service::CRecipient>(pDataProvider));
       webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CUpdate>(updateManager));
+         boost::make_shared<web::rest::service::CUpdate>(updateManager,
+                                                         pluginManager));
       webServer->getConfigurator()->restHandlerRegisterService(
          boost::make_shared<web::rest::service::CMaintenance>(m_pathProvider, pDataProvider->getDatabaseRequester(),
                                                               taskManager));
