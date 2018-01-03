@@ -65,6 +65,7 @@ widgetViewModelCtor =
               var self = this;
               var readOnlyMode=false;
               var arrayOfDeffered = [];
+              var d = new $.Deferred();
 
               if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
                   return;
@@ -77,11 +78,15 @@ widgetViewModelCtor =
                //we ask for the first device information
               if  (!isNullOrUndefined(this.widget.configuration.device.deviceId)) {
                 // Get the capacity of the keyword
-                KeywordManager.get(self.widget.configuration.device.keywordId)
+                var deffered = KeywordManager.get(self.widget.configuration.device.keywordId);
+                
+                deffered
                 .done(function (keyword) {
                   self.capacity[0]   = keyword.capacityName;
                   self.accessMode[0] = keyword.accessMode;
                 });
+                
+                arrayOfDeffered.push(deffered);
               }
               
               //we ask for additional devices information
@@ -90,13 +95,27 @@ widgetViewModelCtor =
                       if (!isNullOrUndefined(device.content.source.deviceId)) {
 						  
                          // Get the capacity of the keyword
-                         KeywordManager.get(device.content.source.keywordId)
+                         var deffered = KeywordManager.get(device.content.source.keywordId);
+                         
+                         deffered
                          .done(function (keyword) {
                            self.capacity[index+1]   = keyword.capacityName;
                            self.accessMode[index+1] = keyword.accessMode;
                          });
+                         
+                         arrayOfDeffered.push(deffered);
                       }
                   });
                }              
-          };
+             // This variable is used only for the display
+             $.when.apply($, arrayOfDeffered)
+             .done(function () {
+                d.resolve();
+             })
+             .fail(function () {
+                d.reject();
+             });
+            
+             return d.promise();                
+          };        
       };
