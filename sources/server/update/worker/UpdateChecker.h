@@ -26,12 +26,12 @@ namespace update
          void doWork(const boost::posix_time::time_duration firstScanDelay,
                      const boost::posix_time::time_duration nextScanDelays);
          void scan();
-         shared::CDataContainer buildUpdates(bool includePreleases);
+         shared::CDataContainer buildUpdates(bool includePreleases,
+                                             const pluginSystem::IFactory::AvailablePluginMap& pluginsLocalVersions,
+                                             const shared::CDataContainer& pluginsAvailableVersions);
          shared::CDataContainer buildPluginList(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
                                                 const shared::CDataContainer& availableVersions,
                                                 bool includePreleases);
-         static shared::CDataContainer extractReleases(const shared::CDataContainer& inUpdates);
-         static shared::CDataContainer extractReleasesFromVersionsNode(const shared::CDataContainer& inVersionsNode);
 
       private:
          boost::shared_ptr<pluginSystem::CManager> m_pluginManager;

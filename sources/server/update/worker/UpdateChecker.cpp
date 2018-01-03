@@ -100,9 +100,13 @@ namespace update
 
       void CUpdateChecker::scan()
       {
+         // Read inputs
+         const auto pluginsLocalVersions = m_pluginManager->getPluginList();
+         const auto pluginsAvailableVersions = info::CUpdateSite::getAllPluginVersions("fr" /*TODO à gérer*/);
+
          m_updatesAvailable = false;
-         const auto updates = buildUpdates(true /*TODO à gérer*/);
-         const auto releasesOnlyUpdates = extractReleases(updates);
+         const auto updates = buildUpdates(true, pluginsLocalVersions, pluginsAvailableVersions);
+         const auto releasesOnlyUpdates = buildUpdates(false, pluginsLocalVersions, pluginsAvailableVersions);
 
          YADOMS_LOG(debug) << "updates : ";//TODO virer
          updates.printToLog(YADOMS_LOG(debug));
@@ -118,12 +122,12 @@ namespace update
          m_releasesOnlyUpdates = releasesOnlyUpdates;
       }
 
-      shared::CDataContainer CUpdateChecker::buildUpdates(bool includePreleases)
+      shared::CDataContainer CUpdateChecker::buildUpdates(bool includePreleases,
+                                                          const pluginSystem::IFactory::AvailablePluginMap& pluginsLocalVersions,
+                                                          const shared::CDataContainer& pluginsAvailableVersions)
       {
          shared::CDataContainer updates;
 
-         const auto pluginsLocalVersions = m_pluginManager->getPluginList();
-         const auto pluginsAvailableVersions = info::CUpdateSite::getAllPluginVersions("fr" /*TODO à gérer*/);
          const auto pluginUpdates = buildPluginList(pluginsLocalVersions,
                                                     pluginsAvailableVersions,
                                                     includePreleases);
@@ -292,7 +296,6 @@ namespace update
                                                                return availableVersionForPlugin.get<std::string>(
                                                                   "version") == newestVersionLabel;
                                                             });
-               newestVersionData->printToLog(YADOMS_LOG(debug));
                item.set("iconUrl", newestVersionData->get<std::string>("iconUrl"));
                item.set("versions", versions);
 
@@ -306,86 +309,6 @@ namespace update
          }
 
          return list;
-      }
-
-      shared::CDataContainer CUpdateChecker::extractReleases(const shared::CDataContainer& inUpdates)
-      {
-         shared::CDataContainer outUpdates;
-         for (const auto& inModuleTypeNode : inUpdates.getKeys()) // inModuleTypeNode = ["plugins", "widgets" ...]
-         {
-            shared::CDataContainer outModuleType;
-            auto modules = inUpdates.get<shared::CDataContainer>(inModuleTypeNode);
-            for (const auto& inModuleKeyNode : modules.getKeys()) // inModuleTypeNode = ["rfxcom", "Sigfox" ...]
-            {
-               shared::CDataContainer outModuleKey;
-               auto inModule = modules.get<shared::CDataContainer>(inModuleKeyNode);
-               for (const auto& inItem : inModule.getKeys()) // inModuleTypeNode = ["iconUrl", "versions" ...]
-               {
-                  if (inItem != "versions")
-                  {
-                     if (inModule.containsValue(inItem))
-                        outModuleKey.set(inItem, inModule.get<std::string>(inItem));
-                     else
-                        outModuleKey.set(inItem, inModule.get<shared::CDataContainer>(inItem));
-
-                     continue;
-                  }
-
-                  auto inModuleVersions = inModule.get<shared::CDataContainer>("versions");
-                  shared::CDataContainer outModuleVersions;
-
-                  if (inModuleVersions.exists("installed"))
-                     outModuleVersions.set("installed", inModuleVersions.get<std::string>("installed"));
-
-                  if (inModuleVersions.exists("older"))
-                  {
-                     const auto olderVersions = inModuleVersions.get<shared::CDataContainer>("older");
-                     if (!olderVersions.empty())
-                     {
-                        const auto olderReleases = extractReleasesFromVersionsNode(olderVersions);
-                        if (!olderReleases.empty())
-                           outModuleVersions.set("older", olderReleases);
-                     }
-                  }
-
-                  if (inModuleVersions.exists("newer"))
-                  {
-                     const auto newerVersions = inModuleVersions.get<shared::CDataContainer>("newer");
-                     if (!newerVersions.empty())
-                     {
-                        const auto newerReleases = extractReleasesFromVersionsNode(newerVersions);
-                        if (!newerReleases.empty())
-                        {
-                           outModuleVersions.set("newer", newerReleases);
-                           const auto& newerReleasesKeys = newerReleases.getKeys();
-                           shared::CDataContainer newest;
-                           newest.set(newerReleasesKeys.front(), newerReleases.get<shared::CDataContainer>(newerReleasesKeys.front(), 0), 0);
-                           outModuleVersions.set("newest", newest);                           
-                        }
-                     }
-                  }
-
-                  outModuleKey.set("versions", outModuleVersions);
-               }
-               outModuleType.set(inModuleKeyNode, outModuleKey);
-            }
-            outUpdates.set(inModuleTypeNode, outModuleType);
-         }
-
-         return outUpdates;
-      }
-
-      shared::CDataContainer CUpdateChecker::extractReleasesFromVersionsNode(
-         const shared::CDataContainer& inVersionsNode)
-      {
-         shared::CDataContainer out;
-         for (const auto& inVersionNode : inVersionsNode.getKeys())
-         {
-            if (shared::versioning::CVersion(inVersionNode).prerelease().empty())
-               out.set(inVersionNode, inVersionsNode.get<shared::CDataContainer>(inVersionNode, 0), 0);
-         }
-
-         return out;
       }
    } // namespace worker
 } // namespace update
