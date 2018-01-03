@@ -20,9 +20,9 @@ namespace web
          )
 
          CUpdate::CUpdate(boost::shared_ptr<update::CUpdateManager> updateManager,
-                          boost::shared_ptr<pluginSystem::CManager> pluginManager)
+                          boost::shared_ptr<update::worker::IUpdateChecker> updateChecker)
             : m_updateManager(updateManager),
-              m_pluginManager(pluginManager)
+              m_updateChecker(updateChecker)
          {
          }
 
@@ -38,6 +38,9 @@ namespace web
 
          void CUpdate::configureDispatcher(CRestDispatcher& dispatcher)
          {
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("update"), CUpdate::availableUpdates);
+
+            //TODO faire le ménage
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("yadoms")("list")("*"), CUpdate::
                availableYadomsVersions);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("yadoms")("update"), CUpdate::updateYadoms);
@@ -68,6 +71,18 @@ namespace web
                installScriptInterpreter);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("remove")("*"), CUpdate
                ::removeScriptInterpreter);
+         }
+
+         shared::CDataContainer CUpdate::availableUpdates(const std::vector<std::string>& parameters,
+                                                          const std::string& requestContent) const
+         {
+            if (parameters.size() != 5)
+               return CResult::GenerateError("Invalid parameters in url /rest/plugin/list");
+
+            const auto includePreleases = parameters[3] == "includePreReleases";
+            const auto lang = parameters[4];//TODO à gérer ou enlever ?
+
+            return CResult::GenerateSuccess(m_updateChecker->getUpdates(includePreleases));
          }
 
          shared::CDataContainer CUpdate::availableYadomsVersions(const std::vector<std::string>& parameters,
@@ -106,14 +121,9 @@ namespace web
                return CResult::GenerateError("Invalid parameters in url /rest/plugin/list");
 
             const auto includePreleases = parameters[3] == "includePreReleases";
-            const auto lang = parameters[4];
+            const auto lang = parameters[4];//TODO à gérer ou enlever ?
 
-            const auto localVersions = m_pluginManager->getPluginList();
-
-            const auto availableVersions = update::info::CUpdateSite::getAllPluginVersions(lang);
-
-            //ask site info
-            return CResult::GenerateSuccess(buildPluginList(localVersions, availableVersions, includePreleases));
+            return CResult::GenerateSuccess(m_updateChecker->getUpdates(includePreleases));
          }
 
 
@@ -297,183 +307,6 @@ namespace web
             shared::CDataContainer result;
             result.set("taskId", taskId);
             return CResult::GenerateSuccess(result);
-         }
-
-         shared::CDataContainer CUpdate::buildPluginList(
-            const pluginSystem::IFactory::AvailablePluginMap& localVersions,
-            const shared::CDataContainer& availableVersions,
-            bool includePreleases) const
-         {
-            shared::CDataContainer list;
-            for (const auto& localVersion : localVersions)
-            {
-               try
-               {
-                  const auto pluginType = localVersion.first;
-                  shared::CDataContainer item;
-
-                  //TODO conserver ? Le client doit pouvoir le récupérer comme le name/description
-                  item.set("iconUrl", (localVersion.second->getPath() / "icon.png").generic_string());
-
-                  shared::CDataContainer versions;
-                  versions.set("installed", localVersion.second->getVersion().toString());
-                  std::map<std::string, shared::CDataContainer> older; // Pass by a map to sort versions list
-                  std::map<std::string, shared::CDataContainer> newer; // Pass by a map to sort versions list
-                  if (availableVersions.exists(pluginType))
-                  {
-                     try
-                     {
-                        const auto availableVersionsForPlugin =
-                           availableVersions.get<std::vector<shared::CDataContainer>>(pluginType);
-                        for (auto& version : availableVersionsForPlugin)
-                        {
-                           shared::versioning::CVersion v(version.get<std::string>("version"));
-
-                           // Don't add prereleases versions if not asked
-                           if (!v.prerelease().empty() && !includePreleases)
-                              continue;
-
-                           if (v == localVersion.second->getVersion())
-                              continue;
-
-                           shared::CDataContainer versionData;
-                           versionData.set("downloadUrl", version.get<std::string>("downloadUrl"));
-
-                           if (v < localVersion.second->getVersion())
-                              older[version.get<std::string>("version")] = versionData;
-                           else
-                              newer[version.get<std::string>("version")] = versionData;
-                        }
-                     }
-                     catch (std::exception& exception)
-                     {
-                        YADOMS_LOG(warning) << "Invalid remote package for " << pluginType << ", will be ignored";
-                        YADOMS_LOG(debug) << "exception : " << exception.what();
-                     }
-                  }
-
-                  if (!older.empty())
-                  {
-                     // Sort (newer version first)
-                     shared::CDataContainer olderVersions;
-                     for (auto v = older.rbegin(); v != older.rend(); ++v)
-                        // Force different path char to not cut version string into subPaths
-                        olderVersions.set(v->first, v->second, 0);
-                     versions.set("older", olderVersions);
-                  }
-
-                  if (!newer.empty())
-                  {
-                     // Sort (newer version first)
-                     shared::CDataContainer newerVersions;
-                     for (auto v = newer.rbegin(); v != newer.rend(); ++v)
-                        // Force different path char to not cut version string into subPaths
-                        newerVersions.set(v->first, v->second, 0);
-                     versions.set("newer", newerVersions);
-
-                     // Find the newest version
-                     shared::CDataContainer newestVersion;
-                     // Force different path char to not cut version string into subPaths
-                     newestVersion.set(newer.rbegin()->first, newer.rbegin()->second, 0);
-                     versions.set("newest", newestVersion);
-                  }
-
-                  item.set("versions", versions);
-
-                  list.set(pluginType, item);
-               }
-               catch (std::exception& exception)
-               {
-                  YADOMS_LOG(warning) << "Invalid package " << localVersion.first << ", will be ignored";
-                  YADOMS_LOG(debug) << "exception : " << exception.what();
-               }
-            }
-
-            // Add items not already installed (ie not in localVersions list)
-            for (const auto& pluginType : availableVersions.getKeys())
-            {
-               if (localVersions.find(pluginType) != localVersions.end())
-                  continue; // Module already installed
-
-               // Module not installed
-               const auto availableModule = availableVersions.get<shared::CDataContainer>(pluginType);
-
-               // Pass by a map to sort versions list
-               std::map<std::string, shared::CDataContainer> newPluginAvailableVersions;
-               try
-               {
-                  const auto availableVersionsForPlugin =
-                     availableVersions.get<std::vector<shared::CDataContainer>>(pluginType);
-                  for (auto& version : availableVersionsForPlugin)
-                  {
-                     shared::versioning::CVersion v(version.get<std::string>("version"));
-
-                     // Don't add prereleases versions if not asked
-                     if (!v.prerelease().empty() && !includePreleases)
-                        continue;
-
-                     shared::CDataContainer versionData;
-                     versionData.set("downloadUrl", version.get<std::string>("downloadUrl"));
-                     newPluginAvailableVersions[version.get<std::string>("version")] = versionData;
-                  }
-               }
-               catch (std::exception& exception)
-               {
-                  YADOMS_LOG(warning) << "Invalid remote package for " << pluginType << ", will be ignored";
-                  YADOMS_LOG(debug) << "exception : " << exception.what();
-               }
-
-
-               if (newPluginAvailableVersions.empty())
-                  continue;
-
-               shared::CDataContainer versions;
-               // Sort (newer version first)
-               shared::CDataContainer sortedVersions;
-               for (auto v = newPluginAvailableVersions.rbegin(); v != newPluginAvailableVersions.rend(); ++v)
-                  // Force different path char to not cut version string into subPaths
-                  sortedVersions.set(v->first, v->second, 0);
-               versions.set("versions", sortedVersions);
-
-               // Find the newest version
-               shared::CDataContainer newestVersion;
-               // Force different path char to not cut version string into subPaths
-               newestVersion.set(newPluginAvailableVersions.rbegin()->first,
-                                 newPluginAvailableVersions.rbegin()->second, 0);
-               versions.set("newest", newestVersion);
-
-               try
-               {
-                  shared::CDataContainer item;
-                  const auto& availableVersionsForPlugin = availableVersions.get<std::vector<shared::CDataContainer>>(
-                     pluginType);
-                  const auto& newestVersionLabel = newPluginAvailableVersions.rbegin()->first;
-                  const auto& newestVersionData = std::find_if(availableVersionsForPlugin.begin(),
-                                                               availableVersionsForPlugin.end(),
-                                                               [&newestVersionLabel](
-                                                               const shared::CDataContainer& availableVersionForPlugin)
-                                                               {
-                                                                  return availableVersionForPlugin.get<std::string>(
-                                                                     "version") == newestVersionLabel;
-                                                               });
-                  newestVersionData->printToLog(YADOMS_LOG(debug));
-                  item.set("iconUrl", newestVersionData->get<std::string>("iconUrl"));
-                  item.set("versions", versions);
-
-                  list.set(pluginType, item);
-               }
-               catch (std::exception& exception)
-               {
-                  YADOMS_LOG(warning) << "Invalid remote package for " << pluginType << ", will be ignored";
-                  YADOMS_LOG(debug) << "exception : " << exception.what();
-               }
-            }
-
-
-            YADOMS_LOG(debug) << "list : ";//TODO virer
-            list.printToLog(YADOMS_LOG(debug));
-
-            return list;
          }
       } //namespace service
    } //namespace rest

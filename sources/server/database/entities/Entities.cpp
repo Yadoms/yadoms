@@ -44,6 +44,7 @@ namespace database
          ((Started))
          ((Stopped))
          ((Updated))
+         ((UpdateAvailable))
       )
 
       DECLARE_ENUM_IMPLEMENTATION(ERuleState,

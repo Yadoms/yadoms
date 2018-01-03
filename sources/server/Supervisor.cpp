@@ -33,6 +33,7 @@
 #include "location/IpApiAutoLocation.h"
 #include "dateTime/TimeZoneProvider.h"
 #include "dateTime/TimeZoneDatabase.h"
+#include "update/worker/UpdateChecker.h"
 
 CSupervisor::CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider)
    : m_pathProvider(pathProvider)
@@ -112,6 +113,13 @@ void CSupervisor::run()
       shared::CServiceLocator::instance().push<automation::IRuleManager>(automationRulesManager);
 
 
+      // Start the update checker
+      const auto updateChecker = boost::make_shared<update::worker::CUpdateChecker>(boost::posix_time::minutes(1),
+                                                                                    boost::posix_time::hours(12),
+                                                                                    pluginManager,
+                                                                                    dal->getEventLogger());
+
+
       // Start Web server
       const auto webServerIp = startupOptions->getWebServerIPAddress();
       const auto webServerUseSSL = startupOptions->getIsWebServerUseSSL();
@@ -159,7 +167,7 @@ void CSupervisor::run()
          boost::make_shared<web::rest::service::CRecipient>(pDataProvider));
       webServer->getConfigurator()->restHandlerRegisterService(
          boost::make_shared<web::rest::service::CUpdate>(updateManager,
-                                                         pluginManager));
+                                                         updateChecker));
       webServer->getConfigurator()->restHandlerRegisterService(
          boost::make_shared<web::rest::service::CMaintenance>(m_pathProvider, pDataProvider->getDatabaseRequester(),
                                                               taskManager));

@@ -3,6 +3,7 @@
 #include "IRestService.h"
 #include "update/UpdateManager.h"
 #include <shared/enumeration/EnumHelpers.hpp>
+#include "update/worker/IUpdateChecker.h"
 
 namespace web
 {
@@ -21,7 +22,7 @@ namespace web
             /// \param [in] updateManager   The update manager
             //-----------------------------------------------------------------------------      
             CUpdate(boost::shared_ptr<update::CUpdateManager> updateManager,
-                    boost::shared_ptr<pluginSystem::CManager> pluginManager);
+                    boost::shared_ptr<update::worker::IUpdateChecker> updateChecker);
 
             //-----------------------------------------------------------------------------
             /// \brief  Destructor
@@ -46,6 +47,15 @@ namespace web
                ((Update)(0))
                ((Check)(1))
             )
+
+            //-----------------------------------------------------------------------------
+            /// \brief  List all available updates
+            /// \param [in]   parameters        The url parameters
+            /// \param [in]   requestContent    The url content
+            /// \return the request result
+            //-----------------------------------------------------------------------------         
+            shared::CDataContainer availableUpdates(const std::vector<std::string>& parameters,
+                                                    const std::string& requestContent) const;
 
             //-----------------------------------------------------------------------------
             /// \brief  List all available versions of Yadoms
@@ -177,16 +187,11 @@ namespace web
                                                            const std::string& requestContent) const;
 
 
-            shared::CDataContainer buildPluginList(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
-                                                   const shared::CDataContainer& availableVersions,
-                                                   bool includePreleases) const;
-
-
             //-----------------------------------------------------------------------------
             /// \brief  The dependancies
             //-----------------------------------------------------------------------------         
             boost::shared_ptr<update::CUpdateManager> m_updateManager;
-            boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
+            boost::shared_ptr<update::worker::IUpdateChecker> m_updateChecker;
 
             //-----------------------------------------------------------------------------
             /// \brief  The rest keyword
