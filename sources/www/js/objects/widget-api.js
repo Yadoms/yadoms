@@ -149,7 +149,6 @@ WidgetApi.prototype.manageBatteryConfiguration = function () {
            //we check for the device to look if it has battery keyword
            DeviceManager.getKeywordsBydeviceIdAndCapacity(deviceId, "Get", "batteryLevel")
            .done(function (keyword) {
-               console.log (keyword);
                // We assume that we have only 1 batteryLevel keyword for one device, it's the first one
                if (keyword.length>0) {
                  $battery.removeClass("hidden");
