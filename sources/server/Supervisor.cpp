@@ -89,11 +89,20 @@ void CSupervisor::run()
                                                                     location,
                                                                     taskManager));
 
+      // Start the update checker
+      const auto updateChecker = boost::make_shared<update::worker::CUpdateChecker>(boost::posix_time::minutes(1),
+                                                                                    boost::posix_time::hours(12),
+                                                                                    pluginManager,
+                                                                                    dal->getEventLogger(),
+                                                                                    startupOptions->getDeveloperMode());
+
       // Start Task manager
       taskManager->start();
 
       // Create the update manager
-      auto updateManager(boost::make_shared<update::CUpdateManager>(taskManager, pluginManager));
+      auto updateManager(boost::make_shared<update::CUpdateManager>(taskManager,
+                                                                    pluginManager,
+                                                                    updateChecker));
 
       // Start the plugin gateway
       auto pluginGateway(
@@ -111,13 +120,6 @@ void CSupervisor::run()
          location,
          timezoneProvider));
       shared::CServiceLocator::instance().push<automation::IRuleManager>(automationRulesManager);
-
-
-      // Start the update checker
-      const auto updateChecker = boost::make_shared<update::worker::CUpdateChecker>(boost::posix_time::minutes(1),
-                                                                                    boost::posix_time::hours(12),
-                                                                                    pluginManager,
-                                                                                    dal->getEventLogger());
 
 
       // Start Web server

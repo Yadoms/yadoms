@@ -1,35 +1,35 @@
 #pragma once
-#include <Poco/Path.h>
 #include "WorkerTools.h"
+#include "IUpdateChecker.h"
 
-namespace update {
-   namespace worker {
-
+namespace update
+{
+   namespace worker
+   {
       class CScriptInterpreter
       {
       public:
          //---------------------------------------------
          ///\brief                        Install a new scriptInterpreter
-         ///\param [in] progressCallback  The progress callback
-         ///\param [in] downloadUrl       The scriptInterpreter package url
          //---------------------------------------------
-         static void install(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & downloadUrl);
+         static void install(CWorkerTools::WorkerProgressFunc progressCallback,
+                             const std::string& downloadUrl,
+                             boost::shared_ptr<IUpdateChecker> updateChecker);
 
          //---------------------------------------------
          ///\brief                              Update a scriptInterpreter
-         ///\param [in] progressCallback        The progress callback
-         ///\param [in] scriptInterpreterName   The scriptInterpreter name
-         ///\param [in] downloadUrl             The scriptInterpreter package url
          //---------------------------------------------
-         static void update(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & scriptInterpreterName, const std::string & downloadUrl);
+         static void update(CWorkerTools::WorkerProgressFunc progressCallback,
+                            const std::string& scriptInterpreterName,
+                            const std::string& downloadUrl,
+                            boost::shared_ptr<IUpdateChecker> updateChecker);
 
          //---------------------------------------------
          ///\brief                              Remove a scriptInterpreter
-         ///\param [in] progressCallback        The progress callback
-         ///\param [in] scriptInterpreterName   The scriptInterpreter name
          //---------------------------------------------
-         static void remove(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & scriptInterpreterName);
+         static void remove(CWorkerTools::WorkerProgressFunc progressCallback,
+                            const std::string& scriptInterpreterName,
+                            boost::shared_ptr<IUpdateChecker> updateChecker);
       };
-
    } // namespace worker
 } // namespace update

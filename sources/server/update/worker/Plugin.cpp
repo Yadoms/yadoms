@@ -17,7 +17,8 @@ namespace update
    {
       void CPlugin::install(CWorkerTools::WorkerProgressFunc progressCallback,
                             const std::string& downloadUrl,
-                            boost::shared_ptr<pluginSystem::CManager> pluginManager)
+                            boost::shared_ptr<pluginSystem::CManager> pluginManager,
+                            boost::shared_ptr<IUpdateChecker> updateChecker)
       {
          YADOMS_LOG(information) << "Installing new plugin from " << downloadUrl;
 
@@ -33,7 +34,8 @@ namespace update
          {
             YADOMS_LOG(information) << "Downloading package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginDownload, std::string(), callbackData);
-            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdatePluginDownload, 0.0, 50.0);
+            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdatePluginDownload,
+                                                                         0.0, 50.0);
             YADOMS_LOG(information) << "Downloading package with success";
 
             /////////////////////////////////////////////
@@ -76,12 +78,15 @@ namespace update
             YADOMS_LOG(error) << "Fail to download package : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginDownloadFailed, ex.what(), callbackData);
          }
+
+         updateChecker->forceRebuildUpdates();
       }
 
       void CPlugin::update(CWorkerTools::WorkerProgressFunc progressCallback,
                            const std::string& pluginName,
                            const std::string& downloadUrl,
-                           boost::shared_ptr<pluginSystem::CManager> pluginManager)
+                           boost::shared_ptr<pluginSystem::CManager> pluginManager,
+                           boost::shared_ptr<IUpdateChecker> updateChecker)
       {
          YADOMS_LOG(information) << "Updating plugin " << pluginName << " from " << downloadUrl;
 
@@ -98,7 +103,8 @@ namespace update
          {
             YADOMS_LOG(information) << "Downloading package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginDownload, std::string(), callbackData);
-            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdatePluginDownload, 0.0, 50.0);
+            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdatePluginDownload,
+                                                                         0.0, 50.0);
             YADOMS_LOG(information) << "Downloading package with success";
 
             /////////////////////////////////////////////
@@ -145,13 +151,16 @@ namespace update
             YADOMS_LOG(error) << "Fail to download package : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginDownloadFailed, ex.what(), callbackData);
          }
+
+         updateChecker->forceRebuildUpdates();
       }
 
       void CPlugin::remove(CWorkerTools::WorkerProgressFunc progressCallback,
                            const std::string& pluginName,
-                           boost::shared_ptr<pluginSystem::CManager> pluginManager)
+                           boost::shared_ptr<pluginSystem::CManager> pluginManager,
+                           boost::shared_ptr<IUpdateChecker> updateChecker)
       {
-         YADOMS_LOG(information) << "Removing plugin " << pluginName ;
+         YADOMS_LOG(information) << "Removing plugin " << pluginName;
 
          shared::CDataContainer callbackData;
          callbackData.set("pluginName", pluginName);
@@ -191,8 +200,8 @@ namespace update
             YADOMS_LOG(error) << "Fail to delete plugin : " << pluginName << " : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginRemoveFailed, ex.what(), callbackData);
          }
+
+         updateChecker->forceRebuildUpdates();
       }
    } // namespace worker
 } // namespace update
-
-

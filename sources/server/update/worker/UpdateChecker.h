@@ -14,7 +14,8 @@ namespace update
          CUpdateChecker(const boost::posix_time::time_duration firstScanDelay,
                         const boost::posix_time::time_duration nextScanDelays,
                         boost::shared_ptr<pluginSystem::CManager> pluginManager,
-                        boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger);
+                        boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
+            bool developerMode);
          virtual ~CUpdateChecker();
 
          // IUpdateChecker Implementation
@@ -36,6 +37,7 @@ namespace update
       private:
          boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
          boost::shared_ptr<dataAccessLayer::IEventLogger> m_eventLogger;
+         bool m_developerMode;
 
          boost::thread m_thread;
          shared::event::CEventHandler m_evtHandler;

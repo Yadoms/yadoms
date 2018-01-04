@@ -17,9 +17,11 @@ namespace update
       CUpdateChecker::CUpdateChecker(const boost::posix_time::time_duration firstScanDelay,
                                      const boost::posix_time::time_duration nextScanDelays,
                                      boost::shared_ptr<pluginSystem::CManager> pluginManager,
-                                     boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger)
+                                     boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
+                                     bool developerMode)
          : m_pluginManager(pluginManager),
            m_eventLogger(eventLogger),
+           m_developerMode(developerMode),
            m_thread(boost::thread(&CUpdateChecker::doWork, this, firstScanDelay, nextScanDelays)),
            m_updatesAvailable(false)
       {
@@ -100,30 +102,34 @@ namespace update
 
       void CUpdateChecker::scan()
       {
-         // Read inputs
-         const auto pluginsLocalVersions = m_pluginManager->getPluginList();
-         const auto pluginsAvailableVersions = info::CUpdateSite::getAllPluginVersions("fr" /*TODO à gérer*/);
+         try
+         {
+            // Read inputs
+            const auto pluginsLocalVersions = m_pluginManager->getPluginList();
+            const auto pluginsAvailableVersions = info::CUpdateSite::getAllPluginVersions("fr" /*TODO à gérer*/);
 
-         m_updatesAvailable = false;
-         const auto updates = buildUpdates(true, pluginsLocalVersions, pluginsAvailableVersions);
-         const auto releasesOnlyUpdates = buildUpdates(false, pluginsLocalVersions, pluginsAvailableVersions);
+            m_updatesAvailable = false;
+            const auto updates = buildUpdates(true, pluginsLocalVersions, pluginsAvailableVersions);
+            const auto releasesOnlyUpdates = buildUpdates(false, pluginsLocalVersions, pluginsAvailableVersions);
 
-         YADOMS_LOG(debug) << "updates : ";//TODO virer
-         updates.printToLog(YADOMS_LOG(debug));
-         YADOMS_LOG(debug) << "releasesOnlyUpdates : ";//TODO virer
-         releasesOnlyUpdates.printToLog(YADOMS_LOG(debug));
+            // Notify only for new releases (not for prereleases)
+            if (releasesOnlyUpdates != m_releasesOnlyUpdates)
+               m_eventLogger->addEvent(database::entities::ESystemEventCode::kUpdateAvailable, "yadoms", std::string());
 
-         // Notify only for new releases (not for prereleases)
-         if (releasesOnlyUpdates != m_releasesOnlyUpdates)
-            m_eventLogger->addEvent(database::entities::ESystemEventCode::kUpdateAvailable, "yadoms", std::string());
-
-         boost::lock_guard<boost::recursive_mutex> lock(m_updateMutex);
-         m_allUpdates = updates;
-         m_releasesOnlyUpdates = releasesOnlyUpdates;
+            boost::lock_guard<boost::recursive_mutex> lock(m_updateMutex);
+            m_allUpdates = updates;
+            m_releasesOnlyUpdates = releasesOnlyUpdates;
+         }
+         catch (std::exception& e)
+         {
+            YADOMS_LOG(error) << " Error scanning available versions (do you have a working Internet connection ?), " << e
+               .what();
+         }
       }
 
       shared::CDataContainer CUpdateChecker::buildUpdates(bool includePreleases,
-                                                          const pluginSystem::IFactory::AvailablePluginMap& pluginsLocalVersions,
+                                                          const pluginSystem::IFactory::AvailablePluginMap&
+                                                          pluginsLocalVersions,
                                                           const shared::CDataContainer& pluginsAvailableVersions)
       {
          shared::CDataContainer updates;
@@ -137,10 +143,9 @@ namespace update
          return updates;
       }
 
-      shared::CDataContainer CUpdateChecker::buildPluginList(
-         const pluginSystem::IFactory::AvailablePluginMap& localVersions,
-         const shared::CDataContainer& availableVersions,
-         bool includePreleases)
+      shared::CDataContainer CUpdateChecker::buildPluginList(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
+                                                             const shared::CDataContainer& availableVersions,
+                                                             bool includePreleases)
       {
          shared::CDataContainer list;
          for (const auto& localVersion : localVersions)
@@ -148,6 +153,13 @@ namespace update
             try
             {
                const auto pluginType = localVersion.first;
+
+               // Filter non-updatable plugins
+               if (boost::starts_with(pluginType, "system-"))
+                  continue;
+               if (m_developerMode && boost::starts_with(pluginType, "dev-"))
+                  continue;
+
                shared::CDataContainer item;
 
                //TODO conserver ? Le client doit pouvoir le récupérer comme le name/description
@@ -161,8 +173,7 @@ namespace update
                {
                   try
                   {
-                     const auto availableVersionsForPlugin =
-                        availableVersions.get<std::vector<shared::CDataContainer>>(pluginType);
+                     const auto availableVersionsForPlugin = availableVersions.get<std::vector<shared::CDataContainer>>(pluginType);
                      for (auto& version : availableVersionsForPlugin)
                      {
                         shared::versioning::CVersion v(version.get<std::string>("version"));
@@ -242,8 +253,7 @@ namespace update
             std::map<std::string, shared::CDataContainer> newPluginAvailableVersions;
             try
             {
-               const auto availableVersionsForPlugin =
-                  availableVersions.get<std::vector<shared::CDataContainer>>(pluginType);
+               const auto availableVersionsForPlugin = availableVersions.get<std::vector<shared::CDataContainer>>(pluginType);
                for (auto& version : availableVersionsForPlugin)
                {
                   shared::versioning::CVersion v(version.get<std::string>("version"));
@@ -285,8 +295,7 @@ namespace update
             try
             {
                shared::CDataContainer item;
-               const auto& availableVersionsForPlugin = availableVersions.get<std::vector<shared::CDataContainer>>(
-                  pluginType);
+               const auto& availableVersionsForPlugin = availableVersions.get<std::vector<shared::CDataContainer>>(pluginType);
                const auto& newestVersionLabel = newPluginAvailableVersions.rbegin()->first;
                const auto& newestVersionData = std::find_if(availableVersionsForPlugin.begin(),
                                                             availableVersionsForPlugin.end(),

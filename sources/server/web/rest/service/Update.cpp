@@ -38,49 +38,36 @@ namespace web
 
          void CUpdate::configureDispatcher(CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("update"), CUpdate::availableUpdates);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("list")("*")("*"), CUpdate::availableUpdates);
 
             //TODO faire le ménage
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("yadoms")("list")("*"), CUpdate::
-               availableYadomsVersions);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("yadoms")("list")("*"), CUpdate:: availableYadomsVersions);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("yadoms")("update"), CUpdate::updateYadoms);
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("widget")("list")("*"), CUpdate::
-               availableWidgets);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("update")("*"), CUpdate::
-               updateWidget);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("install"), CUpdate::installWidget
-            );
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("remove")("*"), CUpdate::
-               removeWidget);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("widget")("list")("*"), CUpdate:: availableWidgets);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("update")("*"), CUpdate:: updateWidget);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("install"), CUpdate::installWidget );
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("remove")("*"), CUpdate:: removeWidget);
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("plugin")("list")("*")("*"), CUpdate::
-               availablePlugins);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("update")("*"), CUpdate::
-               updatePlugin);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("install"), CUpdate::installPlugin
-            );
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("remove")("*"), CUpdate::
-               removePlugin);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("plugin")("list")("*")("*"), CUpdate:: availablePlugins);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("update")("*"), CUpdate:: updatePlugin);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("install"), CUpdate::installPlugin );
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("remove")("*"), CUpdate:: removePlugin);
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET" , (m_restKeyword)("scriptInterpreter")("list")("*"), CUpdate::
-               availableScriptInterpreters);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("update")("*"), CUpdate
-               ::updateScriptInterpreter);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("install"), CUpdate::
-               installScriptInterpreter);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("remove")("*"), CUpdate
-               ::removeScriptInterpreter);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET" , (m_restKeyword)("scriptInterpreter")("list")("*"), CUpdate:: availableScriptInterpreters);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("update")("*"), CUpdate ::updateScriptInterpreter);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("install"), CUpdate:: installScriptInterpreter);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("remove")("*"), CUpdate ::removeScriptInterpreter);
          }
 
          shared::CDataContainer CUpdate::availableUpdates(const std::vector<std::string>& parameters,
                                                           const std::string& requestContent) const
          {
-            if (parameters.size() != 5)
-               return CResult::GenerateError("Invalid parameters in url /rest/plugin/list");
+            if (parameters.size() != 4)
+               return CResult::GenerateError("Invalid parameters in url /rest/update/list");
 
-            const auto includePreleases = parameters[3] == "includePreReleases";
-            const auto lang = parameters[4];//TODO à gérer ou enlever ?
+            const auto includePreleases = parameters[2] == "includePreReleases";
+            const auto lang = parameters[3];//TODO à gérer ou enlever ?
 
             return CResult::GenerateSuccess(m_updateChecker->getUpdates(includePreleases));
          }
@@ -210,6 +197,7 @@ namespace web
             auto taskId = m_updateManager->updateWidgetAsync(widgetName, downloadUrl);
             shared::CDataContainer result;
             result.set("taskId", taskId);
+            m_updateChecker->forceRebuildUpdates();
             return CResult::GenerateSuccess(result);
          }
 
@@ -240,6 +228,7 @@ namespace web
             auto taskId = m_updateManager->removeWidgetAsync(widgetName);
             shared::CDataContainer result;
             result.set("taskId", taskId);
+            m_updateChecker->forceRebuildUpdates();
             return CResult::GenerateSuccess(result);
          }
 

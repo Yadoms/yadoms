@@ -4,18 +4,18 @@
         <span data-i18n="modals.dashboard.sub-windows.install-update.title"></span>
         <i class="making-async-action pull-right fa fa-circle-o-notch fa-spin hidden"></i>
     </h1>
-   <div class="checkbox">
-      <label>
-         <input type="checkbox" class="cb-release-type">&nbsp;&nbsp;
-         <span data-i18n="modals.dashboard.sub-windows.install-update.includePreRelease">Include pre-release versions</span>
-      </label>
-   </div>
-   
-   <h2 id="install-update-developerModeWarning" class="bg-danger hidden">
-      <span data-i18n="modals.dashboard.sub-windows.install-update.developerModeWarning"></span>
-   </h2>
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" class="cb-release-type">&nbsp;&nbsp;
+            <span data-i18n="modals.dashboard.sub-windows.install-update.includePreRelease">Include pre-release versions</span>
+        </label>
+    </div>
 
-   <div class="panel-group" id="install-update-accordion" role="tablist" aria-multiselectable="true">
+    <h2 id="install-update-developerModeWarning" class="bg-danger hidden">
+        <span data-i18n="modals.dashboard.sub-windows.install-update.developerModeWarning"></span>
+    </h2>
+
+    <div class="panel-group" id="install-update-accordion" role="tablist" aria-multiselectable="true">
         <!--accordion yadoms update-->
         <div class="panel panel-default with-overflow-visible">
             <div class="panel-heading" role="tab" id="install-update-yadoms-heading-panel" data-toggle="collapse" data-parent="#install-update-accordion"
@@ -185,12 +185,12 @@
     };
 
     YadomsInformationManager.getList()
-       .done(function (data) {
-           if (data.developerMode) {
-              $("#install-update-developerModeWarning").removeClass("hidden");
-           } else {
-              $("#install-update-developerModeWarning").addClass("hidden");
-           }
+        .done(function (data) {
+            if (data.developerMode) {
+                $("#install-update-developerModeWarning").removeClass("hidden");
+            } else {
+                $("#install-update-developerModeWarning").addClass("hidden");
+            }
         })
 
     /**
@@ -223,17 +223,14 @@
         //we remove update available header
         $(".panel-title span.update-available-label").addClass("hidden");
 
-        var deferredArray = [];
-        deferredArray.push(fillYadomsInformation());
-        deferredArray.push(fillPluginList());
-        deferredArray.push(fillWidgetList());
-        deferredArray.push(fillScriptInterpreterList());
-        $.whenAll(deferredArray)
-            .done(function () {
+        UpdateInformationManager.getList(includePreReleases)
+            .done(function (data) {
+                if (data.plugins)
+                    buildList("plugin", data.plugins);
                 $asyncActionIndicator.addClass("hidden");
                 d.resolve();
             })
-            .fail(d.reject);
+            .fail(d.reject)
 
         return d.promise();
     }
@@ -490,19 +487,6 @@
             });
 
     }
-    /**
-     * This function fill the plugin list from the server elements
-     */
-    function fillPluginList() {
-        var d = new $.Deferred();
-        //we launch requests
-        PluginManager.getAll()
-            .done(function (localList) {
-                buildList("plugin", localList).always(d.resolve);
-            })
-            .fail(d.reject);
-        return d.promise();
-    }
 
     /**
      * This function fill the widget list from the server elements
@@ -512,7 +496,7 @@
         //we save the information that the load of objectType is in progress
         WidgetPackageManager.getAll()
             .done(function () {
-                buildList("widget", WidgetPackageManager.packageList).always(d.resolve);
+                // buildList("widget", WidgetPackageManager.packageList).always(d.resolve);
             })
             .fail(function (error) {
                 notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), error);
@@ -529,7 +513,7 @@
         //we launch requests
         AutomationInterpreterManager.getAllDetailed()
             .done(function (interpreters) {
-                buildList("scriptInterpreter", interpreters).always(d.resolve);
+                // buildList("scriptInterpreter", interpreters).always(d.resolve);
             })
             .fail(function (error) {
                 notifyError($.t("objects.interpreter.errorListingInterpreters"), error);
@@ -541,51 +525,18 @@
     /**
      * Create the list from the localList
      */
-    function buildList(objectType, localList) {
+    function buildList(objectType, list) {
         assert(!isNullOrUndefined(objectType), "objectType must be defined");
-        assert(!isNullOrUndefined(localList), "localList must be defined");
-
-        var d = new $.Deferred();
+        assert(!isNullOrUndefined(list), "list must be defined");
 
         //we remove all rows except header
         $("table#" + objectType + "-install-update-list").find("tr:gt(0)").remove();
-        UpdateInformationManager.getList(objectType, includePreReleases)
-            .done(function (serverList) {
-                //we get installed plugin List
-                if (!isNullOrUndefined(serverList)) {
-                    mergeLists(localList, serverList, function (mergedList) {
-                        //we sort the list by name
-                        mergedList.sort(function (item1, item2) {
-                            return item2.type > item1.type;
-                        });
 
-                        YadomsInformationManager.getList()
-                            .done(function (data) {
-                                //we display the result
-                                Object.keys(mergedList).forEach(function (key) {
-                                    if (!key.startsWith("system-") && (data.developerMode || !
-                                            key.startsWith("dev-"))) {
-                                        //the actual item does nothing
-                                        mergedList[key].processing = false;
-                                        createInstallUpdateItemLine(objectType, mergedList[key]);
-                                        //we set the visibility to the allowed buttons
-                                        updateLine(objectType, mergedList[key]);
-                                    }
-                                });
-                                d.resolve();
-                            })
-                            .fail(d.reject);
-                    });
-                } else {
-                    d.resolve();
-                }
-            })
-            .fail(function (error) {
-                console.warn("Unable to get versions for " + objectType + " : " + error);
-                d.reject(error);
-            });
-
-        return d.promise();
+        debugger;
+        $.each(list, function (index, value) {
+            createInstallUpdateItemLine(objectType, index, value);
+            updateLine(objectType, index, value);
+        });
     }
 
     /**
@@ -676,50 +627,53 @@
         callback(localList);
     }
 
-    function createInstallUpdateItemLine(objectType, item) {
+    function createInstallUpdateItemLine(objectType, itemType, item) {
         assert(!isNullOrUndefined(objectType), "objectType must be defined");
+        assert(!isNullOrUndefined(itemType), "itemType must be defined");
         assert(!isNullOrUndefined(item), "item must be defined");
 
-        //determine the i8n base path (because scriptInterpreters have specific path)
-        item.i18nBasePath = objectType + "s/" + item.type;
+        //determine the i18n base path (because scriptInterpreters have specific path)
+        //TODO item.i18nBasePath = objectType + "s/" + item.type;
+        //
+        // var s = "<tr id=\"" + item.type + "\">" +
+        //     "<td><span>" + $.t(item.i18nBasePath + ":name", {
+        //         defaultValue: item.package.name
+        //     }) + "</span>" +
+        //     "<span class=\"update-available-label hidden label label-as-badge label-success\">!</span>" +
+        //     "</td>";
 
-        var s = "<tr id=\"" + item.type + "\">" +
-            "<td><span>" + $.t(item.i18nBasePath + ":name", {
-                defaultValue: item.package.name
-            }) + "</span>" +
+        var s = "<tr id=\"" + itemType + "\">" +
+            "<td><span>" + itemType + "</span>" +
             "<span class=\"update-available-label hidden label label-as-badge label-success\">!</span>" +
             "</td>";
 
-        var iconName = "icon.png";
-        if (objectType === "widget")
-            iconName = "preview.png";
-
-        s += "<td><img a=\"" + (item.iconUrl ? item.iconUrl : objectType + "s/" + item.type + "/" + iconName) +
-            "\"  src=\"" + (item.iconUrl ? item.iconUrl : objectType + "s/" + item.type + "/" + iconName) +
+        s += "<td><img a=\"" + item.iconUrl + "\" src=\"" + item.iconUrl +
             "\" class=\"img-thumbnail dashboard-table-icon\"></td>";
 
-        s += "<td><span>" + $.t(item.i18nBasePath + ":description", {
-                defaultValue: item.package.description
-            }) + "</span></td>" +
-            "<td><em class=\"local-version\"></em></td>" +
-            "<td><em class=\"latest-version\"></em></td>" +
-            "<td>" +
-            "<div class=\"action-buttons btn-group\">" +
+        s += "<td><span>" + itemType + "</span></td>";
+
+        s += "<td><em class=\"local-version\"></em></td>";
+
+        s += "<td><em class=\"latest-version\"></em></td>";
+
+        s += "<td>";
+        s += "<div class=\"action-buttons btn-group\">" +
             "<div class=\"btn-group btn-install\">" +
-            "<button type=\"button\" class=\"btn main-btn btn-primary\">" +
+            "<button type=\"button\" class=\"btn main-btn btn-primary disabled\">" +
             "<span class=\"glyphicon glyphicon-save \"></span>" +
             "<span class=\"latest-installable-version\"></span>" +
             "</button>" +
-            "<button type=\"button\" class=\"btn dropdown-toggle btn-expand btn-primary\" data-toggle=\"dropdown\" aria-expanded=\"false\">" +
+            "<button type=\"button\" class=\"btn dropdown-toggle btn-expand btn-primary disabled\" data-toggle=\"dropdown\" aria-expanded=\"false\">" +
             "<span class= \"caret\"></span>" +
             "<span class=\"sr-only\">Toggle Dropdown</span>" +
             "</button>" +
             "<ul class=\"dropdown-menu versions\" role=\"menu\">" +
             "</ul>" +
             "</div>" +
-            "<button type=\"button\" class=\"btn btn-danger btn-uninstall\" data-i18n=\"[title]modals.dashboard.sub-windows.install-update.generic.uninstall\"><span class=\"fa fa-trash\"></span></button>" +
-            "</div>" +
-            "<div class=\"action-progression\">" +
+            "<button type=\"button\" class=\"btn btn-danger btn-uninstall disabled\" data-i18n=\"[title]modals.dashboard.sub-windows.install-update.generic.uninstall\"><span class=\"fa fa-trash\"></span></button>" +
+            "</div>";
+
+        s += "<div class=\"action-progression\">" +
             "<div class=\"progress\">" +
             "<div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" style=\"width: 0%\">" +
             "<span class=\"hidden\">60% Complete</span>" +
@@ -740,7 +694,7 @@
     function getLineFromItem(objectType, item) {
         assert(!isNullOrUndefined(objectType), "objectType must be defined");
         assert(!isNullOrUndefined(item), "item must be defined");
-        return $("table#" + objectType + "-install-update-list").find("tr#" + item.type);
+        return $("table#" + objectType + "-install-update-list").find("tr#" + item);
     }
 
     /**
@@ -762,162 +716,233 @@
     /**
      * Update the DOM row form the object
      */
-    function updateLine(objectType, item) {
+    function updateLine(objectType, itemType, item) {
         assert(!isNullOrUndefined(objectType), "objectType must be defined");
+        assert(!isNullOrUndefined(itemType), "itemType must be defined");
         assert(!isNullOrUndefined(item), "item must be defined");
 
-        var $line = getLineFromItem(objectType, item);
+        var $line = getLineFromItem(objectType, itemType);
 
-        //we manage general information
-        if (!isNullOrUndefined(item.package.version)) {
-            //we can display the local version
-            $line.find("em.local-version").text(item.package.version.toString());
-        } else {
-            $line.find("em.local-version").text("");
+        $line.find("em.local-version").text(isNullOrUndefined(item.versions.installed) ? "" : item.versions.installed);
+
+        var newestVersionLabel = (isNullOrUndefined(item.versions.newest) || $.isEmptyObject(item.versions.newest)) ?
+            "" : Object.keys(item.versions.newest)[0];
+        $line.find("em.latest-version").text(newestVersionLabel);
+        $line.find("ul.latest-installable-version").text(newestVersionLabel);
+
+        // Create a combo
+        var $cbVersion = $line.find("ul.versions");
+        $cbVersion.empty();
+        var enableDropDownButton = false;
+
+        if (!isNullOrUndefined(item.versions.newer) && !$.isEmptyObject(item.versions.newer)) {
+            $.each(item.versions.newer, function (index, value) {
+                enableDropDownButton = true;
+                $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl + "\"><a href=\"#\"><em>" + index +
+                    "</em></a></li>");
+                //we manage the click event on each version
+                if (!isNullOrUndefined(item.versions.installed)) {
+                    //the item is already installed, we ask an update
+                    $cbVersion.find("li").last().unbind('click').bind('click', function () {
+                        askForUpdate(objectType, item, value);
+                    });
+                } else {
+                    //the item isn't installed so we make a new install
+                    $cbVersion.find("li").last().unbind('click').bind('click', function () {
+                        askForInstall(objectType, item, value);
+                    });
+                }
+            });
+        }
+        if (!isNullOrUndefined(item.versions.older) && !$.isEmptyObject(item.versions.older)) {
+            $.each(item.versions.older, function (index, value) {
+                enableDropDownButton = true;
+                $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl +
+                    "\"><a href=\"#\"><em class='text-muted small'>" + index + "</em></a></li>");
+                //we manage the click event on each version
+                if (!isNullOrUndefined(item.versions.installed)) {
+                    //the item is already installed, we ask an update
+                    $cbVersion.find("li").last().unbind('click').bind('click', function () {
+                        askForUpdate(objectType, item, value);
+                    });
+                } else {
+                    //the item isn't installed so we make a new install
+                    $cbVersion.find("li").last().unbind('click').bind('click', function () {
+                        askForInstall(objectType, item, value);
+                    });
+                }
+            });
         }
 
-        if (!item.processing) {
-            //no action in progress we show action buttons
+        if (newestVersionLabel)
+            $line.find("div.btn-install button.main-btn").removeClass("disabled");
+        else
+            $line.find("div.btn-install button.main-btn").addClass("disabled");
 
-            $line.find("div.action-buttons").removeClass("hidden");
-            $line.find("div.action-progression").addClass("hidden");
+        if (enableDropDownButton)
+            $line.find("div.btn-install button.btn-expand").removeClass("disabled");
+        else
+            $line.find("div.btn-install button.btn-expand").addClass("disabled");
 
-            //we manage actions buttons
-            var uninstallAllowed = false;
-            var updateAllowed = false;
-            var canChooseVersion = false;
+        if (item.versions.installed)
+            $line.find("button.btn-uninstall").removeClass("disabled");
+        else
+            $line.find("button.btn-uninstall").addClass("disabled");
 
-            var availableVersions = [];
-
-            if (!isNullOrUndefined(item.serverVersions)) {
-                //we create a list of all version available to update based on the type of the version and the list of available version different from the local one
-                $.each(item.serverVersions, function (index, value) {
-                    if (isWanted(value.version)) {
-                        //if this releasetype is wanted we add it to the arrays of version for this item
-                        if (Version.compare(item.package.version, value.version) !== 0) {
-                            availableVersions.push(value);
-                        }
-                    }
-                });
-            }
-
-
-            if (!isNullOrUndefined(item.package.version)) {
-                //the plugin is already installed so the button is used to update
-                $line.find("div.btn-install button.main-btn").attr("data-i18n",
-                    "[title]modals.dashboard.sub-windows.install-update.generic.install");
-
-                //the component is already installed so we can uninstall it
-                uninstallAllowed = true;
-            } else {
-                $line.find("div.btn-install button.main-btn").attr("data-i18n",
-                    "[title]modals.dashboard.sub-windows.install-update.generic.update");
-            }
-
-            if (availableVersions.length > 0) {
-                //we order the list
-                availableVersions.sort(function (a, b) {
-                    return Version.compare(b.version, a.version); //invert versions
-                });
-
-                // Update the last available version (if newer than installed version)
-                if (Version.compare(availableVersions[0].version, item.package.version) > 0) {
-                    $line.find("em.latest-version").text(availableVersions[0].version.toString());
-                    $line.find("ul.latest-installable-version").text(availableVersions[0].version.toString());
-                    updateAllowed = true;
-                }
-
-                // Can install every different version than actualy installed
-                $.each(availableVersions, function (index, availableVersion) {
-                    if (Version.compare(availableVersion.version, item.package.version) != 0) {
-                        canChooseVersion = true;
-                        return false;
-                    }
-                });
-
-                //we create a combo that have all available versions for install or update
-                var $cbVersion = $line.find("ul.versions");
-                $cbVersion.empty();
-
-
-
-                $.each(availableVersions, function (index, value) {
-
-                    $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl + "\"><a href=\"#\"><em" + ((
-                            item.package.version && Version.compare(value.version, item.package.version) <
-                            0) ? " class='text-muted small'" : "") + ">" + value.version.toString() +
-                        "</em></a></li>");
-
-                    //we manage the click event on each version
-                    if (!isNullOrUndefined(item.package.version)) {
-                        //the item is already installed, we ask an update
-                        $cbVersion.find("li").last().unbind('click').bind('click', function () {
-                            askForUpdate(objectType, item, value);
-                        });
-                    } else {
-                        //the item isn't installed so we make a new install
-                        $cbVersion.find("li").last().unbind('click').bind('click', function () {
-                            askForInstall(objectType, item, value);
-                        });
-                    }
-                });
-            } else {
-                //there is no interesting version
-                $line.find("button.btn-expand").addClass("disabled");
-            }
-
-
-
-            if (uninstallAllowed) {
-                $line.find("button.btn-uninstall").removeClass("disabled");
-                $line.find("button.btn-uninstall")
-                    .unbind('click')
-                    .bind('click', function () {
-                        askForRemove(objectType, item);
-                    });
-            } else {
-                $line.find("button.btn-uninstall").addClass("disabled");
-                $line.find("button.btn-uninstall").unbind('click');
-            }
-
-            //if the user can choose version we enable the list
-            if (canChooseVersion)
-                $line.find("div.btn-install button.btn-expand").removeClass("disabled");
-            else
-                $line.find("div.btn-install button.btn-expand").addClass("disabled");
-
-            if (updateAllowed) {
-                $line.find("div.btn-install button.main-btn").removeClass("disabled");
-                $line.find("span.update-available-label").removeClass("hidden");
-
-                //we manage click events
-                if (!isNullOrUndefined(item.package.version)) {
-                    //the item is already installed, we ask an update if there is some available
-                    if (availableVersions.length > 0) {
-                        $line.find("button.main-btn").unbind('click').bind('click', function () {
-                            askForUpdate(objectType, item, availableVersions[0]);
-                        });
-                    }
-                } else {
-                    //the item isn't installed so we make a new install if there is some available
-                    if (availableVersions.length > 0)
-                        $line.find("button.main-btn").unbind('click').bind('click', function () {
-                            askForInstall(objectType, item, availableVersions[0])
-                        });
-                    $line.find("span.update-available-label").addClass("hidden");
-                }
-            } else {
-                $line.find("div.btn-install button.main-btn").addClass("disabled");
-                $line.find("span.update-available-label").addClass("hidden");
-            }
+        // Show new version indicator (if module already installed)
+        if (item.versions.installed && newestVersionLabel) {
+            $line.find("div.btn-install button.main-btn").removeClass("disabled");
+            $line.find("span.update-available-label").removeClass("hidden");
         } else {
-            //an action is in progress we show progression
-            $line.find("div.action-buttons").addClass("hidden");
-            $line.find("div.action-progression").removeClass("hidden");
+            $line.find("div.btn-install button.main-btn").addClass("disabled");
             $line.find("span.update-available-label").addClass("hidden");
         }
-        //we update the header update available label
+
         updateHeaderUpdateAvailableLabel(objectType);
+
+        // if (!item.processing) {
+        //     //no action in progress we show action buttons
+
+        //     $line.find("div.action-buttons").removeClass("hidden");
+        //     $line.find("div.action-progression").addClass("hidden");
+
+        //     //we manage actions buttons
+        //     var uninstallAllowed = false;
+        //     var updateAllowed = false;
+        //     var canChooseVersion = false;
+
+        //     var availableVersions = [];
+
+        //     if (!isNullOrUndefined(item.serverVersions)) {
+        //         //we create a list of all version available to update based on the type of the version and the list of available version different from the local one
+        //         $.each(item.serverVersions, function (index, value) {
+        //             if (isWanted(value.version)) {
+        //                 //if this releasetype is wanted we add it to the arrays of version for this item
+        //                 if (Version.compare(item.package.version, value.version) !== 0) {
+        //                     availableVersions.push(value);
+        //                 }
+        //             }
+        //         });
+        //     }
+
+
+        //     if (!isNullOrUndefined(item.package.version)) {
+        //         //the plugin is already installed so the button is used to update
+        //         $line.find("div.btn-install button.main-btn").attr("data-i18n",
+        //             "[title]modals.dashboard.sub-windows.install-update.generic.install");
+
+        //         //the component is already installed so we can uninstall it
+        //         uninstallAllowed = true;
+        //     } else {
+        //         $line.find("div.btn-install button.main-btn").attr("data-i18n",
+        //             "[title]modals.dashboard.sub-windows.install-update.generic.update");
+        //     }
+
+        //     if (availableVersions.length > 0) {
+        //         //we order the list
+        //         availableVersions.sort(function (a, b) {
+        //             return Version.compare(b.version, a.version); //invert versions
+        //         });
+
+        //         // Update the last available version (if newer than installed version)
+        //         if (Version.compare(availableVersions[0].version, item.package.version) > 0) {
+        //             $line.find("em.latest-version").text(availableVersions[0].version.toString());
+        //             $line.find("ul.latest-installable-version").text(availableVersions[0].version.toString());
+        //             updateAllowed = true;
+        //         }
+
+        //         // Can install every different version than actualy installed
+        //         $.each(availableVersions, function (index, availableVersion) {
+        //             if (Version.compare(availableVersion.version, item.package.version) != 0) {
+        //                 canChooseVersion = true;
+        //                 return false;
+        //             }
+        //         });
+
+        //         //we create a combo that have all available versions for install or update
+        //         var $cbVersion = $line.find("ul.versions");
+        //         $cbVersion.empty();
+
+
+
+        //         $.each(availableVersions, function (index, value) {
+
+        //             $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl + "\"><a href=\"#\"><em" + (
+        //                     (
+        //                         item.package.version && Version.compare(value.version, item.package.version) <
+        //                         0) ? " class='text-muted small'" : "") + ">" + value.version.toString() +
+        //                 "</em></a></li>");
+
+        //             //we manage the click event on each version
+        //             if (!isNullOrUndefined(item.package.version)) {
+        //                 //the item is already installed, we ask an update
+        //                 $cbVersion.find("li").last().unbind('click').bind('click', function () {
+        //                     askForUpdate(objectType, item, value);
+        //                 });
+        //             } else {
+        //                 //the item isn't installed so we make a new install
+        //                 $cbVersion.find("li").last().unbind('click').bind('click', function () {
+        //                     askForInstall(objectType, item, value);
+        //                 });
+        //             }
+        //         });
+        //     } else {
+        //         //there is no interesting version
+        //         $line.find("button.btn-expand").addClass("disabled");
+        //     }
+
+
+
+        //     if (uninstallAllowed) {
+        //         $line.find("button.btn-uninstall").removeClass("disabled");
+        //         $line.find("button.btn-uninstall")
+        //             .unbind('click')
+        //             .bind('click', function () {
+        //                 askForRemove(objectType, item);
+        //             });
+        //     } else {
+        //         $line.find("button.btn-uninstall").addClass("disabled");
+        //         $line.find("button.btn-uninstall").unbind('click');
+        //     }
+
+        //     //if the user can choose version we enable the list
+        //     if (canChooseVersion)
+        //         $line.find("div.btn-install button.btn-expand").removeClass("disabled");
+        //     else
+        //         $line.find("div.btn-install button.btn-expand").addClass("disabled");
+
+        //     if (updateAllowed) {
+        //         $line.find("div.btn-install button.main-btn").removeClass("disabled");
+        //         $line.find("span.update-available-label").removeClass("hidden");
+
+        //         //we manage click events
+        //         if (!isNullOrUndefined(item.package.version)) {
+        //             //the item is already installed, we ask an update if there is some available
+        //             if (availableVersions.length > 0) {
+        //                 $line.find("button.main-btn").unbind('click').bind('click', function () {
+        //                     askForUpdate(objectType, item, availableVersions[0]);
+        //                 });
+        //             }
+        //         } else {
+        //             //the item isn't installed so we make a new install if there is some available
+        //             if (availableVersions.length > 0)
+        //                 $line.find("button.main-btn").unbind('click').bind('click', function () {
+        //                     askForInstall(objectType, item, availableVersions[0])
+        //                 });
+        //             $line.find("span.update-available-label").addClass("hidden");
+        //         }
+        //     } else {
+        //         $line.find("div.btn-install button.main-btn").addClass("disabled");
+        //         $line.find("span.update-available-label").addClass("hidden");
+        //     }
+        // } else {
+        //     //an action is in progress we show progression
+        //     $line.find("div.action-buttons").addClass("hidden");
+        //     $line.find("div.action-progression").removeClass("hidden");
+        //     $line.find("span.update-available-label").addClass("hidden");
+        // }
+        // //we update the header update available label
+        // updateHeaderUpdateAvailableLabel(objectType);
     }
 
     /**
@@ -1023,7 +1048,7 @@
         assert(!isNullOrUndefined(item), "item must be defined");
 
         //we initialize the progress bar
-        var $line = getLineFromItem(objectType, item);
+        var $line = getLineFromItem(objectType, item.type);
         $line.find("div.progress-bar").css("width", "0");
 
         //we listen for webSocket event

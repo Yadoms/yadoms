@@ -1,36 +1,36 @@
 #pragma once
-#include <shared/DataContainer.h>
 #include "WorkerTools.h"
+#include "IUpdateChecker.h"
 
 
-namespace update {
-   namespace worker {
-
+namespace update
+{
+   namespace worker
+   {
       class CWidget
       {
       public:
          //---------------------------------------------
          ///\brief                        Install a new widget
-         ///\param [in] progressCallback  The progress callback
-         ///\param [in] downloadUrl       The plugin package url
          //---------------------------------------------
-         static void install(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & downloadUrl);
+         static void install(CWorkerTools::WorkerProgressFunc progressCallback,
+                             const std::string& downloadUrl,
+                             boost::shared_ptr<IUpdateChecker> updateChecker);
 
          //---------------------------------------------
          ///\brief                        Update a widget
-         ///\param [in] progressCallback  The progress callback
-         ///\param [in] widgetName        The widget name
-         ///\param [in] downloadUrl       The widget package url
          //---------------------------------------------
-         static void update(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & widgetName, const std::string & downloadUrl);
+         static void update(CWorkerTools::WorkerProgressFunc progressCallback,
+                            const std::string& widgetName,
+                            const std::string& downloadUrl,
+                            boost::shared_ptr<IUpdateChecker> updateChecker);
 
          //---------------------------------------------
          ///\brief                        Remove a widget
-         ///\param [in] progressCallback  The progress callback
-         ///\param [in] widgetName        The widget name
          //---------------------------------------------
-         static void remove(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & widgetName);
+         static void remove(CWorkerTools::WorkerProgressFunc progressCallback,
+                            const std::string& widgetName,
+                            boost::shared_ptr<IUpdateChecker> updateChecker);
       };
-
    } // namespace worker
 } // namespace update
