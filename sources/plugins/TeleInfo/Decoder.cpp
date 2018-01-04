@@ -22,6 +22,7 @@ const std::string CDecoder::m_tag_IINST2 = "IINST2";//instant current power usag
 const std::string CDecoder::m_tag_IINST3 = "IINST3";//instant current power usage phase 3
 const std::string CDecoder::m_tag_PAPP = "PAPP";//apparent power
 const std::string CDecoder::m_tag_DEMAIN = "DEMAIN"; // Color of the next day
+const std::string CDecoder::m_tag_PEJP = "PEJP"; // EJP Warning
 
 CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    : m_baseCounter(boost::make_shared<yApi::historization::CEnergy>("BaseCounter")),
@@ -61,6 +62,10 @@ void CDecoder::decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> api,
    bool isMono = true; // default mono
 
    m_teleinfoEnableInCounter = (messages->size() == 1 && messages->find(m_tag_ADCO) != messages->end()) ? false : true;
+
+   // By default (for EJP/Tempo), the forecast is not defined, if not present
+   // It's not used for Base or HPHC contract
+   m_ForecastPeriod->set(teleInfo::specificHistorizers::EColor::kNOTDEFINED);
 
    for (const auto message : *messages)
    {
@@ -115,6 +120,12 @@ void CDecoder::createDeviceAndKeywords(const bool monoPhase)
                            "TeleInfoUSB : Id = " + m_deviceName,
                            m_keywords,
                            m_DeviceDetails);
+
+      // for compatibility with old plugin revision, we create separately the keyword if not existing
+      // If the device already exist, we have to create keywords manually
+      // This is only for EJP contracts
+      if (!m_api->keywordExists(m_deviceName, m_ForecastPeriod->GetHistorizable()) && m_optarif == OP_EJP)
+         m_api->declareKeyword(m_deviceName, m_ForecastPeriod->GetHistorizable());
    }
 
    m_deviceCreated = true;
@@ -154,6 +165,7 @@ void CDecoder::createKeywordList(const std::string& tariff)
       m_keywords.push_back(m_EJPNormalPeriod);
       m_keywords.push_back(m_apparentPower);
       m_keywords.push_back(m_TimePeriod->GetHistorizable());
+      m_keywords.push_back(m_ForecastPeriod->GetHistorizable());
       break;
    }
    case 'B':
@@ -296,6 +308,11 @@ void CDecoder::processMessage(const std::string& key,
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "DEMAIN" << "=" << value ;
 			m_ForecastPeriod->set(value);
 		}
+      else if (key == m_tag_PEJP)
+      {
+         if (m_isdeveloperMode) YADOMS_LOG(information) << "PEJP" << "=" << value;
+         m_ForecastPeriod->set(teleInfo::specificHistorizers::EColor::kRED);
+      }
 		else
 		{
 			YADOMS_LOG(warning) << "label " << key << " not processed" ;
