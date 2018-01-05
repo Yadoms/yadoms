@@ -12,6 +12,7 @@ widgetViewModelCtor =
           this.invert = ko.observable(false);
           this.icon = ko.observable("");
           this.readonly = ko.observable(true);
+		  this.capacity = "";
 
           // default size
           this.WidgetHeight = 70;
@@ -24,6 +25,19 @@ widgetViewModelCtor =
                  if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
                      var cmd = null;
 
+					  switch (self.capacity) {
+						 case "curtain":
+							if (self.command() == 0) {
+								cmd = "close";
+							}else{
+								cmd = "open";
+							}
+							break;					  
+						 default:
+							 cmd = newState;
+							 break;
+					  }					 
+					 
                      cmd = newState;
                      KeywordManager.sendCommand(this.widget.configuration.device.keywordId, cmd.toString());
                  }
@@ -31,19 +45,17 @@ widgetViewModelCtor =
           };
 
           self.shutterIcon = ko.computed(function () {
-              
               var displayValue = self.command();
-              
-              if (self.invert()) {
+			  
+              if (self.invert())
                   displayValue = !displayValue;
-              }
-              
+			  
               if (self.kind() !== "verticalInverter")
               {
                  if (displayValue)
-                     return "widgets/shutter/icons/" + self.kind() + "-close.png";
-                 else
                      return "widgets/shutter/icons/" + self.kind() + "-open.png";
+                 else
+                     return "widgets/shutter/icons/" + self.kind() + "-close.png";
               }
               else 
                  return "widgets/shutter/icons/window-open.png"; // default value
@@ -64,15 +76,32 @@ widgetViewModelCtor =
 
           this.shutterClick = function () {
               var self = this;
+			  var cmd = null;
               
               if(self.readonly() !== true) {
-                 if (self.command() === 0)
-                     self.command(1);
-                 else
-                     self.command(0);
+				  switch (self.capacity) {
+					 case "curtain":
+					    if (self.command() === 0) {
+							self.command(1);
+							cmd = "open";
+						}else{
+							self.command(0);
+							cmd = "close";
+						}
+						break;					  
+					 default:
+                         if (self.command() === 0) {
+                            self.command(1);
+							cmd = 1;
+						 }else{
+                            self.command(0);
+							cmd = 0;
+						 }
+						 break;
+				  }
 
                  //Send the command
-                 this.commandClick(self.command());
+                 this.commandClick(cmd);
               }
           }
 
@@ -95,6 +124,8 @@ widgetViewModelCtor =
                          self.readonly(false);
                      else
                          self.readonly(true);
+					 
+					 self.capacity   = keyword.capacityName;
                  });
               }else {
                  deffered = new $.Deferred().resolve();
@@ -119,14 +150,22 @@ widgetViewModelCtor =
               var self = this;
 
               if ((this.widget.configuration != undefined) && (this.widget.configuration.device != undefined)) {
-
                   if (keywordId === this.widget.configuration.device.keywordId) {
-
-                      // Adapt for dimmable or switch capacities
-                      if (parseInt(data.value) !== 0)
-                          self.command(1);
-                      else
-                          self.command(0);
+					  switch (self.capacity) {
+						 case "curtain":
+					        if (data.value==="open")
+							   self.command(1);
+						    else
+							   self.command(0);
+						    break;
+						  default:
+                            // Adapt for dimmable or switch capacities
+                            if (parseInt(data.value) !== 0)
+                               self.command(1);
+                            else
+                               self.command(0);
+						   break;
+					  }
                   }
               }
           };

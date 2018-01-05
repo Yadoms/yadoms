@@ -4,27 +4,22 @@ widgetViewModelCtor =
  * Create a thermometer ViewModel
  * @constructor
  */
-function thermometerViewModel() 
-{  
+function thermometerViewModel(){  
    this.data = "-";
    
    // default size
    this.WidgetHeight = 175;
    this.WidgetWidth  = 95;
-   
    this.tempMax = 50;
    this.tempMin = -40;
-   
    var isSmall = true;
-	 
 
    /**
     * Initialization method
     * @param widget widget class object
     */
 	
-   this.initialize = function() 
-   {
+   this.initialize = function(){
        //we configure the toolbar
        this.widgetApi.toolbar({
            activated: true,
@@ -38,14 +33,11 @@ function thermometerViewModel()
     * @param keywordId keywordId on which new acquisition was received
     * @param data Acquisition data
     */
-   this.onNewAcquisition = function(keywordId, data)
-   {
+   this.onNewAcquisition = function(keywordId, data){
       var self = this;	  
 	  
-      if (keywordId === self.widget.configuration.device.keywordId) 
-	  {
-		  if ( data.value !== self.data ) // refresh only when it's necessary.
-		  {
+      if (keywordId === self.widget.configuration.device.keywordId){
+		  if ( data.value !== self.data ){ // refresh only when it's necessary.
 			 //it is the good device
           if (data.value !== "")
 			    self.data = parseFloat(data.value).toFixed(1).toString();
@@ -79,15 +71,15 @@ function thermometerViewModel()
 		//y  : position y for the height of the column. 0 is the top of the frame
 		//dx : the thickness of the column. should not change
 		//dy : the height of the column. The final value y + dy should equal to 74 (in the colour ball).
-		// -40° -> 10 of height
-		// 50°  -> 60 of height
+		// min -> 0 of height
+		// max -> 60 of height
       
       // Value for the physical representation
-      var posYMin = 10 * self.WidgetHeight / 99;
-      var posYMax = 60 * self.WidgetHeight / 99;		
-      var posYBall = (90 - (self.WidgetWidth/100-1)*7) * (self.WidgetHeight / 99);
-      var posCenterBall = (91 - (self.WidgetWidth/100-1)*7) * (self.WidgetHeight / 99);
-       
+      var posYMin = 10 * self.WidgetHeight / 99;   // the highest position
+      var posYMax = 80 * self.WidgetHeight / 99;	// the lowest position	
+      var posYBall = (90 - (self.WidgetWidth*7/(100-1))) * (self.WidgetHeight/99);
+      var posCenterBall = (91 - (self.WidgetWidth*7/(100-1))) * (self.WidgetHeight/99);
+      
       //draw a circle
       ctx.beginPath();
                // position x         position y             diameter
@@ -97,27 +89,24 @@ function thermometerViewModel()
       var initialPositionY = posYMax;
       
       // We draw into the thermeter only if a value is present
-      if (self.data !== "-")
-      {
-         ctx.fillStyle = "rgb(" + Math.round(255 - (self.tempMax - self.data) * 255 / 90) + ",0," + Math.round(255 - (self.data - self.tempMin) * 255 / 90) + ")";
+      if (self.data !== "-"){
+         ctx.fillStyle = "rgb(" + Math.round(255-(self.tempMax-self.data)*255/90) + ",0," + Math.round(255-(self.data-self.tempMin)*255/90)+")";
          ctx.fill();
          
          var lenghtColumn = posYBall - initialPositionY;		
          
-         if (self.data > self.tempMin && self.data < self.tempMax && (self.tempMax - self.tempMin!=0))
-         {
-            initialPositionY = posYMin + ( self.tempMax - self.data )*( posYMax - posYMin )/ ( self.tempMax - self.tempMin) ;
+         if ((self.data>self.tempMin) && (self.data<self.tempMax) && ((self.tempMax - self.tempMin)!=0)){
+            initialPositionY = posYMin + (self.tempMax-self.data)*(posYMax - posYMin)/(self.tempMax - self.tempMin);
+            console.log ("initialPositionY : ", initialPositionY);
             lenghtColumn = posYBall - initialPositionY;
          }
          else
          {
-            if ( self.data <= self.tempMin )
-            {
+            if ( self.data <= self.tempMin ){
                initialPositionY = posYMax;
                lenghtColumn = posYBall - initialPositionY;
             }
-            if (self.data > self.tempMax )
-            {
+            if (self.data > self.tempMax ){
                initialPositionY = posYMin;
                lenghtColumn = posYBall - initialPositionY;
             }			
@@ -156,57 +145,53 @@ function thermometerViewModel()
 		
 		ctx.closePath();
 		ctx.stroke();
-   }
+   };
    
-   this.configurationChanged = function() 
-   {
+   this.configurationChanged = function() {
        var self = this;
 
        //we register keyword new acquisition
        self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
 	   
       //we fill the deviceId of the battery indicator
-       self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
-       
-      self.tempMax = self.widget.configuration.customYAxisMinMax.content.maximumValue;
-      self.tempMin = self.widget.configuration.customYAxisMinMax.content.minimumValue;
+      self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
       
+      if (parseBool(self.widget.configuration.customYAxisMinMax.checkbox)){
+         self.tempMax = parseFloat(self.widget.configuration.customYAxisMinMax.content.maximumValue);
+         self.tempMin = parseFloat(self.widget.configuration.customYAxisMinMax.content.minimumValue);
+      } else {
+         self.tempMax = 50;
+         self.tempMin = -40;
+      }
       self.refresh();
    };
 
-   this.resized = function() 
-   {
-       var self = this;
+   this.resized = function(){
+      var self = this;
 	   
-       if ( this.widget.getHeight() == 200 && this.widget.getWidth() == 200 )
-	   {
+      if ( this.widget.getHeight() == 200 && this.widget.getWidth() == 200 ){
 		   self.WidgetWidth  = 190;
 		   self.WidgetHeight = 170;
 		   isSmall = false;
 	   }
-       else if ( this.widget.getHeight() == 200 && this.widget.getWidth() == 100 )
-	   {
+      else if ( this.widget.getHeight() == 200 && this.widget.getWidth() == 100 ){
 		   self.WidgetWidth  = 95;
 		   self.WidgetHeight = 170;
 
 	   }	   
-       else if ( this.widget.getHeight() == 300 && this.widget.getWidth() == 100 )
-	   {
+      else if ( this.widget.getHeight() == 300 && this.widget.getWidth() == 100 ){
 		   self.WidgetWidth  = 95;
 		   self.WidgetHeight = 272;
 	   }  
-       else if ( this.widget.getHeight() == 300 && this.widget.getWidth() == 200 )
-	   {
+      else if ( this.widget.getHeight() == 300 && this.widget.getWidth() == 200 ){
 		   self.WidgetWidth  = 190;
 		   self.WidgetHeight = 272;
 	   }
-       else if (this.widget.getHeight() == 400 && this.widget.getWidth() == 200 )
-	   {
+      else if (this.widget.getHeight() == 400 && this.widget.getWidth() == 200 ){
 		   self.WidgetWidth  = 190;
 		   self.WidgetHeight = 368;
 	   }	   
-	   else
-	   {
+	   else{
 		   self.WidgetWidth  = 95;
 		   self.WidgetHeight = 368;
 		   isSmall = true;
