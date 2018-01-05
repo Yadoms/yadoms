@@ -162,8 +162,8 @@ namespace update
 
                shared::CDataContainer item;
 
-               //TODO conserver ? Le client doit pouvoir le récupérer comme le name/description
                item.set("iconUrl", (localVersion.second->getPath() / "icon.png").generic_string());
+               item.set("localesUrl", (localVersion.second->getPath() / "locales").generic_string());
 
                shared::CDataContainer versions;
                versions.set("installed", localVersion.second->getVersion().toString());
