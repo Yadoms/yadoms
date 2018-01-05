@@ -351,6 +351,13 @@ PageManager.ensureOnePageIsSelected = function () {
     }
 };
 
+PageManager.selectPageId = function (pageId) {
+   $.each(PageManager.pages, function (index, currentPage) {
+      if (currentPage.id == parseInt(SessionDataManager.getVariable("CurrentPage")))
+         currentPage.$tab.find("a").trigger("click");
+   });
+};
+
 /**
  * Return the current displayed page
  * @returns {Page}

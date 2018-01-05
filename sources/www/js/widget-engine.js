@@ -34,9 +34,14 @@ function initializeWidgetEngine() {
 
             //we deactivate the customization without launch save process
             exitCustomization(false);
-
-            //we ensure that one page is selected
-            PageManager.ensureOnePageIsSelected();
+            
+            console.log ("Yadoms.systemConfiguration", Yadoms.systemConfiguration);
+            
+            //if (Yadoms.systemConfiguration.refreshPage.value)
+              if (PageManager.pages.length > 0 && SessionDataManager.getVariable("CurrentPage")!=null)
+                 PageManager.selectPageId(parseInt(SessionDataManager.getVariable("CurrentPage")));
+            else
+               PageManager.ensureOnePageIsSelected(); //we ensure that one page is selected
 
             //we ask for the last event to ask only those occurs after this one
             EventLoggerManager.getLast()
@@ -114,7 +119,11 @@ function tabClick(pageId) {
 
     if ((currentPage != null) && (currentPage.id === pageId))
         return;
-     
+    
+    //if (Yadoms.systemConfiguration.refreshPage.value)
+    console.log ("Nouvelle page : ", pageId.toString());
+    SessionDataManager.addVariable("CurrentPage", pageId.toString());
+    
     var page = PageManager.getPage(pageId);
     
     assert(page != null, "page Id doesn't exit");
@@ -307,6 +316,7 @@ function dispatchTimeToWidgets(timeData) {
 }
 
 function updateWebSocketFilter() {
+   console.log ("updateWebSocketFilter !");
     if (WebSocketEngine.isActive()) {
         var page = PageManager.getCurrentPage();
         if (page == null)

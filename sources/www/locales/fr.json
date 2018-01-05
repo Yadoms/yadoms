@@ -436,6 +436,10 @@
               "name": "Format de la date",
               "description": "Vous pouvez changer le format de la date en utilisant la syntaxe moment.js (ex \"LLL\" ou \"'MMMM Do YYYY, h:mm:ss a\")"
             },
+            "refreshPage": {
+              "name": "Mémoriser la page active pendant le temps de la session",
+              "description": "Si vous raffraichissez en tapant F5, Yadoms se rechargera sur votre page active"
+            },
             "location": {
               "name": "Localisation",
               "description": "Entrer ci-dessous les coordonnées de votre ville ([Site web latlong](http://www.latlong.net/))"
