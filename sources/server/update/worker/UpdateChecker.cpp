@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "UpdateChecker.h"
 #include "shared/Log.h"
+#include "shared/tools/Filesystem.h"
 #include "update/info/UpdateSite.h"
+#include "Widget.h"
 
 namespace update
 {
@@ -18,10 +20,12 @@ namespace update
                                      const boost::posix_time::time_duration nextScanDelays,
                                      boost::shared_ptr<pluginSystem::CManager> pluginManager,
                                      boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
-                                     bool developerMode)
+                                     bool developerMode,
+                                     boost::shared_ptr<const IPathProvider> pathProvider)
          : m_pluginManager(pluginManager),
            m_eventLogger(eventLogger),
            m_developerMode(developerMode),
+           m_pathProvider(pathProvider),
            m_thread(boost::thread(&CUpdateChecker::doWork, this, firstScanDelay, nextScanDelays)),
            m_updatesAvailable(false)
       {
@@ -108,9 +112,21 @@ namespace update
             const auto pluginsLocalVersions = m_pluginManager->getPluginList();
             const auto pluginsAvailableVersions = info::CUpdateSite::getAllPluginVersions("fr" /*TODO à gérer*/);
 
+            const auto widgetsLocalVersions = CWidget::getWidgetList();
+            const auto widgetsAvailableVersions = info::CUpdateSite::getAllWidgetsVersions("fr" /*TODO à gérer*/);
+
+
             m_updatesAvailable = false;
-            const auto updates = buildUpdates(true, pluginsLocalVersions, pluginsAvailableVersions);
-            const auto releasesOnlyUpdates = buildUpdates(false, pluginsLocalVersions, pluginsAvailableVersions);
+            const auto updates = buildUpdates(true,
+                                              pluginsLocalVersions,
+                                              pluginsAvailableVersions,
+                                              widgetsLocalVersions,
+                                              widgetsAvailableVersions);
+            const auto releasesOnlyUpdates = buildUpdates(false,
+                                                          pluginsLocalVersions,
+                                                          pluginsAvailableVersions,
+                                                          widgetsLocalVersions,
+                                                          widgetsAvailableVersions);
 
             // Notify only for new releases (not for prereleases)
             if (releasesOnlyUpdates != m_releasesOnlyUpdates)
@@ -128,17 +144,22 @@ namespace update
       }
 
       shared::CDataContainer CUpdateChecker::buildUpdates(bool includePreleases,
-                                                          const pluginSystem::IFactory::AvailablePluginMap&
-                                                          pluginsLocalVersions,
-                                                          const shared::CDataContainer& pluginsAvailableVersions)
+                                                          const pluginSystem::IFactory::AvailablePluginMap& pluginsLocalVersions,
+                                                          const shared::CDataContainer& pluginsAvailableVersions,
+                                                          const CWidget::AvailableWidgetMap& widgetsLocalVersions,
+                                                          const shared::CDataContainer& widgetsAvailableVersions)
       {
          shared::CDataContainer updates;
 
          const auto pluginUpdates = buildPluginList(pluginsLocalVersions,
                                                     pluginsAvailableVersions,
                                                     includePreleases);
-
          updates.set("plugins", pluginUpdates);
+
+         const auto widgetUpdates = buildWidgetList(widgetsLocalVersions,
+                                                    widgetsAvailableVersions,
+                                                    includePreleases);
+         updates.set("widgets", widgetUpdates);
 
          return updates;
       }
@@ -148,32 +169,75 @@ namespace update
                                                              bool includePreleases)
       {
          shared::CDataContainer list;
+
+         // Add updatable items (ie already installed)
+         const auto updatableItems = addUpdatablePlugins(localVersions,
+                                                         availableVersions,
+                                                         includePreleases);
+         list.set("updatable", updatableItems);
+
+         // Add items not already installed (ie not in localVersions list)
+         const auto newItems = addNewPlugins(localVersions,
+                                             availableVersions,
+                                             includePreleases);
+         list.set("new", newItems);
+
+         return list;
+      }
+
+      shared::CDataContainer CUpdateChecker::buildWidgetList(const CWidget::AvailableWidgetMap& localVersions,
+                                                             const shared::CDataContainer& availableVersions,
+                                                             bool includePreleases)
+      {
+         shared::CDataContainer list;
+
+         // Add updatable items (ie already installed)
+         const auto updatableItems = addUpdatableWidgets(localVersions,
+                                                         availableVersions,
+                                                         includePreleases);
+         list.set("updatable", updatableItems);
+
+         // Add items not already installed (ie not in localVersions list)
+         const auto newItems = addNewWidgets(localVersions,
+                                             availableVersions,
+                                             includePreleases);
+         list.set("new", newItems);
+
+         return list;
+      }
+
+      shared::CDataContainer CUpdateChecker::addUpdatablePlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
+                                                                 const shared::CDataContainer& availableVersions,
+                                                                 bool includePreleases)
+      {
+         shared::CDataContainer updatableItems;
+
          for (const auto& localVersion : localVersions)
          {
             try
             {
-               const auto pluginType = localVersion.first;
+               const auto moduleType = localVersion.first;
 
-               // Filter non-updatable plugins
-               if (boost::starts_with(pluginType, "system-"))
+               // Filter non-updatable modules
+               if (boost::starts_with(moduleType, "system-"))
                   continue;
-               if (m_developerMode && boost::starts_with(pluginType, "dev-"))
+               if (m_developerMode && boost::starts_with(moduleType, "dev-"))
                   continue;
 
                shared::CDataContainer item;
 
                item.set("iconUrl", (localVersion.second->getPath() / "icon.png").generic_string());
-               item.set("localesUrl", (localVersion.second->getPath() / "locales").generic_string());
+               item.set("localesUrl", (localVersion.second->getPath() / "locales").generic_string());//TODO utile ?
 
                shared::CDataContainer versions;
                versions.set("installed", localVersion.second->getVersion().toString());
                std::map<std::string, shared::CDataContainer> older; // Pass by a map to sort versions list
                std::map<std::string, shared::CDataContainer> newer; // Pass by a map to sort versions list
-               if (availableVersions.exists(pluginType))
+               if (availableVersions.exists(moduleType))
                {
                   try
                   {
-                     const auto availableVersionsForPlugin = availableVersions.get<std::vector<shared::CDataContainer>>(pluginType);
+                     const auto availableVersionsForPlugin = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
                      for (auto& version : availableVersionsForPlugin)
                      {
                         shared::versioning::CVersion v(version.get<std::string>("version"));
@@ -196,7 +260,7 @@ namespace update
                   }
                   catch (std::exception& exception)
                   {
-                     YADOMS_LOG(warning) << "Invalid remote package for " << pluginType << ", will be ignored";
+                     YADOMS_LOG(warning) << "Invalid remote package for " << moduleType << ", will be ignored";
                      YADOMS_LOG(debug) << "exception : " << exception.what();
                   }
                }
@@ -231,7 +295,7 @@ namespace update
 
                item.set("versions", versions);
 
-               list.set(pluginType, item);
+               updatableItems.set(moduleType, item);
             }
             catch (std::exception& exception)
             {
@@ -240,21 +304,29 @@ namespace update
             }
          }
 
-         // Add items not already installed (ie not in localVersions list)
-         for (const auto& pluginType : availableVersions.getKeys())
+         return updatableItems;
+      }
+
+      shared::CDataContainer CUpdateChecker::addNewPlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
+                                                           const shared::CDataContainer& availableVersions,
+                                                           bool includePreleases)
+      {
+         shared::CDataContainer newItems;
+
+         for (const auto& moduleType : availableVersions.getKeys())
          {
-            if (localVersions.find(pluginType) != localVersions.end())
+            if (localVersions.find(moduleType) != localVersions.end())
                continue; // Module already installed
 
             // Module not installed
-            const auto availableModule = availableVersions.get<shared::CDataContainer>(pluginType);
+            const auto availableModule = availableVersions.get<shared::CDataContainer>(moduleType);
 
             // Pass by a map to sort versions list
-            std::map<std::string, shared::CDataContainer> newPluginAvailableVersions;
+            std::map<std::string, shared::CDataContainer> newModuleAvailableVersions;
             try
             {
-               const auto availableVersionsForPlugin = availableVersions.get<std::vector<shared::CDataContainer>>(pluginType);
-               for (auto& version : availableVersionsForPlugin)
+               const auto availableVersionsForModule = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+               for (auto& version : availableVersionsForModule)
                {
                   shared::versioning::CVersion v(version.get<std::string>("version"));
 
@@ -264,23 +336,25 @@ namespace update
 
                   shared::CDataContainer versionData;
                   versionData.set("downloadUrl", version.get<std::string>("downloadUrl"));
-                  newPluginAvailableVersions[version.get<std::string>("version")] = versionData;
+                  newModuleAvailableVersions[version.get<std::string>("version")] = versionData;
                }
             }
             catch (std::exception& exception)
             {
-               YADOMS_LOG(warning) << "Invalid remote package for " << pluginType << ", will be ignored";
+               YADOMS_LOG(warning) << "Invalid remote package for " << moduleType << ", will be ignored";
                YADOMS_LOG(debug) << "exception : " << exception.what();
             }
 
 
-            if (newPluginAvailableVersions.empty())
+            if (newModuleAvailableVersions.empty())
                continue;
 
+
+            // Create the versions node
             shared::CDataContainer versions;
             // Sort (newer version first)
             shared::CDataContainer sortedVersions;
-            for (auto v = newPluginAvailableVersions.rbegin(); v != newPluginAvailableVersions.rend(); ++v)
+            for (auto v = newModuleAvailableVersions.rbegin(); v != newModuleAvailableVersions.rend(); ++v)
                // Force different path char to not cut version string into subPaths
                sortedVersions.set(v->first, v->second, 0);
             versions.set("versions", sortedVersions);
@@ -288,15 +362,17 @@ namespace update
             // Find the newest version
             shared::CDataContainer newestVersion;
             // Force different path char to not cut version string into subPaths
-            newestVersion.set(newPluginAvailableVersions.rbegin()->first,
-                              newPluginAvailableVersions.rbegin()->second, 0);
+            newestVersion.set(newModuleAvailableVersions.rbegin()->first,
+                              newModuleAvailableVersions.rbegin()->second, 0);
             versions.set("newest", newestVersion);
 
+
+            // Add the module entry to the list
             try
             {
                shared::CDataContainer item;
-               const auto& availableVersionsForPlugin = availableVersions.get<std::vector<shared::CDataContainer>>(pluginType);
-               const auto& newestVersionLabel = newPluginAvailableVersions.rbegin()->first;
+               const auto& availableVersionsForPlugin = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+               const auto& newestVersionLabel = newModuleAvailableVersions.rbegin()->first;
                const auto& newestVersionData = std::find_if(availableVersionsForPlugin.begin(),
                                                             availableVersionsForPlugin.end(),
                                                             [&newestVersionLabel](
@@ -308,16 +384,210 @@ namespace update
                item.set("iconUrl", newestVersionData->get<std::string>("iconUrl"));
                item.set("versions", versions);
 
-               list.set(pluginType, item);
+               newItems.set(moduleType, item);
             }
             catch (std::exception& exception)
             {
-               YADOMS_LOG(warning) << "Invalid remote package for " << pluginType << ", will be ignored";
+               YADOMS_LOG(warning) << "Invalid remote package for " << moduleType << ", will be ignored";
                YADOMS_LOG(debug) << "exception : " << exception.what();
             }
          }
 
-         return list;
+         return newItems;
+      }
+
+      shared::CDataContainer CUpdateChecker::addUpdatableWidgets(const CWidget::AvailableWidgetMap& localVersions,
+                                                                 const shared::CDataContainer& availableVersions,
+                                                                 bool includePreleases)
+      {
+         shared::CDataContainer updatableItems;
+
+         for (const auto& localVersion : localVersions)
+         {
+            try
+            {
+               const auto moduleType = localVersion.first;
+
+               // Filter non-updatable modules
+               if (boost::starts_with(moduleType, "system-"))
+                  continue;
+               if (m_developerMode && boost::starts_with(moduleType, "dev-"))
+                  continue;
+
+               shared::CDataContainer item;
+
+               // Widget path should be relative to www folder
+               const auto widgetPath = shared::tools::CFilesystem::makeRelative(m_pathProvider->webServerPath(),
+                                                                                localVersion.second->getPath());
+
+               item.set("iconUrl", (widgetPath / "preview.png").generic_string());
+               item.set("localesUrl", (widgetPath / "locales").generic_string());//TODO utile ?
+
+               shared::CDataContainer versions;
+               versions.set("installed", localVersion.second->getVersion().toString());
+               std::map<std::string, shared::CDataContainer> older; // Pass by a map to sort versions list
+               std::map<std::string, shared::CDataContainer> newer; // Pass by a map to sort versions list
+               if (availableVersions.exists(moduleType))
+               {
+                  try
+                  {
+                     const auto availableVersionsForPlugin = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+                     for (auto& version : availableVersionsForPlugin)
+                     {
+                        shared::versioning::CVersion v(version.get<std::string>("version"));
+
+                        // Don't add prereleases versions if not asked
+                        if (!v.prerelease().empty() && !includePreleases)
+                           continue;
+
+                        if (v == localVersion.second->getVersion())
+                           continue;
+
+                        shared::CDataContainer versionData;
+                        versionData.set("downloadUrl", version.get<std::string>("downloadUrl"));
+
+                        if (v < localVersion.second->getVersion())
+                           older[version.get<std::string>("version")] = versionData;
+                        else
+                           newer[version.get<std::string>("version")] = versionData;
+                     }
+                  }
+                  catch (std::exception& exception)
+                  {
+                     YADOMS_LOG(warning) << "Invalid remote package for " << moduleType << ", will be ignored";
+                     YADOMS_LOG(debug) << "exception : " << exception.what();
+                  }
+               }
+
+               if (!older.empty())
+               {
+                  // Sort (newer version first)
+                  shared::CDataContainer olderVersions;
+                  for (auto v = older.rbegin(); v != older.rend(); ++v)
+                     // Force different path char to not cut version string into subPaths
+                     olderVersions.set(v->first, v->second, 0);
+                  versions.set("older", olderVersions);
+               }
+
+               if (!newer.empty())
+               {
+                  // Sort (newer version first)
+                  shared::CDataContainer newerVersions;
+                  for (auto v = newer.rbegin(); v != newer.rend(); ++v)
+                     // Force different path char to not cut version string into subPaths
+                     newerVersions.set(v->first, v->second, 0);
+                  versions.set("newer", newerVersions);
+
+                  // Find the newest version
+                  shared::CDataContainer newestVersion;
+                  // Force different path char to not cut version string into subPaths
+                  newestVersion.set(newer.rbegin()->first, newer.rbegin()->second, 0);
+                  versions.set("newest", newestVersion);
+
+                  m_updatesAvailable = true;
+               }
+
+               item.set("versions", versions);
+
+               updatableItems.set(moduleType, item);
+            }
+            catch (std::exception& exception)
+            {
+               YADOMS_LOG(warning) << "Invalid package " << localVersion.first << ", will be ignored";
+               YADOMS_LOG(debug) << "exception : " << exception.what();
+            }
+         }
+
+         return updatableItems;
+      }
+
+      shared::CDataContainer CUpdateChecker::addNewWidgets(const CWidget::AvailableWidgetMap& localVersions,
+                                                           const shared::CDataContainer& availableVersions,
+                                                           bool includePreleases)
+      {
+         shared::CDataContainer newItems;
+
+         for (const auto& moduleType : availableVersions.getKeys())
+         {
+            if (localVersions.find(moduleType) != localVersions.end())
+               continue; // Module already installed
+
+            // Module not installed
+            const auto availableModule = availableVersions.get<shared::CDataContainer>(moduleType);
+
+            // Pass by a map to sort versions list
+            std::map<std::string, shared::CDataContainer> newModuleAvailableVersions;
+            try
+            {
+               const auto availableVersionsForModule = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+               for (auto& version : availableVersionsForModule)
+               {
+                  shared::versioning::CVersion v(version.get<std::string>("version"));
+
+                  // Don't add prereleases versions if not asked
+                  if (!v.prerelease().empty() && !includePreleases)
+                     continue;
+
+                  shared::CDataContainer versionData;
+                  versionData.set("downloadUrl", version.get<std::string>("downloadUrl"));
+                  newModuleAvailableVersions[version.get<std::string>("version")] = versionData;
+               }
+            }
+            catch (std::exception& exception)
+            {
+               YADOMS_LOG(warning) << "Invalid remote package for " << moduleType << ", will be ignored";
+               YADOMS_LOG(debug) << "exception : " << exception.what();
+            }
+
+
+            if (newModuleAvailableVersions.empty())
+               continue;
+
+
+            // Create the versions node
+            shared::CDataContainer versions;
+            // Sort (newer version first)
+            shared::CDataContainer sortedVersions;
+            for (auto v = newModuleAvailableVersions.rbegin(); v != newModuleAvailableVersions.rend(); ++v)
+               // Force different path char to not cut version string into subPaths
+               sortedVersions.set(v->first, v->second, 0);
+            versions.set("versions", sortedVersions);
+
+            // Find the newest version
+            shared::CDataContainer newestVersion;
+            // Force different path char to not cut version string into subPaths
+            newestVersion.set(newModuleAvailableVersions.rbegin()->first,
+                              newModuleAvailableVersions.rbegin()->second, 0);
+            versions.set("newest", newestVersion);
+
+
+            // Add the module entry to the list
+            try
+            {
+               shared::CDataContainer item;
+               const auto& availableVersionsForPlugin = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+               const auto& newestVersionLabel = newModuleAvailableVersions.rbegin()->first;
+               const auto& newestVersionData = std::find_if(availableVersionsForPlugin.begin(),
+                                                            availableVersionsForPlugin.end(),
+                                                            [&newestVersionLabel](
+                                                            const shared::CDataContainer& availableVersionForPlugin)
+                                                            {
+                                                               return availableVersionForPlugin.get<std::string>(
+                                                                  "version") == newestVersionLabel;
+                                                            });
+               item.set("iconUrl", newestVersionData->get<std::string>("iconUrl"));
+               item.set("versions", versions);
+
+               newItems.set(moduleType, item);
+            }
+            catch (std::exception& exception)
+            {
+               YADOMS_LOG(warning) << "Invalid remote package for " << moduleType << ", will be ignored";
+               YADOMS_LOG(debug) << "exception : " << exception.what();
+            }
+         }
+
+         return newItems;
       }
    } // namespace worker
 } // namespace update

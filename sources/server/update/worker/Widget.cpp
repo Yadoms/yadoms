@@ -2,8 +2,10 @@
 #include "Widget.h"
 #include "WorkerTools.h"
 #include <Poco/File.h>
+#include <Poco/DirectoryIterator.h>
 #include "i18n/ClientStrings.h"
 #include <shared/Log.h>
+#include "WidgetInformation.h"
 
 namespace update
 {
@@ -160,6 +162,26 @@ namespace update
          }
 
          updateChecker->forceRebuildUpdates();
+      }
+
+      CWidget::AvailableWidgetMap CWidget::getWidgetList()
+      {
+         AvailableWidgetMap widgets;
+
+         for (Poco::DirectoryIterator it(CWorkerTools::getWidgetBasePath()); it != Poco::DirectoryIterator(); ++it)
+         {
+            try
+            {
+               const auto widget = boost::make_shared<CWidgetInformation>(it->path());
+               widgets[widget->getType()] = widget;
+            }
+            catch (std::exception& e)
+            {
+               YADOMS_LOG(warning) << "Unknown widget in " << it->path() << ", " << e.what();
+            }
+         }
+
+         return widgets;
       }
    } // namespace worker
 } // namespace update

@@ -547,6 +547,7 @@ set(YADOMS_SRC
    server/update/info/UpdateSite.h
    server/update/info/UpdateSite.cpp
    server/update/worker/IUpdateChecker.h
+   server/update/worker/IWidgetInformation.h
    server/update/worker/Plugin.h
    server/update/worker/Plugin.cpp
    server/update/worker/ScriptInterpreter.h
@@ -555,6 +556,8 @@ set(YADOMS_SRC
    server/update/worker/UpdateChecker.cpp
    server/update/worker/Widget.h
    server/update/worker/Widget.cpp
+   server/update/worker/WidgetInformation.h
+   server/update/worker/WidgetInformation.cpp
    server/update/worker/Yadoms.h
    server/update/worker/Yadoms.cpp
    server/update/worker/WorkerTools.h

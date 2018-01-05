@@ -94,7 +94,8 @@ void CSupervisor::run()
                                                                                     boost::posix_time::hours(12),
                                                                                     pluginManager,
                                                                                     dal->getEventLogger(),
-                                                                                    startupOptions->getDeveloperMode());
+                                                                                    startupOptions->getDeveloperMode(),
+                                                                                    m_pathProvider);
 
       // Start Task manager
       taskManager->start();

@@ -227,6 +227,8 @@
             .done(function (data) {
                 if (data.plugins)
                     buildList("plugin", data.plugins);
+                if (data.widgets)
+                    buildList("widget", data.widgets);
                 $asyncActionIndicator.addClass("hidden");
                 d.resolve();
             })
@@ -533,10 +535,21 @@
         var $table = $("table#" + objectType + "-install-update-list");
         $table.find("tr:gt(0)").remove();
 
-        $.each(list, function (index, value) {
+        debugger;
+        // Add updatable an new items in the same list
+        addItemsInTable($table, objectType, list.updatable);
+        addItemsInTable($table, objectType, list.new);
+    }
+
+    function addItemsInTable(inTable, objectType, fromList) {
+        assert(!isNullOrUndefined(inTable), "inTable must be defined");
+        assert(!isNullOrUndefined(objectType), "objectType must be defined");
+        assert(!isNullOrUndefined(fromList), "fromList must be defined");
+
+        $.each(fromList, function (index, value) {
             var lineContent = createInstallUpdateItemLine(objectType, index);
 
-            insertIntoTableInAlphabeticOrder($table, lineContent, function (lineContent) {
+            insertIntoTableInAlphabeticOrder(inTable, lineContent, function (lineContent) {
                 return $(lineContent).find("span#name").text();
             });
 
