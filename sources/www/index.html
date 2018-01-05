@@ -171,6 +171,7 @@
     <script src="js/objects/update/yadoms-update-information-manager.js"></script>
     <script src="js/objects/configuration/configuration-helper.js"></script>
     <script src="js/objects/event-logger-manager.js"></script>
+    <script src="js/objects/session-data-manager.js"></script>
     <script src="js/rest-engine.js"></script>
     <script src="js/websocket-engine.js"></script>
     <script src="js/widget-engine.js"></script>
@@ -257,84 +258,36 @@
                          var navigatorLanguage = window.navigator.userLanguage || window.navigator.language;
                          //var navigatorTimezone = jstz.determine().name();
 
+                         var arrayOfDeffered = [];
+                         var deffered = null;
+                         
                          //update configuration with these values
 
-                         ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.language, navigatorLanguage, "", "language used by default")
-                             .done(function() {
-                                 console.info("Language detected : " + navigatorLanguage);
+                         ConfigurationManager.saveDefaultLanguage(arrayOfDeffered, navigatorLanguage);
+                         ConfigurationManager.saveDefaultAdvancedParameters(arrayOfDeffered);
+                         ConfigurationManager.saveDefaultDateFormatString(arrayOfDeffered);
+                         ConfigurationManager.saveRefreshPageDefaultValue(arrayOfDeffered);
+                         ConfigurationManager.saveDefaultBasicAuthentification(arrayOfDeffered);
+                         ConfigurationManager.saveFirstStart(arrayOfDeffered);
 
-                                 ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.advancedParameters, false)
-                                     .done(function() {
-                                         console.info("Advanced parameters : false");
-
-                                         ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.dateFormatString, "LLL")
-                                             .done(function() {
-                                                 console.info("Date Format String : " + "LLL");
-
-                                                 var basicAuth = {
-                                                     "active": false,
-                                                     "user": "admin",
-                                                     "password": ""
-                                                 };
-                                                 ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.basicAuthentication, JSON.stringify(basicAuth))
-                                                     .done(function() {
-                                                         console.info("Basic authentication : " + JSON.stringify(basicAuth));
-
-
-                                                         ConfigurationManager.createToServer(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart, "false", "true", "First start of Web app has been done")
-                                                             .done(function() {
-                                                                 //we check for page. If there is no page, we create a new one automatically
-                                                                 PageManager.getAll()
-                                                                     .done(function() {
-                                                                         if (PageManager.pages.length === 0) {
-                                                                             console.info("Creating a default page");
-                                                                             PageManager.createPage($.t("initialization.homePage"), 0)
-                                                                                 .done(function() {
-                                                                                     PageManager.ensureOnePageIsSelected();
-                                                                                 });
-                                                                         }
-                                                                         //we can start app
-                                                                         main();
-                                                                     })
-                                                                     .fail(function(error) {
-                                                                         notifyError($.t("objects.pageManager.errorDuringGettingPages"), error);
-                                                                     });
-                                                             })
-                                                             .fail(function(error) {
-                                                                 notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
-                                                                     section: ConfigurationManager.items.installSection,
-                                                                     key: ConfigurationManager.items.install.firstStart
-                                                                 }), error);
-                                                             });
-                                                     })
-                                                     .fail(function(error) {
-                                                         notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
-                                                             section: ConfigurationManager.items.systemSection,
-                                                             key: ConfigurationManager.items.system.basicAuthentication
-                                                         }), error);
-                                                     });
-
-                                             })
-                                             .fail(function(error) {
-                                                 notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
-                                                     section: ConfigurationManager.items.systemSection,
-                                                     key: ConfigurationManager.items.system.dateFormatString
-                                                 }), error);
-                                             });
-                                     })
-                                     .fail(function(error) {
-                                         notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
-                                             section: ConfigurationManager.items.systemSection,
-                                             key: ConfigurationManager.items.system.advancedParameters
-                                         }), error);
-                                     });
-
-                             })
-                             .fail(function(error) {
-                                 notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
-                                     section: ConfigurationManager.items.systemSection,
-                                     key: ConfigurationManager.items.system.language
-                                 }), error);
+                         $.whenAll(arrayOfDeffered)
+                            .done(function() {
+                               //we check for page. If there is no page, we create a new one automatically
+                               PageManager.getAll()
+                                  .done(function() {
+                                     if (PageManager.pages.length === 0) {
+                                       console.info("Creating a default page");
+                                       PageManager.createPage($.t("initialization.homePage"), 0)
+                                          .done(function() {
+                                             PageManager.ensureOnePageIsSelected();
+                                          });
+                                     }
+                                     //we can start app
+                                     main();
+                                   })
+                                   .fail(function(error) {
+                                      notifyError($.t("objects.pageManager.errorDuringGettingPages"), error);
+                                   });
                              });
                      });
 
@@ -542,13 +495,23 @@
               .done(function(result) {
                   if (!isNullOrUndefined(result)) {
                       Yadoms.systemConfiguration = result;
-                      //we set the right language
-                      i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
-                          $("html").i18n();
-                          moment.lang(window.navigator.userLanguage || window.navigator.language);
-                          waitForServerReady();
-                      });
-                  }
+                      var deferredArray = [];
+                      
+                      // create default configuration is configuration missing
+                      if (isNullOrUndefined(Yadoms.systemConfiguration[ConfigurationManager.items.system.refreshPage])) {
+                         ConfigurationManager.saveRefreshPageDefaultValue(deferredArray);
+                      }
+                      
+                      $.whenAll(deferredArray)
+                         .always(function() {
+                            //we set the right language
+                            i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
+                                $("html").i18n();
+                                moment.lang(window.navigator.userLanguage || window.navigator.language);
+                                waitForServerReady();
+                            });
+                         });
+                      }
               })
               .fail(function(error) {
                   notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
