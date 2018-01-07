@@ -581,15 +581,15 @@ function chartViewModel() {
               var arrayOfDeffered = [];
               self.chartLastValue = [];
               
+              //we compute the date from the configuration
+              var dateFrom = self.calculateBeginDate(interval, self.serverTime, self.prefix);
+              self.changexAxisBound(dateFrom);
+              var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
+              var prefixUri = "/" + self.prefix;
+              var timeBetweenTwoConsecutiveValues = moment.duration(1, self.prefix).asMilliseconds();              
+              
               //for each plot in the configuration we request for data
               $.each(self.widget.configuration.devices, function (index, device) {
-                 
-                 //we compute the date from the configuration
-                 var dateFrom = self.calculateBeginDate(interval, self.serverTime, self.prefix);
-                 var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
-                 var prefixUri = "/" + self.prefix;
-                 var timeBetweenTwoConsecutiveValues = moment.duration(1, self.prefix).asMilliseconds();
-                 
                   //If the device is a bool, you have to modify
                   if (self.isBoolVariable(index) || self.isEnumVariable(index)) {
                      switch (interval) {
@@ -964,7 +964,7 @@ function chartViewModel() {
             RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + "/" + prefix + "/" + dateFrom + "/" + dateTo)
                .done(function (data) {
                    try {
-                       if (!isNullOrUndefinedOrEmpty(data.data[data.data.length-1])) {
+                       if (!isNullOrUndefined(data.data) && !isNullOrUndefinedOrEmpty(data.data[data.data.length-1])) {
                           var registerDate = DateTimeFormatter.isoDateToDate(data.data[data.data.length-1].date)._d.getTime().valueOf();
                           if (registerDate != serie.points[serie.points.length-1].x){
                              self.chart.hideLoading(); // If a text was displayed before
