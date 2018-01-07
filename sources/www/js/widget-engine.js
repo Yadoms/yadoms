@@ -16,7 +16,6 @@ function initializeWidgetEngine() {
     //we ask all widgets packages
     WidgetPackageManager.getAll()
     .done(function () {
-        console.timeStamp("entering WidgetPackageManager.getAll");
         //we show notification
         loadPagesNotification = notifyInformation($.t("mainPage.actions.loadingPages"));
         PageManager.getAll()
@@ -37,11 +36,12 @@ function initializeWidgetEngine() {
             
             console.log ("Yadoms.systemConfiguration", Yadoms.systemConfiguration);
             
-            //if (Yadoms.systemConfiguration.refreshPage.value)
+            if (Yadoms.systemConfiguration.refreshPage.value) {
               if (PageManager.pages.length > 0 && SessionDataManager.getVariable("CurrentPage")!=null)
                  PageManager.selectPageId(parseInt(SessionDataManager.getVariable("CurrentPage")));
-            else
-               PageManager.ensureOnePageIsSelected(); //we ensure that one page is selected
+              else
+                 PageManager.ensureOnePageIsSelected(); //we ensure that one page is selected
+            }
 
             //we ask for the last event to ask only those occurs after this one
             EventLoggerManager.getLast()
@@ -155,110 +155,130 @@ function tabClick(pageId) {
 function periodicUpdateTask() {
     //we first check if the server is online and only if it answer to the eventLog new messages
     //to do that we ask event message
-    EventLoggerManager.getFrom(LastEventLogId)
-    .done(function (data) {
-        //if we were offline we go back to online status
-        if (!serverIsOnline) {
-            serverIsOnline = true;
-            //we signal that server has been back
-            notifyInformation($.t("mainPage.notifications.connectionToServerHasBeenRestored"));
-            //if the errorNotification is always visible we close it
-            if (OfflineServerNotification != null) {
-                OfflineServerNotification.close();
-                if (OfflineServerNotification.showing)
-                    OfflineServerNotification.$bar.dequeue();
-                OfflineServerNotification = null;
-            }
-            //we change the interval period to the normal one
-            clearInterval(widgetUpdateInterval);
-            if (!WebSocketEngine.isActive())
-                widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateIntervalWithWebSocketDisabled);
-            else
-                widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateInterval);
+	
+	if (WebSocketEngine.isConnected()) {
+		EventLoggerManager.getFrom(LastEventLogId)
+		.done(function (data) {
+			//if we were offline we go back to online status
+			if (!serverIsOnline) {
+				serverIsOnline = true;
+				//we signal that server has been back
+				notifyInformation($.t("mainPage.notifications.connectionToServerHasBeenRestored"));
+				//if the errorNotification is always visible we close it
+				if (OfflineServerNotification != null) {
+					OfflineServerNotification.close();
+					if (OfflineServerNotification.showing)
+						OfflineServerNotification.$bar.dequeue();
+					OfflineServerNotification = null;
+				}
+				//we change the interval period to the normal one
+				clearInterval(widgetUpdateInterval);
+				if (!WebSocketEngine.isActive())
+					widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateIntervalWithWebSocketDisabled);
+				else
+					widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateInterval);
 
-            //we reinitialize the websocket
-            WebSocketEngine.initializeWebSocketEngine(function () {
-                //web socket opened
-                //we listen acquisitionupdate event
-                $(document).on("acquisitionupdate", function (e, websocketData) {
-                    var acq = AcquisitionManager.factory(websocketData.data);
-                    dispatchNewAcquisitionsToWidgets(acq);
-                });
-                 //we listen time event
-                 $(document).on("timenotification", function (e, websocketData) {
-                     dispatchTimeToWidgets(websocketData.time);
-                 });
+				//we reinitialize the websocket
+				WebSocketEngine.initializeWebSocketEngine(function () {
+					//web socket opened
+					//we listen acquisitionupdate event
+					$(document).on("acquisitionupdate", function (e, websocketData) {
+						var acq = AcquisitionManager.factory(websocketData.data);
+						dispatchNewAcquisitionsToWidgets(acq);
+					});
+					 //we listen time event
+					 $(document).on("timenotification", function (e, websocketData) {
+						 dispatchTimeToWidgets(websocketData.time);
+					 });
 
-                //Maybe there is a lot of time between the turn off of the server and the turn on, so we must ask all widget
-                //data to be sure that all information displayed are fresh
-                updateWidgetsPolling().always(function() {
-                   //we update the filter of the websockets to receive only wanted data
-                   updateWebSocketFilter();                   
-                });
-            });
-        }
+					//Maybe there is a lot of time between the turn off of the server and the turn on, so we must ask all widget
+					//data to be sure that all information displayed are fresh
+					updateWidgetsPolling().always(function() {
+					   //we update the filter of the websockets to receive only wanted data
+					   updateWebSocketFilter();                   
+					});
+				});
+			}
 
-        if (!isNullOrUndefinedOrEmpty(data.EventLogger)) {
+			if (!isNullOrUndefinedOrEmpty(data.EventLogger)) {
 
-            $.each(data.EventLogger,
-                function (index, value) {
-                    console.debug("incoming event: " + JSON.stringify(value));
-                    var gravity;
-                    //the gravity of the noty depend on the code
-                    if ((value.code.toLowerCase() === "started") ||
-                    (value.code.toLowerCase() === "stopped") ||
-                    (value.code.toLowerCase() === "updated")) {
-                        gravity = "information";
-                    } else {
-                        gravity = "error";
-                    }
+				$.each(data.EventLogger,
+					function (index, value) {
+						console.debug("incoming event: " + JSON.stringify(value));
+						var gravity;
+						//the gravity of the noty depend on the code
+						if ((value.code.toLowerCase() === "started") ||
+						(value.code.toLowerCase() === "stopped") ||
+						(value.code.toLowerCase() === "updated")) {
+							gravity = "information";
+						} else {
+							gravity = "error";
+						}
 
-                    var translation = "eventLogger." + value.code;
-                    notify(DateTimeFormatter.isoDateToString(value.date) +
-                        " " +
-                        $.t(translation, { 
-                              "who": $.t(value.who, { // structure sometimes : core.[who].name or core.[who]
-                                 defaultValue: $.t('core.' + value.who + '.name', {
-                                    defaultValue: $.t('core.' + value.who, {
-                                       defaultValue: value.who
-                                    })
-                                 })
-                              }), 
-                              "what": $.t(value.what, { // structure sometimes : core.[what].name or core.[what]
-                                 defaultValue: $.t('core.' + value.what + '.name', {
-                                    defaultValue: $.t('core.' + value.what, {
-                                       defaultValue: value.what
-                                    })
-                                 })
-                              })
-                        }),
-                        gravity);
+						var translation = "eventLogger." + value.code;
+						notify(DateTimeFormatter.isoDateToString(value.date) +
+							" " +
+							$.t(translation, { 
+								  "who": $.t(value.who, { // structure sometimes : core.[who].name or core.[who]
+									 defaultValue: $.t('core.' + value.who + '.name', {
+										defaultValue: $.t('core.' + value.who, {
+										   defaultValue: value.who
+										})
+									 })
+								  }), 
+								  "what": $.t(value.what, { // structure sometimes : core.[what].name or core.[what]
+									 defaultValue: $.t('core.' + value.what + '.name', {
+										defaultValue: $.t('core.' + value.what, {
+										   defaultValue: value.what
+										})
+									 })
+								  })
+							}),
+							gravity);
 
-                    //we update the lastEvent Id Read
-                    LastEventLogId = value.id;
-                });
-        }
-        //we ask for widget's devices if web sockets are unsupported
-        if (!WebSocketEngine.isActive())
-            updateWidgetsPolling();
-    })
-    .fail(function (error) {
-        if (serverIsOnline) {
-          //we indicate that *server has passed offline
-          serverIsOnline = false;
-          OfflineServerNotification = notifyError($.t("mainPage.errors.youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline"), error, false);
-          //we change the interval period
-          clearInterval(widgetUpdateInterval);
-          widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateIntervalInOfflineMode);
-          failGetEventCounter = 0;
-          //we close the dashboard if shown
-          $('#main-dashboard-modal').modal('hide');
-          //we stop refresh timer of the dashboard if set
-          if (Yadoms.periodicDashboardTask)
-              clearInterval(Yadoms.periodicDashboardTask);
-        }
-        //if we are again offline there is nothing to do
-    });
+						//we update the lastEvent Id Read
+						LastEventLogId = value.id;
+					});
+			}
+			//we ask for widget's devices if web sockets are unsupported
+			if (!WebSocketEngine.isActive())
+				updateWidgetsPolling();
+		})
+		.fail(function (error) {
+			if (serverIsOnline) {
+			  //we indicate that *server has passed offline
+			  serverIsOnline = false;
+			  OfflineServerNotification = notifyError($.t("mainPage.errors.youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline"), error, false);
+			  //we change the interval period
+			  clearInterval(widgetUpdateInterval);
+			  widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateIntervalInOfflineMode);
+			  //we close the dashboard if shown
+			  $('#main-dashboard-modal').modal('hide');
+			  //we stop refresh timer of the dashboard if set
+			  if (Yadoms.periodicDashboardTask)
+				  clearInterval(Yadoms.periodicDashboardTask);
+			}
+			//if we are again offline there is nothing to do
+		});
+	} else {
+		if (serverIsOnline) {
+		  //we close the dashboard if shown
+		  $('#main-dashboard-modal').modal('hide');
+		  //we stop refresh timer of the dashboard if set
+		  if (Yadoms.periodicDashboardTask)
+			  clearInterval(Yadoms.periodicDashboardTask);
+        
+		  //we indicate that *server has passed offline
+		  serverIsOnline = false;
+		  OfflineServerNotification = notifyError($.t("mainPage.errors.youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline"));
+
+        // Initialize a new websocket
+		  WebSocketEngine.initializeWebSocketEngine(function() {
+           // send a new time all ids needed
+           updateWebSocketFilter();
+        });
+		}
+	}
 }
 
 function dispatchNewAcquisitionsToWidgets(acq) {
