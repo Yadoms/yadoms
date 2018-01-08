@@ -132,7 +132,6 @@ WidgetManager.getViewFromServer_ = function (widgetType) {
     return d.promise();
 };
 
-
 /**
  * Get a widget viewModel from the server 
  * @param {String} widgetType The widget type to download the viewModel

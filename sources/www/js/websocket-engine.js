@@ -36,14 +36,12 @@ CLOSED	3	The connection is closed or couldn't be opened.
 */
 WebSocketEngine.isConnected = function() {
 	if (!isNullOrUndefined(this.webSocket_)){
-	   console.log ("WebSocketEngine state : ", this.webSocket_.readyState);
 	   if (this.webSocket_.readyState != 3)
-          return true;
+         return true;
 	   else
-		  return false;
-	}
-	else 
-       return false;
+		   return false;
+	} else 
+      return false;
 };
 
 /**
@@ -69,6 +67,23 @@ WebSocketEngine.sendIsServerAlive = function () {
  */
 WebSocketEngine.initializeWebSocketEngine = function(callback) {
 
+     /*
+      * Definitions of functions called in the document by websocket returns
+      */
+
+     //we listen acquisitionupdate event
+     $(document).on("acquisitionupdate", function(e, websocketData) {
+         var acq = AcquisitionManager.factory(websocketData.data);
+         dispatchNewAcquisitionsToWidgets(acq);
+     });
+     //we listen time event
+     $(document).on("timenotification", function(e, websocketData) {
+         dispatchTimeToWidgets(websocketData.time);
+     });
+
+     /*
+      */     
+     
     if (!isNullOrUndefined(WebSocketEngine.webSocket_))
         WebSocketEngine.webSocket_.close();
 

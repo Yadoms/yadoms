@@ -470,20 +470,8 @@
       }
 
       function whenServerReady() {
-
           $("#serverNotReady").hide();
-
           WebSocketEngine.initializeWebSocketEngine(function() {
-              //we listen acquisitionupdate event
-              $(document).on("acquisitionupdate", function(e, websocketData) {
-                  var acq = AcquisitionManager.factory(websocketData.data);
-                  dispatchNewAcquisitionsToWidgets(acq);
-              });
-              //we listen time event
-              $(document).on("timenotification", function(e, websocketData) {
-                  dispatchTimeToWidgets(websocketData.time);
-              });
-
               //web socket opened
               initializeWidgetEngine();
           });
