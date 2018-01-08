@@ -308,7 +308,7 @@ void CDecoder::processMessage(const std::string& key,
 		}
       else if (key == m_tag_PEJP)
       {
-         if (m_isdeveloperMode) YADOMS_LOG(information) << "PEJP" << "=" << value;
+         YADOMS_LOG(information) << "PEJP" << "=" << value;
          m_ForecastPeriod->set(teleInfo::specificHistorizers::EColor::kRED);
       }
 		else
