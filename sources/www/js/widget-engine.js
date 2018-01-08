@@ -31,8 +31,6 @@ function initializeWidgetEngine() {
             //we deactivate the customization without launch save process
             exitCustomization(false);
             
-            console.log ("Yadoms.systemConfiguration", Yadoms.systemConfiguration);
-            
             if (Yadoms.systemConfiguration.refreshPage.value) {
               if (PageManager.pages.length > 0 && SessionDataManager.getVariable("CurrentPage")!=null)
                  PageManager.selectPageId(parseInt(SessionDataManager.getVariable("CurrentPage")));
@@ -116,9 +114,8 @@ function tabClick(pageId) {
     if ((currentPage != null) && (currentPage.id === pageId))
         return;
     
-    //if (Yadoms.systemConfiguration.refreshPage.value)
-    console.log ("Nouvelle page : ", pageId.toString());
-    SessionDataManager.addVariable("CurrentPage", pageId.toString());
+    if (Yadoms.systemConfiguration.refreshPage.value)
+       SessionDataManager.addVariable("CurrentPage", pageId.toString());
     
     var page = PageManager.getPage(pageId);
     
