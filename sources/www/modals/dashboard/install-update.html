@@ -226,7 +226,10 @@
         UpdateInformationManager.getList(includePreReleases)
             .done(function (data) {
                 if (data.plugins)
-                    buildList("plugin", data.plugins);
+                    // Load plugins translations
+                    PluginManager.getAll().always(function () {
+                        buildList("plugin", data.plugins);
+                    });
                 if (data.widgets)
                     buildList("widget", data.widgets);
                 $asyncActionIndicator.addClass("hidden");
@@ -676,28 +679,19 @@
         assert(!isNullOrUndefined(objectType), "objectType must be defined");
         assert(!isNullOrUndefined(itemType), "itemType must be defined");
 
-
-        //determine the i18n base path (because scriptInterpreters have specific path)
-        //TODO item.i18nBasePath = objectType + "s/" + item.type;
-        //
-        // var s = "<tr id=\"" + item.type + "\">" +
-        //     "<td><span>" + $.t(item.i18nBasePath + ":name", {
-        //         defaultValue: item.package.name
-        //     }) + "</span>" +
-        //     "<span class=\"update-available-label hidden label label-as-badge label-success\">!</span>" +
-        //     "</td>";
+        //determine the i18n base path
         var i18nBasePath = objectType + "s/" + itemType;
-        // var nam = $.t(i18nBasePath + ":name", {defaultValue: itemType});
-        var nam = $.t("plugins/IPX800:name");
 
         var s = "<tr id=\"" + itemType + "\">" +
-            "<td><span id=\"name\">" + itemType + "</span>" +
+            "<td><span id=\"name\">" + $.t(i18nBasePath + ":name", {
+                defaultValue: itemType
+            }) + "</span>" +
             "<span class=\"update-available-label hidden label label-as-badge label-success\">!</span>" +
             "</td>";
 
         s += "<td><img class=\"img-thumbnail dashboard-table-icon\"></td>";
 
-        s += "<td><span id=\"description\"></span></td>";
+        s += "<td><span id=\"description\">" + $.t(i18nBasePath + ":description") + "</span></td>";
 
         s += "<td><em class=\"local-version\"></em></td>";
 

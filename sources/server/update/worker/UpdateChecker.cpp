@@ -219,8 +219,6 @@ namespace update
                const auto moduleType = localVersion.first;
 
                // Filter non-updatable modules
-               if (boost::starts_with(moduleType, "system-"))
-                  continue;
                if (m_developerMode && boost::starts_with(moduleType, "dev-"))
                   continue;
 
@@ -409,7 +407,7 @@ namespace update
                const auto moduleType = localVersion.first;
 
                // Filter non-updatable modules
-               if (boost::starts_with(moduleType, "system-"))
+               if (moduleType == "system-deactivated-widget")
                   continue;
                if (m_developerMode && boost::starts_with(moduleType, "dev-"))
                   continue;
