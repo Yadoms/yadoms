@@ -81,7 +81,10 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
      $(document).on("timenotification", function(e, websocketData) {
          dispatchTimeToWidgets(websocketData.time);
      });
-
+     //we listen keyword Deletion event
+     $(document).on("keyworddeleted", function(e, websocketData) {
+         dispatchkeywordDeletedToWidgets(websocketData.data);
+     });
      /*
       */     
      

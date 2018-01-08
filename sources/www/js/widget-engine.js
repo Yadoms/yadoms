@@ -137,7 +137,6 @@ function tabClick(pageId) {
             });
         } else {
             //we poll all widget data
-            debugger;
             updateWidgetsPolling(page).always(function() {
                page.$grid.packery('destroy');
                page.$grid.packery(PageManager.packeryOptions);
@@ -355,7 +354,6 @@ function updateWebSocketFilter() {
 }
 
 function updateWidgetsPolling() {
-   
    var page = PageManager.getCurrentPage();
    updateWidgetsPolling(pageId = page);
 }
