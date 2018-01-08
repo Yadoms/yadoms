@@ -90,8 +90,7 @@ void CSupervisor::run()
                                                                     taskManager));
 
       // Start the update checker
-      const auto updateChecker = boost::make_shared<update::worker::CUpdateChecker>(boost::posix_time::minutes(1),
-                                                                                    boost::posix_time::hours(12),
+      const auto updateChecker = boost::make_shared<update::worker::CUpdateChecker>(boost::posix_time::hours(12),
                                                                                     pluginManager,
                                                                                     dal->getEventLogger(),
                                                                                     startupOptions->getDeveloperMode(),

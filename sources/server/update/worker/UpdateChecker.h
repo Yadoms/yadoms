@@ -12,8 +12,7 @@ namespace update
       class CUpdateChecker : public IUpdateChecker
       {
       public:
-         CUpdateChecker(const boost::posix_time::time_duration firstScanDelay,
-                        const boost::posix_time::time_duration nextScanDelays,
+         CUpdateChecker(const boost::posix_time::time_duration scanPeriod,
                         boost::shared_ptr<pluginSystem::CManager> pluginManager,
                         boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
                         bool developerMode,
@@ -26,8 +25,7 @@ namespace update
          // [END] IUpdateChecker Implementation
 
       protected:
-         void doWork(const boost::posix_time::time_duration firstScanDelay,
-                     const boost::posix_time::time_duration nextScanDelays);
+         void doWork(const boost::posix_time::time_duration scanPeriod);
          void scan();
          shared::CDataContainer buildUpdates(bool includePreleases,
                                              const pluginSystem::IFactory::AvailablePluginMap& pluginsLocalVersions,

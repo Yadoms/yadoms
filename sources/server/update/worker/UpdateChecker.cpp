@@ -16,8 +16,7 @@ namespace update
       };
 
 
-      CUpdateChecker::CUpdateChecker(const boost::posix_time::time_duration firstScanDelay,
-                                     const boost::posix_time::time_duration nextScanDelays,
+      CUpdateChecker::CUpdateChecker(const boost::posix_time::time_duration scanPeriod,
                                      boost::shared_ptr<pluginSystem::CManager> pluginManager,
                                      boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
                                      bool developerMode,
@@ -26,7 +25,7 @@ namespace update
            m_eventLogger(eventLogger),
            m_developerMode(developerMode),
            m_pathProvider(pathProvider),
-           m_thread(boost::thread(&CUpdateChecker::doWork, this, firstScanDelay, nextScanDelays)),
+           m_thread(boost::thread(&CUpdateChecker::doWork, this, scanPeriod)),
            m_updatesAvailable(false)
       {
       }
@@ -48,34 +47,16 @@ namespace update
          return includePreleases ? m_allUpdates : m_releasesOnlyUpdates;
       }
 
-      void CUpdateChecker::doWork(const boost::posix_time::time_duration firstScanDelay,
-                                  const boost::posix_time::time_duration nextScanDelays)
+      void CUpdateChecker::doWork(const boost::posix_time::time_duration scanPeriod)
       {
          YADOMS_LOG_CONFIGURE("CUpdateChecker");
          YADOMS_LOG(debug) << "Start";
          try
          {
-            // Wait for first scan
-            //TODO remettre
-            //switch (m_evtHandler.waitForEvents(firstScanDelay))
-            //{
-            //case shared::event::kTimeout:
-            //   break;
-
-            //case kForceScanEventId:
-            //   YADOMS_LOG(debug) << "Force first scan...";
-            //   break;
-
-            //default:
-            //   YADOMS_LOG(error) << "Unsupported event " << m_evtHandler.getEventId() << ", ignored";
-            //   break;
-            //}
-
             YADOMS_LOG(debug) << "Start first scan...";
             scan();
 
-            auto nexScanTimer = m_evtHandler.createTimer(kNextScanTimerId, shared::event::CEventTimer::kOneShot,
-                                                         nextScanDelays);
+            auto nexScanTimer = m_evtHandler.createTimer(kNextScanTimerId, shared::event::CEventTimer::kOneShot, scanPeriod);
             while (true)
             {
                switch (m_evtHandler.waitForEvents())
@@ -225,7 +206,6 @@ namespace update
                shared::CDataContainer item;
 
                item.set("iconUrl", (localVersion.second->getPath() / "icon.png").generic_string());
-               item.set("localesUrl", (localVersion.second->getPath() / "locales").generic_string());//TODO utile ?
 
                shared::CDataContainer versions;
                versions.set("installed", localVersion.second->getVersion().toString());
@@ -419,7 +399,6 @@ namespace update
                                                                                 localVersion.second->getPath());
 
                item.set("iconUrl", (widgetPath / "preview.png").generic_string());
-               item.set("localesUrl", (widgetPath / "locales").generic_string());//TODO utile ?
 
                shared::CDataContainer versions;
                versions.set("installed", localVersion.second->getVersion().toString());
