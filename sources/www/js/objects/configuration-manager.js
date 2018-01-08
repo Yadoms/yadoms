@@ -47,6 +47,7 @@ ConfigurationManager.items.system.location.altitude  = "altitude";
 
 ConfigurationManager.items.system.advancedParameters = "advancedParameters";
 ConfigurationManager.items.system.dateFormatString = "dateFormatString";
+ConfigurationManager.items.system.refreshPage = "refreshPage";
 
 ConfigurationManager.items.install = {};
 ConfigurationManager.items.installSection = "install";
@@ -141,4 +142,104 @@ ConfigurationManager.createToServer = function(section, name, value, defaultValu
          "securityAccess": securityAccess
       })
    });
+};
+
+ConfigurationManager.saveRefreshPageDefaultValue = function (arrayOfDeffered) {
+   var deffered = ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.refreshPage, true, true, "", null);
+   
+   deffered
+      .done(function() {
+          console.info("refresh page : " + "true");
+      })
+     .fail(function(error) {
+         notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
+             section: ConfigurationManager.items.systemSection,
+             key: ConfigurationManager.items.system.refreshPage
+         }), error);
+     });
+     
+     arrayOfDeffered.push(deffered);
+};
+
+ConfigurationManager.saveDefaultAdvancedParameters = function (arrayOfDeffered){
+  var deffered = ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.advancedParameters, false);
+  
+  deffered
+     .done(function() {
+        console.info("Advanced parameters : false");
+     })
+     .fail(function(error) {
+        notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
+            section: ConfigurationManager.items.systemSection,
+            key: ConfigurationManager.items.system.advancedParameters
+        }), error);
+     });
+  arrayOfDeffered.push(deffered);
+};
+
+ConfigurationManager.saveDefaultDateFormatString = function (arrayOfDeffered) {
+  var deffered = ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.dateFormatString, "LLL");
+  
+  deffered
+      .done(function() {
+          console.info("Date Format String : " + "LLL");
+      })
+      .fail(function(error) {
+          notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
+              section: ConfigurationManager.items.systemSection,
+              key: ConfigurationManager.items.system.dateFormatString
+          }), error);
+      }); 
+   arrayOfDeffered.push(deffered);
+};
+
+ConfigurationManager.saveDefaultBasicAuthentification = function (arrayOfDeffered) {
+   var basicAuth = {
+      "active": false,
+      "user": "admin",
+      "password": ""
+   };
+   
+   var deffered = ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.basicAuthentication, JSON.stringify(basicAuth));
+   
+   deffered
+        .done(function() {
+            console.info("Basic authentication : " + JSON.stringify(basicAuth));
+        })
+        .fail(function(error) {
+            notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
+                section: ConfigurationManager.items.systemSection,
+                key: ConfigurationManager.items.system.basicAuthentication
+            }), error);
+        });
+   arrayOfDeffered.push(deffered);
+};
+
+ConfigurationManager.saveDefaultLanguage = function (arrayOfDeffered, defaultLanguage) {
+    var deffered = ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.language, defaultLanguage, "", "language used by default");
+    
+    deffered
+        .done(function() {
+            console.info("Language detected : " + defaultLanguage);
+        })                                 
+        .fail(function(error) {
+            notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
+                section: ConfigurationManager.items.systemSection,
+                key: ConfigurationManager.items.system.language
+            }), error);
+        }); 
+     arrayOfDeffered.push(deffered);   
+};
+
+ConfigurationManager.saveFirstStart = function (arrayOfDeffered) {
+   var deffered = ConfigurationManager.createToServer(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart, "false", "true", "First start of Web app has been done");
+   
+   deffered
+    .fail(function(error) {
+        notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
+            section: ConfigurationManager.items.installSection,
+            key: ConfigurationManager.items.install.firstStart
+        }), error);
+    });
+    arrayOfDeffered.push(deffered);   
 };

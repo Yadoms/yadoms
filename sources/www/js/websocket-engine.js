@@ -20,7 +20,28 @@ WebSocketEngine.webSocket_ = null;
  * @return {boolean}
  */
 WebSocketEngine.isActive = function() {
-    return !isNullOrUndefined(this.webSocket_);
+	return !isNullOrUndefined(this.webSocket_);
+};
+
+/**
+ * Check if websocket is active
+ * @return {boolean}
+
+ Constant	Value	Description
+CONNECTING	0	The connection is not yet open.
+OPEN	1	The connection is open and ready to communicate.
+CLOSING	2	The connection is in the process of closing.
+CLOSED	3	The connection is closed or couldn't be opened.
+
+*/
+WebSocketEngine.isConnected = function() {
+	if (!isNullOrUndefined(this.webSocket_)){
+	   if (this.webSocket_.readyState != 3)
+         return true;
+	   else
+		   return false;
+	} else 
+      return false;
 };
 
 /**
@@ -47,6 +68,23 @@ WebSocketEngine.sendIsServerAlive = function () {
  */
 WebSocketEngine.initializeWebSocketEngine = function(callback) {
 
+     /*
+      * Definitions of functions called in the document by websocket returns
+      */
+
+     //we listen acquisitionupdate event
+     $(document).on("acquisitionupdate", function(e, websocketData) {
+         var acq = AcquisitionManager.factory(websocketData.data);
+         dispatchNewAcquisitionsToWidgets(acq);
+     });
+     //we listen time event
+     $(document).on("timenotification", function(e, websocketData) {
+         dispatchTimeToWidgets(websocketData.time);
+     });
+
+     /*
+      */     
+     
     if (!isNullOrUndefined(WebSocketEngine.webSocket_))
         WebSocketEngine.webSocket_.close();
 
@@ -67,9 +105,13 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
                protocol = "ws://";
             websocketEndpoint = protocol + window.location.host + '/ws';
          }
-              
-        WebSocketEngine.webSocket_ = new WebSocket(websocketEndpoint);
-
+        
+        try{        
+           WebSocketEngine.webSocket_ = new WebSocket(websocketEndpoint);
+        }catch(error){
+           console.warn (error);
+        }
+        
         WebSocketEngine.webSocket_.onopen = function() {
             console.debug('Web socket opened');
             if ($.isFunction(callback))

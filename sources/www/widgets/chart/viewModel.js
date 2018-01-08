@@ -272,10 +272,13 @@ function chartViewModel() {
                             if (!this.series.hideInLegend) {
                                 if (isNullOrUndefined(this.point.low)) { //Standard serie
                                     s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
-                                        this.series.name + " : " + this.y.toFixed(this.series.precision) + " " + this.series.units;
+                                        this.series.name + " : " + this.y.toFixed(this.series.precision) + this.series.units;
                                 } else { //Range Serie
                                     s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
-                                        this.series.name + " : " + this.point.low.toFixed(this.series.precision) + "-" + this.point.high.toFixed(this.series.precision) + " " + this.series.units;
+                                        this.series.name + " : " + "<i style=\"color: " + this.series.color + ";\" class=\"fa fa-long-arrow-down\"></i>&nbsp;" +
+                                        this.point.low.toFixed(this.series.precision) + this.series.units + " " +
+                                        "<i style=\"color: " + this.series.color + ";\" class=\"fa fa-long-arrow-up\"></i>&nbsp;" +
+                                        this.point.high.toFixed(this.series.precision) + this.series.units;
                                 }
                             }
                         });
@@ -338,8 +341,7 @@ function chartViewModel() {
                        filename: 'export'
                    });
                 }
-                catch(error)
-                {
+                catch(error){
                    notifyError($.t("widgets/chart:formatNotSupported", {format: $(e.currentTarget).attr("mime-type")}));
                 }
             });
@@ -579,15 +581,15 @@ function chartViewModel() {
               var arrayOfDeffered = [];
               self.chartLastValue = [];
               
+              //we compute the date from the configuration
+              var dateFrom = self.calculateBeginDate(interval, self.serverTime, self.prefix);
+              self.changexAxisBound(dateFrom);
+              var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
+              var prefixUri = "/" + self.prefix;
+              var timeBetweenTwoConsecutiveValues = moment.duration(1, self.prefix).asMilliseconds();              
+              
               //for each plot in the configuration we request for data
               $.each(self.widget.configuration.devices, function (index, device) {
-                 
-                 //we compute the date from the configuration
-                 var dateFrom = self.calculateBeginDate(interval, self.serverTime, self.prefix);
-                 var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
-                 var prefixUri = "/" + self.prefix;
-                 var timeBetweenTwoConsecutiveValues = moment.duration(1, self.prefix).asMilliseconds();
-                 
                   //If the device is a bool, you have to modify
                   if (self.isBoolVariable(index) || self.isEnumVariable(index)) {
                      switch (interval) {
@@ -800,15 +802,16 @@ function chartViewModel() {
                                           zIndex: 0
                                       }, false, false); // Do not redraw immediately
 
-                                      // Add Units for ranges
-                                      if (serieRange)
-                                      {
+                                      // Add Units and precision for ranges
+                                      if (serieRange){
                                          try{
                                             serieRange.units = $.t(self.keywordInfo[index].units);
                                          }
                                          catch(error){
                                             serieRange.units="";
                                          }
+                                         
+                                         serieRange.precision = self.precision[index];
                                       }
                                   }
                               }
@@ -816,7 +819,7 @@ function chartViewModel() {
                               console.error('Fail to create serie : ' + err2);
                           }
 
-                          if (serie) {
+                          if (serie){
                              //we save the unit in the serie for tooltip formatting
                              try{
                                 serie.units = $.t(self.keywordInfo[index].units);
@@ -825,7 +828,7 @@ function chartViewModel() {
                              }
                              
                              // register the precision for each serie into the serie
-                             serie.precision  = self.precision[index];                                
+                             serie.precision = self.precision[index];
                           }
                       })
                       .fail(function (error) {
@@ -955,7 +958,6 @@ function chartViewModel() {
             
             var serie = self.chart.get(self.seriesUuid[index]);
             var serieRange = self.chart.get('range_' + self.seriesUuid[index]);
-            
             var dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf(prefix).subtract(1, prefix + 's'));
             
             // we ask only from the last point registered
@@ -964,16 +966,14 @@ function chartViewModel() {
             RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + "/" + prefix + "/" + dateFrom + "/" + dateTo)
                .done(function (data) {
                    try {
-                       if (!isNullOrUndefinedOrEmpty(data.data[data.data.length-1])) {
+                       if (!isNullOrUndefined(data.data) && !isNullOrUndefinedOrEmpty(data.data[data.data.length-1])) {
                           var registerDate = DateTimeFormatter.isoDateToDate(data.data[data.data.length-1].date)._d.getTime().valueOf();
                           if (registerDate != serie.points[serie.points.length-1].x){
                              self.chart.hideLoading(); // If a text was displayed before
                              var valueToDisplay = parseFloat(data.data[data.data.length-1][self.periodValueType[index]]);
                        
-                             if (self.differentialDisplay[index])
-                             {
-                                if (serie && !isNullOrUndefined(self.chartLastValue[index]))
-                                {
+                             if (self.differentialDisplay[index]){
+                                if (serie && !isNullOrUndefined(self.chartLastValue[index])){
                                    serie.addPoint([registerDate, valueToDisplay-self.chartLastValue[index]], 
                                                   true,  // redraw. When more than 1 => false.
                                                   false, // shift if true, one point at left is remove
@@ -985,8 +985,7 @@ function chartViewModel() {
                                 serie.addPoint([registerDate, valueToDisplay], true, false, true);
                         
                              //Add also for ranges if any
-                             if (serieRange && !self.differentialDisplay[index])
-                             {
+                             if (serieRange && !self.differentialDisplay[index]){
                                 serieRange.addPoint([registerDate, parseFloat(data.data[data.data.length-1].min), parseFloat(data.data[data.data.length-1].max)], 
                                                     true, false, true);
                              }

@@ -57,7 +57,7 @@ function thermostatViewModel() {
            var deffered2 = self.widgetApi.getKeywordInformation(self.widget.configuration.thermostatStateSection.content.state.keywordId);
            deffered2
            .done(function (keyword) {
-               thermostatStateType = keyword.type;
+               self.thermostatStateType = keyword.type;
            });
            
            defferedKeywordInformation.push( deffered2 );
@@ -89,7 +89,6 @@ function thermostatViewModel() {
         defferedKeywordInformation.push( deffered1 );
         
         //we fill the deviceId of the battery indicator
-        //TODO : handle all keywords
         self.widgetApi.configureBatteryIcon(self.widget.configuration.controlSection.content.temperatureSet.deviceId);
         
         //Read the step
@@ -166,7 +165,6 @@ function thermostatViewModel() {
                self.temperatureSet("-");
         } 
         else if (keywordId === self.widget.configuration.thermostatStateSection.content.state.keywordId) {
-
             //it is the right device
             if (data.value !=="")
             {
@@ -182,7 +180,6 @@ function thermostatViewModel() {
                   else if (data.value === "Heating")
                      this.widgetApi.find(".icon-div").css("visibility", "visible");
                   else {}
-                     
                }
                else {}
             }
