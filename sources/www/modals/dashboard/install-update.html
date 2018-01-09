@@ -538,25 +538,45 @@
         var $table = $("table#" + objectType + "-install-update-list");
         $table.find("tr:gt(0)").remove();
 
-        debugger;
-        // Add updatable an new items in the same list
-        addItemsInTable($table, objectType, list.updatable);
-        addItemsInTable($table, objectType, list.new);
+        // Add updatable and new items in the same list
+        addItemsInTable($table, objectType, list.updatable, function (moduleType, data) {
+            return objectType + "s/" + moduleType;
+        });
+
+        addItemsInTable($table, objectType, list.new, function (moduleType, data) {
+            // For new items, we need to import translations
+            var newestVersion = Object.keys(data.versions.newest)[0];
+            i18n.options.resGetPath = getBaseUrl(data.versions.newest[newestVersion].downloadUrl) +
+                '/__ns__/locales/__lng__.json';
+            i18n.loadNamespace(moduleType + "/" + newestVersion);
+            i18n.options.resGetPath = "locales/__lng__.json";
+            return moduleType + "/" + newestVersion;
+        });
     }
 
-    function addItemsInTable(inTable, objectType, fromList) {
+    function getBaseUrl(fullUrl) {
+        var baseUrl = fullUrl;
+        baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // Remove .zip file
+        baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // Remove version
+        baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/')); // remove module type
+        return baseUrl;
+    }
+
+    function addItemsInTable(inTable, objectType, fromList, getI18nBasePathFct) {
         assert(!isNullOrUndefined(inTable), "inTable must be defined");
         assert(!isNullOrUndefined(objectType), "objectType must be defined");
         assert(!isNullOrUndefined(fromList), "fromList must be defined");
+        assert(!isNullOrUndefined(getI18nBasePathFct), "getI18nBasePathFct must be defined");
 
-        $.each(fromList, function (index, value) {
-            var lineContent = createInstallUpdateItemLine(objectType, index);
+        $.each(fromList, function (moduleType, data) {
+            var lineContent = createInstallUpdateItemLine(objectType, moduleType, getI18nBasePathFct(moduleType,
+                data));
 
             insertIntoTableInAlphabeticOrder(inTable, lineContent, function (lineContent) {
                 return $(lineContent).find("span#name").text();
             });
 
-            updateLine(objectType, index, value);
+            updateLine(objectType, moduleType, data);
         });
     }
 
@@ -595,92 +615,10 @@
         $asyncActionIndicator.addClass("hidden");
     }
 
-    /**
-     * Merge the two lists into a new one
-     */
-    function mergeLists(localList, serverList, callback) {
-        assert(!isNullOrUndefined(localList), "localList must be defined");
-        assert(!isNullOrUndefined(serverList), "serverList must be defined");
-        assert($.isFunction(callback), "callback must be a function");
-
-        //we merge the two lists
-        if (serverList) {
-            Object.keys(serverList).forEach(function (serverKey) {
-                var serverValue = serverList[serverKey];
-                if ((serverValue) && (serverValue.length > 0)) {
-                    //we search it on the other list
-                    var itemFound = false;
-                    var typeName = serverValue[0].type;
-                    if (!isNullOrUndefined(localList[typeName])) {
-                        //the item exist in a local context
-                        itemFound = true;
-                        //we add informations of all versions that user wants
-                        localList[typeName].serverVersions = [];
-                        //we browse all versions of that item
-                        $.each(serverValue,
-                            function (versionIndex, versionValue) {
-                                //if this releasetype is wanted we add it to the arrays of version for this item
-                                if (isWanted(versionValue.version)) {
-                                    var item = {};
-                                    item.downloadUrl = versionValue.downloadUrl;
-                                    item.version = versionValue.version;
-                                    localList[typeName].serverVersions.push(item);
-                                }
-                            });
-                    }
-
-                    if (!itemFound) {
-                        //we add the new item available only on the server
-                        var canAddOnThePage = false;
-
-                        //we order the list
-                        serverValue.sort(function (a, b) {
-                            return Version.compare(b.version, a.version); //invert versions
-                        });
-
-                        var newItem = {};
-
-                        //generic informations
-                        newItem.type = serverValue[0].type;
-
-                        newItem.package = {};
-                        newItem.package.type = serverValue[0].type;
-                        newItem.package.name = serverValue[0].name;
-                        newItem.package.description = serverValue[0].description;
-                        newItem.package.author = serverValue[0].author;
-                        newItem.package.url = serverValue[0].url;
-                        newItem.iconUrl = serverValue[0].iconUrl;
-
-                        //we add informations of all version that user wants
-                        newItem.serverVersions = [];
-                        //we browse all version of that item
-                        $.each(serverValue,
-                            function (versionIndex, versionValue) {
-                                var item = {};
-                                item.downloadUrl = versionValue.downloadUrl;
-                                item.version = versionValue.version;
-                                newItem.serverVersions.push(item);
-                                //we need only one release type available in tthe wanted array to can see the whole line
-                                if (isWanted(item.version))
-                                    canAddOnThePage = true;
-                            });
-
-                        if (canAddOnThePage)
-                            localList[serverValue[0].type] = newItem;
-                    }
-                }
-            });
-        }
-
-        callback(localList);
-    }
-
-    function createInstallUpdateItemLine(objectType, itemType) {
+    function createInstallUpdateItemLine(objectType, itemType, i18nBasePath) {
         assert(!isNullOrUndefined(objectType), "objectType must be defined");
         assert(!isNullOrUndefined(itemType), "itemType must be defined");
-
-        //determine the i18n base path
-        var i18nBasePath = objectType + "s/" + itemType;
+        assert(!isNullOrUndefined(i18nBasePath), "i18nBasePath must be defined");
 
         var s = "<tr id=\"" + itemType + "\">" +
             "<td><span id=\"name\">" + $.t(i18nBasePath + ":name", {
