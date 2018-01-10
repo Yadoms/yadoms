@@ -717,56 +717,92 @@
         $cbVersion.empty();
         var enableDropDownButton = false;
 
-        if (!isNullOrUndefined(item.versions.newer) && !$.isEmptyObject(item.versions.newer)) {
-            $.each(item.versions.newer, function (index, value) {
-                enableDropDownButton = true;
-                $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl + "\"><a href=\"#\"><em>" +
-                    index +
-                    "</em></a></li>");
-                //we manage the click event on each version
-                if (!isNullOrUndefined(item.versions.installed)) {
-                    //the item is already installed, we ask an update
+
+        if (!isNullOrUndefined(item.versions.installed)) {
+            // Updatable item
+
+            // Add newer versions in combo
+            if (!isNullOrUndefined(item.versions.newer) && !$.isEmptyObject(item.versions.newer)) {
+                $.each(item.versions.newer, function (index, value) {
+                    enableDropDownButton = true;
+                    $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl + "\"><a href=\"#\"><em>" +
+                        index +
+                        "</em></a></li>");
+                    //we manage the click event on each version
                     $cbVersion.find("li").last().unbind('click').bind('click', function () {
                         askForUpdate(objectType, item, value);
                     });
-                } else {
-                    //the item isn't installed so we make a new install
+                });
+            }
+
+            // Add older versions in combo
+            if (!isNullOrUndefined(item.versions.older) && !$.isEmptyObject(item.versions.older)) {
+                $.each(item.versions.older, function (index, value) {
+                    enableDropDownButton = true;
+                    $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl +
+                        "\"><a href=\"#\"><em class='text-muted small'>" + index + "</em></a></li>");
+                    //we manage the click event on each version
                     $cbVersion.find("li").last().unbind('click').bind('click', function () {
-                        askForInstall(objectType, item, value);
+                        askForUpdate(objectType, item, value); //TODO revoir l'appel
                     });
-                }
-            });
-        }
-        if (!isNullOrUndefined(item.versions.older) && !$.isEmptyObject(item.versions.older)) {
-            $.each(item.versions.older, function (index, value) {
-                enableDropDownButton = true;
-                $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl +
-                    "\"><a href=\"#\"><em class='text-muted small'>" + index + "</em></a></li>");
-                //we manage the click event on each version
-                if (!isNullOrUndefined(item.versions.installed)) {
-                    //the item is already installed, we ask an update
+                });
+            }
+        } else {
+            // Installable item
+            // Add versions in combo
+            if (!isNullOrUndefined(item.versions.versions) && !$.isEmptyObject(item.versions.versions)) {
+                $.each(item.versions.versions, function (index, value) {
+                    enableDropDownButton = true;
+                    $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl + "\"><a href=\"#\"><em>" +
+                        index +
+                        "</em></a></li>");
+                    //we manage the click event on each version
                     $cbVersion.find("li").last().unbind('click').bind('click', function () {
-                        askForUpdate(objectType, item, value);
+                        askForInstall(objectType, item,
+                            $.t(itemType + "/" + newestVersionLabel + ":name", {
+                                defaultValue: itemType
+                            }),
+                            index,
+                            value.downloadUrl);
                     });
-                } else {
-                    //the item isn't installed so we make a new install
-                    $cbVersion.find("li").last().unbind('click').bind('click', function () {
-                        askForInstall(objectType, item, value);
-                    });
-                }
-            });
+                });
+            }
         }
 
-        if (newestVersionLabel)
-            $line.find("div.btn-install button.main-btn").removeClass("disabled");
-        else
-            $line.find("div.btn-install button.main-btn").addClass("disabled");
 
+        // Main install/update button
+        var mainInstallButton = $line.find("div.btn-install button.main-btn");
+        if (newestVersionLabel) {
+            mainInstallButton.removeClass("disabled");
+            if (!isNullOrUndefined(item.versions.installed)) {
+                //the item is already installed, we ask an update
+                mainInstallButton.unbind('click').bind('click', function () {
+                    debugger;
+                    askForUpdate(objectType, item, item.versions.newest);
+                });
+            } else {
+                //the item isn't installed so we make a new install
+                mainInstallButton.unbind('click').bind('click', function () {
+                    askForInstall(objectType, item,
+                        $.t(itemType + "/" + newestVersionLabel + ":name", {
+                            defaultValue: itemType
+                        }),
+                        newestVersionLabel,
+                        Object.values(item.versions.newest)[0].downloadUrl);
+                });
+            }
+        } else {
+            mainInstallButton.addClass("disabled");
+            mainInstallButton.unbind('click');
+        }
+
+        // Dropdown button for other versions than newest
         if (enableDropDownButton)
             $line.find("div.btn-install button.btn-expand").removeClass("disabled");
         else
             $line.find("div.btn-install button.btn-expand").addClass("disabled");
 
+        // Uninstall button
         if (item.versions.installed)
             $line.find("button.btn-uninstall").removeClass("disabled");
         else
@@ -785,24 +821,24 @@
     /**
      * Ask for a confirmation of a install of an item
      */
-    function askForInstall(objectType, item, updateInformation) {
+    function askForInstall(objectType, item, itemName, version, downloadUrl) {
         assert(!isNullOrUndefined(objectType), "objectType must be defined");
         assert(!isNullOrUndefined(item), "item must be defined");
-        assert(!isNullOrUndefined(updateInformation), "updateInformation must be defined");
+        assert(!isNullOrUndefined(itemName), "itemName must be defined");
+        assert(!isNullOrUndefined(version), "version must be defined");
+        assert(!isNullOrUndefined(downloadUrl), "downloadUrl must be defined");
 
         Yadoms.modals.confirmation.loadAsync()
             .done(function () {
                 Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
                     $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstallTitle"),
                     $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstall", {
-                        objectName: $.t(objectType + "s/" + item.type + ":name", {
-                            defaultValue: item.package.name
-                        }),
-                        version: updateInformation.version.toString()
+                        objectName: itemName,
+                        version: version
                     }),
                     function () {
                         //the user has confirmed the action
-                        UpdateInformationManager.install(objectType, updateInformation.downloadUrl)
+                        UpdateInformationManager.install(objectType, downloadUrl)
                             .done(function (data) {
                                 installUpdateRemoveCallback(objectType, data.taskId, item);
                             })
