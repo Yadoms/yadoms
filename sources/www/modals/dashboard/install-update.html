@@ -730,7 +730,13 @@
                         "</em></a></li>");
                     //we manage the click event on each version
                     $cbVersion.find("li").last().unbind('click').bind('click', function () {
-                        askForUpdate(objectType, item, value);
+                        askForUpdate(objectType, item,
+                            itemType,
+                            $.t(objectType + "s/" + itemType + ":name", {
+                                defaultValue: itemType
+                            }),
+                            index,
+                            value.downloadUrl);
                     });
                 });
             }
@@ -743,12 +749,19 @@
                         "\"><a href=\"#\"><em class='text-muted small'>" + index + "</em></a></li>");
                     //we manage the click event on each version
                     $cbVersion.find("li").last().unbind('click').bind('click', function () {
-                        askForUpdate(objectType, item, value); //TODO revoir l'appel
+                        askForUpdate(objectType, item,
+                            itemType,
+                            $.t(objectType + "s/" + itemType + ":name", {
+                                defaultValue: itemType
+                            }),
+                            index,
+                            value.downloadUrl);
                     });
                 });
             }
         } else {
             // Installable item
+
             // Add versions in combo
             if (!isNullOrUndefined(item.versions.versions) && !$.isEmptyObject(item.versions.versions)) {
                 $.each(item.versions.versions, function (index, value) {
@@ -854,24 +867,25 @@
     /**
      * Ask for a confirmation of an update of an item
      */
-    function askForUpdate(objectType, item, updateInformation) {
+    function askForUpdate(objectType, item, itemType, itemName, version, downloadUrl) {
         assert(!isNullOrUndefined(objectType), "objectType must be defined");
         assert(!isNullOrUndefined(item), "item must be defined");
-        assert(!isNullOrUndefined(updateInformation), "updateInformation must be defined");
+        assert(!isNullOrUndefined(itemType), "item must be defined");
+        assert(!isNullOrUndefined(itemName), "itemName must be defined");
+        assert(!isNullOrUndefined(version), "version must be defined");
+        assert(!isNullOrUndefined(downloadUrl), "downloadUrl must be defined");
 
         Yadoms.modals.confirmation.loadAsync()
             .done(function () {
                 Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
                     $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdateTitle"),
                     $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdate", {
-                        objectName: $.t(objectType + "s/" + item.type + ":name", {
-                            defaultValue: item.package.name
-                        }),
-                        version: updateInformation.version.toString()
+                        objectName: itemName,
+                        version: version
                     }),
                     function () {
                         //the user has confirmed the action
-                        UpdateInformationManager.update(objectType, item.type, updateInformation.downloadUrl)
+                        UpdateInformationManager.update(objectType, itemType, downloadUrl)
                             .done(function (data) {
                                 installUpdateRemoveCallback(objectType, data.taskId, item);
                             })
