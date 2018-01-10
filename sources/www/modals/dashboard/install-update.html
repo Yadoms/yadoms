@@ -723,39 +723,29 @@
 
             // Add newer versions in combo
             if (!isNullOrUndefined(item.versions.newer) && !$.isEmptyObject(item.versions.newer)) {
-                $.each(item.versions.newer, function (index, value) {
+                $.each(item.versions.newer, function (versionLabel, value) {
                     enableDropDownButton = true;
                     $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl + "\"><a href=\"#\"><em>" +
-                        index +
+                        versionLabel +
                         "</em></a></li>");
                     //we manage the click event on each version
                     $cbVersion.find("li").last().unbind('click').bind('click', function () {
-                        askForUpdate(objectType, item,
-                            itemType,
-                            $.t(objectType + "s/" + itemType + ":name", {
-                                defaultValue: itemType
-                            }),
-                            index,
-                            value.downloadUrl);
+                        askForUpdate(objectType, itemType, item, objectType + "s/" + itemType,
+                            versionLabel, value.downloadUrl);
                     });
                 });
             }
 
             // Add older versions in combo
             if (!isNullOrUndefined(item.versions.older) && !$.isEmptyObject(item.versions.older)) {
-                $.each(item.versions.older, function (index, value) {
+                $.each(item.versions.older, function (versionLabel, value) {
                     enableDropDownButton = true;
                     $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl +
-                        "\"><a href=\"#\"><em class='text-muted small'>" + index + "</em></a></li>");
+                        "\"><a href=\"#\"><em class='text-muted small'>" + versionLabel + "</em></a></li>");
                     //we manage the click event on each version
                     $cbVersion.find("li").last().unbind('click').bind('click', function () {
-                        askForUpdate(objectType, item,
-                            itemType,
-                            $.t(objectType + "s/" + itemType + ":name", {
-                                defaultValue: itemType
-                            }),
-                            index,
-                            value.downloadUrl);
+                        askForUpdate(objectType, itemType, item, objectType + "s/" + itemType,
+                            versionLabel, value.downloadUrl);
                     });
                 });
             }
@@ -764,19 +754,15 @@
 
             // Add versions in combo
             if (!isNullOrUndefined(item.versions.versions) && !$.isEmptyObject(item.versions.versions)) {
-                $.each(item.versions.versions, function (index, value) {
+                $.each(item.versions.versions, function (versionLabel, value) {
                     enableDropDownButton = true;
                     $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl + "\"><a href=\"#\"><em>" +
-                        index +
+                        versionLabel +
                         "</em></a></li>");
                     //we manage the click event on each version
                     $cbVersion.find("li").last().unbind('click').bind('click', function () {
-                        askForInstall(objectType, item,
-                            $.t(itemType + "/" + newestVersionLabel + ":name", {
-                                defaultValue: itemType
-                            }),
-                            index,
-                            value.downloadUrl);
+                        askForInstall(objectType, itemType, item, itemType + "/" + newestVersionLabel,
+                            versionLabel, value.downloadUrl);
                     });
                 });
             }
@@ -790,18 +776,14 @@
             if (!isNullOrUndefined(item.versions.installed)) {
                 //the item is already installed, we ask an update
                 mainInstallButton.unbind('click').bind('click', function () {
-                    debugger;
-                    askForUpdate(objectType, item, item.versions.newest);
+                    askForUpdate(objectType, itemType, item, objectType + "s/" + itemType,
+                    newestVersionLabel, Object.values(item.versions.newest)[0].downloadUrl);
                 });
             } else {
                 //the item isn't installed so we make a new install
                 mainInstallButton.unbind('click').bind('click', function () {
-                    askForInstall(objectType, item,
-                        $.t(itemType + "/" + newestVersionLabel + ":name", {
-                            defaultValue: itemType
-                        }),
-                        newestVersionLabel,
-                        Object.values(item.versions.newest)[0].downloadUrl);
+                    askForInstall(objectType, itemType, item, itemType + "/" + newestVersionLabel,
+                        newestVersionLabel, Object.values(item.versions.newest)[0].downloadUrl);
                 });
             }
         } else {
@@ -834,10 +816,11 @@
     /**
      * Ask for a confirmation of a install of an item
      */
-    function askForInstall(objectType, item, itemName, version, downloadUrl) {
+    function askForInstall(objectType, itemType, item, i18nBasePath, version, downloadUrl) {
         assert(!isNullOrUndefined(objectType), "objectType must be defined");
+        assert(!isNullOrUndefined(itemType), "itemType must be defined");
         assert(!isNullOrUndefined(item), "item must be defined");
-        assert(!isNullOrUndefined(itemName), "itemName must be defined");
+        assert(!isNullOrUndefined(i18nBasePath), "i18nBasePath must be defined");
         assert(!isNullOrUndefined(version), "version must be defined");
         assert(!isNullOrUndefined(downloadUrl), "downloadUrl must be defined");
 
@@ -846,7 +829,9 @@
                 Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
                     $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstallTitle"),
                     $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstall", {
-                        objectName: itemName,
+                        objectName: $.t(i18nBasePath + ":name", {
+                            defaultValue: itemType
+                        }),
                         version: version
                     }),
                     function () {
@@ -867,11 +852,11 @@
     /**
      * Ask for a confirmation of an update of an item
      */
-    function askForUpdate(objectType, item, itemType, itemName, version, downloadUrl) {
+    function askForUpdate(objectType, itemType, item, i18nBasePath, version, downloadUrl) {
         assert(!isNullOrUndefined(objectType), "objectType must be defined");
+        assert(!isNullOrUndefined(itemType), "itemType must be defined");
         assert(!isNullOrUndefined(item), "item must be defined");
-        assert(!isNullOrUndefined(itemType), "item must be defined");
-        assert(!isNullOrUndefined(itemName), "itemName must be defined");
+        assert(!isNullOrUndefined(i18nBasePath), "i18nBasePath must be defined");
         assert(!isNullOrUndefined(version), "version must be defined");
         assert(!isNullOrUndefined(downloadUrl), "downloadUrl must be defined");
 
@@ -880,7 +865,9 @@
                 Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
                     $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdateTitle"),
                     $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdate", {
-                        objectName: itemName,
+                        objectName: $.t(i18nBasePath + ":name", {
+                            defaultValue: itemType
+                        }),
                         version: version
                     }),
                     function () {

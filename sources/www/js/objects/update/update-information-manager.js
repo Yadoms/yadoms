@@ -18,10 +18,10 @@ UpdateInformationManager.install = function(objectType, downloadUrl) {
    return RestEngine.postJson("rest/update/" + objectType + "/install", { data: JSON.stringify({ "downloadUrl": downloadUrl }) });
 };
 
-UpdateInformationManager.update = function(objectType, type, downloadUrl) {
+UpdateInformationManager.update = function(objectType, itemType, downloadUrl) {
    assert(!isNullOrUndefined(objectType), "objectType must be defined");
-   assert(!isNullOrUndefined(type), "type must be defined");
-   return RestEngine.postJson("rest/update/" + objectType + "/update/" + type, { data: JSON.stringify({ "downloadUrl": downloadUrl }) });
+   assert(!isNullOrUndefined(itemType), "itemType must be defined");
+   return RestEngine.postJson("rest/update/" + objectType + "/update/" + itemType, { data: JSON.stringify({ "downloadUrl": downloadUrl }) });
 };
 
 /**
