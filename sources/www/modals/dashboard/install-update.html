@@ -713,9 +713,8 @@
         $line.find("ul.latest-installable-version").text(newestVersionLabel);
 
         // Create a combo
-        var $cbVersion = $line.find("ul.versions");
-        $cbVersion.empty();
-        var enableDropDownButton = false;
+        var cbVersion = $line.find("ul.versions");
+        cbVersion.empty();
 
 
         if (!isNullOrUndefined(item.versions.installed)) {
@@ -724,12 +723,11 @@
             // Add newer versions in combo
             if (!isNullOrUndefined(item.versions.newer) && !$.isEmptyObject(item.versions.newer)) {
                 $.each(item.versions.newer, function (versionLabel, value) {
-                    enableDropDownButton = true;
-                    $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl + "\"><a href=\"#\"><em>" +
+                    cbVersion.append("<li downloadUrl=\"" + value.downloadUrl + "\"><a href=\"#\"><em>" +
                         versionLabel +
                         "</em></a></li>");
                     //we manage the click event on each version
-                    $cbVersion.find("li").last().unbind('click').bind('click', function () {
+                    cbVersion.find("li").last().unbind('click').bind('click', function () {
                         askForUpdate(objectType, itemType, item, objectType + "s/" + itemType,
                             versionLabel, value.downloadUrl);
                     });
@@ -739,11 +737,10 @@
             // Add older versions in combo
             if (!isNullOrUndefined(item.versions.older) && !$.isEmptyObject(item.versions.older)) {
                 $.each(item.versions.older, function (versionLabel, value) {
-                    enableDropDownButton = true;
-                    $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl +
+                    cbVersion.append("<li downloadUrl=\"" + value.downloadUrl +
                         "\"><a href=\"#\"><em class='text-muted small'>" + versionLabel + "</em></a></li>");
                     //we manage the click event on each version
-                    $cbVersion.find("li").last().unbind('click').bind('click', function () {
+                    cbVersion.find("li").last().unbind('click').bind('click', function () {
                         askForUpdate(objectType, itemType, item, objectType + "s/" + itemType,
                             versionLabel, value.downloadUrl);
                     });
@@ -755,12 +752,11 @@
             // Add versions in combo
             if (!isNullOrUndefined(item.versions.versions) && !$.isEmptyObject(item.versions.versions)) {
                 $.each(item.versions.versions, function (versionLabel, value) {
-                    enableDropDownButton = true;
-                    $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl + "\"><a href=\"#\"><em>" +
+                    cbVersion.append("<li downloadUrl=\"" + value.downloadUrl + "\"><a href=\"#\"><em>" +
                         versionLabel +
                         "</em></a></li>");
                     //we manage the click event on each version
-                    $cbVersion.find("li").last().unbind('click').bind('click', function () {
+                    cbVersion.find("li").last().unbind('click').bind('click', function () {
                         askForInstall(objectType, itemType, item, itemType + "/" + newestVersionLabel,
                             versionLabel, value.downloadUrl);
                     });
@@ -792,7 +788,7 @@
         }
 
         // Dropdown button for other versions than newest
-        if (enableDropDownButton)
+        if (cbVersion.find("li").length)
             $line.find("div.btn-install button.btn-expand").removeClass("disabled");
         else
             $line.find("div.btn-install button.btn-expand").addClass("disabled");
