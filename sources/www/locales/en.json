@@ -1008,7 +1008,8 @@
     "YadomsCrash": "yadoms has crashed",
     "PluginCrash": "Plugin __who__ has been crashed",
     "TaskFailed": "__who__ task has been crashed",
-    "RuleFailed": "The automation rule __who__ has failed"
+    "RuleFailed": "The automation rule __who__ has failed",
+    "UpdateAvailable": "An software update is available, check the install&update page"
   },
   "webSockets": {
     "update": {

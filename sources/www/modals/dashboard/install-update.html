@@ -568,15 +568,15 @@
         assert(!isNullOrUndefined(fromList), "fromList must be defined");
         assert(!isNullOrUndefined(getI18nBasePathFct), "getI18nBasePathFct must be defined");
 
-        $.each(fromList, function (moduleType, data) {
-            var lineContent = createInstallUpdateItemLine(objectType, moduleType, getI18nBasePathFct(moduleType,
+        $.each(fromList, function (itemType, data) {
+            var lineContent = createInstallUpdateItemLine(objectType, itemType, getI18nBasePathFct(itemType,
                 data));
 
             insertIntoTableInAlphabeticOrder(inTable, lineContent, function (lineContent) {
                 return $(lineContent).find("span#name").text();
             });
 
-            updateLine(objectType, moduleType, data);
+            updateLine(objectType, itemType, data);
         });
     }
 
@@ -667,12 +667,12 @@
     }
 
     /**
-     * Get the row the DOM form the item and its type
+     * Get the row the DOM form the item type
      */
-    function getLineFromItem(objectType, item) {
+    function getLineFromItem(objectType, itemType) {
         assert(!isNullOrUndefined(objectType), "objectType must be defined");
-        assert(!isNullOrUndefined(item), "item must be defined");
-        return $("table#" + objectType + "-install-update-list").find("tr#" + item);
+        assert(!isNullOrUndefined(itemType), "itemType must be defined");
+        return $("table#" + objectType + "-install-update-list").find("tr#" + itemType);
     }
 
     /**
@@ -773,7 +773,7 @@
                 //the item is already installed, we ask an update
                 mainInstallButton.unbind('click').bind('click', function () {
                     askForUpdate(objectType, itemType, item, objectType + "s/" + itemType,
-                    newestVersionLabel, Object.values(item.versions.newest)[0].downloadUrl);
+                        newestVersionLabel, Object.values(item.versions.newest)[0].downloadUrl);
                 });
             } else {
                 //the item isn't installed so we make a new install
@@ -834,7 +834,7 @@
                         //the user has confirmed the action
                         UpdateInformationManager.install(objectType, downloadUrl)
                             .done(function (data) {
-                                installUpdateRemoveCallback(objectType, data.taskId, item);
+                                installUpdateRemoveCallback(objectType, itemType, item, data.taskId);
                             })
                             .fail(function (error) {
                                 notifyError($.t("objects.generic.errorInstalling", {
@@ -870,7 +870,7 @@
                         //the user has confirmed the action
                         UpdateInformationManager.update(objectType, itemType, downloadUrl)
                             .done(function (data) {
-                                installUpdateRemoveCallback(objectType, data.taskId, item);
+                                installUpdateRemoveCallback(objectType, itemType, item, data.taskId);
                             })
                             .fail(function (error) {
                                 notifyError($.t("objects.generic.errorUpdating", {
@@ -901,7 +901,7 @@
                         //the user has confirmed the action
                         UpdateInformationManager.remove(objectType, item.type)
                             .done(function (data) {
-                                installUpdateRemoveCallback(objectType, data.taskId, item);
+                                installUpdateRemoveCallback(objectType, itemType, item, data.taskId);
                             })
                             .fail(function (error) {
                                 notifyError($.t("objects.generic.errorDeleting", {
@@ -912,13 +912,15 @@
             });
     }
 
-    function installUpdateRemoveCallback(objectType, taskId, item) {
+    function installUpdateRemoveCallback(objectType, itemType, item, taskId) {
         assert(!isNullOrUndefined(objectType), "objectType must be defined");
-        assert(!isNullOrUndefined(taskId), "taskId must be defined");
+        assert(!isNullOrUndefined(itemType), "itemType must be defined");
         assert(!isNullOrUndefined(item), "item must be defined");
+        assert(!isNullOrUndefined(taskId), "taskId must be defined");
 
         //we initialize the progress bar
-        var $line = getLineFromItem(objectType, item.type);
+        debugger;
+        var $line = getLineFromItem(objectType, itemType);
         $line.find("div.progress-bar").css("width", "0");
 
         //we listen for webSocket event
@@ -942,7 +944,7 @@
             if (taskFinished) {
                 //we remove the progress information and restore buttons
                 item.processing = false;
-                updateLine(objectType, item);
+                updateLine(objectType, itemType, item);
                 $line.find("div.progress-bar").css("width", "0");
 
                 //refresh the list
@@ -952,7 +954,7 @@
         });
         //we hide the buttons and show the progression
         item.processing = true;
-        updateLine(objectType, item);
+        updateLine(objectType, itemType, item);
     }
 
 
