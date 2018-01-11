@@ -45,13 +45,10 @@ namespace update
                Poco::Path pluginPath = CWorkerTools::deployScriptInterpreterPackage(downloadedPackage);
                YADOMS_LOG(information) << "ScriptInterpreter deployed with success";
 
-
+               // Refresh scriptInterpreter list
                YADOMS_LOG(information) << "Refresh scriptInterpreter list";
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdateScriptInterpreterFinalize, std::string(), callbackData);
-
-               //force refresh of script interpreters
-               boost::shared_ptr<automation::IRuleManager> automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager
-               >();
+               auto automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
                if (automationRuleManager)
                   automationRuleManager->getAvailableInterpreters(); //as seen in comments, refresh interpreters list
 
@@ -112,7 +109,7 @@ namespace update
 
             //TOFIX must stop the interpreter itself and wait for stopped
             //stop all rules using this scriptInterpreter
-            boost::shared_ptr<automation::IRuleManager> automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
+            auto automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
             if (automationRuleManager)
                automationRuleManager->stopAllRulesMatchingInterpreter(scriptInterpreterName);
 
@@ -127,8 +124,15 @@ namespace update
                YADOMS_LOG(information) << "ScriptInterpreter deployed with success";
 
 
-               YADOMS_LOG(information) << "Start instances";
+               // Refresh scriptInterpreter list
+               YADOMS_LOG(information) << "Refresh scriptInterpreter list";
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdateScriptInterpreterFinalize, std::string(), callbackData);
+               if (automationRuleManager)
+                  automationRuleManager->getAvailableInterpreters(); //as seen in comments, refresh interpreters list
+
+
+               YADOMS_LOG(information) << "Start instances";
+               progressCallback(true, 95.0f, i18n::CClientStrings::UpdateScriptInterpreterFinalize, std::string(), callbackData);
 
                //start all rules using this scriptInterpreter
                if (automationRuleManager)

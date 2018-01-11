@@ -50,13 +50,11 @@ namespace update
 
 
                YADOMS_LOG(information) << "Refresh plugin list";
-
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdatePluginFinalize, std::string(), callbackData);
                if (pluginManager)
                   pluginManager->updatePluginList();
 
                YADOMS_LOG(information) << "Plugin installed with success";
-
                progressCallback(true, 100.0f, i18n::CClientStrings::UpdatePluginSuccess, std::string(), callbackData);
             }
             catch (std::exception& ex)
@@ -124,8 +122,14 @@ namespace update
                YADOMS_LOG(information) << "Plugin deployed with success";
 
 
-               YADOMS_LOG(information) << "Start instances";
+               YADOMS_LOG(information) << "Refresh plugin list";
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdatePluginFinalize, std::string(), callbackData);
+               if (pluginManager)
+                  pluginManager->updatePluginList();
+
+
+               YADOMS_LOG(information) << "Start instances";
+               progressCallback(true, 95.0f, i18n::CClientStrings::UpdatePluginFinalize, std::string(), callbackData);
                if (pluginManager)
                   pluginManager->startAllInstancesOfPlugin(pluginName);
 
@@ -178,7 +182,7 @@ namespace update
             /////////////////////////////////////////////
             //2. remove plugin folder
             /////////////////////////////////////////////
-            auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
+            const auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
             Poco::Path pluginPath(startupOptions->getPluginsPath());
             pluginPath.append(pluginName);
 

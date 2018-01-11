@@ -144,8 +144,8 @@ namespace web
             if (!content.containsValue("downloadUrl"))
                return CResult::GenerateError("The request should contains the downloadURL.");
 
-            auto downloadUrl = content.get<std::string>("downloadUrl");
-            auto taskId = m_updateManager->installPluginAsync(downloadUrl);
+            const auto downloadUrl = content.get<std::string>("downloadUrl");
+            const auto taskId = m_updateManager->installPluginAsync(downloadUrl);
             shared::CDataContainer result;
             result.set("taskId", taskId);
             return CResult::GenerateSuccess(result);

@@ -652,7 +652,7 @@
             "<button type=\"button\" class=\"btn btn-danger btn-uninstall disabled\" data-i18n=\"[title]modals.dashboard.sub-windows.install-update.generic.uninstall\"><span class=\"fa fa-trash\"></span></button>" +
             "</div>";
 
-        s += "<div class=\"action-progression\">" +
+        s += "<div class=\"action-progression hidden\">" +
             "<div class=\"progress\">" +
             "<div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" style=\"width: 0%\">" +
             "<span class=\"hidden\">60% Complete</span>" +
@@ -764,49 +764,58 @@
             }
         }
 
+        // Show buttons or progressbar
+        if (item.processing) {
+            $line.find("div.action-progression").removeClass("hidden");
+            $line.find("div.action-buttons").addClass("hidden");
+        } else {
+            $line.find("div.action-progression").addClass("hidden");
+            $line.find("div.action-buttons").removeClass("hidden");
 
-        // Main install/update button
-        var mainInstallButton = $line.find("div.btn-install button.main-btn");
-        if (newestVersionLabel) {
-            mainInstallButton.removeClass("disabled");
-            if (!isNullOrUndefined(item.versions.installed)) {
-                //the item is already installed, we ask an update
-                mainInstallButton.unbind('click').bind('click', function () {
-                    askForUpdate(objectType, itemType, item, objectType + "s/" + itemType,
-                        newestVersionLabel, Object.values(item.versions.newest)[0].downloadUrl);
-                });
+            // Main install/update button
+            var mainInstallButton = $line.find("div.btn-install button.main-btn");
+            if (newestVersionLabel) {
+                mainInstallButton.removeClass("disabled");
+                if (!isNullOrUndefined(item.versions.installed)) {
+                    //the item is already installed, we ask an update
+                    mainInstallButton.unbind('click').bind('click', function () {
+                        askForUpdate(objectType, itemType, item, objectType + "s/" + itemType,
+                            newestVersionLabel, Object.values(item.versions.newest)[0].downloadUrl);
+                    });
+                } else {
+                    //the item isn't installed so we make a new install
+                    mainInstallButton.unbind('click').bind('click', function () {
+                        askForInstall(objectType, itemType, item, itemType + "/" + newestVersionLabel,
+                            newestVersionLabel, Object.values(item.versions.newest)[0].downloadUrl);
+                    });
+                }
             } else {
-                //the item isn't installed so we make a new install
-                mainInstallButton.unbind('click').bind('click', function () {
-                    askForInstall(objectType, itemType, item, itemType + "/" + newestVersionLabel,
-                        newestVersionLabel, Object.values(item.versions.newest)[0].downloadUrl);
-                });
+                mainInstallButton.addClass("disabled");
+                mainInstallButton.unbind('click');
             }
-        } else {
-            mainInstallButton.addClass("disabled");
-            mainInstallButton.unbind('click');
+
+            // Dropdown button for other versions than newest
+            if (cbVersion.find("li").length)
+                $line.find("div.btn-install button.btn-expand").removeClass("disabled");
+            else
+                $line.find("div.btn-install button.btn-expand").addClass("disabled");
+
+            // Uninstall button
+            if (item.versions.installed)
+                $line.find("button.btn-uninstall").removeClass("disabled");
+            else
+                $line.find("button.btn-uninstall").addClass("disabled");
+
+            // Show new version indicator (if module already installed)
+            if (item.versions.installed && newestVersionLabel) {
+                $line.find("span.update-available-label").removeClass("hidden");
+            } else {
+                $line.find("span.update-available-label").addClass("hidden");
+            }
+
+            updateHeaderUpdateAvailableLabel(objectType);
+
         }
-
-        // Dropdown button for other versions than newest
-        if (cbVersion.find("li").length)
-            $line.find("div.btn-install button.btn-expand").removeClass("disabled");
-        else
-            $line.find("div.btn-install button.btn-expand").addClass("disabled");
-
-        // Uninstall button
-        if (item.versions.installed)
-            $line.find("button.btn-uninstall").removeClass("disabled");
-        else
-            $line.find("button.btn-uninstall").addClass("disabled");
-
-        // Show new version indicator (if module already installed)
-        if (item.versions.installed && newestVersionLabel) {
-            $line.find("span.update-available-label").removeClass("hidden");
-        } else {
-            $line.find("span.update-available-label").addClass("hidden");
-        }
-
-        updateHeaderUpdateAvailableLabel(objectType);
     }
 
     /**
@@ -919,13 +928,13 @@
         assert(!isNullOrUndefined(taskId), "taskId must be defined");
 
         //we initialize the progress bar
-        debugger;
         var $line = getLineFromItem(objectType, itemType);
-        $line.find("div.progress-bar").css("width", "0");
+        var progressBar = $line.find("div.progress-bar");
+        progressBar.css("width", "0");
 
         //we listen for webSocket event
         $(document).on("taskupdatenotification." + taskId, function (e, taskUpdateInformation) {
-            $line.find("div.progress-bar").css("width", taskUpdateInformation.progression + "%");
+            progressBar.css("width", taskUpdateInformation.progression + "%");
             $line.find("span.message").text($.t("core." + taskUpdateInformation.message));
 
             var taskFinished = false;
@@ -945,7 +954,8 @@
                 //we remove the progress information and restore buttons
                 item.processing = false;
                 updateLine(objectType, itemType, item);
-                $line.find("div.progress-bar").css("width", "0");
+                progressBar.css("width", "0");
+                progressBarContener.addClass("hidden");
 
                 //refresh the list
                 refreshAllData();
