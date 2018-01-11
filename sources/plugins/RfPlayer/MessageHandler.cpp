@@ -42,9 +42,6 @@ bool CMessageHandler::sendFile(const std::string & fileContent, boost::function<
    const unsigned int bufferSize = 8192;
    std::string stepi18n = "customLabels.firmwareUpdate.writeFile";
 
-   auto portObj = boost::dynamic_pointer_cast<shared::communication::CAsyncSerialPort>(m_port);
-   portObj->setWriteTimeout(boost::date_time::pos_infin);
-
    for (unsigned int i = 0; i < totalSize;)
    {
       std::string buffer = fileContent.substr(i, bufferSize);
@@ -53,9 +50,6 @@ bool CMessageHandler::sendFile(const std::string & fileContent, boost::function<
       i += buffer.size();
       onProgressHandler(i*100.0f/totalSize);
    }
-
-   portObj->setWriteTimeout(boost::posix_time::seconds(5));
-
    return true;
 }
 
