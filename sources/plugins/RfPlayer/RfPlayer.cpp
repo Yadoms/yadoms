@@ -414,6 +414,24 @@ void CRfPlayer::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi>& api,
    std::string base64firmware = extraQuery->getData()->data().get<std::string>("fileContent");
    std::string firmwareContent = shared::encryption::CBase64::decode(base64firmware);
 
+   try
+   {
+      auto tempName = api->getDataPath() / "uploadedfirmware.bin";
+      YADOMS_LOG(information) << "Writing firmware to " << tempName.string();
+
+      if (boost::filesystem::exists(tempName))
+      {
+         boost::filesystem::remove(tempName);
+      }
+      std::ofstream ofs(tempName.string(), std::ofstream::out);
+      ofs << firmwareContent;
+      ofs.close();
+   }
+   catch (std::exception &ex)
+   {
+      YADOMS_LOG(warning) << "Fail to write firmware to local filesystem : " << ex.what();
+   }   
+   
    const std::string stepi18nSendingFile = "customLabels.firmwareUpdate.writeFile";
    m_messageHandler->sendFile(firmwareContent, [&](float progress)
                               {
