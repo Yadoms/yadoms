@@ -145,7 +145,6 @@ function chartViewModel() {
                             color: colorAxis
                         },
                         formatter: function () {
-                           console.log (this.chart.keyword[index].typeInfo.values[this.value]);
                            if (this.chart.keyword[index].type === "Enum") {
                               return this.chart.keyword[index].typeInfo.values[this.value];
                            }
