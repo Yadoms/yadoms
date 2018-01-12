@@ -16,8 +16,7 @@ namespace update
    namespace worker
    {
       void CScriptInterpreter::install(CWorkerTools::WorkerProgressFunc progressCallback,
-                                       const std::string& downloadUrl,
-                                       boost::shared_ptr<IUpdateChecker> updateChecker)
+                                       const std::string& downloadUrl)
       {
          YADOMS_LOG(information) << "Installing new scriptInterpreter from " << downloadUrl;
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterInstall, std::string(), shared::CDataContainer::EmptyContainer);
@@ -75,14 +74,11 @@ namespace update
             YADOMS_LOG(error) << "Fail to download scriptInterpreter package : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterDownloadFailed, ex.what(), callbackData);
          }
-
-         updateChecker->forceRebuildUpdates();
       }
 
       void CScriptInterpreter::update(CWorkerTools::WorkerProgressFunc progressCallback,
                                       const std::string& scriptInterpreterName,
-                                      const std::string& downloadUrl,
-                                      boost::shared_ptr<IUpdateChecker> updateChecker)
+                                      const std::string& downloadUrl)
       {
          YADOMS_LOG(information) << "Updating scriptInterpreter " << scriptInterpreterName << " from " << downloadUrl;
 
@@ -161,13 +157,10 @@ namespace update
             YADOMS_LOG(error) << "Fail to download scriptInterpreter package : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterDownloadFailed, ex.what(), callbackData);
          }
-
-         updateChecker->forceRebuildUpdates();
       }
 
       void CScriptInterpreter::remove(CWorkerTools::WorkerProgressFunc progressCallback,
-                                      const std::string& scriptInterpreterName,
-                                      boost::shared_ptr<IUpdateChecker> updateChecker)
+                                      const std::string& scriptInterpreterName)
       {
          YADOMS_LOG(information) << "Removing scriptInterpreter " << scriptInterpreterName;
 
@@ -193,7 +186,7 @@ namespace update
             /////////////////////////////////////////////
             //2. remove scriptInterpreter folder
             /////////////////////////////////////////////
-            auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
+            const auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
             Poco::Path scriptInterpreterPath(startupOptions->getScriptInterpretersPath());
             scriptInterpreterPath.append(scriptInterpreterName);
 
@@ -214,8 +207,6 @@ namespace update
             YADOMS_LOG(error) << "Fail to delete scriptInterpreter : " << scriptInterpreterName << " : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterRemoveFailed, ex.what(), callbackData);
          }
-
-         updateChecker->forceRebuildUpdates();
       }
    } // namespace worker
 } // namespace update

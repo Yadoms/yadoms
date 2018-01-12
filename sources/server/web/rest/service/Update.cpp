@@ -14,11 +14,6 @@ namespace web
       {
          std::string CUpdate::m_restKeyword = std::string("update");
 
-         DECLARE_ENUM_IMPLEMENTATION_NESTED(CUpdate::EWhatToDo, EWhatToDo,
-            ((Update))
-            ((Check))
-         )
-
          CUpdate::CUpdate(boost::shared_ptr<update::CUpdateManager> updateManager,
                           boost::shared_ptr<update::worker::IUpdateChecker> updateChecker)
             : m_updateManager(updateManager),
@@ -38,7 +33,8 @@ namespace web
 
          void CUpdate::configureDispatcher(CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("list")("*")("*"), CUpdate::availableUpdates);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scan"), CUpdate::scanForUpdates);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("list")("*"), CUpdate::availableUpdates);
 
             //TODO faire le ménage
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("yadoms")("list")("*"), CUpdate:: availableYadomsVersions);
@@ -60,14 +56,22 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("remove")("*"), CUpdate ::removeScriptInterpreter);
          }
 
+         shared::CDataContainer CUpdate::scanForUpdates(const std::vector<std::string>& parameters,
+                                                      const std::string& requestContent) const
+         {
+            const auto taskId = m_updateManager->scanForUpdatesAsync();
+            shared::CDataContainer result;
+            result.set("taskId", taskId);
+            return CResult::GenerateSuccess(result);
+         }
+
          shared::CDataContainer CUpdate::availableUpdates(const std::vector<std::string>& parameters,
                                                           const std::string& requestContent) const
          {
-            if (parameters.size() != 4)
+            if (parameters.size() != 3)
                return CResult::GenerateError("Invalid parameters in url /rest/update/list");
 
             const auto includePreleases = parameters[2] == "includePreReleases";
-            const auto lang = parameters[3];//TODO à gérer ou enlever ?
 
             return CResult::GenerateSuccess(m_updateChecker->getUpdates(includePreleases));
          }
@@ -158,8 +162,8 @@ namespace web
             if (parameters.size() <= 3)
                return CResult::GenerateError("Not enougth parameters in url /rest/plugin/remove/**pluginName**");
 
-            auto pluginName = parameters[3];
-            auto taskId = m_updateManager->removePluginAsync(pluginName);
+            const auto pluginName = parameters[3];
+            const auto taskId = m_updateManager->removePluginAsync(pluginName);
             shared::CDataContainer result;
             result.set("taskId", taskId);
             return CResult::GenerateSuccess(result);
@@ -187,17 +191,16 @@ namespace web
             if (parameters.size() <= 3)
                return CResult::GenerateError("Not enougth parameters in url /rest/widget/update/**widgetName**");
 
-            auto widgetName = parameters[3];
+            const auto widgetName = parameters[3];
 
             shared::CDataContainer content(requestContent);
             if (!content.containsValue("downloadUrl"))
                return CResult::GenerateError("The request should contains the downloadURL.");
 
-            auto downloadUrl = content.get<std::string>("downloadUrl");
-            auto taskId = m_updateManager->updateWidgetAsync(widgetName, downloadUrl);
+            const auto downloadUrl = content.get<std::string>("downloadUrl");
+            const auto taskId = m_updateManager->updateWidgetAsync(widgetName, downloadUrl);
             shared::CDataContainer result;
             result.set("taskId", taskId);
-            m_updateChecker->forceRebuildUpdates();
             return CResult::GenerateSuccess(result);
          }
 
@@ -210,8 +213,8 @@ namespace web
             if (!content.containsValue("downloadUrl"))
                return CResult::GenerateError("The request should contains the downloadURL.");
 
-            auto downloadUrl = content.get<std::string>("downloadUrl");
-            auto taskId = m_updateManager->installWidgetAsync(downloadUrl);
+            const auto downloadUrl = content.get<std::string>("downloadUrl");
+            const auto taskId = m_updateManager->installWidgetAsync(downloadUrl);
             shared::CDataContainer result;
             result.set("taskId", taskId);
             return CResult::GenerateSuccess(result);
@@ -224,11 +227,10 @@ namespace web
             if (parameters.size() <= 3)
                return CResult::GenerateError("Not enougth parameters in url /rest/widget/remove/**widgetName**");
 
-            auto widgetName = parameters[3];
-            auto taskId = m_updateManager->removeWidgetAsync(widgetName);
+            const auto widgetName = parameters[3];
+            const auto taskId = m_updateManager->removeWidgetAsync(widgetName);
             shared::CDataContainer result;
             result.set("taskId", taskId);
-            m_updateChecker->forceRebuildUpdates();
             return CResult::GenerateSuccess(result);
          }
 
@@ -254,14 +256,14 @@ namespace web
                return CResult::GenerateError(
                   "Not enougth parameters in url /rest/scriptInterpreter/update/**scriptInterpreterName**");
 
-            auto scriptInterpreterName = parameters[3];
+            const auto scriptInterpreterName = parameters[3];
 
             shared::CDataContainer content(requestContent);
             if (!content.containsValue("downloadUrl"))
                return CResult::GenerateError("The request should contains the downloadURL.");
 
-            auto downloadUrl = content.get<std::string>("downloadUrl");
-            auto taskId = m_updateManager->updateScriptInterpreterAsync(scriptInterpreterName, downloadUrl);
+            const auto downloadUrl = content.get<std::string>("downloadUrl");
+            const auto taskId = m_updateManager->updateScriptInterpreterAsync(scriptInterpreterName, downloadUrl);
             shared::CDataContainer result;
             result.set("taskId", taskId);
             return CResult::GenerateSuccess(result);
@@ -276,8 +278,8 @@ namespace web
             if (!content.containsValue("downloadUrl"))
                return CResult::GenerateError("The request should contains the downloadURL.");
 
-            auto downloadUrl = content.get<std::string>("downloadUrl");
-            auto taskId = m_updateManager->installScriptInterpreterAsync(downloadUrl);
+            const auto downloadUrl = content.get<std::string>("downloadUrl");
+            const auto taskId = m_updateManager->installScriptInterpreterAsync(downloadUrl);
             shared::CDataContainer result;
             result.set("taskId", taskId);
             return CResult::GenerateSuccess(result);

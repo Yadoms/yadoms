@@ -174,14 +174,11 @@
 </div>
 
 <script>
-    var $cbIncludePreReleases = $("div#dashboard-install-update input.cb-release-type")
+    var cbIncludePreReleases = $("div#dashboard-install-update input.cb-release-type")
     var includePreReleases = false;
 
-    var $asyncActionIndicator = $("div#dashboard-install-update i.making-async-action");
-
     Yadoms.initializeInstallUpdateDashboard = function () {
-        $cbIncludePreReleases.change(refreshAllData);
-        return refreshAllData();
+        return scanForUpdates();
     };
 
     YadomsInformationManager.getList()
@@ -197,7 +194,7 @@
      * Permit to update includePreReleases from the checkbox
      */
     function updateReleaseType() {
-        includePreReleases = $cbIncludePreReleases.prop("checked");
+        includePreReleases = cbIncludePreReleases.prop("checked");
     }
 
     /**
@@ -211,13 +208,48 @@
         return (version.preRelease() == undefined);
     }
 
+    function scanForUpdates() {
+        var d = new $.Deferred();
+        cbIncludePreReleases.unbind();
+        var asyncActionIndicator = $("div#dashboard-install-update i.making-async-action");
+        asyncActionIndicator.removeClass("hidden");
+
+        UpdateInformationManager.scanForUpdates()
+            .done(function (data) {
+                //we listen for webSocket event
+                $(document).on("taskupdatenotification." + data.taskId, function (e, taskUpdateInformation) {
+                    var taskFinished = false;
+                    //we manage the end of the task
+                    if (taskUpdateInformation.taskState.toLowerCase() === "fail") {
+                        console.error("Fail to get updates");
+                        taskFinished = true;
+                    } else if (taskUpdateInformation.taskState.toLowerCase() === "success") {
+                        taskFinished = true;
+                    }
+
+                    if (taskFinished) {
+                        asyncActionIndicator.addClass("hidden");
+                        cbIncludePreReleases.change(refreshAllData);
+                        refreshAllData();
+                    }
+                });
+                d.resolve();
+            })
+
+            .fail(function (error) {
+                console.error("Fail to get updates");
+                asyncActionIndicator.addClass("hidden");
+                d.reject();
+            });
+        return d;
+    }
+
     /**
      * Ask a refresh of all data in the modal
      */
     function refreshAllData(e) {
         var d = new $.Deferred();
 
-        $asyncActionIndicator.removeClass("hidden");
         updateReleaseType(e);
 
         //we remove update available header
@@ -232,7 +264,6 @@
                     });
                 if (data.widgets)
                     buildList("widget", data.widgets);
-                $asyncActionIndicator.addClass("hidden");
                 d.resolve();
             })
             .fail(d.reject)
@@ -320,12 +351,13 @@
                                     $cbVersion.append("<li><a href=\"#\"><em>" + value.version.toString() +
                                         "</em></a></li>");
                                     //we manage the click event on each version
-                                    $cbVersion.find("li").last().unbind('click').bind('click', function () {
-                                        Yadoms.modals.confirmation.loadAsync()
-                                            .done(function () {
-                                                askForYadomsUpdate(value);
-                                            });
-                                    });
+                                    $cbVersion.find("li").last().unbind('click').bind('click',
+                                        function () {
+                                            Yadoms.modals.confirmation.loadAsync()
+                                                .done(function () {
+                                                    askForYadomsUpdate(value);
+                                                });
+                                        });
                                 });
 
                                 if (installUpdateAllowed) {
@@ -607,14 +639,6 @@
         }
     }
 
-    /**
-     * Manage the animated indicator that show an asynchronous action is in progress
-     */
-    function updateInstallUpdateActionIndicator() {
-        //if all loading is finished we can hide the icon
-        $asyncActionIndicator.addClass("hidden");
-    }
-
     function createInstallUpdateItemLine(objectType, itemType, i18nBasePath) {
         assert(!isNullOrUndefined(objectType), "objectType must be defined");
         assert(!isNullOrUndefined(itemType), "itemType must be defined");
@@ -738,7 +762,8 @@
             if (!isNullOrUndefined(item.versions.older) && !$.isEmptyObject(item.versions.older)) {
                 $.each(item.versions.older, function (versionLabel, value) {
                     cbVersion.append("<li downloadUrl=\"" + value.downloadUrl +
-                        "\"><a href=\"#\"><em class='text-muted small'>" + versionLabel + "</em></a></li>");
+                        "\"><a href=\"#\"><em class='text-muted small'>" + versionLabel +
+                        "</em></a></li>");
                     //we manage the click event on each version
                     cbVersion.find("li").last().unbind('click').bind('click', function () {
                         askForUpdate(objectType, itemType, item, objectType + "s/" + itemType,
@@ -757,7 +782,8 @@
                         "</em></a></li>");
                     //we manage the click event on each version
                     cbVersion.find("li").last().unbind('click').bind('click', function () {
-                        askForInstall(objectType, itemType, item, itemType + "/" + newestVersionLabel,
+                        askForInstall(objectType, itemType, item, itemType + "/" +
+                            newestVersionLabel,
                             versionLabel, value.downloadUrl);
                     });
                 });
@@ -953,14 +979,8 @@
             if (taskFinished) {
                 //we remove the progress information and restore buttons
                 item.processing = false;
-                updateLine(objectType, itemType, item);
-                progressBar.css("width", "0");
-                progressBarContener.addClass("hidden");
-
-                //refresh the list
-                refreshAllData();
+                scanForUpdates();
             }
-
         });
         //we hide the buttons and show the progression
         item.processing = true;

@@ -17,7 +17,7 @@ namespace notification {
    {
       if (notification)
       {
-         //make the observers likst copy, and release mutex
+         //make the observers list copy, and release mutex
          boost::mutex::scoped_lock lock(m_mutex);
          std::vector< boost::shared_ptr< IObserver > > localList(m_observers);
          lock.unlock();

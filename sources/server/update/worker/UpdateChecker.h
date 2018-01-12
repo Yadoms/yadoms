@@ -20,13 +20,13 @@ namespace update
          virtual ~CUpdateChecker();
 
          // IUpdateChecker Implementation
-         void forceRebuildUpdates() override;
+         void scanForUpdates(CWorkerTools::WorkerProgressFunc progressCallback) override;
          shared::CDataContainer getUpdates(bool includePreleases) const override;
          // [END] IUpdateChecker Implementation
 
       protected:
          void doWork(const boost::posix_time::time_duration scanPeriod);
-         void scan();
+         bool scan();
          shared::CDataContainer buildUpdates(bool includePreleases,
                                              const pluginSystem::IFactory::AvailablePluginMap& pluginsLocalVersions,
                                              const shared::CDataContainer& pluginsAvailableVersions,

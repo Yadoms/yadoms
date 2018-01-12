@@ -540,6 +540,7 @@ set(YADOMS_SRC
    server/task/plugins/ExtraQuery.cpp
    
    
+   server/update/IUpdateManager.h
    server/update/UpdateManager.h
    server/update/UpdateManager.cpp
    server/update/UpdateType.h

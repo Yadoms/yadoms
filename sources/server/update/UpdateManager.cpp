@@ -51,14 +51,22 @@ namespace update
          return taskId;
       throw shared::exception::CException("Fail to start task");
    }
+   
 
+   std::string CUpdateManager::scanForUpdatesAsync() const
+   {
+      const auto task(boost::make_shared<task::CGenericTask>("scanForUpdates",
+                                                             boost::bind(&worker::IUpdateChecker::scanForUpdates, m_updateChecker, _1)));
+      //force to copy parameters because references cannot be used in async task
+      return startTask(task);
+   }
 
    std::string CUpdateManager::updatePluginAsync(const std::string& pluginName,
                                                  const std::string& downloadUrl) const
    {
       const auto task(boost::make_shared<task::CGenericTask>("plugin.update",
                                                              boost::bind(&worker::CPlugin::update, _1, std::string(pluginName),
-                                                                         std::string(downloadUrl), m_pluginManager, m_updateChecker)));
+                                                                         std::string(downloadUrl), m_pluginManager)));
       //force to copy parameters because references cannot be used in async task
       return startTask(task);
    }
@@ -67,7 +75,7 @@ namespace update
    {
       const auto task(boost::make_shared<task::CGenericTask>("plugin.install",
                                                              boost::bind(&worker::CPlugin::install, _1, std::string(downloadUrl),
-                                                                         m_pluginManager, m_updateChecker)));
+                                                                         m_pluginManager)));
       //force to copy parameters because references cannot be used in async task
       return startTask(task);
    }
@@ -76,7 +84,7 @@ namespace update
    {
       const auto task(boost::make_shared<task::CGenericTask>("plugin.remove",
                                                              boost::bind(&worker::CPlugin::remove, _1, std::string(pluginName),
-                                                                         m_pluginManager, m_updateChecker)));
+                                                                         m_pluginManager)));
       //force to copy parameters because references cannot be used in async task
       return startTask(task);
    }
@@ -86,7 +94,7 @@ namespace update
    {
       const auto task(boost::make_shared<task::CGenericTask>("widget.update",
                                                              boost::bind(&worker::CWidget::update, _1, std::string(widgetName),
-                                                                         std::string(downloadUrl), m_updateChecker)));
+                                                                         std::string(downloadUrl))));
       //force to copy parameters because references cannot be used in async task
       return startTask(task);
    }
@@ -94,7 +102,7 @@ namespace update
    std::string CUpdateManager::installWidgetAsync(const std::string& downloadUrl) const
    {
       const auto task(boost::make_shared<task::CGenericTask>("widget.install",
-                                                             boost::bind(&worker::CWidget::install, _1, std::string(downloadUrl), m_updateChecker)));
+                                                             boost::bind(&worker::CWidget::install, _1, std::string(downloadUrl))));
       //force to copy parameters because references cannot be used in async task
       return startTask(task);
    }
@@ -102,7 +110,7 @@ namespace update
    std::string CUpdateManager::removeWidgetAsync(const std::string& widgetName) const
    {
       const auto task(boost::make_shared<task::CGenericTask>("widget.remove",
-                                                             boost::bind(&worker::CWidget::remove, _1, std::string(widgetName), m_updateChecker)));
+                                                             boost::bind(&worker::CWidget::remove, _1, std::string(widgetName))));
       //force to copy parameters because references cannot be used in async task
       return startTask(task);
    }
@@ -114,8 +122,7 @@ namespace update
       const auto task(boost::make_shared<task::CGenericTask>("scriptInterpreter.update",
                                                              boost::bind(&worker::CScriptInterpreter::update, _1,
                                                                          std::string(scriptInterpreterName),
-                                                                         std::string(downloadUrl),
-                                                                         m_updateChecker)));
+                                                                         std::string(downloadUrl))));
       //force to copy parameters because references cannot be used in async task
       return startTask(task);
    }
@@ -124,8 +131,7 @@ namespace update
    {
       const auto task(boost::make_shared<task::CGenericTask>("scriptInterpreter.install",
                                                              boost::bind(&worker::CScriptInterpreter::install, _1,
-                                                                         std::string(downloadUrl),
-                                                                         m_updateChecker)));
+                                                                         std::string(downloadUrl))));
       //force to copy parameters because references cannot be used in async task
       return startTask(task);
    }
@@ -134,8 +140,7 @@ namespace update
    {
       const auto task(boost::make_shared<task::CGenericTask>("scriptInterpreter.remove",
                                                              boost::bind(&worker::CScriptInterpreter::install, _1,
-                                                                         std::string(scriptInterpreterName),
-                                                                         m_updateChecker)));
+                                                                         std::string(scriptInterpreterName))));
       //force to copy parameters because references cannot be used in async task
       return startTask(task);
    }
@@ -144,8 +149,7 @@ namespace update
    {
       const auto task(boost::make_shared<task::CGenericTask>("yadoms.update",
                                                              boost::bind(&worker::CYadoms::update, _1,
-                                                                         shared::CDataContainer(versionToInstall),
-                                                                         m_updateChecker)));
+                                                                         shared::CDataContainer(versionToInstall))));
       //force to copy parameter because the versionToInstall is a reference and cannot be used "as is" in async task
       return startTask(task);
    }

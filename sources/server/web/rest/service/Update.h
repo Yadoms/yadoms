@@ -40,20 +40,8 @@ namespace web
             //-----------------------------------------------------------------------------      
             static const std::string& getRestKeyword();
          private:
-            //-----------------------------------------------------
-            ///\brief The operation type to do
-            //-----------------------------------------------------
-            DECLARE_ENUM_HEADER(EWhatToDo,
-               ((Update)(0))
-               ((Check)(1))
-            )
-
-            //-----------------------------------------------------------------------------
-            /// \brief  List all available updates
-            /// \param [in]   parameters        The url parameters
-            /// \param [in]   requestContent    The url content
-            /// \return the request result
-            //-----------------------------------------------------------------------------         
+            shared::CDataContainer scanForUpdates(const std::vector<std::string>& parameters,
+                                                  const std::string& requestContent) const;
             shared::CDataContainer availableUpdates(const std::vector<std::string>& parameters,
                                                     const std::string& requestContent) const;
 

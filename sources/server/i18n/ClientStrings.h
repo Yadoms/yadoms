@@ -8,6 +8,10 @@ namespace i18n
    class CClientStrings
    {
    public:
+      static std::string ScanForUpdates;
+      static std::string ScanForUpdatesFailed;
+      static std::string ScanForUpdatesSuccess;
+
       static std::string UpdatePluginInstall;
       static std::string UpdatePluginUpdate;
       static std::string UpdatePluginRemove;

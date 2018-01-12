@@ -16,8 +16,7 @@ namespace update
    namespace worker
    {
       void CYadoms::update(CWorkerTools::WorkerProgressFunc progressCallback,
-                           const shared::CDataContainer& versionToUpdateParam,
-                           boost::shared_ptr<IUpdateChecker> updateChecker)
+                           const shared::CDataContainer& versionToUpdateParam)
       {
          auto versionToUpdate = versionToUpdateParam;
 
@@ -52,8 +51,8 @@ namespace update
          }
 
 
-         auto downloadUrl = versionToUpdate.get<std::string>("downloadUrl");
-         auto md5HashExpected = versionToUpdate.get<std::string>("md5Hash");
+         const auto downloadUrl = versionToUpdate.get<std::string>("downloadUrl");
+         const auto md5HashExpected = versionToUpdate.get<std::string>("md5Hash");
 
          try
          {
@@ -81,7 +80,7 @@ namespace update
                {
                   YADOMS_LOG(information) << "Running updater";
                   progressCallback(true, 90.0f, i18n::CClientStrings::UpdateYadomsDeploy, std::string(), versionToUpdate);
-                  auto commandToRun = versionToUpdate.get<std::string>("commandToRun");
+                  const auto commandToRun = versionToUpdate.get<std::string>("commandToRun");
                   step4RunUpdaterProcess(extractedPackageLocation, commandToRun, runningInformation);
 
                   //////////////////////////////////////////////////////////
@@ -124,8 +123,6 @@ namespace update
             YADOMS_LOG(error) << "Fail to download package : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsDownloadFailed, ex.what(), versionToUpdate);
          }
-
-         updateChecker->forceRebuildUpdates();
       }
 
 

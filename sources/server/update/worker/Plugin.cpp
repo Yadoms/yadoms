@@ -17,8 +17,7 @@ namespace update
    {
       void CPlugin::install(CWorkerTools::WorkerProgressFunc progressCallback,
                             const std::string& downloadUrl,
-                            boost::shared_ptr<pluginSystem::CManager> pluginManager,
-                            boost::shared_ptr<IUpdateChecker> updateChecker)
+                            boost::shared_ptr<pluginSystem::CManager> pluginManager)
       {
          YADOMS_LOG(information) << "Installing new plugin from " << downloadUrl;
 
@@ -76,15 +75,12 @@ namespace update
             YADOMS_LOG(error) << "Fail to download package : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginDownloadFailed, ex.what(), callbackData);
          }
-
-         updateChecker->forceRebuildUpdates();
       }
 
       void CPlugin::update(CWorkerTools::WorkerProgressFunc progressCallback,
                            const std::string& pluginName,
                            const std::string& downloadUrl,
-                           boost::shared_ptr<pluginSystem::CManager> pluginManager,
-                           boost::shared_ptr<IUpdateChecker> updateChecker)
+                           boost::shared_ptr<pluginSystem::CManager> pluginManager)
       {
          YADOMS_LOG(information) << "Updating plugin " << pluginName << " from " << downloadUrl;
 
@@ -155,14 +151,11 @@ namespace update
             YADOMS_LOG(error) << "Fail to download package : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginDownloadFailed, ex.what(), callbackData);
          }
-
-         updateChecker->forceRebuildUpdates();
       }
 
       void CPlugin::remove(CWorkerTools::WorkerProgressFunc progressCallback,
                            const std::string& pluginName,
-                           boost::shared_ptr<pluginSystem::CManager> pluginManager,
-                           boost::shared_ptr<IUpdateChecker> updateChecker)
+                           boost::shared_ptr<pluginSystem::CManager> pluginManager)
       {
          YADOMS_LOG(information) << "Removing plugin " << pluginName;
 
@@ -204,8 +197,6 @@ namespace update
             YADOMS_LOG(error) << "Fail to delete plugin : " << pluginName << " : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdatePluginRemoveFailed, ex.what(), callbackData);
          }
-
-         updateChecker->forceRebuildUpdates();
       }
    } // namespace worker
 } // namespace update

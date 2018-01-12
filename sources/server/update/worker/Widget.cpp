@@ -12,8 +12,7 @@ namespace update
    namespace worker
    {
       void CWidget::install(CWorkerTools::WorkerProgressFunc progressCallback,
-                            const std::string& downloadUrl,
-                            boost::shared_ptr<IUpdateChecker> updateChecker)
+                            const std::string& downloadUrl)
       {
          YADOMS_LOG(information) << "Installing new widget from " << downloadUrl;
 
@@ -64,15 +63,12 @@ namespace update
             YADOMS_LOG(error) << "Fail to download pwidget ackage : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdateWidgetDownloadFailed, ex.what(), callbackData);
          }
-
-         updateChecker->forceRebuildUpdates();
       }
 
 
       void CWidget::update(CWorkerTools::WorkerProgressFunc progressCallback,
                            const std::string& widgetName,
-                           const std::string& downloadUrl,
-                           boost::shared_ptr<IUpdateChecker> updateChecker)
+                           const std::string& downloadUrl)
       {
          YADOMS_LOG(information) << "Updating widget " << widgetName << " from " << downloadUrl;
 
@@ -124,13 +120,10 @@ namespace update
             YADOMS_LOG(error) << "Fail to download pwidget ackage : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdateWidgetDownloadFailed, ex.what(), callbackData);
          }
-
-         updateChecker->forceRebuildUpdates();
       }
 
       void CWidget::remove(CWorkerTools::WorkerProgressFunc progressCallback,
-                           const std::string& widgetName,
-                           boost::shared_ptr<IUpdateChecker> updateChecker)
+                           const std::string& widgetName)
       {
          YADOMS_LOG(information) << "Removing widget " << widgetName;
 
@@ -160,8 +153,6 @@ namespace update
             YADOMS_LOG(error) << "Fail to delete widget : " << widgetName << " : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdateWidgetRemoveFailed, ex.what(), callbackData);
          }
-
-         updateChecker->forceRebuildUpdates();
       }
 
       CWidget::AvailableWidgetMap CWidget::getWidgetList()

@@ -4,6 +4,7 @@
 #include "shared/tools/Filesystem.h"
 #include "update/info/UpdateSite.h"
 #include "Widget.h"
+#include "i18n/ClientStrings.h"
 
 namespace update
 {
@@ -11,8 +12,7 @@ namespace update
    {
       enum
       {
-         kNextScanTimerId = shared::event::kUserFirstId,
-         kForceScanEventId
+         kNextScanTimerId = shared::event::kUserFirstId
       };
 
 
@@ -36,9 +36,23 @@ namespace update
          m_thread.timed_join(boost::posix_time::seconds(30));
       }
 
-      void CUpdateChecker::forceRebuildUpdates()
+      void CUpdateChecker::scanForUpdates(CWorkerTools::WorkerProgressFunc progressCallback)
       {
-         m_evtHandler.postEvent(kForceScanEventId);
+         YADOMS_LOG(information) << "Scan for updates...";
+         
+         progressCallback(true, 0.0f, i18n::CClientStrings::ScanForUpdates, std::string(), shared::CDataContainer::EmptyContainer);
+
+         // TODO suspendre le timer de scan auto
+
+         if (!scan())            
+         {
+            progressCallback(false, 100.0f, i18n::CClientStrings::ScanForUpdatesFailed, std::string(), shared::CDataContainer::EmptyContainer);
+            return;
+         }
+
+         // TODO Relancer le timer de scan auto
+
+         progressCallback(true, 100.0f, i18n::CClientStrings::ScanForUpdatesSuccess, std::string(), shared::CDataContainer::EmptyContainer);
       }
 
       shared::CDataContainer CUpdateChecker::getUpdates(bool includePreleases) const
@@ -66,13 +80,6 @@ namespace update
                   scan();
                   break;
 
-               case kForceScanEventId:
-                  YADOMS_LOG(debug) << "Force scan...";
-                  nexScanTimer->stop();
-                  scan();
-                  nexScanTimer->start();
-                  break;
-
                default:
                   YADOMS_LOG(error) << "Unsupported event " << m_evtHandler.getEventId() << ", ignored";
                   break;
@@ -85,7 +92,7 @@ namespace update
          }
       }
 
-      void CUpdateChecker::scan()
+      bool CUpdateChecker::scan()
       {
          try
          {
@@ -121,7 +128,9 @@ namespace update
          {
             YADOMS_LOG(error) << " Error scanning available versions (do you have a working Internet connection ?), " << e
                .what();
+            return false;
          }
+         return true;
       }
 
       shared::CDataContainer CUpdateChecker::buildUpdates(bool includePreleases,
