@@ -50,6 +50,7 @@ namespace update
          shared::CDataContainer addNewWidgets(const CWidget::AvailableWidgetMap& localVersions,
                                               const shared::CDataContainer& availableVersions,
                                               bool includePreleases);
+         void notifyNewUpdateAvailable() const;
 
       private:
          boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
@@ -63,7 +64,6 @@ namespace update
          mutable boost::recursive_mutex m_updateMutex;
          shared::CDataContainer m_allUpdates;
          shared::CDataContainer m_releasesOnlyUpdates;
-         bool m_updatesAvailable;
       };
    } // namespace worker
 } // namespace update

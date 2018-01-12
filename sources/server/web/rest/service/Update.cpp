@@ -85,7 +85,7 @@ namespace web
                lang = parameters[3];
 
             //ask site info
-            return CResult::GenerateSuccess(update::info::CUpdateSite::getAllYadomsVersions(lang));
+            return CResult::GenerateSuccess(update::info::CUpdateSite::getAllYadomsVersions());
          }
 
          shared::CDataContainer CUpdate::updateYadoms(const std::vector<std::string>& parameters,
@@ -179,7 +179,7 @@ namespace web
                lang = parameters[3];
 
             //ask site info
-            return CResult::GenerateSuccess(update::info::CUpdateSite::getAllWidgetsVersions(lang));
+            return CResult::GenerateSuccess(update::info::CUpdateSite::getAllWidgetsVersions());
          }
 
 
@@ -243,7 +243,7 @@ namespace web
                lang = parameters[3];
 
             //ask site info
-            return CResult::GenerateSuccess(update::info::CUpdateSite::getAllScriptInterpreterVersions(lang));
+            return CResult::GenerateSuccess(update::info::CUpdateSite::getAllScriptInterpreterVersions());
          }
 
 

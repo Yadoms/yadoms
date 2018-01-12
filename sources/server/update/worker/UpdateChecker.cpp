@@ -12,7 +12,9 @@ namespace update
    {
       enum
       {
-         kNextScanTimerId = shared::event::kUserFirstId
+         kNextScanTimerId = shared::event::kUserFirstId,
+         kStopNextScanTimerId,
+         kStartNextScanTimerId
       };
 
 
@@ -25,8 +27,7 @@ namespace update
            m_eventLogger(eventLogger),
            m_developerMode(developerMode),
            m_pathProvider(pathProvider),
-           m_thread(boost::thread(&CUpdateChecker::doWork, this, scanPeriod)),
-           m_updatesAvailable(false)
+           m_thread(boost::thread(&CUpdateChecker::doWork, this, scanPeriod))
       {
       }
 
@@ -39,20 +40,24 @@ namespace update
       void CUpdateChecker::scanForUpdates(CWorkerTools::WorkerProgressFunc progressCallback)
       {
          YADOMS_LOG(information) << "Scan for updates...";
-         
+
          progressCallback(true, 0.0f, i18n::CClientStrings::ScanForUpdates, std::string(), shared::CDataContainer::EmptyContainer);
 
-         // TODO suspendre le timer de scan auto
+         // Suspend periodic updates scan
+         m_evtHandler.postEvent(kStopNextScanTimerId);
 
-         if (!scan())            
+         try
+         {
+            scan();
+            progressCallback(true, 100.0f, i18n::CClientStrings::ScanForUpdatesSuccess, std::string(), shared::CDataContainer::EmptyContainer);
+         }
+         catch (std::exception&)
          {
             progressCallback(false, 100.0f, i18n::CClientStrings::ScanForUpdatesFailed, std::string(), shared::CDataContainer::EmptyContainer);
-            return;
          }
 
-         // TODO Relancer le timer de scan auto
-
-         progressCallback(true, 100.0f, i18n::CClientStrings::ScanForUpdatesSuccess, std::string(), shared::CDataContainer::EmptyContainer);
+         // Restart periodic updates scan
+         m_evtHandler.postEvent(kStartNextScanTimerId);
       }
 
       shared::CDataContainer CUpdateChecker::getUpdates(bool includePreleases) const
@@ -67,17 +72,26 @@ namespace update
          YADOMS_LOG(debug) << "Start";
          try
          {
-            YADOMS_LOG(debug) << "Start first scan...";
-            scan();
-
             auto nexScanTimer = m_evtHandler.createTimer(kNextScanTimerId, shared::event::CEventTimer::kOneShot, scanPeriod);
             while (true)
             {
                switch (m_evtHandler.waitForEvents())
                {
+               case kStopNextScanTimerId:
+                  {
+                     nexScanTimer->stop();
+                     break;
+                  }
+               case kStartNextScanTimerId:
+                  {
+                     nexScanTimer->start();
+                     break;
+                  }
                case kNextScanTimerId:
                   YADOMS_LOG(debug) << "Start scan...";
-                  scan();
+                  if (scan())
+                     notifyNewUpdateAvailable();
+                  nexScanTimer->start();
                   break;
 
                default:
@@ -94,17 +108,17 @@ namespace update
 
       bool CUpdateChecker::scan()
       {
+         auto updateAvailable = false;
          try
          {
             // Read inputs
             const auto pluginsLocalVersions = m_pluginManager->getPluginList();
-            const auto pluginsAvailableVersions = info::CUpdateSite::getAllPluginVersions("fr" /*TODO à gérer*/);
+            const auto pluginsAvailableVersions = info::CUpdateSite::getAllPluginVersions();
 
             const auto widgetsLocalVersions = CWidget::getWidgetList();
-            const auto widgetsAvailableVersions = info::CUpdateSite::getAllWidgetsVersions("fr" /*TODO à gérer*/);
+            const auto widgetsAvailableVersions = info::CUpdateSite::getAllWidgetsVersions();
 
 
-            m_updatesAvailable = false;
             const auto updates = buildUpdates(true,
                                               pluginsLocalVersions,
                                               pluginsAvailableVersions,
@@ -118,7 +132,7 @@ namespace update
 
             // Notify only for new releases (not for prereleases)
             if (releasesOnlyUpdates != m_releasesOnlyUpdates)
-               m_eventLogger->addEvent(database::entities::ESystemEventCode::kUpdateAvailable, "yadoms", std::string());
+               updateAvailable = true;
 
             boost::lock_guard<boost::recursive_mutex> lock(m_updateMutex);
             m_allUpdates = updates;
@@ -128,9 +142,9 @@ namespace update
          {
             YADOMS_LOG(error) << " Error scanning available versions (do you have a working Internet connection ?), " << e
                .what();
-            return false;
+            throw;
          }
-         return true;
+         return updateAvailable;
       }
 
       shared::CDataContainer CUpdateChecker::buildUpdates(bool includePreleases,
@@ -276,8 +290,6 @@ namespace update
                   // Force different path char to not cut version string into subPaths
                   newestVersion.set(newer.rbegin()->first, newer.rbegin()->second, 0);
                   versions.set("newest", newestVersion);
-
-                  m_updatesAvailable = true;
                }
 
                item.set("versions", versions);
@@ -469,8 +481,6 @@ namespace update
                   // Force different path char to not cut version string into subPaths
                   newestVersion.set(newer.rbegin()->first, newer.rbegin()->second, 0);
                   versions.set("newest", newestVersion);
-
-                  m_updatesAvailable = true;
                }
 
                item.set("versions", versions);
@@ -574,6 +584,11 @@ namespace update
          }
 
          return newItems;
+      }
+
+      void CUpdateChecker::notifyNewUpdateAvailable() const
+      {
+         m_eventLogger->addEvent(database::entities::ESystemEventCode::kUpdateAvailable, "yadoms", std::string());
       }
    } // namespace worker
 } // namespace update

@@ -31,34 +31,31 @@ namespace update
       {
       }
 
-      shared::CDataContainer CUpdateSite::getAllYadomsVersions(const std::string& displayLanguage)
+      shared::CDataContainer CUpdateSite::getAllYadomsVersions()
       {
-         return callDistantScript(m_distantYadomsListScript, true, displayLanguage, m_distantYadomsScriptResultField);
+         return callDistantScript(m_distantYadomsListScript, true, m_distantYadomsScriptResultField);
       }
 
-      shared::CDataContainer CUpdateSite::getAllPluginVersions(const std::string& displayLanguage)
+      shared::CDataContainer CUpdateSite::getAllPluginVersions()
       {
-         return callDistantScript(m_distantPluginsListScript, true, displayLanguage, m_distantPluginsScriptResultField);
-      }
-
-
-      shared::CDataContainer CUpdateSite::getAllScriptInterpreterVersions(const std::string& displayLanguage)
-      {
-         return callDistantScript(m_distantScriptInterpretersListScript, true, displayLanguage,
-                                  m_distantScriptInterpretersScriptResultField);
+         return callDistantScript(m_distantPluginsListScript, true, m_distantPluginsScriptResultField);
       }
 
 
-      shared::CDataContainer CUpdateSite::getAllWidgetsVersions(const std::string& displayLanguage)
+      shared::CDataContainer CUpdateSite::getAllScriptInterpreterVersions()
       {
-         return callDistantScript(m_distantWidgetsListScript, false, displayLanguage,
-                                  m_distantWidgetsScriptResultField);
+         return callDistantScript(m_distantScriptInterpretersListScript, true, m_distantScriptInterpretersScriptResultField);
+      }
+
+
+      shared::CDataContainer CUpdateSite::getAllWidgetsVersions()
+      {
+         return callDistantScript(m_distantWidgetsListScript, false, m_distantWidgetsScriptResultField);
       }
 
 
       shared::CDataContainer CUpdateSite::callDistantScript(const std::string& script,
                                                             bool includeOsAndArch,
-                                                            const std::string& displayLanguage,
                                                             const std::string& resultFieldToReturn)
       {
          try
@@ -75,7 +72,7 @@ namespace update
                base.addQueryParameter(m_distantScriptParamOs, Poco::Environment::osName());
                base.addQueryParameter(m_distantScriptParamArch, Poco::Environment::osArchitecture());
             }
-            base.addQueryParameter(m_distantScriptParamLang, displayLanguage);
+            base.addQueryParameter(m_distantScriptParamLang, "en" /* Let hard-coded as it is no more used */);
             if (shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode())
                base.addQueryParameter(m_distantScriptParamDevMode);
 
