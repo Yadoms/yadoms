@@ -59,6 +59,9 @@ function stateDisplayViewModel() {
          .fail(function (error) {
             defferedPluginInstance.reject();
          });         
+      })
+      .fail(function (error) {
+         notifyError(error);
       });
       
       $.when.apply(arrayOfDeffered)
@@ -80,10 +83,14 @@ function stateDisplayViewModel() {
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
 
-        if (keywordId === self.widget.configuration.device.keywordId) {
+        //
+        // self.keyword!=undefined
+        // Sometimes onNewAcquisition arrive before the end of the configurationChanged by websocket
+        //
+        
+        if (keywordId === self.widget.configuration.device.keywordId && self.keyword!=undefined) {
             //it is the right device
-            if (data.value !=="")
-            {
+            if (data.value !==""){
                var translatedEnumValue = $.t("plugins/" + self.pluginInstanceType + ":enumerations." + self.keyword.typeInfo.name + ".values." + data.value, 
                { defaultValue:data.value} );
                console.log ("translatedLink:", "plugins/" + self.pluginInstanceType + ":enumerations." + self.keyword.typeInfo.name + ".values." + data.value);
