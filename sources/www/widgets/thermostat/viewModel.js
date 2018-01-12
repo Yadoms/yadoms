@@ -44,7 +44,6 @@ function thermostatViewModel() {
             console.log ("temperature set", this.temperatureSet());
             KeywordManager.sendCommand(this.widget.configuration.controlSection.content.temperatureSet.keywordId, this.temperatureSet().toString());
         }
-        this.widgetApi.find(".textfit").fitText();
     };    
     
     this.configurationChanged = function () {
@@ -186,6 +185,5 @@ function thermostatViewModel() {
             else 
                this.widgetApi.find(".icon-div").css("visibility", "hidden");
         }
-        self.widgetApi.fitText();
     };
 };

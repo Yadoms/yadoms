@@ -26,7 +26,6 @@ widgetViewModelCtor = function weatherViewModel() {
 
         // create the chart
         self.$chart = self.widgetApi.find("div.container");
-
         self.widgetApi.loadCss("libs/weather-icons/css/weather-icons.min.css").done(function() {
 
             //we configure the toolbar
@@ -62,7 +61,6 @@ widgetViewModelCtor = function weatherViewModel() {
 
             self.condition(obj.Conditions.WeatherCondition);
             self.temperature(obj.Conditions.Temp + $.t(obj.Units.temperature));
-            self.widgetApi.fitText();
         }
     };
 
