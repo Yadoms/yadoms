@@ -254,6 +254,9 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
         defferedResult = defferedResult || new $.Deferred().resolve();
         defferedResult
         .always(function () {
+               // fit the new text to the container
+               widget.viewModel.widgetApi.fitText();
+               
            //we manage the toolbar api specific icons
            widget.viewModel.widgetApi.manageBatteryConfiguration()
            .always(d.resolve);

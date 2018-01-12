@@ -30,6 +30,9 @@ function chartViewModel() {
     
     //this variable is for the selection of the computed value used for the chart (min, avg, max)
     this.periodValueType = [];
+    
+    // This variable is only used for keyword of type enum. It returns the plugin instance type for this keyword
+    this.pluginInstanceType = [];
 
     /**
      * Helpers
@@ -53,7 +56,7 @@ function chartViewModel() {
     
     this.isEnumVariable = function (index) {
         var self = this;
-        if ((self.keywordInfo[index]) && (self.keywordInfo[index].type === "enum"))
+        if ((self.keywordInfo[index]) && (self.keywordInfo[index].type === "Enum"))
            return true;
         else
            return false;
@@ -103,7 +106,6 @@ function chartViewModel() {
         //create axis if needed
         if (isNullOrUndefined(self.chart.get(yAxisName))) {
             try {
-                
                 function getAxisTitle(){
                    // create the structure
                    var response= {
@@ -128,6 +130,8 @@ function chartViewModel() {
                    console.log ("unit is empty for keyword ", device.content.source.keywordId);
                 }
 
+                self.chart.keyword = self.keywordInfo;
+                
                 self.chart.addAxis({
                     // new axis
                     id: yAxisName, //The same id as the serie with axis at the beginning
@@ -138,6 +142,14 @@ function chartViewModel() {
                         format: '{value:.' + self.precision[index].toString() + 'f} ' + unit,
                         style: {
                             color: colorAxis
+                        },
+                        formatter: function () {
+                           console.log (this.chart.keyword[index].typeInfo.values[this.value]);
+                           if (this.chart.keyword[index].type === "Enum") {
+                              return this.chart.keyword[index].typeInfo.values[this.value];
+                           }
+                           else
+                              this.axis.defaultLabelFormatter.call(this);
                         }
                     },
                     opposite: isOdd(index)
@@ -295,6 +307,7 @@ function chartViewModel() {
 
             self.$chart.highcharts('StockChart', self.chartOption);
             self.chart = self.$chart.highcharts();
+            self.chart.keyword = [];
             
             self.widgetApi.toolbar({
                 activated: true,
@@ -417,7 +430,9 @@ function chartViewModel() {
         // Reset of some values
         self.periodValueType = [];
         self.seriesUuid = [];
+        var arrayOfDeffered = [];
         var d = new $.Deferred();
+        var defferedPluginInstance = new $.Deferred();
 
         if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
             return;
@@ -438,9 +453,7 @@ function chartViewModel() {
           self.ConfigurationLegendLabels = self.widget.configuration.legends.content.legendLabels;
         }catch(error){ // If the configuration doesn't exist (migration, ...) -> default value
           console.log ("default value for legend labels : device name + keyword name");
-        }            
-        
-        var arrayOfDeffered = [];
+        }
 
         //we create an uuid for each serie
         $.each(self.widget.configuration.devices, function (index, device) {
@@ -454,11 +467,12 @@ function chartViewModel() {
             else
                self.precision[index] = 1;
             
-            // We ask the current device name
-            var deffered = DeviceManager.get(device.content.source.deviceId);
+            var deffered = self.widgetApi.getDeviceInformation(device.content.source.deviceId);
             arrayOfDeffered.push(deffered);
-            deffered.done(function (data) {
-                self.deviceInfo[index] = data;
+            
+            deffered
+            .done(function (device) {
+               self.deviceInfo[index] = device;
             })
             .fail(function (error) {
                self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
@@ -469,9 +483,10 @@ function chartViewModel() {
             arrayOfDeffered.push(deffered2);
             deffered2.done(function (keyword) {
                 self.keywordInfo[index] = keyword;
+                self.chart.keyword[index] = keyword;
+                
                 try{
                    if (parseBool(device.content.advancedConfiguration.checkbox)){
-                      
                       // read the differential display variable
                       if (device.content.advancedConfiguration.content.differentialDisplay ==="relative")
                          self.differentialDisplay[index] = true;
@@ -492,8 +507,7 @@ function chartViewModel() {
                      }
                   }
                }
-               catch(error)
-               {
+               catch(error){
                   console.log('error detecting during defferential configuration display => automatic management.');
                   if (keyword.measure === "Cumulative"){
                      self.differentialDisplay[index] = true;
@@ -505,8 +519,7 @@ function chartViewModel() {
                   }
                }
                
-               if (self.differentialDisplay[index] && device.content.PlotType === "arearange")
-               {
+               if (self.differentialDisplay[index] && device.content.PlotType === "arearange"){
                   notifyError($.t("widgets/chart:incompatibilityDifferential"), "error");
                   self.incompatibility = true;
                   return;
@@ -519,13 +532,39 @@ function chartViewModel() {
             })
             .fail(function (error) {
                self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
-            });               
+            });
+            
+            if (self.isEnumVariable(index)) {
+               $.when(deffered, deffered2)
+               .done(function() {
+                     arrayOfDeffered.push(defferedPluginInstance);
+                     self.widgetApi.getPluginInstanceInformation(device.pluginId)
+                     .done(function (pluginInstance) {
+                        self.pluginInstanceType[index] = pluginInstance.type;
+                        console.log("pluginInstance : ", pluginInstance);
+                        defferedPluginInstance.resolve();
+                     })
+                     .fail(function (error) {
+                        defferedPluginInstance.reject();
+                     });
+               });
+            }
         });
         
         $.when.apply($, arrayOfDeffered) // The first failing array fail the when.apply
         .done(function () {
+              // Translate enum values only for enum keyword
+              $.each(self.widget.configuration.devices, function (index, device) {
+                  if (self.isEnumVariable(index)){
+                      $.each(self.keywordInfo[index].typeInfo.values, function (index2, value) {
+                         console.log("self.keywordInfo[index] :", self.keywordInfo[index2]);
+                         self.keywordInfo[index].typeInfo.values[index2] = $.t("plugins/" + self.pluginInstanceType[index] + ":enumerations." + self.keywordInfo[index].typeInfo.name + ".values." + value, { defaultValue:value} );
+                      });           
+                  }
+              });
+              
             self.refreshData(self.widget.configuration.interval).always(function () {
-               d.resolve();
+              d.resolve();
             })
             .fail(function (error) {
                d.reject();

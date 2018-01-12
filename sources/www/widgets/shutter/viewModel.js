@@ -27,9 +27,9 @@ widgetViewModelCtor =
 					  switch (self.capacity) {
 						 case "curtain":
 							if (newState == 0) {
-								cmd = "close";
+								cmd = "Close";
 							}else{
-								cmd = "open";
+								cmd = "Open";
 							}
 							break;					  
 						 default:
@@ -136,7 +136,7 @@ widgetViewModelCtor =
                   if (keywordId === this.widget.configuration.device.keywordId) {
 					  switch (self.capacity) {
 						 case "curtain":
-					        if (data.value==="open")
+					        if (data.value.toLowerCase()==="open")
 							   self.command(1);
 						    else
 							   self.command(0);

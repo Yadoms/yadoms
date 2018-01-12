@@ -1,0 +1,11 @@
+.widget-state-display .mainData {
+   display: flex;
+   justify-content: space-around;
+   align-items: center;
+   flex-direction: row;
+   height: 100%;
+}
+
+.widget-state-display .data {
+   flex: auto;
+}

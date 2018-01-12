@@ -259,8 +259,10 @@ function dispatchNewAcquisitionsToWidgets(acq) {
                     if (keywordId == acq.keywordId) {
                         try {
                             //we signal the new acquisition to the widget if the widget supports the method
-                            if (typeof widget.viewModel.onNewAcquisition === 'function')
+                            if (typeof widget.viewModel.onNewAcquisition === 'function') {
                                 widget.viewModel.onNewAcquisition(keywordId, acq);
+                                widget.viewModel.widgetApi.fitText();
+                            }
                         }
                         catch (e) {
                             console.error(widget.type + " has encouter an error in onNewAcquisition() method:" + e.message);
@@ -403,8 +405,9 @@ function updateWidgetPolling(widget) {
              if (data) {
                 $.each(data, function (index, acquisition) {
                    //we signal the new acquisition to the widget if the widget support the method
-                   if (widget.viewModel.onNewAcquisition !== undefined)
+                    if (widget.viewModel.onNewAcquisition !== undefined) {
                       widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
+                    }
                 });
              }
              d.resolve();

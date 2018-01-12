@@ -52,33 +52,36 @@ function getTextWidth(text, font) {
                     //we get full text of $this including :bfore and :after content for font awesome icons
                     var text = "";
                     var before = getComputedStyle($this[0], ':before');
-                    if ((before) && (before.content) && (before.content!=="none"))
+                    if ((before) && (before.content) && (before.content!=="none") && (before.content[1]!=undefined))
                         text += before.content[1];
                     text += $this.text();
                     var after = getComputedStyle($this[0], ':after');
-                    if ((after) && (after.content) && (after.content!=="none"))
+                    if ((after) && (after.content) && (after.content!=="none") && (after.content[1]!=undefined))
                         text += after.content[1];
-
+                     
                     var minFont = $this.attr("min-font") || 10;
                     if (text === "")
                         text = "W";
                      
                     $this.css('font-size', 1);
-
+                    
                     //determine the width for a large fontsize
                     var px300 = getTextWidth(text, "300px " + $this.css("font-family"));
                     
                     //estimate the size relative to the item width, and apply a 0.8 factor to ensure the text will fit
                     var fontSizeFromWidth = ($this.width() * 300 / px300) * .8;
 
-                    if ($this.hasClass("textfit-from-parent")) {
-                        fontSizeFromWidth = ($this.parent().width() * 300 / px300) * .8;
+                    var $temp = $this.parent();
+                    while ($temp.hasClass("textfit-in-parent")) $temp = $temp.parent();
+                    
+                    if ($this.hasClass("textfit-in-parent")) {
+                        fontSizeFromWidth = ($temp.width() * 300 / px300) * .8;
                     }
 
                     var fontSizeFromHeight = $this.height() / 1.42857143;
                     
                     if ($this.hasClass("textfit-in-parent")) {
-                        fontSizeFromHeight = $this.parent().height() / 1.42857143;
+                        fontSizeFromHeight = $temp.height() / 1.42857143;
                     }
 
                     $this.css('font-size', Math.max(Math.min(fontSizeFromWidth, fontSizeFromHeight), minFont));
