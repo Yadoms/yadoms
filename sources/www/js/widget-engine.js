@@ -209,6 +209,14 @@ function periodicUpdateTask() {
                             gravity = "error";
                         }
 
+                        //we update the lastEvent Id Read
+                        LastEventLogId = value.id;
+
+                        // Filter (don't display notification) for certain event
+                        if (value.who === "scanForUpdates")
+                            return;
+
+                        // Display notification
                         var translation = "eventLogger." + value.code;
                         notify(DateTimeFormatter.isoDateToString(value.date) +
                             " " +
@@ -229,9 +237,6 @@ function periodicUpdateTask() {
                                 })
                             }),
                             gravity);
-
-                        //we update the lastEvent Id Read
-                        LastEventLogId = value.id;
                     });
             }
             //we ask for widget's devices if web sockets are unsupported
