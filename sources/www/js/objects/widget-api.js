@@ -35,9 +35,9 @@ WidgetApi.prototype.getKeywordInformation = function (keywordId) {
  * @param {} deviceId to query
  * @returns {} a promise that's return done when information grabbed from server
  */
-WidgetApi.prototype.getDeviceInformation = function (keywordId) {
-   assert(!isNullOrUndefinedOrEmpty(keywordId), "deviceId must be defined");
-   return DeviceManager.get(keywordId);
+WidgetApi.prototype.getDeviceInformation = function (deviceId) {
+   assert(!isNullOrUndefinedOrEmpty(deviceId), "deviceId must be defined");
+   return DeviceManager.get(deviceId);
 };
 
 /**
