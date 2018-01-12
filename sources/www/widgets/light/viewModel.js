@@ -27,9 +27,9 @@ widgetViewModelCtor =
                      case "dimmable": cmd = newState == 1 ? 100 : 0; break;
 					 case "curtain":
 					    if (newState==1)
-							cmd = "open";
+							cmd = "Open";
 						else
-							cmd = "close";
+							cmd = "Close";
 						break;
                      default: cmd = newState; break;
                   }
@@ -118,9 +118,9 @@ widgetViewModelCtor =
 								  self.command(0); 
 							  break;
 						   case "curtain":
-						      if (data.value === "open")
+						      if (data.value.toLowerCase() === "open")
 							     self.command(1);
-							  else if (data.value === "close")
+							  else if (data.value.toLowerCase() === "close")
 								 self.command(0);
 						      break;
                            default: 
