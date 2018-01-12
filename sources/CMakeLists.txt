@@ -547,14 +547,11 @@ set(YADOMS_SRC
    server/update/UpdateType.cpp
    server/update/info/UpdateSite.h
    server/update/info/UpdateSite.cpp
-   server/update/worker/IUpdateChecker.h
    server/update/worker/IWidgetInformation.h
    server/update/worker/Plugin.h
    server/update/worker/Plugin.cpp
    server/update/worker/ScriptInterpreter.h
    server/update/worker/ScriptInterpreter.cpp
-   server/update/worker/UpdateChecker.h
-   server/update/worker/UpdateChecker.cpp
    server/update/worker/Widget.h
    server/update/worker/Widget.cpp
    server/update/worker/WidgetInformation.h

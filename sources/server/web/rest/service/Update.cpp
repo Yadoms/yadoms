@@ -14,10 +14,8 @@ namespace web
       {
          std::string CUpdate::m_restKeyword = std::string("update");
 
-         CUpdate::CUpdate(boost::shared_ptr<update::CUpdateManager> updateManager,
-                          boost::shared_ptr<update::worker::IUpdateChecker> updateChecker)
-            : m_updateManager(updateManager),
-              m_updateChecker(updateChecker)
+         CUpdate::CUpdate(boost::shared_ptr<update::CUpdateManager> updateManager)
+            : m_updateManager(updateManager)
          {
          }
 
@@ -73,7 +71,7 @@ namespace web
 
             const auto includePreleases = parameters[2] == "includePreReleases";
 
-            return CResult::GenerateSuccess(m_updateChecker->getUpdates(includePreleases));
+            return CResult::GenerateSuccess(m_updateManager->getUpdates(includePreleases));
          }
 
          shared::CDataContainer CUpdate::availableYadomsVersions(const std::vector<std::string>& parameters,
@@ -114,7 +112,7 @@ namespace web
             const auto includePreleases = parameters[3] == "includePreReleases";
             const auto lang = parameters[4];//TODO à gérer ou enlever ?
 
-            return CResult::GenerateSuccess(m_updateChecker->getUpdates(includePreleases));
+            return CResult::GenerateSuccess(m_updateManager->getUpdates(includePreleases));
          }
 
 
@@ -179,7 +177,7 @@ namespace web
                lang = parameters[3];
 
             //ask site info
-            return CResult::GenerateSuccess(update::info::CUpdateSite::getAllWidgetsVersions());
+            return CResult::GenerateSuccess(update::info::CUpdateSite::getAllWidgetVersions());
          }
 
 

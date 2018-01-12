@@ -2,7 +2,7 @@
 #include "IUpdateManager.h"
 #include "task/Scheduler.h"
 #include "pluginSystem/Manager.h"
-#include "worker/IUpdateChecker.h"
+#include "worker/Widget.h"
 
 namespace update
 {
@@ -12,22 +12,17 @@ namespace update
    class CUpdateManager : public IUpdateManager
    {
    public:
-      //-----------------------------------------------------------------------------
-      /// \brief  Constructor
-      /// \param [in]   taskScheduler        The task scheduler
-      /// \param [in]   pluginManager        Plugin manager (needed to update plugin list after update)
-      //-----------------------------------------------------------------------------   
       CUpdateManager(boost::shared_ptr<task::CScheduler>& taskScheduler,
                      boost::shared_ptr<pluginSystem::CManager> pluginManager,
-                     boost::shared_ptr<worker::IUpdateChecker> updateChecker);
-
-      //-----------------------------------------------------------------------------
-      /// \brief  Destructor
-      //-----------------------------------------------------------------------------   
+                     boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
+                     bool developerMode,
+                     boost::shared_ptr<const IPathProvider> pathProvider);
       virtual ~CUpdateManager();
-      
 
-      std::string scanForUpdatesAsync() const override;
+      // IUpdateManager implementation
+      std::string scanForUpdatesAsync() override;
+      shared::CDataContainer getUpdates(bool includePreleases) const override;
+      // [END] IUpdateManager implementation
 
       //-----------------------------------------------------------------------------
       /// \brief  Update a plugin (async process)
@@ -103,6 +98,35 @@ namespace update
       //-----------------------------------------------------------------------------   
       std::string updateYadomsAsync(const shared::CDataContainer& versionToInstall) const override;
 
+   protected:
+      void doWork(const boost::posix_time::time_duration scanPeriod);
+      bool scan();
+      void scanForUpdates(worker::CWorkerTools::WorkerProgressFunc progressCallback);
+      shared::CDataContainer buildUpdates(bool includePreleases,
+                                          const pluginSystem::IFactory::AvailablePluginMap& pluginsLocalVersions,
+                                          const shared::CDataContainer& pluginsAvailableVersions,
+                                          const worker::CWidget::AvailableWidgetMap& widgetsLocalVersions,
+                                          const shared::CDataContainer& widgetsAvailableVersions);
+      shared::CDataContainer buildPluginList(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
+                                             const shared::CDataContainer& availableVersions,
+                                             bool includePreleases);
+      shared::CDataContainer buildWidgetList(const worker::CWidget::AvailableWidgetMap& localVersions,
+                                             const shared::CDataContainer& availableVersions,
+                                             bool includePreleases);
+      shared::CDataContainer addUpdatablePlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
+                                                 const shared::CDataContainer& availableVersions,
+                                                 bool includePreleases) const;
+      shared::CDataContainer addNewPlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
+                                           const shared::CDataContainer& availableVersions,
+                                           bool includePreleases);
+      shared::CDataContainer addUpdatableWidgets(const worker::CWidget::AvailableWidgetMap& localVersions,
+                                                 const shared::CDataContainer& availableVersions,
+                                                 bool includePreleases) const;
+      shared::CDataContainer addNewWidgets(const worker::CWidget::AvailableWidgetMap& localVersions,
+                                           const shared::CDataContainer& availableVersions,
+                                           bool includePreleases);
+      void notifyNewUpdateAvailable() const;
+
    private:
       //-----------------------------------------------------------------------------
       /// \brief  Start a task
@@ -110,7 +134,7 @@ namespace update
       /// \param [out]  taskUid     The task identifier created if sucessfully started
       /// \return result (true/false)
       //-----------------------------------------------------------------------------   
-      bool startTask(boost::shared_ptr<task::ITask> task, std::string& taskUid) const;
+      bool startTask(boost::shared_ptr<task::ITask> task, std::string& taskUid) const;//TODO utilisé ?
 
       //-----------------------------------------------------------------------------
       /// \brief  Start a task
@@ -118,19 +142,29 @@ namespace update
       /// \return The task identifier created if sucessfully started
       /// \throw shared::exception::CException if task launch fails
       //-----------------------------------------------------------------------------   
-      std::string startTask(boost::shared_ptr<task::ITask> task) const;
+      std::string startTask(boost::shared_ptr<task::ITask> task) const;//TODO utilisé ?
 
 
       //-----------------------------------------------------------------------------
       /// \brief  Task scheduler
       //-----------------------------------------------------------------------------
-      boost::shared_ptr<task::CScheduler> m_taskScheduler;
+      boost::shared_ptr<task::CScheduler> m_taskScheduler;//TODO utilisé ?
 
       //-----------------------------------------------------------------------------
       /// \brief  Plugin manager (needed to update plugin list after update)
       //-----------------------------------------------------------------------------
       boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
 
-      boost::shared_ptr<worker::IUpdateChecker> m_updateChecker;
+
+      boost::shared_ptr<dataAccessLayer::IEventLogger> m_eventLogger;
+      bool m_developerMode;
+      boost::shared_ptr<const IPathProvider> m_pathProvider;
+
+      boost::thread m_thread;
+      shared::event::CEventHandler m_evtHandler;
+
+      mutable boost::recursive_mutex m_updateMutex;
+      shared::CDataContainer m_allUpdates;
+      shared::CDataContainer m_releasesOnlyUpdates;
    };
 } // namespace update

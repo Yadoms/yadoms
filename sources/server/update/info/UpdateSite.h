@@ -37,7 +37,7 @@ namespace update
          ///\param [in] displayLanguage The language used for display
          ///\return the list of widgets version
          //---------------------------------------------
-         static shared::CDataContainer getAllWidgetsVersions();
+         static shared::CDataContainer getAllWidgetVersions();
 
          //---------------------------------------------
          ///\brief   Get all the available versions for a scriptInterpreter

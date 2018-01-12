@@ -48,7 +48,7 @@ namespace update
       }
 
 
-      shared::CDataContainer CUpdateSite::getAllWidgetsVersions()
+      shared::CDataContainer CUpdateSite::getAllWidgetVersions()
       {
          return callDistantScript(m_distantWidgetsListScript, false, m_distantWidgetsScriptResultField);
       }
