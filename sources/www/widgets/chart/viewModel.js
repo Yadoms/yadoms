@@ -236,6 +236,7 @@ function chartViewModel() {
                    ordinal: false, //axis is linear
                    events: {},
                    labels: {
+                      rotation: -20,
                       formatter: function () {
                          if (self.chart.interval) {
                             switch (self.chart.interval) {
