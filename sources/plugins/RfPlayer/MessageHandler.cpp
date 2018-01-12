@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MessageHandler.h"
 #include <shared/Log.h>
+#include <shared/communication/AsyncSerialPort.h>
 
 CMessageHandler::CMessageHandler(boost::shared_ptr<shared::communication::IAsyncPort> port, shared::event::CEventHandler& mainEventHandler, int mainEvtPortDataReceived)
    : m_port(port), m_mainEventHandler(mainEventHandler), m_mainEvtPortDataReceived(mainEvtPortDataReceived)
@@ -49,7 +50,6 @@ bool CMessageHandler::sendFile(const std::string & fileContent, boost::function<
       i += buffer.size();
       onProgressHandler(i*100.0f/totalSize);
    }
-
    return true;
 }
 
