@@ -126,13 +126,11 @@ function chartViewModel() {
                 try {
                    unit = $.t(self.keywordInfo[index].units);
                 }
-                catch(error)
-                {
+                catch(error){
                    console.log ("unit is empty for keyword ", device.content.source.keywordId);
                 }
 
                 self.chart.keyword = self.keywordInfo;
-                
                 self.chart.addAxis({
                     // new axis
                     id: yAxisName, //The same id as the serie with axis at the beginning
@@ -145,8 +143,8 @@ function chartViewModel() {
                             color: colorAxis
                         },
                         formatter: function () {
-                           if (this.chart.keyword[index].type === "Enum") {
-                              return this.chart.keyword[index].typeInfo.values[this.value];
+                           if (this.chart.keyword[index].type === "Enum") {  // Return the translated enum value
+                              return this.chart.keyword[index].typeInfo.translatedValues[this.value];
                            }
                            else
                               return this.axis.defaultLabelFormatter.call(this);
@@ -163,7 +161,6 @@ function chartViewModel() {
         }
 
         if ((parseBool(configuration.oneAxis.checkbox))) {
-
             //Configure the min/max in this case
             try {
                 var yAxis = self.chart.get(yAxisName);
@@ -284,8 +281,13 @@ function chartViewModel() {
                         $.each(this.points, function () {
                             if (!this.series.hideInLegend) {
                                 if (isNullOrUndefined(this.point.low)) { //Standard serie
+                                   if (this.series.chart.keyword[this.series.index].type === "Enum") {
+                                      s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
+                                        this.series.chart.keyword[this.series.index].typeInfo.translatedValues[parseInt(this.y)];
+                                   }else {
                                     s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
                                         this.series.name + " : " + this.y.toFixed(this.series.precision) + this.series.units;
+                                   }
                                 } else { //Range Serie
                                     s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
                                         this.series.name + " : " + "<i style=\"color: " + this.series.color + ";\" class=\"fa fa-long-arrow-down\"></i>&nbsp;" +
@@ -434,7 +436,6 @@ function chartViewModel() {
         self.seriesUuid = [];
         var arrayOfDeffered = [];
         var d = new $.Deferred();
-        var defferedPluginInstance = new $.Deferred();
 
         if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
             return;
@@ -487,6 +488,7 @@ function chartViewModel() {
             deffered2.done(function (keyword) {
                 self.keywordInfo[index] = keyword;
                 self.chart.keyword[index] = keyword;
+                self.chart.keyword[index].typeInfo.translatedValues = [];
                 
                 try{
                    if (parseBool(device.content.advancedConfiguration.checkbox)){
@@ -537,31 +539,46 @@ function chartViewModel() {
                notifyError($.t("widgets/chart:keywordNotFound", {Id: device.content.source.keywordId}));
             });
             
-            if (self.isEnumVariable(index)) {
-               $.when(deffered, deffered2)
-               .done(function() {
-                     arrayOfDeffered.push(defferedPluginInstance);
-                     self.widgetApi.getPluginInstanceInformation(device.pluginId)
+            var defferedPluginInstance = new $.Deferred();
+            arrayOfDeffered.push(defferedPluginInstance);
+            
+            //
+            // Use to get the plugin Instance Type only for Enum
+            //
+            deffered2
+            .done(function(){
+               if (self.isEnumVariable(index)) {
+                  $.when(deffered, deffered2)
+                  .done(function() {
+                     self.widgetApi.getPluginInstanceInformation(self.deviceInfo[index].pluginId)
                      .done(function (pluginInstance) {
                         self.pluginInstanceType[index] = pluginInstance.type;
-                        console.log("pluginInstance : ", pluginInstance);
                         defferedPluginInstance.resolve();
                      })
                      .fail(function (error) {
                         defferedPluginInstance.reject();
                      });
-               });
-            }
+                  })
+                  .fail(function (error) {
+                     defferedPluginInstance.reject();
+                  });
+               } else {
+                  defferedPluginInstance.resolve();
+               }
+            })
+            .fail(function (error) {
+               defferedPluginInstance.reject();
+            });
+            //
+            //
         });
         
-        // fail function doesn't exist for whenAll
         $.whenAll(arrayOfDeffered).done(function () {
               // Translate enum values only for enum keyword
               $.each(self.widget.configuration.devices, function (index, device) {
                   if (self.isEnumVariable(index)){
                       $.each(self.keywordInfo[index].typeInfo.values, function (index2, value) {
-                         console.log("self.keywordInfo[index] :", self.keywordInfo[index2]);
-                         self.keywordInfo[index].typeInfo.values[index2] = $.t("plugins/" + self.pluginInstanceType[index] + ":enumerations." + self.keywordInfo[index].typeInfo.name + ".values." + value, { defaultValue:value} );
+                         self.keywordInfo[index].typeInfo.translatedValues[index2] = $.t("plugins/" + self.pluginInstanceType[index] + ":enumerations." + self.keywordInfo[index].typeInfo.name + ".values." + value, { defaultValue:value} );
                       });           
                   }
               });
