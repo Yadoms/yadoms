@@ -149,7 +149,7 @@ function chartViewModel() {
                               return this.chart.keyword[index].typeInfo.values[this.value];
                            }
                            else
-                              this.axis.defaultLabelFormatter.call(this);
+                              return this.axis.defaultLabelFormatter.call(this);
                         }
                     },
                     opposite: isOdd(index)
@@ -679,7 +679,11 @@ function chartViewModel() {
 
                                   var v;
                                   if (!isNullOrUndefined(value.key)) {
-                                      v = parseFloat(value.key);
+                                     if (self.isEnumVariable(index)) {
+                                        v= self.chart.keyword[index].typeInfo.values.indexOf(value.key);
+                                     }else {
+                                        v = parseFloat(value.key);
+                                     }
                                   } else {
                                       throw Error("Unable to parse answer");
                                   }
