@@ -480,30 +480,34 @@
       function main() {
           //we get configuration
           ConfigurationManager.getSection(ConfigurationManager.items.systemSection)
-              .done(function(result) {
-                  if (!isNullOrUndefined(result)) {
-                      Yadoms.systemConfiguration = result;
-                      var deferredArray = [];
-                      
-                      // create default configuration is configuration missing
-                      if (isNullOrUndefined(Yadoms.systemConfiguration[ConfigurationManager.items.system.refreshPage])) {
-                         ConfigurationManager.saveRefreshPageDefaultValue(deferredArray);
-                      }
-                      
-                      $.whenAll(deferredArray)
-                         .always(function() {
-                            //we set the right language
-                            i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
-                                $("html").i18n();
-                                moment.lang(window.navigator.userLanguage || window.navigator.language);
+           .done(function(result) {
+               if (!isNullOrUndefined(result)) {
+                   Yadoms.systemConfiguration = result;
+                   var deferredArray = [];
+                   
+                   // create default configuration is configuration missing
+                   if (isNullOrUndefined(Yadoms.systemConfiguration[ConfigurationManager.items.system.refreshPage])) {
+                      ConfigurationManager.saveRefreshPageDefaultValue(deferredArray);
+                   }
+                   
+                   $.whenAll(deferredArray)
+                      .always(function() {
+                         //we set the right language
+                         i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
+                             $("html").i18n();
+                             moment.lang(window.navigator.userLanguage || window.navigator.language);
+                             
+                             //Load Plugin instances to load initially all languages files. Needed for some widgets
+                             PluginInstanceManager.getAll().done(function (allInstances) {
                                 waitForServerReady();
-                            });
+                             });
                          });
-                      }
-              })
-              .fail(function(error) {
-                  notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
-              });
+                      });
+                   }
+           })
+           .fail(function(error) {
+               notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
+           });
       }    
     </script>
 </body>
