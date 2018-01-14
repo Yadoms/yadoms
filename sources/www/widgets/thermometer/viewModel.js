@@ -97,7 +97,6 @@ function thermometerViewModel(){
          
          if ((self.data>self.tempMin) && (self.data<self.tempMax) && ((self.tempMax - self.tempMin)!=0)){
             initialPositionY = posYMin + (self.tempMax-self.data)*(posYMax - posYMin)/(self.tempMax - self.tempMin);
-            console.log ("initialPositionY : ", initialPositionY);
             lenghtColumn = posYBall - initialPositionY;
          }
          else

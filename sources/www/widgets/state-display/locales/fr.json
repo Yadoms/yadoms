@@ -1,5 +1,5 @@
 {
-	"name": "Afficheur d'état",
+	"name": "Afficheur Etat",
 	"description": "Un widget qui affiche un état (du type énuméré)",
 	"configurationSchema": {
 		"device": {
