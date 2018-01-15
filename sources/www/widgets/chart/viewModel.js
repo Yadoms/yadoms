@@ -664,8 +664,7 @@ function chartViewModel() {
                       prefixUri = "";
                       deviceIsSummary[index] = false; // We change the summary for the boolean device.
                   } else {
-                    if (interval == "HOUR")
-                    {
+                    if (interval == "HOUR"){
                       dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime)); // rewriting the final time
                       //we request all data
                       timeBetweenTwoConsecutiveValues = undefined;
@@ -706,8 +705,7 @@ function chartViewModel() {
                                   }
                                   
                                   // The differential display is disabled if the type of the data is enum or boolean
-                                  if (self.differentialDisplay[index] && !self.isBoolVariable(index) && !self.isEnumVariable(index))
-                                  {
+                                  if (self.differentialDisplay[index] && !self.isBoolVariable(index) && !self.isEnumVariable(index)){
                                      if (!isNullOrUndefined(self.chartLastValue[index]))
                                         plot.push([d, v-self.chartLastValue[index]]);
 
@@ -747,8 +745,7 @@ function chartViewModel() {
                                   }
 
                                   // The differential display is disabled if the type of the data is enum or boolean
-                                  if (self.differentialDisplay[index] && !self.isBoolVariable(index) && !self.isEnumVariable(index))                                              
-                                  {  
+                                  if (self.differentialDisplay[index] && !self.isBoolVariable(index) && !self.isEnumVariable(index)){  
                                      if (!isNullOrUndefined(self.chartLastValue[index]))
                                         plot.push([d, vplot-self.chartLastValue[index]]);
                                      
@@ -763,14 +760,12 @@ function chartViewModel() {
                               });
                               
                               // Add here missing last data at the end
-                              if (!isNullOrUndefinedOrEmpty(data.data))
-                              {
+                              if (!isNullOrUndefinedOrEmpty(data.data)){
                                  d = DateTimeFormatter.isoDateToDate(data.data[data.data.length-1].date)._d.getTime();
                                  var time = moment(self.serverTime).startOf(self.prefix)._d.getTime().valueOf();
                                  var registerDate = moment(self.serverTime).startOf(self.prefix).subtract(1, self.prefix + 's')._d.getTime().valueOf();
                                  
-                                 if ((time - d) > self.summaryTimeBetweenNewPoint)
-                                 {
+                                 if ((time - d) > self.summaryTimeBetweenNewPoint){
                                      if (device.content.PlotType === "arearange")
                                           range.push([registerDate, null, null]);
 
@@ -943,8 +938,7 @@ function chartViewModel() {
          var lastDate = 0;
           
           if (!isNullOrUndefined(serie)){
-             if ((serie.points.length > 0) && ((time - lastDate) > (self.summaryTimeBetweenNewPoint)))
-             {
+             if ((serie.points.length > 0) && ((time - lastDate) > (self.summaryTimeBetweenNewPoint))){
                 lastDate = serie.points[serie.points.length - 1].x;
                 
                 switch (self.interval) {
@@ -993,7 +987,6 @@ function chartViewModel() {
       self.addContinuousSummaryPoint();
       
       $.each(self.seriesUuid, function (index, value) {
-      
          var serie = self.chart.get(value);
          var serieRange = self.chart.get('range_' + value);
          
@@ -1100,8 +1093,10 @@ function chartViewModel() {
                                               if (serie.points.length > 0 && !isNullOrUndefined(self.chartLastValue[index]))
                                                  serie.addPoint([data.date.valueOf(), parseFloat(data.value) - self.chartLastValue[index]], true, false, true);
                                               self.chartLastValue[index] = parseFloat(data.value);                                                 
-                                           }
-                                           else
+                                           }else if (self.isEnumVariable(index)){
+                                              var value = self.chart.keyword[index].typeInfo.values.indexOf(data.value);
+                                              serie.addPoint([data.date.valueOf(), value], true, false, true);
+                                           }else
                                               serie.addPoint([data.date.valueOf(), parseFloat(data.value)], true, false, true);
                                         }
                                     }
