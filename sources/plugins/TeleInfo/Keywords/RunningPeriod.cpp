@@ -8,11 +8,12 @@ namespace yApi = shared::plugin::yPluginApi;
 
 CRunningPeriod::CRunningPeriod(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& KeyWordName)
    : m_runningPeriod(boost::make_shared<teleInfo::specificHistorizers::CPeriod>(KeyWordName)),
-     m_isDeveloperMode(api->getYadomsInformation()->developperMode())
+     m_isDeveloperMode(api->getYadomsInformation()->developperMode()),
+   m_isChanged(true)
 {
 }
 
-void CRunningPeriod::set(const std::string& value) const
+void CRunningPeriod::set(const std::string& value)
 {
    static const EnumPeriod EEnumPeriod = boost::assign::map_list_of
       ("TH..", teleInfo::specificHistorizers::EPeriod::kAllHours)
@@ -30,9 +31,15 @@ void CRunningPeriod::set(const std::string& value) const
    try
    {
       auto it = EEnumPeriod.find(value);
+      auto temp = static_cast<teleInfo::specificHistorizers::EPeriod>(it->second);
       if (it != EEnumPeriod.end())
       {
-         m_runningPeriod->set(static_cast<teleInfo::specificHistorizers::EPeriod>(it->second));
+         if (m_runningPeriod->get() != temp) {
+            m_runningPeriod->set(temp);
+            m_isChanged = true;
+         }
+         else
+            m_isChanged = false;
 
          if (m_isDeveloperMode) YADOMS_LOG(information) << m_runningPeriod->getKeyword() << "=" << m_runningPeriod->get() ;
       }
@@ -43,6 +50,10 @@ void CRunningPeriod::set(const std::string& value) const
    {
       YADOMS_LOG(information) << e.what();
    }
+}
+
+bool CRunningPeriod::isChanged() const {
+   return m_isChanged;
 }
 
 CRunningPeriod::~CRunningPeriod()
