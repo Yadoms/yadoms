@@ -88,7 +88,7 @@ function stateDisplayViewModel() {
         // Sometimes onNewAcquisition arrive before the end of the configurationChanged by websocket
         //
         
-        if (keywordId === self.widget.configuration.device.keywordId && !isNullOrUndefined(self.keyword) && !isNullOrUndefinedEmpty(self.pluginInstanceType)) {
+        if (keywordId === self.widget.configuration.device.keywordId && !isNullOrUndefined(self.keyword) && !isNullOrUndefinedOrEmpty(self.pluginInstanceType)) {
             //it is the right device
             if (data.value !==""){
                console.log(self.pluginInstanceType);
