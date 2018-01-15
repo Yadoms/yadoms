@@ -239,7 +239,7 @@ namespace pluginSystem
          else if (standardCapacity == yApi::CStandardCapacities::Dimmable().getName())
             keyword = boost::make_shared<yApi::historization::CDimmable>("state", yApi::EKeywordAccessMode::kGetSet);
          else if (standardCapacity == yApi::CStandardCapacities::Direction().getName())
-            keyword = boost::make_shared<yApi::historization::CDirection>("uv", yApi::EKeywordAccessMode::kGetSet);
+            keyword = boost::make_shared<yApi::historization::CDirection>("direction", yApi::EKeywordAccessMode::kGetSet);
          else if (standardCapacity == yApi::CStandardCapacities::Distance().getName())
             keyword = boost::make_shared<yApi::historization::CDistance>("distance", yApi::EKeywordAccessMode::kGetSet);
          else if (standardCapacity == yApi::CStandardCapacities::Duration().getName())
