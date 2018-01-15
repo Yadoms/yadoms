@@ -174,7 +174,7 @@
 </div>
 
 <script>
-    var cbIncludePreReleases = $("div#dashboard-install-update input.cb-release-type")
+    var $cbIncludePreReleases = $("div#dashboard-install-update input.cb-release-type")
     var includePreReleases = false;
 
     Yadoms.initializeInstallUpdateDashboard = function () {
@@ -194,7 +194,7 @@
      * Permit to update includePreReleases from the checkbox
      */
     function updateReleaseType() {
-        includePreReleases = cbIncludePreReleases.prop("checked");
+        includePreReleases = $cbIncludePreReleases.prop("checked");
     }
 
     /**
@@ -210,9 +210,9 @@
 
     function scanForUpdates() {
         var d = new $.Deferred();
-        cbIncludePreReleases.unbind();
-        var asyncActionIndicator = $("div#dashboard-install-update i.making-async-action");
-        asyncActionIndicator.removeClass("hidden");
+        $cbIncludePreReleases.unbind();
+        var $asyncActionIndicator = $("div#dashboard-install-update i.making-async-action");
+        $asyncActionIndicator.removeClass("hidden");
 
         UpdateInformationManager.scanForUpdates()
             .done(function (data) {
@@ -228,8 +228,8 @@
                     }
 
                     if (taskFinished) {
-                        asyncActionIndicator.addClass("hidden");
-                        cbIncludePreReleases.change(refreshAllData);
+                        $asyncActionIndicator.addClass("hidden");
+                        $cbIncludePreReleases.change(refreshAllData);
                         refreshAllData();
                     }
                 });
@@ -238,7 +238,7 @@
 
             .fail(function (error) {
                 console.error("Fail to get updates");
-                asyncActionIndicator.addClass("hidden");
+                $asyncActionIndicator.addClass("hidden");
                 d.reject();
             });
         return d;
@@ -627,20 +627,20 @@
         if (rowsLength == 1) {
             table.append(lineContent);
         } else {
-            var found;
+            var $found;
             var newName = refTextInLineContentGetter(lineContent);
             // Ignore first line (header)
             for (var i = 1; i < rowsLength; i++) {
                 var rowName = refTextInLineContentGetter(rows[i]);
                 if (newName.toLowerCase().localeCompare(rowName.toLowerCase()) < 0) {
-                    found = $(rows[i]);
+                    $found = $(rows[i]);
                     break;
                 }
             }
-            if (isNullOrUndefined(found))
+            if (isNullOrUndefined($found))
                 table.append(lineContent);
             else
-                found.before(lineContent);
+                $found.before(lineContent);
         }
     }
 
@@ -709,12 +709,12 @@
      */
     function updateHeaderUpdateAvailableLabel(objectType) {
         var $line = $("div#install-update-" + objectType + "-heading-panel .update-available-label");
-        var updateAvailableLabels = $("table#" + objectType + "-install-update-list span.update-available-label").not(
+        var $updateAvailableLabels = $("table#" + objectType + "-install-update-list span.update-available-label").not(
             ".hidden");
-        if (updateAvailableLabels.length > 0) {
+        if ($updateAvailableLabels.length > 0) {
             //there is at least one item that have an update available
             $line.removeClass("hidden");
-            $line.text(updateAvailableLabels.length);
+            $line.text($updateAvailableLabels.length);
         } else {
             $line.addClass("hidden");
         }
