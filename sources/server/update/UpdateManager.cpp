@@ -22,11 +22,13 @@ namespace update
 
    CUpdateManager::CUpdateManager(boost::shared_ptr<task::CScheduler>& taskScheduler,
                                   boost::shared_ptr<pluginSystem::CManager> pluginManager,
+                                  boost::shared_ptr<automation::interpreter::IManager> interpreterManager,
                                   boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
                                   bool developerMode,
                                   boost::shared_ptr<const IPathProvider> pathProvider)
       : m_taskScheduler(taskScheduler),
         m_pluginManager(pluginManager),
+        m_interpreterManager(interpreterManager),
         m_eventLogger(eventLogger),
         m_developerMode(developerMode),
         m_pathProvider(pathProvider),
@@ -36,8 +38,8 @@ namespace update
 
    CUpdateManager::~CUpdateManager()
    {
-         m_thread.interrupt();
-         m_thread.timed_join(boost::posix_time::seconds(30));
+      m_thread.interrupt();
+      m_thread.timed_join(boost::posix_time::seconds(30));
    }
 
    void CUpdateManager::doWork(const boost::posix_time::time_duration scanPeriod)
@@ -92,21 +94,24 @@ namespace update
          const auto widgetsLocalVersions = worker::CWidget::getWidgetList();
          const auto widgetsAvailableVersions = info::CUpdateSite::getAllWidgetVersions();
 
-         //TODO
-         //const auto scriptInterpretersLocalVersions = getAvailableInterpreters();
-         //const auto scriptInterpretersAvailableVersions = info::CUpdateSite::getAllScriptInterpreterVersions();
+         const auto scriptInterpretersLocalVersions = m_interpreterManager->getAvailableInterpretersInformation();
+         const auto scriptInterpretersAvailableVersions = info::CUpdateSite::getAllScriptInterpreterVersions();
 
 
          const auto updates = buildUpdates(true,
                                            pluginsLocalVersions,
                                            pluginsAvailableVersions,
                                            widgetsLocalVersions,
-                                           widgetsAvailableVersions);
+                                           widgetsAvailableVersions,
+                                           scriptInterpretersLocalVersions,
+                                           scriptInterpretersAvailableVersions);
          const auto releasesOnlyUpdates = buildUpdates(false,
                                                        pluginsLocalVersions,
                                                        pluginsAvailableVersions,
                                                        widgetsLocalVersions,
-                                                       widgetsAvailableVersions);
+                                                       widgetsAvailableVersions,
+                                                       scriptInterpretersLocalVersions,
+                                                       scriptInterpretersAvailableVersions);
 
          // Notify only for new releases (not for prereleases)
          if (releasesOnlyUpdates != m_releasesOnlyUpdates)
@@ -148,17 +153,21 @@ namespace update
       m_evtHandler.postEvent(kStartNextScanTimerId);
    }
 
-      shared::CDataContainer CUpdateManager::getUpdates(bool includePreleases) const
-      {
-         boost::lock_guard<boost::recursive_mutex> lock(m_updateMutex);
-         return includePreleases ? m_allUpdates : m_releasesOnlyUpdates;
-      }
+   shared::CDataContainer CUpdateManager::getUpdates(bool includePreleases) const
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_updateMutex);
+      return includePreleases ? m_allUpdates : m_releasesOnlyUpdates;
+   }
 
    shared::CDataContainer CUpdateManager::buildUpdates(bool includePreleases,
                                                        const pluginSystem::IFactory::AvailablePluginMap& pluginsLocalVersions,
                                                        const shared::CDataContainer& pluginsAvailableVersions,
                                                        const worker::CWidget::AvailableWidgetMap& widgetsLocalVersions,
-                                                       const shared::CDataContainer& widgetsAvailableVersions)
+                                                       const shared::CDataContainer& widgetsAvailableVersions,
+                                                       const std::map<
+                                                          std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>&
+                                                       scriptInterpretersLocalVersions,
+                                                       const shared::CDataContainer& scriptInterpretersAvailableVersions)
    {
       shared::CDataContainer updates;
 
@@ -171,6 +180,11 @@ namespace update
                                                  widgetsAvailableVersions,
                                                  includePreleases);
       updates.set("widgets", widgetUpdates);
+
+      const auto scriptInterpreterUpdates = buildScriptInterpreterList(scriptInterpretersLocalVersions,
+                                                                       scriptInterpretersAvailableVersions,
+                                                                       includePreleases);
+      updates.set("scriptInterpreters", scriptInterpreterUpdates);
 
       return updates;
    }
@@ -217,6 +231,28 @@ namespace update
       return list;
    }
 
+   shared::CDataContainer CUpdateManager::buildScriptInterpreterList(
+      const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>& localVersions,
+      const shared::CDataContainer& availableVersions,
+      bool includePreleases)
+   {
+      shared::CDataContainer list;
+
+      // Add updatable items (ie already installed)
+      const auto updatableItems = addUpdatableScriptInterpreters(localVersions,
+                                                                 availableVersions,
+                                                                 includePreleases);
+      list.set("updatable", updatableItems);
+
+      // Add items not already installed (ie not in localVersions list)
+      const auto newItems = addNewScriptInterpreters(localVersions,
+                                                     availableVersions,
+                                                     includePreleases);
+      list.set("new", newItems);
+
+      return list;
+   }
+
    shared::CDataContainer CUpdateManager::addUpdatablePlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
                                                               const shared::CDataContainer& availableVersions,
                                                               bool includePreleases) const
@@ -245,8 +281,8 @@ namespace update
             {
                try
                {
-                  const auto availableVersionsForPlugin = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
-                  for (auto& version : availableVersionsForPlugin)
+                  const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+                  for (auto& version : availableVersionsForItem)
                   {
                      shared::versioning::CVersion v(version.get<std::string>("version"));
 
@@ -377,14 +413,14 @@ namespace update
          try
          {
             shared::CDataContainer item;
-            const auto& availableVersionsForPlugin = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+            const auto& availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
             const auto& newestVersionLabel = newModuleAvailableVersions.rbegin()->first;
-            const auto& newestVersionData = std::find_if(availableVersionsForPlugin.begin(),
-                                                         availableVersionsForPlugin.end(),
+            const auto& newestVersionData = std::find_if(availableVersionsForItem.begin(),
+                                                         availableVersionsForItem.end(),
                                                          [&newestVersionLabel](
-                                                         const shared::CDataContainer& availableVersionForPlugin)
+                                                         const shared::CDataContainer& availableVersionForItem)
                                                          {
-                                                            return availableVersionForPlugin.get<std::string>(
+                                                            return availableVersionForItem.get<std::string>(
                                                                "version") == newestVersionLabel;
                                                          });
             item.set("iconUrl", newestVersionData->get<std::string>("iconUrl"));
@@ -436,8 +472,8 @@ namespace update
             {
                try
                {
-                  const auto availableVersionsForPlugin = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
-                  for (auto& version : availableVersionsForPlugin)
+                  const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+                  for (auto& version : availableVersionsForItem)
                   {
                      shared::versioning::CVersion v(version.get<std::string>("version"));
 
@@ -568,14 +604,201 @@ namespace update
          try
          {
             shared::CDataContainer item;
-            const auto& availableVersionsForPlugin = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+            const auto& availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
             const auto& newestVersionLabel = newModuleAvailableVersions.rbegin()->first;
-            const auto& newestVersionData = std::find_if(availableVersionsForPlugin.begin(),
-                                                         availableVersionsForPlugin.end(),
+            const auto& newestVersionData = std::find_if(availableVersionsForItem.begin(),
+                                                         availableVersionsForItem.end(),
                                                          [&newestVersionLabel](
-                                                         const shared::CDataContainer& availableVersionForPlugin)
+                                                         const shared::CDataContainer& availableVersionForItem)
                                                          {
-                                                            return availableVersionForPlugin.get<std::string>(
+                                                            return availableVersionForItem.get<std::string>(
+                                                               "version") == newestVersionLabel;
+                                                         });
+            item.set("iconUrl", newestVersionData->get<std::string>("iconUrl"));
+            item.set("versions", versions);
+
+            newItems.set(moduleType, item);
+         }
+         catch (std::exception& exception)
+         {
+            YADOMS_LOG(warning) << "Invalid remote package for " << moduleType << ", will be ignored";
+            YADOMS_LOG(debug) << "exception : " << exception.what();
+         }
+      }
+
+      return newItems;
+   }
+
+   shared::CDataContainer CUpdateManager::addUpdatableScriptInterpreters(
+      const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>& localVersions,
+      const shared::CDataContainer& availableVersions,
+      bool includePreleases) const
+   {
+      shared::CDataContainer updatableItems;
+
+      for (const auto& localVersion : localVersions)
+      {
+         try
+         {
+            const auto moduleType = localVersion.first;
+
+            // Filter non-updatable modules
+            if (m_developerMode && boost::starts_with(moduleType, "dev-"))
+               continue;
+
+            shared::CDataContainer item;
+
+            item.set("iconUrl", (localVersion.second->getPath() / "icon.png").generic_string());
+
+            shared::CDataContainer versions;
+            versions.set("installed", localVersion.second->getVersion().toString());
+            std::map<std::string, shared::CDataContainer> older; // Pass by a map to sort versions list
+            std::map<std::string, shared::CDataContainer> newer; // Pass by a map to sort versions list
+            if (availableVersions.exists(moduleType))
+            {
+               try
+               {
+                  const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+                  for (auto& version : availableVersionsForItem)
+                  {
+                     shared::versioning::CVersion v(version.get<std::string>("version"));
+
+                     // Don't add prereleases versions if not asked
+                     if (!v.prerelease().empty() && !includePreleases)
+                        continue;
+
+                     if (v == localVersion.second->getVersion())
+                        continue;
+
+                     shared::CDataContainer versionData;
+                     versionData.set("downloadUrl", version.get<std::string>("downloadUrl"));
+
+                     if (v < localVersion.second->getVersion())
+                        older[version.get<std::string>("version")] = versionData;
+                     else
+                        newer[version.get<std::string>("version")] = versionData;
+                  }
+               }
+               catch (std::exception& exception)
+               {
+                  YADOMS_LOG(warning) << "Invalid remote package for " << moduleType << ", will be ignored";
+                  YADOMS_LOG(debug) << "exception : " << exception.what();
+               }
+            }
+
+            if (!older.empty())
+            {
+               // Sort (newer version first)
+               shared::CDataContainer olderVersions;
+               for (auto v = older.rbegin(); v != older.rend(); ++v)
+                  // Force different path char to not cut version string into subPaths
+                  olderVersions.set(v->first, v->second, 0);
+               versions.set("older", olderVersions);
+            }
+
+            if (!newer.empty())
+            {
+               // Sort (newer version first)
+               shared::CDataContainer newerVersions;
+               for (auto v = newer.rbegin(); v != newer.rend(); ++v)
+                  // Force different path char to not cut version string into subPaths
+                  newerVersions.set(v->first, v->second, 0);
+               versions.set("newer", newerVersions);
+
+               // Find the newest version
+               shared::CDataContainer newestVersion;
+               // Force different path char to not cut version string into subPaths
+               newestVersion.set(newer.rbegin()->first, newer.rbegin()->second, 0);
+               versions.set("newest", newestVersion);
+            }
+
+            item.set("versions", versions);
+
+            updatableItems.set(moduleType, item);
+         }
+         catch (std::exception& exception)
+         {
+            YADOMS_LOG(warning) << "Invalid package " << localVersion.first << ", will be ignored";
+            YADOMS_LOG(debug) << "exception : " << exception.what();
+         }
+      }
+
+      return updatableItems;
+   }
+
+   shared::CDataContainer CUpdateManager::addNewScriptInterpreters(
+      const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>& localVersions,
+      const shared::CDataContainer& availableVersions,
+      bool includePreleases)
+   {
+      shared::CDataContainer newItems;
+
+      for (const auto& moduleType : availableVersions.getKeys())
+      {
+         if (localVersions.find(moduleType) != localVersions.end())
+            continue; // Module already installed
+
+         // Module not installed
+         const auto availableModule = availableVersions.get<shared::CDataContainer>(moduleType);
+
+         // Pass by a map to sort versions list
+         std::map<std::string, shared::CDataContainer> newModuleAvailableVersions;
+         try
+         {
+            const auto availableVersionsForModule = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+            for (auto& version : availableVersionsForModule)
+            {
+               shared::versioning::CVersion v(version.get<std::string>("version"));
+
+               // Don't add prereleases versions if not asked
+               if (!v.prerelease().empty() && !includePreleases)
+                  continue;
+
+               shared::CDataContainer versionData;
+               versionData.set("downloadUrl", version.get<std::string>("downloadUrl"));
+               newModuleAvailableVersions[version.get<std::string>("version")] = versionData;
+            }
+         }
+         catch (std::exception& exception)
+         {
+            YADOMS_LOG(warning) << "Invalid remote package for " << moduleType << ", will be ignored";
+            YADOMS_LOG(debug) << "exception : " << exception.what();
+         }
+
+
+         if (newModuleAvailableVersions.empty())
+            continue;
+
+
+         // Create the versions node
+         shared::CDataContainer versions;
+         // Sort (newer version first)
+         shared::CDataContainer sortedVersions;
+         for (auto v = newModuleAvailableVersions.rbegin(); v != newModuleAvailableVersions.rend(); ++v)
+            // Force different path char to not cut version string into subPaths
+            sortedVersions.set(v->first, v->second, 0);
+         versions.set("versions", sortedVersions);
+
+         // Find the newest version
+         shared::CDataContainer newestVersion;
+         // Force different path char to not cut version string into subPaths
+         newestVersion.set(newModuleAvailableVersions.rbegin()->first,
+                           newModuleAvailableVersions.rbegin()->second, 0);
+         versions.set("newest", newestVersion);
+
+
+         // Add the module entry to the list
+         try
+         {
+            shared::CDataContainer item;
+            const auto& availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+            const auto& newestVersionLabel = newModuleAvailableVersions.rbegin()->first;
+            const auto& newestVersionData = std::find_if(availableVersionsForItem.begin(),
+                                                         availableVersionsForItem.end(),
+                                                         [&newestVersionLabel](
+                                                         const shared::CDataContainer& availableVersionForItem)
+                                                         {
+                                                            return availableVersionForItem.get<std::string>(
                                                                "version") == newestVersionLabel;
                                                          });
             item.set("iconUrl", newestVersionData->get<std::string>("iconUrl"));

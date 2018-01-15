@@ -3,6 +3,7 @@
 #include "task/Scheduler.h"
 #include "pluginSystem/Manager.h"
 #include "worker/Widget.h"
+#include "automation/interpreter/IManager.h"
 
 namespace update
 {
@@ -14,6 +15,7 @@ namespace update
    public:
       CUpdateManager(boost::shared_ptr<task::CScheduler>& taskScheduler,
                      boost::shared_ptr<pluginSystem::CManager> pluginManager,
+                     boost::shared_ptr<automation::interpreter::IManager> interpreterManager,
                      boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
                      bool developerMode,
                      boost::shared_ptr<const IPathProvider> pathProvider);
@@ -106,13 +108,18 @@ namespace update
                                           const pluginSystem::IFactory::AvailablePluginMap& pluginsLocalVersions,
                                           const shared::CDataContainer& pluginsAvailableVersions,
                                           const worker::CWidget::AvailableWidgetMap& widgetsLocalVersions,
-                                          const shared::CDataContainer& widgetsAvailableVersions);
+                                          const shared::CDataContainer& widgetsAvailableVersions,
+                                          const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>& scriptInterpretersLocalVersions,
+                                          const shared::CDataContainer& scriptInterpretersAvailableVersions);
       shared::CDataContainer buildPluginList(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
                                              const shared::CDataContainer& availableVersions,
                                              bool includePreleases);
       shared::CDataContainer buildWidgetList(const worker::CWidget::AvailableWidgetMap& localVersions,
                                              const shared::CDataContainer& availableVersions,
                                              bool includePreleases);
+      shared::CDataContainer buildScriptInterpreterList(const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>& localVersions,
+                                                        const shared::CDataContainer& availableVersions,
+                                                        bool includePreleases);
       shared::CDataContainer addUpdatablePlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
                                                  const shared::CDataContainer& availableVersions,
                                                  bool includePreleases) const;
@@ -125,6 +132,12 @@ namespace update
       shared::CDataContainer addNewWidgets(const worker::CWidget::AvailableWidgetMap& localVersions,
                                            const shared::CDataContainer& availableVersions,
                                            bool includePreleases);
+      shared::CDataContainer addUpdatableScriptInterpreters(const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>& localVersions,
+                                                            const shared::CDataContainer& availableVersions,
+                                                            bool includePreleases) const;
+      shared::CDataContainer addNewScriptInterpreters(const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>& localVersions,
+                                                      const shared::CDataContainer& availableVersions,
+                                                      bool includePreleases);
       void notifyNewUpdateAvailable() const;
 
    private:
@@ -150,11 +163,9 @@ namespace update
       //-----------------------------------------------------------------------------
       boost::shared_ptr<task::CScheduler> m_taskScheduler;//TODO utilisé ?
 
-      //-----------------------------------------------------------------------------
-      /// \brief  Plugin manager (needed to update plugin list after update)
-      //-----------------------------------------------------------------------------
-      boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
 
+      boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
+      boost::shared_ptr<automation::interpreter::IManager> m_interpreterManager;
 
       boost::shared_ptr<dataAccessLayer::IEventLogger> m_eventLogger;
       bool m_developerMode;

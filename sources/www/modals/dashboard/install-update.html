@@ -264,6 +264,11 @@
                     });
                 if (data.widgets)
                     buildList("widget", data.widgets);
+                if (data.scriptInterpreters)
+                    // Load script interpreters translations
+                    AutomationInterpreterManager.getAllDetailed().always(function () {
+                        buildList("scriptInterpreter", data.scriptInterpreters);
+                    });
                 d.resolve();
             })
             .fail(d.reject)

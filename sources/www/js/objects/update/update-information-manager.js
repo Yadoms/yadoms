@@ -9,7 +9,7 @@
  * @param sync
  */
 UpdateInformationManager.getList = function(includePreReleases) {
-   return RestEngine.getJson("rest/update/list/" + (includePreReleases ? "includePreReleases/" : "releasesOnly/"));
+   return RestEngine.getJson("rest/update/list/" + (includePreReleases ? "includePreReleases" : "releasesOnly"));
 };
 
 UpdateInformationManager.scanForUpdates = function() {

@@ -11,14 +11,15 @@
 
 namespace automation
 {
-   CRuleManager::CRuleManager(boost::shared_ptr<const IPathProvider> pathProvider,
+   CRuleManager::CRuleManager(boost::shared_ptr<interpreter::IManager> interpreterManager,
                               boost::shared_ptr<database::IDataProvider> dataProvider,
                               boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                               boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                               boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
                               boost::shared_ptr<shared::ILocation> location,
                               boost::shared_ptr<dateTime::ITimeZoneProvider> timezoneProvider)
-      : m_pluginGateway(pluginGateway),
+      : m_interpreterManager(interpreterManager),
+        m_pluginGateway(pluginGateway),
         m_dbAcquisitionRequester(dataProvider->getAcquisitionRequester()),
         m_dbDeviceRequester(dataProvider->getDeviceRequester()),
         m_keywordAccessLayer(keywordAccessLayer),
@@ -27,7 +28,6 @@ namespace automation
         m_generalInfo(boost::make_shared<script::CGeneralInfo>(location, timezoneProvider)),
         m_ruleRequester(dataProvider->getRuleRequester()),
         m_ruleEventHandler(boost::make_shared<shared::event::CEventHandler>()),
-        m_interpreterManager(boost::make_shared<interpreter::CManager>(pathProvider)),
         m_yadomsShutdown(false)
    {
       m_interpreterManager->setOnScriptStoppedFct(
@@ -115,14 +115,14 @@ namespace automation
          YADOMS_LOG(information) << "Start rule #" << ruleId;
 
          boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
-         auto newRule(boost::make_shared<CRule>(ruleData,
-                                                m_interpreterManager,
-                                                m_pluginGateway,
-                                                m_dbAcquisitionRequester,
-                                                m_dbDeviceRequester,
-                                                m_keywordAccessLayer,
-                                                m_dbRecipientRequester,
-                                                m_generalInfo));
+         const auto newRule(boost::make_shared<CRule>(ruleData,
+                                                      m_interpreterManager,
+                                                      m_pluginGateway,
+                                                      m_dbAcquisitionRequester,
+                                                      m_dbDeviceRequester,
+                                                      m_keywordAccessLayer,
+                                                      m_dbRecipientRequester,
+                                                      m_generalInfo));
          m_startedRules[ruleId] = newRule;
       }
       catch (shared::exception::CEmptyResult& e)
@@ -219,7 +219,7 @@ namespace automation
    {
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
-         auto rule = m_startedRules.find(ruleId);
+         const auto rule = m_startedRules.find(ruleId);
 
          if (rule == m_startedRules.end())
             return;
@@ -254,10 +254,10 @@ namespace automation
                                 const std::string& code)
    {
       // Add rule in database
-      auto ruleId = m_ruleRequester->addRule(ruleData);
+      const auto ruleId = m_ruleRequester->addRule(ruleData);
 
       // Create script file
-      auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(ruleId)));
+      const auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(ruleId)));
       m_interpreterManager->updateScriptFile(ruleProperties->interpreterName(),
                                              ruleProperties->scriptPath().string(),
                                              code);
@@ -277,7 +277,7 @@ namespace automation
    {
       try
       {
-         auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id)));
+         const auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id)));
          return m_interpreterManager->getScriptContent(ruleProperties->interpreterName(),
                                                        ruleProperties->scriptPath().string());
       }
@@ -332,12 +332,12 @@ namespace automation
                                      const std::string& code)
    {
       // If rule was started, must be stopped to update its configuration
-      auto ruleWasStarted = isRuleStarted(id);
+      const auto ruleWasStarted = isRuleStarted(id);
       if (ruleWasStarted)
          stopRuleAndWaitForStopped(id);
 
       // Update script file
-      auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id)));
+      const auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id)));
       m_interpreterManager->updateScriptFile(ruleProperties->interpreterName(),
                                              ruleProperties->scriptPath().string(),
                                              code);
@@ -360,7 +360,7 @@ namespace automation
          m_ruleRequester->deleteRule(id);
 
          // Remove script file
-         auto ruleProperties(boost::make_shared<script::CProperties>(ruleData));
+         const auto ruleProperties(boost::make_shared<script::CProperties>(ruleData));
          m_interpreterManager->deleteScriptFile(ruleProperties->interpreterName(),
                                                 ruleProperties->scriptPath().string());
       }

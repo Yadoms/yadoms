@@ -33,6 +33,7 @@
 #include "location/IpApiAutoLocation.h"
 #include "dateTime/TimeZoneProvider.h"
 #include "dateTime/TimeZoneDatabase.h"
+#include "automation/interpreter/Manager.h"
 
 CSupervisor::CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider)
    : m_pathProvider(pathProvider)
@@ -91,22 +92,18 @@ void CSupervisor::run()
       // Start Task manager
       taskManager->start();
 
-      // Create the update manager
-      auto updateManager(boost::make_shared<update::CUpdateManager>(taskManager,
-                                                                    pluginManager,
-                                                                    dal->getEventLogger(),
-                                                                    startupOptions->getDeveloperMode(),
-                                                                    m_pathProvider));
-
       // Start the plugin gateway
       auto pluginGateway(
          boost::make_shared<communication::CPluginGateway>(pDataProvider, dal->getAcquisitionHistorizer(),
                                                            pluginManager));
 
 
+      // Start script interpreter manager
+      auto scriptInterpreterManager(boost::make_shared<automation::interpreter::CManager>(m_pathProvider));
+
       // Start automation rules manager
       boost::shared_ptr<automation::IRuleManager> automationRulesManager(boost::make_shared<automation::CRuleManager>(
-         m_pathProvider,
+         scriptInterpreterManager,
          pDataProvider,
          pluginGateway,
          dal->getKeywordManager(),
@@ -114,6 +111,15 @@ void CSupervisor::run()
          location,
          timezoneProvider));
       shared::CServiceLocator::instance().push<automation::IRuleManager>(automationRulesManager);
+
+
+      // Create the update manager
+      auto updateManager(boost::make_shared<update::CUpdateManager>(taskManager,
+                                                                    pluginManager,
+                                                                    scriptInterpreterManager,
+                                                                    dal->getEventLogger(),
+                                                                    startupOptions->getDeveloperMode(),
+                                                                    m_pathProvider));
 
 
       // Start Web server

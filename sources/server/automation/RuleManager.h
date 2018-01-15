@@ -6,7 +6,6 @@
 #include "database/IDeviceRequester.h"
 #include "database/IRecipientRequester.h"
 #include "../dataAccessLayer/IKeywordManager.h"
-#include <IPathProvider.h>
 #include <shared/event/EventHandler.hpp>
 #include <shared/ILocation.h>
 #include "interpreter/IManager.h"
@@ -24,7 +23,7 @@ namespace automation
    class CRuleManager : public IRuleManager
    {
    public:
-      CRuleManager(boost::shared_ptr<const IPathProvider> pathProvider,
+      CRuleManager(boost::shared_ptr<interpreter::IManager> interpreterManager,
                    boost::shared_ptr<database::IDataProvider> dataProvider,
                    boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                    boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
@@ -105,6 +104,7 @@ namespace automation
                              const std::string& error = std::string()) const;
 
    private:
+      boost::shared_ptr<interpreter::IManager> m_interpreterManager;
       boost::shared_ptr<communication::ISendMessageAsync> m_pluginGateway;
       boost::shared_ptr<database::IAcquisitionRequester> m_dbAcquisitionRequester;
       boost::shared_ptr<database::IDeviceRequester> m_dbDeviceRequester;
@@ -115,7 +115,6 @@ namespace automation
 
       boost::shared_ptr<database::IRuleRequester> m_ruleRequester;
       boost::shared_ptr<shared::event::CEventHandler> m_ruleEventHandler;
-      boost::shared_ptr<interpreter::IManager> m_interpreterManager;
       bool m_yadomsShutdown;
 
       std::map<int, boost::shared_ptr<IRule>> m_startedRules;

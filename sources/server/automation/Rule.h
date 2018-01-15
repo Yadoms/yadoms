@@ -10,8 +10,6 @@
 #include "database/IDeviceRequester.h"
 #include "communication/ISendMessageAsync.h"
 #include "script/IIpcAdapter.h"
-#include <shared/Log.h>
-#include "IPathProvider.h"
 
 namespace automation
 {

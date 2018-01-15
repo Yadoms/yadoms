@@ -25,6 +25,12 @@ namespace automation
          virtual std::vector<std::string> getAvailableInterpreters() = 0;
 
          //-----------------------------------------------------
+         ///\brief               Get available interpreters with associated informations
+         ///\return              The list of available interpreters with their informations
+         //-----------------------------------------------------
+         virtual std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>> getAvailableInterpretersInformation() = 0;
+
+         //-----------------------------------------------------
          ///\brief               Get the interpreter needed to run a script
          ///\param[in] interpreterType The interpreter type
          ///\return              The first interpreter found supporting this script
