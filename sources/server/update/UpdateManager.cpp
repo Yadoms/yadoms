@@ -360,9 +360,6 @@ namespace update
          if (localVersions.find(moduleType) != localVersions.end())
             continue; // Module already installed
 
-         // Module not installed
-         const auto availableModule = availableVersions.get<shared::CDataContainer>(moduleType);
-
          // Pass by a map to sort versions list
          std::map<std::string, shared::CDataContainer> newModuleAvailableVersions;
          try
@@ -551,9 +548,6 @@ namespace update
          if (localVersions.find(moduleType) != localVersions.end())
             continue; // Module already installed
 
-         // Module not installed
-         const auto availableModule = availableVersions.get<shared::CDataContainer>(moduleType);
-
          // Pass by a map to sort versions list
          std::map<std::string, shared::CDataContainer> newModuleAvailableVersions;
          try
@@ -614,7 +608,8 @@ namespace update
                                                             return availableVersionForItem.get<std::string>(
                                                                "version") == newestVersionLabel;
                                                          });
-            item.set("iconUrl", newestVersionData->get<std::string>("iconUrl"));
+            newestVersionData->printToLog(YADOMS_LOG(debug));
+            item.set("iconUrl", newestVersionData->get<std::string>("previewUrl"));
             item.set("versions", versions);
 
             newItems.set(moduleType, item);
@@ -737,9 +732,6 @@ namespace update
       {
          if (localVersions.find(moduleType) != localVersions.end())
             continue; // Module already installed
-
-         // Module not installed
-         const auto availableModule = availableVersions.get<shared::CDataContainer>(moduleType);
 
          // Pass by a map to sort versions list
          std::map<std::string, shared::CDataContainer> newModuleAvailableVersions;
