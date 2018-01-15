@@ -32,8 +32,7 @@ public:
 
 private:
    boost::shared_ptr<yApi::IYPluginApi> m_api;
-   const std::string& m_deviceId;
-   boost::shared_ptr<yApi::historization::CSwitch> m_buttonA, m_buttonB, m_buttonA2ndAction, m_buttonB2ndAction;
+   const std::string m_deviceId;
+   boost::shared_ptr<yApi::historization::CSwitch> m_buttonA, m_buttonB;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_secondActionHistorizers;
 };
