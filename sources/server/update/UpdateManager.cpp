@@ -9,6 +9,7 @@
 #include "info/UpdateSite.h"
 #include "shared/tools/Filesystem.h"
 #include "i18n/ClientStrings.h"
+#include "shared/ServiceLocator.h"
 
 
 namespace update
@@ -88,6 +89,9 @@ namespace update
       try
       {
          // Read inputs
+         const auto yadomsLocalVersion = shared::CServiceLocator::instance().get<IRunningInformation>()->getSoftwareVersion().getVersion();
+         const auto yadomsAvailableVersions = info::CUpdateSite::getAllYadomsVersions();
+
          const auto pluginsLocalVersions = m_pluginManager->getPluginList();
          const auto pluginsAvailableVersions = info::CUpdateSite::getAllPluginVersions();
 
@@ -99,6 +103,8 @@ namespace update
 
 
          const auto updates = buildUpdates(true,
+                                           yadomsLocalVersion,
+                                           yadomsAvailableVersions,
                                            pluginsLocalVersions,
                                            pluginsAvailableVersions,
                                            widgetsLocalVersions,
@@ -106,6 +112,8 @@ namespace update
                                            scriptInterpretersLocalVersions,
                                            scriptInterpretersAvailableVersions);
          const auto releasesOnlyUpdates = buildUpdates(false,
+                                                       yadomsLocalVersion,
+                                                       yadomsAvailableVersions,
                                                        pluginsLocalVersions,
                                                        pluginsAvailableVersions,
                                                        widgetsLocalVersions,
@@ -160,6 +168,8 @@ namespace update
    }
 
    shared::CDataContainer CUpdateManager::buildUpdates(bool includePreleases,
+                                                       const shared::versioning::CVersion& yadomsLocalVersion,
+                                                       const shared::CDataContainer& yadomsAvailableVersions,
                                                        const pluginSystem::IFactory::AvailablePluginMap& pluginsLocalVersions,
                                                        const shared::CDataContainer& pluginsAvailableVersions,
                                                        const worker::CWidget::AvailableWidgetMap& widgetsLocalVersions,
@@ -170,6 +180,11 @@ namespace update
                                                        const shared::CDataContainer& scriptInterpretersAvailableVersions)
    {
       shared::CDataContainer updates;
+
+      const auto yadomsUpdates = buildYadomsList(yadomsLocalVersion,
+                                                 yadomsAvailableVersions,
+                                                 includePreleases);
+      updates.set("yadoms", yadomsUpdates);
 
       const auto pluginUpdates = buildPluginList(pluginsLocalVersions,
                                                  pluginsAvailableVersions,
@@ -187,6 +202,21 @@ namespace update
       updates.set("scriptInterpreters", scriptInterpreterUpdates);
 
       return updates;
+   }
+
+   shared::CDataContainer CUpdateManager::buildYadomsList(const shared::versioning::CVersion& localVersion,
+                                                          const shared::CDataContainer& availableVersions,
+                                                          bool includePreleases)
+   {
+      shared::CDataContainer list;
+
+      // Only updatable items for Yadoms
+      const auto updatableItems = addUpdatableYadoms(localVersion,
+                                                     availableVersions,
+                                                     includePreleases);
+      list.set("updatable", updatableItems);
+
+      return list;
    }
 
    shared::CDataContainer CUpdateManager::buildPluginList(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
@@ -253,6 +283,57 @@ namespace update
       return list;
    }
 
+   shared::CDataContainer CUpdateManager::addUpdatableYadoms(const shared::versioning::CVersion& localVersion,
+                                                             const shared::CDataContainer& availableVersions,
+                                                             bool includePreleases)
+   {
+      shared::CDataContainer item;
+
+      std::map<std::string, shared::CDataContainer> older; // Pass by a map to sort versions list
+      std::map<std::string, shared::CDataContainer> newer; // Pass by a map to sort versions list
+      try
+      {
+         for (auto& version : availableVersions.get<std::vector<shared::CDataContainer>>())
+         {
+            shared::versioning::CVersion v(version.get<std::string>("version"));
+
+            // Don't add prereleases versions if not asked
+            if (!v.prerelease().empty() && !includePreleases)
+               continue;
+
+            if (v == localVersion)
+               continue;
+
+            shared::CDataContainer versionData;
+            versionData.set("downloadUrl", version.get<std::string>("downloadUrl"));
+
+            if (v < localVersion)
+               older[version.get<std::string>("version")] = versionData;
+            else
+               newer[version.get<std::string>("version")] = versionData;
+         }
+      }
+      catch (std::exception& exception)
+      {
+         YADOMS_LOG(warning) << "Invalid remote package for Yadoms, will be ignored";
+         YADOMS_LOG(debug) << "exception : " << exception.what();
+      }
+
+      try
+      {
+         item.set("versions", buildUpdatableVersionsNode(localVersion.toString(),
+                                                         older,
+                                                         newer));
+      }
+      catch (std::exception& exception)
+      {
+         YADOMS_LOG(warning) << "Invalid Yadoms package " << localVersion << ", will be ignored";
+         YADOMS_LOG(debug) << "exception : " << exception.what();
+      }
+
+      return item;
+   }
+
    shared::CDataContainer CUpdateManager::addUpdatablePlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
                                                               const shared::CDataContainer& availableVersions,
                                                               bool includePreleases) const
@@ -273,8 +354,6 @@ namespace update
 
             item.set("iconUrl", (localVersion.second->getPath() / "icon.png").generic_string());
 
-            shared::CDataContainer versions;
-            versions.set("installed", localVersion.second->getVersion().toString());
             std::map<std::string, shared::CDataContainer> older; // Pass by a map to sort versions list
             std::map<std::string, shared::CDataContainer> newer; // Pass by a map to sort versions list
             if (availableVersions.exists(moduleType))
@@ -309,33 +388,9 @@ namespace update
                }
             }
 
-            if (!older.empty())
-            {
-               // Sort (newer version first)
-               shared::CDataContainer olderVersions;
-               for (auto v = older.rbegin(); v != older.rend(); ++v)
-                  // Force different path char to not cut version string into subPaths
-                  olderVersions.set(v->first, v->second, 0);
-               versions.set("older", olderVersions);
-            }
-
-            if (!newer.empty())
-            {
-               // Sort (newer version first)
-               shared::CDataContainer newerVersions;
-               for (auto v = newer.rbegin(); v != newer.rend(); ++v)
-                  // Force different path char to not cut version string into subPaths
-                  newerVersions.set(v->first, v->second, 0);
-               versions.set("newer", newerVersions);
-
-               // Find the newest version
-               shared::CDataContainer newestVersion;
-               // Force different path char to not cut version string into subPaths
-               newestVersion.set(newer.rbegin()->first, newer.rbegin()->second, 0);
-               versions.set("newest", newestVersion);
-            }
-
-            item.set("versions", versions);
+            item.set("versions", buildUpdatableVersionsNode(localVersion.second->getVersion().toString(),
+                                                            older,
+                                                            newer));
 
             updatableItems.set(moduleType, item);
          }
@@ -388,24 +443,6 @@ namespace update
          if (newModuleAvailableVersions.empty())
             continue;
 
-
-         // Create the versions node
-         shared::CDataContainer versions;
-         // Sort (newer version first)
-         shared::CDataContainer sortedVersions;
-         for (auto v = newModuleAvailableVersions.rbegin(); v != newModuleAvailableVersions.rend(); ++v)
-            // Force different path char to not cut version string into subPaths
-            sortedVersions.set(v->first, v->second, 0);
-         versions.set("versions", sortedVersions);
-
-         // Find the newest version
-         shared::CDataContainer newestVersion;
-         // Force different path char to not cut version string into subPaths
-         newestVersion.set(newModuleAvailableVersions.rbegin()->first,
-                           newModuleAvailableVersions.rbegin()->second, 0);
-         versions.set("newest", newestVersion);
-
-
          // Add the module entry to the list
          try
          {
@@ -421,7 +458,7 @@ namespace update
                                                                "version") == newestVersionLabel;
                                                          });
             item.set("iconUrl", newestVersionData->get<std::string>("iconUrl"));
-            item.set("versions", versions);
+            item.set("versions", buildNewVersionsNode(newModuleAvailableVersions));
 
             newItems.set(moduleType, item);
          }
@@ -461,8 +498,6 @@ namespace update
 
             item.set("iconUrl", (widgetPath / "preview.png").generic_string());
 
-            shared::CDataContainer versions;
-            versions.set("installed", localVersion.second->getVersion().toString());
             std::map<std::string, shared::CDataContainer> older; // Pass by a map to sort versions list
             std::map<std::string, shared::CDataContainer> newer; // Pass by a map to sort versions list
             if (availableVersions.exists(moduleType))
@@ -497,33 +532,9 @@ namespace update
                }
             }
 
-            if (!older.empty())
-            {
-               // Sort (newer version first)
-               shared::CDataContainer olderVersions;
-               for (auto v = older.rbegin(); v != older.rend(); ++v)
-                  // Force different path char to not cut version string into subPaths
-                  olderVersions.set(v->first, v->second, 0);
-               versions.set("older", olderVersions);
-            }
-
-            if (!newer.empty())
-            {
-               // Sort (newer version first)
-               shared::CDataContainer newerVersions;
-               for (auto v = newer.rbegin(); v != newer.rend(); ++v)
-                  // Force different path char to not cut version string into subPaths
-                  newerVersions.set(v->first, v->second, 0);
-               versions.set("newer", newerVersions);
-
-               // Find the newest version
-               shared::CDataContainer newestVersion;
-               // Force different path char to not cut version string into subPaths
-               newestVersion.set(newer.rbegin()->first, newer.rbegin()->second, 0);
-               versions.set("newest", newestVersion);
-            }
-
-            item.set("versions", versions);
+            item.set("versions", buildUpdatableVersionsNode(localVersion.second->getVersion().toString(),
+                                                            older,
+                                                            newer));
 
             updatableItems.set(moduleType, item);
          }
@@ -576,24 +587,6 @@ namespace update
          if (newModuleAvailableVersions.empty())
             continue;
 
-
-         // Create the versions node
-         shared::CDataContainer versions;
-         // Sort (newer version first)
-         shared::CDataContainer sortedVersions;
-         for (auto v = newModuleAvailableVersions.rbegin(); v != newModuleAvailableVersions.rend(); ++v)
-            // Force different path char to not cut version string into subPaths
-            sortedVersions.set(v->first, v->second, 0);
-         versions.set("versions", sortedVersions);
-
-         // Find the newest version
-         shared::CDataContainer newestVersion;
-         // Force different path char to not cut version string into subPaths
-         newestVersion.set(newModuleAvailableVersions.rbegin()->first,
-                           newModuleAvailableVersions.rbegin()->second, 0);
-         versions.set("newest", newestVersion);
-
-
          // Add the module entry to the list
          try
          {
@@ -609,7 +602,7 @@ namespace update
                                                                "version") == newestVersionLabel;
                                                          });
             item.set("iconUrl", newestVersionData->get<std::string>("previewUrl"));
-            item.set("versions", versions);
+            item.set("versions", buildNewVersionsNode(newModuleAvailableVersions));
 
             newItems.set(moduleType, item);
          }
@@ -644,8 +637,6 @@ namespace update
 
             item.set("iconUrl", (localVersion.second->getPath() / "icon.png").generic_string());
 
-            shared::CDataContainer versions;
-            versions.set("installed", localVersion.second->getVersion().toString());
             std::map<std::string, shared::CDataContainer> older; // Pass by a map to sort versions list
             std::map<std::string, shared::CDataContainer> newer; // Pass by a map to sort versions list
             if (availableVersions.exists(moduleType))
@@ -680,33 +671,9 @@ namespace update
                }
             }
 
-            if (!older.empty())
-            {
-               // Sort (newer version first)
-               shared::CDataContainer olderVersions;
-               for (auto v = older.rbegin(); v != older.rend(); ++v)
-                  // Force different path char to not cut version string into subPaths
-                  olderVersions.set(v->first, v->second, 0);
-               versions.set("older", olderVersions);
-            }
-
-            if (!newer.empty())
-            {
-               // Sort (newer version first)
-               shared::CDataContainer newerVersions;
-               for (auto v = newer.rbegin(); v != newer.rend(); ++v)
-                  // Force different path char to not cut version string into subPaths
-                  newerVersions.set(v->first, v->second, 0);
-               versions.set("newer", newerVersions);
-
-               // Find the newest version
-               shared::CDataContainer newestVersion;
-               // Force different path char to not cut version string into subPaths
-               newestVersion.set(newer.rbegin()->first, newer.rbegin()->second, 0);
-               versions.set("newest", newestVersion);
-            }
-
-            item.set("versions", versions);
+            item.set("versions", buildUpdatableVersionsNode(localVersion.second->getVersion().toString(),
+                                                            older,
+                                                            newer));
 
             updatableItems.set(moduleType, item);
          }
@@ -760,24 +727,6 @@ namespace update
          if (newModuleAvailableVersions.empty())
             continue;
 
-
-         // Create the versions node
-         shared::CDataContainer versions;
-         // Sort (newer version first)
-         shared::CDataContainer sortedVersions;
-         for (auto v = newModuleAvailableVersions.rbegin(); v != newModuleAvailableVersions.rend(); ++v)
-            // Force different path char to not cut version string into subPaths
-            sortedVersions.set(v->first, v->second, 0);
-         versions.set("versions", sortedVersions);
-
-         // Find the newest version
-         shared::CDataContainer newestVersion;
-         // Force different path char to not cut version string into subPaths
-         newestVersion.set(newModuleAvailableVersions.rbegin()->first,
-                           newModuleAvailableVersions.rbegin()->second, 0);
-         versions.set("newest", newestVersion);
-
-
          // Add the module entry to the list
          try
          {
@@ -793,7 +742,7 @@ namespace update
                                                                "version") == newestVersionLabel;
                                                          });
             item.set("iconUrl", newestVersionData->get<std::string>("iconUrl"));
-            item.set("versions", versions);
+            item.set("versions", buildNewVersionsNode(newModuleAvailableVersions));
 
             newItems.set(moduleType, item);
          }
@@ -805,6 +754,63 @@ namespace update
       }
 
       return newItems;
+   }
+
+   shared::CDataContainer CUpdateManager::buildUpdatableVersionsNode(const std::string& installed,
+                                                                     std::map<std::string, shared::CDataContainer> older,
+                                                                     std::map<std::string, shared::CDataContainer> newer)
+   {
+      shared::CDataContainer versions;
+      versions.set("installed", installed);
+
+      if (!older.empty())
+      {
+         // Sort (newer version first)
+         shared::CDataContainer olderVersions;
+         for (auto v = older.rbegin(); v != older.rend(); ++v)
+            // Force different path char to not cut version string into subPaths
+            olderVersions.set(v->first, v->second, 0);
+         versions.set("older", olderVersions);
+      }
+
+      if (!newer.empty())
+      {
+         // Sort (newer version first)
+         shared::CDataContainer newerVersions;
+         for (auto v = newer.rbegin(); v != newer.rend(); ++v)
+            // Force different path char to not cut version string into subPaths
+            newerVersions.set(v->first, v->second, 0);
+         versions.set("newer", newerVersions);
+
+         // Find the newest version
+         shared::CDataContainer newestVersion;
+         // Force different path char to not cut version string into subPaths
+         newestVersion.set(newer.rbegin()->first, newer.rbegin()->second, 0);
+         versions.set("newest", newestVersion);
+      }
+
+      return versions;
+   }
+
+   shared::CDataContainer CUpdateManager::buildNewVersionsNode(const std::map<std::string, shared::CDataContainer>& newItemAvailableVersions)
+   {
+      shared::CDataContainer versions;
+
+      // Sort (newer version first)
+      shared::CDataContainer sortedVersions;
+      for (auto v = newItemAvailableVersions.rbegin(); v != newItemAvailableVersions.rend(); ++v)
+         // Force different path char to not cut version string into subPaths
+         sortedVersions.set(v->first, v->second, 0);
+      versions.set("versions", sortedVersions);
+
+      // Find the newest version
+      shared::CDataContainer newestVersion;
+      // Force different path char to not cut version string into subPaths
+      newestVersion.set(newItemAvailableVersions.rbegin()->first,
+                        newItemAvailableVersions.rbegin()->second, 0);
+      versions.set("newest", newestVersion);
+
+      return versions;
    }
 
    void CUpdateManager::notifyNewUpdateAvailable() const

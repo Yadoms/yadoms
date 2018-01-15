@@ -833,7 +833,6 @@
 
             // Uninstall button
             var $uninstallButton = $line.find("div.action-buttons button.btn-uninstall");
-            debugger;
             if (item.versions.installed) {
                 $uninstallButton.removeClass("disabled");
                 $uninstallButton.unbind('click').bind('click', function () {
