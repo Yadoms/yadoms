@@ -832,10 +832,17 @@
                 $line.find("div.btn-install button.btn-expand").addClass("disabled");
 
             // Uninstall button
-            if (item.versions.installed)
-                $line.find("button.btn-uninstall").removeClass("disabled");
-            else
-                $line.find("button.btn-uninstall").addClass("disabled");
+            var $uninstallButton = $line.find("div.action-buttons button.btn-uninstall");
+            debugger;
+            if (item.versions.installed) {
+                $uninstallButton.removeClass("disabled");
+                $uninstallButton.unbind('click').bind('click', function () {
+                    askForRemove(objectType, itemType, item, objectType + "s/" + itemType);
+                });
+            } else {
+                $uninstallButton.addClass("disabled");
+                $uninstallButton.unbind('click');
+            }
 
             // Show new version indicator (if module already installed)
             if (item.versions.installed && newestVersionLabel) {
@@ -924,22 +931,23 @@
     /**
      * Ask for a confirmation of a remove of an item
      */
-    function askForRemove(objectType, item) {
+    function askForRemove(objectType, itemType, item, i18nBasePath) {
         assert(!isNullOrUndefined(objectType), "objectType must be defined");
         assert(!isNullOrUndefined(item), "item must be defined");
+        assert(!isNullOrUndefined(i18nBasePath), "i18nBasePath must be defined");
 
         Yadoms.modals.confirmation.loadAsync()
             .done(function () {
                 Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
                     $.t("modals.dashboard.sub-windows.install-update.generic.confirmRemoveTitle"),
                     $.t("modals.dashboard.sub-windows.install-update.generic.confirmRemove", {
-                        objectName: $.t(objectType + "s/" + item.type + ":name", {
-                            defaultValue: item.package.name
-                        })
+                        objectName: $.t(i18nBasePath + ":name", {
+                            defaultValue: itemType
+                        }),
                     }),
                     function () {
                         //the user has confirmed the action
-                        UpdateInformationManager.remove(objectType, item.type)
+                        UpdateInformationManager.remove(objectType, itemType)
                             .done(function (data) {
                                 installUpdateRemoveCallback(objectType, itemType, item, data.taskId);
                             })

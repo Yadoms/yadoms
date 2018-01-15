@@ -608,7 +608,6 @@ namespace update
                                                             return availableVersionForItem.get<std::string>(
                                                                "version") == newestVersionLabel;
                                                          });
-            newestVersionData->printToLog(YADOMS_LOG(debug));
             item.set("iconUrl", newestVersionData->get<std::string>("previewUrl"));
             item.set("versions", versions);
 
