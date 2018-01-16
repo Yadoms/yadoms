@@ -95,7 +95,7 @@ function numericDisplayViewModel() {
                if (data.date!=="")
                   self.lastReceiveDate(moment(data.date).calendar().toString());
                else
-                  self.lastReceiveDate($.t("widgets/numeric-display:NoAcquisition"));
+                  self.lastReceiveDate($.t("widgets.numeric-display:NoAcquisition"));
             }
         }
     };

@@ -125,7 +125,6 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
             if (!isNullOrUndefined(e)) {
                 var websocketData = JSON.parse(e.data);
                 if (!isNullOrUndefined(websocketData)) {
-                   console.log ("websocketData : ", websocketData);
                     switch (websocketData.type.toLowerCase()) {
                         case "acquisitionupdate":
                            $(document).trigger("acquisitionupdate", websocketData);

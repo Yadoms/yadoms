@@ -125,8 +125,8 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
                type:
                {
                   type: "comboSection", 
-                  name: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.title", { defaultValue: $.t("configuration.manually-device-model.title") }), 
-                  name: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.description", { defaultValue: $.t("configuration.manually-device-model.description") }), 
+                  name: $.t("plugins." + self.type + ":deviceConfiguration.staticConfigurationSchema.title", { defaultValue: $.t("configuration.manually-device-model.title") }), 
+                  name: $.t("plugins." + self.type + ":deviceConfiguration.staticConfigurationSchema.description", { defaultValue: $.t("configuration.manually-device-model.description") }), 
                   content : {}
                }
             };
@@ -136,10 +136,10 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
                      if(schema[k].types[typeName].canBeCreatedManually == "true") {
                         tmp.type.content[typeName] = {
                            type: "section",
-                           name: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".types." + typeName + ".title", { defaultValue: typeName}),
-                           description: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".types." + typeName + ".description", { defaultValue: ""}),
+                           name: $.t("plugins." + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".types." + typeName + ".title", { defaultValue: typeName}),
+                           description: $.t("plugins." + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".types." + typeName + ".description", { defaultValue: ""}),
                            content: schema[k].content,
-                           i18nBasePath: "plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas.",
+                           i18nBasePath: "plugins." + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas.",
                            i18nKey: k
                         };
                      }

@@ -75,7 +75,7 @@
       var failToLoadPluginPackage = pi.package === null || pi.package === undefined || pi.package.failToLoad === true;
 
       var type = "<img src=\"plugins/" + pi.type + "/icon.png\" class=\"img-thumbnail dashboard-table-icon\">&nbsp;&nbsp;" +
-                  "<span>" + $.t("plugins/" + pi.type + ":name", { defaultValue: pi.package.name }) + "</span>";
+                  "<span>" + $.t("plugins." + pi.type + ":name", { defaultValue: pi.package.name }) + "</span>";
 
       var autoStartCommand = "<input class=\"cb-autoStart\" type=\"checkbox\">";
       if (failToLoadPluginPackage === true)
@@ -204,7 +204,7 @@
                   //create DOM
                   var extraQueryButton = "<ul class=\"dropdown-menu dropdown-extraqueries\">";
                   $.each(extraQueries, function(index, values) {
-                        extraQueryButton += "<li><a href=\"#\" class=\"btn-extraQuery-" +index +"\"><span class=\"extra-query-icon " +values.iconClass +"\"></span>&nbsp;<span data-i18n=\"plugins/" +pi.type +":extraQueries." +index +".name\"></span>" +(values.commandData ? "..." : "") +"</a></li>";
+                        extraQueryButton += "<li><a href=\"#\" class=\"btn-extraQuery-" +index +"\"><span class=\"extra-query-icon " +values.iconClass +"\"></span>&nbsp;<span data-i18n=\"plugins." +pi.type +":extraQueries." +index +".name\"></span>" +(values.commandData ? "..." : "") +"</a></li>";
                   });
                   extraQueryButton += "</ul>";
 
@@ -382,7 +382,7 @@
                         // 1. try plugin one
                         // 2. try core
                         // 3. try directly
-                        var translatedMessage = $.t("plugins/" + pi.type + ":" + taskUpdateInformation.message, {
+                        var translatedMessage = $.t("plugins." + pi.type + ":" + taskUpdateInformation.message, {
                            defaultValue: $.t("core." + taskUpdateInformation.message, {
                               defaultValue: $.t(taskUpdateInformation.message), 
                               extraquery : $.t(taskUpdateInformation.name)
@@ -520,7 +520,7 @@
       i18nOpt.defaultValue = $.t(messageId, i18nOpt); //define default value parameter (for step 2)
       
       if(messageId && messageId !== "") {
-         return $.t("plugins/" + pluginInstance.type + ":customLabels.pluginState." + messageId, i18nOpt); //step 1
+         return $.t("plugins." + pluginInstance.type + ":customLabels.pluginState." + messageId, i18nOpt); //step 1
       }
       return i18nOpt.defaultValue;      
    }
@@ -543,7 +543,7 @@
 	
 	function createPlugin(packageName, pluginType) {
 	
-	   var pi = new PluginInstance(null, $.t("plugins/" + pluginType.type + ":name", { defaultValue: pluginType.package.name }), pluginType.type, "", 1, "user");
+	   var pi = new PluginInstance(null, $.t("plugins." + pluginType.type + ":name", { defaultValue: pluginType.package.name }), pluginType.type, "", 1, "user");
 	
 	   pi.package = pluginType.package;
 	   

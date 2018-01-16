@@ -42,7 +42,7 @@
 
         //we haven't any other configuration
         //we append classic configuration
-        var configMgr = new ConfigurationControlManager(schema, device.configuration, "plugins/" + device.attachedPlugin.type + ":deviceConfiguration.", $modalBody);
+        var configMgr = new ConfigurationControlManager(schema, device.configuration, "plugins." + device.attachedPlugin.type + ":deviceConfiguration.", $modalBody);
 
         //i18n
         $modalBody.i18n();

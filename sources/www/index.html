@@ -110,7 +110,9 @@
     <script src="libs/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
     <script src="libs/bootstrap/js/bootstrap.min.js"></script>
     <script src="libs/knockout/js/knockout-3.4.0.js"></script>
-    <script src="libs/i18next/js/i18next-1.11.2.min.js"></script>
+    <script src="libs/i18next/js/i18next.min.js"></script>
+    <script src="libs/i18next/js/jquery-i18next.min.js"></script>
+    <script src="libs/i18next/js/i18nextXHRBackend.min.js"></script>
     <script src="libs/lazyload/js/lazyload.min.js"></script>
     <script src="libs/moment.js/js/moment-with-langs.min.js"></script>
     <script src="libs/moment.js/js/moment-timezone.min.js"></script>
@@ -127,6 +129,7 @@
     <script src="libs/markdown-it/markdown-it-for-inline.min.js"></script>
     <script src="libs/lodash/lodash.min.js"></script>
 
+    <script src="js/i18n-manager.js"></script>
     <script src="js/jquery-extensions.js"></script>
     <script src="js/knock-out-extenders.js"></script>
     <script src="js/iso-language-codes.js"></script>
@@ -231,16 +234,8 @@
              Yadoms.modals.recipientConfigure = new LazyLoaderManager("modals/recipient_configure.html");
 
              //we start i18n engine
-             var option = {
-                 resGetPath: "locales/__lng__.json",
-                 fallbackLng: "en",
-                 useDataAttrOptions: true,
-                 debug: false,
-                 fallbackNS: "translation",
-                 load: 'unspecific',
-                 getAsync: false
-             };
-             i18n.init(option, function() {
+             i18nManager.init()
+             .done(function() {
                  //we get install/firstStart key to have information if firstStart has already been done
                  ConfigurationManager.get(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart)
                      .done(function() {
@@ -491,11 +486,11 @@
                       $.whenAll(deferredArray)
                          .always(function() {
                             //we set the right language
-                            i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
+                            i18next.changeLanguage(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
                                 $("html").i18n();
                                 moment.lang(window.navigator.userLanguage || window.navigator.language);
                                 waitForServerReady();
-                            });
+                            });                            
                          });
                       }
               })

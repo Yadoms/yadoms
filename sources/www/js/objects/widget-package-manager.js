@@ -15,21 +15,25 @@ function WidgetPackageManager(){}
 WidgetPackageManager.packageList = [];
 
 WidgetPackageManager.factory = function(json) {
+   
+   var d = new $.Deferred();
+
    assert(!isNullOrUndefined(json), "json must be defined");
    assert(!isNullOrUndefined(json.type), "json.type must be defined");
 
    var wp = new WidgetPackage();
    wp.package = json;
    wp.type = json.type;
-   //we get i18n data
-   i18n.options.resGetPath = '__ns__/locales/__lng__.json';
-   i18n.loadNamespace("widgets/" + json.type);
-   //we restore the resGetPath
-   i18n.options.resGetPath = "locales/__lng__.json";
-
+   //we manage i18n
+   i18nManager.loadNamespace("widgets", json.type)
+   .done(function() {
    wp.viewAnViewModelHaveBeenDownloaded = false;
+      d.resolve(wp);      
+   })
+   .fail(d.reject);
 
-   return wp;
+   return d.promise();
+
 };
 
 WidgetPackageManager.packageList = [];
@@ -43,19 +47,26 @@ WidgetPackageManager.getAll = function () {
          //we add it to the package list
          var newWidgetPackages = [];
 
+         var deferredArray = [];
          $.each(data.package, function(index, value) {
-            try {
-               newWidgetPackages.push(WidgetPackageManager.factory(value));
-            } catch (err) {
+            var pck = WidgetPackageManager.factory(value);
+            deferredArray.push(pck);
+            pck.done(function(wp) {
+               newWidgetPackages.push(wp);
+            })
+            .fail(function(f) {
                notifyError($.t("objects.widgetPackageManager.incorrectPackage"), value);
-            }
+         });
          });
          
+         
+        $.whenAll(deferredArray)
+         .done(function() {
          //
          $.each(newWidgetPackages, function(index, newPackage) {
             if(WidgetPackageManager.packageList[newPackage.type]) {
                //if already exists and newer
-               if(newPackage.package.version != WidgetPackageManager.packageList[newPackage.type].package.version) {
+                  if(newPackage.version != WidgetPackageManager.packageList[newPackage.type].version) {
                   WidgetPackageManager.packageList[newPackage.type] = newPackage;
                } else {
                   //already exist, same version, so do nothing
@@ -73,6 +84,8 @@ WidgetPackageManager.getAll = function () {
          }
 
          d.resolve();
+         });        
+
       })
       .fail(d.reject);
    return d.promise();

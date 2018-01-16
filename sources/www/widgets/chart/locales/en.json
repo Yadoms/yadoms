@@ -7,9 +7,9 @@
   "loadingData": "Loading data",
   "RangeTooBroad": "Range is too broad",
   "noAvailableData": "No available data for the selected range",
-  "formatNotSupported": "This format __format__ is not supported",
-  "deviceNotFound": "Device Id __Id__ not found",
-  "keywordNotFound" : "Data Id __Id__ not found",
+  "formatNotSupported": "This format {{format}} is not supported",
+  "deviceNotFound": "Device Id {{Id}} not found",
+  "keywordNotFound" : "Data Id {{Id}} not found",
   "configurationSchema": {
     "interval": {
       "name": "Default interval of the chart",

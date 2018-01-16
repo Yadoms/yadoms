@@ -224,7 +224,7 @@ DeviceManager.getConfigurationSchema = function(device) {
                                var config = deviceConfig.staticConfigurationSchema.schemas[k];
                                if(config && config.content) {
                                   for(var l in config.content) {
-                                     config.content[l].i18nBasePath = "plugins/" + device.attachedPlugin.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".content.";
+                                     config.content[l].i18nBasePath = "plugins." + device.attachedPlugin.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".content.";
                                   }                            
                                   schema = _.merge(schema, config.content);
                                }

@@ -1,0 +1,3 @@
+i18next v10.2.2
+
+https://github.com/i18next/i18next/releases/tag/v10.2.2

@@ -426,17 +426,12 @@ function updateWidgetPolling(widget) {
 function updateWidgetPollingByKeywordsId(keywordIds) {
     var d = new $.Deferred();
     
-    console.log ("keywordIds : ", keywordIds);
     if (!isNullOrUndefined(keywordIds)) {
        if (keywordIds!=0) // only if this list is not empty
        {
           AcquisitionManager.getLastValues(keywordIds)
-          .done(function (data) {
-             console.log ("return of updateWidgetPollingByKeywordsId : ", data);
-             d.resolve(data);
-          })
+          .done(d.resolve)
           .fail(function (error) {
-             debugger;
              notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for widget = " + keywordIds }), error);
              d.reject(error);
           });

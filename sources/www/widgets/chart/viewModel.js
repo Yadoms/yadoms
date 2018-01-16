@@ -314,25 +314,25 @@ function chartViewModel() {
                 displayTitle: true,
                 batteryItem: false,
                 items: [
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"widgets/chart:navigator.hour\"/></div>" },
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"widgets/chart:navigator.day\"/></div>"},
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\"><span data-i18n=\"widgets/chart:navigator.week\"/></div>"},
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\"><span data-i18n=\"widgets/chart:navigator.month\"/></div>"},
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\"><span data-i18n=\"widgets/chart:navigator.half_year\"/></div>"},
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets/chart:navigator.year\"/></div>" },
+                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"widgets.chart:navigator.hour\"/></div>" },
+                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"widgets.chart:navigator.day\"/></div>"},
+                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\"><span data-i18n=\"widgets.chart:navigator.week\"/></div>"},
+                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\"><span data-i18n=\"widgets.chart:navigator.month\"/></div>"},
+                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\"><span data-i18n=\"widgets.chart:navigator.half_year\"/></div>"},
+                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets.chart:navigator.year\"/></div>" },
                 { separator: ""},
                 { custom: "<div class=\"widget-toolbar-button export-btn dropdown\">" +
                              "<a id=\"chartExportMenu" + self.widget.id + "\" data-target=\"#\" class=\"widget-toolbar-button export-btn dropdown\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">" +
                                  "<span class=\"fa fa-bars\"/>" +
                              "</a>" +
                              "<ul class=\"dropdown-menu\" aria-labelledby=\"chartExportMenu" + self.widget.id + "\">" +
-                                 "<li><span class=\"print-command\" data-i18n=\"widgets/chart:export.print\"></span></li>" +
+                                 "<li><span class=\"print-command\" data-i18n=\"widgets.chart:export.print\"></span></li>" +
                                  "<li role=\"separator\" class=\"divider\"></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.png\" mime-type=\"image/png\"></span></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.jpeg\" mime-type=\"image/jpeg\"></span></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.svg\" mime-type=\"image/svg+xml\"></span></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.csv\" mime-type=\"text/csv\"></span></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.xls\" mime-type=\"application/vnd.ms-excel\"></span></li>" +
+                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.png\" mime-type=\"image/png\"></span></li>" +
+                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.jpeg\" mime-type=\"image/jpeg\"></span></li>" +
+                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.svg\" mime-type=\"image/svg+xml\"></span></li>" +
+                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.csv\" mime-type=\"text/csv\"></span></li>" +
+                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.xls\" mime-type=\"application/vnd.ms-excel\"></span></li>" +
                              "</ul>" +
                           "</div>"
                     }
@@ -356,7 +356,7 @@ function chartViewModel() {
                    });
                 }
                 catch(error){
-                   notifyError($.t("widgets/chart:formatNotSupported", {format: $(e.currentTarget).attr("mime-type")}));
+                   notifyError($.t("widgets.chart:formatNotSupported", {format: $(e.currentTarget).attr("mime-type")}));
                 }
             });
             
@@ -520,7 +520,7 @@ function chartViewModel() {
                }
                
                if (self.differentialDisplay[index] && device.content.PlotType === "arearange"){
-                  notifyError($.t("widgets/chart:incompatibilityDifferential"), "error");
+                  notifyError($.t("widgets.chart:incompatibilityDifferential"), "error");
                   self.incompatibility = true;
                   return;
                }
@@ -558,7 +558,7 @@ function chartViewModel() {
                   if (self.isEnumVariable(index)){
                       $.each(self.keywordInfo[index].typeInfo.values, function (index2, value) {
                          console.log("self.keywordInfo[index] :", self.keywordInfo[index2]);
-                         self.keywordInfo[index].typeInfo.values[index2] = $.t("plugins/" + self.pluginInstanceType[index] + ":enumerations." + self.keywordInfo[index].typeInfo.name + ".values." + value, { defaultValue:value} );
+                         self.keywordInfo[index].typeInfo.values[index2] = $.t("plugins." + self.pluginInstanceType[index] + ":enumerations." + self.keywordInfo[index].typeInfo.name + ".values." + value, { defaultValue:value} );
                       });           
                   }
               });
@@ -608,7 +608,7 @@ function chartViewModel() {
             self.chart.interval = interval;
 
             try {
-              self.chart.showLoading($.t("widgets/chart:loadingData"));
+              self.chart.showLoading($.t("widgets.chart:loadingData"));
               var deviceIsSummary = [];
               
               //ensure all series and axis are removed (may cause some crash if not done)
@@ -683,7 +683,7 @@ function chartViewModel() {
                                       v = parseFloat(value.key);
                                   } else {
                                      self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
-                                     notifyError($.t("widgets/chart:errorInitialization"));
+                                     notifyError($.t("widgets.chart:errorInitialization"));
                                   }
                                   
                                   // The differential display is disabled if the type of the data is enum or boolean
@@ -715,7 +715,7 @@ function chartViewModel() {
                                       vMax = parseFloat(value.max);
                                   } else {
                                      self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
-                                     notifyError($.t("widgets/chart:errorInitialization"));
+                                     notifyError($.t("widgets.chart:errorInitialization"));
                                   }
 
                                   //we manage the missing data
@@ -872,7 +872,7 @@ function chartViewModel() {
                           }
                       })
                       .fail(function (error) {
-                         notifyError($.t("widgets/chart:errorDuringGettingDeviceData"), error);
+                         notifyError($.t("widgets.chart:errorDuringGettingDeviceData"), error);
                          d.reject();
                       });
                   }
@@ -882,7 +882,7 @@ function chartViewModel() {
                  d.resolve();
               })
              .fail(function (error) {
-                notifyError($.t("widgets/chart:errorDuringGettingDeviceData"), error);
+                notifyError($.t("widgets.chart:errorDuringGettingDeviceData"), error);
                 d.reject();
              });
             } catch (err) {
@@ -905,11 +905,11 @@ function chartViewModel() {
 
        // If for all data, length == 0, we display no Data Available
        if (noAvailableData && !self.incompatibility && !self.rangeTooLarge) {
-          self.chart.showLoading($.t("widgets/chart:noAvailableData"));
+          self.chart.showLoading($.t("widgets.chart:noAvailableData"));
        }else if (self.incompatibility) {
-          self.chart.showLoading($.t("widgets/chart:incompatibilityDifferential"));
+          self.chart.showLoading($.t("widgets.chart:incompatibilityDifferential"));
        }else if (self.rangeTooLarge && noAvailableData) {
-          self.chart.showLoading($.t("widgets/chart:RangeTooBroad"));                  // Display that the range is too large
+          self.chart.showLoading($.t("widgets.chart:RangeTooBroad"));                  // Display that the range is too large
        }else {
           self.chart.hideLoading();
         }

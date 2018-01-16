@@ -670,7 +670,7 @@
                }
             }
             else if(keyword.type.toLowerCase() === "enum") {
-               var translatedEnumValue = $.t("plugins/" + pluginInstance.type + ":enumerations." + keyword.typeInfo.name + ".values." + acquisition.value, { defaultValue:acquisition.value} );
+               var translatedEnumValue = $.t("plugins." + pluginInstance.type + ":enumerations." + keyword.typeInfo.name + ".values." + acquisition.value, { defaultValue:acquisition.value} );
                keywordValue = "<span>" + translatedEnumValue + "</span>";
             }
             else if(keyword.type.toLowerCase() === "json") {

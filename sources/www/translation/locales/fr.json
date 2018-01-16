@@ -78,8 +78,8 @@
     },
     "plugins": {
       "extraquery": {
-        "success": "__extraquery__ a réussi",
-        "fail": "Echec de __extraquery__"
+        "success": "{{extraquery}} a réussi",
+        "fail": "Echec de {{extraquery}}"
       }
     }
   },
@@ -109,13 +109,13 @@
     },
     "actions": {
       "loadingPages": "Chargement des pages ...",
-      "loadingWidgetsOfPage": "Chargement des widgets de la page __pageName__ ...",
+      "loadingWidgetsOfPage": "Chargement des widgets de la page {{pageName}} ...",
       "firstRunConfiguration": "Premier démarrage"
     },
     "customization": {
       "addNewPage": "Ajouter une nouvelle page",
       "addNewWidget": "Ajouter un nouveau widget",
-      "dropHereToMovePage": "Glisser ici pour déplacer sur la page __pageName__",
+      "dropHereToMovePage": "Glisser ici pour déplacer sur la page {{pageName}}",
       "moveToLeft": "Déplacer à gauche",
       "moveToRight": "Déplacer à droite",
       "rename": "Renommer",
@@ -142,8 +142,8 @@
   "404Page": {
     "title": "Page introuvable - Erreur 404",
     "line1": "Désolé, mais la page que vous recherchez n'a pas été trouvée. Vérifiez s'il n'y a pas d'erreur dans l'URL.",
-    "line2": "Vous allez être automatiquement redirigé vers la page d'accueil de Yadoms dans __count__ seconde ou appuyez sur le bouton ci-dessous.",
-    "line2_plural": "Vous allez être automatiquement redirigé vers la page d'accueil de Yadoms dans __count__ secondes ou appuyez sur le bouton ci-dessous.",
+    "line2": "Vous allez être automatiquement redirigé vers la page d'accueil de Yadoms dans {{count}} seconde ou appuyez sur le bouton ci-dessous.",
+    "line2_plural": "Vous allez être automatiquement redirigé vers la page d'accueil de Yadoms dans {{count}} secondes ou appuyez sur le bouton ci-dessous.",
     "goingToHome": "Retour à l'accueil ...",
     "takeMeHome": "Retourner à l'accueil"
   },
@@ -161,7 +161,7 @@
       "getMore": "Obtenir des widgets",
       "errorDuringCreatingWidget": "Erreur à la création du widget",
       "widgetSuccessfullyCreated": "Widget créé",
-      "unableToCreateWidgetOfType": "Impossible de créer le widget du type __widgetType__"
+      "unableToCreateWidgetOfType": "Impossible de créer le widget du type {{widgetType}}"
     },
     "configure-widget": {
       "title": "Configuration du widget",
@@ -170,26 +170,26 @@
         "description": "Texte affiché au-dessus du widget"
       },
       "errorDuringGettingDeviceList": "Erreur lors de la récupération de la liste des équipements",
-      "errorDuringGettingDeviceListMatchCapacity": "Erreur lors de la récupération de la liste des équipements ayant la capacité __expectedCapacityAccess__ __expectedCapacity__",
-      "errorDuringGettingDeviceListMatchCapacityType": "Erreur lors de la récupération de la liste des équipements ayant la capacité __expectedCapacityAccess__ __expectedCapacityType__",
-      "errorDuringGettingDeviceListMatchKeywordAccess": "Erreur lors de la récupération de la liste des équipements ayant une données en accès __expectedKeywordAccess__",
+      "errorDuringGettingDeviceListMatchCapacity": "Erreur lors de la récupération de la liste des équipements ayant la capacité {{expectedCapacityAccess}} {{expectedCapacity}}",
+      "errorDuringGettingDeviceListMatchCapacityType": "Erreur lors de la récupération de la liste des équipements ayant la capacité {{expectedCapacityAccess}} {{expectedCapacityType}}",
+      "errorDuringGettingDeviceListMatchKeywordAccess": "Erreur lors de la récupération de la liste des équipements ayant une données en accès {{expectedKeywordAccess}}",
       "errorDuringGettingKeywordList": "Erreur lors de la récupération de la liste des données",
-      "errorDuringGettingKeywordListMatchCapacity": "Erreur lors de la récupération de la liste des données équipement ayant la capacité __expectedCapacityAccess__ __expectedCapacity__",
+      "errorDuringGettingKeywordListMatchCapacity": "Erreur lors de la récupération de la liste des données équipement ayant la capacité {{expectedCapacityAccess}} {{expectedCapacity}}",
       "errorDuringGettingSerialPortList": "Erreur lors de la récupération de la liste des ports série"
     },
     "delete-widget": {
       "title": "Confirmation de la suppression du widget",
-      "text": "Cette opération va supprimer le widget de type __widgetType__. Continuer tout de même ?",
+      "text": "Cette opération va supprimer le widget de type {{widgetType}}. Continuer tout de même ?",
       "widgetSuccessfullyDeleted": "Widget supprimé avec succès",
       "errorDuringDeletingWidget": "Erreur pendant la suppression du widget",
-      "errorDuringDeletingWidgetNamed": "Erreur pendant la suppression du widget de type __widgetType__"
+      "errorDuringDeletingWidgetNamed": "Erreur pendant la suppression du widget de type {{widgetType}}"
     },
     "delete-page": {
       "title": "Confirmation de la suppression d'une page",
-      "text": "Cette opération va supprimer la page __pageName__ ainsi que tous les widgets qu'elle contient. Continuer tout de même ?",
+      "text": "Cette opération va supprimer la page {{pageName}} ainsi que tous les widgets qu'elle contient. Continuer tout de même ?",
       "pageSuccessfullyDeleted": "Page supprimée avec succès",
       "errorDuringDeletingPage": "Erreur pendant la suppression de la page",
-      "errorDuringDeletingPageNamed": "Erreur pendant la suppression de la page __pageName__",
+      "errorDuringDeletingPageNamed": "Erreur pendant la suppression de la page {{pageName}}",
       "deletingLastPageNotAllowed": "La suppression de la dernière page n'est pas autorisé"
     },
     "modify-page": {
@@ -198,9 +198,9 @@
       "createNewPageTitle": "Créer une nouvelle page",
       "createNewPageValidationButton": "Créer",
       "errorDuringModifyingPage": "Erreur pendant la modification de la page",
-      "errorDuringModifyingPageNamed": "Erreur pendant la modification de la page __pageName__",
+      "errorDuringModifyingPageNamed": "Erreur pendant la modification de la page {{pageName}}",
       "errorDuringCreatingPage": "Erreur pendant la création de la page",
-      "errorDuringCreatingPageNamed": "Erreur pendant la création de la page __pageName__",
+      "errorDuringCreatingPageNamed": "Erreur pendant la création de la page {{pageName}}",
       "placeholder": "Saisissez un nom de page"
     },
     "add-plugin": {
@@ -233,13 +233,13 @@
     },
     "delete-device": {
       "title": "Mettre l'équipement en liste noire",
-      "text": "Cette opération va mettre l'équipement __deviceName__ en liste noire, et supprimer son historique de données.",
+      "text": "Cette opération va mettre l'équipement {{deviceName}} en liste noire, et supprimer son historique de données.",
       "explanation": "Un équipement en liste noire sera ignoré par Yadoms, même si le matériel associé continue d'envoyer des données. Un équipement en liste noire peut également être restauré. Mettez un équipement en liste noire si le capteur associé ne vous intéresse pas (capteur ne vous appartenant pas par exemple). Supprimer définitivement un équipement si vous ne disposez plus du capteur associé.",
       "checkbox": "Supprimer définitivement"
     },
     "confirm-delete-device": {
       "title": "Supprimer définitivement l'équipement",
-      "text": "Cette opération va supprimer définitivement l'équipement __deviceName__, ainsi que son historique de données."
+      "text": "Cette opération va supprimer définitivement l'équipement {{deviceName}}, ainsi que son historique de données."
     },
     "configure-plugin": {
       "title": "Configuration du plugin",
@@ -249,9 +249,9 @@
         "regexErrorMessage": "Le nom du plugin doit contenir au minimum 1 caractère"
       },
       "pluginSuccessfullyCreated": "Plugin créé",
-      "pluginFailToCreate": "Impossible de créer le plugin __pluginName__",
-      "pluginFailToDelete": "Impossible de supprimer le plugin __pluginName__",
-      "pluginFailToConfigure": "Impossible de configurer le plugin __pluginName__"
+      "pluginFailToCreate": "Impossible de créer le plugin {{pluginName}}",
+      "pluginFailToDelete": "Impossible de supprimer le plugin {{pluginName}}",
+      "pluginFailToConfigure": "Impossible de configurer le plugin {{pluginName}}"
     },
     "extra-queries": {
       "title": "Envoi d'une extra requête au plugin"
@@ -359,7 +359,7 @@
     },
     "show-log-plugin": {
       "title": "Journal d'une instance de plugin",
-      "failToGetLog": "Impossible d'obtenir le journal pour __pluginName__"
+      "failToGetLog": "Impossible d'obtenir le journal pour {{pluginName}}"
     },
     "qrcode": {
       "title": "QR Code de Yadoms",
@@ -492,7 +492,7 @@
           "delete": "Supprimer le plugin",
           "log": "Consulter le journal",
           "errorGettingPluginList": "Erreur lors de la récupération de la liste des plugins",
-          "confirmPluginDeletion": "Confirmez-vous la suppression du plugin __pluginName__ ?"
+          "confirmPluginDeletion": "Confirmez-vous la suppression du plugin {{pluginName}} ?"
         },
         "recipients": {
           "title": "Destinataires",
@@ -500,7 +500,7 @@
           "new": "Créer un destinataire",
           "edit": "Modifier le destinataire",
           "delete": "Supprimer le destinataire",
-          "confirmRecipientDeletion": "Confirmez-vous la suppression du destinataire __firstName__ __lastName__ ?",
+          "confirmRecipientDeletion": "Confirmez-vous la suppression du destinataire {{firstName}} {{lastName}} ?",
           "table": {
             "firstName": "Prénom",
             "lastName": "Nom",
@@ -532,9 +532,9 @@
           "restore": "Restauration de l'équipement",
           "errorGettingDeviceList": "Erreur lors de la récupération de la liste des équipements",
           "errorGettingDeviceDetailsList": "Erreur lors de la récupération des détails de l'équipement",
-          "errorUpdatingKeyword": "Erreur lors de la mise à jour de la donnée __keyword__",
-          "errorDeletingDevice": "Erreur lors de la suppression/restauration de l'équipement __device__",
-          "errorBlacklistingKeyword": "Erreur lors de la suppression/restauration de la donnée __keyword__",
+          "errorUpdatingKeyword": "Erreur lors de la mise à jour de la donnée {{keyword}}",
+          "errorDeletingDevice": "Erreur lors de la suppression/restauration de l'équipement {{device}}",
+          "errorBlacklistingKeyword": "Erreur lors de la suppression/restauration de la donnée {{keyword}}",
           "noAcquisition": "Aucune acquisition",
           "showBlacklistedDevices": "Afficher les équipements supprimés"
         },
@@ -557,23 +557,23 @@
           },
           "edit": "Modifier la règle",
           "delete": "Supprimer la règle",
-          "confirmDeletion": "Confirmez-vous la suppression de la règle __name__ ?",
+          "confirmDeletion": "Confirmez-vous la suppression de la règle {{name}} ?",
           "log": "Consulter le journal",
-          "confirmLogDeletion": "Confirmez-vous la suppression du journal de la règle __name__ ?",
+          "confirmLogDeletion": "Confirmez-vous la suppression du journal de la règle {{name}} ?",
           "ruleSuccessfullyCreated": "Règle créée",
           "ruleSuccessfullyUpdated": "Règle mise à jour",
           "ruleDeleted": "Règle supprimée",
-          "ruleCreationError": "Impossible de créer la règle __rule__.",
-          "ruleUpdateError": "Impossible de mettre à jour la règle __rule__.",
-          "ruleEditError": "Impossible d'éditer la règle __rule__.",
-          "ruleDeletionError": "Impossible de supprimer la règle __rule__.",
-          "ruleStopError": "Impossible d'arrêter la règle __rule__.",
-          "ruleStartError": "Impossible de démarrer la règle __rule__.",
+          "ruleCreationError": "Impossible de créer la règle {{rule}}.",
+          "ruleUpdateError": "Impossible de mettre à jour la règle {{rule}}.",
+          "ruleEditError": "Impossible d'éditer la règle {{rule}}.",
+          "ruleDeletionError": "Impossible de supprimer la règle {{rule}}.",
+          "ruleStopError": "Impossible d'arrêter la règle {{rule}}.",
+          "ruleStartError": "Impossible de démarrer la règle {{rule}}.",
           "pluginListingError": "Impossible de lister les plugins.",
           "ruleListingError": "Impossible de lister les règles.",
           "ruleInterpreterListingError": "Impossible de lister les interpréteurs de règles.",
-          "ruleGetLogError": "Impossible d'obtenir le journal de la règle __rule__.",
-          "ruleDeleteLogError": "Impossible de supprimer le journal de la règle __rule__.",
+          "ruleGetLogError": "Impossible d'obtenir le journal de la règle {{rule}}.",
+          "ruleDeleteLogError": "Impossible de supprimer le journal de la règle {{rule}}.",
           "editors": {
             "code": {
               "name": "Code"
@@ -607,11 +607,11 @@
             "install": "Installation",
             "uninstall": "Désinstallation",
             "confirmUpdateTitle": "Confirmation de mise à jour",
-            "confirmUpdate": "Mettre à jour __objectName__ en version __version__ ?",
+            "confirmUpdate": "Mettre à jour {{objectName}} en version {{version}} ?",
             "confirmInstallTitle": "Confirmation d'installation",
-            "confirmInstall": "Installer __objectName__ en version __version__ ?",
+            "confirmInstall": "Installer {{objectName}} en version {{version}} ?",
             "confirmRemoveTitle": "Confirmer la désinstallation",
-            "confirmRemove": "Désinstaller __objectName__ ?"
+            "confirmRemove": "Désinstaller {{objectName}} ?"
           },
           "plugins": {
             "title": "Plugins"
@@ -659,7 +659,7 @@
           }
         }
       },
-      "unableToLoadSubWindow": "Impossible d'afficher la fenêtre __subWindowPath__"
+      "unableToLoadSubWindow": "Impossible d'afficher la fenêtre {{subWindowPath}}"
     },
     "confirmation": {
       "title": "Confirmation"
@@ -674,10 +674,10 @@
       "incorrectValue": "Valeur incorrecte",
       "onlyIntegerNumberAllowed": "Nombre entier attendu",
       "onlyNumberAllowed": "Nombre attendu",
-      "maxValueExceeded": "La valeur ne peut être supérieure à __maxValue__",
-      "minValueExceeded": "La valeur ne peut être inférieure à __minValue__",
-      "minNumberItemsRequired": "La liste doit contenir au moins __minValue__ éléments",
-      "maxNumberItemsAllowed": "La liste ne peut contenir plus de __maxValue__ éléments",
+      "maxValueExceeded": "La valeur ne peut être supérieure à {{maxValue}}",
+      "minValueExceeded": "La valeur ne peut être inférieure à {{minValue}}",
+      "minNumberItemsRequired": "La liste doit contenir au moins {{minValue}} éléments",
+      "maxNumberItemsAllowed": "La liste ne peut contenir plus de {{maxValue}} éléments",
       "required": "Une valeur est nécessaire"
     },
     "iconpicker-search-prompt": "Rechercher une icône..."
@@ -931,14 +931,14 @@
   },
   "objects": {
     "pluginInstance": {
-      "errorGettingState": "Erreur lors de la récupération de l'état du plugin __pluginName__",
-      "errorStarting": "Erreur lors du démarrage du plugin __pluginName__",
-      "errorStopping": "Erreur lors de l'arrêt du plugin __pluginName__",
-      "errorCreating": "Erreur lors de la création de __pluginName__",
-      "errorCreatingManuallyDevice": "Erreur lors de la création de __deviceName__",
-      "errorDeleting": "Erreur lors de la suppression de __pluginName__",
-      "errorGettingPackage": "Erreur lors de la récupération des informations de __pluginName__",
-      "errorUpdating": "Erreur lors de la mise à jour de __pluginName__",
+      "errorGettingState": "Erreur lors de la récupération de l'état du plugin {{pluginName}}",
+      "errorStarting": "Erreur lors du démarrage du plugin {{pluginName}}",
+      "errorStopping": "Erreur lors de l'arrêt du plugin {{pluginName}}",
+      "errorCreating": "Erreur lors de la création de {{pluginName}}",
+      "errorCreatingManuallyDevice": "Erreur lors de la création de {{deviceName}}",
+      "errorDeleting": "Erreur lors de la suppression de {{pluginName}}",
+      "errorGettingPackage": "Erreur lors de la récupération des informations de {{pluginName}}",
+      "errorUpdating": "Erreur lors de la mise à jour de {{pluginName}}",
       "errorGettingManuallyDeviceCreation": "Erreur lors de la récupération du plugin de création manuelle d'équipement",
       "errorApplyingBinding": "Erreur lors de l'application de la liaison de données"
     },
@@ -946,24 +946,24 @@
       "errorListing": "Erreur lors de la récupération de la liste des plugins"
     },
     "deviceManager": {
-      "errorGettingDeviceDetails": "Erreur lors de la récupération des détails de l'équipement __deviceName__",
-      "errorDeleting": "Erreur lors de la suppression de l'équipement __deviceName__",
-      "errorCreating": "Erreur lors de la création de l'équipement __deviceName__",
-      "errorUpdating": "Erreur lors de la mise à jour de l'équipement __deviceName__"
+      "errorGettingDeviceDetails": "Erreur lors de la récupération des détails de l'équipement {{deviceName}}",
+      "errorDeleting": "Erreur lors de la suppression de l'équipement {{deviceName}}",
+      "errorCreating": "Erreur lors de la création de l'équipement {{deviceName}}",
+      "errorUpdating": "Erreur lors de la mise à jour de l'équipement {{deviceName}}"
     },
     "lazyLoaderManager": {
-      "unableToLoadModal": "Impossible de charger le dialogue __modalPath__"
+      "unableToLoadModal": "Impossible de charger le dialogue {{modalPath}}"
     },
     "widgetManager": {
       "errorDuringModifyingWidget": "Erreur lors de la modification du widget",
-      "exceptionDuringCallConfigurationChanged": "Le widget __widgetType__ a généré une exception lors de l'appel à configurationChanged()",
-      "errorDuringModifyingWidgetNamed": "Erreur lors de la modification du widget du type __widgetType__",
+      "exceptionDuringCallConfigurationChanged": "Le widget {{widgetType}} a généré une exception lors de l'appel à configurationChanged()",
+      "errorDuringModifyingWidgetNamed": "Erreur lors de la modification du widget du type {{widgetType}}",
       "unableToGetWidgets": "Impossible d'obtenir les Widgets",
-      "partOfWidgetIsMissing": "Impossible d'obtenir une partie du widget __widgetName__. Les widgets de ce type ont été désactivés.",
-      "widgetHasGeneratedAnExceptionDuringCallingMethod": "Le widget __widgetName__ a généré une exception à l'appel de __methodName__()",
+      "partOfWidgetIsMissing": "Impossible d'obtenir une partie du widget {{widgetName}}. Les widgets de ce type ont été désactivés.",
+      "widgetHasGeneratedAnExceptionDuringCallingMethod": "Le widget {{widgetName}} a généré une exception à l'appel de {{methodName}}()",
       "errorDuringGettingDeviceInformation": "Erreur lors de la récupération des informations de l'équipement",
       "loadingWidgetsError": "Erreur lors du chargement d'un widget",
-      "widgetDisabled": "Le widget __widgetName__ a été désactivé car la configuration est incorrecte (équipement manquant ou supprimé)",
+      "widgetDisabled": "Le widget {{widgetName}} a été désactivé car la configuration est incorrecte (équipement manquant ou supprimé)",
       "unknownError" : "Erreur inconnue"
     },
     "widgetPackageManager": {
@@ -975,9 +975,9 @@
     },
     "ConfigurationManager": {
       "errorDuringGettingSystemConfiguration": "Erreur lors de la récupération de la configuration",
-      "errorDuringGettingConfiguration": "Erreur lors de la récupération de la configuration __section__.__key__",
-      "errorDuringCreatingConfiguration": "Erreur lors de la création de la configuration __section__.__key__",
-      "errorDuringUpdatingConfiguration": "Erreur lors de la mise à jour de la configuration __section__.__key__"
+      "errorDuringGettingConfiguration": "Erreur lors de la récupération de la configuration {{section}}.{{key}}",
+      "errorDuringCreatingConfiguration": "Erreur lors de la création de la configuration {{section}}.{{key}}",
+      "errorDuringUpdatingConfiguration": "Erreur lors de la mise à jour de la configuration {{section}}.{{key}}"
     },
     "interpreter": {
       "errorListingInterpreters": "Erreur lors du listing des interpréteurs de script"
@@ -998,8 +998,8 @@
       }
     },
     "update": {
-      "errorUpdating": "Erreur lors de la mise à jour de __objectName__",
-      "errorChecking": "Erreur lors de la vérification des mises à jour de __objectName__"
+      "errorUpdating": "Erreur lors de la mise à jour de {{objectName}}",
+      "errorChecking": "Erreur lors de la vérification des mises à jour de {{objectName}}"
     },
     "widget": {
       "errorSendingCommand": "Erreur lors de l'envoi de la commande"
@@ -1008,26 +1008,26 @@
       "errorListing": "Erreur lors de la récupération de la liste des serveurs"
     },
     "generic": {
-      "errorEditing": "Erreur lors de l'édition de __objectName__",
-      "errorUpdating": "Erreur lors de la mise à jour de __objectName__",
-      "errorDeleting": "Erreur lors de la suppression de __objectName__",
-      "errorCreating": "Erreur lors de la création de __objectName__",
-      "errorLoading": "Erreur lors du chargement de __objectName__",
-      "errorGetting": "Erreur lors du téléchargement de __objectName__",
-      "errorInstalling": "Erreur lors de l'installation de __objectName__",
-      "errorUninstalling": "Erreur lors de la désinstallation de __objectName__",
+      "errorEditing": "Erreur lors de l'édition de {{objectName}}",
+      "errorUpdating": "Erreur lors de la mise à jour de {{objectName}}",
+      "errorDeleting": "Erreur lors de la suppression de {{objectName}}",
+      "errorCreating": "Erreur lors de la création de {{objectName}}",
+      "errorLoading": "Erreur lors du chargement de {{objectName}}",
+      "errorGetting": "Erreur lors du téléchargement de {{objectName}}",
+      "errorInstalling": "Erreur lors de l'installation de {{objectName}}",
+      "errorUninstalling": "Erreur lors de la désinstallation de {{objectName}}",
       "retrievingData": "Récupération des données..."
     }
   },
   "eventLogger": {
-    "DefaultCode": "Evénement inconnu : __what__ généré par __who__",
-    "Started": "__who__ a démarré",
-    "Stopped": "__who__ s'est arrêté",
-    "Updated": "The __who__ a été mise à jour",
+    "DefaultCode": "Evénement inconnu : {{what}} généré par {{who}}",
+    "Started": "{{who}} a démarré",
+    "Stopped": "{{who}} s'est arrêté",
+    "Updated": "The {{who}} a été mise à jour",
     "YadomsCrash": "yadoms a rencontré une erreur et s'est arrêté",
-    "PluginCrash": "__who__ a rencontré une erreur et s'est arrêté",
-    "TaskFailed": "La tâche __who__ a rencontré une erreur et s'est arrêtée",
-    "RuleFailed": "La règle d'automatisation __who__ a échoué"
+    "PluginCrash": "{{who}} a rencontré une erreur et s'est arrêté",
+    "TaskFailed": "La tâche {{who}} a rencontré une erreur et s'est arrêtée",
+    "RuleFailed": "La règle d'automatisation {{who}} a échoué"
   },
   "webSockets": {
     "update": {
@@ -1083,7 +1083,7 @@
       "failToCommunicateWithHardware": "Impossible de communiquer avec le matériel. Vérififez la présence du matériel ainsi que sa configuration",
       "connectionClosed": "Connexion avec le matériel terminée (liaison série)",
       "connectionError": "Erreur de connexion avec le matériel (liaison série)",
-      "failToOpen": "Impossible d'ouvrir la liaison série __port__. Vérififez le matériel ou la configuration."
+      "failToOpen": "Impossible d'ouvrir la liaison série {{port}}. Vérififez le matériel ou la configuration."
     }
   },
   "system": {
