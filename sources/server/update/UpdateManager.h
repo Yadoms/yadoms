@@ -100,6 +100,7 @@ namespace update
                                                                std::map<std::string, shared::CDataContainer> newer);
       static shared::CDataContainer buildNewVersionsNode(const std::map<std::string, shared::CDataContainer>& newItemAvailableVersions);
       void notifyNewUpdateAvailable() const;
+      bool checkDependencies(const shared::CDataContainer& dependencies) const;
 
    private:
       //-----------------------------------------------------------------------------
@@ -108,7 +109,7 @@ namespace update
       /// \param [out]  taskUid     The task identifier created if sucessfully started
       /// \return result (true/false)
       //-----------------------------------------------------------------------------   
-      bool startTask(boost::shared_ptr<task::ITask> task, std::string& taskUid) const;//TODO utilisé ?
+      bool startTask(boost::shared_ptr<task::ITask> task, std::string& taskUid) const;
 
       //-----------------------------------------------------------------------------
       /// \brief  Start a task
@@ -116,13 +117,13 @@ namespace update
       /// \return The task identifier created if sucessfully started
       /// \throw shared::exception::CException if task launch fails
       //-----------------------------------------------------------------------------   
-      std::string startTask(boost::shared_ptr<task::ITask> task) const;//TODO utilisé ?
+      std::string startTask(boost::shared_ptr<task::ITask> task) const;
 
 
       //-----------------------------------------------------------------------------
       /// \brief  Task scheduler
       //-----------------------------------------------------------------------------
-      boost::shared_ptr<task::CScheduler> m_taskScheduler;//TODO utilisé ?
+      boost::shared_ptr<task::CScheduler> m_taskScheduler;
 
 
       boost::shared_ptr<pluginSystem::CManager> m_pluginManager;

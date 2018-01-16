@@ -368,6 +368,9 @@ namespace update
                      if (v == localVersion.second->getVersion())
                         continue;
 
+                     if (!checkDependencies(version.get<shared::CDataContainer>("dependencies")))
+                        continue;
+
                      shared::CDataContainer versionData;
                      versionData.set("downloadUrl", version.get<std::string>("downloadUrl"));
 
@@ -971,5 +974,26 @@ namespace update
                                                                          std::string(versionInfo->get<std::string>("md5Hash")))));
       //force to copy parameter because the versionToInstall is a reference and cannot be used "as is" in async task
       return startTask(task);
+   }
+
+   bool CUpdateManager::checkDependencies(const shared::CDataContainer& dependencies) const
+   {
+      //TODO :
+//| TREE START
+//|-type : rfxcom
+//|-name : RFXCom
+//|-description : RFXCom radio interface support (see http://rfxcom.com/)
+//|-version : 1.1.1-beta.1
+//|-author : Sébastien GALLOU
+//|-url : https://github.com/Yadoms/yadoms/wiki/Rfxcom
+//|-credits :
+//|-dependencies :
+//   |-yadoms :
+//      |-minimumVersion : 2.0.2
+//|-downloadUrl : http://www.yadoms.com/downloads/update/dev/plugins/windows/x86/rfxcom/1.1.1-beta.1/rfxcom.zip
+//|-md5Hash : 955f066996f3b38d6a5e12dd65178d57
+//|-iconUrl : http://www.yadoms.com/downloads/update/dev/plugins/windows/x86/rfxcom/1.1.1-beta.1/icon.png
+//| TREE END
+      return true;      
    }
 } // namespace update

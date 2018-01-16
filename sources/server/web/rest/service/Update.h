@@ -19,7 +19,7 @@ namespace web
             /// \brief  Constructor
             /// \param [in] updateManager   The update manager
             //-----------------------------------------------------------------------------      
-            CUpdate(boost::shared_ptr<update::CUpdateManager> updateManager);
+            explicit CUpdate(boost::shared_ptr<update::CUpdateManager> updateManager);
 
             //-----------------------------------------------------------------------------
             /// \brief  Destructor
@@ -43,15 +43,6 @@ namespace web
                                                     const std::string& requestContent) const;
 
             //-----------------------------------------------------------------------------
-            /// \brief  List all available versions of Yadoms
-            /// \param [in]   parameters        The url parameters
-            /// \param [in]   requestContent    The url content
-            /// \return the request result
-            //-----------------------------------------------------------------------------         
-            shared::CDataContainer availableYadomsVersions(const std::vector<std::string>& parameters,
-                                                           const std::string& requestContent) const;
-
-            //-----------------------------------------------------------------------------
             /// \brief  Update Yadoms to another version (upgrade or downgrade)
             /// \param [in]   parameters        The url parameters
             /// \param [in]   requestContent    The url content
@@ -59,16 +50,6 @@ namespace web
             //-----------------------------------------------------------------------------         
             shared::CDataContainer updateYadoms(const std::vector<std::string>& parameters,
                                                 const std::string& requestContent) const;
-
-
-            //-----------------------------------------------------------------------------
-            /// \brief  Get the list of all available widgets from the server
-            /// \param [in]   parameters        The url parameters
-            /// \param [in]   requestContent    The url content
-            /// \return the request result
-            //-----------------------------------------------------------------------------         
-            shared::CDataContainer availableWidgets(const std::vector<std::string>& parameters,
-                                                    const std::string& requestContent) const;
 
             //-----------------------------------------------------------------------------
             /// \brief  Update a widget to another version (upgrade or downgrade)
@@ -97,16 +78,6 @@ namespace web
             shared::CDataContainer removeWidget(const std::vector<std::string>& parameters,
                                                 const std::string& requestContent) const;
 
-
-            //-----------------------------------------------------------------------------
-            /// \brief  Get the list of all available plugins from the server
-            /// \param [in]   parameters        The url parameters
-            /// \param [in]   requestContent    The url content
-            /// \return the request result
-            //-----------------------------------------------------------------------------         
-            shared::CDataContainer availablePlugins(const std::vector<std::string>& parameters,
-                                                    const std::string& requestContent) const;
-
             //-----------------------------------------------------------------------------
             /// \brief  Update a plugin to another version (upgrade or downgrade)
             /// \param [in]   parameters        The url parameters
@@ -133,16 +104,6 @@ namespace web
             //-----------------------------------------------------------------------------         
             shared::CDataContainer removePlugin(const std::vector<std::string>& parameters,
                                                 const std::string& requestContent) const;
-
-
-            //-----------------------------------------------------------------------------
-            /// \brief  Get the list of all available scriptInterpreters from the server
-            /// \param [in]   parameters        The url parameters
-            /// \param [in]   requestContent    The url content
-            /// \return the request result
-            //-----------------------------------------------------------------------------         
-            shared::CDataContainer availableScriptInterpreters(const std::vector<std::string>& parameters,
-                                                               const std::string& requestContent) const;
 
             //-----------------------------------------------------------------------------
             /// \brief  Update a scriptInterpreter to another version (upgrade or downgrade)

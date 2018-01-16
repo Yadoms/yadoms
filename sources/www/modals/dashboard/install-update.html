@@ -197,17 +197,6 @@
         includePreReleases = $cbIncludePreReleases.prop("checked");
     }
 
-    /**
-     * Permit to know if the version is wanted using pre release checkbox
-     */
-    function isWanted(version) {
-        if (!version)
-            return false;
-        if (includePreReleases)
-            return true;
-        return (version.preRelease() == undefined);
-    }
-
     function scanForUpdates() {
         var d = new $.Deferred();
         $cbIncludePreReleases.unbind();
