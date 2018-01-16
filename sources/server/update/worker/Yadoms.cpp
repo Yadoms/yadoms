@@ -59,7 +59,7 @@ namespace update
                   YADOMS_LOG(information) << "Find update command";
                   shared::CDataContainer packageJson;
                   packageJson.deserializeFromFile(Poco::Path(extractedPackageLocation, "package.json").toString());
-                  const auto& commandToRun = packageJson.get<std::string>("commandToRun");
+                  const auto& commandToRun = packageJson.get<std::string>("yadoms.information.commandToRun");
 
                   YADOMS_LOG(information) << "Running updater";
                   progressCallback(true, 90.0f, i18n::CClientStrings::UpdateYadomsDeploy, std::string(), callbackData);
