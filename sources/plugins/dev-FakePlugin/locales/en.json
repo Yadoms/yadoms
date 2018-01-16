@@ -80,7 +80,7 @@
 		"pluginState": {
 			"connecting": "Connecting...",
 			"updateConfiguration": "Configuration updating...",
-			"anotherMessageWithData" : "New state with message __messageFromExtraQuery__"
+			"anotherMessageWithData" : "New state with message {{messageFromExtraQuery}}"
 		},
       "asyncEQwithProgression" : {
          "step1" : "Step n°1",
