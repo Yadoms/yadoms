@@ -510,7 +510,7 @@ namespace web
                boost::smatch result;
                if (boost::regex_search(device->Name(), result, DeviceNamePattern))
                {
-                  auto number = std::stoul(std::string(result[1].first, result[1].second), nullptr, 16);
+                  auto number = std::stoul(std::string(result[1].first, result[1].second));
                   if (lastNumber < number)
                      lastNumber = number;
                }

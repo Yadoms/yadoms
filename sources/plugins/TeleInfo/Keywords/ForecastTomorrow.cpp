@@ -8,11 +8,12 @@ namespace yApi = shared::plugin::yPluginApi;
 
 CForecastTomorrow::CForecastTomorrow(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& KeyWordName)
    : m_forecastPeriod(boost::make_shared<teleInfo::specificHistorizers::CColor>(KeyWordName)),
-     m_isDeveloperMode(api->getYadomsInformation()->developperMode())
+     m_isDeveloperMode(api->getYadomsInformation()->developperMode()),
+   m_isChanged(true)
 {
 }
 
-void CForecastTomorrow::set(const std::string& Value) const
+void CForecastTomorrow::set(const std::string& Value)
 {
    static const EnumColorMap EEnumColorMap = boost::assign::map_list_of
       ("----", teleInfo::specificHistorizers::EColor::kNOTDEFINED)
@@ -23,9 +24,16 @@ void CForecastTomorrow::set(const std::string& Value) const
    try
    {
       auto it = EEnumColorMap.find(Value);
+      auto temp = static_cast<teleInfo::specificHistorizers::EColor>(it->second);
       if (it != EEnumColorMap.end())
       {
-         m_forecastPeriod->set(static_cast<teleInfo::specificHistorizers::EColor>(it->second));
+         if (m_forecastPeriod->get() != temp)
+         {
+            m_isChanged = true;
+            m_forecastPeriod->set(temp);
+         }
+         else
+            m_isChanged = false;
 
          if (m_isDeveloperMode) YADOMS_LOG(information) << m_forecastPeriod->getKeyword() << "=" << m_forecastPeriod->get() ;
       }
@@ -47,3 +55,6 @@ boost::shared_ptr<yApi::historization::IHistorizable> CForecastTomorrow::GetHist
    return m_forecastPeriod;
 }
 
+bool CForecastTomorrow::isChanged() const {
+   return m_isChanged;
+}

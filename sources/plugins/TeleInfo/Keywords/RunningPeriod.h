@@ -23,7 +23,13 @@ public:
    /// \brief	                      Set the value of the keyword
    /// \param[in] value              The new value
    //--------------------------------------------------------------
-   void set(const std::string& value) const;
+   void set(const std::string& value);
+
+   //--------------------------------------------------------------
+   /// \brief	                      Get if the value have changed
+   /// \return                       true, if it's a new value
+   //--------------------------------------------------------------
+   bool isChanged() const;
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -54,5 +60,9 @@ private:
    /// \brief	developer mode
    //--------------------------------------------------------------
    bool m_isDeveloperMode;
-};
 
+   //--------------------------------------------------------------
+   /// \brief	if the value change
+   //--------------------------------------------------------------
+   bool m_isChanged;
+};

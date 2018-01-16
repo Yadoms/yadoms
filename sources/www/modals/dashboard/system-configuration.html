@@ -248,6 +248,32 @@
                .value);
             advancedSectionParameters.configurationHandlers.push(dateFormatStringParameter);
 
+            //*************
+            //refresh page : keep the active page
+            var refreshPage = true;
+            try {
+               console.log("refresh page1");
+               refreshPage = Yadoms.systemConfiguration[ConfigurationManager.items.system.refreshPage].value;
+            } catch (err) {
+               //Initial Configuration - No cache for refreshing the page
+               refreshPage = true;
+               Yadoms.systemConfiguration.refreshPage = {};
+               Yadoms.systemConfiguration.refreshPage.value = refreshPage;
+               Yadoms.systemConfiguration.refreshPage.defaultValue = refreshPage;
+               console.log("refresh page2");
+            }            
+            
+            var refreshPageBoolParameter = new BoolParameterHandler(i18NContext,
+               undefined,
+               ConfigurationManager.items.system.refreshPage,
+               {
+                  defaultValue: Yadoms.systemConfiguration[ConfigurationManager.items
+                     .system.refreshPage].defaultValue
+               },
+               Yadoms.systemConfiguration[ConfigurationManager.items.system.refreshPage]
+               .value);
+             advancedSectionParameters.configurationHandlers.push(refreshPageBoolParameter);
+            
             //and add it to the gui
             $modalBody.append(languageParameter.getDOMObject());
             $modalBody.append(citySectionParameters.getDOMObject());
@@ -403,7 +429,6 @@
 
             ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.language])
                .done(function() {
-
                   if (i18n.lng() !== Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value) {
                      //we change language of i18n
                      i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value,
@@ -445,8 +470,6 @@
                   d.reject();
                });
          }).fail(d.reject);
-
-
    };
 
    function saveFormatString(arrayOfDeffered, dateFormatStringParameter) {

@@ -30,6 +30,16 @@ public:
    // [END] ITransceiver implementation
 
 private:
+
+   enum EContracts
+   {
+      OP_NOT_DEFINED,
+      OP_BASE,
+      OP_CREUSE,
+      OP_EJP,
+      OP_TEMPO
+   };
+
    //--------------------------------------------------------------
    /// \brief	                     Create the Device with the counter Id
    ///\param[in] monoPhase          the counter is mono phase
@@ -40,7 +50,13 @@ private:
    /// \brief	                     Create the keyword list depending of the tariff
    ///\param[in] tariff             contract of the tele-info
    //-----------------------------------------------------
-   void createKeywordList(const std::string& tariff);
+   void constructKeywordList(const EContracts contract);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Create the keyword list depending of the tariff
+   ///\param[in] tariff             contract of the tele-info
+   //-----------------------------------------------------
+   void declareKeywordList(const std::string& tariff);
 
    //--------------------------------------------------------------
    /// \brief	                     Process each tele-Info message
@@ -84,21 +100,10 @@ private:
 
    boost::shared_ptr<yApi::IYPluginApi> m_api;
    std::string m_deviceName;
-
    bool m_isdeveloperMode;
-
    bool m_teleinfoEnableInCounter;
-
    bool m_deviceCreated;
-   
-   enum
-   {
-      OP_NOT_DEFINED,
-      OP_BASE,
-      OP_CREUSE,
-      OP_EJP,
-      OP_TEMPO
-   } m_optarif;
+   EContracts m_optarif;
 
    static const std::string m_tag_ADCO;
    static const std::string m_tag_OPTARIF;
@@ -120,4 +125,5 @@ private:
    static const std::string m_tag_IINST3;
    static const std::string m_tag_PAPP;
    static const std::string m_tag_DEMAIN;
+   static const std::string m_tag_PEJP;
 };

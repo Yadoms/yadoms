@@ -194,7 +194,6 @@ widgetViewModelCtor = function gaugeViewModel() {
             //we resize value and unit text to keep them into the gauge
             $(".valueAndUnit").css("height", (self.$chart.find("path")[0].getBBox().height / 1.5) + "px");
         }
-        self.widgetApi.fitText();
         $(window).trigger("resize");
     };
 };

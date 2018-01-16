@@ -1,0 +1,10 @@
+{
+	"name": "Afficheur Etat",
+	"description": "Un widget qui affiche un état (du type énuméré)",
+	"configurationSchema": {
+		"device": {
+			"name": "Donnée à afficher",
+			"description": "Sélectionnez ici la donnée que vous souhaitez visualiser"
+		}    
+	}
+}

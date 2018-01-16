@@ -76,8 +76,6 @@ function numericDisplayViewModel() {
             else 
                self.data("-");
             
-            self.widgetApi.fitText();
-            
             if (self.shouldBeVisible())
             {
                if (data.date!=="")

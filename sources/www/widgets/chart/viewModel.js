@@ -31,6 +31,9 @@ function chartViewModel() {
     
     //this variable is for the selection of the computed value used for the chart (min, avg, max)
     this.periodValueType = [];
+    
+    // This variable is only used for keyword of type enum. It returns the plugin instance type for this keyword
+    this.pluginInstanceType = [];
 
     /**
      * Helpers
@@ -54,7 +57,7 @@ function chartViewModel() {
     
     this.isEnumVariable = function (index) {
         var self = this;
-        if ((self.keywordInfo[index]) && (self.keywordInfo[index].type === "enum"))
+        if ((self.keywordInfo[index]) && (self.keywordInfo[index].type === "Enum"))
            return true;
         else
            return false;
@@ -104,7 +107,6 @@ function chartViewModel() {
         //create axis if needed
         if (isNullOrUndefined(self.chart.get(yAxisName))) {
             try {
-                
                 function getAxisTitle(){
                    // create the structure
                    var response= {
@@ -124,11 +126,11 @@ function chartViewModel() {
                 try {
                    unit = $.t(self.keywordInfo[index].units);
                 }
-                catch(error)
-                {
+                catch(error){
                    console.log ("unit is empty for keyword ", device.content.source.keywordId);
                 }
 
+                self.chart.keyword = self.keywordInfo;
                 self.chart.addAxis({
                     // new axis
                     id: yAxisName, //The same id as the serie with axis at the beginning
@@ -139,6 +141,13 @@ function chartViewModel() {
                         format: '{value:.' + self.precision[index].toString() + 'f} ' + unit,
                         style: {
                             color: colorAxis
+                        },
+                        formatter: function () {
+                           if (this.chart.keyword[index].type === "Enum") {  // Return the translated enum value
+                              return this.chart.keyword[index].typeInfo.translatedValues[this.value];
+                           }
+                           else
+                              return this.axis.defaultLabelFormatter.call(this);
                         }
                     },
                     opposite: isOdd(index)
@@ -152,7 +161,6 @@ function chartViewModel() {
         }
 
         if ((parseBool(configuration.oneAxis.checkbox))) {
-
             //Configure the min/max in this case
             try {
                 var yAxis = self.chart.get(yAxisName);
@@ -237,6 +245,7 @@ function chartViewModel() {
                    ordinal: false, //axis is linear
                    events: {},
                    labels: {
+                      rotation: -20,
                       formatter: function () {
                          if (self.chart.interval) {
                             switch (self.chart.interval) {
@@ -272,8 +281,13 @@ function chartViewModel() {
                         $.each(this.points, function () {
                             if (!this.series.hideInLegend) {
                                 if (isNullOrUndefined(this.point.low)) { //Standard serie
+                                   if (this.series.chart.keyword[this.series.index].type === "Enum") {
+                                      s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
+                                        this.series.chart.keyword[this.series.index].typeInfo.translatedValues[parseInt(this.y)];
+                                   }else {
                                     s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
                                         this.series.name + " : " + this.y.toFixed(this.series.precision) + this.series.units;
+                                   }
                                 } else { //Range Serie
                                     s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
                                         this.series.name + " : " + "<i style=\"color: " + this.series.color + ";\" class=\"fa fa-long-arrow-down\"></i>&nbsp;" +
@@ -295,6 +309,7 @@ function chartViewModel() {
 
             self.$chart.highcharts('StockChart', self.chartOption);
             self.chart = self.$chart.highcharts();
+            self.chart.keyword = [];
             
             self.widgetApi.toolbar({
                 activated: true,
@@ -419,6 +434,7 @@ function chartViewModel() {
         // Reset of some values
         self.periodValueType = [];
         self.seriesUuid = [];
+        var arrayOfDeffered = [];
         var d = new $.Deferred();
 
         if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
@@ -441,9 +457,7 @@ function chartViewModel() {
           self.ConfigurationLegendLabels = self.widget.configuration.legends.content.legendLabels;
         }catch(error){ // If the configuration doesn't exist (migration, ...) -> default value
           console.log ("default value for legend labels : device name + keyword name");
-        }            
-        
-        var arrayOfDeffered = [];
+        }
 
         //we create an uuid for each serie
         $.each(self.widget.configuration.devices, function (index, device) {
@@ -457,11 +471,12 @@ function chartViewModel() {
             else
                self.precision[index] = 1;
             
-            // We ask the current device name
-            var deffered = DeviceManager.get(device.content.source.deviceId);
+            var deffered = self.widgetApi.getDeviceInformation(device.content.source.deviceId);
             arrayOfDeffered.push(deffered);
-            deffered.done(function (data) {
-                self.deviceInfo[index] = data;
+            
+            deffered
+            .done(function (device) {
+               self.deviceInfo[index] = device;
             })
             .fail(function (error) {
                notifyError($.t("widgets/chart:deviceNotFound", {Id: device.content.source.deviceId}));
@@ -472,9 +487,11 @@ function chartViewModel() {
             arrayOfDeffered.push(deffered2);
             deffered2.done(function (keyword) {
                 self.keywordInfo[index] = keyword;
+                self.chart.keyword[index] = keyword;
+                self.chart.keyword[index].typeInfo.translatedValues = [];
+                
                 try{
                    if (parseBool(device.content.advancedConfiguration.checkbox)){
-                      
                       // read the differential display variable
                       if (device.content.advancedConfiguration.content.differentialDisplay ==="relative")
                          self.differentialDisplay[index] = true;
@@ -495,8 +512,7 @@ function chartViewModel() {
                      }
                   }
                }
-               catch(error)
-               {
+               catch(error){
                   console.log('error detecting during defferential configuration display => automatic management.');
                   if (keyword.measure === "Cumulative"){
                      self.differentialDisplay[index] = true;
@@ -508,8 +524,7 @@ function chartViewModel() {
                   }
                }
                
-               if (self.differentialDisplay[index] && device.content.PlotType === "arearange")
-               {
+               if (self.differentialDisplay[index] && device.content.PlotType === "arearange"){
                   notifyError($.t("widgets/chart:incompatibilityDifferential"), "error");
                   self.incompatibility = true;
                   return;
@@ -522,13 +537,54 @@ function chartViewModel() {
             })
             .fail(function (error) {
                notifyError($.t("widgets/chart:keywordNotFound", {Id: device.content.source.keywordId}));
-            });               
+            });
+            
+            var defferedPluginInstance = new $.Deferred();
+            arrayOfDeffered.push(defferedPluginInstance);
+            
+            //
+            // Use to get the plugin Instance Type only for Enum
+            //
+            deffered2
+            .done(function(){
+               if (self.isEnumVariable(index)) {
+                  $.when(deffered, deffered2)
+                  .done(function() {
+                     self.widgetApi.getPluginInstanceInformation(self.deviceInfo[index].pluginId)
+                     .done(function (pluginInstance) {
+                        self.pluginInstanceType[index] = pluginInstance.type;
+                        defferedPluginInstance.resolve();
+                     })
+                     .fail(function (error) {
+                        defferedPluginInstance.reject();
+                     });
+                  })
+                  .fail(function (error) {
+                     defferedPluginInstance.reject();
+                  });
+               } else {
+                  defferedPluginInstance.resolve();
+               }
+            })
+            .fail(function (error) {
+               defferedPluginInstance.reject();
+            });
+            //
+            //
         });
         
-        // fail function doesn't exist for whenAll
         $.whenAll(arrayOfDeffered).done(function () {
-               self.refreshData(self.widget.configuration.interval).always(function () {
-               d.resolve();
+              // Translate enum values only for enum keyword
+              $.each(self.widget.configuration.devices, function (index, device) {
+                  if (self.isEnumVariable(index)){
+                      $.each(self.keywordInfo[index].typeInfo.values, function (index2, value) {
+                         self.keywordInfo[index].typeInfo.translatedValues[index2] = $.t("plugins/" + self.pluginInstanceType[index] + ":enumerations." + self.keywordInfo[index].typeInfo.name + ".values." + value, { defaultValue:value} );
+                      });           
+                  }
+              });
+              
+              self.refreshData(self.widget.configuration.interval).always(function () {
+              d.resolve();
             })
             .fail(function (error) {
                d.reject();
@@ -581,15 +637,15 @@ function chartViewModel() {
               var arrayOfDeffered = [];
               self.chartLastValue = [];
               
+              //we compute the date from the configuration
+              var dateFrom = self.calculateBeginDate(interval, self.serverTime, self.prefix);
+              self.changexAxisBound(dateFrom);
+              var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
+              var prefixUri = "/" + self.prefix;
+              var timeBetweenTwoConsecutiveValues = moment.duration(1, self.prefix).asMilliseconds();              
+              
               //for each plot in the configuration we request for data
               $.each(self.widget.configuration.devices, function (index, device) {
-                 
-                 //we compute the date from the configuration
-                 var dateFrom = self.calculateBeginDate(interval, self.serverTime, self.prefix);
-                 var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
-                 var prefixUri = "/" + self.prefix;
-                 var timeBetweenTwoConsecutiveValues = moment.duration(1, self.prefix).asMilliseconds();
-                 
                   //If the device is a bool, you have to modify
                   if (self.isBoolVariable(index) || self.isEnumVariable(index)) {
                      switch (interval) {
@@ -640,7 +696,11 @@ function chartViewModel() {
 
                                   var v;
                                   if (!isNullOrUndefined(value.key)) {
-                                      v = parseFloat(value.key);
+                                     if (self.isEnumVariable(index)) {
+                                        v= self.chart.keyword[index].typeInfo.values.indexOf(value.key);
+                                     }else {
+                                        v = parseFloat(value.key);
+                                     }
                                   } else {
                                       throw Error("Unable to parse answer");
                                   }
@@ -964,7 +1024,7 @@ function chartViewModel() {
             RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + "/" + prefix + "/" + dateFrom + "/" + dateTo)
                .done(function (data) {
                    try {
-                       if (!isNullOrUndefinedOrEmpty(data.data[data.data.length-1])) {
+                       if (!isNullOrUndefined(data.data) && !isNullOrUndefinedOrEmpty(data.data[data.data.length-1])) {
                           var registerDate = DateTimeFormatter.isoDateToDate(data.data[data.data.length-1].date)._d.getTime().valueOf();
                           if (registerDate != serie.points[serie.points.length-1].x){
                              self.chart.hideLoading(); // If a text was displayed before

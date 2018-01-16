@@ -15,19 +15,18 @@ widgetViewModelCtor = function dimmerViewModel() {
 
 
     this.commandClickPlus = function () {
-        this.commandClick(this.step());
+       this.commandClick(this.step());
 
     }
     this.commandClickMinus = function () {
-        this.commandClick(-this.step());
+       this.commandClick(-this.step());
     }
 
     this.commandClick = function (value) {
-        if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
-            this.data(this.data() + value);
-            KeywordManager.sendCommand(this.widget.configuration.device.keywordId, this.data().toString());
-        }
-        this.widgetApi.find(".textfit").fitText();
+       if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
+          this.data(this.data() + value);
+          KeywordManager.sendCommand(this.widget.configuration.device.keywordId, this.data().toString());
+       }
     };
 
     /**
@@ -78,7 +77,6 @@ widgetViewModelCtor = function dimmerViewModel() {
         if (keywordId === self.widget.configuration.device.keywordId) {
             //it is the right device
             self.data(parseFloat(data.value));
-            self.widgetApi.fitText();
         }
     };
 };

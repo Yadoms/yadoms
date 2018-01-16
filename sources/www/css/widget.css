@@ -196,7 +196,6 @@
 
 .textfit-in-parent {
     margin: auto;
-    flex: 1;
 }
 
 /*Permit to use a span instead of a <a> in a dropdown menu*/

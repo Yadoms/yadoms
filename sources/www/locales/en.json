@@ -436,6 +436,10 @@
               "name": "Date Format String",
               "description": "You can change date format string using moment.js syntax (ie \"LLL\" or \"'MMMM Do YYYY, h:mm:ss a\")"
             },
+            "refreshPage": {
+              "name": "Keep the active page during session",
+              "description": "If you refresh the browser by pressiong F5, Yadoms will automatically load in the precedent active page"
+            },            
             "location": {
               "name": "Location",
               "description": "Enter below coordonates of your city ([Site web latlong](http://www.latlong.net/))"

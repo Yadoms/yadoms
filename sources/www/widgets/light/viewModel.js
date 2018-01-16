@@ -9,7 +9,7 @@ widgetViewModelCtor =
           //observable data
           this.command = ko.observable(1);
           this.icon = ko.observable("");
-		    this.readonly = ko.observable(true);
+          this.readonly = ko.observable(true);
           this.capacity = "";
 
           // default size
@@ -25,6 +25,12 @@ widgetViewModelCtor =
 
                   switch (self.capacity) {
                      case "dimmable": cmd = newState == 1 ? 100 : 0; break;
+					 case "curtain":
+					    if (newState==1)
+							cmd = "Open";
+						else
+							cmd = "Close";
+						break;
                      default: cmd = newState; break;
                   }
                                     
@@ -104,18 +110,27 @@ widgetViewModelCtor =
               if ((this.widget.configuration != undefined) && (this.widget.configuration.device != undefined)) {
 
                   if (keywordId === this.widget.configuration.device.keywordId) {
-
-                      // Adapt for dimmable or switch capacities
-                      if (parseInt(data.value) !== 0)
-                      {
                         switch (self.capacity) {
-                           case "dimmable": self.command(100); break;
-                           default: self.command(1); break;
+                           case "dimmable": 
+						      if (parseInt(data.value) !== 0) 
+								  self.command(100);
+							  else 
+								  self.command(0); 
+							  break;
+						   case "curtain":
+						      if (data.value.toLowerCase() === "open")
+							     self.command(1);
+							  else if (data.value.toLowerCase() === "close")
+								 self.command(0);
+						      break;
+                           default: 
+						      if (parseInt(data.value) !== 0)
+								  self.command(1); 
+							  else 
+								  self.command(0); 
+							  break;
                         }                         
-                      }
-                      else
-                          self.command(0);
-                  }
-              }
+				  }
+			    }
           };
       };

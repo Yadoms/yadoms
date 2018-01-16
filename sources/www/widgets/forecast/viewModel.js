@@ -93,12 +93,14 @@ function forecastViewModel() {
 
       ctx.fillStyle = "rgb(116,208,241)"; // blue Azur clair
 
+      var rain = parseInt(rainValue, 10);
+      if (isNaN(rain)) rain = 0;
+      
       var positionY = 0;
       if (rainValue < 40)
-         positionY = 40 - parseInt(rainValue);
+         positionY = 40 - rain;
 
-
-      ctx.fillRect(0, positionY, 40, rainValue);
+      ctx.fillRect(0, positionY, 40, rain);
       ctx.stroke();
 
       ctx.strokeStyle = "rgb(116,208,241)"; // blue Azur clair
@@ -114,7 +116,7 @@ function forecastViewModel() {
       ctx.font = $( ".cases" ).css( "font-size" ) + " " + $( ".cases" ).css( "font-family" );
 
       //write the text at the same position as the height of the column
-      ctx.fillText(rainValue, 20 - (7 * String(rainValue).match(/\d/g).length) / 2, 23);
+      ctx.fillText(rainValue, 20 - (7 * String(rainValue).length) / 2, 23);
       ctx.stroke();
    };
 

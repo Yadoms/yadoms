@@ -22,6 +22,7 @@ const std::string CDecoder::m_tag_IINST2 = "IINST2";//instant current power usag
 const std::string CDecoder::m_tag_IINST3 = "IINST3";//instant current power usage phase 3
 const std::string CDecoder::m_tag_PAPP = "PAPP";//apparent power
 const std::string CDecoder::m_tag_DEMAIN = "DEMAIN"; // Color of the next day
+const std::string CDecoder::m_tag_PEJP = "PEJP"; // EJP Warning
 
 CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    : m_baseCounter(boost::make_shared<yApi::historization::CEnergy>("BaseCounter")),
@@ -62,6 +63,10 @@ void CDecoder::decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> api,
 
    m_teleinfoEnableInCounter = (messages->size() == 1 && messages->find(m_tag_ADCO) != messages->end()) ? false : true;
 
+   // By default (for EJP/Tempo), the forecast is not defined, if not present
+   // It's not used for Base or HPHC contract
+   m_ForecastPeriod->set(teleInfo::specificHistorizers::EColor::kNOTDEFINED);
+
    for (const auto message : *messages)
    {
       processMessage(message.first,
@@ -91,6 +96,8 @@ void CDecoder::decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> api,
 
    if (!m_deviceCreated)
       createDeviceAndKeywords(isMono);
+   else
+      constructKeywordList(m_optarif);
 
    m_api->historizeData(m_deviceName, m_keywords);
 }
@@ -115,20 +122,77 @@ void CDecoder::createDeviceAndKeywords(const bool monoPhase)
                            "TeleInfoUSB : Id = " + m_deviceName,
                            m_keywords,
                            m_DeviceDetails);
+
+      // for compatibility with old plugin revision, we create separately the keyword if not existing
+      // If the device already exist, we have to create keywords manually
+      // This is only for EJP contracts
+      if (!m_api->keywordExists(m_deviceName, m_ForecastPeriod->GetHistorizable()) && m_optarif == OP_EJP)
+         m_api->declareKeyword(m_deviceName, m_ForecastPeriod->GetHistorizable());
    }
 
    m_deviceCreated = true;
 }
 
-void CDecoder::createKeywordList(const std::string& tariff)
+void CDecoder::constructKeywordList(const EContracts contract)
 {
+   m_keywords.clear();
+
+   switch (contract)
+   {
+   case OP_BASE:
+   {
+      m_keywords.push_back(m_baseCounter);
+      m_keywords.push_back(m_apparentPower);
+      if (m_TimePeriod->isChanged()) m_keywords.push_back(m_TimePeriod->GetHistorizable());
+      break;
+   }
+   case OP_CREUSE:
+   {
+      
+      m_keywords.push_back(m_lowCostCounter);
+      m_keywords.push_back(m_normalCostCounter);
+      m_keywords.push_back(m_apparentPower);
+      if (m_TimePeriod->isChanged()) m_keywords.push_back(m_TimePeriod->GetHistorizable());
+      break;
+   }
+   case OP_EJP:
+   {
+      m_keywords.push_back(m_EJPPeakPeriod);
+      m_keywords.push_back(m_EJPNormalPeriod);
+      m_keywords.push_back(m_apparentPower);
+      if (m_TimePeriod->isChanged()) m_keywords.push_back(m_TimePeriod->GetHistorizable());
+      if (m_ForecastPeriod->isChanged()) m_keywords.push_back(m_ForecastPeriod->GetHistorizable());
+      break;
+   }
+   case OP_TEMPO:
+   {
+      m_keywords.push_back(m_apparentPower);
+      m_keywords.push_back(m_tempoBlueDaysLowCostPeriod);
+      m_keywords.push_back(m_tempoBlueDaysNormalCostPeriod);
+      m_keywords.push_back(m_tempoRedDaysLowCostPeriod);
+      m_keywords.push_back(m_tempoRedDaysNormalCostPeriod);
+      m_keywords.push_back(m_tempoWhiteDaysLowCostPeriod);
+      m_keywords.push_back(m_tempoWhiteDaysNormalCostPeriod);
+      if (m_TimePeriod->isChanged()) m_keywords.push_back(m_TimePeriod->GetHistorizable());
+      if (m_ForecastPeriod->isChanged()) m_keywords.push_back(m_ForecastPeriod->GetHistorizable());
+      break;
+   }
+   default:
+      //Erreur normalement
+      break;
+   }
+}
+
+void CDecoder::declareKeywordList(const std::string& tariff)
+{
+   m_keywords.clear();
+
    switch (tariff[1])
    {
    case 'A':
    {
       m_optarif = OP_BASE;
 
-      m_keywords.clear();
       m_keywords.push_back(m_baseCounter);
       m_keywords.push_back(m_apparentPower);
       m_keywords.push_back(m_TimePeriod->GetHistorizable());
@@ -138,7 +202,6 @@ void CDecoder::createKeywordList(const std::string& tariff)
    {
       m_optarif = OP_CREUSE;
 
-      m_keywords.clear();
       m_keywords.push_back(m_lowCostCounter);
       m_keywords.push_back(m_normalCostCounter);
       m_keywords.push_back(m_apparentPower);
@@ -149,18 +212,17 @@ void CDecoder::createKeywordList(const std::string& tariff)
    {
       m_optarif = OP_EJP;
 
-      m_keywords.clear();
       m_keywords.push_back(m_EJPPeakPeriod);
       m_keywords.push_back(m_EJPNormalPeriod);
       m_keywords.push_back(m_apparentPower);
       m_keywords.push_back(m_TimePeriod->GetHistorizable());
+      m_keywords.push_back(m_ForecastPeriod->GetHistorizable());
       break;
    }
    case 'B':
    {
       m_optarif = OP_TEMPO;
 
-      m_keywords.clear();
       m_keywords.push_back(m_apparentPower);
       m_keywords.push_back(m_tempoBlueDaysLowCostPeriod);
       m_keywords.push_back(m_tempoBlueDaysNormalCostPeriod);
@@ -204,7 +266,7 @@ void CDecoder::processMessage(const std::string& key,
 		{
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "OPTARIF" << "=" << value ;
 			if (m_keywords.empty())
-				createKeywordList(value);
+				declareKeywordList(value);
 		}
 		else if (key == m_tag_BASE)
 		{
@@ -296,6 +358,11 @@ void CDecoder::processMessage(const std::string& key,
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "DEMAIN" << "=" << value ;
 			m_ForecastPeriod->set(value);
 		}
+      else if (key == m_tag_PEJP)
+      {
+         if (m_isdeveloperMode) YADOMS_LOG(information) << "PEJP" << "=" << value;
+         m_ForecastPeriod->set(teleInfo::specificHistorizers::EColor::kRED);
+      }
 		else
 		{
 			YADOMS_LOG(warning) << "label " << key << " not processed" ;

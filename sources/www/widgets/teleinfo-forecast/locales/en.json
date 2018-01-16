@@ -1,6 +1,6 @@
 {
 	"name": "TeleInfo Forecast",
-	"description": "A widget that provide teleinfo forecast for tomorrow. Color would be blue, white, red, and grey for not prevision",
+	"description": "A widget that provide teleinfo forecast for tomorrow. Color would be blue, white, red, and grey for no prevision. Used with TEMPO & EJP contracts",
 	"configurationSchema": {
 		"device": {
 			"name": "Device",

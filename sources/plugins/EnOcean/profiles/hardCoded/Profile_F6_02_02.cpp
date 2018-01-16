@@ -9,10 +9,7 @@ CProfile_F6_02_02::CProfile_F6_02_02(const std::string& deviceId,
      m_deviceId(deviceId),
      m_buttonA(boost::make_shared<yApi::historization::CSwitch>("Button A", yApi::EKeywordAccessMode::kGet)),
      m_buttonB(boost::make_shared<yApi::historization::CSwitch>("Button B", yApi::EKeywordAccessMode::kGet)),
-     m_buttonA2ndAction(boost::make_shared<yApi::historization::CSwitch>("Button A - 2nd action", yApi::EKeywordAccessMode::kGet)),
-     m_buttonB2ndAction(boost::make_shared<yApi::historization::CSwitch>("Button B - 2nd action", yApi::EKeywordAccessMode::kGet)),
-     m_historizers({m_buttonA , m_buttonB}),
-     m_secondActionHistorizers({m_buttonA2ndAction , m_buttonB2ndAction})
+     m_historizers({m_buttonA , m_buttonB})
 {
 }
 
@@ -98,28 +95,24 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    auto secondAction = bitset_extract(data, 7, 1) ? true : false;
    if (secondAction)
    {
-      // 2nd action historizers are perhaps not declared
-      m_api->declareKeywords(m_deviceId,
-                             m_secondActionHistorizers);
-
       auto rocker2ndAction = bitset_extract(data, 4, 3);
       switch (rocker2ndAction)
       {
       case 0:
-         m_buttonA2ndAction->set(true);
-         historizers.push_back(m_buttonA2ndAction);
+         m_buttonA->set(true);
+         historizers.push_back(m_buttonA);
          break;
       case 1:
-         m_buttonA2ndAction->set(false);
-         historizers.push_back(m_buttonA2ndAction);
+         m_buttonA->set(false);
+         historizers.push_back(m_buttonA);
          break;
       case 2:
-         m_buttonB2ndAction->set(true);
-         historizers.push_back(m_buttonB2ndAction);
+         m_buttonB->set(true);
+         historizers.push_back(m_buttonB);
          break;
       case 3:
-         m_buttonB2ndAction->set(false);
-         historizers.push_back(m_buttonB2ndAction);
+         m_buttonB->set(false);
+         historizers.push_back(m_buttonB);
          break;
       default:
          YADOMS_LOG(error) << "Profile F6_02_02 : receive unsupported rocker second action value " << rocker2ndAction;
