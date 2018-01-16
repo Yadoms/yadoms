@@ -311,7 +311,7 @@
         var $cbVersion = $line.find("ul.versions");
         createVersionsCombo($cbVersion, item,
             function (versionLabel, downloadUrl) {
-                askForYadomsUpdate(versionLabel, downloadUrl);
+                askForYadomsUpdate(versionLabel, downloadUrl, item);
             });
 
         // Show buttons or progressbar
@@ -327,7 +327,8 @@
             if (newestVersionLabel && !isNullOrUndefinedOrEmpty(item.versions.installed)) {
                 $mainInstallButton.removeClass("disabled");
                 $mainInstallButton.unbind('click').bind('click', function () {
-                    askForYadomsUpdate(newestVersionLabel, Object.values(item.versions.newest)[0].downloadUrl);
+                    askForYadomsUpdate(newestVersionLabel, Object.values(item.versions.newest)[0].downloadUrl,
+                        item);
                 });
             } else {
                 $mainInstallButton.addClass("disabled");
@@ -351,9 +352,10 @@
         }
     }
 
-    function askForYadomsUpdate(version, downloadUrl) {
+    function askForYadomsUpdate(version, downloadUrl, item) {
         assert(!isNullOrUndefined(version), "version must be defined");
         assert(!isNullOrUndefined(downloadUrl), "downloadUrl must be defined");
+        assert(!isNullOrUndefined(item), "item must be defined");
 
         Yadoms.modals.confirmation.loadAsync()
             .done(function () {
@@ -365,9 +367,9 @@
                     }),
                     function () {
                         //the user has confirmed the action
-                        YadomsUpdateInformationManager.update(versionContainer)
+                        YadomsUpdateInformationManager.update(downloadUrl)
                             .done(function (data) {
-                                yadomsUpdateCallback(data.taskId, versionContainer);
+                                yadomsUpdateCallback(data.taskId, item);
                             })
                             .fail(function (error) {
                                 notifyError($.t("objects.generic.errorUpdating", {
@@ -384,11 +386,12 @@
 
         //we initialize the progress bar
         var $line = $("table#yadoms-install-update-list tr.yadoms-information");
-        $line.find("div.progress-bar").css("width", "0");
+        var progressBar = $line.find("div.progress-bar");
+        progressBar.css("width", "0");
 
         //we listen for webSocket event
         $(document).on("taskupdatenotification." + taskId, function (e, taskUpdateInformation) {
-            $line.find("div.progress-bar").css("width", taskUpdateInformation.progression + "%");
+            progressBar.css("width", taskUpdateInformation.progression + "%");
             $line.find("span.message").text($.t("core." + taskUpdateInformation.message));
 
             //we manage the end of the task
@@ -398,23 +401,17 @@
 
                 //we remove the progress information and restore buttons
                 item.processing = false;
-                $line.find("div.progress-bar").css("width", "100%");
-
-                //refresh the list
-                refreshAllData();
-            }
-
-            if (taskUpdateInformation.taskState.toLowerCase() === "success") {
+                scanForUpdates();
+            } else if (taskUpdateInformation.taskState.toLowerCase() === "success") {
                 notifySuccess($.t("core." + taskUpdateInformation.message));
                 //we display a non closable modal and wait for yadoms restart
                 waitForUpdateFinished();
             }
         });
+
         //we hide the buttons and show the progression
         item.processing = true;
-        $line.find("div.action-buttons").addClass("hidden");
-        $line.find("div.action-progression").removeClass("hidden");
-        $line.find("span.update-available-label").addClass("hidden");
+        updateYadomsLine(item);
     }
 
     function waitForUpdateFinished() {
@@ -464,14 +461,13 @@
             .done(function () {
                 console.log("waitForYadomsReturn EventLoggerManager.getLast(true).done");
                 //we received an answer, the server is back
-                //we reload full page
-                location.reload();
+                //we reload full page (clearing cache)
+                location.reload(true);
             })
             .fail(function (error) {
                 console.log("waitForYadomsReturn EventLoggerManager.getLast(true).fail : " + error);
-                setTimeout(waitForYadomsReturn(), 500);
+                setTimeout(waitForYadomsReturn(), 1000);
             });
-
     }
 
     /**
@@ -906,9 +902,7 @@
                 console.error("Unable to install : " + taskUpdateInformation.exception);
                 notifyError($.t("core." + taskUpdateInformation.message));
                 taskFinished = true;
-            }
-
-            if (taskUpdateInformation.taskState.toLowerCase() === "success") {
+            } else if (taskUpdateInformation.taskState.toLowerCase() === "success") {
                 notifySuccess($.t("core." + taskUpdateInformation.message));
                 taskFinished = true;
             }
