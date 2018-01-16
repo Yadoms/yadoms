@@ -55,7 +55,7 @@ namespace web
          }
 
          shared::CDataContainer CUpdate::scanForUpdates(const std::vector<std::string>& parameters,
-                                                      const std::string& requestContent) const
+                                                        const std::string& requestContent) const
          {
             const auto taskId = m_updateManager->scanForUpdatesAsync();
             shared::CDataContainer result;
@@ -89,18 +89,26 @@ namespace web
          shared::CDataContainer CUpdate::updateYadoms(const std::vector<std::string>& parameters,
                                                       const std::string& requestContent) const
          {
-            shared::CDataContainer content(requestContent);
-            if (!content.containsChild("versionData"))
+            try
             {
-               content.printToLog(YADOMS_LOG(information));
-               return CResult::GenerateError("The request should contains the versionData.");
-            }
+               //the request content should contain the downloadURL
+               if (parameters.size() <= 2)
+                  return CResult::GenerateError("Not enougth parameters in url /rest/update/yadoms/update");
 
-            const auto versionData = content.get<shared::CDataContainer>("versionData");
-            const auto taskId = m_updateManager->updateYadomsAsync(versionData);
-            shared::CDataContainer result;
-            result.set("taskId", taskId);
-            return CResult::GenerateSuccess(result);
+               shared::CDataContainer content(requestContent);
+               if (!content.containsValue("downloadUrl"))
+                  return CResult::GenerateError("The request should contains the downloadURL.");
+
+               const auto downloadUrl = content.get<std::string>("downloadUrl");
+               const auto taskId = m_updateManager->updateYadomsAsync(downloadUrl);
+               shared::CDataContainer result;
+               result.set("taskId", taskId);
+               return CResult::GenerateSuccess(result);
+            }
+            catch (std::exception& e)
+            {
+               return CResult::GenerateError(std::string("Fail to update Yadoms, ") + e.what());
+            }
          }
 
          shared::CDataContainer CUpdate::availablePlugins(const std::vector<std::string>& parameters,
@@ -122,7 +130,7 @@ namespace web
             //the request url should contain the pluginName
             //the request content should contain the downloadURL
             if (parameters.size() <= 3)
-               return CResult::GenerateError("Not enougth parameters in url /rest/plugin/update/**pluginName**");
+               return CResult::GenerateError("Not enougth parameters in url /rest/update/plugin/update/**pluginName**");
 
             const auto pluginName = parameters[3];
 

@@ -16,10 +16,12 @@ namespace update
          //---------------------------------------------
          ///\brief   Update Yadoms to another version
          ///\param [in] progressCallback The progress callback
-         ///\param [in] versionInfo    The version information to use (can be upgrade or downgrade)
+         ///\param [in] downloadUrl    The version download URL
+         ///\param [in] expectedMd5Hash    The expected MD5 Hash to check package validity
          //---------------------------------------------
          static void update(CWorkerTools::WorkerProgressFunc progressCallback,
-                            const shared::CDataContainer& versionInfo);
+                            const std::string& downloadUrl,
+                            const std::string& expectedMd5Hash);
 
 
       private:

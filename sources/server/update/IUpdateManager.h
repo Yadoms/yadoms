@@ -26,6 +26,6 @@ namespace update
       virtual std::string updateScriptInterpreterAsync(const std::string& scriptInterpreterName, const std::string& downloadUrl) const = 0;
       virtual std::string installScriptInterpreterAsync(const std::string& downloadUrl) const = 0;
       virtual std::string removeScriptInterpreterAsync(const std::string& scriptInterpreterName) const = 0;
-      virtual std::string updateYadomsAsync(const shared::CDataContainer& versionToInstall) const = 0;
+      virtual std::string updateYadomsAsync(const std::string& downloadUrl) const = 0;
    };
 } // namespace update

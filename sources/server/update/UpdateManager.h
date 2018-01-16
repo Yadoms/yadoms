@@ -32,81 +32,18 @@ namespace update
       // IUpdateManager implementation
       std::string scanForUpdatesAsync() override;
       shared::CDataContainer getUpdates(bool includePreleases) const override;
+      std::string updatePluginAsync(const std::string& pluginName, const std::string& downloadUrl) const override; 
+      std::string installPluginAsync(const std::string& downloadUrl) const override;  
+      std::string removePluginAsync(const std::string& pluginName) const override;  
+      std::string updateWidgetAsync(const std::string& widgetName, const std::string& downloadUrl) const override; 
+      std::string installWidgetAsync(const std::string& downloadUrl) const override;
+      std::string removeWidgetAsync(const std::string& widgetName) const override;  
+      std::string updateScriptInterpreterAsync(const std::string& scriptInterpreterName, const std::string& downloadUrl) const override;
+      std::string installScriptInterpreterAsync(const std::string& downloadUrl) const override; 
+      std::string removeScriptInterpreterAsync(const std::string& scriptInterpreterName) const override;
+      std::string updateYadomsAsync(const std::string& downloadUrl) const override;
       // [END] IUpdateManager implementation
 
-      //-----------------------------------------------------------------------------
-      /// \brief  Update a plugin (async process)
-      /// \param [in]   pluginName        The plugin name to update
-      /// \param [in]   downloadUrl       The plugin package download url
-      /// \return  The task unique id
-      //-----------------------------------------------------------------------------   
-      std::string updatePluginAsync(const std::string& pluginName, const std::string& downloadUrl) const override;
-
-      //-----------------------------------------------------------------------------
-      /// \brief  Install a plugin (async process)
-      /// \param [in]   downloadUrl       The plugin package download url
-      /// \return  The task unique id
-      //-----------------------------------------------------------------------------   
-      std::string installPluginAsync(const std::string& downloadUrl) const override;
-
-      //-----------------------------------------------------------------------------
-      /// \brief  Remove a plugin (async process)
-      /// \param [in]   pluginName       The plugin name to remove
-      /// \return  The task unique id
-      //-----------------------------------------------------------------------------   
-      std::string removePluginAsync(const std::string& pluginName) const override;
-
-      //-----------------------------------------------------------------------------
-      /// \brief  Update a widget (async process)
-      /// \param [in]   widgetName        The widget name to update
-      /// \param [in]   downloadUrl       The widget package download url
-      /// \return  The task unique id
-      //-----------------------------------------------------------------------------   
-      std::string updateWidgetAsync(const std::string& widgetName, const std::string& downloadUrl) const override;
-
-      //-----------------------------------------------------------------------------
-      /// \brief  Install a widget (async process)
-      /// \param [in]   downloadUrl       The widget package download url
-      /// \return  The task unique id
-      //-----------------------------------------------------------------------------   
-      std::string installWidgetAsync(const std::string& downloadUrl) const override;
-
-      //-----------------------------------------------------------------------------
-      /// \brief  Remove a widget (async process)
-      /// \param [in]   widgetName       The widget name to remove
-      /// \return  The task unique id
-      //-----------------------------------------------------------------------------   
-      std::string removeWidgetAsync(const std::string& widgetName) const override;
-
-
-      //-----------------------------------------------------------------------------
-      /// \brief  Update a scriptInterpreter (async process)
-      /// \param [in]   scriptInterpreterName        The scriptInterpreter name to update
-      /// \param [in]   downloadUrl       The scriptInterpreter package download url
-      /// \return  The task unique id
-      //-----------------------------------------------------------------------------   
-      std::string updateScriptInterpreterAsync(const std::string& scriptInterpreterName, const std::string& downloadUrl) const override;
-
-      //-----------------------------------------------------------------------------
-      /// \brief  Install a scriptInterpreter (async process)
-      /// \param [in]   downloadUrl       The scriptInterpreter package download url
-      /// \return  The task unique id
-      //-----------------------------------------------------------------------------   
-      std::string installScriptInterpreterAsync(const std::string& downloadUrl) const override;
-
-      //-----------------------------------------------------------------------------
-      /// \brief  Remove a scriptInterpreter (async process)
-      /// \param [in]   scriptInterpreterName       The scriptInterpreter name to remove
-      /// \return  The task unique id
-      //-----------------------------------------------------------------------------   
-      std::string removeScriptInterpreterAsync(const std::string& scriptInterpreterName) const override;
-
-      //-----------------------------------------------------------------------------
-      /// \brief  Start an update of Yadoms (asynchronous; update result is provided by webservice)
-      /// \param [in]   versionToInstall        The yadoms lastVersion.json to install (can be lastVersion.json, or any other one)
-      /// \return  The task unique id
-      //-----------------------------------------------------------------------------   
-      std::string updateYadomsAsync(const shared::CDataContainer& versionToInstall) const override;
 
    protected:
       void doWork(const boost::posix_time::time_duration scanPeriod);
