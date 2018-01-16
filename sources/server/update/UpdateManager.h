@@ -100,7 +100,7 @@ namespace update
                                                                std::map<std::string, shared::CDataContainer> newer);
       static shared::CDataContainer buildNewVersionsNode(const std::map<std::string, shared::CDataContainer>& newItemAvailableVersions);
       void notifyNewUpdateAvailable() const;
-      bool checkDependencies(const shared::CDataContainer& dependencies) const;
+      static bool checkDependencies(const shared::CDataContainer& itemVersionNode);
 
    private:
       //-----------------------------------------------------------------------------
