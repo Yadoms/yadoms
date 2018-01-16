@@ -965,8 +965,6 @@ namespace update
             throw std::runtime_error("Version not found");
       }
       
-                                       versionInfo->printToLog(YADOMS_LOG(debug));
-      YADOMS_LOG(debug) << "md5 = " << versionInfo->get<std::string>("md5Hash");
       const auto task(boost::make_shared<task::CGenericTask>("yadoms.update",
                                                              boost::bind(&worker::CYadoms::update, _1,
                                                                          std::string(downloadUrl),
