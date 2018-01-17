@@ -558,16 +558,30 @@
                     
                     YadomsInformationManager.getList()
                     .done(function (data) {
-                       //we display the result
+
+                       //create line
+                       var lineArray = [];
                        Object.keys(mergedList).forEach(function (key) {
                             if (!key.startsWith("system-") && (data.developerMode || !key.startsWith("dev-"))) {
-                                //the actual item does nothing
+                                lineArray.push(createInstallUpdateItemLine(objectType, mergedList[key]));
+                            }
+                       }); 
+
+                       //sort and add lines to dom
+                       var sortedLineArray = sortListItemsWithdisplayName ( lineArray );
+                        $.each(sortedLineArray, function (index, value) {
+                           addLineToDOM(objectType, value.content);
+                        });
+                       
+                       //finalize lines
+                      //we set the visibility to the allowed buttons
+                       Object.keys(mergedList).forEach(function (key) {
+                            if (!key.startsWith("system-") && (data.developerMode || !key.startsWith("dev-"))) {
                                 mergedList[key].processing = false;
-                                createInstallUpdateItemLine(objectType, mergedList[key]);
-                                //we set the visibility to the allowed buttons
                                 updateLine(objectType, mergedList[key]);
                             }
-                       });     
+                       }); 
+
                        d.resolve();
                     })
                     .fail(d.reject);
@@ -677,10 +691,11 @@
         assert(!isNullOrUndefined(item), "item must be defined");
 
         //determine the i8n base path (because scriptInterpreters have specific path)
-        item.i18nBasePath = objectType + "s/" + item.type;
+        item.i18nBasePath = objectType + "s." + item.type;
+        var displayName = $.t(item.i18nBasePath + ":name", { defaultValue: item.package.name });
         
         var s = "<tr id=\"" + item.type + "\">" +
-                    "<td><span>" + $.t(item.i18nBasePath + ":name", { defaultValue: item.package.name }) + "</span>" +
+                    "<td><span>" + displayName + "</span>" +
                     "<span class=\"update-available-label hidden label label-as-badge label-success\">!</span>" +
                     "</td>";
 
@@ -720,8 +735,14 @@
                     "</td>" +
                 "</tr>";
 
-        //we add the line to the right list
-        $("table#" + objectType + "-install-update-list").append(s);
+        return {
+           displayName: displayName,
+           content : s
+        };
+    }
+    
+    function addLineToDOM(objectType, s) {
+      $("table#" + objectType + "-install-update-list").append(s);
     }
 
     /**
@@ -915,7 +936,7 @@
                Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
                      $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstallTitle"),
                      $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstall", {
-                         objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }),
+                         objectName: $.t(objectType + "s." + item.type + ":name", { defaultValue: item.package.name }),
                          version: updateInformation.version.toString()
                      }),
                      function () {
@@ -944,7 +965,7 @@
             Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
                   $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdateTitle"),
                   $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdate", {
-                      objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }),
+                      objectName: $.t(objectType + "s." + item.type + ":name", { defaultValue: item.package.name }),
                       version: updateInformation.version.toString()
                   }),
                   function () {
@@ -971,7 +992,7 @@
          .done(function () {
              Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
                    $.t("modals.dashboard.sub-windows.install-update.generic.confirmRemoveTitle"),
-                   $.t("modals.dashboard.sub-windows.install-update.generic.confirmRemove", { objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }) }),
+                   $.t("modals.dashboard.sub-windows.install-update.generic.confirmRemove", { objectName: $.t(objectType + "s." + item.type + ":name", { defaultValue: item.package.name }) }),
                    function () {
                        //the user has confirmed the action
                        UpdateInformationManager.remove(objectType, item.type)

@@ -54,3 +54,11 @@ i18nManager.loadNamespace = function(category, object) {
    });
    return d.promise();   
 }
+
+i18nManager.getLanguage = function() {
+   return i18next.language.substring(0, 2);
+}
+
+i18nManager.getFallbackLanguage = function() {
+   return i18next.options.fallbackLng[0];
+}

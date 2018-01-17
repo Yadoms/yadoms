@@ -254,15 +254,15 @@
                         
                      ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.language])
                      .done(function() {
-                     
-                        if (i18n.lng()!= Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value)
+                        if (i18nManager.getLanguage()!= Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value)
                         {
                            //we change language of i18n
-                           i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
-                              $("html").i18n();
-                              window.location.reload();
-                              d.resolve();
-                           });
+                            i18next.changeLanguage(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
+                                $("html").i18n();
+                                moment.lang(window.navigator.userLanguage || window.navigator.language);
+                                window.location.reload();
+                                d.resolve();
+                            });                       
                         }
                         else
                         {
@@ -478,10 +478,10 @@
                               ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.language])
                                  .done(function() {
                                     //we change language of i18n
-                                    i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
-                                       $("html").i18n();
+                                    i18next.changeLanguage(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
+                                         $("html").i18n();
                                     });
-
+                                    
                                     //*************
                                     //basic authentication
                                     Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value = Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].defaultValue;
@@ -535,14 +535,16 @@
 
             ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.language])
                .done(function() {
-                  if (i18n.lng() !== Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value) {
+               
+                  if (i18nManager.getLanguage()!= Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value)
+                  {
                      //we change language of i18n
-                     i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value,
-                        function() {
-                           $("html").i18n();
-                           window.location.reload();
-                           d.resolve();
-                        });
+                      i18next.changeLanguage(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
+                          $("html").i18n();
+                          moment.lang(window.navigator.userLanguage || window.navigator.language);
+                          window.location.reload();
+                          d.resolve();
+                      });                       
                   } else {
                      d.resolve();
                   }
