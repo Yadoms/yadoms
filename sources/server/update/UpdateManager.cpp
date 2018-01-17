@@ -284,6 +284,9 @@ namespace update
    {
       shared::CDataContainer item;
 
+      if (availableVersions.exists("changelogUrl"))
+         item.set("changelogUrl", availableVersions.get<std::string>("changelogUrl"));
+
       std::map<std::string, shared::CDataContainer> older; // Pass by a map to sort versions list
       std::map<std::string, shared::CDataContainer> newer; // Pass by a map to sort versions list
       try
@@ -354,6 +357,9 @@ namespace update
             std::map<std::string, shared::CDataContainer> newer; // Pass by a map to sort versions list
             if (availableVersions.exists(moduleType))
             {
+               if (availableVersions.exists(moduleType + ".changelogUrl"))
+                  item.set("changelogUrl", availableVersions.get<std::string>(moduleType + ".changelogUrl"));
+
                try
                {
                   const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
@@ -501,6 +507,9 @@ namespace update
             std::map<std::string, shared::CDataContainer> newer; // Pass by a map to sort versions list
             if (availableVersions.exists(moduleType))
             {
+               if (availableVersions.exists(moduleType + ".changelogUrl"))
+                  item.set("changelogUrl", availableVersions.get<std::string>(moduleType + ".changelogUrl"));
+
                try
                {
                   const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
@@ -643,6 +652,9 @@ namespace update
             std::map<std::string, shared::CDataContainer> newer; // Pass by a map to sort versions list
             if (availableVersions.exists(moduleType))
             {
+               if (availableVersions.exists(moduleType + ".changelogUrl"))
+                  item.set("changelogUrl", availableVersions.get<std::string>(moduleType + ".changelogUrl"));
+
                try
                {
                   const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
@@ -973,7 +985,7 @@ namespace update
          if (versionInfo == versions.end())
             throw std::runtime_error("Version not found");
       }
-      
+
       const auto task(boost::make_shared<task::CGenericTask>("yadoms.update",
                                                              boost::bind(&worker::CYadoms::update, _1,
                                                                          std::string(downloadUrl),
@@ -991,6 +1003,6 @@ namespace update
       const shared::versioning::CVersion minSupportedYadomsVersion(itemVersionNode.get<std::string>("dependencies.yadoms.minimumVersion"));
       const auto& actualYadomsVersion = shared::CServiceLocator::instance().get<IRunningInformation>()->getSoftwareVersion().getVersion();
 
-      return actualYadomsVersion >= minSupportedYadomsVersion;   
+      return actualYadomsVersion >= minSupportedYadomsVersion;
    }
 } // namespace update
