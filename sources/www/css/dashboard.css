@@ -427,6 +427,11 @@
     padding: 0;
 }
 
+.show-changelog-modal {
+    width: 60%;
+    padding: 0;
+}
+
 .modal-dialog {
     width: 80%;
 }

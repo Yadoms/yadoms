@@ -353,6 +353,11 @@
       "title": "Journal d'une instance de plugin",
       "failToGetLog": "Impossible d'obtenir le journal pour __pluginName__"
     },
+    "show-changelog": {
+      "title": "Note de version",
+      "loading": "Chargement...",
+      "failToGetChangelog": "Impossible d'obtenir la note de version"
+    },
     "qrcode": {
       "title": "QR Code de Yadoms",
       "text": "Voici le QRCode de Yadoms. Vous pouvez le flasher avec votre téléphone pour accéder à Yadoms de partout."
@@ -597,6 +602,7 @@
             "update": "Mise à jour",
             "install": "Installation",
             "uninstall": "Désinstallation",
+            "changelog": "Consulter les notes de version",
             "confirmUpdateTitle": "Confirmation de mise à jour",
             "confirmUpdate": "Mettre à jour __objectName__ en version __version__ ?",
             "confirmInstallTitle": "Confirmation d'installation",

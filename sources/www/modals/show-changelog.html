@@ -1,0 +1,78 @@
+<div class="modal fade" id="show-changelog-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog show-changelog-modal">
+        <div class="modal-content">
+            <form class="form-horizontal" novalidate>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h2 class="modal-title" data-i18n="modals.show-changelog.title"></h2>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.close"></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    Yadoms.showChangelogModal = function (changelogUrl) {
+        assert(!isNullOrUndefined(changelogUrl), "changelogUrl must be defined");
+
+        var $container = $("div#show-changelog-modal .modal-body");
+        $container.html("<h3>" + $.t("modals.show-changelog.loading") + "</h3>");
+
+        $.ajax({
+            dataType: "text",
+            url: changelogUrl,
+            success: function (content) {
+                showContent($container, content);
+            },
+            error: function (error) {
+                $container.html("<h3>" + $.t("modals.show-changelog.failToGetChangelog") + "</h3>");
+            }
+        });
+
+        //we display the modal
+        $('div#show-changelog-modal').modal({ backdrop: 'static' });
+    };
+
+    showContent = function ($container, content) {
+        assert(!isNullOrUndefined(content), "content must be defined");
+        assert(!isNullOrUndefined(content), "content must be defined");
+
+        var md = window.markdownit({
+            html: true,
+            breaks: true,
+            linkify: true,
+            highlight: function (str, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    try {
+                        return hljs.highlight(lang, str).value;
+                    } catch (__) { }
+                }
+
+                return ''; // use external default escaping
+            }
+        });
+
+        // Open all links in new tab
+        var defaultRender = md.renderer.rules.link_open || function (tokens, idx, options, env, self) {
+            return self.renderToken(tokens, idx, options);
+        };
+        md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+            var aIndex = tokens[idx].attrIndex('target');
+            if (aIndex < 0) {
+                tokens[idx].attrPush(['target', '_blank']);
+            } else {
+                tokens[idx].attrs[aIndex][1] = '_blank';
+            }
+            return defaultRender(tokens, idx, options, env, self);
+        };
+
+        $container.html(md.render(content));
+    }
+</script>
