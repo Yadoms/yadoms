@@ -674,7 +674,7 @@
                keywordValue = "<span>" + translatedEnumValue + "</span>";
             }
             else if(keyword.type.toLowerCase() === "json") {
-               keywordValue = "<span></span>";
+               keywordValue = "<pre class=\"json-value-container\">" + library.json.prettyPrint(JSON.parse(acquisition.value)) + "</pre>";
             } else {
                keywordValue = "<span>" + acquisition.value + "</span>";
             }

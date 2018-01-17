@@ -299,3 +299,18 @@ body {
 .blocklyWidgetDiv .goog-menu { 
    max-height: 215px; 
 }
+
+
+.json-key {
+   color: brown;
+}
+.json-value {
+   color: navy;
+}
+.json-string {
+   color: olive;
+}
+.json-value-container {
+   text-align: left;
+   border: 0;
+}
