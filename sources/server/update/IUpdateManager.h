@@ -16,7 +16,6 @@ namespace update
       virtual std::string scanForUpdatesAsync() = 0;
       virtual shared::CDataContainer getUpdates(bool includePreleases) const = 0;
 
-      //TODO faire le ménage
       virtual std::string updatePluginAsync(const std::string& pluginName, const std::string& downloadUrl) const = 0;
       virtual std::string installPluginAsync(const std::string& downloadUrl) const = 0;
       virtual std::string removePluginAsync(const std::string& pluginName) const = 0;
