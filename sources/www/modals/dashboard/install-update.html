@@ -249,6 +249,7 @@
                 if (data.yadoms) {
                     buildYadomsLine(data.yadoms);
                 }
+                debugger;
                 if (data.plugins)
                     // Load plugins translations
                     PluginManager.getAll().always(function () {
@@ -905,5 +906,13 @@
         //we hide the buttons and show the progression
         item.processing = true;
         updateLine(objectType, itemType, item);
+    }
+
+
+    function showChangeLog(changeLogUrl) {
+        var url = "help.html";
+        url += "?lang=" + Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value;
+        url += "&helpUrl=" + encodeURIComponent(changeLogUrl);
+        window.open(url);
     }
 </script>
