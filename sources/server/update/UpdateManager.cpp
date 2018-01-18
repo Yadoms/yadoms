@@ -89,19 +89,23 @@ namespace update
       try
       {
          // Read inputs
+         YADOMS_LOG(debug) << "Read Yadoms versions...";
          const auto yadomsLocalVersion = shared::CServiceLocator::instance().get<IRunningInformation>()->getSoftwareVersion().getVersion();
          const auto yadomsAvailableVersions = info::CUpdateSite::getAllYadomsVersions();
 
+         YADOMS_LOG(debug) << "Read Plugins versions...";
          const auto pluginsLocalVersions = m_pluginManager->getPluginList();
          const auto pluginsAvailableVersions = info::CUpdateSite::getAllPluginVersions();
 
+         YADOMS_LOG(debug) << "Read Widgets versions...";
          const auto widgetsLocalVersions = worker::CWidget::getWidgetList();
          const auto widgetsAvailableVersions = info::CUpdateSite::getAllWidgetVersions();
 
+         YADOMS_LOG(debug) << "Read ScriptInterpreters versions...";
          const auto scriptInterpretersLocalVersions = m_interpreterManager->getAvailableInterpretersInformation();
          const auto scriptInterpretersAvailableVersions = info::CUpdateSite::getAllScriptInterpreterVersions();
 
-
+         YADOMS_LOG(debug) << "Build updates data (with prereleases)...";
          const auto updates = buildUpdates(true,
                                            yadomsLocalVersion,
                                            yadomsAvailableVersions,
@@ -111,6 +115,8 @@ namespace update
                                            widgetsAvailableVersions,
                                            scriptInterpretersLocalVersions,
                                            scriptInterpretersAvailableVersions);
+
+         YADOMS_LOG(debug) << "Build updates data (releases only)...";
          const auto releasesOnlyUpdates = buildUpdates(false,
                                                        yadomsLocalVersion,
                                                        yadomsAvailableVersions,
@@ -161,13 +167,13 @@ namespace update
       m_evtHandler.postEvent(kStartNextScanTimerId);
    }
 
-   shared::CDataContainer CUpdateManager::getUpdates(bool includePreleases) const
+   shared::CDataContainer CUpdateManager::getUpdates(bool includePrereleases) const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_updateMutex);
-      return includePreleases ? m_allUpdates : m_releasesOnlyUpdates;
+      return includePrereleases ? m_allUpdates : m_releasesOnlyUpdates;
    }
 
-   shared::CDataContainer CUpdateManager::buildUpdates(bool includePreleases,
+   shared::CDataContainer CUpdateManager::buildUpdates(bool includePrereleases,
                                                        const shared::versioning::CVersion& yadomsLocalVersion,
                                                        const shared::CDataContainer& yadomsAvailableVersions,
                                                        const pluginSystem::IFactory::AvailablePluginMap& pluginsLocalVersions,
@@ -183,22 +189,22 @@ namespace update
 
       const auto yadomsUpdates = buildYadomsList(yadomsLocalVersion,
                                                  yadomsAvailableVersions,
-                                                 includePreleases);
+                                                 includePrereleases);
       updates.set("yadoms", yadomsUpdates);
 
       const auto pluginUpdates = buildPluginList(pluginsLocalVersions,
                                                  pluginsAvailableVersions,
-                                                 includePreleases);
+                                                 includePrereleases);
       updates.set("plugins", pluginUpdates);
 
       const auto widgetUpdates = buildWidgetList(widgetsLocalVersions,
                                                  widgetsAvailableVersions,
-                                                 includePreleases);
+                                                 includePrereleases);
       updates.set("widgets", widgetUpdates);
 
       const auto scriptInterpreterUpdates = buildScriptInterpreterList(scriptInterpretersLocalVersions,
                                                                        scriptInterpretersAvailableVersions,
-                                                                       includePreleases);
+                                                                       includePrereleases);
       updates.set("scriptInterpreters", scriptInterpreterUpdates);
 
       return updates;
@@ -206,30 +212,30 @@ namespace update
 
    shared::CDataContainer CUpdateManager::buildYadomsList(const shared::versioning::CVersion& localVersion,
                                                           const shared::CDataContainer& availableVersions,
-                                                          bool includePreleases)
+                                                          bool includePrereleases)
    {
       // Only updatable items for Yadoms
       return addUpdatableYadoms(localVersion,
                                 availableVersions,
-                                includePreleases);
+                                includePrereleases);
    }
 
    shared::CDataContainer CUpdateManager::buildPluginList(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
                                                           const shared::CDataContainer& availableVersions,
-                                                          bool includePreleases)
+                                                          bool includePrereleases)
    {
       shared::CDataContainer list;
 
       // Add updatable items (ie already installed)
       const auto updatableItems = addUpdatablePlugins(localVersions,
                                                       availableVersions,
-                                                      includePreleases);
+                                                      includePrereleases);
       list.set("updatable", updatableItems);
 
       // Add items not already installed (ie not in localVersions list)
       const auto newItems = addNewPlugins(localVersions,
                                           availableVersions,
-                                          includePreleases);
+                                          includePrereleases);
       list.set("new", newItems);
 
       return list;
@@ -237,20 +243,20 @@ namespace update
 
    shared::CDataContainer CUpdateManager::buildWidgetList(const worker::CWidget::AvailableWidgetMap& localVersions,
                                                           const shared::CDataContainer& availableVersions,
-                                                          bool includePreleases)
+                                                          bool includePrereleases)
    {
       shared::CDataContainer list;
 
       // Add updatable items (ie already installed)
       const auto updatableItems = addUpdatableWidgets(localVersions,
                                                       availableVersions,
-                                                      includePreleases);
+                                                      includePrereleases);
       list.set("updatable", updatableItems);
 
       // Add items not already installed (ie not in localVersions list)
       const auto newItems = addNewWidgets(localVersions,
                                           availableVersions,
-                                          includePreleases);
+                                          includePrereleases);
       list.set("new", newItems);
 
       return list;
@@ -259,20 +265,20 @@ namespace update
    shared::CDataContainer CUpdateManager::buildScriptInterpreterList(
       const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>& localVersions,
       const shared::CDataContainer& availableVersions,
-      bool includePreleases)
+      bool includePrereleases)
    {
       shared::CDataContainer list;
 
       // Add updatable items (ie already installed)
       const auto updatableItems = addUpdatableScriptInterpreters(localVersions,
                                                                  availableVersions,
-                                                                 includePreleases);
+                                                                 includePrereleases);
       list.set("updatable", updatableItems);
 
       // Add items not already installed (ie not in localVersions list)
       const auto newItems = addNewScriptInterpreters(localVersions,
                                                      availableVersions,
-                                                     includePreleases);
+                                                     includePrereleases);
       list.set("new", newItems);
 
       return list;
@@ -280,7 +286,7 @@ namespace update
 
    shared::CDataContainer CUpdateManager::addUpdatableYadoms(const shared::versioning::CVersion& localVersion,
                                                              const shared::CDataContainer& availableVersions,
-                                                             bool includePreleases)
+                                                             bool includePrereleases)
    {
       shared::CDataContainer item;
 
@@ -289,14 +295,18 @@ namespace update
 
       std::map<std::string, shared::CDataContainer> older; // Pass by a map to sort versions list
       std::map<std::string, shared::CDataContainer> newer; // Pass by a map to sort versions list
-      try
+
+      for (auto& version : availableVersions.get<std::vector<shared::CDataContainer>>())
       {
-         for (auto& version : availableVersions.get<std::vector<shared::CDataContainer>>())
+         if (version.empty()) // Ignore value data (like "changelogUrl")
+            continue;
+
+         try
          {
             shared::versioning::CVersion v(version.get<std::string>("version"));
 
             // Don't add prereleases versions if not asked
-            if (!v.prerelease().empty() && !includePreleases)
+            if (!v.prerelease().empty() && !includePrereleases)
                continue;
 
             if (v == localVersion)
@@ -311,11 +321,11 @@ namespace update
             else
                newer[version.get<std::string>("version")] = versionData;
          }
-      }
-      catch (std::exception& exception)
-      {
-         YADOMS_LOG(warning) << "Invalid remote package for Yadoms, will be ignored";
-         YADOMS_LOG(debug) << "exception : " << exception.what();
+         catch (std::exception& exception)
+         {
+            YADOMS_LOG(warning) << "Invalid remote package for Yadoms, will be ignored. " << exception.what();
+            version.printToLog(YADOMS_LOG(debug));
+         }
       }
 
       try
@@ -335,7 +345,7 @@ namespace update
 
    shared::CDataContainer CUpdateManager::addUpdatablePlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
                                                               const shared::CDataContainer& availableVersions,
-                                                              bool includePreleases) const
+                                                              bool includePrereleases) const
    {
       shared::CDataContainer updatableItems;
 
@@ -365,10 +375,13 @@ namespace update
                   const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
                   for (auto& version : availableVersionsForItem)
                   {
+                     if (version.empty()) // Ignore value data (like "changelogUrl")
+                        continue;
+
                      shared::versioning::CVersion v(version.get<std::string>("version"));
 
                      // Don't add prereleases versions if not asked
-                     if (!v.prerelease().empty() && !includePreleases)
+                     if (!v.prerelease().empty() && !includePrereleases)
                         continue;
 
                      if (v == localVersion.second->getVersion())
@@ -411,7 +424,7 @@ namespace update
 
    shared::CDataContainer CUpdateManager::addNewPlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
                                                         const shared::CDataContainer& availableVersions,
-                                                        bool includePreleases)
+                                                        bool includePrereleases)
    {
       shared::CDataContainer newItems;
 
@@ -430,7 +443,7 @@ namespace update
                shared::versioning::CVersion v(version.get<std::string>("version"));
 
                // Don't add prereleases versions if not asked
-               if (!v.prerelease().empty() && !includePreleases)
+               if (!v.prerelease().empty() && !includePrereleases)
                   continue;
 
                shared::CDataContainer versionData;
@@ -479,7 +492,7 @@ namespace update
 
    shared::CDataContainer CUpdateManager::addUpdatableWidgets(const worker::CWidget::AvailableWidgetMap& localVersions,
                                                               const shared::CDataContainer& availableVersions,
-                                                              bool includePreleases) const
+                                                              bool includePrereleases) const
    {
       shared::CDataContainer updatableItems;
 
@@ -515,10 +528,13 @@ namespace update
                   const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
                   for (auto& version : availableVersionsForItem)
                   {
+                     if (version.empty()) // Ignore value data (like "changelogUrl")
+                        continue;
+
                      shared::versioning::CVersion v(version.get<std::string>("version"));
 
                      // Don't add prereleases versions if not asked
-                     if (!v.prerelease().empty() && !includePreleases)
+                     if (!v.prerelease().empty() && !includePrereleases)
                         continue;
 
                      if (v == localVersion.second->getVersion())
@@ -561,7 +577,7 @@ namespace update
 
    shared::CDataContainer CUpdateManager::addNewWidgets(const worker::CWidget::AvailableWidgetMap& localVersions,
                                                         const shared::CDataContainer& availableVersions,
-                                                        bool includePreleases)
+                                                        bool includePrereleases)
    {
       shared::CDataContainer newItems;
 
@@ -580,7 +596,7 @@ namespace update
                shared::versioning::CVersion v(version.get<std::string>("version"));
 
                // Don't add prereleases versions if not asked
-               if (!v.prerelease().empty() && !includePreleases)
+               if (!v.prerelease().empty() && !includePrereleases)
                   continue;
 
                shared::CDataContainer versionData;
@@ -630,7 +646,7 @@ namespace update
    shared::CDataContainer CUpdateManager::addUpdatableScriptInterpreters(
       const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>& localVersions,
       const shared::CDataContainer& availableVersions,
-      bool includePreleases) const
+      bool includePrereleases) const
    {
       shared::CDataContainer updatableItems;
 
@@ -660,10 +676,13 @@ namespace update
                   const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
                   for (auto& version : availableVersionsForItem)
                   {
+                     if (version.empty()) // Ignore value data (like "changelogUrl")
+                        continue;
+
                      shared::versioning::CVersion v(version.get<std::string>("version"));
 
                      // Don't add prereleases versions if not asked
-                     if (!v.prerelease().empty() && !includePreleases)
+                     if (!v.prerelease().empty() && !includePrereleases)
                         continue;
 
                      if (v == localVersion.second->getVersion())
@@ -707,7 +726,7 @@ namespace update
    shared::CDataContainer CUpdateManager::addNewScriptInterpreters(
       const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>& localVersions,
       const shared::CDataContainer& availableVersions,
-      bool includePreleases)
+      bool includePrereleases)
    {
       shared::CDataContainer newItems;
 
@@ -726,7 +745,7 @@ namespace update
                shared::versioning::CVersion v(version.get<std::string>("version"));
 
                // Don't add prereleases versions if not asked
-               if (!v.prerelease().empty() && !includePreleases)
+               if (!v.prerelease().empty() && !includePrereleases)
                   continue;
 
                shared::CDataContainer versionData;
