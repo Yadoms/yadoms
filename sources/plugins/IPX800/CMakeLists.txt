@@ -85,5 +85,6 @@ PLUGIN_LINK   (IPX800 ${IPX800_PLUGIN_ADDITIONAL_LIB})
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(IPX800 package.json)
+PLUGIN_POST_BUILD_COPY_FILE(IPX800 changelog.md)
 PLUGIN_POST_BUILD_COPY_FILE(IPX800 icon.png)
 PLUGIN_POST_BUILD_COPY_DIRECTORY(IPX800 locales)

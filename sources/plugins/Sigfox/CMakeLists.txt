@@ -57,5 +57,6 @@ PLUGIN_LINK   (Sigfox ${SIGFOX_PLUGIN_ADDITIONAL_LIB})
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(Sigfox package.json)
+PLUGIN_POST_BUILD_COPY_FILE(Sigfox changelog.md)
 PLUGIN_POST_BUILD_COPY_FILE(Sigfox icon.png)
 PLUGIN_POST_BUILD_COPY_DIRECTORY(Sigfox locales)

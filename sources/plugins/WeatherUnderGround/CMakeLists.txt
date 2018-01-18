@@ -94,5 +94,6 @@ PLUGIN_LINK(WeatherUnderground ${WUNDERGROUND_ADDITIONAL_LIB})
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(WeatherUnderground package.json)
+PLUGIN_POST_BUILD_COPY_FILE(WeatherUnderground changelog.md)
 PLUGIN_POST_BUILD_COPY_FILE(WeatherUnderground icon.png)
 PLUGIN_POST_BUILD_COPY_DIRECTORY(WeatherUnderground locales)
