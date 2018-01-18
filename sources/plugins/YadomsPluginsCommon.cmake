@@ -22,12 +22,15 @@ MACRO(PLUGIN_SOURCES _targetName)
    if(NOT PACKAGE_JSON_FILE)
       # Add package.json if exists (can be absent if generated)
       FILE(GLOB PACKAGE_JSON_FILE package.json)
-   
    endif(NOT PACKAGE_JSON_FILE)
+
+   # Add changelog.md if exists (can be absent if generated)
+   FILE(GLOB CHANGELOG_MD_FILE changelog.md)
    
    set(PLUGIN_SOURCE_FILES
       ${ARGN}
       ${PACKAGE_JSON_FILE}
+      ${CHANGELOG_MD_FILE}
       ${TRANSLATION_FILES}
       )
 
