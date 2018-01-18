@@ -5,6 +5,9 @@
 #include "Lighting5MdRemote.h"
 #include "Lighting5OnOff.h"
 #include <shared/Log.h>
+#include "RareDeviceIdFilter.h"
+#include "../MessageFilteredException.hpp"
+
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -22,7 +25,7 @@ namespace rfxcomMessages
       m_id = deviceDetails.get<unsigned int>("id");
       m_unitCode = deviceDetails.get<unsigned char>("unitCode");
       m_subTypeManager->set(command);
-      
+
       // Build device description
       buildDeviceName();
       m_deviceDetails = deviceDetails;
@@ -52,8 +55,10 @@ namespace rfxcomMessages
 
    CLighting5::CLighting5(boost::shared_ptr<yApi::IYPluginApi> api,
                           const RBUF& rbuf,
-                          size_t rbufSize)
-      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+                          size_t rbufSize,
+                          boost::shared_ptr<IUnsecuredProtocolFilter> messageFilter)
+      : m_messageFilter(messageFilter),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_signalPower})
    {
       CheckReceivedMessage(rbuf,
@@ -76,7 +81,11 @@ namespace rfxcomMessages
 
       // Create device and keywords if needed
       if (!api->deviceExists(m_deviceName))
-      {         
+      {
+         if (m_messageFilter && !m_messageFilter->isValid(m_deviceName))
+            throw CMessageFilteredException((boost::format("Receive unknown device (id %1%) for unsecured protocol (LIGHTING5 / %2%), may be a transmission error : ignored")
+               % m_id % model).str());
+
          api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
          YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
          m_deviceDetails.printToLog(YADOMS_LOG(information));
@@ -85,6 +94,12 @@ namespace rfxcomMessages
 
    CLighting5::~CLighting5()
    {
+   }
+
+   boost::shared_ptr<IUnsecuredProtocolFilter> CLighting5::createFilter()
+   {
+      return boost::make_shared<CRareDeviceIdFilter>(3,
+                                                     boost::posix_time::minutes(1));
    }
 
    void CLighting5::buildDeviceDetails()
@@ -195,5 +210,3 @@ namespace rfxcomMessages
       m_deviceName = ssdeviceName.str();
    }
 } // namespace rfxcomMessages
-
-

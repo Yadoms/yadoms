@@ -1,13 +1,13 @@
 {
   "type": "rfxcom",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "Sébastien GALLOU",
   "url": "https://github.com/Yadoms/yadoms/wiki/Rfxcom",
   "credits": "",
   "supportedPlatforms": "all",
   "dependencies": {
     "yadoms" : {
-      "minimumVersion" : "2.1.0"
+      "minimumVersion" : "2.0.0"
     }
   },
   "configurationSchema": {

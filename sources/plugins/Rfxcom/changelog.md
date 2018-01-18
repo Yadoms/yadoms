@@ -1,3 +1,6 @@
+### 1.1.1
+* Filter parasite devices for Lighting5 protocol (LightwaveRF, Siemens, EMW100, BBSB, MDREMOTE, RSL2, OTIO, Livolo, RGB, Aoke relay, Eurodomest, RGB432W, Legrand, Avantek, IT, Kangtai)
+
 ### 1.1.0
 * Add Yadoms dependency support
 * This version needs Yadoms v2.0.2 minimum
