@@ -37,12 +37,22 @@
         });
 
         //we display the modal
-        $('div#show-changelog-modal').modal({ backdrop: 'static' });
+        $('div#show-changelog-modal').modal({
+            backdrop: 'static'
+        });
     };
 
     showContent = function ($container, content) {
         assert(!isNullOrUndefined(content), "content must be defined");
         assert(!isNullOrUndefined(content), "content must be defined");
+
+        // Make links on eferences on Github fixes like "Fix #123"
+        content = content.replace(
+            /(F|f)ix #(\d+)/g,
+            function (match0, match1, match2) {
+                var url = 'https://github.com/Yadoms/yadoms/issues/' + match2;
+                return '<a target=_blank href="' + url + '">' + match0 + '</a>';
+            });
 
         var md = window.markdownit({
             html: true,
@@ -52,7 +62,7 @@
                 if (lang && hljs.getLanguage(lang)) {
                     try {
                         return hljs.highlight(lang, str).value;
-                    } catch (__) { }
+                    } catch (__) {}
                 }
 
                 return ''; // use external default escaping
@@ -73,6 +83,7 @@
             return defaultRender(tokens, idx, options, env, self);
         };
 
-        $container.html(md.render(content));
+        $container.html(md
+            .render(content));
     }
 </script>
