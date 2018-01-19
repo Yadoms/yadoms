@@ -66,13 +66,13 @@ namespace tools
 
       const auto normalizedScriptPath(boost::filesystem::path(scriptPath).parent_path() / "normalizedUpdate.sh");
 
-      YADOMS_LOG(debug) << "launchNativeScript : write into " << normalizedScriptPath << "...";
-      std::ofstream outfile(normalizedScriptPath, std::ios:out | std::ios::trunc);
+      YADOMS_LOG(debug) << "launchNativeScript : write into " << normalizedScriptPath.string() << "...";
+      std::ofstream outfile(normalizedScriptPath.string(), std::ios::out | std::ios::trunc);
       outfile << content;
       outfile.close();
 
       Poco::Process::Args nativeArgs = args;
-      nativeArgs.insert(args.begin(), normalizedScriptPath);
+      nativeArgs.insert(args.begin(), normalizedScriptPath.string());
       YADOMS_LOG(debug) << "launchNativeScript sh with args " << boost::algorithm::join(nativeArgs, ", ");
       return Poco::Process::launch("sh", nativeArgs);
    }
