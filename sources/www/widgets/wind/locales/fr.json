@@ -1,0 +1,15 @@
+{
+   "name": "Rose des vents",
+   "description": "Un widget qui permet d'afficher une rose des vents",
+   "noAvailableData": "Aucune donnée pour l'échelle sélectionnée",
+	"configurationSchema": {     
+      "windDirection": {
+         "name": "Direction du vent",
+         "description": "Choisir les données de l'équipement à afficher."
+      },
+      "windSpeed": {
+         "name": "Vitesse du vent",
+         "description": "Choisir les données de l'équipement à afficher."
+      }
+	}
+}

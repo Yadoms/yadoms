@@ -1,0 +1,15 @@
+{
+  "name": "Wind chart",
+  "description": "A widget that provide a wind rose",
+  "noAvailableData": "No available data for the selected range",
+  "configurationSchema": {
+      "windDirection": {
+         "name": "Direction of the wind",
+         "description": "Choose the data of a device to display"
+      },
+      "windSpeed": {
+         "name": "Speed of the wind",
+         "description": "Choose the data of a device to display"
+      }
+  }
+}

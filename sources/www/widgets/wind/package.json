@@ -1,0 +1,34 @@
+{
+	"type": "wind",
+	"version": "1.0.0-beta",
+	"author": "Jean-Michel BERHAULT",
+	"url": "https://github.com/Yadoms/yadoms/wiki/wind",
+	"credits": "",
+  "dimensions": {
+    "min": {
+      "x": 2,
+      "y": 2
+    },
+    "max": {
+      "x": 3,
+      "y": 3
+    },
+    "default": {
+      "x": 3,
+      "y": 3
+    }
+  },
+  "hasTitle" :  true,
+	"configurationSchema": {
+      "windDirection": {
+         "type": "keyword",
+         "expectedCapacity": ["direction"],
+         "expectedKeywordAccess": "get"
+      },
+      "windSpeed": {
+         "type": "keyword",
+         "expectedCapacity": ["speed"],
+         "expectedKeywordAccess": "get"
+      }
+	}
+}
