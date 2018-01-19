@@ -23,28 +23,28 @@ namespace update
          ///\param [in] displayLanguage The language used for display
          ///\return the list of Yadoms versions
          //---------------------------------------------
-         static shared::CDataContainer getAllYadomsVersions(const std::string& displayLanguage);
+         static shared::CDataContainer getAllYadomsVersions();
 
          //---------------------------------------------
          ///\brief   Get all the available versions for a plugin
          ///\param [in] displayLanguage The language used for display
          ///\return the list of plugin version
          //---------------------------------------------
-         static shared::CDataContainer getAllPluginVersions(const std::string& displayLanguage);
+         static shared::CDataContainer getAllPluginVersions();
 
          //---------------------------------------------
          ///\brief   Get all the available versions for widgets
          ///\param [in] displayLanguage The language used for display
          ///\return the list of widgets version
          //---------------------------------------------
-         static shared::CDataContainer getAllWidgetsVersions(const std::string& displayLanguage);
+         static shared::CDataContainer getAllWidgetVersions();
 
          //---------------------------------------------
          ///\brief   Get all the available versions for a scriptInterpreter
          ///\param [in] displayLanguage The language used for display
          ///\return the list of scriptInterpreter version
          //---------------------------------------------
-         static shared::CDataContainer getAllScriptInterpreterVersions(const std::string& displayLanguage);
+         static shared::CDataContainer getAllScriptInterpreterVersions();
 
       private:
          //---------------------------------------------
@@ -57,7 +57,6 @@ namespace update
          //---------------------------------------------
          static shared::CDataContainer callDistantScript(const std::string& script,
                                                          bool includeOsAndArch,
-                                                         const std::string& displayLanguage,
                                                          const std::string& resultFieldToReturn);
 
          //---------------------------------------------
@@ -106,10 +105,6 @@ namespace update
          ///\brief   The parameter DEMMODE for distant scripts
          //---------------------------------------------
          static std::string m_distantScriptParamDevMode;
-         //---------------------------------------------
-         ///\brief   The parameter LANG for distant scripts
-         //---------------------------------------------
-         static std::string m_distantScriptParamLang;
 
          //---------------------------------------------
          ///\brief   The result field for distant scripts

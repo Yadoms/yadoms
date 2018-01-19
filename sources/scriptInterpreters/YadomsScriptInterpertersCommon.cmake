@@ -23,6 +23,7 @@ MACRO(SCRIPT_INTERPRETER_SOURCES _targetName)
    set(SCRIPT_INTERPRETER_SOURCE_FILES
       ${ARGN}
       package.json
+      changelog.md
       ${TRANSLATION_FILES}
       )
       

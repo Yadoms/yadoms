@@ -6,7 +6,7 @@ namespace shared
 {
    namespace versioning
    {
-      CVersionInformation::CVersionInformation(const shared::versioning::CVersion& version)
+      CVersionInformation::CVersionInformation(const CVersion& version)
       {
          m_container.set("version", version.toString());
       }
@@ -21,7 +21,7 @@ namespace shared
          return m_container.serialize();
       }
 
-      const shared::CDataContainer& CVersionInformation::getContainer() const
+      const CDataContainer& CVersionInformation::getContainer() const
       {
          return m_container;
       }

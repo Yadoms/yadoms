@@ -11,11 +11,12 @@
 #include "automation/IRuleManager.h"
 #include "i18n/ClientStrings.h"
 
-namespace update {
-   namespace worker {
-
-
-      void CScriptInterpreter::install(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & downloadUrl)
+namespace update
+{
+   namespace worker
+   {
+      void CScriptInterpreter::install(CWorkerTools::WorkerProgressFunc progressCallback,
+                                       const std::string& downloadUrl)
       {
          YADOMS_LOG(information) << "Installing new scriptInterpreter from " << downloadUrl;
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterInstall, std::string(), shared::CDataContainer::EmptyContainer);
@@ -29,7 +30,8 @@ namespace update {
          {
             YADOMS_LOG(information) << "Downloading scriptInterpreter package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterDownload, std::string(), callbackData);
-            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
+            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback,
+                                                                         i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
             YADOMS_LOG(information) << "Downloading scriptInterpreter package with success";
 
             /////////////////////////////////////////////
@@ -42,25 +44,22 @@ namespace update {
                Poco::Path pluginPath = CWorkerTools::deployScriptInterpreterPackage(downloadedPackage);
                YADOMS_LOG(information) << "ScriptInterpreter deployed with success";
 
-
+               // Refresh scriptInterpreter list
                YADOMS_LOG(information) << "Refresh scriptInterpreter list";
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdateScriptInterpreterFinalize, std::string(), callbackData);
-
-               //force refresh of script interpreters
-               boost::shared_ptr<automation::IRuleManager> automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
+               auto automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
                if (automationRuleManager)
                   automationRuleManager->getAvailableInterpreters(); //as seen in comments, refresh interpreters list
 
                YADOMS_LOG(information) << "ScriptInterpreter installed with success";
-               progressCallback(true, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterSuccess, std::string(), shared::CDataContainer::EmptyContainer);
-
+               progressCallback(true, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterSuccess, std::string(),
+                                shared::CDataContainer::EmptyContainer);
             }
-            catch (std::exception & ex)
+            catch (std::exception& ex)
             {
                //fail to extract package file
                YADOMS_LOG(error) << "Fail to deploy scriptInterpreter package : " << ex.what();
                progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterDeployFailed, ex.what(), callbackData);
-
             }
 
 
@@ -68,20 +67,18 @@ namespace update {
             Poco::File toDelete(downloadedPackage.toString());
             if (toDelete.exists())
                toDelete.remove();
-
          }
-         catch (std::exception & ex)
+         catch (std::exception& ex)
          {
             //fail to download package
             YADOMS_LOG(error) << "Fail to download scriptInterpreter package : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterDownloadFailed, ex.what(), callbackData);
          }
-
       }
 
       void CScriptInterpreter::update(CWorkerTools::WorkerProgressFunc progressCallback,
-         const std::string & scriptInterpreterName,
-         const std::string & downloadUrl)
+                                      const std::string& scriptInterpreterName,
+                                      const std::string& downloadUrl)
       {
          YADOMS_LOG(information) << "Updating scriptInterpreter " << scriptInterpreterName << " from " << downloadUrl;
 
@@ -90,7 +87,7 @@ namespace update {
          callbackData.set("downloadUrl", downloadUrl);
 
          progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterUpdate, std::string(), callbackData);
-         
+
          /////////////////////////////////////////////
          //1. download package
          /////////////////////////////////////////////
@@ -98,7 +95,8 @@ namespace update {
          {
             YADOMS_LOG(information) << "Downloading scriptInterpreter package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterDownload, std::string(), callbackData);
-            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
+            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback,
+                                                                         i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
             YADOMS_LOG(information) << "Downloading scriptInterpreter package with success";
 
             /////////////////////////////////////////////
@@ -107,7 +105,7 @@ namespace update {
 
             //TOFIX must stop the interpreter itself and wait for stopped
             //stop all rules using this scriptInterpreter
-            boost::shared_ptr<automation::IRuleManager> automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
+            auto automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
             if (automationRuleManager)
                automationRuleManager->stopAllRulesMatchingInterpreter(scriptInterpreterName);
 
@@ -122,8 +120,15 @@ namespace update {
                YADOMS_LOG(information) << "ScriptInterpreter deployed with success";
 
 
-               YADOMS_LOG(information) << "Start instances";
+               // Refresh scriptInterpreter list
+               YADOMS_LOG(information) << "Refresh scriptInterpreter list";
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdateScriptInterpreterFinalize, std::string(), callbackData);
+               if (automationRuleManager)
+                  automationRuleManager->getAvailableInterpreters(); //as seen in comments, refresh interpreters list
+
+
+               YADOMS_LOG(information) << "Start instances";
+               progressCallback(true, 95.0f, i18n::CClientStrings::UpdateScriptInterpreterFinalize, std::string(), callbackData);
 
                //start all rules using this scriptInterpreter
                if (automationRuleManager)
@@ -132,9 +137,8 @@ namespace update {
                progressCallback(true, 100.0f, "ScriptInterpreter updated with success", std::string(), shared::CDataContainer::EmptyContainer);
                YADOMS_LOG(information) << "ScriptInterpreter installed with success";
                progressCallback(true, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterSuccess, std::string(), callbackData);
-
             }
-            catch (std::exception & ex)
+            catch (std::exception& ex)
             {
                //fail to extract package file
                YADOMS_LOG(error) << "Fail to deploy scriptInterpreter package : " << ex.what();
@@ -146,9 +150,8 @@ namespace update {
             Poco::File toDelete(downloadedPackage.toString());
             if (toDelete.exists())
                toDelete.remove();
-
          }
-         catch (std::exception & ex)
+         catch (std::exception& ex)
          {
             //fail to download package
             YADOMS_LOG(error) << "Fail to download scriptInterpreter package : " << ex.what();
@@ -156,7 +159,8 @@ namespace update {
          }
       }
 
-      void CScriptInterpreter::remove(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & scriptInterpreterName)
+      void CScriptInterpreter::remove(CWorkerTools::WorkerProgressFunc progressCallback,
+                                      const std::string& scriptInterpreterName)
       {
          YADOMS_LOG(information) << "Removing scriptInterpreter " << scriptInterpreterName;
 
@@ -170,7 +174,7 @@ namespace update {
             /////////////////////////////////////////////
             //1. stop any instance
             /////////////////////////////////////////////
-            
+
             //TOFIX must stop the interpreter itself and wait for stopped
             //stop all rules using this scriptInterpreter
             auto automationRuleManager = shared::CServiceLocator::instance().get<automation::IRuleManager>();
@@ -182,7 +186,7 @@ namespace update {
             /////////////////////////////////////////////
             //2. remove scriptInterpreter folder
             /////////////////////////////////////////////
-            auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
+            const auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
             Poco::Path scriptInterpreterPath(startupOptions->getScriptInterpretersPath());
             scriptInterpreterPath.append(scriptInterpreterName);
 
@@ -197,21 +201,12 @@ namespace update {
             if (automationRuleManager)
                automationRuleManager->getAvailableInterpreters(); //as seen in comments, refresh interpreters list
          }
-         catch (std::exception & ex)
+         catch (std::exception& ex)
          {
             //fail to remove package
             YADOMS_LOG(error) << "Fail to delete scriptInterpreter : " << scriptInterpreterName << " : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterRemoveFailed, ex.what(), callbackData);
          }
       }
-
-
-
-
-
-
-
-
-
    } // namespace worker
 } // namespace update

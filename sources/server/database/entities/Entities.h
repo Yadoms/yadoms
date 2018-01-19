@@ -49,6 +49,7 @@ namespace database
          ((Started)(1))
          ((Stopped)(2))
          ((Updated)(3))
+         ((UpdateAvailable)(4))
       )
 
       DECLARE_ENUM_HEADER(ERuleState,

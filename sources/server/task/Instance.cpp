@@ -103,7 +103,7 @@ namespace task {
          YADOMS_LOG(debug) << m_task->getName() << " report progression none with message " << m_currentMessage;
 
       // Post notification
-      boost::shared_ptr<CInstanceNotificationData> obj(new CInstanceNotificationData(*this));
+      const auto obj = boost::make_shared<CInstanceNotificationData>(*this);
       notification::CHelpers::postNotification(obj);
    }
 

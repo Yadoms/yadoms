@@ -150,7 +150,7 @@ int CYadomsServer::main(const ArgVec& /*args*/)
 
       //configure the Poco ErrorHandler
       CErrorHandler eh;
-      auto pOldEH = Poco::ErrorHandler::set(&eh);
+      const auto pOldEH = Poco::ErrorHandler::set(&eh);
 
       //configure stop handler
       enum

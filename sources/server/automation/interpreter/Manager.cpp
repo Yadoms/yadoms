@@ -154,6 +154,17 @@ namespace automation
          return interpreters;
       }
 
+      std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>> CManager::getAvailableInterpretersInformation()
+      {
+         const auto interpreters = getAvailableInterpreters();
+
+         std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>> interpreterInformations;
+         for (const auto& interpreter : interpreters)
+            interpreterInformations[interpreter] = getInterpreterInstance(interpreter)->aboutInterpreter();            
+
+         return interpreterInformations;
+      }
+
       void CManager::unloadInterpreter(const std::string& interpreterType)
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);

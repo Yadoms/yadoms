@@ -129,7 +129,6 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
                             break;
                         case "taskupdatenotification":
                             $(document).trigger("taskupdatenotification." + websocketData.uuid, websocketData);
-                            console.log("TaskUpdateNotification : " + JSON.stringify(websocketData));
                             break;
                         case "isalive":
                             $(document).trigger("isalive");

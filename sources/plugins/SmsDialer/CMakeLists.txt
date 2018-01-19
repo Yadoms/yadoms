@@ -65,6 +65,7 @@ if(GAMMU_FOUND)
    ## "package.json" and "icon.png" are needed, but you can add extra-files
    #########################################
    PLUGIN_POST_BUILD_COPY_FILE(smsDialer package.json)
+   PLUGIN_POST_BUILD_COPY_FILE(smsDialer changelog.md)
    PLUGIN_POST_BUILD_COPY_FILE(smsDialer icon.png)
    PLUGIN_POST_BUILD_COPY_DIRECTORY(smsDialer locales)
 else()

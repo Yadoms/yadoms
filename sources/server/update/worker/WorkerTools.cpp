@@ -19,41 +19,29 @@
 #include <shared/exception/Extract.hpp>
 
 
-namespace update {
-   namespace worker {
-      Poco::Path CWorkerTools::downloadPackage(const std::string & downloadUrl, WorkerProgressFunc callback, const std::string & function, float min, float max)
+namespace update
+{
+   namespace worker
+   {
+      Poco::Path CWorkerTools::downloadPackage(const std::string& downloadUrl, WorkerProgressFunc callback, const std::string& function, float min,
+                                               float max)
       {
          return downloadPackage(downloadUrl, boost::bind(&CWorkerTools::reportDownloadProgress, _1, _2, callback, function, min, max));
       }
 
-      Poco::Path CWorkerTools::downloadPackageAndVerify(const std::string & downloadUrl, const std::string & md5Hash, WorkerProgressFunc callback, const std::string & function, float min, float max)
+      Poco::Path CWorkerTools::downloadPackageAndVerify(const std::string& downloadUrl, const std::string& md5Hash, WorkerProgressFunc callback,
+                                                        const std::string& function, float min, float max)
       {
-         return downloadPackageAndVerify(downloadUrl, md5Hash, boost::bind(&CWorkerTools::reportDownloadProgress, _1, _2, callback, function, min, max));
+         return downloadPackageAndVerify(downloadUrl, md5Hash,
+                                         boost::bind(&CWorkerTools::reportDownloadProgress, _1, _2, callback, function, min, max));
       }
 
-      Poco::Path CWorkerTools::downloadPackage(const std::string & downloadUrl)
+      Poco::Path CWorkerTools::downloadPackage(const std::string& downloadUrl)
       {
          return downloadPackage(downloadUrl, boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
       }
 
-      Poco::Path CWorkerTools::downloadPackage(const std::string & downloadUrl, shared::web::CFileDownloader::ProgressFunc progressReporter)
-      {
-         //determine the filename to download
-         Poco::URI toDownload(downloadUrl);
-         std::string packageName = shared::web::CUriHelpers::getFile(toDownload);
-         if (packageName.empty())
-            packageName = "temp.zip";
-
-         //determine local path
-         Poco::Path downloadedPackage(tools::CFileSystem::createTemporaryFolder());
-         downloadedPackage.setFileName(packageName);
-
-         shared::web::CFileDownloader::downloadFile(toDownload, downloadedPackage, progressReporter);
-         return downloadedPackage;
-      }
-
-
-      Poco::Path CWorkerTools::downloadPackageAndVerify(const std::string & downloadUrl, const std::string & md5Hash, shared::web::CFileDownloader::ProgressFunc progressReporter)
+      Poco::Path CWorkerTools::downloadPackage(const std::string& downloadUrl, shared::web::CFileDownloader::ProgressFunc progressReporter)
       {
          //determine the filename to download
          Poco::URI toDownload(downloadUrl);
@@ -62,7 +50,25 @@ namespace update {
             packageName = "temp.zip";
 
          //determine local path
-         auto downloadedPackage(tools::CFileSystem::createTemporaryFolder());
+         auto downloadedPackage(tools::CFileSystem::createTemporaryFolder(std::string(), true));
+         downloadedPackage.setFileName(packageName);
+
+         shared::web::CFileDownloader::downloadFile(toDownload, downloadedPackage, progressReporter);
+         return downloadedPackage;
+      }
+
+
+      Poco::Path CWorkerTools::downloadPackageAndVerify(const std::string& downloadUrl, const std::string& md5Hash,
+                                                        shared::web::CFileDownloader::ProgressFunc progressReporter)
+      {
+         //determine the filename to download
+         Poco::URI toDownload(downloadUrl);
+         auto packageName = shared::web::CUriHelpers::getFile(toDownload);
+         if (packageName.empty())
+            packageName = "temp.zip";
+
+         //determine local path
+         auto downloadedPackage(tools::CFileSystem::createTemporaryFolder(std::string(), true));
          downloadedPackage.setFileName(packageName);
 
          shared::web::CFileDownloader::downloadFileAndVerify(toDownload, downloadedPackage, md5Hash, progressReporter);
@@ -70,7 +76,7 @@ namespace update {
       }
 
 
-      Poco::Path CWorkerTools::deployPackage(Poco::Path downloadedPackage, const std::string & outputDirectory)
+      Poco::Path CWorkerTools::deployPackage(Poco::Path downloadedPackage, const std::string& outputDirectory)
       {
          /*
          When deploying a plugin we dont know the plugin name
@@ -100,11 +106,11 @@ namespace update {
                YADOMS_LOG(debug) << "Read " << packageJsonPath.toString() << "...";
 
                shared::CDataContainer packageJson;
-               std::string packageJsonPathString = packageJsonPath.toString();
+               const auto packageJsonPathString = packageJsonPath.toString();
                packageJson.deserializeFromFile(packageJsonPathString);
 
                //retreive the plugin name
-               std::string pluginName = packageJson.get<std::string>("type");
+               const auto pluginName = packageJson.get<std::string>("type");
 
 
                try
@@ -128,12 +134,12 @@ namespace update {
                   }
                   return realPluginFolder;
                }
-               catch (Poco::FileException & fileException)
+               catch (Poco::FileException& fileException)
                {
                   YADOMS_LOG(error) << "Operation fail :" << fileException.displayText();
                   throw;
                }
-               catch (std::exception & ex)
+               catch (std::exception& ex)
                {
                   //delete folder tempPluginFolder
                   YADOMS_LOG(error) << "Operation fail (std::exception):" << ex.what();
@@ -141,7 +147,7 @@ namespace update {
                   throw;
                }
             }
-            catch (std::exception & ex)
+            catch (std::exception& ex)
             {
                //delete folder tempPluginFolder
                YADOMS_LOG(error) << "Operation fail (read json):" << ex.what();
@@ -149,19 +155,18 @@ namespace update {
                throw;
             }
          }
-         catch (shared::exception::CExtract & ex)
+         catch (shared::exception::CExtract& ex)
          {
             YADOMS_LOG(error) << "Cannot extract package :" << ex.what();
             tools::CFileSystem::remove(tempPluginFolder, true);
             throw;
          }
-
       }
-      
+
       std::string CWorkerTools::getWidgetBasePath() //TODO récupérer du IPathProvider
       {
          //retreive startup options
-         auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
+         const auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
          Poco::Path websiteFolder(startupOptions->getWebServerInitialPath());
          websiteFolder.append("widgets");
          return websiteFolder.toString();
@@ -170,14 +175,14 @@ namespace update {
       std::string CWorkerTools::getPluginBasePath() //TODO récupérer du IPathProvider
       {
          //retreive startup options
-         auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
+         const auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
          return startupOptions->getPluginsPath();
       }
 
       std::string CWorkerTools::getScriptInterpreterBasePath() //TODO récupérer du IPathProvider
       {
          //retreive startup options
-         auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
+         const auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
          return startupOptions->getScriptInterpretersPath();
       }
 
@@ -186,27 +191,27 @@ namespace update {
       {
          return deployPackage(downloadedPackage, getPluginBasePath());
       }
-      
+
       Poco::Path CWorkerTools::deployWidgetPackage(Poco::Path downloadedPackage)
       {
          return deployPackage(downloadedPackage, getWidgetBasePath());
       }
-      
+
       Poco::Path CWorkerTools::deployScriptInterpreterPackage(Poco::Path downloadedPackage)
       {
          return deployPackage(downloadedPackage, getScriptInterpreterBasePath());
       }
 
-      void CWorkerTools::reportDownloadProgress(const std::string & file, float progress, WorkerProgressFunc callback, const std::string & function, float min, float max)
+      void CWorkerTools::reportDownloadProgress(const std::string& file, float progress, WorkerProgressFunc callback, const std::string& function,
+                                                float min, float max)
       {
          shared::CDataContainer callbackData;
          callbackData.set("file", file);
          callbackData.set("progress", progress);
          //progress is the progression of pure download (from 0 to 100)
          //so the download progress, will update the task progression between min and max
-         float fullProgression = min + (((max - min) / 100.0f) * progress);
+         const float fullProgression = min + (((max - min) / 100.0f) * progress);
          callback(true, fullProgression, function, std::string(), callbackData);
       }
-
    } // namespace worker
 } // namespace update

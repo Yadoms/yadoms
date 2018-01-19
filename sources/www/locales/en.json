@@ -353,6 +353,11 @@
       "title": "Plugin log view",
       "failToGetLog": "Fail to get log for __pluginName__"
     },
+    "show-changelog": {
+      "title": "Change log",
+      "loading": "Loading...",
+      "failToGetChangelog": "Fail to get change log"
+    },
     "qrcode": {
       "title": "QR Code de Yadoms",
       "text": "Here is the QRCode of Yadoms. You can now flash it with your phone to access Yadoms everywhere."
@@ -597,6 +602,7 @@
             "update": "Update",
             "install": "Install",
             "uninstall": "Uninstall",
+            "changelog": "Show versions information",
             "confirmUpdateTitle": "Confirm update",
             "confirmUpdate": "Update __objectName__ to version __version__ ?",
             "confirmInstallTitle": "Confirm install",
@@ -1012,7 +1018,8 @@
     "YadomsCrash": "yadoms has crashed",
     "PluginCrash": "Plugin __who__ has been crashed",
     "TaskFailed": "__who__ task has been crashed",
-    "RuleFailed": "The automation rule __who__ has failed"
+    "RuleFailed": "The automation rule __who__ has failed",
+    "UpdateAvailable": "An software update is available, check the install&update page"
   },
   "webSockets": {
     "update": {

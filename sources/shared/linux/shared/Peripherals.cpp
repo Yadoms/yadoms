@@ -21,7 +21,7 @@ boost::shared_ptr<CPeripherals::SerialPortsMap> CPeripherals::getSerialPorts()
 {
    boost::filesystem::path ttyDir("/sys/class/tty");
 
-   boost::shared_ptr<SerialPortsMap> serialPorts(new SerialPortsMap);
+   auto serialPorts(boost::make_shared<SerialPortsMap>());
 
    if (boost::filesystem::exists(ttyDir) && boost::filesystem::is_directory(ttyDir))
    {

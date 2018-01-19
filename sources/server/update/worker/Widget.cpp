@@ -2,13 +2,17 @@
 #include "Widget.h"
 #include "WorkerTools.h"
 #include <Poco/File.h>
+#include <Poco/DirectoryIterator.h>
 #include "i18n/ClientStrings.h"
 #include <shared/Log.h>
+#include "WidgetInformation.h"
 
-namespace update {
-   namespace worker {
-
-      void CWidget::install(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & downloadUrl)
+namespace update
+{
+   namespace worker
+   {
+      void CWidget::install(CWorkerTools::WorkerProgressFunc progressCallback,
+                            const std::string& downloadUrl)
       {
          YADOMS_LOG(information) << "Installing new widget from " << downloadUrl;
 
@@ -24,7 +28,8 @@ namespace update {
             YADOMS_LOG(information) << "Downloading widget package";
 
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetDownload, std::string(), callbackData);
-            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateWidgetDownload, 0.0, 90.0);
+            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateWidgetDownload,
+                                                                         0.0, 90.0);
             YADOMS_LOG(information) << "Downloading widget package with success";
 
 
@@ -39,7 +44,7 @@ namespace update {
                YADOMS_LOG(information) << "Widget deployed with success";
                progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, std::string(), shared::CDataContainer::EmptyContainer);
             }
-            catch (std::exception & ex)
+            catch (std::exception& ex)
             {
                //fail to extract package file
                YADOMS_LOG(error) << "Fail to deploy widget package : " << ex.what();
@@ -51,9 +56,8 @@ namespace update {
             Poco::File toDelete(downloadedPackage.toString());
             if (toDelete.exists())
                toDelete.remove();
-
          }
-         catch (std::exception & ex)
+         catch (std::exception& ex)
          {
             //fail to download package
             YADOMS_LOG(error) << "Fail to download pwidget ackage : " << ex.what();
@@ -62,8 +66,9 @@ namespace update {
       }
 
 
-
-      void CWidget::update(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & widgetName, const std::string & downloadUrl)
+      void CWidget::update(CWorkerTools::WorkerProgressFunc progressCallback,
+                           const std::string& widgetName,
+                           const std::string& downloadUrl)
       {
          YADOMS_LOG(information) << "Updating widget " << widgetName << " from " << downloadUrl;
 
@@ -79,9 +84,9 @@ namespace update {
          {
             YADOMS_LOG(information) << "Downloading widget package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetDownload, std::string(), callbackData);
-            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateWidgetDownload, 0.0, 90.0);
+            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateWidgetDownload,
+                                                                         0.0, 90.0);
             YADOMS_LOG(information) << "Downloading widget package with success";
-
 
 
             /////////////////////////////////////////////
@@ -96,11 +101,11 @@ namespace update {
                YADOMS_LOG(information) << "Widget installed with success";
                progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, std::string(), callbackData);
             }
-            catch (std::exception & ex)
+            catch (std::exception& ex)
             {
                //fail to extract package file
                YADOMS_LOG(error) << "Fail to deploy widget package : " << ex.what();
-                progressCallback(false, 100.0f, i18n::CClientStrings::UpdateWidgetDeployFailed, ex.what(), callbackData);
+               progressCallback(false, 100.0f, i18n::CClientStrings::UpdateWidgetDeployFailed, ex.what(), callbackData);
             }
 
 
@@ -108,9 +113,8 @@ namespace update {
             Poco::File toDelete(downloadedPackage.toString());
             if (toDelete.exists())
                toDelete.remove();
-
          }
-         catch (std::exception & ex)
+         catch (std::exception& ex)
          {
             //fail to download package
             YADOMS_LOG(error) << "Fail to download pwidget ackage : " << ex.what();
@@ -118,7 +122,8 @@ namespace update {
          }
       }
 
-      void CWidget::remove(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & widgetName)
+      void CWidget::remove(CWorkerTools::WorkerProgressFunc progressCallback,
+                           const std::string& widgetName)
       {
          YADOMS_LOG(information) << "Removing widget " << widgetName;
 
@@ -142,7 +147,7 @@ namespace update {
 
             progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, std::string(), callbackData);
          }
-         catch (std::exception & ex)
+         catch (std::exception& ex)
          {
             //fail to remove package
             YADOMS_LOG(error) << "Fail to delete widget : " << widgetName << " : " << ex.what();
@@ -150,6 +155,24 @@ namespace update {
          }
       }
 
+      CWidget::AvailableWidgetMap CWidget::getWidgetList()
+      {
+         AvailableWidgetMap widgets;
 
+         for (Poco::DirectoryIterator it(CWorkerTools::getWidgetBasePath()); it != Poco::DirectoryIterator(); ++it)
+         {
+            try
+            {
+               const auto widget = boost::make_shared<CWidgetInformation>(it->path());
+               widgets[widget->getType()] = widget;
+            }
+            catch (std::exception& e)
+            {
+               YADOMS_LOG(warning) << "Unknown widget in " << it->path() << ", " << e.what();
+            }
+         }
+
+         return widgets;
+      }
    } // namespace worker
 } // namespace update

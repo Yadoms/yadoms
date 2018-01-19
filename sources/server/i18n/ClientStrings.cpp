@@ -4,6 +4,10 @@
 namespace i18n
 {
 
+   std::string CClientStrings::ScanForUpdates                               = "scanForUpdates";
+   std::string CClientStrings::ScanForUpdatesFailed                         = "scanForUpdates.failed";
+   std::string CClientStrings::ScanForUpdatesSuccess                        = "scanForUpdates.success";
+
    std::string CClientStrings::UpdatePluginInstall                          = "plugin.install";
    std::string CClientStrings::UpdatePluginUpdate                           = "plugin.update";
    std::string CClientStrings::UpdatePluginRemove                           = "plugin.remove";

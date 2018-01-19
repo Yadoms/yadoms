@@ -246,5 +246,6 @@ PLUGIN_LINK(enOcean ${ENOCEAN_ADDITIONAL_LIB})
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(enOcean ${ENOCEAN_GENERATED_OUT_DIR}/package.json)
+PLUGIN_POST_BUILD_COPY_FILE(enOcean changelog.md)
 PLUGIN_POST_BUILD_COPY_FILE(enOcean icon.png)
 PLUGIN_POST_BUILD_COPY_DIRECTORY(enOcean ${ENOCEAN_GENERATED_OUT_DIR}/locales)

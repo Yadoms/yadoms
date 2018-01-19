@@ -77,6 +77,7 @@ if(CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
    ## "package.json" and "icon.png" are needed, but you can add extra-files
    #########################################
    PLUGIN_POST_BUILD_COPY_FILE(Piface2 package.json)
+   PLUGIN_POST_BUILD_COPY_FILE(Piface2 changelog.md)
    PLUGIN_POST_BUILD_COPY_FILE(Piface2 icon.png)
    PLUGIN_POST_BUILD_COPY_DIRECTORY(Piface2 locales)
 

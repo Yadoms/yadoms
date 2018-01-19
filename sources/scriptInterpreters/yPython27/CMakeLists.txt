@@ -80,6 +80,7 @@ if(PYTHONLIBS_FOUND)
    ## Copy files to build directory
    #########################################
    SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(yPython27 package.json)
+   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(yPython27 changelog.md)
    SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(yPython27 icon.png)
    SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(yPython27 scriptCaller.py)
    SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(yPython27 scriptUtilities.py)

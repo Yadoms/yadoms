@@ -10,10 +10,10 @@ namespace update
 {
    namespace info
    {
-      std::string CUpdateSite::m_distantYadomsListScript("yadoms.php");
-      std::string CUpdateSite::m_distantPluginsListScript("plugins.php");
-      std::string CUpdateSite::m_distantScriptInterpretersListScript("scriptInterpreters.php");
-      std::string CUpdateSite::m_distantWidgetsListScript("widgets.php");
+      std::string CUpdateSite::m_distantYadomsListScript("yadoms2.php");
+      std::string CUpdateSite::m_distantPluginsListScript("plugins2.php");
+      std::string CUpdateSite::m_distantScriptInterpretersListScript("scriptInterpreters2.php");
+      std::string CUpdateSite::m_distantWidgetsListScript("widgets2.php");
 
       std::string CUpdateSite::m_distantYadomsScriptResultField("data.yadoms");
       std::string CUpdateSite::m_distantPluginsScriptResultField("data.plugins");
@@ -22,7 +22,6 @@ namespace update
 
       std::string CUpdateSite::m_distantScriptParamOs("os");
       std::string CUpdateSite::m_distantScriptParamArch("arch");
-      std::string CUpdateSite::m_distantScriptParamLang("lang");
       std::string CUpdateSite::m_distantScriptParamDevMode("devMode");
 
       std::string CUpdateSite::m_distantScriptResult("result");
@@ -31,63 +30,73 @@ namespace update
       {
       }
 
-      shared::CDataContainer CUpdateSite::getAllYadomsVersions(const std::string& displayLanguage)
+      shared::CDataContainer CUpdateSite::getAllYadomsVersions()
       {
-         return callDistantScript(m_distantYadomsListScript, true, displayLanguage, m_distantYadomsScriptResultField);
+         return callDistantScript(m_distantYadomsListScript, true, m_distantYadomsScriptResultField);
       }
 
-      shared::CDataContainer CUpdateSite::getAllPluginVersions(const std::string& displayLanguage)
+      shared::CDataContainer CUpdateSite::getAllPluginVersions()
       {
-         return callDistantScript(m_distantPluginsListScript, true, displayLanguage, m_distantPluginsScriptResultField);
-      }
-
-
-      shared::CDataContainer CUpdateSite::getAllScriptInterpreterVersions(const std::string& displayLanguage)
-      {
-         return callDistantScript(m_distantScriptInterpretersListScript, true, displayLanguage, m_distantScriptInterpretersScriptResultField);
+         return callDistantScript(m_distantPluginsListScript, true, m_distantPluginsScriptResultField);
       }
 
 
-      shared::CDataContainer CUpdateSite::getAllWidgetsVersions(const std::string& displayLanguage)
+      shared::CDataContainer CUpdateSite::getAllScriptInterpreterVersions()
       {
-         return callDistantScript(m_distantWidgetsListScript, false, displayLanguage, m_distantWidgetsScriptResultField);
+         return callDistantScript(m_distantScriptInterpretersListScript, true, m_distantScriptInterpretersScriptResultField);
+      }
+
+
+      shared::CDataContainer CUpdateSite::getAllWidgetVersions()
+      {
+         return callDistantScript(m_distantWidgetsListScript, false, m_distantWidgetsScriptResultField);
       }
 
 
       shared::CDataContainer CUpdateSite::callDistantScript(const std::string& script,
                                                             bool includeOsAndArch,
-                                                            const std::string& displayLanguage,
                                                             const std::string& resultFieldToReturn)
       {
-         auto startupOptions(shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>());
-
-         //get the script address
-         Poco::URI base(startupOptions->getUpdateSiteUri());
-         shared::web::CUriHelpers::appendPath(base, script);
-
-         //include script parameters
-         if (includeOsAndArch)
+         try
          {
-            base.addQueryParameter(m_distantScriptParamOs, Poco::Environment::osName());
-            base.addQueryParameter(m_distantScriptParamArch, Poco::Environment::osArchitecture());
+            const auto startupOptions(shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>());
+
+            //get the script address
+            Poco::URI base(startupOptions->getUpdateSiteUri());
+            shared::web::CUriHelpers::appendPath(base, script);
+
+            //include script parameters
+            if (includeOsAndArch)
+            {
+               base.addQueryParameter(m_distantScriptParamOs, Poco::Environment::osName());
+               base.addQueryParameter(m_distantScriptParamArch, Poco::Environment::osArchitecture());
+            }
+            if (shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode())
+               base.addQueryParameter(m_distantScriptParamDevMode);
+
+            //call script
+            auto lastVersionInformation = shared::web::CFileDownloader::downloadInMemoryJsonFile(base,
+                                                                                                 boost::bind(
+                                                                                                    &shared::web::
+                                                                                                    CFileDownloader::
+                                                                                                    reportProgressToLog,
+                                                                                                    _1, _2));
+
+            if (!lastVersionInformation.containsValue(m_distantScriptResult))
+               throw std::runtime_error("Error in calling script. Fail to get data from " + base.toString());
+
+            if (!lastVersionInformation.get<bool>(m_distantScriptResult))
+               throw std::runtime_error(
+                  "Error in calling script : " + lastVersionInformation.get<std::string>("message"));
+
+            return lastVersionInformation.get<shared::CDataContainer>(resultFieldToReturn);
          }
-         base.addQueryParameter(m_distantScriptParamLang, displayLanguage);
-         if (shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode())
-            base.addQueryParameter(m_distantScriptParamDevMode);
-
-         //call script
-         auto lastVersionInformation = shared::web::CFileDownloader::downloadInMemoryJsonFile(base,
-                                                                                              boost::bind(&shared::web::CFileDownloader::reportProgressToLog, _1, _2));
-
-         if (!lastVersionInformation.containsValue(m_distantScriptResult))
-            throw shared::exception::CException("Error in calling script. Fail to get data from " + base.toString());
-
-         if (!lastVersionInformation.get<bool>(m_distantScriptResult))
-            throw shared::exception::CException("Error in calling script : " + lastVersionInformation.get<std::string>("message"));
-
-         return lastVersionInformation.get<shared::CDataContainer>(resultFieldToReturn);
+         catch (std::exception& e)
+         {
+            YADOMS_LOG(error) << "CUpdateSite::callDistantScript : fail to call " << script << " distant script" << e.
+               what();
+            throw std::runtime_error("Fail to call distant script");
+         }
       }
    }
 } // namespace update::info
-
-

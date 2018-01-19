@@ -245,5 +245,6 @@ PLUGIN_LINK(rfxcom ${RFXCOM_ADDITIONAL_LIB})
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(rfxcom package.json)
+PLUGIN_POST_BUILD_COPY_FILE(rfxcom changelog.md)
 PLUGIN_POST_BUILD_COPY_FILE(rfxcom icon.png)
 PLUGIN_POST_BUILD_COPY_DIRECTORY(rfxcom locales)

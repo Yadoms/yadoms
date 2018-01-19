@@ -154,6 +154,7 @@ if (UNIX AND NOT APPLE)
    ## "package.json" and "icon.png" are needed, but you can add extra-files
    #########################################
    PLUGIN_POST_BUILD_COPY_FILE(OneWire package.json)
+   PLUGIN_POST_BUILD_COPY_FILE(OneWire changelog.md)
    PLUGIN_POST_BUILD_COPY_FILE(OneWire icon.png)
    PLUGIN_POST_BUILD_COPY_DIRECTORY(OneWire locales)
 

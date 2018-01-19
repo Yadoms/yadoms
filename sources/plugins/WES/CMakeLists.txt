@@ -93,5 +93,6 @@ PLUGIN_LINK   (WES ${WES_PLUGIN_ADDITIONAL_LIB})
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(WES package.json)
+PLUGIN_POST_BUILD_COPY_FILE(WES changelog.md)
 PLUGIN_POST_BUILD_COPY_FILE(WES icon.png)
 PLUGIN_POST_BUILD_COPY_DIRECTORY(WES locales)

@@ -2,8 +2,6 @@
 #include "Update.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/Result.h"
-#include "update/info/UpdateSite.h"
-#include <shared/Log.h>
 
 
 namespace web
@@ -13,11 +11,6 @@ namespace web
       namespace service
       {
          std::string CUpdate::m_restKeyword = std::string("update");
-
-         DECLARE_ENUM_IMPLEMENTATION_NESTED(CUpdate::EWhatToDo, EWhatToDo,
-            ((Update))
-            ((Check))
-         )
 
          CUpdate::CUpdate(boost::shared_ptr<update::CUpdateManager> updateManager)
             : m_updateManager(updateManager)
@@ -36,64 +29,67 @@ namespace web
 
          void CUpdate::configureDispatcher(CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("yadoms")("list")("*"), CUpdate::availableYadomsVersions);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scan"), CUpdate::scanForUpdates);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("list")("*"), CUpdate::availableUpdates);
+
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("yadoms")("update"), CUpdate::updateYadoms);
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("widget")("list")("*"), CUpdate::availableWidgets);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("update")("*"), CUpdate::updateWidget);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("install"), CUpdate::installWidget);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("remove")("*"), CUpdate::removeWidget);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("update")("*"), CUpdate:: updateWidget);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("install"), CUpdate::installWidget );
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("widget")("remove")("*"), CUpdate:: removeWidget);
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("plugin")("list")("*"), CUpdate::availablePlugins);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("update")("*"), CUpdate::updatePlugin);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("install"), CUpdate::installPlugin);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("remove")("*"), CUpdate::removePlugin);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("update")("*"), CUpdate:: updatePlugin);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("install"), CUpdate::installPlugin );
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("plugin")("remove")("*"), CUpdate:: removePlugin);
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET" , (m_restKeyword)("scriptInterpreter")("list")("*"), CUpdate::availableScriptInterpreters);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("update")("*"), CUpdate::updateScriptInterpreter);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("install"), CUpdate::installScriptInterpreter);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("remove")("*"), CUpdate::removeScriptInterpreter);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("update")("*"), CUpdate ::updateScriptInterpreter);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("install"), CUpdate:: installScriptInterpreter);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("remove")("*"), CUpdate ::removeScriptInterpreter);
          }
 
-         shared::CDataContainer CUpdate::availableYadomsVersions(const std::vector<std::string>& parameters,
-                                                                 const std::string& requestContent) const
+         shared::CDataContainer CUpdate::scanForUpdates(const std::vector<std::string>& parameters,
+                                                        const std::string& requestContent) const
          {
-            std::string lang = "";
-
-            if (parameters.size() > 3)
-               lang = parameters[3];
-
-            //ask site info
-            return CResult::GenerateSuccess(update::info::CUpdateSite::getAllYadomsVersions(lang));
-         }
-
-         shared::CDataContainer CUpdate::updateYadoms(const std::vector<std::string>& parameters,
-                                                      const std::string& requestContent) const
-         {
-            shared::CDataContainer content(requestContent);
-            if (!content.containsChild("versionData"))
-            {
-               content.printToLog(YADOMS_LOG(information));
-               return CResult::GenerateError("The request should contains the versionData.");
-            }
-
-            auto versionData = content.get<shared::CDataContainer>("versionData");
-            auto taskId = m_updateManager->updateYadomsAsync(versionData);
+            const auto taskId = m_updateManager->scanForUpdatesAsync();
             shared::CDataContainer result;
             result.set("taskId", taskId);
             return CResult::GenerateSuccess(result);
          }
 
-         shared::CDataContainer CUpdate::availablePlugins(const std::vector<std::string>& parameters,
+         shared::CDataContainer CUpdate::availableUpdates(const std::vector<std::string>& parameters,
                                                           const std::string& requestContent) const
          {
-            std::string lang = "";
+            if (parameters.size() != 3)
+               return CResult::GenerateError("Invalid parameters in url /rest/update/list");
 
-            if (parameters.size() > 3)
-               lang = parameters[3];
+            const auto includePreleases = parameters[2] == "includePreReleases";
 
-            //ask site info
-            return CResult::GenerateSuccess(update::info::CUpdateSite::getAllPluginVersions(lang));
+            return CResult::GenerateSuccess(m_updateManager->getUpdates(includePreleases));
+         }
+
+         shared::CDataContainer CUpdate::updateYadoms(const std::vector<std::string>& parameters,
+                                                      const std::string& requestContent) const
+         {
+            try
+            {
+               //the request content should contain the downloadURL
+               if (parameters.size() <= 2)
+                  return CResult::GenerateError("Not enougth parameters in url /rest/update/yadoms/update");
+
+               shared::CDataContainer content(requestContent);
+               if (!content.containsValue("downloadUrl"))
+                  return CResult::GenerateError("The request should contains the downloadURL.");
+
+               const auto downloadUrl = content.get<std::string>("downloadUrl");
+               const auto taskId = m_updateManager->updateYadomsAsync(downloadUrl);
+               shared::CDataContainer result;
+               result.set("taskId", taskId);
+               return CResult::GenerateSuccess(result);
+            }
+            catch (std::exception& e)
+            {
+               return CResult::GenerateError(std::string("Fail to update Yadoms, ") + e.what());
+            }
          }
 
 
@@ -103,16 +99,16 @@ namespace web
             //the request url should contain the pluginName
             //the request content should contain the downloadURL
             if (parameters.size() <= 3)
-               return CResult::GenerateError("Not enougth parameters in url /rest/plugin/update/**pluginName**");
+               return CResult::GenerateError("Not enougth parameters in url /rest/update/plugin/update/**pluginName**");
 
-            auto pluginName = parameters[3];
+            const auto pluginName = parameters[3];
 
             shared::CDataContainer content(requestContent);
             if (!content.containsValue("downloadUrl"))
                return CResult::GenerateError("The request should contains the downloadURL.");
 
-            auto downloadUrl = content.get<std::string>("downloadUrl");
-            auto taskId = m_updateManager->updatePluginAsync(pluginName, downloadUrl);
+            const auto downloadUrl = content.get<std::string>("downloadUrl");
+            const auto taskId = m_updateManager->updatePluginAsync(pluginName, downloadUrl);
             shared::CDataContainer result;
             result.set("taskId", taskId);
             return CResult::GenerateSuccess(result);
@@ -127,8 +123,8 @@ namespace web
             if (!content.containsValue("downloadUrl"))
                return CResult::GenerateError("The request should contains the downloadURL.");
 
-            auto downloadUrl = content.get<std::string>("downloadUrl");
-            auto taskId = m_updateManager->installPluginAsync(downloadUrl);
+            const auto downloadUrl = content.get<std::string>("downloadUrl");
+            const auto taskId = m_updateManager->installPluginAsync(downloadUrl);
             shared::CDataContainer result;
             result.set("taskId", taskId);
             return CResult::GenerateSuccess(result);
@@ -141,24 +137,11 @@ namespace web
             if (parameters.size() <= 3)
                return CResult::GenerateError("Not enougth parameters in url /rest/plugin/remove/**pluginName**");
 
-            auto pluginName = parameters[3];
-            auto taskId = m_updateManager->removePluginAsync(pluginName);
+            const auto pluginName = parameters[3];
+            const auto taskId = m_updateManager->removePluginAsync(pluginName);
             shared::CDataContainer result;
             result.set("taskId", taskId);
             return CResult::GenerateSuccess(result);
-         }
-
-
-         shared::CDataContainer CUpdate::availableWidgets(const std::vector<std::string>& parameters,
-                                                          const std::string& requestContent) const
-         {
-            std::string lang = "";
-
-            if (parameters.size() > 3)
-               lang = parameters[3];
-
-            //ask site info
-            return CResult::GenerateSuccess(update::info::CUpdateSite::getAllWidgetsVersions(lang));
          }
 
 
@@ -170,14 +153,14 @@ namespace web
             if (parameters.size() <= 3)
                return CResult::GenerateError("Not enougth parameters in url /rest/widget/update/**widgetName**");
 
-            auto widgetName = parameters[3];
+            const auto widgetName = parameters[3];
 
             shared::CDataContainer content(requestContent);
             if (!content.containsValue("downloadUrl"))
                return CResult::GenerateError("The request should contains the downloadURL.");
 
-            auto downloadUrl = content.get<std::string>("downloadUrl");
-            auto taskId = m_updateManager->updateWidgetAsync(widgetName, downloadUrl);
+            const auto downloadUrl = content.get<std::string>("downloadUrl");
+            const auto taskId = m_updateManager->updateWidgetAsync(widgetName, downloadUrl);
             shared::CDataContainer result;
             result.set("taskId", taskId);
             return CResult::GenerateSuccess(result);
@@ -192,8 +175,8 @@ namespace web
             if (!content.containsValue("downloadUrl"))
                return CResult::GenerateError("The request should contains the downloadURL.");
 
-            auto downloadUrl = content.get<std::string>("downloadUrl");
-            auto taskId = m_updateManager->installWidgetAsync(downloadUrl);
+            const auto downloadUrl = content.get<std::string>("downloadUrl");
+            const auto taskId = m_updateManager->installWidgetAsync(downloadUrl);
             shared::CDataContainer result;
             result.set("taskId", taskId);
             return CResult::GenerateSuccess(result);
@@ -206,23 +189,11 @@ namespace web
             if (parameters.size() <= 3)
                return CResult::GenerateError("Not enougth parameters in url /rest/widget/remove/**widgetName**");
 
-            auto widgetName = parameters[3];
-            auto taskId = m_updateManager->removeWidgetAsync(widgetName);
+            const auto widgetName = parameters[3];
+            const auto taskId = m_updateManager->removeWidgetAsync(widgetName);
             shared::CDataContainer result;
             result.set("taskId", taskId);
             return CResult::GenerateSuccess(result);
-         }
-
-         shared::CDataContainer CUpdate::availableScriptInterpreters(const std::vector<std::string>& parameters,
-                                                                     const std::string& requestContent) const
-         {
-            std::string lang = "";
-
-            if (parameters.size() > 3)
-               lang = parameters[3];
-
-            //ask site info
-            return CResult::GenerateSuccess(update::info::CUpdateSite::getAllScriptInterpreterVersions(lang));
          }
 
 
@@ -232,16 +203,17 @@ namespace web
             //the request url should contain the scriptInterpreterName
             //the request content should contain the downloadURL
             if (parameters.size() <= 3)
-               return CResult::GenerateError("Not enougth parameters in url /rest/scriptInterpreter/update/**scriptInterpreterName**");
+               return CResult::GenerateError(
+                  "Not enougth parameters in url /rest/scriptInterpreter/update/**scriptInterpreterName**");
 
-            auto scriptInterpreterName = parameters[3];
+            const auto scriptInterpreterName = parameters[3];
 
             shared::CDataContainer content(requestContent);
             if (!content.containsValue("downloadUrl"))
                return CResult::GenerateError("The request should contains the downloadURL.");
 
-            auto downloadUrl = content.get<std::string>("downloadUrl");
-            auto taskId = m_updateManager->updateScriptInterpreterAsync(scriptInterpreterName, downloadUrl);
+            const auto downloadUrl = content.get<std::string>("downloadUrl");
+            const auto taskId = m_updateManager->updateScriptInterpreterAsync(scriptInterpreterName, downloadUrl);
             shared::CDataContainer result;
             result.set("taskId", taskId);
             return CResult::GenerateSuccess(result);
@@ -256,8 +228,8 @@ namespace web
             if (!content.containsValue("downloadUrl"))
                return CResult::GenerateError("The request should contains the downloadURL.");
 
-            auto downloadUrl = content.get<std::string>("downloadUrl");
-            auto taskId = m_updateManager->installScriptInterpreterAsync(downloadUrl);
+            const auto downloadUrl = content.get<std::string>("downloadUrl");
+            const auto taskId = m_updateManager->installScriptInterpreterAsync(downloadUrl);
             shared::CDataContainer result;
             result.set("taskId", taskId);
             return CResult::GenerateSuccess(result);
@@ -268,10 +240,11 @@ namespace web
          {
             //the request url should contain the scriptInterpreterName
             if (parameters.size() <= 3)
-               return CResult::GenerateError("Not enougth parameters in url /rest/scriptInterpreter/remove/**scriptInterpreterName**");
+               return CResult::GenerateError(
+                  "Not enougth parameters in url /rest/scriptInterpreter/remove/**scriptInterpreterName**");
 
-            auto scriptInterpreterName = parameters[3];
-            auto taskId = m_updateManager->removeScriptInterpreterAsync(scriptInterpreterName);
+            const auto scriptInterpreterName = parameters[3];
+            const auto taskId = m_updateManager->removeScriptInterpreterAsync(scriptInterpreterName);
             shared::CDataContainer result;
             result.set("taskId", taskId);
             return CResult::GenerateSuccess(result);
@@ -279,5 +252,3 @@ namespace web
       } //namespace service
    } //namespace rest
 } //namespace web 
-
-

@@ -168,6 +168,7 @@ PLUGIN_LINK(ZWave ${ZWAVE_PLUGIN_ADDITIONAL_LIB})
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(ZWave package.json)
+PLUGIN_POST_BUILD_COPY_FILE(ZWave changelog.md)
 PLUGIN_POST_BUILD_COPY_FILE(ZWave icon.png)
 PLUGIN_POST_BUILD_COPY_DIRECTORY(ZWave locales)
 

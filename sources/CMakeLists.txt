@@ -540,18 +540,22 @@ set(YADOMS_SRC
    server/task/plugins/ExtraQuery.cpp
    
    
+   server/update/IUpdateManager.h
    server/update/UpdateManager.h
    server/update/UpdateManager.cpp
    server/update/UpdateType.h
    server/update/UpdateType.cpp
    server/update/info/UpdateSite.h
    server/update/info/UpdateSite.cpp
+   server/update/worker/IWidgetInformation.h
    server/update/worker/Plugin.h
    server/update/worker/Plugin.cpp
    server/update/worker/ScriptInterpreter.h
    server/update/worker/ScriptInterpreter.cpp
    server/update/worker/Widget.h
    server/update/worker/Widget.cpp
+   server/update/worker/WidgetInformation.h
+   server/update/worker/WidgetInformation.cpp
    server/update/worker/Yadoms.h
    server/update/worker/Yadoms.cpp
    server/update/worker/WorkerTools.h
@@ -923,6 +927,10 @@ if(WIN32)
 endif(WIN32)
 
 
+# Add changelog file
+set(YADOMS_SRC ${YADOMS_SRC} 
+   ../changelog.md
+)
 
 #define YADOMS output
 add_executable(yadoms ${YADOMS_SRC})

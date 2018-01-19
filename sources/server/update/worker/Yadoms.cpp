@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Yadoms.h"
 #include <shared/Log.h>
-#include <shared/DataContainer.h>
 #include <shared/ServiceLocator.h>
 #include <Poco/Process.h>
 #include <shared/compression/Extract.h>
@@ -16,49 +15,29 @@ namespace update
    namespace worker
    {
       void CYadoms::update(CWorkerTools::WorkerProgressFunc progressCallback,
-                           const shared::CDataContainer& versionToUpdateParam)
+                           const std::string& downloadUrl,
+                           const std::string& expectedMd5Hash)
       {
-         auto versionToUpdate = versionToUpdateParam;
-
          //make some initializations
          auto runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>());
 
-         YADOMS_LOG(information) << "Updating Yadoms : " << versionToUpdate.serialize();
+         YADOMS_LOG(information) << "Updating Yadoms from " << downloadUrl;
 
-         progressCallback(true, 0.0f, i18n::CClientStrings::UpdateYadomsUpdate, std::string(), versionToUpdate);
+         shared::CDataContainer callbackData;
+         callbackData.set("downloadUrl", downloadUrl);
+
+         progressCallback(true, 0.0f, i18n::CClientStrings::UpdateYadomsUpdate, std::string(), callbackData);
 
          //////////////////////////////////////////////////////////
          // STEP2 : download package file
          //////////////////////////////////////////////////////////
 
-         //check all needed parameters are included
-         if (!versionToUpdate.containsValue("downloadUrl"))
-         {
-            progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsUpdateFailed, "Bad info (downloadUrl) to update to", versionToUpdate);
-            return;
-         }
-
-         if (!versionToUpdate.containsValue("md5Hash"))
-         {
-            progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsUpdateFailed, "Bad info (md5Hash) to update to", versionToUpdate);
-            return;
-         }
-
-         if (!versionToUpdate.containsValue("commandToRun"))
-         {
-            progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsUpdateFailed, "Bad info (commandToRun) to update to", versionToUpdate);
-            return;
-         }
-
-
-         auto downloadUrl = versionToUpdate.get<std::string>("downloadUrl");
-         auto md5HashExpected = versionToUpdate.get<std::string>("md5Hash");
-
          try
          {
             YADOMS_LOG(information) << "Downloading package " << downloadUrl;
-            progressCallback(true, 0.0f, i18n::CClientStrings::UpdateYadomsDownload, std::string(), versionToUpdate);
-            auto downloadedPackage = CWorkerTools::downloadPackageAndVerify(downloadUrl, md5HashExpected, progressCallback, i18n::CClientStrings::UpdateYadomsDownload, 0.0, 50.0);
+            progressCallback(true, 0.0f, i18n::CClientStrings::UpdateYadomsDownload, std::string(), callbackData);
+            auto downloadedPackage = CWorkerTools::downloadPackageAndVerify(downloadUrl, expectedMd5Hash, progressCallback,
+                                                                            i18n::CClientStrings::UpdateYadomsDownload, 0.0, 50.0);
             YADOMS_LOG(information) << "Package successfully downloaded into " << downloadedPackage.toString();
 
             //////////////////////////////////////////////////////////
@@ -68,7 +47,7 @@ namespace update
             {
                YADOMS_LOG(information) << "Extracting downloaded package";
 
-               progressCallback(true, 50.0f, i18n::CClientStrings::UpdateYadomsExtract, std::string(), versionToUpdate);
+               progressCallback(true, 50.0f, i18n::CClientStrings::UpdateYadomsExtract, std::string(), callbackData);
                shared::compression::CExtract unZipper;
                auto extractedPackageLocation = unZipper.here(downloadedPackage);
 
@@ -77,9 +56,13 @@ namespace update
                //////////////////////////////////////////////////////////
                try
                {
+                  YADOMS_LOG(information) << "Find update command";
+                  shared::CDataContainer packageJson;
+                  packageJson.deserializeFromFile(Poco::Path(extractedPackageLocation, "package.json").toString());
+                  const auto& commandToRun = packageJson.get<std::string>("yadoms.information.commandToRun");
+
                   YADOMS_LOG(information) << "Running updater";
-                  progressCallback(true, 90.0f, i18n::CClientStrings::UpdateYadomsDeploy, std::string(), versionToUpdate);
-                  auto commandToRun = versionToUpdate.get<std::string>("commandToRun");
+                  progressCallback(true, 90.0f, i18n::CClientStrings::UpdateYadomsDeploy, std::string(), callbackData);
                   step4RunUpdaterProcess(extractedPackageLocation, commandToRun, runningInformation);
 
                   //////////////////////////////////////////////////////////
@@ -88,7 +71,7 @@ namespace update
 
                   //exit yadoms
                   YADOMS_LOG(information) << "Exiting Yadoms";
-                  progressCallback(true, 100.0f, i18n::CClientStrings::UpdateYadomsExit, std::string(), versionToUpdate);
+                  progressCallback(true, 100.0f, i18n::CClientStrings::UpdateYadomsExit, std::string(), callbackData);
 
                   //sleep 1 sec, to ensure clients receive last notification
                   boost::this_thread::sleep(boost::posix_time::seconds(1));
@@ -100,7 +83,7 @@ namespace update
                {
                   //fail to run updater
                   YADOMS_LOG(error) << "Fail to run updater : " << ex.what();
-                  progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsDeployFailed, ex.what(), versionToUpdate);
+                  progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsDeployFailed, ex.what(), callbackData);
 
                   //remove folder
                   tools::CFileSystem::remove(extractedPackageLocation, true);
@@ -110,7 +93,7 @@ namespace update
             {
                //fail to download package
                YADOMS_LOG(error) << "Fail to extract package : " << ex.what();
-               progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsExtractFailed, ex.what(), versionToUpdate);
+               progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsExtractFailed, ex.what(), callbackData);
             }
 
             //no more need downloaded zip package
@@ -120,7 +103,7 @@ namespace update
          {
             //fail to download package
             YADOMS_LOG(error) << "Fail to download package : " << ex.what();
-            progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsDownloadFailed, ex.what(), versionToUpdate);
+            progressCallback(false, 100.0f, i18n::CClientStrings::UpdateYadomsDownloadFailed, ex.what(), callbackData);
          }
       }
 
@@ -140,7 +123,7 @@ namespace update
 
          //run updater script
          YADOMS_LOG(debug) << "Launch script \"" << executablePath.toString() << "\" with args " << boost::algorithm::join(args, ", ");
-         auto handle = tools::COperatingSystem::launchNativeScript(executablePath.toString(), args);
+         const auto handle = tools::COperatingSystem::launchNativeScript(executablePath.toString(), args);
 
          //the update command is running, wait for 5 seconds and ensure it is always running
          boost::this_thread::sleep(boost::posix_time::seconds(5));
@@ -150,5 +133,3 @@ namespace update
       }
    } // namespace worker
 } // namespace update
-
-

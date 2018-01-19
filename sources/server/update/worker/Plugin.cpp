@@ -33,7 +33,8 @@ namespace update
          {
             YADOMS_LOG(information) << "Downloading package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginDownload, std::string(), callbackData);
-            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdatePluginDownload, 0.0, 50.0);
+            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdatePluginDownload,
+                                                                         0.0, 50.0);
             YADOMS_LOG(information) << "Downloading package with success";
 
             /////////////////////////////////////////////
@@ -48,13 +49,11 @@ namespace update
 
 
                YADOMS_LOG(information) << "Refresh plugin list";
-
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdatePluginFinalize, std::string(), callbackData);
                if (pluginManager)
                   pluginManager->updatePluginList();
 
                YADOMS_LOG(information) << "Plugin installed with success";
-
                progressCallback(true, 100.0f, i18n::CClientStrings::UpdatePluginSuccess, std::string(), callbackData);
             }
             catch (std::exception& ex)
@@ -98,7 +97,8 @@ namespace update
          {
             YADOMS_LOG(information) << "Downloading package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginDownload, std::string(), callbackData);
-            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdatePluginDownload, 0.0, 50.0);
+            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdatePluginDownload,
+                                                                         0.0, 50.0);
             YADOMS_LOG(information) << "Downloading package with success";
 
             /////////////////////////////////////////////
@@ -118,8 +118,14 @@ namespace update
                YADOMS_LOG(information) << "Plugin deployed with success";
 
 
-               YADOMS_LOG(information) << "Start instances";
+               YADOMS_LOG(information) << "Refresh plugin list";
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdatePluginFinalize, std::string(), callbackData);
+               if (pluginManager)
+                  pluginManager->updatePluginList();
+
+
+               YADOMS_LOG(information) << "Start instances";
+               progressCallback(true, 95.0f, i18n::CClientStrings::UpdatePluginFinalize, std::string(), callbackData);
                if (pluginManager)
                   pluginManager->startAllInstancesOfPlugin(pluginName);
 
@@ -151,7 +157,7 @@ namespace update
                            const std::string& pluginName,
                            boost::shared_ptr<pluginSystem::CManager> pluginManager)
       {
-         YADOMS_LOG(information) << "Removing plugin " << pluginName ;
+         YADOMS_LOG(information) << "Removing plugin " << pluginName;
 
          shared::CDataContainer callbackData;
          callbackData.set("pluginName", pluginName);
@@ -169,7 +175,7 @@ namespace update
             /////////////////////////////////////////////
             //2. remove plugin folder
             /////////////////////////////////////////////
-            auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
+            const auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
             Poco::Path pluginPath(startupOptions->getPluginsPath());
             pluginPath.append(pluginName);
 
@@ -194,5 +200,3 @@ namespace update
       }
    } // namespace worker
 } // namespace update
-
-

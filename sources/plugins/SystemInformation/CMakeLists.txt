@@ -154,5 +154,6 @@ PLUGIN_LINK   (SystemInformation ${SYSTEMINFORMATION_PLUGIN_ADDITIONAL_LIB})
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(SystemInformation package.json)
+PLUGIN_POST_BUILD_COPY_FILE(SystemInformation changelog.md)
 PLUGIN_POST_BUILD_COPY_FILE(SystemInformation icon.png)
 PLUGIN_POST_BUILD_COPY_DIRECTORY(SystemInformation locales)

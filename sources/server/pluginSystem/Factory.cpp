@@ -49,12 +49,12 @@ namespace pluginSystem
 
       auto pluginInformation = createInformation(instanceData->Type());
 
-      auto instanceStateHandler = createInstanceStateHandler(instanceData,
-                                                             pluginInformation,
-                                                             dataProvider,
-                                                             dataAccessLayer,
-                                                             qualifier,
-                                                             onPluginsStoppedFct);
+      const auto instanceStateHandler = createInstanceStateHandler(instanceData,
+                                                                   pluginInformation,
+                                                                   dataProvider,
+                                                                   dataAccessLayer,
+                                                                   qualifier,
+                                                                   onPluginsStoppedFct);
 
       auto yPluginApi = createInstanceRunningContext(pluginInformation,
                                                      instanceData,
@@ -62,10 +62,10 @@ namespace pluginSystem
                                                      dataProvider,
                                                      dataAccessLayer);
 
-      auto commandLine = createCommandLine(pluginInformation,
-                                           yPluginApi->id());
+      const auto commandLine = createCommandLine(pluginInformation,
+                                                 yPluginApi->id());
 
-      auto logger = createLogger("Plugin." + std::to_string(instanceData->Id()));
+      const auto logger = createLogger("Plugin." + std::to_string(instanceData->Id()));
 
       auto process = createInstanceProcess(commandLine,
                                            instanceStateHandler,
@@ -123,7 +123,8 @@ namespace pluginSystem
 
 
    boost::shared_ptr<CInstanceStateHandler> CFactory::createInstanceStateHandler(boost::shared_ptr<const database::entities::CPlugin> instanceData,
-                                                                                 boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+                                                                                 boost::shared_ptr<const shared::plugin::information::IInformation>
+                                                                                 pluginInformation,
                                                                                  boost::shared_ptr<database::IDataProvider> dataProvider,
                                                                                  boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                                                  boost::shared_ptr<IQualifier> qualifier,
@@ -140,15 +141,17 @@ namespace pluginSystem
                                                        dataAccessLayer->getKeywordManager());
    }
 
-   boost::shared_ptr<shared::process::ICommandLine> CFactory::createCommandLine(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-                                                                                const std::string& messageQueueId) const
+   boost::shared_ptr<shared::process::ICommandLine> CFactory::createCommandLine(
+      const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+      const std::string& messageQueueId) const
    {
       std::vector<std::string> args;
       args.push_back(messageQueueId);
 
-      return boost::make_shared<shared::process::CNativeExecutableCommandLine>(pluginInformation->getPath() / shared::CExecutable::ToFileName(pluginInformation->getType()),
-                                                                               ".",
-                                                                               args);
+      return boost::make_shared<shared::process::CNativeExecutableCommandLine>(
+         pluginInformation->getPath() / shared::CExecutable::ToFileName(pluginInformation->getType()),
+         ".",
+         args);
    }
 
    boost::shared_ptr<shared::process::IExternalProcessLogger> CFactory::createLogger(const std::string& loggerName) const
@@ -158,7 +161,8 @@ namespace pluginSystem
 
    boost::shared_ptr<shared::process::IProcess> CFactory::createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
                                                                                 boost::shared_ptr<CInstanceStateHandler> instanceStateHandler,
-                                                                                boost::shared_ptr<shared::process::IExternalProcessLogger> logger) const
+                                                                                boost::shared_ptr<shared::process::IExternalProcessLogger> logger)
+   const
    {
       try
       {
@@ -174,11 +178,12 @@ namespace pluginSystem
       }
    }
 
-   boost::shared_ptr<CYPluginApiImplementation> CFactory::createApiPluginImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-                                                                                        boost::shared_ptr<const database::entities::CPlugin> instanceData,
-                                                                                        boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
-                                                                                        boost::shared_ptr<database::IDataProvider> dataProvider,
-                                                                                        boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const
+   boost::shared_ptr<CYPluginApiImplementation> CFactory::createApiPluginImplementation(
+      boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+      boost::shared_ptr<const database::entities::CPlugin> instanceData,
+      boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
+      boost::shared_ptr<database::IDataProvider> dataProvider,
+      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const
    {
       return boost::make_shared<CYPluginApiImplementation>(pluginInformation,
                                                            instanceData,
@@ -191,11 +196,12 @@ namespace pluginSystem
                                                            m_location);
    }
 
-   boost::shared_ptr<IIpcAdapter> CFactory::createInstanceRunningContext(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-                                                                         boost::shared_ptr<const database::entities::CPlugin> instanceData,
-                                                                         boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
-                                                                         boost::shared_ptr<database::IDataProvider> dataProvider,
-                                                                         boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const
+   boost::shared_ptr<IIpcAdapter> CFactory::createInstanceRunningContext(
+      boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
+      boost::shared_ptr<const database::entities::CPlugin> instanceData,
+      boost::shared_ptr<IInstanceStateHandler> instanceStateHandler,
+      boost::shared_ptr<database::IDataProvider> dataProvider,
+      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer) const
    {
       auto apiImplementation = createApiPluginImplementation(pluginInformation,
                                                              instanceData,
@@ -211,10 +217,12 @@ namespace pluginSystem
       // Check if plugin is a native executable plugin
       const auto expectedExecutableName(shared::CExecutable::ToFileName(directory.filename().string()));
 
-      for (boost::filesystem::directory_iterator fileIterator(directory); fileIterator != boost::filesystem::directory_iterator(); ++fileIterator)
+      for (boost::filesystem::directory_iterator fileIterator(directory); fileIterator != boost::filesystem::
+           directory_iterator(); ++fileIterator)
       {
          if (boost::filesystem::is_regular_file(fileIterator->status()) && // It's a file...
-            boost::iequals(fileIterator->path().filename().string(), expectedExecutableName)) // ...with the same name as sub-directory...
+            boost::iequals(fileIterator->path().filename().string(), expectedExecutableName))
+            // ...with the same name as sub-directory...
             return true;
       }
 
@@ -227,7 +235,8 @@ namespace pluginSystem
       // for example a subdirectory "fakePlugin" containing a "fakePlugin.dll|so" file
       std::vector<boost::filesystem::path> pluginDirectories;
 
-      if (boost::filesystem::exists(m_pathProvider->pluginsPath()) && boost::filesystem::is_directory(m_pathProvider->pluginsPath()))
+      if (boost::filesystem::exists(m_pathProvider->pluginsPath()) && boost::filesystem::is_directory(
+         m_pathProvider->pluginsPath()))
       {
          // Check all subdirectories in plugin path
          for (boost::filesystem::directory_iterator subDirIterator(m_pathProvider->pluginsPath());
@@ -254,9 +263,9 @@ namespace pluginSystem
          try
          {
             // Get informations for current found plugin
-            auto pluginName = pluginDirectory->filename().string();
+            const auto pluginName = pluginDirectory->filename().string();
 
-            auto pluginInformation = createInformation(pluginName);
+            const auto pluginInformation = createInformation(pluginName);
             if (pluginInformation->isSupportedOnThisPlatform())
             {
                availablePlugins[pluginName] = pluginInformation;
@@ -287,5 +296,3 @@ namespace pluginSystem
       return availablePlugins;
    }
 } // namespace pluginSystem
-
-

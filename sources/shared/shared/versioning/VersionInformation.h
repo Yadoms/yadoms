@@ -17,7 +17,7 @@ namespace shared
          ///\brief Constructor
          ///\param [in] version     The version
          //---------------------------------------------
-         explicit CVersionInformation(const shared::versioning::CVersion& version);
+         explicit CVersionInformation(const CVersion& version);
 
          //---------------------------------------------
          ///\brief Get the version

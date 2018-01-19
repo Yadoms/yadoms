@@ -1,36 +1,39 @@
 #pragma once
-#include <shared/DataContainer.h>
 #include "WorkerTools.h"
+#include "IWidgetInformation.h"
 
 
-namespace update {
-   namespace worker {
-
+namespace update
+{
+   namespace worker
+   {
       class CWidget
       {
       public:
          //---------------------------------------------
          ///\brief                        Install a new widget
-         ///\param [in] progressCallback  The progress callback
-         ///\param [in] downloadUrl       The plugin package url
          //---------------------------------------------
-         static void install(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & downloadUrl);
+         static void install(CWorkerTools::WorkerProgressFunc progressCallback,
+                             const std::string& downloadUrl);
 
          //---------------------------------------------
          ///\brief                        Update a widget
-         ///\param [in] progressCallback  The progress callback
-         ///\param [in] widgetName        The widget name
-         ///\param [in] downloadUrl       The widget package url
          //---------------------------------------------
-         static void update(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & widgetName, const std::string & downloadUrl);
+         static void update(CWorkerTools::WorkerProgressFunc progressCallback,
+                            const std::string& widgetName,
+                            const std::string& downloadUrl);
 
          //---------------------------------------------
          ///\brief                        Remove a widget
-         ///\param [in] progressCallback  The progress callback
-         ///\param [in] widgetName        The widget name
          //---------------------------------------------
-         static void remove(CWorkerTools::WorkerProgressFunc progressCallback, const std::string & widgetName);
-      };
+         static void remove(CWorkerTools::WorkerProgressFunc progressCallback,
+                            const std::string& widgetName);
 
+         //---------------------------------------------
+         ///\brief                        Get installed widgets
+         //---------------------------------------------
+         typedef std::map<std::string, boost::shared_ptr<const IWidgetInformation>> AvailableWidgetMap;
+         static AvailableWidgetMap getWidgetList();
+      };
    } // namespace worker
 } // namespace update

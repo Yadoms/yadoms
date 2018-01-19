@@ -288,6 +288,8 @@ set(SHARED_LIB_SRC
    shared/script/yScriptApi/IYScriptApi.h
    shared/script/yScriptApi/WaitForEventResult.h
 
+   shared/tools/Filesystem.h
+   shared/tools/Filesystem.cpp
    shared/tools/Random.h
    shared/tools/Random.cpp
 

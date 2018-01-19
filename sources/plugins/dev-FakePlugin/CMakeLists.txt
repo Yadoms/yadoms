@@ -68,5 +68,6 @@ PLUGIN_LINK(dev-fakePlugin ${FAKE_PLUGIN_ADDITIONAL_LIB})
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(dev-fakePlugin package.json)
+PLUGIN_POST_BUILD_COPY_FILE(dev-fakePlugin changelog.md)
 PLUGIN_POST_BUILD_COPY_FILE(dev-fakePlugin icon.png)
 PLUGIN_POST_BUILD_COPY_DIRECTORY(dev-fakePlugin locales)

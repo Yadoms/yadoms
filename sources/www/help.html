@@ -114,16 +114,7 @@
 
                   return ''; // use external default escaping
                }
-            }); 
-
-
-             //trick to allow using only relative path in markdown
-             md.commonNormalizer = md.normalizeLink;
-             md.normalizeLink = function(url) {
-               if(url.startsWith("/this/"))
-                  return md.commonNormalizer(mdPath + url.replace("/this", ""));
-               return md.commonNormalizer(url);
-             };
+            });
 
              container.html(md.render(content));
              $(document).i18n();

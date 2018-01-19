@@ -27,6 +27,7 @@ namespace automation
       protected:
          // IManager Implementation
          std::vector<std::string> getAvailableInterpreters() override;
+         std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>> getAvailableInterpretersInformation() override;
          boost::shared_ptr<IInstance> getInterpreterInstance(const std::string& interpreterType) override;
          void unloadInterpreter(const std::string& interpreterType) override;
          void onInterpreterUnloaded(const std::string& interpreterType);

@@ -121,6 +121,7 @@ PLUGIN_LINK(RfPlayer ${RFPLAYER_PLUGIN_ADDITIONAL_LIB})
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(RfPlayer package.json)
+PLUGIN_POST_BUILD_COPY_FILE(RfPlayer changelog.md)
 PLUGIN_POST_BUILD_COPY_FILE(RfPlayer icon.png)
 PLUGIN_POST_BUILD_COPY_DIRECTORY(RfPlayer locales)
 

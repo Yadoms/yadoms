@@ -150,5 +150,6 @@ PLUGIN_LINK(RfxLanXpl ${RFXLANXPL_PLUGIN_ADDITIONAL_LIB})
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(RfxLanXpl package.json)
+PLUGIN_POST_BUILD_COPY_FILE(RfxLanXpl changelog.md)
 PLUGIN_POST_BUILD_COPY_FILE(RfxLanXpl icon.png)
 PLUGIN_POST_BUILD_COPY_DIRECTORY(RfxLanXpl locales)

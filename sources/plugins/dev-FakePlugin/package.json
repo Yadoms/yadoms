@@ -5,6 +5,11 @@
   "url": "https://github.com/Yadoms/yadoms/wiki/FakePlugin",
   "credits": "",
   "supportedPlatforms": "all",
+  "dependencies": {
+    "yadoms" : {
+      "minimumVersion" : "2.0.0"
+    }
+  },
   "configurationSchema": {
     "StringParameter": {
       "type": "string"

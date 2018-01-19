@@ -11,9 +11,6 @@ namespace update
       public:
          //---------------------------------------------
          ///\brief                        Install a new plugin
-         ///\param [in] progressCallback  The progress callback
-         ///\param [in] downloadUrl       The plugin package url
-         ///\param [in] pluginManager     The plugin manager
          //---------------------------------------------
          static void install(CWorkerTools::WorkerProgressFunc progressCallback,
                              const std::string& downloadUrl,
@@ -21,10 +18,6 @@ namespace update
 
          //---------------------------------------------
          ///\brief                        Update a plugin
-         ///\param [in] progressCallback  The progress callback
-         ///\param [in] pluginName        The plugin name
-         ///\param [in] downloadUrl       The plugin package url
-         ///\param [in] pluginManager     The plugin manager
          //---------------------------------------------
          static void update(CWorkerTools::WorkerProgressFunc progressCallback,
                             const std::string& pluginName,
@@ -33,9 +26,6 @@ namespace update
 
          //---------------------------------------------
          ///\brief                        Remove a plugin
-         ///\param [in] progressCallback  The progress callback
-         ///\param [in] pluginName        The plugin name
-         ///\param [in] pluginManager     The plugin manager
          //---------------------------------------------
          static void remove(CWorkerTools::WorkerProgressFunc progressCallback,
                             const std::string& pluginName,
@@ -43,5 +33,3 @@ namespace update
       };
    } // namespace worker
 } // namespace update
-
-
