@@ -3,16 +3,17 @@
 #include <shared/DataContainer.h>
 #include <shared/web/FileDownloader.h>
 
-namespace update {
-   namespace worker {
-
+namespace update
+{
+   namespace worker
+   {
       class CWorkerTools
       {
       public:
          //---------------------------------
          ///\brief Define a function prototype for updating the worker progress
          //---------------------------------
-         typedef boost::function5<void, bool, boost::optional<float>, std::string, std::string, shared::CDataContainer > WorkerProgressFunc;
+         typedef boost::function5<void, bool, boost::optional<float>, std::string, std::string, shared::CDataContainer> WorkerProgressFunc;
 
          //---------------------------------------------
          ///\brief   Download a package
@@ -23,8 +24,9 @@ namespace update {
          ///\param [in] max         The global progression when download ends
          ///\return The package local path
          //---------------------------------------------
-         static Poco::Path downloadPackage(const std::string & downloadUrl, WorkerProgressFunc callback, const std::string & function, float min, float max);
-         
+         static Poco::Path downloadPackage(const std::string& downloadUrl, WorkerProgressFunc callback, const std::string& function, float min,
+                                           float max);
+
          //---------------------------------------------
          ///\brief   Download a package
          ///\param [in] downloadUrl The downloaded package URL
@@ -35,14 +37,15 @@ namespace update {
          ///\param [in] max         The global progression when download ends
          ///\return The package local path
          //---------------------------------------------
-         static Poco::Path downloadPackageAndVerify(const std::string & downloadUrl, const std::string & md5Hash, WorkerProgressFunc callback, const std::string & function, float min, float max);
-         
+         static Poco::Path downloadPackageAndVerify(const std::string& downloadUrl, const std::string& md5Hash, WorkerProgressFunc callback,
+                                                    const std::string& function, float min, float max);
+
          //---------------------------------------------
          ///\brief   Download a package (report progress to log)
          ///\param [in] downloadUrl  The downloaded package URL
          ///\return The package local path
          //---------------------------------------------
-         static Poco::Path downloadPackage(const std::string & downloadUrl);  
+         static Poco::Path downloadPackage(const std::string& downloadUrl);
 
          //---------------------------------------------
          ///\brief   Download a package
@@ -50,8 +53,8 @@ namespace update {
          ///\param [in] progressReporter  The progress report callback
          ///\return The package local path
          //---------------------------------------------
-         static Poco::Path downloadPackage(const std::string & downloadUrl, shared::web::CFileDownloader::ProgressFunc progressReporter);  
-         
+         static Poco::Path downloadPackage(const std::string& downloadUrl, shared::web::CFileDownloader::ProgressFunc progressReporter);
+
          //---------------------------------------------
          ///\brief   Download a package
          ///\param [in] downloadUrl       The downloaded package URL
@@ -59,7 +62,8 @@ namespace update {
          ///\param [in] progressReporter  The progress report callback
          ///\return The package local path
          //---------------------------------------------
-         static Poco::Path downloadPackageAndVerify(const std::string & downloadUrl, const std::string & md5Hash, shared::web::CFileDownloader::ProgressFunc progressReporter);
+         static Poco::Path downloadPackageAndVerify(const std::string& downloadUrl, const std::string& md5Hash,
+                                                    shared::web::CFileDownloader::ProgressFunc progressReporter);
 
          //---------------------------------------------
          ///\brief   Deploy a package
@@ -67,7 +71,7 @@ namespace update {
          ///\param [in] outputDirectory  The output base path (plugins folder for example)
          ///\return The deployed directory
          //---------------------------------------------
-         static Poco::Path deployPackage(Poco::Path downloadedPackage, const std::string & outputDirectory);
+         static Poco::Path deployPackage(Poco::Path downloadedPackage, const std::string& outputDirectory);
 
          //---------------------------------------------
          ///\brief   Deploy a plugin package
@@ -114,9 +118,8 @@ namespace update {
          ///\param [in] min         The global progression when download start
          ///\param [in] max         The global progression when download ends
          //---------------------------------------------
-         static void reportDownloadProgress(const std::string & file, float progress, WorkerProgressFunc callback, const std::string & function, float min, float max);
-
+         static void reportDownloadProgress(const std::string& file, float progress, WorkerProgressFunc callback, const std::string& function,
+                                            float min, float max);
       };
-
    } // namespace worker
 } // namespace update

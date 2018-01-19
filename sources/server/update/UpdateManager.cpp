@@ -974,41 +974,44 @@ namespace update
       return startTask(task);
    }
 
+   std::string CUpdateManager::findMd5HashAssociatedTo(const std::string& downloadUrl,
+                                                       const std::string& allUpdatesNode) const
+   {
+      if (m_allUpdates.exists(allUpdatesNode))
+      {
+         auto versions = m_allUpdates.get<std::vector<shared::CDataContainer>>(allUpdatesNode);
+         auto versionInfo = std::find_if(versions.begin(),
+                                         versions.end(),
+                                         [&downloadUrl](
+                                         const shared::CDataContainer& version)
+                                         {
+                                            return version.get<std::string>(
+                                               "downloadUrl") == downloadUrl;
+                                         });
+
+         if (versionInfo == versions.end())
+            return std::string();
+
+         return versionInfo->get<std::string>("md5Hash");
+      }
+      return std::string();
+   }
+
    std::string CUpdateManager::updateYadomsAsync(const std::string& downloadUrl) const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_updateMutex);
 
       // Find expected MD5Hash corresponding to the download URL
-      auto versions = m_allUpdates.get<std::vector<shared::CDataContainer>>("yadoms.versions.newer");
-      auto versionInfo = std::find_if(versions.begin(),
-                                      versions.end(),
-                                      [&downloadUrl](
-                                      const shared::CDataContainer& version)
-                                      {
-                                         return version.get<std::string>(
-                                            "downloadUrl") == downloadUrl;
-                                      });
-
-      if (versionInfo == versions.end())
-      {
-         versions = m_allUpdates.get<std::vector<shared::CDataContainer>>("yadoms.versions.older");
-         versionInfo = std::find_if(versions.begin(),
-                                    versions.end(),
-                                    [&downloadUrl](
-                                    const shared::CDataContainer& version)
-                                    {
-                                       return version.get<std::string>(
-                                          "downloadUrl") == downloadUrl;
-                                    });
-
-         if (versionInfo == versions.end())
-            throw std::runtime_error("Version not found");
-      }
+      auto expectedMd5Hash = findMd5HashAssociatedTo(downloadUrl, "yadoms.versions.newer");
+      if (expectedMd5Hash.empty())
+         expectedMd5Hash = findMd5HashAssociatedTo(downloadUrl, "yadoms.versions.older");
+      if (expectedMd5Hash.empty())
+         throw std::runtime_error("Version not found");
 
       const auto task(boost::make_shared<task::CGenericTask>("yadoms.update",
                                                              boost::bind(&worker::CYadoms::update, _1,
                                                                          std::string(downloadUrl),
-                                                                         std::string(versionInfo->get<std::string>("md5Hash")))));
+                                                                         expectedMd5Hash)));
       //force to copy parameter because the versionToInstall is a reference and cannot be used "as is" in async task
       return startTask(task);
    }

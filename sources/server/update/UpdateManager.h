@@ -32,14 +32,14 @@ namespace update
       // IUpdateManager implementation
       std::string scanForUpdatesAsync() override;
       shared::CDataContainer getUpdates(bool includePrereleases) const override;
-      std::string updatePluginAsync(const std::string& pluginName, const std::string& downloadUrl) const override; 
-      std::string installPluginAsync(const std::string& downloadUrl) const override;  
-      std::string removePluginAsync(const std::string& pluginName) const override;  
-      std::string updateWidgetAsync(const std::string& widgetName, const std::string& downloadUrl) const override; 
+      std::string updatePluginAsync(const std::string& pluginName, const std::string& downloadUrl) const override;
+      std::string installPluginAsync(const std::string& downloadUrl) const override;
+      std::string removePluginAsync(const std::string& pluginName) const override;
+      std::string updateWidgetAsync(const std::string& widgetName, const std::string& downloadUrl) const override;
       std::string installWidgetAsync(const std::string& downloadUrl) const override;
-      std::string removeWidgetAsync(const std::string& widgetName) const override;  
+      std::string removeWidgetAsync(const std::string& widgetName) const override;
       std::string updateScriptInterpreterAsync(const std::string& scriptInterpreterName, const std::string& downloadUrl) const override;
-      std::string installScriptInterpreterAsync(const std::string& downloadUrl) const override; 
+      std::string installScriptInterpreterAsync(const std::string& downloadUrl) const override;
       std::string removeScriptInterpreterAsync(const std::string& scriptInterpreterName) const override;
       std::string updateYadomsAsync(const std::string& downloadUrl) const override;
       // [END] IUpdateManager implementation
@@ -101,6 +101,8 @@ namespace update
       static shared::CDataContainer buildNewVersionsNode(const std::map<std::string, shared::CDataContainer>& newItemAvailableVersions);
       void notifyNewUpdateAvailable() const;
       static bool checkDependencies(const shared::CDataContainer& itemVersionNode);
+      std::string findMd5HashAssociatedTo(const std::string& downloadUrl,
+                                          const std::string& allUpdatesNode) const;
 
    private:
       //-----------------------------------------------------------------------------
