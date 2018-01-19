@@ -4,6 +4,11 @@
 	"author": "Jean-Michel BERHAULT",
 	"url": "https://github.com/Yadoms/yadoms/wiki/state-display",
 	"credits": "",
+   "dependencies": {
+     "yadoms" : {
+       "minimumVersion" : "2.0.2"
+     }
+    },   
   "dimensions": {
     "min": {
       "x": 2,
