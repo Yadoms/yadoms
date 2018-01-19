@@ -67,7 +67,7 @@ namespace tools
       const auto normalizedScriptPath(boost::filesystem::path(scriptPath).parent_path() / "normalizedUpdate.sh");
 
       YADOMS_LOG(debug) << "launchNativeScript : write into " << normalizedScriptPath << "...";
-      std::ofstream outfile(normalizedScriptPath, ios_base::out | ios_base::trunc);
+      std::ofstream outfile(normalizedScriptPath, std::ios_base::out | std::ios_base::trunc);
       outfile << content;
       outfile.close();
 
