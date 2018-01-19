@@ -1,4 +1,4 @@
-### 2.0.2-rc.1
+### 2.0.2-beta.1
 
 #### New features and fixes
 
