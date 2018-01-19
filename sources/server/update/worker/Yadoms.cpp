@@ -123,7 +123,7 @@ namespace update
 
          //run updater script
          YADOMS_LOG(debug) << "Launch script \"" << executablePath.toString() << "\" with args " << boost::algorithm::join(args, ", ");
-         auto handle = tools::COperatingSystem::launchNativeScript(executablePath.toString(), args);
+         const auto handle = tools::COperatingSystem::launchNativeScript(executablePath.toString(), args);
 
          //the update command is running, wait for 5 seconds and ensure it is always running
          boost::this_thread::sleep(boost::posix_time::seconds(5));

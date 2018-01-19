@@ -927,6 +927,10 @@ if(WIN32)
 endif(WIN32)
 
 
+# Add changelog file
+set(YADOMS_SRC ${YADOMS_SRC} 
+   ../changelog.md
+)
 
 #define YADOMS output
 add_executable(yadoms ${YADOMS_SRC})
