@@ -105,10 +105,6 @@ namespace update
          ///\brief   The parameter DEMMODE for distant scripts
          //---------------------------------------------
          static std::string m_distantScriptParamDevMode;
-         //---------------------------------------------
-         ///\brief   The parameter LANG for distant scripts
-         //---------------------------------------------
-         static std::string m_distantScriptParamLang;
 
          //---------------------------------------------
          ///\brief   The result field for distant scripts

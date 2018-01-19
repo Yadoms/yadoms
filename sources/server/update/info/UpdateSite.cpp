@@ -10,10 +10,10 @@ namespace update
 {
    namespace info
    {
-      std::string CUpdateSite::m_distantYadomsListScript("yadoms.php");
-      std::string CUpdateSite::m_distantPluginsListScript("plugins.php");
-      std::string CUpdateSite::m_distantScriptInterpretersListScript("scriptInterpreters.php");
-      std::string CUpdateSite::m_distantWidgetsListScript("widgets.php");
+      std::string CUpdateSite::m_distantYadomsListScript("yadoms2.php");
+      std::string CUpdateSite::m_distantPluginsListScript("plugins2.php");
+      std::string CUpdateSite::m_distantScriptInterpretersListScript("scriptInterpreters2.php");
+      std::string CUpdateSite::m_distantWidgetsListScript("widgets2.php");
 
       std::string CUpdateSite::m_distantYadomsScriptResultField("data.yadoms");
       std::string CUpdateSite::m_distantPluginsScriptResultField("data.plugins");
@@ -22,7 +22,6 @@ namespace update
 
       std::string CUpdateSite::m_distantScriptParamOs("os");
       std::string CUpdateSite::m_distantScriptParamArch("arch");
-      std::string CUpdateSite::m_distantScriptParamLang("lang");
       std::string CUpdateSite::m_distantScriptParamDevMode("devMode");
 
       std::string CUpdateSite::m_distantScriptResult("result");
@@ -72,7 +71,6 @@ namespace update
                base.addQueryParameter(m_distantScriptParamOs, Poco::Environment::osName());
                base.addQueryParameter(m_distantScriptParamArch, Poco::Environment::osArchitecture());
             }
-            base.addQueryParameter(m_distantScriptParamLang, "en" /* Let hard-coded as it is no more used */);
             if (shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode())
                base.addQueryParameter(m_distantScriptParamDevMode);
 
