@@ -87,8 +87,10 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          try {
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
             onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
-            api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
-            api->setPluginState(yApi::historization::EPluginState::kRunning);
+            if (m_equipmentManager->size() > 0)
+               api->setPluginState(yApi::historization::EPluginState::kRunning);
+            else
+               api->setPluginState(yApi::historization::EPluginState::kCustom, "ready");
          }
          catch (std::exception &e)
          {
@@ -104,7 +106,7 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
               try {
                  m_equipmentManager->refreshEquipments(api, m_frameManager, m_configuration.getAPIKey(), m_decoder);
               }
-              catch (shared::CHttpException &e)
+              catch (shared::CHttpException &)
               {
                  api->setPluginState(yApi::historization::EPluginState::kCustom, "noConnection");
                  YADOMS_LOG(error) << "Error during connection to the web site";
@@ -142,6 +144,12 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                else if (extraQuery->getData()->query() == "onlyActivated")
                {
                   registerActivatedDevices(api);
+
+                  // fire immediately a event to read devices values
+                  m_waitForAnswerTimer = api->getEventHandler().createTimer(kEvtTimerRefreshDevices,
+                                                                            shared::event::CEventTimer::kOneShot,
+                                                                            boost::posix_time::seconds(0));
+
                   api->setPluginState(yApi::historization::EPluginState::kRunning);
                }
                else if (extraQuery->getData()->query() == "removeAllDevices")
@@ -156,18 +164,18 @@ void COrangeBusiness::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                api->setPluginState(yApi::historization::EPluginState::kCustom, "noConnection");
                YADOMS_LOG(error) << "Error during connection to the web site";
-               extraQuery->sendError(e.what()); // TODO : Envoyer un message traduit
+               extraQuery->sendError(e.what());
             }
             catch (CUnauthorizedException &e)
             {
                api->setPluginState(yApi::historization::EPluginState::kCustom, "unauthorizedAccess");
                YADOMS_LOG(error) << e.what();
-               extraQuery->sendError(e.what()); // TODO : Envoyer un message traduit
+               extraQuery->sendError(e.what());
             }
             catch (std::exception &e)
             {
                YADOMS_LOG(information) << "Error during extra query : " << e.what();
-               extraQuery->sendError(e.what()); // TODO : Envoyer un message traduit
+               extraQuery->sendError(e.what());
             }
          }
          break;

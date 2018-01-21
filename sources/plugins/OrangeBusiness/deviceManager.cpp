@@ -69,7 +69,7 @@ void CEquipmentManager::refreshEquipment(boost::shared_ptr<yApi::IYPluginApi> ap
 
       // Reading of the last communication date. If the date is too old for battery level > 1 week - do not historize it
       try {
-         if (elapseTimeSinceLastBatteryMessage < maxTimeForBatteryHistorization)
+         if (elapseTimeSinceLastBatteryMessage >= maxTimeForBatteryHistorization)
          {
             equipment->updateBatteryLevel(api, response.get<int>("lastBatteryLevel"));
          }

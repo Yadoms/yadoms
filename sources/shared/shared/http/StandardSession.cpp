@@ -7,7 +7,7 @@ namespace shared
 	StandardSession::StandardSession(std::string url):
 		m_url(url)
 	{
-		Poco::URI uri(url);
+		Poco::URI uri(url.c_str());
 		m_session = boost::make_shared<Poco::Net::HTTPClientSession>(uri.getHost(), uri.getPort());
 	}
 
