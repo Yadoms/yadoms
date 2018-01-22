@@ -54,36 +54,24 @@ namespace tools
       YADOMS_LOG(debug) << "launchNativeScript : convert script EOL if needed...";
 
       // Script can have Windows EOL, so adapt to Unix EOL
-
-      YADOMS_LOG(debug) << "launchNativeScript : read " << scriptPath << "...";
       std::ifstream infile(scriptPath);
       std::stringstream buffer;
       buffer << infile.rdbuf();
       auto content = buffer.str();
-
-      YADOMS_LOG(debug) << "launchNativeScript : replace EOL...";
       boost::replace_all(content, "\r\n", "\n");
-
       const auto normalizedScriptPath(boost::filesystem::path(scriptPath).parent_path() / "normalizedUpdate.sh");
-
-      YADOMS_LOG(debug) << "launchNativeScript : write into " << normalizedScriptPath.string() << "...";
       std::ofstream outfile(normalizedScriptPath.string(), std::ios::out | std::ios::trunc);
       outfile << content;
       outfile.close();
 
-      YADOMS_LOG(debug) << "launchNativeScript : " << normalizedScriptPath.string() << " closed";
-
       // Make a full copy of args list to insert script path
       Poco::Process::Args nativeArgs;
-      YADOMS_LOG(debug) << "launchNativeScript : nativeArgs created";
       nativeArgs.push_back(normalizedScriptPath.string());
-      YADOMS_LOG(debug) << "launchNativeScript : normalizedScriptPath added";
       for (const auto& arg : args)
          nativeArgs.push_back(arg);
 
-      YADOMS_LOG(debug) << "launchNativeScript : boost::algorithm::join(nativeArgs, \", \") = " << boost::algorithm::join(nativeArgs, ", ");
-
-      YADOMS_LOG(information) << "launchNativeScript sh with args " << boost::algorithm::join(nativeArgs, ", ");
+      YADOMS_LOG(information) << "launchNativeScript : start update script :";
+      YADOMS_LOG(information) << "   sh " << boost::algorithm::join(nativeArgs, " ");
       return Poco::Process::launch("sh", nativeArgs);
    }
    

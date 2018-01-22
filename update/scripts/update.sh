@@ -6,6 +6,12 @@ yadomsCurrentPid=$1
 yadomsPath=$2
 timeoutYadoms=${3:-60}
 
+echo "Starting at $(date)...."
+echo "    baseDir : $baseDir"
+echo "    Param : Path : $yadomsPath"
+echo "    Param : currentPid : $yadomsCurrentPid"
+echo "    Param : timeoutYadoms : $timeoutYadoms"
+
 #check parameters
 if [ -z "$yadomsPath" ]
 then
@@ -18,7 +24,7 @@ then
     exit 2
 fi
 
-logFile="$yadomsPath/update.log"
+logFile="update.log"
 
 echo "Starting at $(date)...." > $logFile 2>&1
 echo "    baseDir : $baseDir" >> $logFile 2>&1
