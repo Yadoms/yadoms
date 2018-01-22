@@ -72,12 +72,18 @@ namespace tools
       outfile.close();
 
       YADOMS_LOG(debug) << "launchNativeScript : " << normalizedScriptPath.string() << " closed";
-      Poco::Process::Args nativeArgs = args;
+
+      // Make a full copy of args list to insert script path
+      Poco::Process::Args nativeArgs;
       YADOMS_LOG(debug) << "launchNativeScript : nativeArgs created";
-      nativeArgs.insert(args.begin(), normalizedScriptPath.string());
+      nativeArgs.push_back(normalizedScriptPath.string());
       YADOMS_LOG(debug) << "launchNativeScript : normalizedScriptPath added";
+      for (const auto& arg : args)
+         nativeArgs.push_back(arg);
+
       YADOMS_LOG(debug) << "launchNativeScript : boost::algorithm::join(nativeArgs, \", \") = " << boost::algorithm::join(nativeArgs, ", ");
-      YADOMS_LOG(debug) << "launchNativeScript sh with args " << boost::algorithm::join(nativeArgs, ", ");
+
+      YADOMS_LOG(information) << "launchNativeScript sh with args " << boost::algorithm::join(nativeArgs, ", ");
       return Poco::Process::launch("sh", nativeArgs);
    }
    
