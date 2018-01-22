@@ -1,18 +1,17 @@
+### 2.0.2-beta.3
+
+#### New features and fixes
+
+##### Yadoms Core
+* Same content as 2.0.2-beta.2 to test Yadoms update
+
+
 ### 2.0.2-beta.2
 
 #### New features and fixes
 
 ##### Yadoms Core
 * Fix update on RaspberryPi
-
-##### Plugins
-* N/A
-
-##### Widgets
-* N/A
-
-#### Issues fixed
-* N/A
 
 
 ### 2.0.2-beta.1
