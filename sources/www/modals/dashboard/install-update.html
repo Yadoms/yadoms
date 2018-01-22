@@ -239,10 +239,10 @@
     /**
      * Ask a refresh of all data in the modal
      */
-    function refreshAllData(e) {
+    function refreshAllData() {
         var d = new $.Deferred();
 
-        updateReleaseType(e);
+        updateReleaseType();
 
         //we remove update available header
         $(".panel-title span.update-available-label").addClass("hidden");
