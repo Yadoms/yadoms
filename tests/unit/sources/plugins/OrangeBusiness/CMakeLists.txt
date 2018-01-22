@@ -58,6 +58,8 @@ IF(NOT DISABLE_TEST_PLUGIN_ORANGE_BUSINESS)
       TestOrangeBusinessEquipmentManager.cpp
       urlManagerMock.cpp
       urlManagerMock.h
+      MessagesHelper.cpp
+      MessagesHelper.h
    )
    
 ENDIF()

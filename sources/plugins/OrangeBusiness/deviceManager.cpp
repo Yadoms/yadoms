@@ -94,21 +94,23 @@ void CEquipmentManager::refreshEquipment(boost::shared_ptr<yApi::IYPluginApi> ap
       response.printToLog(YADOMS_LOG(trace));
 
       // get last data from this last frame
-      response = decoder->getLastData(response);
+      shared::CDataContainer lastData = decoder->getLastData(response);
       response.printToLog(YADOMS_LOG(trace));
 
+      std::string idNewMessage = lastData.getWithDefault<std::string>("id", "");
+      std::string idlastMessage = equipment->getlastMessageId(api);
+
       // Register the new data, only if it's a new id
-      if (response.getWithDefault<std::string>("id","") != equipment->getlastMessageId(api))
+      // Should be enhanced in the futur
+      if (idNewMessage != idlastMessage)
       {
-         std::string receivedTimeString = response.get<std::string>("updateTs");
+         std::string receivedTimeString = lastData.get<std::string>("timestamp");
          boost::remove_erase_if(receivedTimeString, boost::is_any_of("Z-:."));
          boost::posix_time::ptime receivedTime = boost::posix_time::from_iso_string(receivedTimeString);
          boost::posix_time::time_duration elapseTimeSinceLastDataMessage = actualTime - receivedTime;
          const boost::posix_time::time_duration maxTimeForDataHistorization = boost::posix_time::minutes(30);
-
-         // If the time is > 30mn, we do not historize it
-         if (elapseTimeSinceLastDataMessage < maxTimeForDataHistorization)
-            equipment->updateData(api, response.get<std::string>("data"));
+         equipment->updateData(api, lastData.get<std::string>("payload"));
+         equipment->updatelastMessageId(api, idNewMessage);
       }
    }
    catch (shared::CHttpException &e)

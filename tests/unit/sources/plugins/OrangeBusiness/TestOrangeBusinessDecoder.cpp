@@ -95,40 +95,75 @@ namespace yApi = shared::plugin::yPluginApi;
 
    BOOST_AUTO_TEST_CASE(DecoderCommandeListNominal)
    {
-      shared::CDataContainer deviceInformation;
+      std::string message = "[{\
+         \"id\" : \"58e276370cf2cabaf8221840\",\
+            \"streamId\" : \"urn:lora:70B3D532600013B5!uplink\",\
+            \"timestamp\" : \"2017-04-03T16:20:07.513Z\",\
+            \"model\" : \"lora_v0\",\
+            \"value\" : {\
+            \"port\" : 2,\
+               \"fcnt\" : 1,\
+               \"signalLevel\" : 5,\
+               \"payload\" : \"03000000000004\"\
+         },\
+            \"tags\" : [],\
+               \"metadata\" : {\
+               \"source\" : \"urn:lora:70B3D532600013B5\",\
+                  \"connector\" : \"lora\",\
+                  \"network\" : {\
+                  \"lora\" : {\
+                     \"devEUI\" : \"70B3D532600013B5\",\
+                        \"port\" : 2,\
+                        \"fcnt\" : 1,\
+                        \"rssi\" : -92.0,\
+                        \"snr\" : 13.0,\
+                        \"sf\" : 7,\
+                        \"signalLevel\" : 5\
+                  }\
+               }\
+            },\
+               \"created\" : \"2017-04-03T16:20:07.793Z\"\
+      }, {\
+         \"id\" : \"58e272b20cf21b81b15cd1ea\",\
+         \"streamId\" : \"urn:lora:70B3D532600013B5!uplink\",\
+         \"timestamp\" : \"2017-04-03T16:05:05.741Z\",\
+         \"model\" : \"lora_v0\",\
+         \"value\" : {\
+               \"port\" : 2,\
+                  \"fcnt\" : 0,\
+                  \"signalLevel\" : 5,\
+                  \"payload\" : \"0400000000000000000004\"\
+            },\
+               \"tags\" : [],\
+                  \"metadata\" : {\
+                  \"source\" : \"urn:lora:70B3D532600013B5\",\
+                     \"connector\" : \"lora\",\
+                     \"network\" : {\
+                     \"lora\" : {\
+                        \"devEUI\" : \"70B3D532600013B5\",\
+                           \"port\" : 2,\
+                           \"fcnt\" : 0,\
+                           \"rssi\" : -91.0,\
+                           \"snr\" : 15.0,\
+                           \"sf\" : 7,\
+                           \"signalLevel\" : 5\
+                     }\
+                  }\
+               },\
+                  \"created\" : \"2017-04-03T16:05:06.026Z\"\
+      } ]";
+
+      shared::CDataContainer messageRecu(message);
+
       CDecoder decoder;
+      shared::CDataContainer response = decoder.getLastData(messageRecu);
 
-      deviceInformation.set("page", 0);
-      deviceInformation.set("size", 20);
-      deviceInformation.set("totalCount", 2);
-
-      std::vector<shared::CDataContainer> data;
-
-      shared::CDataContainer command1, command2;
-
-      command1.set("id", "5703cfa9e4b0b24cd6862865");
-      command1.set("data", "01");
-      command1.set("port", 1);
-      command1.set("confirmed", true);
-      command1.set("commandStatus", SENT);
-      command1.set("creationTs", "2016-06-03T15:50:39.669Z");
-
-      command2.set("id", "5703cfa9e4b0b24cd6862866");
-      command2.set("data", "02");
-      command2.set("port", 1);
-      command2.set("confirmed", true);
-      command2.set("commandStatus", SENT);
-      command2.set("creationTs", "2016-06-03T15:50:39.669Z");
-
-      data.push_back(command2); // the more recent command is pushed in the first place
-      data.push_back(command1);
-      deviceInformation.set("data", data);
-
-      shared::CDataContainer response = decoder.getLastData(deviceInformation);
-
-      BOOST_CHECK_EQUAL(response.get<std::string>("data") == "02", true);
-      BOOST_CHECK_EQUAL(response.get<std::string>("id") == "5703cfa9e4b0b24cd6862866", true);
-      BOOST_CHECK_EQUAL(response.get<std::string>("date") == "2016-06-03T15:50:39.669Z", true);
+      BOOST_CHECK_EQUAL(response.get<std::string>("id") == "58e276370cf2cabaf8221840", true);
+      BOOST_CHECK_EQUAL(response.get<std::string>("payload") == "03000000000004", true);
+      BOOST_CHECK_EQUAL(response.get<std::string>("timestamp") == "2017-04-03T16:20:07.513Z", true);
+      BOOST_CHECK_EQUAL(response.get<int>("signalLevel"), 5);
+      BOOST_CHECK_EQUAL(response.get<double>("rssi"), -92);
+      BOOST_CHECK_EQUAL(response.get<double>("snr"), 13);
    }
 
    BOOST_AUTO_TEST_SUITE_END()

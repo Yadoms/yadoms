@@ -14,6 +14,7 @@ public:
    urlManagerMock();
 
    void addRegisteredEquipmentsMessageReturned(shared::CDataContainer newMessage);
+   void addMessagesForEquipment(shared::CDataContainer newMessage);
 
    //--------------------------------------------------------------
    /// \brief	    get all equipments from the website
@@ -56,5 +57,5 @@ private:
    // All simulated messages
    shared::CDataContainer RegisteredEquipments;
    shared::CDataContainer DeviceInformation;
-   shared::CDataContainer DeviceCommands;
+   shared::CDataContainer DeviceMessages;
 };

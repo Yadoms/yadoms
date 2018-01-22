@@ -50,17 +50,27 @@ bool CDecoder::isFrameComplete(shared::CDataContainer& message)
       return false;
 }
 
-shared::CDataContainer CDecoder::getLastData(shared::CDataContainer& message)
+shared::CDataContainer CDecoder::getLastData(shared::CDataContainer& response)
 {
-   auto commands = message.get<std::vector<shared::CDataContainer> >("data");
-   shared::CDataContainer response;
+   auto messages = response.get<std::vector<shared::CDataContainer> >("");
+   shared::CDataContainer lastData;
 
-   if (commands.size() > 0)
+   if (messages.size() > 0)
    {
-      // // the lastest elements should be the first one presented
-      response.set("data", commands[0].get<std::string>("data"));
-	   response.set("date", commands[0].get<std::string>("creationTs"));
-      response.set("id", commands[0].get<std::string>("id"));
+      // first message is the last message received
+      auto message = messages[0];
+
+      //Copy to the answer needed information
+      lastData.set("id", message.get<std::string>("id"));
+      lastData.set("timestamp", message.get<std::string>("timestamp"));
+      lastData.set("payload", message.get<std::string>("value.payload"));
+      lastData.set("rssi", message.get<double>("metadata.network.lora.rssi"));
+      lastData.set("snr", message.get<double>("metadata.network.lora.snr"));
+
+      //TODO : Value to be checked
+      lastData.set("signalLevel", message.get<int>("value.signalLevel"));
+
+      lastData.printToLog(YADOMS_LOG(information));
    }
-   return response;
+   return lastData;
 }
