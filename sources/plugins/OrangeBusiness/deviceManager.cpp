@@ -13,22 +13,17 @@ CEquipmentManager::CEquipmentManager(boost::shared_ptr<yApi::IYPluginApi> api)
 {
 	std::vector<std::string> devices = api->getAllDevices();
 
-	// Create all extensions devices
 	for (const auto& device : devices)
 	{
-		std::string devEUI = "";
-
-		// plugin state have no type
-		try
+		try  // plugin state have no type
 		{
-			devEUI = api->getDeviceDetails(device).get<std::string>("devEUI");
+         std::string devEUI = api->getDeviceDetails(device).get<std::string>("devEUI");
+
+         if (devEUI != "") // Create the device 
+            m_deviceList.insert(std::pair<std::string, boost::shared_ptr<equipments::IEquipment>>(device, boost::make_shared<equipments::CDefaultEquipment>(device, devEUI)));
 		}
 		catch (...)
-		{
-		}
-
-		if (devEUI != "") // Create the device 
-			m_deviceList.insert(std::pair<std::string, boost::shared_ptr<equipments::IEquipment>>(device, boost::make_shared<equipments::CDefaultEquipment>(device, devEUI)));
+		{}
 	}
 }
 

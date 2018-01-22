@@ -4,6 +4,8 @@
 
 namespace equipments
 {
+   // TODO : Mettre en place keyword SignalLevel/snr/rssi
+
    CDefaultEquipment::CDefaultEquipment(const std::string& name,
                                         const std::string& devEUID) :
 	   m_messageKeyword(boost::make_shared<yApi::historization::CText>("message",
@@ -49,6 +51,7 @@ namespace equipments
                                                const std::string& id)
    {
       shared::CDataContainer details;
+      details.set("devEUI", m_devEUI);
       details.set("id", id);
 
       api->updateDeviceDetails(m_name, details);

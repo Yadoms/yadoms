@@ -109,22 +109,15 @@ namespace shared
                                          Poco::Net::HTTPResponse& httpresponse,
                                          CDataContainer& response)
    {
-      std::string content;
       auto& rs = session->receiveResponse(httpresponse);
-
       if (boost::icontains(httpresponse.getContentType(), "application/json"))
       {
-         if (httpresponse.hasContentLength())
-         {
-            content.resize(static_cast<unsigned int>(httpresponse.getContentLength()));
-            rs.read(const_cast<char*>(content.c_str()), httpresponse.getContentLength());
-            response.deserialize(content);
-         }
-
-         //request content may be empty
+         // Content-Length is not always fullfilled so we don't use hasContentLength and getContentLength
+         std::istreambuf_iterator<char> eos;
+         std::string content(std::istreambuf_iterator<char>(rs), eos);
+         response.deserialize(content);
          return true;
       }
-
       return false;
    }
 } // namespace shared
