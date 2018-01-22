@@ -422,6 +422,8 @@
         //we don't want ESC close the modal
         var $splash = $('div#yadoms-updating-splash');
 
+        stopPeriodicTask();
+
         //we wait the Server stop to answer request
         waitForYadomsExit();
         $splash.i18n();
@@ -429,6 +431,7 @@
     }
 
     function waitForYadomsExit() {
+        console.log("Wait Yadoms exiting...");
         var timeout = setTimeout(function () {
             //the timeout has expired. So server is not alive anymore
             waitForYadomsReturn();
@@ -438,22 +441,23 @@
         $(document).on("isAlive", function () {
             //we have received a alive answer
             //we resend a new isAlive call until it doesn't answer
+            console.log("Yadoms still alive, wait more...");
             clearTimeout(timeout);
             timeout = setTimeout(function () {
                 //the timeout has expired. So server is not alive anymore
+                console.log("Timeout, Yadoms exited");
                 waitForYadomsReturn();
             }, 5000);
-            console.log("WebSocketEngine.sendIsServerAlive()");
             //we send the ping and wait for the answer
             WebSocketEngine.sendIsServerAlive();
         });
 
-        console.log("WebSocketEngine.sendIsServerAlive()");
         //we send the ping and wait for the answer
         WebSocketEngine.sendIsServerAlive();
     }
 
     function waitForYadomsReturn() {
+        console.log("Wait Yadoms exiting...");
         var $splash = $('div#yadoms-updating-splash');
         $splash.find("h1.waiting").addClass("hidden");
         $splash.find("h1.updating").removeClass("hidden");
@@ -463,13 +467,13 @@
             timeout: 2000
         })
             .done(function () {
-                console.log("waitForYadomsReturn EventLoggerManager.getLast(true).done");
                 //we received an answer, the server is back
                 //we reload full page (clearing cache)
+                console.log("Yadoms is back, reload page (discarding cache)...");
                 location.reload(true);
             })
             .fail(function (error) {
-                console.log("waitForYadomsReturn EventLoggerManager.getLast(true).fail : " + error);
+                console.log("Yadoms is not back, wait more... (" + error + ")");
                 setTimeout(waitForYadomsReturn(), 1000);
             });
     }

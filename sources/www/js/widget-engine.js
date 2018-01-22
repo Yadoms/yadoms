@@ -287,6 +287,10 @@ function periodicUpdateTask() {
         });
 }
 
+function stopPeriodicTask() {
+    clearInterval(widgetUpdateInterval);
+}
+
 function dispatchNewAcquisitionsToWidgets(acq) {
     assert(!isNullOrUndefined(acq), "data must be defined");
 
