@@ -1,3 +1,6 @@
+### 1.0.2-beta.2
+* Fix crash when D2-xx-xx device not responding
+
 ### 1.0.2-beta.1
 * Fix #433
 

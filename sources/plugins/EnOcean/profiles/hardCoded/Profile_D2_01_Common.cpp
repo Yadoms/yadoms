@@ -169,7 +169,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    // Sometimes ioChannel is not well set by device (ex NODON ASP-2-1-00 set ioChannel to 1 instead of 0),
    // so ignore ioChannel value (juste verify that is not input channel)
    if (ioChannel == kInputChannel)
-      YADOMS_LOG(warning) << "ActuatorStatusResponse : received unsupported ioChannel value " << ioChannel;
+   YADOMS_LOG(warning) << "ActuatorStatusResponse : received unsupported ioChannel value " << ioChannel;
    else
    {
       if (!!channel1)
@@ -185,7 +185,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       else
       {
          YADOMS_LOG(warning) << "ActuatorStatusResponse : received unsupported ioChannel value " << ioChannel;
-      }      
+      }
    }
 
    if (!!overCurrent)
@@ -539,12 +539,12 @@ void CProfile_D2_01_Common::sendMessage(boost::shared_ptr<IMessageHandler> messa
                           {
                              answer = esp3Packet;
                           }))
-   YADOMS_LOG(error) << "Fail to send message to " << targetId << " : no answer to \"" << commandName << "\"";
+      throw std::runtime_error((boost::format("Fail to send message to %1% : no answer to \"%2%\"") % targetId % commandName).str());
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
 
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-   YADOMS_LOG(error) << "Fail to send message to " << targetId << " : \"" << commandName << "\" returns " << response->returnCode();
+      YADOMS_LOG(error) << "Fail to send message to " << targetId << " : \"" << commandName << "\" returns " << response->returnCode();
 }
 
 
