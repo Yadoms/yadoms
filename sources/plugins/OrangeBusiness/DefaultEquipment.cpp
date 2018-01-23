@@ -4,12 +4,10 @@
 
 namespace equipments
 {
-   // TODO : Mettre en place keyword SignalLevel/snr/rssi
-
    CDefaultEquipment::CDefaultEquipment(const std::string& name,
                                         const std::string& devEUID) :
 	   m_messageKeyword(boost::make_shared<yApi::historization::CText>("message",
-                                                                      yApi::EKeywordAccessMode::kGetSet)),
+                                                                      yApi::EKeywordAccessMode::kGet)),
       m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
       m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
       m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),

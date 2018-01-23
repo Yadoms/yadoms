@@ -66,11 +66,7 @@ shared::CDataContainer CDecoder::getLastData(shared::CDataContainer& response)
       lastData.set("payload", message.get<std::string>("value.payload"));
       lastData.set("rssi", message.get<double>("metadata.network.lora.rssi"));
       lastData.set("snr", message.get<double>("metadata.network.lora.snr"));
-
-      //TODO : Value to be checked
       lastData.set("signalLevel", message.get<int>("value.signalLevel"));
-
-      lastData.printToLog(YADOMS_LOG(information));
    }
    return lastData;
 }
