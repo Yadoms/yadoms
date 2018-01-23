@@ -281,7 +281,7 @@ function chartViewModel() {
                         $.each(this.points, function () {
                             if (!this.series.hideInLegend) {
                                 if (isNullOrUndefined(this.point.low)) { //Standard serie
-                                   if (this.series.chart.keyword[this.series.index].type === "Enum") {
+                                   if (this.series.chart.keyword[this.series.keywordTabId].type === "Enum") {
                                       s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
                                         this.series.chart.keyword[this.series.index].typeInfo.translatedValues[parseInt(this.y)];
                                    }else {
@@ -863,8 +863,8 @@ function chartViewModel() {
                                          catch(error){
                                             serieRange.units="";
                                          }
-                                         
                                          serieRange.precision = self.precision[index];
+                                         serieRange.keywordTabId = index;
                                       }
                                   }
                               }
@@ -882,6 +882,7 @@ function chartViewModel() {
                              
                              // register the precision for each serie into the serie
                              serie.precision = self.precision[index];
+                             serie.keywordTabId = index;
                           }
                       })
                       .fail(function (error) {
