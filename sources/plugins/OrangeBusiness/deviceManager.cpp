@@ -104,7 +104,12 @@ void CEquipmentManager::refreshEquipment(boost::shared_ptr<yApi::IYPluginApi> ap
          boost::posix_time::ptime receivedTime = boost::posix_time::from_iso_string(receivedTimeString);
          boost::posix_time::time_duration elapseTimeSinceLastDataMessage = actualTime - receivedTime;
          const boost::posix_time::time_duration maxTimeForDataHistorization = boost::posix_time::minutes(30);
-         equipment->updateData(api, lastData.get<std::string>("payload"));
+
+         equipment->updateData(api, 
+                               lastData.get<std::string>("payload"),
+                               lastData.get<double>("rssi"),
+                               lastData.get<int>("signalLevel"),
+                               lastData.get<double>("snr"));
          equipment->updatelastMessageId(api, idNewMessage);
       }
    }

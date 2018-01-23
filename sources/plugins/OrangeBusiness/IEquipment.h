@@ -29,7 +29,10 @@ namespace equipments
       /// \brief	                     Create the Device with the counter Id
       //-----------------------------------------------------
       virtual void updateData(boost::shared_ptr<yApi::IYPluginApi> api,
-                              const std::string& data) = 0;
+                              const std::string& data,
+                              const double& rssi,
+                              const int signalLevel,
+                              const double& snr) = 0;
 
       //--------------------------------------------------------------
       /// \brief	                     Update in the database for this equipment the last message id

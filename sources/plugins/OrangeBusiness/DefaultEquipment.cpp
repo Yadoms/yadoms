@@ -11,6 +11,9 @@ namespace equipments
 	   m_messageKeyword(boost::make_shared<yApi::historization::CText>("message",
                                                                       yApi::EKeywordAccessMode::kGetSet)),
       m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_snr(boost::make_shared<specificHistorizers::CSNR>("snr")),
 	   m_name(name),
       m_devEUI(devEUID)
    {}
@@ -21,10 +24,19 @@ namespace equipments
       m_messageKeyword(boost::make_shared<yApi::historization::CText>("message",
                                                                       yApi::EKeywordAccessMode::kGetSet)),
       m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_snr(boost::make_shared<specificHistorizers::CSNR>("snr")),
       m_name(name),
       m_devEUI(devEUID)
    {
-      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToDeclare = { m_batteryLevel, m_messageKeyword };
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToDeclare = {
+         m_batteryLevel, 
+         m_messageKeyword,
+         m_rssi,
+         m_signalPower,
+         m_snr
+      };
 
       // Save names into details
       shared::CDataContainer details;
@@ -63,10 +75,23 @@ namespace equipments
    }
 
    void CDefaultEquipment::updateData(boost::shared_ptr<yApi::IYPluginApi> api,
-                                      const std::string& data)
+                                      const std::string& data,
+                                      const double& rssi,
+                                      const int signalLevel,
+                                      const double& snr)
    {
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToHistorize = {
+         m_messageKeyword,
+         m_rssi,
+         m_signalPower,
+         m_snr
+      };
+
       m_messageKeyword->set(data);
-      api->historizeData(m_name, m_messageKeyword);
+      m_rssi->set(rssi);
+      m_signalPower->set(signalLevel);
+      m_snr->set(snr);
+      api->historizeData(m_name, keywordsToHistorize);
    }
 
    void CDefaultEquipment::updateBatteryLevel(boost::shared_ptr<yApi::IYPluginApi> api,

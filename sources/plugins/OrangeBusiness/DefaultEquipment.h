@@ -2,6 +2,7 @@
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "IEquipment.h"
+#include "specificHistorizer/SNR.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -38,7 +39,10 @@ namespace equipments
       std::string getName() const override;
       std::string getEUI() const override;
       void updateData(boost::shared_ptr<yApi::IYPluginApi> api,
-                      const std::string& data) override;
+                      const std::string& data,
+                      const double& rssi,
+                      const int signalLevel,
+                      const double& snr) override;
 	  void updateBatteryLevel(boost::shared_ptr<yApi::IYPluginApi> api,
 					  int batteryLevel) override;
      void updatelastMessageId(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -63,6 +67,17 @@ namespace equipments
       /// \brief	The battery level (percent)
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CBatteryLevel> m_batteryLevel;
+
+      //--------------------------------------------------------------
+      /// \brief	The keyword associated with rssi
+      //--------------------------------------------------------------
+      boost::shared_ptr<yApi::historization::CRssi> m_rssi;
+      boost::shared_ptr<yApi::historization::CSignalPower> m_signalPower;
+
+      //--------------------------------------------------------------
+      /// \brief	The keyword associated with SNR
+      //--------------------------------------------------------------
+      boost::shared_ptr<specificHistorizers::CSNR> m_snr;
 
       std::string m_name;
       std::string m_devEUI;

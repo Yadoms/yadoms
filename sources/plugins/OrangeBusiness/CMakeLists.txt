@@ -25,6 +25,8 @@ set(ORANGE_BUSINESS_PLUGIN_SOURCES
    UnauthorizedException.hpp
    urlManager.cpp
    urlManager.h
+   specificHistorizer/SNR.cpp
+   specificHistorizer/SNR.h
 )
 	
 #########################################
