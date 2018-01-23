@@ -71,17 +71,15 @@ def checkLocalRuleLogById(id, expectedLog):
    
    readLog = []
    with open(ruleLogFilePath, 'r') as ruleFile:
-      # Skip first line (containing somting like "# Log file created/rotated Monday, 23 Jan 17 13:54:56 GMT")
+      # Skip first line (containing something like "# Log file created/rotated Monday, 23 Jan 17 13:54:56 GMT")
       next(ruleFile)
       for line in ruleFile:
          # Remove date/time for comparison
-         readLog.append(re.sub("\d{2}:\d{2}:\d{2} : ", "", line))
+         readLog.append(re.sub("\w{3}, \d{2}:\d{2}:\d{2} : ", "", line))
          
    if (readLog != expectedLog):
-      print ">>>>>>>>>>> Read log : "
-      print readLog
-      print ">>>>>>>>>>> Expected log : "
-      print expectedLog
+      print ">>>>>>>>>>> Read log     :", readLog
+      print ">>>>>>>>>>> Expected log :", expectedLog
       return False         
 
    return True
