@@ -6,7 +6,7 @@ namespace shared
 {
    namespace communication
    {
-      CFixedSizeReceiveBufferHandler::CFixedSizeReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
+      CFixedSizeReceiveBufferHandler::CFixedSizeReceiveBufferHandler(event::CEventHandler& receiveDataEventHandler,
                                                                      int receiveDataEventId,
                                                                      size_t messageSize)
          : m_receiveDataEventHandler(receiveDataEventHandler),
@@ -23,6 +23,7 @@ namespace shared
 
       void CFixedSizeReceiveBufferHandler::push(const CByteBuffer& buffer)
       {
+         boost::lock_guard<boost::recursive_mutex> lock(m_contentMutex);
          for (size_t idx = 0; idx < buffer.size(); ++ idx)
             m_content.push_back(buffer[idx]);
 
@@ -32,11 +33,13 @@ namespace shared
 
       void CFixedSizeReceiveBufferHandler::flush()
       {
+         boost::lock_guard<boost::recursive_mutex> lock(m_contentMutex);
          m_content.clear();
       }
 
       bool CFixedSizeReceiveBufferHandler::isComplete() const
       {
+         boost::lock_guard<boost::recursive_mutex> lock(m_contentMutex);
          if (m_content.empty())
             return false;
 
@@ -49,8 +52,9 @@ namespace shared
 
       boost::shared_ptr<const CByteBuffer> CFixedSizeReceiveBufferHandler::popNextMessage()
       {
+         boost::lock_guard<boost::recursive_mutex> lock(m_contentMutex);
          if (!isComplete())
-            throw exception::CException("CFixedSizeReceiveBufferHandler : Can not pop not completed message. Call isComplete to check if a message is available");
+            throw exception::CException("CFixedSizeReceiveBufferHandler : Can not pop incompleted message. Call isComplete to check if a message is available");
 
          auto extractedMessage(boost::make_shared<CByteBuffer>(m_messageSize));
          for (size_t idx = 0; idx < m_messageSize; ++ idx)

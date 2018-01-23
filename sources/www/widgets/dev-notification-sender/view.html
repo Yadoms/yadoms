@@ -1,8 +1,8 @@
 <script type="text/html" id="dev-notification-sender-template">
    <div class="notificationSenderWidget">
-      <div class="sendNotificationText"><span data-i18n="widgets/dev-notification-sender:text"></span> :</div>
-      <select class="to" data-bind="options: toList, optionsCaption: toCaption, optionsAfterRender: optionsAfterRender, optionsText: 'name', optionsValue: 'id', value: toSelected" data-i18n="[placeholder]widgets/dev-notification-sender:to" required></select>
-      <input class="body" data-bind="value: body" data-i18n="[placeholder]widgets/dev-notification-sender:message">
+      <div class="sendNotificationText"><span data-i18n="widgets.dev-notification-sender:text"></span> :</div>
+      <select class="to" data-bind="options: toList, optionsCaption: toCaption, optionsAfterRender: optionsAfterRender, optionsText: 'name', optionsValue: 'id', value: toSelected" data-i18n="[placeholder]widgets.dev-notification-sender:to" required></select>
+      <input class="body" data-bind="value: body" data-i18n="[placeholder]widgets.dev-notification-sender:message">
       <button class="btn btn-lg btn-primary" data-bind="event: {click: function() {send()}}">
          <span class="glyphicon glyphicon-send"></span>
       </button>

@@ -11,7 +11,7 @@
 YadomsUpdateInformationManager.getList = function () {
    var d = new $.Deferred();
    
-   RestEngine.getJson("rest/update/yadoms/list/" + i18n.lng())
+   RestEngine.getJson("rest/update/yadoms/list/" + i18nManager.getLanguage())
    .done(function(data) {
       $.each(data, function (versionIndex, versionValue) {
          data[versionIndex].version = new Version(data[versionIndex].version);

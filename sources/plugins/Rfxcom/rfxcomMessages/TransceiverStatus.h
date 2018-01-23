@@ -156,8 +156,7 @@ namespace rfxcomMessages
       bool m_LWRFenabled;
       bool m_HIDEKIenabled;
       bool m_LACROSSEenabled;
-      bool m_FS20enabled;
-      bool m_PROGUARDenabled;
+      bool m_LegrandCADenabled;
       bool m_BLINDST0enabled;
       bool m_BLINDST1enabled;
       bool m_X10enabled;

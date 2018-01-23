@@ -58,23 +58,29 @@ void CForecast::addPeriod(const shared::CDataContainer& valueContainer,
    std::string stgmaxWind;
    std::string stgaveWind;
    std::string stgsnowday;
+   std::string stgRainDay;
    
    convertKmhToMs(stgmaxWind, valueContainer, maxWind);
    convertKmhToMs(stgaveWind, valueContainer, aveWind);
    convertcmTomm(stgsnowday, valueContainer, snowDay);
 
+   stgRainDay = valueContainer.get<std::string>(rainDay);
+
+   if (stgRainDay == "null")
+      stgRainDay = "--";
+
    m_forecast->addPeriod(valueContainer.get<std::string>(year),
-                           valueContainer.get<std::string>(month),
-                           valueContainer.get<std::string>(day),
-                           weatherIconTemp,
-                           valueContainer.get<std::string>(tempMax),
-                           valueContainer.get<std::string>(tempMin),
-                           stgmaxWind,
-                           stgaveWind,
-                           valueContainer.get<std::string>(aveWindDegrees),
-                           valueContainer.get<std::string>(aveHumidity),
-                           valueContainer.get<std::string>(rainDay),
-                           stgsnowday);
+                         valueContainer.get<std::string>(month),
+                         valueContainer.get<std::string>(day),
+                         weatherIconTemp,
+                         valueContainer.get<std::string>(tempMax),
+                         valueContainer.get<std::string>(tempMin),
+                         stgmaxWind,
+                         stgaveWind,
+                         valueContainer.get<std::string>(aveWindDegrees),
+                         valueContainer.get<std::string>(aveHumidity),
+                         stgRainDay,
+                         stgsnowday);
 }
 
 void CForecast::clearAllPeriods() const

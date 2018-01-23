@@ -245,7 +245,7 @@ namespace shared
             if (m_flowControl.value() == boost::asio::serial_port_base::flow_control::none
                || m_writeTimeout == boost::date_time::pos_infin)
             {
-               m_boostSerialPort.write_some(buffer);
+               boost::asio::write(m_boostSerialPort, buffer);
             }
             else
             {
@@ -257,12 +257,12 @@ namespace shared
                      kSendFinished = event::kUserFirstId
                   };
                m_writeTimeouted = false;
-               m_boostSerialPort.async_write_some(buffer,
-                                                  [&evtHandler](const boost::system::error_code& ec,
-                                                     std::size_t bytes_transferred)
-                                                  {
-                                                     evtHandler.postEvent(kSendFinished, ec);
-                                                  });
+               boost::asio::async_write(m_boostSerialPort, buffer, 
+                                                      [&evtHandler](const boost::system::error_code& ec,
+                                                         std::size_t bytes_transferred)
+                                                      {
+                                                         evtHandler.postEvent(kSendFinished, ec);
+                                                      });
 
                switch (evtHandler.waitForEvents(m_writeTimeout))
                {

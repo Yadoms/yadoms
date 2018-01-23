@@ -2,5 +2,5 @@
     "name": "Deactivated widget",
     "description": "",
     "deactivated" : "deactivated widget",
-    "deactivatedWithType" : "deactivated widget: __widgetType__"
+    "deactivatedWithType" : "deactivated widget: {{widgetType}}"
 }

@@ -132,7 +132,6 @@ WidgetManager.getViewFromServer_ = function (widgetType) {
     return d.promise();
 };
 
-
 /**
  * Get a widget viewModel from the server 
  * @param {String} widgetType The widget type to download the viewModel
@@ -255,6 +254,9 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
         defferedResult = defferedResult || new $.Deferred().resolve();
         defferedResult
         .always(function () {
+               // fit the new text to the container
+               widget.viewModel.widgetApi.fitText();
+               
            //we manage the toolbar api specific icons
            widget.viewModel.widgetApi.manageBatteryConfiguration()
            .always(d.resolve);

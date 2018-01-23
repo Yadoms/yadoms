@@ -66,7 +66,7 @@ const CDefaultYPluginApiMock::Data& readLastData(boost::shared_ptr<CDefaultYPlug
 BOOST_AUTO_TEST_CASE(Historization)
 {
    auto api(boost::make_shared<CDefaultYPluginApiMock>());
-   shared::currentTime::Provider().setProvider(boost::make_shared<CDefaultCurrentTimeMock>());
+   useTimeMock();
 
    CFakeSensor sensor(sensorId);
    sensor.historizeData(api);

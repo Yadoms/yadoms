@@ -8,8 +8,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Yet Another DOMotic System Error Page">
     <meta name="author" content="yadoms team">
-    <link rel="shortcut icon" href="assets/ico/favicon.png">
 
+    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="img/favicon/manifest.json">
+    <link rel="mask-icon" href="img/favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="img/favicon/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileImage" content="img/favicon/mstile-144x144.png">
+    <meta name="msapplication-config" content="img/favicon/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    
     <title>Yadoms</title>
 
     <!-- Bootstrap core CSS -->
@@ -54,8 +64,12 @@
    <!-- Placed at the end of the document so the pages load faster -->
    <script src="libs/jquery/js/jquery-2.2.4.min.js"></script>
    <script src="libs/bootstrap/js/bootstrap.js"></script>
-<!--   <script src="libs/knockout/js/knockout-3.4.0.js"></script>-->
-   <script src="libs/i18next/js/i18next-1.11.2.min.js"></script>
+
+    <script src="libs/i18next/js/i18next.min.js"></script>
+    <script src="libs/i18next/js/jquery-i18next.min.js"></script>
+    <script src="libs/i18next/js/i18nextXHRBackend.min.js"></script>
+    <script src="js/i18n-manager.js"></script>
+    
    <script src="js/iso-language-codes.js"></script>
    <script src="js/utility.js"></script>
 
@@ -72,22 +86,22 @@
    $(document).ready(function() {
 
       //we start i18n engine
-      var option = { resGetPath: "locales/__lng__.json", fallbackLng:"en", useDataAttrOptions: true};
-      i18n.init(option, function() {
-		$("div#tabContainer").i18n();
-         });
-      });
+       i18nManager.init()
+       .done(function() {   
+         $("div#tabContainer").i18n();
+       });
+  });
 
-      /**
-      * Callback of the click on the show qr code button
-      * Make lazy loading of the qrcode modal
-      */
-      $("#btn-show-qrcode").click(function() {
-         Yadoms.modals.qrCode.loadAsync()
-         .done(function() {
-            $('#qrcode-modal').modal();
-         });
+   /**
+   * Callback of the click on the show qr code button
+   * Make lazy loading of the qrcode modal
+   */
+   $("#btn-show-qrcode").click(function() {
+      Yadoms.modals.qrCode.loadAsync()
+      .done(function() {
+         $('#qrcode-modal').modal();
       });
+   });
 
 	</script>
   </body>

@@ -1,0 +1,10 @@
+{
+	"name": "State display",
+	"description": "A simple widget that display a state value (enum type)",
+	"configurationSchema": {
+		"device": {
+			"name": "Data to display",
+			"description": "Select the data that you want to display"
+		}
+	}
+}

@@ -123,7 +123,7 @@ Yadoms.askPackages = function (elements, instanceManager, thumbnail, title, call
 						var i18NContext = value.type + ":";
 						
 						// Add all package into a list
-						packageList.push ( {displayName: $.t(elements + "/" + i18NContext + "name"), type: value.type} );
+						packageList.push ( {displayName: $.t(elements + "." + i18NContext + "name"), type: value.type} );
 					}
 
 					//we translate the new item
@@ -160,8 +160,8 @@ Yadoms.askPackages = function (elements, instanceManager, thumbnail, title, call
                   
 						//we fill the details div
 						$detailsDiv.find("img").attr("src", "/" + elements + "/" + value.type + "/" + thumbnail);
-						$detailsDiv.find("span.element-name").text($.t( elements + "/" + type + ":name", { defaultValue: value.name }));
-						$detailsDiv.find("td.element-description").html(ConfigurationHelper.makdownIt($.t( elements + "/" + type + ":description", { defaultValue: value.description })));
+						$detailsDiv.find("span.element-name").text($.t( elements + "." + type + ":name", { defaultValue: value.name }));
+						$detailsDiv.find("td.element-description").html(ConfigurationHelper.makdownIt($.t( elements + "." + type + ":description", { defaultValue: value.description })));
 						$detailsDiv.find("td.element-version").text(value.version);
 						$detailsDiv.find("td.element-author").text(value.author);
 

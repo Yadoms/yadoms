@@ -49,7 +49,7 @@
 
             widgetToConfigure.getBoundConfigurationSchema()
             .done( function(schema) {
-                configMgr = new ConfigurationControlManager(schema, widgetToConfigure.configuration, "widgets/" + widgetToConfigure.type + ":configurationSchema.", $modalBody);
+                configMgr = new ConfigurationControlManager(schema, widgetToConfigure.configuration, "widgets." + widgetToConfigure.type + ":configurationSchema.", $modalBody);
             })
             .fail( function(error) {
             })

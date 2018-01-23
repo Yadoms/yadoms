@@ -53,6 +53,26 @@ WidgetApi.prototype.getKeywordInformation = function (keywordId) {
 
 /**
  * @deprecated Register keywords to receive notifications when a new acquisition triggers
+ * Obtain information about a device
+ * @param {} deviceId to query
+ * @returns {} a promise that's return done when information grabbed from server
+ */
+WidgetApi.prototype.getDeviceInformation = function (deviceId) {
+   assert(!isNullOrUndefinedOrEmpty(deviceId), "deviceId must be defined");
+   return DeviceManager.get(deviceId);
+};
+
+/**
+ * Obtain information about a plugin
+ * @param {} deviceId to query
+ * @returns {} a promise that's return done when information grabbed from server
+ */
+WidgetApi.prototype.getPluginInstanceInformation = function (pluginId) {
+   assert(!isNullOrUndefinedOrEmpty(pluginId), "pluginId must be defined");
+   return PluginInstanceManager.get(pluginId);
+};
+
+/**
  * @param {} keywordIds to register (can be a single value or an array of values)
  */
 WidgetApi.prototype.registerKeywordAcquisitions = function (keywordIds) {

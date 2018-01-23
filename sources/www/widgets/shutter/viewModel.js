@@ -5,45 +5,54 @@ widgetViewModelCtor =
     * @constructor
     */
       function shutterViewModel() {
-          var self = this;
-          //observable data
-          this.command = ko.observable(1);
-          this.kind = ko.observable("simple");
-          this.invert = ko.observable(false);
-          this.icon = ko.observable("");
-          this.readonly = ko.observable(true);
+         var self = this;
+         //observable data
+         this.command = ko.observable(1);
+         this.kind = ko.observable("simple");
+         this.invert = ko.observable(false);
+         this.icon = ko.observable("");
+         this.readonly = ko.observable(true);
+         this.capacity = "";
 
           // default size
           this.WidgetHeight = 70;
           this.WidgetWidth = 95;
 
           this.commandClick = function (newState) {
-
               var self = this;
               if(self.readonly() !== true) {
                  if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
                      var cmd = null;
 
-                     cmd = newState;
+					  switch (self.capacity) {
+						 case "curtain":
+							if (newState == 0) {
+								cmd = "Close";
+							}else{
+								cmd = "Open";
+							}
+							break;					  
+						 default:
+							 cmd = newState;
+							 break;
+					  }
                      KeywordManager.sendCommand(this.widget.configuration.device.keywordId, cmd.toString());
                  }
               }
           };
 
           self.shutterIcon = ko.computed(function () {
+             var displayValue = self.command();
               
-              var displayValue = self.command();
-              
-              if (self.invert()) {
+              if (self.invert())
                   displayValue = !displayValue;
-              }
-              
+			  
               if (self.kind() !== "verticalInverter")
               {
                  if (displayValue)
-                     return "widgets/shutter/icons/" + self.kind() + "-close.png";
-                 else
                      return "widgets/shutter/icons/" + self.kind() + "-open.png";
+                 else
+                     return "widgets/shutter/icons/" + self.kind() + "-close.png";
               }
               else 
                  return "widgets/shutter/icons/window-open.png"; // default value
@@ -63,16 +72,19 @@ widgetViewModelCtor =
           };
 
           this.shutterClick = function () {
-              var self = this;
+             var self = this;
+			    var cmd = null;
               
               if(self.readonly() !== true) {
-                 if (self.command() === 0)
+                  if (self.command() == 0) {
                      self.command(1);
-                 else
+							cmd = 1;
+						 }else{
                      self.command(0);
-
+							cmd = 0;
+						 }
                  //Send the command
-                 this.commandClick(self.command());
+                 this.commandClick(cmd);
               }
           }
 
@@ -95,6 +107,8 @@ widgetViewModelCtor =
                          self.readonly(false);
                      else
                          self.readonly(true);
+					 
+					 self.capacity   = keyword.capacityName;
                  });
               }else {
                  deffered = new $.Deferred().resolve();
@@ -119,14 +133,22 @@ widgetViewModelCtor =
               var self = this;
 
               if ((this.widget.configuration != undefined) && (this.widget.configuration.device != undefined)) {
-
                   if (keywordId === this.widget.configuration.device.keywordId) {
-
-                      // Adapt for dimmable or switch capacities
-                      if (parseInt(data.value) !== 0)
+					  switch (self.capacity) {
+						 case "curtain":
+					        if (data.value.toLowerCase()==="open")
+							   self.command(1);
+						    else
+							   self.command(0);
+						    break;
+						  default:
+                       // Adapt for dimmable or switch capacities
+                       if (parseInt(data.value) !== 0)
                           self.command(1);
-                      else
+                       else
                           self.command(0);
+						   break;
+					  }
                   }
               }
           };

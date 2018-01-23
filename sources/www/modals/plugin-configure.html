@@ -43,7 +43,7 @@
             .done(function(bindedConfigurationSchema) {
 
                //we append classic configuration
-               var configMgr = new ConfigurationControlManager(bindedConfigurationSchema, pluginInstance.configuration, "plugins/" + pluginInstance.type + ":configurationSchema.", $modalBody);
+               var configMgr = new ConfigurationControlManager(bindedConfigurationSchema, pluginInstance.configuration, "plugins." + pluginInstance.type + ":configurationSchema.", $modalBody);
 
                //i18n
                $modalBody.i18n();

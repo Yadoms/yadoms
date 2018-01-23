@@ -57,8 +57,7 @@ namespace web { namespace poco {
             extension = fullpath.substr(last_dot_pos + 1);
          }
 
-
-         if (m_cacheManager.checkCache(fullpath, request, response) == CWebsiteCacheManager::kNothingChanged)
+         if (boost::filesystem::exists(fullpath) && m_cacheManager.checkCache(fullpath, request, response) == CWebsiteCacheManager::kNothingChanged)
          {
             //etag has not changed, so just answer "not modified"
             //(the browser is allowed to use local file from its cache and update expiration date)

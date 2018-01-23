@@ -291,8 +291,7 @@ BOOST_AUTO_TEST_SUITE(TestReceiveBufferHandler)
          0x41 // CRC8D
       };
 
-      auto timeProviderMock = boost::make_shared<CDefaultCurrentTimeMock>();
-      shared::currentTime::Provider().setProvider(timeProviderMock);
+      auto timeProviderMock = useTimeMock();
 
       shared::event::CEventHandler evtHandler;
       auto msgHandler = boost::make_shared<CMessageHandlerMock>(evtHandler, shared::event::kUserFirstId);
@@ -322,8 +321,7 @@ BOOST_AUTO_TEST_SUITE(TestReceiveBufferHandler)
          0x41 // CRC8D
       };
 
-      auto timeProviderMock = boost::make_shared<CDefaultCurrentTimeMock>();
-      shared::currentTime::Provider().setProvider(timeProviderMock);
+      auto timeProviderMock = useTimeMock();
 
       shared::event::CEventHandler evtHandler;
       auto msgHandler = boost::make_shared<CMessageHandlerMock>(evtHandler, shared::event::kUserFirstId);

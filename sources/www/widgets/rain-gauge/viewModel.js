@@ -12,7 +12,7 @@ function rainGaugeDisplayViewModel() {
     
     //observable data - last receive information
     this.shouldBeVisible = ko.observable(false);
-    this.lastReceiveDate = ko.observable($.t("widgets/rain-gauge:loadingData"));
+    this.lastReceiveDate = ko.observable($.t("widgets.rain-gauge:loadingData"));
     this.serverTime = null;
     this.acquisitionData = [];
     
@@ -84,10 +84,8 @@ function rainGaugeDisplayViewModel() {
          if (self.acquisitionData.length!=0)
             self.lastReceiveDate(DateTimeFormatter.isoDateToDate(lastValue.date).calendar().toString());
          else
-            self.lastReceiveDate($.t("widgets/rain-gauge:NoAcquisition"));
+            self.lastReceiveDate($.t("widgets.rain-gauge:NoAcquisition"));
        }
-      
-      self.widgetApi.fitText();
     };
   
     this.configurationChanged = function () {
@@ -111,9 +109,6 @@ function rainGaugeDisplayViewModel() {
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
        
        self.shouldBeVisible(self.widget.configuration.dateDisplay);
-       
-       //format the text before the following frame that could take more than 1 second.
-       self.widgetApi.fitText();
        
        // Retrieve last values
        date24h = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'days').startOf('minute'));

@@ -1,7 +1,7 @@
 #pragma once
 #include <plugin_cpp_api/IPlugin.h>
+#include "RfxcomFactory.h"
 #include "RfxcomConfiguration.h"
-#include "Transceiver.h"
 #include <shared/communication/IAsyncPort.h>
 #include "rfxcomMessages/Ack.h"
 #include "rfxcomMessages/TransceiverStatus.h"
@@ -90,6 +90,14 @@ protected:
                                   const shared::communication::CByteBuffer& data);
 
    //--------------------------------------------------------------
+   /// \brief	                     Process the firmware update
+   /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \param [in] extraQuery       Extra query
+   //--------------------------------------------------------------
+   void processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                              boost::shared_ptr<yApi::IExtraQuery> extraQuery);
+
+   //--------------------------------------------------------------
    /// \brief	                     Create the connection to the RFXCom
    /// \param [in] eventHandler     Event handler to be notified on events on the connection
    //--------------------------------------------------------------
@@ -168,6 +176,8 @@ protected:
                                    const CRfxcomConfiguration& conf2);
 
 private:
+   CRfxcomFactory m_factory;
+
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
@@ -184,7 +194,7 @@ private:
    boost::shared_ptr<shared::communication::IAsyncPort> m_port;
 
    //--------------------------------------------------------------
-   /// \brief  The communication port
+   /// \brief  The buffer logger use to log what is send and receive on serial link
    //--------------------------------------------------------------
    shared::communication::CBufferLogger m_logger;
 

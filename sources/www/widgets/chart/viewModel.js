@@ -30,6 +30,9 @@ function chartViewModel() {
     
     //this variable is for the selection of the computed value used for the chart (min, avg, max)
     this.periodValueType = [];
+    
+    // This variable is only used for keyword of type enum. It returns the plugin instance type for this keyword
+    this.pluginInstanceType = [];
 
     /**
      * Helpers
@@ -53,7 +56,7 @@ function chartViewModel() {
     
     this.isEnumVariable = function (index) {
         var self = this;
-        if ((self.keywordInfo[index]) && (self.keywordInfo[index].type === "enum"))
+        if ((self.keywordInfo[index]) && (self.keywordInfo[index].type === "Enum"))
            return true;
         else
            return false;
@@ -103,7 +106,6 @@ function chartViewModel() {
         //create axis if needed
         if (isNullOrUndefined(self.chart.get(yAxisName))) {
             try {
-                
                 function getAxisTitle(){
                    // create the structure
                    var response= {
@@ -128,6 +130,8 @@ function chartViewModel() {
                    console.log ("unit is empty for keyword ", device.content.source.keywordId);
                 }
 
+                self.chart.keyword = self.keywordInfo;
+                
                 self.chart.addAxis({
                     // new axis
                     id: yAxisName, //The same id as the serie with axis at the beginning
@@ -138,6 +142,14 @@ function chartViewModel() {
                         format: '{value:.' + self.precision[index].toString() + 'f} ' + unit,
                         style: {
                             color: colorAxis
+                        },
+                        formatter: function () {
+                           console.log (this.chart.keyword[index].typeInfo.values[this.value]);
+                           if (this.chart.keyword[index].type === "Enum") {
+                              return this.chart.keyword[index].typeInfo.values[this.value];
+                           }
+                           else
+                              this.axis.defaultLabelFormatter.call(this);
                         }
                     },
                     opposite: isOdd(index)
@@ -236,6 +248,7 @@ function chartViewModel() {
                    ordinal: false, //axis is linear
                    events: {},
                    labels: {
+                      rotation: -20,
                       formatter: function () {
                          if (self.chart.interval) {
                             switch (self.chart.interval) {
@@ -272,10 +285,13 @@ function chartViewModel() {
                             if (!this.series.hideInLegend) {
                                 if (isNullOrUndefined(this.point.low)) { //Standard serie
                                     s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
-                                        this.series.name + " : " + this.y.toFixed(this.series.precision) + " " + this.series.units;
+                                        this.series.name + " : " + this.y.toFixed(this.series.precision) + this.series.units;
                                 } else { //Range Serie
                                     s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
-                                        this.series.name + " : " + this.point.low.toFixed(this.series.precision) + "-" + this.point.high.toFixed(this.series.precision) + " " + this.series.units;
+                                        this.series.name + " : " + "<i style=\"color: " + this.series.color + ";\" class=\"fa fa-long-arrow-down\"></i>&nbsp;" +
+                                        this.point.low.toFixed(this.series.precision) + this.series.units + " " +
+                                        "<i style=\"color: " + this.series.color + ";\" class=\"fa fa-long-arrow-up\"></i>&nbsp;" +
+                                        this.point.high.toFixed(this.series.precision) + this.series.units;
                                 }
                             }
                         });
@@ -291,31 +307,32 @@ function chartViewModel() {
 
             self.$chart.highcharts('StockChart', self.chartOption);
             self.chart = self.$chart.highcharts();
+            self.chart.keyword = [];
             
             self.widgetApi.toolbar({
                 activated: true,
                 displayTitle: true,
                 batteryItem: false,
                 items: [
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"widgets/chart:navigator.hour\"/></div>" },
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"widgets/chart:navigator.day\"/></div>"},
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\"><span data-i18n=\"widgets/chart:navigator.week\"/></div>"},
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\"><span data-i18n=\"widgets/chart:navigator.month\"/></div>"},
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\"><span data-i18n=\"widgets/chart:navigator.half_year\"/></div>"},
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets/chart:navigator.year\"/></div>" },
+                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"widgets.chart:navigator.hour\"/></div>" },
+                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"widgets.chart:navigator.day\"/></div>"},
+                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\"><span data-i18n=\"widgets.chart:navigator.week\"/></div>"},
+                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\"><span data-i18n=\"widgets.chart:navigator.month\"/></div>"},
+                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\"><span data-i18n=\"widgets.chart:navigator.half_year\"/></div>"},
+                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets.chart:navigator.year\"/></div>" },
                 { separator: ""},
                 { custom: "<div class=\"widget-toolbar-button export-btn dropdown\">" +
                              "<a id=\"chartExportMenu" + self.widget.id + "\" data-target=\"#\" class=\"widget-toolbar-button export-btn dropdown\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">" +
                                  "<span class=\"fa fa-bars\"/>" +
                              "</a>" +
                              "<ul class=\"dropdown-menu\" aria-labelledby=\"chartExportMenu" + self.widget.id + "\">" +
-                                 "<li><span class=\"print-command\" data-i18n=\"widgets/chart:export.print\"></span></li>" +
+                                 "<li><span class=\"print-command\" data-i18n=\"widgets.chart:export.print\"></span></li>" +
                                  "<li role=\"separator\" class=\"divider\"></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.png\" mime-type=\"image/png\"></span></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.jpeg\" mime-type=\"image/jpeg\"></span></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.svg\" mime-type=\"image/svg+xml\"></span></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.csv\" mime-type=\"text/csv\"></span></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.xls\" mime-type=\"application/vnd.ms-excel\"></span></li>" +
+                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.png\" mime-type=\"image/png\"></span></li>" +
+                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.jpeg\" mime-type=\"image/jpeg\"></span></li>" +
+                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.svg\" mime-type=\"image/svg+xml\"></span></li>" +
+                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.csv\" mime-type=\"text/csv\"></span></li>" +
+                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.xls\" mime-type=\"application/vnd.ms-excel\"></span></li>" +
                              "</ul>" +
                           "</div>"
                     }
@@ -338,9 +355,8 @@ function chartViewModel() {
                        filename: 'export'
                    });
                 }
-                catch(error)
-                {
-                   notifyError($.t("widgets/chart:formatNotSupported", {format: $(e.currentTarget).attr("mime-type")}));
+                catch(error){
+                   notifyError($.t("widgets.chart:formatNotSupported", {format: $(e.currentTarget).attr("mime-type")}));
                 }
             });
             
@@ -414,7 +430,9 @@ function chartViewModel() {
         // Reset of some values
         self.periodValueType = [];
         self.seriesUuid = [];
+        var arrayOfDeffered = [];
         var d = new $.Deferred();
+        var defferedPluginInstance = new $.Deferred();
 
         if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
             return;
@@ -435,9 +453,7 @@ function chartViewModel() {
           self.ConfigurationLegendLabels = self.widget.configuration.legends.content.legendLabels;
         }catch(error){ // If the configuration doesn't exist (migration, ...) -> default value
           console.log ("default value for legend labels : device name + keyword name");
-        }            
-        
-        var arrayOfDeffered = [];
+        }
 
         //we create an uuid for each serie
         $.each(self.widget.configuration.devices, function (index, device) {
@@ -451,11 +467,12 @@ function chartViewModel() {
             else
                self.precision[index] = 1;
             
-            // We ask the current device name
-            var deffered = DeviceManager.get(device.content.source.deviceId);
+            var deffered = self.widgetApi.getDeviceInformation(device.content.source.deviceId);
             arrayOfDeffered.push(deffered);
-            deffered.done(function (data) {
-                self.deviceInfo[index] = data;
+            
+            deffered
+            .done(function (device) {
+               self.deviceInfo[index] = device;
             })
             .fail(function (error) {
                self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
@@ -466,9 +483,10 @@ function chartViewModel() {
             arrayOfDeffered.push(deffered2);
             deffered2.done(function (keyword) {
                 self.keywordInfo[index] = keyword;
+                self.chart.keyword[index] = keyword;
+                
                 try{
                    if (parseBool(device.content.advancedConfiguration.checkbox)){
-                      
                       // read the differential display variable
                       if (device.content.advancedConfiguration.content.differentialDisplay ==="relative")
                          self.differentialDisplay[index] = true;
@@ -489,8 +507,7 @@ function chartViewModel() {
                      }
                   }
                }
-               catch(error)
-               {
+               catch(error){
                   console.log('error detecting during defferential configuration display => automatic management.');
                   if (keyword.measure === "Cumulative"){
                      self.differentialDisplay[index] = true;
@@ -502,9 +519,8 @@ function chartViewModel() {
                   }
                }
                
-               if (self.differentialDisplay[index] && device.content.PlotType === "arearange")
-               {
-                  notifyError($.t("widgets/chart:incompatibilityDifferential"), "error");
+               if (self.differentialDisplay[index] && device.content.PlotType === "arearange"){
+                  notifyError($.t("widgets.chart:incompatibilityDifferential"), "error");
                   self.incompatibility = true;
                   return;
                }
@@ -516,13 +532,39 @@ function chartViewModel() {
             })
             .fail(function (error) {
                self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
-            });               
+            });
+            
+            if (self.isEnumVariable(index)) {
+               $.when(deffered, deffered2)
+               .done(function() {
+                     arrayOfDeffered.push(defferedPluginInstance);
+                     self.widgetApi.getPluginInstanceInformation(device.pluginId)
+                     .done(function (pluginInstance) {
+                        self.pluginInstanceType[index] = pluginInstance.type;
+                        console.log("pluginInstance : ", pluginInstance);
+                        defferedPluginInstance.resolve();
+                     })
+                     .fail(function (error) {
+                        defferedPluginInstance.reject();
+                     });
+               });
+            }
         });
         
         $.when.apply($, arrayOfDeffered) // The first failing array fail the when.apply
         .done(function () {
+              // Translate enum values only for enum keyword
+              $.each(self.widget.configuration.devices, function (index, device) {
+                  if (self.isEnumVariable(index)){
+                      $.each(self.keywordInfo[index].typeInfo.values, function (index2, value) {
+                         console.log("self.keywordInfo[index] :", self.keywordInfo[index2]);
+                         self.keywordInfo[index].typeInfo.values[index2] = $.t("plugins." + self.pluginInstanceType[index] + ":enumerations." + self.keywordInfo[index].typeInfo.name + ".values." + value, { defaultValue:value} );
+                      });           
+                  }
+              });
+              
             self.refreshData(self.widget.configuration.interval).always(function () {
-               d.resolve();
+              d.resolve();
             })
             .fail(function (error) {
                d.reject();
@@ -566,7 +608,7 @@ function chartViewModel() {
             self.chart.interval = interval;
 
             try {
-              self.chart.showLoading($.t("widgets/chart:loadingData"));
+              self.chart.showLoading($.t("widgets.chart:loadingData"));
               var deviceIsSummary = [];
               
               //ensure all series and axis are removed (may cause some crash if not done)
@@ -579,15 +621,15 @@ function chartViewModel() {
               var arrayOfDeffered = [];
               self.chartLastValue = [];
               
+              //we compute the date from the configuration
+              var dateFrom = self.calculateBeginDate(interval, self.serverTime, self.prefix);
+              self.changexAxisBound(dateFrom);
+              var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
+              var prefixUri = "/" + self.prefix;
+              var timeBetweenTwoConsecutiveValues = moment.duration(1, self.prefix).asMilliseconds();              
+              
               //for each plot in the configuration we request for data
               $.each(self.widget.configuration.devices, function (index, device) {
-                 
-                 //we compute the date from the configuration
-                 var dateFrom = self.calculateBeginDate(interval, self.serverTime, self.prefix);
-                 var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
-                 var prefixUri = "/" + self.prefix;
-                 var timeBetweenTwoConsecutiveValues = moment.duration(1, self.prefix).asMilliseconds();
-                 
                   //If the device is a bool, you have to modify
                   if (self.isBoolVariable(index) || self.isEnumVariable(index)) {
                      switch (interval) {
@@ -641,7 +683,7 @@ function chartViewModel() {
                                       v = parseFloat(value.key);
                                   } else {
                                      self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
-                                     notifyError($.t("widgets/chart:errorInitialization"));
+                                     notifyError($.t("widgets.chart:errorInitialization"));
                                   }
                                   
                                   // The differential display is disabled if the type of the data is enum or boolean
@@ -673,7 +715,7 @@ function chartViewModel() {
                                       vMax = parseFloat(value.max);
                                   } else {
                                      self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
-                                     notifyError($.t("widgets/chart:errorInitialization"));
+                                     notifyError($.t("widgets.chart:errorInitialization"));
                                   }
 
                                   //we manage the missing data
@@ -800,15 +842,16 @@ function chartViewModel() {
                                           zIndex: 0
                                       }, false, false); // Do not redraw immediately
 
-                                      // Add Units for ranges
-                                      if (serieRange)
-                                      {
+                                      // Add Units and precision for ranges
+                                      if (serieRange){
                                          try{
                                             serieRange.units = $.t(self.keywordInfo[index].units);
                                          }
                                          catch(error){
                                             serieRange.units="";
                                          }
+                                         
+                                         serieRange.precision = self.precision[index];
                                       }
                                   }
                               }
@@ -816,7 +859,7 @@ function chartViewModel() {
                               console.error('Fail to create serie : ' + err2);
                           }
 
-                          if (serie) {
+                          if (serie){
                              //we save the unit in the serie for tooltip formatting
                              try{
                                 serie.units = $.t(self.keywordInfo[index].units);
@@ -825,11 +868,11 @@ function chartViewModel() {
                              }
                              
                              // register the precision for each serie into the serie
-                             serie.precision  = self.precision[index];                                
+                             serie.precision = self.precision[index];
                           }
                       })
                       .fail(function (error) {
-                         notifyError($.t("widgets/chart:errorDuringGettingDeviceData"), error);
+                         notifyError($.t("widgets.chart:errorDuringGettingDeviceData"), error);
                          d.reject();
                       });
                   }
@@ -839,7 +882,7 @@ function chartViewModel() {
                  d.resolve();
               })
              .fail(function (error) {
-                notifyError($.t("widgets/chart:errorDuringGettingDeviceData"), error);
+                notifyError($.t("widgets.chart:errorDuringGettingDeviceData"), error);
                 d.reject();
              });
             } catch (err) {
@@ -862,11 +905,11 @@ function chartViewModel() {
 
        // If for all data, length == 0, we display no Data Available
        if (noAvailableData && !self.incompatibility && !self.rangeTooLarge) {
-          self.chart.showLoading($.t("widgets/chart:noAvailableData"));
+          self.chart.showLoading($.t("widgets.chart:noAvailableData"));
        }else if (self.incompatibility) {
-          self.chart.showLoading($.t("widgets/chart:incompatibilityDifferential"));
+          self.chart.showLoading($.t("widgets.chart:incompatibilityDifferential"));
        }else if (self.rangeTooLarge && noAvailableData) {
-          self.chart.showLoading($.t("widgets/chart:RangeTooBroad"));                  // Display that the range is too large
+          self.chart.showLoading($.t("widgets.chart:RangeTooBroad"));                  // Display that the range is too large
        }else {
           self.chart.hideLoading();
         }
@@ -955,7 +998,6 @@ function chartViewModel() {
             
             var serie = self.chart.get(self.seriesUuid[index]);
             var serieRange = self.chart.get('range_' + self.seriesUuid[index]);
-            
             var dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf(prefix).subtract(1, prefix + 's'));
             
             // we ask only from the last point registered
@@ -964,16 +1006,14 @@ function chartViewModel() {
             RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + "/" + prefix + "/" + dateFrom + "/" + dateTo)
                .done(function (data) {
                    try {
-                       if (!isNullOrUndefinedOrEmpty(data.data[data.data.length-1])) {
+                       if (!isNullOrUndefined(data.data) && !isNullOrUndefinedOrEmpty(data.data[data.data.length-1])) {
                           var registerDate = DateTimeFormatter.isoDateToDate(data.data[data.data.length-1].date)._d.getTime().valueOf();
                           if (registerDate != serie.points[serie.points.length-1].x){
                              self.chart.hideLoading(); // If a text was displayed before
                              var valueToDisplay = parseFloat(data.data[data.data.length-1][self.periodValueType[index]]);
                        
-                             if (self.differentialDisplay[index])
-                             {
-                                if (serie && !isNullOrUndefined(self.chartLastValue[index]))
-                                {
+                             if (self.differentialDisplay[index]){
+                                if (serie && !isNullOrUndefined(self.chartLastValue[index])){
                                    serie.addPoint([registerDate, valueToDisplay-self.chartLastValue[index]], 
                                                   true,  // redraw. When more than 1 => false.
                                                   false, // shift if true, one point at left is remove
@@ -985,8 +1025,7 @@ function chartViewModel() {
                                 serie.addPoint([registerDate, valueToDisplay], true, false, true);
                         
                              //Add also for ranges if any
-                             if (serieRange && !self.differentialDisplay[index])
-                             {
+                             if (serieRange && !self.differentialDisplay[index]){
                                 serieRange.addPoint([registerDate, parseFloat(data.data[data.data.length-1].min), parseFloat(data.data[data.data.length-1].max)], 
                                                     true, false, true);
                              }

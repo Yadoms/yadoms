@@ -1,0 +1,29 @@
+{
+	"type": "state-display",
+	"version": "1.0.0-beta.1",
+	"author": "Jean-Michel BERHAULT",
+	"url": "https://github.com/Yadoms/yadoms/wiki/state-display",
+	"credits": "",
+  "dimensions": {
+    "min": {
+      "x": 2,
+      "y": 1
+    },
+    "max": {
+      "x": 6,
+      "y": 2
+    },
+    "default": {
+      "x": 2,
+      "y": 1
+    }
+  },
+  "hasTitle" :  true,
+	"configurationSchema": {
+		"device": {
+			"type": "keyword",
+			"expectedKeywordType": "enum",
+			"expectedKeywordAccess": "get"
+		}
+	}
+}

@@ -41,7 +41,7 @@ namespace shared
 
             void CFile::fillFromSerializedString(const std::string & serializedData)
             {
-               shared::CDataContainer deserializeData(serializedData);
+               CDataContainer deserializeData(serializedData);
                fillFromContent(deserializeData);
             }
 
@@ -72,7 +72,7 @@ namespace shared
 
             std::string CFile::getContent() const
             {
-               return shared::encryption::CBase64::decode(m_base64content);
+               return encryption::CBase64::decode(m_base64content);
             }
          }
       }

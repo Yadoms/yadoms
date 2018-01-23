@@ -45,11 +45,11 @@ Recipient.prototype.toJSON = function () {
  * Define the systemFields
  * @type {string[]}
  *
- * There is no regex for mobile because too many phone number format.
+ * A simple international regex : the number begin by +, no space, no -, no ()
  */
 Recipient.systemFields = {
     "email": "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$",
-    "mobile": ""
+    "mobile": "^\\+(?:[0-9]?){6,14}[0-9]$"
 };
 
 

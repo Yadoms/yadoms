@@ -254,15 +254,15 @@
                         
                      ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.language])
                      .done(function() {
-                     
-                        if (i18n.lng()!= Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value)
+                        if (i18nManager.getLanguage()!= Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value)
                         {
                            //we change language of i18n
-                           i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
-                              $("html").i18n();
-                              window.location.reload();
-                              d.resolve();
-                           });
+                            i18next.changeLanguage(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
+                                $("html").i18n();
+                                moment.lang(window.navigator.userLanguage || window.navigator.language);
+                                window.location.reload();
+                                d.resolve();
+                            });                       
                         }
                         else
                         {
@@ -314,6 +314,37 @@
                   dateFormatStringParameter.getCurrentConfiguration()
                   .done(function(currentconfiguration) {
                      Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value = currentconfiguration;
+            //*************
+            //refresh page : keep the active page
+            var refreshPage = true;
+            try {
+               console.log("refresh page1");
+               refreshPage = Yadoms.systemConfiguration[ConfigurationManager.items.system.refreshPage].value;
+            } catch (err) {
+               //Initial Configuration - No cache for refreshing the page
+               refreshPage = true;
+               Yadoms.systemConfiguration.refreshPage = {};
+               Yadoms.systemConfiguration.refreshPage.value = refreshPage;
+               Yadoms.systemConfiguration.refreshPage.defaultValue = refreshPage;
+               console.log("refresh page2");
+            }            
+            
+            var refreshPageBoolParameter = new BoolParameterHandler(i18NContext,
+               undefined,
+               ConfigurationManager.items.system.refreshPage,
+               {
+                  defaultValue: Yadoms.systemConfiguration[ConfigurationManager.items
+                     .system.refreshPage].defaultValue
+               },
+               Yadoms.systemConfiguration[ConfigurationManager.items.system.refreshPage]
+               .value);
+             advancedSectionParameters.configurationHandlers.push(refreshPageBoolParameter);
+            
+            //and add it to the gui
+            $modalBody.append(languageParameter.getDOMObject());
+            $modalBody.append(citySectionParameters.getDOMObject());
+            $modalBody.append(basicAuthenticationSectionParameters.getDOMObject());
+            $modalBody.append(advancedSectionParameters.getDOMObject());
 
                      ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString])
                      .done(function() {
@@ -447,10 +478,10 @@
                               ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.language])
                                  .done(function() {
                                     //we change language of i18n
-                                    i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
-                                       $("html").i18n();
+                                    i18next.changeLanguage(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
+                                         $("html").i18n();
                                     });
-
+                                    
                                     //*************
                                     //basic authentication
                                     Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value = Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].defaultValue;
@@ -493,4 +524,203 @@
       return promise.promise();
    };
 
+
+   function saveLanguageParameter(arrayOfDeffered, languageParameter) {
+      var d = new $.Deferred();
+      arrayOfDeffered.push(d);
+
+      languageParameter.getCurrentConfiguration()
+         .done(function(config) {
+            Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value = config;
+
+            ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.language])
+               .done(function() {
+               
+                  if (i18nManager.getLanguage()!= Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value)
+                  {
+                     //we change language of i18n
+                      i18next.changeLanguage(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
+                          $("html").i18n();
+                          moment.lang(window.navigator.userLanguage || window.navigator.language);
+                          window.location.reload();
+                          d.resolve();
+                      });                       
+                  } else {
+                     d.resolve();
+                  }
+               })
+               .fail(function() {
+                  console.error("failed save language parameter");
+                  d.reject();
+               });
+         })
+         .fail(function() {
+            console.error("failed to get language parameter");
+            d.reject();
+         });
+   }
+
+   function saveAdvancedParameters(arrayOfDeffered, advancedSectionParameters) {
+      var d = new $.Deferred();
+      arrayOfDeffered.push(d);
+
+      advancedSectionParameters.getCurrentConfiguration()
+         .done(function(currentconfiguration) {
+            Yadoms.systemConfiguration[ConfigurationManager.items.system.advancedParameters].value = currentconfiguration.checkbox;
+
+            ConfigurationManager
+               .updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.advancedParameters])
+               .done(function() {
+                  d.resolve();
+               })
+               .fail(function() {
+                  console.error("failed save advanced parameters");
+                  d.reject();
+               });
+         }).fail(d.reject);
+   };
+
+   function saveFormatString(arrayOfDeffered, dateFormatStringParameter) {
+
+      var d = new $.Deferred();
+      arrayOfDeffered.push(d);
+
+      dateFormatStringParameter.getCurrentConfiguration()
+         .done(function(currentconfiguration) {
+            Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value = currentconfiguration;
+
+            ConfigurationManager.updateToServer(Yadoms.systemConfiguration[
+                  ConfigurationManager.items.system.dateFormatString])
+               .done(function() {
+                  d.resolve();
+               })
+               .fail(function() {
+                  console.error("failed save date format string");
+                  d.reject();
+               });
+         }).fail(d.reject);
+
+
+   };
+
+   function saveBasicAuthentification(arrayOfDeffered,
+      basicAuthenticationSectionParameters,
+      basicAuth,
+      userAuthenticationParameter,
+      passwordAuthenticationParameter) {
+      var value = {};
+
+      var d = new $.Deferred();
+      arrayOfDeffered.push(d);
+
+      var d2 = new $.Deferred();
+
+      basicAuthenticationSectionParameters.getCurrentConfiguration()
+         .done(function(currentConfiguration) {
+            value.active = currentConfiguration.checkbox;
+
+            //if we activate / deactivate the authentication we must reload the page
+            if (value.active !== basicAuth.active)
+               pageHasToBeReloaded = true;
+
+            if (value.active) {
+               //the authentication method is active
+               userAuthenticationParameter.getCurrentConfiguration()
+                  .done(function(userConfig) {
+
+                     value.user = userConfig;
+                     if (value.user !== basicAuth.user)
+                        pageHasToBeReloaded = true;
+
+                     //we check for password modification
+                     passwordAuthenticationParameter.getCurrentConfiguration()
+                        .done(function(password) {
+                           var newPass = password;
+                           if (newPass !== $.md5(fakePassword)) {
+                              //the password has been changed
+                              value.password = newPass;
+                              //we has to reload the page
+                              pageHasToBeReloaded = true;
+                           } else {
+                              //we set the previous one
+                              value.password = basicAuth.password;
+                           }
+                           d2.resolve();
+                        }).fail(d2.reject);
+
+
+                  }).fail(d2.reject);
+
+
+            } else {
+               userAuthenticationParameter.getCurrentConfiguration()
+                  .done(function(authparam) {
+                     //the authentication method is inactive
+                     value.user = authparam;
+                     //we clear the password for the next re-activation
+                     value.password = "";
+
+                     d2.resolve();
+                  }).fail(d2.reject);
+            }
+
+         }).fail(d2.reject);
+
+      d2.promise().done(function() {
+            Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication]
+               .value = JSON.stringify(value);
+
+            ConfigurationManager.updateToServer(Yadoms.systemConfiguration[
+                  ConfigurationManager.items.system.basicAuthentication
+               ])
+               .done(function() {
+                  d.resolve();
+               })
+               .fail(function() {
+                  console.error("failed save basic authentification");
+                  d.reject();
+               });
+         })
+         .fail(d.reject);
+   }
+
+   function saveLocation(arrayOfDeffered, latitudeParameter, longitudeParameter, timezoneParameter) {
+
+      var d = new $.Deferred();
+      arrayOfDeffered.push(d);
+
+      latitudeParameter.getCurrentConfiguration()
+         .done(function(lat) {
+            longitudeParameter.getCurrentConfiguration()
+               .done(function(lon) {
+                  timezoneParameter.getCurrentConfiguration()
+                     .done(function(tz) {
+                        Yadoms.systemConfiguration.location
+                           .value[ConfigurationManager.items.system.location.latitude] = lat;
+                        Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.longitude
+                        ] = lon;
+                        Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.timezone] =
+                           tz;
+
+                        ConfigurationManager.createToServer("system",
+                              "location",
+                              JSON.stringify(Yadoms.systemConfiguration.location.value),
+                              "",
+                              "",
+                              "none")
+                           .done(d.resolve)
+                           .fail(function() {
+                              console.error("failed save location");
+                              d.reject();
+                           });
+                     }).fail(d.reject);
+               }).fail(d.reject);
+         }).fail(d.reject);
+   }
+
+   function getdefaultLanguageFromSupported() {
+      var navigatorLanguage = navigator.language || navigator.userLanguage;
+      var langs = window.getSupportedLanguages();
+      return isNullOrUndefined(langs[navigatorLanguage]) ? Object.keys(langs)[0] : navigatorLanguage;
+   }
 </script>

@@ -29,11 +29,11 @@ PluginManager.getAll = function () {
    .done(function(data) {
       //we've got a list of plugin type. For each of one we download the package.json
       PluginManager.packageList = [];
-      i18n.options.resGetPath = '__ns__/locales/__lng__.json';
 	  
       var arrayOfDeffered = [];
       $.each(data.plugins, function (index, pluginType) {
-         i18n.loadNamespace("plugins/" + pluginType);
+         
+         arrayOfDeffered.push(i18nManager.loadNamespace("plugins", pluginType));
 
          var deffered = PluginManager.downloadPackage(pluginType);
          arrayOfDeffered.push(deffered);
@@ -48,7 +48,6 @@ PluginManager.getAll = function () {
 
       $.whenAll(arrayOfDeffered)
 	     .done(function () {
-            i18n.options.resGetPath = "locales/__lng__.json";
             d.resolve(PluginManager.packageList);
          })
 		 .fail(function (error) {
@@ -73,9 +72,11 @@ PluginManager.downloadPackage = function (pluginType) {
    var d = new $.Deferred();
    RestEngine.get("plugins/" + pluginType + "/package.json", { dataType: "json" })
    .done(function (data) {
-      i18n.loadNamespace("plugins/" + pluginType, function () {
+      i18nManager.loadNamespace("plugins", pluginType)
+      .done(function() {
          d.resolve(data);
-      });
+      })
+      .fail(d.reject);         
    })
    .fail(d.reject);
    return d.promise();

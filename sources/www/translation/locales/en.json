@@ -78,8 +78,8 @@
     },
     "plugins": {
       "extraQuery": {
-        "success": "__extraquery__ succeeded",
-        "fail": "__extraquery__ failed"
+        "success": "{{extraquery}} succeeded",
+        "fail": "{{extraquery}} failed"
       }
     }
   },
@@ -109,7 +109,7 @@
     },
     "actions": {
       "loadingPages": "Loading Pages ...",
-      "loadingWidgetsOfPage": "Loading widgets of __pageName__ page ...",
+      "loadingWidgetsOfPage": "Loading widgets of {{pageName}} page ...",
       "firstRunConfiguration": "First run configuration"
     },
     "customization": {
@@ -119,7 +119,7 @@
       "moveToRight": "Move to right",
       "rename": "Rename",
       "delete": "Delete",
-      "dropHereToMovePage": "Drop here to move to page __pageName__"
+      "dropHereToMovePage": "Drop here to move to page {{pageName}}"
     },
     "errors": {
       "unableToAddWidgetWithoutPage": "You must have at least one page to add widget",
@@ -142,8 +142,8 @@
   "404Page": {
     "title": "Page Not Found - Error 404",
     "line1": "Sorry, but the page you are looking for has not been found. Try checking URL for errors.",
-    "line2": "You will be automatically redirected to Yadoms home page in __count__ second or press button below.",
-    "line2_plural": "You will be automatically redirected to Yadoms home page in __count__ seconds or press button below.",
+    "line2": "You will be automatically redirected to Yadoms home page in {{count}} second or press button below.",
+    "line2_plural": "You will be automatically redirected to Yadoms home page in {{count}} seconds or press button below.",
     "goingToHome": "Going to home ...",
     "takeMeHome": "Take Me Home"
   },
@@ -161,7 +161,7 @@
       "getMore": "Get More widgets",
       "errorDuringCreatingWidget": "Error during creating widget",
       "widgetSuccessfullyCreated": "Widget successfully created",
-      "unableToCreateWidgetOfType": "Unable to create widget of type __widgetType__"
+      "unableToCreateWidgetOfType": "Unable to create widget of type {{widgetType}}"
     },
     "configure-widget": {
       "title": "Widget configuration",
@@ -170,26 +170,26 @@
         "description": "Text displayed for the widget"
       },
       "errorDuringGettingDeviceList": "Error during getting device list",
-      "errorDuringGettingDeviceListMatchCapacity": "Error during getting device list that match capacity __expectedCapacityAccess__ __expectedCapacity__",
-      "errorDuringGettingDeviceListMatchCapacityType": "Error during getting device list that match capacity type __expectedCapacityAccess__ __expectedCapacityType__",
-      "errorDuringGettingDeviceListMatchKeywordAccess": "Error during getting device list that match keyword with access mode __expectedKeywordAccess__",
+      "errorDuringGettingDeviceListMatchCapacity": "Error during getting device list that match capacity {{expectedCapacityAccess}} {{expectedCapacity}}",
+      "errorDuringGettingDeviceListMatchCapacityType": "Error during getting device list that match capacity type {{expectedCapacityAccess}} {{expectedCapacityType}}",
+      "errorDuringGettingDeviceListMatchKeywordAccess": "Error during getting device list that match keyword with access mode {{expectedKeywordAccess}}",
       "errorDuringGettingKeywordList": "Error during getting keyword list",
-      "errorDuringGettingKeywordListMatchCapacity": "Error during getting keyword list that match capacity __expectedCapacityAccess__ __expectedCapacity__",
+      "errorDuringGettingKeywordListMatchCapacity": "Error during getting keyword list that match capacity {{expectedCapacityAccess}} {{expectedCapacity}}",
       "errorDuringGettingSerialPortList": "Error during getting serial port list"
     },
     "delete-widget": {
       "title": "Delete widget confirmation",
-      "text": "This operation will delete widget __widgetType__. Continue anyway ?",
+      "text": "This operation will delete widget {{widgetType}}. Continue anyway ?",
       "widgetSuccessfullyDeleted": "Widget successfully deleted",
       "errorDuringDeletingWidget": "Error during deleting widget",
-      "errorDuringDeletingWidgetNamed": "Error during deleting widget of type __widgetType__"
+      "errorDuringDeletingWidgetNamed": "Error during deleting widget of type {{widgetType}}"
     },
     "delete-page": {
       "title": "Delete page confirmation",
-      "text": "This operation will delete page __pageName__ and all of its widgets. Continue anyway ?",
+      "text": "This operation will delete page {{pageName}} and all of its widgets. Continue anyway ?",
       "pageSuccessfullyDeleted": "Page successfully deleted",
       "errorDuringDeletingPage": "Error during deleting page",
-      "errorDuringDeletingPageNamed": "Error during deleting page __pageName__",
+      "errorDuringDeletingPageNamed": "Error during deleting page {{pageName}}",
       "deletingLastPageNotAllowed": "Deleting last page is not allowed"
     },
     "modify-page": {
@@ -198,9 +198,9 @@
       "createNewPageTitle": "Create a new Page",
       "createNewPageValidationButton": "Create",
       "errorDuringModifyingPage": "Error during modifying page",
-      "errorDuringModifyingPageNamed": "Error during modifying page __pageName__",
+      "errorDuringModifyingPageNamed": "Error during modifying page {{pageName}}",
       "errorDuringCreatingPage": "Error during creating page",
-      "errorDuringCreatingPageNamed": "Error during creating page __pageName__",
+      "errorDuringCreatingPageNamed": "Error during creating page {{pageName}}",
       "placeholder": "Enter Page name"
     },
     "add-plugin": {
@@ -233,13 +233,13 @@
     },
     "delete-device": {
       "title": "Blacklist device",
-      "text": "This operation will blacklist __deviceName__  device, and remove its data hostoric.",
+      "text": "This operation will blacklist {{deviceName}}  device, and remove its data hostoric.",
       "explanation": "A blacklisted device will be ignored by Yadoms, even if associated sensor send data. A blacklisted device can be restored. Blacklist the device if associated sensor is not interesting you (ie this sensor is not yours). Permanently delete device if you don't have it anymore.",
       "checkbox": "Permanently delete"
     },
     "confirm-delete-device": {
       "title": "Delete device permanently",
-      "text": "This operation will delete permanently the __deviceName__ device, with its associated data historic."
+      "text": "This operation will delete permanently the {{deviceName}} device, with its associated data historic."
     },
     "configure-plugin": {
       "title": "Plugin configuration",
@@ -249,9 +249,9 @@
         "regexErrorMessage": "The name of the plugin must contains at least one character"
       },
       "pluginSuccessfullyCreated": "Plugin successfully created",
-      "pluginFailToCreate": "Fail to create plugin __pluginName__",
-      "pluginFailToDelete": "Fail to delete plugin __pluginName__",
-      "pluginFailToConfigure": "Fail to configure plugin __pluginName__"
+      "pluginFailToCreate": "Fail to create plugin {{pluginName}}",
+      "pluginFailToDelete": "Fail to delete plugin {{pluginName}}",
+      "pluginFailToConfigure": "Fail to configure plugin {{pluginName}}"
     },
     "extra-queries": {
       "title": "Send extra query to plugin"
@@ -359,7 +359,7 @@
     },
     "show-log-plugin": {
       "title": "Plugin log view",
-      "failToGetLog": "Fail to get log for __pluginName__"
+      "failToGetLog": "Fail to get log for {{pluginName}}"
     },
     "qrcode": {
       "title": "QR Code de Yadoms",
@@ -444,6 +444,10 @@
               "name": "Date Format String",
               "description": "You can change date format string using moment.js syntax (ie \"LLL\" or \"'MMMM Do YYYY, h:mm:ss a\")"
             },
+            "refreshPage": {
+              "name": "Keep the active page during session",
+              "description": "If you refresh the browser by pressiong F5, Yadoms will automatically load in the precedent active page"
+            },            
             "location": {
               "name": "Location",
               "description": "Enter below coordonates of your city ([Site web latlong](http://www.latlong.net/))"
@@ -488,7 +492,7 @@
           "delete": "Delete the plugin",
           "log": "View log",
           "errorGettingPluginList": "An error has occurred acquiring plugin list",
-          "confirmPluginDeletion": "This action will delete the plugin __pluginName__. Continue anyway ?"
+          "confirmPluginDeletion": "This action will delete the plugin {{pluginName}}. Continue anyway ?"
         },
         "recipients": {
           "title": "Recipients",
@@ -496,7 +500,7 @@
           "new": "Create a new recipient",
           "edit": "Edit the recipient",
           "delete": "Delete the recipient",
-          "confirmRecipientDeletion": "This action will delete the recipient __firstName__ __lastName__. Continue anyway ?",
+          "confirmRecipientDeletion": "This action will delete the recipient {{firstName}} {{lastName}}. Continue anyway ?",
           "table": {
             "firstName": "First name",
             "lastName": "Last name",
@@ -528,9 +532,9 @@
           "restore": "Restore the device",
           "errorGettingDeviceList": "An error has occurred acquiring device list",
           "errorGettingDeviceDetailsList": "An error has occurred acquiring device details list",
-          "errorUpdatingKeyword": "An error occurred updating data __keyword__",
-          "errorDeletingDevice": "An error occurred while removing/restoring __device__",
-          "errorBlacklistingKeyword": "An error occurred while removing/restoring __keyword__",
+          "errorUpdatingKeyword": "An error occurred updating data {{keyword}}",
+          "errorDeletingDevice": "An error occurred while removing/restoring {{device}}",
+          "errorBlacklistingKeyword": "An error occurred while removing/restoring {{keyword}}",
           "noAcquisition": "No acquisition",
           "showBlacklistedDevices": "Show deleted devices"
         },
@@ -553,23 +557,23 @@
           },
           "edit": "Edit the rule",
           "delete": "Delete the rule",
-          "confirmDeletion": "This action will delete the rule __name__. Continue anyway ?",
+          "confirmDeletion": "This action will delete the rule {{name}}. Continue anyway ?",
           "log": "View log",
-          "confirmLogDeletion": "This action will delete the __name__ rule log. Continue anyway ?",
+          "confirmLogDeletion": "This action will delete the {{name}} rule log. Continue anyway ?",
           "ruleSuccessfullyCreated": "Rule successfully created",
           "ruleSuccessfullyUpdated": "Rule successfully updated",
           "ruleDeleted": "Rule successfully removed",
-          "ruleCreationError": "Fail to create rule __rule__.",
-          "ruleUpdateError": "Fail to update rule __rule__.",
-          "ruleEditError": "Fail to edit rule __rule__.",
-          "ruleDeletionError": "Fail to delete rule __rule__.",
-          "ruleStopError": "Fail to stop rule __rule__.",
-          "ruleStartError": "Fail to start rule __rule__.",
+          "ruleCreationError": "Fail to create rule {{rule}}.",
+          "ruleUpdateError": "Fail to update rule {{rule}}.",
+          "ruleEditError": "Fail to edit rule {{rule}}.",
+          "ruleDeletionError": "Fail to delete rule {{rule}}.",
+          "ruleStopError": "Fail to stop rule {{rule}}.",
+          "ruleStartError": "Fail to start rule {{rule}}.",
           "pluginListingError": "Fail to list plugins.",
           "ruleListingError": "Fail to list rules.",
           "ruleInterpreterListingError": "Fail to list rule interpreters.",
-          "ruleGetLogError": "Fail to get logs of rule __rule__.",
-          "ruleDeleteLogError": "Fail to delete logs of rule __rule__.",
+          "ruleGetLogError": "Fail to get logs of rule {{rule}}.",
+          "ruleDeleteLogError": "Fail to delete logs of rule {{rule}}.",
           "editors": {
             "code": {
               "name": "Code"
@@ -603,11 +607,11 @@
             "install": "Install",
             "uninstall": "Uninstall",
             "confirmUpdateTitle": "Confirm update",
-            "confirmUpdate": "Update __objectName__ to version __version__ ?",
+            "confirmUpdate": "Update {{objectName}} to version {{version}} ?",
             "confirmInstallTitle": "Confirm install",
-            "confirmInstall": "Install __objectName__ to version __version__ ?",
+            "confirmInstall": "Install {{objectName}} to version {{version}} ?",
             "confirmRemoveTitle": "Confirm uninstall",
-            "confirmRemove": "Uninstall __objectName__ ?"
+            "confirmRemove": "Uninstall {{objectName}} ?"
           },
           "plugins": {
             "title": "Plugins"
@@ -655,7 +659,7 @@
           }
         }
       },
-      "unableToLoadSubWindow": "Unable to load sub window __subWindowPath__"
+      "unableToLoadSubWindow": "Unable to load sub window {{subWindowPath}}"
     },
     "confirmation": {
       "title": "Confirmation"
@@ -670,10 +674,10 @@
       "incorrectValue": "Incorrect value",
       "onlyIntegerNumberAllowed": "Only integer number are allowed",
       "onlyNumberAllowed": "Only numbers are allowed",
-      "maxValueExceeded": "The value can't be higher than __maxValue__",
-      "minValueExceeded": "The value can't be lower than __minValue__",
-      "minNumberItemsRequired": "the list must have at least __minValue__ items",
-      "maxNumberItemsAllowed": "the list can't have more than __maxValue__ items",
+      "maxValueExceeded": "The value can't be higher than {{maxValue}}",
+      "minValueExceeded": "The value can't be lower than {{minValue}}",
+      "minNumberItemsRequired": "the list must have at least {{minValue}} items",
+      "maxNumberItemsAllowed": "the list can't have more than {{maxValue}} items",
       "required": "This is required"
     },
     "iconpicker-search-prompt": "Search icon..."
@@ -927,14 +931,14 @@
   },
   "objects": {
     "pluginInstance": {
-      "errorGettingState": "An error has occurred getting state of plugin __pluginName__",
-      "errorStarting": "An error has occurred starting __pluginName__",
-      "errorStopping": "An error has occurred stopping __pluginName__",
-      "errorCreating": "An error has occurred creating __pluginName__",
-      "errorCreatingManuallyDevice": "An error has occurred creating __deviceName__",
-      "errorDeleting": "An error has occurred deleting __pluginName__",
-      "errorGettingPackage": "An error has occurred get package of __pluginName__",
-      "errorUpdating": "An error has occurred updating __pluginName__",
+      "errorGettingState": "An error has occurred getting state of plugin {{pluginName}}",
+      "errorStarting": "An error has occurred starting {{pluginName}}",
+      "errorStopping": "An error has occurred stopping {{pluginName}}",
+      "errorCreating": "An error has occurred creating {{pluginName}}",
+      "errorCreatingManuallyDevice": "An error has occurred creating {{deviceName}}",
+      "errorDeleting": "An error has occurred deleting {{pluginName}}",
+      "errorGettingPackage": "An error has occurred get package of {{pluginName}}",
+      "errorUpdating": "An error has occurred updating {{pluginName}}",
       "errorGettingManuallyDeviceCreation": "An error has occurred getting plugin instance that handle manually device creation",
       "errorApplyingBinding": "An error has occurred applying binding"
     },
@@ -942,24 +946,24 @@
       "errorListing": "An error occurs while listing plugins"
     },
     "deviceManager": {
-      "errorGettingDeviceDetails": "An error has occurred getting device details of __deviceName__",
-      "errorDeleting": "An error has occurred deleting __deviceName__",
-      "errorCreating": "An error has occurred creating __deviceName__",
-      "errorUpdating": "An error has occurred updating __deviceName__"
+      "errorGettingDeviceDetails": "An error has occurred getting device details of {{deviceName}}",
+      "errorDeleting": "An error has occurred deleting {{deviceName}}",
+      "errorCreating": "An error has occurred creating {{deviceName}}",
+      "errorUpdating": "An error has occurred updating {{deviceName}}"
     },
     "lazyLoaderManager": {
-      "unableToLoadModal": "Unable to load modal __modalPath__"
+      "unableToLoadModal": "Unable to load modal {{modalPath}}"
     },
     "widgetManager": {
       "errorDuringModifyingWidget": "Error during modifying widget",
-      "exceptionDuringCallConfigurationChanged": "The widget __widgetType__ has generated an exception during call configurationChanged()",
-      "errorDuringModifyingWidgetNamed": "Error during modifying widget of type __widgetType__",
+      "exceptionDuringCallConfigurationChanged": "The widget {{widgetType}} has generated an exception during call configurationChanged()",
+      "errorDuringModifyingWidgetNamed": "Error during modifying widget of type {{widgetType}}",
       "unableToGetWidgets": "Unable to get Widgets",
-      "partOfWidgetIsMissing": "Unable to get part of __widgetName__ widget. Widgets of this type have been deactivated.",
-      "widgetHasGeneratedAnExceptionDuringCallingMethod": "The widget __widgetName__ has generated an exception calling __methodName__()",
+      "partOfWidgetIsMissing": "Unable to get part of {{widgetName}} widget. Widgets of this type have been deactivated.",
+      "widgetHasGeneratedAnExceptionDuringCallingMethod": "The widget {{widgetName}} has generated an exception calling {{methodName}}()",
       "errorDuringGettingDeviceInformation": "Error during getting device information",
       "loadingWidgetsError": "Error during the loading of a widget",
-      "widgetDisabled": "The widget __widgetName__ have been disabled because of the configuration is not correct (deleted/missing equipment configured)",
+      "widgetDisabled": "The widget {{widgetName}} have been disabled because of the configuration is not correct (deleted/missing equipment configured)",
       "unknownError" : "Unknow error"
     },
     "widgetPackageManager": {
@@ -971,9 +975,9 @@
     },
     "ConfigurationManager": {
       "errorDuringGettingSystemConfiguration": "Error during getting configuration",
-      "errorDuringGettingConfiguration": "Error in reading configuration __section__.__key__",
-      "errorDuringCreatingConfiguration": "Error in creating configuration __section__.__key__",
-      "errorDuringUpdatingConfiguration": "Error in updating configuration __section__.__key__"
+      "errorDuringGettingConfiguration": "Error in reading configuration {{section}}.{{key}}",
+      "errorDuringCreatingConfiguration": "Error in creating configuration {{section}}.{{key}}",
+      "errorDuringUpdatingConfiguration": "Error in updating configuration {{section}}.{{key}}"
     },
     "interpreter": {
       "errorListingInterpreters": "An error has occurred listing script interpreters"
@@ -988,14 +992,14 @@
         },
         "mobile": {
           "name": "Mobile phone (system)",
-          "description": "The mobile phone number of the recipient (system)",
-          "regexErrorMessage": ""
+          "description": "The mobile phone number of the recipient (system) : (international format : +33601020304)",
+          "regexErrorMessage": "It must match a valid phone number (beginning with +, no space, no -)"
         }
       }
     },
     "update": {
-      "errorUpdating": "An error has occurred updating  __objectName__",
-      "errorChecking": "An error has occurred checking for update of __objectName__"
+      "errorUpdating": "An error has occurred updating  {{objectName}}",
+      "errorChecking": "An error has occurred checking for update of {{objectName}}"
     },
     "widget": {
       "errorSendingCommand": "Error during sending command"
@@ -1004,26 +1008,26 @@
       "errorListing": "Error during getting server list"
     },
     "generic": {
-      "errorEditing": "An error has occurred editing __objectName__",
-      "errorUpdating": "An error has occurred updating __objectName__",
-      "errorDeleting": "An error has occurred deleting __objectName__",
-      "errorCreating": "An error has occurred creating __objectName__",
-      "errorLoading": "An error has occurred loading __objectName__",
-      "errorGetting": "An error has occurred getting __objectName__",
-      "errorInstalling": "An error has occurred installing __objectName__",
-      "errorUninstalling": "An error has occurred uninstalling __objectName__",
+      "errorEditing": "An error has occurred editing {{objectName}}",
+      "errorUpdating": "An error has occurred updating {{objectName}}",
+      "errorDeleting": "An error has occurred deleting {{objectName}}",
+      "errorCreating": "An error has occurred creating {{objectName}}",
+      "errorLoading": "An error has occurred loading {{objectName}}",
+      "errorGetting": "An error has occurred getting {{objectName}}",
+      "errorInstalling": "An error has occurred installing {{objectName}}",
+      "errorUninstalling": "An error has occurred uninstalling {{objectName}}",
       "retrievingData": "Retrieving data..."
     }
   },
   "eventLogger": {
-    "DefaultCode": "Unknown event : __what__ generated by __who__",
-    "Started": "__who__ has started",
-    "Stopped": "__who__ has stopped",
-    "Updated": "The __who__ has been updated",
+    "DefaultCode": "Unknown event : {{what}} generated by {{who}}",
+    "Started": "{{who}} has started",
+    "Stopped": "{{who}} has stopped",
+    "Updated": "The {{who}} has been updated",
     "YadomsCrash": "yadoms has crashed",
-    "PluginCrash": "Plugin __who__ has been crashed",
-    "TaskFailed": "__who__ task has been crashed",
-    "RuleFailed": "The automation rule __who__ has failed"
+    "PluginCrash": "Plugin {{who}} has been crashed",
+    "TaskFailed": "{{who}} task has been crashed",
+    "RuleFailed": "The automation rule {{who}} has failed"
   },
   "webSockets": {
     "update": {
@@ -1079,7 +1083,7 @@
       "failToCommunicateWithHardware": "Unable to communicate with hardware. Check the hardware and its configuration",
       "connectionClosed": "Connection with hardware closed (serial link)",
       "connectionError": "Hardware connection error (serial link)",
-      "failToOpen": "Unable to open serial link __port__. Check hardware or configuration."
+      "failToOpen": "Unable to open serial link {{port}}. Check hardware or configuration."
     }
   },
   "system": {

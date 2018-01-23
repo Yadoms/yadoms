@@ -195,7 +195,7 @@ ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, 
             }
          }
          obj.values = enumValues;
-         return new EnumParameterHandler("plugins/" + pluginInstance.type + ":enumerations.", i18nKey, keyword.typeInfo.name, obj, currentValue);
+         return new EnumParameterHandler("plugins." + pluginInstance.type + ":enumerations.", i18nKey, keyword.typeInfo.name, obj, currentValue);
 
       case "string":
          return new StringParameterHandler(i18NContext, i18nKey, paramName, obj, currentValue);

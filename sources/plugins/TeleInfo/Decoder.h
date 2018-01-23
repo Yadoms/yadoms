@@ -118,4 +118,5 @@ private:
    static const std::string m_tag_IINST3;
    static const std::string m_tag_PAPP;
    static const std::string m_tag_DEMAIN;
+   static const std::string m_tag_PEJP;
 };

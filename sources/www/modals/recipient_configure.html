@@ -68,10 +68,10 @@
             if (sections[field.pluginType] == undefined) {
                sections[field.pluginType] = new SectionParameterHandler("[prepend]modals.recipient_configure.", undefined, "pluginSection",
                {
-                  name: $.t("plugins/" + field.pluginType + ":name", { "defaultValue": field.pluginDefaultDisplayName })
+                  name: $.t("plugins." + field.pluginType + ":name", { "defaultValue": field.pluginDefaultDisplayName })
                });
             }
-            valueParameter = ConfigurationHelper.createParameterHandler("plugins/" + field.pluginType + ":recipientFields.", undefined, field.fieldName, field, field.value); //keep the field
+            valueParameter = ConfigurationHelper.createParameterHandler("plugins." + field.pluginType + ":recipientFields.", undefined, field.fieldName, field, field.value); //keep the field
             valueParameter.field = field;
             recipientConfigurationFields.push(valueParameter);
 
