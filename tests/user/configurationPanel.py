@@ -30,7 +30,8 @@ class ConfigurationPanel():
       # Not found
       assert False 
 
-   def getFielsCount(self):
+   def getFielsCount(self, recursive=False):
+      # TOFIX
       return len(self.__panelWebElement.find_elements_by_class_name('control-group'))
       
    def getAddObjectButton(self, dataI18nString):
