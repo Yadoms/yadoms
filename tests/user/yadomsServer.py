@@ -71,12 +71,14 @@ def start(startupArgs=[]):
    if not startupArgs or all("logLevel=" not in arg for arg in startupArgs):
       startupArgs.append("logLevel=none")
 
-   argsLine = ""
+   cmdLine = []
+   cmdLine.append(os.path.join(binaryPath(), executableName()))
    for arg in startupArgs:
-      argsLine += " --" + arg
+      cmdLine.append("--" + arg)
 
-   print 'Start server...'
-   serverProcess = subprocess.Popen("python yadomsServerWrapper.py " + os.path.join(binaryPath(), executableName() + " " + argsLine), stdin=subprocess.PIPE)
+   print 'Start server ...' 
+   print '  ', ' '.join(str(item) for item in cmdLine)
+   serverProcess = psutil.Popen(cmdLine)
 
    if waitServerStarted() == True:
       return serverProcess
@@ -104,10 +106,9 @@ def isProcessRunning(pid):
 def killProcTree(pid, including_parent=True):
    """Kill a parent process with its children"""
    parent = psutil.Process(pid)
-   children = parent.children(recursive=True)
-   while parent.children(recursive=True):
+   for child in parent.children(recursive=True):
       try:
-         parent.children(recursive=True)[0].kill()
+         child.kill()
       except:
          pass
    psutil.wait_procs(parent.children(recursive=True), timeout=5)
@@ -125,16 +126,9 @@ def stop(yadomsProcess):
    """Kill Yadoms server with its sub-processes"""
 
    print 'Stop Yadoms...'
-   try:
-      yadomsProcess.communicate(input=' ')  
-   except KeyboardInterrupt:
-      print 'Stopped'
-      return
-   except Exception, e:
-      print 'Error stopping Yadoms', str(e)
-
-   print 'Yadoms was not gracefully stopped, try to kill...'
+   # Sending signal.CTRL_C_EVENT doesn't work, so kill process tree
    killProcTree(yadomsProcess.pid)
+   print 'Yadoms stopped'
       
   
 def ensureStopped():

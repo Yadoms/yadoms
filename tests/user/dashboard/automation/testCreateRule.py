@@ -106,27 +106,27 @@ class CreateRule(unittest.TestCase):
       self.assertTrue(tools.waitUntil(lambda: scripts.checkLocalRuleLogById(1, ruleLog)))
       
       
-   #def test_createErroneousRule(self):
-   #   print '=== Test of rule creation, with error in code ==='
-   #   self.doTest(
-   #      "TestingErroneousRule",
-   #      "This rule is just for testing",
-   #      ["import time",
-   #       "",
-   #       "def yMain(yApi):",
-   #       "   while(True)",
-   #       "      print 'Some log entry...'",
-   #       "      while(True):",
-   #       "         time.sleep(1)"],
-   #      lambda ruleName, ruleDescription, ruleCode: self.checkCreateErroneousRule(ruleName, ruleDescription, ruleCode,
-   #         ['[Information] : #### START ####\n',
-   #          '[Error] : Traceback (most recent call last):\n',
-   #          '[Error] :   File "scriptCaller.py", line 36, in <module>\n',
-   #          '[Error] :     script = __import__(scriptModule)\n',
-   #          '[Error] :   File "' + os.path.abspath(scripts.ruleFullPath(1)) + '", line 4\n',
-   #          '[Error] :     while(True)\n',
-   #          '[Error] :               ^\n',
-   #          '[Error] : SyntaxError: invalid syntax\n']))
+   def test_createErroneousRule(self):
+      print '=== Test of rule creation, with error in code ==='
+      self.doTest(
+         "TestingErroneousRule",
+         "This rule is just for testing",
+         ["import time",
+          "",
+          "def yMain(yApi):",
+          "   while(True)",
+          "      print 'Some log entry...'",
+          "      while(True):",
+          "         time.sleep(1)"],
+         lambda ruleName, ruleDescription, ruleCode: self.checkCreateErroneousRule(ruleName, ruleDescription, ruleCode,
+            ['[Information] : #### START ####\n',
+             '[Error] : Traceback (most recent call last):\n',
+             '[Error] :   File "scriptCaller.py", line 36, in <module>\n',
+             '[Error] :     script = __import__(scriptModule)\n',
+             '[Error] :   File "' + os.path.abspath(scripts.ruleFullPath(1)) + '", line 4\n',
+             '[Error] :     while(True)\n',
+             '[Error] :               ^\n',
+             '[Error] : SyntaxError: invalid syntax\n']))
 
          
       
