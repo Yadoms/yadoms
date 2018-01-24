@@ -19,8 +19,10 @@ class ConfigureDevice(unittest.TestCase):
    def setUp(self):
       yadomsServer.ensureStopped()
       database.deploy('OneFakePlugin')
-      config.deploy("withDeveloperMode")
-      self.serverProcess = yadomsServer.start()
+      #TODO remettre config.deploy("withDeveloperMode")
+      config.deploy("nominal")
+      #TODO remettre self.serverProcess = yadomsServer.start()
+      self.serverProcess = yadomsServer.start(["logLevel=information"])
       self.browser = webdriver.Chrome()
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)

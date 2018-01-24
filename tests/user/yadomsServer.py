@@ -163,13 +163,13 @@ def openClient(browser, waitForReadyForNormalOperation = True):
 
    try:
       browser.get("http://127.0.0.1:8080")
-      if WebDriverWait(browser, 60).until(lambda browser: browser.execute_script("return document.readyState") == u"complete" and browser.execute_script("return jQuery.active") == 0):
+      if WebDriverWait(browser, 60).until(lambda browser: browser.execute_script("return (document.readyState == 'complete' && jQuery.active == 0)")):
          if not waitForReadyForNormalOperation:
             return
          if WebDriverWait(browser, 60).until(lambda browser: len(browser.find_elements_by_class_name("tabPagePills")) > 0):
             return
    except:
-      print 'Exception waiting page loding'
+      print 'Exception waiting page loading'
 
    print 'Unable to load client'
    assert False
