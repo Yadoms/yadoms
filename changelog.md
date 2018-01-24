@@ -1,3 +1,11 @@
+### 2.0.2-beta.4
+
+#### New features and fixes
+
+##### Yadoms Core
+* Fix error notifications when updating Yadoms from web-client
+
+
 ### 2.0.2-beta.3
 
 #### New features and fixes
