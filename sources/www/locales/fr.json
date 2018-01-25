@@ -590,7 +590,7 @@
             "availableVersion": "Version disponible",
             "update": "Mise à jour de Yadoms",
             "updating": "Mise à jour de Yadoms en cours. Merci de patienter ...",
-            "waitingExit": "Arrêt de Yadoms en cours. Merci de patienter ..."
+            "restarting": "Yadoms redémarre. Merci de patienter ..."
           },
           "generic": {
             "name": "Nom",

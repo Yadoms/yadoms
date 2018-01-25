@@ -589,8 +589,8 @@
             "currentVersion": "Current version",
             "availableVersion": "Available version",
             "update": "Update Yadoms",
-            "waitingExit": "Yadoms is exitting. Please wait ...",
-            "updating": "Yadoms is updating. Please wait ..."
+            "updating": "Yadoms is updating. Please wait ...",
+            "restarting": "Yadoms will restart. Please wait ..."
           },
           "generic": {
             "name": "Name",

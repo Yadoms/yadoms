@@ -162,13 +162,13 @@
 </div>
 
 <div class="hidden" id="yadoms-updating-splash">
-    <h1 class="waiting">
-        <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>
-        <span data-i18n="modals.dashboard.sub-windows.install-update.yadoms.waitingExit"></span>
-    </h1>
-    <h1 class="updating hidden">
+    <h1 class="updating">
         <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
         <span data-i18n="modals.dashboard.sub-windows.install-update.yadoms.updating"></span>
+    </h1>
+    <h1 class="restarting hidden">
+        <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>
+        <span data-i18n="modals.dashboard.sub-windows.install-update.yadoms.restarting"></span>
     </h1>
     <div class="progress progress-striped active">
         <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
@@ -421,13 +421,13 @@
     function waitForUpdateFinished() {
         //we don't want ESC close the modal
         var $splash = $('div#yadoms-updating-splash');
+        $splash.i18n();
+        $splash.removeClass("hidden");
 
         stopPeriodicTask();
 
         //we wait the Server stop to answer request
         waitForYadomsExit();
-        $splash.i18n();
-        $splash.removeClass("hidden");
     }
 
     function waitForYadomsExit() {
@@ -459,8 +459,8 @@
     function waitForYadomsReturn() {
         console.log("Wait Yadoms exiting...");
         var $splash = $('div#yadoms-updating-splash');
-        $splash.find("h1.waiting").addClass("hidden");
-        $splash.find("h1.updating").removeClass("hidden");
+        $splash.find("h1.updating").addClass("hidden");
+        $splash.find("h1.restarting").removeClass("hidden");
 
         //we try to get information from server loop until the server answer
         EventLoggerManager.getLast({
