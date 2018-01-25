@@ -19,16 +19,19 @@ class ConfigurationPanel():
       # Not found
       assert False  
       
-   def __findSection(self, dataI18nString):
+   def __findSection(self, dataI18nSectionName):
       """ Find the configuration section """
-      sections = self.__panelWebElement.find_elements_by_class_name('configuration-section')
-      for section in sections:
-         header = section.find_element_by_class_name('configuration-header')
-         span = header.find_element_by_tag_name('span')
-         if dataI18nString in span.get_attribute('data-i18n'):
-            return section
-      # Not found
-      assert False 
+      labelNode = self.__panelWebElement.find_element_by_xpath(".//div[@class='control-group configuration-section well']//span[@data-i18n='" + dataI18nSectionName + "']")
+      return labelNode.find_element_by_xpath(".//ancestor::div[@class='control-group configuration-section well']")
+      
+   def enableOptionalSection(self, dataI18nSectionName, enable=True):
+      """ Active an optional configuration section """
+      section = self.__findSection(dataI18nSectionName)
+      checkBoxElement = section.find_element_by_xpath(".//div[@class='checkbox']/label/input[@type='checkbox']")
+      isChecked = True if checkBoxElement.get_attribute('checked') is not None else False
+      if enable != isChecked:
+         checkBoxElement.click()
+      return section
 
    def getFielsCount(self, recursive=False):
       return len(self.__panelWebElement.find_elements_by_tag_name('input')) + \
@@ -42,6 +45,10 @@ class ConfigurationPanel():
    def getItemByName(self, dataI18nString):
       """ Find a configuration single item by its "data-i18n" field """
       return self.__findField(dataI18nString).find_element_by_class_name('configuration-control').find_element_by_class_name('form-control')
+      
+   def getCheckboxItemByName(self, dataI18nString):
+      """ Find a configuration single checkbox by its "data-i18n" field """
+      return self.__findField(dataI18nString).find_element_by_xpath(".//input[@type='checkbox']")
 
    def getItemsByName(self, dataI18nString):
       """ Find list of configuration items by its "data-i18n" field """
