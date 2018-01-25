@@ -260,18 +260,15 @@ class SetValueKeywordModal():
 
    def getBoolValue(self):
       valueElement = self.__getValueElement()
-      if 'checkbox' in valueElement.get_attribute('class'):
-         return True if valueElement.find_element_by_tag_name('input').get_attribute('checked') is not None else False
-      assert False
+      checkbox = valueElement.find_element_by_xpath(".//input[@type='checkbox']")
+      return True if checkbox.get_attribute('checked') is not None else False
       
    def setBoolValue(self, newValue):
       if newValue == self.getBoolValue():
          return      
       valueElement = self.__getValueElement()
-      if 'checkbox' in (valueElement.get_attribute('class')):
-         valueElement.find_element_by_tag_name('input').click()
-         return
-      assert False
+      checkbox = valueElement.find_element_by_xpath(".//input[@type='checkbox']")
+      checkbox.click()
 
    def getEnumValue(self):
       valueElement = self.__getValueElement()
