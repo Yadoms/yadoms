@@ -41,7 +41,7 @@
       "success": "Succès"
     },
     "yadoms": {
-      "name": "yadoms",
+      "name": "Yadoms",
       "update": "Mise à jour de Yadoms ...",
       "updateFailed": "La mise à jour de Yadoms a échoué",
       "download": "Téléchargement de Yadoms ...",
@@ -1015,7 +1015,7 @@
     "Started": "__who__ a démarré",
     "Stopped": "__who__ s'est arrêté",
     "Updated": "The __who__ a été mise à jour",
-    "YadomsCrash": "yadoms a rencontré une erreur et s'est arrêté",
+    "YadomsCrash": "Yadoms a rencontré une erreur et s'est arrêté",
     "PluginCrash": "__who__ a rencontré une erreur et s'est arrêté",
     "TaskFailed": "La tâche __who__ a rencontré une erreur et s'est arrêtée",
     "RuleFailed": "La règle d'automatisation __who__ a échoué",
@@ -1079,10 +1079,10 @@
     }
   },
   "system": {
-    "yadoms": "yadoms",
+    "yadoms": "Yadoms",
     "databaseBackup": "Sauvegarde de base de données",
     "pluginUpdate": "Mise à jour de plugin",
-    "yadomsUpdate": "Mise à jour de yadoms"
+    "yadomsUpdate": "Mise à jour de Yadoms"
   },
   "initialization": {
     "homePage": "Accueil",

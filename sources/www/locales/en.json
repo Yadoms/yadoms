@@ -41,17 +41,17 @@
       "success": "Success"
     },
     "yadoms": {
-      "name": "yadoms",
-      "update": "Updating yadoms ...",
+      "name": "Yadoms",
+      "update": "Updating Yadoms ...",
       "updateFailed": "Yadoms update has failed",
-      "download": "Downloading yadoms ...",
-      "downloadFailed": "Download yadoms failed",
-      "extract": "Extracting yadoms ...",
+      "download": "Downloading Yadoms ...",
+      "downloadFailed": "Download Yadoms failed",
+      "extract": "Extracting Yadoms ...",
       "extractFailed": "Yadoms Extract has failed",
-      "deploy": "Deploying yadoms ...",
-      "deployFailed": "Deploy yadoms failed",
-      "exit": "Exiting yadoms ...",
-      "information": "yadoms information"
+      "deploy": "Deploying Yadoms ...",
+      "deployFailed": "Deploy Yadoms failed",
+      "exit": "Exiting Yadoms ...",
+      "information": "Yadoms information"
     },
     "task": {
       "name": "task",
@@ -331,8 +331,8 @@
     },
     "edit-automation-rule": {
       "title": "Automation rule edition",
-      "show-help": "Help on the yadoms Script API",
-      "show-help-blockly": "Help on the yadoms block scripting",
+      "show-help": "Help on the Yadoms Script API",
+      "show-help-blockly": "Help on the Yadoms block scripting",
       "interpreter-rule": {
         "name": "Interpreter",
         "description": "Interpreter of the rule"
@@ -1015,7 +1015,7 @@
     "Started": "__who__ has started",
     "Stopped": "__who__ has stopped",
     "Updated": "The __who__ has been updated",
-    "YadomsCrash": "yadoms has crashed",
+    "YadomsCrash": "Yadoms has crashed",
     "PluginCrash": "Plugin __who__ has been crashed",
     "TaskFailed": "__who__ task has been crashed",
     "RuleFailed": "The automation rule __who__ has failed",
@@ -1079,7 +1079,7 @@
     }
   },
   "system": {
-    "yadoms": "yadoms",
+    "yadoms": "Yadoms",
     "databaseBackup": "Database backup",
     "pluginUpdate": "Plugin update",
     "yadomsUpdate": "Yadoms update"
