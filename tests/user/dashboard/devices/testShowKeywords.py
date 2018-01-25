@@ -75,9 +75,9 @@ class ShowKeywords(unittest.TestCase):
       assert len(dashboard.devices.getKeywordActions(item)) == 1
       assert 'btn-configure' in dashboard.devices.getKeywordActions(item)[0].get_attribute('class')
 
-      print '    Check rssi data'
+      print '    Check signalPower data'
       item = keywords[3]
-      assert dashboard.devices.getKeywordName(item) == u'rssi'
+      assert dashboard.devices.getKeywordName(item) == u'signalPower'
       assert int(dashboard.devices.getKeywordTextValue(item)) in range(0, 100)
       assert dashboard.devices.getKeywordUnit(item) == u'%'
       assert len(dashboard.devices.getKeywordActions(item)) == 1
