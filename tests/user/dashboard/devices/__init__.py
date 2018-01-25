@@ -168,7 +168,7 @@ class NewDeviceModal():
        self.__newDeviceModalWebElement = newDeviceModalWebElement
 
    def selectAttachedPlugin(self, pluginName):
-      select = WebDriverWait(self.__newDeviceModalWebElement, 10).until(Condition.visibility_of_element_located((By.ID, "associatedPluginTypeList")))
+      select = WebDriverWait(self.__newDeviceModalWebElement, 10).until(Condition.visibility_of_element_located((By.XPATH, ".//select[@data-i18n='[data-content]modals.add-manually-device.addManuallyDeviceSection.content.attachedToPlugin.content.plugins.description']")))
       for option in select.find_elements_by_tag_name('option'):
          if option.text == pluginName:
             return option
