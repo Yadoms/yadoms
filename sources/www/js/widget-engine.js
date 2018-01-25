@@ -15,11 +15,11 @@ function initializeWidgetEngine() {
 
     //we ask all widgets packages
     WidgetPackageManager.getAll()
-        .done(function() {
+        .done(function () {
             //we show notification
             loadPagesNotification = notifyInformation($.t("mainPage.actions.loadingPages"));
             PageManager.getAll()
-                .done(function() {
+                .done(function () {
                     if (loadPagesNotification != null) {
                         loadPagesNotification.close();
                         if (loadPagesNotification.showing)
@@ -28,7 +28,7 @@ function initializeWidgetEngine() {
                     }
                     //we add all pages to the DOM
                     $.each(PageManager.pages,
-                        function(index, currentPage) {
+                        function (index, currentPage) {
                             PageManager.addToDom(currentPage);
                         });
 
@@ -44,7 +44,7 @@ function initializeWidgetEngine() {
 
                     //we ask for the last event to ask only those occurs after this one
                     EventLoggerManager.getLast()
-                        .done(function(data) {
+                        .done(function (data) {
                             //we save the id of the last event
                             LastEventLogId = data.id;
 
@@ -56,7 +56,7 @@ function initializeWidgetEngine() {
                             else
                                 widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateInterval);
                         })
-                        .fail(function(error) {
+                        .fail(function (error) {
                             notifyError($.t("objects.generic.errorGetting",
                                 {
                                     objectName: $.t("core.event")
@@ -64,11 +64,11 @@ function initializeWidgetEngine() {
                                 error));
                         });
                 })
-                .fail(function(error) {
+                .fail(function (error) {
                     notifyError($.t("objects.pageManager.errorDuringGettingPages"), error);
                 });
         })
-        .fail(function(error) {
+        .fail(function (error) {
             notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), error);
         });
 }
@@ -85,10 +85,10 @@ function requestWidgets(page) {
     page.$grid.empty();
 
     WidgetManager.getWidgetOfPageFromServer(page)
-        .done(function(list) {
+        .done(function (list) {
             if (list != null) {
                 WidgetManager.loadWidgets(list, page)
-                    .done(function() {
+                    .done(function () {
                         if (!isNullOrUndefined(loadWidgetsNotification)) {
                             loadWidgetsNotification.close();
                             if (loadWidgetsNotification.showing)
@@ -100,7 +100,7 @@ function requestWidgets(page) {
                         updateWebSocketFilter();
                         d.resolve();
                     })
-                    .fail(function(errorMessage) {
+                    .fail(function (errorMessage) {
                         console.error(errorMessage);
                         notifyError($.t("objects.widgetManager.loadingWidgetsError"));
                         d.reject();
@@ -137,9 +137,9 @@ function tabClick(pageId) {
         //and if it's not loaded for the moment
         if (!page.loaded) {
             requestWidgets(page)
-                .always(function() {
+                .always(function () {
                     //we poll all widget data
-                    updateWidgetsPolling().always(function() {
+                    updateWidgetsPolling().always(function () {
                         var b = page.$grid.packery('reloadItems');
                         updateWebSocketFilter();
                         PageManager.updateWidgetLayout(page);
@@ -148,7 +148,7 @@ function tabClick(pageId) {
         } else {
 
             //we poll all widget data
-            updateWidgetsPolling().always(function() {
+            updateWidgetsPolling().always(function () {
                 page.$grid.packery('destroy');
                 page.$grid.packery(PageManager.packeryOptions);
                 updateWebSocketFilter();
@@ -162,7 +162,7 @@ function periodicUpdateTask() {
     //we first check if the server is online and only if it answer to the eventLog new messages
     //to do that we ask event message
     EventLoggerManager.getFrom(LastEventLogId)
-        .done(function(data) {
+        .done(function (data) {
             //if we were offline we go back to online status
             if (!serverIsOnline) {
                 serverIsOnline = true;
@@ -183,22 +183,22 @@ function periodicUpdateTask() {
                     widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateInterval);
 
                 //we reinitialize the websocket
-                WebSocketEngine.initializeWebSocketEngine(function() {
+                WebSocketEngine.initializeWebSocketEngine(function () {
                     //web socket opened
                     //we listen acquisitionupdate event
                     $(document).on("acquisitionupdate",
-                        function(e, websocketData) {
+                        function (e, websocketData) {
                             var acq = AcquisitionManager.factory(websocketData.data);
                             dispatchNewAcquisitionsToWidgets(acq);
                         });
                     //we listen time event
                     $(document).on("timenotification",
-                        function(e, websocketData) {
+                        function (e, websocketData) {
                             dispatchTimeToWidgets(websocketData.time);
                         });
                     //Maybe there is a lot of time between the turn off of the server and the turn on, so we must ask all widget
                     //data to be sure that all information displayed are fresh
-                    updateWidgetsPolling().always(function() {
+                    updateWidgetsPolling().always(function () {
                         //we update the filter of the websockets to receive only wanted data
                         updateWebSocketFilter();
                     });
@@ -208,7 +208,7 @@ function periodicUpdateTask() {
             if (!isNullOrUndefinedOrEmpty(data.EventLogger)) {
 
                 $.each(data.EventLogger,
-                    function(index, value) {
+                    function (index, value) {
                         console.debug("incoming event: " + JSON.stringify(value));
                         var gravity;
                         //the gravity of the noty depend on the code
@@ -230,32 +230,33 @@ function periodicUpdateTask() {
 
                         // Display notification
                         var translation = "eventLogger." + value.code;
-                        notify(DateTimeFormatter.isoDateToString(value.date) +
-                            " " +
-                            $.t(translation,
-                                {
-                                    "who": $.t(value.who,
-                                        { // structure sometimes : core.[who].name or core.[who]
-                                            defaultValue: $.t('core.' + value.who + '.name',
-                                                {
-                                                    defaultValue: $.t('core.' + value.who,
-                                                        {
-                                                            defaultValue: value.who
-                                                        })
-                                                })
-                                        }),
-                                    "what": $.t(value.what,
-                                        { // structure sometimes : core.[what].name or core.[what]
-                                            defaultValue: $.t('core.' + value.what + '.name',
-                                                {
-                                                    defaultValue: $.t('core.' + value.what,
-                                                        {
-                                                            defaultValue: value.what
-                                                        })
-                                                })
-                                        })
-                                }),
-                            gravity);
+                        if (!filteredEvent(value))
+                            notify(DateTimeFormatter.isoDateToString(value.date) +
+                                " " +
+                                $.t(translation,
+                                    {
+                                        "who": $.t(value.who,
+                                            { // structure sometimes : core.[who].name or core.[who]
+                                                defaultValue: $.t('core.' + value.who + '.name',
+                                                    {
+                                                        defaultValue: $.t('core.' + value.who,
+                                                            {
+                                                                defaultValue: value.who
+                                                            })
+                                                    })
+                                            }),
+                                        "what": $.t(value.what,
+                                            { // structure sometimes : core.[what].name or core.[what]
+                                                defaultValue: $.t('core.' + value.what + '.name',
+                                                    {
+                                                        defaultValue: $.t('core.' + value.what,
+                                                            {
+                                                                defaultValue: value.what
+                                                            })
+                                                    })
+                                            })
+                                    }),
+                                gravity);
                         //we update the lastEvent Id Read
                         LastEventLogId = value.id;
                     });
@@ -266,7 +267,7 @@ function periodicUpdateTask() {
             if (!WebSocketEngine.isConnected())
                 serverIsOnline = false;
         })
-        .fail(function(error) {
+        .fail(function (error) {
             if (serverIsOnline) {
                 //we indicate that *server has passed offline
                 serverIsOnline = false;
@@ -287,6 +288,13 @@ function periodicUpdateTask() {
         });
 }
 
+function filteredEvent(event) {
+    if (!isNullOrUndefined(event.who) && event.who.toLowerCase() === "yadoms")
+        if (event.code.toLowerCase() === "started" || event.code.toLowerCase() === "stopped")
+            return true;
+    return false;
+}
+
 function stopPeriodicTask() {
     clearInterval(widgetUpdateInterval);
 }
@@ -299,11 +307,11 @@ function dispatchNewAcquisitionsToWidgets(acq) {
         return;
 
     $.each(page.widgets,
-        function(widgetIndex, widget) {
+        function (widgetIndex, widget) {
             //we ask which devices are needed for this widget instance
             if (!isNullOrUndefined(widget.listenedKeywords)) {
                 $.each(widget.listenedKeywords,
-                    function(keywordIndex, keywordId) {
+                    function (keywordIndex, keywordId) {
                         if (!isNullOrUndefined(keywordId)) {
                             //foreach device we ask for last values
                             if (keywordId == acq.keywordId) {
@@ -341,7 +349,7 @@ function dispatchTimeToWidgets(timeData) {
         return;
 
     $.each(page.widgets,
-        function(widgetIndex, widget) {
+        function (widgetIndex, widget) {
             serverLocalTime = new Time(timeData);
             console.debug("onTime : " + serverLocalTime.toJSON().time);
             try {
@@ -364,11 +372,11 @@ function updateWebSocketFilter() {
 
         //we build the collection of keywordId to ask
         $.each(page.widgets,
-            function(widgetIndex, widget) {
+            function (widgetIndex, widget) {
                 //we ask which devices are needed for this widget instance
                 if (!isNullOrUndefined(widget.listenedKeywords)) {
                     $.each(widget.listenedKeywords,
-                        function(keywordIndex, keywordId) {
+                        function (keywordIndex, keywordId) {
                             if (!isNullOrUndefined(keywordId)) {
                                 collection.push(keywordId);
                             }
@@ -391,7 +399,7 @@ function updateWidgetsPolling() {
         var arrayOfDeffered = [];
 
         $.each(page.widgets,
-            function(widgetIndex, widget) {
+            function (widgetIndex, widget) {
                 //we ask which devices are needed for this widget instance
                 var deffered = updateWidgetPolling(widget);
                 arrayOfDeffered.push(deffered);
@@ -409,10 +417,10 @@ function updateWidgetPolling(widget) {
 
     if (!isNullOrUndefined(widget.listenedKeywords)) {
         AcquisitionManager.getLastValues(widget.listenedKeywords)
-            .done(function(data) {
+            .done(function (data) {
                 if (data) {
                     $.each(data,
-                        function(index, acquisition) {
+                        function (index, acquisition) {
                             //we signal the new acquisition to the widget if the widget support the method
                             if (widget.viewModel.onNewAcquisition !== undefined) {
                                 widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
@@ -421,11 +429,11 @@ function updateWidgetPolling(widget) {
                 }
                 d.resolve();
             })
-            .fail(function(error) {
+            .fail(function (error) {
                 notifyError($.t("objects.generic.errorGetting",
-                        {
-                            objectName: "last acquisition for widget = " + widget.id
-                        }),
+                    {
+                        objectName: "last acquisition for widget = " + widget.id
+                    }),
                     error);
                 d.reject(error);
             });
