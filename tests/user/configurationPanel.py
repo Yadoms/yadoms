@@ -31,8 +31,9 @@ class ConfigurationPanel():
       assert False 
 
    def getFielsCount(self, recursive=False):
-      # TOFIX
-      return len(self.__panelWebElement.find_elements_by_class_name('control-group'))
+      return len(self.__panelWebElement.find_elements_by_tag_name('input')) + \
+         len(self.__panelWebElement.find_elements_by_tag_name('select')) + \
+         len(self.__panelWebElement.find_elements_by_xpath('.//button[@role=\"iconpicker\"]'))
       
    def getAddObjectButton(self, dataI18nString):
       """ Get the Add object button of a configuration section """

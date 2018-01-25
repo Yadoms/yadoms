@@ -40,7 +40,7 @@ class ConfigureDevice(unittest.TestCase):
       deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
       configureDeviceModal = dashboard.devices.waitConfigureDeviceModal(self.browser)
-      assert configureDeviceModal.getConfigurationFieldsCount() == 0
+      assert configureDeviceModal.getConfigurationFieldsCount() == 2
       configureDeviceModal.cancel()
 
 
@@ -54,12 +54,12 @@ class ConfigureDevice(unittest.TestCase):
       deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
       configureDeviceModal = dashboard.devices.waitConfigureDeviceModal(self.browser)
-      #TOFIX assert configureDeviceModal.getConfigurationFieldsCount() == 2
+      assert configureDeviceModal.getConfigurationFieldsCount() == 5
 
       print '  Start change device configuration then cancel'
       assert configureDeviceModal.getTextField('CounterDivider2') == '2'
       configureDeviceModal.updateTextField('CounterDivider2', '5')
-      configureDeviceModal.cancel() #TOFIX
+      configureDeviceModal.cancel()
       
       print '  Start change device configuration then confirm'
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()

@@ -219,10 +219,7 @@ class ConfigureDeviceModal():
       nameField.send_keys(newModel)
 
    def getConfigurationFieldsCount(self):
-      totalFieldsCount = ConfigurationPanel(self.__configureDeviceModalWebElement).getFielsCount()
-      if totalFieldsCount < 2:
-         return None
-      return totalFieldsCount - 2
+      return ConfigurationPanel(self.__configureDeviceModalWebElement).getFielsCount()
 
    def getTextField(self, field):
       return ConfigurationPanel(self.__configureDeviceModalWebElement).getItemByName(field).get_attribute('value')
@@ -242,7 +239,7 @@ class ConfigureDeviceModal():
       modals.waitForClosed(self.__configureDeviceModalWebElement)
          
    def getCancelButton(self):
-      return self.__configureDeviceModalWebElement.find_element_by_class_name("btn-default")
+      return self.__configureDeviceModalWebElement.find_element_by_xpath(".//button[@data-i18n='common.cancel']")
          
    def cancel(self):
       self.getCancelButton().click()
