@@ -353,7 +353,7 @@ PageManager.ensureOnePageIsSelected = function () {
 
 PageManager.selectPageId = function (pageId) {
    $.each(PageManager.pages, function (index, currentPage) {
-      if (currentPage.id == parseInt(SessionDataManager.getVariable("CurrentPage")))
+      if (currentPage.id == pageId)
          currentPage.$tab.find("a").trigger("click");
    });
 };

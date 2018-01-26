@@ -41,6 +41,8 @@ function initializeWidgetEngine() {
                         else
                             PageManager.ensureOnePageIsSelected(); //we ensure that one page is selected
                     }
+                    else
+                        PageManager.ensureOnePageIsSelected(); //we ensure that one page is selected
 
                     //we ask for the last event to ask only those occurs after this one
                     EventLoggerManager.getLast()
