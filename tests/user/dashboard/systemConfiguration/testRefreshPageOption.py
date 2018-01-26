@@ -14,6 +14,7 @@ import yadomsServer
 import dashboard.systemConfiguration
 import tools
 import mainPage
+import i18n
 
 class RefreshPageOption(unittest.TestCase):
    """RefreshPage option test"""
@@ -42,16 +43,16 @@ class RefreshPageOption(unittest.TestCase):
       self.assertTrue(dashboard.systemConfiguration.getRefreshPageOptionState(advancedParameterSection), True)
 
       
-   def test_refreshPageOption(self):
-      print '=== RefreshPage option test ==='
+   def test_refreshPageOptionEnable(self):
+      print '=== RefreshPage option (enabled) test ==='
 
       print 'Open systemConfiguration dashboard'
       dashboard.open(self.browser)
       dashboard.openSystemConfiguration(self.browser)
       
-      print 'Active RefreshPage option'      
+      print 'Enable RefreshPage option'      
       advancedParameterSection = dashboard.systemConfiguration.enableAdvancedParametersSection(self.browser)
-      dashboard.systemConfiguration.enableRefreshPageOption(advancedParameterSection)
+      dashboard.systemConfiguration.setRefreshPageOption(advancedParameterSection, True)
       dashboard.close(self.browser)
 
       print 'Create 3 more pages (for a total of 4 pages)'
@@ -73,6 +74,41 @@ class RefreshPageOption(unittest.TestCase):
       mainPage.getPagesMenuBar(self.browser).selectPage("Page 1")
       self.browser.refresh()
       self.assertEqual(mainPage.getPagesMenuBar(self.browser).getCurrentPage().getName(), "Page 1")
+
+      
+   def test_refreshPageOptionDisable(self):
+      print '=== RefreshPage option (disabled) test ==='
+
+      print 'Open systemConfiguration dashboard'
+      dashboard.open(self.browser)
+      dashboard.openSystemConfiguration(self.browser)
+      
+      print 'Disable RefreshPage option'      
+      advancedParameterSection = dashboard.systemConfiguration.enableAdvancedParametersSection(self.browser)
+      dashboard.systemConfiguration.setRefreshPageOption(advancedParameterSection, False)
+      dashboard.close(self.browser)
+
+      print 'Create 3 more pages (for a total of 4 pages)'
+      mainPage.addPage(self.browser, "Page 1")
+      mainPage.addPage(self.browser, "Page 2")
+      mainPage.addPage(self.browser, "Page 3")
+
+      welcomePageTitle = i18n.get()["initialization"]["homePage"]
+
+      print 'Select page 2 and refresh'
+      mainPage.getPagesMenuBar(self.browser).selectPage("Page 2")
+      self.browser.refresh()
+      self.assertEqual(mainPage.getPagesMenuBar(self.browser).getCurrentPage().getName(), welcomePageTitle)
+
+      print 'Select page 3 and refresh'
+      mainPage.getPagesMenuBar(self.browser).selectPage("Page 3")
+      self.browser.refresh()
+      self.assertEqual(mainPage.getPagesMenuBar(self.browser).getCurrentPage().getName(), welcomePageTitle)
+
+      print 'Select page 1 and refresh'
+      mainPage.getPagesMenuBar(self.browser).selectPage("Page 1")
+      self.browser.refresh()
+      self.assertEqual(mainPage.getPagesMenuBar(self.browser).getCurrentPage().getName(), welcomePageTitle)
 
       
    def tearDown(self):

@@ -14,15 +14,16 @@ from configurationPanel import ConfigurationPanel
 """ Operations on system configuration dashboard page """
 
 def enableAdvancedParametersSection(browser):
-   panel = ConfigurationPanel(browser.find_element_by_id("dashboard-system-configuration"))
-   return ConfigurationPanel(panel.enableOptionalSection("modals.dashboard.sub-windows.system-configuration.configuration-items.advancedParameters.name", True))
+   panel = ConfigurationPanel(WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "dashboard-system-configuration"))))
+   section = panel.enableOptionalSection("modals.dashboard.sub-windows.system-configuration.configuration-items.advancedParameters.name", True)
+   return ConfigurationPanel(section)
 
 def getRefreshPageOptionState(advancedParameterSection):
    refreshPageCheckbox = advancedParameterSection.getCheckboxItemByName("modals.dashboard.sub-windows.system-configuration.configuration-items.refreshPage.name")
    return True if refreshPageCheckbox.get_attribute('checked') is not None else False
 
-def enableRefreshPageOption(advancedParameterSection):
+def setRefreshPageOption(advancedParameterSection, enable):
    refreshPageCheckbox = advancedParameterSection.getCheckboxItemByName("modals.dashboard.sub-windows.system-configuration.configuration-items.refreshPage.name")
    isChecked = True if refreshPageCheckbox.get_attribute('checked') is not None else False
-   if not isChecked:
-      checkBoxElement.click()
+   if isChecked != enable:
+      refreshPageCheckbox.click()

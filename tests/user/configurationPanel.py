@@ -30,7 +30,7 @@ class ConfigurationPanel():
    def enableOptionalSection(self, dataI18nSectionName, enable=True):
       """ Active an optional configuration section """
       section = self.__findSection(dataI18nSectionName)
-      checkBoxElement = section.find_element_by_xpath(".//div[@class='checkbox']/label/input[@type='checkbox']")
+      checkBoxElement = WebDriverWait(section, 10).until(Condition.visibility_of_element_located((By.XPATH, ".//div[@class='checkbox']/label/input[@type='checkbox']")))
       isChecked = True if checkBoxElement.get_attribute('checked') is not None else False
       if enable != isChecked:
          checkBoxElement.click()
