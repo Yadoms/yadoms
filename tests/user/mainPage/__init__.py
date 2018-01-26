@@ -46,7 +46,7 @@ def waitConfigureWidgetModal(browser):
 
 def getCurrentPage(browser):
    pagesContainer = browser.find_element_by_id("tabContainer")
-   return pagesContainer.find_element_by_css_selector('div.widgetPage.active')   
+   return pagesContainer.find_element_by_css_selector('div.widgetPage.active')
    
 def getWidgetGrid(browser, page):
    return page.find_element_by_class_name("grid")
@@ -152,6 +152,18 @@ def waitAddPageModal(browser):
       return AddPageModal(modal)
    assert False
 
+def addPage(browser, pageName):
+   """ High-level function to add a page """
+   customizeMode = isCustomizing(browser)
+   if not customizeMode:
+      enterCustomizingMode(browser)
+   getPagesMenuBar(browser).getAddPageButton().click()
+   addPageModal = waitAddPageModal(browser)
+   addPageModal.enterPageName(pageName)
+   addPageModal.ok()
+   if not customizeMode:
+      exitCustomizingMode(browser)
+
 
 class PageMenuBar():
    """ Operations on the pages menu bar """
@@ -165,8 +177,21 @@ class PageMenuBar():
    def getPagesCount(self):
       return len(self.__bar.find_elements_by_xpath(".//li[contains(@class, 'tabPagePills')]"))
 
+   def findPage(self, name):
+      for indexPage in range(self.getPagesCount()):
+         page = self.getPage(indexPage)
+         if page.getName() == name:
+            return page
+      return None
+
+   def selectPage(self, name):
+      self.findPage(name).select()
+
    def getPage(self, index):
       return PageMenuBarTab(self.__bar.find_element_by_xpath(".//li[contains(@page-id, '" + str(index + 1) + "')]"))
+
+   def getCurrentPage(self):
+      return PageMenuBarTab(self.__bar.find_element_by_xpath(".//li[@class='tabPagePills active']"))
 
 
 class PageMenuBarTab():
@@ -177,6 +202,9 @@ class PageMenuBarTab():
    
    def getName(self):
       return self.__tab.find_element_by_xpath(".//a[@data-toggle='tab']//span").text
+
+   def select(self):
+      self.__tab.find_element_by_xpath(".//a[@data-toggle='tab']").click()
 
 
 class AddPageModal():

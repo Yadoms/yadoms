@@ -1,4 +1,7 @@
-﻿
+﻿from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as Condition
+
 
 
 class ConfigurationPanel():
@@ -31,6 +34,7 @@ class ConfigurationPanel():
       isChecked = True if checkBoxElement.get_attribute('checked') is not None else False
       if enable != isChecked:
          checkBoxElement.click()
+         WebDriverWait(section, 10).until(Condition.visibility_of_element_located((By.XPATH, ".//div[contains(@class, 'section-content')]")))
       return section
 
    def getFielsCount(self, recursive=False):

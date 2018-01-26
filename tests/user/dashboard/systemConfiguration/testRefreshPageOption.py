@@ -13,6 +13,7 @@ import scripts
 import yadomsServer
 import dashboard.systemConfiguration
 import tools
+import mainPage
 
 class RefreshPageOption(unittest.TestCase):
    """RefreshPage option test"""
@@ -44,9 +45,6 @@ class RefreshPageOption(unittest.TestCase):
    def test_refreshPageOption(self):
       print '=== RefreshPage option test ==='
 
-      print 'Create 2 more pages (for a total of 3 pages)'
-      #TODO
-
       print 'Open systemConfiguration dashboard'
       dashboard.open(self.browser)
       dashboard.openSystemConfiguration(self.browser)
@@ -54,26 +52,28 @@ class RefreshPageOption(unittest.TestCase):
       print 'Active RefreshPage option'      
       advancedParameterSection = dashboard.systemConfiguration.enableAdvancedParametersSection(self.browser)
       dashboard.systemConfiguration.enableRefreshPageOption(advancedParameterSection)
+      dashboard.close(self.browser)
 
-      import time
-      time.sleep(3)
+      print 'Create 3 more pages (for a total of 4 pages)'
+      mainPage.addPage(self.browser, "Page 1")
+      mainPage.addPage(self.browser, "Page 2")
+      mainPage.addPage(self.browser, "Page 3")
 
+      print 'Select page 2 and refresh'
+      mainPage.getPagesMenuBar(self.browser).selectPage("Page 2")
+      self.browser.refresh()
+      self.assertEqual(mainPage.getPagesMenuBar(self.browser).getCurrentPage().getName(), "Page 2")
 
-#|||
-#      startStopButton = dashboard.plugins.getPluginStartStopButton(pluginsTable, pluginNumber)
-      
-#      self.assertEqual(dashboard.plugins.getPluginState(pluginsTable, pluginNumber), dashboard.plugins.PluginState.Running)
+      print 'Select page 3 and refresh'
+      mainPage.getPagesMenuBar(self.browser).selectPage("Page 3")
+      self.browser.refresh()
+      self.assertEqual(mainPage.getPagesMenuBar(self.browser).getCurrentPage().getName(), "Page 3")
 
-#      print 'Stop plugin'
-#      self.assertTrue(tools.waitUntil(lambda: startStopButton.is_enabled()))
-#      startStopButton.click()
-#      self.assertTrue(tools.waitUntil(lambda: dashboard.plugins.getPluginState(pluginsTable, pluginNumber) is dashboard.plugins.PluginState.Stopped))
+      print 'Select page 1 and refresh'
+      mainPage.getPagesMenuBar(self.browser).selectPage("Page 1")
+      self.browser.refresh()
+      self.assertEqual(mainPage.getPagesMenuBar(self.browser).getCurrentPage().getName(), "Page 1")
 
-#      print 'Start plugin'
-#      self.assertTrue(tools.waitUntil(lambda: startStopButton.is_enabled()))
-#      startStopButton.click()
-#      self.assertTrue(tools.waitUntil(lambda: dashboard.plugins.getPluginState(pluginsTable, pluginNumber) is dashboard.plugins.PluginState.Running))
-            
       
    def tearDown(self):
       self.browser.close()
