@@ -6,7 +6,7 @@ import database
 import config
 import scripts
 import yadomsServer
-import mainPage.widgets
+import mainPage
 import time
 
 class AddPage(unittest.TestCase):
@@ -27,7 +27,7 @@ class AddPage(unittest.TestCase):
       print '=== Entering/Exiting customization test ==='
       
       print 'Enter customizing mode'
-      mainPage.widgets.enterCustomizingMode(self.browser)
+      mainPage.enterCustomizingMode(self.browser)
          
       print 'Open add page modal'
       mainPage.getPagesMenuBar(self.browser).getAddPageButton().click()
@@ -36,7 +36,7 @@ class AddPage(unittest.TestCase):
       addPageModal.cancel()
       
       print 'Exit customizing mode'
-      mainPage.widgets.exitCustomizingMode(self.browser)
+      mainPage.exitCustomizingMode(self.browser)
             
             
    def test_addPage(self):
@@ -44,7 +44,7 @@ class AddPage(unittest.TestCase):
       newPageName = "New page"
       
       print 'Enter customizing mode'
-      mainPage.widgets.enterCustomizingMode(self.browser)
+      mainPage.enterCustomizingMode(self.browser)
          
       print 'Open add page modal'
       pagesMenuBar = mainPage.getPagesMenuBar(self.browser)
@@ -60,12 +60,13 @@ class AddPage(unittest.TestCase):
       self.assertEqual(pagesMenuBar.getPage(1).getName(), newPageName)      
       
       print 'Exit customizing mode'
-      mainPage.widgets.exitCustomizingMode(self.browser)
+      mainPage.exitCustomizingMode(self.browser)
       
       print 'Check page was created (normal mode)'
       pagesMenuBar = mainPage.getPagesMenuBar(self.browser)
       self.assertEqual(pagesMenuBar.getPagesCount(), 2)
       self.assertEqual(pagesMenuBar.getPage(1).getName(), newPageName)
+
       
    def tearDown(self):
       self.browser.close()

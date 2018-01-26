@@ -7,7 +7,7 @@ import database
 import config
 import scripts
 import yadomsServer
-import mainPage.widgets
+import mainPage
 import i18n
 import tools
 import os.path
@@ -50,7 +50,7 @@ class CreateWidget(unittest.TestCase):
       print '  Check no notification occurs'
       self.assertTrue(notification.noNotification(self.browser))
       print '  Check widget present on main page'
-      widget = mainPage.widgets.findWidgetOnCurrentPage(self.browser, widgetType, widgetTitle)
+      widget = mainPage.findWidgetOnCurrentPage(self.browser, widgetType, widgetTitle)
       self.assertIsNotNone(widget)
 
          
@@ -76,21 +76,21 @@ class CreateWidget(unittest.TestCase):
       
    def doTest(self, widgetType, widgetTitle, configureWidgetFct, checkFct):
       print 'Enter customizing mode'
-      mainPage.widgets.enterCustomizingMode(self.browser)
+      mainPage.enterCustomizingMode(self.browser)
 
       print 'Open add widget modal'
-      mainPage.widgets.getAddWidgetButton(self.browser).click()
-      newWidgetModal = mainPage.widgets.waitNewWidgetModal(self.browser)
+      mainPage.getAddWidgetButton(self.browser).click()
+      newWidgetModal = mainPage.waitNewWidgetModal(self.browser)
       
       print 'Select widget'
       newWidgetModal.selectWidget(widgetType).click()
-      newWidgetModal.ok()
+      newWidgetModal.clickAdd()
 
       print 'Configure widget'
-      configureWidgetFct(mainPage.widgets.waitConfigureWidgetModal(self.browser), widgetTitle)
+      configureWidgetFct(mainPage.waitConfigureWidgetModal(self.browser), widgetTitle)
       
       print 'Exit customizing mode'
-      mainPage.widgets.exitCustomizingMode(self.browser)
+      mainPage.exitCustomizingMode(self.browser)
       
       
       print 'Check created widget'

@@ -6,7 +6,7 @@ import database
 import config
 import scripts
 import yadomsServer
-import mainPage.widgets
+import mainPage
 import time
 
 class Customizing(unittest.TestCase):
@@ -27,10 +27,10 @@ class Customizing(unittest.TestCase):
       print '=== Entering/Exiting customization test ==='
       
       print 'Enter customizing mode'
-      mainPage.widgets.enterCustomizingMode(self.browser)
+      mainPage.enterCustomizingMode(self.browser)
       
       print 'Exit customizing mode'
-      mainPage.widgets.exitCustomizingMode(self.browser)
+      mainPage.exitCustomizingMode(self.browser)
             
             
    def test_uncustomizingAfterModal(self):
@@ -40,16 +40,16 @@ class Customizing(unittest.TestCase):
       # to be sure it works well
       for i in range (0, 10):
          print 'Enter customizing mode'
-         mainPage.widgets.enterCustomizingMode(self.browser)
+         mainPage.enterCustomizingMode(self.browser)
          
          print 'Open add widget modal'
-         mainPage.widgets.getAddWidgetButton(self.browser).click()
-         newWidgetModal = mainPage.widgets.waitNewWidgetModal(self.browser)
+         mainPage.getAddWidgetButton(self.browser).click()
+         newWidgetModal = mainPage.waitNewWidgetModal(self.browser)
          print 'Cancel add widget modal'
          newWidgetModal.cancel()
          
          print 'Immediately exit customizing mode'
-         mainPage.widgets.exitCustomizingMode(self.browser)
+         mainPage.exitCustomizingMode(self.browser)
       
       
       

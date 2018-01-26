@@ -50,14 +50,14 @@ class PickupSelectorModal():
             return button
       return None
 
-   def getConfirmButton(self):
-      return self.__newItemModalWebElement.find_element_by_id("btn-confirm-add-element")
+   def getAddButton(self):
+      return self.__newItemModalWebElement.find_element_by_xpath(".//button[@id='btn-confirm-add-element']")
          
    def getCancelButton(self):
       return self.__newItemModalWebElement.find_element_by_class_name('close')
       
-   def ok(self):
-      self.getConfirmButton().click()
+   def clickAdd(self):
+      self.getAddButton().click()
       waitForClosed(self.__newItemModalWebElement)
       
    def cancel(self):
