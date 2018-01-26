@@ -145,8 +145,8 @@ class NewPluginModal():
    def getCancelButton(self):
       return self.__modal.getCancelButton()
       
-   def ok(self):
-      return self.__modal.ok()
+   def clickAdd(self):
+      return self.__modal.clickAdd()
       
    def cancel(self):
       return self.__modal.cancel()
@@ -206,7 +206,7 @@ def createPluginSequence(browser, pluginInstanceName, pluginType, setPluginConfi
    getCreatePluginButton(browser).click()
    newPluginModal = waitNewPluginModal(browser)
    newPluginModal.selectPlugin(pluginType).click()
-   newPluginModal.ok()
+   newPluginModal.clickAdd()
 
    setPluginConfigurationSequenceFct(pluginInstanceName)
 
