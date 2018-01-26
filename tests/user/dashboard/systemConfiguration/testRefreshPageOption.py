@@ -53,6 +53,7 @@ class RefreshPageOption(unittest.TestCase):
       print 'Enable RefreshPage option'      
       advancedParameterSection = dashboard.systemConfiguration.enableAdvancedParametersSection(self.browser)
       dashboard.systemConfiguration.setRefreshPageOption(advancedParameterSection, True)
+      dashboard.systemConfiguration.applySystemConfiguration(self.browser)
       dashboard.close(self.browser)
 
       print 'Create 3 more pages (for a total of 4 pages)'
@@ -86,6 +87,7 @@ class RefreshPageOption(unittest.TestCase):
       print 'Disable RefreshPage option'      
       advancedParameterSection = dashboard.systemConfiguration.enableAdvancedParametersSection(self.browser)
       dashboard.systemConfiguration.setRefreshPageOption(advancedParameterSection, False)
+      dashboard.systemConfiguration.applySystemConfiguration(self.browser)
       dashboard.close(self.browser)
 
       print 'Create 3 more pages (for a total of 4 pages)'
