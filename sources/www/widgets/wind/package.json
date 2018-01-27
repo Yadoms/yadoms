@@ -1,13 +1,13 @@
 {
 	"type": "wind",
-	"version": "1.0.0-beta.1",
+	"version": "1.0.0-beta.2",
 	"author": "Jean-Michel BERHAULT",
 	"url": "https://github.com/Yadoms/yadoms/wiki/wind",
 	"credits": "",
   "dimensions": {
     "min": {
-      "x": 2,
-      "y": 2
+      "x": 3,
+      "y": 3
     },
     "max": {
       "x": 3,
@@ -25,10 +25,32 @@
          "expectedCapacity": ["direction"],
          "expectedKeywordAccess": "get"
       },
-      "windSpeed": {
-         "type": "keyword",
-         "expectedCapacity": ["speed"],
-         "expectedKeywordAccess": "get"
-      }
+      "speedDisplay" : {
+			"type": "section",
+			"defaultValue": "true",
+			"enableWithCheckBox": "true",
+			"enableWithCheckBoxDefaultValue": "false",
+         "content": {        
+            "windSpeed": {
+               "type": "keyword",
+               "expectedCapacity": ["speed"],
+               "expectedKeywordAccess": "get"
+            }
+         }
+      },
+      "options" : {
+			"type": "section",
+			"defaultValue": "true",
+			"enableWithCheckBox": "true",
+			"enableWithCheckBoxDefaultValue": "false",
+         "content": {        
+            "directionCorrection": {
+               "type": "int",
+               "defaultValue": "0",
+               "maximumValue": "360",
+               "minimumValue": "0"
+            }
+         }
+      }      
 	}
 }

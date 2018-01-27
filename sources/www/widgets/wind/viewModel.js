@@ -8,6 +8,7 @@ widgetViewModelCtor = function weatherViewModel() {
     this.direction = ko.observable(0);
     this.unit = "m/s";
     this.background = ko.observable("widgets/wind/images/Windrose-fr.png");
+    this.correction = 0;
 
    this.displayNeedle = function(direction){
 	   var self = this;
@@ -26,7 +27,7 @@ widgetViewModelCtor = function weatherViewModel() {
       var centerY = mainDiv.height()/2;
       var needleLenght = 0;
       
-      if (self.widget.getHeight() == 200)
+      if (self.widget.getHeight() == 200 && self.widget.getWidth() == 200)
          needleLenght = 70;
       else
          needleLenght = 110;
@@ -69,6 +70,11 @@ widgetViewModelCtor = function weatherViewModel() {
     this.initialize = function () {
         var self = this;
     };
+    
+    this.mod = function(number, n) {
+       var m = (( number % n) + n) % n;
+       return m < 0 ? m + Math.abs(n) : m;
+    };
 
     /**
      * New acquisition handler
@@ -78,12 +84,15 @@ widgetViewModelCtor = function weatherViewModel() {
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
         
-        if (keywordId === self.widget.configuration.windSpeed.keywordId) {
-            self.windspeed(parseFloat(data.value).toFixed(1) + " " + self.unit);
+        if (parseBool(self.widget.configuration.speedDisplay.checkbox)){
+           if (keywordId === self.widget.configuration.speedDisplay.content.windSpeed.keywordId) {
+               self.windspeed(parseFloat(data.value).toFixed(1) + " " + self.unit);
+           }
         }
         
         if (keywordId === self.widget.configuration.windDirection.keywordId) {
-            self.displayNeedle(parseFloat(data.value));
+           console.log (parseFloat(data.value) + self.correction);
+            self.displayNeedle(self.mod(parseFloat(data.value) + self.correction,360));
         }
     };
     
@@ -100,9 +109,21 @@ widgetViewModelCtor = function weatherViewModel() {
         if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
             return;
         
-        //we register keyword new acquisition
-        self.widgetApi.registerKeywordAcquisitions([self.widget.configuration.windDirection.keywordId,
-                                                    self.widget.configuration.windSpeed.keywordId]);    
+        // we register keyword new acquisition
+        self.widgetApi.registerKeywordAcquisitions([self.widget.configuration.windDirection.keywordId]);
+        
+        // we add only the speed if we have ckeck it
+        if (parseBool(self.widget.configuration.speedDisplay.checkbox)){
+           self.widgetApi.registerKeywordAcquisitions([self.widget.configuration.speedDisplay.content.windSpeed.keywordId]);
+           self.widgetApi.find(".windspeed").css("visibility","visible");
+        }else
+           self.widgetApi.find(".windspeed").css("visibility","hidden");
+        
+        if (parseBool(self.widget.configuration.options.checkbox)){
+           self.correction = parseInt(self.widget.configuration.options.content.directionCorrection);
+        }
+        else
+           self.correction = 0;
         
         self.displayNeedle("-");
     }

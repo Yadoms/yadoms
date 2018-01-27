@@ -5,11 +5,31 @@
 	"configurationSchema": {     
       "windDirection": {
          "name": "Direction du vent",
-         "description": "Choisir les données de l'équipement à afficher."
+         "description": "Choisir les données de l'équipement à afficher"
       },
       "windSpeed": {
          "name": "Vitesse du vent",
-         "description": "Choisir les données de l'équipement à afficher."
+         "description": "Choisir les données de l'équipement à afficher"
       }
+      "speedDisplay" : {
+         "name": "Affichage de la vitesse",
+         "description": "",
+         "content": {        
+            "windSpeed": {
+               "name": "Vitesse du vent",
+               "description": "Choisir les données de l'équipement à afficher"
+            }
+         }
+      },
+      "options" : {
+         "name": "Options",
+         "description": "",
+         "content": {        
+            "directionCorrection": {
+               "name": "Correction de la direction",
+               "description": "Entrer l'angle correcteur si votre équipement est mal orienté"
+            }
+         }
+      }      
 	}
 }

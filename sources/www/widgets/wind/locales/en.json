@@ -7,9 +7,25 @@
          "name": "Direction of the wind",
          "description": "Choose the data of a device to display"
       },
-      "windSpeed": {
-         "name": "Speed of the wind",
-         "description": "Choose the data of a device to display"
+      "speedDisplay" : {
+         "name": "Display of the speed",
+         "description": "",
+         "content": {
+            "windSpeed": {
+               "name": "Speed of the wind",
+               "description": "Choose the data of a device to display"
+            }
+         }
+      },
+      "options" : {
+         "name": "Options",
+         "description": "",
+         "content": {        
+            "directionCorrection": {
+               "name": "Direction correction",
+               "description": "correction of the angle if your equipment is misplaced"
+            }
+         }
       }
   }
 }
