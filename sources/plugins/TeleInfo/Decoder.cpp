@@ -97,7 +97,7 @@ void CDecoder::decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> api,
    if (!m_deviceCreated)
       createDeviceAndKeywords(isMono);
    else
-      constructKeywordList(m_optarif);
+      constructKeywordList(m_optarif, isMono);
 
    m_api->historizeData(m_deviceName, m_keywords);
 }
@@ -133,7 +133,7 @@ void CDecoder::createDeviceAndKeywords(const bool monoPhase)
    m_deviceCreated = true;
 }
 
-void CDecoder::constructKeywordList(const EContracts contract)
+void CDecoder::constructKeywordList(const EContracts contract, const bool monoPhase)
 {
    m_keywords.clear();
 
@@ -180,6 +180,16 @@ void CDecoder::constructKeywordList(const EContracts contract)
    default:
       //Erreur normalement
       break;
+   }
+
+   if (monoPhase)
+   {
+      m_keywords.push_back(m_instantCurrent);
+   }
+   else
+   {
+      for (unsigned char counter = 0; counter < 3; ++counter)
+         m_keywords.push_back(m_instantCurrentPhase[counter]);
    }
 }
 

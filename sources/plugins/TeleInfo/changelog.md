@@ -1,2 +1,2 @@
 ### 1.0.3
-* First release
+* Historize period time and forecast color only when the value changed

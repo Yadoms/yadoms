@@ -48,9 +48,10 @@ private:
 
    //--------------------------------------------------------------
    /// \brief	                     Create the keyword list depending of the tariff
-   ///\param[in] tariff             contract of the tele-info
+   ///\param[in] contract             contract of the tele-info
+   ///\param[in] monoPhase            the counter is mono phase
    //-----------------------------------------------------
-   void constructKeywordList(const EContracts contract);
+   void constructKeywordList(const EContracts contract, const bool monoPhase);
 
    //--------------------------------------------------------------
    /// \brief	                     Create the keyword list depending of the tariff
