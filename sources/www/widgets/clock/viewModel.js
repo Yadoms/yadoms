@@ -33,7 +33,7 @@ function clockViewModel() {
          activated: false
       });
       
-      self.widgetApi.askServerLocalTime(self.updateTime);
+      return self.widgetApi.askServerLocalTime(self.updateTime);
    };
 
    /**
