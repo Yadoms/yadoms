@@ -158,6 +158,7 @@ ConfigurationManager.saveRefreshPageDefaultValue = function (arrayOfDeffered) {
          }), error);
      });
      
+     Yadoms.systemConfiguration[ConfigurationManager.items.system.refreshPage] = true;
      arrayOfDeffered.push(deffered);
 };
 

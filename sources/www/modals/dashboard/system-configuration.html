@@ -247,12 +247,11 @@
                Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString]
                .value);
             advancedSectionParameters.configurationHandlers.push(dateFormatStringParameter);
-
+            
             //*************
             //refresh page : keep the active page
             var refreshPage = true;
             try {
-               console.log("refresh page1");
                refreshPage = Yadoms.systemConfiguration[ConfigurationManager.items.system.refreshPage].value;
             } catch (err) {
                //Initial Configuration - No cache for refreshing the page
@@ -260,7 +259,6 @@
                Yadoms.systemConfiguration.refreshPage = {};
                Yadoms.systemConfiguration.refreshPage.value = refreshPage;
                Yadoms.systemConfiguration.refreshPage.defaultValue = refreshPage;
-               console.log("refresh page2");
             }            
             
             var refreshPageBoolParameter = new BoolParameterHandler(i18NContext,
@@ -317,6 +315,7 @@
                      userAuthenticationParameter,
                      passwordAuthenticationParameter);
                   saveLocation(arrayOfDeffered, latitudeParameter, longitudeParameter, timezoneParameter);
+                  saveRefreshPage(arrayOfDeffered, refreshPageBoolParameter);
 
                   $.whenAll(arrayOfDeffered)
                      .done(function() {
@@ -491,9 +490,30 @@
                   d.reject();
                });
          }).fail(d.reject);
-
-
    };
+   
+   function saveRefreshPage(arrayOfDeffered, refreshPageBoolParameter) {
+
+      var d = new $.Deferred();
+      arrayOfDeffered.push(d);
+
+      refreshPageBoolParameter.getCurrentConfiguration()
+         .done(function(currentconfiguration) {
+            Yadoms.systemConfiguration[ConfigurationManager.items.system.refreshPage].value = currentconfiguration;
+
+            ConfigurationManager.updateToServer(Yadoms.systemConfiguration[
+                  ConfigurationManager.items.system.refreshPage])
+               .done(function() {
+                  d.resolve();
+               })
+               .fail(function() {
+                  console.error("failed save refresh boolean");
+                  d.reject();
+               });
+         }).fail(d.reject);
+
+
+   };   
 
    function saveBasicAuthentification(arrayOfDeffered,
       basicAuthenticationSectionParameters,

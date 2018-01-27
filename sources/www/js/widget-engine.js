@@ -129,8 +129,7 @@ function tabClick(pageId) {
     if ((currentPage != null) && (currentPage.id === pageId))
         return;
 
-    if (Yadoms.systemConfiguration.refreshPage.value)
-        SessionDataManager.addVariable("CurrentPage", pageId.toString());
+    SessionDataManager.addVariable("CurrentPage", pageId.toString());
 
     var page = PageManager.getPage(pageId);
 
