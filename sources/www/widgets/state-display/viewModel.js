@@ -1,7 +1,7 @@
 widgetViewModelCtor =
 
 /**
- * Create a Numeric Display ViewModel
+ * Create a State Display ViewModel
  * @constructor
  */
 function stateDisplayViewModel() {
@@ -42,7 +42,6 @@ function stateDisplayViewModel() {
       arrayOfDeffered.push(defferedKeywordInformation);
       defferedKeywordInformation
       .done(function (keyword) {
-         console.log ("keyword : ", keyword);
          self.keyword = keyword;
       });
       
@@ -53,7 +52,6 @@ function stateDisplayViewModel() {
          self.widgetApi.getPluginInstanceInformation(device.pluginId)
          .done(function (pluginInstance) {
             self.pluginInstanceType = pluginInstance.type;
-            console.log("pluginInstance : ", pluginInstance);
             defferedPluginInstance.resolve();
          })
          .fail(function (error) {
@@ -94,8 +92,6 @@ function stateDisplayViewModel() {
                console.log(self.pluginInstanceType);
                var translatedEnumValue = $.t("plugins/" + self.pluginInstanceType + ":enumerations." + self.keyword.typeInfo.name + ".values." + data.value, 
                { defaultValue:data.value} );
-               console.log ("translatedLink:", "plugins/" + self.pluginInstanceType + ":enumerations." + self.keyword.typeInfo.name + ".values." + data.value);
-               console.log("translatedEnumValue: ", translatedEnumValue);
                self.data(translatedEnumValue);
             }
             else 
