@@ -1,5 +1,5 @@
 {
-	"name": "afficheur digital",
+	"name": "Afficheur digital",
 	"description": "Un widget qui affiche une valeur numérique d'un équipement",
 	"configurationSchema": {
 		"device": {
