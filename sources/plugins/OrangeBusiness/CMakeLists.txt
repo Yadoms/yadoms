@@ -28,6 +28,12 @@ set(ORANGE_BUSINESS_PLUGIN_SOURCES
    specificHistorizer/SNR.cpp
    specificHistorizer/SNR.h
 )
+
+#########################################
+## Place here all additional groups (solution folder)
+#########################################
+source_group(sources ./*.*)
+source_group(sources\\specificHistorizer specificHistorizer/*.*)
 	
 #########################################
 ## Place here all additional include directories

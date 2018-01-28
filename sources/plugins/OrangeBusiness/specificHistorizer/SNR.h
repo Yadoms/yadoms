@@ -22,6 +22,6 @@ namespace specificHistorizers
       //-----------------------------------------------------
       virtual ~CSNR();
    };
-} // namespace teleInfo::specificHistorizers
+} // namespace specificHistorizers
 
 
