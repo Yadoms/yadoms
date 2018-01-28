@@ -48,6 +48,8 @@ IF(NOT DISABLE_TEST_PLUGIN_ORANGE_BUSINESS)
       plugins/OrangeBusiness/IurlManager.h
       plugins/OrangeBusiness/IDecoder.h
       plugins/OrangeBusiness/IEquipment.h
+      plugins/OrangeBusiness/specificHistorizer/SNR.cpp
+      plugins/OrangeBusiness/specificHistorizer/SNR.h
    )
    
    ADD_YADOMS_SOURCES(${YADOMS_SOURCES})
