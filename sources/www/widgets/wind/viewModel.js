@@ -69,6 +69,13 @@ widgetViewModelCtor = function weatherViewModel() {
      */
     this.initialize = function () {
         var self = this;
+        
+        //we configure the toolbar
+        this.widgetApi.toolbar({
+            activated: true,
+            displayTitle: true,
+            batteryItem: true
+        });        
     };
     
     this.mod = function(number, n) {
