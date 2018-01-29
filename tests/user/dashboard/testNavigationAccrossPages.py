@@ -29,7 +29,8 @@ class NavigationAccrossPages(unittest.TestCase):
    def getDisplayedPages(self, dashboardSubWindow):
       displayedPages = []
       for page in dashboardSubWindow.find_elements_by_xpath("div"):
-         if page.get_attribute('class') is not None and 'hidden' not in page.get_attribute('class'):
+         pageClasses = page.get_attribute('class')
+         if pageClasses is not None and 'hidden' not in pageClasses:
             displayedPages.append(page)
       return displayedPages
 
