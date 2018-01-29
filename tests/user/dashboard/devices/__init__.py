@@ -47,6 +47,7 @@ def waitDevicesTableHasDeviceNamed(browser, expectedDeviceName):
    return findDeviceInTable(devicesTable, expectedDeviceName)
    
 def getDeviceDatas(devicesTable, deviceId):
+   assert deviceId is not None
    return devicesTable.find_elements_by_xpath('//tr[@device-id="' + deviceId + '"]/td')
 
 def getDeviceName(devicesTable, deviceId):
@@ -85,7 +86,9 @@ def getKeywords(devicesTable):
    return tablerows
    
 def getDeployKeywordsButton(devicesTable, deviceId):
-   return getDeviceDatas(devicesTable, deviceId)[0].find_element_by_class_name('deploy')
+   datas = getDeviceDatas(devicesTable, deviceId)
+   assert len(datas) > 0
+   return datas[0].find_element_by_class_name('deploy')
 
 def getKeywordName(keywordRow):
    item = keywordRow.find_element_by_class_name('keyword-friendlyName')

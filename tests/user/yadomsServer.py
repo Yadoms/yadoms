@@ -80,6 +80,8 @@ def start(startupArgs=[]):
    print '  ', ' '.join(str(item) for item in cmdLine)
    serverProcess = psutil.Popen(cmdLine)
 
+   print '[DEBUG] server process status =', serverProcess.status()   #TODO virer
+
    if waitServerStarted() == True:
       return serverProcess
 

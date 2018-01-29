@@ -41,10 +41,12 @@ def openPage(browser, pageElementId, elementIdToWait):
    #WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, elementIdToWait)))
    #
    # But here we don't want to be blocked here, so this is a workaround :
+   import time
    button = browser.find_element_by_id(pageElementId)
    retries = 10
    while(retries > 0):
       button.click()
+      time.sleep(1)
       foundElements = browser.find_elements_by_xpath(".//div[@id='main-dashboard-sub-window-content']//*[@id='" + elementIdToWait + "']")
       if len(foundElements) and foundElements[0].is_displayed():
          return
