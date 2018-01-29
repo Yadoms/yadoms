@@ -33,8 +33,23 @@ def close(browser):
 def openPage(browser, pageElementId, elementIdToWait):
    """Open a specific dashboard page"""
    
-   browser.find_element_by_id(pageElementId).click()
-   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, elementIdToWait)))
+   # Note that the navigation is not perfect, but considered as acceptable for actual Yadoms version
+   # See testNavigationAccrossPages.py and https://github.com/Yadoms/yadoms/issues/172 for more information
+   # So the ideal code should be :
+   #
+   #browser.find_element_by_id(pageElementId).click()
+   #WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, elementIdToWait)))
+   #
+   # But here we don't want to be blocked here, so this is a workaround :
+   button = browser.find_element_by_id(pageElementId)
+   retries = 10
+   while(retries > 0):
+      button.click()
+      foundElements = browser.find_elements_by_xpath(".//div[@id='main-dashboard-sub-window-content']//*[@id='" + elementIdToWait + "']")
+      if len(foundElements) and foundElements[0].is_displayed():
+         return
+      retries = retries - 1
+   assert False
 
    
 def openSummary(browser):
