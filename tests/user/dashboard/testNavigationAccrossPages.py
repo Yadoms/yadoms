@@ -29,8 +29,7 @@ class NavigationAccrossPages(unittest.TestCase):
    def getDisplayedPages(self, dashboardSubWindow):
       displayedPages = []
       for page in dashboardSubWindow.find_elements_by_xpath("div"):
-         pageClasses = page.get_attribute('class')
-         if pageClasses is not None and 'hidden' not in pageClasses:
+         if page.is_displayed():
             displayedPages.append(page)
       return displayedPages
 
@@ -62,18 +61,15 @@ class NavigationAccrossPages(unittest.TestCase):
       # See https://github.com/Yadoms/yadoms/issues/172 for more information
 
       def checkPage(dashboardSubWindow, expectedPageTitles, pageIndex):
-         displayedPages = self.getDisplayedPages(dashboardSubWindow)
-         assert len(displayedPages) == 1
-         pageTitle = displayedPages[0].get_attribute('id')
-         if pageTitle == expectedPageTitles[pageIndex]:
-            print '   [OK] Get expected page (' + expectedPageTitles[pageIndex] + ')'
-            return True
-         print '    [WARNING] Displayed page is ' + pageTitle + ', should be ' + expectedPageTitles[pageIndex]
-         return False
+         page = dashboardSubWindow.find_element_by_xpath(".//div[@id='" + expectedPageTitles[pageIndex] + "']")
+         return tools.waitUntil(lambda: page.is_displayed())
+         #TODO ajouter le check du bouton sélectionné
 
       dashboardSubWindow = db.find_element_by_id("main-dashboard-sub-window-content")
+
       for page in range(0, len(menuEntries)):
-         assert tools.doUntil(lambda : self.click(menuEntries, page), lambda: checkPage(dashboardSubWindow, expectedPageTitles, page), 3)
+         self.click(menuEntries, page)
+         self.assertTrue(checkPage(dashboardSubWindow, expectedPageTitles, page))
 
 
    def test_quickNavigation(self):

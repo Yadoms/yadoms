@@ -15,9 +15,7 @@
                   <div class="col-sm-3 col-md-2 sidebar">
                      <ul id="dashboard-btns" class="nav nav-sidebar">
                         <li id="btn-dashboard-summary" class="active"><a href="#" data-i18n="modals.dashboard.sub-windows.summary.title"></a></li>
-                        <!--<li id="btn-dashboard-user-management" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.user-management.title"></a></li>-->
                         <li id="btn-dashboard-system-configuration" class=""><a href="#"><span class="fa fa-cogs"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.system-configuration.title"></span></a></li>
-                        <!--<li id="btn-dashboard-user-configuration" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.user-configuration.title"></a></li>-->
                         <li id="btn-dashboard-plugins" class=""><a href="#"><span class="fa fa-rocket"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.plugins.title"></span></a></li>
                         <li id="btn-dashboard-devices" class=""><a href="#"><span class="fa fa-tasks"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.title"></span></a></li>
                         <li id="btn-dashboard-automatisation" class=""><a href="#"><span class="fa fa-code-fork"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.title"></span></a></li>
@@ -97,11 +95,15 @@
    }
 
    function setBtnActive(btnId) {
+       debugger;
+    console.debug(arguments.callee.name, btnId) #TODO virer
       $("ul#dashboard-btns > li").removeClass("active");
       $("li#" + btnId).addClass("active");
    }
 
    function disableAllDashboardButtons() {
+       return;
+       console.debug(arguments.callee.name) #TODO virer (avec le reste de la fonction)
       $("#btn-dashboard-summary").off('click');
       $("#btn-dashboard-system-configuration").off('click');
       $("#btn-dashboard-plugins").off('click');
@@ -114,18 +116,20 @@
    }
    
    function enableAllDashboardButtons() {
-      $("#btn-dashboard-summary").on('click', showDashboardTabSummary);
-      $("#btn-dashboard-system-configuration").on('click', showDashboardTabSystemConfiguration);
-      $("#btn-dashboard-plugins").on('click', showDashboardTabPlugin);
-      $("#btn-dashboard-devices").on('click', showDashboardTabDevice);
-      $("#btn-dashboard-automatisation").on('click', showDashboardTabAutomation);
-      $("#btn-dashboard-recipients").on('click', showDashboardTabRecipient);
-      $("#btn-dashboard-install-update").on('click', showDashboardTabUpdate);
-      $("#btn-dashboard-maintenance").on('click', showDashboardTabMaintenance);
-      $("#btn-dashboard-about").on('click', showDashboardTabAbout);
+    console.debug(arguments.callee.name) #TODO virer
+      $("#btn-dashboard-summary").off('click').on('click', showDashboardTabSummary);
+      $("#btn-dashboard-system-configuration").off('click').on('click', showDashboardTabSystemConfiguration);
+      $("#btn-dashboard-plugins").off('click').on('click', showDashboardTabPlugin);
+      $("#btn-dashboard-devices").off('click').on('click', showDashboardTabDevice);
+      $("#btn-dashboard-automatisation").off('click').on('click', showDashboardTabAutomation);
+      $("#btn-dashboard-recipients").off('click').on('click', showDashboardTabRecipient);
+      $("#btn-dashboard-install-update").off('click').on('click', showDashboardTabUpdate);
+      $("#btn-dashboard-maintenance").off('click').on('click', showDashboardTabMaintenance);
+      $("#btn-dashboard-about").off('click').on('click', showDashboardTabAbout);
    }
 
    function showDashboardTabSummary() {
+    console.debug(arguments.callee.name) #TODO virer
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
       disableAllDashboardButtons();
@@ -134,7 +138,7 @@
       .done(function() {
          Yadoms.initializeSummaryDashboard()
             .done(function() {
-               setBtnActive(this.id);
+               setBtnActive("btn-dashboard-summary");
             })
             .always(function () {
                enableAllDashboardButtons();
@@ -145,24 +149,8 @@
       });
    }
 
-   function showDashboardTabUserManagement() {
-      //Has the page change is realized on an "li" element, we can't use disabled property.
-      //the only way to prevent from multiple click on the li is to unbind the click
-      $("#btn-dashboard-user-management").unbind('click');
-      clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/user-management.html")
-      .done(function() {
-         setBtnActive(this.id);
-      })
-      .always(function() {
-         $("#btn-dashboard-user-management").bind('click', showDashboardTabUserManagement);
-      });
-   }
-   $("#btn-dashboard-user-management").bind('click', showDashboardTabUserManagement);
-
-
-
    function showDashboardTabSystemConfiguration() {
+    console.debug(arguments.callee.name) #TODO virer
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
       disableAllDashboardButtons();
@@ -171,7 +159,7 @@
       .done(function() {
          Yadoms.initializeSystemConfigurationDashboard()
          .done(function () {
-            setBtnActive(this.id);
+            setBtnActive("btn-dashboard-system-configuration");
          })
          .always(function () {
             enableAllDashboardButtons();
@@ -182,24 +170,8 @@
       });
    }
 
-   function showDashboardTabUserConfiguration() {
-      //Has the page change is realized on an "li" element, we can't use disabled property.
-      //the only way to prevent from multiple click on the li is to unbind the click
-      $("#btn-dashboard-system-user").unbind('click');
-      clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/user-configuration.html")
-      .done(function() {
-         setBtnActive(this.id);
-      })
-      .always(function() {
-         $("#btn-dashboard-user-configuration").bind('click', showDashboardTabUserConfiguration);
-      });
-   }
-   $("#btn-dashboard-user-configuration").bind('click', showDashboardTabUserConfiguration);
-
-
-  
    function showDashboardTabPlugin() {
+    console.debug(arguments.callee.name) #TODO virer
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
       disableAllDashboardButtons();
@@ -208,7 +180,7 @@
       .done(function() {
          Yadoms.initializePluginDashboard()
          .done(function () {
-            setBtnActive(this.id);
+            setBtnActive("btn-dashboard-plugins");
          })
          .always(function () {
             enableAllDashboardButtons();
@@ -220,6 +192,7 @@
    }
 
    function showDashboardTabDevice() {
+    console.debug(arguments.callee.name) #TODO virer
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
       disableAllDashboardButtons();
@@ -228,7 +201,7 @@
       .done(function() {
          Yadoms.initializeDeviceDashboard()
          .done(function () {
-            setBtnActive(this.id);
+            setBtnActive("btn-dashboard-devices");
          })
          .always(function () {
             enableAllDashboardButtons();
@@ -240,6 +213,7 @@
    }
 
    function showDashboardTabAutomation() {
+    console.debug(arguments.callee.name) #TODO virer
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
       disableAllDashboardButtons();
@@ -248,7 +222,7 @@
       .done(function() {
          Yadoms.initializeAutomationCenterDashboard()
          .done(function () {
-            setBtnActive(this.id);
+            setBtnActive("btn-dashboard-automatisation");
          })
          .always(function () {
             enableAllDashboardButtons();
@@ -260,6 +234,7 @@
    }
 
    function showDashboardTabRecipient() {
+    console.debug(arguments.callee.name) #TODO virer
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
       disableAllDashboardButtons();
@@ -268,7 +243,7 @@
       .done(function() {
          Yadoms.initializeRecipientsDashboard()
          .done(function () {
-            setBtnActive(this.id);
+            setBtnActive("btn-dashboard-recipients");
          })
          .always(function () {
             enableAllDashboardButtons();
@@ -280,6 +255,7 @@
    }
 
    function showDashboardTabUpdate() {
+    console.debug(arguments.callee.name) #TODO virer
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
       disableAllDashboardButtons();
@@ -288,7 +264,7 @@
       .done(function() {
          Yadoms.initializeInstallUpdateDashboard()
          .done(function () {
-            setBtnActive(this.id);
+            setBtnActive("btn-dashboard-install-update");
          })
          .always(function () {
             enableAllDashboardButtons();
@@ -300,6 +276,7 @@
    }
    
    function showDashboardTabMaintenance() {
+    console.debug(arguments.callee.name) #TODO virer
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
       disableAllDashboardButtons();
@@ -308,7 +285,7 @@
       .done(function() {
          Yadoms.initializeMaintenanceDashboard()
          .done(function () {
-            setBtnActive(this.id);
+            setBtnActive("btn-dashboard-maintenance");
          })
          .always(function () {
             enableAllDashboardButtons();
@@ -320,6 +297,7 @@
    }
    
    function showDashboardTabAbout() {
+    console.debug(arguments.callee.name) #TODO virer
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
       disableAllDashboardButtons();
@@ -328,7 +306,7 @@
       .done(function() {
 	     Yadoms.initializeAboutDashboard()
          .done(function () {
-            setBtnActive(this.id);
+            setBtnActive("btn-dashboard-about");
          })
 		 .always(function() {
 		    enableAllDashboardButtons();

@@ -34,6 +34,10 @@
     background-color: #428bca;
 }
 
+.nav-sidebar > .active > a:focus {
+    background-color: #428bca;
+}
+
 .summary-table {
     width: auto;
 }
