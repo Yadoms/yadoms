@@ -1,2 +1,2 @@
 ### 1.0.2-beta.1
-* First release
+* Fix unstable connexion with the counter.

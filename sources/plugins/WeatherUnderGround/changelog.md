@@ -1,2 +1,2 @@
 ### 1.0.2
-* First release
+* Fix empty historization due to data format not supported for rain and snow.
