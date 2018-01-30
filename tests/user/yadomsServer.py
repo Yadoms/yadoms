@@ -80,8 +80,20 @@ def start(startupArgs=[]):
    print '  ', ' '.join(str(item) for item in cmdLine)
    serverProcess = psutil.Popen(cmdLine)
 
+   # DEBUG
    import datetime
    print datetime.datetime.now(), ': [DEBUG] server process status =', serverProcess.status()   #TODO virer
+   import imp
+   try:
+      imp.find_module('wmi')
+      import wmi
+      c = wmi.WMI ()
+      for process in c.Win32_Process ():
+         print process.ProcessId, process.Name
+   except ImportError:
+      print 'Unable to print running processes, "wmi" module not installed'
+
+   # END DEBUG
 
    if waitServerStarted() == True:
       return serverProcess
