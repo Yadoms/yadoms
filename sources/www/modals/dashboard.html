@@ -96,14 +96,14 @@
 
    function setBtnActive(btnId) {
        debugger;
-    console.debug(arguments.callee.name, btnId) #TODO virer
+    console.debug(arguments.callee.name, btnId) //TODO virer
       $("ul#dashboard-btns > li").removeClass("active");
       $("li#" + btnId).addClass("active");
    }
 
    function disableAllDashboardButtons() {
        return;
-       console.debug(arguments.callee.name) #TODO virer (avec le reste de la fonction)
+       console.debug(arguments.callee.name) //TODO virer (avec le reste de la fonction)
       $("#btn-dashboard-summary").off('click');
       $("#btn-dashboard-system-configuration").off('click');
       $("#btn-dashboard-plugins").off('click');
@@ -116,7 +116,7 @@
    }
    
    function enableAllDashboardButtons() {
-    console.debug(arguments.callee.name) #TODO virer
+    console.debug(arguments.callee.name) //TODO virer
       $("#btn-dashboard-summary").off('click').on('click', showDashboardTabSummary);
       $("#btn-dashboard-system-configuration").off('click').on('click', showDashboardTabSystemConfiguration);
       $("#btn-dashboard-plugins").off('click').on('click', showDashboardTabPlugin);
@@ -129,7 +129,7 @@
    }
 
    function showDashboardTabSummary() {
-    console.debug(arguments.callee.name) #TODO virer
+    console.debug(arguments.callee.name) //TODO virer
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
       disableAllDashboardButtons();
@@ -150,7 +150,7 @@
    }
 
    function showDashboardTabSystemConfiguration() {
-    console.debug(arguments.callee.name) #TODO virer
+    console.debug(arguments.callee.name) //TODO virer
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
       disableAllDashboardButtons();
@@ -171,7 +171,7 @@
    }
 
    function showDashboardTabPlugin() {
-    console.debug(arguments.callee.name) #TODO virer
+    console.debug(arguments.callee.name) //TODO virer
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
       disableAllDashboardButtons();
@@ -192,7 +192,7 @@
    }
 
    function showDashboardTabDevice() {
-    console.debug(arguments.callee.name) #TODO virer
+    console.debug(arguments.callee.name) //TODO virer
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
       disableAllDashboardButtons();
@@ -213,7 +213,7 @@
    }
 
    function showDashboardTabAutomation() {
-    console.debug(arguments.callee.name) #TODO virer
+    console.debug(arguments.callee.name) //TODO virer
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
       disableAllDashboardButtons();
@@ -234,7 +234,7 @@
    }
 
    function showDashboardTabRecipient() {
-    console.debug(arguments.callee.name) #TODO virer
+    console.debug(arguments.callee.name) //TODO virer
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
       disableAllDashboardButtons();
@@ -255,7 +255,7 @@
    }
 
    function showDashboardTabUpdate() {
-    console.debug(arguments.callee.name) #TODO virer
+    console.debug(arguments.callee.name) //TODO virer
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
       disableAllDashboardButtons();
@@ -276,7 +276,7 @@
    }
    
    function showDashboardTabMaintenance() {
-    console.debug(arguments.callee.name) #TODO virer
+    console.debug(arguments.callee.name) //TODO virer
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
       disableAllDashboardButtons();
@@ -297,7 +297,7 @@
    }
    
    function showDashboardTabAbout() {
-    console.debug(arguments.callee.name) #TODO virer
+    console.debug(arguments.callee.name) //TODO virer
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
       disableAllDashboardButtons();
