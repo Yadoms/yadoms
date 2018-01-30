@@ -66,8 +66,15 @@ namespace update
                }
             case kNextScanTimerId:
                YADOMS_LOG(debug) << "Start scan...";
-               if (scan())
-                  notifyNewUpdateAvailable();
+               try
+               {
+                  if (scan())
+                     notifyNewUpdateAvailable();
+               }
+               catch (std::exception& exception)
+               {
+                  YADOMS_LOG(warning) << "Unable to check for Update, " << exception.what();
+               }
                nexScanTimer->start();
                break;
 
