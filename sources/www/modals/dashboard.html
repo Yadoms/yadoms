@@ -15,7 +15,10 @@
             <div class="col-sm-3 col-md-2 sidebar">
               <ul id="dashboard-btns" class="nav nav-sidebar">
                 <li id="btn-dashboard-summary" class="active">
-                  <a href="#" data-i18n="modals.dashboard.sub-windows.summary.title"></a>
+                  <a href="#">
+                    <span class="fa fa-info"></span>&nbsp;
+                    <span data-i18n="modals.dashboard.sub-windows.summary.title"></span>
+                  </a>
                 </li>
                 <li id="btn-dashboard-system-configuration" class="">
                   <a href="#">
@@ -60,7 +63,10 @@
                   </a>
                 </li>
                 <li id="btn-dashboard-about" class="">
-                  <a href="#" data-i18n="modals.dashboard.sub-windows.about.title"></a>
+                  <a href="#">
+                    <span class="fa fa-comment"></span>&nbsp;
+                    <span data-i18n="modals.dashboard.sub-windows.about.title"></span>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -88,7 +94,7 @@
     var d = new $.Deferred();
 
     try {
-      var animationDuration = 300;
+      var animationDuration = 200;
       var $container = $("div#main-dashboard-sub-window-content");
       $container.slideUp(animationDuration, function () {
         $container.empty();
