@@ -91,12 +91,13 @@ class NavigationAccrossPages(unittest.TestCase):
       dashboardButtons = db.find_element_by_id("dashboard-btns")
       menuEntries = dashboardButtons.find_elements_by_xpath("./child::*")
 
-      for page in range(0, len(menuEntries)):
-         self.click(menuEntries, page)
+      # Do several tests because #172 is not systematic
+      for testId in range(0, 10):
 
-      nbDisplayedPages = len(db.find_elements_by_xpath(".//div[@id='main-dashboard-sub-window-content']/div"))
-      print '         ' + str(nbDisplayedPages) + ' pages displayed, expected 1'
-      self.assertEqual(nbDisplayedPages, 1)
+         for page in range(0, len(menuEntries)):
+            self.click(menuEntries, page)
+
+         self.assertTrue(tools.waitUntil(lambda: len(db.find_elements_by_xpath(".//div[@id='main-dashboard-sub-window-content']/div")) == 1))
 
       
    def tearDown(self):
