@@ -1,3 +1,13 @@
+### 2.0.2-rc.1
+
+#### New features and fixes
+
+##### Yadoms Core
+* Filter some notifications
+* Fix refresh-page option when disabled
+* Fix navigation between dashboard pages
+* Add icon on all dashboard pages
+
 ### 2.0.2-beta.4
 
 #### New features and fixes

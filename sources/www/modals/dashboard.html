@@ -2,355 +2,396 @@
 
 <!--Main Dashboard Modal -->
 <div class="modal fade" id="main-dashboard-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-   <div class="modal-dialog main-dashboard-modal">
-      <div class="modal-content main-dashboard-modal-content">
-         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="myModalLabel" data-i18n="modals.dashboard.title">Dashboard</h4>
-         </div>
-         <div class="modal-body dashboard-modal-body">
-            <div class="">
-               <div class="row">
-                  <!-- Dashboard menu -->
-                  <div class="col-sm-3 col-md-2 sidebar">
-                     <ul id="dashboard-btns" class="nav nav-sidebar">
-                        <li id="btn-dashboard-summary" class="active"><a href="#" data-i18n="modals.dashboard.sub-windows.summary.title"></a></li>
-                        <!--<li id="btn-dashboard-user-management" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.user-management.title"></a></li>-->
-                        <li id="btn-dashboard-system-configuration" class=""><a href="#"><span class="fa fa-cogs"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.system-configuration.title"></span></a></li>
-                        <!--<li id="btn-dashboard-user-configuration" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.user-configuration.title"></a></li>-->
-                        <li id="btn-dashboard-plugins" class=""><a href="#"><span class="fa fa-rocket"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.plugins.title"></span></a></li>
-                        <li id="btn-dashboard-devices" class=""><a href="#"><span class="fa fa-tasks"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.title"></span></a></li>
-                        <li id="btn-dashboard-automatisation" class=""><a href="#"><span class="fa fa-code-fork"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.title"></span></a></li>
-                        <li id="btn-dashboard-recipients" class=""><a href="#"><span class="fa fa-envelope"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.recipients.title"></span></a></li>
-                        <li id="btn-dashboard-install-update" class=""><a href="#"><span class="glyphicon glyphicon-save"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.install-update.title"></span></a></li>
-                        <li id="btn-dashboard-maintenance" class=""><a href="#"><span class="fa fa-briefcase"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.maintenance.title"></span></a></li>
-                        <li id="btn-dashboard-about" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.about.title"></a></li>
-                     </ul>
-                  </div>
-                  <!-- Dashboard content -->
-                  <div id="main-dashboard-sub-window-content" class="col-sm-9 col-md-10">
-                     <!--sub windows will be inserted here -->
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.close">Close</button>
-         </div>
+  <div class="modal-dialog main-dashboard-modal">
+    <div class="modal-content main-dashboard-modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel" data-i18n="modals.dashboard.title">Dashboard</h4>
       </div>
-   </div>
+      <div class="modal-body dashboard-modal-body">
+        <div class="">
+          <div class="row">
+            <!-- Dashboard menu -->
+            <div class="col-sm-3 col-md-2 sidebar">
+              <ul id="dashboard-btns" class="nav nav-sidebar">
+                <li id="btn-dashboard-summary" class="">
+                  <a href="#">
+                    <span class="fa fa-info"></span>&nbsp;
+                    <span data-i18n="modals.dashboard.sub-windows.summary.title"></span>
+                  </a>
+                </li>
+                <li id="btn-dashboard-system-configuration" class="">
+                  <a href="#">
+                    <span class="fa fa-cogs"></span>&nbsp;
+                    <span data-i18n="modals.dashboard.sub-windows.system-configuration.title"></span>
+                  </a>
+                </li>
+                <li id="btn-dashboard-plugins" class="">
+                  <a href="#">
+                    <span class="fa fa-rocket"></span>&nbsp;
+                    <span data-i18n="modals.dashboard.sub-windows.plugins.title"></span>
+                  </a>
+                </li>
+                <li id="btn-dashboard-devices" class="">
+                  <a href="#">
+                    <span class="fa fa-tasks"></span>&nbsp;
+                    <span data-i18n="modals.dashboard.sub-windows.devices.title"></span>
+                  </a>
+                </li>
+                <li id="btn-dashboard-automatisation" class="">
+                  <a href="#">
+                    <span class="fa fa-code-fork"></span>&nbsp;
+                    <span data-i18n="modals.dashboard.sub-windows.automation-center.title"></span>
+                  </a>
+                </li>
+                <li id="btn-dashboard-recipients" class="">
+                  <a href="#">
+                    <span class="fa fa-envelope"></span>&nbsp;
+                    <span data-i18n="modals.dashboard.sub-windows.recipients.title"></span>
+                  </a>
+                </li>
+                <li id="btn-dashboard-install-update" class="">
+                  <a href="#">
+                    <span class="glyphicon glyphicon-save"></span>&nbsp;
+                    <span data-i18n="modals.dashboard.sub-windows.install-update.title"></span>
+                  </a>
+                </li>
+                <li id="btn-dashboard-maintenance" class="">
+                  <a href="#">
+                    <span class="fa fa-briefcase"></span>&nbsp;
+                    <span data-i18n="modals.dashboard.sub-windows.maintenance.title"></span>
+                  </a>
+                </li>
+                <li id="btn-dashboard-about" class="">
+                  <a href="#">
+                    <span class="fa fa-comment"></span>&nbsp;
+                    <span data-i18n="modals.dashboard.sub-windows.about.title"></span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <!-- Dashboard content -->
+            <div id="main-dashboard-sub-window-content" class="col-sm-9 col-md-10">
+              <!--sub windows will be inserted here -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.close">Close</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
+  var subWindowList = [];
+  enableAllDashboardButtons();
 
+  function asyncLoad(subWindowPath) {
+    assert(!isNullOrUndefined(subWindowPath), "subWindowPath must be defined");
 
-   var subWindowList = [];
-   enableAllDashboardButtons();
+    var d = new $.Deferred();
 
-   function asyncLoad(subWindowPath) {
-      assert(!isNullOrUndefined(subWindowPath), "subWindowPath must be defined");
+    try {
+      var animationDuration = 200;
+      var $container = $("div#main-dashboard-sub-window-content");
+      $container.slideUp(animationDuration, function () {
+        $container.empty();
+        if (isNullOrUndefined(subWindowList[subWindowPath])) {
+          //it's the first time we load this sub window
 
-      var d = new $.Deferred();
+          RestEngine.getHtml(subWindowPath)
+            .done(function (data) {
+              var $data = $(data);
+              $data.i18n();
+              //we save it in the sub window list
+              subWindowList[subWindowPath] = $data;
 
-      try {
-         var animationDuration = 300;
-         var $container = $("div#main-dashboard-sub-window-content");
-         $container.slideUp(animationDuration, function () {
-            $container.empty();
-            if (isNullOrUndefined(subWindowList[subWindowPath])) {
-               //it's the first time we load this sub window
-
-               RestEngine.getHtml(subWindowPath)
-               .done(function (data) {
-                  var $data = $(data);
-                  $data.i18n();
-                  //we save it in the sub window list
-                  subWindowList[subWindowPath] = $data;
-
-                  //we add the modal to the body
-                  $container.append($data);
-                  $container.slideDown(animationDuration);
-                  //we resolve
-                  d.resolve();
-               })
-               .fail(function (error) {
-                  notifyError($.t("modals.dashboard.unableToLoadSubWindow", { subWindowPath: subWindowPath }), error);
-                  d.reject();
-               });
-            }
-            else {
-               //we already have loaded this sub window
-               //we take it from the sub window list
-               var $data = subWindowList[subWindowPath];
-
-               //we add the modal to the body
-               $container.append($data);
-               $container.slideDown(animationDuration);
-               //we call the callback
-               d.resolve();
-            }
-         });
-      } catch(e) {
-         d.reject();
-      }
-      return d.promise();
-   }
-
-   function setBtnActive(btnId) {
-      $("ul#dashboard-btns > li").removeClass("active");
-      $("li#" + btnId).addClass("active");
-   }
-
-   function disableAllDashboardButtons() {
-      $("#btn-dashboard-summary").off('click');
-      $("#btn-dashboard-system-configuration").off('click');
-      $("#btn-dashboard-plugins").off('click');
-      $("#btn-dashboard-devices").off('click');
-      $("#btn-dashboard-automatisation").off('click');
-      $("#btn-dashboard-recipients").off('click');
-      $("#btn-dashboard-install-update").off('click');
-      $("#btn-dashboard-maintenance").off('click');
-      $("#btn-dashboard-about").off('click');
-   }
-   
-   function enableAllDashboardButtons() {
-      $("#btn-dashboard-summary").on('click', showDashboardTabSummary);
-      $("#btn-dashboard-system-configuration").on('click', showDashboardTabSystemConfiguration);
-      $("#btn-dashboard-plugins").on('click', showDashboardTabPlugin);
-      $("#btn-dashboard-devices").on('click', showDashboardTabDevice);
-      $("#btn-dashboard-automatisation").on('click', showDashboardTabAutomation);
-      $("#btn-dashboard-recipients").on('click', showDashboardTabRecipient);
-      $("#btn-dashboard-install-update").on('click', showDashboardTabUpdate);
-      $("#btn-dashboard-maintenance").on('click', showDashboardTabMaintenance);
-      $("#btn-dashboard-about").on('click', showDashboardTabAbout);
-   }
-
-   function showDashboardTabSummary() {
-      //Has the page change is realized on an "li" element, we can't use disabled property.
-      //the only way to prevent from multiple click on the li is to unbind the click
-      disableAllDashboardButtons();
-      clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/summary.html")
-      .done(function() {
-         Yadoms.initializeSummaryDashboard()
-            .done(function() {
-               setBtnActive(this.id);
+              //we add the modal to the body
+              $container.empty();
+              $container.append($data);
+              $container.slideDown(animationDuration);
+              //we resolve
+              d.resolve();
             })
-            .always(function () {
-               enableAllDashboardButtons();
+            .fail(function (error) {
+              notifyError($.t("modals.dashboard.unableToLoadSubWindow", {
+                subWindowPath: subWindowPath
+              }), error);
+              d.reject();
             });
+        } else {
+          //we already have loaded this sub window
+          //we take it from the sub window list
+          var $data = subWindowList[subWindowPath];
+
+          //we add the modal to the body
+          $container.append($data);
+          $container.slideDown(animationDuration);
+          //we call the callback
+          d.resolve();
+        }
+      });
+    } catch (e) {
+      d.reject();
+    }
+    return d.promise();
+  }
+
+  function setBtnActive(btnId) {
+    $("ul#dashboard-btns > li.active").removeClass("active");
+    $("li#" + btnId).addClass("active");
+  }
+
+  function enableAllDashboardButtons() {
+    $("#btn-dashboard-summary").off('click').on('click', showDashboardTabSummary);
+    $("#btn-dashboard-system-configuration").off('click').on('click', showDashboardTabSystemConfiguration);
+    $("#btn-dashboard-plugins").off('click').on('click', showDashboardTabPlugin);
+    $("#btn-dashboard-devices").off('click').on('click', showDashboardTabDevice);
+    $("#btn-dashboard-automatisation").off('click').on('click', showDashboardTabAutomation);
+    $("#btn-dashboard-recipients").off('click').on('click', showDashboardTabRecipient);
+    $("#btn-dashboard-install-update").off('click').on('click', showDashboardTabUpdate);
+    $("#btn-dashboard-maintenance").off('click').on('click', showDashboardTabMaintenance);
+    $("#btn-dashboard-about").off('click').on('click', showDashboardTabAbout);
+  }
+
+
+  var showDashboardTabSummaryButtonClicked = false;
+
+  function showDashboardTabSummary() {
+    if (showDashboardTabSummaryButtonClicked) {
+      return;
+    }
+    showDashboardTabSummaryButtonClicked = true;
+
+    clearInterval(Yadoms.periodicDashboardTask);
+    asyncLoad("modals/dashboard/summary.html")
+      .done(function () {
+        Yadoms.initializeSummaryDashboard()
+          .done(function () {
+            setBtnActive("btn-dashboard-summary");
+          })
+          .always(function () {
+            showDashboardTabSummaryButtonClicked = false;
+          });
       })
-      .fail(function() {
-         enableAllDashboardButtons();
+      .fail(function () {
+        showDashboardTabSummaryButtonClicked = false;
       });
-   }
+  }
 
-   function showDashboardTabUserManagement() {
-      //Has the page change is realized on an "li" element, we can't use disabled property.
-      //the only way to prevent from multiple click on the li is to unbind the click
-      $("#btn-dashboard-user-management").unbind('click');
-      clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/user-management.html")
-      .done(function() {
-         setBtnActive(this.id);
+
+  var showDashboardTabSystemConfigurationButtonClicked = false;
+
+  function showDashboardTabSystemConfiguration() {
+    if (showDashboardTabSystemConfigurationButtonClicked) {
+      return;
+    }
+    showDashboardTabSystemConfigurationButtonClicked = true;
+
+    clearInterval(Yadoms.periodicDashboardTask);
+    asyncLoad("modals/dashboard/system-configuration.html")
+      .done(function () {
+        Yadoms.initializeSystemConfigurationDashboard()
+          .done(function () {
+            setBtnActive("btn-dashboard-system-configuration");
+          })
+          .always(function () {
+            showDashboardTabSystemConfigurationButtonClicked = false;
+          });
       })
-      .always(function() {
-         $("#btn-dashboard-user-management").bind('click', showDashboardTabUserManagement);
+      .fail(function () {
+        showDashboardTabSystemConfigurationButtonClicked = false;
       });
-   }
-   $("#btn-dashboard-user-management").bind('click', showDashboardTabUserManagement);
+  }
 
 
+  var showDashboardTabPluginButtonClicked = false;
 
-   function showDashboardTabSystemConfiguration() {
-      //Has the page change is realized on an "li" element, we can't use disabled property.
-      //the only way to prevent from multiple click on the li is to unbind the click
-      disableAllDashboardButtons();
-      clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/system-configuration.html")
-      .done(function() {
-         Yadoms.initializeSystemConfigurationDashboard()
-         .done(function () {
-            setBtnActive(this.id);
-         })
-         .always(function () {
-            enableAllDashboardButtons();
-         });
+  function showDashboardTabPlugin() {
+    if (showDashboardTabPluginButtonClicked) {
+      return;
+    }
+    showDashboardTabPluginButtonClicked = true;
+
+    clearInterval(Yadoms.periodicDashboardTask);
+    asyncLoad("modals/dashboard/plugins.html")
+      .done(function () {
+        Yadoms.initializePluginDashboard()
+          .done(function () {
+            setBtnActive("btn-dashboard-plugins");
+          })
+          .always(function () {
+            showDashboardTabPluginButtonClicked = false;
+          });
       })
-      .fail(function() {
-         enableAllDashboardButtons();
+      .fail(function () {
+        showDashboardTabPluginButtonClicked = false;
       });
-   }
+  }
 
-   function showDashboardTabUserConfiguration() {
-      //Has the page change is realized on an "li" element, we can't use disabled property.
-      //the only way to prevent from multiple click on the li is to unbind the click
-      $("#btn-dashboard-system-user").unbind('click');
-      clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/user-configuration.html")
-      .done(function() {
-         setBtnActive(this.id);
+
+  var showDashboardTabDeviceButtonClicked = false;
+
+  function showDashboardTabDevice() {
+    if (showDashboardTabDeviceButtonClicked) {
+      return;
+    }
+    showDashboardTabDeviceButtonClicked = true;
+
+    clearInterval(Yadoms.periodicDashboardTask);
+    asyncLoad("modals/dashboard/devices.html")
+      .done(function () {
+        Yadoms.initializeDeviceDashboard()
+          .done(function () {
+            setBtnActive("btn-dashboard-devices");
+          })
+          .always(function () {
+            showDashboardTabDeviceButtonClicked = false;
+          });
       })
-      .always(function() {
-         $("#btn-dashboard-user-configuration").bind('click', showDashboardTabUserConfiguration);
+      .fail(function () {
+        showDashboardTabDeviceButtonClicked = false;
       });
-   }
-   $("#btn-dashboard-user-configuration").bind('click', showDashboardTabUserConfiguration);
+  }
 
 
-  
-   function showDashboardTabPlugin() {
-      //Has the page change is realized on an "li" element, we can't use disabled property.
-      //the only way to prevent from multiple click on the li is to unbind the click
-      disableAllDashboardButtons();
-      clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/plugins.html")
-      .done(function() {
-         Yadoms.initializePluginDashboard()
-         .done(function () {
-            setBtnActive(this.id);
-         })
-         .always(function () {
-            enableAllDashboardButtons();
-         });
+  var showDashboardTabAutomationButtonClicked = false;
+
+  function showDashboardTabAutomation() {
+    if (showDashboardTabAutomationButtonClicked) {
+      return;
+    }
+    showDashboardTabAutomationButtonClicked = true;
+
+    clearInterval(Yadoms.periodicDashboardTask);
+    asyncLoad("modals/dashboard/automation-center.html")
+      .done(function () {
+        Yadoms.initializeAutomationCenterDashboard()
+          .done(function () {
+            setBtnActive("btn-dashboard-automatisation");
+          })
+          .always(function () {
+            showDashboardTabAutomationButtonClicked = false;
+          });
       })
-      .fail(function() {
-         enableAllDashboardButtons();
+      .fail(function () {
+        showDashboardTabAutomationButtonClicked = false;
       });
-   }
+  }
 
-   function showDashboardTabDevice() {
-      //Has the page change is realized on an "li" element, we can't use disabled property.
-      //the only way to prevent from multiple click on the li is to unbind the click
-      disableAllDashboardButtons();
-      clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/devices.html")
-      .done(function() {
-         Yadoms.initializeDeviceDashboard()
-         .done(function () {
-            setBtnActive(this.id);
-         })
-         .always(function () {
-            enableAllDashboardButtons();
-         });
-      })
-      .fail(function() {
-         enableAllDashboardButtons();
-      });
-   }
 
-   function showDashboardTabAutomation() {
-      //Has the page change is realized on an "li" element, we can't use disabled property.
-      //the only way to prevent from multiple click on the li is to unbind the click
-      disableAllDashboardButtons();
-      clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/automation-center.html")
-      .done(function() {
-         Yadoms.initializeAutomationCenterDashboard()
-         .done(function () {
-            setBtnActive(this.id);
-         })
-         .always(function () {
-            enableAllDashboardButtons();
-         });
-      })
-      .fail(function() {
-         enableAllDashboardButtons();
-      });
-   }
+  var showDashboardTabRecipientButtonClicked = false;
 
-   function showDashboardTabRecipient() {
-      //Has the page change is realized on an "li" element, we can't use disabled property.
-      //the only way to prevent from multiple click on the li is to unbind the click
-      disableAllDashboardButtons();
-      clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/recipients.html")
-      .done(function() {
-         Yadoms.initializeRecipientsDashboard()
-         .done(function () {
-            setBtnActive(this.id);
-         })
-         .always(function () {
-            enableAllDashboardButtons();
-         });
-      })
-      .fail(function() {
-         enableAllDashboardButtons();
-      });
-   }
+  function showDashboardTabRecipient() {
+    if (showDashboardTabRecipientButtonClicked) {
+      return;
+    }
+    showDashboardTabRecipientButtonClicked = true;
 
-   function showDashboardTabUpdate() {
-      //Has the page change is realized on an "li" element, we can't use disabled property.
-      //the only way to prevent from multiple click on the li is to unbind the click
-      disableAllDashboardButtons();
-      clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/install-update.html")
-      .done(function() {
-         Yadoms.initializeInstallUpdateDashboard()
-         .done(function () {
-            setBtnActive(this.id);
-         })
-         .always(function () {
-            enableAllDashboardButtons();
-         });
+    clearInterval(Yadoms.periodicDashboardTask);
+    asyncLoad("modals/dashboard/recipients.html")
+      .done(function () {
+        Yadoms.initializeRecipientsDashboard()
+          .done(function () {
+            setBtnActive("btn-dashboard-recipients");
+          })
+          .always(function () {
+            showDashboardTabRecipientButtonClicked = false;
+          });
       })
-      .fail(function() {
-         enableAllDashboardButtons();
+      .fail(function () {
+        showDashboardTabRecipientButtonClicked = false;
       });
-   }
-   
-   function showDashboardTabMaintenance() {
-      //Has the page change is realized on an "li" element, we can't use disabled property.
-      //the only way to prevent from multiple click on the li is to unbind the click
-      disableAllDashboardButtons();
-      clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/maintenance.html")
-      .done(function() {
-         Yadoms.initializeMaintenanceDashboard()
-         .done(function () {
-            setBtnActive(this.id);
-         })
-         .always(function () {
-            enableAllDashboardButtons();
-         });
-      })
-      .fail(function() {
-         enableAllDashboardButtons();
-      });
-   }
-   
-   function showDashboardTabAbout() {
-      //Has the page change is realized on an "li" element, we can't use disabled property.
-      //the only way to prevent from multiple click on the li is to unbind the click
-      disableAllDashboardButtons();
-      clearInterval(Yadoms.periodicDashboardTask);
-      asyncLoad("modals/dashboard/about.html")
-      .done(function() {
-	     Yadoms.initializeAboutDashboard()
-         .done(function () {
-            setBtnActive(this.id);
-         })
-		 .always(function() {
-		    enableAllDashboardButtons();
-		 });		 
-      })
-      .fail(function() {
-         enableAllDashboardButtons();
-      });
-   }
+  }
 
-   //we async load some libraries
-   asyncLoadJSLibs([
-       "js/objects/automation/automation-rule-manager.js",
-       "js/objects/automation/automation-rule.js",
-       "js/objects/automation/automation-interpreter.js",
-       "js/objects/automation/automation-interpreter-manager.js"
-   ]).done(function() {
-      //we async configuration libraries
-      ConfigurationHelper.loadConfigurationLibs().done(function () {
-         //we load summary
-         $("#btn-dashboard-summary").click();
-      });
-   });
 
+  var showDashboardTabUpdateButtonClicked = false;
+
+  function showDashboardTabUpdate() {
+    if (showDashboardTabUpdateButtonClicked) {
+      return;
+    }
+    showDashboardTabUpdateButtonClicked = true;
+
+    clearInterval(Yadoms.periodicDashboardTask);
+    asyncLoad("modals/dashboard/install-update.html")
+      .done(function () {
+        Yadoms.initializeInstallUpdateDashboard()
+          .done(function () {
+            setBtnActive("btn-dashboard-install-update");
+          })
+          .always(function () {
+            showDashboardTabUpdateButtonClicked = false;
+          });
+      })
+      .fail(function () {
+        showDashboardTabUpdateButtonClicked = false;
+      });
+  }
+
+
+  var showDashboardTabMaintenanceButtonClicked = false;
+
+  function showDashboardTabMaintenance() {
+    if (showDashboardTabMaintenanceButtonClicked) {
+      return;
+    }
+    showDashboardTabMaintenanceButtonClicked = true;
+
+    clearInterval(Yadoms.periodicDashboardTask);
+    asyncLoad("modals/dashboard/maintenance.html")
+      .done(function () {
+        Yadoms.initializeMaintenanceDashboard()
+          .done(function () {
+            setBtnActive("btn-dashboard-maintenance");
+          })
+          .always(function () {
+            showDashboardTabMaintenanceButtonClicked = false;
+          });
+      })
+      .fail(function () {
+        showDashboardTabMaintenanceButtonClicked = false;
+      });
+  }
+
+
+  var showDashboardTabAboutButtonClicked = false;
+
+  function showDashboardTabAbout() {
+    if (showDashboardTabAboutButtonClicked) {
+      return;
+    }
+    showDashboardTabAboutButtonClicked = true;
+
+    clearInterval(Yadoms.periodicDashboardTask);
+    asyncLoad("modals/dashboard/about.html")
+      .done(function () {
+        Yadoms.initializeAboutDashboard()
+          .done(function () {
+            setBtnActive("btn-dashboard-about");
+          })
+          .always(function () {
+            showDashboardTabAboutButtonClicked = false;
+          });
+      })
+      .fail(function () {
+        showDashboardTabAboutButtonClicked = false;
+      });
+  }
+
+  //we async load some libraries
+  asyncLoadJSLibs([
+    "js/objects/automation/automation-rule-manager.js",
+    "js/objects/automation/automation-rule.js",
+    "js/objects/automation/automation-interpreter.js",
+    "js/objects/automation/automation-interpreter-manager.js"
+  ]).done(function () {
+    //we async configuration libraries
+    ConfigurationHelper.loadConfigurationLibs().done(function () {
+      //we load summary
+      $("#btn-dashboard-summary").click();
+    });
+  });
 </script>

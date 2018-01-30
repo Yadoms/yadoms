@@ -10,69 +10,72 @@
  * @param currentValue
  * @constructor
  */
-function StringParameterHandler(i18nContext, i18nKey, paramName, content, currentValue) {
-   assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
-   assert(paramName !== undefined, "paramName must be defined");
-   assert(content !== undefined, "content must be defined");
+function StringParameterHandler(i18nContext, i18nKey, paramName, content, currentValue, autocomplete) {
+    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
+    assert(paramName !== undefined, "paramName must be defined");
+    assert(content !== undefined, "content must be defined");
 
-   //we set the current value of the default value or empty string
-   if ((currentValue !== undefined) && (currentValue != null))
-      this.value = currentValue;
-   else if ((content.defaultValue !== undefined) && (content.defaultValue != null))
-      this.value = content.defaultValue;
-   else
-      this.value = "";
+    //we set the current value of the default value or empty string
+    if ((currentValue !== undefined) && (currentValue != null))
+        this.value = currentValue;
+    else if ((content.defaultValue !== undefined) && (content.defaultValue != null))
+        this.value = content.defaultValue;
+    else
+        this.value = "";
 
-   //we get max length value
-   this.maximumLength = parseInt(content.maximumLength);
+    //we set the current value of the default value or empty string
+    if (!isNullOrUndefinedOrEmpty(autocomplete))
+        this.autocomplete = autocomplete;
+    else
+        this.autocomplete = "";
 
-   //we cut the actual value in the maximumLength allowed if greater
-   if (!isNaN(this.maximumLength))
-      this.value =  this.value.substr(0,this.maximumLength);
+    //we get max length value
+    this.maximumLength = parseInt(content.maximumLength);
 
-   //we look for a regex pattern
-   if (!isNullOrUndefinedOrEmpty(content.regex)) {
-      this.regex = content.regex;
-      this.regexErrorMessage = content.regexErrorMessage;
-   }
+    //we cut the actual value in the maximumLength allowed if greater
+    if (!isNaN(this.maximumLength))
+        this.value = this.value.substr(0, this.maximumLength);
 
-   //we look if the field mustn't be blank
-   if (!isNullOrUndefined(content.required))
-       this.required = parseBool(content.required);
-   else
-       this.required = false;
+    //we look for a regex pattern
+    if (!isNullOrUndefinedOrEmpty(content.regex)) {
+        this.regex = content.regex;
+        this.regexErrorMessage = content.regexErrorMessage;
+    }
 
-   //we look if the text has to be encrypted or not
-   if (!isNullOrUndefined(content.encrypted)) {
-      this.encrypted = parseBool(content.encrypted);
-      //if it is encrypted, the crypting method depend on the decryptable attribute.
-      //if it is decryptable we use Xor encryption method, if not we can use md5 method
-      if (!isNullOrUndefined(content.decryptable)) {
-         this.decryptable = parseBool(content.decryptable);
-      }
-      else {
-         this.decryptable = true;
-      }
-   }
-   else {
-      this.encrypted = false;
-   }
+    //we look if the field mustn't be blank
+    if (!isNullOrUndefined(content.required))
+        this.required = parseBool(content.required);
+    else
+        this.required = false;
 
-   //we look if the text has to match to another named input
-   if (!isNullOrUndefined(content.mustMatchTo)) {
-      this.mustMatchTo = content.mustMatchTo;
-   }
-   else {
-      this.mustMatchTo = null;
-   }
+    //we look if the text has to be encrypted or not
+    if (!isNullOrUndefined(content.encrypted)) {
+        this.encrypted = parseBool(content.encrypted);
+        //if it is encrypted, the crypting method depend on the decryptable attribute.
+        //if it is decryptable we use Xor encryption method, if not we can use md5 method
+        if (!isNullOrUndefined(content.decryptable)) {
+            this.decryptable = parseBool(content.decryptable);
+        } else {
+            this.decryptable = true;
+        }
+    } else {
+        this.encrypted = false;
+    }
 
-   this.name = content.name;
-   this.uuid = createUUID();
-   this.paramName = paramName;
-   this.description = isNullOrUndefined(content.description)?"":content.description;
-   this.i18nContext = i18nContext;
-   this.i18nKey = i18nKey || paramName;
-   this.content = content;
+    //we look if the text has to match to another named input
+    if (!isNullOrUndefined(content.mustMatchTo)) {
+        this.mustMatchTo = content.mustMatchTo;
+    } else {
+        this.mustMatchTo = null;
+    }
+
+    this.name = content.name;
+    this.uuid = createUUID();
+    this.paramName = paramName;
+    this.description = isNullOrUndefined(content.description) ? "" : content.description;
+    this.i18nContext = i18nContext;
+    this.i18nKey = i18nKey || paramName;
+    this.content = content;
 }
 
 /**
@@ -83,61 +86,64 @@ StringParameterHandler.prototype.getDOMObject = function () {
     var input = "<input ";
 
     if (this.encrypted)
-        input +=        "type=\"password\" ";
+        input += "type=\"password\" ";
     else
-        input +=        "type=\"text\" ";
+        input += "type=\"text\" ";
 
-    input +=            "class=\"form-control enable-validation\" " +
-                        "id=\"" + this.uuid + "\" " +
-                        "name=\"" + this.uuid + "\" " +
-                        "data-content=\"" + this.description + "\" ";
-   if (this.required) {
-      input +=            "required aria-required ";
-      //this line MUST be translated before rendering
-      input += "data-validation-required-message=\"" + $.t("configuration.validationForm.required") + "\" ";
-   }
-   
-   var dataI18n = "data-i18n=\"";
-   dataI18n += "[data-content]" + this.i18nContext + this.i18nKey + ".description";
+    if (this.autocomplete)
+        input += "autocomplete=\"" + this.autocomplete + "\" ";
 
-   if (!isNaN(this.maximumLength))
-      input += "maxlength=\"" + this.maximumLength + "\" ";
+    input += "class=\"form-control enable-validation\" " +
+        "id=\"" + this.uuid + "\" " +
+        "name=\"" + this.uuid + "\" " +
+        "data-content=\"" + this.description + "\" ";
+    if (this.required) {
+        input += "required aria-required ";
+        //this line MUST be translated before rendering
+        input += "data-validation-required-message=\"" + $.t("configuration.validationForm.required") + "\" ";
+    }
 
-   if (!isNullOrUndefined(this.regex)) {
-      input += "pattern=\"" + this.regex + "\" data-validation-pattern-message=\"" + this.regexErrorMessage + "\"";
-      dataI18n += ";[data-validation-pattern-message]" + this.i18nContext + this.i18nKey + ".regexErrorMessage";
-   }
+    var dataI18n = "data-i18n=\"";
+    dataI18n += "[data-content]" + this.i18nContext + this.i18nKey + ".description";
 
-   if (!isNullOrUndefined(this.mustMatchTo)) {
-      input += "data-validation-match-match=\"" + this.mustMatchTo + "\"";
-      dataI18n += ";[data-validation-match-message]" + this.i18nContext + this.i18nKey + ".matchToErrorMessage";
-   }
+    if (!isNaN(this.maximumLength))
+        input += "maxlength=\"" + this.maximumLength + "\" ";
 
-   dataI18n += "\"";
+    if (!isNullOrUndefined(this.regex)) {
+        input += "pattern=\"" + this.regex + "\" data-validation-pattern-message=\"" + this.regexErrorMessage + "\"";
+        dataI18n += ";[data-validation-pattern-message]" + this.i18nContext + this.i18nKey + ".regexErrorMessage";
+    }
 
-   input += " value =\"";
-   if ((this.encrypted) && (this.decryptable))
-       input += EncryptionManager.decryptBase64(this.value, EncryptionManager.key);
-   else
-       input += this.value;
-   input +=  "\" ";
-   input += dataI18n + " >";
-   input += "</input>";
+    if (!isNullOrUndefined(this.mustMatchTo)) {
+        input += "data-validation-match-match=\"" + this.mustMatchTo + "\"";
+        dataI18n += ";[data-validation-match-message]" + this.i18nContext + this.i18nKey + ".matchToErrorMessage";
+    }
 
-   var self = this;
-   return ConfigurationHelper.createControlGroup(self, input);
+    dataI18n += "\"";
+
+    input += " value =\"";
+    if ((this.encrypted) && (this.decryptable))
+        input += EncryptionManager.decryptBase64(this.value, EncryptionManager.key);
+    else
+        input += this.value;
+    input += "\" ";
+    input += dataI18n + " >";
+    input += "</input>";
+
+    var self = this;
+    return ConfigurationHelper.createControlGroup(self, input);
 };
 
 StringParameterHandler.prototype.locateInDOM = function () {
-   return $("input#" + this.uuid);
+    return $("input#" + this.uuid);
 };
 
 /**
  * Get the param name
  * @returns {string}
  */
-StringParameterHandler.prototype.getParamName = function() {
-   return this.paramName;
+StringParameterHandler.prototype.getParamName = function () {
+    return this.paramName;
 };
 
 /**
@@ -147,9 +153,9 @@ StringParameterHandler.prototype.setEnabled = function (enabled) {
     var self = this;
 
     if (enabled) {
-            $("#" + self.uuid).addClass("enable-validation");
+        $("#" + self.uuid).addClass("enable-validation");
     } else {
-            $("#" + self.uuid).removeClass("enable-validation");
+        $("#" + self.uuid).removeClass("enable-validation");
     }
 }
 
@@ -158,21 +164,19 @@ StringParameterHandler.prototype.setEnabled = function (enabled) {
  * @returns {string}
  */
 StringParameterHandler.prototype.getCurrentConfiguration = function () {
-   var val = $("input#" + this.uuid).val();
-   if (this.encrypted) {
-      if (this.decryptable) {
-         this.value = EncryptionManager.encryptBase64(val, EncryptionManager.key);
-      }
-      else {
-         this.value = $.md5(val);
-      }
-   }
-   else {
+    var val = $("input#" + this.uuid).val();
+    if (this.encrypted) {
+        if (this.decryptable) {
+            this.value = EncryptionManager.encryptBase64(val, EncryptionManager.key);
+        } else {
+            this.value = $.md5(val);
+        }
+    } else {
         this.value = val;
-   }
-   
-   var d = new $.Deferred();
-   d.resolve(this.value);
-   return d.promise();
+    }
+
+    var d = new $.Deferred();
+    d.resolve(this.value);
+    return d.promise();
 
 };

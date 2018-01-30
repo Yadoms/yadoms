@@ -10,7 +10,7 @@
       "windSpeed": {
          "name": "Vitesse du vent",
          "description": "Choisir les données de l'équipement à afficher"
-      }
+      },
       "speedDisplay" : {
          "name": "Affichage de la vitesse",
          "description": "",

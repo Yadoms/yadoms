@@ -26,14 +26,6 @@ class NavigationAccrossPages(unittest.TestCase):
       print 'click on ' + menuEntries[pageIndex].text + ' page (index ' + str(pageIndex) + ')'
       menuEntries[pageIndex].click()
 
-   def getDisplayedPages(self, dashboardSubWindow):
-      displayedPages = []
-      for page in dashboardSubWindow.find_elements_by_xpath("div"):
-         if page.get_attribute('class') is not None and 'hidden' not in page.get_attribute('class'):
-            displayedPages.append(page)
-      return displayedPages
-
-      
    def test_rightPagesDisplayed(self):
       print '=== Test navigation accros dashboard pages ==='
       print 'ref Issues : #172, #174'
@@ -48,50 +40,64 @@ class NavigationAccrossPages(unittest.TestCase):
          u'dashboard-install-update', \
          u'dashboard-maintenance', \
          u'dashboard-about']
+
+      expectedButtons = [ \
+         u'btn-dashboard-summary', \
+         u'btn-dashboard-system-configuration', \
+         u'btn-dashboard-plugins', \
+         u'btn-dashboard-devices', \
+         u'btn-dashboard-automatisation', \
+         u'btn-dashboard-recipients', \
+         u'btn-dashboard-install-update', \
+         u'btn-dashboard-maintenance', \
+         u'btn-dashboard-about']
       
       print '  Enter dashboard'
       db = dashboard.open(self.browser)
    
-      dashboard_boutons = db.find_element_by_id("dashboard-btns")
-      menuEntries = dashboard_boutons.find_elements_by_xpath("./child::*")
-      assert len(menuEntries) == len(expectedPageTitles)
+      dashboardSubWindow = db.find_element_by_xpath(".//div[@id='main-dashboard-sub-window-content']")
+      dashboardButtons = db.find_element_by_xpath(".//ul[@id='dashboard-btns']")
+      menuEntries = dashboardButtons.find_elements_by_xpath("./child::*")
+      self.assertEqual(len(menuEntries), len(expectedPageTitles))
 
       print '   Display all dashboard pages sequentially'
-      # Note that the navigation is not perfect, but considered as acceptable for actual Yadoms version
-      # See https://github.com/Yadoms/yadoms/issues/172 for more information
 
       def checkPage(dashboardSubWindow, expectedPageTitles, pageIndex):
-         displayedPages = self.getDisplayedPages(dashboardSubWindow)
-         assert len(displayedPages) == 1
-         pageTitle = displayedPages[0].get_attribute('id')
-         if pageTitle == expectedPageTitles[pageIndex]:
-            print '   [OK] Get expected page (' + expectedPageTitles[pageIndex] + ')'
-            return True
-         print '    [WARNING] Displayed page is ' + pageTitle + ', should be ' + expectedPageTitles[pageIndex]
-         return False
+         page = dashboardSubWindow.find_element_by_xpath(".//div[@id='" + expectedPageTitles[pageIndex] + "']")
+         self.assertTrue(tools.waitUntil(lambda: page.is_displayed()))
 
-      dashboardSubWindow = db.find_element_by_id("main-dashboard-sub-window-content")
+      def checkActiveButton(dashboardButtons, expectedButtons, pageIndex):
+         activeButtons = dashboardButtons.find_elements_by_xpath(".//li[@class='active']")
+         if len(activeButtons) != 1:
+            return False
+         if activeButtons[0].get_attribute("id") != expectedButtons[pageIndex]:
+            return False
+         return True
+
       for page in range(0, len(menuEntries)):
-         assert tools.doUntil(lambda : self.click(menuEntries, page), lambda: checkPage(dashboardSubWindow, expectedPageTitles, page), 3)
+         self.click(menuEntries, page)
+         checkPage(dashboardSubWindow, expectedPageTitles, page)
+         self.assertTrue(tools.waitUntil(lambda: checkActiveButton(dashboardButtons, expectedButtons, page)))
 
 
    def test_quickNavigation(self):
-      print '=== Test quick navigation accros dashboard pages ==='
+      print '=== Test quick navigation accross dashboard pages ==='
+      print 'At test end, only one page must be displayed'
       print 'ref Issues : #172'
 
       print '  Enter dashboard'
       db = dashboard.open(self.browser)
    
-      dashboard_boutons = db.find_element_by_id("dashboard-btns")
-      menuEntries = dashboard_boutons.find_elements_by_xpath("./child::*")
+      dashboardButtons = db.find_element_by_id("dashboard-btns")
+      menuEntries = dashboardButtons.find_elements_by_xpath("./child::*")
 
-      for page in range(0, len(menuEntries)):
-         self.click(menuEntries, page)
+      # Do several tests because #172 is not systematic
+      for testId in range(0, 10):
 
-      nbDisplayedPages = len(self.getDisplayedPages(db.find_element_by_id("main-dashboard-sub-window-content")))
-      if nbDisplayedPages != 1:
-         print '   [FAIL] ' + str(nbDisplayedPages) + ' pages displayed, expected 1'
-         assert False
+         for page in range(0, len(menuEntries)):
+            self.click(menuEntries, page)
+
+         self.assertTrue(tools.waitUntil(lambda: len(db.find_elements_by_xpath(".//div[@id='main-dashboard-sub-window-content']/div")) == 1))
 
       
    def tearDown(self):
