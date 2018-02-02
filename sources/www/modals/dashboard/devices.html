@@ -21,7 +21,6 @@
 
 <script>
    var deviceList = [];
-   var periodicDashboardDevicesTaskCounter = 0;
 
    Yadoms.initializeDeviceDashboard = function () {
    
@@ -671,11 +670,11 @@
                }
             }
             else if(keyword.type.toLowerCase() === "enum") {
-               var translatedEnumValue = $.t("plugins/" + pluginInstance.type + ":enumerations." + keyword.typeInfo.name + ".values." + acquisition.value, { defaultValue:acquisition.value} );
+               var translatedEnumValue = $.t("plugins." + pluginInstance.type + ":enumerations." + keyword.typeInfo.name + ".values." + acquisition.value, { defaultValue:acquisition.value} );
                keywordValue = "<span>" + translatedEnumValue + "</span>";
             }
             else if(keyword.type.toLowerCase() === "json") {
-               keywordValue = "<span></span>";
+               keywordValue = "<pre class=\"json-value-container\">" + library.json.prettyPrint(JSON.parse(acquisition.value)) + "</pre>";
             } else {
                keywordValue = "<span>" + acquisition.value + "</span>";
             }

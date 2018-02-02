@@ -20,6 +20,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Cartelectronic.cpp
    rfxcomMessages/CartelectronicEncoder.h
    rfxcomMessages/CartelectronicEncoder.cpp
+   rfxcomMessages/CartelectronicLinky.h
+   rfxcomMessages/CartelectronicLinky.cpp
    rfxcomMessages/CartelectronicTIC.h
    rfxcomMessages/CartelectronicTIC.cpp
    rfxcomMessages/Chime.h
@@ -183,17 +185,35 @@ set(SPECIFIC_HISTORIZERS_SOURCES
    rfxcomMessages/specificHistorizers/TeleInfoStatus.cpp   
 )
 
+set(PIC_CONFIGURATIONS_SOURCES
+   picConfigurations/IPicConfiguration.h
+   picConfigurations/RfxLan.h
+   picConfigurations/RfxLan.cpp
+   picConfigurations/RfxMtr.h
+   picConfigurations/RfxMtr.cpp
+   picConfigurations/RFXtrx.h
+   picConfigurations/RFXtrx.cpp
+   picConfigurations/RFXtrxX.h
+   picConfigurations/RFXtrxX.cpp
+)
+
 set(RFXCOM_SOURCES
    stdafx.h
    stdafx.cpp
    IncrementSequenceNumber.h
    IRfxcomConfiguration.h
+   IRfxcomFirmwareUpdater.h
    ISequenceNumber.h
    ITransceiver.h
    IUnsecuredProtocolFilter.h
    ManuallyDeviceCreationException.hpp
    MessageFilteredException.hpp
    NullSequenceNumber.h
+   PicBoot.h
+   PicBoot.cpp
+   PicBootPacketControlCharacters.h
+   PicBootReceiveBufferHandler.h
+   PicBootReceiveBufferHandler.cpp
    ProtocolException.hpp
    Rfxcom.h
    Rfxcom.cpp
@@ -203,9 +223,12 @@ set(RFXCOM_SOURCES
    RfxcomConfiguration.cpp
    RfxcomFactory.h
    RfxcomFactory.cpp
+   RfxcomFirmwareUpdater.h
+   RfxcomFirmwareUpdater.cpp
    Transceiver.h
    Transceiver.cpp
    ${SPECIFIC_HISTORIZERS_SOURCES}
+   ${PIC_CONFIGURATIONS_SOURCES}
    ${RFXCOM_MESSAGES_SOURCES}
 )
 
@@ -216,6 +239,7 @@ source_group(sources ./*.*)
 source_group(sources\\rfxcomMessages rfxcomMessages/*.*)
 source_group(sources\\rfxcomMessages\\specificHistorizers rfxcomMessages/specificHistorizers/*.*)
 source_group(sources\\rfxcomMessages\\Keywords rfxcomMessages/Keywords/*.*)
+source_group(sources\\picConfigurations picConfigurations/*.*)
 
 #########################################
 ## Place here all additional include directories

@@ -96,7 +96,7 @@ EnumParameterHandler.prototype.updateValues = function () {
    var translatedValues = {};
    $.each(self.values, function (key, value) {
        var newValue = "";
-       if (i18n.exists(self.i18nContext + self.i18nKey + ".values." + key)) {
+       if (i18next.exists(self.i18nContext + self.i18nKey + ".values." + key)) {
            newValue = $.t(self.i18nContext + self.i18nKey + ".values." + key);
        }
        else { //if the precedent line doesn't exist into the i18n we are in the case of binding. So we have to display the "value"

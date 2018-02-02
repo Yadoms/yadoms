@@ -6,7 +6,7 @@
 #include <shared/compression/Extract.h>
 #include "tools/FileSystem.h"
 #include "i18n/ClientStrings.h"
-#include <shared/process/SoftwareStop.h>
+#include <shared/process/SoftwareStop.h> 
 #include "tools/OperatingSystem.h"
 #include <boost/process/environment.hpp>
 

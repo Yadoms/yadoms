@@ -200,7 +200,7 @@ WidgetManager.deleteWidget = function (widgetToDelete) {
 
 WidgetManager.updateToServer = function (widget) {
     assert(!isNullOrUndefined(widget), "widget must be defined");
-    
+
     var d = new $.Deferred();
 
     RestEngine.putJson("/rest/widget/" + widget.id, { data: JSON.stringify(widget) })
@@ -208,9 +208,6 @@ WidgetManager.updateToServer = function (widget) {
          //we notify that configuration has changed
          try {
              WidgetManager.updateWidgetConfiguration_(widget).always(function(){
-                // update the widget acquisition filter
-                updateWebSocketFilter();
-                
                 //we ask for a refresh of widget data
                 updateWidgetPolling(widget)
                 .always(d.resolve);
@@ -245,23 +242,25 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
             widget.$gridWidget.find('div.panel-widget-title').text("");
         //we clear the listened device list before call the configuration
         widget.listenedKeywords = [];
+        widget.getlastValue = [];
         // Update widget specific values
+        var defferedResult;
+        // default state is OK
+        widget.viewModel.widgetApi.setState(widgetStateEnum.OK);
         if (!isNullOrUndefined(widget.viewModel.configurationChanged)) {
             var defferedResult = widget.viewModel.configurationChanged();
-            //we manage answer if it is a promise or not
-            defferedResult = defferedResult || new $.Deferred().resolve();
-            defferedResult
-            .always(function () {
+        }
+        //we manage answer if it is a promise or not
+        defferedResult = defferedResult || new $.Deferred().resolve();
+        defferedResult
+        .always(function () {
                // fit the new text to the container
                widget.viewModel.widgetApi.fitText();
                
-               //we manage the toolbar api specific icons
-               widget.viewModel.widgetApi.manageBatteryConfiguration()
-               .always(d.resolve);
-            });
-        } else {
-            d.resolve();
-        }
+           //we manage the toolbar api specific icons
+           widget.viewModel.widgetApi.manageBatteryConfiguration()
+           .always(d.resolve);
+        });        
     }
     catch (e) {
         notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'configurationChanged' }));
@@ -316,10 +315,11 @@ WidgetManager.loadWidgets = function (widgetList, pageWhereToAdd) {
     $.when.apply($, arrayOfDeffered)
     .done(function () {
         var arrayOfLoadingWidgetDeferred = [];
+        
         $.each(widgetList, function (index, widget) {
             arrayOfLoadingWidgetDeferred.push(WidgetManager.loadWidget(widget, pageWhereToAdd));
         });
-
+           
         $.when.apply($, arrayOfLoadingWidgetDeferred)
         .done(d.resolve)
         .fail(d.reject);
@@ -421,10 +421,16 @@ WidgetManager.instanciateWidgetToPage_ = function (pageWhereToAdd, widget, widge
         //we finalize the load of the widget
         WidgetManager.consolidate_(widget, WidgetPackageManager.packageList[widgetType]);
         WidgetManager.addToDom_(widget, ensureVisible)
-        .done(d.resolve)
-        .fail(d.reject);
-        //we add the widget to the collection
-        pageWhereToAdd.addWidget(widget);
+        .done(function () {
+           //we add the widget to the collection
+           pageWhereToAdd.addWidget(widget);
+           d.resolve();
+        })
+        .fail(function () {
+           //we add the widget to the collection
+           pageWhereToAdd.addWidget(widget);           
+           d.reject();
+        });
     }
     catch (ex) {
         if (!widget.downgraded) {
@@ -546,15 +552,21 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
                         }
 						
                         widget.$gridWidget.find(".textfit").fitText();
-						
-                        //we ask for widget refresh data
-                        updateWidgetPolling(widget)
-                        .always(function() {
-                           widget.viewModel.widgetApi.manageRollingTitle();
-                           d.resolve();                           
-                        });
+                        widget.viewModel.widgetApi.manageRollingTitle();
+                        d.resolve();
                     }).fail(d.reject);
-                }).fail(d.reject);
+                }).fail(function () {
+                   widget.$gridWidget.i18n();
+                   
+                   if (ensureVisible === true) {
+                      //ensure the item is completly visible
+                      widget.$gridWidget.ensureVisible(true);
+                   }
+            
+                   widget.$gridWidget.find(".textfit").fitText();
+                   widget.viewModel.widgetApi.manageRollingTitle();
+                   d.reject();
+                });
             })
             .fail(d.reject);
         } else {
@@ -635,6 +647,7 @@ WidgetManager.createGridWidget = function (widget) {
 
     domWidget += ">\n" +
         "<div class=\"grid-item-content\">\n" +
+          "<div class=\"panel-widget-desactivated hidden\"><div class=\"panel-widget-header-desactivated\"><i class=\"fa fa-exclamation-triangle wigetConfigurationErrorIcon\" title=\""+ $.t("objects.widgetManager.unknownError") +"\"></i></div></div>\n" +
           "<div class=\"panel-widget-customization-overlay customization-item hidden\">\n" +
              "<div class=\"customizationToolbar widgetCustomizationToolbar\">";
 

@@ -31,8 +31,6 @@
 #include <Poco/Net/NetException.h>
 #include "location/Location.h"
 #include "location/IpApiAutoLocation.h"
-#include "dateTime/TimeZoneProvider.h"
-#include "dateTime/TimeZoneDatabase.h"
 #include "automation/interpreter/Manager.h"
 
 CSupervisor::CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider)
@@ -54,15 +52,15 @@ void CSupervisor::run()
    try
    {
       //create the notification center
-      const auto notificationCenter(boost::make_shared<notification::CNotificationCenter>());
+      auto notificationCenter(boost::make_shared<notification::CNotificationCenter>());
       shared::CServiceLocator::instance().push<notification::CNotificationCenter>(notificationCenter);
 
       //retrieve startup options
       auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
 
       //start database system
-      const auto databaseFactory = boost::make_shared<database::CFactory>(m_pathProvider,
-                                                                          startupOptions);
+      auto databaseFactory = boost::make_shared<database::CFactory>(m_pathProvider,
+                                                                    startupOptions);
       auto pDataProvider = databaseFactory->createDataProvider();
       if (!pDataProvider->load())
          throw shared::exception::CException("Fail to load database");
@@ -72,12 +70,8 @@ void CSupervisor::run()
       shared::CServiceLocator::instance().push<dataAccessLayer::IDataAccessLayer>(dal);
 
       // Create the location provider
-      const auto location = boost::make_shared<location::CLocation>(dal->getConfigurationManager(),
-                                                                    boost::make_shared<location::CIpApiAutoLocation>());
-      const auto timezoneDatabase = boost::make_shared<dateTime::CTimeZoneDatabase>();
-      const auto timezoneProvider = boost::make_shared<dateTime::CTimeZoneProvider>(dal->getConfigurationManager(),
-                                                                                    timezoneDatabase,
-                                                                                    "Europe/Paris");
+      auto location = boost::make_shared<location::CLocation>(dal->getConfigurationManager(),
+                                                              boost::make_shared<location::CIpApiAutoLocation>());
 
       // Create Task manager
       auto taskManager(boost::make_shared<task::CScheduler>(dal->getEventLogger()));
@@ -93,23 +87,20 @@ void CSupervisor::run()
       taskManager->start();
 
       // Start the plugin gateway
-      auto pluginGateway(
-         boost::make_shared<communication::CPluginGateway>(pDataProvider, dal->getAcquisitionHistorizer(),
-                                                           pluginManager));
+      auto pluginGateway(boost::make_shared<communication::CPluginGateway>(pDataProvider, dal->getAcquisitionHistorizer(), pluginManager));
 
 
       // Start script interpreter manager
       auto scriptInterpreterManager(boost::make_shared<automation::interpreter::CManager>(m_pathProvider));
 
       // Start automation rules manager
-      boost::shared_ptr<automation::IRuleManager> automationRulesManager(boost::make_shared<automation::CRuleManager>(
+      boost::shared_ptr<automation::IRuleManager> automationRulesManager(boost::make_shared<automation::CRuleManager>(m_pathProvider,
          scriptInterpreterManager,
-         pDataProvider,
-         pluginGateway,
-         dal->getKeywordManager(),
-         dal->getEventLogger(),
-         location,
-         timezoneProvider));
+                                                                                                                      pDataProvider,
+                                                                                                                      pluginGateway,
+                                                                                                                      dal->getKeywordManager(),
+                                                                                                                      dal->getEventLogger(),
+                                                                                                                      location));
       shared::CServiceLocator::instance().push<automation::IRuleManager>(automationRulesManager);
 
 
@@ -131,47 +122,27 @@ void CSupervisor::run()
       const auto scriptInterpretersPath = m_pathProvider->scriptInterpretersPath().string();
       bool allowExternalAccess = startupOptions->getWebServerAllowExternalAccess();
 
-      auto webServer(boost::make_shared<web::poco::CWebServer>(webServerIp, webServerUseSSL, webServerPort,
-                                                               securedWebServerPort, webServerPath, "/rest/", "/ws",
-                                                               allowExternalAccess));
+      auto webServer(boost::make_shared<web::poco::CWebServer>(webServerIp, webServerUseSSL, webServerPort, securedWebServerPort, webServerPath, "/rest/", "/ws", allowExternalAccess));
 
       webServer->getConfigurator()->websiteHandlerAddAlias("plugins", m_pathProvider->pluginsPath().string());
       webServer->getConfigurator()->websiteHandlerAddAlias("scriptInterpreters", scriptInterpretersPath);
       webServer->getConfigurator()->websiteHandlerAddAlias("backups", m_pathProvider->backupPath().string());
 
-      webServer->getConfigurator()->configureAuthentication(
-         boost::make_shared<authentication::CBasicAuthentication>(dal->getConfigurationManager(),
-                                                                  startupOptions->getNoPasswordFlag()));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CPlugin>(pDataProvider, pluginManager, *pluginGateway));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CDevice>(pDataProvider, pluginManager, dal->getDeviceManager(),
-                                                         dal->getKeywordManager(), *pluginGateway));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CPage>(pDataProvider));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CWidget>(pDataProvider, webServerPath));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CConfiguration>(dal->getConfigurationManager()));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CPluginEventLogger>(pDataProvider));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CEventLogger>(dal->getEventLogger()));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CSystem>(timezoneDatabase));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CAcquisition>(pDataProvider));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CAutomationRule>(pDataProvider, automationRulesManager));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CTask>(taskManager));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CRecipient>(pDataProvider));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CUpdate>(updateManager));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CMaintenance>(m_pathProvider, pDataProvider->getDatabaseRequester(),
-                                                              taskManager));
+      webServer->getConfigurator()->configureAuthentication(boost::make_shared<authentication::CBasicAuthentication>(dal->getConfigurationManager(), startupOptions->getNoPasswordFlag()));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CPlugin>(pDataProvider, pluginManager, *pluginGateway));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CDevice>(pDataProvider, pluginManager, dal->getDeviceManager(), dal->getKeywordManager(), *pluginGateway));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CPage>(pDataProvider));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CWidget>(pDataProvider, webServerPath));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CConfiguration>(dal->getConfigurationManager()));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CPluginEventLogger>(pDataProvider));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CEventLogger>(dal->getEventLogger()));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CSystem>());
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CAcquisition>(pDataProvider));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CAutomationRule>(pDataProvider, automationRulesManager));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CTask>(taskManager));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CRecipient>(pDataProvider));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CUpdate>(updateManager));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CMaintenance>(m_pathProvider, pDataProvider->getDatabaseRequester(), taskManager));
 
       webServer->start();
 
@@ -229,8 +200,7 @@ void CSupervisor::run()
    {
       YADOMS_LOG(error) << "Supervisor : net exception " << pe.displayText();
       if (dal && dal->getEventLogger())
-         dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms",
-                                         pe.displayText());
+         dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", pe.displayText());
    }
    catch (Poco::Exception& e)
    {
@@ -259,3 +229,4 @@ void CSupervisor::requestToStop()
 {
    m_EventHandler.postEvent(kStopRequested);
 }
+

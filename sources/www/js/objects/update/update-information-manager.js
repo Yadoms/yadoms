@@ -3,7 +3,7 @@
  */
 
 /**
- * Obtain from the server the available plugin/widget/scriptInterpreter list from the yadoms.com web site
+ * Obtain from the server the available plugin list from the yadoms.com web site
  * @param callback
  * @param objectType : "plugin", "widget", "scriptInterpreter"
  * @param sync

@@ -24,7 +24,7 @@ namespace rfxcomMessages
          throw shared::exception::CException((boost::format("Wrong message length, received : %1%, expected : %2% (total_message_size - 1)") % rbufSize % (GET_RBUF_STRUCT_SIZE(RXRESPONSE) - 1)).str());
       }
 
-      if (rbuf.RXRESPONSE.packettype == sTypeRecStarted)
+      if (rbuf.RXRESPONSE.subtype == sTypeRecStarted)
       {
          // Length is specific for the receiver started message
          CheckReceivedMessage(rbuf,
@@ -62,13 +62,12 @@ namespace rfxcomMessages
       case sTypeInterfaceWrongCommand: m_statusType = kWrongCommand;
          break;
       default:
-         YADOMS_LOG(error) << "Unknown status subtype value : " << rbuf.IRESPONSE.subtype ;
-         break;
+         throw shared::exception::CException((boost::format("Unknown status subtype value : %1%") % rbuf.IRESPONSE.subtype).str());
       }
 
       if (m_statusType == kReceiverStarted)
       {
-         m_validMessage = std::string(reinterpret_cast<const char*>(&rbuf.IRESPONSE.msg1), 16);
+         m_validMessage = reinterpret_cast<const char*>(&rbuf.IRESPONSE.msg1);
       }
       else
       {
@@ -80,6 +79,8 @@ namespace rfxcomMessages
             // New IRESPONSE message format
             m_firmwareType = rbuf.IRESPONSE.msg10;
             m_firmwareVersion = rbuf.IRESPONSE.msg2 + 1000;
+            m_hardwareVersionMajor = rbuf.IRESPONSE.msg7;
+            m_hardwareVersionMinor = rbuf.IRESPONSE.msg8;
          }
          else
          {
@@ -93,6 +94,9 @@ namespace rfxcomMessages
                m_firmwareType = EFirmwareType::kType2;
             else
                m_firmwareType = EFirmwareType::kExt;
+            
+            m_hardwareVersionMajor = 0;
+            m_hardwareVersionMinor = 0;
          }
 
          // Enabled protocols
@@ -108,8 +112,7 @@ namespace rfxcomMessages
          m_LWRFenabled = rbuf.IRESPONSE.LWRFenabled;
          m_HIDEKIenabled = rbuf.IRESPONSE.HIDEKIenabled;
          m_LACROSSEenabled = rbuf.IRESPONSE.LACROSSEenabled;
-         m_FS20enabled = rbuf.IRESPONSE.FS20enabled;
-         m_PROGUARDenabled = rbuf.IRESPONSE.PROGUARDenabled;
+         m_LegrandCADenabled = rbuf.IRESPONSE.FS20enabled;
          m_BLINDST0enabled = rbuf.IRESPONSE.BLINDST0enabled;
          m_BLINDST1enabled = rbuf.IRESPONSE.BLINDST1enabled;
          m_X10enabled = rbuf.IRESPONSE.X10enabled;
@@ -129,7 +132,7 @@ namespace rfxcomMessages
    {
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CTransceiverStatus::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiverStatus::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("Status is a read-only message, can not be encoded");
    }
@@ -152,37 +155,36 @@ namespace rfxcomMessages
 
    void CTransceiverStatus::traceEnabledProtocols() const
    {
-      YADOMS_LOG(information) << "RFXCom configured protocols :" ;
+      YADOMS_LOG(information) << "RFXCom configured protocols :";
 
-      if (m_AEenabled) YADOMS_LOG(information) << "   - AE Blyss" ;
-      if (m_RUBICSONenabled) YADOMS_LOG(information) << "   - Rubicson" ;
-      if (m_FINEOFFSETenabled) YADOMS_LOG(information) << "   - FineOffset/Viking" ;
-      if (m_LIGHTING4enabled) YADOMS_LOG(information) << "   - Lighting4" ;
-      if (m_RSLenabled) YADOMS_LOG(information) << "   - RSL" ;
-      if (m_SXenabled) YADOMS_LOG(information) << "   - Byron SX" ;
-      if (m_IMAGINTRONIXenabled) YADOMS_LOG(information) << "   - Imagintronix/Opus" ;
-      if (m_UNDECODEDenabled) YADOMS_LOG(information) << "   - undecoded messages" ;
+      if (m_AEenabled) YADOMS_LOG(information) << "   - AE Blyss";
+      if (m_RUBICSONenabled) YADOMS_LOG(information) << "   - Rubicson";
+      if (m_FINEOFFSETenabled) YADOMS_LOG(information) << "   - FineOffset, Viking";
+      if (m_LIGHTING4enabled) YADOMS_LOG(information) << "   - Lighting4";
+      if (m_RSLenabled) YADOMS_LOG(information) << "   - RSL, Revolt";
+      if (m_SXenabled) YADOMS_LOG(information) << "   - Byron SX, SelectPlus";
+      if (m_IMAGINTRONIXenabled) YADOMS_LOG(information) << "   - Imagintronix/Opus";
+      if (m_UNDECODEDenabled) YADOMS_LOG(information) << "   - undecoded messages";
 
-      if (m_MERTIKenabled) YADOMS_LOG(information) << "   - Mertik" ;
-      if (m_LWRFenabled) YADOMS_LOG(information) << "   - AD LightwaveRF" ;
-      if (m_HIDEKIenabled) YADOMS_LOG(information) << "   - Hideki/UPM" ;
-      if (m_LACROSSEenabled) YADOMS_LOG(information) << "   - La Crosse" ;
-      if (m_FS20enabled) YADOMS_LOG(information) << "   - FS20" ;
-      if (m_PROGUARDenabled) YADOMS_LOG(information) << "   - ProGuard" ;
-      if (m_BLINDST0enabled) YADOMS_LOG(information) << "   - BlindsT0" ;
-      if (m_BLINDST1enabled) YADOMS_LOG(information) << "   - BlindsT1" ;
+      if (m_MERTIKenabled) YADOMS_LOG(information) << "   - Mertik";
+      if (m_LWRFenabled) YADOMS_LOG(information) << "   - AD LightwaveRF";
+      if (m_HIDEKIenabled) YADOMS_LOG(information) << "   - Hideki, TFA, Cresta, UPM";
+      if (m_LACROSSEenabled) YADOMS_LOG(information) << "   - La Crosse";
+      if (m_LegrandCADenabled) YADOMS_LOG(information) << "   - Legrand CAD";
+      if (m_BLINDST0enabled) YADOMS_LOG(information) << "   - BlindsT0";
+      if (m_BLINDST1enabled) YADOMS_LOG(information) << "   - BlindsT1";
 
-      if (m_X10enabled) YADOMS_LOG(information) << "   - X10" ;
-      if (m_ARCenabled) YADOMS_LOG(information) << "   - ARC" ;
-      if (m_ACenabled) YADOMS_LOG(information) << "   - AC" ;
-      if (m_HEEUenabled) YADOMS_LOG(information) << "   - HomeEasy EU" ;
-      if (m_MEIANTECHenabled) YADOMS_LOG(information) << "   - Meiantech" ;
-      if (m_OREGONenabled) YADOMS_LOG(information) << "   - Oregon Scientific" ;
-      if (m_ATIenabled) YADOMS_LOG(information) << "   - ATI" ;
-      if (m_VISONICenabled) YADOMS_LOG(information) << "   - Visonic" ;
+      if (m_X10enabled) YADOMS_LOG(information) << "   - X10";
+      if (m_ARCenabled) YADOMS_LOG(information) << "   - ARC";
+      if (m_ACenabled) YADOMS_LOG(information) << "   - AC";
+      if (m_HEEUenabled) YADOMS_LOG(information) << "   - HomeEasy EU";
+      if (m_MEIANTECHenabled) YADOMS_LOG(information) << "   - Meiantech";
+      if (m_OREGONenabled) YADOMS_LOG(information) << "   - Oregon Scientific";
+      if (m_ATIenabled) YADOMS_LOG(information) << "   - ATI";
+      if (m_VISONICenabled) YADOMS_LOG(information) << "   - Visonic";
 
-      if (m_KeeLoqenabled) YADOMS_LOG(information) << "   - KeeLoq" ;
-      if (m_HomeConfortenabled) YADOMS_LOG(information) << "   - HomeConfort" ;
+      if (m_KeeLoqenabled) YADOMS_LOG(information) << "   - KeeLoq";
+      if (m_HomeConfortenabled) YADOMS_LOG(information) << "   - HomeConfort";
    }
 
    CTransceiverStatus::EStatusType CTransceiverStatus::getStatusType() const
@@ -201,22 +203,18 @@ namespace rfxcomMessages
    std::string CTransceiverStatus::rfxcomTypeToString() const
    {
       static const std::map<unsigned int, std::string> RfxcomTypes = boost::assign::map_list_of
-      (recType310, "310MHz")
-         (recType315, "315MHz")
-         (recType43392, "433.92MHz receiver only")
-         (trxType43392, "433.92MHz transceiver")
-         (0x54, "433.42MHz") // No constant is defined in rfxtrx.h v6.19
-         (recType86800, "868.00MHz")
-         (recType86800FSK, "868.00MHz FSK")
-         (recType86830, "868.30MHz")
-         (recType86830FSK, "868.30MHz FSK")
-         (recType86835, "868.35MHz")
-         (recType86835FSK, "868.35MHz FSK")
-         (recType86895, "868.95MHz");
+         (trxType310, "RFXtrx315 operating at 310MHz")
+         (trxType315, "RFXtrx315 operating at 315MHz")
+         (recType43392, "RFXrec433 operating at 433.92MHz (receiver only)")
+         (trxType43392, "RFXtrx433 operating at 433.92MHz")
+         (0x54, "RFXtrx433 operating at 433.42MHz (internal use)") // No constant is defined in rfxtrx.h v9.17
+         (trxType868, "RFXtrx868X operating at 868MHz")
+         (trxTypeIOT433, "RFXtrxIOT operating at 433.92MHz")
+         (trxTypeIOT868, "RFXtrxIOT operating at 868MHz");
 
       auto itRfxcomTypes = RfxcomTypes.find(m_rfxcomType);
       if (itRfxcomTypes == RfxcomTypes.end())
-         return std::to_string(m_rfxcomType);
+         return boost::lexical_cast<std::string>(m_rfxcomType);
 
       return itRfxcomTypes->second;
    }
@@ -237,6 +235,14 @@ namespace rfxcomMessages
       return m_firmwareVersion;
    }
 
+   std::string CTransceiverStatus::getHardwareVersion() const
+   {
+      if (m_statusType == kReceiverStarted)
+         throw std::out_of_range("RFXCom hardware version not avaible in this message");
+
+      return (boost::format("%1%.%2%") % m_hardwareVersionMajor % m_hardwareVersionMinor).str();
+   }
+
    std::string CTransceiverStatus::getValidMessage() const
    {
       if (m_statusType != kReceiverStarted)
@@ -251,37 +257,34 @@ namespace rfxcomMessages
          throw std::out_of_range("RFXCom configuration not available in this message");
 
       if (
-         (configuration.isAEenabled() == m_AEenabled) &&
-         (configuration.isRUBICSONenabled() == m_RUBICSONenabled) &&
-         (configuration.isFINEOFFSETenabled() == m_FINEOFFSETenabled) &&
-         (configuration.isLIGHTING4enabled() == m_LIGHTING4enabled) &&
-         (configuration.isRSLenabled() == m_RSLenabled) &&
-         (configuration.isSXenabled() == m_SXenabled) &&
-         (configuration.isIMAGINTRONIXenabled() == m_IMAGINTRONIXenabled) &&
-         (configuration.isUNDECODEDenabled() == m_UNDECODEDenabled) &&
-         (configuration.isMERTIKenabled() == m_MERTIKenabled) &&
-         (configuration.isLWRFenabled() == m_LWRFenabled) &&
-         (configuration.isHIDEKIenabled() == m_HIDEKIenabled) &&
-         (configuration.isLACROSSEenabled() == m_LACROSSEenabled) &&
-         (configuration.isFS20enabled() == m_FS20enabled) &&
-         (configuration.isPROGUARDenabled() == m_PROGUARDenabled) &&
-         (configuration.isBLINDST0enabled() == m_BLINDST0enabled) &&
-         (configuration.isBLINDST1enabled() == m_BLINDST1enabled) &&
-         (configuration.isX10enabled() == m_X10enabled) &&
-         (configuration.isARCenabled() == m_ARCenabled) &&
-         (configuration.isACenabled() == m_ACenabled) &&
-         (configuration.isHEEUenabled() == m_HEEUenabled) &&
-         (configuration.isMEIANTECHenabled() == m_MEIANTECHenabled) &&
-         (configuration.isOREGONenabled() == m_OREGONenabled) &&
-         (configuration.isATIenabled() == m_ATIenabled) &&
-         (configuration.isVISONICenabled() == m_VISONICenabled) &&
-         (configuration.isKeeLoqenabled() == m_KeeLoqenabled) &&
-         (configuration.isHomeConfortenabled() == m_HomeConfortenabled)
-         )
+         configuration.isAEenabled() == m_AEenabled &&
+         configuration.isRUBICSONenabled() == m_RUBICSONenabled &&
+         configuration.isFINEOFFSETenabled() == m_FINEOFFSETenabled &&
+         configuration.isLIGHTING4enabled() == m_LIGHTING4enabled &&
+         configuration.isRSLenabled() == m_RSLenabled &&
+         configuration.isSXenabled() == m_SXenabled &&
+         configuration.isIMAGINTRONIXenabled() == m_IMAGINTRONIXenabled &&
+         configuration.isUNDECODEDenabled() == m_UNDECODEDenabled &&
+         configuration.isMERTIKenabled() == m_MERTIKenabled &&
+         configuration.isLWRFenabled() == m_LWRFenabled &&
+         configuration.isHIDEKIenabled() == m_HIDEKIenabled &&
+         configuration.isLACROSSEenabled() == m_LACROSSEenabled &&
+         configuration.isLEGRANDenabled() == m_LegrandCADenabled &&
+         configuration.isBLINDST0enabled() == m_BLINDST0enabled &&
+         configuration.isBLINDST1enabled() == m_BLINDST1enabled &&
+         configuration.isX10enabled() == m_X10enabled &&
+         configuration.isARCenabled() == m_ARCenabled &&
+         configuration.isACenabled() == m_ACenabled &&
+         configuration.isHEEUenabled() == m_HEEUenabled &&
+         configuration.isMEIANTECHenabled() == m_MEIANTECHenabled &&
+         configuration.isOREGONenabled() == m_OREGONenabled &&
+         configuration.isATIenabled() == m_ATIenabled &&
+         configuration.isVISONICenabled() == m_VISONICenabled &&
+         configuration.isKeeLoqenabled() == m_KeeLoqenabled &&
+         configuration.isHomeConfortenabled() == m_HomeConfortenabled
+      )
          return false;
 
       return true;
    }
 } // namespace rfxcomMessages
-
-

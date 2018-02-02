@@ -2,13 +2,10 @@
  * global viewModel object used to get the viewModelCtor of each kind of widget
  */
 var widgetViewModelCtor = null;
-
 var loadPagesNotification = null;
-
 var widgetUpdateInterval;
 var serverIsOnline;
 var OfflineServerNotification = null;
-
 var LastEventLogId = null;
 
 function initializeWidgetEngine() {
@@ -140,7 +137,7 @@ function tabClick(pageId) {
             requestWidgets(page)
                 .always(function () {
                     //we poll all widget data
-                    updateWidgetsPolling().always(function () {
+               updateWidgetsPolling(page).always(function() {
                         var b = page.$grid.packery('reloadItems');
                         updateWebSocketFilter();
                         PageManager.updateWidgetLayout(page);
@@ -149,7 +146,7 @@ function tabClick(pageId) {
         } else {
 
             //we poll all widget data
-            updateWidgetsPolling().always(function () {
+            updateWidgetsPolling(page).always(function() {
                 page.$grid.packery('destroy');
                 page.$grid.packery(PageManager.packeryOptions);
                 updateWebSocketFilter();
@@ -363,10 +360,35 @@ function dispatchTimeToWidgets(timeData) {
         });
 }
 
+function dispatchkeywordDeletedToWidgets(eventData){
+   assert(!isNullOrUndefined(eventData), "eventData must be defined");
+   
+   var page = PageManager.getCurrentPage();
+   if (page == null)
+      return;
+
+   console.debug("onKeywordDeletion : ", eventData);
+   $.each(page.widgets, function (widgetIndex, widget) {
+      try {
+          if ($.inArray(eventData.keyword.id, widget.listenedKeywords)!=-1)
+          {
+             //we signal the time event to the widget if the widget supports the method
+             if (typeof widget.viewModel.onKeywordDeletion === 'function' && !isNullOrUndefined(widget.viewModel.onKeywordDeletion))
+                 widget.viewModel.onKeywordDeletion(eventData.keyword);
+              else // by default, we disable the widget
+                 widget.viewModel.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
+          }
+      }
+      catch (e) {
+          console.error(widget.type + " has encouter an error in onKeywordDeletion() method:" + e.message);
+      }
+   });   
+}
+
 function updateWebSocketFilter() {
     if (WebSocketEngine.isActive()) {
-        var page = PageManager.getCurrentPage();
-        if (page == null)
+       var page = PageManager.getCurrentPage();
+       if (page == null)
             return;
 
         var collection = [];
@@ -390,24 +412,42 @@ function updateWebSocketFilter() {
 }
 
 function updateWidgetsPolling() {
+   var page = PageManager.getCurrentPage();
+   updateWidgetsPolling(pageId = page);
+}
+
+function updateWidgetsPolling(pageId) {
     var d = new $.Deferred();
+    var getLastValuesKeywords = [];
 
     //we browse each widget instance
-    var page = PageManager.getCurrentPage();
-    if (page == null) {
+    if (pageId == null) {
         d.resolve();
     } else {
-        var arrayOfDeffered = [];
-
-        $.each(page.widgets,
-            function (widgetIndex, widget) {
-                //we ask which devices are needed for this widget instance
-                var deffered = updateWidgetPolling(widget);
-                arrayOfDeffered.push(deffered);
-            });
-
-        $.whenAll(arrayOfDeffered)
-            .done(d.resolve)
+       $.each(pageId.widgets, function (widgetIndex, widget) {
+           //we ask which devices are needed for this widget instance
+           if (!isNullOrUndefinedOrEmpty(widget.getlastValue))
+              getLastValuesKeywords = getLastValuesKeywords.concat (widget.getlastValue);
+       });
+       
+       updateWidgetPollingByKeywordsId(duplicateRemoval(getLastValuesKeywords))
+       .done(function (data) {
+          $.each(data, function (index, acquisition) {
+             //we signal the new acquisition to the widget if the widget support the method
+             $.each(pageId.widgets, function (widgetIndex, widget) {
+                if ($.inArray(acquisition.keywordId, widget.getlastValue)!=-1)
+                {
+                   if (isNullOrUndefined(acquisition.error)){
+                      if (widget.viewModel.onNewAcquisition !== undefined)
+                         widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
+                   }else{ // we desactivate the widget
+                      widget.viewModel.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
+                   }
+                }
+             });
+          });
+          d.resolve();
+       })
             .fail(d.reject);
     }
     return d.promise();
@@ -415,9 +455,11 @@ function updateWidgetsPolling() {
 
 function updateWidgetPolling(widget) {
     var d = new $.Deferred();
-
+    
     if (!isNullOrUndefined(widget.listenedKeywords)) {
-        AcquisitionManager.getLastValues(widget.listenedKeywords)
+       if (widget.listenedKeywords.length!=0) // only if this list is not empty
+       {
+          AcquisitionManager.getLastValues(widget.listenedKeywords)
             .done(function (data) {
                 if (data) {
                     $.each(data,
@@ -436,8 +478,28 @@ function updateWidgetPolling(widget) {
                         objectName: "last acquisition for widget = " + widget.id
                     }),
                     error);
-                d.reject(error);
-            });
+             d.reject(error);
+          });
+       }  
+    } else {
+       d.resolve();
+    }
+    return d.promise();
+}
+
+function updateWidgetPollingByKeywordsId(keywordIds) {
+    var d = new $.Deferred();
+    
+    if (!isNullOrUndefined(keywordIds)) {
+       if (keywordIds!=0) // only if this list is not empty
+       {
+          AcquisitionManager.getLastValues(keywordIds)
+          .done(d.resolve)
+          .fail(function (error) {
+             notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for widget = " + keywordIds }), error);
+             d.reject(error);
+          });
+       }  
     } else {
         d.resolve();
     }

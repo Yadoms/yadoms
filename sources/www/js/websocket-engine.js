@@ -49,7 +49,8 @@ WebSocketEngine.isConnected = function() {
  * @param keywordCollectionToFilter The collection of keyword id to filter
  */
 WebSocketEngine.updateAcquisitionFilter = function(keywordCollectionToFilter) {
-    WebSocketEngine.webSocket_.send(JSON.stringify({"type" : "acquisitionFilter", "data" : keywordCollectionToFilter}));
+   
+   WebSocketEngine.webSocket_.send(JSON.stringify({"type" : "acquisitionFilter", "data" : keywordCollectionToFilter}));
 };
 
 
@@ -80,7 +81,10 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
      $(document).on("timenotification", function(e, websocketData) {
          dispatchTimeToWidgets(websocketData.time);
      });
-
+     //we listen keyword Deletion event
+     $(document).on("keyworddeleted", function(e, websocketData) {
+         dispatchkeywordDeletedToWidgets(websocketData.data);
+     });
      /*
       */     
      
@@ -123,19 +127,22 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
                 if (!isNullOrUndefined(websocketData)) {
                     switch (websocketData.type.toLowerCase()) {
                         case "acquisitionupdate":
-                            $(document).trigger("acquisitionupdate", websocketData);
-                            break;
+                           $(document).trigger("acquisitionupdate", websocketData);
+                           break;
+                        case "keyworddeleted":
+                           $(document).trigger("keyworddeleted", websocketData);
+                           break;
                         case "devicenew":
-                            break;
+                           break;
                         case "taskupdatenotification":
-                            $(document).trigger("taskupdatenotification." + websocketData.uuid, websocketData);
-                            break;
+                           $(document).trigger("taskupdatenotification." + websocketData.uuid, websocketData);
+                           break;
                         case "isalive":
-                            $(document).trigger("isalive");
-                            break;
+                           $(document).trigger("isalive");
+                           break;
                         case "timenotification":
-                            $(document).trigger("timenotification", websocketData);
-                            break;
+                           $(document).trigger("timenotification", websocketData);
+                           break;
                     }
                 }
             }

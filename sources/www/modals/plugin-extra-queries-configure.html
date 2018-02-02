@@ -34,9 +34,9 @@
          $modalBody.empty();
 
          //we append classic configuration
-         var configMgr = new ConfigurationControlManager(extraQueryConfig, "", "plugins/" + pluginInstance.type + ":extraQueries." + command + ".commandData.", $modalBody);
+         var configMgr = new ConfigurationControlManager(extraQueryConfig, "", "plugins." + pluginInstance.type + ":extraQueries." + command + ".commandData.", $modalBody);
 
-         var title = "plugins/" +pluginInstance.type +":extraQueries." + command +".name";
+         var title = "plugins." +pluginInstance.type +":extraQueries." + command +".name";
          $("div#plugin-extra-queries-configure-modal .modal-title").attr("data-i18n", title);
          
          //i18n

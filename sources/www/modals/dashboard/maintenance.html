@@ -4,7 +4,8 @@
         <span data-i18n="modals.dashboard.sub-windows.maintenance.title"></span>
     </h1>
 
-    <button type="button" class="btn btn-default btn-info backupButton" data-i18n="modals.dashboard.sub-windows.maintenance.backup" aria-expanded="false" />
+   <button type="button" class="btn btn-default btn-info backupButton" data-i18n="modals.dashboard.sub-windows.maintenance.backup" aria-expanded="false" />
+   <button type="button" class="btn btn-danger btn-info deleteAllButton" data-i18n="modals.dashboard.sub-windows.maintenance.deleteAll" aria-expanded="false" />
 
     <div class="action-progression" style="width: 340px; margin-top: 10px;">
         <div class="progress">
@@ -38,6 +39,10 @@
             $("table#backup-list").find("tr:gt(0)").remove();
             
             if(infos.backups) {
+            
+               //order backup by date desc
+               infos.backups = _.orderBy(infos.backups, ['modificationDate'], ['desc']);
+               
                $.each(infos.backups, function(index, info) {
                   if (info && info.url && info.path && info.size && info.modificationDate) {
                   
@@ -149,7 +154,29 @@
             });
         });
 
-        showLastBackupInformation();
+       $(".deleteAllButton").unbind('click').bind('click', function () {
+          Yadoms.modals.confirmation.loadAsync()
+          .done(function () {
+              Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
+                 $.t("modals.dashboard.sub-windows.maintenance.deleteAllConfirmTitle"),
+                 $.t("modals.dashboard.sub-windows.maintenance.deleteAllConfirm"),
+                 function () {
+                     MaintenanceManager.deleteAllBackups()
+                     .done(function() {
+                        console.log("All backups are deleted with success");
+                     })
+                     .fail(function(err) {
+                        console.error("Fail to delete backups", err);
+                     })
+                     .always(function () {
+                        //refresh list
+                        showLastBackupInformation();
+                     });
+                 });
+          });
+       });
+
+       showLastBackupInformation();
     }
 
 

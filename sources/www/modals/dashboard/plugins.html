@@ -83,7 +83,7 @@
 
             var type = "<img src=\"plugins/" + pi.type +
                   "/icon.png\" class=\"img-thumbnail dashboard-table-icon\">&nbsp;&nbsp;" +
-                  "<span>" + $.t("plugins/" + pi.type + ":name", {
+                  "<span>" + $.t("plugins." + pi.type + ":name", {
                         defaultValue: pi.package.name
                   }) + "</span>";
 
@@ -240,7 +240,7 @@
                                           extraQueryButton +=
                                                 "<li><a href=\"#\" class=\"btn-extraQuery-" + index +
                                                 "\"><span class=\"extra-query-icon " + values.iconClass +
-                                                "\"></span>&nbsp;<span data-i18n=\"plugins/" + pi.type +
+                                                "\"></span>&nbsp;<span data-i18n=\"plugins." + pi.type +
                                                 ":extraQueries." + index + ".name\"></span>" + (
                                                       values.commandData ? "..." : "") + "</a></li>";
                                     });
@@ -463,7 +463,7 @@
                                     // 1. try plugin one
                                     // 2. try core
                                     // 3. try directly
-                                    var translatedMessage = $.t("plugins/" + pi.type + ":" +
+                                    var translatedMessage = $.t("plugins." + pi.type + ":" +
                                           taskUpdateInformation.message, {
                                                 defaultValue: $.t("core." +
                                                       taskUpdateInformation.message, {
@@ -647,7 +647,7 @@
             i18nOpt.defaultValue = $.t(messageId, i18nOpt); //define default value parameter (for step 2)
 
             if (messageId && messageId !== "") {
-                  return $.t("plugins/" + pluginInstance.type + ":customLabels.pluginState." + messageId, i18nOpt); //step 1
+                  return $.t("plugins." + pluginInstance.type + ":customLabels.pluginState." + messageId, i18nOpt); //step 1
             }
             return i18nOpt.defaultValue;
       }
@@ -672,7 +672,7 @@
 
       function createPlugin(packageName, pluginType) {
 
-            var pi = new PluginInstance(null, $.t("plugins/" + pluginType.type + ":name", {
+            var pi = new PluginInstance(null, $.t("plugins." + pluginType.type + ":name", {
                   defaultValue: pluginType.package.name
             }), pluginType.type, "", 1, "user");
 

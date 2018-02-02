@@ -12,6 +12,7 @@
 #include "web/ws/AcquisitionSummaryUpdateFrame.h"
 #include "web/ws/LogEventFrame.h"
 #include "web/ws/NewDeviceFrame.h"
+#include "web/ws/KeywordDeletedFrame.h"
 #include "web/ws/TaskUpdateNotificationFrame.h"
 #include "web/ws/TimeNotificationFrame.h"
 #include "web/ws/IsAliveFrame.h"
@@ -67,6 +68,11 @@ namespace web
             observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CDevice>(notification::change::EChangeType::kCreate,
                                                                                                              *eventHandler,
                                                                                                              kNewDevice));
+
+            // Subscribe to keyword deletion notifications
+            observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CKeyword>(notification::change::EChangeType::kDelete,
+                                                                                                             *eventHandler,
+                                                                                                             kDeleteKeyword));
 
             // Subscribe to event logger notifications
             observers.push_back(notification::CHelpers::subscribeBasicObserver<database::entities::CEventLogger>(*eventHandler,
@@ -198,7 +204,6 @@ namespace web
                      clientSeemConnected = send(webSocket, ws::CTimeNotificationFrame(shared::currentTime::Provider().now()));
                      break;
                   }
-
                case kNewAcquisition:
                   {
                      auto notif = eventHandler->getEventData<boost::shared_ptr<notification::acquisition::CNotification>>();
@@ -211,14 +216,19 @@ namespace web
                      clientSeemConnected = send(webSocket, ws::CAcquisitionSummaryUpdateFrame(notif->getAcquisitionSummaries()));
                      break;
                   }
-
                case kNewDevice:
                   {
                      auto newDevice = eventHandler->getEventData<boost::shared_ptr<database::entities::CDevice>>();
                      clientSeemConnected = send(webSocket, ws::CNewDeviceFrame(newDevice));
                      break;
                   }
-
+               case kDeleteKeyword:
+                  {
+                     YADOMS_LOG(information) << "DeleteKeyword information";
+                     auto keyword = eventHandler->getEventData<boost::shared_ptr<database::entities::CKeyword>>();
+                     clientSeemConnected = send(webSocket, ws::CKeywordDeletedFrame(keyword));
+                     break;
+                  }
                case kNewLogEvent:
                   {
                      auto logEvent = eventHandler->getEventData<boost::shared_ptr<database::entities::CEventLogger>>();

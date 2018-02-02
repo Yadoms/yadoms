@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "DefaultCurrentTimeMock.h"
+#include "../../../../sources/shared/shared/currentTime/Provider.h"
 
 
 CDefaultCurrentTimeMock::CDefaultCurrentTimeMock(const std::string& refTime)
@@ -40,3 +41,10 @@ void CDefaultCurrentTimeMock::move(const boost::posix_time::time_duration& durat
    m_refTime = m_initialRefTime + duration;
 }
 
+
+boost::shared_ptr<CDefaultCurrentTimeMock> useTimeMock()
+{
+   auto timeProviderMock = boost::make_shared<CDefaultCurrentTimeMock>();
+   shared::currentTime::Provider().setProvider(timeProviderMock);
+   return timeProviderMock;
+}

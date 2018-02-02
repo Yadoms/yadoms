@@ -50,8 +50,7 @@ BOOST_AUTO_TEST_SUITE(TestRfxComReceiveBufferHandler)
          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00  // msg[9-16]
       };
 
-      auto timeProviderMock = boost::make_shared<CDefaultCurrentTimeMock>();
-      shared::currentTime::Provider().setProvider(timeProviderMock);
+      auto timeProviderMock = useTimeMock();
 
       shared::event::CEventHandler evtHandler;
       CRfxcomReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId);

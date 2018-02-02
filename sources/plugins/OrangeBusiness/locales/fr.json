@@ -1,0 +1,30 @@
+﻿{
+   "name": "Orange business Live objects",
+   "description": "Ce plugin permet de synchroniser Yadoms avec des équipements LoRA du cloud Orange Business live object",
+   "configurationSchema":{
+      "APIKey": {
+         "name": "API Key",
+         "description": "La clé API est obtenue sur le site web Orange live business"
+      }
+   },
+	"extraQueries" : {
+		"retreiveData" : {
+			"name" : "Récupérer l'ensemble des équipements LoRA du site Orange"
+		},
+		"onlyActivated" : {
+			"name" : "Récupérer l'ensemble des équipements LoRA activés du site Orange"
+		},
+      "removeAllDevices" : {
+         "name" : "Supprimer tous les équipements enregistrés dans Yadoms"
+      }
+   },   
+	"customLabels": {
+		"pluginState": {
+         "initializationError": "Erreur d'initialisation",
+			"updateConfiguration": "Mise à jour de la configuration...",
+         "ready": "plugin prêt",
+         "noConnection": "Erreur de connexion au site internet Orange Business",
+         "unauthorizedAccess": "Accès non authorisé, vérifiez votre clé API"
+		}
+	}
+}

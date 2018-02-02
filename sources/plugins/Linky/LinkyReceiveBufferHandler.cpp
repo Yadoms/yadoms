@@ -17,15 +17,13 @@ enum
 
 CLinkyReceiveBufferHandler::CLinkyReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
                                                        int receiveDataEventId,
-                                                       const boost::posix_time::time_duration suspendDelay,
 															          boost::shared_ptr<shared::communication::IBufferLogger> logger,
                                                        const bool isDeveloperMode)
    : m_receiveDataEventHandler(receiveDataEventHandler),
      m_receiveDataEventId(receiveDataEventId),
      m_logger (logger),
-     m_nextSendMessageDate(shared::currentTime::Provider().now()),
-     m_suspendDelay (suspendDelay),
-   m_isDeveloperMode(isDeveloperMode)
+   m_isDeveloperMode(isDeveloperMode),
+   m_pushActivated(false)
 {
 }
 
@@ -35,7 +33,7 @@ CLinkyReceiveBufferHandler::~CLinkyReceiveBufferHandler()
 
 void CLinkyReceiveBufferHandler::push(const shared::communication::CByteBuffer& buffer)
 {
-   if (shared::currentTime::Provider().now() < m_nextSendMessageDate)
+   if (!m_pushActivated) 
       return;
 
    for (size_t idx = 0; idx < buffer.size(); ++idx)
@@ -52,8 +50,6 @@ void CLinkyReceiveBufferHandler::push(const shared::communication::CByteBuffer& 
       notifyEventHandler(messages);
 
       m_logger->logReceived(shared::communication::CByteBuffer(m_content));
-
-      m_nextSendMessageDate = shared::currentTime::Provider().now() + m_suspendDelay;
    }
 }
 
@@ -211,4 +207,14 @@ void CLinkyReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<std::map<s
 {
    m_receiveDataEventHandler.postEvent<boost::shared_ptr<std::map<std::string, std::vector<std::string > > > >(m_receiveDataEventId,
                                                                                                                messages);
+}
+
+void CLinkyReceiveBufferHandler::activate()
+{
+   m_pushActivated = true;
+}
+
+void CLinkyReceiveBufferHandler::desactivate()
+{
+   m_pushActivated = false;
 }

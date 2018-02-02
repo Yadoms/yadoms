@@ -1,0 +1,30 @@
+{
+   "name": "Orange Business Live objects",
+   "description": "This plugin synchronize data from LoRA Orange business live objects and Yadoms",
+   "configurationSchema":{	
+      "APIKey": {
+         "name": "API Key",
+         "description": "The API key is obtained from the live object Orange web site"
+      }
+	},
+	"extraQueries" : {
+		"retreiveData" : {
+			"name" : "Retreive all LoRA devices from the Orange business web site"
+		},
+		"onlyActivated" : {
+			"name" : "Retreive all LoRA activated devices from the Orange business web site"
+		},
+      "removeAllDevices" : {
+         "name" : "remove all devices registered in Yadoms"
+      }
+   },
+	"customLabels": {
+		"pluginState": {
+			"initializationError": "Initialization error",
+			"updateConfiguration": "Configuration updating...",
+			"ready": "Plugin ready",
+			"noConnection": "Could not connect to the equipment",
+         "unauthorizedAccess": "Unauthorized access, please check the APIKey"
+		}
+	}
+}

@@ -12,7 +12,7 @@ function rainGaugeDisplayViewModel() {
     
     //observable data - last receive information
     this.shouldBeVisible = ko.observable(false);
-    this.lastReceiveDate = ko.observable($.t("widgets/rain-gauge:loadingData"));
+    this.lastReceiveDate = ko.observable($.t("widgets.rain-gauge:loadingData"));
     this.serverTime = null;
     this.acquisitionData = [];
     
@@ -84,7 +84,7 @@ function rainGaugeDisplayViewModel() {
          if (self.acquisitionData.length!=0)
             self.lastReceiveDate(DateTimeFormatter.isoDateToDate(lastValue.date).calendar().toString());
          else
-            self.lastReceiveDate($.t("widgets/rain-gauge:NoAcquisition"));
+            self.lastReceiveDate($.t("widgets.rain-gauge:NoAcquisition"));
        }
     };
   
@@ -103,7 +103,7 @@ function rainGaugeDisplayViewModel() {
         });
 
         //we register keyword new acquisition
-        self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
+        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);
         
         //we fill the deviceId of the battery indicator
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);

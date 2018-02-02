@@ -96,6 +96,14 @@ namespace shared
                kEventStopScript,
 
                //-----------------------------------------------------
+               ///\brief Yadoms requests to purge log files
+               ///\usage Required
+               ///\note Data : a boost::shared_ptr<yApi::IPurgeLogScript> object containing the request
+               ///\note Interpreter must process the specified request
+               //-----------------------------------------------------
+               kEventPurgeScriptLog,
+
+               //-----------------------------------------------------
                ///\brief First event ID to use for user-defined events
                ///\note Define interpreter events like :
                ///\note enum

@@ -82,7 +82,7 @@
 		"devices": {
 			"type": "list",
 			"nbItemsMin": "1",
-			"nbItemsMax": "4",
+			"nbItemsMax": "3",
 			"allowDuplication": "true",
 			"item": {
 				"type": "section",
@@ -105,7 +105,7 @@
                         "type" : "int",
                         "defaultValue" : "1",
                         "maximumValue" : "3",
-                        "minimumValue" : "0"
+                        "minimumValue" : "1"
                      },                  
                      "differentialDisplay": {
                         "type": "enum",

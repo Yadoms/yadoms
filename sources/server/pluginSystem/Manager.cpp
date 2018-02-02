@@ -196,7 +196,7 @@ namespace pluginSystem
 
          // Remove in database
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-         m_dataProvider->getDeviceRequester()->removeAllDeviceForPlugin(id);
+         m_dataAccessLayer->getDeviceManager()->removeAllDeviceForPlugin(id);
          m_pluginDBTable->removeInstance(id);
 
          // Remove logs

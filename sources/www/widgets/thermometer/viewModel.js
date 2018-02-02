@@ -10,8 +10,6 @@ function thermometerViewModel(){
    // default size
    this.WidgetHeight = 175;
    this.WidgetWidth  = 95;
-   this.tempMax = 50;
-   this.tempMin = -40;
    var isSmall = true;
 
    /**
@@ -50,7 +48,8 @@ function thermometerViewModel(){
       }
    };
    
-   this.refresh = function(){
+   this.refresh = function()
+   {
 	   var self = this;
 
       var element = self.widgetApi.find(".thermometer-canvas");
@@ -73,6 +72,10 @@ function thermometerViewModel(){
 		//dy : the height of the column. The final value y + dy should equal to 74 (in the colour ball).
 		// min -> 0 of height
 		// max -> 60 of height
+		
+      // Value 
+      var tempMax = self.widget.configuration.customYAxisMinMax.content.maximumValue;
+      var tempMin = self.widget.configuration.customYAxisMinMax.content.minimumValue;
       
       // Value for the physical representation
       var posYMin = 10 * self.WidgetHeight / 99;   // the highest position
@@ -171,32 +174,44 @@ function thermometerViewModel(){
       if ( this.widget.getHeight() == 200 && this.widget.getWidth() == 200 ){
 		   self.WidgetWidth  = 190;
 		   self.WidgetHeight = 170;
+		   
+		   self.refresh();
 		   isSmall = false;
 	   }
       else if ( this.widget.getHeight() == 200 && this.widget.getWidth() == 100 ){
 		   self.WidgetWidth  = 95;
 		   self.WidgetHeight = 170;
-
+		   
+		   //To be painted only one time
+		   self.refresh();
 	   }	   
       else if ( this.widget.getHeight() == 300 && this.widget.getWidth() == 100 ){
 		   self.WidgetWidth  = 95;
 		   self.WidgetHeight = 272;
+		   
+		   //To be painted only one time
+		   self.refresh();
 	   }  
       else if ( this.widget.getHeight() == 300 && this.widget.getWidth() == 200 ){
 		   self.WidgetWidth  = 190;
 		   self.WidgetHeight = 272;
+		   
+		   //To be painted only one time
+		   self.refresh();
 	   }
       else if (this.widget.getHeight() == 400 && this.widget.getWidth() == 200 ){
 		   self.WidgetWidth  = 190;
 		   self.WidgetHeight = 368;
+		   
+		   //To be painted only one time
+		   self.refresh();
 	   }	   
 	   else{
 		   self.WidgetWidth  = 95;
 		   self.WidgetHeight = 368;
+		   
+		   self.refresh();
 		   isSmall = true;
 	   }
-      
-      //To be painted only one time
-      self.refresh();
-   };
+   };	   
 };

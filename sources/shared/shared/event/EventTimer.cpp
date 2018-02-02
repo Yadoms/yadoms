@@ -59,7 +59,7 @@ namespace shared
       bool CEventTimer::canBeRemoved() const
       {
          // Timer can be removed if no more event is to come
-         return (m_nextStopPoint == boost::date_time::not_a_date_time);
+         return m_nextStopPoint == boost::date_time::not_a_date_time;
       }
 
       int CEventTimer::getId() const

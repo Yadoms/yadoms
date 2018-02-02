@@ -8,7 +8,7 @@ function notificationSenderViewModel() {
    var self = this;
 
    // Observable data
-   self.toCaption = ko.observable($.t("widgets/dev-notification-sender:to"));
+   self.toCaption = ko.observable($.t("widgets.dev-notification-sender:to"));
    self.body = ko.observable();
    self.toSelected = ko.observable();
    
@@ -38,7 +38,7 @@ function notificationSenderViewModel() {
 
           KeywordManager.sendCommand(this.widget.configuration.device.keywordId, JSON.stringify(notification))
               .done(function() {
-                  self.widgetApi.notify($.t("widgets/dev-notification-sender:notificationSent"), "success");
+                  self.widgetApi.notify($.t("widgets.dev-notification-sender:notificationSent"), "success");
               });
       }
    };

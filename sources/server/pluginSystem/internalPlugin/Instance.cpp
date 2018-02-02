@@ -193,9 +193,10 @@ namespace pluginSystem
             throw std::invalid_argument("Wrong device type");
 
          std::string standardCapacity;
+         bool isStandardCapacity;
          try
          {
-            bool isStandardCapacity = data.getConfiguration().get<std::string>("capacity.activeSection") == "standardCapacity";
+            isStandardCapacity = data.getConfiguration().get<std::string>("capacity.activeSection") == "standardCapacity";
             boost::shared_ptr<const yApi::historization::IHistorizable> keyword;
             if (isStandardCapacity)
                createStandardCapacityDevice(api,

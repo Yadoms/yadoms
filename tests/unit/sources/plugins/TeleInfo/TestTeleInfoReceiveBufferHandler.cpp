@@ -29,11 +29,9 @@ class CTeleInfoReceiveBufferHandlerMock : public CTeleInfoReceiveBufferHandler
 public:
    CTeleInfoReceiveBufferHandlerMock(shared::event::CEventHandler& receiveDataEventHandler,
                                      int receiveDataEventId,
-                                     const boost::posix_time::time_duration suspendDelay,
-									 boost::shared_ptr<shared::communication::IBufferLogger> logger)
+									          boost::shared_ptr<shared::communication::IBufferLogger> logger)
       : CTeleInfoReceiveBufferHandler(receiveDataEventHandler,
                                       receiveDataEventId,
-                                      suspendDelay,
                                       logger,
                                       false)
    {
@@ -59,7 +57,6 @@ BOOST_AUTO_TEST_SUITE(TestTeleInfoReceiveBufferHandler)
       shared::event::CEventHandler eventHandler;
       CTeleInfoReceiveBufferHandlerMock bufferHandler(eventHandler,
                                                       shared::event::kUserFirstId,
-                                                      boost::posix_time::seconds(30),
                                                       boost::make_shared<BufferLoggerMock>());
 
 
@@ -105,7 +102,6 @@ BOOST_AUTO_TEST_CASE(getMessages)
 	shared::event::CEventHandler evtHandler;
 	CTeleInfoReceiveBufferHandlerMock bufferHandler(evtHandler,
                                                    shared::event::kUserFirstId,
-                                                   boost::posix_time::seconds(0),
                                                    boost::make_shared<BufferLoggerMock>());
 
 	const auto out = bufferHandler.getMessages(frame);
@@ -129,9 +125,9 @@ BOOST_AUTO_TEST_CASE(Nominal)
    shared::event::CEventHandler evtHandler;
    CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
                                                shared::event::kUserFirstId,
-                                               boost::posix_time::seconds(0),
                                                boost::make_shared<BufferLoggerMock>(),
                                                false);
+   bufferHandler.activate();
    bufferHandler.push(shared::communication::CByteBuffer(frame));
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
    const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
@@ -155,9 +151,9 @@ BOOST_AUTO_TEST_CASE(twoframesOnePush)
 	shared::event::CEventHandler evtHandler;
 	CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
                                                shared::event::kUserFirstId,
-                                               boost::posix_time::seconds(0),
                                                boost::make_shared<BufferLoggerMock>(),
                                                false);
+   bufferHandler.activate();
 	bufferHandler.push(shared::communication::CByteBuffer(frame));
 	BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 	const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
@@ -181,9 +177,9 @@ BOOST_AUTO_TEST_CASE(twoframesTwoPush)
 	shared::event::CEventHandler evtHandler;
 	CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
                                                shared::event::kUserFirstId,
-                                               boost::posix_time::seconds(0),
                                                boost::make_shared<BufferLoggerMock>(),
                                                false);
+   bufferHandler.activate();
 	bufferHandler.push(shared::communication::CByteBuffer(frame1));
 	BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 	const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
@@ -201,9 +197,9 @@ BOOST_AUTO_TEST_CASE(extraCharactersbetweenCRetx)
 	shared::event::CEventHandler evtHandler;
 	CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
                                                shared::event::kUserFirstId,
-                                               boost::posix_time::seconds(0),
                                                boost::make_shared<BufferLoggerMock>(),
                                                false);
+   bufferHandler.activate();
 	bufferHandler.push(shared::communication::CByteBuffer(frame));
 	BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
 }
@@ -225,9 +221,9 @@ BOOST_AUTO_TEST_CASE(extraCharactersbetweenstxLF)
 	shared::event::CEventHandler evtHandler;
 	CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
                                                shared::event::kUserFirstId,
-                                               boost::posix_time::seconds(0),
                                                boost::make_shared<BufferLoggerMock>(),
                                                false);
+   bufferHandler.activate();
 	bufferHandler.push(shared::communication::CByteBuffer(frame));
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
    const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
@@ -251,9 +247,9 @@ BOOST_AUTO_TEST_CASE(extraCharactersbeforestx)
 	shared::event::CEventHandler evtHandler;
 	CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
                                                shared::event::kUserFirstId,
-                                               boost::posix_time::seconds(0),
                                                boost::make_shared<BufferLoggerMock>(),
                                                false);
+   bufferHandler.activate();
 	bufferHandler.push(shared::communication::CByteBuffer(frame));
 	BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 	const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
@@ -277,9 +273,9 @@ BOOST_AUTO_TEST_CASE(extraCharactersbeforestx2)
 	shared::event::CEventHandler evtHandler;
 	CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
                                                shared::event::kUserFirstId,
-                                               boost::posix_time::seconds(0),
                                                boost::make_shared<BufferLoggerMock>(),
                                                false);
+   bufferHandler.activate();
 	bufferHandler.push(shared::communication::CByteBuffer(frame));
 	BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 	const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
@@ -293,9 +289,9 @@ BOOST_AUTO_TEST_CASE(OneCRCFailed)
 	shared::event::CEventHandler evtHandler;
 	CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
                                                shared::event::kUserFirstId,
-                                               boost::posix_time::seconds(0),
                                                boost::make_shared<BufferLoggerMock>(),
                                                false);
+   bufferHandler.activate();
 	bufferHandler.push(shared::communication::CByteBuffer(frame));
 	BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
 }
@@ -307,9 +303,9 @@ BOOST_AUTO_TEST_CASE(MissingCR)
 	shared::event::CEventHandler evtHandler;
 	CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
                                                shared::event::kUserFirstId,
-                                               boost::posix_time::seconds(0),
                                                boost::make_shared<BufferLoggerMock>(),
                                                false);
+   bufferHandler.activate();
 	bufferHandler.push(shared::communication::CByteBuffer(frame));
 	BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
 }
@@ -336,10 +332,10 @@ BOOST_AUTO_TEST_CASE(Multiframe)
 	shared::event::CEventHandler evtHandler;
 	CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
                                                shared::event::kUserFirstId,
-                                               boost::posix_time::seconds(0),
                                                boost::make_shared<BufferLoggerMock>(),
                                                false);
 
+   bufferHandler.activate();
 	bufferHandler.push(shared::communication::CByteBuffer(frame1));
 	BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
 	bufferHandler.push(shared::communication::CByteBuffer(frame2));
@@ -373,86 +369,18 @@ BOOST_AUTO_TEST_CASE(final)
 	shared::event::CEventHandler evtHandler;
 	CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
                                                shared::event::kUserFirstId,
-                                               boost::posix_time::seconds(0),
                                                boost::make_shared<BufferLoggerMock>(),
                                                false);
+	useTimeMock();
+
+   bufferHandler.activate();
 	bufferHandler.push(shared::communication::CByteBuffer(frame1));
 	BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
 	bufferHandler.push(shared::communication::CByteBuffer(frame2));
+	auto timeMock = useTimeMock();
 	BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 	const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
 	BOOST_CHECK_EQUAL(*out == expectedMap, true);
-}
-
-BOOST_AUTO_TEST_CASE(threeImmediateframesTwoPushdelay30s)
-{
-	shared::currentTime::Provider().setProvider(boost::make_shared<CDefaultCurrentTimeMock>());
-
-	const auto frame1 = serialTeleInfoMessage::normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
-	const std::map<std::string, std::string> expectedMap = {
-		{ "ADCO", "031428097115" },
-		{ "OPTARIF", "BASE" },
-		{ "ISOUSC", "30" },
-		{ "BASE", "006238747" },
-		{ "PTEC", "TH.." },
-		{ "IINST", "008" },
-		{ "IMAX", "025" },
-		{ "PAPP", "01940" },
-		{ "MOTDETAT", "000000" } };
-
-	shared::event::CEventHandler evtHandler;
-	CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
-                                               shared::event::kUserFirstId,
-                                               boost::posix_time::seconds(30),
-                                               boost::make_shared<BufferLoggerMock>(),
-                                               false);
-	bufferHandler.push(shared::communication::CByteBuffer(frame1));
-	BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
-	const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
-	BOOST_CHECK_EQUAL(*out == expectedMap, true);
-	bufferHandler.push(shared::communication::CByteBuffer(frame1));
-	BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
-	bufferHandler.push(shared::communication::CByteBuffer(frame1));
-	BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
-}
-
-BOOST_AUTO_TEST_CASE(threeframesat30sTwoPushdelay30s)
-{
-	auto timeMock = boost::make_shared<CDefaultCurrentTimeMock>();
-	shared::currentTime::Provider().setProvider(timeMock);
-
-	const auto frame1 = serialTeleInfoMessage::normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
-	const std::map<std::string, std::string> expectedMap = {
-		{ "ADCO", "031428097115" },
-		{ "OPTARIF", "BASE" },
-		{ "ISOUSC", "30" },
-		{ "BASE", "006238747" },
-		{ "PTEC", "TH.." },
-		{ "IINST", "008" },
-		{ "IMAX", "025" },
-		{ "PAPP", "01940" },
-		{ "MOTDETAT", "000000" } };
-
-	shared::event::CEventHandler evtHandler;
-	CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
-                                               shared::event::kUserFirstId,
-                                               boost::posix_time::seconds(30),
-                                               boost::make_shared<BufferLoggerMock>(),
-                                               false);
-	bufferHandler.push(shared::communication::CByteBuffer(frame1));
-	BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
-	const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
-	BOOST_CHECK_EQUAL(*out == expectedMap, true);
-	timeMock->sleep(boost::posix_time::seconds(30));
-	bufferHandler.push(shared::communication::CByteBuffer(frame1));
-	BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
-	const auto out1 = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
-	BOOST_CHECK_EQUAL(*out1 == expectedMap, true);
-	timeMock->sleep(boost::posix_time::seconds(30));
-	bufferHandler.push(shared::communication::CByteBuffer(frame1));
-	BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
-	const auto out2 = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
-	BOOST_CHECK_EQUAL(*out2 == expectedMap, true);
 }
 
 //
@@ -476,9 +404,10 @@ BOOST_AUTO_TEST_CASE(LF_Change_to_STX)
    shared::event::CEventHandler evtHandler;
    CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
                                                shared::event::kUserFirstId,
-                                               boost::posix_time::seconds(0),
                                                boost::make_shared<BufferLoggerMock>(),
                                                false);
+
+   bufferHandler.activate();
    bufferHandler.push(shared::communication::CByteBuffer(frame));
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
    const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
@@ -502,9 +431,10 @@ BOOST_AUTO_TEST_CASE(LF_Change_to_STX2)
    shared::event::CEventHandler evtHandler;
    CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
                                                shared::event::kUserFirstId,
-                                               boost::posix_time::seconds(0),
                                                boost::make_shared<BufferLoggerMock>(),
                                                false);
+
+   bufferHandler.activate();
    bufferHandler.push(shared::communication::CByteBuffer(frame));
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
    const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
@@ -529,9 +459,10 @@ BOOST_AUTO_TEST_CASE(Last_Default)
    shared::event::CEventHandler evtHandler;
    CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
                                                shared::event::kUserFirstId,
-                                               boost::posix_time::seconds(0),
                                                boost::make_shared<BufferLoggerMock>(),
                                                false);
+
+   bufferHandler.activate();
    // First frame
    bufferHandler.push(shared::communication::CByteBuffer(serialTeleInfoMessage::normalizeFrame("<etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BAS")));
 

@@ -39,10 +39,16 @@ namespace rfxcomMessages
       case sTypeRAIN4:
       case sTypeRAIN5:
       case sTypeRAIN7:
-         m_rain->set(((rbuf.RAIN.raintotal1 << 16) | (rbuf.RAIN.raintotal2 << 8) | rbuf.RAIN.raintotal3) / 10.0);
+         m_rain->set((rbuf.RAIN.raintotal1 << 16 | rbuf.RAIN.raintotal2 << 8 | rbuf.RAIN.raintotal3) / 10.0);
          break;
       case sTypeRAIN6:
          m_rain->set(rbuf.RAIN.raintotal3 * 0.266);
+         break;
+      case sTypeRAIN8:
+         m_rain->set(rbuf.RAIN.raintotal3 * 0.2); // 2 cartridge can be installed : 0.2 mm or 0.01 inch. We support only 0.2 mm cartridge.
+         break;         
+      case sTypeRAIN9:
+         m_rain->set((rbuf.RAIN.raintotal2 << 8 | rbuf.RAIN.raintotal3) * 0.3);
          break;
       default:
          YADOMS_LOG(information) << "Rain subtype is not supported : " << m_subType ;
@@ -124,6 +130,10 @@ namespace rfxcomMessages
       case sTypeRAIN6: ssModel << "TX5";
          break;
       case sTypeRAIN7: ssModel << "Alecto WS4500, Auriol H13726, Hama EWS1500, Meteoscan W155/W160, Ventus WS155";
+         break;
+      case sTypeRAIN8: ssModel << "Davis";
+         break;
+      case sTypeRAIN9: ssModel << "Alecto ACH2010";
          break;
       default: ssModel << boost::lexical_cast<std::string>(m_subType);
          break;

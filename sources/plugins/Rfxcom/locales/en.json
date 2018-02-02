@@ -12,18 +12,17 @@
       "content": {
         "AE Blyss": { "name": "AE Blyss" },
         "Rubicson": { "name": "Rubicson" },
-        "FineOffset/Viking": { "name": "FineOffset/Viking" },
+        "FineOffset/Viking": { "name": "FineOffset, Viking" },
         "Lighting4": { "name": "Lighting4" },
-        "RSL": { "name": "RSL" },
-        "Byron SX": { "name": "Byron SX" },
+        "RSL": { "name": "RSL, Revolt" },
+        "Byron SX": { "name": "Byron SX, SelectPlus" },
         "Imagintronix": { "name": "Imagintronix/Opus" },
         "undecoded messages": { "name": "undecoded messages" },
         "Mertik": { "name": "Mertik" },
         "AD LightwaveRF": { "name": "AD LightwaveRF" },
-        "Hideki/UPM": { "name": "Hideki/UPM" },
+        "Hideki/UPM": { "name": "Hideki, TFA, Cresta, UPM" },
         "La Crosse": { "name": "La Crosse" },
-        "FS20": { "name": "FS20" },
-        "ProGuard": { "name": "ProGuard" },
+        "LegrandCAD": { "name": "Legrand CAD" },
         "BlindsT0": { "name": "BlindsT0" },
         "BlindsT1": { "name": "BlindsT1" },
         "X10": { "name": "X10" },
@@ -650,13 +649,35 @@
       }
     }
   },
+  "extraQueries": {
+    "firmwareUpdate": {
+      "name": "Update firmware",
+      "commandData": {
+        "fileContent": {
+          "name": "File",
+          "description": "The firmware file to use"
+        }
+      }
+    }
+  },
   "customLabels": {
     "pluginState": {
       "connecting": "Connecting...",
       "initializing": "RFXCom initializing...",
       "connectionLost": "RFXCom connection was lost",
       "updateConfiguration": "Configuration updating...",
+      "updateFirmware": "Firmware updating...",
       "failToConfigure": "Unable to set configuration as expected, maybe incompatible protocols were selected, see RFXCom manual"
+    },
+    "firmwareUpdate": {
+      "loadInputFile": "Loading file...",
+      "connect": "Connecting to RFXCom...",
+      "erase": "Erasing RFXCom memory...",
+      "write": "Writing RFXCom memory...",
+      "reboot": "Finished, reboot RFXCom",
+      "ErrorInternal": "Unable to update firmware because of internal error",
+      "ErrorOnlyAvailableForSerial": "Firmware updating is only available with serial connection",
+      "ErrorInvalidInputFile": "Unable to update firmware, input file is invalid"
     }
   }
 }

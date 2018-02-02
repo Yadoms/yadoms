@@ -90,7 +90,7 @@ function stateDisplayViewModel() {
             //it is the right device
             if (data.value !==""){
                console.log(self.pluginInstanceType);
-               var translatedEnumValue = $.t("plugins/" + self.pluginInstanceType + ":enumerations." + self.keyword.typeInfo.name + ".values." + data.value, 
+               var translatedEnumValue = $.t("plugins." + self.pluginInstanceType + ":enumerations." + self.keyword.typeInfo.name + ".values." + data.value, 
                { defaultValue:data.value} );
                self.data(translatedEnumValue);
             }

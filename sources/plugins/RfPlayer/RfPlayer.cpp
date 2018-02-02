@@ -3,9 +3,9 @@
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/Log.h>
 #include "Factory.h"
-#include <shared/encryption/Base64.h>
 #include "frames/outgoing/Factory.h"
 #include "ManuallyDeviceFactory.h"
+#include <shared/plugin/yPluginApi/configuration/File.h>
 
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
@@ -411,8 +411,8 @@ void CRfPlayer::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi>& api,
    */
 
 
-   std::string base64firmware = extraQuery->getData()->data().get<std::string>("fileContent");
-   std::string firmwareContent = shared::encryption::CBase64::decode(base64firmware);
+   yApi::configuration::CFile fileFromClient = extraQuery->getData()->data().get<yApi::configuration::CFile>("fileContent");
+   std::string firmwareContent = fileFromClient.getContent();
 
    const std::string stepi18nSendingFile = "customLabels.firmwareUpdate.writeFile";
    m_messageHandler->sendFile(firmwareContent, [&](float progress)

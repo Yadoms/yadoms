@@ -1,6 +1,5 @@
 // Includes needed to compile tested classes
 #include "../../../../sources/shared/shared/currentTime/ICurrentTime.h"
-#include "../../../../sources/shared/shared/currentTime/Provider.h"
 
 class CDefaultCurrentTimeMock : public shared::currentTime::ICurrentTime
 {
@@ -28,4 +27,4 @@ private:
    boost::posix_time::ptime m_refTime;
 };
 
-
+extern boost::shared_ptr<CDefaultCurrentTimeMock> useTimeMock();

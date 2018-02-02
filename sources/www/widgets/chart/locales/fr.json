@@ -7,9 +7,9 @@
    "loadingData": "Chargement des données",
    "RangeTooBroad" : "Echelle trop large",
    "noAvailableData": "Aucune donnée pour l'échelle sélectionnée",
-   "formatNotSupported": "Le format __format__ n'est pas supporté",
-   "deviceNotFound": "Equipement Id __Id__ introuvable",
-   "keywordNotFound" : "Donnée Id __Id__ introuvable",
+   "formatNotSupported": "Le format {{format}} n'est pas supporté",
+   "deviceNotFound": "Equipement Id {{Id}} introuvable",
+   "keywordNotFound" : "Donnée Id {{Id}} introuvable",
 	"configurationSchema": {
 		"interval": {
 			"name": "Période d'affichage du graphique",
@@ -84,7 +84,7 @@
                         "description": "Ce graphique représente la différence de valeur entre chaque acquisition (Précipitations pluviométriques cumulatives, ...). Cette option est ignorée dans le cas de variables booléennes ou d'énumération.",
                         "values": {
                            "absolute": "valeurs absolues",
-                           "relative": "valeurs relatives"
+                           "relative": "valeurs relative"
                         }
                      },
                      "periodtype": {

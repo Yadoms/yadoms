@@ -8,24 +8,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="description" content="Yet Another DOMotic System">
     <meta name="author" content="yadoms team">
-    <link rel="apple-touch-icon" sizes="57x57" href="img/favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="img/favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="img/favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="img/favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="img/favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="img/favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="img/favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="img/favicon/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="img/favicon/android-icon-192x192.png">
+
+    <!-- Favicon, generated from https://realfavicongenerator.net -->
+    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="img/favicon/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
     <link rel="manifest" href="img/favicon/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="img/favicon/ms-icon-144x144.png">
+    <link rel="mask-icon" href="img/favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="img/favicon/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileImage" content="img/favicon/mstile-144x144.png">
+    <meta name="msapplication-config" content="img/favicon/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
-
+    
     <title>Yadoms</title>
 
     <!-- Bootstrap core CSS -->
@@ -129,7 +124,9 @@
     <script src="libs/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
     <script src="libs/bootstrap/js/bootstrap.min.js"></script>
     <script src="libs/knockout/js/knockout-3.4.0.js"></script>
-    <script src="libs/i18next/js/i18next-1.11.2.min.js"></script>
+    <script src="libs/i18next/js/i18next.min.js"></script>
+    <script src="libs/i18next/js/jquery-i18next.min.js"></script>
+    <script src="libs/i18next/js/i18nextXHRBackend.min.js"></script>
     <script src="libs/lazyload/js/lazyload.min.js"></script>
     <script src="libs/moment.js/js/moment-with-langs.min.js"></script>
     <script src="libs/moment.js/js/moment-timezone.min.js"></script>
@@ -146,7 +143,9 @@
     <script src="libs/markdown-it/markdown-it-for-inline.min.js"></script>
     <script src="libs/lodash/lodash.min.js"></script>
 
+    <script src="js/i18n-manager.js"></script>
     <script src="js/jquery-extensions.js"></script>
+    <script src="js/json-prettyprint.js"></script>
     <script src="js/knock-out-extenders.js"></script>
     <script src="js/iso-language-codes.js"></script>
     <script src="js/utility.js"></script>
@@ -251,16 +250,8 @@
                     Yadoms.modals.showChangelog = new LazyLoaderManager("modals/show-changelog.html");
 
                     //we start i18n engine
-                    var option = {
-                        resGetPath: "locales/__lng__.json",
-                        fallbackLng: "en",
-                        useDataAttrOptions: true,
-                        debug: false,
-                        fallbackNS: "translation",
-                        load: 'unspecific',
-                        getAsync: false
-                    };
-                    i18n.init(option, function () {
+             i18nManager.init()
+             .done(function() {
                         //we get install/firstStart key to have information if firstStart has already been done
                         ConfigurationManager.get(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart)
                             .done(function () {
@@ -436,7 +427,10 @@
                                 WidgetManager.loadWidget(w, currentPage, true)
                                     .done(function () {
                                         //we update the filter for the websocket
+                                 updateWidgetPolling(w)
+                                 .always(function() {
                                         updateWebSocketFilter();
+                                 });
                                     })
                                     .fail(function (errorMessage) {
                                         notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {
@@ -508,14 +502,14 @@
                         $.whenAll(deferredArray)
                             .always(function () {
                                 //we set the right language
-                                i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function () {
+                            i18next.changeLanguage(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
                                     $("html").i18n();
                                     moment.lang(window.navigator.userLanguage || window.navigator.language);
 
                                     //Load Plugin instances to load initially all languages files. Needed for some widgets
                                     PluginInstanceManager.getAll().done(function (allInstances) {
                                         waitForServerReady();
-                                    });
+                            });                            
                                 });
                             });
                     }

@@ -13,7 +13,6 @@
 #include "script/IGeneralInfo.h"
 #include "database/IDataProvider.h"
 #include "dataAccessLayer/IEventLogger.h"
-#include "dateTime/ITimeZoneProvider.h"
 
 namespace automation
 {
@@ -28,8 +27,7 @@ namespace automation
                    boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                    boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                    boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
-                   boost::shared_ptr<shared::ILocation> location,
-                   boost::shared_ptr<dateTime::ITimeZoneProvider> timezoneProvider);
+                   boost::shared_ptr<shared::ILocation> location);
       virtual ~CRuleManager();
 
       // IRuleManager Implementation
@@ -41,6 +39,7 @@ namespace automation
       boost::shared_ptr<database::entities::CRule> getRule(int id) const override;
       std::string getRuleCode(int id) const override;
       std::string getRuleLog(int id) const override;
+      void deleteRuleLog(int id) const override;
       std::string getRuleTemplateCode(const std::string& interpreterName) const override;
       void updateRule(boost::shared_ptr<const database::entities::CRule> ruleData) override;
       void updateRuleCode(int id, const std::string& code) override;
@@ -50,8 +49,7 @@ namespace automation
       void deleteAllRulesMatchingInterpreter(const std::string& interpreterName) override;
       void startRule(int ruleId) override;
       bool stopRule(int ruleId) override;
-      void stopRuleAndWaitForStopped(
-         int ruleId, const boost::posix_time::time_duration& timeout = boost::posix_time::seconds(20)) override;
+      void stopRuleAndWaitForStopped(int ruleId, const boost::posix_time::time_duration& timeout = boost::posix_time::seconds(20)) override;
       // [END] IRuleManager Implementation
 
 
@@ -124,3 +122,5 @@ namespace automation
       std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler>>> m_ruleStopNotifiers;
    };
 } // namespace automation	
+
+

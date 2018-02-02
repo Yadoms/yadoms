@@ -32,6 +32,7 @@ ConfigurationManager.items = {};
 ConfigurationManager.items.system = {};
 ConfigurationManager.items.systemSection = "system";
 ConfigurationManager.items.system.language = "language";
+ConfigurationManager.items.system.timezone = "timezone";
 
 ConfigurationManager.items.system.basicAuthentication = "basicAuthentication";
 ConfigurationManager.items.system.basicAuthenticationUser = "basicAuthenticationUser";
@@ -43,7 +44,6 @@ ConfigurationManager.items.system.locationSection = "location";
 ConfigurationManager.items.system.location.latitude  = "latitude";
 ConfigurationManager.items.system.location.longitude = "longitude";
 ConfigurationManager.items.system.location.altitude  = "altitude";
-ConfigurationManager.items.system.location.timezone = "timezone";
 
 ConfigurationManager.items.system.advancedParameters = "advancedParameters";
 ConfigurationManager.items.system.dateFormatString = "dateFormatString";

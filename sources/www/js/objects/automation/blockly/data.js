@@ -86,11 +86,11 @@ Blockly.Yadoms.LoadDataFinalize_ = function(result) {
                //all is OK, this is a new enum, ask for translation
                var translatedEnum = [];
                $.each(typeInfo.values, function (index2, value) {
-                  var trad = $.t("plugins/" + pluginData.type + ":enumerations." + typeInfo.name + ".values." + value, { defaultValue: value });
+                  var trad = $.t("plugins." + pluginData.type + ":enumerations." + typeInfo.name + ".values." + value, { defaultValue: value });
                   translatedEnum.push([trad, value]);
                });
 
-               var translatedName = $.t("plugins/" + pluginData.type + ":enumerations." + typeInfo.name + ".name", { defaultValue: typeInfo.name });
+               var translatedName = $.t("plugins." + pluginData.type + ":enumerations." + typeInfo.name + ".name", { defaultValue: typeInfo.name });
 
                result.enumerations[typeToSet] = {
                   typeToSet: typeToSet,

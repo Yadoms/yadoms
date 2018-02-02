@@ -25,8 +25,7 @@ BOOST_AUTO_TEST_CASE(DeviceSeen3TimesEachHours)
    CRareDeviceIdFilter filter(3, boost::posix_time::hours(12));
    const std::string newDeviceName("device");
 
-   auto timeProviderMock = boost::make_shared<CDefaultCurrentTimeMock>();
-   shared::currentTime::Provider().setProvider(timeProviderMock);
+   auto timeProviderMock = useTimeMock();
 
    BOOST_CHECK_EQUAL(filter.isValid(newDeviceName), false);
    timeProviderMock->sleep(boost::posix_time::hours(1));
@@ -40,8 +39,7 @@ BOOST_AUTO_TEST_CASE(TimeOver)
    CRareDeviceIdFilter filter(3, boost::posix_time::hours(12));
    const std::string newDeviceName("device");
 
-   auto timeProviderMock = boost::make_shared<CDefaultCurrentTimeMock>();
-   shared::currentTime::Provider().setProvider(timeProviderMock);
+   auto timeProviderMock = useTimeMock();
 
    BOOST_CHECK_EQUAL(filter.isValid(newDeviceName), false);
    timeProviderMock->sleep(boost::posix_time::hours(7));

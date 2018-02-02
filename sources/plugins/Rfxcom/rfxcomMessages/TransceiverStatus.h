@@ -86,10 +86,16 @@ namespace rfxcomMessages
       EFirmwareType getFirmwareType() const;
 
       //--------------------------------------------------------------
-      /// \brief	                     Get the RfxCom type as string
-      /// \return                      A string representing the RfxCom type
+      /// \brief	                     Get the RfxCom firmware version
+      /// \return                      The firmware version
       //--------------------------------------------------------------
       unsigned int getFirmwareVersion() const;
+
+      //--------------------------------------------------------------
+      /// \brief	                     Get the RfxCom hardware version as string
+      /// \return                      A string representing the RfxCom hardware version
+      //--------------------------------------------------------------
+      std::string getHardwareVersion() const;
 
       //--------------------------------------------------------------
       /// \brief	                     Get the valid message (copyright message)
@@ -121,6 +127,11 @@ namespace rfxcomMessages
       unsigned int m_firmwareVersion;
 
       //--------------------------------------------------------------
+      /// \brief  The RfxCom hardware version
+      //--------------------------------------------------------------
+      unsigned int m_hardwareVersionMajor, m_hardwareVersionMinor;
+
+      //--------------------------------------------------------------
       /// \brief  The RfxCom firmware type
       //--------------------------------------------------------------
       EFirmwareType m_firmwareType;
@@ -145,8 +156,7 @@ namespace rfxcomMessages
       bool m_LWRFenabled;
       bool m_HIDEKIenabled;
       bool m_LACROSSEenabled;
-      bool m_FS20enabled;
-      bool m_PROGUARDenabled;
+      bool m_LegrandCADenabled;
       bool m_BLINDST0enabled;
       bool m_BLINDST1enabled;
       bool m_X10enabled;

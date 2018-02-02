@@ -3,6 +3,7 @@
 #include <shared/exception/EmptyResult.hpp>
 #include <Poco/Exception.h>
 #include <Poco/URI.h>
+#include "notification/Helpers.hpp"
 
 namespace dataAccessLayer
 {
@@ -138,9 +139,14 @@ namespace dataAccessLayer
 
    void CKeywordManager::updateKeywordBlacklistState(int keywordId, const bool blacklist)
    {
+      auto keywordToBlacklist = getKeyword(keywordId);
+
       if(blacklist)
          m_dataProvider->getAcquisitionRequester()->removeKeywordData(keywordId);
       m_keywordRequester->updateKeywordBlacklistState(keywordId, blacklist);
+
+      //post notification
+      notification::CHelpers::postChangeNotification(keywordToBlacklist, notification::change::EChangeType::kDelete);
    }
 
    void CKeywordManager::removeKeyword(int deviceId, const std::string& keyword)
@@ -154,8 +160,12 @@ namespace dataAccessLayer
 
    void CKeywordManager::removeKeyword(int keywordId)
    {
+     auto keywordToDelete = getKeyword(keywordId);
      m_dataProvider->getAcquisitionRequester()->removeKeywordData(keywordId);
      m_keywordRequester->removeKeyword(keywordId);
+
+     //post notification
+     notification::CHelpers::postChangeNotification(keywordToDelete, notification::change::EChangeType::kDelete);
    }
 
    boost::shared_ptr<database::entities::CKeyword> CKeywordManager::makeKeywordEntity(int deviceId, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details)
@@ -193,6 +203,4 @@ namespace dataAccessLayer
 
       return keywordEntity;
    }
-} //namespace dataAccessLayer 
-
-
+} //namespace dataAccessLayer

@@ -491,7 +491,7 @@
 
         // Add updatable and new items in the same list
         addItemsInTable($table, objectType, list.updatable, function (moduleType, data) {
-            return objectType + "s/" + moduleType;
+            return objectType + "s." + moduleType;
         });
 
         addItemsInTable($table, objectType, list.new, function (moduleType, data) {
@@ -501,7 +501,7 @@
                 '/__ns__/locales/__lng__.json';
             i18n.loadNamespace(moduleType + "/" + newestVersion);
             i18n.options.resGetPath = "locales/__lng__.json";
-            return moduleType + "/" + newestVersion;
+            return moduleType + "." + newestVersion;
         });
     }
 

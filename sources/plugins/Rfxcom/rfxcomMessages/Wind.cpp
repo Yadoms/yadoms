@@ -12,10 +12,10 @@ namespace rfxcomMessages
                 const RBUF& rbuf,
                 size_t rbufSize)
       : m_windDirection(boost::make_shared<yApi::historization::CDirection>("windDirection")),
-      m_windMaxSpeed(boost::make_shared<yApi::historization::CSpeed>("windMaxSpeed")),
-      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_windDirection , m_windMaxSpeed , m_batteryLevel , m_signalPower })
+        m_windMaxSpeed(boost::make_shared<yApi::historization::CSpeed>("windMaxSpeed")),
+        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_windDirection , m_windMaxSpeed , m_batteryLevel , m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -28,7 +28,10 @@ namespace rfxcomMessages
 
       m_id = rbuf.WIND.id1 | (rbuf.WIND.id2 << 8);
 
-      m_windDirection->set(rbuf.WIND.directionl | (rbuf.WIND.directionh << 8));
+      if (m_subType != sTypeWIND8)
+      {
+         m_windDirection->set(rbuf.WIND.directionl | (rbuf.WIND.directionh << 8));
+      }
 
       if (m_subType != sTypeWIND5)
       {
@@ -40,12 +43,15 @@ namespace rfxcomMessages
 
       m_windMaxSpeed->set((rbuf.WIND.gustl | (rbuf.WIND.gusth << 8)) / 10.0);
 
-      if (m_subType == sTypeWIND4)
+      if (m_subType == sTypeWIND4 || m_subType == sTypeWIND8)
       {
          m_temperature = boost::make_shared<yApi::historization::CTemperature>("temperature");
          m_temperature->set(NormalizeTemperature(rbuf.WIND.temperatureh, rbuf.WIND.temperaturel, rbuf.WIND.tempsign == 1));
          m_keywords.push_back(m_temperature);
+      }
 
+      if (m_subType == sTypeWIND4)
+      {
          m_chillTemperature = boost::make_shared<yApi::historization::CTemperature>("chillTemperature");
          m_chillTemperature->set(NormalizeTemperature(rbuf.WIND.chillh, rbuf.WIND.chilll, rbuf.WIND.chillsign == 1));
          m_keywords.push_back(m_chillTemperature);
@@ -80,7 +86,7 @@ namespace rfxcomMessages
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CWind::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CWind::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("Wind is a read-only message, can not be encoded");
    }
@@ -127,6 +133,8 @@ namespace rfxcomMessages
          break;
       case sTypeWIND7: ssModel << "Alecto WS4500, Auriol H13726, Hama EWS1500, Meteoscan W155/W160, Ventus WS155";
          break;
+      case sTypeWIND8: ssModel << "Alecto ACH2010";
+         break;
       default: ssModel << boost::lexical_cast<std::string>(m_subType);
          break;
       }
@@ -134,5 +142,3 @@ namespace rfxcomMessages
       m_deviceModel = ssModel.str();
    }
 } // namespace rfxcomMessages
-
-

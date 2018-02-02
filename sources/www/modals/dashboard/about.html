@@ -57,11 +57,11 @@
    var d = new $.Deferred();
       
       function getWidgetDomRow(widgetPackage) {
-        return $("table#widget-package-list").find("tr[widget-id='" + widgetPackage + "']");
+        return $("table#widget-package-list").find("tr[widget-id=\"" + widgetPackage + "\"]");
       }
 
       function getPluginDomRow(pluginPackage) {
-        return $("table#plugin-package-list").find("tr[plugin-id='" + pluginPackage + "']");
+        return $("table#plugin-package-list").find("tr[plugin-id=\"" + pluginPackage + "\"]");
       }     
       
        AddWidgetPackage = function( name, version, authors, credits, url ) {
@@ -208,7 +208,7 @@
                      if( (!data.developerMode && !key.startsWith("dev-")) || data.developerMode) {
                         var value = packageList[key];
                         
-                        tabPlugins.push ( {plugin: value, friendlyName: $.t("plugins/" + value.type + ":name" ) });
+                        tabPlugins.push ( {plugin: value, friendlyName: $.t("plugins." + value.type + ":name" ) });
                      }
                    });
                    
@@ -240,7 +240,7 @@
                
                if ((!value.type.startsWith("system-")) && ((data.developerMode) || (!value.type.startsWith("dev-")))) {
                        var i18NContext = value.type + ":";
-                  WidgetList.push ( {displayName: $.t("widgets/" + i18NContext + "name"), widget: value} );
+                  WidgetList.push ( {displayName: $.t("widgets." + i18NContext + "name"), widget: value} );
                }
             }
          }

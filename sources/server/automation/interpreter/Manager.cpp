@@ -275,6 +275,14 @@ namespace automation
          return std::string(std::istreambuf_iterator<char>(file), eos);
       }
 
+      void CManager::deleteLog(int ruleId)
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
+         for (const auto& runningInterpreter : m_loadedInterpreters)
+            runningInterpreter.second->purgeScriptLog(ruleId,
+                                                      getScriptLogFilename(ruleId));
+      }
+
       boost::filesystem::path CManager::getScriptLogFilename(int ruleId) const
       {
          return m_pathProvider->scriptsLogPath() / std::to_string(ruleId) / "rule.log";
@@ -286,3 +294,5 @@ namespace automation
       }
    }
 } // namespace automation::interpreter
+
+

@@ -55,8 +55,8 @@
 // RFXCOM implementation
 // =======================================================================
 // This RFXCom support was developped for :
-// - Sepcifications "RFXtrx SDK.pdf" : Version 9.14 Jan 12, 2017
-// - RFXtrx.h : version 9.13
+// - Sepcifications "RFXtrx SDK.pdf" : Version 9.17 Oct ??, 2017
+// - RFXtrx.h : version 9.17
 // =======================================================================
 //
 
@@ -147,8 +147,7 @@ shared::communication::CByteBuffer CTransceiver::buildSetModeCmd(unsigned char f
    if (configuration.isLWRFenabled()) request.ICMND.msg4 |= msg4_AD;
    if (configuration.isHIDEKIenabled()) request.ICMND.msg4 |= msg4_HID;
    if (configuration.isLACROSSEenabled()) request.ICMND.msg4 |= msg4_LCROS;
-   if (configuration.isFS20enabled()) request.ICMND.msg4 |= msg4_FS20;
-   if (configuration.isPROGUARDenabled()) request.ICMND.msg4 |= msg4_PROGUARD;
+   if (configuration.isLEGRANDenabled()) request.ICMND.msg4 |= msg4_LEGRAND;
    if (configuration.isBLINDST0enabled()) request.ICMND.msg4 |= msg4_BLINDST0;
    if (configuration.isBLINDST1enabled()) request.ICMND.msg4 |= msg4_BLINDST1;
    request.ICMND.msg5 = 0;

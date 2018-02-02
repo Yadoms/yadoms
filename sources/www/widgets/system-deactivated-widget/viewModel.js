@@ -11,10 +11,10 @@ function systemDeactivatedWidgetViewModel() {
     */
    this.initialize = function() {
       if (!isNullOrUndefined(this.widget.requiredType)) {
-          this.widgetApi.find(".deactivatedWidget").text($.t("widgets/system-deactivated-widget:deactivatedWithType", { widgetType: this.widget.requiredType }));
+          this.widgetApi.find(".deactivatedWidget").text($.t("widgets.system-deactivated-widget:deactivatedWithType", { widgetType: this.widget.requiredType }));
       }
       else {
-          this.widgetApi.find(".deactivatedWidget").text($.t("widgets/system-deactivated-widget:deactivated"));
+          this.widgetApi.find(".deactivatedWidget").text($.t("widgets.system-deactivated-widget:deactivated"));
       }
    };
 

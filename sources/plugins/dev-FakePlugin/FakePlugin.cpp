@@ -9,7 +9,7 @@
 #include "FakeCurtain.h"
 #include <Poco/Net/NetworkInterface.h>
 #include <shared/Log.h>
-#include <shared/encryption/Base64.h>
+#include <shared/plugin/yPluginApi/configuration/File.h>
 
 // Use this macro to define all necessary to make your plugin a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -182,8 +182,15 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                }
                else if (extraQuery->getData()->query() == "asyncEQwithProgression")
                {
-                  auto base64firmware = extraQuery->getData()->data().get<std::string>("fileContent");
-                  auto firmwareContent = shared::encryption::CBase64::decode(base64firmware);
+                  auto fileFromClient = extraQuery->getData()->data().get<yApi::configuration::CFile>("fileContent");
+                  auto firmwareContent = fileFromClient.getContent();
+
+                  YADOMS_LOG(information) << "File received from extra command";
+                  YADOMS_LOG(information) << "    File name = " << fileFromClient.getFileName();
+                  YADOMS_LOG(information) << "    File size = " << fileFromClient.getSize();
+                  YADOMS_LOG(information) << "    File type = " << fileFromClient.getMimeType();
+                  YADOMS_LOG(information) << "    File date = " << fileFromClient.getLastModificationDate().getBoostDateTime();
+                  YADOMS_LOG(information) << "    content = " << fileFromClient.getContent();
 
                   for (int i = 0; i < 100; ++i)
                   {

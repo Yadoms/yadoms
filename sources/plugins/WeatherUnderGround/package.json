@@ -10,7 +10,7 @@
 	"configurationSchema": {
 		"APIKey": {
 			"type": "string",
-         "required" : "true"         
+         "required" : "true"
 		},
       "location": {
          "type": "section",

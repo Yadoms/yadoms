@@ -11,10 +11,10 @@ namespace interpreter_cpp_api
       virtual ~CStartScript();
 
       // IStartScript Implementation
-      int getScriptInstanceId() override;
-      const boost::filesystem::path& getScriptPath() override;
-      const std::string& getScriptApiId() override;
-      const boost::filesystem::path& getScriptLogPath() override;
+      int getScriptInstanceId() const override;
+      const boost::filesystem::path& getScriptPath() const override;
+      const std::string& getScriptApiId() const override;
+      const boost::filesystem::path& getScriptLogPath() const override;
       // [END] IStartScript Implementation
 
    private:

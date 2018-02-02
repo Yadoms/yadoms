@@ -101,7 +101,6 @@ private:
 
    boost::shared_ptr<yApi::IYPluginApi> m_api;
    std::string m_deviceName;
-   bool m_isdeveloperMode;
    bool m_teleinfoEnableInCounter;
    bool m_deviceCreated;
    EContracts m_optarif;

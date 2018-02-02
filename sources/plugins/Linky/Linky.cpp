@@ -31,7 +31,8 @@ enum
    kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId, // Always start from shared::event::CEventHandler::kUserFirstId
    kEvtPortDataReceived,
    kErrorRetryTimer,
-   kAnswerTimeout
+   kAnswerTimeout,
+   kSamplingTimer
 };
 
 void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -54,6 +55,15 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
                                                              shared::event::CEventTimer::kOneShot,
                                                              boost::posix_time::seconds(45));
+
+   m_periodicSamplingTimer = api->getEventHandler().createTimer(kSamplingTimer,
+                                                                shared::event::CEventTimer::kPeriodic,
+                                                                boost::posix_time::seconds(30));
+
+   // For immediat sampling
+   m_periodicSamplingTimer = api->getEventHandler().createTimer(kSamplingTimer,
+                                                                shared::event::CEventTimer::kOneShot,
+                                                                boost::posix_time::seconds(0));
 
    // Create the connection
    createConnection(api);
@@ -101,9 +111,10 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             processDataReceived(api,
                                 api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string>>>>());
 
-			//Lauch a new time the time out to detect connexion failure
-			m_waitForAnswerTimer->start();
+            m_receiveBufferHandler->desactivate();
 
+			   //Lauch a new time the time out to detect connexion failure
+			   m_waitForAnswerTimer->start();
             break;
          }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
@@ -115,6 +126,11 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             break;
          }
+      case kSamplingTimer:
+      {
+         m_receiveBufferHandler->activate();
+         break;
+      }
       case kErrorRetryTimer:
          {
             createConnection(api);

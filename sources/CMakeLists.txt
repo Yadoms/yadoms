@@ -274,13 +274,6 @@ set(YADOMS_SRC
 
    server/dateTime/DateTimeNotifier.h
    server/dateTime/DateTimeNotifier.cpp
-   server/dateTime/ITimeZoneProvider.h
-   server/dateTime/TimeZoneDatabase.h
-   server/dateTime/TimeZoneDatabase.cpp
-   server/dateTime/TimeZoneProvider.h
-   server/dateTime/TimeZoneProvider.cpp
-   server/dateTime/TimeZoneProviderFromId.h
-   server/dateTime/TimeZoneProviderFromId.cpp
    
    server/automation/IRule.h
    server/automation/IRuleManager.h
@@ -311,6 +304,8 @@ set(YADOMS_SRC
    server/automation/interpreter/LoadScriptContentRequest.cpp
    server/automation/interpreter/Manager.h
    server/automation/interpreter/Manager.cpp
+   server/automation/interpreter/PurgeScriptLog.h
+   server/automation/interpreter/PurgeScriptLog.cpp
    server/automation/interpreter/SaveScriptContentRequest.h
    server/automation/interpreter/SaveScriptContentRequest.cpp
    server/automation/interpreter/StartScript.h
@@ -607,6 +602,8 @@ set(YADOMS_SRC
    server/web/ws/AcquisitionUpdateFrame.cpp
    server/web/ws/AcquisitionSummaryUpdateFrame.h
    server/web/ws/AcquisitionSummaryUpdateFrame.cpp
+   server/web/ws/KeywordDeletedFrame.h
+   server/web/ws/KeywordDeletedFrame.cpp
    server/web/ws/FrameBase.h
    server/web/ws/FrameBase.cpp
    server/web/ws/FrameFactory.h
@@ -1302,6 +1299,7 @@ SET(CPACK_PACKAGE_EXECUTABLES "Yadoms" "Yadoms")
 # When calling "make package" it do not run "make all" 
 # So package can be realized with make all_unity call before make package
 set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
+set(CMAKE_SKIP_PACKAGE_ALL_DEPENDENCY ON)
 
 INCLUDE(CPack)
 

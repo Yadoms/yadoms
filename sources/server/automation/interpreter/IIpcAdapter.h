@@ -4,6 +4,7 @@
 #include <shared/script/yInterpreterApi/ISaveScriptContentRequest.h>
 #include <shared/script/yInterpreterApi/IStartScript.h>
 #include <shared/script/yInterpreterApi/IStopScript.h>
+#include <shared/script/yInterpreterApi/IPurgeScriptLog.h>
 #include <shared/script/yInterpreterApi/IInformation.h>
 
 
@@ -33,6 +34,7 @@ namespace automation
          virtual void postSaveScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ISaveScriptContentRequest> request) = 0;
          virtual void postStartScript(boost::shared_ptr<shared::script::yInterpreterApi::IStartScript> request) = 0;
          virtual void postStopScript(boost::shared_ptr<shared::script::yInterpreterApi::IStopScript> request) = 0;
+         virtual void postPurgeScriptLog(boost::shared_ptr<shared::script::yInterpreterApi::IPurgeScriptLog> request) = 0;
       };
    }
 } // namespace automation::interpreter

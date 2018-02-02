@@ -4,6 +4,7 @@
 #include "CartelectronicTIC.h"
 #include "CartelectronicEncoder.h"
 #include <shared/Log.h>
+#include "CartelectronicLinky.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -40,6 +41,8 @@ namespace rfxcomMessages
       case sTypeTIC: m_subTypeManager = boost::make_shared<CCartelectronicTIC>(rbuf, rbufSize);
          break;
       case sTypeCEencoder: m_subTypeManager = boost::make_shared<CCartelectronicEncoder>(rbuf, rbufSize);
+         break;
+      case sTypeLinky: m_subTypeManager = boost::make_shared<CCartelectronicLinky>(rbuf, rbufSize);
          break;
       default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");

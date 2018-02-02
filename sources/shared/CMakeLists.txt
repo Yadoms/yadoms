@@ -114,8 +114,14 @@ set(SHARED_LIB_SRC
    shared/exception/Parse.hpp
    shared/exception/JSONParse.hpp
    
+   shared/http/IHttpSession.h
+   shared/http/HttpException.hpp
    shared/http/HttpMethods.h
    shared/http/HttpMethods.cpp
+   shared/http/SecureSession.h
+   shared/http/SecureSession.cpp
+   shared/http/StandardSession.h
+   shared/http/StandardSession.cpp
 
    shared/plugin/information/IInformation.h
    shared/plugin/information/IYadomsInformation.h
@@ -145,6 +151,9 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/StandardValues.cpp
    shared/plugin/yPluginApi/StandardValues.h
    shared/plugin/yPluginApi/YPluginConfiguration.hpp
+
+   shared/plugin/yPluginApi/configuration/File.cpp
+   shared/plugin/yPluginApi/configuration/File.h
 
    shared/plugin/yPluginApi/historization/IHistorizable.h
    shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp
@@ -280,6 +289,7 @@ set(SHARED_LIB_SRC
    shared/script/yInterpreterApi/IAvalaibleRequest.h
    shared/script/yInterpreterApi/IInformation.h
    shared/script/yInterpreterApi/ILoadScriptContentRequest.h
+   shared/script/yInterpreterApi/IPurgeScriptLog.h
    shared/script/yInterpreterApi/ISaveScriptContentRequest.h
    shared/script/yInterpreterApi/IStartScript.h
    shared/script/yInterpreterApi/IStopScript.h
@@ -397,6 +407,7 @@ source_group(logInternal shared/logInternal/*.*)
 source_group(plugin shared/shared/plugin/*.* )	
 source_group(plugin\\information shared/shared/plugin/information/*.* )	
 source_group(plugin\\yPluginApi shared/shared/plugin/yPluginApi/*.* )	
+source_group(plugin\\yPluginApi\\configuration shared/shared/plugin/yPluginApi/configuration/*.* )	
 source_group(plugin\\yPluginApi\\historization shared/shared/plugin/yPluginApi/historization/*.* )	
 source_group(plugin\\yPluginApi\\historization\\typeInfo shared/shared/plugin/yPluginApi/historization/typeInfo/*.* )	
 source_group(process process/*.* )	
@@ -426,7 +437,7 @@ source_group(platformSpecific\\mac\\process shared/mac/shared/process/*.*)
 add_library(yadoms-shared STATIC ${SHARED_LIB_SRC})
 
 target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
-set_property( TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}  ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS})
+set_property( TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}  ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
 
 if(COTIRE_USE)
    set_target_properties(yadoms-shared PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
@@ -441,7 +452,7 @@ if(COTIRE_USE)
 	
    if(COTIRE_USE_UNITY)
       target_link_libraries(yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS})
-set_property( TARGET yadoms-shared_unity PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS})
+set_property( TARGET yadoms-shared_unity PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
    endif()	
 else()
    add_precompiled_header(yadoms-shared stdafx.h)

@@ -8,7 +8,6 @@ namespace yApi = shared::plugin::yPluginApi;
 
 CRunningPeriod::CRunningPeriod(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& KeyWordName)
    : m_runningPeriod(boost::make_shared<teleInfo::specificHistorizers::CPeriod>(KeyWordName)),
-     m_isDeveloperMode(api->getYadomsInformation()->developperMode()),
    m_isChanged(true)
 {
 }
@@ -40,8 +39,6 @@ void CRunningPeriod::set(const std::string& value)
          }
          else
             m_isChanged = false;
-
-         if (m_isDeveloperMode) YADOMS_LOG(information) << m_runningPeriod->getKeyword() << "=" << m_runningPeriod->get() ;
       }
       else
          throw CKeywordException("Keyword " + m_runningPeriod->getKeyword() + " could not be set");

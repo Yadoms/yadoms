@@ -17,13 +17,11 @@ public:
    /// \brief	                           Constructor
    /// \param[in] receiveDataEventHandler The event handler to notify for received data event
    /// \param[in] receiveDataEventId      The event id to notify for received data event
-   /// \param[in] suspendDelay            Mute delay, used to filter messages
    /// \param[in] logger                  logger in developer mode
    /// \param[in] isDeveloperMode         developer mode is active
    //--------------------------------------------------------------
    CLinkyReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
                               int receiveDataEventId,
-                              const boost::posix_time::time_duration suspendDelay,
                               boost::shared_ptr<shared::communication::IBufferLogger> logger,
                               const bool isDeveloperMode);
 
@@ -36,6 +34,9 @@ public:
    void push(const shared::communication::CByteBuffer& buffer) override;
    void flush() override;
    // [END] ILinkyReceiveBufferHandler implementation
+
+   void activate();
+   void desactivate();
 
 protected:
    //--------------------------------------------------------------
@@ -85,12 +86,7 @@ private:
    //--------------------------------------------------------------
    boost::shared_ptr<shared::communication::IBufferLogger> m_logger;
 
-   //--------------------------------------------------------------
-   /// \brief	Management of suspend delay between 2 messages
-   //--------------------------------------------------------------
-   boost::posix_time::ptime m_nextSendMessageDate;
-   const boost::posix_time::time_duration m_suspendDelay;
-
    bool m_isDeveloperMode;
+   bool m_pushActivated;
 };
 

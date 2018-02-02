@@ -8,7 +8,6 @@ function chartViewModel() {
     this.seriesUuid = [];
 
     //Keyword Id List !
-    this.devicesList = [];
     this.interval = 0;
     this.deviceInfo = [];       
     this.keywordInfo = [];
@@ -316,25 +315,25 @@ function chartViewModel() {
                 displayTitle: true,
                 batteryItem: false,
                 items: [
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"widgets/chart:navigator.hour\"/></div>" },
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"widgets/chart:navigator.day\"/></div>"},
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\"><span data-i18n=\"widgets/chart:navigator.week\"/></div>"},
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\"><span data-i18n=\"widgets/chart:navigator.month\"/></div>"},
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\"><span data-i18n=\"widgets/chart:navigator.half_year\"/></div>"},
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets/chart:navigator.year\"/></div>" },
+                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"widgets.chart:navigator.hour\"/></div>" },
+                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"widgets.chart:navigator.day\"/></div>"},
+                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\"><span data-i18n=\"widgets.chart:navigator.week\"/></div>"},
+                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\"><span data-i18n=\"widgets.chart:navigator.month\"/></div>"},
+                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\"><span data-i18n=\"widgets.chart:navigator.half_year\"/></div>"},
+                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets.chart:navigator.year\"/></div>" },
                 { separator: ""},
                 { custom: "<div class=\"widget-toolbar-button export-btn dropdown\">" +
                              "<a id=\"chartExportMenu" + self.widget.id + "\" data-target=\"#\" class=\"widget-toolbar-button export-btn dropdown\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">" +
                                  "<span class=\"fa fa-bars\"/>" +
                              "</a>" +
                              "<ul class=\"dropdown-menu\" aria-labelledby=\"chartExportMenu" + self.widget.id + "\">" +
-                                 "<li><span class=\"print-command\" data-i18n=\"widgets/chart:export.print\"></span></li>" +
+                                 "<li><span class=\"print-command\" data-i18n=\"widgets.chart:export.print\"></span></li>" +
                                  "<li role=\"separator\" class=\"divider\"></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.png\" mime-type=\"image/png\"></span></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.jpeg\" mime-type=\"image/jpeg\"></span></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.svg\" mime-type=\"image/svg+xml\"></span></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.csv\" mime-type=\"text/csv\"></span></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets/chart:export.xls\" mime-type=\"application/vnd.ms-excel\"></span></li>" +
+                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.png\" mime-type=\"image/png\"></span></li>" +
+                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.jpeg\" mime-type=\"image/jpeg\"></span></li>" +
+                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.svg\" mime-type=\"image/svg+xml\"></span></li>" +
+                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.csv\" mime-type=\"text/csv\"></span></li>" +
+                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.xls\" mime-type=\"application/vnd.ms-excel\"></span></li>" +
                              "</ul>" +
                           "</div>"
                     }
@@ -358,7 +357,7 @@ function chartViewModel() {
                    });
                 }
                 catch(error){
-                   notifyError($.t("widgets/chart:formatNotSupported", {format: $(e.currentTarget).attr("mime-type")}));
+                   notifyError($.t("widgets.chart:formatNotSupported", {format: $(e.currentTarget).attr("mime-type")}));
                 }
             });
             
@@ -372,8 +371,7 @@ function chartViewModel() {
             });
         })
         .fail(function (error) {
-            notifyError($.t("widgets/chart:errorInitialization"), error);
-            throw $.t("widgets/chart:errorInitialization");
+            self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
             d.reject();
         });
         return d.promise();
@@ -430,7 +428,6 @@ function chartViewModel() {
     
     this.configurationChanged = function () {
         var self = this;
-
         // Reset of some values
         self.periodValueType = [];
         self.seriesUuid = [];
@@ -450,7 +447,6 @@ function chartViewModel() {
         self.widgetApi.find(".range-btn[interval='" + self.interval + "']").addClass("widget-toolbar-pressed-button");
 
         //just update some viewmodel info
-        self.devicesList = self.widget.configuration.devices.slice(0); 
         self.chartParametersConfiguration();
          
         try{
@@ -479,7 +475,7 @@ function chartViewModel() {
                self.deviceInfo[index] = device;
             })
             .fail(function (error) {
-               notifyError($.t("widgets/chart:deviceNotFound", {Id: device.content.source.deviceId}));
+               self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
             });
 
             //we ask the current value
@@ -525,7 +521,7 @@ function chartViewModel() {
                }
                
                if (self.differentialDisplay[index] && device.content.PlotType === "arearange"){
-                  notifyError($.t("widgets/chart:incompatibilityDifferential"), "error");
+                  notifyError($.t("widgets.chart:incompatibilityDifferential"), "error");
                   self.incompatibility = true;
                   return;
                }
@@ -533,10 +529,10 @@ function chartViewModel() {
                   self.incompatibility = false;
                
                 //we register the keyword for new acquisition if the device exist
-                self.widgetApi.registerKeywordAcquisitions(device.content.source.keywordId);                  
+                self.widgetApi.registerKeywordForNewAcquisitions(device.content.source.keywordId);                  
             })
             .fail(function (error) {
-               notifyError($.t("widgets/chart:keywordNotFound", {Id: device.content.source.keywordId}));
+               self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
             });
             
             var defferedPluginInstance = new $.Deferred();
@@ -573,23 +569,28 @@ function chartViewModel() {
             //
         });
         
-        $.whenAll(arrayOfDeffered).done(function () {
+        $.when.apply($, arrayOfDeffered) // The first failing array fail the when.apply
+        .done(function () {
               // Translate enum values only for enum keyword
               $.each(self.widget.configuration.devices, function (index, device) {
                   if (self.isEnumVariable(index)){
                       $.each(self.keywordInfo[index].typeInfo.values, function (index2, value) {
-                         self.keywordInfo[index].typeInfo.translatedValues[index2] = $.t("plugins/" + self.pluginInstanceType[index] + ":enumerations." + self.keywordInfo[index].typeInfo.name + ".values." + value, { defaultValue:value} );
+                         self.keywordInfo[index].typeInfo.translatedValues[index2] = $.t("plugins." + self.pluginInstanceType[index] + ":enumerations." + self.keywordInfo[index].typeInfo.name + ".values." + value, { defaultValue:value} );
                       });           
                   }
               });
               
-              self.refreshData(self.widget.configuration.interval).always(function () {
+            self.refreshData(self.widget.configuration.interval).always(function () {
               d.resolve();
             })
             .fail(function (error) {
                d.reject();
             });
+        })
+        .fail(function() {
+           d.reject();
         });
+        
         return d.promise();
     };
 
@@ -624,7 +625,7 @@ function chartViewModel() {
             self.chart.interval = interval;
 
             try {
-              self.chart.showLoading($.t("widgets/chart:loadingData"));
+              self.chart.showLoading($.t("widgets.chart:loadingData"));
               var deviceIsSummary = [];
               
               //ensure all series and axis are removed (may cause some crash if not done)
@@ -701,7 +702,8 @@ function chartViewModel() {
                                         v = parseFloat(value.key);
                                      }
                                   } else {
-                                      throw Error("Unable to parse answer");
+                                     self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
+                                     notifyError($.t("widgets.chart:errorInitialization"));
                                   }
                                   
                                   // The differential display is disabled if the type of the data is enum or boolean
@@ -731,7 +733,8 @@ function chartViewModel() {
                                       vMin = parseFloat(value.min);
                                       vMax = parseFloat(value.max);
                                   } else {
-                                      throw Error("Unable to parse answer");
+                                     self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
+                                     notifyError($.t("widgets.chart:errorInitialization"));
                                   }
 
                                   //we manage the missing data
@@ -790,7 +793,7 @@ function chartViewModel() {
                              else
                                 legendText = self.deviceInfo[index].friendlyName + "/" + self.keywordInfo[index].friendlyName;
                           }catch(error){
-                             legendText = $.t("widgets/chart:keywordNotFound", {Id: device.content.source.keywordId});
+                             self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
                           }
                           
                           var serie = null;
@@ -886,17 +889,17 @@ function chartViewModel() {
                           }
                       })
                       .fail(function (error) {
-                         notifyError($.t("widgets/chart:errorDuringGettingDeviceData"), error);
+                         notifyError($.t("widgets.chart:errorDuringGettingDeviceData"), error);
                          d.reject();
                       });
                   }
               });
-              $.whenAll(arrayOfDeffered).done(function () {
+              $.when.apply($, arrayOfDeffered).done(function () {
                  self.finalRefresh();
                  d.resolve();
               })
              .fail(function (error) {
-                notifyError($.t("widgets/chart:errorDuringGettingDeviceData"), error);
+                notifyError($.t("widgets.chart:errorDuringGettingDeviceData"), error);
                 d.reject();
              });
             } catch (err) {
@@ -919,11 +922,11 @@ function chartViewModel() {
 
        // If for all data, length == 0, we display no Data Available
        if (noAvailableData && !self.incompatibility && !self.rangeTooLarge) {
-          self.chart.showLoading($.t("widgets/chart:noAvailableData"));
+          self.chart.showLoading($.t("widgets.chart:noAvailableData"));
        }else if (self.incompatibility) {
-          self.chart.showLoading($.t("widgets/chart:incompatibilityDifferential"));
+          self.chart.showLoading($.t("widgets.chart:incompatibilityDifferential"));
        }else if (self.rangeTooLarge && noAvailableData) {
-          self.chart.showLoading($.t("widgets/chart:RangeTooBroad"));                  // Display that the range is too large
+          self.chart.showLoading($.t("widgets.chart:RangeTooBroad"));                  // Display that the range is too large
        }else {
           self.chart.hideLoading();
         }
@@ -1063,6 +1066,27 @@ function chartViewModel() {
             console.error(err.message);
         }
     };
+    
+    /**
+    * event keyword deleted handler
+    * @param keywordId keyword Id removed from Yadoms
+    */    
+    this.onKeywordDeletion = function (keywordId) {
+       var self = this;
+       
+       if (self.chart){
+          $.each(self.keywordInfo, function (index, keyword) {
+             if (keywordId.id == keyword.id){ // we found the keyword associated, index to the corresponding series
+                var serie = self.chart.get(self.seriesUuid[index]);
+                var serieRange = self.chart.get('range_' + self.seriesUuid[index]);             
+                
+                // Remove corresponding series to the keyword
+                if (serie) serie.remove();
+                if (serieRange) serieRange.remove();
+             }
+          });
+       }
+    };       
 
     /**
     * New acquisition handler

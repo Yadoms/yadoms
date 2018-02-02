@@ -29,7 +29,7 @@
          widgetToDelete = page.getWidget(widgetId);
          assert(widgetToDelete != null, "widget Id doesn't exit in the page");
 
-         $("div#delete-widget-modal").find("div.modal-body").text($.t("modals.delete-widget.text", { widgetType: $.t("widgets/" + widgetToDelete.type + ":name", { defaultValue: widgetToDelete.package.name }) }));
+         $("div#delete-widget-modal").find("div.modal-body").text($.t("modals.delete-widget.text", { widgetType: $.t("widgets." + widgetToDelete.type + ":name", { defaultValue: widgetToDelete.package.name }) }));
 
          //we display the modal
          $('div#delete-widget-modal').modal({ backdrop: 'static' });
