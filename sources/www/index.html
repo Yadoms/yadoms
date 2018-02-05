@@ -283,6 +283,7 @@
                                             .done(function () {
                                                 if (PageManager.pages.length === 0) {
                                                     console.info("Creating a default page");
+                                                    debugger;
                                                     PageManager.createPage($.t("initialization.homePage"), 0)
                                                         .done(function () {
                                                             PageManager.ensureOnePageIsSelected();
@@ -504,7 +505,7 @@
                                 //we set the right language
                             i18next.changeLanguage(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
                                     $("html").i18n();
-                                    moment.lang(window.navigator.userLanguage || window.navigator.language);
+                                    moment.lang(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value);
 
                                     //Load Plugin instances to load initially all languages files. Needed for some widgets
                                     PluginInstanceManager.getAll().done(function (allInstances) {

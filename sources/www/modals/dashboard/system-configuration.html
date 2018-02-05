@@ -382,7 +382,8 @@
                                                       .language])
                                                 .done(function () {
                                                       //we change language of i18n
-                                                      i18n.setLng(Yadoms.systemConfiguration[
+                                                      i18next.changeLanguage(Yadoms
+                                                            .systemConfiguration[
                                                                   ConfigurationManager
                                                                   .items.system
                                                                   .language].value,
@@ -570,10 +571,12 @@
                         ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items
                                     .system.language])
                               .done(function () {
-                                    if (i18n.lng() !== Yadoms.systemConfiguration[ConfigurationManager.items
+                                    if (i18next.language !== Yadoms.systemConfiguration[
+                                                ConfigurationManager.items
                                                 .system.language].value) {
                                           //we change language of i18n
-                                          i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items
+                                          i18next.changeLanguage(Yadoms.systemConfiguration[
+                                                      ConfigurationManager.items
                                                       .system.language].value,
                                                 function () {
                                                       $("html").i18n();

@@ -43,7 +43,8 @@ ConfigurationManager.items.system.location = {};
 ConfigurationManager.items.system.locationSection = "location";
 ConfigurationManager.items.system.location.latitude  = "latitude";
 ConfigurationManager.items.system.location.longitude = "longitude";
-ConfigurationManager.items.system.location.altitude  = "altitude";
+ConfigurationManager.items.system.location.altitude  = "altitude"; 
+ConfigurationManager.items.system.location.timezone = "timezone";
 
 ConfigurationManager.items.system.advancedParameters = "advancedParameters";
 ConfigurationManager.items.system.dateFormatString = "dateFormatString";
