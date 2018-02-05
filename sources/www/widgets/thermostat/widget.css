@@ -20,7 +20,7 @@
 }
 
 .widget-thermostat .icon-div {
-   margin : auto;
+   margin : auto auto auto 5px;
    width : 20px;
 }
 
@@ -37,8 +37,8 @@
     background-color: #cccccc;
 }
 
-.btn-th,
-.btn-group-th > .btn {
+.widget-thermostat .btn-th,
+.widget-thermostat .btn-group-th > .btn {
   padding: 2px 8px;
   font-size: 12px;
   line-height: 1.5;
