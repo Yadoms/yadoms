@@ -94,8 +94,7 @@ void CSupervisor::run()
       auto scriptInterpreterManager(boost::make_shared<automation::interpreter::CManager>(m_pathProvider));
 
       // Start automation rules manager
-      boost::shared_ptr<automation::IRuleManager> automationRulesManager(boost::make_shared<automation::CRuleManager>(m_pathProvider,
-         scriptInterpreterManager,
+      boost::shared_ptr<automation::IRuleManager> automationRulesManager(boost::make_shared<automation::CRuleManager>(scriptInterpreterManager,
                                                                                                                       pDataProvider,
                                                                                                                       pluginGateway,
                                                                                                                       dal->getKeywordManager(),
