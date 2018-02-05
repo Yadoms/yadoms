@@ -274,6 +274,13 @@ set(YADOMS_SRC
 
    server/dateTime/DateTimeNotifier.h
    server/dateTime/DateTimeNotifier.cpp
+   server/dateTime/ITimeZoneProvider.h
+   server/dateTime/TimeZoneDatabase.h
+   server/dateTime/TimeZoneDatabase.cpp
+   server/dateTime/TimeZoneProvider.h
+   server/dateTime/TimeZoneProvider.cpp
+   server/dateTime/TimeZoneProviderFromId.h
+   server/dateTime/TimeZoneProviderFromId.cpp
    
    server/automation/IRule.h
    server/automation/IRuleManager.h

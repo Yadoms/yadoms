@@ -1,6 +1,8 @@
 #pragma once
 #include "IDayLightProvider.h"
+#include "dateTime/ITimeZoneProvider.h"
 #include <shared/ILocation.h>
+#include <boost/date_time/local_time/posix_time_zone.hpp>
 
 namespace automation
 {
@@ -16,7 +18,8 @@ namespace automation
          ///\brief               Constructor
          ///\param[in] location  The current location
          //-----------------------------------------------------
-         explicit CDayLightProvider(boost::shared_ptr<shared::ILocation> location);
+         CDayLightProvider(boost::shared_ptr<shared::ILocation> location,
+                           const boost::shared_ptr<dateTime::ITimeZoneProvider> timezoneProvider);
 
          //-----------------------------------------------------
          ///\brief               Destructor
@@ -49,8 +52,8 @@ namespace automation
          ///\param[in] hours     Number of hours, as double
          ///\return local time composed by provided date and hour
          //-----------------------------------------------------
-         static boost::posix_time::ptime hoursToLocalTime(const boost::gregorian::date& date,
-                                                          double hours);
+         boost::posix_time::ptime hoursToLocalTime(const boost::gregorian::date& date,
+                                                   double hours) const;
 
       private:
          //-----------------------------------------------------
@@ -67,6 +70,8 @@ namespace automation
          ///\brief               Pre-calculed sun event times
          //-----------------------------------------------------
          boost::posix_time::ptime m_rise, m_set;
+
+         boost::shared_ptr<boost::local_time::posix_time_zone::base_type> m_timeZone;
       };
    }
 } // namespace automation::script

@@ -13,6 +13,7 @@
 #include "script/IGeneralInfo.h"
 #include "database/IDataProvider.h"
 #include "dataAccessLayer/IEventLogger.h"
+#include "dateTime/ITimeZoneProvider.h"
 
 namespace automation
 {
@@ -27,7 +28,8 @@ namespace automation
                    boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                    boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                    boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
-                   boost::shared_ptr<shared::ILocation> location);
+                   boost::shared_ptr<shared::ILocation> location,
+                   boost::shared_ptr<dateTime::ITimeZoneProvider> timezoneProvider);
       virtual ~CRuleManager();
 
       // IRuleManager Implementation

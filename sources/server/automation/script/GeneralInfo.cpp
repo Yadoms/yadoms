@@ -11,9 +11,10 @@ namespace automation
 {
    namespace script
    {
-      CGeneralInfo::CGeneralInfo(boost::shared_ptr<shared::ILocation> locationProvider)
+      CGeneralInfo::CGeneralInfo(boost::shared_ptr<shared::ILocation> locationProvider,
+                                 boost::shared_ptr<dateTime::ITimeZoneProvider> timezoneProvider)
          : m_locationProvider(locationProvider),
-           m_dayLightProvider(boost::make_shared<CDayLightProvider>(locationProvider))
+           m_dayLightProvider(boost::make_shared<CDayLightProvider>(locationProvider, timezoneProvider))
       {
       }
 

@@ -16,7 +16,8 @@ namespace automation
                               boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                               boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                               boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
-                              boost::shared_ptr<shared::ILocation> location)
+                              boost::shared_ptr<shared::ILocation> location,
+                              boost::shared_ptr<dateTime::ITimeZoneProvider> timezoneProvider)
       : m_interpreterManager(interpreterManager),
         m_pluginGateway(pluginGateway),
         m_dbAcquisitionRequester(dataProvider->getAcquisitionRequester()),
@@ -24,7 +25,7 @@ namespace automation
         m_keywordAccessLayer(keywordAccessLayer),
         m_dbRecipientRequester(dataProvider->getRecipientRequester()),
         m_eventLogger(eventLogger),
-        m_generalInfo(boost::make_shared<script::CGeneralInfo>(location)),
+        m_generalInfo(boost::make_shared<script::CGeneralInfo>(location, timezoneProvider)),
         m_ruleRequester(dataProvider->getRuleRequester()),
         m_ruleEventHandler(boost::make_shared<shared::event::CEventHandler>()),
         m_yadomsShutdown(false)

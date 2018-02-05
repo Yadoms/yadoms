@@ -7,6 +7,7 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include <boost/math/constants/constants.hpp>
 #include <boost/date_time/c_local_time_adjustor.hpp>
+#include <boost/date_time/local_time/local_date_time.hpp>
 
 namespace automation
 {
@@ -294,8 +295,10 @@ namespace automation
       } /* GMST0 */
 
 
-      CDayLightProvider::CDayLightProvider(boost::shared_ptr<shared::ILocation> location)
-         : m_location(location)
+      CDayLightProvider::CDayLightProvider(const boost::shared_ptr<shared::ILocation> location,
+                                           const boost::shared_ptr<dateTime::ITimeZoneProvider> timezoneProvider)
+         : m_location(location),
+           m_timeZone(timezoneProvider->get())
       {
       }
 
@@ -303,7 +306,7 @@ namespace automation
       {
       }
 
-      boost::posix_time::ptime CDayLightProvider::sunEventTime(bool sunrise)
+      boost::posix_time::ptime CDayLightProvider::sunEventTime(const bool sunrise)
       {
          auto now = shared::currentTime::Provider().now();
          if (m_lastCalculationDate.date() != now.date())
@@ -312,7 +315,8 @@ namespace automation
 
             // Compute sun events
             double rise, set;
-            if (sun_rise_set(now.date().year(), now.date().month(), now.date().day(), m_location->longitude(), m_location->latitude(), &rise, &set) != 0)
+            if (sun_rise_set(now.date().year(), now.date().month(), now.date().day(), m_location->longitude(),
+               m_location->latitude(), &rise, &set) != 0)
                throw shared::exception::CInvalidParameter("Unable to compute sunrise time");
 
             m_rise = hoursToLocalTime(now.date(), rise);
@@ -323,12 +327,16 @@ namespace automation
       }
 
       boost::posix_time::ptime CDayLightProvider::hoursToLocalTime(const boost::gregorian::date& date,
-                                                                   double hours)
+                                                                   const double hours) const
       {
-         // Use the Os settings to adjust to local time
-         typedef boost::date_time::c_local_adjustor<boost::posix_time::ptime> local_adj;
-         return local_adj::utc_to_local(boost::posix_time::ptime(date,
-                                                                 boost::posix_time::hours(static_cast<long>(floor(hours))) + boost::posix_time::minutes(lround(hours * 60) % 60)));
+         const auto computedDateTime(boost::posix_time::ptime(date, boost::posix_time::hours(
+                                                                 static_cast<long>(floor(hours))) + boost::
+                                                              posix_time
+                                                              ::minutes(
+                                                                 static_cast<long>(floor(hours * 60)) % 60)));
+
+         return boost::local_time::local_date_time(computedDateTime,
+                                                   m_timeZone).local_time();
       }
 
 

@@ -9,7 +9,6 @@ dist: trusty
 # fixes the problem.
 filter_secrets: false
 
-
 #limit to git depth to 1 because don't use any git command in this script
 git:
   depth: 1
@@ -34,7 +33,7 @@ before_install:
 #CMake
 #- echo 'Installing CMake 3.9.2'
 #- sudo apt-get remove cmake
-#- if [ ${GENERATE_CMAKE} != true ]; then wget  -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/cmake-3.9.2-build.tar.bz2; else wget --no-check-certificate https://cmake.org/files/v3.9/cmake-3.9.2.tar.gz; fi
+#- if [ ${GENERATE_CMAKE} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/cmake-3.9.2-build.tar.bz2; else wget --no-verbose --no-check-certificate https://cmake.org/files/v3.9/cmake-3.9.2.tar.gz; fi
 #- if [ ${GENERATE_CMAKE} != true ]; then tar jxf cmake-3.9.2-build.tar.bz2; else tar zxf cmake-3.9.2.tar.gz; fi
 #- cd cmake-3.9.2
 #- if [ ${GENERATE_CMAKE} != true ]; then echo "Bypass CMake/bootstrap" ; else ./bootstrap > $HOME/logs/yadoms_cmake.log; fi
@@ -47,7 +46,7 @@ before_install:
 
 # boost
 - echo 'Building Boost 1.65.1'
-- if [ ${GENERATE_BOOST} != true ]; then wget -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/boost_1_65_1-build.tar.bz2; else wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.65.1/boost_1_65_1.tar.bz2; fi
+- if [ ${GENERATE_BOOST} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/boost_1_65_1-build.tar.bz2; else wget --no-verbose http://netcologne.dl.sourceforge.net/project/boost/boost/1.65.1/boost_1_65_1.tar.bz2; fi
 - if [ ${GENERATE_BOOST} != true ]; then tar xjf boost_1_65_1-build.tar.bz2; else tar xjf boost_1_65_1.tar.bz2; fi
 - cd boost_1_65_1
 - if [ ${GENERATE_BOOST} != true ]; then echo "Bypass boost/bootstrap"; else ./bootstrap.sh > $HOME/logs/yadoms_boost.log; fi
@@ -59,7 +58,7 @@ before_install:
   
  # openssl
 - echo 'Building OpenSSL'
-- if [ ${GENERATE_OPENSSL} != true ]; then wget -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/openssl-1.0.2k-build.tar.bz2; else wget https://www.openssl.org/source/openssl-1.0.2k.tar.gz; fi
+- if [ ${GENERATE_OPENSSL} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/openssl-1.0.2k-build.tar.bz2; else wget --no-verbose https://www.openssl.org/source/openssl-1.0.2k.tar.gz; fi
 - if [ ${GENERATE_OPENSSL} != true ]; then tar xjf openssl-1.0.2k-build.tar.bz2; else tar xzf openssl-1.0.2k.tar.gz; fi
 - cd openssl-1.0.2k
 - if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/configure"; else ./config --prefix=$HOME/depsBuild/openssl > $HOME/logs/yadoms_openssl.log; fi
@@ -72,7 +71,7 @@ before_install:
 
 # poco
 - echo 'Building Poco 1.7.9-all'
-- if [ ${GENERATE_POCO} != true ]; then wget -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/poco-1.7.9-all-build.tar.bz2; else wget http://pocoproject.org/releases/poco-1.7.9/poco-1.7.9-all.tar.gz; fi
+- if [ ${GENERATE_POCO} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/poco-1.7.9-all-build.tar.bz2; else wget --no-verbose http://pocoproject.org/releases/poco-1.7.9/poco-1.7.9-all.tar.gz; fi
 - if [ ${GENERATE_POCO} != true ]; then tar xjf poco-1.7.9-all-build.tar.bz2; else tar xzf poco-1.7.9-all.tar.gz; fi
 - sudo apt-get install libssl-dev libgnutls-dev libopencv-gpu-dev > $HOME/logs/yadoms_poco.log
 - cd poco-1.7.9-all/
@@ -89,7 +88,7 @@ before_install:
 # protobuf
 - echo 'Building Protobuf 3.4.1'
 - sudo apt-get install autoconf automake libtool curl make g++ unzip
-- if [ ${GENERATE_PROTOBUF} != true ]; then wget -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/protobuf-3.4.1-build.tar.bz2; else wget https://github.com/google/protobuf/releases/download/v3.4.1/protobuf-cpp-3.4.1.tar.gz; fi
+- if [ ${GENERATE_PROTOBUF} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/protobuf-3.4.1-build.tar.bz2; else wget --no-verbose https://github.com/google/protobuf/releases/download/v3.4.1/protobuf-cpp-3.4.1.tar.gz; fi
 - if [ ${GENERATE_PROTOBUF} != true ]; then tar xjf protobuf-3.4.1-build.tar.bz2 -C $HOME/depsBuild; else tar xzf protobuf-cpp-3.4.1.tar.gz; fi
 - if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/cd"; else cd protobuf-3.4.1; fi
 - if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/autogen"; else ./autogen.sh > $HOME/logs/yadoms_protobuf_pi.log; fi
@@ -105,7 +104,7 @@ before_install:
 # gammu
 - echo 'Building Gammu 1.38.4'
 - sudo apt-get install pkg-config libmysqlclient-dev libpq-dev libcurl4-gnutls-dev libusb-1.0-0-dev libdbi0-dev libbluetooth-dev libgudev-1.0-dev libglib2.0-dev unixodbc-dev
-- if [ ${GENERATE_GAMMU} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/gammu-1.38.4-build.tar.bz2; else wget http://dl.cihar.com/gammu/releases/gammu-1.38.4.tar.gz; fi
+- if [ ${GENERATE_GAMMU} != true ]; then wget --no-verbose -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/gammu-1.38.4-build.tar.bz2; else wget --no-verbose http://dl.cihar.com/gammu/releases/gammu-1.38.4.tar.gz; fi
 - if [ ${GENERATE_GAMMU} != true ]; then tar xjf gammu-1.38.4-build.tar.bz2; else tar zxf gammu-1.38.4.tar.gz; fi
 - cd gammu-1.38.4
 - if [ ${GENERATE_GAMMU} != true ]; then echo "Bypass mkdir build"; else mkdir build; fi
@@ -124,7 +123,7 @@ before_install:
 
  # SWIG
 - echo 'Building SWIG'
-- if [ ${GENERATE_SWIG} != true ]; then wget -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/swig-3.0.12-build.tar.bz2; else wget http://prdownloads.sourceforge.net/swig/swig-3.0.12.tar.gz; fi
+- if [ ${GENERATE_SWIG} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/swig-3.0.12-build.tar.bz2; else wget --no-verbose http://prdownloads.sourceforge.net/swig/swig-3.0.12.tar.gz; fi
 - if [ ${GENERATE_SWIG} != true ]; then tar xjf swig-3.0.12-build.tar.bz2; else tar xzf swig-3.0.12.tar.gz; fi
 - cd swig-3.0.12
 - if [ ${GENERATE_SWIG} != true ]; then echo "Bypass SWIG/configure"; else ./configure > $HOME/logs/yadoms_swig.log; fi
@@ -140,7 +139,7 @@ before_install:
 
 # PostgreSQL
 - echo 'Building PostgreSQL'
-- if [ ${GENERATE_POSTGRESQL} != true ]; then wget -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/postgresql-9.6.2-build.tar.bz2; else wget https://ftp.postgresql.org/pub/source/v9.6.2/postgresql-9.6.2.tar.bz2; fi
+- if [ ${GENERATE_POSTGRESQL} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/postgresql-9.6.2-build.tar.bz2; else wget --no-verbose https://ftp.postgresql.org/pub/source/v9.6.2/postgresql-9.6.2.tar.bz2; fi
 - if [ ${GENERATE_POSTGRESQL} != true ]; then tar xjf postgresql-9.6.2-build.tar.bz2; else tar xjf postgresql-9.6.2.tar.bz2; fi
 - cd postgresql-9.6.2
 - if [ ${GENERATE_POSTGRESQL} != true ]; then echo "Bypass PostgreSQL/configure"; else ./configure > $HOME/logs/yadoms_postgresql.log; fi
