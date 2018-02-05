@@ -85,7 +85,7 @@ boost::shared_ptr<CPeripherals::SerialPortsMap> CPeripherals::getSerialPorts()
 
 boost::system::error_code CPeripherals::flushSerialPort(boost::asio::serial_port& port)
 {
-   return tcflush(port.native(), TCIOFLUSH) ?
+   return tcflush(port.native_handle(), TCIOFLUSH) ?
       boost::system::error_code(errno, boost::asio::error::get_system_category()) :
       boost::system::error_code();
 }

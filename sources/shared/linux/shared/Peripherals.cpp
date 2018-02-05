@@ -47,7 +47,7 @@ boost::system::error_code CPeripherals::flushSerialPort(boost::asio::serial_port
    // As workaround, wait a bit.
    usleep(200000);
    
-   return tcflush(port.native(), TCIOFLUSH) ?
+   return tcflush(port.native_handle(), TCIOFLUSH) ?
       boost::system::error_code(errno, boost::asio::error::get_system_category()) :
       boost::system::error_code();
 }
