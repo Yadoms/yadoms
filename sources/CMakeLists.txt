@@ -20,7 +20,7 @@ cmake_minimum_required (VERSION 3.2.0)
 ##################################################################################################
 include(cmake/version.cmake)
 message (STATUS "### Building Yadoms ${YADOMS_VERSION} ###\n")
-
+add_definitions(-DYADOMS_VERSION="${YADOMS_VERSION}")
 
 ##################################################################################################
 ## Include other cmake scripts
@@ -933,7 +933,7 @@ endif(WIN32)
 
 # Add changelog file
 set(YADOMS_SRC ${YADOMS_SRC} 
-   ../changelog.md
+   server/changelog.md
 )
 
 #define YADOMS output
