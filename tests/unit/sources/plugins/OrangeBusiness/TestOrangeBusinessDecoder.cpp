@@ -6,8 +6,8 @@
 
 
 BOOST_AUTO_TEST_SUITE(TestOrangeBusiness)
-  
-namespace yApi = shared::plugin::yPluginApi;
+
+   namespace yApi = shared::plugin::yPluginApi;
 
    BOOST_AUTO_TEST_CASE(DecoderisFrameCompleteEmpty)
    {
@@ -40,7 +40,7 @@ namespace yApi = shared::plugin::yPluginApi;
       // Device 1
       device1.set("devEUI", "0018B20000000272");
       device1.set("name", "DeviceTest2");
-      device1.set("activationType", "OTAA"); 
+      device1.set("activationType", "OTAA");
       device1.set("profile", "SMTC/LoRaMoteClassA.2");
       device1.set("deviceStatus", "ACTIVATED");
       std::vector<std::string> tags;
@@ -48,7 +48,7 @@ namespace yApi = shared::plugin::yPluginApi;
       tags.push_back("Lyon");
       tags.push_back("Test");
 
-      device1.set("tags", tags );
+      device1.set("tags", tags);
       device1.set("lastActivationTs", "2016-06-09T08:04:37.971Z");
       device1.set("lastCommunicationTs", "2016-06-03T15:55:36.944Z");
       device1.set("creationTs", "2016-06-03T15:20:53.803Z");
@@ -76,10 +76,10 @@ namespace yApi = shared::plugin::yPluginApi;
       equipments.push_back(device2);
       messageRecu.set("data", equipments);
 
-	  std::map<std::string, boost::shared_ptr<equipments::IEquipment>> devicesRegistered = decoder.decodeDevicesMessage(api, messageRecu);
+      std::map<std::string, boost::shared_ptr<equipments::IEquipment>> devicesRegistered = decoder.decodeDevicesMessage(api, messageRecu);
       BOOST_CHECK_EQUAL(decoder.isFrameComplete(messageRecu), true);
 
-      BOOST_CHECK_EQUAL(devicesRegistered.size(), 2);
+      BOOST_CHECK_EQUAL(devicesRegistered.size(), static_cast<unsigned int>(2));
       BOOST_CHECK_NO_THROW(devicesRegistered.at("DeviceTest1")); // If present, no exception std::out_of_range
       BOOST_CHECK_NO_THROW(devicesRegistered.at("DeviceTest2"));
       BOOST_CHECK_EQUAL(devicesRegistered.at("DeviceTest2")->getEUI(), "0018B20000000272");
@@ -159,4 +159,4 @@ namespace yApi = shared::plugin::yPluginApi;
       BOOST_CHECK_EQUAL(response.get<double>("snr"), 13);
    }
 
-   BOOST_AUTO_TEST_SUITE_END()
+BOOST_AUTO_TEST_SUITE_END()
