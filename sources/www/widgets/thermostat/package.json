@@ -4,6 +4,11 @@
 	"author": "jean-Michel BERHAULT",
 	"url": "https://github.com/Yadoms/yadoms/wiki/thermostat",
 	"credits": "",
+   "dependencies": {
+     "yadoms" : {
+       "minimumVersion" : "2.0.2"
+     }
+  },
   "dimensions": {
     "min": {
       "x": 1,
