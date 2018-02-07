@@ -3,49 +3,21 @@
 Ongoing...
 
 
-### 2.0.2-rc.1
-
-#### New features and fixes
-
-##### Yadoms Core
-* Filter some notifications
-* Fix refresh-page option when disabled
-* Fix navigation between dashboard pages
-* Add icon on all dashboard pages
-
-### 2.0.2-beta.4
-
-#### New features and fixes
-
-##### Yadoms Core
-* Fix error notifications when updating Yadoms from web-client
-
-
-### 2.0.2-beta.3
-
-#### New features and fixes
-
-##### Yadoms Core
-* Same content as 2.0.2-beta.2 to test Yadoms update
-
-
-### 2.0.2-beta.2
-
-#### New features and fixes
-
-##### Yadoms Core
-* Fix update on RaspberryPi
-
-
-### 2.0.2-beta.1
+### 2.0.2
 
 #### New features and fixes
 
 ##### Yadoms Core
 * Refactor of install/update page
+* Fix update on RaspberryPi
 * Add changelog support for modules (plugins, widgets, script interpreters and Yadoms itself)
 * Modules (plugins, widgets, script interpreters) can now specify a minimal Yadoms version (in their package.json)
 * Webclient : By default, when refresh a page, the page reloaded is the current page/redesign configuration creation
+* Fix error notifications when updating Yadoms from web-client
+* Filter some notifications
+* Fix refresh-page option when disabled
+* Fix navigation between dashboard pages
+* Add icon on all dashboard pages
 
 ##### Plugins
 * RFXCom : Cartelectronic message fix TeleInfoStatus NoData to Enum Type
