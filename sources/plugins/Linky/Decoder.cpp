@@ -159,14 +159,24 @@ void CDecoder::createRunningKeywordList(bool isTriphases)
    }
 
    m_keywords.push_back(m_apparentPower[0]);
-   m_keywords.push_back(m_meanVoltage[0]);
+
+   // At counter startup the value is 0
+   // we historize only when the mean exists (0 during 10mn at counter power on)
+   if (m_meanVoltage[0].get()!=0)
+      m_keywords.push_back(m_meanVoltage[0]);
 
    if (isTriphases) // We add missing phases
    {
       m_keywords.push_back(m_apparentPower[1]);
       m_keywords.push_back(m_apparentPower[2]);
-      m_keywords.push_back(m_meanVoltage[1]);
-      m_keywords.push_back(m_meanVoltage[2]);
+
+      // At counter startup the value is 0
+      // we historize only when the mean exists (0 during 10mn at counter power on)
+      if (m_meanVoltage[1].get() != 0)
+         m_keywords.push_back(m_meanVoltage[1]);
+
+      if (m_meanVoltage[2].get() != 0)
+         m_keywords.push_back(m_meanVoltage[2]);
    }
 
    // Historization of the active index only
