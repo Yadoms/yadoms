@@ -86,13 +86,6 @@ namespace yApi = shared::plugin::yPluginApi;
       BOOST_CHECK_EQUAL(devicesRegistered.at("DeviceTest1")->getEUI(), "0018B20000000274");
    }
 
-   BOOST_AUTO_TEST_CASE(DecoderCommandListEmpty)
-   {
-      CDecoder decoder;
-      shared::CDataContainer messageRecu;
-      BOOST_REQUIRE_THROW(decoder.getLastData(messageRecu), shared::exception::CInvalidParameter);
-   }
-
    BOOST_AUTO_TEST_CASE(DecoderCommandeListNominal)
    {
       std::string message = "[{\
