@@ -58,6 +58,7 @@ MACRO(PLUGIN_SOURCES _targetName)
          
          # apply templating to the manifest for setting the version
          # PLUGIN_EXE_ICON is used in "plugin.rc.in"
+         set(WINDOWS_RESOURCES_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../common/resources/windows")
          configure_file(../common/resources/windows/plugin.rc.in
             "${CMAKE_BINARY_DIR}/plugin-${_targetName}-generated.rc"
          @ONLY)

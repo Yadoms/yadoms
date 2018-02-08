@@ -16,6 +16,34 @@ endif()
 # Compilers/IDE configurations
 include(${YADOMS_ROOT}/sources/cmake/compilers.cmake)
 
+set(CMAKE_PDB_OUTPUT_DIRECTORY .)
+
+###############################################
+# Common libraries
+###############################################
+## Thread Library
+FIND_PACKAGE(Threads)
+
+## RT Library
+if(UNIX AND NOT APPLE)
+   set(LIBS ${LIBS} rt)
+endif()
+
+## IOKIT (needed for Mac)
+if(APPLE)
+	include(${YADOMS_ROOT}/sources/cmake/mac.cmake)
+	
+	if(NOT IOKIT_FOUND)
+		message(SEND_ERROR "Unable to find the required IOKit libraries")
+	endif()
+
+	if(NOT CARBON_FOUND)
+		message(SEND_ERROR "Unable to find the required Carbon libraries")
+	endif()
+	set(LIBS ${LIBS} ${IOKIT_LIBRARY} ${CARBON_LIBRARY})
+endif()
+
+
 
 ###############################################
 # Boost
@@ -41,39 +69,6 @@ find_package(Boost 1.60.0 REQUIRED COMPONENTS ${BOOST_LIBS})
 set(BOOST_INCL_DIR ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
 
 
-## Thread Library
-FIND_PACKAGE(Threads)
-
-## RT Library
-if(UNIX AND NOT APPLE)
-   set(LIBS ${LIBS} rt)
-endif()
-
-## Poco dependencies
-if(WIN32)
-   set(LIBS ${LIBS} Iphlpapi.lib)
-endif()
-
-## OpenSSL dependencies
-if(WIN32)
-   set(LIBS ${LIBS} legacy_stdio_definitions.lib Crypt32.lib)
-endif()
-
-## IOKIT (needed for Mac)
-if(APPLE)
-	include(${YADOMS_ROOT}/sources/cmake/mac.cmake)
-	
-	if(NOT IOKIT_FOUND)
-		message(SEND_ERROR "Unable to find the required IOKit libraries")
-	endif()
-
-	if(NOT CARBON_FOUND)
-		message(SEND_ERROR "Unable to find the required Carbon libraries")
-	endif()
-	set(LIBS ${LIBS} ${IOKIT_LIBRARY} ${CARBON_LIBRARY})
-endif()
-
-
 ###############################################
 # OpenSSL
 ###############################################
@@ -87,11 +82,15 @@ if(NOT ${OPENSSL_FOUND})
    set(OPENSSL_INCLUDE_DIR "")
 endif()
 
+## Dependencies
+if(WIN32)
+   set(LIBS ${LIBS} legacy_stdio_definitions.lib Crypt32.lib)
+endif()
+
 
 ###############################################
 # POCO
 ###############################################
-
 SET (POCO_LIBS
 	PocoUtil
    PocoNetSSL
@@ -112,6 +111,48 @@ IF(NOT ${Poco_FOUND})
 	message(FATAL_ERROR "Unable to find the required POCO libraries")
 ENDIF()
 
+## Dependencies
+if(WIN32)
+   set(LIBS ${LIBS} Iphlpapi.lib)
+endif()
+
+
+###############################################
+# Protobuf
+###############################################
+set (Protobuf_SRC_ROOT_FOLDER ${PROTOBUF_ROOT})
+set (Protobuf_USE_STATIC_LIBS ON)
+
+#Helper (FindProtoBuf.cmake allows defining all variables before finding it)
+#In case Protobuf has been installed in a custom directory (${PROTOBUF_ROOT}) 
+#then predefine all files and paths (make it works with old cmake <3.9)
+if(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
+   if(NOT PROTOBUF_INCLUDE_DIR)
+      set(PROTOBUF_INCLUDE_DIR "${PROTOBUF_ROOT}/include")
+   endif(NOT PROTOBUF_INCLUDE_DIR)
+   if(NOT PROTOBUF_LIBRARY)
+      set(PROTOBUF_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf.a")
+   endif(NOT PROTOBUF_LIBRARY)
+   if(NOT PROTOBUF_LIBRARY_DEBUG)
+      set(PROTOBUF_LIBRARY_DEBUG "${PROTOBUF_ROOT}/lib/libprotobuf.a")
+   endif(NOT PROTOBUF_LIBRARY_DEBUG)
+   if(NOT PROTOBUF_LITE_LIBRARY)
+      set(PROTOBUF_LITE_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf-lite.a")
+   endif(NOT PROTOBUF_LITE_LIBRARY)
+   if(NOT PROTOBUF_LITE_LIBRARY_DEBUG)
+      set(PROTOBUF_LITE_LIBRARY_DEBUG "${PROTOBUF_ROOT}/lib/libprotobuf-lite.a")
+   endif(NOT PROTOBUF_LITE_LIBRARY_DEBUG)
+   if(NOT PROTOBUF_PROTOC_EXECUTABLE)
+      set(PROTOBUF_PROTOC_EXECUTABLE "${PROTOBUF_ROOT}/bin/protoc")
+   endif(NOT PROTOBUF_PROTOC_EXECUTABLE)
+endif(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
+
+find_package(Protobuf 3.0.0 REQUIRED)
+
+if(NOT ${PROTOBUF_FOUND})
+	message(FATAL_ERROR "Unable to find the required Protobuf tool")
+endif()
+
 
 ##################################################################################################
 ## yadoms-shared
@@ -125,6 +166,13 @@ ELSEIF(APPLE)
 ELSE()
 	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${YADOMS_ROOT}/sources/shared/linux)
 ENDIF()
+
+
+##################################################################################################
+## Plugin CPP API
+##################################################################################################
+
+set(plugin_cpp_api_INCLUDE_DIR ${YADOMS_ROOT}/sources/plugin_cpp_api)
 
 
 
@@ -142,11 +190,11 @@ function(PLUGIN_IS_IN_DEV_STATE _targetName)
 endfunction()
 
 MACRO(PLUGIN_SOURCES _targetName)
-   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${YADOMS_OUTPUT_DIR}/plugins/${_targetName} )
-   foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
-       string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
-       set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${YADOMS_OUTPUT_DIR}/${OUTPUTCONFIG}/plugins/${_targetName})
-   endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
+   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${YADOMS_ROOT}/builds/${OUTPUTCONFIG}/plugins/${_targetName})
+   foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
+       string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
+       set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${YADOMS_ROOT}/builds/${OUTPUTCONFIG}/plugins/${_targetName})
+   endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)
    
    FILE(GLOB TRANSLATION_FILES locales/*)
    source_group(locales locales/*)
@@ -180,17 +228,19 @@ MACRO(PLUGIN_SOURCES _targetName)
          include(${PLUGIN_COMMON_DIR}/version.cmake)            
 
          set(PLUGIN_NAME ${_targetName})
-        
+
+         set(WINDOWS_RESOURCES_PATH "${PLUGIN_COMMON_DIR}/resources/windows")
+         
          #Try to use plugin icon
          FILE(GLOB PLUGIN_EXE_ICON icon.ico)
          if(NOT EXISTS ${PLUGIN_EXE_ICON})
-            SET(PLUGIN_EXE_ICON "${PLUGIN_COMMON_DIR}/resources/windows/plugin.ico")
+            SET(PLUGIN_EXE_ICON "${WINDOWS_RESOURCES_PATH}/plugin.ico")
          endif(NOT EXISTS ${PLUGIN_EXE_ICON})
          
          
          # apply templating to the manifest for setting the version
          # PLUGIN_EXE_ICON is used in "plugin.rc.in"
-         configure_file(${PLUGIN_COMMON_DIR}/resources/windows/plugin.rc.in
+         configure_file(${WINDOWS_RESOURCES_PATH}/plugin.rc.in
             "${CMAKE_BINARY_DIR}/plugin-${_targetName}-generated.rc"
          @ONLY)
             
@@ -199,9 +249,9 @@ MACRO(PLUGIN_SOURCES _targetName)
          set(PLUGIN_SOURCE_FILES ${PLUGIN_SOURCE_FILES} 
             ${PLUGIN_EXE_ICON}
             ${CMAKE_BINARY_DIR}/plugin-${_targetName}-generated.rc
-            ${PLUGIN_COMMON_DIR}/resources/windows/resource.h
+            ${WINDOWS_RESOURCES_PATH}/resource.h
          )
-         source_group(resources ${PLUGIN_COMMON_DIR}/resources/windows/*.*)
+         source_group(resources ${WINDOWS_RESOURCES_PATH}/*.*)
       endif(MSVC)
    endif(WIN32)   
    
@@ -218,9 +268,9 @@ MACRO(PLUGIN_INCLDIR _targetName)
 
    #define the list of all include dirs
    set(PLUGINS_ALL_INCLUDE_DIRS
-      ${SHARED_INCL_DIR}
       ${BOOST_INCL_DIR}
       ${Poco_INCLUDE_DIRS}
+      ${SHARED_INCL_DIR}
       ${plugin_cpp_api_INCLUDE_DIR}
       ${ARGN}
       )
@@ -235,8 +285,11 @@ ENDMACRO()
 
 MACRO(PLUGIN_LINK _targetName)
 	target_link_libraries(${_targetName}
-      yadoms-shared
-      plugin_cpp_api
+      ${Boost_LIBRARIES}
+      ${Poco_FOUND_LIBS}       
+      ${YADOMS_ROOT}/projects/shared/${CMAKE_CFG_INTDIR}/yadoms-shared.lib
+      ${YADOMS_ROOT}/projects/plugin_cpp_api/${CMAKE_CFG_INTDIR}/plugin_cpp_api.lib
+      ${YADOMS_ROOT}/projects/plugin_IPC/${CMAKE_CFG_INTDIR}/plugin_IPC.lib
       ${LIBS}
       ${CMAKE_DL_LIBS}
       ${PROTOBUF_LIBRARIES}
@@ -245,7 +298,7 @@ MACRO(PLUGIN_LINK _targetName)
 	
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
    
-   #configure plugin as installable component if not in devlopment state (target name begin by 'dev-')
+   #configure plugin as installable component if not in development state (target name begin by 'dev-')
    PLUGIN_IS_IN_DEV_STATE(${_targetName})
    if (NOT ${DEV_PLUGIN})
       install(TARGETS ${_targetName} 
