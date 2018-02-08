@@ -209,7 +209,7 @@ namespace shared
       /// \brief			Destructor
       /// \return    	void
       //--------------------------------------------------------------
-      virtual ~CDataContainer(void);
+      virtual ~CDataContainer();
 
 
       //--------------------------------------------------------------
@@ -328,10 +328,21 @@ namespace shared
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] whereFct         Criteria : lambda must returns true if item is found
       /// \return     The found parameter
-      /// \throw      shared::exception::CEmptyResutl if no parameter matching criteria was found
+      /// \throw      shared::exception::CEmptyResult if no parameter matching criteria was found
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       CDataContainer find(const std::string& parameterName, boost::function<bool(const CDataContainer&)> whereFct, const char pathChar = '.') const;
+
+
+      //--------------------------------------------------------------
+      /// \brief	    Merge this container from another one
+      /// \param [in] from source container
+      /// \desc       Add non-exisiting (or replace existing) values of "from" container into this container
+      ///             Values of this container not present in "from" container will be kept
+      //--------------------------------------------------------------
+      void mergeFrom(const CDataContainer& from);
+
+
 
       //--------------------------------------------------------------
       //
@@ -1035,7 +1046,10 @@ namespace shared
       /// \param [in]	   pathChar          The character which is interpreted as path separator
       /// \return the path
       //--------------------------------------------------------------
-      boost::property_tree::ptree::path_type generatePath(const std::string & parameterName, const char pathChar) const;
+      static boost::property_tree::ptree::path_type generatePath(const std::string & parameterName, const char pathChar);
+
+      static void mergeChildFrom(const boost::property_tree::ptree& from, boost::property_tree::ptree& to);
+
 
    private:
       //--------------------------------------------------------------

@@ -27,10 +27,13 @@ namespace web
 
          void CConfiguration::configureDispatcher(CRestDispatcher& dispatcher)
          {
+            //TODO faire le ménage sur ce qui est utile
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("system"), CConfiguration::getSystemConfiguration);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("system")("reset"), CConfiguration::resetSystemConfiguration);
+
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CConfiguration::getAllConfigurations);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CConfiguration::getSectionConfigurations);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*"), CConfiguration::getConfiguration);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword), CConfiguration::createOneConfiguration);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("*"), CConfiguration::updateOneConfiguration);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword), CConfiguration::updateAllConfigurations);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("*")("*"), CConfiguration::deleteOneConfiguration);
@@ -39,6 +42,39 @@ namespace web
          const std::string& CConfiguration::getRestKeyword()
          {
             return m_restKeyword;
+         }
+
+         shared::CDataContainer CConfiguration::resetSystemConfiguration(const std::vector<std::string>& parameters,
+                                                                         const std::string& requestContent) const
+         {
+            try
+            {
+               m_configurationManager->resetSystemConfiguration();
+               return CResult::GenerateSuccess(m_configurationManager->getSystemConfiguration());
+            }
+            catch (shared::exception::CEmptyResult&)
+            {
+               return CResult::GenerateError("Fail to reset system configuration");
+            }
+         }
+
+         shared::CDataContainer CConfiguration::getSystemConfiguration(const std::vector<std::string>& parameters,
+                                                                       const std::string& requestContent) const
+         {
+            auto keyname = std::string();
+            if (parameters.size() > 1)
+               keyname = parameters[1];
+
+            try
+            {
+               if (keyname.empty())
+                  return CResult::GenerateSuccess(m_configurationManager->getSystemConfiguration(keyname));
+               return CResult::GenerateSuccess(m_configurationManager->getSystemConfiguration());
+            }
+            catch (shared::exception::CEmptyResult&)
+            {
+               return CResult::GenerateError((boost::format("[Section = system ; Name = %1%] not found.") % keyname).str());
+            }
          }
 
 
@@ -54,7 +90,7 @@ namespace web
 
             try
             {
-               auto configFound = m_configurationManager->getConfiguration(section, keyname);
+               const auto configFound = m_configurationManager->getConfiguration(section, keyname);
                return CResult::GenerateSuccess(configFound);
             }
             catch (shared::exception::CEmptyResult&)
@@ -71,38 +107,19 @@ namespace web
                section = parameters[1];
 
 
-            auto hwList = m_configurationManager->getConfigurations(section);
+            const auto config = m_configurationManager->getConfigurations(section);
             shared::CDataContainer collection;
-            collection.set(getRestKeyword(), hwList);
+            collection.set(getRestKeyword(), config);
             return CResult::GenerateSuccess(collection);
          }
 
          shared::CDataContainer CConfiguration::getAllConfigurations(const std::vector<std::string>& parameters,
                                                                      const std::string& requestContent) const
          {
-            auto hwList = m_configurationManager->getConfigurations();
+            const auto config = m_configurationManager->getConfigurations();
             shared::CDataContainer collection;
-            collection.set(getRestKeyword(), hwList);
+            collection.set(getRestKeyword(), config);
             return CResult::GenerateSuccess(collection);
-         }
-
-         shared::CDataContainer CConfiguration::createOneConfiguration(const std::vector<std::string>& parameters,
-                                                                       const std::string& requestContent) const
-         {
-            //get data from request content
-            database::entities::CConfiguration configToCreate;
-            configToCreate.fillFromSerializedString(requestContent);
-
-            //check that configuration entry do not already exists
-            if (m_configurationManager->exists(configToCreate.Section(), configToCreate.Name()))
-               return CResult::GenerateError("The entry to create already exists");
-
-            //commit changes to database
-            m_configurationManager->create(configToCreate);
-
-            auto widgetFound = m_configurationManager->getConfiguration(configToCreate.Section(),
-                                                                        configToCreate.Name());
-            return CResult::GenerateSuccess(widgetFound);
          }
 
          shared::CDataContainer CConfiguration::updateOneConfiguration(const std::vector<std::string>& parameters,
@@ -152,7 +169,8 @@ namespace web
          {
             try
             {
-               auto listToUpdate = shared::CDataContainer(requestContent).get<std::vector<boost::shared_ptr<database::entities::CConfiguration> > >(getRestKeyword());
+               auto listToUpdate = shared::CDataContainer(requestContent).get<std::vector<boost::shared_ptr<database::entities::CConfiguration>>>(
+                  getRestKeyword());
 
                for (auto i = listToUpdate.begin(); i != listToUpdate.end(); ++i)
                {
@@ -195,5 +213,3 @@ namespace web
       } //namespace service
    } //namespace rest
 } //namespace web 
-
-

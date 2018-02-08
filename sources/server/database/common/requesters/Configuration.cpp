@@ -26,7 +26,7 @@ namespace database
          // IConfigurationRequester implementation
          void CConfiguration::create(entities::CConfiguration& configurationToCreate)
          {
-            boost::posix_time::ptime insertDate = shared::currentTime::Provider().now();
+            const auto insertDate = shared::currentTime::Provider().now();
             auto qInsert = m_databaseRequester->newQuery();
             qInsert->InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName(), CConfigurationTable::getDefaultValueColumnName(), CConfigurationTable::getLastModificationDateColumnName()).
                Values(configurationToCreate.Section(), configurationToCreate.Name(), configurationToCreate.Value(), configurationToCreate.Description(), configurationToCreate.DefaultValue(), insertDate);
@@ -58,7 +58,7 @@ namespace database
             if (adapter.getResults().size() >= 1)
                return adapter.getResults()[0];
 
-            std::string sEx = (boost::format("Cannot retrieve Configuration Section=%1% and Name=%2% in database") % section % name).str();
+            const auto sEx = (boost::format("Cannot retrieve Configuration Section=%1% and Name=%2% in database") % section % name).str();
             throw shared::exception::CEmptyResult(sEx);
          }
 
@@ -90,7 +90,7 @@ namespace database
 
          void CConfiguration::updateConfiguration(entities::CConfiguration& configurationToUpdate)
          {
-            auto updateDate = shared::currentTime::Provider().now();
+            const auto updateDate = shared::currentTime::Provider().now();
 
             if (exists(configurationToUpdate.Section(), configurationToUpdate.Name()))
             {
@@ -108,6 +108,15 @@ namespace database
             {
                return create(configurationToUpdate);
             }
+         }
+
+         void CConfiguration::removeConfigurations(const std::string& section)
+         {
+            auto qDelete = m_databaseRequester->newQuery();
+            qDelete->DeleteFrom(CConfigurationTable::getTableName()).
+               Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, section);
+            if (m_databaseRequester->queryStatement(*qDelete) <= 0)
+               throw shared::exception::CEmptyResult("No lines affected");
          }
 
          void CConfiguration::removeConfiguration(entities::CConfiguration& configurationToRemove)

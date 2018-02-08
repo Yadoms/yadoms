@@ -32,4 +32,12 @@ def applySystemConfiguration(browser):
    panel = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "dashboard-system-configuration")))
    panel.find_element_by_xpath(".//button[@id='btn-confirm-configure-system']").click()
 
+def resetToDefaultSystemConfiguration(browser):
+   panel = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "dashboard-system-configuration")))
+   panel.find_element_by_xpath(".//button[@id='resetSystemConfiguration']").click()
+   confirmationModal = modals.waitOkCancelModal(browser)
+   confirmationModal.ok()
+
+
+
 

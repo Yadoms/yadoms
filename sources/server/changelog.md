@@ -1,6 +1,10 @@
 ### 2.1.0-beta.1
 
-Ongoing...
+#### New features and fixes
+
+##### Yadoms Core
+* Fix the reset to default function on system configuration page
+* Refactor the system configuration management
 
 
 ### 2.0.2

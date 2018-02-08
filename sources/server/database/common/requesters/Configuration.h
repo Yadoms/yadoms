@@ -4,43 +4,46 @@
 #include "database/IDatabaseRequester.h"
 
 
-namespace database { namespace common { namespace requesters { 
-
-   //--------------------------------------------------------------
-   /// \Brief		   Configuration requester for database
-   //--------------------------------------------------------------
-   class CConfiguration: public IConfigurationRequester
+namespace database
+{
+   namespace common
    {
-   public:
-      //--------------------------------------------------------------
-      /// \Brief		   Constructor
-      /// \param [in]	pDatabaseHandler: the database handler
-      //--------------------------------------------------------------
-      explicit CConfiguration(boost::shared_ptr<IDatabaseRequester> databaseRequester);
+      namespace requesters
+      {
+         //--------------------------------------------------------------
+         /// \Brief		   Configuration requester for database
+         //--------------------------------------------------------------
+         class CConfiguration : public IConfigurationRequester
+         {
+         public:
+            //--------------------------------------------------------------
+            /// \Brief		   Constructor
+            /// \param [in]	databaseRequester: the database requester
+            //--------------------------------------------------------------
+            explicit CConfiguration(boost::shared_ptr<IDatabaseRequester> databaseRequester);
 
-      //--------------------------------------------------------------
-      /// \Brief		   Destructor
-      //--------------------------------------------------------------
-      virtual ~CConfiguration();
+            //--------------------------------------------------------------
+            /// \Brief		   Destructor
+            //--------------------------------------------------------------
+            virtual ~CConfiguration();
 
-      // IConfigurationRequester implementation
-      virtual void create(entities::CConfiguration& configurationToCreate);
-      virtual bool exists(const std::string & section, const std::string & name);
-      virtual boost::shared_ptr<entities::CConfiguration> getConfiguration(const std::string & section, const std::string & name);
-      virtual std::vector<boost::shared_ptr<entities::CConfiguration> > getConfigurations(const std::string & section);
-      virtual std::vector<boost::shared_ptr<entities::CConfiguration> > getConfigurations();
-      virtual void updateConfiguration(entities::CConfiguration& configurationToUpdate);
-      virtual void removeConfiguration(entities::CConfiguration& configurationToRemove);
-      // [END] IConfigurationRequester implementation
+            // IConfigurationRequester implementation
+            void create(entities::CConfiguration& configurationToCreate) override;
+            bool exists(const std::string& section, const std::string& name) override;
+            boost::shared_ptr<entities::CConfiguration> getConfiguration(const std::string& section, const std::string& name) override;
+            std::vector<boost::shared_ptr<entities::CConfiguration>> getConfigurations(const std::string& section) override;
+            std::vector<boost::shared_ptr<entities::CConfiguration>> getConfigurations() override;
+            void updateConfiguration(entities::CConfiguration& configurationToUpdate) override;
+            void removeConfigurations(const std::string& section) override;
+            void removeConfiguration(entities::CConfiguration& configurationToRemove) override;
+            // [END] IConfigurationRequester implementation
 
-   private:
-      //--------------------------------------------------------------
-      /// \Brief		   Reference to IDatabaseRequester
-      //--------------------------------------------------------------
-      boost::shared_ptr<IDatabaseRequester> m_databaseRequester;
-   };
-
-} //namespace requesters
-} //namespace common
+         private:
+            //--------------------------------------------------------------
+            /// \Brief		   Reference to IDatabaseRequester
+            //--------------------------------------------------------------
+            boost::shared_ptr<IDatabaseRequester> m_databaseRequester;
+         };
+      } //namespace requesters
+   } //namespace common
 } //namespace database 
-

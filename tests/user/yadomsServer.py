@@ -172,16 +172,22 @@ def waitServerStarted():
    return False
 
 
+def waitPageLoaded(browser, waitForReadyForNormalOperation = True):
+   if WebDriverWait(browser, 60).until(lambda browser: browser.execute_script("return (document.readyState == 'complete' && jQuery.active == 0)")):
+      if not waitForReadyForNormalOperation:
+         return True
+      if WebDriverWait(browser, 60).until(lambda browser: len(browser.find_elements_by_class_name("tabPagePills")) > 0):
+         return True
+   return False
+
+
 def openClient(browser, waitForReadyForNormalOperation = True):
    """Open a client on local server and wait for full loading"""
 
    try:
       browser.get("http://127.0.0.1:8080")
-      if WebDriverWait(browser, 60).until(lambda browser: browser.execute_script("return (document.readyState == 'complete' && jQuery.active == 0)")):
-         if not waitForReadyForNormalOperation:
-            return
-         if WebDriverWait(browser, 60).until(lambda browser: len(browser.find_elements_by_class_name("tabPagePills")) > 0):
-            return
+      if waitPageLoaded(browser, waitForReadyForNormalOperation):
+         return
    except:
       print 'Exception waiting page loading'
 

@@ -37,7 +37,7 @@ namespace database {
       /// \return     The entries found
       /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CConfiguration> > getConfigurations(const std::string & section) = 0;
+      virtual std::vector<boost::shared_ptr<entities::CConfiguration> > getConfigurations(const std::string& section) = 0;
 
       //--------------------------------------------------------------
       /// \brief      Read all configuration entries 
@@ -59,6 +59,13 @@ namespace database {
       /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void removeConfiguration(entities::CConfiguration& configurationToRemove) = 0;
+      
+      //--------------------------------------------------------------
+      /// \brief      Remove a entire configuration section
+      /// \param [in] section  The configuration section to delete
+      /// \throw      shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual void removeConfigurations(const std::string& section) = 0;
 
       //--------------------------------------------------------------
       /// \brief       Destructor
