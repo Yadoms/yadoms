@@ -315,7 +315,11 @@ namespace shared
          else
          {
             // It's a sub-child
-            mergeChildFrom(fromChild.second, m_tree.get_child(fromChild.first));
+            const auto toChild = m_tree.get_child_optional(fromChild.first);
+            if(!!toChild)
+               mergeChildFrom(fromChild.second, m_tree.get_child(fromChild.first));
+            else
+               m_tree.add_child(fromChild.first, fromChild.second);
          }
       }
    }
