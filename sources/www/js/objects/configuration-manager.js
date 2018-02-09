@@ -8,6 +8,8 @@
  */
 function ConfigurationManager() {}
 
+var SystemConfiguration;
+
 // TODO faire le ménage (fonctions obsolètes)
 
 /**
@@ -149,12 +151,45 @@ ConfigurationManager.createToServer = function (section, name, value, defaultVal
     });
 };
 
-ConfigurationManager.getSystemConfiguration = function () {
-    return ConfigurationManager.getSection("system");
+ConfigurationManager.loadSystemConfiguration = function () {
+    var d = new $.Deferred();
+
+    RestEngine.getJson("rest/configuration/system")
+        .done(function (data) {
+            SystemConfiguration = JSON.parse(data);
+            d.resolve(SystemConfiguration);
+        })
+        .fail(d.reject);
+
+    return d.promise();
+}
+
+ConfigurationManager.saveSystemConfiguration = function (newConfiguration) {
+    assert(!isNullOrUndefined(newConfiguration), "newConfiguration must be defined");
+    return RestEngine.putJson("/rest/configuration/system", {
+        data: JSON.stringify(newConfiguration)
+    });
+};
+
+ConfigurationManager.SystemConfiguration = function() {
+    if (isNullOrUndefined(SystemConfiguration))
+        console.error("Configuration not already loaded, call ConfigurationManager.loadSystemConfiguration before accessing configuration");
+    return SystemConfiguration;
 }
 
 ConfigurationManager.resetSystemConfiguration = function () {
-    return RestEngine.putJson("/rest/configuration/system/reset");
+    var d = new $.Deferred();
+    
+    RestEngine.putJson("/rest/configuration/system/reset")
+    .done(function (newConfiguration) {
+          SystemConfiguration = newConfiguration;
+          d.resolve();
+    })
+    .fail(function () {
+          console.error("failed to reset system configuration");
+          d.reject();
+    })
+    return d;
 }
 
 ConfigurationManager.saveRefreshPageDefaultValue = function (arrayOfDeffered) {

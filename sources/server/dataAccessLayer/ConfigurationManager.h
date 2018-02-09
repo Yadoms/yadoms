@@ -21,6 +21,7 @@ namespace dataAccessLayer
       // IConfigurationManager implementation
       std::string getSystemConfiguration(const std::string& keyName) const override;
       boost::shared_ptr<const shared::CDataContainer> getSystemConfiguration() override;
+      void saveSystemConfiguration(const shared::CDataContainer& newConfiguration) override;
       void resetSystemConfiguration() override;
       virtual bool exists(const std::string& section, const std::string& name);
       virtual boost::shared_ptr<database::entities::CConfiguration> getConfiguration(const std::string& section, const std::string& name);
@@ -40,6 +41,9 @@ namespace dataAccessLayer
       static bool isJson(const std::string& str);
       static boost::shared_ptr<shared::CDataContainer> configurationEntitiesToContainer(
          const std::vector<boost::shared_ptr<database::entities::CConfiguration>>& configurationEntities);
+      static boost::shared_ptr<std::vector<boost::shared_ptr<database::entities::CConfiguration>>> containerToConfigurationEntities(
+         const std::string& sectionName,
+         const shared::CDataContainer& container);
 
    private:
       //--------------------------------------------------------------

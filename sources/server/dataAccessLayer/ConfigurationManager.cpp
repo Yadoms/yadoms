@@ -88,17 +88,20 @@ namespace dataAccessLayer
       {
          // Returned configuration is the default one, overided by stored values
          auto configuration = boost::make_shared<shared::CDataContainer>(*m_defaultSystemConfiguration);
-         configuration->printToLog(YADOMS_LOG(trace)); //TODO virer
-
          configuration->mergeFrom(*configurationEntitiesToContainer(m_configurationRequester->getConfigurations("system")));
-
-         configuration->printToLog(YADOMS_LOG(trace)); //TODO virer
          return configuration;
       }
       catch (shared::exception::CEmptyResult&)
       {
          return m_defaultSystemConfiguration;
       }
+   }
+
+   void CConfigurationManager::saveSystemConfiguration(const shared::CDataContainer& newConfiguration)
+   {
+      const auto& c = containerToConfigurationEntities("system", newConfiguration);
+      for (const auto& entity : *c)
+         m_configurationRequester->updateConfiguration(*entity);
    }
 
    bool CConfigurationManager::isJson(const std::string& str)
@@ -119,6 +122,24 @@ namespace dataAccessLayer
             container->set(entity->Name(), entity->Value());
 
       return container;
+   }
+
+   boost::shared_ptr<std::vector<boost::shared_ptr<database::entities::CConfiguration>>> CConfigurationManager::containerToConfigurationEntities(
+      const std::string& sectionName,
+      const shared::CDataContainer& container)
+   {
+      auto configurationEntities = boost::make_shared<std::vector<boost::shared_ptr<database::entities::CConfiguration>>>();
+
+      for (const auto& key : container.getKeys())
+      {
+         auto item = boost::make_shared<database::entities::CConfiguration>();
+         item->Section = sectionName;
+         item->Name = key;
+         item->Value = container.containsValue(key) ? container.get<std::string>(key) : container.get<shared::CDataContainer>(key).serialize();
+         configurationEntities->push_back(item);
+      }
+
+      return configurationEntities;
    }
 
    void CConfigurationManager::resetSystemConfiguration()

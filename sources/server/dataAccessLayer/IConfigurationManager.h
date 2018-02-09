@@ -1,7 +1,7 @@
 #pragma once
 #include "database/entities/Entities.h"
 
-//TODO supprimer les fonctions génériques
+//TODO supprimer les fonctions génériques ?
 
 namespace dataAccessLayer
 {
@@ -16,6 +16,12 @@ namespace dataAccessLayer
       //--------------------------------------------------------------
       virtual std::string getSystemConfiguration(const std::string& keyName) const = 0;
       virtual boost::shared_ptr<const shared::CDataContainer> getSystemConfiguration() = 0;
+
+      //--------------------------------------------------------------
+      /// \brief      Save system configuration
+      /// \param [in] newConfiguration the new configuration to save
+      //--------------------------------------------------------------
+      virtual void saveSystemConfiguration(const shared::CDataContainer& newConfiguration) = 0;
       
       //--------------------------------------------------------------
       /// \brief      Reset system configuration

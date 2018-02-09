@@ -23,7 +23,7 @@ DateTimeFormatter.isoDateToDate = function (isoDate) {
 DateTimeFormatter.isoDateToString = function (isoDate) {
 
    var d = DateTimeFormatter.isoDateToDate(isoDate);
-   var format = Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value;
+   var format = ConfigurationManager.SystemConfiguration()[ConfigurationManager.items.system.dateFormatString];
 
    return d.format(format);
 };
@@ -40,7 +40,7 @@ DateTimeFormatter.dateToString = function (date, optionalFormat) {
    assert(d.isValid(), "Date given " + date + " is not valid");
    var format = optionalFormat;
    if (!format)
-      format = Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value;
+      format = ConfigurationManager.SystemConfiguration()[ConfigurationManager.items.system.dateFormatString];
 
    return d.format(format);
 };

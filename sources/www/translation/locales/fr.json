@@ -108,8 +108,7 @@
       "customization": "Personalisation"
     },
     "actions": {
-      "loadingPages": "Chargement des pages ...",
-      "loadingWidgetsOfPage": "Chargement des widgets de la page {{pageName}} ...",
+      "loadingPage": "Chargement de la page {{pageName}} ...",
       "firstRunConfiguration": "Premier démarrage"
     },
     "customization": {

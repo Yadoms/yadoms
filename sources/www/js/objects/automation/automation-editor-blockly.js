@@ -244,7 +244,7 @@ AutomationEditorBlockly.prototype.getName = function() {
  */
 AutomationEditorBlockly.prototype.showDoc = function () {
     var url = "help.html?product=blockly";
-    url += "&lang=" + Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value;
+    url += "&lang=" + ConfigurationManager.SystemConfiguration()[ConfigurationManager.items.system.language];
     window.open(url);
 };
 

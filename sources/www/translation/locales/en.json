@@ -108,8 +108,7 @@
       "customization": "Enter customization mode"
     },
     "actions": {
-      "loadingPages": "Loading Pages ...",
-      "loadingWidgetsOfPage": "Loading widgets of {{pageName}} page ...",
+      "loadingPage": "Loading {{pageName}} page ...",
       "firstRunConfiguration": "First run configuration"
     },
     "customization": {

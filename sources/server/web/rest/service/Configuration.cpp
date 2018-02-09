@@ -30,6 +30,7 @@ namespace web
             //TODO faire le ménage sur ce qui est utile
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("system"), CConfiguration::getSystemConfiguration);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("system")("reset"), CConfiguration::resetSystemConfiguration);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("system"), CConfiguration::saveSystemConfiguration);
 
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CConfiguration::getAllConfigurations);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CConfiguration::getSectionConfigurations);
@@ -37,11 +38,6 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("*"), CConfiguration::updateOneConfiguration);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword), CConfiguration::updateAllConfigurations);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("*")("*"), CConfiguration::deleteOneConfiguration);
-         }
-
-         const std::string& CConfiguration::getRestKeyword()
-         {
-            return m_restKeyword;
          }
 
          shared::CDataContainer CConfiguration::resetSystemConfiguration(const std::vector<std::string>& parameters,
@@ -62,18 +58,36 @@ namespace web
                                                                        const std::string& requestContent) const
          {
             auto keyname = std::string();
-            if (parameters.size() > 1)
-               keyname = parameters[1];
+            if (parameters.size() > 2)
+               keyname = parameters[2];
 
             try
             {
-               if (keyname.empty())
+               if (!keyname.empty())
                   return CResult::GenerateSuccess(m_configurationManager->getSystemConfiguration(keyname));
                return CResult::GenerateSuccess(m_configurationManager->getSystemConfiguration());
             }
             catch (shared::exception::CEmptyResult&)
             {
                return CResult::GenerateError((boost::format("[Section = system ; Name = %1%] not found.") % keyname).str());
+            }
+         }
+
+         shared::CDataContainer CConfiguration::saveSystemConfiguration(const std::vector<std::string>& parameters,
+                                                                        const std::string& requestContent) const
+         {
+            try
+            {
+               m_configurationManager->saveSystemConfiguration(shared::CDataContainer(requestContent));
+               return CResult::GenerateSuccess();
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in updating all configuration");
             }
          }
 
@@ -109,7 +123,7 @@ namespace web
 
             const auto config = m_configurationManager->getConfigurations(section);
             shared::CDataContainer collection;
-            collection.set(getRestKeyword(), config);
+            collection.set(m_restKeyword, config);
             return CResult::GenerateSuccess(collection);
          }
 
@@ -118,7 +132,7 @@ namespace web
          {
             const auto config = m_configurationManager->getConfigurations();
             shared::CDataContainer collection;
-            collection.set(getRestKeyword(), config);
+            collection.set(m_restKeyword, config);
             return CResult::GenerateSuccess(collection);
          }
 
@@ -170,7 +184,7 @@ namespace web
             try
             {
                auto listToUpdate = shared::CDataContainer(requestContent).get<std::vector<boost::shared_ptr<database::entities::CConfiguration>>>(
-                  getRestKeyword());
+                  m_restKeyword);
 
                for (auto i = listToUpdate.begin(); i != listToUpdate.end(); ++i)
                {
