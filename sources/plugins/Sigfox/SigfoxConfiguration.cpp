@@ -33,3 +33,8 @@ double CSigfoxConfiguration::getTensionMax() const
 {
    return m_data.get<double>("advancedConfiguration.content.tensionMax");
 }
+
+int CSigfoxConfiguration::getSocketPort() const
+{
+   return m_data.get<int>("port");
+}

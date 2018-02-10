@@ -4,6 +4,7 @@
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include <shared/Log.h>
+#include "webServer/sigfoxHTTPServer.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -35,6 +36,7 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    YADOMS_LOG(information) << "Sigfox is starting...";
    m_configuration.initializeWith(api->getConfiguration());
+   CSigfoxHTTPServer webServer(m_configuration.getSocketPort());
       
    try {
 
@@ -76,6 +78,8 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventExtraQuery:
       {
          // Command was received from Yadoms
+         // compatibility with Sigfox v1.0
+         // now it's a local HTTP server => Sigfox v1.1
          auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery> >();
          if (extraQuery)
          {
