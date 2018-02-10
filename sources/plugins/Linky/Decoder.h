@@ -86,4 +86,8 @@ private:
    // index 1 : old index
    unsigned char m_activeIndex[2];
    bool m_production;
+
+   bool m_runningPeriodChanged;
+   bool m_tomorrowColorChanged;
+   bool m_todayColorChanged;
 };
