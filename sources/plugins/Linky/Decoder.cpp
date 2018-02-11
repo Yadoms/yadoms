@@ -126,6 +126,7 @@ void CDecoder::createFirstKeywordList(bool isTriphases)
 
 void CDecoder::createRunningKeywordList(bool isTriphases)
 {
+   static bool firstRun = true;
    m_keywords.clear();
 
    if (m_newPeriod != m_runningPeriod->get())
@@ -137,7 +138,6 @@ void CDecoder::createRunningKeywordList(bool isTriphases)
 
    if (m_todayColorChanged || firstRun)
       m_keywords.push_back(m_todayColor);
-   }
 
    if (m_tomorrowColorChanged || firstRun)
       m_keywords.push_back(m_tomorrowColor);
