@@ -67,13 +67,11 @@ void CDecoder::decodeLinkyMessage(boost::shared_ptr<yApi::IYPluginApi> api,
       // Create all keywords
       createFirstKeywordList(triphases);
       createDeviceAndKeywords();
-      m_api->historizeData(m_deviceName, m_keywords);
    }
-   else {
-      // Historizing only running keywords
-      createRunningKeywordList(triphases);
-      m_api->historizeData(m_deviceName, m_keywords);
-   }
+
+   // Historizing only running keywords
+   createRunningKeywordList(triphases);
+   m_api->historizeData(m_deviceName, m_keywords);
 }
 
 void CDecoder::createDeviceAndKeywords()
@@ -129,7 +127,7 @@ void CDecoder::createRunningKeywordList(bool isTriphases)
    static bool firstRun = true;
    m_keywords.clear();
 
-   if (m_newPeriod != m_runningPeriod->get())
+   if (m_newPeriod != m_runningPeriod->get() || firstRun)
    {
       m_runningPeriod->set(m_newPeriod);
       m_keywords.push_back(m_runningIndex);
@@ -146,7 +144,7 @@ void CDecoder::createRunningKeywordList(bool isTriphases)
 
    // At counter startup the value is 0
    // we historize only when the mean exists (0 during 10mn at counter power on)
-   if (m_meanVoltage[0].get()!=0)
+   if (m_meanVoltage[0]->get()!=0)
       m_keywords.push_back(m_meanVoltage[0]);
 
    if (isTriphases) // We add missing phases
@@ -156,10 +154,10 @@ void CDecoder::createRunningKeywordList(bool isTriphases)
 
       // At counter startup the value is 0
       // we historize only when the mean exists (0 during 10mn at counter power on)
-      if (m_meanVoltage[1].get() != 0)
+      if (m_meanVoltage[1]->get() != 0)
          m_keywords.push_back(m_meanVoltage[1]);
 
-      if (m_meanVoltage[2].get() != 0)
+      if (m_meanVoltage[2]->get() != 0)
          m_keywords.push_back(m_meanVoltage[2]);
    }
 
@@ -279,14 +277,13 @@ void CDecoder::processMessage(const std::string& key,
       }
       else if (m_revision == 1) // specific functions v1
       {
-         YADOMS_LOG(trace) << "SINST1" << "=" << values[0];
          if (key == m_tag_SINST1)
          {
             m_apparentPower[0]->set(boost::lexical_cast<double>(values[0]));
          }
          else if (key == m_tag_LTARF) // For v1 running period is reverse with the NGTF tag !!
          {
-            YADOMS_LOG(trace) << "LTARF" << "= <" << values[0] << ">";
+            YADOMS_LOG(trace) << "LTARF" << "=<" << values[0] << ">";
             std::string value = values[0];
 
             m_newPeriod = trim(value);
