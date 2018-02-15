@@ -161,13 +161,23 @@ void CDecoder::createRunningKeywordList(bool isTriphases)
          m_keywords.push_back(m_meanVoltage[2]);
    }
 
-   // Historization of the active index only
-   m_keywords.push_back(m_counter[m_activeIndex[0]]);
+   if (firstRun)
+   {
+      for (unsigned char counter = 0; counter < 10; ++counter)
+      {
+         if (m_counter[counter]->get() != 0) // We register only counter != 0
+            m_keywords.push_back(m_counter[counter]);
+      }
+   }
+   else
+   {
+      // Historization of the active index only
+      m_keywords.push_back(m_counter[m_activeIndex[0]]);
 
-   // when the index changed, we register the olf index also, to register the last index value
-   if (m_activeIndex[0] != m_activeIndex[1])
-      m_keywords.push_back(m_counter[m_activeIndex[1]]);
-
+      // when the index changed, we register the old index also, to register the last index value
+      if (m_activeIndex[0] != m_activeIndex[1])
+         m_keywords.push_back(m_counter[m_activeIndex[1]]);
+   }
    if (m_production)
       m_keywords.push_back(m_activeEnergyInjected);
 
