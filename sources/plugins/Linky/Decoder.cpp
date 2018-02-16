@@ -90,15 +90,12 @@ void CDecoder::createFirstKeywordList(bool isTriphases)
 {
    m_keywords.clear();
 
-   m_runningPeriod->set(m_newPeriod);
    m_keywords.push_back(m_runningPeriod);
    m_keywords.push_back(m_runningIndex);
 
-   if (m_todayColor->get() != linky::specificHistorizers::EColor::kNOTDEFINED)
-   {
-      m_keywords.push_back(m_tomorrowColor);
-      m_keywords.push_back(m_todayColor);
-   }
+   // We don't know in which contract we are, so we create theses keywords
+   m_keywords.push_back(m_tomorrowColor);
+   m_keywords.push_back(m_todayColor);
 
    // common for all contracts
    m_keywords.push_back(m_apparentPower[0]);
