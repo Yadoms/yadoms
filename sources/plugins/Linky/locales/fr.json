@@ -8,20 +8,13 @@
 		}
 	},
 	"enumerations": {
-		"EPeriod": {
-			"name" : "Période tarifaire",
+		"EColor": {
+			"name" : "Couleur de demain",
 			"values" : {
-				"AllHours": "Toutes heures",
-				"LowCostHours": "Heures creuses",
-				"PeakCostHour": "Heures pleines",
-				"NormalCostHours": "Heures pleines",
-            "MobilePeakCostHours": "heures pointe mobile",
-            "LowCostBlueDays": "Heures creuses bleues",
-            "LowCostWhiteDays": "Heures creuses blanches",
-            "LowCostRedDays": "Heures creuses rouges",
-            "NormalCostBlueDays": "Heures pleines bleues",
-            "NormalCostWhiteDays": "Heures pleines blanches",
-            "NormalCostRedDays": "Heures pleines rouges"
+				"NOTDEFINED": "Pas définie",
+				"BLUE": "Bleu",
+				"WHITE": "Blanc",
+				"RED": "Rouge"
 			}
 		}
    },    
