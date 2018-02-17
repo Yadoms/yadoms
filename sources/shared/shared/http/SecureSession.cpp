@@ -1,4 +1,3 @@
-#pragma once
 #include "SecureSession.h"
 #include <Poco/Net/Context.h>
 #include <Poco/URI.h>

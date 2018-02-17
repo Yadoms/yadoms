@@ -1,4 +1,3 @@
-#pragma once
 #include "StandardSession.h"
 #include <Poco/URI.h>
 
