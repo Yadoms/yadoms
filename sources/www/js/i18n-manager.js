@@ -25,22 +25,11 @@ i18nManager.init = function () {
 
   if (isNullOrUndefined(i18nManager.option.fallbackLng))
   {
+    var regString = "[a-z]+";
     if (!isNullOrUndefined(navigator.language))
-    {
-       var findDash = navigator.language.indexOf("-");
-       if (findDash!=-1)
-          i18nManager.option.fallbackLng = navigator.language.slice(0, findDash);
-       else
-          i18nManager.option.fallbackLng = navigator.language;
-    }
+       i18nManager.option.fallbackLng = navigator.language.match(regString)[0];
     else if (!isNullOrUndefined(navigator.userLanguage))
-    {
-       var findDash = navigator.userLanguage.indexOf("-");
-       if (findDash!=-1)
-          i18nManager.option.fallbackLng = navigator.language.slice(0, findDash);
-       else 
-          i18nManager.option.fallbackLng = navigator.language;
-    }
+       i18nManager.option.fallbackLng = navigator.userLanguage.match(regString)[0];
     else
        i18nManager.option.fallbackLng = "en";
   }
