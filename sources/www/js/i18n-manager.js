@@ -24,8 +24,15 @@ i18nManager.init = function () {
   var d = new $.Deferred();
 
   if (isNullOrUndefined(i18nManager.option.fallbackLng))
-    i18nManager.option.fallbackLng = navigator.language || navigator.userLanguage || "en";
-
+  {
+    if (!isNullOrUndefined(navigator.language))
+       i18nManager.option.fallbackLng = navigator.language.slice(0, navigator.language.indexOf("-"));
+    else if (!isNullOrUndefined(navigator.userLanguage))
+       i18nManager.option.fallbackLng = navigator.language.slice(0, navigator.userLanguage.indexOf("-"));
+    else
+       i18nManager.option.fallbackLng = "en";
+  }
+  
   i18next
     .use(i18nextXHRBackend)
     .init(i18nManager.option, function () {
