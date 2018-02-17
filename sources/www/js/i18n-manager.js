@@ -25,10 +25,11 @@ i18nManager.init = function () {
 
   if (isNullOrUndefined(i18nManager.option.fallbackLng))
   {
+    var regString = "[a-z]+";
     if (!isNullOrUndefined(navigator.language))
-       i18nManager.option.fallbackLng = navigator.language.slice(0, navigator.language.indexOf("-"));
+       i18nManager.option.fallbackLng = navigator.language.match(regString)[0];
     else if (!isNullOrUndefined(navigator.userLanguage))
-       i18nManager.option.fallbackLng = navigator.language.slice(0, navigator.userLanguage.indexOf("-"));
+       i18nManager.option.fallbackLng = navigator.userLanguage.match(regString)[0];
     else
        i18nManager.option.fallbackLng = "en";
   }
