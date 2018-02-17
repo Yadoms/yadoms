@@ -26,9 +26,21 @@ i18nManager.init = function () {
   if (isNullOrUndefined(i18nManager.option.fallbackLng))
   {
     if (!isNullOrUndefined(navigator.language))
-       i18nManager.option.fallbackLng = navigator.language.slice(0, navigator.language.indexOf("-"));
+    {
+       var findDash = navigator.language.indexOf("-");
+       if (findDash!=-1)
+          i18nManager.option.fallbackLng = navigator.language.slice(0, findDash);
+       else
+          i18nManager.option.fallbackLng = navigator.language;
+    }
     else if (!isNullOrUndefined(navigator.userLanguage))
-       i18nManager.option.fallbackLng = navigator.language.slice(0, navigator.userLanguage.indexOf("-"));
+    {
+       var findDash = navigator.userLanguage.indexOf("-");
+       if (findDash!=-1)
+          i18nManager.option.fallbackLng = navigator.language.slice(0, findDash);
+       else 
+          i18nManager.option.fallbackLng = navigator.language;
+    }
     else
        i18nManager.option.fallbackLng = "en";
   }
