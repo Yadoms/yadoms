@@ -1,6 +1,6 @@
 {
 	"name": "linky",
-	"description": "Linky - EDF power meter information. The equipment is connected directly on the EDF power meter. This plugin communicate in standard mode. If the Linky power meter communicate in historical mode, you have to connect through the teleInfo plugin.",
+	"description": "Linky - EDF power meter information. The equipment is connected directly on the EDF power meter. This plugin communicate in standard mode. If the Linky power meter communicate in historical mode, you have to connect with the teleInfo plugin.",
 	"configurationSchema": {
 		"SerialPort": {
 			"name": "Serial port",

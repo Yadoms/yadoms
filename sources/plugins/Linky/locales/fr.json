@@ -1,6 +1,6 @@
 ﻿{
 	"name": "linky",
-	"description": "Module de suivi de consommation électrique. Cet équipement se connecte directement sur le compteur électrique Linky en communication standard. Si celui communique en mode historique, il faut utiliser le plugin teleInfo",
+	"description": "Module de suivi de consommation électrique. Cet équipement se connecte directement sur le compteur électrique Linky en communication standard. Si celui communique en mode historique, il faut utiliser le plugin teleInfo.",
 	"configurationSchema": {
 		"SerialPort": {
 			"name": "Port Série",
