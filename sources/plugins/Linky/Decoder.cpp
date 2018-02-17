@@ -126,7 +126,7 @@ void CDecoder::createRunningKeywordList(bool isTriphases)
 
    if (m_newPeriod != m_runningPeriod->get() || firstRun)
    {
-      YADOMS_LOG(information) << m_runningPeriod;
+      YADOMS_LOG(information) << "m_newPeriod : " << m_newPeriod;
       m_runningPeriod->set(m_newPeriod);
       m_keywords.push_back(m_runningIndex);
       m_keywords.push_back(m_runningPeriod);
@@ -293,7 +293,6 @@ void CDecoder::processMessage(const std::string& key,
          {
             YADOMS_LOG(trace) << "LTARF" << "=<" << values[0] << ">";
             std::string value = values[0];
-
             m_newPeriod = trim(value);
          }
       }
