@@ -3,6 +3,7 @@
 #include "../KeywordAccessMode.h"
 #include "MeasureType.h"
 #include "shared/DataContainer.h"
+#include "shared/Export.h"
 
 namespace shared
 {
