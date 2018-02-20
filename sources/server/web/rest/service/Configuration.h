@@ -39,8 +39,6 @@ namespace web
                                                           const std::string& requestContent) const;
             shared::CDataContainer updateAllConfigurations(const std::vector<std::string>& parameters,
                                                            const std::string& requestContent) const;
-            shared::CDataContainer deleteOneConfiguration(const std::vector<std::string>& parameters,
-                                                          const std::string& requestContent) const;
             
             boost::shared_ptr<dataAccessLayer::IConfigurationManager> m_configurationManager;
             static std::string m_restKeyword;

@@ -27,6 +27,11 @@ namespace dataAccessLayer
       /// \brief      Reset system configuration
       //--------------------------------------------------------------
       virtual void resetSystemConfiguration() = 0;
+      
+      //--------------------------------------------------------------
+      /// \brief      Subscribe to system configuration changes
+      //--------------------------------------------------------------
+      virtual void subscribeOnSystemConfigurationChanged(boost::function1<void, boost::shared_ptr<const shared::CDataContainer>> onSystemConfigurationChangedFct) = 0;
 
 
       //--------------------------------------------------------------
@@ -67,13 +72,6 @@ namespace dataAccessLayer
       /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void updateConfiguration(database::entities::CConfiguration& configurationToUpdate) = 0;
-
-      //--------------------------------------------------------------
-      /// \brief      Remove a configuration entry
-      /// \param [in] configurationToRemove  The configuration to delete
-      /// \throw      shared::exception::CEmptyResult if fails
-      //--------------------------------------------------------------
-      virtual void removeConfiguration(database::entities::CConfiguration& configurationToRemove) = 0;
 
       //--------------------------------------------------------------
       /// \brief       Destructor

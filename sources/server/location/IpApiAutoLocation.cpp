@@ -24,7 +24,7 @@ namespace location
    {
       try
       {
-         auto ipApiResult(shared::CHttpMethods::SendGetRequest("http://ip-api.com/json/?fields=status,lat,lon"));
+         auto ipApiResult(shared::CHttpMethods::SendGetRequest("http://ip-api.com/json/?fields=status,lat,lon,timezone"));
 
          if (ipApiResult.get("status") == std::string("fail"))
             throw shared::exception::CException(ipApiResult.get("message"));
@@ -33,6 +33,7 @@ namespace location
          foundLocation.set("latitude", ipApiResult.get<double>("lat"));
          foundLocation.set("longitude", ipApiResult.get<double>("lon"));
          foundLocation.set("altitude", 0.0); // Not available by this service
+         foundLocation.set("timezone", ipApiResult.get<std::string>("timezone")); // Not available by this service
 
          onFoundFct(foundLocation);
       }

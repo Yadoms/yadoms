@@ -20,6 +20,23 @@
       var fakePassword = createUUID();
       var pageHasToBeReloaded = false;
 
+      var languageParameter;
+
+      var locationSectionParameters;
+      var latitudeParameter;
+      var longitudeParameter;
+      var timezoneParameter;
+
+      var basicAuthenticationSectionParameters;
+      var userAuthenticationParameter;
+      var passwordAuthenticationParameter;
+      var password2AuthenticationParameter;
+
+      var advancedSectionParameters;
+      var dateFormatStringParameter;
+      var refreshPageBoolParameter;
+
+
       Yadoms.initializeSystemConfigurationDashboard = function () {
             var i18NContext = "modals.dashboard.sub-windows.system-configuration.configuration-items.";
             var $modalBody = $("div#dashboard-system-configuration .form-group");
@@ -78,7 +95,7 @@
                               },
                               submitSuccess: function ($form, event) {
                                     event.preventDefault();
-                                    saveParameters();
+                                    saveParameters(systemConfiguration);
                                     promise.resolve();
                               },
                               filter: function () {
@@ -89,38 +106,16 @@
                         })
 
                         $("button#resetSystemConfiguration").unbind('click').bind('click',
-                              function () {
-                                    //we ask for confirmation before resetting all system configuration
-                                    Yadoms.modals.confirmation.loadAsync()
-                                          .done(function () {
-                                                Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
-                                                      null,
-                                                      $.t(
-                                                            "modals.dashboard.sub-windows.system-configuration.confirmResetToDefault"
-                                                      ),
-                                                      function () {
-                                                            ConfigurationManager
-                                                                  .resetSystemConfiguration()
-                                                                  .done(function () {
-                                                                        window.location
-                                                                              .reload();
-                                                                  });
-                                                      },
-                                                      function () {
-                                                            promise.resolve();
-                                                      });
-                                          });
-                              });
+                              resetSystemConfiguration);
                   });
 
             return promise.promise();
       }
 
-      function createParameters($body, i18NContext, systemConfiguration,
-            supportedTimezones) {
+      function createParameters($body, i18NContext, systemConfiguration, supportedTimezones) {
             //*************
             //language
-            var languageParameter = new EnumParameterHandler(i18NContext,
+            languageParameter = new EnumParameterHandler(i18NContext,
                   undefined,
                   ConfigurationManager.items.system.language, {
                         "values": window.getSupportedLanguages(),
@@ -132,22 +127,15 @@
 
             //*************
             //City section parameters
-            var locationSectionParameters = createLocationSectionParameters(
-                  i18NContext,
-                  systemConfiguration,
-                  supportedTimezones);
+            createLocationSectionParameters(i18NContext, systemConfiguration, supportedTimezones);
 
             //*************
             //Basic Authentication parameters
-            var basicAuthenticationSectionParameters =
-                  createBasicAuthenticationSectionParameters(i18NContext,
-                        systemConfiguration);
+            createBasicAuthenticationSectionParameters(i18NContext, systemConfiguration);
 
             //*************
             //advanced parameters
-            var advancedSectionParameters = createAdvancedSectionParameters(
-                  i18NContext,
-                  systemConfiguration);
+            createAdvancedSectionParameters(i18NContext, systemConfiguration);
 
 
             //and add to the gui
@@ -168,11 +156,9 @@
       }
 
 
-      function createLocationSectionParameters(i18NContext,
-            systemConfiguration,
-            supportedTimezones) {
+      function createLocationSectionParameters(i18NContext, systemConfiguration, supportedTimezones) {
 
-            var latitudeParameter = new StringParameterHandler(i18NContext,
+            latitudeParameter = new StringParameterHandler(i18NContext,
                   undefined,
                   ConfigurationManager.items.system.location.latitude, {
                         "regex": "^-?[0-9]+(\.[0-9]+)?$",
@@ -182,7 +168,7 @@
                         .system.location
                         .latitude]);
 
-            var longitudeParameter = new StringParameterHandler(i18NContext,
+            longitudeParameter = new StringParameterHandler(i18NContext,
                   undefined,
                   ConfigurationManager.items.system.location.longitude, {
                         "regex": "^-?[0-9]+(\.[0-9]+)?$",
@@ -192,7 +178,7 @@
                         .system.location
                         .longitude]);
 
-            var timezoneParameter = new EnumParameterHandler(i18NContext,
+            timezoneParameter = new EnumParameterHandler(i18NContext,
                   undefined,
                   ConfigurationManager.items.system.location.timezone, {
                         "values": supportedTimezones,
@@ -203,27 +189,20 @@
                         .timezone]);
 
             // Add sub elements to the city section
-            var locationSectionParameters = new SectionParameterHandler(
+            locationSectionParameters = new SectionParameterHandler(
                   i18NContext,
                   undefined,
                   ConfigurationManager.items.system.locationSection, {},
                   ConfigurationManager.items.system.locationSection);
 
-            locationSectionParameters.configurationHandlers.push(
-                  latitudeParameter);
-            locationSectionParameters.configurationHandlers.push(
-                  longitudeParameter);
-            locationSectionParameters.configurationHandlers.push(
-                  timezoneParameter);
-
-            return locationSectionParameters;
+            locationSectionParameters.configurationHandlers.push(latitudeParameter);
+            locationSectionParameters.configurationHandlers.push(longitudeParameter);
+            locationSectionParameters.configurationHandlers.push(timezoneParameter);
       }
 
-      function createBasicAuthenticationSectionParameters(i18NContext,
-            systemConfiguration) {
+      function createBasicAuthenticationSectionParameters(i18NContext, systemConfiguration) {
 
-            var basicAuth = systemConfiguration[ConfigurationManager.items.system
-                  .basicAuthentication];
+            var basicAuth = systemConfiguration[ConfigurationManager.items.system.basicAuthentication];
 
             //we affect a fake password if there is already one to help password modification detection
             var passwordToDisplay = "";
@@ -233,7 +212,7 @@
 
             //*************
             //user authentication
-            var userAuthenticationParameter = new StringParameterHandler(
+            userAuthenticationParameter = new StringParameterHandler(
                   i18NContext,
                   undefined,
                   ConfigurationManager.items.system.basicAuthenticationUser, {
@@ -245,7 +224,7 @@
 
             //*************
             //password authentication
-            var passwordAuthenticationParameter = new StringParameterHandler(
+            passwordAuthenticationParameter = new StringParameterHandler(
                   i18NContext,
                   undefined,
                   ConfigurationManager.items.system.basicAuthenticationPassword, {
@@ -259,7 +238,7 @@
 
             //*************
             //password authentication
-            var password2AuthenticationParameter = new StringParameterHandler(
+            password2AuthenticationParameter = new StringParameterHandler(
                   i18NContext,
                   undefined,
                   ConfigurationManager.items.system.basicAuthenticationPassword2, {
@@ -272,7 +251,7 @@
                   passwordToDisplay,
                   "new-password");
 
-            var basicAuthenticationSectionParameters = new SectionParameterHandler(
+            basicAuthenticationSectionParameters = new SectionParameterHandler(
                   i18NContext,
                   undefined,
                   ConfigurationManager.items.system.basicAuthentication, {
@@ -283,174 +262,103 @@
                   }
             );
 
-            basicAuthenticationSectionParameters.configurationHandlers.push(
-                  userAuthenticationParameter);
-            basicAuthenticationSectionParameters.configurationHandlers.push(
-                  passwordAuthenticationParameter);
-            basicAuthenticationSectionParameters.configurationHandlers.push(
-                  password2AuthenticationParameter);
-
-            return basicAuthenticationSectionParameters;
+            basicAuthenticationSectionParameters.configurationHandlers.push(userAuthenticationParameter);
+            basicAuthenticationSectionParameters.configurationHandlers.push(passwordAuthenticationParameter);
+            basicAuthenticationSectionParameters.configurationHandlers.push(password2AuthenticationParameter);
       }
 
-      function createAdvancedSectionParameters(i18NContext,
-            systemConfiguration) {
+      function createAdvancedSectionParameters(i18NContext, systemConfiguration) {
 
             //*************
             //dateFormatString
-            var dateFormatStringParameter = new StringParameterHandler(
+            dateFormatStringParameter = new StringParameterHandler(
                   i18NContext,
                   undefined,
                   ConfigurationManager.items.system.dateFormatString, {
-                        defaultValue: systemConfiguration[
-                              ConfigurationManager.items
-                              .system.dateFormatString].defaultValue,
+                        defaultValue: systemConfiguration[ConfigurationManager.items.system.dateFormatString].defaultValue,
                         "required": "true"
                   },
-                  systemConfiguration[ConfigurationManager.items.system
-                        .dateFormatString]
+                  systemConfiguration[ConfigurationManager.items.system.dateFormatString]
             );
 
             //*************
             //refresh page : keep the active page
-            var refreshPage = true;
-            try {
-                  refreshPage = systemConfiguration[ConfigurationManager.items
-                        .system.refreshPage];
-            } catch (err) {
-                  //Initial Configuration - No cache for refreshing the page
-                  refreshPage = true;
-                  systemConfiguration.refreshPage = {};
-                  systemConfiguration.refreshPage.value = refreshPage;
-                  systemConfiguration.refreshPage.defaultValue = refreshPage;
-            }
-
-            var refreshPageBoolParameter = new BoolParameterHandler(
+            refreshPageBoolParameter = new BoolParameterHandler(
                   i18NContext,
                   undefined,
                   ConfigurationManager.items.system.refreshPage, {
-                        defaultValue: systemConfiguration[
-                              ConfigurationManager.items
-                              .system.refreshPage].defaultValue
+                        defaultValue: systemConfiguration[ConfigurationManager.items.system.refreshPage].defaultValue
                   },
-                  systemConfiguration[ConfigurationManager.items.system
-                        .refreshPage]
+                  systemConfiguration[ConfigurationManager.items.system.refreshPage]
             );
 
-            var advancedSectionParameters = new SectionParameterHandler(
+            advancedSectionParameters = new SectionParameterHandler(
                   i18NContext,
                   undefined,
                   ConfigurationManager.items.system.advancedParameters, {
                         "enableWithCheckBox": true,
-                        "enableWithCheckBoxDefaultValue": systemConfiguration[
-                                    ConfigurationManager.items.system.advancedParameters
-                              ]
+                        "enableWithCheckBoxDefaultValue": systemConfiguration[ConfigurationManager.items.system.advancedParameters]
                               .defaultValue
                   }, {
-                        "checkbox": systemConfiguration[
-                              ConfigurationManager.items.system
-                              .advancedParameters]
+                        "checkbox": systemConfiguration[ConfigurationManager.items.system.advancedParameters]
                   });
 
-            advancedSectionParameters.configurationHandlers.push(
-                  dateFormatStringParameter);
-            advancedSectionParameters.configurationHandlers.push(
-                  refreshPageBoolParameter);
-
-            return advancedSectionParameters;
+            advancedSectionParameters.configurationHandlers.push(dateFormatStringParameter);
+            advancedSectionParameters.configurationHandlers.push(refreshPageBoolParameter);
       }
 
 
-      function saveParameters() {
+      function saveParameters(systemConfiguration) {
+            debugger;
             pageHasToBeReloaded = false;
 
             var arrayOfDeffered = [];
 
-            arrayOfDeffered.push(saveLanguageParameter(
-                  systemConfiguration,
-                  languageParameter));
-            //TODO faire les autres
-            saveAdvancedParameters(arrayOfDeffered,
-                  advancedSectionParameters);
-            saveFormatString(arrayOfDeffered,
-                  dateFormatStringParameter);
-            saveBasicAuthentification(arrayOfDeffered,
-                  basicAuthenticationSectionParameters,
-                  basicAuth,
-                  userAuthenticationParameter,
-                  passwordAuthenticationParameter);
-            saveLocation(arrayOfDeffered, latitudeParameter,
-                  longitudeParameter,
-                  timezoneParameter);
-            saveRefreshPage(arrayOfDeffered,
-                  refreshPageBoolParameter);
+            arrayOfDeffered.push(readLanguageParameter(systemConfiguration));
+            arrayOfDeffered.push(readAdvancedParameters(systemConfiguration));
+            arrayOfDeffered.push(readFormatString(systemConfiguration));
+            arrayOfDeffered.push(readBasicAuthentification(systemConfiguration));
+            arrayOfDeffered.push(readLocation(systemConfiguration));
+            arrayOfDeffered.push(readRefreshPage(systemConfiguration));
 
             $.whenAll(arrayOfDeffered)
                   .always(function () {
+                        ConfigurationManager.saveSystemConfiguration(systemConfiguration)
+                              .done(function () {
+                                    notifySuccess($.t(
+                                          "modals.dashboard.sub-windows.system-configuration.configurationSaved"
+                                    ));
 
-                              ConfigurationManager.saveSystemConfiguration(
-                                          systemConfiguration)
-                                    .done(function () {
-                                          notifySuccess($.t(
-                                                "modals.dashboard.sub-windows.system-configuration.configurationSaved"
-                                          ));
-
-                                          if (
-                                                pageHasToBeReloaded
-                                          )
-                                                window.location
-                                                .reload();
-                                    })
-                                    .fail(function (error) {
-                                          //an error has occurred during saving
-                                          notifyError($.t(
-                                                      "modals.dashboard.sub-windows.system-configuration.errorDuringSavingConfiguration"
-                                                ),
-                                                error
-                                          );
-                                    });
-
-                        },
+                                    if (pageHasToBeReloaded) {
+                                          $("html").i18n();
+                                          window.location.reload();
+                                    }
+                              })
+                              .fail(function (error) {
+                                    //an error has occurred during saving
+                                    notifyError($.t(
+                                          "modals.dashboard.sub-windows.system-configuration.errorDuringSavingConfiguration"
+                                    ), error);
+                              });
                   });
       }
 
 
-      function saveLanguageParameter(systemConfiguration, languageParameter) {
+      function readLanguageParameter(systemConfiguration) {
             var d = new $.Deferred();
 
             languageParameter.getCurrentConfiguration()
-                  .done(function (config) {
-                        systemConfiguration[ConfigurationManager.items.system.language] =
-                              config;
+                  .done(function (newValue) {
+                        systemConfiguration[ConfigurationManager.items.system.language] = newValue;
 
-                        ConfigurationManager.updateToServer(Yadoms.systemConfiguration[
-                                    ConfigurationManager.items
-                                    .system.language])
-                              .done(function () {
-                                    if (i18next.language !== Yadoms.systemConfiguration[
-                                                ConfigurationManager.items
-                                                .system.language].value) {
-                                          //we change language of i18n
-                                          i18next.changeLanguage(Yadoms.systemConfiguration[
-                                                      ConfigurationManager
-                                                      .items
-                                                      .system.language]
-                                                .value,
-                                                function () {
-                                                      $("html").i18n();
-                                                      window.location.reload();
-                                                      d.resolve();
-                                                });
-                                    } else {
-                                          d.resolve();
-                                    }
-                              })
-                              .fail(function () {
-                                    console.error(
-                                          "failed save language parameter"
-                                    );
-                                    d.reject();
-                              });
+                        if (i18next.language !== newValue) {
+                              //we change language of i18n
+                              i18next.changeLanguage(systemConfiguration[ConfigurationManager.items.system.language],
+                                    function () {
+                                          pageHasToBeReloaded = true;
+                                    });
+                        }
+                        d.resolve();
                   })
                   .fail(function () {
                         console.error("failed to get language parameter");
@@ -459,154 +367,75 @@
             return d;
       }
 
-      function saveAdvancedParameters(arrayOfDeffered, advancedSectionParameters) {
+      function readAdvancedParameters(systemConfiguration) {
             var d = new $.Deferred();
-            arrayOfDeffered.push(d);
 
             advancedSectionParameters.getCurrentConfiguration()
                   .done(function (currentconfiguration) {
-                        Yadoms.systemConfiguration[ConfigurationManager.items.system
-                                    .advancedParameters]
-                              .value =
+                        systemConfiguration[ConfigurationManager.items.system.advancedParameters].value =
                               currentconfiguration.checkbox;
-
-                        ConfigurationManager
-                              .updateToServer(Yadoms.systemConfiguration[
-                                    ConfigurationManager.items.system.advancedParameters
-                              ])
-                              .done(function () {
-                                    d.resolve();
-                              })
-                              .fail(function () {
-                                    console.error(
-                                          "failed save advanced parameters"
-                                    );
-                                    d.reject();
-                              });
+                        d.resolve();
                   }).fail(d.reject);
+            return d;
       };
 
-      function saveFormatString(arrayOfDeffered, dateFormatStringParameter) {
-
+      function readFormatString(systemConfiguration) {
             var d = new $.Deferred();
-            arrayOfDeffered.push(d);
 
             dateFormatStringParameter.getCurrentConfiguration()
                   .done(function (currentconfiguration) {
-                        Yadoms.systemConfiguration[ConfigurationManager.items.system
-                                    .dateFormatString]
-                              .value =
+                        systemConfiguration[ConfigurationManager.items.system.dateFormatString].value =
                               currentconfiguration;
-
-                        ConfigurationManager.updateToServer(Yadoms.systemConfiguration[
-                                    ConfigurationManager.items.system.dateFormatString
-                              ])
-                              .done(function () {
-                                    d.resolve();
-                              })
-                              .fail(function () {
-                                    console.error(
-                                          "failed save date format string"
-                                    );
-                                    d.reject();
-                              });
+                        d.resolve();
                   }).fail(d.reject);
+            return d;
       };
 
-      function saveRefreshPage(arrayOfDeffered, refreshPageBoolParameter) {
-
-            var d = new $.Deferred();
-            arrayOfDeffered.push(d);
-
-            refreshPageBoolParameter.getCurrentConfiguration()
-                  .done(function (currentconfiguration) {
-                        Yadoms.systemConfiguration[ConfigurationManager.items.system
-                                    .refreshPage]
-                              .value =
-                              currentconfiguration;
-
-                        ConfigurationManager.updateToServer(Yadoms.systemConfiguration[
-                                    ConfigurationManager.items.system.refreshPage
-                              ])
-                              .done(function () {
-                                    d.resolve();
-                              })
-                              .fail(function () {
-                                    console.error(
-                                          "failed save refresh boolean"
-                                    );
-                                    d.reject();
-                              });
-                  }).fail(d.reject);
-
-
-      };
-
-      function saveBasicAuthentification(arrayOfDeffered,
-            basicAuthenticationSectionParameters,
-            basicAuth,
-            userAuthenticationParameter,
-            passwordAuthenticationParameter) {
-            var value = {};
-
-            var d = new $.Deferred();
-            arrayOfDeffered.push(d);
-
+      function readBasicAuthentification(systemConfiguration) {
             var d2 = new $.Deferred();
+            var currentBasicAuth = systemConfiguration[ConfigurationManager.items.system.basicAuthentication];
+            var newBasicAuth = {};
 
             basicAuthenticationSectionParameters.getCurrentConfiguration()
                   .done(function (currentConfiguration) {
-                        value.active = currentConfiguration.checkbox;
+                        newBasicAuth.active = currentConfiguration.checkbox ? "true" : "false";
 
                         //if we activate / deactivate the authentication we must reload the page
-                        if (value.active !== basicAuth.active)
+                        if (newBasicAuth.active !== currentBasicAuth.active)
                               pageHasToBeReloaded = true;
 
-                        if (value.active) {
+                        if (newBasicAuth.active === "true") {
                               //the authentication method is active
                               userAuthenticationParameter.getCurrentConfiguration()
                                     .done(function (userConfig) {
 
-                                          value.user = userConfig;
-                                          if (value.user !== basicAuth.user)
+                                          newBasicAuth.user = userConfig;
+                                          if (newBasicAuth.user !== currentBasicAuth.user)
                                                 pageHasToBeReloaded = true;
 
                                           //we check for password modification
                                           passwordAuthenticationParameter.getCurrentConfiguration()
                                                 .done(function (password) {
-                                                      var newPass =
-                                                            password;
-                                                      if (newPass !==
-                                                            $.md5(
-                                                                  fakePassword
-                                                            )) {
+                                                      var newPass = password;
+                                                      if (newPass !== $.md5(fakePassword)) {
                                                             //the password has been changed
-                                                            value.password =
-                                                                  newPass;
+                                                            newBasicAuth.password = newPass;
                                                             //we has to reload the page
-                                                            pageHasToBeReloaded
-                                                                  =
-                                                                  true;
+                                                            pageHasToBeReloaded = true;
                                                       } else {
                                                             //we set the previous one
-                                                            value.password =
-                                                                  basicAuth
-                                                                  .password;
+                                                            newBasicAuth.password = currentBasicAuth.password;
                                                       }
                                                       d2.resolve();
                                                 }).fail(d2.reject);
-
-
                                     }).fail(d2.reject);
-
-
                         } else {
                               userAuthenticationParameter.getCurrentConfiguration()
                                     .done(function (authparam) {
                                           //the authentication method is inactive
-                                          value.user = authparam;
+                                          newBasicAuth.user = authparam;
                                           //we clear the password for the next re-activation
-                                          value.password = "";
+                                          newBasicAuth.password = "";
 
                                           d2.resolve();
                                     }).fail(d2.reject);
@@ -614,87 +443,83 @@
 
                   }).fail(d2.reject);
 
+            var d = new $.Deferred();
             d2.promise().done(function () {
-                        Yadoms.systemConfiguration[ConfigurationManager.items.system
-                                    .basicAuthentication]
-                              .value = JSON.stringify(value);
-
-                        ConfigurationManager.updateToServer(Yadoms.systemConfiguration[
-                                    ConfigurationManager.items.system.basicAuthentication
-                              ])
-                              .done(function () {
-                                    d.resolve();
-                              })
-                              .fail(function () {
-                                    console.error(
-                                          "failed save basic authentification"
-                                    );
-                                    d.reject();
-                              });
+                        systemConfiguration[ConfigurationManager.items.system.basicAuthentication] = newBasicAuth;
+                        d.resolve();
                   })
                   .fail(d.reject);
+            return d;
       }
 
-      function saveLocation(arrayOfDeffered, latitudeParameter, longitudeParameter,
-            timezoneParameter) {
-
+      function readLocation(systemConfiguration) {
             var d = new $.Deferred();
-            arrayOfDeffered.push(d);
 
+            var arrayOfDeffered = [];
+            var d1 = new $.Deferred();
             latitudeParameter.getCurrentConfiguration()
                   .done(function (lat) {
-                        longitudeParameter.getCurrentConfiguration()
-                              .done(function (lon) {
-                                    timezoneParameter.getCurrentConfiguration()
-                                          .done(function (tz) {
-                                                Yadoms.systemConfiguration
-                                                      .location
-                                                      .value[
-                                                            ConfigurationManager
-                                                            .items.system
-                                                            .location
-                                                            .latitude] =
-                                                      lat;
-                                                Yadoms.systemConfiguration
-                                                      .location
-                                                      .value[
-                                                            ConfigurationManager
-                                                            .items.system
-                                                            .location
-                                                            .longitude
-                                                      ] = lon;
-                                                Yadoms.systemConfiguration
-                                                      .location
-                                                      .value[
-                                                            ConfigurationManager
-                                                            .items.system
-                                                            .location
-                                                            .timezone] =
-                                                      tz;
+                        systemConfiguration.location[ConfigurationManager.items.system.location.latitude] =
+                              lat;
+                        d1.resolve();
+                  })
+                  .fail(d1.reject);
+            arrayOfDeffered.push(d1);
 
-                                                ConfigurationManager.createToServer(
-                                                            "system",
-                                                            "location",
-                                                            JSON.stringify(
-                                                                  Yadoms
-                                                                  .systemConfiguration
-                                                                  .location
-                                                                  .value
-                                                            ),
-                                                            "",
-                                                            "",
-                                                            "none")
-                                                      .done(d.resolve)
-                                                      .fail(function () {
-                                                            console
-                                                                  .error(
-                                                                        "failed save location"
-                                                                  );
-                                                            d.reject();
-                                                      });
-                                          }).fail(d.reject);
-                              }).fail(d.reject);
+            var d2 = new $.Deferred();
+            longitudeParameter.getCurrentConfiguration()
+                  .done(function (lon) {
+                        systemConfiguration.location[ConfigurationManager.items.system.location.longitude] =
+                              lon;
+                        d2.resolve();
+                  })
+                  .fail(d2.reject);
+            arrayOfDeffered.push(d2);
+
+            var d3 = new $.Deferred();
+            timezoneParameter.getCurrentConfiguration()
+                  .done(function (tz) {
+                        systemConfiguration.location[ConfigurationManager.items.system.location.timezone] =
+                              tz;
+                        d3.resolve();
+                  })
+                  .fail(d3.reject);
+            arrayOfDeffered.push(d3);
+
+            $.whenAll(arrayOfDeffered)
+                  .done(d.resolve)
+                  .fail(d.reject);
+            return d;
+      }
+
+      function readRefreshPage(systemConfiguration) {
+            var d = new $.Deferred();
+
+            refreshPageBoolParameter.getCurrentConfiguration()
+                  .done(function (currentconfiguration) {
+                        systemConfiguration[ConfigurationManager.items.system.refreshPage].value =
+                              currentconfiguration;
+                        d.resolve();
                   }).fail(d.reject);
+            return d;
+      };
+
+      function resetSystemConfiguration() {
+            Yadoms.modals.confirmation.loadAsync()
+                  .done(function () {
+                        Yadoms.showConfirmModal(Yadoms.btnKind.yesNo, null,
+                              $.t("modals.dashboard.sub-windows.system-configuration.confirmResetToDefault"),
+                              function () {
+                                    ConfigurationManager.resetSystemConfiguration()
+                                          .done(function () {
+                                                $("html").i18n();
+                                                window.location.reload();
+                                          });
+                              },
+                              function () {
+                                    promise.resolve();
+                              });
+                  });
       }
 
       function getdefaultLanguageFromSupported() { //TODO utile ?

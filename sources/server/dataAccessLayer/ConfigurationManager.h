@@ -23,19 +23,19 @@ namespace dataAccessLayer
       boost::shared_ptr<const shared::CDataContainer> getSystemConfiguration() override;
       void saveSystemConfiguration(const shared::CDataContainer& newConfiguration) override;
       void resetSystemConfiguration() override;
+      void subscribeOnSystemConfigurationChanged(boost::function1<void, boost::shared_ptr<const shared::CDataContainer>> onSystemConfigurationChangedFct) override;
       virtual bool exists(const std::string& section, const std::string& name);
       virtual boost::shared_ptr<database::entities::CConfiguration> getConfiguration(const std::string& section, const std::string& name);
       virtual std::vector<boost::shared_ptr<database::entities::CConfiguration>> getConfigurations(const std::string& section);
       virtual std::vector<boost::shared_ptr<database::entities::CConfiguration>> getConfigurations();
       virtual void updateConfiguration(database::entities::CConfiguration& configurationToUpdate);
-      virtual void removeConfiguration(database::entities::CConfiguration& configurationToRemove);
       // [END] - IConfigurationManager implementation
 
    protected:
       //--------------------------------------------------------------
       /// \brief  Post an update configuration notification for the [section,name] data
       //--------------------------------------------------------------
-      static void postUpdateNotification(const std::string& section, const std::string& name);
+      void notifySystemConfigurationChanged(boost::shared_ptr<const shared::CDataContainer> systemConfiguration);
 
 
       static bool isJson(const std::string& str);
@@ -52,5 +52,7 @@ namespace dataAccessLayer
       boost::shared_ptr<database::IConfigurationRequester> m_configurationRequester;
 
       const boost::shared_ptr<const shared::CDataContainer> m_defaultSystemConfiguration;
+
+      std::vector<boost::function1<void, boost::shared_ptr<const shared::CDataContainer>>> m_onSystemConfigurationChangedObservers;
    };
 } //namespace dataAccessLayer 

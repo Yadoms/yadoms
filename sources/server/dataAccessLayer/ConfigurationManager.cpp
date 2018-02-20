@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "ConfigurationManager.h"
-#include <shared/Log.h>
-#include "notification/Helpers.hpp"
 #include <shared/exception/EmptyResult.hpp>
 
 namespace dataAccessLayer
@@ -53,21 +51,10 @@ namespace dataAccessLayer
    {
    }
 
-   void CConfigurationManager::postUpdateNotification(const std::string& section, const std::string& name)
+   void CConfigurationManager::notifySystemConfigurationChanged(boost::shared_ptr<const shared::CDataContainer> systemConfiguration)
    {
-      //post notification
-      try
-      {
-         boost::shared_ptr<database::entities::CConfiguration> notificationData(new database::entities::CConfiguration);
-         notificationData->Section = section;
-         notificationData->Name = name;
-
-         notification::CHelpers::postChangeNotification(notificationData, notification::change::EChangeType::kUpdate);
-      }
-      catch (shared::exception::CException& ex)
-      {
-         YADOMS_LOG(error) << "Fail to retreive new configuration : " << ex.what();
-      }
+      for (const auto& fct : m_onSystemConfigurationChangedObservers)
+         fct(systemConfiguration);
    }
 
    std::string CConfigurationManager::getSystemConfiguration(const std::string& keyName) const
@@ -86,7 +73,7 @@ namespace dataAccessLayer
    {
       try
       {
-         // Returned configuration is the default one, overided by stored values
+         // Returned configuration is the default one, overriden by stored values
          auto configuration = boost::make_shared<shared::CDataContainer>(*m_defaultSystemConfiguration);
          configuration->mergeFrom(*configurationEntitiesToContainer(m_configurationRequester->getConfigurations("system")));
          return configuration;
@@ -102,11 +89,12 @@ namespace dataAccessLayer
       const auto& c = containerToConfigurationEntities("system", newConfiguration);
       for (const auto& entity : *c)
          m_configurationRequester->updateConfiguration(*entity);
+      notifySystemConfigurationChanged(getSystemConfiguration());
    }
 
    bool CConfigurationManager::isJson(const std::string& str)
    {
-      static const boost::regex JsonPattern("^\\{.*\\}$");
+      static const boost::regex JsonPattern("^\\{.*\\}\\s*$");
       return boost::regex_match(str, JsonPattern);
    }
 
@@ -160,6 +148,14 @@ namespace dataAccessLayer
          configuration.Value = m_defaultSystemConfiguration->get(key);
          m_configurationRequester->create(configuration);
       }
+
+      notifySystemConfigurationChanged(getSystemConfiguration());
+   }
+
+   void CConfigurationManager::subscribeOnSystemConfigurationChanged(
+      boost::function1<void, boost::shared_ptr<const shared::CDataContainer>> onSystemConfigurationChangedFct)
+   {
+      m_onSystemConfigurationChangedObservers.push_back(onSystemConfigurationChangedFct);
    }
 
    bool CConfigurationManager::exists(const std::string& section, const std::string& name)
@@ -185,12 +181,5 @@ namespace dataAccessLayer
    void CConfigurationManager::updateConfiguration(database::entities::CConfiguration& configurationToUpdate)
    {
       m_configurationRequester->updateConfiguration(configurationToUpdate);
-      postUpdateNotification(configurationToUpdate.Section, configurationToUpdate.Name);
-   }
-
-   void CConfigurationManager::removeConfiguration(database::entities::CConfiguration& configurationToRemove)
-   {
-      m_configurationRequester->removeConfiguration(configurationToRemove);
-      postUpdateNotification(configurationToRemove.Section, configurationToRemove.Name);
    }
 } //namespace dataAccessLayer 

@@ -269,26 +269,13 @@
                                 .fail(function () {
                                     //we make the first start configuration
                                     notifyInformation($.t("mainPage.actions.firstRunConfiguration"));
-                                    var navigatorLanguage = window.navigator.userLanguage || window
-                                        .navigator.language;
-                                    //var navigatorTimezone = jstz.determine().name();
 
+                                    //update configuration
                                     var arrayOfDeffered = [];
-                                    var deffered = null;
-
-                                    //update configuration with these values
-
-                                    ConfigurationManager.saveDefaultLanguage(arrayOfDeffered,
-                                        navigatorLanguage);
-                                    ConfigurationManager.saveDefaultAdvancedParameters(
-                                        arrayOfDeffered);
-                                    ConfigurationManager.saveDefaultDateFormatString(
-                                        arrayOfDeffered);
-                                    ConfigurationManager.saveRefreshPageDefaultValue(
-                                        arrayOfDeffered);
-                                    ConfigurationManager.saveDefaultBasicAuthentification(
-                                        arrayOfDeffered);
-                                    ConfigurationManager.saveFirstStart(arrayOfDeffered);
+                                    arrayOfDeffered.push(ConfigurationManager.saveDefaultLanguage(
+                                        window.navigator.userLanguage || window.navigator.language
+                                    ));
+                                    arrayOfDeffered.push(ConfigurationManager.saveFirstStart());
 
                                     $.whenAll(arrayOfDeffered)
                                         .done(function () {

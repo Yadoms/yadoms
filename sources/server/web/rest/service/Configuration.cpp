@@ -37,7 +37,6 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*"), CConfiguration::getConfiguration);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("*"), CConfiguration::updateOneConfiguration);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword), CConfiguration::updateAllConfigurations);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("*")("*"), CConfiguration::deleteOneConfiguration);
          }
 
          shared::CDataContainer CConfiguration::resetSystemConfiguration(const std::vector<std::string>& parameters,
@@ -201,28 +200,6 @@ namespace web
             {
                return CResult::GenerateError("unknown exception in updating all configuration");
             }
-         }
-
-
-         shared::CDataContainer CConfiguration::deleteOneConfiguration(const std::vector<std::string>& parameters,
-                                                                       const std::string& requestContent) const
-         {
-            std::string section = "";
-            std::string keyname = "";
-            if (parameters.size() > 1)
-               section = parameters[1];
-            if (parameters.size() > 2)
-               keyname = parameters[2];
-
-            if (!section.empty() && !keyname.empty())
-            {
-               database::entities::CConfiguration configToRemove;
-               configToRemove.Section = section;
-               configToRemove.Name = keyname;
-               m_configurationManager->removeConfiguration(configToRemove);
-            }
-
-            return CResult::GenerateSuccess();
          }
       } //namespace service
    } //namespace rest

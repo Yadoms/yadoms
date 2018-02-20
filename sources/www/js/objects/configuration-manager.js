@@ -171,7 +171,7 @@ ConfigurationManager.saveSystemConfiguration = function (newConfiguration) {
     });
 };
 
-ConfigurationManager.SystemConfiguration = function() {
+ConfigurationManager.SystemConfiguration = function () {
     if (isNullOrUndefined(SystemConfiguration))
         console.error("Configuration not already loaded, call ConfigurationManager.loadSystemConfiguration before accessing configuration");
     return SystemConfiguration;
@@ -179,116 +179,31 @@ ConfigurationManager.SystemConfiguration = function() {
 
 ConfigurationManager.resetSystemConfiguration = function () {
     var d = new $.Deferred();
-    
+
     RestEngine.putJson("/rest/configuration/system/reset")
-    .done(function (newConfiguration) {
-          SystemConfiguration = newConfiguration;
-          d.resolve();
-    })
-    .fail(function () {
-          console.error("failed to reset system configuration");
-          d.reject();
-    })
+        .done(function (newConfiguration) {
+            SystemConfiguration = newConfiguration;
+            d.resolve();
+        })
+        .fail(function () {
+            console.error("failed to reset system configuration");
+            d.reject();
+        })
     return d;
 }
 
-ConfigurationManager.saveRefreshPageDefaultValue = function (arrayOfDeffered) {
-    var deffered = ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.refreshPage, true, true, "", null);
-
-    deffered
-        .done(function () {
-            console.info("refresh page : " + "true");
-        })
-        .fail(function (error) {
-            notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
-                section: ConfigurationManager.items.systemSection,
-                key: ConfigurationManager.items.system.refreshPage
-            }), error);
-        });
-
-    Yadoms.systemConfiguration[ConfigurationManager.items.system.refreshPage] = true;
-    arrayOfDeffered.push(deffered);
-};
-
-ConfigurationManager.saveDefaultAdvancedParameters = function (arrayOfDeffered) {
-    var deffered = ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.advancedParameters, false);
-
-    deffered
-        .done(function () {
-            console.info("Advanced parameters : false");
-        })
-        .fail(function (error) {
-            notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
-                section: ConfigurationManager.items.systemSection,
-                key: ConfigurationManager.items.system.advancedParameters
-            }), error);
-        });
-    arrayOfDeffered.push(deffered);
-};
-
-ConfigurationManager.saveDefaultDateFormatString = function (arrayOfDeffered) {
-    var deffered = ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.dateFormatString, "LLL");
-
-    deffered
-        .done(function () {
-            console.info("Date Format String : " + "LLL");
-        })
-        .fail(function (error) {
-            notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
-                section: ConfigurationManager.items.systemSection,
-                key: ConfigurationManager.items.system.dateFormatString
-            }), error);
-        });
-    arrayOfDeffered.push(deffered);
-};
-
-ConfigurationManager.saveDefaultBasicAuthentification = function (arrayOfDeffered) {
-    var basicAuth = {
-        "active": false,
-        "user": "admin",
-        "password": ""
-    };
-
-    var deffered = ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.basicAuthentication, JSON.stringify(basicAuth));
-
-    deffered
-        .done(function () {
-            console.info("Basic authentication : " + JSON.stringify(basicAuth));
-        })
-        .fail(function (error) {
-            notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
-                section: ConfigurationManager.items.systemSection,
-                key: ConfigurationManager.items.system.basicAuthentication
-            }), error);
-        });
-    arrayOfDeffered.push(deffered);
-};
-
-ConfigurationManager.saveDefaultLanguage = function (arrayOfDeffered, defaultLanguage) {
-    var deffered = ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.language, defaultLanguage, "", "language used by default");
-
-    deffered
-        .done(function () {
-            console.info("Language detected : " + defaultLanguage);
-        })
-        .fail(function (error) {
-            notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
-                section: ConfigurationManager.items.systemSection,
-                key: ConfigurationManager.items.system.language
-            }), error);
-        });
-    arrayOfDeffered.push(deffered);
+ConfigurationManager.saveDefaultLanguage = function (defaultLanguage) {
+    return ConfigurationManager.createToServer(ConfigurationManager.items.systemSection,
+        ConfigurationManager.items.system.language,
+        defaultLanguage,
+        "",
+        "language used by default");
 };
 
 ConfigurationManager.saveFirstStart = function (arrayOfDeffered) {
-    var deffered = ConfigurationManager.createToServer(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart, "false", "true", "First start of Web app has been done");
-
-    deffered
-        .fail(function (error) {
-            notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
-                section: ConfigurationManager.items.installSection,
-                key: ConfigurationManager.items.install.firstStart
-            }), error);
-        });
-    arrayOfDeffered.push(deffered);
+    return ConfigurationManager.createToServer(ConfigurationManager.items.installSection,
+        ConfigurationManager.items.install.firstStart,
+        "false",
+        "true",
+        "First start of Web app has been done");
 };
