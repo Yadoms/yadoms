@@ -22,11 +22,7 @@ namespace database
 
          DECLARE_ADAPTER_IMPLEMENTATION(Configuration,
             ((Section)(std::string)(""))
-            ((Name)(std::string)(""))
             ((Value)(std::string)(""))
-            ((DefaultValue)(std::string)(""))
-            ((Description)(std::string)(""))
-            ((SecurityAccess)(database::entities::ESecurityAccess)(database::entities::ESecurityAccess::kNone)(std::string))
             ((LastModificationDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
          );
 

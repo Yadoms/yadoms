@@ -19,16 +19,9 @@ namespace common {
 
    DECLARE_TABLE(Configuration,
       (Section)
-      (Name)
       (Value)
-      (DefaultValue)
-      (Description)
-      (SecurityAccess)
       (LastModificationDate)
    )
-
-
-
 
    DECLARE_TABLE(Page,
       (Id)

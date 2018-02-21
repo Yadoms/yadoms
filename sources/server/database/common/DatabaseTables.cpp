@@ -15,18 +15,11 @@ namespace common {
       ((Category)("category"))
    )
 
-   DECLARE_TABLE_COLUMN_NAMES(Configuration,  "Configuration",
+   DECLARE_TABLE_COLUMN_NAMES(Configuration,  "Configuration2",
       ((Section)("section"))
-      ((Name)("name"))
       ((Value)("value"))
-      ((DefaultValue)("defaultValue"))
-      ((Description)("description"))
-      ((SecurityAccess)("securityAccess"))
       ((LastModificationDate)("lastModificationDate"))
    )
-
-
-
 
    DECLARE_TABLE_COLUMN_NAMES(Page,  "Page",
       ((Id)("id"))

@@ -5,7 +5,6 @@
 #include <shared/versioning/Version.h>
 #include "VersionException.h"
 #include <shared/Log.h>
-#include <database/common/adapters/SingleValueAdapter.hpp>
 #include <database/common/adapters/DatabaseAdapters.h>
 
 namespace database

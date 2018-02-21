@@ -1,6 +1,4 @@
 #pragma once
-
-#include "SqlExtension.hpp"
 #include "AdapterHelpers.hpp"
 #include "IResultAdapter.h"
 #include "database/common/DatabaseTables.h"
