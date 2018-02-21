@@ -34,10 +34,12 @@ function initializeWidgetEngine() {
                         if (PageManager.pages.length > 0 && SessionDataManager.getVariable("CurrentPage") != null)
                             PageManager.selectPageId(parseInt(SessionDataManager.getVariable("CurrentPage")));
                         else
-                            PageManager.ensureOnePageIsSelected(); //we ensure that one page is selected
+                            PageManager.ensureOnePageIsSelected();
                     }
                     else
-                        PageManager.ensureOnePageIsSelected(); //we ensure that one page is selected
+                    {
+                        PageManager.selectFirstPage();
+                    }
 
                     //we ask for the last event to ask only those occurs after this one
                     EventLoggerManager.getLast()

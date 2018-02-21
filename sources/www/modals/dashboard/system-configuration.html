@@ -36,6 +36,8 @@
       var dateFormatStringParameter;
       var refreshPageBoolParameter;
 
+      debugger;
+
 
       Yadoms.initializeSystemConfigurationDashboard = function () {
             var i18NContext = "modals.dashboard.sub-windows.system-configuration.configuration-items.";
@@ -80,7 +82,6 @@
                   });
             deferredArray.push(d2);
 
-            // When systemSection is done
             $.whenAll(deferredArray)
                   .done(function () {
                         createParameters($modalBody, i18NContext, systemConfiguration, supportedTimezones);
@@ -107,7 +108,8 @@
 
                         $("button#resetSystemConfiguration").unbind('click').bind('click',
                               resetSystemConfiguration);
-                  });
+                  })
+                  .always(promise.resolve);
 
             return promise.promise();
       }
@@ -122,11 +124,10 @@
                         "defaultValue": getdefaultLanguageFromSupported(),
                         "sort": true
                   },
-                  systemConfiguration[ConfigurationManager.items.system
-                        .language]);
+                  systemConfiguration[ConfigurationManager.items.system.language]);
 
             //*************
-            //City section parameters
+            //Location section parameters
             createLocationSectionParameters(i18NContext, systemConfiguration, supportedTimezones);
 
             //*************
@@ -275,7 +276,7 @@
                   i18NContext,
                   undefined,
                   ConfigurationManager.items.system.dateFormatString, {
-                        defaultValue: systemConfiguration[ConfigurationManager.items.system.dateFormatString].defaultValue,
+                        defaultValue: systemConfiguration[ConfigurationManager.items.system.dateFormatString],
                         "required": "true"
                   },
                   systemConfiguration[ConfigurationManager.items.system.dateFormatString]
@@ -287,7 +288,7 @@
                   i18NContext,
                   undefined,
                   ConfigurationManager.items.system.refreshPage, {
-                        defaultValue: systemConfiguration[ConfigurationManager.items.system.refreshPage].defaultValue
+                        defaultValue: systemConfiguration[ConfigurationManager.items.system.refreshPage]
                   },
                   systemConfiguration[ConfigurationManager.items.system.refreshPage]
             );
@@ -298,7 +299,6 @@
                   ConfigurationManager.items.system.advancedParameters, {
                         "enableWithCheckBox": true,
                         "enableWithCheckBoxDefaultValue": systemConfiguration[ConfigurationManager.items.system.advancedParameters]
-                              .defaultValue
                   }, {
                         "checkbox": systemConfiguration[ConfigurationManager.items.system.advancedParameters]
                   });
@@ -314,12 +314,10 @@
 
             var arrayOfDeffered = [];
 
-            arrayOfDeffered.push(readLanguageParameter(systemConfiguration));
-            arrayOfDeffered.push(readAdvancedParameters(systemConfiguration));
-            arrayOfDeffered.push(readFormatString(systemConfiguration));
-            arrayOfDeffered.push(readBasicAuthentification(systemConfiguration));
+            arrayOfDeffered.push(readLanguage(systemConfiguration));
             arrayOfDeffered.push(readLocation(systemConfiguration));
-            arrayOfDeffered.push(readRefreshPage(systemConfiguration));
+            arrayOfDeffered.push(readBasicAuthentification(systemConfiguration));
+            arrayOfDeffered.push(readAdvancedParameters(systemConfiguration));
 
             $.whenAll(arrayOfDeffered)
                   .always(function () {
@@ -344,7 +342,7 @@
       }
 
 
-      function readLanguageParameter(systemConfiguration) {
+      function readLanguage(systemConfiguration) {
             var d = new $.Deferred();
 
             languageParameter.getCurrentConfiguration()
@@ -367,15 +365,66 @@
             return d;
       }
 
-      function readAdvancedParameters(systemConfiguration) {
+      function readLocation(systemConfiguration) {
             var d = new $.Deferred();
 
+            var arrayOfDeffered = [];
+            var d1 = new $.Deferred();
+            latitudeParameter.getCurrentConfiguration()
+                  .done(function (lat) {
+                        systemConfiguration.location[ConfigurationManager.items.system.location.latitude] =
+                              lat;
+                        d1.resolve();
+                  })
+                  .fail(d1.reject);
+            arrayOfDeffered.push(d1);
+
+            var d2 = new $.Deferred();
+            longitudeParameter.getCurrentConfiguration()
+                  .done(function (lon) {
+                        systemConfiguration.location[ConfigurationManager.items.system.location.longitude] =
+                              lon;
+                        d2.resolve();
+                  })
+                  .fail(d2.reject);
+            arrayOfDeffered.push(d2);
+
+            var d3 = new $.Deferred();
+            timezoneParameter.getCurrentConfiguration()
+                  .done(function (tz) {
+                        systemConfiguration.location[ConfigurationManager.items.system.location.timezone] =
+                              tz;
+                        d3.resolve();
+                  })
+                  .fail(d3.reject);
+            arrayOfDeffered.push(d3);
+
+            $.whenAll(arrayOfDeffered)
+                  .done(d.resolve)
+                  .fail(d.reject);
+            return d;
+      }
+
+      function readAdvancedParameters(systemConfiguration) {
+            var arrayOfDeffered = [];
+
+            var d2 = new $.Deferred();
             advancedSectionParameters.getCurrentConfiguration()
-                  .done(function (currentconfiguration) {
-                        systemConfiguration[ConfigurationManager.items.system.advancedParameters].value =
-                              currentconfiguration.checkbox;
-                        d.resolve();
-                  }).fail(d.reject);
+                  .done(function (currentConfiguration) {
+                        systemConfiguration[ConfigurationManager.items.system.advancedParameters] =
+                              currentConfiguration.checkbox ? "true" : "false";
+                        d2.resolve();
+
+                  }).fail(d2.reject);
+            arrayOfDeffered.push(d2);
+
+            arrayOfDeffered.push(readFormatString(systemConfiguration));
+            arrayOfDeffered.push(readRefreshPage(systemConfiguration));
+
+            var d = new $.Deferred();
+            $.whenAll(arrayOfDeffered)
+                  .done(d.resolve)
+                  .fail(d.reject);
             return d;
       };
 
@@ -384,8 +433,19 @@
 
             dateFormatStringParameter.getCurrentConfiguration()
                   .done(function (currentconfiguration) {
-                        systemConfiguration[ConfigurationManager.items.system.dateFormatString].value =
+                        systemConfiguration[ConfigurationManager.items.system.dateFormatString] =
                               currentconfiguration;
+                        d.resolve();
+                  }).fail(d.reject);
+            return d;
+      };
+
+      function readRefreshPage(systemConfiguration) {
+            var d = new $.Deferred();
+
+            refreshPageBoolParameter.getCurrentConfiguration()
+                  .done(function (currentconfiguration) {
+                        systemConfiguration[ConfigurationManager.items.system.refreshPage] = currentconfiguration ? "true" : "false";
                         d.resolve();
                   }).fail(d.reject);
             return d;
@@ -398,7 +458,7 @@
 
             basicAuthenticationSectionParameters.getCurrentConfiguration()
                   .done(function (currentConfiguration) {
-                        newBasicAuth.active = currentConfiguration.checkbox ? "true" : "false";
+                        newBasicAuth.active = currentConfiguration.checkbox;
 
                         //if we activate / deactivate the authentication we must reload the page
                         if (newBasicAuth.active !== currentBasicAuth.active)
@@ -452,58 +512,6 @@
             return d;
       }
 
-      function readLocation(systemConfiguration) {
-            var d = new $.Deferred();
-
-            var arrayOfDeffered = [];
-            var d1 = new $.Deferred();
-            latitudeParameter.getCurrentConfiguration()
-                  .done(function (lat) {
-                        systemConfiguration.location[ConfigurationManager.items.system.location.latitude] =
-                              lat;
-                        d1.resolve();
-                  })
-                  .fail(d1.reject);
-            arrayOfDeffered.push(d1);
-
-            var d2 = new $.Deferred();
-            longitudeParameter.getCurrentConfiguration()
-                  .done(function (lon) {
-                        systemConfiguration.location[ConfigurationManager.items.system.location.longitude] =
-                              lon;
-                        d2.resolve();
-                  })
-                  .fail(d2.reject);
-            arrayOfDeffered.push(d2);
-
-            var d3 = new $.Deferred();
-            timezoneParameter.getCurrentConfiguration()
-                  .done(function (tz) {
-                        systemConfiguration.location[ConfigurationManager.items.system.location.timezone] =
-                              tz;
-                        d3.resolve();
-                  })
-                  .fail(d3.reject);
-            arrayOfDeffered.push(d3);
-
-            $.whenAll(arrayOfDeffered)
-                  .done(d.resolve)
-                  .fail(d.reject);
-            return d;
-      }
-
-      function readRefreshPage(systemConfiguration) {
-            var d = new $.Deferred();
-
-            refreshPageBoolParameter.getCurrentConfiguration()
-                  .done(function (currentconfiguration) {
-                        systemConfiguration[ConfigurationManager.items.system.refreshPage].value =
-                              currentconfiguration;
-                        d.resolve();
-                  }).fail(d.reject);
-            return d;
-      };
-
       function resetSystemConfiguration() {
             Yadoms.modals.confirmation.loadAsync()
                   .done(function () {
@@ -515,14 +523,11 @@
                                                 $("html").i18n();
                                                 window.location.reload();
                                           });
-                              },
-                              function () {
-                                    promise.resolve();
                               });
                   });
       }
 
-      function getdefaultLanguageFromSupported() { //TODO utile ?
+      function getdefaultLanguageFromSupported() {
             var navigatorLanguage = navigator.language || navigator.userLanguage;
             var langs = window.getSupportedLanguages();
             return isNullOrUndefined(langs[navigatorLanguage]) ? Object.keys(langs)[0] :
