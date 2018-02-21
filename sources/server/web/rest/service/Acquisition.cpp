@@ -242,40 +242,12 @@ namespace web
                   if (parameters.size() > 5)
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
-                  boost::posix_time::ptime start, stop;
-                  start = boost::posix_time::microsec_clock::local_time();
-
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByHour(keywordId,
                                                                                                      timeFrom,
                                                                                                      timeTo);
-                  
-                  stop = boost::posix_time::microsec_clock::local_time();
 
-                  boost::posix_time::time_duration dur = stop - start;
-                  long milliseconds = dur.total_milliseconds();
-
-                  //database::common::adapters::CHighchartValueAdapter m_test;
-
-                  boost::format output("%.2f");
-                  output % (milliseconds);
-                  YADOMS_LOG(information) << "time 1: " << output << std::endl;
-
-                  start = boost::posix_time::microsec_clock::local_time();
-
-                  //m_test.adapt(allData);
                   boost::shared_ptr<CStringContainer> result=boost::make_shared<CStringContainer>(allData);
-                  //shared::CDataContainer result(allData);
-                  //shared::CDataContainer result;
-                  //result.set("data", allData);
-                  stop = boost::posix_time::microsec_clock::local_time();
-
-                  dur = stop - start;
-                  milliseconds = dur.total_milliseconds();
-
-                  output % (milliseconds);
-                  YADOMS_LOG(information) << "time 2: " << output << std::endl;
-
-                  return result; // CResult::GenerateSuccess(result);
+                  return result;
                }
                return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
             }

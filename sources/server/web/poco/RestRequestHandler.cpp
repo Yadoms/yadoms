@@ -80,20 +80,7 @@ namespace web
 
             //dispatch url to rest dispatcher
             auto js = m_restDispatcher.dispath(request.getMethod(), parameters, content);
-
-            boost::posix_time::ptime start, stop;
-            start = boost::posix_time::microsec_clock::local_time();
             std::string temp = js->serialize();
-
-            stop = boost::posix_time::microsec_clock::local_time();
-
-            boost::posix_time::time_duration dur = stop - start;
-            long milliseconds = dur.total_milliseconds();
-
-            boost::format output("%.2f");
-            output % (milliseconds);
-            YADOMS_LOG(information) << "time 3: " << output << std::endl;
-            //YADOMS_LOG(information) << temp;
             return temp;
          }
 
