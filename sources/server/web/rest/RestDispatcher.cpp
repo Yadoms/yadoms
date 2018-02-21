@@ -101,7 +101,7 @@ namespace web { namespace rest {
    }
 
 
-   shared::CDataContainer CRestDispatcher::dispath(const std::string & requestType, const std::vector<std::string> & url, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CRestDispatcher::dispath(const std::string & requestType, const std::vector<std::string> & url, const std::string & requestContent)
    {
       //check that requestType has some functions
       if(m_handledFunctions.find(requestType) != m_handledFunctions.end())
@@ -139,7 +139,7 @@ namespace web { namespace rest {
       return false;
    }
 
-   shared::CDataContainer CRestDispatcher::callRealMethod(CRestMethodHandler realMethod, CRestMethodIndirector encapsulatedMethod,
+   boost::shared_ptr<shared::serialization::IDataSerializable> CRestDispatcher::callRealMethod(CRestMethodHandler realMethod, CRestMethodIndirector encapsulatedMethod,
       const std::vector<std::string> & url, const std::string & requestContent)
    {
       if(encapsulatedMethod != NULL)

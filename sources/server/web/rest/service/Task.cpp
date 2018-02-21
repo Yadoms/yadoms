@@ -35,7 +35,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword), CTask::addTask);
    }
 
-   shared::CDataContainer CTask::getOneTask(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CTask::getOneTask(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       if(parameters.size()>1)
       {
@@ -52,7 +52,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CTask::getAllTasks(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CTask::getAllTasks(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       std::vector< boost::shared_ptr< task::IInstance > > taskList = m_taskManager->getAllTasks();
 
@@ -72,7 +72,7 @@ namespace web { namespace rest { namespace service {
       return web::rest::CResult::GenerateSuccess(collection);
    }
 
-   shared::CDataContainer CTask::addTask(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CTask::addTask(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {

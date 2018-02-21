@@ -37,10 +37,10 @@ namespace web
             //-----------------------------------------------------------------------------      
             static const std::string& getRestKeyword();
          private:
-            shared::CDataContainer scanForUpdates(const std::vector<std::string>& parameters,
-                                                  const std::string& requestContent) const;
-            shared::CDataContainer availableUpdates(const std::vector<std::string>& parameters,
-                                                    const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> scanForUpdates(const std::vector<std::string>& parameters,
+                                                                                       const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> availableUpdates(const std::vector<std::string>& parameters,
+                                                                                         const std::string& requestContent) const;
 
             //-----------------------------------------------------------------------------
             /// \brief  Update Yadoms to another version (upgrade or downgrade)
@@ -48,8 +48,8 @@ namespace web
             /// \param [in]   requestContent    The url content
             /// \return the request result
             //-----------------------------------------------------------------------------         
-            shared::CDataContainer updateYadoms(const std::vector<std::string>& parameters,
-                                                const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> updateYadoms(const std::vector<std::string>& parameters,
+                                                                                     const std::string& requestContent) const;
 
             //-----------------------------------------------------------------------------
             /// \brief  Update a widget to another version (upgrade or downgrade)
@@ -57,8 +57,8 @@ namespace web
             /// \param [in]   requestContent    The url content
             /// \return the request result
             //-----------------------------------------------------------------------------   
-            shared::CDataContainer updateWidget(const std::vector<std::string>& parameters,
-                                                const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> updateWidget(const std::vector<std::string>& parameters,
+                                                                                     const std::string& requestContent) const;
 
             //-----------------------------------------------------------------------------
             /// \brief  Install a new widget
@@ -66,8 +66,8 @@ namespace web
             /// \param [in]   requestContent    The url content
             /// \return the request result
             //-----------------------------------------------------------------------------    
-            shared::CDataContainer installWidget(const std::vector<std::string>& parameters,
-                                                 const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> installWidget(const std::vector<std::string>& parameters,
+                                                                                      const std::string& requestContent) const;
 
             //-----------------------------------------------------------------------------
             /// \brief  Remove a widget
@@ -75,8 +75,8 @@ namespace web
             /// \param [in]   requestContent    The url content
             /// \return the request result
             //-----------------------------------------------------------------------------   
-            shared::CDataContainer removeWidget(const std::vector<std::string>& parameters,
-                                                const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> removeWidget(const std::vector<std::string>& parameters,
+                                                                                     const std::string& requestContent) const;
 
             //-----------------------------------------------------------------------------
             /// \brief  Update a plugin to another version (upgrade or downgrade)
@@ -84,8 +84,8 @@ namespace web
             /// \param [in]   requestContent    The url content
             /// \return the request result
             //-----------------------------------------------------------------------------         
-            shared::CDataContainer updatePlugin(const std::vector<std::string>& parameters,
-                                                const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> updatePlugin(const std::vector<std::string>& parameters,
+                                                                                     const std::string& requestContent) const;
 
             //-----------------------------------------------------------------------------
             /// \brief  Install a new plugin
@@ -93,8 +93,8 @@ namespace web
             /// \param [in]   requestContent    The url content
             /// \return the request result
             //-----------------------------------------------------------------------------         
-            shared::CDataContainer installPlugin(const std::vector<std::string>& parameters,
-                                                 const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> installPlugin(const std::vector<std::string>& parameters,
+                                                                                      const std::string& requestContent) const;
 
             //-----------------------------------------------------------------------------
             /// \brief  Remove a plugin
@@ -102,8 +102,8 @@ namespace web
             /// \param [in]   requestContent    The url content
             /// \return the request result
             //-----------------------------------------------------------------------------         
-            shared::CDataContainer removePlugin(const std::vector<std::string>& parameters,
-                                                const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> removePlugin(const std::vector<std::string>& parameters,
+                                                                                     const std::string& requestContent) const;
 
             //-----------------------------------------------------------------------------
             /// \brief  Update a scriptInterpreter to another version (upgrade or downgrade)
@@ -111,8 +111,8 @@ namespace web
             /// \param [in]   requestContent    The url content
             /// \return the request result
             //-----------------------------------------------------------------------------         
-            shared::CDataContainer updateScriptInterpreter(const std::vector<std::string>& parameters,
-                                                           const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> updateScriptInterpreter(const std::vector<std::string>& parameters,
+                                                                                                const std::string& requestContent) const;
 
             //-----------------------------------------------------------------------------
             /// \brief  Install a new scriptInterpreter
@@ -120,8 +120,8 @@ namespace web
             /// \param [in]   requestContent    The url content
             /// \return the request result
             //-----------------------------------------------------------------------------         
-            shared::CDataContainer installScriptInterpreter(const std::vector<std::string>& parameters,
-                                                            const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> installScriptInterpreter(const std::vector<std::string>& parameters,
+                                                                                                 const std::string& requestContent) const;
 
             //-----------------------------------------------------------------------------
             /// \brief  Remove a scriptInterpreter
@@ -129,8 +129,8 @@ namespace web
             /// \param [in]   requestContent    The url content
             /// \return the request result
             //-----------------------------------------------------------------------------         
-            shared::CDataContainer removeScriptInterpreter(const std::vector<std::string>& parameters,
-                                                           const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> removeScriptInterpreter(const std::vector<std::string>& parameters,
+                                                                                                const std::string& requestContent) const;
 
 
             //-----------------------------------------------------------------------------

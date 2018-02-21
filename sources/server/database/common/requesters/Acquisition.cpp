@@ -4,7 +4,7 @@
 #include "database/common/DatabaseTables.h"
 #include "database/common/Query.h"
 #include "database/common/adapters/DatabaseAdapters.h"
-#include "database/common/adapters/HighchartValueAdapter.hpp"
+#include "database/common/adapters/HugeDataVectorAdapter.hpp"
 #include "database/common/adapters/SingleValueAdapter.hpp"
 #include "database/common/adapters/MultipleValueAdapter.hpp"
 #include "database/DatabaseException.hpp"
@@ -186,27 +186,27 @@ namespace database
             return mva.getResults();
          }
 
-         std::vector<boost::shared_ptr<entities::CAcquisitionSummary>> CAcquisition::getKeywordDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+         std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary>> CAcquisition::getKeywordDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
          {
             return getKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kHour, keywordId, timeFrom, timeTo);
          }
 
-         std::vector<boost::shared_ptr<entities::CAcquisitionSummary>> CAcquisition::getKeywordDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+         std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary>> CAcquisition::getKeywordDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
          {
             return getKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kDay, keywordId, timeFrom, timeTo);
          }
 
-         std::vector<boost::shared_ptr<entities::CAcquisitionSummary>> CAcquisition::getKeywordDataByMonth(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+         std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary>> CAcquisition::getKeywordDataByMonth(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
          {
             return getKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kMonth, keywordId, timeFrom, timeTo);
          }
 
-         std::vector<boost::shared_ptr<entities::CAcquisitionSummary>> CAcquisition::getKeywordDataByYear(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+         std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary>> CAcquisition::getKeywordDataByYear(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
          {
             return getKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kYear, keywordId, timeFrom, timeTo);
          }
 
-         std::vector<boost::shared_ptr<entities::CAcquisitionSummary>> CAcquisition::getKeywordSummaryDataByType(const entities::EAcquisitionSummaryType& type, int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) const
+         std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary>> CAcquisition::getKeywordSummaryDataByType(const entities::EAcquisitionSummaryType& type, int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) const
          {
             auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
@@ -224,12 +224,11 @@ namespace database
             }
 
             qSelect->OrderBy(CAcquisitionSummaryTable::getDateColumnName());
-
+            
             if (type == entities::EAcquisitionSummaryType::kDay)
-               qSelect->Limit(2000); //more than 5 years
+            qSelect->Limit(2000); //more than 5 years
             else
-               qSelect->Limit(200); // more than 8 days
-
+            qSelect->Limit(200); // more than 8 days
 
             adapters::CAcquisitionSummaryAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
@@ -237,38 +236,30 @@ namespace database
             return adapter.getResults();
          }
 
-         std::string CAcquisition::getKeywordHighchartData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+         std::string CAcquisition::getHugeVectorKeywordDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
          {
-            //this query is optimized to get only one field to read
-            //the output data is a single column (without brackets):  ["dateiso",value]
-            auto qSelect = m_databaseRequester->newQuery();
-            qSelect->Select(qSelect->concatenate(qSelect->dateToIsoString(CAcquisitionTable::getDateColumnName()), ",", CAcquisitionTable::getValueColumnName())).
-               From(CAcquisitionTable::getTableName()).
-               Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId);
-
-            if (!timeFrom.is_not_a_date_time())
-            {
-               qSelect->And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, timeFrom);
-               if (!timeTo.is_not_a_date_time())
-               {
-                  qSelect->And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, timeTo);
-               }
-            }
-
-            qSelect->OrderBy(CAcquisitionTable::getDateColumnName());
-            adapters::CHighchartValueAdapter mva;
-
-            m_databaseRequester->queryEntities(&mva, *qSelect);
-
-            return mva.getRawResults();
+            return getHugeVectorKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kHour, keywordId, timeFrom, timeTo);
          }
 
-         std::string CAcquisition::getKeywordHighchartDataByType(const entities::EAcquisitionSummaryType& type, int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) const
+         std::string CAcquisition::getHugeVectorKeywordDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
          {
-            //this query is optimized to get only one field to read
-            //the output data is a single column (without brackets):  ["dateiso",value]
+            return getHugeVectorKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kDay, keywordId, timeFrom, timeTo);
+         }
+
+         std::string CAcquisition::getHugeVectorKeywordDataByMonth(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+         {
+            return getHugeVectorKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kMonth, keywordId, timeFrom, timeTo);
+         }
+
+         std::string CAcquisition::getHugeVectorKeywordDataByYear(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+         {
+            return getHugeVectorKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kYear, keywordId, timeFrom, timeTo);
+         }
+
+         std::string CAcquisition::getHugeVectorKeywordSummaryDataByType(const entities::EAcquisitionSummaryType& type, int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) const
+         {
             auto qSelect = m_databaseRequester->newQuery();
-            qSelect->Select(qSelect->concatenate(qSelect->dateToIsoString(CAcquisitionSummaryTable::getDateColumnName()), ",", CAcquisitionSummaryTable::getAvgColumnName())).
+            qSelect->Select().
                From(CAcquisitionSummaryTable::getTableName()).
                Where(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
                And(CAcquisitionSummaryTable::getTypeColumnName(), CQUERY_OP_EQUAL, type);
@@ -283,31 +274,18 @@ namespace database
             }
 
             qSelect->OrderBy(CAcquisitionSummaryTable::getDateColumnName());
-            adapters::CHighchartValueAdapter mva;
+            /*
+            if (type == entities::EAcquisitionSummaryType::kDay)
+               qSelect->Limit(2000); //more than 5 years
+            else
+               qSelect->Limit(200); // more than 8 days
+               */
 
-            m_databaseRequester->queryEntities(&mva, *qSelect);
+            //adapters::CAcquisitionSummaryAdapter adapter;
+            adapters::CHugeDataVectorAdapter adapter;
+            m_databaseRequester->queryEntities(&adapter, *qSelect);
 
-            return mva.getRawResults();
-         }
-
-         std::string CAcquisition::getKeywordHighchartDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
-         {
-            return getKeywordHighchartDataByType(entities::EAcquisitionSummaryType::kHour, keywordId, timeFrom, timeTo);
-         }
-
-         std::string CAcquisition::getKeywordHighchartDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
-         {
-            return getKeywordHighchartDataByType(entities::EAcquisitionSummaryType::kDay, keywordId, timeFrom, timeTo);
-         }
-
-         std::string CAcquisition::getKeywordHighchartDataByMonth(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
-         {
-            return getKeywordHighchartDataByType(entities::EAcquisitionSummaryType::kMonth, keywordId, timeFrom, timeTo);
-         }
-
-         std::string CAcquisition::getKeywordHighchartDataByYear(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
-         {
-            return getKeywordHighchartDataByType(entities::EAcquisitionSummaryType::kYear, keywordId, timeFrom, timeTo);
+            return adapter.getRawResults();
          }
 
          void CAcquisition::getKeywordsHavingDate(const boost::posix_time::ptime& timeFrom, const boost::posix_time::ptime& timeTo, std::vector<int>& results)

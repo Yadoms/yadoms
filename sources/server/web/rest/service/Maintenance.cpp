@@ -41,7 +41,7 @@ namespace web
             return m_restKeyword;
          }
 
-         shared::CDataContainer CMaintenance::getDatabaseInformation(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::getDatabaseInformation(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -59,7 +59,7 @@ namespace web
             }
          }
 
-         shared::CDataContainer CMaintenance::startBackup(const std::vector<std::string>& parameters, const std::string& requestContent)
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::startBackup(const std::vector<std::string>& parameters, const std::string& requestContent)
          {
             try
             {
@@ -90,7 +90,7 @@ namespace web
             }
          }
 
-         shared::CDataContainer CMaintenance::getBackups(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::getBackups(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -140,7 +140,7 @@ namespace web
             }
          }
 
-         shared::CDataContainer CMaintenance::deleteBackup(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::deleteBackup(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -172,7 +172,7 @@ namespace web
             }
          }
 
-         shared::CDataContainer CMaintenance::deleteAllBackups(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::deleteAllBackups(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {

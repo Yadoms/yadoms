@@ -153,7 +153,9 @@ namespace database
                   retry = false;
 
                   sqlite3_stmt* stmt;
+
                   auto rc = sqlite3_prepare_v2(m_pDatabaseHandler, querytoExecute.c_str(), -1, &stmt, nullptr);
+
                   if (rc == SQLITE_OK)
                   {
                      boost::shared_ptr<CSQLiteResultHandler> handler(new CSQLiteResultHandler(stmt));

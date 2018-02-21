@@ -42,8 +42,8 @@ namespace web
          }
 
 
-         shared::CDataContainer CConfiguration::getConfiguration(const std::vector<std::string>& parameters,
-                                                                 const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getConfiguration(const std::vector<std::string>& parameters,
+                                                                                                      const std::string& requestContent) const
          {
             std::string section = "";
             std::string keyname = "";
@@ -63,8 +63,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CConfiguration::getSectionConfigurations(const std::vector<std::string>& parameters,
-                                                                         const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getSectionConfigurations(const std::vector<std::string>& parameters,
+                                                                                                              const std::string& requestContent) const
          {
             std::string section = "";
             if (parameters.size() > 1)
@@ -77,8 +77,8 @@ namespace web
             return CResult::GenerateSuccess(collection);
          }
 
-         shared::CDataContainer CConfiguration::getAllConfigurations(const std::vector<std::string>& parameters,
-                                                                     const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getAllConfigurations(const std::vector<std::string>& parameters,
+                                                                                                          const std::string& requestContent) const
          {
             auto hwList = m_configurationManager->getConfigurations();
             shared::CDataContainer collection;
@@ -86,8 +86,8 @@ namespace web
             return CResult::GenerateSuccess(collection);
          }
 
-         shared::CDataContainer CConfiguration::createOneConfiguration(const std::vector<std::string>& parameters,
-                                                                       const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::createOneConfiguration(const std::vector<std::string>& parameters,
+                                                                                                            const std::string& requestContent) const
          {
             //get data from request content
             database::entities::CConfiguration configToCreate;
@@ -105,8 +105,8 @@ namespace web
             return CResult::GenerateSuccess(widgetFound);
          }
 
-         shared::CDataContainer CConfiguration::updateOneConfiguration(const std::vector<std::string>& parameters,
-                                                                       const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::updateOneConfiguration(const std::vector<std::string>& parameters,
+                                                                                                            const std::string& requestContent) const
          {
             try
             {
@@ -147,8 +147,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CConfiguration::updateAllConfigurations(const std::vector<std::string>& parameters,
-                                                                        const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::updateAllConfigurations(const std::vector<std::string>& parameters,
+                                                                                                             const std::string& requestContent) const
          {
             try
             {
@@ -172,8 +172,8 @@ namespace web
          }
 
 
-         shared::CDataContainer CConfiguration::deleteOneConfiguration(const std::vector<std::string>& parameters,
-                                                                       const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::deleteOneConfiguration(const std::vector<std::string>& parameters,
+                                                                                                            const std::string& requestContent) const
          {
             std::string section = "";
             std::string keyname = "";

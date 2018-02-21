@@ -79,19 +79,33 @@ namespace web
             }
 
             //dispatch url to rest dispatcher
-            shared::CDataContainer js = m_restDispatcher.dispath(request.getMethod(), parameters, content);
-            return js.serialize();
+            auto js = m_restDispatcher.dispath(request.getMethod(), parameters, content);
+
+            boost::posix_time::ptime start, stop;
+            start = boost::posix_time::microsec_clock::local_time();
+            std::string temp = js->serialize();
+
+            stop = boost::posix_time::microsec_clock::local_time();
+
+            boost::posix_time::time_duration dur = stop - start;
+            long milliseconds = dur.total_milliseconds();
+
+            boost::format output("%.2f");
+            output % (milliseconds);
+            YADOMS_LOG(information) << "time 3: " << output << std::endl;
+            //YADOMS_LOG(information) << temp;
+            return temp;
          }
 
          catch (std::exception& ex)
          {
             YADOMS_LOG(error) << "An exception occured in treating REST url : " << request_path << std::endl << "Exception : " << ex.what();
-            return web::rest::CResult::GenerateError(ex).serialize();
+            return web::rest::CResult::GenerateError(ex)->serialize();
          }
          catch (...)
          {
             YADOMS_LOG(error) << "An unknown exception occured in treating REST url : " << request_path;
-            return web::rest::CResult::GenerateError("An unknown exception occured in treating REST url : " + request_path).serialize();
+            return web::rest::CResult::GenerateError("An unknown exception occured in treating REST url : " + request_path)->serialize();
          }
       }
 

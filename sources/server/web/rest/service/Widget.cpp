@@ -36,10 +36,10 @@ namespace web {
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CWidget::deleteOneWidget, CWidget::transactionalMethod);
          }
 
-         shared::CDataContainer CWidget::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent)
+         boost::shared_ptr<shared::serialization::IDataSerializable> CWidget::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             boost::shared_ptr<database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
-            shared::CDataContainer result;
+            boost::shared_ptr<shared::serialization::IDataSerializable> result;
             try
             {
                if (pTransactionalEngine)
@@ -57,7 +57,7 @@ namespace web {
 
             if (pTransactionalEngine)
             {
-               if (CResult::isSuccess(result))
+               if (CResult::isSuccess(*boost::dynamic_pointer_cast<shared::CDataContainer>(result)))
                   pTransactionalEngine->transactionCommit();
                else
                   pTransactionalEngine->transactionRollback();
@@ -72,7 +72,7 @@ namespace web {
          }
 
 
-         shared::CDataContainer CWidget::getOneWidget(const std::vector<std::string> & parameters, const std::string & requestContent)
+         boost::shared_ptr<shared::serialization::IDataSerializable> CWidget::getOneWidget(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
@@ -94,7 +94,7 @@ namespace web {
             }
          }
 
-         shared::CDataContainer CWidget::getAllWidgets(const std::vector<std::string> & parameters, const std::string & requestContent)
+         boost::shared_ptr<shared::serialization::IDataSerializable> CWidget::getAllWidgets(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             std::vector< boost::shared_ptr<database::entities::CWidget> > widgetList = m_dataProvider->getWidgetRequester()->getWidgets();
             shared::CDataContainer collection;
@@ -103,7 +103,7 @@ namespace web {
          }
 
 
-         shared::CDataContainer CWidget::addWidget(const std::vector<std::string> & parameters, const std::string & requestContent)
+         boost::shared_ptr<shared::serialization::IDataSerializable> CWidget::addWidget(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
@@ -123,7 +123,7 @@ namespace web {
             }
          }
 
-         shared::CDataContainer CWidget::updateOneWidget(const std::vector<std::string> & parameters, const std::string & requestContent)
+         boost::shared_ptr<shared::serialization::IDataSerializable> CWidget::updateOneWidget(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
@@ -157,7 +157,7 @@ namespace web {
          }
 
 
-         shared::CDataContainer CWidget::deleteOneWidget(const std::vector<std::string> & parameters, const std::string & requestContent)
+         boost::shared_ptr<shared::serialization::IDataSerializable> CWidget::deleteOneWidget(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
@@ -180,7 +180,7 @@ namespace web {
          }
 
 
-         shared::CDataContainer CWidget::replaceAllWidgets(const std::vector<std::string> & parameters, const std::string & requestContent)
+         boost::shared_ptr<shared::serialization::IDataSerializable> CWidget::replaceAllWidgets(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
@@ -205,7 +205,7 @@ namespace web {
             }
          }
 
-         shared::CDataContainer CWidget::deleteAllWidgets(const std::vector<std::string> & parameters, const std::string & requestContent)
+         boost::shared_ptr<shared::serialization::IDataSerializable> CWidget::deleteAllWidgets(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {
@@ -223,7 +223,7 @@ namespace web {
          }
 
 
-         shared::CDataContainer CWidget::findWidgetPackages(const std::vector<std::string> & parameters, const std::string & requestContent)
+         boost::shared_ptr<shared::serialization::IDataSerializable> CWidget::findWidgetPackages(const std::vector<std::string> & parameters, const std::string & requestContent)
          {
             try
             {

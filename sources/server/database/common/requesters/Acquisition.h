@@ -51,37 +51,37 @@ namespace database
             std::vector<boost::tuple<boost::posix_time::ptime, std::string> > getKeywordData(int keywordId,
                                                                                              boost::posix_time::ptime timeFrom,
                                                                                              boost::posix_time::ptime timeTo) override;
-            std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > getKeywordDataByDay(int keywordId,
-                                                                                               boost::posix_time::ptime timeFrom,
-                                                                                               boost::posix_time::ptime timeTo) override;
-            std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > getKeywordDataByHour(int keywordId,
-                                                                                                boost::posix_time::ptime timeFrom,
-                                                                                                boost::posix_time::ptime timeTo) override;
-            std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > getKeywordDataByMonth(int keywordId,
-                                                                                                 boost::posix_time::ptime timeFrom,
-                                                                                                 boost::posix_time::ptime timeTo) override;
-            std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > getKeywordDataByYear(int keywordId,
-                                                                                                boost::posix_time::ptime timeFrom,
-                                                                                                boost::posix_time::ptime timeTo) override;
-            std::string getKeywordHighchartData(int keywordId,
+
+            virtual std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > getKeywordDataByDay(int keywordId,
+                                                                                                                  boost::posix_time::ptime timeFrom,
+                                                                                                                  boost::posix_time::ptime timeTo) override;
+            virtual std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > getKeywordDataByHour(int keywordId,
+                                                                                                                   boost::posix_time::ptime timeFrom,
+                                                                                                                   boost::posix_time::ptime timeTo) override;
+            virtual std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > getKeywordDataByMonth(int keywordId,
+                                                                                                                    boost::posix_time::ptime timeFrom,
+                                                                                                                    boost::posix_time::ptime timeTo) override;
+            virtual std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > getKeywordDataByYear(int keywordId,
+                                                                                                                   boost::posix_time::ptime timeFrom,
+                                                                                                                   boost::posix_time::ptime timeTo) override;
+            std::string getHugeVectorKeywordDataByDay(int keywordId,
                                                 boost::posix_time::ptime timeFrom,
                                                 boost::posix_time::ptime timeTo) override;
-            std::string getKeywordHighchartDataByHour(int keywordId,
-                                                      boost::posix_time::ptime timeFrom,
-                                                      boost::posix_time::ptime timeTo) override;
-            std::string getKeywordHighchartDataByDay(int keywordId,
-                                                     boost::posix_time::ptime timeFrom,
-                                                     boost::posix_time::ptime timeTo) override;
-            std::string getKeywordHighchartDataByMonth(int keywordId,
-                                                               boost::posix_time::ptime timeFrom,
-                                                               boost::posix_time::ptime timeTo) override;
-            std::string getKeywordHighchartDataByYear(int keywordId,
-                                                              boost::posix_time::ptime timeFrom,
-                                                              boost::posix_time::ptime timeTo) override;
+            std::string getHugeVectorKeywordDataByHour(int keywordId,
+                                                 boost::posix_time::ptime timeFrom,
+                                                 boost::posix_time::ptime timeTo) override;
+            std::string getHugeVectorKeywordDataByMonth(int keywordId,
+                                                  boost::posix_time::ptime timeFrom,
+                                                  boost::posix_time::ptime timeTo) override;
+            std::string getHugeVectorKeywordDataByYear(int keywordId,
+                                                 boost::posix_time::ptime timeFrom,
+                                                 boost::posix_time::ptime timeTo) override;
+
             int purgeAcquisitions(boost::posix_time::ptime purgeDate) override;
             // [END] IAcquisitionRequester implementation
 
          private:
+
             //--------------------------------------------------------------
             /// \brief                    Get the data  by type (avg, min, max)
             /// \param [in] keywordId     keywordId Id
@@ -90,23 +90,21 @@ namespace database
             /// \return                   CAcquisitionSummary data
             /// \throw                    CInvalidParameter if deviceId is unknown
             //--------------------------------------------------------------
-            std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > getKeywordSummaryDataByType(const entities::EAcquisitionSummaryType& type, int keywordId,
-                                                                                                       boost::posix_time::ptime timeFrom,
-                                                                                                       boost::posix_time::ptime timeTo) const;
+            std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > getKeywordSummaryDataByType(const entities::EAcquisitionSummaryType& type, int keywordId,
+                                                                                                                  boost::posix_time::ptime timeFrom,
+                                                                                                                  boost::posix_time::ptime timeTo) const;
 
             //--------------------------------------------------------------
-            /// \brief                    Get the summary data (highchart js format) : [[date,value],[date,value],...] by acquisition type
-            /// \param [in] type          Type of data to select
+            /// \brief                    Get the data  by type (avg, min, max)
             /// \param [in] keywordId     keywordId Id
             /// \param [in] timeFrom      The start date (optionnal)
             /// \param [in] timeTo        The end date (optionnal)
-            /// \return                   Map of data : (date, value). One value per hour
+            /// \return                   CAcquisitionSummary data
             /// \throw                    CInvalidParameter if deviceId is unknown
             //--------------------------------------------------------------
-            std::string getKeywordHighchartDataByType(const entities::EAcquisitionSummaryType& type,
-                                                      int keywordId,
-                                                      boost::posix_time::ptime timeFrom,
-                                                      boost::posix_time::ptime timeTo) const;
+            std::string getHugeVectorKeywordSummaryDataByType(const entities::EAcquisitionSummaryType& type, int keywordId,
+                                                        boost::posix_time::ptime timeFrom,
+                                                        boost::posix_time::ptime timeTo) const;
 
             //--------------------------------------------------------------
             /// \Brief		   Pointer to keyword requester
