@@ -1,7 +1,10 @@
 ### 2.1.0-beta.1
 
-Ongoing...
+#### New features and fixes
 
+* Web Client : Optimize REST request handling at the startup of the web client
+* Web Client : fix rolling title, when change the title of the widget
+* Web client : widgets configured with missing device/keyword(s) are automatically disabled
 
 ### 2.0.2
 
