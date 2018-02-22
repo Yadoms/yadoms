@@ -137,7 +137,7 @@ function tabClick(pageId) {
             requestWidgets(page)
                 .always(function () {
                     //we poll all widget data
-               updateWidgetsPolling(page).always(function() {
+                    updateWidgetsPolling(page).always(function() {
                         var b = page.$grid.packery('reloadItems');
                         updateWebSocketFilter();
                         PageManager.updateWidgetLayout(page);
@@ -315,12 +315,16 @@ function dispatchNewAcquisitionsToWidgets(acq) {
                             if (keywordId == acq.keywordId) {
                                 try {
                                     //we signal the new acquisition to the widget if the widget supports the method
-                                    if (typeof widget.viewModel.onNewAcquisition === 'function' && (widget.getState() == widgetStateEnum.Running)) {
-                                        widget.viewModel.onNewAcquisition(keywordId, acq);
-                                        widget.viewModel.widgetApi.fitText();
-                                    }
-                                    else{
-                                       widget.waitingAcquisition.push(acq);
+                                    if (typeof widget.viewModel.onNewAcquisition === 'function') {
+                                       if (widget.getState() == widgetStateEnum.Running){
+                                          widget.viewModel.onNewAcquisition(keywordId, acq);
+                                          widget.viewModel.widgetApi.fitText();
+                                       }else{
+                                          console.log ("push acquisition !");
+                                          console.log ("widget.getState() : ", widget.getState());
+                                          console.log ("widget :", widget);
+                                          widget.waitingAcquisition.push(acq);
+                                       }                                        
                                     }
                                 } catch (e) {
                                     console.error(widget.type +
@@ -446,12 +450,21 @@ function updateWidgetsPolling(pageId) {
                    }else{ // we desactivate the widget
                       widget.viewModel.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
                    }
+                   
+                   //we manage battery value
+                   var $battery = widget.$toolbar.find(".widget-toolbar-battery");
+                   if ($battery) {
+                      if ($battery.attr("keywordId") == acquisition.keywordId) {
+                         widget.viewModel.widgetApi.updateBatteryLevel(acquisition.value);
+                      }
+                   }
+                   widget.viewModel.widgetApi.manageRollingTitle();
                 }
              });
           });
           d.resolve();
        })
-            .fail(d.reject);
+       .fail(d.reject);
     }
     return d.promise();
 }
@@ -471,6 +484,9 @@ function updateWidgetPolling(widget) {
                             if (widget.viewModel.onNewAcquisition !== undefined) {
                                 widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
                             }
+                            
+                            widget.viewModel.widgetApi.manageBatteryConfiguration();
+                            widget.viewModel.widgetApi.manageRollingTitle();
                         });
                 }
                 d.resolve();

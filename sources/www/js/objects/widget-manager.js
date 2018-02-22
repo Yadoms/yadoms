@@ -545,6 +545,8 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
                         notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'resized' }));
                         console.warn(e);
                     }
+                    
+                    widget.viewModel.widgetApi.setState(widgetStateEnum.Running);
 
                     //we manage answer if it is a promise or not
                     defferedResized = defferedResized || new $.Deferred().resolve();
@@ -558,7 +560,6 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
                         }
 						
                         widget.$gridWidget.find(".textfit").fitText();
-                        widget.viewModel.widgetApi.manageRollingTitle();
                         d.resolve();
                     }).fail(d.reject);
                 }).fail(function () {
@@ -570,7 +571,6 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
                    }
             
                    widget.$gridWidget.find(".textfit").fitText();
-                   widget.viewModel.widgetApi.manageRollingTitle();
                    widget.viewModel.widgetApi.setState(widgetStateEnum.Running);
                    d.reject();
                 });
