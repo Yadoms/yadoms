@@ -7,52 +7,37 @@ namespace dataAccessLayer
    class CConfigurationManager : public IConfigurationManager
    {
    public:
-      //--------------------------------------------------------------
-      /// \brief                                Constructor
-      /// \param [in] configurationRequester    The configuration requester
-      //--------------------------------------------------------------
       explicit CConfigurationManager(boost::shared_ptr<database::IConfigurationRequester> configurationRequester);
-
-      //--------------------------------------------------------------
-      /// \brief       Destructor
-      //--------------------------------------------------------------
       virtual ~CConfigurationManager();
 
       // IConfigurationManager implementation
-      std::string getSystemConfiguration(const std::string& keyName) const override;
-      boost::shared_ptr<const shared::CDataContainer> getSystemConfiguration() override;
-      void saveSystemConfiguration(const shared::CDataContainer& newConfiguration) override;
-      void resetSystemConfiguration() override;
-      void subscribeOnSystemConfigurationChanged(boost::function1<void, boost::shared_ptr<const shared::CDataContainer>> onSystemConfigurationChangedFct) override;
-      virtual bool exists(const std::string& section, const std::string& name);
-      virtual boost::shared_ptr<database::entities::CConfiguration> getConfiguration(const std::string& section, const std::string& name);
-      virtual std::vector<boost::shared_ptr<database::entities::CConfiguration>> getConfigurations(const std::string& section);
-      virtual std::vector<boost::shared_ptr<database::entities::CConfiguration>> getConfigurations();
-      virtual void updateConfiguration(database::entities::CConfiguration& configurationToUpdate);
+      std::string getExternalConfiguration(const std::string& section) const override;
+      void saveExternalConfiguration(const std::string& section,
+                                     const shared::CDataContainer& value) override;
+      boost::shared_ptr<const shared::CDataContainer> getServerConfiguration() const override;
+      void saveServerConfiguration(const shared::CDataContainer& newConfiguration) override;
+      void resetServerConfiguration() override;
+      void subscribeOnServerConfigurationChanged(
+         boost::function1<void, boost::shared_ptr<const shared::CDataContainer>> onServerConfigurationChangedFct) override;
+      shared::CDataContainer CConfigurationManager::getLocation() const override;
+      void saveLocation(const shared::CDataContainer& newLocation) override;
+      shared::CDataContainer getBasicAuthentication() const override;
+      void saveBasicAuthentication(const shared::CDataContainer& newBasicAuthentication) override;
       // [END] - IConfigurationManager implementation
 
    protected:
-      //--------------------------------------------------------------
-      /// \brief  Post an update configuration notification for the [section,name] data
-      //--------------------------------------------------------------
-      void notifySystemConfigurationChanged(boost::shared_ptr<const shared::CDataContainer> systemConfiguration);
+      std::string getConfiguration(const std::string& section) const;
+      void saveConfiguration(const std::string& section,
+                             const shared::CDataContainer& value) const;
 
-
-      static bool isJson(const std::string& str);
-      static boost::shared_ptr<shared::CDataContainer> configurationEntitiesToContainer(
-         const std::vector<boost::shared_ptr<database::entities::CConfiguration>>& configurationEntities);
-      static boost::shared_ptr<std::vector<boost::shared_ptr<database::entities::CConfiguration>>> containerToConfigurationEntities(
-         const std::string& sectionName,
-         const shared::CDataContainer& container);
+      void notifyServerConfigurationChanged(boost::shared_ptr<const shared::CDataContainer> serverConfiguration);
 
    private:
-      //--------------------------------------------------------------
-      /// \brief           The real data requester
-      //--------------------------------------------------------------
       boost::shared_ptr<database::IConfigurationRequester> m_configurationRequester;
+      mutable boost::recursive_mutex m_configurationMutex;
 
-      const boost::shared_ptr<const shared::CDataContainer> m_defaultSystemConfiguration;
+      const boost::shared_ptr<const shared::CDataContainer> m_defaultServerConfiguration;
 
-      std::vector<boost::function1<void, boost::shared_ptr<const shared::CDataContainer>>> m_onSystemConfigurationChangedObservers;
+      std::vector<boost::function1<void, boost::shared_ptr<const shared::CDataContainer>>> m_onServerConfigurationChangedObservers;
    };
 } //namespace dataAccessLayer 

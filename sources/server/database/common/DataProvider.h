@@ -2,7 +2,7 @@
 #include "database/IDataProvider.h"
 #include "database/IDatabaseRequester.h"
 #include "requesters/Plugin.h"
-#include "requesters/Configuration.h"
+#include "requesters/Configuration2.h"
 #include "requesters/Device.h"
 #include "requesters/Keyword.h"
 #include "requesters/Page.h"
@@ -105,7 +105,7 @@ namespace database
 
          // [END] IDatabaseProvider implementation
 
-         shared::versioning::CVersion GetVersion() const;
+         shared::versioning::CVersion getVersion() const;
       private:
          //--------------------------------------------------------------
          /// \Brief		Load all requesters
@@ -136,7 +136,7 @@ namespace database
          //--------------------------------------------------------------
          /// \Brief		Plugin requester
          //--------------------------------------------------------------
-         boost::shared_ptr<requesters::CConfiguration> m_configurationRequester;
+         boost::shared_ptr<requesters::CConfiguration2> m_configurationRequester;
 
          //--------------------------------------------------------------
          /// \Brief		Device requester

@@ -65,13 +65,9 @@ namespace database
 
 
       DECLARE_ENTITY_CLASS_IMPLEMENTATION(
-         Configuration,
+         Configuration2,
          ((Section)(std::string)("")("section"))
-         ((Name)(std::string)("")("name"))
          ((Value)(std::string)("")("value"))
-         ((DefaultValue)(std::string)("")("defaultValue")) // No more used (default values are hard-coded)
-         ((Description)(std::string)("")("description"))
-         ((SecurityAccess)(database::entities::ESecurityAccess)(database::entities::ESecurityAccess::kNone)("securityAccess"))
          ((LastModificationDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now())("lastModificationDate"))
       ) ;
 

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "DatabaseAdapters.h"
+#include "SqlExtension.hpp"
 #include "../IResultHandler.h"
+#include "database/common/DatabaseTables.h"
 #include <shared/currentTime/Provider.h>
 #include <shared/Log.h>
 
@@ -20,7 +22,7 @@ namespace database
             ((Category)(database::entities::EPluginCategory)(database::entities::EPluginCategory::kUser)(std::string))
          );
 
-         DECLARE_ADAPTER_IMPLEMENTATION(Configuration,
+         DECLARE_ADAPTER_IMPLEMENTATION(Configuration2,
             ((Section)(std::string)(""))
             ((Value)(std::string)(""))
             ((LastModificationDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))

@@ -64,30 +64,31 @@ namespace database
 
                // Reorganize
                // - The server configuration
+               //TODO ne pas écrire la conf server si elle n'existe pas (ou écrire celle par défaut fournie par CConfigurationManager)
                shared::CDataContainer serverConfiguration;
                serverConfiguration.set("firstStart", firstStart);
                serverConfiguration.set("location", location);
                serverConfiguration.set("basicAuthentication", basicAuthentication);
                // - The GUI configuration (actually only one known GUI client kind)
-               shared::CDataContainer guiConfiguration;
-               guiConfiguration.set("language", language);
-               guiConfiguration.set("advancedParametersActive", advancedParameters);
+               shared::CDataContainer webClientConfiguration;
+               webClientConfiguration.set("language", language);
+               webClientConfiguration.set("advancedParametersActive", advancedParameters);
                // Boolean values were recorded as strings in old database
-               guiConfiguration.set("dateFormatString", dateFormatString);
-               guiConfiguration.set("refreshPage", refreshPage);
+               webClientConfiguration.set("dateFormatString", dateFormatString);
+               webClientConfiguration.set("refreshPage", refreshPage);
 
 
                // Create the new configuration table (keep the old in case of use downgrades his Yadoms version)
                if (requester->transactionSupport())
                   requester->transactionBegin();
 
-               requester->createTableIfNotExists(CConfigurationTable::getTableName(),
+               requester->createTableIfNotExists(CConfiguration2Table::getTableName(),
                                                  requester->getTableCreationScriptProvider()->getTableConfiguration());
 
                const auto insertDate = shared::currentTime::Provider().now();
 
                insertConfigurationValue(requester, "server", serverConfiguration, insertDate);
-               insertConfigurationValue(requester, "webClient", guiConfiguration, insertDate);
+               insertConfigurationValue(requester, "webClient", webClientConfiguration, insertDate);
 
                updateDatabaseVersion(requester, Version, insertDate);
 
@@ -114,10 +115,10 @@ namespace database
                                   const std::string& name)
          {
             auto loadQuery = requester->newQuery();
-            loadQuery->Select("value").
-                       From("Configuration").
-                       Where("section", CQUERY_OP_EQUAL, section).
-                       And("name", CQUERY_OP_EQUAL, name);
+            loadQuery->Select(CDatabaseColumn("value")).
+                       From(CDatabaseTable("Configuration")).
+                       Where(CDatabaseColumn("section"), CQUERY_OP_EQUAL, section).
+                       And(CDatabaseColumn("name"), CQUERY_OP_EQUAL, name);
 
             adapters::CSingleValueAdapter<T> adapter;
             requester->queryEntities(&adapter, *loadQuery);
@@ -175,36 +176,21 @@ namespace database
 
          shared::CDataContainer CVersion_4_2_0::convertLocation(const std::string& oldLocation)
          {
-            return shared::CDataContainer(oldLocation);
-            //TODO faut-il passer les valeurs en type natif (actuellement en string), attention aux arrondis ?
+            shared::CDataContainer oldLocationContainer(oldLocation);
+            shared::CDataContainer newLocation;
+
+            // Boolean values were recorded as strings in old database
+            newLocation.set("latitude", oldLocationContainer.get<std::string>("latitude"));
+            newLocation.set("longitude", oldLocationContainer.get<std::string>("longitude"));
+            newLocation.set("altitude", oldLocationContainer.get<std::string>("altitude")); // Altitude is initialy in native type (float), getting it as string convert it to string
+            newLocation.set("timezone", oldLocationContainer.get<std::string>("timezone"));
+
+            return newLocation;
          }
 
          shared::CDataContainer CVersion_4_2_0::convertBasicAuthentication(const std::string& oldBasicAuthentication)
          {
-            shared::CDataContainer oldBasicAuthenticationContainer(oldBasicAuthentication);
-            shared::CDataContainer newBasicAuthentication;
-
-            // Boolean values were recorded as strings in old database
-            newBasicAuthentication.set("active", oldBasicAuthenticationContainer.get<std::string>("active") == "true");
-            newBasicAuthentication.set("user", oldBasicAuthenticationContainer.get<std::string>("user"));
-            newBasicAuthentication.set("password", oldBasicAuthenticationContainer.get<std::string>("password"));
-
-            return newBasicAuthentication;
-         }
-
-         void CVersion_4_2_0::updateDatabaseVersion(const boost::shared_ptr<IDatabaseRequester> requester,
-                                                    const shared::versioning::CVersion& newVersion,
-                                                    const boost::posix_time::ptime& insertDate)
-         {
-            auto qInsert = requester->newQuery();
-            qInsert->InsertOrReplaceInto(CConfigurationTable::getTableName(),
-                                         CConfigurationTable::getSectionColumnName(),
-                                         CConfigurationTable::getValueColumnName(),
-                                         CConfigurationTable::getLastModificationDateColumnName()).
-                     Values("DatabaseVersion",
-                            Version.toString(),
-                            insertDate);
-            requester->queryStatement(*qInsert);
+            return shared::CDataContainer(oldBasicAuthentication);
          }
 
          void CVersion_4_2_0::insertConfigurationValue(const boost::shared_ptr<IDatabaseRequester> requester,
@@ -213,10 +199,10 @@ namespace database
                                                        const boost::posix_time::ptime& insertDate)
          {
             auto qInsert = requester->newQuery();
-            qInsert->InsertOrReplaceInto(CConfigurationTable::getTableName(),
-                                         CConfigurationTable::getSectionColumnName(),
-                                         CConfigurationTable::getValueColumnName(),
-                                         CConfigurationTable::getLastModificationDateColumnName()).
+            qInsert->InsertOrReplaceInto(CConfiguration2Table::getTableName(),
+                                         CConfiguration2Table::getSectionColumnName(),
+                                         CConfiguration2Table::getValueColumnName(),
+                                         CConfiguration2Table::getLastModificationDateColumnName()).
                      Values(section,
                             value.serialize(),
                             insertDate);

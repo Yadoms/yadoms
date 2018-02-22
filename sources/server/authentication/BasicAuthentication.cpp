@@ -16,7 +16,7 @@ namespace authentication
       {
          updateConfiguration();
 
-         configurationManager->subscribeOnSystemConfigurationChanged([&](boost::shared_ptr<const shared::CDataContainer> systemConfiguration)
+         configurationManager->subscribeOnServerConfigurationChanged([&](boost::shared_ptr<const shared::CDataContainer> serverConfiguration)
          {
             updateConfiguration();
          });
@@ -63,7 +63,7 @@ namespace authentication
       try
       {
          boost::lock_guard<boost::mutex> lock(m_configurationMutex);
-         shared::CDataContainer basicAuthenConfiguration(m_configurationManager->getSystemConfiguration("basicAuthentication"));
+         const auto basicAuthenConfiguration(m_configurationManager->getBasicAuthentication());
          m_isAuthenticationActive = basicAuthenConfiguration.getWithDefault<bool>("active", false);
          m_currentAuthenticationUsername = basicAuthenConfiguration.get<std::string>("user");
          m_currentAuthenticationPassword = basicAuthenConfiguration.get<std::string>("password");

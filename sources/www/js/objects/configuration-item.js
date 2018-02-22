@@ -1,5 +1,7 @@
 /** @module Page class */
 
+//TODO utile ?
+
 /**
  * Creates an instance of Page
  * @param section

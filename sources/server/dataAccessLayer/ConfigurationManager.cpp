@@ -4,7 +4,7 @@
 
 namespace dataAccessLayer
 {
-   class CDefaultSystemConfiguration
+   class CDefaultServerConfiguration
    {
    public:
       boost::shared_ptr<shared::CDataContainer> get() const
@@ -12,28 +12,25 @@ namespace dataAccessLayer
          return m_configuration;
       }
 
-      CDefaultSystemConfiguration::CDefaultSystemConfiguration()
+      CDefaultServerConfiguration::CDefaultServerConfiguration()
          : m_configuration(boost::make_shared<shared::CDataContainer>())
       {
-         m_configuration->set("developerMode", false);
-
+         m_configuration->set("firstStart", false);
          m_configuration->set("location.latitude", "48.853");
          m_configuration->set("location.longitude", "2.35");
          m_configuration->set("location.altitude", "0.0");
          m_configuration->set("location.timezone", "Europe/Paris");
-
-         m_configuration->set("language", "en");
-
-         m_configuration->set("advancedParameters", false);
-         m_configuration->set("dateFormatString", "LLL");
-         m_configuration->set("refreshPage", false);
-
          m_configuration->set("basicAuthentication.active", false);
          m_configuration->set("basicAuthentication.user", "admin");
          m_configuration->set("basicAuthentication.password", std::string());
+
+         //m_configuration->set("webclient.language", "en"); //TODO à déplacer dans le client web
+         //m_configuration->set("webclient.advancedParametersActive", false);
+         //m_configuration->set("webclient.dateFormatString", "LLL");
+         //m_configuration->set("webclient.refreshPage", false);
       }
 
-      CDefaultSystemConfiguration::~CDefaultSystemConfiguration()
+      CDefaultServerConfiguration::~CDefaultServerConfiguration()
       {
       }
 
@@ -43,7 +40,7 @@ namespace dataAccessLayer
 
    CConfigurationManager::CConfigurationManager(boost::shared_ptr<database::IConfigurationRequester> configurationRequester)
       : m_configurationRequester(configurationRequester),
-        m_defaultSystemConfiguration(CDefaultSystemConfiguration().get())
+        m_defaultServerConfiguration(CDefaultServerConfiguration().get())
    {
    }
 
@@ -51,135 +48,104 @@ namespace dataAccessLayer
    {
    }
 
-   void CConfigurationManager::notifySystemConfigurationChanged(boost::shared_ptr<const shared::CDataContainer> systemConfiguration)
+   std::string CConfigurationManager::getExternalConfiguration(const std::string& section) const
    {
-      for (const auto& fct : m_onSystemConfigurationChangedObservers)
-         fct(systemConfiguration);
+      if (section == "server")
+         throw std::invalid_argument("\"server\" configuration section is reserved, user getServerConfiguration to get server configuration");
+
+      return getConfiguration(section);
    }
 
-   std::string CConfigurationManager::getSystemConfiguration(const std::string& keyName) const
+   void CConfigurationManager::saveExternalConfiguration(const std::string& section,
+                                                         const shared::CDataContainer& value)
    {
-      try
-      {
-         return m_configurationRequester->getConfiguration("system", keyName)->Value();
-      }
-      catch (shared::exception::CEmptyResult&)
-      {
-         return m_defaultSystemConfiguration->get<std::string>(keyName);
-      }
+      if (section == "server")
+         throw std::invalid_argument("\"server\" configuration section is reserved, user another section to store your configuration");
+
+      saveConfiguration(section,
+                        value);
    }
 
-   boost::shared_ptr<const shared::CDataContainer> CConfigurationManager::getSystemConfiguration()
+   void CConfigurationManager::notifyServerConfigurationChanged(boost::shared_ptr<const shared::CDataContainer> serverConfiguration)
+   {
+      for (const auto& fct : m_onServerConfigurationChangedObservers)
+         fct(serverConfiguration);
+   }
+
+   boost::shared_ptr<const shared::CDataContainer> CConfigurationManager::getServerConfiguration() const
    {
       try
       {
          // Returned configuration is the default one, overriden by stored values
-         auto configuration = boost::make_shared<shared::CDataContainer>(*m_defaultSystemConfiguration);
-         configuration->mergeFrom(*configurationEntitiesToContainer(m_configurationRequester->getConfigurations("system")));
+         auto configuration = boost::make_shared<shared::CDataContainer>(*m_defaultServerConfiguration);
+         configuration->mergeFrom(shared::CDataContainer(getConfiguration("server")));
          return configuration;
       }
       catch (shared::exception::CEmptyResult&)
       {
-         return m_defaultSystemConfiguration;
+         return m_defaultServerConfiguration;
       }
    }
 
-   void CConfigurationManager::saveSystemConfiguration(const shared::CDataContainer& newConfiguration)
+   void CConfigurationManager::saveServerConfiguration(const shared::CDataContainer& newConfiguration)
    {
-      const auto& c = containerToConfigurationEntities("system", newConfiguration);
-      for (const auto& entity : *c)
-         m_configurationRequester->updateConfiguration(*entity);
-      notifySystemConfigurationChanged(getSystemConfiguration());
+      saveConfiguration("server",
+                        newConfiguration);
+      notifyServerConfigurationChanged(getServerConfiguration());
    }
 
-   bool CConfigurationManager::isJson(const std::string& str)
+   void CConfigurationManager::resetServerConfiguration()
    {
-      static const boost::regex JsonPattern("^\\{.*\\}\\s*$");
-      return boost::regex_match(str, JsonPattern);
+      saveConfiguration("server",
+                        *m_defaultServerConfiguration);
+      notifyServerConfigurationChanged(getServerConfiguration());
    }
 
-   boost::shared_ptr<shared::CDataContainer> CConfigurationManager::configurationEntitiesToContainer(
-      const std::vector<boost::shared_ptr<database::entities::CConfiguration>>& configurationEntities)
+   void CConfigurationManager::subscribeOnServerConfigurationChanged(
+      boost::function1<void, boost::shared_ptr<const shared::CDataContainer>> onServerConfigurationChangedFct)
    {
-      auto container = boost::make_shared<shared::CDataContainer>();
-
-      for (const auto& entity : configurationEntities)
-         if (isJson(entity->Value()))
-            container->set(entity->Name(), shared::CDataContainer(entity->Value()));
-         else
-            container->set(entity->Name(), entity->Value());
-
-      return container;
+      m_onServerConfigurationChangedObservers.push_back(onServerConfigurationChangedFct);
    }
 
-   boost::shared_ptr<std::vector<boost::shared_ptr<database::entities::CConfiguration>>> CConfigurationManager::containerToConfigurationEntities(
-      const std::string& sectionName,
-      const shared::CDataContainer& container)
+   shared::CDataContainer CConfigurationManager::getLocation() const
    {
-      auto configurationEntities = boost::make_shared<std::vector<boost::shared_ptr<database::entities::CConfiguration>>>();
-
-      for (const auto& key : container.getKeys())
-      {
-         auto item = boost::make_shared<database::entities::CConfiguration>();
-         item->Section = sectionName;
-         item->Name = key;
-         item->Value = container.containsValue(key) ? container.get<std::string>(key) : container.get<shared::CDataContainer>(key).serialize();
-         configurationEntities->push_back(item);
-      }
-
-      return configurationEntities;
+      return getServerConfiguration()->get<shared::CDataContainer>("location");
    }
 
-   void CConfigurationManager::resetSystemConfiguration()
+   void CConfigurationManager::saveLocation(const shared::CDataContainer& newLocation)
    {
-      try
-      {
-         m_configurationRequester->removeConfigurations("system");
-      }
-      catch (shared::exception::CEmptyResult&)
-      {
-      }
-
-      for (const auto& key : m_defaultSystemConfiguration->getKeys())
-      {
-         database::entities::CConfiguration configuration;
-         configuration.Section = "system";
-         configuration.Name = key;
-         configuration.Value = m_defaultSystemConfiguration->get(key);
-         m_configurationRequester->create(configuration);
-      }
-
-      notifySystemConfigurationChanged(getSystemConfiguration());
+         boost::lock_guard<boost::recursive_mutex> lock(m_configurationMutex);
+      auto serverConfiguration = *getServerConfiguration();
+      serverConfiguration.set("location", newLocation);
+      saveServerConfiguration(serverConfiguration);
+      notifyServerConfigurationChanged(getServerConfiguration());
    }
 
-   void CConfigurationManager::subscribeOnSystemConfigurationChanged(
-      boost::function1<void, boost::shared_ptr<const shared::CDataContainer>> onSystemConfigurationChangedFct)
+   shared::CDataContainer CConfigurationManager::getBasicAuthentication() const
    {
-      m_onSystemConfigurationChangedObservers.push_back(onSystemConfigurationChangedFct);
+      return getServerConfiguration()->get<shared::CDataContainer>("basicAuthentication");
    }
 
-   bool CConfigurationManager::exists(const std::string& section, const std::string& name)
+   void CConfigurationManager::saveBasicAuthentication(const shared::CDataContainer& newBasicAuthentication)
    {
-      return m_configurationRequester->exists(section, name);
+         boost::lock_guard<boost::recursive_mutex> lock(m_configurationMutex);
+      auto serverConfiguration = *getServerConfiguration();
+      serverConfiguration.set("basicAuthentication", newBasicAuthentication);
+      saveServerConfiguration(serverConfiguration);
+      notifyServerConfigurationChanged(getServerConfiguration());
    }
 
-   boost::shared_ptr<database::entities::CConfiguration> CConfigurationManager::getConfiguration(const std::string& section, const std::string& name)
+   std::string CConfigurationManager::getConfiguration(const std::string& section) const
    {
-      return m_configurationRequester->getConfiguration(section, name);
+         boost::lock_guard<boost::recursive_mutex> lock(m_configurationMutex);
+      return m_configurationRequester->getConfiguration(section)->Value();
    }
 
-   std::vector<boost::shared_ptr<database::entities::CConfiguration>> CConfigurationManager::getConfigurations(const std::string& section)
+   void CConfigurationManager::saveConfiguration(const std::string& section,
+                                                 const shared::CDataContainer& value) const
    {
-      return m_configurationRequester->getConfigurations(section);
-   }
-
-   std::vector<boost::shared_ptr<database::entities::CConfiguration>> CConfigurationManager::getConfigurations()
-   {
-      return m_configurationRequester->getConfigurations();
-   }
-
-   void CConfigurationManager::updateConfiguration(database::entities::CConfiguration& configurationToUpdate)
-   {
-      m_configurationRequester->updateConfiguration(configurationToUpdate);
+         boost::lock_guard<boost::recursive_mutex> lock(m_configurationMutex);
+      m_configurationRequester->updateConfiguration(section,
+                                                    value.serialize());
    }
 } //namespace dataAccessLayer 

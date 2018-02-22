@@ -30,7 +30,7 @@ function initializeWidgetEngine() {
                     //we deactivate the customization without launch save process
                     exitCustomization(false);
 
-                    if (ConfigurationManager.SystemConfiguration().refreshPage) {
+                    if (configurationManager.refreshPage()) {
                         if (PageManager.pages.length > 0 && SessionDataManager.getVariable("CurrentPage") != null)
                             PageManager.selectPageId(parseInt(SessionDataManager.getVariable("CurrentPage")));
                         else

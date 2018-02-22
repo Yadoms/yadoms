@@ -15,7 +15,7 @@ namespace common {
       ((Category)("category"))
    )
 
-   DECLARE_TABLE_COLUMN_NAMES(Configuration,  "Configuration2",
+   DECLARE_TABLE_COLUMN_NAMES(Configuration2,  "Configuration2",
       ((Section)("section"))
       ((Value)("value"))
       ((LastModificationDate)("lastModificationDate"))

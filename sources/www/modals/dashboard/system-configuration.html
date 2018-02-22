@@ -52,7 +52,7 @@
             var systemConfiguration;
 
             //we update system configuration to be sure to modify the latest version of the configuration
-            ConfigurationManager.loadSystemConfiguration()
+            ConfigurationManager.loadServerConfiguration()
                   .done(function (data) {
                         systemConfiguration = data;
                         d1.resolve();
@@ -527,10 +527,5 @@
                   });
       }
 
-      function getdefaultLanguageFromSupported() {
-            var navigatorLanguage = navigator.language || navigator.userLanguage;
-            var langs = window.getSupportedLanguages();
-            return isNullOrUndefined(langs[navigatorLanguage]) ? Object.keys(langs)[0] :
-                  navigatorLanguage;
-      }
+
 </script>

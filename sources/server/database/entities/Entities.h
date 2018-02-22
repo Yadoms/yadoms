@@ -67,13 +67,9 @@ namespace database
          ((Category)(database::entities::EPluginCategory))
       )
 
-      DECLARE_ENTITY_CLASS_HEADER(Configuration,
+      DECLARE_ENTITY_CLASS_HEADER(Configuration2,
          ((Section)(std::string))
-         ((Name)(std::string))
          ((Value)(std::string))
-         ((DefaultValue)(std::string)) // No more used (default values are hard-coded)
-         ((Description)(std::string))
-         ((SecurityAccess)(database::entities::ESecurityAccess))
          ((LastModificationDate)(boost::posix_time::ptime))
       )
 

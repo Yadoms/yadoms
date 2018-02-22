@@ -14,7 +14,7 @@ namespace database { namespace sqlite {
 
    std::string CSQLiteTableCreationScriptProvider::getTableConfiguration()
    {
-      return " CREATE TABLE Configuration                                  \
+      return " CREATE TABLE Configuration2                                 \
                (  section VARCHAR(50) NOT NULL,                            \
                   value TEXT NOT NULL,                                     \
                   lastModificationDate TEXT,                               \

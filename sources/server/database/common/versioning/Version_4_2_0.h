@@ -30,11 +30,6 @@ namespace database
                                  const shared::versioning::CVersion& currentVersion) override;
             // [END] ISQLiteVersionUpgrade implementation
 
-         protected:
-            static void updateDatabaseVersion(const boost::shared_ptr<IDatabaseRequester> requester,
-                                              const shared::versioning::CVersion& newVersion,
-                                              const boost::posix_time::ptime& insertDate);
-
          private:
             static const shared::versioning::CVersion Version;
 

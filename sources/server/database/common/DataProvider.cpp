@@ -26,27 +26,40 @@ namespace database
          CDataProvider::unload();
       }
 
-      shared::versioning::CVersion CDataProvider::GetVersion() const
+      shared::versioning::CVersion CDataProvider::getVersion() const
       {
-         //get the database version
-         shared::versioning::CVersion currentVersion;
-
          try
          {
-            if (m_databaseRequester->checkTableExists(CConfigurationTable::getTableName()))
+            if (m_databaseRequester->checkTableExists(CConfiguration2Table::getTableName()))
             {
                auto qVersion = m_databaseRequester->newQuery();
-               qVersion->Select(CConfigurationTable::getValueColumnName()).
-                  From(CConfigurationTable::getTableName()).
-                  Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "Database").
-                  And(CConfigurationTable::getNameColumnName(), CQUERY_OP_EQUAL, "Version");
+               qVersion->Select(CConfiguration2Table::getValueColumnName()).
+                         From(CConfiguration2Table::getTableName()).
+                         Where(CConfiguration2Table::getSectionColumnName(), CQUERY_OP_EQUAL, "DatabaseVersion");
 
                adapters::CSingleValueAdapter<std::string> adapter;
                m_databaseRequester->queryEntities(&adapter, *qVersion);
                auto results = adapter.getResults();
 
                if (results.size() >= 1)
-                  currentVersion = shared::versioning::CVersion(results[0]);
+                  return shared::versioning::CVersion(results[0]);
+            }
+
+            // Fallback to old Configuration table            
+            if (m_databaseRequester->checkTableExists(CDatabaseTable("Configuration")))
+            {
+               auto qVersion = m_databaseRequester->newQuery();
+               qVersion->Select(CDatabaseColumn("value")).
+                         From(CDatabaseTable("Configuration")).
+                         Where(CDatabaseColumn("section"), CQUERY_OP_EQUAL, "Database").
+                         And(CDatabaseColumn("name"), CQUERY_OP_EQUAL, "Version");
+
+               adapters::CSingleValueAdapter<std::string> adapter;
+               m_databaseRequester->queryEntities(&adapter, *qVersion);
+               auto results = adapter.getResults();
+
+               if (results.size() >= 1)
+                  return shared::versioning::CVersion(results[0]);
             }
          }
          catch (std::exception& ex)
@@ -58,7 +71,7 @@ namespace database
             YADOMS_LOG(debug) << "Fail to get version of database : Unkonown exception";
          }
 
-         return currentVersion;
+         return shared::versioning::CVersion();
       }
 
       // IDatabaseProvider implementation
@@ -75,7 +88,7 @@ namespace database
             //check for update
             YADOMS_LOG(information) << "Check for database update...";
 
-            versioning::CVersionUpgraderFactory::GetUpgrader()->checkForUpgrade(m_databaseRequester, GetVersion());
+            versioning::CVersionUpgraderFactory::GetUpgrader()->checkForUpgrade(m_databaseRequester, getVersion());
 
             //create entities requester (high level querier)
             loadRequesters();
@@ -136,8 +149,10 @@ namespace database
 
          //schedule the timer to launch task each hour +1min
          //Schedule : now and each hour (1000 * 3600)
-         auto msWait = static_cast<long>(timeToWaitBeforeFirstOccurrence.totalMilliseconds()); //force cast because value is maximum 1hour = 1000*3600 which is less than "long" maximum value
-         auto msWaitPeriod = static_cast<long>(oneHourOffset.totalMilliseconds());//force cast because value is 1 hour = 1000*3600 which is less than "long" maximum value
+         auto msWait = static_cast<long>(timeToWaitBeforeFirstOccurrence.totalMilliseconds());
+         //force cast because value is maximum 1hour = 1000*3600 which is less than "long" maximum value
+         auto msWaitPeriod = static_cast<long>(oneHourOffset.totalMilliseconds());
+         //force cast because value is 1 hour = 1000*3600 which is less than "long" maximum value
 
          m_maintenanceTimer->scheduleAtFixedRate(m_maintenanceSummaryComputingTask, msWait, msWaitPeriod);
       }
@@ -158,8 +173,10 @@ namespace database
          firstPurgeOccurence += oneDayOffset;//+1day
          Poco::Timespan timeToWaitBeforeFirstPurgeOccurrence = firstPurgeOccurence - now;
 
-         auto msWait = static_cast<long>(timeToWaitBeforeFirstPurgeOccurrence.totalMilliseconds()); //force cast because value is maximum 1hour = 1000*3600 which is less than "long" maximum value
-         auto msWaitPeriod = static_cast<long>(oneDayOffset.totalMilliseconds());//force cast because value is 1 hour = 1000*3600 which is less than "long" maximum value
+         auto msWait = static_cast<long>(timeToWaitBeforeFirstPurgeOccurrence.totalMilliseconds());
+         //force cast because value is maximum 1hour = 1000*3600 which is less than "long" maximum value
+         auto msWaitPeriod = static_cast<long>(oneDayOffset.totalMilliseconds());
+         //force cast because value is 1 hour = 1000*3600 which is less than "long" maximum value
 
          m_maintenanceTimer->scheduleAtFixedRate(m_maintenancePurgeTask, msWait, msWaitPeriod);
       }
@@ -188,7 +205,7 @@ namespace database
       void CDataProvider::loadRequesters()
       {
          m_pluginRequester = boost::make_shared<requesters::CPlugin>(m_databaseRequester);
-         m_configurationRequester = boost::make_shared<requesters::CConfiguration>(m_databaseRequester);
+         m_configurationRequester = boost::make_shared<requesters::CConfiguration2>(m_databaseRequester);
          m_deviceRequester = boost::make_shared<requesters::CDevice>(m_databaseRequester);
          m_keywordRequester = boost::make_shared<requesters::CKeyword>(m_databaseRequester);
          m_pageRequester = boost::make_shared<requesters::CPage>(m_databaseRequester);
@@ -209,5 +226,3 @@ namespace database
       }
    } //namespace common
 } //namespace database
-
-

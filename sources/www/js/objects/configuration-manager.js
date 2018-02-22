@@ -1,14 +1,110 @@
-/**
- * Created by nicolasHILAIRE on 25/02/14.
- */
+//Here is the list of items of server configuration
+ConfigurationManager.items = {};
+ConfigurationManager.items.serverSection = "server";
+ConfigurationManager.items.server = {};
+ConfigurationManager.items.server.firstStart = "firstStart";
+ConfigurationManager.items.server.timezone = "timezone";
+
+ConfigurationManager.items.server.locationSection = "location";
+ConfigurationManager.items.server.location = {};
+ConfigurationManager.items.server.location.latitude = "latitude";
+ConfigurationManager.items.server.location.longitude = "longitude";
+ConfigurationManager.items.server.location.altitude = "altitude";
+ConfigurationManager.items.server.location.timezone = "timezone";
+
+ConfigurationManager.items.server.basicAuthenticationSection = "basicAuthentication";
+ConfigurationManager.items.server.basicAuthentication = {};
+ConfigurationManager.items.server.basicAuthentication.active = "active";
+ConfigurationManager.items.server.basicAuthentication.user = "user";
+ConfigurationManager.items.server.basicAuthentication.password = "password";
+
+//Here is the list of items of configuration specific to this web client
+ConfigurationManager.items.webclientSection = "webclient";
+ConfigurationManager.items.webclient = {};
+ConfigurationManager.items.webclient.language = "language";
+ConfigurationManager.items.webclient.advancedParametersActive = "advancedParametersActive";
+ConfigurationManager.items.webclient.dateFormatString = "dateFormatString";
+ConfigurationManager.items.webclient.refreshPage = "refreshPage";
+
 
 /**
  * Ctor which does nothing because it is used as a static class
  * @constructor
  */
-function ConfigurationManager() {}
+function ConfigurationManager() {
+    var serverConfiguration;
+    var webClientConfiguration;
 
-var SystemConfiguration;
+    this.load = function () {
+        var deferredArray = [];
+        deferredArray.push(loadServerConfiguration());
+        deferredArray.push(loadWebClientConfiguration());
+    
+        var d = new $.Deferred();
+        $.whenAll(deferredArray)
+            .done(d.resolve)
+            .fail(d.reject);
+    
+        return d;
+    }
+
+    loadServerConfiguration = function () {
+        var d = new $.Deferred();
+    
+        RestEngine.getJson("rest/configuration/server")
+            .done(function (data) {
+                serverConfiguration = JSON.parse(data);
+                d.resolve();
+            })
+            .fail(d.reject);
+    
+        return d.promise();
+    }
+    
+    loadWebClientConfiguration = function () {
+        var d = new $.Deferred();
+    
+        RestEngine.getJson("rest/configuration/webClient")
+            .done(function (data) {
+                webClientConfiguration = JSON.parse(data);
+                d.resolve();
+            })
+            .fail(d.reject);
+    
+        return d.promise();
+    }
+
+    this.isServerFirstStart = function () {
+        return serverConfiguration[ConfigurationManager.items.server.firstStart] === "true";
+    };
+    
+    this.currentLanguage = function () {
+        return webClientConfiguration[ConfigurationManager.items.webclient.language] || getdefaultLanguageFromSupported();
+    };
+
+    this.refreshPage = function () {
+        return webClientConfiguration[ConfigurationManager.items.webclient.refreshPage] === "true";
+    };
+
+    getdefaultLanguageFromSupported = function() {
+        var navigatorLanguage = navigator.language || navigator.userLanguage;
+        var langs = window.getSupportedLanguages();
+        return isNullOrUndefined(langs[navigatorLanguage]) ? Object.keys(langs)[0] :
+              navigatorLanguage;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 // TODO faire le ménage (fonctions obsolètes)
 
@@ -17,92 +113,19 @@ var SystemConfiguration;
  * @param {Json} json The configuration item as json
  * @returns {ConfigurationItem} The newly created configuration item
  */
+//TODO utile ?
 ConfigurationManager.factory = function (json) {
     assert(!isNullOrUndefined(json), "json must be defined");
     assert(!isNullOrUndefined(json.section), "json.section must be defined");
-    assert(!isNullOrUndefined(json.name), "json.name must be defined");
     assert(!isNullOrUndefined(json.value), "json.value must be defined");
-    assert(!isNullOrUndefined(json.defaultValue), "json.defaultValue must be defined");
-    assert(!isNullOrUndefined(json.description), "json.description must be defined");
-    assert(!isNullOrUndefined(json.securityAccess), "json.securityAccess must be defined");
     assert(!isNullOrUndefined(json.lastModificationDate), "json.lastModificationDate must be defined");
 
     return new ConfigurationItem(json.section, json.name, ConfigurationItem.decodeValue(json.value),
         ConfigurationItem.decodeValue(json.defaultValue), json.description, json.securityAccess, json.lastModificationDate);
 };
 
-//Here is the list of items of system configuration
-ConfigurationManager.items = {};
-ConfigurationManager.items.system = {};
-ConfigurationManager.items.systemSection = "system";
-ConfigurationManager.items.system.language = "language";
-ConfigurationManager.items.system.timezone = "timezone";
 
-ConfigurationManager.items.system.basicAuthentication = "basicAuthentication";
-ConfigurationManager.items.system.basicAuthenticationUser = "basicAuthenticationUser";
-ConfigurationManager.items.system.basicAuthenticationPassword = "basicAuthenticationPassword";
-ConfigurationManager.items.system.basicAuthenticationPassword2 = "basicAuthenticationPassword2";
 
-ConfigurationManager.items.system.location = {};
-ConfigurationManager.items.system.locationSection = "location";
-ConfigurationManager.items.system.location.latitude = "latitude";
-ConfigurationManager.items.system.location.longitude = "longitude";
-ConfigurationManager.items.system.location.altitude = "altitude";
-ConfigurationManager.items.system.location.timezone = "timezone";
-
-ConfigurationManager.items.system.advancedParameters = "advancedParameters";
-ConfigurationManager.items.system.dateFormatString = "dateFormatString";
-ConfigurationManager.items.system.refreshPage = "refreshPage";
-
-ConfigurationManager.items.install = {};
-ConfigurationManager.items.installSection = "install";
-ConfigurationManager.items.install.firstStart = "firstStart";
-
-/**
- * Get all configuration values from a section
- * @param {Section} section The section
- * @returns {Promise} 
- */
-ConfigurationManager.getSection = function (section) {
-    assert(!isNullOrUndefined(section), "section must be defined");
-
-    var d = new $.Deferred();
-
-    RestEngine.getJson("rest/configuration/" + section)
-        .done(function (data) {
-            var result = [];
-
-            $.each(data.configuration, function (index, value) {
-                var ci = ConfigurationManager.factory(value);
-                result[ci.name] = ci;
-            });
-
-            d.resolve(result);
-        })
-        .fail(d.reject);
-
-    return d.promise();
-};
-
-/**
- * Get a configuration value from server
- * @param {String} configurationSection The item section
- * @param {String} configurationName The item key
- * @returns {Promise} 
- */
-ConfigurationManager.get = function (configurationSection, configurationName) {
-    assert(!isNullOrUndefined(configurationSection), "configurationSection must be defined");
-    assert(!isNullOrUndefined(configurationName), "configurationName must be defined");
-
-    var d = new $.Deferred();
-    RestEngine.getJson("rest/configuration/" + configurationSection + "/" + configurationName)
-        .done(function (data) {
-            var result = ConfigurationManager.factory(data);
-            d.resolve(result);
-        })
-        .fail(d.reject);
-    return d.promise();
-};
 
 
 /**
@@ -121,72 +144,44 @@ ConfigurationManager.updateToServer = function (configurationItem) {
 /**
  * Save a configuration item 
  * @param {String} section The configuration item section
- * @param {String} name The configuration item identifier
  * @param {String} value The value 
- * @param {String} defaultValue The default value
- * @param {String} description The descrption
- * @param {String} securityAccess The securit access
  * @returns {Promise} 
  */
-ConfigurationManager.createToServer = function (section, name, value, defaultValue, description, securityAccess) {
+ConfigurationManager.createToServer = function (section, value) {
     assert(!isNullOrUndefined(section), "section must be defined");
-    assert(!isNullOrUndefined(name), "name must be defined");
     assert(!isNullOrUndefined(value), "value must be defined");
 
-    if (isNullOrUndefined(securityAccess))
-        securityAccess = "none";
-
-    if (isNullOrUndefined(defaultValue))
-        defaultValue = value;
-
-    return RestEngine.putJson("/rest/configuration/" + section + "/" + name, {
+    return RestEngine.putJson("/rest/configuration/" + section, {
         data: JSON.stringify({
             "section": section,
-            "name": name,
-            "value": value,
-            "defaultValue": defaultValue,
-            "description": description,
-            "securityAccess": securityAccess
+            "value": value
         })
     });
 };
 
-ConfigurationManager.loadSystemConfiguration = function () {
-    var d = new $.Deferred();
-
-    RestEngine.getJson("rest/configuration/system")
-        .done(function (data) {
-            SystemConfiguration = JSON.parse(data);
-            d.resolve(SystemConfiguration);
-        })
-        .fail(d.reject);
-
-    return d.promise();
-}
-
 ConfigurationManager.saveSystemConfiguration = function (newConfiguration) {
     assert(!isNullOrUndefined(newConfiguration), "newConfiguration must be defined");
-    return RestEngine.putJson("/rest/configuration/system", {
+    return RestEngine.putJson("/rest/configuration/server", {
         data: JSON.stringify(newConfiguration)
     });
 };
 
-ConfigurationManager.SystemConfiguration = function () {
-    if (isNullOrUndefined(SystemConfiguration))
-        console.error("Configuration not already loaded, call ConfigurationManager.loadSystemConfiguration before accessing configuration");
-    return SystemConfiguration;
+ConfigurationManager.ServerConfiguration = function () {
+    if (isNullOrUndefined(ServerConfiguration))
+        console.error("Configuration not already loaded, call ConfigurationManager.loadServerConfiguration before accessing configuration");
+    return ServerConfiguration;
 }
 
 ConfigurationManager.resetSystemConfiguration = function () {
     var d = new $.Deferred();
 
-    RestEngine.putJson("/rest/configuration/system/reset")
+    RestEngine.putJson("/rest/configuration/server/reset")
         .done(function (newConfiguration) {
-            SystemConfiguration = newConfiguration;
+            ServerConfiguration = newConfiguration;
             d.resolve();
         })
         .fail(function () {
-            console.error("failed to reset system configuration");
+            console.error("failed to reset server configuration");
             d.reject();
         })
     return d;
@@ -194,7 +189,7 @@ ConfigurationManager.resetSystemConfiguration = function () {
 
 ConfigurationManager.saveDefaultLanguage = function (defaultLanguage) {
     return ConfigurationManager.createToServer(ConfigurationManager.items.systemSection,
-        ConfigurationManager.items.system.language,
+        ConfigurationManager.items.server.language,
         defaultLanguage,
         "",
         "language used by default");

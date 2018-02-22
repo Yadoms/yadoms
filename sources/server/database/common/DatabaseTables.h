@@ -2,7 +2,6 @@
 
 #include "DatabaseColumn.h"
 #include "DatabaseTablesHelpers.hpp"
-#include "database/entities/Entities.h"
 
 
 namespace database {
@@ -17,7 +16,7 @@ namespace common {
       (Category)
    )
 
-   DECLARE_TABLE(Configuration,
+   DECLARE_TABLE(Configuration2,
       (Section)
       (Value)
       (LastModificationDate)
