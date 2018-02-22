@@ -315,9 +315,12 @@ function dispatchNewAcquisitionsToWidgets(acq) {
                             if (keywordId == acq.keywordId) {
                                 try {
                                     //we signal the new acquisition to the widget if the widget supports the method
-                                    if (typeof widget.viewModel.onNewAcquisition === 'function') {
+                                    if (typeof widget.viewModel.onNewAcquisition === 'function' && (widget.getState() == widgetStateEnum.Running)) {
                                         widget.viewModel.onNewAcquisition(keywordId, acq);
                                         widget.viewModel.widgetApi.fitText();
+                                    }
+                                    else{
+                                       widget.waitingAcquisition.push(acq);
                                     }
                                 } catch (e) {
                                     console.error(widget.type +
@@ -370,13 +373,14 @@ function dispatchkeywordDeletedToWidgets(eventData){
    console.debug("onKeywordDeletion : ", eventData);
    $.each(page.widgets, function (widgetIndex, widget) {
       try {
-          if ($.inArray(eventData.keyword.id, widget.listenedKeywords)!=-1)
-          {
-             //we signal the time event to the widget if the widget supports the method
-             if (typeof widget.viewModel.onKeywordDeletion === 'function' && !isNullOrUndefined(widget.viewModel.onKeywordDeletion))
-                 widget.viewModel.onKeywordDeletion(eventData.keyword);
-              else // by default, we disable the widget
-                 widget.viewModel.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
+          if ($.inArray(eventData.keyword.id, widget.listenedKeywords)!=-1){
+             if (widget.getState() == widgetStateEnum.Running) {
+                //we signal the time event to the widget if the widget supports the method
+                if (typeof widget.viewModel.onKeywordDeletion === 'function' && !isNullOrUndefined(widget.viewModel.onKeywordDeletion))
+                    widget.viewModel.onKeywordDeletion(eventData.keyword);
+                 else // by default, we disable the widget
+                    widget.viewModel.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
+             }
           }
       }
       catch (e) {
@@ -435,8 +439,7 @@ function updateWidgetsPolling(pageId) {
           $.each(data, function (index, acquisition) {
              //we signal the new acquisition to the widget if the widget support the method
              $.each(pageId.widgets, function (widgetIndex, widget) {
-                if ($.inArray(acquisition.keywordId, widget.getlastValue)!=-1)
-                {
+                if ($.inArray(acquisition.keywordId, widget.getlastValue)!=-1){
                    if (isNullOrUndefined(acquisition.error)){
                       if (widget.viewModel.onNewAcquisition !== undefined)
                          widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);

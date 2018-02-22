@@ -34,10 +34,20 @@ WidgetApi.prototype.setState = function (newState) {
          this.widget.$gridWidget.find(".fa-exclamation-triangle").attr("title", message);
          notifyWarning(message);
       }
-      else if (newState == widgetStateEnum.OK)
-         this.widget.$gridWidget.find(".panel-widget-desactivated").addClass("hidden");
       else
-      {}
+         this.widget.$gridWidget.find(".panel-widget-desactivated").addClass("hidden");
+   
+      if (newState == widgetStateEnum.Running && this.widget.waitingAcquisition.length!=0){
+         //Execute pending acquisition received during widget loading
+         this.widget.setState(widgetStateEnum.Initialization);
+         $.each(this.widget.waitingAcquisition,function (index, acquisition) {
+             //we signal the new acquisition to the widget if the widget support the method
+             if (widget.viewModel.onNewAcquisition !== undefined) {
+                 widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
+             }
+         });
+         this.widget.setState(widgetStateEnum.Running);
+      }
    }
 }
 
