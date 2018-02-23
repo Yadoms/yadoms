@@ -15,7 +15,7 @@ namespace dataAccessLayer
       CDefaultServerConfiguration::CDefaultServerConfiguration()
          : m_configuration(boost::make_shared<shared::CDataContainer>())
       {
-         m_configuration->set("firstStart", false);
+         m_configuration->set("firstStart", true);
          m_configuration->set("location.latitude", "48.853");
          m_configuration->set("location.longitude", "2.35");
          m_configuration->set("location.altitude", "0.0");
@@ -23,11 +23,6 @@ namespace dataAccessLayer
          m_configuration->set("basicAuthentication.active", false);
          m_configuration->set("basicAuthentication.user", "admin");
          m_configuration->set("basicAuthentication.password", std::string());
-
-         //m_configuration->set("webclient.language", "en"); //TODO à déplacer dans le client web
-         //m_configuration->set("webclient.advancedParametersActive", false);
-         //m_configuration->set("webclient.dateFormatString", "LLL");
-         //m_configuration->set("webclient.refreshPage", false);
       }
 
       CDefaultServerConfiguration::~CDefaultServerConfiguration()

@@ -1,100 +1,153 @@
-//Here is the list of items of server configuration
-ConfigurationManager.items = {};
-ConfigurationManager.items.serverSection = "server";
-ConfigurationManager.items.server = {};
-ConfigurationManager.items.server.firstStart = "firstStart";
-ConfigurationManager.items.server.timezone = "timezone";
-
-ConfigurationManager.items.server.locationSection = "location";
-ConfigurationManager.items.server.location = {};
-ConfigurationManager.items.server.location.latitude = "latitude";
-ConfigurationManager.items.server.location.longitude = "longitude";
-ConfigurationManager.items.server.location.altitude = "altitude";
-ConfigurationManager.items.server.location.timezone = "timezone";
-
-ConfigurationManager.items.server.basicAuthenticationSection = "basicAuthentication";
-ConfigurationManager.items.server.basicAuthentication = {};
-ConfigurationManager.items.server.basicAuthentication.active = "active";
-ConfigurationManager.items.server.basicAuthentication.user = "user";
-ConfigurationManager.items.server.basicAuthentication.password = "password";
-
-//Here is the list of items of configuration specific to this web client
-ConfigurationManager.items.webclientSection = "webclient";
-ConfigurationManager.items.webclient = {};
-ConfigurationManager.items.webclient.language = "language";
-ConfigurationManager.items.webclient.advancedParametersActive = "advancedParametersActive";
-ConfigurationManager.items.webclient.dateFormatString = "dateFormatString";
-ConfigurationManager.items.webclient.refreshPage = "refreshPage";
-
-
 /**
- * Ctor which does nothing because it is used as a static class
+ * Configuration manager : manage all configurations (server and client)
  * @constructor
  */
 function ConfigurationManager() {
-    var serverConfiguration;
-    var webClientConfiguration;
 
     this.load = function () {
         var deferredArray = [];
         deferredArray.push(loadServerConfiguration());
         deferredArray.push(loadWebClientConfiguration());
-    
+        deferredArray.push(loadDatabaseVersion());
+
         var d = new $.Deferred();
         $.whenAll(deferredArray)
             .done(d.resolve)
             .fail(d.reject);
-    
+
         return d;
     }
 
+    this.isServerFirstStart = function () {
+        return serverConfiguration[items.server.firstStart] === "true";
+    };
+
+    this.currentLanguage = function () {
+        return webClientConfiguration[items.webclient.language];
+    };
+
+    this.refreshPage = function () {
+        return webClientConfiguration[items.webclient.refreshPage] === "true";
+    };
+
+    this.databaseVersion = function () {
+        return databaseVersion;
+    };
+
+    this.saveServerFirstStartDone = function () {
+        serverConfiguration[items.server.firstStart] = "false";
+        return saveServerConfiguration();
+    };
+
+
     loadServerConfiguration = function () {
         var d = new $.Deferred();
-    
+
         RestEngine.getJson("rest/configuration/server")
             .done(function (data) {
                 serverConfiguration = JSON.parse(data);
                 d.resolve();
             })
             .fail(d.reject);
-    
+
         return d.promise();
     }
-    
-    loadWebClientConfiguration = function () {
+
+    saveServerConfiguration = function () {
+        return RestEngine.putJson("/rest/configuration/server", {
+            data: JSON.stringify(serverConfiguration)
+        });
+    }
+
+
+    loadDatabaseVersion = function () {
         var d = new $.Deferred();
-    
-        RestEngine.getJson("rest/configuration/webClient")
+
+        RestEngine.getJson("rest/configuration/DatabaseVersion")
             .done(function (data) {
-                webClientConfiguration = JSON.parse(data);
+                databaseVersion = data;
                 d.resolve();
             })
             .fail(d.reject);
-    
+
         return d.promise();
     }
 
-    this.isServerFirstStart = function () {
-        return serverConfiguration[ConfigurationManager.items.server.firstStart] === "true";
-    };
+    loadWebClientConfiguration = function () {
+        var d = new $.Deferred();
+
+        RestEngine.getJson("rest/configuration/webClient")
+            .done(function (data) {
+                loadedClientConfiguration = JSON.parse(data);
+
+                // Merge loaded configuration with default one, in case of some new fields not in loaded configuration
+                webClientConfiguration = defaultWebClientConfiguration;
+                Object.assign(webClientConfiguration, loadedClientConfiguration);
+
+                d.resolve();
+            })
+            .fail(function () {
+                webClientConfiguration = defaultWebClientConfiguration;
+                d.reject();
+            });
+
+        return d.promise();
+    }
+
+    saveWebClientConfiguration = function () {
+        return RestEngine.putJson("/rest/configuration/webClient", {
+            data: JSON.stringify(webClientConfiguration)
+        });
+    }
     
-    this.currentLanguage = function () {
-        return webClientConfiguration[ConfigurationManager.items.webclient.language] || getdefaultLanguageFromSupported();
-    };
-
-    this.refreshPage = function () {
-        return webClientConfiguration[ConfigurationManager.items.webclient.refreshPage] === "true";
-    };
-
-    getdefaultLanguageFromSupported = function() {
+    var getdefaultLanguageFromSupported = function () {
         var navigatorLanguage = navigator.language || navigator.userLanguage;
         var langs = window.getSupportedLanguages();
         return isNullOrUndefined(langs[navigatorLanguage]) ? Object.keys(langs)[0] :
-              navigatorLanguage;
-  }
+            navigatorLanguage;
+    }
+
+    
+    // Items of server configuration
+    var items = {};
+    items.serverSection = "server";
+    items.server = {};
+    items.server.firstStart = "firstStart";
+    items.server.timezone = "timezone";
+
+    items.server.locationSection = "location";
+    items.server.location = {};
+    items.server.location.latitude = "latitude";
+    items.server.location.longitude = "longitude";
+    items.server.location.altitude = "altitude";
+    items.server.location.timezone = "timezone";
+
+    items.server.basicAuthenticationSection = "basicAuthentication";
+    items.server.basicAuthentication = {};
+    items.server.basicAuthentication.active = "active";
+    items.server.basicAuthentication.user = "user";
+    items.server.basicAuthentication.password = "password";
+
+    // Items of configuration specific to this web client
+    items.webclientSection = "webclient";
+    items.webclient = {};
+    items.webclient.language = "language";
+    items.webclient.advancedParametersActive = "advancedParametersActive";
+    items.webclient.dateFormatString = "dateFormatString";
+    items.webclient.refreshPage = "refreshPage";
+    // Associated default values
+    var defaultWebClientConfiguration = {};
+    defaultWebClientConfiguration[items.webclient.language] = getdefaultLanguageFromSupported();
+    defaultWebClientConfiguration[items.webclient.advancedParametersActive] = "false";
+    defaultWebClientConfiguration[items.webclient.dateFormatString] = "LLL";
+    defaultWebClientConfiguration[items.webclient.refreshPage] = "false";
+    defaultWebClientConfiguration["newData"] = "1234";
+
+    // Main configuration instances
+    var serverConfiguration;
+    var webClientConfiguration;
+    var databaseVersion;
 }
-
-
 
 
 
