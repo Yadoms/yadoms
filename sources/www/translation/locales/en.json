@@ -463,16 +463,12 @@
             "longitude": {
               "name": "Longitude",
               "description": ""
-            },
-            "altitude": {
-              "name": "Altitude",
-              "description": ""
             }
           },
           "confirmResetToDefault": "This operation will restore all default configuration. Continue ?",
-          "configurationSaved": "System configuration successfully saved",
+          "configurationSaved": "Configuration saved",
           "defaultConfigurationRestored": "Default configuration restored",
-          "errorDuringSavingConfiguration": "An error has occurred during saving system configuration"
+          "errorDuringSavingConfiguration": "An error has occurred during saving configuration"
         },
         "user-configuration": {
           "title": "User configuration"

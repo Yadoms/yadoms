@@ -102,6 +102,7 @@ namespace web
          shared::CDataContainer CConfiguration::saveExternalConfiguration(const std::vector<std::string>& parameters,
                                                                           const std::string& requestContent) const
          {
+            //TODO ajouter une protection : on ne doit pas être capable d'écraser DatabaseVersion
             if (parameters.size() < 2)
                return CResult::GenerateError("PUT /rest/configuration request : missing section name");
             const auto section = parameters[1];

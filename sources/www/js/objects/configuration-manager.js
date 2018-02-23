@@ -34,6 +34,19 @@ function ConfigurationManager() {
         return d;
     }
 
+    this.reset = function () {
+        var deferredArray = [];
+        deferredArray.push(resetServerConfiguration());
+        deferredArray.push(resetWebClientConfiguration());
+
+        var d = new $.Deferred();
+        $.whenAll(deferredArray)
+            .done(d.resolve)
+            .fail(d.reject);
+
+        return d;
+    }
+
     this.isServerFirstStart = function () {
         return serverConfiguration[items.server.firstStart] === "true";
     };
@@ -59,11 +72,20 @@ function ConfigurationManager() {
     };
 
     this.location = function () {
-        return serverConfiguration[items.server.locationSection];
+        return {
+            active: serverConfiguration[items.server.locationSection].latitude,
+            user: serverConfiguration[items.server.locationSection].longitude,
+            password: serverConfiguration[items.server.locationSection].altitude,
+            password: serverConfiguration[items.server.locationSection].timezone
+        };
     };
 
     this.basicAuthentication = function () {
-        return serverConfiguration[items.server.basicAuthenticationSection];
+        return {
+            active: serverConfiguration[items.server.basicAuthenticationSection].active === "true",
+            user: serverConfiguration[items.server.basicAuthenticationSection].user,
+            password: serverConfiguration[items.server.basicAuthenticationSection].password
+        };
     };
 
     this.setServerFirstStartDone = function () {
@@ -120,6 +142,20 @@ function ConfigurationManager() {
         return this;
     };
 
+    this.setBasicAuthentication = function (active, user, password) {
+        var currentlyActive = serverConfiguration[items.server.basicAuthentication.active] === "true";
+
+        if (currentlyActive != active ||
+            serverConfiguration[items.server.basicAuthentication.user] != user ||
+            serverConfiguration[items.server.basicAuthentication.password] != password) {
+
+            serverConfiguration[items.server.basicAuthentication.active] = active ? "true" : "false";
+            serverConfiguration[items.server.basicAuthentication.user] = user;
+            serverConfiguration[items.server.basicAuthentication.password] = password;
+            serverConfigurationChanged = true;
+        }
+    };
+
 
     loadServerConfiguration = function () {
         var d = new $.Deferred();
@@ -140,7 +176,7 @@ function ConfigurationManager() {
         if (!serverConfigurationChanged) {
             d.resolve();
         } else {
-            d = RestEngine.putJson("/rest/configuration/server", {
+            RestEngine.putJson("/rest/configuration/server", {
                     data: JSON.stringify(serverConfiguration)
                 })
                 .done(function () {
@@ -150,6 +186,22 @@ function ConfigurationManager() {
                 .fail(d.reject);
         }
 
+        return d;
+    }
+
+    resetServerConfiguration = function () {
+        var d = new $.Deferred();
+
+        RestEngine.putJson("/rest/configuration/server/reset")
+            .done(function (newConfiguration) {
+                serverConfiguration = newConfiguration;
+                serverConfigurationChanged = false;
+                d.resolve();
+            })
+            .fail(function () {
+                console.error("failed to reset server configuration");
+                d.reject();
+            })
         return d;
     }
 
@@ -194,7 +246,7 @@ function ConfigurationManager() {
         if (!webClientConfigurationChanged) {
             d.resolve();
         } else {
-            d = RestEngine.putJson("/rest/configuration/webClient", {
+            RestEngine.putJson("/rest/configuration/webClient", {
                     data: JSON.stringify(webClientConfiguration)
                 })
                 .done(function () {
@@ -205,6 +257,21 @@ function ConfigurationManager() {
         }
 
         return d;
+    }
+
+    resetWebClientConfiguration = function () {
+        var d = new $.Deferred();
+        debugger;
+        
+        webClientConfiguration = defaultWebClientConfiguration;
+        webClientConfigurationChanged = true;
+        saveWebClientConfiguration()
+        .done(function(){
+            webClientConfigurationChanged = false;
+        })
+        .always(d.resolve);
+
+        return d;       
     }
 
     var getdefaultLanguageFromSupported = function () {
@@ -248,7 +315,6 @@ function ConfigurationManager() {
     defaultWebClientConfiguration[items.webclient.advancedParametersActive] = "false";
     defaultWebClientConfiguration[items.webclient.dateFormat] = "LLL";
     defaultWebClientConfiguration[items.webclient.refreshPage] = "false";
-    defaultWebClientConfiguration["newData"] = "1234";
 
     // Main configuration instances
     var serverConfiguration;
@@ -257,110 +323,3 @@ function ConfigurationManager() {
     var serverConfigurationChanged;
     var webClientConfigurationChanged;
 }
-
-
-
-
-
-
-
-
-
-
-
-// TODO faire le ménage (fonctions obsolètes)
-
-/**
- * Create a ConfigurationItem from json content
- * @param {Json} json The configuration item as json
- * @returns {ConfigurationItem} The newly created configuration item
- */
-//TODO utile ?
-ConfigurationManager.factory = function (json) {
-    assert(!isNullOrUndefined(json), "json must be defined");
-    assert(!isNullOrUndefined(json.section), "json.section must be defined");
-    assert(!isNullOrUndefined(json.value), "json.value must be defined");
-    assert(!isNullOrUndefined(json.lastModificationDate), "json.lastModificationDate must be defined");
-
-    return new ConfigurationItem(json.section, json.name, ConfigurationItem.decodeValue(json.value),
-        ConfigurationItem.decodeValue(json.defaultValue), json.description, json.securityAccess, json.lastModificationDate);
-};
-
-
-
-
-
-/**
- * Update a configuration item
- * @param {Object} configurationItem The configuration item to update
- * @returns {Promise} 
- */
-ConfigurationManager.updateToServer = function (configurationItem) {
-    assert(!isNullOrUndefined(configurationItem), "configurationItem must be defined");
-    return RestEngine.putJson("/rest/configuration/" + configurationItem.section + "/" + configurationItem.name, {
-        data: JSON.stringify(configurationItem)
-    });
-};
-
-
-/**
- * Save a configuration item 
- * @param {String} section The configuration item section
- * @param {String} value The value 
- * @returns {Promise} 
- */
-ConfigurationManager.createToServer = function (section, value) {
-    assert(!isNullOrUndefined(section), "section must be defined");
-    assert(!isNullOrUndefined(value), "value must be defined");
-
-    return RestEngine.putJson("/rest/configuration/" + section, {
-        data: JSON.stringify({
-            "section": section,
-            "value": value
-        })
-    });
-};
-
-ConfigurationManager.saveSystemConfiguration = function (newConfiguration) {
-    assert(!isNullOrUndefined(newConfiguration), "newConfiguration must be defined");
-    return RestEngine.putJson("/rest/configuration/server", {
-        data: JSON.stringify(newConfiguration)
-    });
-};
-
-ConfigurationManager.ServerConfiguration = function () {
-    if (isNullOrUndefined(ServerConfiguration))
-        console.error("Configuration not already loaded, call ConfigurationManager.loadServerConfiguration before accessing configuration");
-    return ServerConfiguration;
-}
-
-ConfigurationManager.resetSystemConfiguration = function () {
-    var d = new $.Deferred();
-
-    RestEngine.putJson("/rest/configuration/server/reset")
-        .done(function (newConfiguration) {
-            ServerConfiguration = newConfiguration;
-            d.resolve();
-        })
-        .fail(function () {
-            console.error("failed to reset server configuration");
-            d.reject();
-        })
-    return d;
-}
-
-ConfigurationManager.saveDefaultLanguage = function (defaultLanguage) {
-    return ConfigurationManager.createToServer(ConfigurationManager.items.systemSection,
-        ConfigurationManager.items.server.language,
-        defaultLanguage,
-        "",
-        "language used by default");
-};
-
-ConfigurationManager.saveFirstStart = function (arrayOfDeffered) {
-    return ConfigurationManager.createToServer(ConfigurationManager.items.installSection,
-        ConfigurationManager.items.install.firstStart,
-        "false",
-        "true",
-        "First start of Web app has been done");
-};

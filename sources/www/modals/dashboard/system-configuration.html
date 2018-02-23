@@ -9,7 +9,7 @@
             </div>
             <div class="modal-footer">
                   <div class="form-actions">
-                        <button id="resetSystemConfiguration" type="button" class="btn btn-default" data-i18n="common.resetToDefault"></button>
+                        <button id="resetConfiguration" type="button" class="btn btn-default" data-i18n="common.resetToDefault"></button>
                         <button type="submit" id="btn-confirm-configure-system" class="btn btn-primary" data-i18n="common.apply"></button>
                   </div>
             </div>
@@ -25,7 +25,6 @@
       var locationSectionParameters;
       var latitudeParameter;
       var longitudeParameter;
-      var altitudeParameter;
       var timezoneParameter;
 
       var basicAuthenticationSectionParameters;
@@ -43,12 +42,36 @@
             var $modalBody = $("div#dashboard-system-configuration .form-group");
             $modalBody.empty();
 
-            var d = new $.Deferred();
+            var arrayOfDeffered = [];
+
+            var supportedTimezones = [];
+            var d1 = new $.Deferred();
+            loadSupportedTimezones()
+                  .done(function (receivedSupportedTimezones) {
+                        supportedTimezones = receivedSupportedTimezones;
+                  })
+                  .always(d1.resolve);
+            arrayOfDeffered.push(d1);
 
             // Reload configuration to be sure to modify the latest version of the configuration
+            var d2 = new $.Deferred();
             configurationManager.load()
+                  .done(d2.resolve())
+                  .fail(function (error) {
+                        //an error has occurred during loading
+                        notifyError($.t(
+                                    "modals.dashboard.sub-windows.system-configuration.errorDuringLoadingConfiguration"
+                              ),
+                              error);
+                        d2.reject();
+                  });
+            arrayOfDeffered.push(d2);
+
+
+            var d = new $.Deferred();
+            $.whenAll(arrayOfDeffered)
                   .done(function () {
-                        createParameters($modalBody, i18NContext);
+                        createParameters($modalBody, i18NContext, supportedTimezones);
 
                         $modalBody.i18n();
 
@@ -68,24 +91,33 @@
                               }
                         })
 
-                        $("button#resetSystemConfiguration").unbind('click').bind('click',
-                              resetSystemConfiguration);
+                        $("button#resetConfiguration").unbind('click').bind('click',
+                              resetConfiguration);
 
                         d.resolve();
-                  })
-                  .fail(function (error) {
-                        //an error has occurred during loading
-                        notifyError($.t(
-                                    "modals.dashboard.sub-windows.system-configuration.errorDuringLoadingConfiguration"
-                              ),
-                              error);
-                        d.reject();
                   });
 
             return d.promise();
       }
 
-      function createParameters($body, i18NContext) {
+      function loadSupportedTimezones() {
+            var d = new $.Deferred();
+
+            RestEngine.getJson("/rest/system/binding/supportedTimezones")
+                  .done(function (data) {
+                        d.resolve(data);
+                  })
+                  .fail(function (error) {
+                        notifyError($.t(
+                              "modals.dashboard.sub-windows.system-configuration.errorDuringLoadingConfiguration"
+                        ), error);
+                        d.reject();
+                  });
+
+            return d;
+      }
+
+      function createParameters($body, i18NContext, supportedTimezones) {
 
             languageParameter = new EnumParameterHandler(i18NContext,
                   undefined,
@@ -95,7 +127,7 @@
                   },
                   configurationManager.currentLanguage());
 
-            createLocationSectionParameters(i18NContext);
+            createLocationSectionParameters(i18NContext, supportedTimezones);
             createBasicAuthenticationSectionParameters(i18NContext);
             createAdvancedSectionParameters(i18NContext);
 
@@ -117,12 +149,9 @@
       }
 
 
-      function createLocationSectionParameters(i18NContext) {
+      function createLocationSectionParameters(i18NContext, supportedTimezones) {
 
-            locationSectionParameters = new SectionParameterHandler(
-                  i18NContext,
-                  undefined,
-                  "location", {});
+            var currentLocation = configurationManager.location();
 
             latitudeParameter = new StringParameterHandler(i18NContext,
                   undefined,
@@ -130,8 +159,7 @@
                         "regex": "^-?[0-9]+(\.[0-9]+)?$",
                         "required": "true"
                   },
-                  configurationManager.location().latitude);
-            locationSectionParameters.configurationHandlers.push(latitudeParameter);
+                  currentLocation.latitude);
 
             longitudeParameter = new StringParameterHandler(i18NContext,
                   undefined,
@@ -139,38 +167,24 @@
                         "regex": "^-?[0-9]+(\.[0-9]+)?$",
                         "required": "true"
                   },
-                  configurationManager.location().longitude);
-            locationSectionParameters.configurationHandlers.push(longitudeParameter);
+                  currentLocation.longitude);
 
-            altitudeParameter = new StringParameterHandler(i18NContext,
+            timezoneParameter = new EnumParameterHandler(i18NContext,
                   undefined,
-                  "altitude", {
-                        "regex": "^-?[0-9]+(\.[0-9]+)?$",
-                        "required": "true"
+                  "timezone", {
+                        "values": supportedTimezones,
+                        "sort": true
                   },
-                  configurationManager.location().altitude);
-            locationSectionParameters.configurationHandlers.push(altitudeParameter);
+                  currentLocation.timezone);
 
-            var supportedTimezones = [];
-            RestEngine.getJson("/rest/system/binding/supportedTimezones")//TODO marche
-                  .done(function (data) {
-                        supportedTimezones = data;
-                  })
-                  .fail(function (error) {
-                        notifyError($.t(
-                              "modals.dashboard.sub-windows.system-configuration.errorDuringLoadingConfiguration"
-                        ), error);
-                  })
-                  .always(function () {
-                        timezoneParameter = new EnumParameterHandler(i18NContext,
-                              undefined,
-                              "timezone", {
-                                    "values": supportedTimezones,
-                                    "sort": true
-                              },
-                              configurationManager.location().timezone);
-                        locationSectionParameters.configurationHandlers.push(timezoneParameter);
-                  });
+            locationSectionParameters = new SectionParameterHandler(
+                  i18NContext,
+                  undefined,
+                  "location", {});
+
+            locationSectionParameters.configurationHandlers.push(latitudeParameter);
+            locationSectionParameters.configurationHandlers.push(longitudeParameter);
+            locationSectionParameters.configurationHandlers.push(timezoneParameter);
       }
 
       function createBasicAuthenticationSectionParameters(i18NContext) {
@@ -189,7 +203,8 @@
                   "basicAuthenticationUser", {
                         "required": "true"
                   },
-                  basicAuth.user);
+                  basicAuth.user,
+                  "username");
 
             passwordAuthenticationParameter = new StringParameterHandler(
                   i18NContext,
@@ -199,7 +214,8 @@
                         "encrypted": "true",
                         "decryptable": "false"
                   },
-                  passwordToDisplay);
+                  passwordToDisplay,
+                  "new-password");
 
             password2AuthenticationParameter = new StringParameterHandler(
                   i18NContext,
@@ -210,7 +226,8 @@
                         "decryptable": "false",
                         "mustMatchTo": passwordAuthenticationParameter.uuid
                   },
-                  passwordToDisplay);
+                  passwordToDisplay,
+                  "new-password");
 
             basicAuthenticationSectionParameters = new SectionParameterHandler(
                   i18NContext,
@@ -242,8 +259,7 @@
             refreshPageParameter = new BoolParameterHandler(
                   i18NContext,
                   undefined,
-                  "refreshPage",
-                  {},
+                  "refreshPage", {},
                   configurationManager.refreshPage()
             );
 
@@ -262,7 +278,6 @@
 
 
       function saveParameters() {
-            debugger;
             pageHasToBeReloaded = false;
 
             var arrayOfDeffered = [];
@@ -304,7 +319,7 @@
 
                         if (i18next.language !== newValue) {
                               //we change language of i18n
-                              i18next.changeLanguage(configuration[ConfigurationManager.items.system.language],
+                              i18next.changeLanguage(newValue,
                                     function () {
                                           pageHasToBeReloaded = true;
                                     });
@@ -339,15 +354,6 @@
                   })
                   .fail(d2.reject);
             arrayOfDeffered.push(d2);
-
-            var d3 = new $.Deferred();
-            altitudeParameter.getCurrentConfiguration()
-                  .done(function (alt) {
-                        altitude = alt;
-                        d3.resolve();
-                  })
-                  .fail(d3.reject);
-            arrayOfDeffered.push(d3);
 
             var d4 = new $.Deferred();
             timezoneParameter.getCurrentConfiguration()
@@ -393,7 +399,7 @@
             var d = new $.Deferred();
 
             dateFormatParameter.getCurrentConfiguration()
-                  .done(function (currentconfiguration) {
+                  .done(function (currentConfiguration) {
                         configurationManager.setDateFormat(currentConfiguration);
                         d.resolve();
                   }).fail(d.reject);
@@ -404,8 +410,8 @@
             var d = new $.Deferred();
 
             refreshPageParameter.getCurrentConfiguration()
-                  .done(function (currentconfiguration) {
-                        configurationManager.setRefreshPage(currentConfiguration.checkbox);
+                  .done(function (currentConfiguration) {
+                        configurationManager.setRefreshPage(currentConfiguration);
                         d.resolve();
                   }).fail(d.reject);
             return d;
@@ -413,7 +419,7 @@
 
       function readBasicAuthentification() {
             var d2 = new $.Deferred();
-            var currentBasicAuth = configuration[ConfigurationManager.items.system.basicAuthentication];
+            var currentBasicAuth = configurationManager.basicAuthentication();
             var newBasicAuth = {};
 
             basicAuthenticationSectionParameters.getCurrentConfiguration()
@@ -465,20 +471,21 @@
 
             var d = new $.Deferred();
             d2.promise().done(function () {
-                        configuration[ConfigurationManager.items.system.basicAuthentication] = newBasicAuth;
+                        configurationManager.setBasicAuthentication(newBasicAuth.active, newBasicAuth.user,
+                              newBasicAuth.password);
                         d.resolve();
                   })
                   .fail(d.reject);
             return d;
       }
 
-      function resetSystemConfiguration() {
+      function resetConfiguration() {
             Yadoms.modals.confirmation.loadAsync()
                   .done(function () {
                         Yadoms.showConfirmModal(Yadoms.btnKind.yesNo, null,
                               $.t("modals.dashboard.sub-windows.system-configuration.confirmResetToDefault"),
                               function () {
-                                    ConfigurationManager.resetSystemConfiguration()
+                                    configurationManager.reset()
                                           .done(function () {
                                                 $("html").i18n();
                                                 window.location.reload();
