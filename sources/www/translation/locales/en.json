@@ -60,12 +60,12 @@
       "crash": "Task crashed",
       "unknownError": "Unknown Task error",
       "end": "Task end",
-      "backup" : {
-         "prepare" : "Preparing backup...",
-         "copyfiles" : "Copying files...",
-         "compress" : "Compressing files...",
-         "clean" : "Clening...",
-         "success" : "Backup succeeded"
+      "backup": {
+        "prepare": "Preparing backup...",
+        "copyfiles": "Copying files...",
+        "compress": "Compressing files...",
+        "clean": "Clening...",
+        "success": "Backup succeeded"
       }
     },
     "database": {
@@ -451,7 +451,7 @@
             "refreshPage": {
               "name": "Keep the active page during session",
               "description": "If you refresh the browser by pressiong F5, Yadoms will automatically load in the precedent active page"
-            },            
+            },
             "location": {
               "name": "Location",
               "description": "Enter below coordonates of your city ([Site web latlong](http://www.latlong.net/))"
@@ -462,6 +462,10 @@
             },
             "longitude": {
               "name": "Longitude",
+              "description": ""
+            },
+            "altitude": {
+              "name": "Altitude",
               "description": ""
             }
           },
@@ -631,9 +635,9 @@
         "maintenance": {
           "title": "Maintenance",
           "backup": "Start a database backup",
-          "deleteAll" : "Delete all backups ?",
-          "deleteAllConfirmTitle" : "Confirm delete",
-          "deleteAllConfirm" : "Are you sure you want to delete all backups ?",
+          "deleteAll": "Delete all backups ?",
+          "deleteAllConfirmTitle": "Confirm delete",
+          "deleteAllConfirm": "Are you sure you want to delete all backups ?",
           "backuplist": {
             "date": "Date",
             "size": "File size",
@@ -969,7 +973,7 @@
       "errorDuringGettingDeviceInformation": "Error during getting device information",
       "loadingWidgetsError": "Error during the loading of a widget",
       "widgetDisabled": "The widget {{widgetName}} have been disabled because of the configuration is not correct (deleted/missing equipment configured)",
-      "unknownError" : "Unknow error"
+      "unknownError": "Unknow error"
     },
     "widgetPackageManager": {
       "incorrectPackage": "Incorrect package",

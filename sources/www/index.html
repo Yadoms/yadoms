@@ -240,7 +240,7 @@
                                         notifyInformation($.t(
                                             "mainPage.actions.firstRunConfiguration"));
 
-                                        configurationManager.saveServerFirstStartDone();
+                                        configurationManager.setServerFirstStartDone().save();
 
                                         processFirstStart();
                                     }

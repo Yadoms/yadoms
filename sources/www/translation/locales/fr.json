@@ -463,6 +463,10 @@
             "longitude": {
               "name": "Longitude",
               "description": ""
+            },
+            "altitude": {
+              "name": "Altitude",
+              "description": ""
             }
           },
           "confirmResetToDefault": "Cette opération va restaurer la configuration par défaut. Continuer ?",

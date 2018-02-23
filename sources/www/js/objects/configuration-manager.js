@@ -5,10 +5,26 @@
 function ConfigurationManager() {
 
     this.load = function () {
+        serverConfigurationChanged = false;
+        webClientConfigurationChanged = false;
+
         var deferredArray = [];
         deferredArray.push(loadServerConfiguration());
         deferredArray.push(loadWebClientConfiguration());
         deferredArray.push(loadDatabaseVersion());
+
+        var d = new $.Deferred();
+        $.whenAll(deferredArray)
+            .done(d.resolve)
+            .fail(d.reject);
+
+        return d;
+    }
+
+    this.save = function () {
+        var deferredArray = [];
+        deferredArray.push(saveServerConfiguration());
+        deferredArray.push(saveWebClientConfiguration());
 
         var d = new $.Deferred();
         $.whenAll(deferredArray)
@@ -26,6 +42,10 @@ function ConfigurationManager() {
         return webClientConfiguration[items.webclient.language];
     };
 
+    this.dateFormat = function () {
+        return webClientConfiguration[items.webclient.dateFormat];
+    };
+
     this.refreshPage = function () {
         return webClientConfiguration[items.webclient.refreshPage] === "true";
     };
@@ -34,9 +54,70 @@ function ConfigurationManager() {
         return databaseVersion;
     };
 
-    this.saveServerFirstStartDone = function () {
-        serverConfiguration[items.server.firstStart] = "false";
-        return saveServerConfiguration();
+    this.advancedParametersActive = function () {
+        return webClientConfiguration[items.webclient.advancedParametersActive] === "true";
+    };
+
+    this.location = function () {
+        return serverConfiguration[items.server.locationSection];
+    };
+
+    this.basicAuthentication = function () {
+        return serverConfiguration[items.server.basicAuthenticationSection];
+    };
+
+    this.setServerFirstStartDone = function () {
+        if (serverConfiguration[items.server.firstStart] !== "false") {
+            serverConfiguration[items.server.firstStart] = "false";
+            serverConfigurationChanged = true;
+        }
+        return this;
+    };
+
+    this.setCurrentLanguage = function (value) {
+        if (webClientConfiguration[items.webclient.language] != value) {
+            webClientConfiguration[items.webclient.language] = value;
+            webClientConfigurationChanged = true;
+        }
+    };
+
+    this.setCurrentLocation = function (latitude, longitude, altitude, timezone) {
+        if (serverConfiguration[items.server.location.latitude] != latitude ||
+            serverConfiguration[items.server.location.longitude] != longitude ||
+            serverConfiguration[items.server.location.altitude] != altitude ||
+            serverConfiguration[items.server.location.timezone] != timezone) {
+
+            serverConfiguration[items.server.location.latitude] = latitude;
+            serverConfiguration[items.server.location.longitude] = longitude;
+            serverConfiguration[items.server.location.altitude] = altitude;
+            serverConfiguration[items.server.location.timezone] = timezone;
+            serverConfigurationChanged = true;
+        }
+    };
+
+    this.setAdvancedParametersActive = function (active) {
+        var currentlyActive = webClientConfiguration[items.webclient.advancedParametersActive] === "true";
+        if (active !== currentlyActive) {
+            webClientConfiguration[items.webclient.advancedParametersActive] = active ? "true" : "false";
+            webClientConfigurationChanged = true;
+        }
+        return this;
+    };
+
+    this.setDateFormat = function (value) {
+        if (webClientConfiguration[items.webclient.dateFormat] != value) {
+            webClientConfiguration[items.webclient.dateFormat] = value;
+            webClientConfigurationChanged = true;
+        }
+    };
+
+    this.setRefreshPage = function (active) {
+        var currentlyActive = webClientConfiguration[items.webclient.refreshPage] === "true";
+        if (active !== currentlyActive) {
+            webClientConfiguration[items.webclient.refreshPage] = active ? "true" : "false";
+            webClientConfigurationChanged = true;
+        }
+        return this;
     };
 
 
@@ -54,9 +135,22 @@ function ConfigurationManager() {
     }
 
     saveServerConfiguration = function () {
-        return RestEngine.putJson("/rest/configuration/server", {
-            data: JSON.stringify(serverConfiguration)
-        });
+        var d = new $.Deferred();
+
+        if (!serverConfigurationChanged) {
+            d.resolve();
+        } else {
+            d = RestEngine.putJson("/rest/configuration/server", {
+                    data: JSON.stringify(serverConfiguration)
+                })
+                .done(function () {
+                    serverConfigurationChanged = false;
+                    d.resolve();
+                })
+                .fail(d.reject);
+        }
+
+        return d;
     }
 
 
@@ -95,11 +189,24 @@ function ConfigurationManager() {
     }
 
     saveWebClientConfiguration = function () {
-        return RestEngine.putJson("/rest/configuration/webClient", {
-            data: JSON.stringify(webClientConfiguration)
-        });
+        var d = new $.Deferred();
+
+        if (!webClientConfigurationChanged) {
+            d.resolve();
+        } else {
+            d = RestEngine.putJson("/rest/configuration/webClient", {
+                    data: JSON.stringify(webClientConfiguration)
+                })
+                .done(function () {
+                    webClientConfigurationChanged = false;
+                    d.resolve();
+                })
+                .fail(d.reject);
+        }
+
+        return d;
     }
-    
+
     var getdefaultLanguageFromSupported = function () {
         var navigatorLanguage = navigator.language || navigator.userLanguage;
         var langs = window.getSupportedLanguages();
@@ -107,7 +214,7 @@ function ConfigurationManager() {
             navigatorLanguage;
     }
 
-    
+
     // Items of server configuration
     var items = {};
     items.serverSection = "server";
@@ -133,13 +240,13 @@ function ConfigurationManager() {
     items.webclient = {};
     items.webclient.language = "language";
     items.webclient.advancedParametersActive = "advancedParametersActive";
-    items.webclient.dateFormatString = "dateFormatString";
+    items.webclient.dateFormat = "dateFormat";
     items.webclient.refreshPage = "refreshPage";
     // Associated default values
     var defaultWebClientConfiguration = {};
     defaultWebClientConfiguration[items.webclient.language] = getdefaultLanguageFromSupported();
     defaultWebClientConfiguration[items.webclient.advancedParametersActive] = "false";
-    defaultWebClientConfiguration[items.webclient.dateFormatString] = "LLL";
+    defaultWebClientConfiguration[items.webclient.dateFormat] = "LLL";
     defaultWebClientConfiguration[items.webclient.refreshPage] = "false";
     defaultWebClientConfiguration["newData"] = "1234";
 
@@ -147,6 +254,8 @@ function ConfigurationManager() {
     var serverConfiguration;
     var webClientConfiguration;
     var databaseVersion;
+    var serverConfigurationChanged;
+    var webClientConfigurationChanged;
 }
 
 

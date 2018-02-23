@@ -344,7 +344,7 @@ Blockly.Yadoms.GetResult = function (language, callback) {
  */
 Blockly.Yadoms.GenerateHelpUrl = function (blockName) {
     var url = "help.html?product=blockly";
-    url += "&lang=" + configurationManager.SystemConfiguration()[configurationManager.items.system.language];
+    url += "&lang=" + configurationManager.currentLanguage();
     url += "#" + blockName;
     return url;
 };

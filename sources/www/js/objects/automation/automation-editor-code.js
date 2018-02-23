@@ -109,7 +109,7 @@ AutomationEditorCode.prototype.applyScript = function() {
  */
 AutomationEditorCode.prototype.showDoc = function () {
     var url = "help.html";
-    url += "?lang=" + configurationManager.SystemConfiguration()[configurationManager.items.system.language];
+    url += "?lang=" + configurationManager.currentLanguage();
     url += "&helpUrl=" + encodeURIComponent(this.getApiDocUrl());
     window.open(url);
 };

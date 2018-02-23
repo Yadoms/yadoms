@@ -23,7 +23,7 @@ DateTimeFormatter.isoDateToDate = function (isoDate) {
 DateTimeFormatter.isoDateToString = function (isoDate) {
 
    var d = DateTimeFormatter.isoDateToDate(isoDate);
-   var format = configurationManager.SystemConfiguration()[configurationManager.items.system.dateFormatString];
+   var format = configurationManager.dateFormat();
 
    return d.format(format);
 };
@@ -40,7 +40,7 @@ DateTimeFormatter.dateToString = function (date, optionalFormat) {
    assert(d.isValid(), "Date given " + date + " is not valid");
    var format = optionalFormat;
    if (!format)
-      format = configurationManager.SystemConfiguration()[configurationManager.items.system.dateFormatString];
+      format = configurationManager.dateFormat();
 
    return d.format(format);
 };
