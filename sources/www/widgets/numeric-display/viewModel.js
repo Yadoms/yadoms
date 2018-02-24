@@ -29,32 +29,48 @@ function numericDisplayViewModel() {
     };
 
     this.configurationChanged = function () {
-        var self = this;
+       var self = this;
 
-        //we get the unit of the keyword
-        self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
-            self.unit($.t(keyword.units));
-        });
-
-        //we register keyword new acquisition
-        self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
+       try{
+          self.shouldBeVisible(parseBool(self.widget.configuration.dateDisplay));
+       }
+       catch(error)
+       {
+          self.shouldBeVisible(false);
+          console.warn (error);
+       }
         
-        //we fill the deviceId of the battery indicator
-        self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
+       if (!isNullOrUndefined(self.widget.configuration.precision))
+          self.precision = parseInt(self.widget.configuration.precision, 10);
+       else
+          self.precision = 1;             
         
-        try{
-           self.shouldBeVisible(parseBool(self.widget.configuration.dateDisplay));
-        }
-        catch(error)
-        {
-           self.shouldBeVisible(false);
-           console.warn (error);
-        }
+       var d = new $.Deferred();
         
-        if (!isNullOrUndefined(self.widget.configuration.precision))
-           self.precision = parseInt(self.widget.configuration.precision, 10);
-        else
-           self.precision = 1;     
+       //we register keyword new acquisition
+       self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
+        
+       //we fill the deviceId of the battery indicator
+       self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);        
+        
+       //we get the unit of the keyword
+       self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
+          self.unit($.t(keyword.units));
+           
+          // If no unit, we hide the unit display
+          if (keyword.units === "data.units.noUnit")
+             self.widgetApi.find(".unit").addClass("hidden");
+          else
+             self.widgetApi.find(".unit").removeClass("hidden");
+          
+          d.resolve();
+       })
+       .fail(function (error) {
+          notifyError($.t("widgets/chart:errorInitialization"), error);
+          d.reject();
+       });
+       
+       return d.promise();
     }
 
     /**
@@ -76,12 +92,14 @@ function numericDisplayViewModel() {
             else 
                self.data("-");
             
+            self.widgetApi.fitText();
+            
             if (self.shouldBeVisible())
             {
                if (data.date!=="")
                   self.lastReceiveDate(moment(data.date).calendar().toString());
                else
-                  self.lastReceiveDate($.t("widgets.numeric-display:NoAcquisition"));
+                  self.lastReceiveDate($.t("widgets/numeric-display:NoAcquisition"));
             }
         }
     };
