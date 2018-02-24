@@ -37,18 +37,14 @@ WidgetApi.prototype.setState = function (newState) {
       else
          this.widget.$gridWidget.find(".panel-widget-desactivated").addClass("hidden");
    
-      // TODO : comprendre pourquoi, j'ai une valeur qui se trouve là dedans !
-      //
-      //
       if (newState == widgetStateEnum.Running && this.widget.waitingAcquisition.length!=0){
          //Execute pending acquisition received during widget loading
          this.widget.setState(widgetStateEnum.Initialization);
          widget = this.widget;
-         console.log ("this.widget :", this.widget);
          $.each(this.widget.waitingAcquisition,function (index, acquisition) {
              //we signal the new acquisition to the widget if the widget support the method
-             if (this.widget.viewModel.onNewAcquisition !== undefined) {
-                 this.widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
+             if (widget.viewModel.onNewAcquisition !== undefined) {
+                 widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
              }
          });
          this.widget.setState(widgetStateEnum.Running);
