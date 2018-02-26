@@ -102,10 +102,12 @@ namespace web
          shared::CDataContainer CConfiguration::saveExternalConfiguration(const std::vector<std::string>& parameters,
                                                                           const std::string& requestContent) const
          {
-            //TODO ajouter une protection : on ne doit pas être capable d'écraser DatabaseVersion
             if (parameters.size() < 2)
                return CResult::GenerateError("PUT /rest/configuration request : missing section name");
             const auto section = parameters[1];
+
+            if (section == "DatabaseVersion")
+               return CResult::GenerateError("DatabaseVersion section name forbidden (reserved for Yadoms internal use)");
 
             try
             {
@@ -120,7 +122,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in updating a configuration value");
+               return CResult::GenerateError("Unknown exception in updating a configuration value");
             }
          }
       } //namespace service

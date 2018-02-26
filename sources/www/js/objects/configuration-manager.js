@@ -73,10 +73,10 @@ function ConfigurationManager() {
 
     this.location = function () {
         return {
-            active: serverConfiguration[items.server.locationSection].latitude,
-            user: serverConfiguration[items.server.locationSection].longitude,
-            password: serverConfiguration[items.server.locationSection].altitude,
-            password: serverConfiguration[items.server.locationSection].timezone
+            latitude: serverConfiguration[items.server.locationSection].latitude,
+            longitude: serverConfiguration[items.server.locationSection].longitude,
+            altitude: serverConfiguration[items.server.locationSection].altitude,
+            timezone: serverConfiguration[items.server.locationSection].timezone
         };
     };
 
