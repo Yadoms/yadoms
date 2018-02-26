@@ -430,7 +430,7 @@
                         if (newBasicAuth.active !== currentBasicAuth.active)
                               pageHasToBeReloaded = true;
 
-                        if (newBasicAuth.active === "true") {
+                        if (newBasicAuth.active) {
                               //the authentication method is active
                               userAuthenticationParameter.getCurrentConfiguration()
                                     .done(function (userConfig) {

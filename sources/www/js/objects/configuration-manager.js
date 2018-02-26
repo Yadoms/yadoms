@@ -51,16 +51,47 @@ function ConfigurationManager() {
         return serverConfiguration[items.server.firstStart] === "true";
     };
 
+    this.setServerFirstStartDone = function () {
+        if (serverConfiguration[items.server.firstStart] !== "false") {
+            serverConfiguration[items.server.firstStart] = "false";
+            serverConfigurationChanged = true;
+        }
+        return this;
+    };
+
     this.currentLanguage = function () {
         return webClientConfiguration[items.webclient.language];
+    };
+
+    this.setCurrentLanguage = function (value) {
+        if (webClientConfiguration[items.webclient.language] != value) {
+            webClientConfiguration[items.webclient.language] = value;
+            webClientConfigurationChanged = true;
+        }
     };
 
     this.dateFormat = function () {
         return webClientConfiguration[items.webclient.dateFormat];
     };
 
+    this.setDateFormat = function (value) {
+        if (webClientConfiguration[items.webclient.dateFormat] != value) {
+            webClientConfiguration[items.webclient.dateFormat] = value;
+            webClientConfigurationChanged = true;
+        }
+    };
+
     this.refreshPage = function () {
         return webClientConfiguration[items.webclient.refreshPage] === "true";
+    };
+
+    this.setRefreshPage = function (active) {
+        var currentlyActive = webClientConfiguration[items.webclient.refreshPage] === "true";
+        if (active !== currentlyActive) {
+            webClientConfiguration[items.webclient.refreshPage] = active ? "true" : "false";
+            webClientConfigurationChanged = true;
+        }
+        return this;
     };
 
     this.databaseVersion = function () {
@@ -71,6 +102,15 @@ function ConfigurationManager() {
         return webClientConfiguration[items.webclient.advancedParametersActive] === "true";
     };
 
+    this.setAdvancedParametersActive = function (active) {
+        var currentlyActive = webClientConfiguration[items.webclient.advancedParametersActive] === "true";
+        if (active !== currentlyActive) {
+            webClientConfiguration[items.webclient.advancedParametersActive] = active ? "true" : "false";
+            webClientConfigurationChanged = true;
+        }
+        return this;
+    };
+
     this.location = function () {
         return {
             latitude: serverConfiguration[items.server.locationSection].latitude,
@@ -78,29 +118,6 @@ function ConfigurationManager() {
             altitude: serverConfiguration[items.server.locationSection].altitude,
             timezone: serverConfiguration[items.server.locationSection].timezone
         };
-    };
-
-    this.basicAuthentication = function () {
-        return {
-            active: serverConfiguration[items.server.basicAuthenticationSection].active === "true",
-            user: serverConfiguration[items.server.basicAuthenticationSection].user,
-            password: serverConfiguration[items.server.basicAuthenticationSection].password
-        };
-    };
-
-    this.setServerFirstStartDone = function () {
-        if (serverConfiguration[items.server.firstStart] !== "false") {
-            serverConfiguration[items.server.firstStart] = "false";
-            serverConfigurationChanged = true;
-        }
-        return this;
-    };
-
-    this.setCurrentLanguage = function (value) {
-        if (webClientConfiguration[items.webclient.language] != value) {
-            webClientConfiguration[items.webclient.language] = value;
-            webClientConfigurationChanged = true;
-        }
     };
 
     this.setCurrentLocation = function (latitude, longitude, altitude, timezone) {
@@ -117,41 +134,24 @@ function ConfigurationManager() {
         }
     };
 
-    this.setAdvancedParametersActive = function (active) {
-        var currentlyActive = webClientConfiguration[items.webclient.advancedParametersActive] === "true";
-        if (active !== currentlyActive) {
-            webClientConfiguration[items.webclient.advancedParametersActive] = active ? "true" : "false";
-            webClientConfigurationChanged = true;
-        }
-        return this;
-    };
-
-    this.setDateFormat = function (value) {
-        if (webClientConfiguration[items.webclient.dateFormat] != value) {
-            webClientConfiguration[items.webclient.dateFormat] = value;
-            webClientConfigurationChanged = true;
-        }
-    };
-
-    this.setRefreshPage = function (active) {
-        var currentlyActive = webClientConfiguration[items.webclient.refreshPage] === "true";
-        if (active !== currentlyActive) {
-            webClientConfiguration[items.webclient.refreshPage] = active ? "true" : "false";
-            webClientConfigurationChanged = true;
-        }
-        return this;
+    this.basicAuthentication = function () {
+        return {
+            active: serverConfiguration[items.server.basicAuthenticationSection].active === "true",
+            user: serverConfiguration[items.server.basicAuthenticationSection].user,
+            password: serverConfiguration[items.server.basicAuthenticationSection].password
+        };
     };
 
     this.setBasicAuthentication = function (active, user, password) {
-        var currentlyActive = serverConfiguration[items.server.basicAuthentication.active] === "true";
+        var currentlyActive = serverConfiguration[items.server.basicAuthenticationSection].active === "true";
 
         if (currentlyActive != active ||
-            serverConfiguration[items.server.basicAuthentication.user] != user ||
-            serverConfiguration[items.server.basicAuthentication.password] != password) {
+            serverConfiguration[items.server.basicAuthenticationSection].user != user ||
+            serverConfiguration[items.server.basicAuthenticationSection].password != password) {
 
-            serverConfiguration[items.server.basicAuthentication.active] = active ? "true" : "false";
-            serverConfiguration[items.server.basicAuthentication.user] = user;
-            serverConfiguration[items.server.basicAuthentication.password] = password;
+            serverConfiguration[items.server.basicAuthenticationSection].active = active ? "true" : "false";
+            serverConfiguration[items.server.basicAuthenticationSection].user = user;
+            serverConfiguration[items.server.basicAuthenticationSection].password = password;
             serverConfigurationChanged = true;
         }
     };
@@ -260,8 +260,7 @@ function ConfigurationManager() {
     }
 
     resetWebClientConfiguration = function () {
-        var d = new $.Deferred();
-        debugger;
+        var d = new $.Deferred();        
         
         webClientConfiguration = defaultWebClientConfiguration;
         webClientConfigurationChanged = true;
