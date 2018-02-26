@@ -209,7 +209,7 @@ function ConfigurationManager() {
     loadDatabaseVersion = function () {
         var d = new $.Deferred();
 
-        RestEngine.getJson("rest/configuration/DatabaseVersion")
+        RestEngine.getJson("rest/configuration/databaseVersion")
             .done(function (data) {
                 databaseVersion = data;
                 d.resolve();
@@ -222,7 +222,7 @@ function ConfigurationManager() {
     loadWebClientConfiguration = function () {
         var d = new $.Deferred();
 
-        RestEngine.getJson("rest/configuration/webClient")
+        RestEngine.getJson("rest/configuration/external/webClient")
             .done(function (data) {
                 loadedClientConfiguration = JSON.parse(data);
 
@@ -246,7 +246,7 @@ function ConfigurationManager() {
         if (!webClientConfigurationChanged) {
             d.resolve();
         } else {
-            RestEngine.putJson("/rest/configuration/webClient", {
+            RestEngine.putJson("/rest/configuration/external/webClient", {
                     data: JSON.stringify(webClientConfiguration)
                 })
                 .done(function () {

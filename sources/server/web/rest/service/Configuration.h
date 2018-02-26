@@ -27,6 +27,9 @@ namespace web
             shared::CDataContainer saveServerConfiguration(const std::vector<std::string>& parameters,
                                                            const std::string& requestContent) const;
 
+            shared::CDataContainer getDatabaseVersion(const std::vector<std::string>& parameters,
+                                                      const std::string& requestContent) const;
+
             shared::CDataContainer getExternalConfiguration(const std::vector<std::string>& parameters,
                                                             const std::string& requestContent) const;
             shared::CDataContainer saveExternalConfiguration(const std::vector<std::string>& parameters,

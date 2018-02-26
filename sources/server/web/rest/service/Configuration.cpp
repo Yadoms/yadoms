@@ -31,8 +31,10 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("server")("reset"), CConfiguration::resetServerConfiguration);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("server"), CConfiguration::saveServerConfiguration);
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CConfiguration::getExternalConfiguration);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*"), CConfiguration::saveExternalConfiguration);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("databaseVersion"), CConfiguration::getDatabaseVersion);
+
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("external")("*"), CConfiguration::getExternalConfiguration);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("external")("*"), CConfiguration::saveExternalConfiguration);
          }
 
          shared::CDataContainer CConfiguration::resetServerConfiguration(const std::vector<std::string>& parameters,
@@ -80,13 +82,26 @@ namespace web
             }
          }
 
+         shared::CDataContainer CConfiguration::getDatabaseVersion(const std::vector<std::string>& parameters,
+                                                                   const std::string& requestContent) const
+         {
+            try
+            {
+               return CResult::GenerateSuccess(m_configurationManager->getDatabaseVersion());
+            }
+            catch (shared::exception::CEmptyResult&)
+            {
+               return CResult::GenerateError("Fail to get server configuration");
+            }
+         }
+
 
          shared::CDataContainer CConfiguration::getExternalConfiguration(const std::vector<std::string>& parameters,
                                                                          const std::string& requestContent) const
          {
-            if (parameters.size() < 2)
+            if (parameters.size() < 3)
                return CResult::GenerateError("GET /rest/configuration request : missing section name");
-            const auto section = parameters[1];
+            const auto section = parameters[2];
 
             try
             {
@@ -102,12 +117,9 @@ namespace web
          shared::CDataContainer CConfiguration::saveExternalConfiguration(const std::vector<std::string>& parameters,
                                                                           const std::string& requestContent) const
          {
-            if (parameters.size() < 2)
+            if (parameters.size() < 3)
                return CResult::GenerateError("PUT /rest/configuration request : missing section name");
-            const auto section = parameters[1];
-
-            if (section == "DatabaseVersion")
-               return CResult::GenerateError("DatabaseVersion section name forbidden (reserved for Yadoms internal use)");
+            const auto section = parameters[2];
 
             try
             {

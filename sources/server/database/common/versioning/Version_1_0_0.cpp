@@ -73,7 +73,7 @@ namespace database
                                          CConfiguration2Table::getSectionColumnName(),
                                          CConfiguration2Table::getValueColumnName(),
                                          CConfiguration2Table::getLastModificationDateColumnName()).
-                     Values("DatabaseVersion",
+                     Values("databaseVersion",
                             newVersion.toString(),
                             insertDate);
             requester->queryStatement(*qInsert);

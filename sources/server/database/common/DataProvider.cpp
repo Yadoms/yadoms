@@ -35,7 +35,7 @@ namespace database
                auto qVersion = m_databaseRequester->newQuery();
                qVersion->Select(CConfiguration2Table::getValueColumnName()).
                          From(CConfiguration2Table::getTableName()).
-                         Where(CConfiguration2Table::getSectionColumnName(), CQUERY_OP_EQUAL, "DatabaseVersion");
+                         Where(CConfiguration2Table::getSectionColumnName(), CQUERY_OP_EQUAL, "databaseVersion");
 
                adapters::CSingleValueAdapter<std::string> adapter;
                m_databaseRequester->queryEntities(&adapter, *qVersion);

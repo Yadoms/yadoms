@@ -45,6 +45,12 @@ namespace dataAccessLayer
       virtual void resetServerConfiguration() = 0;
 
       //--------------------------------------------------------------
+      /// \brief      Get database version
+      /// \return     The current database version
+      //--------------------------------------------------------------
+      virtual std::string getDatabaseVersion() const = 0;
+
+      //--------------------------------------------------------------
       /// \brief      Subscribe to system configuration changes
       //--------------------------------------------------------------
       virtual void subscribeOnServerConfigurationChanged(

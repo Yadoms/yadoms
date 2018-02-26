@@ -47,48 +47,49 @@ namespace database
             try
             {
                YADOMS_LOG(information) << "Upgrading database (4.1.0 -> 4.2.0)...";
+               const auto insertDate = shared::currentTime::Provider().now();
 
                // The aims of this update is to reorganize configuration.
                // We want now to have :
                //   - a record containing the server configuration (configuration associated to the server)
                //   - a record by GUI kind
 
-               // First load actual values
-               const auto firstStart = loadFirstStart(requester);
-               const auto location = convertLocation(loadLocation(requester));
-               const auto language = loadLanguage(requester);
-               const auto advancedParameters = loadAdvancedParameters(requester);
-               const auto dateFormatString = loadDateFormatString(requester);
-               const auto refreshPage = loadRefreshPage(requester);
-               const auto basicAuthentication = convertBasicAuthentication(loadBasicAuthentication(requester));
+               // The table "Configuration" doesn't exist if it is the first server start
+               if (requester->checkTableExists(CDatabaseTable("Configuration")))
+               {
+                  // First load actual values
+                  const auto firstStart = loadFirstStart(requester);
+                  const auto location = convertLocation(loadLocation(requester));
+                  const auto language = loadLanguage(requester);
+                  const auto advancedParameters = loadAdvancedParameters(requester);
+                  const auto dateFormatString = loadDateFormatString(requester);
+                  const auto refreshPage = loadRefreshPage(requester);
+                  const auto basicAuthentication = convertBasicAuthentication(loadBasicAuthentication(requester));
 
-               // Reorganize
-               // - The server configuration
-               //TODO ne pas écrire la conf server si elle n'existe pas (ou écrire celle par défaut fournie par CConfigurationManager)
-               shared::CDataContainer serverConfiguration;
-               serverConfiguration.set("firstStart", firstStart);
-               serverConfiguration.set("location", location);
-               serverConfiguration.set("basicAuthentication", basicAuthentication);
-               // - The GUI configuration (actually only one known GUI client kind)
-               shared::CDataContainer webClientConfiguration;
-               webClientConfiguration.set("language", language);
-               webClientConfiguration.set("advancedParametersActive", advancedParameters);
-               // Boolean values were recorded as strings in old database
-               webClientConfiguration.set("dateFormatString", dateFormatString);
-               webClientConfiguration.set("refreshPage", refreshPage);
+                  // Reorganize
+                  // - The server configuration
+                  shared::CDataContainer serverConfiguration;
+                  serverConfiguration.set("firstStart", firstStart);
+                  serverConfiguration.set("location", location);
+                  serverConfiguration.set("basicAuthentication", basicAuthentication);
+                  // - The GUI configuration (actually only one known GUI client kind)
+                  shared::CDataContainer webClientConfiguration;
+                  webClientConfiguration.set("language", language);
+                  webClientConfiguration.set("advancedParametersActive", advancedParameters);
+                  webClientConfiguration.set("dateFormatString", dateFormatString);
+                  webClientConfiguration.set("refreshPage", refreshPage);
 
 
-               // Create the new configuration table (keep the old in case of use downgrades his Yadoms version)
-               if (requester->transactionSupport())
-                  requester->transactionBegin();
+                  // Create the new configuration table (keep the old in case of use downgrades his Yadoms version)
+                  if (requester->transactionSupport())
+                     requester->transactionBegin();
 
-               requester->createTableIfNotExists(CConfiguration2Table::getTableName(),
-                                                 requester->getTableCreationScriptProvider()->getTableConfiguration());
+                  requester->createTableIfNotExists(CConfiguration2Table::getTableName(),
+                                                    requester->getTableCreationScriptProvider()->getTableConfiguration());
 
-               const auto insertDate = shared::currentTime::Provider().now();
-
-               insertConfigurationValue(requester, "server", serverConfiguration, insertDate);
-               insertConfigurationValue(requester, "webClient", webClientConfiguration, insertDate);
+                  insertConfigurationValue(requester, "server", serverConfiguration, insertDate);
+                  insertConfigurationValue(requester, "external.webClient", webClientConfiguration, insertDate);
+               }
 
                updateDatabaseVersion(requester, Version, insertDate);
 
@@ -179,10 +180,10 @@ namespace database
             shared::CDataContainer oldLocationContainer(oldLocation);
             shared::CDataContainer newLocation;
 
-            // Boolean values were recorded as strings in old database
+            newLocation.set("location.status", "userDefined");
             newLocation.set("latitude", oldLocationContainer.get<std::string>("latitude"));
             newLocation.set("longitude", oldLocationContainer.get<std::string>("longitude"));
-            newLocation.set("altitude", oldLocationContainer.get<std::string>("altitude")); // Altitude is initialy in native type (float), getting it as string convert it to string
+            newLocation.set("altitude", oldLocationContainer.get<std::string>("altitude"));
             newLocation.set("timezone", oldLocationContainer.get<std::string>("timezone"));
 
             return newLocation;

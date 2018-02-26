@@ -17,6 +17,7 @@ namespace dataAccessLayer
       boost::shared_ptr<const shared::CDataContainer> getServerConfiguration() const override;
       void saveServerConfiguration(const shared::CDataContainer& newConfiguration) override;
       void resetServerConfiguration() override;
+      std::string getDatabaseVersion() const override;
       void subscribeOnServerConfigurationChanged(
          boost::function1<void, boost::shared_ptr<const shared::CDataContainer>> onServerConfigurationChangedFct) override;
       shared::CDataContainer CConfigurationManager::getLocation() const override;
