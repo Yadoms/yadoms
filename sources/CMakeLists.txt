@@ -738,8 +738,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/adapters/SqlExtension.hpp
 	server/database/common/requesters/Plugin.h
 	server/database/common/requesters/Plugin.cpp
-	server/database/common/requesters/Configuration2.h
-	server/database/common/requesters/Configuration2.cpp
+	server/database/common/requesters/Configuration.h
+	server/database/common/requesters/Configuration.cpp
 	server/database/common/requesters/Keyword.h
 	server/database/common/requesters/Keyword.cpp
 	server/database/common/requesters/Device.h

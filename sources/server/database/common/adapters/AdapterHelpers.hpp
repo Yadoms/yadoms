@@ -29,18 +29,18 @@
 //             DECLARE_ADAPTER_HEADER(Configuration)
 //
 //    Ouptut :
-//             class CConfigurationAdapter : public ISQLiteResultAdapter<boost::shared_ptr<CConfiguration2> >
+//             class CConfigurationAdapter : public ISQLiteResultAdapter<boost::shared_ptr<CConfiguration> >
 //             {
 //             public:
 //             	CConfigurationAdapter ();
 //             	virtual~ CConfigurationAdapter();
 //             	bool adapt(sqlite3_stmt * pStatement);
-//             	std::vector<boost::shared_ptr<CConfiguration2> > getResults()
+//             	std::vector<boost::shared_ptr<CConfiguration> > getResults()
 //             	{
 //             		return m_results;
 //             	}
 //             private:
-//             	std::vector<boost::shared_ptr<CConfiguration2> > m_results;
+//             	std::vector<boost::shared_ptr<CConfiguration> > m_results;
 //             };
 //
 // ==========================================================================
@@ -48,7 +48,7 @@
 // ==========================================================================
 //
 //
-// Example : CConfiguration2 entity => implementation of class
+// Example : CConfiguration entity => implementation of class
 //
 //   Input :
 //             DECLARE_ADAPTER_IMPLEMENTATION(Configuration,
@@ -57,7 +57,7 @@
 //                ((Value)(std::string)(""))
 //                ((DefaultValue)(std::string)(""))
 //                ((Description)(std::string)(""))
-//                ((SecurityAccess)(CConfiguration2::ESecurityAccess)(CConfiguration2::kNone)(int))
+//                ((SecurityAccess)(CConfiguration::ESecurityAccess)(CConfiguration::kNone)(int))
 //                ((LastModificationDate)(boost::posix_time::ptime)(currentTime::Provider().now()))
 //                )
 //
@@ -81,7 +81,7 @@
 //
 //                		while (sqlite3_step(pStatement) == SQLITE_ROW)
 //                		{
-//                			boost::shared_ptr<CConfiguration2> newEntity(new CConfiguration2());
+//                			boost::shared_ptr<CConfiguration> newEntity(new CConfiguration());
 //                			for (int nCol = 0; nCol < nCols; nCol++)
 //                			{
 //                				if(boost::iequals(CConfigurationTable::getSectionColumnName(), cols[nCol]))
@@ -122,9 +122,9 @@
 //                				else if(boost::iequals(CConfigurationTable::getSecurityAccessColumnName(), cols[nCol]))
 //                				{
 //                					if(sqlite3_column_type(pStatement, nCol) == SQLITE_NULL)
-//                						newEntity->setSecurityAccess (CConfiguration2::kNone );
+//                						newEntity->setSecurityAccess (CConfiguration::kNone );
 //                					else
-//                						newEntity->setSecurityAccess ( (CConfiguration2::ESecurityAccess)CSQLite3Extension::extractData< int  >(pStatement, nCol) );
+//                						newEntity->setSecurityAccess ( (CConfiguration::ESecurityAccess)CSQLite3Extension::extractData< int  >(pStatement, nCol) );
 //                				}
 //                				else if(boost::iequals(CConfigurationTable::getLastModificationDateColumnName(), cols[nCol]))
 //                				{
@@ -144,8 +144,6 @@
 //                	}
 //                	return false;
 //                }
-
-
 
 
 #define ADAPTER_COLUMN_ID 0
@@ -265,7 +263,3 @@
    DECLARE_ADAPTER_IMPLEMENTATION_CTOR(_tablename)\
    DECLARE_ADAPTER_IMPLEMENTATION_DTOR(_tablename)\
    DECLARE_ADAPTER_IMPLEMENTATION_ADAPT(_tablename, _seq)
-
-
-
-

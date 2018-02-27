@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Configuration2.h"
+#include "Configuration.h"
 #include <shared/currentTime/Provider.h>
 #include <shared/exception/EmptyResult.hpp>
 #include "database/common/adapters/DatabaseAdapters.h"
@@ -13,23 +13,23 @@ namespace database
    {
       namespace requesters
       {
-         CConfiguration2::CConfiguration2(boost::shared_ptr<IDatabaseRequester> databaseRequester)
+         CConfiguration::CConfiguration(boost::shared_ptr<IDatabaseRequester> databaseRequester)
             : m_databaseRequester(databaseRequester)
          {
          }
 
-         CConfiguration2::~CConfiguration2()
+         CConfiguration::~CConfiguration()
          {
          }
 
-         boost::shared_ptr<entities::CConfiguration2> CConfiguration2::getConfiguration(const std::string& section)
+         boost::shared_ptr<entities::CConfiguration> CConfiguration::getConfiguration(const std::string& section)
          {
             auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
-                     From(CConfiguration2Table::getTableName()).
-                     Where(CConfiguration2Table::getSectionColumnName(), CQUERY_OP_LIKE, section);
+                     From(CConfigurationTable::getTableName()).
+                     Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, section);
 
-            adapters::CConfiguration2Adapter adapter;
+            adapters::CConfigurationAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
             if (adapter.getResults().size() >= 1)
                return adapter.getResults()[0];
@@ -38,25 +38,25 @@ namespace database
             throw shared::exception::CEmptyResult(sEx);
          }
 
-         std::vector<boost::shared_ptr<entities::CConfiguration2>> CConfiguration2::getConfigurations()
+         std::vector<boost::shared_ptr<entities::CConfiguration>> CConfiguration::getConfigurations()
          {
             auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
-                     From(CConfiguration2Table::getTableName());
+                     From(CConfigurationTable::getTableName());
 
-            adapters::CConfiguration2Adapter adapter;
+            adapters::CConfigurationAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
             return adapter.getResults();
          }
 
-         void CConfiguration2::updateConfiguration(const std::string& section,
-                                                   const std::string& value)
+         void CConfiguration::updateConfiguration(const std::string& section,
+                                                  const std::string& value)
          {
             auto query = m_databaseRequester->newQuery();
-            query->InsertOrReplaceInto(CConfiguration2Table::getTableName(),
-                                       CConfiguration2Table::getSectionColumnName(),
-                                       CConfiguration2Table::getValueColumnName(),
-                                       CConfiguration2Table::getLastModificationDateColumnName()).
+            query->InsertOrReplaceInto(CConfigurationTable::getTableName(),
+                                       CConfigurationTable::getSectionColumnName(),
+                                       CConfigurationTable::getValueColumnName(),
+                                       CConfigurationTable::getLastModificationDateColumnName()).
                    Values(section,
                           value,
                           shared::currentTime::Provider().now());

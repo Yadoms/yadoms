@@ -34,7 +34,7 @@ namespace database
                //not for me, version is correct
 
                //check that all tables exist
-               if (!pRequester->checkTableExists(CConfiguration2Table::getTableName()) ||
+               if (!pRequester->checkTableExists(CConfigurationTable::getTableName()) ||
                   !pRequester->checkTableExists(CDeviceTable::getTableName()) ||
                   !pRequester->checkTableExists(CPluginTable::getTableName()) ||
                   !pRequester->checkTableExists(CKeywordTable::getTableName()) ||
@@ -69,10 +69,10 @@ namespace database
                                                     const boost::posix_time::ptime& insertDate)
          {
             auto qInsert = requester->newQuery();
-            qInsert->InsertOrReplaceInto(CConfiguration2Table::getTableName(),
-                                         CConfiguration2Table::getSectionColumnName(),
-                                         CConfiguration2Table::getValueColumnName(),
-                                         CConfiguration2Table::getLastModificationDateColumnName()).
+            qInsert->InsertOrReplaceInto(CConfigurationTable::getTableName(),
+                                         CConfigurationTable::getSectionColumnName(),
+                                         CConfigurationTable::getValueColumnName(),
+                                         CConfigurationTable::getLastModificationDateColumnName()).
                      Values("databaseVersion",
                             newVersion.toString(),
                             insertDate);
@@ -96,7 +96,7 @@ namespace database
                   pRequester->transactionBegin();
 
                //delete tables
-               if (!pRequester->dropTableIfExists(CConfiguration2Table::getTableName()))
+               if (!pRequester->dropTableIfExists(CConfigurationTable::getTableName()))
                   throw CVersionException("Failed to delete Configuration table");
                if (!pRequester->dropTableIfExists(CDeviceTable::getTableName()))
                   throw CVersionException("Failed to delete Device table");
@@ -126,7 +126,7 @@ namespace database
                auto scriptProvider = pRequester->getTableCreationScriptProvider();
 
                //create tables
-               if (!pRequester->createTableIfNotExists(CConfiguration2Table::getTableName(), scriptProvider->getTableConfiguration()))
+               if (!pRequester->createTableIfNotExists(CConfigurationTable::getTableName(), scriptProvider->getTableConfiguration()))
                   throw CVersionException("Failed to create Configuration table");
                if (!pRequester->createTableIfNotExists(CDeviceTable::getTableName(), scriptProvider->getTableDevice()))
                   throw CVersionException("Failed to create Device table");
@@ -164,8 +164,9 @@ namespace database
 
                //system plugin
                auto qInsert = pRequester->newQuery();
-               qInsert->Clear().InsertInto(CPluginTable::getTableName(), CPluginTable::getDisplayNameColumnName(), CPluginTable::getTypeColumnName(), CPluginTable::getAutoStartColumnName(), CPluginTable::getCategoryColumnName()).
-                      Values("System", "System", true, database::entities::EPluginCategory::kSystem);
+               qInsert->Clear().InsertInto(CPluginTable::getTableName(), CPluginTable::getDisplayNameColumnName(), CPluginTable::getTypeColumnName(),
+                                           CPluginTable::getAutoStartColumnName(), CPluginTable::getCategoryColumnName()).
+                        Values("System", "System", true, database::entities::EPluginCategory::kSystem);
                pRequester->queryStatement(*qInsert);
 
                //commit transaction
@@ -187,5 +188,3 @@ namespace database
       } //namespace versioning
    } //namespace common
 } //namespace database 
-
-

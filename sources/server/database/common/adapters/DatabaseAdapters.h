@@ -14,7 +14,7 @@ namespace database
          //---------------------------------
          DECLARE_ADAPTER_HEADER(Plugin)
 
-         DECLARE_ADAPTER_HEADER(Configuration2)
+         DECLARE_ADAPTER_HEADER(Configuration)
 
          DECLARE_ADAPTER_HEADER(Page)
 
@@ -40,5 +40,3 @@ namespace database
       } //namespace adapters
    } //namespace common
 } //namespace database 
-
-

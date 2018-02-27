@@ -22,7 +22,7 @@ namespace database
             ((Category)(database::entities::EPluginCategory)(database::entities::EPluginCategory::kUser)(std::string))
          );
 
-         DECLARE_ADAPTER_IMPLEMENTATION(Configuration2,
+         DECLARE_ADAPTER_IMPLEMENTATION(Configuration,
             ((Section)(std::string)(""))
             ((Value)(std::string)(""))
             ((LastModificationDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
@@ -86,7 +86,8 @@ namespace database
             ((Type)(shared::plugin::yPluginApi::EKeywordDataType)(shared::plugin::yPluginApi::EKeywordDataType::kString)(std::string))
             ((Units)(std::string)(""))
             ((TypeInfo)(shared::CDataContainer)(shared::CDataContainer()))
-            ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType)(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute)(std::string))
+            ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType)(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute)(
+               std::string))
             ((Details)(shared::CDataContainer)(shared::CDataContainer()))
             ((Blacklist)(bool)(false))
             ((LastAcquisitionValue)(std::string)(""))
@@ -142,5 +143,3 @@ namespace database
       } //namespace adapters
    } //namespace common
 } //namespace database 
-
-

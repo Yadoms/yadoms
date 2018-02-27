@@ -30,12 +30,12 @@ namespace database
       {
          try
          {
-            if (m_databaseRequester->checkTableExists(CConfiguration2Table::getTableName()))
+            if (m_databaseRequester->checkTableExists(CConfigurationTable::getTableName()))
             {
                auto qVersion = m_databaseRequester->newQuery();
-               qVersion->Select(CConfiguration2Table::getValueColumnName()).
-                         From(CConfiguration2Table::getTableName()).
-                         Where(CConfiguration2Table::getSectionColumnName(), CQUERY_OP_EQUAL, "databaseVersion");
+               qVersion->Select(CConfigurationTable::getValueColumnName()).
+                         From(CConfigurationTable::getTableName()).
+                         Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "databaseVersion");
 
                adapters::CSingleValueAdapter<std::string> adapter;
                m_databaseRequester->queryEntities(&adapter, *qVersion);
@@ -149,9 +149,9 @@ namespace database
 
          //schedule the timer to launch task each hour +1min
          //Schedule : now and each hour (1000 * 3600)
-         auto msWait = static_cast<long>(timeToWaitBeforeFirstOccurrence.totalMilliseconds());
+         const auto msWait = static_cast<long>(timeToWaitBeforeFirstOccurrence.totalMilliseconds());
          //force cast because value is maximum 1hour = 1000*3600 which is less than "long" maximum value
-         auto msWaitPeriod = static_cast<long>(oneHourOffset.totalMilliseconds());
+         const auto msWaitPeriod = static_cast<long>(oneHourOffset.totalMilliseconds());
          //force cast because value is 1 hour = 1000*3600 which is less than "long" maximum value
 
          m_maintenanceTimer->scheduleAtFixedRate(m_maintenanceSummaryComputingTask, msWait, msWaitPeriod);
@@ -173,9 +173,9 @@ namespace database
          firstPurgeOccurence += oneDayOffset;//+1day
          Poco::Timespan timeToWaitBeforeFirstPurgeOccurrence = firstPurgeOccurence - now;
 
-         auto msWait = static_cast<long>(timeToWaitBeforeFirstPurgeOccurrence.totalMilliseconds());
+         const auto msWait = static_cast<long>(timeToWaitBeforeFirstPurgeOccurrence.totalMilliseconds());
          //force cast because value is maximum 1hour = 1000*3600 which is less than "long" maximum value
-         auto msWaitPeriod = static_cast<long>(oneDayOffset.totalMilliseconds());
+         const auto msWaitPeriod = static_cast<long>(oneDayOffset.totalMilliseconds());
          //force cast because value is 1 hour = 1000*3600 which is less than "long" maximum value
 
          m_maintenanceTimer->scheduleAtFixedRate(m_maintenancePurgeTask, msWait, msWaitPeriod);
@@ -205,7 +205,7 @@ namespace database
       void CDataProvider::loadRequesters()
       {
          m_pluginRequester = boost::make_shared<requesters::CPlugin>(m_databaseRequester);
-         m_configurationRequester = boost::make_shared<requesters::CConfiguration2>(m_databaseRequester);
+         m_configurationRequester = boost::make_shared<requesters::CConfiguration>(m_databaseRequester);
          m_deviceRequester = boost::make_shared<requesters::CDevice>(m_databaseRequester);
          m_keywordRequester = boost::make_shared<requesters::CKeyword>(m_databaseRequester);
          m_pageRequester = boost::make_shared<requesters::CPage>(m_databaseRequester);

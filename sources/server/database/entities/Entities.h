@@ -67,7 +67,7 @@ namespace database
          ((Category)(database::entities::EPluginCategory))
       )
 
-      DECLARE_ENTITY_CLASS_HEADER(Configuration2,
+      DECLARE_ENTITY_CLASS_HEADER(Configuration,
          ((Section)(std::string))
          ((Value)(std::string))
          ((LastModificationDate)(boost::posix_time::ptime))
@@ -189,5 +189,3 @@ namespace database
       )
    } //namespace entities
 } //namespace database
-
-

@@ -13,14 +13,14 @@ namespace database
       /// \return     The configuration entry found
       /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CConfiguration2> getConfiguration(const std::string& section) = 0;
+      virtual boost::shared_ptr<entities::CConfiguration> getConfiguration(const std::string& section) = 0;
 
       //--------------------------------------------------------------
       /// \brief      Read all configuration entries 
       /// \return     The entries found
       /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CConfiguration2>> getConfigurations() = 0;
+      virtual std::vector<boost::shared_ptr<entities::CConfiguration>> getConfigurations() = 0;
 
       //--------------------------------------------------------------
       /// \brief      Update a configuration entry

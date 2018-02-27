@@ -15,7 +15,7 @@ namespace database
 
       std::string CPgsqlTableCreationScriptProvider::getTableConfiguration()
       {
-         return " CREATE TABLE Configuration2                           \
+         return " CREATE TABLE Configuration                            \
               (   section VARCHAR(50) NOT NULL,                         \
                   value TEXT NOT NULL,                                  \
                   lastModificationDate TEXT,                            \

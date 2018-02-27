@@ -54,8 +54,12 @@ namespace database
                //   - a record containing the server configuration (configuration associated to the server)
                //   - a record by GUI kind
 
-               // The table "Configuration" doesn't exist if it is the first server start
-               if (requester->checkTableExists(CDatabaseTable("Configuration")))
+               // The table "Configuration" is empty (except databaseVersion record) if it is the first server start
+               auto qSelect = requester->newQuery();
+               qSelect->SelectCount().
+                        From(CConfigurationTable::getTableName()).
+                        Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_NOT_EQUAL, "databaseVersion");
+               if (requester->queryCount(*qSelect) != 0)
                {
                   // First load actual values
                   const auto firstStart = loadFirstStart(requester);
@@ -80,13 +84,19 @@ namespace database
                   webClientConfiguration.set("refreshPage", refreshPage);
 
 
-                  // Create the new configuration table (keep the old in case of use downgrades his Yadoms version)
+                  // Refactor the configuration table
                   if (requester->transactionSupport())
                      requester->transactionBegin();
 
-                  requester->createTableIfNotExists(CConfiguration2Table::getTableName(),
+                  // Remove current Configuration table
+                  if (!requester->dropTableIfExists(CDatabaseTable("Configuration")))
+                     throw std::runtime_error("Fail to drop Configuration table");
+
+                  // Create new Configuration table
+                  requester->createTableIfNotExists(CConfigurationTable::getTableName(), //TODO tout passer en Configuration
                                                     requester->getTableCreationScriptProvider()->getTableConfiguration());
 
+                  // Insert new records
                   insertConfigurationValue(requester, "server", serverConfiguration, insertDate);
                   insertConfigurationValue(requester, "external.webClient", webClientConfiguration, insertDate);
                }
@@ -200,10 +210,10 @@ namespace database
                                                        const boost::posix_time::ptime& insertDate)
          {
             auto qInsert = requester->newQuery();
-            qInsert->InsertOrReplaceInto(CConfiguration2Table::getTableName(),
-                                         CConfiguration2Table::getSectionColumnName(),
-                                         CConfiguration2Table::getValueColumnName(),
-                                         CConfiguration2Table::getLastModificationDateColumnName()).
+            qInsert->InsertOrReplaceInto(CConfigurationTable::getTableName(),
+                                         CConfigurationTable::getSectionColumnName(),
+                                         CConfigurationTable::getValueColumnName(),
+                                         CConfigurationTable::getLastModificationDateColumnName()).
                      Values(section,
                             value.serialize(),
                             insertDate);

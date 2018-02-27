@@ -65,7 +65,7 @@ namespace database
 
 
       DECLARE_ENTITY_CLASS_IMPLEMENTATION(
-         Configuration2,
+         Configuration,
          ((Section)(std::string)("")("section"))
          ((Value)(std::string)("")("value"))
          ((LastModificationDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now())("lastModificationDate"))
@@ -135,7 +135,8 @@ namespace database
          ((Type)(shared::plugin::yPluginApi::EKeywordDataType)(shared::plugin::yPluginApi::EKeywordDataType::kString)("type"))
          ((Units)(std::string)("")("units"))
          ((TypeInfo)(shared::CDataContainer)(shared::CDataContainer())("typeInfo"))
-         ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType)(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute)("measure"))
+         ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType)(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute)(
+            "measure"))
          ((Details)(shared::CDataContainer)(shared::CDataContainer())("details"))
          ((Blacklist)(bool)(false)("blacklist"))
          ((LastAcquisitionValue)(std::string)("")("lastAcquisitionValue"))
@@ -184,7 +185,8 @@ namespace database
          ((Id)(int)(0)("id"))
          ((FirstName)(std::string)("")("firstName"))
          ((LastName)(std::string)("")("lastName"))
-         ((Fields)(std::vector< boost::shared_ptr<database::entities::CRecipientField> >)(std::vector< boost::shared_ptr<database::entities::CRecipientField> >())("fields"))
+         ((Fields)(std::vector< boost::shared_ptr<database::entities::CRecipientField> >)(std::vector< boost::shared_ptr<database::entities::
+            CRecipientField> >())("fields"))
       ) ;
 
       DECLARE_ENTITY_CLASS_IMPLEMENTATION(
@@ -196,5 +198,3 @@ namespace database
       ) ;
    } //namespace entities
 } //namespace database
-
-

@@ -2,7 +2,7 @@
 #include "database/IDataProvider.h"
 #include "database/IDatabaseRequester.h"
 #include "requesters/Plugin.h"
-#include "requesters/Configuration2.h"
+#include "requesters/Configuration.h"
 #include "requesters/Device.h"
 #include "requesters/Keyword.h"
 #include "requesters/Page.h"
@@ -136,7 +136,7 @@ namespace database
          //--------------------------------------------------------------
          /// \Brief		Plugin requester
          //--------------------------------------------------------------
-         boost::shared_ptr<requesters::CConfiguration2> m_configurationRequester;
+         boost::shared_ptr<requesters::CConfiguration> m_configurationRequester;
 
          //--------------------------------------------------------------
          /// \Brief		Device requester
@@ -205,5 +205,3 @@ namespace database
       };
    } //namespace common
 } //namespace database
-
-
