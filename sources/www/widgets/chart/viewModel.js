@@ -183,6 +183,107 @@ function chartViewModel() {
         
         return yAxisName; // Return the name of the axis
     };
+
+    /**
+     * Configure the toolbar
+     */    
+    this.configureToolbar = function(interval) {
+       self=this;
+       
+       var menuItem = [
+          { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"widgets.chart:navigator.hour\"/></div>" },
+          { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"widgets.chart:navigator.day\"/></div>"},
+          { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\"><span data-i18n=\"widgets.chart:navigator.week\"/></div>"},
+          { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\"><span data-i18n=\"widgets.chart:navigator.month\"/></div>"},
+          { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\"><span data-i18n=\"widgets.chart:navigator.half_year\"/></div>"},
+          { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets.chart:navigator.year\"/></div>" },
+          { separator: ""}
+          ];
+          
+          
+       console.log ("Interval : ", interval);
+       switch(interval)
+       {
+          case "HOUR":
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\" prefix=\"ALL\"><span data-i18n=\"widgets.chart:navigator.all\"/></div>" });
+             break;
+          case "DAY":
+             console.log ("Essai :");
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\" prefix=\"ALL\"><span data-i18n=\"widgets.chart:navigator.all\"/></div>" });
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\" prefix=\"HOURLY\"><span data-i18n=\"widgets.chart:navigator.hourly\"/></div>"});
+             break;
+          case "WEEK":
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\" prefix=\"HOURLY\"><span data-i18n=\"widgets.chart:navigator.hourly\"/></div>"});
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\" prefix=\"DAILY\"><span data-i18n=\"widgets.chart:navigator.daily\"/></div>"});
+          break;
+          case "MONTH":
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\" prefix=\"HOURLY\"><span data-i18n=\"widgets.chart:navigator.hourly\"/></div>"});
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\" prefix=\"DAILY\"><span data-i18n=\"widgets.chart:navigator.daily\"/></div>"});
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\" prefix=\"WEEKLY\"><span data-i18n=\"widgets.chart:navigator.weekly\"/></div>"});
+             break;
+         case "HALF_YEAR": //we request day summary data
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\" prefix=\"DAILY\"><span data-i18n=\"widgets.chart:navigator.daily\"/></div>"});
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\" prefix=\"WEEKLY\"><span data-i18n=\"widgets.chart:navigator.weekly\"/></div>"});
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\" prefix=\"MONTLY\"><span data-i18n=\"widgets.chart:navigator.monthly\"/></div>"});         
+             break;
+         case "YEAR": //we request day summary data
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\" prefix=\"DAILY\"><span data-i18n=\"widgets.chart:navigator.daily\"/></div>"});
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\" prefix=\"WEEKLY\"><span data-i18n=\"widgets.chart:navigator.weekly\"/></div>"});
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\" prefix=\"MONTLY\"><span data-i18n=\"widgets.chart:navigator.monthly\"/></div>"});         
+          break;
+          default:
+          break;
+       }  
+       
+       menuItem.push({ separator: ""});
+       
+       //push last menu items
+       menuItem.push({ custom: "<div class=\"widget-toolbar-button export-btn dropdown\">" +
+                    "<a id=\"chartExportMenu" + self.widget.id + "\" data-target=\"#\" class=\"widget-toolbar-button export-btn dropdown\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">" +
+                        "<span class=\"fa fa-bars\"/>" +
+                    "</a>" +
+                    "<ul class=\"dropdown-menu\" aria-labelledby=\"chartExportMenu" + self.widget.id + "\">" +
+                        "<li><span class=\"print-command\" data-i18n=\"widgets.chart:export.print\"></span></li>" +
+                        "<li role=\"separator\" class=\"divider\"></li>" +
+                        "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.png\" mime-type=\"image/png\"></span></li>" +
+                        "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.jpeg\" mime-type=\"image/jpeg\"></span></li>" +
+                        "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.svg\" mime-type=\"image/svg+xml\"></span></li>" +
+                        "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.csv\" mime-type=\"text/csv\"></span></li>" +
+                        "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.xls\" mime-type=\"application/vnd.ms-excel\"></span></li>" +
+                    "</ul>" +
+                 "</div>"
+           });
+       
+       console.log ("menuItem : ", menuItem);
+       
+       self.widgetApi.toolbar({
+          activated: true,
+          displayTitle: true,
+          batteryItem: false,
+          items: menuItem
+      });
+
+      //we manage toolbar buttons
+      var $btns = self.widgetApi.find(".range-btn");
+      $btns.unbind("click").bind("click", self.navigatorBtnClick());
+
+      self.widgetApi.find(".print-command").unbind("click").bind("click", function () {
+          self.chart.print();
+          window.location.reload(); //force page reload because after having displayed printing page, the widget disposition is erroneous
+      });
+
+      self.widgetApi.find(".export-command").unbind("click").bind("click", function (e) {
+          try{
+             self.chart.exportChartLocal({
+                 type: $(e.currentTarget).attr("mime-type"),
+                 filename: 'export'
+             });
+          }
+          catch(error){
+             notifyError($.t("widgets.chart:formatNotSupported", {format: $(e.currentTarget).attr("mime-type")}));
+          }
+      });       
+    };
     
     /**
      * Initialization method
@@ -310,57 +411,6 @@ function chartViewModel() {
             self.chart = self.$chart.highcharts();
             self.chart.keyword = [];
             
-            self.widgetApi.toolbar({
-                activated: true,
-                displayTitle: true,
-                batteryItem: false,
-                items: [
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"widgets.chart:navigator.hour\"/></div>" },
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"widgets.chart:navigator.day\"/></div>"},
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\"><span data-i18n=\"widgets.chart:navigator.week\"/></div>"},
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\"><span data-i18n=\"widgets.chart:navigator.month\"/></div>"},
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\"><span data-i18n=\"widgets.chart:navigator.half_year\"/></div>"},
-                { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets.chart:navigator.year\"/></div>" },
-                { separator: ""},
-                { custom: "<div class=\"widget-toolbar-button export-btn dropdown\">" +
-                             "<a id=\"chartExportMenu" + self.widget.id + "\" data-target=\"#\" class=\"widget-toolbar-button export-btn dropdown\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">" +
-                                 "<span class=\"fa fa-bars\"/>" +
-                             "</a>" +
-                             "<ul class=\"dropdown-menu\" aria-labelledby=\"chartExportMenu" + self.widget.id + "\">" +
-                                 "<li><span class=\"print-command\" data-i18n=\"widgets.chart:export.print\"></span></li>" +
-                                 "<li role=\"separator\" class=\"divider\"></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.png\" mime-type=\"image/png\"></span></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.jpeg\" mime-type=\"image/jpeg\"></span></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.svg\" mime-type=\"image/svg+xml\"></span></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.csv\" mime-type=\"text/csv\"></span></li>" +
-                                 "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.xls\" mime-type=\"application/vnd.ms-excel\"></span></li>" +
-                             "</ul>" +
-                          "</div>"
-                    }
-                ]
-            });
-
-            //we manage toolbar buttons
-            var $btns = self.widgetApi.find(".range-btn");
-            $btns.unbind("click").bind("click", self.navigatorBtnClick());
-
-            self.widgetApi.find(".print-command").unbind("click").bind("click", function () {
-                self.chart.print();
-                window.location.reload(); //force page reload because after having displayed printing page, the widget disposition is erroneous
-            });
-
-            self.widgetApi.find(".export-command").unbind("click").bind("click", function (e) {
-                try{
-                   self.chart.exportChartLocal({
-                       type: $(e.currentTarget).attr("mime-type"),
-                       filename: 'export'
-                   });
-                }
-                catch(error){
-                   notifyError($.t("widgets.chart:formatNotSupported", {format: $(e.currentTarget).attr("mime-type")}));
-                }
-            });
-            
             self.widgetApi.askServerLocalTime(function (serverLocalTime) {
                self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
             }).done(function(data) {
@@ -442,6 +492,8 @@ function chartViewModel() {
 
         //Change to the new button selected
         self.interval = self.widget.configuration.interval;
+        
+        self.configureToolbar(self.interval);
         
         //Activate the new button
         self.widgetApi.find(".range-btn[interval='" + self.interval + "']").addClass("widget-toolbar-pressed-button");
@@ -599,14 +651,18 @@ function chartViewModel() {
         return function (e) {
             //we manage activation
             var interval = $(e.currentTarget).attr("interval");
+            var prefix = $(e.currentTarget).attr("prefix");
             
             self.interval = interval;
+            self.configureToolbar(interval);
             self.chartParametersConfiguration();
 
-            //we manage button inversion
+            //we manage button inversion about interval
             self.widgetApi.find(".range-btn[interval='" + interval + "']").addClass("widget-toolbar-pressed-button");
             self.widgetApi.find(".range-btn[interval!='" + interval + "']").removeClass("widget-toolbar-pressed-button");
 
+            //we manage button inversion about prefix
+            
             //we ask the new time server, and we refresh information
             self.widgetApi.askServerLocalTime(function (serverLocalTime) {
                self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);

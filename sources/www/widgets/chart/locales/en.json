@@ -15,12 +15,20 @@
       "name": "Default interval of the chart",
       "description": "Used to change the first displayed interval of the chart",
       "values": {
-        "HOUR": "1 hour",
-        "DAY": "1 day",
-        "WEEK": "1 week",
-        "MONTH": "1 month",
-        "HALF_YEAR": "6 months",
-        "YEAR": "1 year"
+        "HOUR": "1 hour/All data",
+        "DAY/ALL": "1 day/All data",
+        "DAY/HOUR": "1 day/hourly processed data",
+        "WEEK/HOUR": "1 week/hourly processed data",
+        "WEEK/DAY": "1 week/daily processed data",
+        "MONTH/HOURLY": "1 month/hourly processed data",
+        "MONTH/DAILY": "1 month/daily processed data",
+        "MONTH/WEEKLY": "1 month/weekly processed data",
+        "HALF_YEAR/DAILY": "6 months/daily processed data",
+        "HALF_YEAR/WEEKLY": "6 months/weekly processed data",
+        "HALF_YEAR/MONTHLY": "6 months/monthly processed data",
+        "YEAR/DAILY": "1 an/daily processed data",
+        "YEAR/WEEKLY": "1 an/weekly processed data",
+        "YEAR/MONTHLY": "1 an/monthly processed data"
       }
     },
       "legends" : {
@@ -117,7 +125,12 @@
     "week": "1w",
     "month": "1m",
     "half_year": "6m",
-    "year": "1y"
+    "year": "1y",
+    "all": "all",
+    "hourly": "hourly",
+    "daily": "daily",
+    "weekly": "weekly",
+    "monthly": "monthly"
   },
   "export": {
     "print": "Print",

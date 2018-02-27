@@ -15,12 +15,20 @@
 			"name": "Période d'affichage du graphique",
 			"description": "Permet de changer la période d'affichage du graphique.",
 			"values": {
-				"HOUR": "1 heure",
-				"DAY": "1 jour",
-				"WEEK": "1 semaine",
-				"MONTH": "1 mois",
-				"HALF_YEAR": "6 mois",
-				"YEAR": "1 an"
+				"HOUR": "1 heure/Toutes les données",
+				"DAY/ALL": "1 jour/Toutes les données",
+            "DAY/HOUR": "1 jour/données horaires",
+				"WEEK/HOUR": "1 semaine/données horaires",
+            "WEEK/DAY": "1 semaine/données journalières",
+				"MONTH/HOURLY": "1 mois/données horaires",
+            "MONTH/DAILY": "1 mois/données journalières",
+            "MONTH/WEEKLY": "1 mois/données hebdomadaires",
+				"HALF_YEAR/DAILY": "6 mois/données journalières",
+            "HALF_YEAR/WEEKLY": "6 mois/données hebdomadaires",
+            "HALF_YEAR/MONTHLY": "6 mois/données mensuelles",
+				"YEAR/DAILY": "1 an/données journalières",
+            "YEAR/WEEKLY": "1 an/données hebdomadaires",
+            "YEAR/MONTHLY": "1 an/données mensuelles"
 			}
 		},
       "legends" : {
@@ -117,7 +125,12 @@
 		"week": "1s",
 		"month": "1m",
 		"half_month": "6m",
-		"year": "1a"
+		"year": "1a",
+      "all": "tout",
+      "hourly": "horaire",
+      "daily": "journalier",
+      "weekly": "hebdomadaire",
+      "monthly": "mensuel"      
 	},
    "export": {
       "print": "Imprimer",
