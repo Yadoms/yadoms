@@ -104,7 +104,10 @@ namespace dataAccessLayer
 
    void CConfigurationManager::resetServerConfiguration()
    {
-      saveServerConfiguration(*m_defaultServerConfiguration);
+      auto resetConfiguration = *m_defaultServerConfiguration;
+      // Reset configuration must not overwrite firstStart flag
+      resetConfiguration.set("firstStart", getServerConfiguration()->get<bool>("firstStart"));
+      saveServerConfiguration(resetConfiguration);
    }
 
    std::string CConfigurationManager::getDatabaseVersion() const
