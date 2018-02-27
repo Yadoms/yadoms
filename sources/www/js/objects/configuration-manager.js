@@ -313,7 +313,7 @@ function ConfigurationManager() {
     defaultWebClientConfiguration[items.webclient.language] = getdefaultLanguageFromSupported();
     defaultWebClientConfiguration[items.webclient.advancedParametersActive] = "false";
     defaultWebClientConfiguration[items.webclient.dateFormat] = "LLL";
-    defaultWebClientConfiguration[items.webclient.refreshPage] = "false";
+    defaultWebClientConfiguration[items.webclient.refreshPage] = "true";
 
     // Main configuration instances
     var serverConfiguration;
