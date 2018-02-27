@@ -61,7 +61,7 @@ def pluginsPath():
 def wwwLocalesPath():
    """return the locales path of the web client"""
    
-   return os.path.join(binaryPath(), "www", "locales")
+   return os.path.join(binaryPath(), "www", "translation", "locales")
    
    
 def start(startupArgs=[]):
