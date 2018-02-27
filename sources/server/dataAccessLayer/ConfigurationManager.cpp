@@ -88,17 +88,18 @@ namespace dataAccessLayer
       boost::lock_guard<boost::recursive_mutex> lock(m_configurationMutex);
 
       // If location changed, mark it as user-modified
-      auto configuration(*getServerConfiguration());
-      if (newConfiguration.get<std::string>("location.latitude") != configuration.get<std::string>("location.latitude") ||
-         newConfiguration.get<std::string>("location.longitude") != configuration.get<std::string>("location.longitude") ||
-         newConfiguration.get<std::string>("location.altitude") != configuration.get<std::string>("location.altitude") ||
-         newConfiguration.get<std::string>("location.timezone") != configuration.get<std::string>("location.timezone"))
+      auto currentConfiguration(*getServerConfiguration());
+      auto configurationToSave(newConfiguration);
+      if (newConfiguration.get<std::string>("location.latitude") != currentConfiguration.get<std::string>("location.latitude") ||
+         newConfiguration.get<std::string>("location.longitude") != currentConfiguration.get<std::string>("location.longitude") ||
+         newConfiguration.get<std::string>("location.altitude") != currentConfiguration.get<std::string>("location.altitude") ||
+         newConfiguration.get<std::string>("location.timezone") != currentConfiguration.get<std::string>("location.timezone"))
       {
-         configuration.set("location.status", "userDefined");
+         configurationToSave.set("location.status", "userDefined");
       }
 
       saveConfiguration("server",
-                        configuration);
+                        configurationToSave);
       notifyServerConfigurationChanged(getServerConfiguration());
    }
 
