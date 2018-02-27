@@ -93,7 +93,7 @@ namespace database
                      throw std::runtime_error("Fail to drop Configuration table");
 
                   // Create new Configuration table
-                  requester->createTableIfNotExists(CConfigurationTable::getTableName(), //TODO tout passer en Configuration
+                  requester->createTableIfNotExists(CConfigurationTable::getTableName(),
                                                     requester->getTableCreationScriptProvider()->getTableConfiguration());
 
                   // Insert new records
