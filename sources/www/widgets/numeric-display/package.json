@@ -4,6 +4,11 @@
 	"author": "Nicolas HILAIRE",
 	"url": "https://github.com/Yadoms/yadoms/wiki/numeric-display",
 	"credits": "",
+    "dependencies": {
+       "yadoms" : {
+          "minimumVersion" : "2.1.0"
+       }
+    },   
   "dimensions": {
     "min": {
       "x": 1,
