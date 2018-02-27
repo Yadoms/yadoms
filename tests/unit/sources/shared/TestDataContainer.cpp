@@ -342,7 +342,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
       void fillFromSerializedString(const std::string& serializedData) override
       {
-         shared::CDataContainer deserializeData(serializedData);
+         const shared::CDataContainer deserializeData(serializedData);
          fillFromContent(deserializeData);
       }
 

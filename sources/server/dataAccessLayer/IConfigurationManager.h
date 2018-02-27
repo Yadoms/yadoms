@@ -1,5 +1,5 @@
 #pragma once
-#include "database/entities/Entities.h"
+#include <shared/DataContainer.h>
 
 namespace dataAccessLayer
 {
@@ -60,8 +60,7 @@ namespace dataAccessLayer
       /// \brief      High-level server configuration accessors
       //--------------------------------------------------------------
       virtual shared::CDataContainer getLocation() const = 0;
-      virtual void saveLocation(const shared::CDataContainer& newLocation) = 0;
+      virtual void saveAutoDetectedLocation(const shared::CDataContainer& newLocation) = 0;
       virtual shared::CDataContainer getBasicAuthentication() const = 0;
-      virtual void saveBasicAuthentication(const shared::CDataContainer& newBasicAuthentication) = 0;
    };
 } //namespace dataAccessLayer 

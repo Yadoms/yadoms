@@ -21,9 +21,8 @@ namespace dataAccessLayer
       void subscribeOnServerConfigurationChanged(
          boost::function1<void, boost::shared_ptr<const shared::CDataContainer>> onServerConfigurationChangedFct) override;
       shared::CDataContainer CConfigurationManager::getLocation() const override;
-      void saveLocation(const shared::CDataContainer& newLocation) override;
+      void saveAutoDetectedLocation(const shared::CDataContainer& newLocation) override;
       shared::CDataContainer getBasicAuthentication() const override;
-      void saveBasicAuthentication(const shared::CDataContainer& newBasicAuthentication) override;
       // [END] - IConfigurationManager implementation
 
    protected:

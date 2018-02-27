@@ -258,7 +258,7 @@ namespace shared
       //--------------------------------------------------------------
       template<class T>
       inline void set(const char* parameterName, const T & value, const char pathChar = '.');
-
+      
 
       //--------------------------------------------------------------
       /// \brief	    Get current parameter key name
@@ -1008,8 +1008,7 @@ namespace shared
          static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector<  boost::shared_ptr<T> > & value, const char pathChar)
          {
             std::vector<  boost::shared_ptr<IDataContainable> > compatibleVector;
-            typename std::vector<  boost::shared_ptr<T> >::const_iterator i;
-            for (i = value.begin(); i != value.end(); ++i)
+            for (typename std::vector<  boost::shared_ptr<T> >::const_iterator i = value.begin(); i != value.end(); ++i)
                compatibleVector.push_back(boost::dynamic_pointer_cast<IDataContainable>(*i));
             tree->setValuesSPIDataContainableInternal(parameterName, compatibleVector, pathChar);
          }
@@ -1105,7 +1104,7 @@ namespace shared
    template<class T>
    inline void CDataContainer::set(const char* parameterName, const T & value, const char pathChar)
    {
-      std::string strParamName(parameterName);
+      const std::string strParamName(parameterName);
       set<T>(strParamName, value, pathChar);
    }
 
@@ -1215,7 +1214,7 @@ namespace shared
       {
          boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
 
-         boost::property_tree::ptree::const_iterator end = child.end();
+         const boost::property_tree::ptree::const_iterator end = child.end();
          for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it) {
             result.push_back(it->second.get_value<T>());
          }
@@ -1270,7 +1269,7 @@ namespace shared
       {
          auto child = m_tree.get_child(generatePath(parameterName, pathChar));
 
-         boost::property_tree::ptree::const_iterator end = child.end();
+         const boost::property_tree::ptree::const_iterator end = child.end();
          for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it) {
             result.push_back(static_cast<T>(it->second.get_value<int>()));
          }
@@ -1296,7 +1295,7 @@ namespace shared
       {
          boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
 
-         boost::property_tree::ptree::const_iterator end = child.end();
+         const boost::property_tree::ptree::const_iterator end = child.end();
          for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it)
          {
             boost::shared_ptr<T> sp = boost::make_shared<T>(it->second.get_value<T>());
@@ -1324,7 +1323,7 @@ namespace shared
       {
          boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
 
-         boost::property_tree::ptree::const_iterator end = child.end();
+         const boost::property_tree::ptree::const_iterator end = child.end();
          for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it)
          {
             boost::shared_ptr<T> sp(new T);
@@ -1356,10 +1355,10 @@ namespace shared
       {
          boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
 
-         boost::property_tree::ptree::const_iterator end = child.end();
+         const boost::property_tree::ptree::const_iterator end = child.end();
          for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it)
          {
-            boost::shared_ptr<IDataContainable> sp;
+            const boost::shared_ptr<IDataContainable> sp;
             result.push_back(sp);
          }
          return result;
@@ -1386,7 +1385,7 @@ namespace shared
       {
          boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
 
-         boost::property_tree::ptree::const_iterator end = child.end();
+         const boost::property_tree::ptree::const_iterator end = child.end();
          for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it)
          {
             T a;
@@ -1509,8 +1508,7 @@ namespace shared
       {
          boost::property_tree::ptree innerData;
 
-         typename std::vector<T>::const_iterator i;
-         for (i = values.begin(); i != values.end(); ++i)
+         for (typename std::vector<T>::const_iterator i = values.begin(); i != values.end(); ++i)
          {
             boost::property_tree::ptree t;
             t.put("", *i);
@@ -1538,8 +1536,7 @@ namespace shared
       {
          boost::property_tree::ptree innerData;
 
-         typename std::vector<T>::const_iterator i;
-         for (i = values.begin(); i != values.end(); ++i)
+         for (typename std::vector<T>::const_iterator i = values.begin(); i != values.end(); ++i)
          {
             boost::property_tree::ptree t;
             t.put("", static_cast<int>(*i));
@@ -1567,8 +1564,7 @@ namespace shared
       {
          boost::property_tree::ptree innerData;
 
-         typename std::vector<T>::const_iterator i;
-         for (i = values.begin(); i != values.end(); ++i)
+         for (typename std::vector<T>::const_iterator i = values.begin(); i != values.end(); ++i)
          {
             CDataContainer t;
             i->extractContent(t);
@@ -1598,8 +1594,7 @@ namespace shared
       {
          boost::property_tree::ptree innerData;
 
-         typename std::vector< boost::shared_ptr<T> >::const_iterator i;
-         for (i = values.begin(); i != values.end(); ++i)
+         for (typename std::vector< boost::shared_ptr<T> >::const_iterator i = values.begin(); i != values.end(); ++i)
          {
             boost::property_tree::ptree t;
             t.put("", *i->get());
@@ -1626,8 +1621,7 @@ namespace shared
       {
          boost::property_tree::ptree innerData;
 
-         std::vector< boost::shared_ptr<IDataContainable> >::const_iterator i;
-         for (i = values.begin(); i != values.end(); ++i)
+         for (std::vector< boost::shared_ptr<IDataContainable> >::const_iterator i = values.begin(); i != values.end(); ++i)
          {
             CDataContainer t;
             (*i)->extractContent(t);
@@ -1656,8 +1650,7 @@ namespace shared
       {
          boost::property_tree::ptree innerData;
 
-         std::vector<CDataContainer>::const_iterator i;
-         for (i = values.begin(); i != values.end(); ++i)
+         for (std::vector<CDataContainer>::const_iterator i = values.begin(); i != values.end(); ++i)
          {
             innerData.push_back(std::make_pair("", i->m_tree));
          }
@@ -1679,7 +1672,7 @@ namespace shared
    template<typename EnumType>
    EnumType CDataContainer::getEnumValue(const std::string& parameterName, const EnumValuesNames& valuesNames, const char pathChar) const
    {
-      auto stringValue = get<std::string>(parameterName, pathChar);
+      const auto stringValue = get<std::string>(parameterName, pathChar);
       auto it = valuesNames.find(stringValue);
       if (it != valuesNames.end())
          return static_cast<EnumType>(it->second);

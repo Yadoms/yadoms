@@ -21,7 +21,7 @@ namespace location
          // Not found in database ==> let location empty
       }
 
-      if (location.empty())
+      if (location.empty() || location.get<std::string>("status") == "default")
       {
          YADOMS_LOG(information) << "Location was not found in database, try to auto-locate...";
          tryAutoLocate();
@@ -39,18 +39,8 @@ namespace location
          m_autoLocationService->tryAutoLocate(
             [&](const shared::CDataContainer& foundLocation)
             {
-               // Update location in database if still empty (can be filled by user in the meantime)
-               try
-               {
-                  // TODO à revoir : il faut mettre un flag pour savoir si la localisation a été écrasée ou pas
-                  m_configurationManager->getLocation();
-               }
-               catch (shared::exception::CEmptyResult&)
-               {
-                  // Not found in database ==> write it
-                  YADOMS_LOG(information) << "Auto-location was successful";
-                  m_configurationManager->saveLocation(foundLocation);
-               }
+               YADOMS_LOG(information) << "Auto-location was successful";
+               m_configurationManager->saveAutoDetectedLocation(foundLocation);
             });
       }
       catch (std::exception& e)
@@ -79,5 +69,3 @@ namespace location
       return getLocation().get<double>("altitude");
    }
 } // namespace location
-
-
