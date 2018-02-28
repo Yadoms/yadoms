@@ -227,13 +227,13 @@ function ConfigurationManager() {
                 loadedClientConfiguration = JSON.parse(data);
 
                 // Merge loaded configuration with default one, in case of some new fields not in loaded configuration
-                webClientConfiguration = defaultWebClientConfiguration;
+                Object.assign(webClientConfiguration, defaultWebClientConfiguration);
                 Object.assign(webClientConfiguration, loadedClientConfiguration);
 
                 d.resolve();
             })
             .fail(function () {
-                webClientConfiguration = defaultWebClientConfiguration;
+                Object.assign(webClientConfiguration, defaultWebClientConfiguration);
                 d.reject();
             });
 
@@ -262,7 +262,7 @@ function ConfigurationManager() {
     resetWebClientConfiguration = function () {
         var d = new $.Deferred();        
         
-        webClientConfiguration = defaultWebClientConfiguration;
+        Object.assign(webClientConfiguration, defaultWebClientConfiguration);
         webClientConfigurationChanged = true;
         saveWebClientConfiguration()
         .done(function(){
@@ -309,7 +309,7 @@ function ConfigurationManager() {
     items.webclient.dateFormat = "dateFormat";
     items.webclient.refreshPage = "refreshPage";
     // Associated default values
-    var defaultWebClientConfiguration = {};
+    const defaultWebClientConfiguration = {};
     defaultWebClientConfiguration[items.webclient.language] = getdefaultLanguageFromSupported();
     defaultWebClientConfiguration[items.webclient.advancedParametersActive] = "false";
     defaultWebClientConfiguration[items.webclient.dateFormat] = "LLL";
@@ -317,7 +317,7 @@ function ConfigurationManager() {
 
     // Main configuration instances
     var serverConfiguration;
-    var webClientConfiguration;
+    var webClientConfiguration = {};
     var databaseVersion;
     var serverConfigurationChanged;
     var webClientConfigurationChanged;
