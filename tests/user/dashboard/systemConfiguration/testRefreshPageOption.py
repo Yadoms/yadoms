@@ -38,7 +38,7 @@ class RefreshPageOption(unittest.TestCase):
       advancedParameterSection = dashboard.systemConfiguration.enableAdvancedParametersSection(self.browser)
 
       print 'Check RefreshPage option default value (cold start)'
-      self.assertEqual(dashboard.systemConfiguration.getRefreshPageOptionState(advancedParameterSection), True)
+      self.assertTrue(dashboard.systemConfiguration.getRefreshPageOptionState(advancedParameterSection))
 
       print 'Change RefreshPage option value'
       dashboard.systemConfiguration.setRefreshPageOption(advancedParameterSection, False)
@@ -53,7 +53,7 @@ class RefreshPageOption(unittest.TestCase):
       advancedParameterSection = dashboard.systemConfiguration.enableAdvancedParametersSection(self.browser)
 
       print 'Check RefreshPage option was saved'
-      self.assertEqual(dashboard.systemConfiguration.getRefreshPageOptionState(advancedParameterSection), False)
+      self.assertFalse(dashboard.systemConfiguration.getRefreshPageOptionState(advancedParameterSection))
 
       print 'Reset to default value'
       dashboard.systemConfiguration.resetToDefaultSystemConfiguration(self.browser)
@@ -66,7 +66,7 @@ class RefreshPageOption(unittest.TestCase):
       advancedParameterSection = dashboard.systemConfiguration.enableAdvancedParametersSection(self.browser)
 
       print 'Check default value was restored'
-      self.assertTrue(tools.waitUntil(lambda: dashboard.systemConfiguration.getRefreshPageOptionState(advancedParameterSection) == True))
+      self.assertTrue(dashboard.systemConfiguration.getRefreshPageOptionState(advancedParameterSection))
 
    def test_refreshPageOptionEnable(self):
       print '=== RefreshPage option (enabled) test ==='
