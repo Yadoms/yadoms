@@ -18,6 +18,14 @@ def enableAdvancedParametersSection(browser):
    section = panel.enableOptionalSection("modals.dashboard.sub-windows.system-configuration.configuration-items.advancedParameters.name", True)
    return ConfigurationPanel(section)
 
+def disableAdvancedParametersSection(browser):
+   panel = ConfigurationPanel(WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "dashboard-system-configuration"))))
+   section = panel.enableOptionalSection("modals.dashboard.sub-windows.system-configuration.configuration-items.advancedParameters.name", False)
+
+def isAdvancedParametersSectionActive(browser):
+   panel = ConfigurationPanel(WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "dashboard-system-configuration"))))
+   return panel.isOptionalSectionEnabled("modals.dashboard.sub-windows.system-configuration.configuration-items.advancedParameters.name")
+
 def getRefreshPageOptionState(advancedParameterSection):
    refreshPageCheckbox = advancedParameterSection.getCheckboxItemByName("modals.dashboard.sub-windows.system-configuration.configuration-items.refreshPage.name")
    return True if refreshPageCheckbox.get_attribute('checked') is not None else False
@@ -31,6 +39,8 @@ def setRefreshPageOption(advancedParameterSection, enable):
 def applySystemConfiguration(browser):
    panel = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "dashboard-system-configuration")))
    panel.find_element_by_xpath(".//button[@id='btn-confirm-configure-system']").click()
+   notification.waitText(browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["system-configuration"]["configurationSaved"])
+   assert tools.waitUntil(lambda: notification.noNotification(browser))
 
 def resetToDefaultSystemConfiguration(browser):
    panel = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "dashboard-system-configuration")))

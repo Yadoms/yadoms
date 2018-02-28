@@ -37,6 +37,12 @@ class ConfigurationPanel():
          WebDriverWait(section, 10).until(Condition.visibility_of_element_located((By.XPATH, ".//div[contains(@class, 'section-content')]")))
       return section
 
+   def isOptionalSectionEnabled(self, dataI18nSectionName):
+      """ Check if optional configuration section is enabled """
+      section = self.__findSection(dataI18nSectionName)
+      checkBoxElement = WebDriverWait(section, 10).until(Condition.visibility_of_element_located((By.XPATH, ".//div[@class='checkbox']/label/input[@type='checkbox']")))
+      return True if checkBoxElement.get_attribute('checked') is not None else False
+
    def getFielsCount(self, recursive=False):
       return len(self.__panelWebElement.find_elements_by_tag_name('input')) + \
          len(self.__panelWebElement.find_elements_by_tag_name('select')) + \
