@@ -8,8 +8,12 @@ def waitForOpened(modalWebElement):
    assert tools.waitUntil(lambda: 'display: block;' in modalWebElement.get_attribute('style'))
 
 def waitForClosed(modalWebElement):
-   assert tools.waitUntil(lambda: 'display: none;' in modalWebElement.get_attribute('style'))
-
+   def l(modalWebElement):
+      try:
+         return 'display: none;' in modalWebElement.get_attribute('style')
+      except Condition.StaleElementReferenceException:
+         return True
+   assert tools.waitUntil(lambda: l(modalWebElement))
 
 class OkCancelModal():
    """ Operations on delete object (plugins, rule...) confirmation modal """
