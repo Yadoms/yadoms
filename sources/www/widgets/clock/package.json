@@ -1,8 +1,13 @@
 {
     "type": "clock",
-    "version": "2.0.2",
+    "version": "2.0.3",
     "author": "yadoms team",
     "credits": "",
+    "dependencies": {
+       "yadoms" : {
+          "minimumVersion" : "2.1.0"
+       }
+    },       
     "dimensions": {
         "min": {
             "x": 1,

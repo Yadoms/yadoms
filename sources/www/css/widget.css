@@ -232,7 +232,6 @@
 }
 
 .textfit {
-    min-height: 20px;   /* min font height is 14, so min height is 14*1.41 ~= 20*/
 }
 
 .textfit-in-parent {

@@ -31,9 +31,9 @@ namespace equipments
       ///\param[in] devEUID              The EUID of the equipment
       ///\param[in] api                  Yadoms API
       //-----------------------------------------------------
-      CDefaultEquipment::CDefaultEquipment(const std::string& name,
-                                           const std::string& devEUID,
-                                           boost::shared_ptr<yApi::IYPluginApi> api);
+      CDefaultEquipment(const std::string& name,
+                        const std::string& devEUID,
+                        boost::shared_ptr<yApi::IYPluginApi> api);
 
       // IEquipment implementation
       std::string getName() const override;

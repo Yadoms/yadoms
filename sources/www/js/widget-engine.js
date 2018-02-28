@@ -137,7 +137,7 @@ function tabClick(pageId) {
             requestWidgets(page)
                 .always(function () {
                     //we poll all widget data
-               updateWidgetsPolling(page).always(function() {
+                    updateWidgetsPolling(page).always(function() {
                         var b = page.$grid.packery('reloadItems');
                         updateWebSocketFilter();
                         PageManager.updateWidgetLayout(page);
@@ -316,8 +316,15 @@ function dispatchNewAcquisitionsToWidgets(acq) {
                                 try {
                                     //we signal the new acquisition to the widget if the widget supports the method
                                     if (typeof widget.viewModel.onNewAcquisition === 'function') {
-                                        widget.viewModel.onNewAcquisition(keywordId, acq);
-                                        widget.viewModel.widgetApi.fitText();
+                                       if (widget.getState() == widgetStateEnum.Running){
+                                          widget.viewModel.onNewAcquisition(keywordId, acq);
+                                          widget.viewModel.widgetApi.fitText();
+                                       }else{
+                                          console.log ("push acquisition !");
+                                          console.log ("widget.getState() : ", widget.getState());
+                                          console.log ("widget :", widget);
+                                          widget.waitingAcquisition.push(acq);
+                                       }                                        
                                     }
                                 } catch (e) {
                                     console.error(widget.type +
@@ -370,13 +377,14 @@ function dispatchkeywordDeletedToWidgets(eventData){
    console.debug("onKeywordDeletion : ", eventData);
    $.each(page.widgets, function (widgetIndex, widget) {
       try {
-          if ($.inArray(eventData.keyword.id, widget.listenedKeywords)!=-1)
-          {
-             //we signal the time event to the widget if the widget supports the method
-             if (typeof widget.viewModel.onKeywordDeletion === 'function' && !isNullOrUndefined(widget.viewModel.onKeywordDeletion))
-                 widget.viewModel.onKeywordDeletion(eventData.keyword);
-              else // by default, we disable the widget
-                 widget.viewModel.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
+          if ($.inArray(eventData.keyword.id, widget.listenedKeywords)!=-1){
+             if (widget.getState() == widgetStateEnum.Running) {
+                //we signal the time event to the widget if the widget supports the method
+                if (typeof widget.viewModel.onKeywordDeletion === 'function' && !isNullOrUndefined(widget.viewModel.onKeywordDeletion))
+                    widget.viewModel.onKeywordDeletion(eventData.keyword);
+                 else // by default, we disable the widget
+                    widget.viewModel.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
+             }
           }
       }
       catch (e) {
@@ -435,20 +443,28 @@ function updateWidgetsPolling(pageId) {
           $.each(data, function (index, acquisition) {
              //we signal the new acquisition to the widget if the widget support the method
              $.each(pageId.widgets, function (widgetIndex, widget) {
-                if ($.inArray(acquisition.keywordId, widget.getlastValue)!=-1)
-                {
+                if ($.inArray(acquisition.keywordId, widget.getlastValue)!=-1){
                    if (isNullOrUndefined(acquisition.error)){
                       if (widget.viewModel.onNewAcquisition !== undefined)
                          widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
                    }else{ // we desactivate the widget
                       widget.viewModel.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
                    }
+                   
+                   //we manage battery value
+                   var $battery = widget.$toolbar.find(".widget-toolbar-battery");
+                   if ($battery) {
+                      if ($battery.attr("keywordId") == acquisition.keywordId) {
+                         widget.viewModel.widgetApi.updateBatteryLevel(acquisition.value);
+                      }
+                   }
+                   widget.viewModel.widgetApi.manageRollingTitle();
                 }
              });
           });
           d.resolve();
        })
-            .fail(d.reject);
+       .fail(d.reject);
     }
     return d.promise();
 }
@@ -468,6 +484,9 @@ function updateWidgetPolling(widget) {
                             if (widget.viewModel.onNewAcquisition !== undefined) {
                                 widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
                             }
+                            
+                            widget.viewModel.widgetApi.manageBatteryConfiguration();
+                            widget.viewModel.widgetApi.manageRollingTitle();
                         });
                 }
                 d.resolve();

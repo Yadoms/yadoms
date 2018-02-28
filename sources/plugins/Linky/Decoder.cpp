@@ -2,28 +2,8 @@
 #include "Decoder.h"
 #include <shared/Log.h>
 #include <boost/algorithm/string.hpp>
-#include <boost/algorithm/hex.hpp>
 #include "specificHistorizer/Color.h"
-
-// trim from left
-inline std::string& ltrim(std::string& s, const char* t = " \t\n\r\f\v")
-{
-   s.erase(0, s.find_first_not_of(t));
-   return s;
-}
-
-// trim from right
-inline std::string& rtrim(std::string& s, const char* t = " \t\n\r\f\v")
-{
-   s.erase(s.find_last_not_of(t) + 1);
-   return s;
-}
-
-// trim from left & right
-inline std::string& trim(std::string& s, const char* t = " \t\n\r\f\v")
-{
-   return ltrim(rtrim(s, t), t);
-}
+#include "LinkyHelpers.hpp"
 
 const std::string CDecoder::m_tag_ADSC = "ADSC";    // meter id
 const std::string CDecoder::m_tag_VTIC = "VTIC";    // Linky revision
@@ -49,7 +29,10 @@ CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    m_todayColor(boost::make_shared<linky::specificHistorizers::CColor>("todayColor")),
    m_api(api),
    m_deviceCreated(false),
-   m_production(false)
+   m_production(false),
+   m_runningPeriodChanged(true),
+   m_tomorrowColorChanged(true),
+   m_todayColorChanged(true)
 {
    m_activeIndex[0] = 0;
    m_activeIndex[1] = 0;
@@ -84,13 +67,11 @@ void CDecoder::decodeLinkyMessage(boost::shared_ptr<yApi::IYPluginApi> api,
       // Create all keywords
       createFirstKeywordList(triphases);
       createDeviceAndKeywords();
-      m_api->historizeData(m_deviceName, m_keywords);
    }
-   else {
-      // Historizing only running keywords
-      createRunningKeywordList(triphases);
-      m_api->historizeData(m_deviceName, m_keywords);
-   }
+
+   // Historizing only running keywords
+   createRunningKeywordList(triphases);
+   m_api->historizeData(m_deviceName, m_keywords);
 }
 
 void CDecoder::createDeviceAndKeywords()
@@ -109,15 +90,12 @@ void CDecoder::createFirstKeywordList(bool isTriphases)
 {
    m_keywords.clear();
 
-   m_runningPeriod->set(m_newPeriod);
    m_keywords.push_back(m_runningPeriod);
    m_keywords.push_back(m_runningIndex);
 
-   if (m_todayColor->get() != linky::specificHistorizers::EColor::kNOTDEFINED)
-   {
-      m_keywords.push_back(m_tomorrowColor);
-      m_keywords.push_back(m_todayColor);
-   }
+   // We don't know in which contract we are, so we create theses keywords
+   m_keywords.push_back(m_tomorrowColor);
+   m_keywords.push_back(m_todayColor);
 
    // common for all contracts
    m_keywords.push_back(m_apparentPower[0]);
@@ -143,41 +121,65 @@ void CDecoder::createFirstKeywordList(bool isTriphases)
 
 void CDecoder::createRunningKeywordList(bool isTriphases)
 {
+   static bool firstRun = true;
    m_keywords.clear();
 
-   if (m_newPeriod != m_runningPeriod->get())
+   if (m_newPeriod != m_runningPeriod->get() || firstRun)
    {
+      YADOMS_LOG(information) << "m_newPeriod : " << m_newPeriod;
       m_runningPeriod->set(m_newPeriod);
       m_keywords.push_back(m_runningIndex);
       m_keywords.push_back(m_runningPeriod);
    }
 
-   if (m_todayColor->get() != linky::specificHistorizers::EColor::kNOTDEFINED)
-   {
-      m_keywords.push_back(m_tomorrowColor);
+   if (m_todayColorChanged || firstRun)
       m_keywords.push_back(m_todayColor);
-   }
+
+   if (m_tomorrowColorChanged || firstRun)
+      m_keywords.push_back(m_tomorrowColor);
 
    m_keywords.push_back(m_apparentPower[0]);
-   m_keywords.push_back(m_meanVoltage[0]);
+
+   // At counter startup the value is 0
+   // we historize only when the mean exists (0 during 10mn at counter power on)
+   if (m_meanVoltage[0]->get()!=0)
+      m_keywords.push_back(m_meanVoltage[0]);
 
    if (isTriphases) // We add missing phases
    {
       m_keywords.push_back(m_apparentPower[1]);
       m_keywords.push_back(m_apparentPower[2]);
-      m_keywords.push_back(m_meanVoltage[1]);
-      m_keywords.push_back(m_meanVoltage[2]);
+
+      // At counter startup the value is 0
+      // we historize only when the mean exists (0 during 10mn at counter power on)
+      if (m_meanVoltage[1]->get() != 0)
+         m_keywords.push_back(m_meanVoltage[1]);
+
+      if (m_meanVoltage[2]->get() != 0)
+         m_keywords.push_back(m_meanVoltage[2]);
    }
 
-   // Historization of the active index only
-   m_keywords.push_back(m_counter[m_activeIndex[0]]);
+   if (firstRun)
+   {
+      for (unsigned char counter = 0; counter < 10; ++counter)
+      {
+         if (m_counter[counter]->get() != 0) // We register only counter != 0
+            m_keywords.push_back(m_counter[counter]);
+      }
+   }
+   else
+   {
+      // Historization of the active index only
+      m_keywords.push_back(m_counter[m_activeIndex[0]]);
 
-   // when the index changed, we register the olf index also, to register the last index value
-   if (m_activeIndex[0] != m_activeIndex[1])
-      m_keywords.push_back(m_counter[m_activeIndex[1]]);
-
+      // when the index changed, we register the old index also, to register the last index value
+      if (m_activeIndex[0] != m_activeIndex[1])
+         m_keywords.push_back(m_counter[m_activeIndex[1]]);
+   }
    if (m_production)
       m_keywords.push_back(m_activeEnergyInjected);
+
+   firstRun = false;
 }
 
 void CDecoder::processMessage(const std::string& key,
@@ -233,8 +235,23 @@ void CDecoder::processMessage(const std::string& key,
          else
             m_production = false;
 
-         m_todayColor->set(linky::specificHistorizers::EColor((status >> 24) & 0x03)); // bit 24 to 25 color of today
-         m_tomorrowColor->set(linky::specificHistorizers::EColor((status & 0x0C000000) >> 26)); // bits 26 to 27 color of tomorrow
+         linky::specificHistorizers::EColor temp = linky::specificHistorizers::EColor((status >> 24) & 0x03);
+         if (temp != m_todayColor->get())
+         {
+            m_todayColorChanged = true;
+            m_todayColor->set(temp); // bit 24 to 25 color of today
+         }
+         else
+            m_todayColorChanged = false;
+
+         temp = linky::specificHistorizers::EColor((status & 0x0C000000) >> 26);
+         if (temp != m_tomorrowColor->get())
+         {
+            m_tomorrowColorChanged = true;
+            m_tomorrowColor->set(temp); // bits 26 to 27 color of tomorrow
+         }
+         else
+            m_tomorrowColorChanged = false;
       }
       else if (key == m_tag_EAIT)
       {
@@ -266,34 +283,26 @@ void CDecoder::processMessage(const std::string& key,
          YADOMS_LOG(trace) << "UMOY3" << "=" << values[1];
          m_meanVoltage[2]->set(boost::lexical_cast<double>(values[1]));
       }
+      else if (key == m_tag_NGTF)
+      {
+         YADOMS_LOG(trace) << "NGTF" << "= <" << values[0] << ">";
+         std::string value = values[0];
+         m_newPeriod = trim(value);
+      }
       else if (m_revision == 1) // specific functions v1
       {
-         YADOMS_LOG(trace) << "SINST1" << "=" << values[0];
          if (key == m_tag_SINST1)
          {
+            YADOMS_LOG(trace) << "SINST1" << "=" << values[0];
             m_apparentPower[0]->set(boost::lexical_cast<double>(values[0]));
-         }
-         else if (key == m_tag_LTARF) // For v1 running period is reverse with the NGTF tag !!
-         {
-            YADOMS_LOG(trace) << "LTARF" << "= <" << values[0] << ">";
-            std::string value = values[0];
-
-            m_newPeriod = trim(value);
          }
       }
       else if (m_revision == 2) // specific functions v2
       {
-         YADOMS_LOG(trace) << "SINSTS" << "=" << values[0];
          if (key == m_tag_SINSTS)
          {
+            YADOMS_LOG(trace) << "SINSTS" << "=" << values[0];
             m_apparentPower[0]->set(boost::lexical_cast<double>(values[0]));
-         }
-         else if (key == m_tag_NGTF)
-         {
-            YADOMS_LOG(trace) << "NGTF" << "= <" << values[0] << ">";
-            std::string value = values[0];
-
-            m_newPeriod = trim(value);
          }
       }
 		else
