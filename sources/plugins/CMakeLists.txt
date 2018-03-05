@@ -1,5 +1,7 @@
 #This file automatically search and add all plugins found from all subdirectories
 
+set(PLUGIN_COMMON_DIR ${CMAKE_CURRENT_SOURCE_DIR}/common)
+
 #This macro list all subdirectories
 MACRO(SUBDIRLIST result curdir)
   FILE(GLOB children RELATIVE ${curdir} ${curdir}/*)

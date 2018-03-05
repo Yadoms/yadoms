@@ -1,5 +1,6 @@
 # Macros for setting up a plugin
 
+
 function(PLUGIN_IS_IN_DEV_STATE _targetName)
    string(FIND ${_targetName} "dev-" DEV_SUBSTRING_POSITION)
    if (${DEV_SUBSTRING_POSITION} EQUAL 0)
@@ -45,21 +46,20 @@ MACRO(PLUGIN_SOURCES _targetName)
       if(MSVC)
          #update the Windows specific 'plugin.rc' file which add properties to executable (version, releaseType=
          #as pre build step (plugin.rc is modified only if needed, to avoid unjustified build
-         include(../common/version.cmake)            
+         include(${PLUGIN_COMMON_DIR}/version.cmake)
 
          set(PLUGIN_NAME ${_targetName})
         
          #Try to use plugin icon
          FILE(GLOB PLUGIN_EXE_ICON icon.ico)
          if(NOT EXISTS ${PLUGIN_EXE_ICON})
-            SET(PLUGIN_EXE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/../common/resources/windows/plugin.ico")
+            SET(PLUGIN_EXE_ICON "${PLUGIN_COMMON_DIR}/resources/windows/plugin.ico")
          endif(NOT EXISTS ${PLUGIN_EXE_ICON})
          
          
          # apply templating to the manifest for setting the version
          # PLUGIN_EXE_ICON is used in "plugin.rc.in"
-         set(WINDOWS_RESOURCES_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../common/resources/windows")
-         configure_file(../common/resources/windows/plugin.rc.in
+         configure_file(${PLUGIN_COMMON_DIR}/resources/windows/plugin.rc.in
             "${CMAKE_BINARY_DIR}/plugin-${_targetName}-generated.rc"
          @ONLY)
             
@@ -68,9 +68,9 @@ MACRO(PLUGIN_SOURCES _targetName)
          set(PLUGIN_SOURCE_FILES ${PLUGIN_SOURCE_FILES} 
             ${PLUGIN_EXE_ICON}
             ${CMAKE_BINARY_DIR}/plugin-${_targetName}-generated.rc
-            ../common/resources/windows/resource.h
+            ${PLUGIN_COMMON_DIR}/resources/windows/resource.h
          )
-         source_group(resources ../common/resources/windows/*.*)
+         source_group(resources ${PLUGIN_COMMON_DIR}/resources/windows/*.*)
       endif(MSVC)
    endif(WIN32)   
    
@@ -168,7 +168,7 @@ MACRO(PLUGIN_LINK _targetName)
          set(PLUGIN_VERSION_FOR_MANIFEST "${PLUGIN_VERSION_MAJOR}.${PLUGIN_VERSION_MINOR}.${PLUGIN_VERSION_PATCH}")
 
          # apply templating to the manifest for setting the version
-         configure_file(../common/resources/windows/plugin.exe.manifest.in
+         configure_file(${PLUGIN_COMMON_DIR}/resources/windows/plugin.exe.manifest.in
             "${CMAKE_BINARY_DIR}/${_targetName}.exe.manifest"
          @ONLY)
       
