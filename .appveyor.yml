@@ -74,7 +74,7 @@ before_build:
   - ps: $cd_for_cmake="$pwd".Replace("\", "/")
   - ps: echo $cd_for_cmake
   - ps: Set-Content 'sources/CMakeListsUserConfig.txt' ('set(ALTERNATIVE_CMAKE_ROOT "' + $cd_for_cmake + '/extra_libs/cmake-3.10.2")')
-  - ps: Set-Content 'sources/CMakeListsUserConfig.txt' ('set(BOOST_ROOT "' + $cd_for_cmake + '/extra_libs/boost_1_65_1")')
+  - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(BOOST_ROOT "' + $cd_for_cmake + '/extra_libs/boost_1_65_1")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(POCO_ROOT "' + $cd_for_cmake + '/extra_libs/poco-1.8.1-all")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(OPENSSL_ROOT "' + $cd_for_cmake + '/extra_libs/openssl-1.1.0g")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PROTOBUF_ROOT "' + $cd_for_cmake + '/extra_libs/protobuf-3.4.1")')
