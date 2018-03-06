@@ -20,7 +20,7 @@ platform: Win32
 # build Configuration, i.e. Debug, Release, etc.
 configuration: Debug
 
-# Add pre-compiled dependancies in cache
+# Add pre-compiled dependencies in cache
 cache:  
   - extra_libs\boost_1_65_1 -> '.appveyor.yml'
   - extra_libs\poco-1.8.1-all -> '.appveyor.yml'
