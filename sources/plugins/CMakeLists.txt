@@ -19,8 +19,8 @@ SUBDIRLIST(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
 #if there is one, then it is a plugin
 FOREACH(subdir ${SUBDIRS})
 	IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${subdir}/CMakeLists.txt)
-		message(STATUS "Found plugin " ${subdir})
-		ADD_SUBDIRECTORY(${subdir})
+		# message(STATUS "Found plugin " ${subdir})
+		# ADD_SUBDIRECTORY(${subdir})
 	ENDIF()
 ENDFOREACH()
 
