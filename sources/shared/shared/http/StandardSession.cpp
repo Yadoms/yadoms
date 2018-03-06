@@ -1,4 +1,4 @@
-#pragma once
+#include "stdafx.h"
 #include "StandardSession.h"
 #include <Poco/URI.h>
 
