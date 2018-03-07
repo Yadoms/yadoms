@@ -43,6 +43,7 @@ before_install:
 - if [ ${GENERATE_CMAKE} = true ]; then tar cjf cmake-3.10.2-build.tar.bz2 cmake-3.10.2; fi
 - if [ ${GENERATE_CMAKE} = true ]; then curl --ftp-create-dirs -T cmake-3.10.2-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
 - if [ ${GENERATE_CMAKE} = true ]; then rm -f cmake-3.10.2-build.tar.bz2; fi
+- cmake --version
 
 # boost
 - echo 'Building Boost 1.65.1'
