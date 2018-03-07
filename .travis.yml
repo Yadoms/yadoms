@@ -32,12 +32,15 @@ before_install:
 
 #CMake
 - echo 'Installing CMake 3.10.2'
+- cmake --version
 - sudo apt-get remove cmake
+- cmake --version
 - if [ ${GENERATE_CMAKE} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/cmake-3.10.2-build.tar.bz2; else wget --no-verbose --no-check-certificate https://cmake.org/files/v3.10/cmake-3.10.2.tar.gz; fi
 - if [ ${GENERATE_CMAKE} != true ]; then tar jxf cmake-3.10.2-build.tar.bz2; else tar zxf cmake-3.10.2.tar.gz; fi
 - cd cmake-3.10.2
-- if [ ${GENERATE_CMAKE} != true ]; then echo "Bypass CMake/bootstrap" ; else ./bootstrap > $HOME/logs/yadoms_cmake.log; fi
+- if [ ${GENERATE_CMAKE} != true ]; then echo "Bypass CMake/bootstrap" ; else ./bootstrap; fi
 - if [ ${GENERATE_CMAKE} != true ]; then echo "Bypass CMake/make"; else make; fi
+- ./cmake --version
 - sudo make install
 - cd ..
 - if [ ${GENERATE_CMAKE} = true ]; then tar cjf cmake-3.10.2-build.tar.bz2 cmake-3.10.2; fi
