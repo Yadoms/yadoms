@@ -37,8 +37,8 @@ before_install:
 - if [ ${GENERATE_CMAKE} != true ]; then tar jxf cmake-3.10.2-build.tar.bz2; else tar zxf cmake-3.10.2.tar.gz; fi
 - cd cmake-3.10.2
 - if [ ${GENERATE_CMAKE} != true ]; then echo "Bypass CMake/bootstrap" ; else ./bootstrap > $HOME/logs/yadoms_cmake.log; fi
-- if [ ${GENERATE_CMAKE} != true ]; then echo "Bypass CMake/make"; else make > $HOME/logs/yadoms_cmake.log; fi
-- sudo make install > $HOME/logs/yadoms_cmake.log
+- if [ ${GENERATE_CMAKE} != true ]; then echo "Bypass CMake/make"; else make; fi
+- sudo make install
 - cd ..
 - if [ ${GENERATE_CMAKE} = true ]; then tar cjf cmake-3.10.2-build.tar.bz2 cmake-3.10.2; fi
 - if [ ${GENERATE_CMAKE} = true ]; then curl --ftp-create-dirs -T cmake-3.10.2-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
