@@ -56,16 +56,16 @@ before_install:
   
  # openssl
 - echo 'Building OpenSSL'
-- if [ ${GENERATE_OPENSSL} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/openssl-1.0.2k-build.tar.bz2; else wget --no-verbose https://www.openssl.org/source/openssl-1.0.2k.tar.gz; fi
-- if [ ${GENERATE_OPENSSL} != true ]; then tar xjf openssl-1.0.2k-build.tar.bz2; else tar xzf openssl-1.0.2k.tar.gz; fi
-- cd openssl-1.0.2k
+- if [ ${GENERATE_OPENSSL} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/openssl-1.1.0g-build.tar.bz2; else wget --no-verbose https://www.openssl.org/source/openssl-1.1.0g.tar.gz; fi
+- if [ ${GENERATE_OPENSSL} != true ]; then tar xjf openssl-1.1.0g-build.tar.bz2; else tar xzf openssl-1.1.0g.tar.gz; fi
+- cd openssl-1.1.0g
 - if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/configure"; else ./config --prefix=$HOME/depsBuild/openssl > $HOME/logs/yadoms_openssl.log; fi
 - if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/make"; else make > $HOME/logs/yadoms_openssl.log; fi
 - make install > $HOME/logs/yadoms_openssl.log
 - cd ..
-- if [ ${GENERATE_OPENSSL} = true ]; then tar cjf openssl-1.0.2k-build.tar.bz2 openssl-1.0.2k; fi
-- if [ ${GENERATE_OPENSSL} = true ]; then curl --ftp-create-dirs -T openssl-1.0.2k-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${GENERATE_OPENSSL} = true ]; then rm -f openssl-1.0.2k-build.tar.bz2; fi
+- if [ ${GENERATE_OPENSSL} = true ]; then tar cjf openssl-1.1.0g-build.tar.bz2 openssl-1.1.0g; fi
+- if [ ${GENERATE_OPENSSL} = true ]; then curl --ftp-create-dirs -T openssl-1.1.0g-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
+- if [ ${GENERATE_OPENSSL} = true ]; then rm -f openssl-1.1.0g-build.tar.bz2; fi
 
 # poco
 - echo 'Building Poco 1.7.9-all'
