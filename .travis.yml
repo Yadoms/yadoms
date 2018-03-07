@@ -31,18 +31,18 @@ before_install:
 - mkdir -p $HOME/logs
 
 #CMake
-- echo 'Installing CMake 3.9.2'
+- echo 'Installing CMake 3.10.2'
 - sudo apt-get remove cmake
-- if [ ${GENERATE_CMAKE} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/cmake-3.9.2-build.tar.bz2; else wget --no-verbose --no-check-certificate https://cmake.org/files/v3.9/cmake-3.9.2.tar.gz; fi
-- if [ ${GENERATE_CMAKE} != true ]; then tar jxf cmake-3.9.2-build.tar.bz2; else tar zxf cmake-3.9.2.tar.gz; fi
-- cd cmake-3.9.2
+- if [ ${GENERATE_CMAKE} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/cmake-3.10.2-build.tar.bz2; else wget --no-verbose --no-check-certificate https://cmake.org/files/v3.10/cmake-3.10.2.tar.gz; fi
+- if [ ${GENERATE_CMAKE} != true ]; then tar jxf cmake-3.10.2-build.tar.bz2; else tar zxf cmake-3.10.2.tar.gz; fi
+- cd cmake-3.10.2
 - if [ ${GENERATE_CMAKE} != true ]; then echo "Bypass CMake/bootstrap" ; else ./bootstrap > $HOME/logs/yadoms_cmake.log; fi
 - if [ ${GENERATE_CMAKE} != true ]; then echo "Bypass CMake/make"; else make > $HOME/logs/yadoms_cmake.log; fi
 - sudo make install > $HOME/logs/yadoms_cmake.log
 - cd ..
-- if [ ${GENERATE_CMAKE} = true ]; then tar cjf cmake-3.9.2-build.tar.bz2 cmake-3.9.2; fi
-- if [ ${GENERATE_CMAKE} = true ]; then curl --ftp-create-dirs -T cmake-3.9.2-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${GENERATE_CMAKE} = true ]; then rm -f cmake-3.9.2-build.tar.bz2; fi
+- if [ ${GENERATE_CMAKE} = true ]; then tar cjf cmake-3.10.2-build.tar.bz2 cmake-3.10.2; fi
+- if [ ${GENERATE_CMAKE} = true ]; then curl --ftp-create-dirs -T cmake-3.10.2-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
+- if [ ${GENERATE_CMAKE} = true ]; then rm -f cmake-3.10.2-build.tar.bz2; fi
 
 # boost
 - echo 'Building Boost 1.65.1'
