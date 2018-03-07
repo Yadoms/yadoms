@@ -41,7 +41,7 @@ before_install:
 - if [ ${GENERATE_CMAKE} != true ]; then echo "Bypass CMake/bootstrap" ; else ./bootstrap; fi
 - if [ ${GENERATE_CMAKE} != true ]; then echo "Bypass CMake/make"; else make; fi
 - ./cmake --version
-- sudo make install
+# - sudo make install
 - cd ..
 - if [ ${GENERATE_CMAKE} = true ]; then tar cjf cmake-3.10.2-build.tar.bz2 cmake-3.10.2; fi
 - if [ ${GENERATE_CMAKE} = true ]; then curl --ftp-create-dirs -T cmake-3.10.2-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
@@ -157,6 +157,7 @@ before_install:
 script:
 # Yadoms configuration file
 - echo 'Configuring Yadoms CMakeListsUserConfig.txt'
+- echo 'set(ALTERNATIVE_CMAKE_ROOT "'$PWD'/cmake-3.10.2")' > sources/CMakeListsUserConfig.txt
 - echo 'set(BOOST_ROOT "'$PWD'/boost_1_65_1")' > sources/CMakeListsUserConfig.txt
 - echo 'set(POCO_ROOT "'$PWD'/poco-1.7.9-all")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PROTOBUF_ROOT "'$HOME'/depsBuild/protobuf")' >> sources/CMakeListsUserConfig.txt
