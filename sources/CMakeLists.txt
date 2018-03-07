@@ -177,9 +177,7 @@ SET (POCO_LIBS
 set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
 set(POCO_USE_STATIC_RUNTIME 1)
 add_definitions(-DPOCO_STATIC)
-IF(WIN32)
-  add_definitions(-DPOCO_EXTERNAL_OPENSSL)
-ENDIF()
+add_definitions(-DPOCO_EXTERNAL_OPENSSL)
 include(cmake/FindPoco.cmake)
 
 IF(NOT ${Poco_FOUND})
