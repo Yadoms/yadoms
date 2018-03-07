@@ -68,19 +68,19 @@ before_install:
 - if [ ${GENERATE_OPENSSL} = true ]; then rm -f openssl-1.1.0g-build.tar.bz2; fi
 
 # poco
-- echo 'Building Poco 1.7.9-all'
-- if [ ${GENERATE_POCO} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/poco-1.7.9-all-build.tar.bz2; else wget --no-verbose http://pocoproject.org/releases/poco-1.7.9/poco-1.7.9-all.tar.gz; fi
-- if [ ${GENERATE_POCO} != true ]; then tar xjf poco-1.7.9-all-build.tar.bz2; else tar xzf poco-1.7.9-all.tar.gz; fi
+- echo 'Building Poco 1.8.1-all'
+- if [ ${GENERATE_POCO} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/poco-1.8.1-all-build.tar.bz2; else wget --no-verbose http://pocoproject.org/releases/poco-1.8.1/poco-1.8.1-all.tar.gz; fi
+- if [ ${GENERATE_POCO} != true ]; then tar xjf poco-1.8.1-all-build.tar.bz2; else tar xzf poco-1.8.1-all.tar.gz; fi
 - sudo apt-get install libssl-dev libgnutls-dev libopencv-gpu-dev > $HOME/logs/yadoms_poco.log
-- cd poco-1.7.9-all/
+- cd poco-1.8.1-all/
 - if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/configure_config_file"; else echo 'STATICOPT_CC = -fPIC' >> build/config/Linux; fi
 - if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/configure_config_file"; else echo 'STATICOPT_CXX = -fPIC' >> build/config/Linux; fi
 - if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/configure"; else ./configure --static --config=Linux --no-samples --no-tests --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page --include-path=$HOME/depsBuild/openssl/include --library-path=$HOME/depsBuild/openssl/lib> $HOME/logs/yadoms_poco.log; fi
 - if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/make"; else make > $HOME/logs/yadoms_poco.log; fi
 - cd ..
-- if [ ${GENERATE_POCO} = true ]; then tar cjf poco-1.7.9-all-build.tar.bz2 poco-1.7.9-all; fi
-- if [ ${GENERATE_POCO} = true ]; then curl --ftp-create-dirs -T poco-1.7.9-all-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${GENERATE_POCO} = true ]; then rm -f poco-1.7.9-all-build.tar.bz2; fi
+- if [ ${GENERATE_POCO} = true ]; then tar cjf poco-1.8.1-all-build.tar.bz2 poco-1.8.1-all; fi
+- if [ ${GENERATE_POCO} = true ]; then curl --ftp-create-dirs -T poco-1.8.1-all-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
+- if [ ${GENERATE_POCO} = true ]; then rm -f poco-1.8.1-all-build.tar.bz2; fi
 
 
 # protobuf
@@ -153,7 +153,7 @@ script:
 - echo 'Configuring Yadoms CMakeListsUserConfig.txt'
 - echo 'set(ALTERNATIVE_CMAKE_ROOT "'$PWD'/cmake-3.10.2")' > sources/CMakeListsUserConfig.txt
 - echo 'set(BOOST_ROOT "'$PWD'/boost_1_65_1")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(POCO_ROOT "'$PWD'/poco-1.7.9-all")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(POCO_ROOT "'$PWD'/poco-1.8.1-all")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PROTOBUF_ROOT "'$HOME'/depsBuild/protobuf")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PROTOBUF_PROTOC_EXECUTABLE "'$HOME'/depsBuild/protobuf/bin/protoc")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY ON)' >> sources/CMakeListsUserConfig.txt
