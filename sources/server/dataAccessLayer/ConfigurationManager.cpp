@@ -12,7 +12,7 @@ namespace dataAccessLayer
          return m_configuration;
       }
 
-      CDefaultServerConfiguration::CDefaultServerConfiguration()
+      CDefaultServerConfiguration()
          : m_configuration(boost::make_shared<shared::CDataContainer>())
       {
          m_configuration->set("firstStart", true);
@@ -32,7 +32,7 @@ namespace dataAccessLayer
          m_configuration->set("basicAuthentication.password", std::string());
       }
 
-      CDefaultServerConfiguration::~CDefaultServerConfiguration()
+      ~CDefaultServerConfiguration()
       {
       }
 

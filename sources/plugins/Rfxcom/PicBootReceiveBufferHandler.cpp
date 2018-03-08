@@ -164,7 +164,7 @@ boost::shared_ptr<const std::vector<unsigned char>> CPicBootReceiveBufferHandler
    unsigned long computedChecksum = 0;
    for (const auto byte:*message)
       computedChecksum += byte;
-   computedChecksum = (~computedChecksum) + 1 & 0xFF;
+   computedChecksum = (~computedChecksum + 1) & 0xFF;
 
    if (readChecksum != computedChecksum)
    {
