@@ -32,7 +32,7 @@ namespace dataAccessLayer
          m_configuration->set("basicAuthentication.password", std::string());
       }
 
-      ~CDefaultServerConfiguration()
+      virtual ~CDefaultServerConfiguration()
       {
       }
 
