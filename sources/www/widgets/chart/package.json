@@ -28,12 +28,20 @@
 		"interval": {
 			"type": "enum",
 			"values": {
-				"HOUR": "",
-				"DAY": "",
-				"WEEK": "",
-				"MONTH": "",
-				"HALF_YEAR": "",
-				"YEAR": ""
+				"HOUR/minute": "",
+				"DAY/minute": "",
+            "DAY/hour": "",
+            "WEEK/hour": "",
+            "WEEK/day": "",
+            "MONTH/hour": "",
+            "MONTH/day": "",
+            "MONTH/week": "",
+            "HALF_YEAR/day": "",
+            "HALF_YEAR/week": "",
+            "HALF_YEAR/month": "",
+            "YEAR/day": "",
+            "YEAR/week": "",
+            "YEAR/month": ""
 			},         
 			"defaultValue": "DAY"
 		},     

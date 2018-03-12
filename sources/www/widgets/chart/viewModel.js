@@ -199,41 +199,49 @@ function chartViewModel() {
           { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets.chart:navigator.year\"/></div>" },
           { separator: ""}
           ];
-          
-          
-       console.log ("Interval : ", interval);
+       
        switch(interval)
        {
-          case "HOUR":
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\" prefix=\"ALL\"><span data-i18n=\"widgets.chart:navigator.all\"/></div>" });
+          case "HOUR/minute":
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"minute\"><span data-i18n=\"widgets.chart:navigator.all\"/></div>" });
              break;
-          case "DAY":
-             console.log ("Essai :");
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\" prefix=\"ALL\"><span data-i18n=\"widgets.chart:navigator.all\"/></div>" });
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\" prefix=\"HOURLY\"><span data-i18n=\"widgets.chart:navigator.hourly\"/></div>"});
+          case "DAY/minute":
+          case "DAY/hour":
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"minute\"><span data-i18n=\"widgets.chart:navigator.all\"/></div>" });
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"hour\"><span data-i18n=\"widgets.chart:navigator.hourly\"/></div>"});
              break;
-          case "WEEK":
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\" prefix=\"HOURLY\"><span data-i18n=\"widgets.chart:navigator.hourly\"/></div>"});
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\" prefix=\"DAILY\"><span data-i18n=\"widgets.chart:navigator.daily\"/></div>"});
+          case "WEEK/hour":
+          case "WEEK/day":
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"hour\"><span data-i18n=\"widgets.chart:navigator.hourly\"/></div>"});
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"day\"><span data-i18n=\"widgets.chart:navigator.daily\"/></div>"});
           break;
-          case "MONTH":
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\" prefix=\"HOURLY\"><span data-i18n=\"widgets.chart:navigator.hourly\"/></div>"});
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\" prefix=\"DAILY\"><span data-i18n=\"widgets.chart:navigator.daily\"/></div>"});
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\" prefix=\"WEEKLY\"><span data-i18n=\"widgets.chart:navigator.weekly\"/></div>"});
+          case "MONTH/hour":
+          case "MONTH/day":
+          case "MONTH/week":
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"hour\"><span data-i18n=\"widgets.chart:navigator.hourly\"/></div>"});
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"day\"><span data-i18n=\"widgets.chart:navigator.daily\"/></div>"});
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"week\"><span data-i18n=\"widgets.chart:navigator.weekly\"/></div>"});
              break;
-         case "HALF_YEAR": //we request day summary data
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\" prefix=\"DAILY\"><span data-i18n=\"widgets.chart:navigator.daily\"/></div>"});
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\" prefix=\"WEEKLY\"><span data-i18n=\"widgets.chart:navigator.weekly\"/></div>"});
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\" prefix=\"MONTLY\"><span data-i18n=\"widgets.chart:navigator.monthly\"/></div>"});         
+         case "HALF_YEAR/day":
+         case "HALF_YEAR/week":
+         case "HALF_YEAR/month":
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"day\"><span data-i18n=\"widgets.chart:navigator.daily\"/></div>"});
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"week\"><span data-i18n=\"widgets.chart:navigator.weekly\"/></div>"});
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"month\"><span data-i18n=\"widgets.chart:navigator.monthly\"/></div>"});         
              break;
-         case "YEAR": //we request day summary data
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\" prefix=\"DAILY\"><span data-i18n=\"widgets.chart:navigator.daily\"/></div>"});
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\" prefix=\"WEEKLY\"><span data-i18n=\"widgets.chart:navigator.weekly\"/></div>"});
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\" prefix=\"MONTLY\"><span data-i18n=\"widgets.chart:navigator.monthly\"/></div>"});         
+         case "YEAR/day":
+         case "YEAR/week":
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"day\"><span data-i18n=\"widgets.chart:navigator.daily\"/></div>"});
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"week\"><span data-i18n=\"widgets.chart:navigator.weekly\"/></div>"});
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"month\"><span data-i18n=\"widgets.chart:navigator.monthly\"/></div>"});         
           break;
           default:
           break;
-       }  
+       }
+       
+       self.prefix = interval.substring(interval.indexOf("/") +1, interval.length);
+       
+       console.log ("self.prefix :", self.prefix);
        
        menuItem.push({ separator: ""});
        
@@ -253,8 +261,8 @@ function chartViewModel() {
                     "</ul>" +
                  "</div>"
            });
-       
-       console.log ("menuItem : ", menuItem);
+           
+       console.log ("Interval : ", interval);
        
        self.widgetApi.toolbar({
           activated: true,
@@ -323,7 +331,7 @@ function chartViewModel() {
                     enabled: true
                 },
                 navigator: {
-                    adaptToUpdatedData: false,
+                    adaptToUpdatedData: true,
                     enabled: false
                 },
                 credits: {
@@ -411,6 +419,8 @@ function chartViewModel() {
             self.chart = self.$chart.highcharts();
             self.chart.keyword = [];
             
+            $('input.highcharts-range-selector:eq(0)').on('change', function(){ console.log("Essai capture !"); });
+            $('g.highcharts-label .highcharts-range-input').on('change', function(){ console.log("Essai capture !"); });            
             self.widgetApi.askServerLocalTime(function (serverLocalTime) {
                self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
             }).done(function(data) {
@@ -442,31 +452,24 @@ function chartViewModel() {
       switch (self.interval) {
           case "HOUR":
               self.cleanValue = 3600000;
-              self.prefix = "minute";
               break;
           case "DAY":
               self.cleanValue = 3600000 * 24;
-              self.prefix = "hour";
               break;
           case "WEEK":
               self.cleanValue = 3600000 * 24 * 7;
-              self.prefix = "hour";
               break;
           case "MONTH":
               self.cleanValue = 3600000 * 24 * 30;
-              self.prefix = "day";
               break;
           case "HALF_YEAR":
               self.cleanValue = 3600000 * 24 * 182;
-              self.prefix = "day";
               break;
           case "YEAR":
               self.cleanValue = 3600000 * 24 * 365;
-              self.prefix = "day";
               break;
           default:
               self.cleanValue = 3600000*24;
-              self.prefix = "hour";
               break;
       }
       
@@ -487,16 +490,13 @@ function chartViewModel() {
         if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
             return;
         
-        //Desactivate the old button
-        self.widgetApi.find(".range-btn[interval='" + self.interval + "']").removeClass("widget-toolbar-pressed-button");
-
-        //Change to the new button selected
-        self.interval = self.widget.configuration.interval;
+        self.configureToolbar(self.widget.configuration.interval);        
         
-        self.configureToolbar(self.interval);
+        self.interval = self.widget.configuration.interval.substring(0,self.widget.configuration.interval.indexOf("/"));
         
         //Activate the new button
         self.widgetApi.find(".range-btn[interval='" + self.interval + "']").addClass("widget-toolbar-pressed-button");
+        self.widgetApi.find(".range-btn[prefix='" + self.prefix + "']").addClass("widget-toolbar-pressed-button");
 
         //just update some viewmodel info
         self.chartParametersConfiguration();
@@ -617,8 +617,6 @@ function chartViewModel() {
             .fail(function (error) {
                defferedPluginInstance.reject();
             });
-            //
-            //
         });
         
         $.when.apply($, arrayOfDeffered) // The first failing array fail the when.apply
@@ -649,19 +647,48 @@ function chartViewModel() {
     this.navigatorBtnClick = function () {
         var self = this;
         return function (e) {
+           
             //we manage activation
             var interval = $(e.currentTarget).attr("interval");
             var prefix = $(e.currentTarget).attr("prefix");
             
-            self.interval = interval;
-            self.configureToolbar(interval);
+            if (!isNullOrUndefined(interval)) {
+               //default prefix for each interval
+               switch (interval)
+               {
+                  case "HOUR":
+                  case "DAY":
+                     self.prefix = "minute";
+                     break;
+                  case "WEEK":
+                  case "MONTH":
+                     self.prefix = "hour";
+                     break;
+                  case "HALF_YEAR":
+                  case "YEAR":
+                     self.prefix = "day";
+                     break;
+               }
+               
+               console.log ("interval value =", interval);
+               console.log ("self.prefix value =", self.prefix);
+               
+               self.configureToolbar(interval + "/" + self.prefix);
+               self.interval = interval;
+               console.log ("interval = ", self.widgetApi.find(".range-btn[interval='" + self.interval + "']"));
+               self.widgetApi.find(".range-btn[interval='" + self.interval + "']").addClass("widget-toolbar-pressed-button");
+               self.widgetApi.find(".range-btn[prefix='" + self.prefix + "']").addClass("widget-toolbar-pressed-button");
+            }
+
+            if (!isNullOrUndefined(prefix)) {
+               console.log ("prefix = ", self.widgetApi.find(".range-btn[prefix='" + prefix + "']"));
+               console.log ("self.prefix = ", self.prefix);
+               self.widgetApi.find(".range-btn[prefix='" + prefix + "']").addClass("widget-toolbar-pressed-button");
+               self.widgetApi.find(".range-btn[prefix='" + self.prefix + "']").removeClass("widget-toolbar-pressed-button");
+               self.prefix = prefix;
+            }
+            
             self.chartParametersConfiguration();
-
-            //we manage button inversion about interval
-            self.widgetApi.find(".range-btn[interval='" + interval + "']").addClass("widget-toolbar-pressed-button");
-            self.widgetApi.find(".range-btn[interval!='" + interval + "']").removeClass("widget-toolbar-pressed-button");
-
-            //we manage button inversion about prefix
             
             //we ask the new time server, and we refresh information
             self.widgetApi.askServerLocalTime(function (serverLocalTime) {
@@ -721,7 +748,7 @@ function chartViewModel() {
                       prefixUri = "";
                       deviceIsSummary[index] = false; // We change the summary for the boolean device.
                   } else {
-                    if (interval == "HOUR"){
+                    if (self.prefix == "minute"){
                       dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime)); // rewriting the final time
                       //we request all data
                       timeBetweenTwoConsecutiveValues = undefined;
