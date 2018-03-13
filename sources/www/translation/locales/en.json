@@ -1032,7 +1032,7 @@
     "YadomsCrash": "Yadoms has crashed",
     "PluginCrash": "Plugin {{who}} has been crashed",
     "TaskFailed": "{{who}} task has been crashed",
-    "RuleFailed": "The automation rule __who__ has failed",
+    "RuleFailed": "The automation rule {{who}} has failed",
     "UpdateAvailable": "An software update is available, check the install&update page"
   },
   "webSockets": {

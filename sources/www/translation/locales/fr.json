@@ -1032,7 +1032,7 @@
     "YadomsCrash": "Yadoms a rencontré une erreur et s'est arrêté",
     "PluginCrash": "{{who}} a rencontré une erreur et s'est arrêté",
     "TaskFailed": "La tâche {{who}} a rencontré une erreur et s'est arrêtée",
-    "RuleFailed": "La règle d'automatisation __who__ a échoué",
+    "RuleFailed": "La règle d'automatisation {{who}} a échoué",
     "UpdateAvailable": "La mise à jour d'un logiciel est disponible, rendez-vous à la page 'Installation & mise à jour' pour plus d'informations"
   },
   "webSockets": {
