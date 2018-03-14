@@ -30,7 +30,17 @@ namespace database
       {
          try
          {
-            if (m_databaseRequester->checkTableExists(CConfigurationTable::getTableName()))
+            // Configuration table changed from Database 4.2.0 version (updated to 4.2.0 in Yadoms 2.1.0 version).
+            // As database version is stored in the Configuration table and this table structure changed,
+            // we have to know the current table structure before get Database version
+            // To check table structure, just check if "databaseVersion" record exists (if yes, database is from new version)
+            auto newDatabaseQuery = m_databaseRequester->newQuery();
+            newDatabaseQuery->Select(CConfigurationTable::getSectionColumnName()).
+                              From(CConfigurationTable::getTableName()).
+                              Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "databaseVersion");
+            const auto isNewDatabase = m_databaseRequester->queryCount(*newDatabaseQuery) == 1;
+
+            if (isNewDatabase)
             {
                auto qVersion = m_databaseRequester->newQuery();
                qVersion->Select(CConfigurationTable::getValueColumnName()).
@@ -44,9 +54,7 @@ namespace database
                if (results.size() >= 1)
                   return shared::versioning::CVersion(results[0]);
             }
-
-            // Fallback to old Configuration table            
-            if (m_databaseRequester->checkTableExists(CDatabaseTable("Configuration")))
+            else
             {
                auto qVersion = m_databaseRequester->newQuery();
                qVersion->Select(CDatabaseColumn("value")).

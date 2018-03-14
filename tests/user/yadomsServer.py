@@ -95,7 +95,7 @@ def start(startupArgs=[]):
 
    # END DEBUG
 
-   if waitServerStarted() == True:
+   if waitServerStarted():
       return serverProcess
 
    print 'Server failed to start'
@@ -155,13 +155,22 @@ def ensureStopped():
             pass
 
 
-def waitServerStarted():
+def getClientUrl(domain = "127.0.0.1", port = "8080", credentials = None):
+   url = "http://"
+   if credentials is not None:
+      url += credentials['user'] + ":" + credentials['password'] + "@"
+   url += domain + ":" + port
+   return url
+
+
+def waitServerStarted(clientCredentials = None, timemoutSeconds = 30):
    import datetime
    import requests
-   timeout = datetime.datetime.now() + datetime.timedelta(seconds = 30)
+   url = getClientUrl(credentials = clientCredentials)
+   timeout = datetime.datetime.now() + datetime.timedelta(seconds = timemoutSeconds)
    while datetime.datetime.now() < timeout:
       try:
-         response = requests.post('http://127.0.0.1:8080/rest/general/system', timeout=1)
+         response = requests.post(url + '/rest/general/system', timeout=1)
          if response.status_code == requests.codes.ok:
             print 'Server started'
             return True
@@ -181,11 +190,11 @@ def waitPageLoaded(browser, waitForReadyForNormalOperation = True):
    return False
 
 
-def openClient(browser, waitForReadyForNormalOperation = True):
+def openClient(browser, waitForReadyForNormalOperation = True, credentials = None):
    """Open a client on local server and wait for full loading"""
 
    try:
-      browser.get("http://127.0.0.1:8080")
+      browser.get(getClientUrl(credentials = credentials))
       if waitPageLoaded(browser, waitForReadyForNormalOperation):
          return
    except:

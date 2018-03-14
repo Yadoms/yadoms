@@ -68,15 +68,39 @@ namespace database
                                                     const shared::versioning::CVersion& newVersion,
                                                     const boost::posix_time::ptime& insertDate)
          {
-            auto qInsert = requester->newQuery();
-            qInsert->InsertOrReplaceInto(CConfigurationTable::getTableName(),
-                                         CConfigurationTable::getSectionColumnName(),
-                                         CConfigurationTable::getValueColumnName(),
-                                         CConfigurationTable::getLastModificationDateColumnName()).
-                     Values("databaseVersion",
-                            newVersion.toString(),
-                            insertDate);
-            requester->queryStatement(*qInsert);
+            // Configuration table changed from Database 4.2.0 version (updated to 4.2.0 in Yadoms 2.1.0 version).
+            // As database version is stored in the Configuration table and this table structure changed,
+            // we have to know the current table structure before get Database version
+            // To check table structure, just check if "databaseVersion" record exists (if yes, database is from new version)
+            auto newDatabaseQuery = requester->newQuery();
+            newDatabaseQuery->Select(CConfigurationTable::getSectionColumnName()).
+                              From(CConfigurationTable::getTableName()).
+                              Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "databaseVersion");
+            const auto isNewDatabase = requester->queryCount(*newDatabaseQuery) == 1;
+
+            if (isNewDatabase)
+            {
+               auto qInsert = requester->newQuery();
+               qInsert->InsertOrReplaceInto(CConfigurationTable::getTableName(),
+                                            CConfigurationTable::getSectionColumnName(),
+                                            CConfigurationTable::getValueColumnName(),
+                                            CConfigurationTable::getLastModificationDateColumnName()).
+                        Values("databaseVersion",
+                               newVersion.toString(),
+                               insertDate);
+               requester->queryStatement(*qInsert);
+            }
+            else
+            {
+               auto qUpdate = requester->newQuery();
+
+               qUpdate->Update(CDatabaseTable("Configuration"))
+                      .Set(CDatabaseColumn("value"), newVersion.toString())
+                      .Where(CDatabaseColumn("section"), CQUERY_OP_EQUAL, "Database")
+                      .And(CDatabaseColumn("name"), CQUERY_OP_EQUAL, "Version");
+
+               requester->queryStatement(*qUpdate);
+            }
          }
 
          // [END] ISQLiteVersionUpgrade implementation
@@ -166,7 +190,7 @@ namespace database
                auto qInsert = pRequester->newQuery();
                qInsert->Clear().InsertInto(CPluginTable::getTableName(), CPluginTable::getDisplayNameColumnName(), CPluginTable::getTypeColumnName(),
                                            CPluginTable::getAutoStartColumnName(), CPluginTable::getCategoryColumnName()).
-                        Values("System", "System", true, database::entities::EPluginCategory::kSystem);
+                        Values("System", "System", true, entities::EPluginCategory::kSystem);
                pRequester->queryStatement(*qInsert);
 
                //commit transaction
