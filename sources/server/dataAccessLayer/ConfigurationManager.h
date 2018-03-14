@@ -20,7 +20,7 @@ namespace dataAccessLayer
       std::string getDatabaseVersion() const override;
       void subscribeOnServerConfigurationChanged(
          boost::function1<void, boost::shared_ptr<const shared::CDataContainer>> onServerConfigurationChangedFct) override;
-      shared::CDataContainer CConfigurationManager::getLocation() const override;
+      shared::CDataContainer getLocation() const override;
       void saveAutoDetectedLocation(const shared::CDataContainer& newLocation) override;
       shared::CDataContainer getBasicAuthentication() const override;
       // [END] - IConfigurationManager implementation
