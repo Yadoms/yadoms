@@ -119,7 +119,6 @@ IZWaveController::E_StartResult COpenZWaveController::start(boost::function0<voi
 
       //this part wait infinitely for serial port open success (configuration can be changed by another thread)
       auto serialPortOpened = false;
-      auto remainingTries = 3;
       while (!serialPortOpened)
       {
          //lock access to configuration

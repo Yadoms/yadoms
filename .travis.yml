@@ -28,61 +28,59 @@ before_install:
 
 #make dir
 - mkdir -p $HOME/depsBuild
-- mkdir -p $HOME/logs
 
 #CMake
-- echo 'Installing CMake 3.9.2'
-- sudo apt-get remove cmake
-- if [ ${GENERATE_CMAKE} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/cmake-3.9.2-build.tar.bz2; else wget --no-verbose --no-check-certificate https://cmake.org/files/v3.9/cmake-3.9.2.tar.gz; fi
-- if [ ${GENERATE_CMAKE} != true ]; then tar jxf cmake-3.9.2-build.tar.bz2; else tar zxf cmake-3.9.2.tar.gz; fi
-- cd cmake-3.9.2
-- if [ ${GENERATE_CMAKE} != true ]; then echo "Bypass CMake/bootstrap" ; else ./bootstrap > $HOME/logs/yadoms_cmake.log; fi
-- if [ ${GENERATE_CMAKE} != true ]; then echo "Bypass CMake/make"; else make > $HOME/logs/yadoms_cmake.log; fi
-- sudo make install > $HOME/logs/yadoms_cmake.log
+- echo 'Installing CMake 3.10.2'
+- if [ ${GENERATE_CMAKE} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/yadoms/cmake-3.10.2-build.tar.bz2; else wget --no-verbose --no-check-certificate https://cmake.org/files/v3.10/cmake-3.10.2.tar.gz; fi
+- if [ ${GENERATE_CMAKE} != true ]; then tar jxf cmake-3.10.2-build.tar.bz2; else tar zxf cmake-3.10.2.tar.gz; fi
+- cd cmake-3.10.2
+- if [ ${GENERATE_CMAKE} != true ]; then echo "Bypass CMake/bootstrap" ; else ./bootstrap; fi
+- if [ ${GENERATE_CMAKE} != true ]; then echo "Bypass CMake/make"; else make; fi
+- sudo make install
 - cd ..
-- if [ ${GENERATE_CMAKE} = true ]; then tar cjf cmake-3.9.2-build.tar.bz2 cmake-3.9.2; fi
-- if [ ${GENERATE_CMAKE} = true ]; then curl --ftp-create-dirs -T cmake-3.9.2-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${GENERATE_CMAKE} = true ]; then rm -f cmake-3.9.2-build.tar.bz2; fi
+- if [ ${GENERATE_CMAKE} = true ]; then tar cjf cmake-3.10.2-build.tar.bz2 cmake-3.10.2; fi
+- if [ ${GENERATE_CMAKE} = true ]; then curl --ftp-create-dirs -T cmake-3.10.2-build.tar.bz2 -u ${FTP_USER}:${FTP_PASSWORD} ${YADOMS_UPLOAD_URL}/yadoms/; fi
+- if [ ${GENERATE_CMAKE} = true ]; then rm -f cmake-3.10.2-build.tar.bz2; fi
 
 # boost
 - echo 'Building Boost 1.65.1'
 - if [ ${GENERATE_BOOST} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/boost_1_65_1-build.tar.bz2; else wget --no-verbose http://netcologne.dl.sourceforge.net/project/boost/boost/1.65.1/boost_1_65_1.tar.bz2; fi
 - if [ ${GENERATE_BOOST} != true ]; then tar xjf boost_1_65_1-build.tar.bz2; else tar xjf boost_1_65_1.tar.bz2; fi
 - cd boost_1_65_1
-- if [ ${GENERATE_BOOST} != true ]; then echo "Bypass boost/bootstrap"; else ./bootstrap.sh > $HOME/logs/yadoms_boost.log; fi
-- if [ ${GENERATE_BOOST} != true ]; then echo "Bypass boost/b2"; else ./b2 --with-atomic --with-chrono --with-date_time --with-filesystem --with-regex --with-thread --with-system link=static runtime-link=static cxxflags=-fPIC > $HOME/logs/yadoms_boost.log; fi
+- if [ ${GENERATE_BOOST} != true ]; then echo "Bypass boost/bootstrap"; else ./bootstrap.sh; fi
+- if [ ${GENERATE_BOOST} != true ]; then echo "Bypass boost/b2"; else ./b2 --with-atomic --with-chrono --with-date_time --with-filesystem --with-regex --with-thread --with-system link=static runtime-link=static cxxflags=-fPIC; fi
 - cd ..
 - if [ ${GENERATE_BOOST} = true ]; then tar cjf boost_1_65_1-build.tar.bz2 boost_1_65_1; fi
-- if [ ${GENERATE_BOOST} = true ]; then curl --ftp-create-dirs -T boost_1_65_1-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
+- if [ ${GENERATE_BOOST} = true ]; then curl --ftp-create-dirs -T boost_1_65_1-build.tar.bz2 -u ${FTP_USER}:${FTP_PASSWORD} ${YADOMS_UPLOAD_URL}/; fi
 - if [ ${GENERATE_BOOST} = true ]; then rm -f boost_1_65_1-build.tar.bz2; fi
   
  # openssl
 - echo 'Building OpenSSL'
-- if [ ${GENERATE_OPENSSL} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/openssl-1.0.2k-build.tar.bz2; else wget --no-verbose https://www.openssl.org/source/openssl-1.0.2k.tar.gz; fi
-- if [ ${GENERATE_OPENSSL} != true ]; then tar xjf openssl-1.0.2k-build.tar.bz2; else tar xzf openssl-1.0.2k.tar.gz; fi
-- cd openssl-1.0.2k
-- if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/configure"; else ./config --prefix=$HOME/depsBuild/openssl > $HOME/logs/yadoms_openssl.log; fi
-- if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/make"; else make > $HOME/logs/yadoms_openssl.log; fi
-- make install > $HOME/logs/yadoms_openssl.log
+- if [ ${GENERATE_OPENSSL} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/openssl-1.1.0g-build.tar.bz2; else wget --no-verbose https://www.openssl.org/source/openssl-1.1.0g.tar.gz; fi
+- if [ ${GENERATE_OPENSSL} != true ]; then tar xjf openssl-1.1.0g-build.tar.bz2; else tar xzf openssl-1.1.0g.tar.gz; fi
+- cd openssl-1.1.0g
+- if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/configure"; else ./config --prefix=$HOME/depsBuild/openssl; fi
+- if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/make"; else make; fi
+- make install
 - cd ..
-- if [ ${GENERATE_OPENSSL} = true ]; then tar cjf openssl-1.0.2k-build.tar.bz2 openssl-1.0.2k; fi
-- if [ ${GENERATE_OPENSSL} = true ]; then curl --ftp-create-dirs -T openssl-1.0.2k-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${GENERATE_OPENSSL} = true ]; then rm -f openssl-1.0.2k-build.tar.bz2; fi
+- if [ ${GENERATE_OPENSSL} = true ]; then tar cjf openssl-1.1.0g-build.tar.bz2 openssl-1.1.0g; fi
+- if [ ${GENERATE_OPENSSL} = true ]; then curl --ftp-create-dirs -T openssl-1.1.0g-build.tar.bz2 -u ${FTP_USER}:${FTP_PASSWORD} ${YADOMS_UPLOAD_URL}/; fi
+- if [ ${GENERATE_OPENSSL} = true ]; then rm -f openssl-1.1.0g-build.tar.bz2; fi
 
 # poco
-- echo 'Building Poco 1.7.9-all'
-- if [ ${GENERATE_POCO} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/poco-1.7.9-all-build.tar.bz2; else wget --no-verbose http://pocoproject.org/releases/poco-1.7.9/poco-1.7.9-all.tar.gz; fi
-- if [ ${GENERATE_POCO} != true ]; then tar xjf poco-1.7.9-all-build.tar.bz2; else tar xzf poco-1.7.9-all.tar.gz; fi
-- sudo apt-get install libssl-dev libgnutls-dev libopencv-gpu-dev > $HOME/logs/yadoms_poco.log
-- cd poco-1.7.9-all/
+- echo 'Building Poco 1.8.1-all'
+- if [ ${GENERATE_POCO} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/poco-1.8.1-all-build.tar.bz2; else wget --no-verbose http://pocoproject.org/releases/poco-1.8.1/poco-1.8.1-all.tar.gz; fi
+- if [ ${GENERATE_POCO} != true ]; then tar xjf poco-1.8.1-all-build.tar.bz2; else tar xzf poco-1.8.1-all.tar.gz; fi
+- sudo apt-get install libssl-dev libgnutls-dev libopencv-gpu-dev
+- cd poco-1.8.1-all/
 - if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/configure_config_file"; else echo 'STATICOPT_CC = -fPIC' >> build/config/Linux; fi
 - if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/configure_config_file"; else echo 'STATICOPT_CXX = -fPIC' >> build/config/Linux; fi
-- if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/configure"; else ./configure --static --config=Linux --no-samples --no-tests --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page --include-path=$HOME/depsBuild/openssl/include --library-path=$HOME/depsBuild/openssl/lib> $HOME/logs/yadoms_poco.log; fi
-- if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/make"; else make > $HOME/logs/yadoms_poco.log; fi
+- if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/configure"; else ./configure --static --config=Linux --no-samples --no-tests --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page --include-path=$HOME/depsBuild/openssl/include --library-path=$HOME/depsBuild/openssl/lib; fi
+- if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/make"; else make; fi
 - cd ..
-- if [ ${GENERATE_POCO} = true ]; then tar cjf poco-1.7.9-all-build.tar.bz2 poco-1.7.9-all; fi
-- if [ ${GENERATE_POCO} = true ]; then curl --ftp-create-dirs -T poco-1.7.9-all-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${GENERATE_POCO} = true ]; then rm -f poco-1.7.9-all-build.tar.bz2; fi
+- if [ ${GENERATE_POCO} = true ]; then tar cjf poco-1.8.1-all-build.tar.bz2 poco-1.8.1-all; fi
+- if [ ${GENERATE_POCO} = true ]; then curl --ftp-create-dirs -T poco-1.8.1-all-build.tar.bz2 -u ${FTP_USER}:${FTP_PASSWORD} ${YADOMS_UPLOAD_URL}/; fi
+- if [ ${GENERATE_POCO} = true ]; then rm -f poco-1.8.1-all-build.tar.bz2; fi
 
 
 # protobuf
@@ -91,14 +89,14 @@ before_install:
 - if [ ${GENERATE_PROTOBUF} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/protobuf-3.4.1-build.tar.bz2; else wget --no-verbose https://github.com/google/protobuf/releases/download/v3.4.1/protobuf-cpp-3.4.1.tar.gz; fi
 - if [ ${GENERATE_PROTOBUF} != true ]; then tar xjf protobuf-3.4.1-build.tar.bz2 -C $HOME/depsBuild; else tar xzf protobuf-cpp-3.4.1.tar.gz; fi
 - if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/cd"; else cd protobuf-3.4.1; fi
-- if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/autogen"; else ./autogen.sh > $HOME/logs/yadoms_protobuf_pi.log; fi
-- if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/configure"; else ./configure --enable-shared=no --prefix=$HOME/depsBuild/protobuf --with-pic > $HOME/logs/yadoms_protobuf_pi.log; fi
-- if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/make"; else make > $HOME/logs/yadoms_protobuf_pi.log; fi
-- if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/make install"; else make install > $HOME/logs/yadoms_protobuf_pi.log; fi
-- if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/ldconfig"; else sudo ldconfig > $HOME/logs/yadoms_protobuf_pi.log; fi
+- if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/autogen"; else ./autogen.sh; fi
+- if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/configure"; else ./configure --enable-shared=no --prefix=$HOME/depsBuild/protobuf --with-pic; fi
+- if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/make"; else make; fi
+- if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/make install"; else make install; fi
+- if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/ldconfig"; else sudo ldconfig; fi
 - if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/cd.."; else cd ..; fi
 - if [ ${GENERATE_PROTOBUF} = true ]; then tar cjf protobuf-3.4.1-build.tar.bz2 -C $HOME/depsBuild protobuf; fi
-- if [ ${GENERATE_PROTOBUF} = true ]; then curl --ftp-create-dirs -T protobuf-3.4.1-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
+- if [ ${GENERATE_PROTOBUF} = true ]; then curl --ftp-create-dirs -T protobuf-3.4.1-build.tar.bz2 -u ${FTP_USER}:${FTP_PASSWORD} ${YADOMS_UPLOAD_URL}/; fi
 - if [ ${GENERATE_PROTOBUF} = true ]; then rm -f protobuf-3.4.1-build.tar.bz2; fi
 
 # gammu
@@ -109,12 +107,12 @@ before_install:
 - cd gammu-1.38.4
 - if [ ${GENERATE_GAMMU} != true ]; then echo "Bypass mkdir build"; else mkdir build; fi
 - if [ ${GENERATE_GAMMU} != true ]; then echo "Bypass cd build"; else cd build; fi
-- if [ ${GENERATE_GAMMU} != true ]; then echo "Bypass cmake"; else cmake -DBUILD_SHARED_LIBS=OFF .. > yadoms_gammu.log; fi
-- if [ ${GENERATE_GAMMU} != true ]; then echo "Bypass make"; else make > yadoms_gammu.log; fi
+- if [ ${GENERATE_GAMMU} != true ]; then echo "Bypass cmake"; else ../cmake-3.10.2/bin/cmake -DBUILD_SHARED_LIBS=OFF ..; fi
+- if [ ${GENERATE_GAMMU} != true ]; then echo "Bypass make"; else make; fi
 - if [ ${GENERATE_GAMMU} != true ]; then echo "Bypass cd .."; else cd ..; fi
 - cd ..
 - if [ ${GENERATE_GAMMU} = true ]; then tar cjf gammu-1.38.4-build.tar.bz2 gammu-1.38.4; fi
-- if [ ${GENERATE_GAMMU} = true ]; then curl --ftp-create-dirs -T gammu-1.38.4-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
+- if [ ${GENERATE_GAMMU} = true ]; then curl --ftp-create-dirs -T gammu-1.38.4-build.tar.bz2 -u ${FTP_USER}:${FTP_PASSWORD} ${YADOMS_UPLOAD_URL}/; fi
 - if [ ${GENERATE_GAMMU} = true ]; then rm -f gammu-1.38.4-build.tar.bz2; fi
 
 # PCRE
@@ -126,12 +124,12 @@ before_install:
 - if [ ${GENERATE_SWIG} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/swig-3.0.12-build.tar.bz2; else wget --no-verbose http://prdownloads.sourceforge.net/swig/swig-3.0.12.tar.gz; fi
 - if [ ${GENERATE_SWIG} != true ]; then tar xjf swig-3.0.12-build.tar.bz2; else tar xzf swig-3.0.12.tar.gz; fi
 - cd swig-3.0.12
-- if [ ${GENERATE_SWIG} != true ]; then echo "Bypass SWIG/configure"; else ./configure > $HOME/logs/yadoms_swig.log; fi
-- if [ ${GENERATE_SWIG} != true ]; then echo "Bypass SWIG/make"; else make > $HOME/logs/yadoms_swig.log; fi
-- sudo make install > $HOME/logs/yadoms_swig.log
+- if [ ${GENERATE_SWIG} != true ]; then echo "Bypass SWIG/configure"; else ./configure; fi
+- if [ ${GENERATE_SWIG} != true ]; then echo "Bypass SWIG/make"; else make; fi
+- sudo make install
 - cd ..
 - if [ ${GENERATE_SWIG} = true ]; then tar cjf swig-3.0.12-build.tar.bz2 swig-3.0.12; fi
-- if [ ${GENERATE_SWIG} = true ]; then curl --ftp-create-dirs -T swig-3.0.12-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
+- if [ ${GENERATE_SWIG} = true ]; then curl --ftp-create-dirs -T swig-3.0.12-build.tar.bz2 -u ${FTP_USER}:${FTP_PASSWORD} ${YADOMS_UPLOAD_URL}/; fi
 - if [ ${GENERATE_SWIG} = true ]; then rm -f swig-3.0.12-build.tar.bz2; fi
 
 # Python
@@ -142,19 +140,20 @@ before_install:
 - if [ ${GENERATE_POSTGRESQL} != true ]; then wget --no-verbose -U 'Yadoms/1.0.0' ${YADOMS_DOWNLOAD_URL}/postgresql-9.6.2-build.tar.bz2; else wget --no-verbose https://ftp.postgresql.org/pub/source/v9.6.2/postgresql-9.6.2.tar.bz2; fi
 - if [ ${GENERATE_POSTGRESQL} != true ]; then tar xjf postgresql-9.6.2-build.tar.bz2; else tar xjf postgresql-9.6.2.tar.bz2; fi
 - cd postgresql-9.6.2
-- if [ ${GENERATE_POSTGRESQL} != true ]; then echo "Bypass PostgreSQL/configure"; else ./configure > $HOME/logs/yadoms_postgresql.log; fi
+- if [ ${GENERATE_POSTGRESQL} != true ]; then echo "Bypass PostgreSQL/configure"; else ./configure; fi
 - cd src/interfaces/libpq
-- if [ ${GENERATE_POSTGRESQL} != true ]; then echo "Bypass PostgreSQL/make"; else make > $HOME/logs/yadoms_postgresql.log; fi
+- if [ ${GENERATE_POSTGRESQL} != true ]; then echo "Bypass PostgreSQL/make"; else make; fi
 - cd ../../../..
 - if [ ${GENERATE_POSTGRESQL} = true ]; then tar cjf postgresql-9.6.2-build.tar.bz2 postgresql-9.6.2; fi
-- if [ ${GENERATE_POSTGRESQL} = true ]; then curl --ftp-create-dirs -T postgresql-9.6.2-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
+- if [ ${GENERATE_POSTGRESQL} = true ]; then curl --ftp-create-dirs -T postgresql-9.6.2-build.tar.bz2 -u ${FTP_USER}:${FTP_PASSWORD} ${YADOMS_UPLOAD_URL}/; fi
 - if [ ${GENERATE_POSTGRESQL} = true ]; then rm -f postgresql-9.6.2-build.tar.bz2; fi
 
 script:
 # Yadoms configuration file
 - echo 'Configuring Yadoms CMakeListsUserConfig.txt'
-- echo 'set(BOOST_ROOT "'$PWD'/boost_1_65_1")' > sources/CMakeListsUserConfig.txt
-- echo 'set(POCO_ROOT "'$PWD'/poco-1.7.9-all")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(ALTERNATIVE_CMAKE_ROOT "'$PWD'/cmake-3.10.2")' > sources/CMakeListsUserConfig.txt
+- echo 'set(BOOST_ROOT "'$PWD'/boost_1_65_1")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(POCO_ROOT "'$PWD'/poco-1.8.1-all")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PROTOBUF_ROOT "'$HOME'/depsBuild/protobuf")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PROTOBUF_PROTOC_EXECUTABLE "'$HOME'/depsBuild/protobuf/bin/protoc")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY ON)' >> sources/CMakeListsUserConfig.txt
