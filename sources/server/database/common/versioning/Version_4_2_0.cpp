@@ -73,15 +73,22 @@ namespace database
                   // Reorganize
                   // - The server configuration
                   shared::CDataContainer serverConfiguration;
-                  serverConfiguration.set("firstStart", firstStart);
-                  serverConfiguration.set("location", location);
-                  serverConfiguration.set("basicAuthentication", basicAuthentication);
+                  if (firstStart != boost::none)
+                     serverConfiguration.set("firstStart", *firstStart);
+                  if (location != boost::none)
+                     serverConfiguration.set("location", *location);
+                  if (basicAuthentication != boost::none)
+                     serverConfiguration.set("basicAuthentication", *basicAuthentication);
                   // - The GUI configuration (actually only one known GUI client kind)
                   shared::CDataContainer webClientConfiguration;
-                  webClientConfiguration.set("language", language);
-                  webClientConfiguration.set("advancedParametersActive", advancedParameters);
-                  webClientConfiguration.set("dateFormatString", dateFormatString);
-                  webClientConfiguration.set("refreshPage", refreshPage);
+                  if (language != boost::none)
+                     webClientConfiguration.set("language", *language);
+                  if (advancedParameters != boost::none)
+                     webClientConfiguration.set("advancedParametersActive", *advancedParameters);
+                  if (dateFormatString != boost::none)
+                     webClientConfiguration.set("dateFormatString", *dateFormatString);
+                  if (refreshPage != boost::none)
+                     webClientConfiguration.set("refreshPage", *refreshPage);
 
 
                   // Refactor the configuration table
@@ -120,10 +127,25 @@ namespace database
             }
          }
 
+         void CVersion_4_2_0::updateDatabaseVersion(const boost::shared_ptr<IDatabaseRequester> requester,
+                                                    const shared::versioning::CVersion& newVersion,
+                                                    const boost::posix_time::ptime& insertDate)
+         {
+            auto qInsert = requester->newQuery();
+            qInsert->InsertOrReplaceInto(CConfigurationTable::getTableName(),
+                                         CConfigurationTable::getSectionColumnName(),
+                                         CConfigurationTable::getValueColumnName(),
+                                         CConfigurationTable::getLastModificationDateColumnName()).
+                     Values("databaseVersion",
+                            newVersion.toString(),
+                            insertDate);
+            requester->queryStatement(*qInsert);
+         }
+
          template <typename T>
-         T loadConfigurationValue(const boost::shared_ptr<IDatabaseRequester>& requester,
-                                  const std::string& section,
-                                  const std::string& name)
+         boost::optional<T> loadConfigurationValue(const boost::shared_ptr<IDatabaseRequester>& requester,
+                                                   const std::string& section,
+                                                   const std::string& name)
          {
             auto loadQuery = requester->newQuery();
             loadQuery->Select(CDatabaseColumn("value")).
@@ -133,75 +155,81 @@ namespace database
 
             adapters::CSingleValueAdapter<T> adapter;
             requester->queryEntities(&adapter, *loadQuery);
-            return adapter.getResults()[0];
+            return adapter.getResults().size() == 0 ? boost::optional<T>() : boost::optional<T>(adapter.getResults()[0]);
          }
 
-         bool CVersion_4_2_0::loadFirstStart(const boost::shared_ptr<IDatabaseRequester>& requester)
+         boost::optional<bool> CVersion_4_2_0::loadFirstStart(const boost::shared_ptr<IDatabaseRequester>& requester)
          {
             return loadConfigurationValue<bool>(requester,
                                                 "install",
                                                 "firstStart");
          }
 
-         std::string CVersion_4_2_0::loadLocation(const boost::shared_ptr<IDatabaseRequester>& requester)
+         boost::optional<std::string> CVersion_4_2_0::loadLocation(const boost::shared_ptr<IDatabaseRequester>& requester)
          {
             return loadConfigurationValue<std::string>(requester,
                                                        "system",
                                                        "location");
          }
 
-         std::string CVersion_4_2_0::loadLanguage(const boost::shared_ptr<IDatabaseRequester>& requester)
+         boost::optional<std::string> CVersion_4_2_0::loadLanguage(const boost::shared_ptr<IDatabaseRequester>& requester)
          {
             return loadConfigurationValue<std::string>(requester,
                                                        "system",
                                                        "language");
          }
 
-         bool CVersion_4_2_0::loadAdvancedParameters(const boost::shared_ptr<IDatabaseRequester>& requester)
+         boost::optional<bool> CVersion_4_2_0::loadAdvancedParameters(const boost::shared_ptr<IDatabaseRequester>& requester)
          {
             return loadConfigurationValue<bool>(requester,
                                                 "system",
                                                 "advancedParameters");
          }
 
-         std::string CVersion_4_2_0::loadDateFormatString(const boost::shared_ptr<IDatabaseRequester>& requester)
+         boost::optional<std::string> CVersion_4_2_0::loadDateFormatString(const boost::shared_ptr<IDatabaseRequester>& requester)
          {
             return loadConfigurationValue<std::string>(requester,
                                                        "system",
                                                        "dateFormatString");
          }
 
-         bool CVersion_4_2_0::loadRefreshPage(const boost::shared_ptr<IDatabaseRequester>& requester)
+         boost::optional<bool> CVersion_4_2_0::loadRefreshPage(const boost::shared_ptr<IDatabaseRequester>& requester)
          {
             return loadConfigurationValue<bool>(requester,
                                                 "system",
                                                 "refreshPage");
          }
 
-         std::string CVersion_4_2_0::loadBasicAuthentication(const boost::shared_ptr<IDatabaseRequester>& requester)
+         boost::optional<std::string> CVersion_4_2_0::loadBasicAuthentication(const boost::shared_ptr<IDatabaseRequester>& requester)
          {
             return loadConfigurationValue<std::string>(requester,
                                                        "system",
                                                        "basicAuthentication");
          }
 
-         shared::CDataContainer CVersion_4_2_0::convertLocation(const std::string& oldLocation)
+         boost::optional<shared::CDataContainer> CVersion_4_2_0::convertLocation(const boost::optional<std::string>& oldLocation)
          {
-            shared::CDataContainer oldLocationContainer(oldLocation);
+            if (!oldLocation)
+               return boost::optional<shared::CDataContainer>();
+
+            boost::optional<shared::CDataContainer> oldLocationContainer(*oldLocation);
             shared::CDataContainer newLocation;
 
             newLocation.set("location.status", "userDefined");
-            newLocation.set("latitude", oldLocationContainer.get<std::string>("latitude"));
-            newLocation.set("longitude", oldLocationContainer.get<std::string>("longitude"));
-            newLocation.set("altitude", oldLocationContainer.get<std::string>("altitude"));
-            newLocation.set("timezone", oldLocationContainer.get<std::string>("timezone"));
+            newLocation.set("latitude", oldLocationContainer->get<std::string>("latitude"));
+            newLocation.set("longitude", oldLocationContainer->get<std::string>("longitude"));
+            newLocation.set("altitude", oldLocationContainer->get<std::string>("altitude"));
+            newLocation.set("timezone", oldLocationContainer->get<std::string>("timezone"));
 
             return newLocation;
          }
 
-         shared::CDataContainer CVersion_4_2_0::convertBasicAuthentication(const std::string& oldBasicAuthentication)
+         boost::optional<shared::CDataContainer> CVersion_4_2_0::convertBasicAuthentication(
+            const boost::optional<std::string>& oldBasicAuthentication)
          {
-            return shared::CDataContainer(oldBasicAuthentication);
+            if (!oldBasicAuthentication)
+               return boost::optional<shared::CDataContainer>();
+            return boost::optional<shared::CDataContainer>(*oldBasicAuthentication);
          }
 
          void CVersion_4_2_0::insertConfigurationValue(const boost::shared_ptr<IDatabaseRequester> requester,

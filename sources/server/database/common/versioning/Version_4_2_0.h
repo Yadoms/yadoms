@@ -30,21 +30,26 @@ namespace database
                                  const shared::versioning::CVersion& currentVersion) override;
             // [END] ISQLiteVersionUpgrade implementation
 
+         protected:
+            static void updateDatabaseVersion(const boost::shared_ptr<IDatabaseRequester> requester,
+                                              const shared::versioning::CVersion& newVersion,
+                                              const boost::posix_time::ptime& insertDate = shared::currentTime::Provider().now());
+
          private:
             static const shared::versioning::CVersion Version;
 
             static void updateFrom4_1_0(const boost::shared_ptr<IDatabaseRequester>& requester);
 
-            static bool loadFirstStart(const boost::shared_ptr<IDatabaseRequester>& requester);
-            static std::string loadLocation(const boost::shared_ptr<IDatabaseRequester>& requester);
-            static std::string loadLanguage(const boost::shared_ptr<IDatabaseRequester>& requester);
-            static bool loadAdvancedParameters(const boost::shared_ptr<IDatabaseRequester>& requester);
-            static std::string loadDateFormatString(const boost::shared_ptr<IDatabaseRequester>& requester);
-            static bool loadRefreshPage(const boost::shared_ptr<IDatabaseRequester>& requester);
-            static std::string loadBasicAuthentication(const boost::shared_ptr<IDatabaseRequester>& requester);
+            static boost::optional<bool> loadFirstStart(const boost::shared_ptr<IDatabaseRequester>& requester);
+            static boost::optional<std::string> loadLocation(const boost::shared_ptr<IDatabaseRequester>& requester);
+            static boost::optional<std::string> loadLanguage(const boost::shared_ptr<IDatabaseRequester>& requester);
+            static boost::optional<bool> loadAdvancedParameters(const boost::shared_ptr<IDatabaseRequester>& requester);
+            static boost::optional<std::string> loadDateFormatString(const boost::shared_ptr<IDatabaseRequester>& requester);
+            static boost::optional<bool> loadRefreshPage(const boost::shared_ptr<IDatabaseRequester>& requester);
+            static boost::optional<std::string> loadBasicAuthentication(const boost::shared_ptr<IDatabaseRequester>& requester);
 
-            static shared::CDataContainer convertLocation(const std::string& oldLocation);
-            static shared::CDataContainer convertBasicAuthentication(const std::string& oldBasicAuthentication);
+            static boost::optional<shared::CDataContainer> convertLocation(const boost::optional<std::string>& oldLocation);
+            static boost::optional<shared::CDataContainer> convertBasicAuthentication(const boost::optional<std::string>& oldBasicAuthentication);
 
             static void insertConfigurationValue(const boost::shared_ptr<IDatabaseRequester> requester,
                                                  const std::string& section,

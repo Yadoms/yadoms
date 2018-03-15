@@ -23,6 +23,7 @@ class NavigationAccrossPages(unittest.TestCase):
       yadomsServer.openClient(self.browser)
 
    def click(self, menuEntries, pageIndex):
+      self.assertTrue(menuEntries[pageIndex].is_enabled())
       print 'click on ' + menuEntries[pageIndex].text + ' page (index ' + str(pageIndex) + ')'
       menuEntries[pageIndex].click()
 

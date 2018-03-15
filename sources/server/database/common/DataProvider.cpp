@@ -30,12 +30,23 @@ namespace database
       {
          try
          {
-            if (m_databaseRequester->checkTableExists(CConfigurationTable::getTableName()))
+            // Configuration table changed from Database 4.2.0 version (updated to 4.2.0 in Yadoms 2.1.0 version).
+            // As database version is stored in the Configuration table and this table structure changed,
+            // we have to know the current table structure before get Database version
+            // To check table structure, just check if "Database" record exists (if yes, database is from old version)
+            auto newDatabaseQuery = m_databaseRequester->newQuery();
+            newDatabaseQuery->SelectCount().
+                              From(CConfigurationTable::getTableName()).
+                              Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "Database");
+            const auto isOldDatabase = m_databaseRequester->queryCount(*newDatabaseQuery) == 1;
+
+            if (isOldDatabase)
             {
                auto qVersion = m_databaseRequester->newQuery();
-               qVersion->Select(CConfigurationTable::getValueColumnName()).
-                         From(CConfigurationTable::getTableName()).
-                         Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "databaseVersion");
+               qVersion->Select(CDatabaseColumn("value")).
+                         From(CDatabaseTable("Configuration")).
+                         Where(CDatabaseColumn("section"), CQUERY_OP_EQUAL, "Database").
+                         And(CDatabaseColumn("name"), CQUERY_OP_EQUAL, "Version");
 
                adapters::CSingleValueAdapter<std::string> adapter;
                m_databaseRequester->queryEntities(&adapter, *qVersion);
@@ -44,15 +55,12 @@ namespace database
                if (results.size() >= 1)
                   return shared::versioning::CVersion(results[0]);
             }
-
-            // Fallback to old Configuration table            
-            if (m_databaseRequester->checkTableExists(CDatabaseTable("Configuration")))
+            else
             {
                auto qVersion = m_databaseRequester->newQuery();
-               qVersion->Select(CDatabaseColumn("value")).
-                         From(CDatabaseTable("Configuration")).
-                         Where(CDatabaseColumn("section"), CQUERY_OP_EQUAL, "Database").
-                         And(CDatabaseColumn("name"), CQUERY_OP_EQUAL, "Version");
+               qVersion->Select(CConfigurationTable::getValueColumnName()).
+                         From(CConfigurationTable::getTableName()).
+                         Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "databaseVersion");
 
                adapters::CSingleValueAdapter<std::string> adapter;
                m_databaseRequester->queryEntities(&adapter, *qVersion);

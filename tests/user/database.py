@@ -8,5 +8,9 @@ def new():
 
          
 def deploy(databaseName):
-   print 'Deploy database ', databaseName
-   resources.deployFile(os.path.join("resources", "databases", databaseName + ".db3"), yadomsServer.databasePath())
+   deployFromPath(os.path.join("resources", "databases", databaseName + ".db3"))
+
+         
+def deployFromPath(databaseFullPath):
+   print 'Deploy database from ', databaseFullPath
+   resources.deployFile(databaseFullPath, yadomsServer.databasePath())

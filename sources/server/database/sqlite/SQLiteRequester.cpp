@@ -398,7 +398,7 @@ namespace database
 
       void CSQLiteRequester::backupData(const std::string & backupFolder, ProgressFunc reporter)
       {
-         int rc = 0;
+         int rc;
          int currentTry = 0;
 
          do

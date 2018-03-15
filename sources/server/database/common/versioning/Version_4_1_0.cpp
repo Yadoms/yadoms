@@ -50,7 +50,7 @@ namespace database
          ///\param [in] pRequester : database requester object
          ///\throw      CVersionException if create database failed
          //-----------------------------------
-         void CVersion_4_1_0::UpdateFrom4_0_1(const boost::shared_ptr<IDatabaseRequester>& pRequester)
+         void CVersion_4_1_0::UpdateFrom4_0_1(const boost::shared_ptr<IDatabaseRequester>& pRequester) const
          {
             try
             {
