@@ -13,6 +13,7 @@ import scripts
 import yadomsServer
 import dashboard
 import dashboard.automation
+import modals
 import notification
 import i18n
 import tools
@@ -65,7 +66,7 @@ class RemoveRule(unittest.TestCase):
       
       print '  Remove rule'
       removeButton.click()
-      confirmationModal = dashboard.automation.waitRemoveRuleConfirmationModal(self.browser)
+      confirmationModal = modals.waitOkCancelModal(self.browser)
       confirmationModal.ok()
       
       print '  Expect notification'
@@ -94,7 +95,7 @@ class RemoveRule(unittest.TestCase):
       
       print '  Remove rule'
       removeButton.click()
-      confirmationModal = dashboard.automation.waitRemoveRuleConfirmationModal(self.browser)
+      confirmationModal = modals.waitOkCancelModal(self.browser)
       print '  Cancel'
       confirmationModal.cancel()
       

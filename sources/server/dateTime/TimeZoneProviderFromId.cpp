@@ -6,7 +6,7 @@
 namespace dateTime
 {
    CTimeZoneProviderFromId::CTimeZoneProviderFromId(const std::string& timezoneId,
-                                                    const boost::shared_ptr<CTimeZoneDatabase> timezoneDatabase)
+                                                    const boost::shared_ptr<const CTimeZoneDatabase> timezoneDatabase)
       : m_timezone(timezoneDatabase->fromId(timezoneId))
    {
    }

@@ -39,5 +39,3 @@ namespace database
       };
    } //namespace pgsql
 } //namespace database 
-
-

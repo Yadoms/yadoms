@@ -1,7 +1,15 @@
 ### 2.1.0-beta.1
 
-Ongoing...
+#### New features and fixes
 
+##### Yadoms Core
+* Fix the reset to default function on system configuration page
+* Refactor the system configuration management
+
+##### Web Client
+* Optimize REST request handling at the startup of the web client
+* Fix rolling title, when change the title of the widget
+* Widgets configured with missing device/keyword(s) are automatically disabled
 
 ### 2.0.2
 

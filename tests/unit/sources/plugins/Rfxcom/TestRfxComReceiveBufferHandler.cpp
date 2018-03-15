@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_SUITE(TestRfxComReceiveBufferHandler)
 
    BOOST_AUTO_TEST_CASE(UncompletedMessage)
    {
-      std::vector<unsigned char> txMessage1{
+      const std::vector<unsigned char> txMessage1{
          0x14, 0x00, 0x00, 0x00, 0x00, // packetlength, packettype, subtype, seqnbr, cmnd
          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // msg[1-8]
          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 // msg[9-16] ==> 1 byte missing

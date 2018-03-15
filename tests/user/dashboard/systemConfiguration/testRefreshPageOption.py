@@ -29,20 +29,45 @@ class RefreshPageOption(unittest.TestCase):
       yadomsServer.openClient(self.browser)
       
       
-   def test_refreshPageOptionDefaultValue(self):
-      print '=== RefreshPage option default value check ==='
+   def test_refreshPageOptionSaveRestoreReset(self):
+      print '=== RefreshPage option default value check (cold start), save value, restore value and reset to default ==='
 
-      print 'Open systemConfiguration dashboard'
+      print 'Open systemConfiguration dashboard and active advanced parameters'
       dashboard.open(self.browser)
       dashboard.openSystemConfiguration(self.browser)
-      
-      print 'Active advanced parameters'
       advancedParameterSection = dashboard.systemConfiguration.enableAdvancedParametersSection(self.browser)
 
-      print 'Check RefreshPage option default value'
-      self.assertTrue(dashboard.systemConfiguration.getRefreshPageOptionState(advancedParameterSection), True)
+      print 'Check RefreshPage option default value (cold start)'
+      self.assertTrue(dashboard.systemConfiguration.getRefreshPageOptionState(advancedParameterSection))
 
+      print 'Change RefreshPage option value'
+      dashboard.systemConfiguration.setRefreshPageOption(advancedParameterSection, False)
+      dashboard.systemConfiguration.applySystemConfiguration(self.browser)
       
+      print 'Close dashboard'
+      dashboard.close(self.browser)
+
+      print 'Re-open systemConfiguration dashboard and active advanced parameters'
+      dashboard.open(self.browser)
+      dashboard.openSystemConfiguration(self.browser)
+      advancedParameterSection = dashboard.systemConfiguration.enableAdvancedParametersSection(self.browser)
+
+      print 'Check RefreshPage option was saved'
+      self.assertFalse(dashboard.systemConfiguration.getRefreshPageOptionState(advancedParameterSection))
+
+      print 'Reset to default value'
+      dashboard.systemConfiguration.resetToDefaultSystemConfiguration(self.browser)
+      # Reseting to default values make page reload, wait for page reloaded
+      yadomsServer.waitPageLoaded(self.browser)
+
+      print 'Re-open systemConfiguration dashboard and active advanced parameters'
+      dashboard.open(self.browser)
+      dashboard.openSystemConfiguration(self.browser)
+      advancedParameterSection = dashboard.systemConfiguration.enableAdvancedParametersSection(self.browser)
+
+      print 'Check default value was restored'
+      self.assertTrue(dashboard.systemConfiguration.getRefreshPageOptionState(advancedParameterSection))
+
    def test_refreshPageOptionEnable(self):
       print '=== RefreshPage option (enabled) test ==='
 

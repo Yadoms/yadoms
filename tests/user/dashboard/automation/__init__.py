@@ -83,11 +83,6 @@ def waitEditRuleModal(browser):
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, 'edit-automation-rule-modal')))
    modals.waitForOpened(browser.find_element_by_id('edit-automation-rule-modal'))
    return EditRuleModal(browser.find_element_by_id('edit-automation-rule-modal'))
-
-def waitRemoveRuleConfirmationModal(browser):
-   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, 'confirmation-modal')))
-   modals.waitForOpened(browser.find_element_by_id('confirmation-modal'))
-   return RemoveRuleConfirmationModal(browser.find_element_by_id('confirmation-modal'))
    
    
    
@@ -122,13 +117,6 @@ class NewRuleModal():
          if (editorButton.find_element_by_tag_name("span").get_attribute("id") == expectedButtonId):
             return editorButton
       assert False
-
-
-   
-
-class RemoveRuleConfirmationModal(modals.RemoveObjectConfirmationModal):
-   """ Operations on delete rule confirmation modal """
-   pass
    
 
 

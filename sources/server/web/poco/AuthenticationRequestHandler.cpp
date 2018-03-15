@@ -48,7 +48,7 @@ namespace web
                const std::string& pwd = cred.getPassword();
                if (!m_authenticator->authenticate(user, pwd))
                {
-                  //credentials are no more valid, eturn unauthorized http (401)
+                  //credentials are no more valid, return unauthorized http (401)
                   response.requireAuthentication("Yadoms");
                   response.send();
                }

@@ -10,61 +10,57 @@ namespace shared
 
    CDataContainer::CDataContainer()
    {
-
    }
 
-   CDataContainer::CDataContainer(const std::string & initialData)
+   CDataContainer::CDataContainer(const std::string& initialData)
    {
       CDataContainer::deserialize(initialData);
    }
 
-   CDataContainer::CDataContainer(const std::map<std::string, std::string> & initialData)
+   CDataContainer::CDataContainer(const std::map<std::string, std::string>& initialData)
    {
-      std::map<std::string, std::string>::const_iterator i;
-      for (i = initialData.begin(); i != initialData.end(); ++i)
-         set(i->first, i->second);
+      for (const auto& i : initialData)
+         set(i.first, i.second);
    }
 
 
    CDataContainer::~CDataContainer()
    {
-
    }
 
 
-   CDataContainer::CDataContainer(const CDataContainer & initialData)
+   CDataContainer::CDataContainer(const CDataContainer& initialData)
    {
       m_tree = initialData.m_tree;
    }
 
-   
-   CDataContainer::CDataContainer(const boost::property_tree::ptree & initialTree)
+
+   CDataContainer::CDataContainer(const boost::property_tree::ptree& initialTree)
    {
       m_tree = initialTree;
    }
 
-   CDataContainer & CDataContainer::operator =(const CDataContainer & rhs)
+   CDataContainer& CDataContainer::operator =(const CDataContainer& rhs)
    {
       initializeWith(rhs);
       return *this;
    }
 
 
-   CDataContainer & CDataContainer::operator=(const std::string &rhs)
+   CDataContainer& CDataContainer::operator=(const std::string& rhs)
    {
       deserialize(rhs);
       return *this;
    }
 
 
-
-   std::ostream& operator << (std::ostream& os, const CDataContainer & dc)
+   std::ostream& operator <<(std::ostream& os, const CDataContainer& dc)
    {
       os << dc.serialize();
       return os;
    }
 
-   std::istream& operator >> (std::istream& is, CDataContainer & dc)
+   std::istream& operator >>(std::istream& is, CDataContainer& dc)
    {
       boost::lock_guard<boost::mutex> lock(dc.m_treeMutex);
 
@@ -87,7 +83,7 @@ namespace shared
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      boost::optional<const boost::property_tree::ptree&> value = m_tree.get_child_optional(generatePath(parameterName, pathChar));
+      const auto value = m_tree.get_child_optional(generatePath(parameterName, pathChar));
       return !!value;
    }
 
@@ -96,30 +92,26 @@ namespace shared
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      boost::optional<const boost::property_tree::ptree&> value = m_tree.get_child_optional(generatePath(parameterName, pathChar));
+      const auto value = m_tree.get_child_optional(generatePath(parameterName, pathChar));
       if (!!value)
       {
          return !value->empty() && value->data().empty();
       }
-      else
-      {
-         return false;
-      }
+
+      return false;
    }
 
    bool CDataContainer::containsValue(const std::string& parameterName, const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      boost::optional<const boost::property_tree::ptree&> value = m_tree.get_child_optional(generatePath(parameterName, pathChar));
+      const auto value = m_tree.get_child_optional(generatePath(parameterName, pathChar));
       if (!!value)
       {
          return value->empty() && !value->data().empty();
       }
-      else
-      {
-         return false;
-      }
+
+      return false;
    }
 
 
@@ -132,7 +124,7 @@ namespace shared
       return buf.str();
    }
 
-   void CDataContainer::deserialize(const std::string & data)
+   void CDataContainer::deserialize(const std::string& data)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -152,14 +144,14 @@ namespace shared
       }
    }
 
-   void CDataContainer::serializeToFile(const std::string & filename) const
+   void CDataContainer::serializeToFile(const std::string& filename) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       boost::property_tree::json_parser::write_json(filename, m_tree);
    }
 
-   void CDataContainer::deserializeFromFile(const std::string & file)
+   void CDataContainer::deserializeFromFile(const std::string& file)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -175,31 +167,29 @@ namespace shared
       }
    }
 
-   void CDataContainer::extractContent(CDataContainer & container) const
+   void CDataContainer::extractContent(CDataContainer& container) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
       container.m_tree = m_tree;
    }
 
-   void CDataContainer::fillFromContent(const CDataContainer & initialData)
+   void CDataContainer::fillFromContent(const CDataContainer& initialData)
    {
       initializeWith(initialData);
    }
 
 
-
-
-   bool CDataContainer::operator ==(const CDataContainer &rhs) const
+   bool CDataContainer::operator ==(const CDataContainer& rhs) const
    {
       return serialize() == rhs.serialize();
    }
 
-   bool CDataContainer::operator !=(const CDataContainer &rhs) const
+   bool CDataContainer::operator !=(const CDataContainer& rhs) const
    {
       return serialize() != rhs.serialize();
    }
 
-   void CDataContainer::initializeWith(const CDataContainer &rhs)
+   void CDataContainer::initializeWith(const CDataContainer& rhs)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
       m_tree = rhs.m_tree;
@@ -220,28 +210,28 @@ namespace shared
       os << "| TREE END" << std::endl;
    }
 
-   void CDataContainer::printToLog(const boost::property_tree::ptree & pt, const int deep, std::ostream& os) const
+   void CDataContainer::printToLog(const boost::property_tree::ptree& pt, const int deep, std::ostream& os) const
    {
       std::string prefix;
       for (auto i = 0; i < deep; ++i)
          prefix += "   ";
-		prefix += "|-";
+      prefix += "|-";
       for (const auto it : pt)
       {
          os << prefix << it.first << " : " << it.second.get_value<std::string>() << std::endl;
-         printToLog(it.second, deep+1, os);
+         printToLog(it.second, deep + 1, os);
       }
    }
 
-   boost::property_tree::ptree::path_type CDataContainer::generatePath(const std::string & parameterName, const char pathChar) const
+   boost::property_tree::ptree::path_type CDataContainer::generatePath(const std::string& parameterName, const char pathChar)
    {
       return boost::property_tree::ptree::path_type(parameterName, pathChar);
    }
 
    void CDataContainer::set(const char* parameterName, const char* value, const char pathChar)
    {
-      std::string strParamName(parameterName);
-      std::string strValue(value);
+      const std::string strParamName(parameterName);
+      const std::string strValue(value);
       set<std::string>(strParamName, strValue, pathChar);
    }
 
@@ -250,13 +240,13 @@ namespace shared
       return m_tree.front().first;
    }
 
-   void CDataContainer::set(const std::string & parameterName, const char* value, const char pathChar)
+   void CDataContainer::set(const std::string& parameterName, const char* value, const char pathChar)
    {
-      std::string strValue(value);
+      const std::string strValue(value);
       set<std::string>(parameterName, strValue, pathChar);
    }
 
-   const char* CDataContainer::get(const std::string & parameterName, const char pathChar) const
+   const char* CDataContainer::get(const std::string& parameterName, const char pathChar) const
    {
       return get<std::string>(parameterName, pathChar).c_str();
    }
@@ -277,7 +267,8 @@ namespace shared
       return result;
    }
 
-   CDataContainer CDataContainer::find(const std::string& parameterName, boost::function<bool(const CDataContainer&)> whereFct, const char pathChar) const
+   CDataContainer CDataContainer::find(const std::string& parameterName, boost::function<bool(const CDataContainer&)> whereFct,
+                                       const char pathChar) const
    {
       for (const auto& key : getKeys(parameterName, pathChar))
       {
@@ -293,5 +284,43 @@ namespace shared
       throw exception::CEmptyResult("No parameter matches criteria");
    }
 
+   void CDataContainer::mergeChildFrom(const boost::property_tree::ptree& from,
+                                       boost::property_tree::ptree& to)
+   {
+      for (const auto& fromChild : from.get_child(std::string()))
+      {
+         if (!fromChild.second.data().empty())
+         {
+            // It's a value
+            to.put(fromChild.first, fromChild.second.data());
+         }
+         else
+         {
+            // It's a sub-child
+            mergeChildFrom(fromChild.second, to.get_child(fromChild.first));
+         }
+      }
+   }
 
+   void CDataContainer::mergeFrom(const CDataContainer& from)
+   {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+      for (const auto& fromChild : from.m_tree.get_child(std::string()))
+      {
+         if (!fromChild.second.data().empty())
+         {
+            // It's a value
+            m_tree.put(fromChild.first, fromChild.second.data());
+         }
+         else
+         {
+            // It's a sub-child
+            const auto toChild = m_tree.get_child_optional(fromChild.first);
+            if(!!toChild)
+               mergeChildFrom(fromChild.second, m_tree.get_child(fromChild.first));
+            else
+               m_tree.add_child(fromChild.first, fromChild.second);
+         }
+      }
+   }
 } // namespace shared

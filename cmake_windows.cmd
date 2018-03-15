@@ -19,8 +19,8 @@ setlocal & pushd .
 @echo.
 
 set xp_compatibility=%1%
-call:getCMakeExecutable cmake_executable
 
+call:getCMakeExecutable cmake_executable
 "%cmake_executable%" --version
 
 ::Move to destination folder

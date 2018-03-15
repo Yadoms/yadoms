@@ -16,13 +16,9 @@ namespace database { namespace sqlite {
    {
       return " CREATE TABLE Configuration                                  \
                (  section VARCHAR(50) NOT NULL,                            \
-                  name VARCHAR(50) NOT NULL,                               \
                   value TEXT NOT NULL,                                     \
-                  defaultValue TEXT,                                       \
-                  description TEXT,                                        \
-                  securityAccess  TEXT DEFAULT \"none\",                   \
                   lastModificationDate TEXT,                               \
-                  PRIMARY KEY(section,name)                                \
+                  PRIMARY KEY(section)                                     \
                )";
    }
 

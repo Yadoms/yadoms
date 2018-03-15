@@ -69,11 +69,7 @@ namespace database
 
       DECLARE_ENTITY_CLASS_HEADER(Configuration,
          ((Section)(std::string))
-         ((Name)(std::string))
          ((Value)(std::string))
-         ((DefaultValue)(std::string))
-         ((Description)(std::string))
-         ((SecurityAccess)(database::entities::ESecurityAccess))
          ((LastModificationDate)(boost::posix_time::ptime))
       )
 
@@ -193,5 +189,3 @@ namespace database
       )
    } //namespace entities
 } //namespace database
-
-

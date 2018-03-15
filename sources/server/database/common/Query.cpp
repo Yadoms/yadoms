@@ -111,7 +111,7 @@ namespace database
       }
 
 
-      CQuery& CQuery::Update(const database::common::CDatabaseTable& table)
+      CQuery& CQuery::Update(const CDatabaseTable& table)
       {
          ChangeQueryType(kUpdate);
          std::ostringstream ss;
