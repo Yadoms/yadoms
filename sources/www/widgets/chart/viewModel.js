@@ -40,23 +40,20 @@ function chartViewModel() {
     
     function isOdd(num) {return num % 2;}
     
-    this.changexAxisBound = function(dateMin){
-       var self = this;
+    this.changexAxisBound = function(chart, dateMin){
        var datet = DateTimeFormatter.isoDateToDate(dateMin)._d.getTime();
-       self.chart.xAxis[0].setExtremes(datet, null);
+       chart.xAxis[0].setExtremes(datet, null);
     };
     
-    this.isBoolVariable = function (index) {
-        var self = this;
-        if ((self.keywordInfo[index]) && (self.keywordInfo[index].type === "Bool"))
+    this.isBoolVariable = function (keywordInfo) {
+        if ((keywordInfo) && (keywordInfo.type === "Bool"))
            return true;
         else
            return false;
     };
     
-    this.isEnumVariable = function (index) {
-        var self = this;
-        if ((self.keywordInfo[index]) && (self.keywordInfo[index].type === "Enum"))
+    this.isEnumVariable = function (keywordInfo) {
+        if ((keywordInfo) && (keywordInfo.type === "Enum"))
            return true;
         else
            return false;
@@ -778,7 +775,7 @@ function chartViewModel() {
               
               //we compute the date from the configuration
               var dateFrom = self.calculateBeginDate(interval, self.serverTime, self.prefix);
-              self.changexAxisBound(dateFrom);
+              self.changexAxisBound(self.chart, dateFrom);
               var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
               var prefixUri = "/" + self.prefix;
               var timeBetweenTwoConsecutiveValues = moment.duration(1, self.prefix).asMilliseconds();              
@@ -786,7 +783,7 @@ function chartViewModel() {
               //for each plot in the configuration we request for data
               $.each(self.widget.configuration.devices, function (index, device) {
                   //If the device is a bool, you have to modify
-                  if (self.isBoolVariable(index) || self.isEnumVariable(index)) {
+                  if (self.isBoolVariable(self.keywordInfo[index]) || self.isEnumVariable(self.keywordInfo[index])) {
                       dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
                       self.rangeTooLarge = false;
                       prefixUri = "";                      
@@ -842,7 +839,7 @@ function chartViewModel() {
                                   }
                                   
                                   // The differential display is disabled if the type of the data is enum or boolean
-                                  if (self.differentialDisplay[index] && !self.isBoolVariable(index) && !self.isEnumVariable(index)){
+                                  if (self.differentialDisplay[index] && !self.isBoolVariable(self.keywordInfo[index]) && !self.isEnumVariable(self.keywordInfo[index])){
                                      if (!isNullOrUndefined(self.chartLastValue[index]))
                                         plot.push([d, v-self.chartLastValue[index]]);
 
@@ -895,7 +892,7 @@ function chartViewModel() {
                                   }
 
                                   // The differential display is disabled if the type of the data is enum or boolean
-                                  if (self.differentialDisplay[index] && !self.isBoolVariable(index) && !self.isEnumVariable(index)){  
+                                  if (self.differentialDisplay[index] && !self.isBoolVariable(self.keywordInfo[index]) && !self.isEnumVariable(self.keywordInfo[index])){  
                                      if (!isNullOrUndefined(self.chartLastValue[index]))
                                         plot.push([d, vplot-self.chartLastValue[index]]);
                                      
@@ -960,7 +957,7 @@ function chartViewModel() {
                                     enabled: false
                                  },
                                  name: legendText,
-                                 connectNulls: self.isBoolVariable(index), // TODO : false si self.prefix === "minute"
+                                 connectNulls: self.isBoolVariable(self.keywordInfo[index]), // TODO : false si self.prefix === "minute"
                                  marker: {
                                     enabled: null,
                                     radius: 2,
@@ -976,7 +973,7 @@ function chartViewModel() {
                               if (device.content.PlotType === "arearange") { // arearange
                                   serieOption.type = 'line';
                               }else {                                             // default option
-                                  serieOption.step = self.isBoolVariable(index);  // For boolean values, create steps.
+                                  serieOption.step = self.isBoolVariable(self.keywordInfo[index]);  // For boolean values, create steps.
                                   serieOption.type = device.content.PlotType;
                               }
                               
@@ -1122,7 +1119,7 @@ function chartViewModel() {
        if (!isNullOrUndefined(serie.points)) {
           if (!isNullOrUndefined(serie.points[0])) {
              if ((finaldate - serie.points[0].x) > dateInMilliSecondes)
-                self.changexAxisBound(self.calculateBeginDate(self.interval, self.serverTime, self.prefix));
+                self.changexAxisBound(self.chart, self.calculateBeginDate(self.interval, self.serverTime, self.prefix));
           }
        }
     };
