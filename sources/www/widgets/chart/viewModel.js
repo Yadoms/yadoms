@@ -36,57 +36,7 @@ function chartViewModel() {
 
     /**
      * Helpers
-     */       
-    
-    function isOdd(num) {return num % 2;}
-    
-    this.changexAxisBound = function(chart, dateMin){
-       var datet = DateTimeFormatter.isoDateToDate(dateMin)._d.getTime();
-       chart.xAxis[0].setExtremes(datet, null);
-    };
-    
-    this.isBoolVariable = function (keywordInfo) {
-        if ((keywordInfo) && (keywordInfo.type === "Bool"))
-           return true;
-        else
-           return false;
-    };
-    
-    this.isEnumVariable = function (keywordInfo) {
-        if ((keywordInfo) && (keywordInfo.type === "Enum"))
-           return true;
-        else
-           return false;
-    };
-    
-    this.calculateBeginDate = function(interval, time, prefix) {
-     var dateValue;
-     /*console.log ("c interval : ", interval);
-     console.log ("c time : ", time);
-     console.log ("c prefix : ", prefix);*/
-     switch (interval) {
-         case "HOUR":
-             dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'hours').startOf(prefix));
-             break;
-         default:
-         case "DAY": //we request hour summary data
-             dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'days').startOf(prefix));
-             break;
-         case "WEEK": //we request hour summary data
-             dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'weeks').startOf(prefix));
-             break;
-         case "MONTH": //we request day summary data
-             dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'months').startOf(prefix));
-             break;
-         case "HALF_YEAR": //we request day summary data
-             dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(6, 'months').startOf(prefix));
-             break;
-         case "YEAR": //we request day summary data
-             dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'years').startOf(prefix));
-             break;
-     }
-     return dateValue;
-    };
+     */
     
     this.createAxis = function (index, configuration, device) {
         var self = this;
@@ -183,57 +133,6 @@ function chartViewModel() {
         
         return yAxisName; // Return the name of the axis
     };
-    
-   this.getWeeks = function (vectorToParse){
-       var self = this;
-       
-       var weekplot = [];
-       if (vectorToParse.length == 0)
-          return weekplot;
-       
-       $.each(vectorToParse, function (index, data) {
-          weekNum = DateTimeFormatter.isoDateToDate(data.date).week();
-          try{
-             
-             if (weekNum == weekplot[weekplot.length-1].week)
-             {
-                weekplot[weekplot.length-1].avg += data.avg;
-                
-                // treat min and max values
-                if (data.min<weekplot[weekplot.length-1].min) weekplot[weekplot.length-1].min = data.min;
-                if (data.max>weekplot[weekplot.length-1].max) weekplot[weekplot.length-1].max = data.max;
-                
-                weekplot[weekplot.length-1].day += 1;
-             }
-             else 
-                throw "";
-             
-          } catch(error){
-             //Enter the first value
-             weekplot.push({
-                avg  : data.avg,
-                date : DateTimeFormatter.isoDateToDate(data.date).startOf('week'),
-                min  : data.min,
-                max  : data.max,
-                day  : 1,
-                week : weekNum
-             });
-          }
-       });
-       
-       // calcul all average // remove weeks with number of days lower than 7 days
-       var index = 0;
-       while (index < weekplot.length) {
-          if (weekplot[index].day < 7){ 
-             weekplot.splice(index, 1);
-          }else {
-             weekplot[index].avg = weekplot[index].avg / weekplot[index].day;
-             index += 1;
-          }
-       };
-       
-       return weekplot;
-   };
 
     /**
      * Configure the toolbar
@@ -362,7 +261,8 @@ function chartViewModel() {
             "libs/highstock/js/modules/canvas-tools.js",
             "libs/highstock/js/modules/boost.js",
             "libs/export-csv/js/export-csv.min.js",
-            "libs/highcharts-export-clientside/js/highcharts-export-clientside.min.js"
+            "libs/highcharts-export-clientside/js/highcharts-export-clientside.min.js",
+            "widgets/chart/helpers.js"
         ]).done(function () {
             self.chartOption = {
                 chart: {
@@ -646,7 +546,7 @@ function chartViewModel() {
             //
             deffered2
             .done(function(){
-               if (self.isEnumVariable(index)) {
+               if (isEnumVariable(self.keywordInfo[index])) {
                   $.when(deffered, deffered2)
                   .done(function() {
                      self.widgetApi.getPluginInstanceInformation(self.deviceInfo[index].pluginId)
@@ -674,7 +574,7 @@ function chartViewModel() {
         .done(function () {
               // Translate enum values only for enum keyword
               $.each(self.widget.configuration.devices, function (index, device) {
-                  if (self.isEnumVariable(index)){
+                  if (isEnumVariable(self.keywordInfo[index])){
                       $.each(self.keywordInfo[index].typeInfo.values, function (index2, value) {
                          self.keywordInfo[index].typeInfo.translatedValues[index2] = $.t("plugins." + self.pluginInstanceType[index] + ":enumerations." + self.keywordInfo[index].typeInfo.name + ".values." + value, { defaultValue:value} );
                       });           
@@ -774,8 +674,8 @@ function chartViewModel() {
               self.chartLastValue = [];
               
               //we compute the date from the configuration
-              var dateFrom = self.calculateBeginDate(interval, self.serverTime, self.prefix);
-              self.changexAxisBound(self.chart, dateFrom);
+              var dateFrom = calculateBeginDate(interval, self.serverTime, self.prefix);
+              changexAxisBound(self.chart, dateFrom);
               var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
               var prefixUri = "/" + self.prefix;
               var timeBetweenTwoConsecutiveValues = moment.duration(1, self.prefix).asMilliseconds();              
@@ -783,7 +683,7 @@ function chartViewModel() {
               //for each plot in the configuration we request for data
               $.each(self.widget.configuration.devices, function (index, device) {
                   //If the device is a bool, you have to modify
-                  if (self.isBoolVariable(self.keywordInfo[index]) || self.isEnumVariable(self.keywordInfo[index])) {
+                  if (isBoolVariable(self.keywordInfo[index]) || isEnumVariable(self.keywordInfo[index])) {
                       dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
                       self.rangeTooLarge = false;
                       prefixUri = "";                      
@@ -828,7 +728,7 @@ function chartViewModel() {
 
                                   var v;
                                   if (!isNullOrUndefined(value.key)) {
-                                     if (self.isEnumVariable(index)) {
+                                     if (isEnumVariable(self.keywordInfo[index])) {
                                         v= self.chart.keyword[index].typeInfo.values.indexOf(value.key);
                                      }else {
                                         v = parseFloat(value.key);
@@ -839,7 +739,7 @@ function chartViewModel() {
                                   }
                                   
                                   // The differential display is disabled if the type of the data is enum or boolean
-                                  if (self.differentialDisplay[index] && !self.isBoolVariable(self.keywordInfo[index]) && !self.isEnumVariable(self.keywordInfo[index])){
+                                  if (self.differentialDisplay[index] && !isBoolVariable(self.keywordInfo[index]) && !isEnumVariable(self.keywordInfo[index])){
                                      if (!isNullOrUndefined(self.chartLastValue[index]))
                                         plot.push([d, v-self.chartLastValue[index]]);
 
@@ -861,7 +761,7 @@ function chartViewModel() {
                               debugger;
                               
                               if (self.prefix === "week") {
-                                 dataVector = self.getWeeks(data.data);
+                                 dataVector = getWeeks(data.data);
                               }else{
                                  dataVector = data.data;
                               }
@@ -892,7 +792,7 @@ function chartViewModel() {
                                   }
 
                                   // The differential display is disabled if the type of the data is enum or boolean
-                                  if (self.differentialDisplay[index] && !self.isBoolVariable(self.keywordInfo[index]) && !self.isEnumVariable(self.keywordInfo[index])){  
+                                  if (self.differentialDisplay[index] && !isBoolVariable(self.keywordInfo[index]) && !isEnumVariable(self.keywordInfo[index])){  
                                      if (!isNullOrUndefined(self.chartLastValue[index]))
                                         plot.push([d, vplot-self.chartLastValue[index]]);
                                      
@@ -957,7 +857,7 @@ function chartViewModel() {
                                     enabled: false
                                  },
                                  name: legendText,
-                                 connectNulls: self.isBoolVariable(self.keywordInfo[index]), // TODO : false si self.prefix === "minute"
+                                 connectNulls: isBoolVariable(self.keywordInfo[index]), // TODO : false si self.prefix === "minute"
                                  marker: {
                                     enabled: null,
                                     radius: 2,
@@ -973,7 +873,7 @@ function chartViewModel() {
                               if (device.content.PlotType === "arearange") { // arearange
                                   serieOption.type = 'line';
                               }else {                                             // default option
-                                  serieOption.step = self.isBoolVariable(self.keywordInfo[index]);  // For boolean values, create steps.
+                                  serieOption.step = isBoolVariable(self.keywordInfo[index]);  // For boolean values, create steps.
                                   serieOption.type = device.content.PlotType;
                               }
                               
@@ -1119,7 +1019,7 @@ function chartViewModel() {
        if (!isNullOrUndefined(serie.points)) {
           if (!isNullOrUndefined(serie.points[0])) {
              if ((finaldate - serie.points[0].x) > dateInMilliSecondes)
-                self.changexAxisBound(self.chart, self.calculateBeginDate(self.interval, self.serverTime, self.prefix));
+                changexAxisBound(self.chart, calculateBeginDate(self.interval, self.serverTime, self.prefix));
           }
        }
     };
@@ -1262,7 +1162,7 @@ function chartViewModel() {
                                               if (serie.points.length > 0 && !isNullOrUndefined(self.chartLastValue[index]))
                                                  serie.addPoint([data.date.valueOf(), parseFloat(data.value) - self.chartLastValue[index]], true, false, true);
                                               self.chartLastValue[index] = parseFloat(data.value);                                                 
-                                           }else if (self.isEnumVariable(index)){
+                                           }else if (isEnumVariable(index)){
                                               var value = self.chart.keyword[index].typeInfo.values.indexOf(data.value);
                                               serie.addPoint([data.date.valueOf(), value], true, false, true);
                                            }else
