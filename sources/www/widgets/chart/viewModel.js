@@ -35,106 +35,6 @@ function chartViewModel() {
     this.pluginInstanceType = [];
 
     /**
-     * Helpers
-     */
-    
-    this.createAxis = function (index, configuration, device) {
-        var self = this;
-        
-        var colorAxis = "#606060"; // default color
-        var yAxisName;
-        
-        // treat oneAxis configuration option => axis name and color
-        if (parseBool(configuration.oneAxis.checkbox)) {
-           yAxisName = 'axis' + self.seriesUuid[0];
-        }
-        else {
-           yAxisName = 'axis' + self.seriesUuid[index];
-           colorAxis = device.content.color;
-        }
-        
-        //create axis if needed
-        if (isNullOrUndefined(self.chart.get(yAxisName))) {
-            try {
-                function getAxisTitle(){
-                   // create the structure
-                   var response= {
-                      text: null,
-                      style:{
-                         color: colorAxis
-                      }
-                   };
-                   return response;
-                }
-
-                var align = 'right';
-                if (isOdd(index))
-                    align = 'left';
-
-                var unit="";
-                try {
-                   unit = $.t(self.keywordInfo[index].units);
-                }
-                catch(error){
-                   console.log ("unit is empty for keyword ", device.content.source.keywordId);
-                }
-
-                self.chart.keyword = self.keywordInfo;
-                self.chart.addAxis({
-                    // new axis
-                    id: yAxisName, //The same id as the serie with axis at the beginning
-                    reversedStacks: false,
-                    title: getAxisTitle(),
-                    labels: {
-                        align: align,
-                        format: '{value:.' + self.precision[index].toString() + 'f} ' + unit,
-                        style: {
-                            color: colorAxis
-                        },
-                        formatter: function () {
-                           if (this.chart.keyword[index].type === "Enum") {  // Return the translated enum value
-                              return this.chart.keyword[index].typeInfo.translatedValues[this.value];
-                           }
-                           else
-                              return this.axis.defaultLabelFormatter.call(this);
-                        }
-                    },
-                    opposite: isOdd(index)
-                }, false, false, false);
-
-            } catch (error) {
-                console.log('Fail to create axis (for index = ' + index + ') : ' + error);
-            }
-        } else {
-            console.log('Axis already exists (for index = ' + index + ')');
-        }
-
-        if ((parseBool(configuration.oneAxis.checkbox))) {
-            //Configure the min/max in this case
-            try {
-                var yAxis = self.chart.get(yAxisName);
-
-                // Avec un seul axe, pas de nom
-                yAxis.setTitle({ text: "" });
-
-                if (parseBool(configuration.oneAxis.content.customYAxisMinMax.checkbox)) {
-                    //we manage min and max scale y axis
-                    var min = parseFloat(configuration.oneAxis.content.customYAxisMinMax.content.minimumValue);
-                    var max = parseFloat(configuration.oneAxis.content.customYAxisMinMax.content.maximumValue);
-                    yAxis.setExtremes(min, max);
-                } else {
-                    //we cancel previous extremes
-                    yAxis.setExtremes(null, null);
-                }
-            } catch (error2) {
-                console.log(error2);
-            }
-        }
-        
-        return yAxisName; // Return the name of the axis
-    };
-
-    /**
      * Configure the toolbar
      */    
     this.configureToolbar = function(interval) {
@@ -822,7 +722,7 @@ function chartViewModel() {
                           }
                           var axisName;
                           try{
-                             axisName = self.createAxis(index, self.widget.configuration, device);
+                             axisName = createAxis(index, self.chart, self.seriesUuid, self.widget.configuration, self.precision[index], device);
                           }catch(error){
                              console.error (error);
                           }

@@ -109,3 +109,102 @@ function changexAxisBound(chart, dateMin){
     var datet = DateTimeFormatter.isoDateToDate(dateMin)._d.getTime();
     chart.xAxis[0].setExtremes(datet, null);
 };
+
+function createAxis (index,         // index of the plot
+                     chart,         // the chart
+                     seriesUuid,    // Uuid array
+                     configuration, // configuration of the widget
+                     precision,     // display precision for this value
+                     device) {      // device associated to the keyword
+
+  var colorAxis = "#606060"; // default color
+  var yAxisName;
+  
+  // treat oneAxis configuration option => axis name and color
+  if (parseBool(configuration.oneAxis.checkbox)) {
+     yAxisName = 'axis' + seriesUuid[0];
+  }
+  else {
+     yAxisName = 'axis' + seriesUuid[index];
+     colorAxis = device.content.color;
+  }
+  
+  //create axis if needed
+  if (isNullOrUndefined(chart.get(yAxisName))) {
+      try {
+          function getAxisTitle(){
+             // create the structure
+             var response= {
+                text: null,
+                style:{
+                   color: colorAxis
+                }
+             };
+             return response;
+          }
+
+          var align = 'right';
+          if (isOdd(index))
+              align = 'left';
+
+          var unit="";
+          try {
+             unit = $.t(chart.keyword[index].units);
+          }
+          catch(error){
+             console.log ("unit is empty for keyword ", device.content.source.keywordId);
+          }
+
+          chart.addAxis({
+              // new axis
+              id: yAxisName, //The same id as the serie with axis at the beginning
+              reversedStacks: false,
+              title: getAxisTitle(),
+              labels: {
+                  align: align,
+                  format: '{value:.' + precision.toString() + 'f} ' + unit,
+                  style: {
+                      color: colorAxis
+                  },
+                  formatter: function () {
+                     if (this.chart.keyword[index].type === "Enum") {  // Return the translated enum value
+                        return this.chart.keyword[index].typeInfo.translatedValues[this.value];
+                     }
+                     else
+                        return this.axis.defaultLabelFormatter.call(this);
+                  }
+              },
+              opposite: isOdd(index)
+          }, false, false, false);
+
+      } catch (error) {
+          console.log('Fail to create axis (for index = ' + index + ') : ' + error);
+      }
+  } else {
+      console.log('Axis already exists (for index = ' + index + ')');
+  }
+
+  if ((parseBool(configuration.oneAxis.checkbox))) {
+      //Configure the min/max in this case
+      try {
+          var yAxis = chart.get(yAxisName);
+
+          // Avec un seul axe, pas de nom
+          yAxis.setTitle({ text: "" });
+
+          if (parseBool(configuration.oneAxis.content.customYAxisMinMax.checkbox)) {
+              //we manage min and max scale y axis
+              var min = parseFloat(configuration.oneAxis.content.customYAxisMinMax.content.minimumValue);
+              var max = parseFloat(configuration.oneAxis.content.customYAxisMinMax.content.maximumValue);
+              yAxis.setExtremes(min, max);
+          } else {
+              //we cancel previous extremes
+              yAxis.setExtremes(null, null);
+          }
+      } catch (error2) {
+          console.log(error2);
+      }
+  }
+  
+  return yAxisName; // Return the name of the axis
+};
