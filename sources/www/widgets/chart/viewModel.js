@@ -64,6 +64,9 @@ function chartViewModel() {
     
     this.calculateBeginDate = function(interval, time, prefix) {
      var dateValue;
+     /*console.log ("c interval : ", interval);
+     console.log ("c time : ", time);
+     console.log ("c prefix : ", prefix);*/
      switch (interval) {
          case "HOUR":
              dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'hours').startOf(prefix));
@@ -183,6 +186,57 @@ function chartViewModel() {
         
         return yAxisName; // Return the name of the axis
     };
+    
+   this.getWeeks = function (vectorToParse){
+       var self = this;
+       
+       var weekplot = [];
+       if (vectorToParse.length == 0)
+          return weekplot;
+       
+       $.each(vectorToParse, function (index, data) {
+          weekNum = DateTimeFormatter.isoDateToDate(data.date).week();
+          try{
+             
+             if (weekNum == weekplot[weekplot.length-1].week)
+             {
+                weekplot[weekplot.length-1].avg += data.avg;
+                
+                // treat min and max values
+                if (data.min<weekplot[weekplot.length-1].min) weekplot[weekplot.length-1].min = data.min;
+                if (data.max>weekplot[weekplot.length-1].max) weekplot[weekplot.length-1].max = data.max;
+                
+                weekplot[weekplot.length-1].day += 1;
+             }
+             else 
+                throw "";
+             
+          } catch(error){
+             //Enter the first value
+             weekplot.push({
+                avg  : data.avg,
+                date : DateTimeFormatter.isoDateToDate(data.date).startOf('week'),
+                min  : data.min,
+                max  : data.max,
+                day  : 1,
+                week : weekNum
+             });
+          }
+       });
+       
+       // calcul all average // remove weeks with number of days lower than 7 days
+       var index = 0;
+       while (index < weekplot.length) {
+          if (weekplot[index].day < 7){ 
+             weekplot.splice(index, 1);
+          }else {
+             weekplot[index].avg = weekplot[index].avg / weekplot[index].day;
+             index += 1;
+          }
+       };
+       
+       return weekplot;
+   };
 
     /**
      * Configure the toolbar
@@ -686,6 +740,7 @@ function chartViewModel() {
                self.widgetApi.find(".range-btn[prefix='" + prefix + "']").addClass("widget-toolbar-pressed-button");
                self.widgetApi.find(".range-btn[prefix='" + self.prefix + "']").removeClass("widget-toolbar-pressed-button");
                self.prefix = prefix;
+               interval = self.interval; // copy this value for the self.refreshData function below
             }
             
             self.chartParametersConfiguration();
@@ -732,33 +787,30 @@ function chartViewModel() {
               $.each(self.widget.configuration.devices, function (index, device) {
                   //If the device is a bool, you have to modify
                   if (self.isBoolVariable(index) || self.isEnumVariable(index)) {
-                     switch (interval) {
-                        case "HOUR":
-                        case "DAY":
-                        case "WEEK":
-                        case "MONTH":
-                           dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
-                           self.rangeTooLarge = false;
-                           break;
-                        case "HALF_YEAR":
-                        case "YEAR":
-                           // no display for theses elements
-                           break;
-                      }
-                      prefixUri = "";
+                      dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
+                      self.rangeTooLarge = false;
+                      prefixUri = "";                      
                       deviceIsSummary[index] = false; // We change the summary for the boolean device.
                   } else {
-                    if (self.prefix == "minute"){
+                     // if self.prefix = "minute" then whe want all data
+                     if (self.prefix == "minute"){
                       dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime)); // rewriting the final time
                       //we request all data
                       timeBetweenTwoConsecutiveValues = undefined;
                       deviceIsSummary[index] = false;
                       prefixUri = ""; // rewrite the prefix                          
-                    }else {
+                    }else if (self.prefix === "week") {
+                       // the prefix week doesn't exist at the server side we have to to it manually
+                       // we use the day prefix
+                       prefixUri = "/day";
+                       deviceIsSummary[index] = true;
+                    }else{
                        deviceIsSummary[index] = true; // By default, it's the summary define above.
                     }
                     self.rangeTooLarge = false;
                   }
+                  
+                  debugger;
 
                   if (!self.rangeTooLarge) {
                       var deffered = RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
@@ -767,9 +819,9 @@ function chartViewModel() {
                           //we make the serie
                           var plot = [];
                           var range = [];
-
                           var lastDate;
                           var d;
+                          var dataVector = data.data;
 
                           if (!(deviceIsSummary[index])) {
                               //data comes from acquisition table
@@ -804,8 +856,20 @@ function chartViewModel() {
                               //it is summarized data so we can get min and max curve
                               var vMin;
                               var vMax;
+                              
+                              //
+                              // in case of week, we have to change manually the array
+                              //
+                              
+                              debugger;
+                              
+                              if (self.prefix === "week") {
+                                 dataVector = self.getWeeks(data.data);
+                              }else{
+                                 dataVector = data.data;
+                              }
 
-                              $.each(data.data, function (index2, value) {
+                              $.each(dataVector, function (index2, value) {
                                   lastDate = d;
                                   d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
                                   var vplot;
@@ -846,8 +910,8 @@ function chartViewModel() {
                               });
                               
                               // Add here missing last data at the end
-                              if (!isNullOrUndefinedOrEmpty(data.data)){
-                                 d = DateTimeFormatter.isoDateToDate(data.data[data.data.length-1].date)._d.getTime();
+                              if (!isNullOrUndefinedOrEmpty(dataVector)){
+                                 d = DateTimeFormatter.isoDateToDate(dataVector[dataVector.length-1].date)._d.getTime();
                                  var time = moment(self.serverTime).startOf(self.prefix)._d.getTime().valueOf();
                                  var registerDate = moment(self.serverTime).startOf(self.prefix).subtract(1, self.prefix + 's')._d.getTime().valueOf();
                                  
@@ -896,7 +960,7 @@ function chartViewModel() {
                                     enabled: false
                                  },
                                  name: legendText,
-                                 connectNulls: self.isBoolVariable(index),
+                                 connectNulls: self.isBoolVariable(index), // TODO : false si self.prefix === "minute"
                                  marker: {
                                     enabled: null,
                                     radius: 2,
