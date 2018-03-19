@@ -231,6 +231,9 @@
 
                   $extraQueriesButton.find("span").removeClass().addClass("fa fa-spinner fa-pulse");
 
+                  //delete previous loaded extrea commands menu
+                  $pluginInstanceRow.find("ul.dropdown-extraqueries").remove();
+
                   pi.getBoundExtraQuery()
                         .done(function (extraQueries) {
                               if (extraQueries && Object.keys(extraQueries).length > 0) {
@@ -246,31 +249,26 @@
                                     });
                                     extraQueryButton += "</ul>";
 
-                                    //delete previous loaded extrea commands menu
-                                    $pluginInstanceRow.remove(".dropdown-extraqueries");
-
                                     //insert the new menu
                                     $extraQueriesButton.after(extraQueryButton);
-                              }
+                                    $extraQueriesMenu = $extraQueriesButton.find("ul");
 
-                              //bind each extra command to js
-                              $.each(extraQueries, function (index, values) {
-                                    $pluginInstanceRow.find("a.btn-extraQuery-" + index).unbind(
-                                          'click').bind('click', function () {
-                                          onExtraQuery(pi, index, values);
+                                    //update menu translation
+                                    $pluginInstanceRow.i18n();
+
+                                    //bind each extra command to js
+                                    $.each(extraQueries, function (index, values) {
+                                          $pluginInstanceRow.find("a.btn-extraQuery-" + index).unbind(
+                                                'click').bind('click', function () {
+                                                onExtraQuery(pi, index, values);
+                                          });
                                     });
-                              });
 
-                              //restore extra commands button icon
-                              $extraQueriesButton.find("span").removeClass().addClass("fa fa-navicon");
-
-                              //update menu translation
-                              $pluginInstanceRow.i18n();
-
-                              //show the dropdown
-                              $extraQueriesButton.dropdown();
+                                    //show the dropdown
+                                    $extraQueriesMenu.dropdown();
+                              }
                         })
-                        .fail(function () {
+                        .always(function () {
                               //restore extra command button icon
                               $extraQueriesButton.find("span").removeClass().addClass("fa fa-navicon");
                         });

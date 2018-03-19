@@ -46,10 +46,6 @@ class ExtraQuery(unittest.TestCase):
       notification.waitText(self.browser,
          notification.Type.Success,
          i18n.get()["core"]["plugins"]["extraquery"]["success"].replace("{{extraquery}}", i18n.getPlugin("dev-fakePlugin")["extraQueries"]["simpleCommand"]["name"]))
-
-
-
-#TODO : chaque clic sur le bouton "extra-command" ajoute un menu (non-affiché) : entrée "ul" dans le DOM, à corriger
       
       
    def tearDown(self):
