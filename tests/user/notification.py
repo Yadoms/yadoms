@@ -100,19 +100,19 @@ def isNotificationContainingText(browser, expectedType, expectedSubText):
    return False
 
 
-def wait(browser, expectedType):
+def wait(browser, expectedType, timeout = 10):
    """ Wait for an expected notification """
-   assert tools.waitUntil(lambda: isNotification(browser, expectedType))
+   assert tools.waitUntil(lambda: isNotification(browser, expectedType), timeout)
 
 
-def waitText(browser, expectedType, expectedText):
+def waitText(browser, expectedType, expectedText, timeout = 10):
    """ Wait for an expected notification """
-   assert tools.waitUntil(lambda: isNotificationWithText(browser, expectedType, expectedText))
+   assert tools.waitUntil(lambda: isNotificationWithText(browser, expectedType, expectedText), timeout)
 
 
-def waitSubText(browser, expectedType, expectedSubText):
+def waitSubText(browser, expectedType, expectedSubText, timeout = 10):
    """ Wait for a notification containing expected text"""
-   assert tools.waitUntil(lambda: isNotificationContainingText(browser, expectedType, expectedSubText))
+   assert tools.waitUntil(lambda: isNotificationContainingText(browser, expectedType, expectedSubText), timeout)
    
    
 def noNotification(browser):
