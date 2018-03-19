@@ -93,12 +93,21 @@
 		"simpleCommand" : {
 			"name" : "Simple command"
 		},
-		"dataCommand" : {
-			"name" : "Command with data",
+		"textDataCommand" : {
+			"name" : "Command with text data",
 			"commandData" : {
 				"testValue": {
 					"name": "SomeString",
 					"description": "Description of Somestring"
+				}			
+			}
+		},
+		"numericDataCommand" : {
+			"name" : "Command with numeric data",
+			"commandData" : {
+				"testValue": {
+					"name": "SomeInteger",
+					"description": "Description of SomeInteger"
 				}			
 			}
 		},	

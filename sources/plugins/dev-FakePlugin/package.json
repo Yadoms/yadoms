@@ -89,11 +89,19 @@
     "simpleCommand": {
       "iconClass": "fa fa-bolt"
     },
-    "dataCommand": {
+    "textDataCommand": {
       "iconClass": "fa fa-edit",
       "commandData": {
         "testValue": {
           "type": "string"
+        }
+      }
+    },
+    "numericDataCommand": {
+      "iconClass": "fa fa-edit",
+      "commandData": {
+        "testValue": {
+          "type": "int"
         }
       }
     },

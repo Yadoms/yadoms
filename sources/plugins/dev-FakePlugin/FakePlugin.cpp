@@ -96,16 +96,16 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          devName != configurableDevice.getDeviceName() &&
          devName != fakeCurtain.getDeviceName())
       {
-         auto type = api->getDeviceType(devName);
+         const auto type = api->getDeviceType(devName);
          if (type == CFakeAnotherConfigurableDevice::getType())
          {
-            auto createdDevice = boost::make_shared<CFakeAnotherConfigurableDevice>(devName,
+            const auto createdDevice = boost::make_shared<CFakeAnotherConfigurableDevice>(devName,
                                                                                     api->getDeviceConfiguration(devName));
             m_manuallyCreatedStaticConfDevices.push_back(createdDevice);
          }
          else if (type == CFakeDynamicallyConfigurableDevice::getType())
          {
-            auto createdDevice = boost::make_shared<CFakeDynamicallyConfigurableDevice>(devName,
+            const auto createdDevice = boost::make_shared<CFakeDynamicallyConfigurableDevice>(devName,
                                                                                         api->getDeviceConfiguration(devName));
             m_manuallyCreatedDynaConfDevices.push_back(createdDevice);
          }
@@ -130,7 +130,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             // Configuration was updated
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
+            const auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
             YADOMS_LOG(information) << "Update configuration...";
 
             // Take into account the new configuration
@@ -160,19 +160,24 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                {
                   YADOMS_LOG(information) << "Simple command received";
                }
-               else if (extraQuery->getData()->query() == "dataCommand")
+               else if (extraQuery->getData()->query() == "textDataCommand")
                {
-                  auto s = extraQuery->getData()->data().get<std::string>("testValue");
+                  const auto s = extraQuery->getData()->data().get<std::string>("testValue");
+                  YADOMS_LOG(information) << "Command with data received : data=" << s;
+               }
+               else if (extraQuery->getData()->query() == "numericDataCommand")
+               {
+                  const auto s = extraQuery->getData()->data().get<int>("testValue");
                   YADOMS_LOG(information) << "Command with data received : data=" << s;
                }
                else if (extraQuery->getData()->query() == "dataBindingCommand")
                {
-                  auto value = extraQuery->getData()->data().get<std::string>("networkInterface");
+                  const auto value = extraQuery->getData()->data().get<std::string>("networkInterface");
                   YADOMS_LOG(information) << "Command with binded data received : value=" << value << " text=" << Poco::Net::NetworkInterface::forName(value).displayName();
                }
                else if (extraQuery->getData()->query() == "dataBindingPluginCommand")
                {
-                  auto interval = extraQuery->getData()->data().get<std::string>("dynamicSection.content.interval");
+                  const auto interval = extraQuery->getData()->data().get<std::string>("dynamicSection.content.interval");
                   YADOMS_LOG(information) << "Command with plugin binded data received : value=" << interval;
                }
                else if (extraQuery->getData()->query() == "changePluginStateMessage")
@@ -247,7 +252,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
             else
             {
-               auto errorMessage = (boost::format("unknown query : %1%") % request->getData().getQuery()).str();
+               const auto errorMessage = (boost::format("unknown query : %1%") % request->getData().getQuery()).str();
                request->sendError(errorMessage);
                YADOMS_LOG(error) << errorMessage;
             }
@@ -257,7 +262,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventDeviceCommand:
          {
             // A command was received from Yadoms
-            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
+            const auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
             YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
             if (command->getKeyword().empty())
             YADOMS_LOG(information) << "Specific command for a device (can be used for any purpose, unless keyword driving, device configuration (see kGetDeviceConfigurationSchemaRequest and kSetDeviceConfiguration documentation) and deletion";
@@ -287,7 +292,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   YADOMS_LOG(information) << "CFakeConfigurableDevice config : MySection/SubIntParameter : " << creation->getData().getConfiguration().get<int>("MySection.content.SubIntParameter");
                   YADOMS_LOG(information) << "CFakeConfigurableDevice config : MySection/SubStringParameter : " << creation->getData().getConfiguration().get<std::string>("MySection.content.SubStringParameter");
 
-                  auto createdDevice = boost::make_shared<CFakeAnotherConfigurableDevice>(creation->getData().getDeviceName(),
+                  const auto createdDevice = boost::make_shared<CFakeAnotherConfigurableDevice>(creation->getData().getDeviceName(),
                                                                                           creation->getData().getConfiguration());
                   api->declareKeywords(creation->getData().getDeviceName(),
                                        createdDevice->historizers());
@@ -299,7 +304,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                {
                   YADOMS_LOG(information) << "CFakeDynamicallyConfigurableDevice config : CounterDivider : " << creation->getData().getConfiguration().get<std::string>("CounterDivider");
 
-                  auto createdDevice = boost::make_shared<CFakeDynamicallyConfigurableDevice>(creation->getData().getDeviceName(),
+                  const auto createdDevice = boost::make_shared<CFakeDynamicallyConfigurableDevice>(creation->getData().getDeviceName(),
                                                                                               creation->getData().getConfiguration());
                   api->declareKeywords(creation->getData().getDeviceName(),
                                        createdDevice->historizers());
@@ -326,7 +331,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       case yApi::IYPluginApi::kEventDeviceRemoved:
          {
-            auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved>>();
+            const auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved>>();
             YADOMS_LOG(information) << device->device() << " was removed";
             break;
          }
@@ -400,7 +405,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   }
                   else
                   {
-                     auto errorMessage = "Try to apply a device configuration to an unconfigurable device";
+                     const auto errorMessage = "Try to apply a device configuration to an unconfigurable device";
                      YADOMS_LOG(error) << errorMessage;
                   }
                }
