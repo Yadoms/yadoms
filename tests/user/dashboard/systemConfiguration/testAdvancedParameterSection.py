@@ -9,6 +9,7 @@ from selenium.webdriver.support import expected_conditions as Condition
 from selenium.webdriver.common.keys import Keys
 import database
 import config
+import modals
 import notification
 import scripts
 import yadomsServer
@@ -38,28 +39,32 @@ class AdvancedParameterSection(unittest.TestCase):
       dashboard.openSystemConfiguration(self.browser)
 
       print 'Check Advanced parameter section default state (cold start)'
-      self.assertFalse(dashboard.systemConfiguration.isAdvancedParametersSectionActive(self.browser))
+      panel = dashboard.systemConfiguration.getPanel(self.browser)
+      self.assertFalse(panel.isAdvancedParametersSectionActive())
       
       print 'Enable Advanced parameter section'      
-      dashboard.systemConfiguration.enableAdvancedParametersSection(self.browser)
-      dashboard.systemConfiguration.applySystemConfiguration(self.browser)
+      panel.enableAdvancedParametersSection()
+      panel.apply()
       dashboard.close(self.browser)
 
       print 'Check that advanced parameter section state was saved'
       self.browser.refresh()
       dashboard.open(self.browser)
       dashboard.openSystemConfiguration(self.browser)
-      self.assertTrue(dashboard.systemConfiguration.isAdvancedParametersSectionActive(self.browser))
+      panel = dashboard.systemConfiguration.getPanel(self.browser)
+      self.assertTrue(panel.isAdvancedParametersSectionActive())
 
       print 'Reset to default value'
-      dashboard.systemConfiguration.resetToDefaultSystemConfiguration(self.browser)
+      panel.resetToDefaultValues()
+      modals.waitOkCancelModal(self.browser).ok()
       # Reseting to default values make page reload, wait for page reloaded
       yadomsServer.waitPageLoaded(self.browser)
 
       print 'Re-open systemConfiguration dashboard and check state was restored'
       dashboard.open(self.browser)
       dashboard.openSystemConfiguration(self.browser)
-      self.assertFalse(dashboard.systemConfiguration.isAdvancedParametersSectionActive(self.browser))
+      panel = dashboard.systemConfiguration.getPanel(self.browser)
+      self.assertFalse(panel.isAdvancedParametersSectionActive())
 
       
    def tearDown(self):

@@ -60,6 +60,7 @@ class SystemConfigurationPanel(ConfigurationPanel):
    def __init__(self, panelWebElement):
       super(SystemConfigurationPanel, self).__init__(panelWebElement)
       self._applyButton = super(SystemConfigurationPanel, self).getButton("common.apply")
+      self._resetValuesButton = panelWebElement.find_element_by_xpath(".//button[@id='resetConfiguration']")
 
    def enableAdvancedParametersSection(self):
       section = super(SystemConfigurationPanel, self).enableOptionalSection("modals.dashboard.sub-windows.system-configuration.configuration-items.advancedParameters.name", True)
@@ -103,6 +104,9 @@ class SystemConfigurationPanel(ConfigurationPanel):
       field.send_keys(Keys.CONTROL + "a")
       field.send_keys(Keys.DELETE)
       field.send_keys(newValue)
+
+   def resetToDefaultValues(self):
+      self._resetValuesButton.click()
 
    def apply(self):
       self._applyButton.click()
