@@ -194,7 +194,7 @@ void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
 					int chanToProg = atoi(extraQuery->getData()->data().get<std::string>("Channel").c_str());
 
 
-					if (chanToProg < 1 || chanToProg > api->getAllDevices().size())
+					if (chanToProg < 1 || (unsigned int) chanToProg > api->getAllDevices().size())
 					{
 						YADOMS_LOG(error) << "Unsupported channel : " << chanToProg;
 						extraQuery->sendError("channel must be under  " + api->getAllDevices().size());
@@ -289,7 +289,7 @@ void CSomfySituo::send(const std::string& message,
 	YADOMS_LOG(information) << "Command send : " << message;
 	
 	std::vector<unsigned char> messageToSend{ STX };  // Header
-	for(int i = 0; i < message.size(); i++)
+	for(unsigned int i = 0; i < message.size(); i++)
 		messageToSend.push_back(message[i]);
 	messageToSend.push_back(ETX);					 // footer
 	//memcpy(buffer.begin(), message.c_str(), message.size());
