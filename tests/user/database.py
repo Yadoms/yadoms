@@ -5,6 +5,7 @@ import os.path
 def new():
    print 'Use new database'
    resources.deleteFile(yadomsServer.databasePath())
+   resources.deleteFile(yadomsServer.databasePath() + "-journal")
 
          
 def deploy(databaseName):
@@ -13,4 +14,5 @@ def deploy(databaseName):
          
 def deployFromPath(databaseFullPath):
    print 'Deploy database from ', databaseFullPath
+   resources.deleteFile(yadomsServer.databasePath() + "-journal")
    resources.deployFile(databaseFullPath, yadomsServer.databasePath())
