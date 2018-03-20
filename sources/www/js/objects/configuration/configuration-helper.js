@@ -178,7 +178,7 @@ ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, 
       type: keyword.type,
       values : keyword.typeInfo.values
    }
-   
+   debugger;
    switch (keyword.type.toLowerCase()) {
       case "numeric":
          return new DecimalParameterHandler(i18NContext, i18nKey, paramName, obj, currentValue);

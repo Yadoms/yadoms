@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
-#include "typeInfo/IntTypeInfo.h"
+#include "typeInfo/PercentageTypeInfo.h"
 
 namespace shared
 {
@@ -17,10 +17,12 @@ namespace shared
             class YADOMS_SHARED_EXPORT CBatteryLevel : public CSingleHistorizableData<int>
             {
             public:
+               static typeInfo::CPercentageTypeInfo PercentageTypeInfo;
+
                explicit CBatteryLevel(const std::string& keywordName,
                                       const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
                                       const EMeasureType& measureType = EMeasureType::kAbsolute,
-                                      typeInfo::CIntTypeInfo& additionalInfo = typeInfo::CIntTypeInfo::Empty);
+                                      const typeInfo::ITypeInfo& additionalInfo = PercentageTypeInfo);
 
                virtual ~CBatteryLevel();
 
@@ -32,5 +34,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-
