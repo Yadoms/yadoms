@@ -93,12 +93,21 @@
     "simpleCommand": {
       "name": "Commande simple"
     },
-    "dataCommand": {
-      "name": "Commande avec des données",
+    "textDataCommand": {
+      "name": "Commande avec des données texte",
       "commandData": {
         "testValue": {
           "name": "UnTexte",
           "description": "Description du texte à saisir"
+        }
+      }
+    },
+    "numericDataCommand": {
+      "name": "Commande avec des données numériques",
+      "commandData": {
+        "testValue": {
+          "name": "UnNombre",
+          "description": "Description du nombre à saisir"
         }
       }
     },
