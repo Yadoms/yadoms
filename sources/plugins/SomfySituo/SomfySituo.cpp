@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "SomfyIOControllerFactory.h"
-#include "SomfyIOController.h"
+#include "SomfySituoFactory.h"
+#include "SomfySituo.h"
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/communication/PortException.hpp>
 #include <shared/communication/AsciiBufferLogger.h>
@@ -16,7 +16,7 @@ DECLARE_ENUM_IMPLEMENTATION(EChannel,
 ((Channel5))
 );
 
-IMPLEMENT_PLUGIN(CSomfyIOController)
+IMPLEMENT_PLUGIN(CSomfySituo)
 #define STX 0x02
 #define ETX 0x03
 
@@ -39,10 +39,10 @@ enum
 };
 
 
-const std::string CSomfyIOController::DeviceName("SituoAdapter");
-const std::map<std::string, int> CSomfyIOController::m_somfyModels = { {"Situo1",1},{"Situo5",5} };
+const std::string CSomfySituo::DeviceName("SituoAdapter");
+const std::map<std::string, int> CSomfySituo::m_somfyModels = { {"Situo1",1},{"Situo5",5} };
 
-CSomfyIOController::CSomfyIOController()
+CSomfySituo::CSomfySituo()
 	: m_logger(boost::make_shared<shared::communication::CAsciiBufferLogger>("trace")),
 	m_protocolErrorCounter(0),
 	m_lastSentBuffer(1),
@@ -53,21 +53,21 @@ CSomfyIOController::CSomfyIOController()
 {
 }
 
-CSomfyIOController::~CSomfyIOController()
+CSomfySituo::~CSomfySituo()
 {
 }
 
-void CSomfyIOController::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
+void CSomfySituo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
 	api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-	YADOMS_LOG(information) << "CSomfyIOController is starting...";
+	YADOMS_LOG(information) << "CSomfySituo is starting...";
 
 	// Load configuration values (provided by database)
 	m_configuration.initializeWith(api->getConfiguration());
 
 	// Create the buffer handler
-	m_ReceiveBufferHandler = CSomfyIOControllerFactory::GetBufferHandler(api->getEventHandler(),
+	m_ReceiveBufferHandler = CSomfySituoFactory::GetBufferHandler(api->getEventHandler(),
 		kEvtPortDataReceived,
 		false);
 
@@ -86,7 +86,7 @@ void CSomfyIOController::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 	}
 }
 
-void CSomfyIOController::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
+void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
 {
 	// Wait for an event
 	switch (api->getEventHandler().waitForEvents())
@@ -121,7 +121,7 @@ void CSomfyIOController::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
 			BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
 														 // Close connection
-			CSomfyIOControllerConfiguration newConfiguration;
+			CSomfySituoConfiguration newConfiguration;
 			newConfiguration.initializeWith(newConfigurationData);
 
 			// If port has changed, destroy and recreate connection (if any)
@@ -259,31 +259,31 @@ void CSomfyIOController::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
 	}
 }
 
-void CSomfyIOController::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
+void CSomfySituo::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
 {
 	api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
 	// Create the port instance
-	m_port = CSomfyIOControllerFactory::constructPort(m_configuration,
+	m_port = CSomfySituoFactory::constructPort(m_configuration,
 		api->getEventHandler(),
 		m_ReceiveBufferHandler,
 		kEvtPortConnection);
 	m_port->start();
 }
 
-void CSomfyIOController::destroyConnection()
+void CSomfySituo::destroyConnection()
 {
 	m_port.reset();
 	m_waitForAnswerTimer->stop();
 }
 
-bool CSomfyIOController::connectionsAreEqual(const CSomfyIOControllerConfiguration& conf1,
-	const CSomfyIOControllerConfiguration& conf2)
+bool CSomfySituo::connectionsAreEqual(const CSomfySituoConfiguration& conf1,
+	const CSomfySituoConfiguration& conf2)
 {
 	return (conf1.getSerialPort() == conf2.getSerialPort());
 }
 
-void CSomfyIOController::send(const std::string& message,
+void CSomfySituo::send(const std::string& message,
 	bool needAnswer)
 {
 	YADOMS_LOG(information) << "Command send : " << message;
@@ -299,7 +299,7 @@ void CSomfyIOController::send(const std::string& message,
 }
 
 
-void CSomfyIOController::send(const shared::communication::CByteBuffer& buffer,
+void CSomfySituo::send(const shared::communication::CByteBuffer& buffer,
 	bool needAnswer)
 {
 	if (!m_port)
@@ -314,7 +314,7 @@ void CSomfyIOController::send(const shared::communication::CByteBuffer& buffer,
 		m_waitForAnswerTimer->start();
 }
 
-void CSomfyIOController::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
+void CSomfySituo::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
 	const std::string& device, const std::string& command)
 {
 	if (!m_port)
@@ -374,7 +374,7 @@ void CSomfyIOController::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
 	}
 
 }
-void CSomfyIOController::processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
+void CSomfySituo::processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
 {
 	YADOMS_LOG(information) << "Controler port opened";
 
@@ -396,7 +396,7 @@ void CSomfyIOController::processConnectionEvent(boost::shared_ptr<yApi::IYPlugin
 	}
 }
 
-void CSomfyIOController::protocolErrorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
+void CSomfySituo::protocolErrorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
 {
 	if (m_protocolErrorCounter <= 3)
 	{
@@ -411,7 +411,7 @@ void CSomfyIOController::protocolErrorProcess(boost::shared_ptr<yApi::IYPluginAp
 	api->getEventHandler().createTimer(kProtocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
 }
 
-void CSomfyIOController::processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api,
+void CSomfySituo::processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api,
 	boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification)
 {
 	YADOMS_LOG(information) << "Controler connection was lost";
@@ -426,7 +426,7 @@ void CSomfyIOController::processUnConnectionEvent(boost::shared_ptr<yApi::IYPlug
 	destroyConnection();
 }
 
-void CSomfyIOController::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
+void CSomfySituo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
 	const std::string& message)
 {
 	try
@@ -530,7 +530,7 @@ void CSomfyIOController::processDataReceived(boost::shared_ptr<yApi::IYPluginApi
 	}
 }
 
-void CSomfyIOController::sendConfigCmd(CSomfyIOController::ConfigSituo conf, int value)
+void CSomfySituo::sendConfigCmd(CSomfySituo::ConfigSituo conf, int value)
 {
 	std::ostringstream cmd;
 	cmd << 'C' << conf << value;
@@ -538,7 +538,7 @@ void CSomfyIOController::sendConfigCmd(CSomfyIOController::ConfigSituo conf, int
 	send(cmd.str(), true);
 }
 
-void CSomfyIOController::sendChannelCmd()
+void CSomfySituo::sendChannelCmd()
 {
 	std::ostringstream cmd;
 	cmd << 'L' << durationPushBtn;
@@ -547,7 +547,7 @@ void CSomfyIOController::sendChannelCmd()
 }
 
 
-void CSomfyIOController::sendGetStatusCmd()
+void CSomfySituo::sendGetStatusCmd()
 {
 	std::ostringstream cmd;
 	cmd << 'S';
@@ -555,7 +555,7 @@ void CSomfyIOController::sendGetStatusCmd()
 	send(cmd.str(), true);
 }
 
-void CSomfyIOController::sendUpCmd()
+void CSomfySituo::sendUpCmd()
 {
 	std::ostringstream cmd;
 	cmd << 'U' << durationPushBtn;
@@ -563,7 +563,7 @@ void CSomfyIOController::sendUpCmd()
 	send(cmd.str(), true);
 }
 
-void CSomfyIOController::sendDownCmd()
+void CSomfySituo::sendDownCmd()
 {
 	std::ostringstream cmd;
 	cmd << 'D' << durationPushBtn;
@@ -571,7 +571,7 @@ void CSomfyIOController::sendDownCmd()
 	send(cmd.str(), true);
 }
 
-void CSomfyIOController::sendMyCmd()
+void CSomfySituo::sendMyCmd()
 {
 	std::ostringstream cmd;
 	cmd << 'M' << durationPushBtn;
@@ -579,7 +579,7 @@ void CSomfyIOController::sendMyCmd()
 	send(cmd.str(), true);
 }
 
-void CSomfyIOController::sendProgCmd()
+void CSomfySituo::sendProgCmd()
 {
 	std::ostringstream cmd;
 	cmd << 'P' << durationPushBtn;
@@ -589,7 +589,7 @@ void CSomfyIOController::sendProgCmd()
 
 
 
-void CSomfyIOController::sendQuickUpCmd(int chan)
+void CSomfySituo::sendQuickUpCmd(int chan)
 {
 	std::ostringstream cmd;
 	cmd << 'u' << chan;
@@ -597,7 +597,7 @@ void CSomfyIOController::sendQuickUpCmd(int chan)
 	send(cmd.str(), true);
 }
 
-void CSomfyIOController::sendQuickDownCmd(int chan)
+void CSomfySituo::sendQuickDownCmd(int chan)
 {
 	std::ostringstream cmd;
 	cmd << 'd' << chan;
@@ -605,7 +605,7 @@ void CSomfyIOController::sendQuickDownCmd(int chan)
 	send(cmd.str(), true);
 }
 
-void CSomfyIOController::sendQuickMyCmd(int chan)
+void CSomfySituo::sendQuickMyCmd(int chan)
 {
 	std::ostringstream cmd;
 	cmd << 'm' << chan;
@@ -613,7 +613,7 @@ void CSomfyIOController::sendQuickMyCmd(int chan)
 	send(cmd.str(), true);
 }
 
-void CSomfyIOController::sendQuickProgCmd(int chan)
+void CSomfySituo::sendQuickProgCmd(int chan)
 {
 	std::ostringstream cmd;
 	cmd << 'p' << chan;
@@ -621,7 +621,7 @@ void CSomfyIOController::sendQuickProgCmd(int chan)
 	send(cmd.str(), true);
 }
 
-void CSomfyIOController::processReceivedInformation(boost::shared_ptr<yApi::IYPluginApi> api,
+void CSomfySituo::processReceivedInformation(boost::shared_ptr<yApi::IYPluginApi> api,
 	const boost::tokenizer<boost::char_separator<char>>& tokens) const
 {
 	auto itToken = tokens.begin();
@@ -637,7 +637,7 @@ void CSomfyIOController::processReceivedInformation(boost::shared_ptr<yApi::IYPl
 }
 
 
-void CSomfyIOController::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+void CSomfySituo::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api,
 	const std::string& model, const std::string& version) const
 {
 	int numberOfChannel = 0;

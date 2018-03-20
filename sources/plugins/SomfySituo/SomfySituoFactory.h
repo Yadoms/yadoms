@@ -1,8 +1,8 @@
 #pragma once
 
-#include "ISomfyIOControllerConfiguration.h"
+#include "ISomfySituoConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
-#include "SomfyIOControllerReceiveBufferHandler.h"
+#include "SomfySituoReceiveBufferHandler.h"
 
 //--------------------------------------------------------------
 /// \brief	Megatec protocol End Of Frame character
@@ -12,13 +12,13 @@
 //--------------------------------------------------------------
 /// \brief	General factory
 //--------------------------------------------------------------
-class CSomfyIOControllerFactory
+class CSomfySituoFactory
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CSomfyIOControllerFactory();
+   virtual ~CSomfySituoFactory();
 
    //--------------------------------------------------------------
    /// \brief	                           Create a port instance and connect to the UPS
@@ -28,7 +28,7 @@ public:
    /// \param[in] evtPortDataReceived     The event id raised on data receive events
    /// \return                            The created port
    //--------------------------------------------------------------
-   static boost::shared_ptr<shared::communication::IAsyncPort> constructPort(const ISomfyIOControllerConfiguration& configuration,
+   static boost::shared_ptr<shared::communication::IAsyncPort> constructPort(const ISomfySituoConfiguration& configuration,
 																			 shared::event::CEventHandler& eventHandler,
 																			 boost::shared_ptr<shared::communication::IReceiveBufferHandler> receiveBufferHandler,
 																			 int evtPortConnectionId);
@@ -40,7 +40,7 @@ public:
    /// \param [in] developerMode          running in developer mode
    /// \return                            The Buffer handler
    //--------------------------------------------------------------
-   static boost::shared_ptr<CSomfyIOControllerReceiveBufferHandler> GetBufferHandler(shared::event::CEventHandler& eventHandler,
+   static boost::shared_ptr<CSomfySituoReceiveBufferHandler> GetBufferHandler(shared::event::CEventHandler& eventHandler,
 	   int evtPortDataReceived,
 	   const bool isDeveloperMode);
 };

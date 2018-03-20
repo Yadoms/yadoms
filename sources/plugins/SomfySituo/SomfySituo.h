@@ -1,6 +1,6 @@
 #pragma once
 #include <plugin_cpp_api/IPlugin.h>
-#include "SomfyIOControllerConfiguration.h"
+#include "SomfySituoConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
 #include <shared/communication/IBufferLogger.h>
 #include <shared/event/EventTimer.h>
@@ -24,7 +24,7 @@ DECLARE_ENUM_HEADER(EChannel,
 //--------------------------------------------------------------
 /// \brief	This plugin supports adapter for Somfy Remote Controls)
 //--------------------------------------------------------------
-class CSomfyIOController : public plugin_cpp_api::IPlugin
+class CSomfySituo : public plugin_cpp_api::IPlugin
 {
 public:
 	typedef enum
@@ -35,12 +35,12 @@ public:
 	//--------------------------------------------------------------
 	/// \brief	Constructor
 	//--------------------------------------------------------------
-	CSomfyIOController();
+	CSomfySituo();
 
 	//--------------------------------------------------------------
 	/// \brief	Destructor
 	//--------------------------------------------------------------
-	virtual ~CSomfyIOController();
+	virtual ~CSomfySituo();
 
 	// IPlugin implementation
 	void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
@@ -127,8 +127,8 @@ protected:
 	/// \param [in] conf2            Second configuration to compare
 	/// \return                      true is connection data are all the same in the both configurations
 	//--------------------------------------------------------------
-	static bool connectionsAreEqual(const CSomfyIOControllerConfiguration& conf1,
-		const CSomfyIOControllerConfiguration& conf2);
+	static bool connectionsAreEqual(const CSomfySituoConfiguration& conf1,
+		const CSomfySituoConfiguration& conf2);
 
 	//--------------------------------------------------------------
 	/// \brief	                     Send the 'Config' command
@@ -190,7 +190,7 @@ private:
 	//--------------------------------------------------------------
 	/// \brief	The plugin configuration
 	//--------------------------------------------------------------
-	CSomfyIOControllerConfiguration m_configuration;
+	CSomfySituoConfiguration m_configuration;
 
 	//--------------------------------------------------------------
 	/// \brief  The communication port
@@ -241,7 +241,7 @@ private:
 	//--------------------------------------------------------------
 	/// \brief  The receiver buffer
 	//--------------------------------------------------------------
-	boost::shared_ptr<CSomfyIOControllerReceiveBufferHandler> m_ReceiveBufferHandler;
+	boost::shared_ptr<CSomfySituoReceiveBufferHandler> m_ReceiveBufferHandler;
 
 	//--------------------------------------------------------------
 	/// \brief	The keywords list to historize in one step for better performances

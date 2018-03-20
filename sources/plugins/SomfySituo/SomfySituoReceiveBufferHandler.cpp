@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "SomfyIOControllerReceiveBufferHandler.h"
+#include "SomfySituoReceiveBufferHandler.h"
 #include <shared/Log.h>
 enum
 {
@@ -12,7 +12,7 @@ enum
    maxMessageSize = 3000
 };
 
-CSomfyIOControllerReceiveBufferHandler::CSomfyIOControllerReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
+CSomfySituoReceiveBufferHandler::CSomfySituoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
                                                        int receiveDataEventId,
 															          boost::shared_ptr<shared::communication::IBufferLogger> logger,
                                                        const bool isDeveloperMode)
@@ -23,11 +23,11 @@ CSomfyIOControllerReceiveBufferHandler::CSomfyIOControllerReceiveBufferHandler(s
 {
 }
 
-CSomfyIOControllerReceiveBufferHandler::~CSomfyIOControllerReceiveBufferHandler()
+CSomfySituoReceiveBufferHandler::~CSomfySituoReceiveBufferHandler()
 {
 }
 
-void CSomfyIOControllerReceiveBufferHandler::push(const shared::communication::CByteBuffer& buffer)
+void CSomfySituoReceiveBufferHandler::push(const shared::communication::CByteBuffer& buffer)
 {
 	YADOMS_LOG(information) << "COM : push buffer size " << buffer.size();
 	static const auto InterByteTimeout = boost::posix_time::milliseconds(100);
@@ -63,12 +63,12 @@ void CSomfyIOControllerReceiveBufferHandler::push(const shared::communication::C
    }
 }
 
-void CSomfyIOControllerReceiveBufferHandler::flush()
+void CSomfySituoReceiveBufferHandler::flush()
 {
    m_content.clear();
 }
 
-boost::shared_ptr<const shared::communication::CByteBuffer> CSomfyIOControllerReceiveBufferHandler::getCompleteMessage()
+boost::shared_ptr<const shared::communication::CByteBuffer> CSomfySituoReceiveBufferHandler::getCompleteMessage()
 {
 	static const boost::shared_ptr<const shared::communication::CByteBuffer> UncompleteMessage;
 
@@ -108,7 +108,7 @@ boost::shared_ptr<const shared::communication::CByteBuffer> CSomfyIOControllerRe
 }
 
 
-void CSomfyIOControllerReceiveBufferHandler::notifyEventHandler(const boost::shared_ptr<const shared::communication::CByteBuffer> buffer) const
+void CSomfySituoReceiveBufferHandler::notifyEventHandler(const boost::shared_ptr<const shared::communication::CByteBuffer> buffer) const
 {
 	m_receiveDataEventHandler.postEvent<const shared::communication::CByteBuffer>(m_receiveDataEventId, *buffer);
 }

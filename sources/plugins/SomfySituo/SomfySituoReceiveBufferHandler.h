@@ -5,12 +5,12 @@
 #include <shared/communication/IBufferLogger.h>
 
 //--------------------------------------------------------------
-/// \brief	Receive buffer handler for SomfyIOController
+/// \brief	Receive buffer handler for SomfySituo
 ///
-/// This class manages the SomfyIOController receive buffer.
+/// This class manages the SomfySituo receive buffer.
 /// A message is considered complete from its content (see protocol specification)
 //--------------------------------------------------------------
-class CSomfyIOControllerReceiveBufferHandler : public shared::communication::IReceiveBufferHandler
+class CSomfySituoReceiveBufferHandler : public shared::communication::IReceiveBufferHandler
 {
 public:
    //--------------------------------------------------------------
@@ -20,7 +20,7 @@ public:
    /// \param[in] logger                  logger in developer mode
    /// \param[in] isDeveloperMode         developer mode is active
    //--------------------------------------------------------------
-   CSomfyIOControllerReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
+   CSomfySituoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
                               int receiveDataEventId,
                               boost::shared_ptr<shared::communication::IBufferLogger> logger,
                               const bool isDeveloperMode);
@@ -28,12 +28,12 @@ public:
    //--------------------------------------------------------------
    /// \brief	                           Destructor
    //--------------------------------------------------------------
-   virtual ~CSomfyIOControllerReceiveBufferHandler();
+   virtual ~CSomfySituoReceiveBufferHandler();
 
-   // ISomfyIOControllerReceiveBufferHandler implementation
+   // ISomfySituoReceiveBufferHandler implementation
    void push(const shared::communication::CByteBuffer& buffer) override;
    void flush() override;
-   // [END] ISomfyIOControllerReceiveBufferHandler implementation
+   // [END] ISomfySituoReceiveBufferHandler implementation
 
    void activate();
    void desactivate();

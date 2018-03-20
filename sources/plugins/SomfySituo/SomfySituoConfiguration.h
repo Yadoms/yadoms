@@ -1,17 +1,17 @@
 #pragma once
 
-#include "ISomfyIOControllerConfiguration.h"
+#include "ISomfySituoConfiguration.h"
 
 //--------------------------------------------------------------
 /// \brief	Configuration of the empty plugin
 //--------------------------------------------------------------
-class CSomfyIOControllerConfiguration : public ISomfyIOControllerConfiguration
+class CSomfySituoConfiguration : public ISomfySituoConfiguration
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CSomfyIOControllerConfiguration();
+   virtual ~CSomfySituoConfiguration();
 
    //--------------------------------------------------------------
    /// \brief		   Load configuration data

@@ -1,14 +1,14 @@
 #include "stdafx.h"
-#include "SomfyIOControllerFactory.h"
+#include "SomfySituoFactory.h"
 #include <shared/communication/AsyncSerialPort.h>
 #include <shared/communication/AsciiBufferLogger.h>
 #include <shared/communication/EOFReceiveBufferHandler.h>
 
-CSomfyIOControllerFactory::~CSomfyIOControllerFactory()
+CSomfySituoFactory::~CSomfySituoFactory()
 {
 }
 
-boost::shared_ptr<shared::communication::IAsyncPort> CSomfyIOControllerFactory::constructPort(const ISomfyIOControllerConfiguration& configuration,
+boost::shared_ptr<shared::communication::IAsyncPort> CSomfySituoFactory::constructPort(const ISomfySituoConfiguration& configuration,
 	shared::event::CEventHandler& eventHandler,
 	boost::shared_ptr<shared::communication::IReceiveBufferHandler> receiveBufferHandler,
 	int evtPortConnectionId)
@@ -28,7 +28,7 @@ boost::shared_ptr<shared::communication::IAsyncPort> CSomfyIOControllerFactory::
 	return port;
 }
 
-boost::shared_ptr<CSomfyIOControllerReceiveBufferHandler> CSomfyIOControllerFactory::GetBufferHandler(shared::event::CEventHandler& eventHandler,
+boost::shared_ptr<CSomfySituoReceiveBufferHandler> CSomfySituoFactory::GetBufferHandler(shared::event::CEventHandler& eventHandler,
 	int evtPortDataReceived,
 	const bool isDeveloperMode)
 {
@@ -36,7 +36,7 @@ boost::shared_ptr<CSomfyIOControllerReceiveBufferHandler> CSomfyIOControllerFact
 
 	logger = boost::make_shared<shared::communication::CAsciiBufferLogger>("trace");
 
-	return boost::make_shared<CSomfyIOControllerReceiveBufferHandler>(eventHandler,
+	return boost::make_shared<CSomfySituoReceiveBufferHandler>(eventHandler,
 		evtPortDataReceived,
 		logger,
 		isDeveloperMode);

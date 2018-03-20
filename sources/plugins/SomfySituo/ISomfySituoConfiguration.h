@@ -4,13 +4,13 @@
 //--------------------------------------------------------------
 /// \brief	Interface of plugin configuration
 //--------------------------------------------------------------
-class ISomfyIOControllerConfiguration
+class ISomfySituoConfiguration
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~ISomfyIOControllerConfiguration()
+   virtual ~ISomfySituoConfiguration()
    {
    }
 
