@@ -215,7 +215,7 @@ namespace database
             boost::optional<shared::CDataContainer> oldLocationContainer(*oldLocation);
             shared::CDataContainer newLocation;
 
-            newLocation.set("location.status", "userDefined");
+            newLocation.set("status", "userDefined");
             newLocation.set("latitude", oldLocationContainer->get<std::string>("latitude"));
             newLocation.set("longitude", oldLocationContainer->get<std::string>("longitude"));
             newLocation.set("altitude", oldLocationContainer->get<std::string>("altitude"));
