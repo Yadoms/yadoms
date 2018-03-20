@@ -16,44 +16,6 @@ from configurationPanel import ConfigurationPanel
 def getPanel(browser):
    return SystemConfigurationPanel(WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "dashboard-system-configuration"))))
 
-def enableAdvancedParametersSection(browser): # TODO virer
-   section = getPanel(browser).enableOptionalSection("modals.dashboard.sub-windows.system-configuration.configuration-items.advancedParameters.name", True)
-   return ConfigurationPanel(section)
-
-def disableAdvancedParametersSection(browser): # TODO virer
-   section = getPanel(browser).enableOptionalSection("modals.dashboard.sub-windows.system-configuration.configuration-items.advancedParameters.name", False)
-
-def isAdvancedParametersSectionActive(browser): # TODO virer
-   return getPanel(browser).isOptionalSectionEnabled("modals.dashboard.sub-windows.system-configuration.configuration-items.advancedParameters.name")
-
-def enableBasicAuthenticationSection(browser): # TODO virer
-   section = getPanel(browser).enableOptionalSection("modals.dashboard.sub-windows.system-configuration.configuration-items.basicAuthentication.name", True)
-   return ConfigurationPanel(section)
-
-def isBasicAuthenticationSectionActive(browser): # TODO virer
-   return getPanel(browser).isOptionalSectionEnabled("modals.dashboard.sub-windows.system-configuration.configuration-items.basicAuthentication.name")
-
-def getRefreshPageOptionState(advancedParameterSection): # TODO virer
-   refreshPageCheckbox = advancedParameterSection.getCheckboxItemByName("modals.dashboard.sub-windows.system-configuration.configuration-items.refreshPage.name")
-   return True if refreshPageCheckbox.get_attribute('checked') is not None else False
-
-def setRefreshPageOption(advancedParameterSection, enable): # TODO virer
-   refreshPageCheckbox = advancedParameterSection.getCheckboxItemByName("modals.dashboard.sub-windows.system-configuration.configuration-items.refreshPage.name")
-   isChecked = True if refreshPageCheckbox.get_attribute('checked') is not None else False
-   if isChecked != enable:
-      refreshPageCheckbox.click()
-
-def applySystemConfiguration(browser): # TODO virer
-   panel = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "dashboard-system-configuration")))
-   panel.find_element_by_xpath(".//button[@id='btn-confirm-configure-system']").click()
-   notification.waitText(browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["system-configuration"]["configurationSaved"])
-   assert tools.waitUntil(lambda: notification.noNotification(browser))
-
-def resetToDefaultSystemConfiguration(browser): # TODO virer
-   panel = WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "dashboard-system-configuration")))
-   panel.find_element_by_xpath(".//button[@id='resetConfiguration']").click()
-   confirmationModal = modals.waitOkCancelModal(browser)
-   confirmationModal.ok()
 
 
 class SystemConfigurationPanel(ConfigurationPanel):
@@ -71,6 +33,16 @@ class SystemConfigurationPanel(ConfigurationPanel):
 
    def isAdvancedParametersSectionActive(self):
       return super(SystemConfigurationPanel, self).isOptionalSectionEnabled("modals.dashboard.sub-windows.system-configuration.configuration-items.advancedParameters.name")
+
+   def getRefreshPageOptionState(self, advancedParameterSection):
+      refreshPageCheckbox = advancedParameterSection.getCheckboxItemByName("modals.dashboard.sub-windows.system-configuration.configuration-items.refreshPage.name")
+      return True if refreshPageCheckbox.get_attribute('checked') is not None else False
+
+   def setRefreshPageOption(self, advancedParameterSection, enable):
+      refreshPageCheckbox = advancedParameterSection.getCheckboxItemByName("modals.dashboard.sub-windows.system-configuration.configuration-items.refreshPage.name")
+      isChecked = True if refreshPageCheckbox.get_attribute('checked') is not None else False
+      if isChecked != enable:
+         refreshPageCheckbox.click()
 
    def enableBasicAuthenticationSection(self):
       section = super(SystemConfigurationPanel, self).enableOptionalSection("modals.dashboard.sub-windows.system-configuration.configuration-items.basicAuthentication.name", True)

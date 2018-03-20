@@ -90,8 +90,8 @@ def start(startupArgs=[]):
       c = wmi.WMI ()
       for process in c.Win32_Process ():
          print process.ProcessId, process.Name
-   except ImportError:
-      print 'Unable to print running processes, "wmi" module not installed'
+   except ImportError as e:
+      print 'Unable to print running processes, "wmi" and "pypiwin32" modules must be installed.', e
 
    # END DEBUG
 
