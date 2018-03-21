@@ -95,6 +95,7 @@
 		},
 		"textDataCommand" : {
 			"name" : "Command with text data",
+      "description": "This command requires data formatted as text",
 			"commandData" : {
 				"testValue": {
 					"name": "SomeString",
@@ -104,6 +105,7 @@
 		},
 		"numericDataCommand" : {
 			"name" : "Command with numeric data",
+      "description": "This command requires a number",
 			"commandData" : {
 				"testValue": {
 					"name": "SomeInteger",
@@ -113,6 +115,7 @@
 		},	
 		"dataBindingCommand" : {
 			"name" : "Command with binded data",
+      "description": "This command ask user to choose from a list provided from Yadoms. The list used here is the available network interfaces of system.",
 			"commandData" : {
 				"networkInterface": {
 					"name": "Network interface",
@@ -122,6 +125,7 @@
 		},
 		"dataBindingPluginCommand" : {
 			"name" : "Command with binded data to plugin",
+      "description": "This command ask user to choose from a list provided from the plugin",
 			"commandData" : {
 				"dynamicSection": {
 					"name": "A dynamic section",
@@ -131,6 +135,7 @@
 		},
 		"changePluginStateMessage" : {
 			"name" : "Change plugin state",
+      "description": "This command changes the plugin state to \"custom\" state, with the provided message",
 			"commandData" : {
 				"newStateMessage": {
 					"name": "Message",
