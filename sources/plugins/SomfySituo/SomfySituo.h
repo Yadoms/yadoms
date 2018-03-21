@@ -14,11 +14,11 @@ namespace yApi = shared::plugin::yPluginApi;
 ///\brief The security mode for sending emails
 //-----------------------------------------------------
 DECLARE_ENUM_HEADER(EChannel,
-((Channel1)(1))
-((Channel2)(2))
-((Channel3)(3))
-((Channel4)(4))
-((Channel5)(5))
+	((Channel1)(1))
+	((Channel2)(2))
+	((Channel3)(3))
+	((Channel4)(4))
+	((Channel5)(5))
 );
 
 //--------------------------------------------------------------
@@ -58,19 +58,17 @@ protected:
 	/// \brief	                     Send a ASCII message to the Controler
 	/// \param [in] message          message to send
 	/// \param [in] needAnswer       true if answer is needed. If true, a timeout will occur if no answer is received.
-	/// \param [in] answerIsRequired true if answer is required (Used for some Controler, not supporting all commands)
 	//--------------------------------------------------------------
 	void send(const std::string& message,
-		bool needAnswer = false);
+	          bool needAnswer = false);
 
 	//--------------------------------------------------------------
 	/// \brief	                     Send a buffer to the Controler
 	/// \param [in] buffer           Buffer to send
 	/// \param [in] needAnswer       true if answer is needed. If true, a timeout will occur if no answer is received.
-	/// \param [in] answerIsRequired true if answer is required (Used for some Controler, not supporting all commands)
 	//--------------------------------------------------------------
 	void send(const shared::communication::CByteBuffer& buffer,
-		bool needAnswer = false);
+	          bool needAnswer = false);
 
 	//--------------------------------------------------------------
 	/// \brief	                     Process a command received from Yadoms
@@ -79,7 +77,7 @@ protected:
 	/// \param [in] command          The received command
 	//--------------------------------------------------------------
 	void onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
-		const std::string& device, const std::string& command);
+	               const std::string& device, const std::string& command);
 
 	//--------------------------------------------------------------
 	/// \brief	                     Called when the remote Control becomes connected
@@ -93,7 +91,8 @@ protected:
 	/// \param [in] notification     The connection notification data
 	//--------------------------------------------------------------
 	void processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api,
-		boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification = boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>());
+	                              boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification =
+		                              boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>());
 
 
 	//--------------------------------------------------------------
@@ -102,7 +101,7 @@ protected:
 	/// \param [in] message          Message received
 	//--------------------------------------------------------------
 	void processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
-		const std::string& message);
+	                         const std::string& message);
 
 	//--------------------------------------------------------------
 	/// \brief	                     Create the connection to the remote Control
@@ -128,7 +127,7 @@ protected:
 	/// \return                      true is connection data are all the same in the both configurations
 	//--------------------------------------------------------------
 	static bool connectionsAreEqual(const CSomfySituoConfiguration& conf1,
-		const CSomfySituoConfiguration& conf2);
+	                                const CSomfySituoConfiguration& conf2);
 
 	//--------------------------------------------------------------
 	/// \brief	                     Send the 'Config' command
@@ -175,7 +174,7 @@ protected:
 	/// \param [in] tokens           Separated fields (company name, Controler model, version)
 	//--------------------------------------------------------------
 	void processReceivedInformation(boost::shared_ptr<yApi::IYPluginApi> api,
-		const boost::tokenizer<boost::char_separator<char>>& tokens) const;
+	                                const boost::tokenizer<boost::char_separator<char>>& tokens) const;
 
 	//--------------------------------------------------------------
 	/// \brief	                     declare device (and associated keywords)
@@ -183,7 +182,7 @@ protected:
 	/// \param [in] model            The Controler model
 	//--------------------------------------------------------------
 	void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-		const std::string& model, const std::string& version) const;
+	                   const std::string& model, const std::string& version) const;
 
 private:
 
@@ -226,7 +225,7 @@ private:
 	//--------------------------------------------------------------
 	/// \brief	the active channel
 	//--------------------------------------------------------------
-	int  m_activeChannel;
+	int m_activeChannel;
 	//--------------------------------------------------------------
 	/// \brief	Indicate whether the channel is lit or not
 	//--------------------------------------------------------------
@@ -237,7 +236,7 @@ private:
 	/// \brief	    Current values of the remote control
 	//--------------------------------------------------------------	
 	boost::shared_ptr<yApi::historization::CCurtain> m_curtain;
-	
+
 	//--------------------------------------------------------------
 	/// \brief  The receiver buffer
 	//--------------------------------------------------------------
@@ -249,6 +248,4 @@ private:
 	std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
 
 	static const std::map<std::string, int> m_somfyModels;
-
 };
-

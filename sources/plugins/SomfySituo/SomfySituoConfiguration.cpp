@@ -15,4 +15,3 @@ std::string CSomfySituoConfiguration::getSerialPort() const
 {
 	return m_data.get<std::string>("SerialPort");
 }
-
