@@ -1,21 +1,53 @@
  /**
   * Simple Helpers
-  */       
+  */
  
  function isOdd(num) {return num % 2;}
  
  function isBoolVariable(keywordInfo) {
-     if ((keywordInfo) && (keywordInfo.type === "Bool"))
-        return true;
-     else
-        return false;
+    if ((keywordInfo) && (keywordInfo.type === "Bool"))
+       return true;
+    else
+       return false;
  };
  
  function isEnumVariable (keywordInfo) {
-     if ((keywordInfo) && (keywordInfo.type === "Enum"))
-        return true;
-     else
-        return false;
+    if ((keywordInfo) && (keywordInfo.type === "Enum"))
+       return true;
+    else
+       return false;
+ };
+
+ /**
+  * transform old configuration to new interval/prefix configuration
+  */
+ 
+ function compatibilityManagement (intervalConfiguration) {
+  var returnValue;
+  switch (intervalConfiguration) {
+      case "HOUR":
+          returnValue = "HOUR/minute";
+          break;
+      default:
+      case "DAY":
+          returnValue = "DAY/hour";
+          break;
+      case "WEEK":
+          returnValue = "WEEK/hour";
+          break;
+      case "MONTH":
+          returnValue = "MONTH/day";
+          break;
+      case "HALF_YEAR":
+          returnValue = "HALF_YEAR/day";
+          break;
+      case "YEAR":
+          returnValue = "YEAR/day";
+          break;
+      case "FIVE_YEAR": //This one doesn't exist
+          returnValue = "FIVE_YEAR/day";
+          break;          
+  }    
  };
  
  function calculateBeginDate(interval, time, prefix) {

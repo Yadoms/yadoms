@@ -104,20 +104,21 @@ function chartViewModel() {
        menuItem.push({ separator: ""});
        
        //push last menu items
-       menuItem.push({ custom: "<div class=\"widget-toolbar-button export-btn dropdown\">" +
-                    "<a id=\"chartExportMenu" + self.widget.id + "\" data-target=\"#\" class=\"widget-toolbar-button export-btn dropdown\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">" +
-                        "<span class=\"fa fa-bars\"/>" +
-                    "</a>" +
-                    "<ul class=\"dropdown-menu\" aria-labelledby=\"chartExportMenu" + self.widget.id + "\">" +
-                        "<li><span class=\"print-command\" data-i18n=\"widgets.chart:export.print\"></span></li>" +
-                        "<li role=\"separator\" class=\"divider\"></li>" +
-                        "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.png\" mime-type=\"image/png\"></span></li>" +
-                        "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.jpeg\" mime-type=\"image/jpeg\"></span></li>" +
-                        "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.svg\" mime-type=\"image/svg+xml\"></span></li>" +
-                        "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.csv\" mime-type=\"text/csv\"></span></li>" +
-                        "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.xls\" mime-type=\"application/vnd.ms-excel\"></span></li>" +
-                    "</ul>" +
-                 "</div>"
+       menuItem.push(
+          { custom: "<div class=\"widget-toolbar-button export-btn dropdown\">" +
+              "<a id=\"chartExportMenu" + self.widget.id + "\" data-target=\"#\" class=\"widget-toolbar-button export-btn dropdown\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">" +
+                  "<span class=\"fa fa-bars\"/>" +
+              "</a>" +
+              "<ul class=\"dropdown-menu\" aria-labelledby=\"chartExportMenu" + self.widget.id + "\">" +
+                  "<li><span class=\"print-command\" data-i18n=\"widgets.chart:export.print\"></span></li>" +
+                  "<li role=\"separator\" class=\"divider\"></li>" +
+                  "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.png\" mime-type=\"image/png\"></span></li>" +
+                  "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.jpeg\" mime-type=\"image/jpeg\"></span></li>" +
+                  "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.svg\" mime-type=\"image/svg+xml\"></span></li>" +
+                  "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.csv\" mime-type=\"text/csv\"></span></li>" +
+                  "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.xls\" mime-type=\"application/vnd.ms-excel\"></span></li>" +
+              "</ul>" +
+           "</div>"
            });
            
        console.log ("Interval : ", interval);
@@ -305,11 +306,11 @@ function chartViewModel() {
         }
     };
 
-    this.chartParametersConfiguration = function () {
+    this.chartParametersConfiguration = function (interval, prefix) {
       var self = this;
       
       // Cleaning ranges switch
-      switch (self.interval) {
+      switch (interval) {
           case "HOUR":
               self.cleanValue = 3600000;
               break;
@@ -336,9 +337,9 @@ function chartViewModel() {
               break;
       }
       
-      if (self.prefix === "hour")
+      if (prefix === "hour")
          self.summaryTimeBetweenNewPoint = 3600000 * 2 + 60000;
-      else if (self.prefix === "day")
+      else if (prefix === "day")
          self.summaryTimeBetweenNewPoint = 3600000 * 24 * 2 + 60000;
     };
     
@@ -353,16 +354,16 @@ function chartViewModel() {
         if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
             return;
         
-        self.configureToolbar(self.widget.configuration.interval);        
-        
-        self.interval = self.widget.configuration.interval.substring(0,self.widget.configuration.interval.indexOf("/"));
+        var intervalConfiguration = self.widget.configuration.interval;
+        self.configureToolbar(intervalConfiguration);
+        self.interval = intervalConfiguration.substring(0,intervalConfiguration.indexOf("/"));
         
         //Activate the new button
         self.widgetApi.find(".range-btn[interval='" + self.interval + "']").addClass("widget-toolbar-pressed-button");
         self.widgetApi.find(".range-btn[prefix='" + self.prefix + "']").addClass("widget-toolbar-pressed-button");
 
         //just update some viewmodel info
-        self.chartParametersConfiguration();
+        self.chartParametersConfiguration(self.interval, self.prefix);
          
         try{
           self.ConfigurationLegendLabels = self.widget.configuration.legends.content.legendLabels;
