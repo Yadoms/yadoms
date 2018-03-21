@@ -28,8 +28,8 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword), CEventLogger::addEvent);
          }
 
-         shared::CDataContainer CEventLogger::getEvents(const std::vector<std::string>& parameters,
-                                                        const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CEventLogger::getEvents(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             try
             {
@@ -48,8 +48,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CEventLogger::getLastEvent(const std::vector<std::string>& parameters,
-                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CEventLogger::getLastEvent(const std::vector<std::string>& parameters,
+                                                                                                const std::string& requestContent) const
          {
             try
             {
@@ -66,8 +66,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CEventLogger::getEventsFrom(const std::vector<std::string>& parameters,
-                                                            const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CEventLogger::getEventsFrom(const std::vector<std::string>& parameters,
+                                                                                                 const std::string& requestContent) const
          {
             try
             {
@@ -91,8 +91,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CEventLogger::getEventsRange(const std::vector<std::string>& parameters,
-                                                             const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CEventLogger::getEventsRange(const std::vector<std::string>& parameters,
+                                                                                                  const std::string& requestContent) const
          {
             try
             {
@@ -118,8 +118,8 @@ namespace web
          }
 
 
-         shared::CDataContainer CEventLogger::addEvent(const std::vector<std::string>& parameters,
-                                                       const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CEventLogger::addEvent(const std::vector<std::string>& parameters,
+                                                                                            const std::string& requestContent) const
          {
             try
             {

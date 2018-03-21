@@ -95,6 +95,7 @@
     },
     "textDataCommand": {
       "name": "Commande avec des données texte",
+      "description": "Cette commande requiert des données au format texte",
       "commandData": {
         "testValue": {
           "name": "UnTexte",
@@ -104,6 +105,7 @@
     },
     "numericDataCommand": {
       "name": "Commande avec des données numériques",
+      "description": "Cette commande requiert un nombre",
       "commandData": {
         "testValue": {
           "name": "UnNombre",
@@ -113,6 +115,7 @@
     },
     "dataBindingCommand": {
       "name": "Commande avec des données liées",
+      "description": "Cette commande requiert un choix de la part de l'utilisateur, à partir d'une liste fournie par le serveur. Ici, la liste demandée au serveur est la liste des interfaces réseau disponibles sur le système.",
       "commandData": {
         "networkInterface": {
           "name": "Interface réseau",
@@ -122,6 +125,7 @@
     },
     "dataBindingPluginCommand": {
       "name": "Commande avec des données liées au plugin",
+      "description": "Cette commande requiert un choix de la part de l'utilisateur, à partir d'une liste fournie par le plugin",
       "commandData": {
         "dynamicSection": {
           "name": "A dynamic section",
@@ -131,6 +135,7 @@
     },
     "changePluginStateMessage": {
       "name": "Changer l'état du plugin",
+      "description": "Cette commande change l'état du plugin à l'état \"custom\", avec le message fourni",
       "commandData": {
         "newStateMessage": {
           "name": "Message",

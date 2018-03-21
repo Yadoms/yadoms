@@ -47,8 +47,8 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("scriptInterpreter")("remove")("*"), CUpdate ::removeScriptInterpreter);
          }
 
-         shared::CDataContainer CUpdate::scanForUpdates(const std::vector<std::string>& parameters,
-                                                        const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::scanForUpdates(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             const auto taskId = m_updateManager->scanForUpdatesAsync();
             shared::CDataContainer result;
@@ -56,8 +56,8 @@ namespace web
             return CResult::GenerateSuccess(result);
          }
 
-         shared::CDataContainer CUpdate::availableUpdates(const std::vector<std::string>& parameters,
-                                                          const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::availableUpdates(const std::vector<std::string>& parameters,
+                                                                                               const std::string& requestContent) const
          {
             if (parameters.size() != 3)
                return CResult::GenerateError("Invalid parameters in url /rest/update/list");
@@ -67,8 +67,8 @@ namespace web
             return CResult::GenerateSuccess(m_updateManager->getUpdates(includePreleases));
          }
 
-         shared::CDataContainer CUpdate::updateYadoms(const std::vector<std::string>& parameters,
-                                                      const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::updateYadoms(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const
          {
             try
             {
@@ -93,8 +93,8 @@ namespace web
          }
 
 
-         shared::CDataContainer CUpdate::updatePlugin(const std::vector<std::string>& parameters,
-                                                      const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::updatePlugin(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const
          {
             //the request url should contain the pluginName
             //the request content should contain the downloadURL
@@ -115,8 +115,8 @@ namespace web
          }
 
 
-         shared::CDataContainer CUpdate::installPlugin(const std::vector<std::string>& parameters,
-                                                       const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::installPlugin(const std::vector<std::string>& parameters,
+                                                                                            const std::string& requestContent) const
          {
             //the request content should contain the downloadURL
             shared::CDataContainer content(requestContent);
@@ -130,8 +130,8 @@ namespace web
             return CResult::GenerateSuccess(result);
          }
 
-         shared::CDataContainer CUpdate::removePlugin(const std::vector<std::string>& parameters,
-                                                      const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::removePlugin(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const
          {
             //the request url should contain the pluginName
             if (parameters.size() <= 3)
@@ -145,8 +145,8 @@ namespace web
          }
 
 
-         shared::CDataContainer CUpdate::updateWidget(const std::vector<std::string>& parameters,
-                                                      const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::updateWidget(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const
          {
             //the request url should contain the widgetName
             //the request content should contain the downloadURL
@@ -167,8 +167,8 @@ namespace web
          }
 
 
-         shared::CDataContainer CUpdate::installWidget(const std::vector<std::string>& parameters,
-                                                       const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::installWidget(const std::vector<std::string>& parameters,
+                                                                                            const std::string& requestContent) const
          {
             //the request content should contain the downloadURL
             shared::CDataContainer content(requestContent);
@@ -182,8 +182,8 @@ namespace web
             return CResult::GenerateSuccess(result);
          }
 
-         shared::CDataContainer CUpdate::removeWidget(const std::vector<std::string>& parameters,
-                                                      const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::removeWidget(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const
          {
             //the request url should contain the pluginName
             if (parameters.size() <= 3)
@@ -197,8 +197,8 @@ namespace web
          }
 
 
-         shared::CDataContainer CUpdate::updateScriptInterpreter(const std::vector<std::string>& parameters,
-                                                                 const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::updateScriptInterpreter(const std::vector<std::string>& parameters,
+                                                                                                      const std::string& requestContent) const
          {
             //the request url should contain the scriptInterpreterName
             //the request content should contain the downloadURL
@@ -220,8 +220,8 @@ namespace web
          }
 
 
-         shared::CDataContainer CUpdate::installScriptInterpreter(const std::vector<std::string>& parameters,
-                                                                  const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::installScriptInterpreter(const std::vector<std::string>& parameters,
+                                                                                                       const std::string& requestContent) const
          {
             //the request content should contain the downloadURL
             shared::CDataContainer content(requestContent);
@@ -235,8 +235,8 @@ namespace web
             return CResult::GenerateSuccess(result);
          }
 
-         shared::CDataContainer CUpdate::removeScriptInterpreter(const std::vector<std::string>& parameters,
-                                                                 const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::removeScriptInterpreter(const std::vector<std::string>& parameters,
+                                                                                                      const std::string& requestContent) const
          {
             //the request url should contain the scriptInterpreterName
             if (parameters.size() <= 3)

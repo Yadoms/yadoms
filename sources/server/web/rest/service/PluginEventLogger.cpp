@@ -27,7 +27,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("*")("*")("*"), CPluginEventLogger::getLogsForPluginNameFromDate);
    }
 
-   shared::CDataContainer CPluginEventLogger::getLogsForPluginName(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CPluginEventLogger::getLogsForPluginName(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       std::string pluginName = "";
       std::string pluginVersion = "";
@@ -42,7 +42,7 @@ namespace web { namespace rest { namespace service {
       return CResult::GenerateSuccess(collection);
    }
 
-   shared::CDataContainer CPluginEventLogger::getLogsForPluginNameFromDate(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CPluginEventLogger::getLogsForPluginNameFromDate(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       std::string pluginName = "";
       std::string pluginVersion = "";
