@@ -354,7 +354,7 @@ function chartViewModel() {
         if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
             return;
         
-        var intervalConfiguration = self.widget.configuration.interval;
+        var intervalConfiguration = compatibilityManagement(self.widget.configuration.interval);
         self.configureToolbar(intervalConfiguration);
         self.interval = intervalConfiguration.substring(0,intervalConfiguration.indexOf("/"));
         
@@ -517,23 +517,9 @@ function chartViewModel() {
             var prefix = $(e.currentTarget).attr("prefix");
             
             if (!isNullOrUndefined(interval)) {
+               
                //default prefix for each interval
-               switch (interval)
-               {
-                  case "HOUR":
-                  case "DAY":
-                     self.prefix = "minute";
-                     break;
-                  case "WEEK":
-                  case "MONTH":
-                     self.prefix = "hour";
-                     break;
-                  case "HALF_YEAR":
-                  case "YEAR":
-                  case "FIVE_YEAR":
-                     self.prefix = "day";
-                     break;
-               }
+               self.prefix = defaultPrefixForInterval(interval);
                
                console.log ("interval value =", interval);
                console.log ("self.prefix value =", self.prefix);

@@ -47,7 +47,30 @@
       case "FIVE_YEAR": //This one doesn't exist
           returnValue = "FIVE_YEAR/day";
           break;          
-  }    
+  }
+  return returnValue;
+ };
+ 
+ function defaultPrefixForInterval(interval) {
+   var prefix;
+   switch (interval)
+   {
+      default:
+      case "HOUR":
+      case "DAY":
+         prefix = "minute";
+         break;
+      case "WEEK":
+      case "MONTH":
+         prefix = "hour";
+         break;
+      case "HALF_YEAR":
+      case "YEAR":
+      case "FIVE_YEAR":
+         prefix = "day";
+         break;
+   }
+   return prefix;
  };
  
  function calculateBeginDate(interval, time, prefix) {
