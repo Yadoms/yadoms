@@ -28,7 +28,10 @@
         "HALF_YEAR/month": "6 months/monthly processed data",
         "YEAR/day": "1 year/daily processed data",
         "YEAR/week": "1 year/weekly processed data",
-        "YEAR/month": "1 year/monthly processed data"
+        "YEAR/month": "1 year/monthly processed data",
+        "FIVE_YEAR/day": "5 years/daily processed data",
+        "FIVE_YEAR/week": "5 years/weekly processed data",
+        "FIVE_YEAR/month": "5 years/monthly processed data"
       }
     },
       "legends" : {
@@ -126,6 +129,7 @@
     "month": "1m",
     "half_year": "6m",
     "year": "1y",
+    "five_year": "5y",
     "all": "all",
     "hourly": "hourly",
     "daily": "daily",

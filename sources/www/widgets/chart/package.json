@@ -41,7 +41,10 @@
             "HALF_YEAR/month": "",
             "YEAR/day": "",
             "YEAR/week": "",
-            "YEAR/month": ""
+            "YEAR/month": "",
+            "FIVE_YEAR/day": "",
+            "FIVE_YEAR/week": "",
+            "FIVE_YEAR/month": ""
 			},         
 			"defaultValue": "DAY"
 		},     

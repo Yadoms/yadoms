@@ -47,6 +47,7 @@ function chartViewModel() {
           { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"MONTH\"><span data-i18n=\"widgets.chart:navigator.month\"/></div>"},
           { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\"><span data-i18n=\"widgets.chart:navigator.half_year\"/></div>"},
           { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets.chart:navigator.year\"/></div>" },
+          { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"FIVE_YEAR\"><span data-i18n=\"widgets.chart:navigator.five_year\"/></div>" },
           { separator: ""}
           ];
        
@@ -85,6 +86,13 @@ function chartViewModel() {
              menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"week\"><span data-i18n=\"widgets.chart:navigator.weekly\"/></div>"});
              menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"month\"><span data-i18n=\"widgets.chart:navigator.monthly\"/></div>"});         
           break;
+         case "FIVE_YEAR/day":
+         case "FIVE_YEAR/week":
+         case "FIVE_YEAR/month":
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"day\"><span data-i18n=\"widgets.chart:navigator.daily\"/></div>"});
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"week\"><span data-i18n=\"widgets.chart:navigator.weekly\"/></div>"});
+             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"month\"><span data-i18n=\"widgets.chart:navigator.monthly\"/></div>"});         
+             break;          
           default:
           break;
        }
@@ -217,6 +225,7 @@ function chartViewModel() {
                                case "MONTH":
                                case "HALF_YEAR":
                                case "YEAR":
+                               case "FIVE_YEAR":
                                   return DateTimeFormatter.dateToString(this.value, "L");
                              }
                          }
@@ -319,6 +328,9 @@ function chartViewModel() {
           case "YEAR":
               self.cleanValue = 3600000 * 24 * 365;
               break;
+          case "FIVE_YEAR":
+              self.cleanValue = 3600000 * 24 * 365 * 5;
+              break;              
           default:
               self.cleanValue = 3600000*24;
               break;
@@ -517,6 +529,7 @@ function chartViewModel() {
                      break;
                   case "HALF_YEAR":
                   case "YEAR":
+                  case "FIVE_YEAR":
                      self.prefix = "day";
                      break;
                }
@@ -905,6 +918,9 @@ function chartViewModel() {
                   case "YEAR":
                      self.DisplaySummary(index, 1, device, "years", "day", lastDate);
                      break;
+                  case "FIVE_YEAR":
+                     self.DisplaySummary(index, 5, device, "years", "day", lastDate);
+                     break;                     
                   default:
                      break;
                 }

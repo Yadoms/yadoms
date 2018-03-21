@@ -28,7 +28,10 @@
             "HALF_YEAR/month": "6 mois/données mensuelles",
 				"YEAR/day": "1 an/données journalières",
             "YEAR/week": "1 an/données hebdomadaires",
-            "YEAR/month": "1 an/données mensuelles"
+            "YEAR/month": "1 an/données mensuelles",
+            "FIVE_YEAR/day": "5 years/données journalières",
+            "FIVE_YEAR/week": "5 years/données hebdomadaires",
+            "FIVE_YEAR/month": "5 years/données mensuelles"            
 			}
 		},
       "legends" : {
@@ -126,6 +129,7 @@
 		"month": "1m",
 		"half_month": "6m",
 		"year": "1a",
+      "five_year": "5a",
       "all": "tout",
       "hourly": "horaire",
       "daily": "journalier",

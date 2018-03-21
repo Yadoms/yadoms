@@ -20,9 +20,6 @@
  
  function calculateBeginDate(interval, time, prefix) {
   var dateValue;
-  /*console.log ("c interval : ", interval);
-  console.log ("c time : ", time);
-  console.log ("c prefix : ", prefix);*/
   switch (interval) {
       case "HOUR":
           dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'hours').startOf(prefix));
@@ -43,6 +40,9 @@
       case "YEAR": //we request day summary data
           dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'years').startOf(prefix));
           break;
+      case "FIVE_YEAR": //we request day summary data
+          dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(5, 'years').startOf(prefix));
+          break;          
   }
   return dateValue;
  };
