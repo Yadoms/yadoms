@@ -45,7 +45,7 @@ class ShowKeywords(unittest.TestCase):
       deployButton.click()
 
       print '  Check keyword list'
-      assert tools.waitUntil(lambda: len(dashboard.devices.getKeywords(devicesTable)) == 6)
+      self.assertTrue(tools.waitUntil(lambda: len(dashboard.devices.getKeywords(devicesTable)) == 6))
       keywords = dashboard.devices.getKeywords(devicesTable)
 
       print '  Wait for first acquisition'
@@ -53,59 +53,56 @@ class ShowKeywords(unittest.TestCase):
 
       print '    Check Battery data'
       item = keywords[0]
-      assert dashboard.devices.getKeywordName(item) == u'Battery'
-      assert int(dashboard.devices.getKeywordTextValue(item)) in range(0, 100)
-      assert dashboard.devices.getKeywordUnit(item) == u'%'
-      assert len(dashboard.devices.getKeywordActions(item)) == 1
-      assert 'btn-configure' in dashboard.devices.getKeywordActions(item)[0].get_attribute('class')
+      self.assertEqual(dashboard.devices.getKeywordName(item), u'Battery')
+      self.assertTrue(int(dashboard.devices.getKeywordTextValue(item)) in range(0, 100))
+      self.assertEqual(dashboard.devices.getKeywordUnit(item), u'%')
+      self.assertEqual(len(dashboard.devices.getKeywordActions(item)), 1)
+      self.assertTrue('btn-configure' in dashboard.devices.getKeywordActions(item)[0].get_attribute('class'))
 
       print '    Check Current data'
       item = keywords[1]
-      assert dashboard.devices.getKeywordName(item) == u'current'
-      assert float(dashboard.devices.getKeywordTextValue(item))
-      assert dashboard.devices.getKeywordUnit(item) == u'A'
-      assert len(dashboard.devices.getKeywordActions(item)) == 1
-      assert 'btn-configure' in dashboard.devices.getKeywordActions(item)[0].get_attribute('class')
+      self.assertEqual(dashboard.devices.getKeywordName(item), u'current')
+      self.assertTrue(float(dashboard.devices.getKeywordTextValue(item)))
+      self.assertEqual(dashboard.devices.getKeywordUnit(item), u'A')
+      self.assertEqual(len(dashboard.devices.getKeywordActions(item)), 1)
+      self.assertTrue('btn-configure' in dashboard.devices.getKeywordActions(item)[0].get_attribute('class'))
 
       print '    Check DateTime data'
       item = keywords[2]
-      assert dashboard.devices.getKeywordName(item) == u'dateTime'
-      assert re.match(r'20[0-9]{2}-[A-Z][a-z]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6}', dashboard.devices.getKeywordTextValue(item))
-      assert dashboard.devices.getKeywordUnit(item) == u''
-      assert len(dashboard.devices.getKeywordActions(item)) == 1
-      assert 'btn-configure' in dashboard.devices.getKeywordActions(item)[0].get_attribute('class')
+      self.assertEqual(dashboard.devices.getKeywordName(item), u'dateTime')
+      self.assertTrue(re.match(r'20[0-9]{2}-[A-Z][a-z]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6}', dashboard.devices.getKeywordTextValue(item)))
+      self.assertEqual(dashboard.devices.getKeywordUnit(item), u'')
+      self.assertEqual(len(dashboard.devices.getKeywordActions(item)), 1)
+      self.assertTrue('btn-configure' in dashboard.devices.getKeywordActions(item)[0].get_attribute('class'))
 
       print '    Check signalPower data'
       item = keywords[3]
-      assert dashboard.devices.getKeywordName(item) == u'signalPower'
-      assert int(dashboard.devices.getKeywordTextValue(item)) in range(0, 100)
-      assert dashboard.devices.getKeywordUnit(item) == u'%'
-      assert len(dashboard.devices.getKeywordActions(item)) == 1
-      assert 'btn-configure' in dashboard.devices.getKeywordActions(item)[0].get_attribute('class')
+      self.assertEqual(dashboard.devices.getKeywordName(item), u'signalPower')
+      self.assertTrue(int(dashboard.devices.getKeywordTextValue(item)) in range(0, 100))
+      self.assertEqual(dashboard.devices.getKeywordUnit(item), u'%')
+      self.assertEqual(len(dashboard.devices.getKeywordActions(item)), 1)
+      self.assertTrue('btn-configure' in dashboard.devices.getKeywordActions(item)[0].get_attribute('class'))
 
       print '    Check temp1 data'
       item = keywords[4]
-      assert dashboard.devices.getKeywordName(item) == u'temp1'
-      assert float(dashboard.devices.getKeywordTextValue(item))
-      assert dashboard.devices.getKeywordUnit(item) == u'°C'
-      assert len(dashboard.devices.getKeywordActions(item)) == 1
-      assert 'btn-configure' in dashboard.devices.getKeywordActions(item)[0].get_attribute('class')
+      self.assertEqual(dashboard.devices.getKeywordName(item), u'temp1')
+      self.assertTrue(float(dashboard.devices.getKeywordTextValue(item)))
+      self.assertEqual(dashboard.devices.getKeywordUnit(item), u'°C')
+      self.assertEqual(len(dashboard.devices.getKeywordActions(item)), 1)
+      self.assertTrue('btn-configure' in dashboard.devices.getKeywordActions(item)[0].get_attribute('class'))
 
       print '    Check temp2 data'
       item = keywords[5]
-      assert dashboard.devices.getKeywordName(item) == u'temp2'
-      assert float(dashboard.devices.getKeywordTextValue(item))
-      assert dashboard.devices.getKeywordUnit(item) == u'°C'
-      assert len(dashboard.devices.getKeywordActions(item)) == 1
-      assert 'btn-configure' in dashboard.devices.getKeywordActions(item)[0].get_attribute('class')
+      self.assertEqual(dashboard.devices.getKeywordName(item), u'temp2')
+      self.assertTrue(float(dashboard.devices.getKeywordTextValue(item)))
+      self.assertEqual(dashboard.devices.getKeywordUnit(item), u'°C')
+      self.assertEqual(len(dashboard.devices.getKeywordActions(item)), 1)
+      self.assertTrue('btn-configure' in dashboard.devices.getKeywordActions(item)[0].get_attribute('class'))
       
       print '   Collapse keywords'
       deployButton.click()
-      try:
+      with self.assertRaises(NoSuchElementException):
          devicesTable.find_element_by_class_name('device-details')
-         assert False
-      except NoSuchElementException:
-         pass
       
       
    def tearDown(self):

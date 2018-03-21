@@ -19,8 +19,13 @@ namespace dateTime
       // ITimeZoneProvider Implementation
       boost::shared_ptr<boost::local_time::posix_time_zone::base_type> get() const override;
       // [END] ITimeZoneProvider Implementation
-
+      
    private:
-      boost::shared_ptr<boost::local_time::posix_time_zone::base_type> m_timeZone;
+      const boost::shared_ptr<const dataAccessLayer::IConfigurationManager> m_configurationManager;
+      const boost::shared_ptr<const CTimeZoneDatabase> m_timezoneDatabase;
+      const std::string m_fallbackTimezoneId;
+
+      mutable std::string m_lastTimezoneId;
+      mutable boost::shared_ptr<boost::local_time::posix_time_zone::base_type> m_lastTimezone;
    };
 } // namespace dateTime

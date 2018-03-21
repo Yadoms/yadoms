@@ -3,12 +3,14 @@
     text-align: center;
     display: flex;
     flex-direction: row;
+    flex: 0 0 85%;
 }
 
 .widget-numeric-display .date-div {
     height: 15px;
     text-align: center;
     font-size: 9px;
+    flex: 0 0 15%;
 }
 
 .widget-numeric-display .unit {

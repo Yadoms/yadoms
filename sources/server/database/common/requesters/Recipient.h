@@ -15,15 +15,7 @@ namespace database
          class CRecipient: public IRecipientRequester
          {
          public:
-            //--------------------------------------------------------------
-            /// \Brief		   Constructor
-            /// \param [in]	pDatabaseHandler: the database handler
-            //--------------------------------------------------------------
             explicit CRecipient(boost::shared_ptr<IDatabaseRequester> databaseRequester);
-
-            //--------------------------------------------------------------
-            /// \Brief		   Destructor
-            //--------------------------------------------------------------
             virtual ~CRecipient();
 
             // IRecipientRequester implementation

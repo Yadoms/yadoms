@@ -19,9 +19,9 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
    };
 
    static const shared::CDataContainer::EnumValuesNames EEnumTypeNames = boost::assign::map_list_of
-   ("EnumValue1", kEnumValue1)
-   ("EnumValue2", kEnumValue2)
-   ("EnumValue3", kEnumValue3);
+      ("EnumValue1", kEnumValue1)
+      ("EnumValue2", kEnumValue2)
+      ("EnumValue3", kEnumValue3);
 
 
    BOOST_AUTO_TEST_CASE(SimpleContainer)
@@ -124,11 +124,11 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       auto vish2bis = test.get<std::vector<int>>("vectorintsh");
       BOOST_CHECK_EQUAL(vish.size(), vish2.size()) ;
       for (unsigned int i = 0; i < vish.size(); ++i)
-      BOOST_CHECK_EQUAL(*(vish[i].get()) == *(vish2[i].get()), true) ;
+         BOOST_CHECK_EQUAL(*(vish[i].get()) == *(vish2[i].get()), true) ;
 
       BOOST_CHECK_EQUAL(vish.size(), vish2bis.size()) ;
       for (unsigned int i = 0; i < vish.size(); ++i)
-      BOOST_CHECK_EQUAL(*(vish[i].get()) == vish2bis[i], true) ;
+         BOOST_CHECK_EQUAL(*(vish[i].get()) == vish2bis[i], true) ;
 
       //check vector of shared_ptr<double>
       std::vector<boost::shared_ptr<double>> vdsh;
@@ -139,11 +139,11 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       auto vdsh2bis = test.get<std::vector<double>>("vectordoublesh");
       BOOST_CHECK_EQUAL(vdsh.size(), vdsh2.size()) ;
       for (unsigned int i = 0; i < vdsh.size(); ++i)
-      BOOST_CHECK_EQUAL(*(vdsh[i].get()) == *(vdsh2[i].get()), true) ;
+         BOOST_CHECK_EQUAL(*(vdsh[i].get()) == *(vdsh2[i].get()), true) ;
 
       BOOST_CHECK_EQUAL(vdsh.size(), vdsh2bis.size()) ;
       for (unsigned int i = 0; i < vdsh.size(); ++i)
-      BOOST_CHECK_EQUAL(*(vdsh[i].get()) == vdsh2bis[i], true) ;
+         BOOST_CHECK_EQUAL(*(vdsh[i].get()) == vdsh2bis[i], true) ;
 
       //check vector of CDataContainer
 
@@ -213,7 +213,8 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       BOOST_CHECK_EQUAL(cfg.get<int>("MySection.SubIntParameter"), 123) ;
       BOOST_CHECK_EQUAL(cfg.get<std::string>("MySection.SubStringParameter"), "Just a string parameter in the sub-section") ;
 
-      boost::posix_time::ptime expected(boost::gregorian::date(2014, 7, 2), boost::posix_time::hours(11) + boost::posix_time::minutes(35) + boost::posix_time::seconds(0));
+      boost::posix_time::ptime expected(boost::gregorian::date(2014, 7, 2),
+                                        boost::posix_time::hours(11) + boost::posix_time::minutes(35) + boost::posix_time::seconds(0));
       BOOST_CHECK_EQUAL(cfg.get<boost::posix_time::ptime>("DateTimeParameter"), expected) ;
 
       //check that serialization match original values
@@ -341,7 +342,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
       void fillFromSerializedString(const std::string& serializedData) override
       {
-         shared::CDataContainer deserializeData(serializedData);
+         const shared::CDataContainer deserializeData(serializedData);
          fillFromContent(deserializeData);
       }
 
@@ -403,11 +404,11 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       auto vc2bis = contvecsh.get<std::vector<CTestClass>>("mycollectionofshared");
       BOOST_CHECK_EQUAL(vcsh.size(), vcsh2.size()) ;
       for (unsigned int i = 0; i < vcsh.size(); ++i)
-      BOOST_CHECK_EQUAL(vcsh[i]->equals(*vcsh2[i].get()), true) ;
+         BOOST_CHECK_EQUAL(vcsh[i]->equals(*vcsh2[i].get()), true) ;
 
       BOOST_CHECK_EQUAL(vcsh.size(), vc2bis.size()) ;
       for (unsigned int i = 0; i < vcsh.size(); ++i)
-      BOOST_CHECK_EQUAL(vcsh[i]->equals(vc2bis[i]), true) ;
+         BOOST_CHECK_EQUAL(vcsh[i]->equals(vc2bis[i]), true) ;
    }
 
 
@@ -475,6 +476,158 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
    //}
 
 
+   BOOST_AUTO_TEST_CASE(Merge)
+   {
+      shared::CDataContainer to(
+         "{"
+         "   \"developerMode\": \"false\","
+         "   \"location\":"
+         "   {"
+         "      \"latitude\": \"48.853\","
+         "      \"longitude\": \"2.35\","
+         "      \"timezone\": \"Europe/Paris\""
+         "   },"
+         "   \"language\": \"en\","
+         "   \"advancedParameters\": \"false\","
+         "   \"dateFormatString\": \"LLL\","
+         "   \"refreshPage\": \"false\","
+         "   \"basicAuthentication\":"
+         "   {"
+         "      \"active\": \"false\","
+         "      \"user\": \"admin\","
+         "      \"password\": \"\""
+         "   },"
+         "   \"multilevelNorMerged\":"
+         "   {"
+         "      \"valueLevel1\": \"1\","
+         "      \"level2\":"
+         "      {"
+         "         \"valueLevel2\": \"2\","
+         "         \"level3\": "
+         "         {"
+         "            \"valueLevel3\": \"3\""
+         "         }"
+         "      }"
+         "   },"
+         "   \"multilevelMerged\":"
+         "   {"
+         "      \"valueLevel1\": \"1\","
+         "      \"level2\":"
+         "      {"
+         "         \"valueLevel2\": \"2\","
+         "         \"level3\": "
+         "         {"
+         "            \"valueLevel3\": \"3\""
+         "         }"
+         "      }"
+         "   }"
+         "}");
+
+      const shared::CDataContainer from(
+         "{"
+         "   \"developerMode\": \"true\","
+         "   \"location\":"
+         "   {"
+         "      \"latitude\": \"52.5\""
+         "   },"
+         "   \"language\": \"fr\","
+         "   \"advancedParameters\": \"true\","
+         "   \"refreshPage\": \"false\","
+         "   \"basicAuthentication\":"
+         "   {"
+         "      \"active\": \"true\","
+         "      \"user\": \"admin\","
+         "      \"password\": \"1234\""
+         "   },"
+         "   \"multilevelMerged\":"
+         "   {"
+         "      \"valueLevel1\": \"1\","
+         "      \"level2\":"
+         "      {"
+         "         \"valueLevel2\": \"2\","
+         "         \"level3\": "
+         "         {"
+         "            \"valueLevel3\": \"abc\""
+         "         }"
+         "      }"
+         "   },"
+         "   \"newBloc\":"
+         "   {"
+         "      \"valueLevel1\": \"1\","
+         "      \"level2\":"
+         "      {"
+         "         \"valueLevel2\": \"2\","
+         "         \"level3\": "
+         "         {"
+         "            \"valueLevel3\": \"abc\""
+         "         }"
+         "      }"
+         "   }"
+         "}");
+
+      const shared::CDataContainer expected(
+         "{"
+         "   \"developerMode\": \"true\","
+         "   \"location\":"
+         "   {"
+         "      \"latitude\": \"52.5\","
+         "      \"longitude\": \"2.35\","
+         "      \"timezone\": \"Europe/Paris\""
+         "   },"
+         "   \"language\": \"fr\","
+         "   \"advancedParameters\": \"true\","
+         "   \"dateFormatString\": \"LLL\","
+         "   \"refreshPage\": \"false\","
+         "   \"basicAuthentication\":"
+         "   {"
+         "      \"active\": \"true\","
+         "      \"user\": \"admin\","
+         "      \"password\": \"1234\""
+         "   },"
+         "   \"multilevelNorMerged\":"
+         "   {"
+         "      \"valueLevel1\": \"1\","
+         "      \"level2\":"
+         "      {"
+         "         \"valueLevel2\": \"2\","
+         "         \"level3\": "
+         "         {"
+         "            \"valueLevel3\": \"3\""
+         "         }"
+         "      }"
+         "   },"
+         "   \"multilevelMerged\":"
+         "   {"
+         "      \"valueLevel1\": \"1\","
+         "      \"level2\":"
+         "      {"
+         "         \"valueLevel2\": \"2\","
+         "         \"level3\": "
+         "         {"
+         "            \"valueLevel3\": \"abc\""
+         "         }"
+         "      }"
+         "   },"
+         "   \"newBloc\":"
+         "   {"
+         "      \"valueLevel1\": \"1\","
+         "      \"level2\":"
+         "      {"
+         "         \"valueLevel2\": \"2\","
+         "         \"level3\": "
+         "         {"
+         "            \"valueLevel3\": \"abc\""
+         "         }"
+         "      }"
+         "   }"
+         "}");
+
+
+      to.mergeFrom(from);
+      BOOST_CHECK_EQUAL(to.serialize(), expected.serialize());
+   }
+
+
 #define BOOST_CHECK_MAPS(input, output) \
    { \
       BOOST_CHECK_EQUAL(input.size(), output.size());\
@@ -502,5 +655,4 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       BOOST_CHECK_MAPS(input, output2);
    }
 
-   BOOST_AUTO_TEST_SUITE_END()
-
+BOOST_AUTO_TEST_SUITE_END()

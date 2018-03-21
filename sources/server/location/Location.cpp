@@ -14,14 +14,14 @@ namespace location
       shared::CDataContainer location;
       try
       {
-         location = m_configurationManager->getConfiguration("system", "location")->Value();
+         location = m_configurationManager->getLocation();
       }
       catch (shared::exception::CEmptyResult&)
       {
          // Not found in database ==> let location empty
       }
 
-      if (location.empty())
+      if (location.empty() || location.get<std::string>("status") == "default")
       {
          YADOMS_LOG(information) << "Location was not found in database, try to auto-locate...";
          tryAutoLocate();
@@ -39,17 +39,8 @@ namespace location
          m_autoLocationService->tryAutoLocate(
             [&](const shared::CDataContainer& foundLocation)
             {
-               // Update location in database if still empty (can be filled by user in the meantime)
-               try
-               {
-                  m_configurationManager->getConfiguration("system", "location");
-               }
-               catch (shared::exception::CEmptyResult&)
-               {
-                  // Not found in database ==> write it
-                  YADOMS_LOG(information) << "Auto-location was successful";
-                  updateLocation(foundLocation);
-               }
+               YADOMS_LOG(information) << "Auto-location was successful";
+               m_configurationManager->saveAutoDetectedLocation(foundLocation);
             });
       }
       catch (std::exception& e)
@@ -58,18 +49,9 @@ namespace location
       }
    }
 
-   void CLocation::updateLocation(const shared::CDataContainer& location) const
-   {
-      database::entities::CConfiguration locationConfiguration;
-      locationConfiguration.Section = "system";
-      locationConfiguration.Name = "location";
-      locationConfiguration.Value = location.serialize();
-      m_configurationManager->updateConfiguration(locationConfiguration);
-   }
-
    shared::CDataContainer CLocation::getLocation() const
    {
-      return shared::CDataContainer(m_configurationManager->getConfiguration("system", "location")->Value());
+      return m_configurationManager->getLocation();
    }
 
    double CLocation::latitude() const
@@ -87,5 +69,3 @@ namespace location
       return getLocation().get<double>("altitude");
    }
 } // namespace location
-
-

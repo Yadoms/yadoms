@@ -110,7 +110,6 @@ FileParameterHandler.prototype.getCurrentConfiguration = function () {
       file = myFile[0];
       var ready = false;
       var result = null;
-      debugger;
       var fr = new FileReader();
       fr.onload = function(evt) {
           // file is loaded

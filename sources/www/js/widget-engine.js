@@ -13,8 +13,6 @@ function initializeWidgetEngine() {
     //we ask all widgets packages
     WidgetPackageManager.getAll()
         .done(function () {
-            //we show notification
-            loadPagesNotification = notifyInformation($.t("mainPage.actions.loadingPages"));
             PageManager.getAll()
                 .done(function () {
                     if (loadPagesNotification != null) {
@@ -32,14 +30,16 @@ function initializeWidgetEngine() {
                     //we deactivate the customization without launch save process
                     exitCustomization(false);
 
-                    if (Yadoms.systemConfiguration.refreshPage.value) {
+                    if (configurationManager.refreshPage()) {
                         if (PageManager.pages.length > 0 && SessionDataManager.getVariable("CurrentPage") != null)
                             PageManager.selectPageId(parseInt(SessionDataManager.getVariable("CurrentPage")));
                         else
-                            PageManager.ensureOnePageIsSelected(); //we ensure that one page is selected
+                            PageManager.ensureOnePageIsSelected();
                     }
                     else
-                        PageManager.ensureOnePageIsSelected(); //we ensure that one page is selected
+                    {
+                        PageManager.selectFirstPage();
+                    }
 
                     //we ask for the last event to ask only those occurs after this one
                     EventLoggerManager.getLast()
@@ -75,7 +75,7 @@ function initializeWidgetEngine() {
 function requestWidgets(page) {
     var d = new $.Deferred();
     //we request widgets for the first page
-    var loadWidgetsNotification = notifyInformation($.t("mainPage.actions.loadingWidgetsOfPage",
+    var loadWidgetsNotification = notifyInformation($.t("mainPage.actions.loadingPage",
         {
             pageName: page.name
         }));

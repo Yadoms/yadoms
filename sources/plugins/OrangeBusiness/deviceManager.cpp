@@ -99,10 +99,6 @@ void CEquipmentManager::refreshEquipment(boost::shared_ptr<yApi::IYPluginApi> ap
       // Should be enhanced in the futur
       if (idNewMessage != idlastMessage)
       {
-         std::string receivedTimeString = lastData.get<std::string>("timestamp");
-         boost::remove_erase_if(receivedTimeString, boost::is_any_of("Z-:."));
-         boost::posix_time::ptime receivedTime = boost::posix_time::from_iso_string(receivedTimeString);
-
          equipment->updateData(api, 
                                lastData.get<std::string>("payload"),
                                lastData.get<double>("rssi"),

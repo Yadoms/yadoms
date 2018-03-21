@@ -4,33 +4,33 @@
 
 namespace testCommon
 {
-   void filesystem::CreateDirectory(std::string name)
+   void filesystem::CreateDirectory(const std::string& name)
    {
       boost::filesystem::path dir(name.c_str());
       BOOST_REQUIRE(boost::filesystem::create_directory(dir)) ;
    }
 
-   void filesystem::RemoveDirectory(std::string name)
+   void filesystem::RemoveDirectory(const std::string& name)
    {
       boost::filesystem::remove_all(name.c_str());
    }
 
-   void filesystem::CreateFile(std::string dir,
-                               std::string file)
+   void filesystem::CreateFile(const std::string& dir,
+                               const std::string& file)
    {
       auto fullPath = boost::filesystem::path(dir) / file;
       std::ofstream outfile(fullPath.string().c_str(), std::ios_base::out);
       BOOST_REQUIRE(outfile.is_open()) ;
    }
 
-   void filesystem::RemoveFile(std::string dir,
-                               std::string file)
+   void filesystem::RemoveFile(const std::string& dir,
+                               const std::string& file)
    {
       auto fullPath = boost::filesystem::path(dir) / file;
       BOOST_REQUIRE(boost::filesystem::remove(fullPath)) ;
    }
 
-   void filesystem::RemoveFile(std::string file,
+   void filesystem::RemoveFile(const std::string& file,
                                bool successRequired)
    {
       if (successRequired)
@@ -48,14 +48,15 @@ namespace testCommon
          boost::filesystem::remove(file.string());
    }
 
-   void filesystem::WriteFile(std::string dir, std::string file)
+   void filesystem::WriteFile(const std::string& dir,
+      const std::string& file)
    {
       WriteFile(dir, file, "some text...");
    }
 
-   void filesystem::WriteFile(std::string dir,
-                              std::string file,
-                              std::string content)
+   void filesystem::WriteFile(const std::string& dir,
+                              const std::string& file,
+                              const std::string& content)
    {
       boost::filesystem::path fullPath;
       if (dir.empty())
@@ -71,7 +72,7 @@ namespace testCommon
    }
 
    void filesystem::WriteFile(const boost::filesystem::path& file,
-                              std::string content)
+                              const std::string& content)
    {
       if (!file.parent_path().empty() && !boost::filesystem::exists(file.parent_path()))
          boost::filesystem::create_directories(file.parent_path());
@@ -80,12 +81,12 @@ namespace testCommon
       outfile << content;
    }
 
-   void filesystem::RenameFile(std::string dir,
-                               std::string oldFile,
-                               std::string newFile)
+   void filesystem::RenameFile(const std::string& dir,
+                               const std::string& oldFile,
+                               const std::string& newFile)
    {
-      auto oldFullPath = boost::filesystem::path(dir) / oldFile;
-      auto newFullPath = boost::filesystem::path(dir) / newFile;
+      const auto oldFullPath = boost::filesystem::path(dir) / oldFile;
+      const auto newFullPath = boost::filesystem::path(dir) / newFile;
       boost::filesystem::rename(oldFullPath, newFullPath);
    }
 } // namespace testCommon

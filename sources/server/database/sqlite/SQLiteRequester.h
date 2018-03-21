@@ -23,7 +23,7 @@ namespace database
 
          // IDatabaseRequester implementation
          boost::shared_ptr<common::CQuery> newQuery() override;
-         void queryEntities(common::adapters::IResultAdapter* pAdapter, const common::CQuery& querytoExecute) override;
+         void queryEntities(common::adapters::IResultAdapter* adapter, const common::CQuery& querytoExecute) override;
          int queryStatement(const common::CQuery& querytoExecute, bool throwIfFails = true) override;
          int queryCount(const common::CQuery& querytoExecute) override;
          QueryRow querySingleLine(const common::CQuery& querytoExecute) override;

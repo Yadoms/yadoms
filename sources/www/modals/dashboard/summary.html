@@ -1,96 +1,97 @@
 <div id="dashboard-summary">
-   <h1 class="page-header" data-i18n="modals.dashboard.sub-windows.summary.title"></h1>
-   <div class="summary-table">
-      <table class="table table-striped table-hover table-bordered dashboard-list table-summary">
-         <tr>
-            <td class="header" data-i18n="modals.dashboard.sub-windows.summary.connectedUser"></td>
-            <td id="dashboard-summary-connected-user">None</td>
-         </tr>
-         <tr>
-            <td class="header" data-i18n="modals.dashboard.sub-windows.summary.platform"></td>
-            <td id="dashboard-summary-platform">Windows</td>
-         </tr>
-         <tr>
-            <td class="header" data-i18n="modals.dashboard.sub-windows.summary.softwareVersion"></td>
-            <td id="dashboard-summary-software-version">0.7b</td>
-         </tr>
-         <tr>
-            <td class="header" data-i18n="modals.dashboard.sub-windows.summary.databaseVersion"></td>
-            <td id="dashboard-summary-database-version">0.7b</td>
-         </tr>
-         <tr>
-            <td class="header" data-i18n="modals.dashboard.sub-windows.summary.startedFrom"></td>
-            <td id="dashboard-summary-started-from">2 days 4 hours 21 minutes 34 seconds</td>
-         </tr>
-         <tr class="line-developer-mode">
-            <td class="header" data-i18n="modals.dashboard.sub-windows.summary.developerMode"></td>
-            <td id="dashboard-summary-developerMode"><input type="checkbox" disabled readonly checked/></td>
-         </tr>
-        
-      </table>
-   </div>
+      <h1 class="page-header" data-i18n="modals.dashboard.sub-windows.summary.title"></h1>
+      <div class="summary-table">
+            <table class="table table-striped table-hover table-bordered dashboard-list table-summary">
+                  <tr>
+                        <td class="header" data-i18n="modals.dashboard.sub-windows.summary.connectedUser"></td>
+                        <td id="dashboard-summary-connected-user">None</td>
+                  </tr>
+                  <tr>
+                        <td class="header" data-i18n="modals.dashboard.sub-windows.summary.platform"></td>
+                        <td id="dashboard-summary-platform">Windows</td>
+                  </tr>
+                  <tr>
+                        <td class="header" data-i18n="modals.dashboard.sub-windows.summary.softwareVersion"></td>
+                        <td id="dashboard-summary-software-version">0.7b</td>
+                  </tr>
+                  <tr>
+                        <td class="header" data-i18n="modals.dashboard.sub-windows.summary.databaseVersion"></td>
+                        <td id="dashboard-summary-database-version">0.7b</td>
+                  </tr>
+                  <tr>
+                        <td class="header" data-i18n="modals.dashboard.sub-windows.summary.startedFrom"></td>
+                        <td id="dashboard-summary-started-from">2 days 4 hours 21 minutes 34 seconds</td>
+                  </tr>
+                  <tr class="line-developer-mode">
+                        <td class="header" data-i18n="modals.dashboard.sub-windows.summary.developerMode"></td>
+                        <td id="dashboard-summary-developerMode">
+                              <input type="checkbox" disabled readonly checked/>
+                        </td>
+                  </tr>
+
+            </table>
+      </div>
 </div>
 
 <script>
-   
-   Yadoms.initializeSummaryDashboard = function () {
-      var d = new $.Deferred();
-      var arrayOfDeffered = [];
-      
-      //we update all fields
-      $("tr.line-developer-mode").hide();
+      Yadoms.initializeSummaryDashboard = function () {
+            var d = new $.Deferred();
+            var arrayOfDeffered = [];
 
-      var deffered = RestEngine.getJson("rest/configuration/Database/Version");
-      arrayOfDeffered.push(deffered);
-      deffered.done(function(data) {
-         $("td#dashboard-summary-database-version").text(data.value);
-      })
-      .fail(function(error) {
-            notifyError($.t("modals.dashboard.sub-windows.summary.errorRequestingDatabaseVersion"), error);
-      });
+            //we update all fields
+            $("tr.line-developer-mode").hide();
 
-      var deffered2 = YadomsInformationManager.getList();
-      arrayOfDeffered.push(deffered2);
-      deffered2.done(function(data) {
+            $("td#dashboard-summary-database-version").text(configurationManager.databaseVersion());
 
-            $("td#dashboard-summary-platform").text(data.runningPlatform);
-            $("td#dashboard-summary-software-version").text(data.yadoms.version);
-            $("td#dashboard-summary-started-from").text(DateTimeFormatter.isoDateToDate(data.startupTime).fromNow());
+            var deffered1 = YadomsInformationManager.getList();
+            arrayOfDeffered.push(deffered1);
+            deffered1.done(function (data) {
 
-            if (data.developerMode) {
-               $("tr.line-developer-mode").show();
-            }
-         })
-         .fail(function (error) {
-            notifyError($.t("objects.generic.errorGetting", { objectName: $.t("core.yadoms.information") }), error);
-         });
-      
-      var deffered3 = MaintenanceManager.getDatabaseDetails();
-      arrayOfDeffered.push(deffered3);
-      deffered3.done(function (databaseDetails) {
-         $(".table-summary-advanced-parameter").remove();
-         $.each(databaseDetails, function (index, value) {
-            if (index !== "backupSupport") {
-               var txt = value;
-               if (index === "size") {
-                  txt = humanFileSize(value);
-               }
-               $(".table-summary").append('<tr class="table-summary-advanced-parameter"><td class="header" data-i18n="modals.dashboard.sub-windows.summary.' + index + '"></td><td>' + txt + '</td></tr>');
-            }
-         });
-      })
-      .fail(function (error) {
-         notifyError($.t("objects.generic.errorGetting", { objectName: $.t("core.yadoms.information") }), error);
-      });      
-      
-      $.whenAll(arrayOfDeffered).done(function () {
-         $(".summary-table").i18n();
-         d.resolve();
-      })
-      .fail(function (error) {
-         d.reject();
-      });           
-           
-      return d.promise();      
-   }
+                        $("td#dashboard-summary-platform").text(data.runningPlatform);
+                        $("td#dashboard-summary-software-version").text(data.yadoms.version);
+                        $("td#dashboard-summary-started-from").text(DateTimeFormatter.isoDateToDate(data.startupTime)
+                              .fromNow());
+
+                        if (data.developerMode) {
+                              $("tr.line-developer-mode").show();
+                        }
+                  })
+                  .fail(function (error) {
+                        notifyError($.t("objects.generic.errorGetting", {
+                              objectName: $.t("core.yadoms.information")
+                        }), error);
+                  });
+
+            var deffered2 = MaintenanceManager.getDatabaseDetails();
+            arrayOfDeffered.push(deffered2);
+            deffered2.done(function (databaseDetails) {
+                        $(".table-summary-advanced-parameter").remove();
+                        $.each(databaseDetails, function (index, value) {
+                              if (index !== "backupSupport") {
+                                    var txt = value;
+                                    if (index === "size") {
+                                          txt = humanFileSize(value);
+                                    }
+                                    $(".table-summary").append(
+                                          '<tr class="table-summary-advanced-parameter"><td class="header" data-i18n="modals.dashboard.sub-windows.summary.' +
+                                          index + '"></td><td>' + txt + '</td></tr>');
+                              }
+                        });
+                  })
+                  .fail(function (error) {
+                        notifyError($.t("objects.generic.errorGetting", {
+                              objectName: $.t("core.yadoms.information")
+                        }), error);
+                  });
+
+            $.whenAll(arrayOfDeffered).done(function () {
+                        $(".summary-table").i18n();
+                        d.resolve();
+                  })
+                  .fail(function (error) {
+                        d.reject();
+                  });
+
+            return d.promise();
+      }
 </script>

@@ -108,8 +108,7 @@
       "customization": "Personalisation"
     },
     "actions": {
-      "loadingPages": "Chargement des pages ...",
-      "loadingWidgetsOfPage": "Chargement des widgets de la page {{pageName}} ...",
+      "loadingPage": "Chargement de la page {{pageName}} ...",
       "firstRunConfiguration": "Premier démarrage"
     },
     "customization": {
@@ -467,9 +466,9 @@
             }
           },
           "confirmResetToDefault": "Cette opération va restaurer la configuration par défaut. Continuer ?",
-          "configurationSaved": "Configuration système sauvegardée",
+          "configurationSaved": "Configuration sauvegardée",
           "defaultConfigurationRestored": "Configuration par défaut restaurée",
-          "errorDuringSavingConfiguration": "Erreur lors de la sauvegarde de la configuration système"
+          "errorDuringSavingConfiguration": "Erreur lors de la sauvegarde de la configuration"
         },
         "user-configuration": {
           "title": "Configuration utilisateur"
@@ -1033,7 +1032,7 @@
     "YadomsCrash": "Yadoms a rencontré une erreur et s'est arrêté",
     "PluginCrash": "{{who}} a rencontré une erreur et s'est arrêté",
     "TaskFailed": "La tâche {{who}} a rencontré une erreur et s'est arrêtée",
-    "RuleFailed": "La règle d'automatisation __who__ a échoué",
+    "RuleFailed": "La règle d'automatisation {{who}} a échoué",
     "UpdateAvailable": "La mise à jour d'un logiciel est disponible, rendez-vous à la page 'Installation & mise à jour' pour plus d'informations"
   },
   "webSockets": {

@@ -20,7 +20,7 @@
     <meta name="msapplication-TileImage" content="img/favicon/mstile-144x144.png">
     <meta name="msapplication-config" content="img/favicon/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
-    
+
     <title>Yadoms</title>
 
     <!-- Bootstrap core CSS -->
@@ -166,7 +166,6 @@
     <script src="js/objects/widget-manager.js"></script>
     <script src="js/objects/widget-package-manager.js"></script>
     <script src="js/objects/configuration-manager.js"></script>
-    <script src="js/objects/configuration-item.js"></script>
     <script src="js/objects/keyword.js"></script>
     <script src="js/objects/keyword-manager.js"></script>
     <script src="js/objects/acquisition.js"></script>
@@ -193,7 +192,6 @@
     <script src="js/objects/widget-api.js"></script>
 
     <script type="text/javascript">
-
         //base configuration
         $.ajaxSetup({
             contentType: "application/json; charset=utf-8",
@@ -204,7 +202,6 @@
         $("#copyrightLabel").html("&copy; Yadoms " + new Date().getFullYear());
 
         var Yadoms = {
-            systemConfiguration: [],
             modals: {},
             updateIntervalInOfflineMode: 10000,
             updateIntervalWithWebSocketDisabled: 1000,
@@ -217,94 +214,44 @@
             baseUrl: ''
         };
 
-        /**
-         * On page loaded
-         */
-        $(document).ready(function () {
-            //load custom configuration from 'config.js', allow any js overriding
-            asyncLoadJSLib("config.js")
-                .always(function () {
-                    //we define all the modals to lazy load
-                    Yadoms.modals.pickupController = new LazyLoaderManager("modals/pickup-controller.html");
-                    Yadoms.modals.widgetConfiguration = new LazyLoaderManager("modals/widget-configure.html");
-                    Yadoms.modals.widgetDelete = new LazyLoaderManager("modals/widget-delete.html");
-                    Yadoms.modals.pageDelete = new LazyLoaderManager("modals/page-delete.html");
-                    Yadoms.modals.pageConfigure = new LazyLoaderManager("modals/page-configure.html");
-                    Yadoms.modals.qrCode = new LazyLoaderManager("modals/qrcode.html");
-                    Yadoms.modals.mainDashboard = new LazyLoaderManager("modals/dashboard.html");
-                    Yadoms.modals.confirmation = new LazyLoaderManager("modals/confirmation.html");
-                    Yadoms.modals.pluginConfigure = new LazyLoaderManager("modals/plugin-configure.html");
-                    Yadoms.modals.pluginExtraQueriesConfigure = new LazyLoaderManager("modals/plugin-extra-queries-configure.html");
-                    Yadoms.modals.pluginShowLog = new LazyLoaderManager("modals/plugin-show-log.html");
-                    Yadoms.modals.deviceConfigure = new LazyLoaderManager("modals/device-configure.html");
-                    Yadoms.modals.keywordConfigure = new LazyLoaderManager("modals/keyword-configure.html");
-                    Yadoms.modals.keywordSetValue = new LazyLoaderManager("modals/keyword-set-value.html");
-                    Yadoms.modals.deviceAddManually = new LazyLoaderManager("modals/device-add-manually.html");
-                    Yadoms.modals.deviceConfigureManually = new LazyLoaderManager("modals/device-configure-manually.html");
-                    Yadoms.modals.virtualDeviceConfigure = new LazyLoaderManager("modals/virtual-device-configure.html");
-                    Yadoms.modals.deviceDelete = new LazyLoaderManager("modals/device-delete.html");
-                    Yadoms.modals.automationRuleNew = new LazyLoaderManager("modals/automation-rule-new.html");
-                    Yadoms.modals.automationRuleEdit = new LazyLoaderManager("modals/automation-rule-edit.html");
-                    Yadoms.modals.automationRuleShowLog = new LazyLoaderManager("modals/automation-rule-show-log.html");
-                    Yadoms.modals.recipientConfigure = new LazyLoaderManager("modals/recipient_configure.html");
-                    Yadoms.modals.showChangelog = new LazyLoaderManager("modals/show-changelog.html");
+        var configurationManager = new ConfigurationManager();
+        configurationManager.load()
+            .done(function () {
+                /**
+                 * On page loaded
+                 */
+                $(document).ready(function () {
+                    //load custom configuration from 'config.js', allow any js overriding
+                    asyncLoadJSLib("config.js")
+                        .always(function () {
 
-                    //we start i18n engine
-             i18nManager.init()
-             .done(function() {
-                        //we get install/firstStart key to have information if firstStart has already been done
-                        ConfigurationManager.get(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart)
-                            .done(function () {
-                                //we start app normally
-                                main();
-                            })
-                            .fail(function () {
-                                //we make the first start configuration
-                                notifyInformation($.t("mainPage.actions.firstRunConfiguration"));
-                                var navigatorLanguage = window.navigator.userLanguage || window.navigator.language;
-                                //var navigatorTimezone = jstz.determine().name();
+                            loadModals();
 
-                                var arrayOfDeffered = [];
-                                var deffered = null;
+                            //we start i18n engine
+                            i18nManager.init()
+                                .done(function () {
+                                    //we get install/firstStart key to have information if firstStart has already been done
+                                    if (!configurationManager.isServerFirstStart()) {
+                                        //we start app normally
+                                        main();
+                                    } else {
+                                        //we make the first start configuration
+                                        notifyInformation($.t(
+                                            "mainPage.actions.firstRunConfiguration"));
 
-                                //update configuration with these values
+                                        configurationManager.setServerFirstStartDone().save();
 
-                                ConfigurationManager.saveDefaultLanguage(arrayOfDeffered, navigatorLanguage);
-                                ConfigurationManager.saveDefaultAdvancedParameters(arrayOfDeffered);
-                                ConfigurationManager.saveDefaultDateFormatString(arrayOfDeffered);
-                                ConfigurationManager.saveRefreshPageDefaultValue(arrayOfDeffered);
-                                ConfigurationManager.saveDefaultBasicAuthentification(arrayOfDeffered);
-                                ConfigurationManager.saveFirstStart(arrayOfDeffered);
+                                        processFirstStart();
+                                    }
+                                });
 
-                                $.whenAll(arrayOfDeffered)
-                                    .done(function () {
-                                        //we check for page. If there is no page, we create a new one automatically
-                                        PageManager.getAll()
-                                            .done(function () {
-                                                if (PageManager.pages.length === 0) {
-                                                    console.info("Creating a default page");
-                                                    debugger;
-                                                    PageManager.createPage($.t("initialization.homePage"), 0)
-                                                        .done(function () {
-                                                            PageManager.ensureOnePageIsSelected();
-                                                        });
-                                                }
-                                                //we can start app
-                                                main();
-                                            })
-                                            .fail(function (error) {
-                                                notifyError($.t("objects.pageManager.errorDuringGettingPages"), error);
-                                            });
-                                    });
-                            });
+                            if (bowser.name === "Internet Explorer" || /Edge/.test(navigator.userAgent)) {
+                                console.log("incompatible browser !");
+                                window.location.href = "browser.html";
+                                return;
+                            }
 
-                        if (bowser.name === "Internet Explorer" || /Edge/.test(navigator.userAgent)) {
-                            console.log("incompatible browser !");
-                            window.location.href = "browser.html";
-                            return;
-                        }
-
-                    });
+                        });
 
                     /**
                      * Callback of the click on the show qr code button
@@ -325,13 +272,17 @@
                                 $('#main-dashboard-modal').modal({
                                     backdrop: 'static'
                                 });
-                                $('#main-dashboard-modal').off('hidden.bs.modal').on('hidden.bs.modal', function () {
-                                    //clear the bootstrap validation when modal is hidden (handle submit and cancel behaviors)
-                                    $('#main-dashboard-modal').find("input,select,textarea").jqBootstrapValidation("destroy");
+                                $('#main-dashboard-modal').off('hidden.bs.modal').on(
+                                    'hidden.bs.modal',
+                                    function () {
+                                        //clear the bootstrap validation when modal is hidden (handle submit and cancel behaviors)
+                                        $('#main-dashboard-modal').find(
+                                            "input,select,textarea").jqBootstrapValidation(
+                                            "destroy");
 
-                                    //we force the dashboard to display the summary refreshed page
-                                    $("#btn-dashboard-summary").click();
-                                });
+                                        //we force the dashboard to display the summary refreshed page
+                                        $("#btn-dashboard-summary").click();
+                                    });
                             });
                     });
 
@@ -359,9 +310,10 @@
                                 );
                             })
                             .fail(function (error) {
-                                notifyError($.t("objects.lazyLoaderManager.unableToLoadModal", {
-                                    modalPath: self.modalPath
-                                }), error);
+                                notifyError($.t(
+                                    "objects.lazyLoaderManager.unableToLoadModal", {
+                                        modalPath: self.modalPath
+                                    }), error);
                             });
                     });
 
@@ -378,21 +330,21 @@
                             try {
                                 minX = pkg.dimensions.min.x;
                                 minY = pkg.dimensions.min.y;
-                            } catch (err) { }
+                            } catch (err) {}
 
                             var maxX = Infinity;
                             var maxY = Infinity;
                             try {
                                 maxX = pkg.dimensions.max.x;
                                 maxY = pkg.dimensions.max.y;
-                            } catch (err) { }
+                            } catch (err) {}
 
                             var defaultX = 1;
                             var defaultY = 1;
                             try {
                                 defaultX = pkg.dimensions.default.x;
                                 defaultY = pkg.dimensions.default.y;
-                            } catch (err) { }
+                            } catch (err) {}
 
                             var sizeX = Math.min(maxX, Math.max(defaultX, minX));
                             var sizeY = Math.min(maxY, Math.max(defaultY, minY));
@@ -401,7 +353,9 @@
                             assert(!isNullOrUndefined(currentPage), "A page must be selected");
 
                             //we create a fake widget to display configuration form
-                            var newWidget = new Widget(-1, currentPage.id, packageName, "", sizeX * Yadoms.gridWidth, sizeY * Yadoms.gridHeight, 0, 0, "");
+                            var newWidget = new Widget(-1, currentPage.id, packageName, "",
+                                sizeX * Yadoms.gridWidth,
+                                sizeY * Yadoms.gridHeight, 0, 0, "");
 
                             newWidget.package = pkg;
                             //we load configuration window only if the widget has a configuration
@@ -428,21 +382,23 @@
                                 WidgetManager.loadWidget(w, currentPage, true)
                                     .done(function () {
                                         //we update the filter for the websocket
-                                 updateWidgetPolling(w)
-                                 .always(function() {
-                                        updateWebSocketFilter();
-                                 });
+                                        updateWidgetPolling(w)
+                                            .always(function () {
+                                                updateWebSocketFilter();
+                                            });
                                     })
                                     .fail(function (errorMessage) {
-                                        notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {
-                                            "widgetType": newWidget.type
-                                        }), errorMessage);
+                                        notifyError($.t(
+                                            "modals.add-widget.unableToCreateWidgetOfType", {
+                                                "widgetType": newWidget.type
+                                            }), errorMessage);
                                     });
                             })
                             .fail(function (errorMessage) {
-                                notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {
-                                    "widgetType": newWidget.type
-                                }), errorMessage);
+                                notifyError($.t(
+                                    "modals.add-widget.unableToCreateWidgetOfType", {
+                                        "widgetType": newWidget.type
+                                    }), errorMessage);
                             });
                     }
 
@@ -459,7 +415,56 @@
                         return false;
                     });
                 });
-        });
+            })
+            .fail(function (error) {
+                notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
+            });
+
+        function loadModals() {
+            Yadoms.modals.pickupController = new LazyLoaderManager("modals/pickup-controller.html");
+            Yadoms.modals.widgetConfiguration = new LazyLoaderManager("modals/widget-configure.html");
+            Yadoms.modals.widgetDelete = new LazyLoaderManager("modals/widget-delete.html");
+            Yadoms.modals.pageDelete = new LazyLoaderManager("modals/page-delete.html");
+            Yadoms.modals.pageConfigure = new LazyLoaderManager("modals/page-configure.html");
+            Yadoms.modals.qrCode = new LazyLoaderManager("modals/qrcode.html");
+            Yadoms.modals.mainDashboard = new LazyLoaderManager("modals/dashboard.html");
+            Yadoms.modals.confirmation = new LazyLoaderManager("modals/confirmation.html");
+            Yadoms.modals.pluginConfigure = new LazyLoaderManager("modals/plugin-configure.html");
+            Yadoms.modals.pluginExtraQueriesConfigure = new LazyLoaderManager(
+                "modals/plugin-extra-queries-configure.html");
+            Yadoms.modals.pluginShowLog = new LazyLoaderManager("modals/plugin-show-log.html");
+            Yadoms.modals.deviceConfigure = new LazyLoaderManager("modals/device-configure.html");
+            Yadoms.modals.keywordConfigure = new LazyLoaderManager("modals/keyword-configure.html");
+            Yadoms.modals.keywordSetValue = new LazyLoaderManager("modals/keyword-set-value.html");
+            Yadoms.modals.deviceAddManually = new LazyLoaderManager("modals/device-add-manually.html");
+            Yadoms.modals.deviceConfigureManually = new LazyLoaderManager("modals/device-configure-manually.html");
+            Yadoms.modals.virtualDeviceConfigure = new LazyLoaderManager("modals/virtual-device-configure.html");
+            Yadoms.modals.deviceDelete = new LazyLoaderManager("modals/device-delete.html");
+            Yadoms.modals.automationRuleNew = new LazyLoaderManager("modals/automation-rule-new.html");
+            Yadoms.modals.automationRuleEdit = new LazyLoaderManager("modals/automation-rule-edit.html");
+            Yadoms.modals.automationRuleShowLog = new LazyLoaderManager("modals/automation-rule-show-log.html");
+            Yadoms.modals.recipientConfigure = new LazyLoaderManager("modals/recipient_configure.html");
+            Yadoms.modals.showChangelog = new LazyLoaderManager("modals/show-changelog.html");
+        }
+
+        function processFirstStart() {
+            //we check for page. If there is no page, we create a new one automatically
+            PageManager.getAll()
+                .done(function () {
+                    if (PageManager.pages.length === 0) {
+                        console.info("Creating a default page");
+                        PageManager.createPage($.t("initialization.homePage"), 0)
+                            .done(function () {
+                                PageManager.ensureOnePageIsSelected();
+                            });
+                    }
+                    //we can start app
+                    main();
+                })
+                .fail(function (error) {
+                    notifyError($.t("objects.pageManager.errorDuringGettingPages"), error);
+                });
+        }
 
         function waitForServerReady() {
             YadomsInformationManager.getList()
@@ -488,37 +493,17 @@
         }
 
         function main() {
-            //we get configuration
-            ConfigurationManager.getSection(ConfigurationManager.items.systemSection)
-                .done(function (result) {
-                    if (!isNullOrUndefined(result)) {
-                        Yadoms.systemConfiguration = result;
-                        var deferredArray = [];
+            //we set the right language
+            i18next.changeLanguage(configurationManager.currentLanguage(), function () {
+                $("html").i18n();
+                moment.lang(configurationManager.currentLanguage());
 
-                        // create default configuration if configuration missing
-                        if (isNullOrUndefined(Yadoms.systemConfiguration[ConfigurationManager.items.system.refreshPage])) {
-                            ConfigurationManager.saveRefreshPageDefaultValue(deferredArray);
-                        }
-
-                        $.whenAll(deferredArray)
-                            .always(function () {
-                                //we set the right language
-                            i18next.changeLanguage(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
-                                    $("html").i18n();
-                                    moment.lang(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value);
-
-                                    //Load Plugin instances to load initially all languages files. Needed for some widgets
-                                    PluginInstanceManager.getAll().done(function (allInstances) {
-                                        waitForServerReady();
-                            });                            
-                                });
-                            });
-                    }
-                })
-                .fail(function (error) {
-                    notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
+                //Load Plugin instances to load initially all languages files. Needed for some widgets
+                PluginInstanceManager.getAll().done(function (allInstances) {
+                    waitForServerReady();
                 });
-        }    
+            });
+        }
     </script>
 </body>
 
