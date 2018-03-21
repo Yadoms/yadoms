@@ -24,22 +24,22 @@ namespace web
             static const std::string& getRestKeyword();
 
 
-            shared::CDataContainer getBinding(const std::vector<std::string>& parameters,
-                                              const std::string& requestContent) const;
-            shared::CDataContainer getSystemInformation(const std::vector<std::string>& parameters,
-                                                        const std::string& requestContent) const;
-            shared::CDataContainer getCurrentTime(const std::vector<std::string>& parameters,
-                                                  const std::string& requestContent) const;
-            shared::CDataContainer getVirtualDevicesSupportedCapacities(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> getBinding(const std::vector<std::string>& parameters,
+                                                                        const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getSystemInformation(const std::vector<std::string>& parameters,
+                                                                        const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getCurrentTime(const std::vector<std::string>& parameters,
+                                                                        const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getVirtualDevicesSupportedCapacities(const std::vector<std::string>& parameters,
                                                                         const std::string& requestContent) const;
 
          private:
-            shared::CDataContainer getSerialPorts() const;
-            shared::CDataContainer getNetworkInterfaces(const bool includeLoopback) const;
-            shared::CDataContainer platformIs(const std::string& refPlatform) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getSerialPorts() const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getNetworkInterfaces(const bool includeLoopback) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> platformIs(const std::string& refPlatform) const;
             static void addVirtualDevicesSupportedCapacity(const shared::plugin::yPluginApi::CStandardCapacity& capacity);
             static const shared::CDataContainer& getVirtualDevicesSupportedCapacities();
-            shared::CDataContainer getSupportedTimezones() const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getSupportedTimezones() const;
 
             static std::string m_restKeyword;
 

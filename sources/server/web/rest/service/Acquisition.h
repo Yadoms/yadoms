@@ -26,74 +26,44 @@ namespace web
             //-----------------------------------------
             ///\brief   Get the last data of a keyword
             //-----------------------------------------
-            shared::CDataContainer getKeywordLastData(const std::vector<std::string>& parameters,
-                                                      const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getKeywordLastData(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   Get the last data of a list of keywords
             //-----------------------------------------
-            shared::CDataContainer getKeywordListLastData(const std::vector<std::string>& parameters,
-                                                          const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getKeywordListLastData(const std::vector<std::string>& parameters,
+                                                                                               const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   Get the data of a keyword (with optional date filter)
             //-----------------------------------------
-            shared::CDataContainer getKeywordData(const std::vector<std::string>& parameters,
-                                                  const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getKeywordData(const std::vector<std::string>& parameters,
+                                                                                       const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   Get the data of a keyword (with optional date filter) by hour (avg, min and max)
             //-----------------------------------------
-            shared::CDataContainer getKeywordDataByHour(const std::vector<std::string>& parameters,
-                                                        const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getKeywordDataByHour(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   Get the data of a keyword (with optional date filter) by day (avg, min and max)
             //-----------------------------------------
-            shared::CDataContainer getKeywordDataByDay(const std::vector<std::string>& parameters,
-                                                       const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getKeywordDataByDay(const std::vector<std::string>& parameters,
+                                                                                            const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   Get the data of a keyword (with optional date filter) by month (avg, min and max)
             //-----------------------------------------
-            shared::CDataContainer getKeywordDataByMonth(const std::vector<std::string>& parameters,
-                                                         const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getKeywordDataByMonth(const std::vector<std::string>& parameters,
+                                                                                              const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   Get the data of a keyword (with optional date filter) by year (avg, min and max)
             //-----------------------------------------
-            shared::CDataContainer getKeywordDataByYear(const std::vector<std::string>& parameters,
-                                                        const std::string& requestContent) const;
-
-            //-----------------------------------------
-            ///\brief   Get the data of a keyword (with optional date filter) for highchart treatment (fast queries, optimized for highcharts js)
-            //-----------------------------------------
-            shared::CDataContainer getHighchartKeywordData(const std::vector<std::string>& parameters,
-                                                           const std::string& requestContent) const;
-
-            //-----------------------------------------
-            ///\brief   Get the data of a keyword (with optional date filter)  by hour (avg, min and max) for highchart treatment (fast queries, optimized for highcharts js)
-            //-----------------------------------------
-            shared::CDataContainer getHighchartKeywordDataByHour(const std::vector<std::string>& parameters,
-                                                                 const std::string& requestContent) const;
-
-            //-----------------------------------------
-            ///\brief   Get the data of a keyword (with optional date filter)  by day (avg, min and max)for highchart treatment (fast queries, optimized for highcharts js)
-            //-----------------------------------------
-            shared::CDataContainer getHighchartKeywordDataByDay(const std::vector<std::string>& parameters,
-                                                                const std::string& requestContent) const;
-
-            //-----------------------------------------
-            ///\brief   Get the data of a keyword (with optional date filter)  by month (avg, min and max)for highchart treatment (fast queries, optimized for highcharts js)
-            //-----------------------------------------
-            shared::CDataContainer getHighchartKeywordDataByMonth(const std::vector<std::string>& parameters,
-                                                                  const std::string& requestContent) const;
-
-            //-----------------------------------------
-            ///\brief   Get the data of a keyword (with optional date filter)  by year (avg, min and max)for highchart treatment (fast queries, optimized for highcharts js)
-            //-----------------------------------------
-            shared::CDataContainer getHighchartKeywordDataByYear(const std::vector<std::string>& parameters,
-                                                                 const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getKeywordDataByYear(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const;
 
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
             static std::string m_restKeyword;

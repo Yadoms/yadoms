@@ -37,8 +37,8 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("external")("*"), CConfiguration::saveExternalConfiguration);
          }
 
-         shared::CDataContainer CConfiguration::resetServerConfiguration(const std::vector<std::string>& parameters,
-                                                                         const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::resetServerConfiguration(const std::vector<std::string>& parameters,
+                                                                                                              const std::string& requestContent) const
          {
             try
             {
@@ -51,8 +51,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CConfiguration::getServerConfiguration(const std::vector<std::string>& parameters,
-                                                                       const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getServerConfiguration(const std::vector<std::string>& parameters,
+                                                                                                            const std::string& requestContent) const
          {
             try
             {
@@ -64,8 +64,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CConfiguration::saveServerConfiguration(const std::vector<std::string>& parameters,
-                                                                        const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::saveServerConfiguration(const std::vector<std::string>& parameters,
+                                                                                                             const std::string& requestContent) const
          {
             try
             {
@@ -82,8 +82,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CConfiguration::getDatabaseVersion(const std::vector<std::string>& parameters,
-                                                                   const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getDatabaseVersion(const std::vector<std::string>& parameters,
+                                                                                                        const std::string& requestContent) const
          {
             try
             {
@@ -96,8 +96,8 @@ namespace web
          }
 
 
-         shared::CDataContainer CConfiguration::getExternalConfiguration(const std::vector<std::string>& parameters,
-                                                                         const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getExternalConfiguration(const std::vector<std::string>& parameters,
+                                                                                                              const std::string& requestContent) const
          {
             if (parameters.size() < 3)
                return CResult::GenerateError("GET /rest/configuration request : missing section name");
@@ -114,8 +114,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CConfiguration::saveExternalConfiguration(const std::vector<std::string>& parameters,
-                                                                          const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::saveExternalConfiguration(const std::vector<std::string>& parameters,
+                                                                                                               const std::string& requestContent) const
          {
             if (parameters.size() < 3)
                return CResult::GenerateError("PUT /rest/configuration request : missing section name");
