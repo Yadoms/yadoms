@@ -50,8 +50,8 @@ namespace web
          }
 
 
-         shared::CDataContainer CSystem::getBinding(const std::vector<std::string>& parameters,
-                                                    const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getBinding(const std::vector<std::string>& parameters,
+                                                                                         const std::string& requestContent) const
          {
             if (parameters.size() > 2)
             {
@@ -77,7 +77,7 @@ namespace web
             return CResult::GenerateError("Cannot retreive url parameters");
          }
 
-         shared::CDataContainer CSystem::getSerialPorts() const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSerialPorts() const
          {
             try
             {
@@ -102,7 +102,7 @@ namespace web
             }
          }
 
-         shared::CDataContainer CSystem::getNetworkInterfaces(const bool includeLoopback) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getNetworkInterfaces(const bool includeLoopback) const
          {
             try
             {
@@ -127,8 +127,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CSystem::getSystemInformation(const std::vector<std::string>& parameters,
-                                                              const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSystemInformation(const std::vector<std::string>& parameters,
+                                                                                                   const std::string& requestContent) const
          {
             try
             {
@@ -154,8 +154,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CSystem::getCurrentTime(const std::vector<std::string>& parameters,
-                                                        const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getCurrentTime(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             try
             {
@@ -173,7 +173,7 @@ namespace web
             }
          }
 
-         shared::CDataContainer CSystem::getVirtualDevicesSupportedCapacities(
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getVirtualDevicesSupportedCapacities(
             const std::vector<std::string>& parameters,
             const std::string& requestContent) const
          {
@@ -193,7 +193,7 @@ namespace web
             }
          }
 
-         shared::CDataContainer CSystem::platformIs(const std::string& refPlatform) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::platformIs(const std::string& refPlatform) const
          {
             try
             {
@@ -264,7 +264,7 @@ namespace web
             return m_virtualDevicesSupportedCapacities;
          }
 
-         shared::CDataContainer CSystem::getSupportedTimezones() const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSupportedTimezones() const
          {
             try
             {

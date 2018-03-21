@@ -20,20 +20,20 @@ namespace web
 
 
          private:
-            shared::CDataContainer resetServerConfiguration(const std::vector<std::string>& parameters,
-                                                            const std::string& requestContent) const;
-            shared::CDataContainer getServerConfiguration(const std::vector<std::string>& parameters,
-                                                          const std::string& requestContent) const;
-            shared::CDataContainer saveServerConfiguration(const std::vector<std::string>& parameters,
-                                                           const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> resetServerConfiguration(const std::vector<std::string>& parameters,
+                                                                                                 const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getServerConfiguration(const std::vector<std::string>& parameters,
+                                                                                               const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> saveServerConfiguration(const std::vector<std::string>& parameters,
+                                                                                                const std::string& requestContent) const;
 
-            shared::CDataContainer getDatabaseVersion(const std::vector<std::string>& parameters,
-                                                      const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getDatabaseVersion(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const;
 
-            shared::CDataContainer getExternalConfiguration(const std::vector<std::string>& parameters,
-                                                            const std::string& requestContent) const;
-            shared::CDataContainer saveExternalConfiguration(const std::vector<std::string>& parameters,
-                                                             const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getExternalConfiguration(const std::vector<std::string>& parameters,
+                                                                                                 const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> saveExternalConfiguration(const std::vector<std::string>& parameters,
+                                                                                                  const std::string& requestContent) const;
 
             boost::shared_ptr<dataAccessLayer::IConfigurationManager> m_configurationManager;
             static std::string m_restKeyword;

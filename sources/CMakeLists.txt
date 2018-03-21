@@ -573,6 +573,8 @@ set(YADOMS_SRC
    server/web/rest/RestDispatcherHelpers.hpp
    server/web/rest/Result.h
    server/web/rest/Result.cpp
+   server/web/rest/StringContainer.h
+   server/web/rest/StringContainer.cpp
 
    server/web/rest/service/Acquisition.h
    server/web/rest/service/Acquisition.cpp
@@ -732,7 +734,7 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/adapters/DatabaseAdapters.cpp
 	server/database/common/adapters/GenericAdapter.h
 	server/database/common/adapters/GenericAdapter.cpp
-	server/database/common/adapters/HighchartValueAdapter.hpp
+	server/database/common/adapters/HugeDataVectorAdapter.hpp
 	server/database/common/adapters/IResultAdapter.h
 	server/database/common/adapters/MultipleValueAdapter.hpp
 	server/database/common/adapters/SingleValueAdapter.hpp

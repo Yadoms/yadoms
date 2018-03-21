@@ -22,36 +22,36 @@ namespace web
             // [END] IRestService implementation
 
             static const std::string& getRestKeyword();
-            shared::CDataContainer getAllInterpreters(const std::vector<std::string>& parameters,
-                                                      const std::string& requestContent) const;
-            shared::CDataContainer getAllRules(const std::vector<std::string>& parameters,
-                                               const std::string& requestContent) const;
-            shared::CDataContainer getRule(const std::vector<std::string>& parameters,
-                                           const std::string& requestContent) const;
-            shared::CDataContainer getRuleCode(const std::vector<std::string>& parameters,
-                                               const std::string& requestContent) const;
-            shared::CDataContainer getRuleCodeTemplate(const std::vector<std::string>& parameters,
-                                                       const std::string& requestContent) const;
-            shared::CDataContainer getRuleLog(const std::vector<std::string>& parameters,
-                                              const std::string& requestContent) const;
-            shared::CDataContainer deleteRuleLog(const std::vector<std::string>& parameters,
-                                                 const std::string& requestContent) const;
-            shared::CDataContainer startRule(const std::vector<std::string>& parameters,
-                                             const std::string& requestContent) const;
-            shared::CDataContainer stopRule(const std::vector<std::string>& parameters,
-                                            const std::string& requestContent) const;
-            shared::CDataContainer createRule(const std::vector<std::string>& parameters,
-                                              const std::string& requestContent) const;
-            shared::CDataContainer updateRule(const std::vector<std::string>& parameters,
-                                              const std::string& requestContent) const;
-            shared::CDataContainer updateRuleCode(const std::vector<std::string>& parameters,
-                                                  const std::string& requestContent) const;
-            shared::CDataContainer deleteRule(const std::vector<std::string>& parameters,
-                                              const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAllInterpreters(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAllRules(const std::vector<std::string>& parameters,
+                                                                                    const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getRule(const std::vector<std::string>& parameters,
+                                                                                const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getRuleCode(const std::vector<std::string>& parameters,
+                                                                                    const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getRuleCodeTemplate(const std::vector<std::string>& parameters,
+                                                                                            const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getRuleLog(const std::vector<std::string>& parameters,
+                                                                                   const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> deleteRuleLog(const std::vector<std::string>& parameters,
+                                                                                      const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> startRule(const std::vector<std::string>& parameters,
+                                                                                  const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> stopRule(const std::vector<std::string>& parameters,
+                                                                                 const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> createRule(const std::vector<std::string>& parameters,
+                                                                                   const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> updateRule(const std::vector<std::string>& parameters,
+                                                                                   const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> updateRuleCode(const std::vector<std::string>& parameters,
+                                                                                       const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> deleteRule(const std::vector<std::string>& parameters,
+                                                                                   const std::string& requestContent) const;
 
-            shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
-                                                       const std::vector<std::string>& parameters,
-                                                       const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
+                                                                                            const std::vector<std::string>& parameters,
+                                                                                            const std::string& requestContent) const;
 
          private:
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
