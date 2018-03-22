@@ -36,6 +36,8 @@ IF(NOT DISABLE_TEST_PLUGIN_FAKEPLUGIN)
       shared/shared/plugin/yPluginApi/historization/typeInfo/IntTypeInfo.cpp
       shared/shared/plugin/yPluginApi/historization/typeInfo/DoubleTypeInfo.h
       shared/shared/plugin/yPluginApi/historization/typeInfo/DoubleTypeInfo.cpp
+      shared/shared/plugin/yPluginApi/historization/typeInfo/PercentageTypeInfo.cpp
+      shared/shared/plugin/yPluginApi/historization/typeInfo/PercentageTypeInfo.h
       shared/shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.h
       shared/shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.cpp
       shared/shared/plugin/yPluginApi/historization/typeInfo/EnumTypeInfo.hpp   

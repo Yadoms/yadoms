@@ -17,6 +17,8 @@ namespace shared
             class YADOMS_SHARED_EXPORT CDimmable : public CSingleHistorizableData<int>
             {
             public:
+               static const typeInfo::CIntTypeInfo DimmableDefaultTypeInfo;
+
                //-----------------------------------------------------
                ///\brief                     Constructor
                ///\param[in] keywordName     Yadoms keyword name
@@ -26,7 +28,7 @@ namespace shared
                explicit CDimmable(const std::string& keywordName,
                                   const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGetSet,
                                   const EMeasureType& measureType = EMeasureType::kAbsolute,
-                                  typeInfo::CIntTypeInfo& additionalInfo = typeInfo::CIntTypeInfo::Empty);
+                                  const typeInfo::CIntTypeInfo& additionalInfo = DimmableDefaultTypeInfo);
 
                //-----------------------------------------------------
                ///\brief                     Destructor
@@ -72,8 +74,6 @@ namespace shared
                ///\return                    The normalized switch level (0-100)
                //-----------------------------------------------------
                static int NormalizeLevel(int level);
-
-            private:
             };
          }
       }

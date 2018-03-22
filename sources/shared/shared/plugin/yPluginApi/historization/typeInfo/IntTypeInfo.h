@@ -13,47 +13,22 @@ namespace shared
          {
             namespace typeInfo
             {
-               //-----------------------------------------------------
-               ///\brief Interface for keyword type information
-               //-----------------------------------------------------
                class YADOMS_SHARED_EXPORT CIntTypeInfo : public ITypeInfo
                {
                public:
-                  //-----------------------------------------------------
-                  ///\brief   Empty container (can be with references)
-                  //-----------------------------------------------------
                   static CIntTypeInfo Empty;
 
-                  //-----------------------------------------------------
-                  ///\brief   Constructor
-                  //-----------------------------------------------------
                   CIntTypeInfo();
-
-                  //-----------------------------------------------------
-                  ///\brief   Destructor
-                  //-----------------------------------------------------
+                  CIntTypeInfo(int minValue,
+                               int maxValue);
+                  CIntTypeInfo(int minValue,
+                               int maxValue,
+                               int stepValue);
                   virtual ~CIntTypeInfo();
 
-                  //-----------------------------------------------------
-                  ///\brief   Set the min value
-                  ///\param [in] minValue : The minimum value
-                  ///\return  A reference to itself to allow method chaining
-                  //-----------------------------------------------------
-                  CIntTypeInfo& setMin(const int minValue);
-
-                  //-----------------------------------------------------
-                  ///\brief   Set the max value
-                  ///\param [in] maxValue : The maximum value
-                  ///\return  A reference to itself to allow method chaining
-                  //-----------------------------------------------------
-                  CIntTypeInfo& setMax(const int maxValue);
-
-                  //-----------------------------------------------------
-                  ///\brief   Set the step value
-                  ///\param [in] stepValue : The step value
-                  ///\return  A reference to itself to allow method chaining
-                  //-----------------------------------------------------
-                  CIntTypeInfo& setStep(const int stepValue);
+                  CIntTypeInfo& setMin(int minValue);
+                  CIntTypeInfo& setMax(int maxValue);
+                  CIntTypeInfo& setStep(int stepValue);
 
                   // ITypeInfo implementation 
                   CDataContainer serialize() const override;
@@ -69,5 +44,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi::historization::typeInfo
-
-
