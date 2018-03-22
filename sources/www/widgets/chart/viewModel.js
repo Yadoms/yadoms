@@ -120,8 +120,6 @@ function chartViewModel() {
               "</ul>" +
            "</div>"
            });
-           
-       console.log ("Interval : ", interval);
        
        self.widgetApi.toolbar({
           activated: true,
@@ -606,8 +604,6 @@ function chartViewModel() {
                     }
                     self.rangeTooLarge = false;
                   }
-                  
-                  debugger;
 
                   if (!self.rangeTooLarge) {
                       var deffered = RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
@@ -889,24 +885,26 @@ function chartViewModel() {
              if ((serie.points.length > 0) && ((time - lastDate) > (self.summaryTimeBetweenNewPoint))){
                 lastDate = serie.points[serie.points.length - 1].x;
                 
+                //debugger;
+                
                 switch (self.interval) {
                   case "DAY":
-                     self.DisplaySummary(index, 1, device, "days", "hour", lastDate);
+                     self.DisplaySummary(index, 1, device, "days", self.prefix, lastDate);
                      break;
                   case "WEEK":
-                     self.DisplaySummary(index, 1, device, "weeks", "hour", lastDate);
+                     self.DisplaySummary(index, 1, device, "weeks", self.prefix, lastDate);
                      break;
                   case "MONTH":
-                     self.DisplaySummary(index, 1, device, "months", "day", lastDate);
+                     self.DisplaySummary(index, 1, device, "months", self.prefix, lastDate);
                      break;
                   case "HALF_YEAR":
-                     self.DisplaySummary(index, 6, device, "months", "day", lastDate);
+                     self.DisplaySummary(index, 6, device, "months", self.prefix, lastDate);
                      break
                   case "YEAR":
-                     self.DisplaySummary(index, 1, device, "years", "day", lastDate);
+                     self.DisplaySummary(index, 1, device, "years", self.prefix, lastDate);
                      break;
                   case "FIVE_YEAR":
-                     self.DisplaySummary(index, 5, device, "years", "day", lastDate);
+                     self.DisplaySummary(index, 5, device, "years", self.prefix, lastDate);
                      break;                     
                   default:
                      break;
@@ -961,54 +959,72 @@ function chartViewModel() {
             var serie = self.chart.get(self.seriesUuid[index]);
             var serieRange = self.chart.get('range_' + self.seriesUuid[index]);
             var dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf(prefix).subtract(1, prefix + 's'));
+            var request_prefix = "";
             
             // we ask only from the last point registered
             var dateFrom = DateTimeFormatter.dateToIsoDate(moment(lastPointDate+1));
+            
+            //the week is not well calculated
+            if (prefix === "week") 
+               request_prefix = "day";
+            else
+               request_prefix = prefix;
          
-            RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + "/" + prefix + "/" + dateFrom + "/" + dateTo)
-               .done(function (data) {
-                   try {
-                       if (!isNullOrUndefined(data.data) && !isNullOrUndefinedOrEmpty(data.data[data.data.length-1])) {
-                          var registerDate = DateTimeFormatter.isoDateToDate(data.data[data.data.length-1].date)._d.getTime().valueOf();
-                          if (registerDate != serie.points[serie.points.length-1].x){
-                             self.chart.hideLoading(); // If a text was displayed before
-                             var valueToDisplay = parseFloat(data.data[data.data.length-1][self.periodValueType[index]]);
+            RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + "/" + request_prefix + "/" + dateFrom + "/" + dateTo)
+            .done(function (data) {
+                try {
+                   //debugger;
+                   
+                   // Weeks is not returned by the server, so we calculate here the weeks vector
+                   if (prefix === "week")
+                      vectorToAnalyze = getWeeks(data.data);
+                   else 
+                      vectorToAnalyze = data.data;
+                   
+                    if (!isNullOrUndefined(vectorToAnalyze) && !isNullOrUndefinedOrEmpty(vectorToAnalyze[vectorToAnalyze.length-1])) {
+                       var registerDate = DateTimeFormatter.isoDateToDate(vectorToAnalyze[vectorToAnalyze.length-1].date)._d.getTime().valueOf();
+                       if (registerDate != serie.points[serie.points.length-1].x){
+                          self.chart.hideLoading(); // If a text was displayed before
+                          var valueToDisplay = parseFloat(vectorToAnalyze[vectorToAnalyze.length-1][self.periodValueType[index]]);
+                    
+                          if (self.differentialDisplay[index]){
+                             if (serie && !isNullOrUndefined(self.chartLastValue[index])){
+                                serie.addPoint([registerDate, valueToDisplay-self.chartLastValue[index]], 
+                                               true,  // redraw. When more than 1 => false.
+                                               false, // shift if true, one point at left is remove
+                                               true); // animation.
+                             }
+                             self.chartLastValue[index] = valueToDisplay;
+                          }
+                          else                              
+                             serie.addPoint([registerDate, valueToDisplay], true, false, true);
+                     
+                          //Add also for ranges if any
+                          if (serieRange && !self.differentialDisplay[index]){
+                             serieRange.addPoint([registerDate, parseFloat(vectorToAnalyze[vectorToAnalyze.length-1].min), parseFloat(vectorToAnalyze[vectorToAnalyze.length-1].max)], 
+                                                 true, false, true);
+                          }
+                       }
+                    }
+                    else{ // Add null for this date
+                       var registerDate = moment(self.serverTime).subtract(1, 'hours').startOf(prefix)._d.getTime().valueOf();
                        
-                             if (self.differentialDisplay[index]){
-                                if (serie && !isNullOrUndefined(self.chartLastValue[index])){
-                                   serie.addPoint([registerDate, valueToDisplay-self.chartLastValue[index]], 
-                                                  true,  // redraw. When more than 1 => false.
-                                                  false, // shift if true, one point at left is remove
-                                                  true); // animation.
-                                }
-                                self.chartLastValue[index] = valueToDisplay;
-                             }
-                             else                              
-                                serie.addPoint([registerDate, valueToDisplay], true, false, true);
-                        
-                             //Add also for ranges if any
-                             if (serieRange && !self.differentialDisplay[index]){
-                                serieRange.addPoint([registerDate, parseFloat(data.data[data.data.length-1].min), parseFloat(data.data[data.data.length-1].max)], 
-                                                    true, false, true);
-                             }
-                          }
+                       if ((registerDate - serie.points[serie.points.length-1].x) > self.cleanValue)
+                          serie.addPoint([registerDate, null], true, false, true);
+                       
+                       if (serieRange && !self.differentialDisplay[index])
+                       {
+                          if ((registerDate - serieRange.points[serieRange.points.length-1].x) > self.cleanValue)
+                             serieRange.addPoint([registerDate, null, null], true, false, true);
                        }
-                       else{ // Add null for this date
-                          var registerDate = moment(self.serverTime).subtract(1, 'hours').startOf(prefix)._d.getTime().valueOf();
-                          
-                          if ((registerDate - serie.points[serie.points.length-1].x) > self.cleanValue)
-                             serie.addPoint([registerDate, null], true, false, true);
-                          
-                          if (serieRange && !self.differentialDisplay[index])
-                          {
-                             if ((registerDate - serieRange.points[serie.points.length-1].x) > self.cleanValue)
-                                serieRange.addPoint([registerDate, null, null], true, false, true);
-                          }
-                       }
-                   } catch (err) {
-                       console.error(err.message);
-                   }
-               });
+                    }
+                } catch (err) {
+                    console.error(err.message);
+                }
+            })
+            .fail(function (error) {
+               console.error(error);
+            });
         } catch (err) {
             console.error(err.message);
         }
