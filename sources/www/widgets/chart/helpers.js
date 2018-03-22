@@ -118,11 +118,11 @@ function getWeeks(vectorToParse){
           
           if (weekNum == weekplot[weekplot.length-1].week)
           {
-             weekplot[weekplot.length-1].avg += data.avg;
+             weekplot[weekplot.length-1].avg += parseFloat(data.avg);
              
              // treat min and max values
-             if (data.min<weekplot[weekplot.length-1].min) weekplot[weekplot.length-1].min = data.min;
-             if (data.max>weekplot[weekplot.length-1].max) weekplot[weekplot.length-1].max = data.max;
+             if (parseFloat(data.min)<parseFloat(weekplot[weekplot.length-1].min)) weekplot[weekplot.length-1].min = data.min;
+             if (parseFloat(data.max)>parseFloat(weekplot[weekplot.length-1].max)) weekplot[weekplot.length-1].max = data.max;
              
              weekplot[weekplot.length-1].day += 1;
           }
@@ -132,7 +132,7 @@ function getWeeks(vectorToParse){
        } catch(error){
           //Enter the first value
           weekplot.push({
-             avg  : data.avg,
+             avg  : parseFloat(data.avg),
              date : DateTimeFormatter.isoDateToDate(data.date).startOf('week'),
              min  : data.min,
              max  : data.max,
@@ -148,7 +148,7 @@ function getWeeks(vectorToParse){
        if (weekplot[index].day < 7){ 
           weekplot.splice(index, 1);
        }else {
-          weekplot[index].avg = weekplot[index].avg / weekplot[index].day;
+          weekplot[index].avg = (weekplot[index].avg / weekplot[index].day).toString();
           index += 1;
        }
     };
