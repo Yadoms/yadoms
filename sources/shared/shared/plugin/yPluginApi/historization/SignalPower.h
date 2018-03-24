@@ -24,8 +24,7 @@ namespace shared
                ///\param[in] measureType     The measure type (normally kAbsolute)
                //-----------------------------------------------------
                explicit CSignalPower(const std::string& keywordName,
-                                 const EMeasureType& measureType = EMeasureType::kAbsolute,
-                                 typeInfo::CIntTypeInfo& additionalInfo = typeInfo::CIntTypeInfo::Empty);
+                                     const EMeasureType& measureType = EMeasureType::kAbsolute);
 
                //-----------------------------------------------------
                ///\brief                     Destructor
@@ -36,5 +35,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

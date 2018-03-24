@@ -11,10 +11,12 @@ namespace shared
       {
          namespace historization
          {
+            const typeInfo::CIntTypeInfo CDimmable::DimmableDefaultTypeInfo(0, 100, 1);
+
             CDimmable::CDimmable(const std::string& keywordName,
                                  const EKeywordAccessMode& accessMode,
                                  const EMeasureType& measureType,
-                                 typeInfo::CIntTypeInfo& additionalInfo)
+                                 const typeInfo::CIntTypeInfo& additionalInfo)
                : CSingleHistorizableData<int>(keywordName,
                                               CStandardCapacities::Dimmable(),
                                               accessMode,

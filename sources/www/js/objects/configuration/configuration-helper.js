@@ -176,7 +176,10 @@ ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, 
       name: keyword.friendlyName,
       description: $.t(keyword.units, { defaultValue: keyword.units }),
       type: keyword.type,
-      values : keyword.typeInfo.values
+      values : keyword.typeInfo.values,
+      minimumValue : keyword.typeInfo.min,
+      maximumValue : keyword.typeInfo.max,
+      precision : keyword.typeInfo.precision,
    }
    
    switch (keyword.type.toLowerCase()) {

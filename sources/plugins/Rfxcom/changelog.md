@@ -1,3 +1,7 @@
+### 1.1.2-beta.1
+* Fix manually creation of sTypeLivolo, sTypeTRC02, sTypeAoke, sTypeTRC02_2, sTypeRGB432W, sTypeMDREMOTE107, sTypeLegrandCAD and sTypeMDREMOTE108 devices
+* Add min/max information for each future created devices containing BatteryLevel or SignalPower keyword
+
 ### 1.1.1
 * Filter parasite devices for Lighting5 protocol (LightwaveRF, Siemens, EMW100, BBSB, MDREMOTE, RSL2, OTIO, Livolo, RGB, Aoke relay, Eurodomest, RGB432W, Legrand, Avantek, IT, Kangtai)
 

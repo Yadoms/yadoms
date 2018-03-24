@@ -35,7 +35,8 @@ namespace rfxcomMessages
                           unsigned int subType,
                           const std::string& name,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_deviceName(name),
+      : m_subType(subType),
+        m_deviceName(name),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_signalPower})
    {
@@ -44,7 +45,24 @@ namespace rfxcomMessages
       createSubType(static_cast<unsigned char>(subType));
 
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
-      m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
+
+      switch (m_subType)
+      {
+      case sTypeMDREMOTE:
+      case sTypeLivolo:
+      case sTypeTRC02:
+      case sTypeAoke:
+      case sTypeTRC02_2:
+      case sTypeRGB432W:
+      case sTypeMDREMOTE107:
+      case sTypeLegrandCAD:
+      case sTypeMDREMOTE108:
+         m_unitCode = 0;
+         break;
+      default:
+         m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
+         break;
+      }
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
