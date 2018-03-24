@@ -509,42 +509,39 @@ function chartViewModel() {
     this.navigatorBtnClick = function () {
         var self = this;
         return function (e) {
+            function ConfigureAndRefreshChart(interval, prefix) {
+               self.chartParametersConfiguration(interval, prefix);
+               
+               //we ask the new time server, and we refresh information
+               self.widgetApi.askServerLocalTime(function (serverLocalTime) {
+                  self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
+                  self.refreshData(interval);
+               });
+            }           
            
             //we manage activation
             var interval = $(e.currentTarget).attr("interval");
             var prefix = $(e.currentTarget).attr("prefix");
             
             if (!isNullOrUndefined(interval)) {
-               
                //default prefix for each interval
                self.prefix = defaultPrefixForInterval(interval);
-               
-               console.log ("interval value =", interval);
-               console.log ("self.prefix value =", self.prefix);
-               
                self.configureToolbar(interval + "/" + self.prefix);
-               self.interval = interval;
-               console.log ("interval = ", self.widgetApi.find(".range-btn[interval='" + self.interval + "']"));
-               self.widgetApi.find(".range-btn[interval='" + self.interval + "']").addClass("widget-toolbar-pressed-button");
+               self.widgetApi.find(".range-btn[interval='" + interval + "']").addClass("widget-toolbar-pressed-button");
                self.widgetApi.find(".range-btn[prefix='" + self.prefix + "']").addClass("widget-toolbar-pressed-button");
+               
+               if (interval != self.interval){
+                  ConfigureAndRefreshChart (interval, self.prefix);
+                  self.interval = interval;
+               }
             }
 
-            if (!isNullOrUndefined(prefix)) {
-               console.log ("prefix = ", self.widgetApi.find(".range-btn[prefix='" + prefix + "']"));
-               console.log ("self.prefix = ", self.prefix);
+            if (!isNullOrUndefined(prefix) && (prefix != self.prefix)) {
                self.widgetApi.find(".range-btn[prefix='" + prefix + "']").addClass("widget-toolbar-pressed-button");
                self.widgetApi.find(".range-btn[prefix='" + self.prefix + "']").removeClass("widget-toolbar-pressed-button");
+               ConfigureAndRefreshChart (self.interval, prefix);
                self.prefix = prefix;
-               interval = self.interval; // copy this value for the self.refreshData function below
             }
-            
-            self.chartParametersConfiguration();
-            
-            //we ask the new time server, and we refresh information
-            self.widgetApi.askServerLocalTime(function (serverLocalTime) {
-               self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
-               self.refreshData(interval);
-            });
         };
     };
 
@@ -1001,7 +998,9 @@ function chartViewModel() {
                      
                           //Add also for ranges if any
                           if (serieRange && !self.differentialDisplay[index]){
-                             serieRange.addPoint([registerDate, parseFloat(vectorToAnalyze[vectorToAnalyze.length-1].min), parseFloat(vectorToAnalyze[vectorToAnalyze.length-1].max)], 
+                             serieRange.addPoint([registerDate, 
+                                                  parseFloat(vectorToAnalyze[vectorToAnalyze.length-1].min), 
+                                                  parseFloat(vectorToAnalyze[vectorToAnalyze.length-1].max)], 
                                                  true, false, true);
                           }
                        }
