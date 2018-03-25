@@ -61,7 +61,7 @@ namespace database
                   }
                   m_internalValue += "}}"; //no data, just append closing bracket
                }
-               return false;
+               return true;
             }
             /*
             bool adapt(std::vector<boost::shared_ptr<entities::CAcquisitionSummary>> resultSummary)

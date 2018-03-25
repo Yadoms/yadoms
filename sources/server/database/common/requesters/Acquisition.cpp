@@ -224,12 +224,6 @@ namespace database
             }
 
             qSelect->OrderBy(CAcquisitionSummaryTable::getDateColumnName());
-            
-            if (type == entities::EAcquisitionSummaryType::kDay)
-            qSelect->Limit(2000); //more than 5 years
-            else
-            qSelect->Limit(200); // more than 8 days
-
             adapters::CAcquisitionSummaryAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
 
@@ -274,14 +268,6 @@ namespace database
             }
 
             qSelect->OrderBy(CAcquisitionSummaryTable::getDateColumnName());
-            /*
-            if (type == entities::EAcquisitionSummaryType::kDay)
-               qSelect->Limit(2000); //more than 5 years
-            else
-               qSelect->Limit(200); // more than 8 days
-               */
-
-            //adapters::CAcquisitionSummaryAdapter adapter;
             adapters::CHugeDataVectorAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
 

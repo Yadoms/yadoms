@@ -1,12 +1,12 @@
 {
 	"type": "chart",
-	"version": "1.0.3",
+	"version": "1.1.0-beta.1",
 	"author": "Jean-Michel BERHAULT, Nicolas HILAIRE",
 	"url": "https://github.com/Yadoms/yadoms/wiki/chart",
 	"credits": "[Highstocks](http://www.highcharts.com/)",
    "dependencies": {
      "yadoms" : {
-       "minimumVersion" : "2.0.2"
+       "minimumVersion" : "2.1.0"
      }
   },   
   "dimensions": {
@@ -28,15 +28,26 @@
 		"interval": {
 			"type": "enum",
 			"values": {
-				"HOUR": "",
-				"DAY": "",
-				"WEEK": "",
-				"MONTH": "",
-				"HALF_YEAR": "",
-				"YEAR": ""
+				"HOUR/minute": "",
+				"DAY/minute": "",
+            "DAY/hour": "",
+            "WEEK/hour": "",
+            "WEEK/day": "",
+            "MONTH/hour": "",
+            "MONTH/day": "",
+            "MONTH/week": "",
+            "HALF_YEAR/day": "",
+            "HALF_YEAR/week": "",
+            "HALF_YEAR/month": "",
+            "YEAR/day": "",
+            "YEAR/week": "",
+            "YEAR/month": "",
+            "FIVE_YEAR/day": "",
+            "FIVE_YEAR/week": "",
+            "FIVE_YEAR/month": ""
 			},         
 			"defaultValue": "DAY"
-		},
+		},     
       "legends" : {
 			"type": "section",
 			"defaultValue": "true",

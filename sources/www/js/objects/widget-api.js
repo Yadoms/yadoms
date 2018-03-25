@@ -172,9 +172,11 @@ WidgetApi.prototype.loadCss = function (cssFiles) {
  */
 WidgetApi.prototype.toolbar = function (options) {
     assert(!isNullOrUndefined(options), "options must be defined");
-
     var self = this;
-
+    
+    // remove all elements from the toolbar
+    self.widget.$toolbar.empty();
+       
     //we define default values
     options.activated = options.activated || false;
     options.displayTitle = options.displayTitle || true;
@@ -198,6 +200,8 @@ WidgetApi.prototype.toolbar = function (options) {
         if (options.batteryItem) {
             self.widget.$toolbar.append("<div class=\"" + self.widgetBatteryClass + "\" deviceId=\"\"></div>");
         }
+        
+        console.log (self.widget.$toolbar);
 
         //all other items
         $.each(options.items, function(index, value) {
