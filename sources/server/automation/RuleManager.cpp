@@ -291,14 +291,9 @@ namespace automation
       {
          return m_interpreterManager->getScriptLogContent(id);
       }
-      catch (shared::exception::CEmptyResult& e)
-      {
-         YADOMS_LOG(error) << "Unable to get rule log : " << e.what();
-         return std::string();
-      }
       catch (shared::exception::CInvalidParameter& e)
       {
-         YADOMS_LOG(error) << "Unable to get rule log : " << e.what();
+         YADOMS_LOG(information) << "Unable to get rule log (maybe not yet created or cleared) : " << e.what();
          return std::string();
       }
    }

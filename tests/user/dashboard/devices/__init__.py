@@ -188,7 +188,7 @@ class NewDeviceModal():
             
             
 
-class RemoveDeviceConfirmationModal(modals.RemoveObjectConfirmationModal):
+class RemoveDeviceConfirmationModal(modals.OkCancelModal):
    """ Operations on delete device confirmation modal """
    pass
    

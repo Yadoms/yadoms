@@ -1,9 +1,7 @@
 #pragma once
-
-#include "SqlExtension.hpp"
 #include "AdapterHelpers.hpp"
 #include "IResultAdapter.h"
-#include "database/common/DatabaseTables.h"
+#include "database/entities/Entities.h"
 
 namespace database
 {
@@ -42,5 +40,3 @@ namespace database
       } //namespace adapters
    } //namespace common
 } //namespace database 
-
-

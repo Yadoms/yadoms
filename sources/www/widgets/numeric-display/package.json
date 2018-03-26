@@ -1,9 +1,14 @@
 {
 	"type": "numeric-display",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"author": "Nicolas HILAIRE",
 	"url": "https://github.com/Yadoms/yadoms/wiki/numeric-display",
 	"credits": "",
+    "dependencies": {
+       "yadoms" : {
+          "minimumVersion" : "2.1.0"
+       }
+    },   
   "dimensions": {
     "min": {
       "x": 1,
@@ -29,7 +34,7 @@
          "type" : "int",
          "defaultValue" : "1",
          "maximumValue" : "3",
-         "minimumValue" : "1"
+         "minimumValue" : "0"
       },
       "dateDisplay": {
          "type": "bool",

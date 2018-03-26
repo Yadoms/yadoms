@@ -219,7 +219,7 @@ namespace update
 
    shared::CDataContainer CUpdateManager::buildYadomsList(const shared::versioning::CVersion& localVersion,
                                                           const shared::CDataContainer& availableVersions,
-                                                          bool includePrereleases)
+                                                          bool includePrereleases) const
    {
       // Only updatable items for Yadoms
       return addUpdatableYadoms(localVersion,
@@ -293,7 +293,7 @@ namespace update
 
    shared::CDataContainer CUpdateManager::addUpdatableYadoms(const shared::versioning::CVersion& localVersion,
                                                              const shared::CDataContainer& availableVersions,
-                                                             bool includePrereleases)
+                                                             bool includePrereleases) const
    {
       shared::CDataContainer item;
 
@@ -337,6 +337,20 @@ namespace update
 
       try
       {
+         if (!older.empty())
+         {
+            if (m_developerMode)
+            {
+               YADOMS_LOG(warning) << "Previous Yadoms versions are available because you are in developper mode : "
+                  << "Install a previous version at yout own risk, "
+                  << "downgraded version may be unable to load your current database";
+            }
+            else
+            {
+               older.clear();
+            }
+         }
+
          item.set("versions", buildUpdatableVersionsNode(localVersion.toString(),
                                                          older,
                                                          newer));

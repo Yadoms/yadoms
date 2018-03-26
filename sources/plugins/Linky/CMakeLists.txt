@@ -18,6 +18,7 @@ set(LINKY_SOURCES
    LinkyConfiguration.cpp
    LinkyFactory.h
    LinkyFactory.cpp
+   LinkyHelpers.hpp
    LinkyReceiveBufferHandler.h
    LinkyReceiveBufferHandler.cpp
    stdafx.h

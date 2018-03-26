@@ -41,12 +41,6 @@ namespace location
       void tryAutoLocate() const;
 
       //--------------------------------------------------------------
-      /// \brief           Update the current location in database
-      /// \param[in] location The new location to write in database
-      //--------------------------------------------------------------
-      void updateLocation(const shared::CDataContainer& location) const;
-
-      //--------------------------------------------------------------
       /// \brief           Get the current location
       /// \return          The current location (from database, or auto-located if not found in database)
       /// \throw shared::exception::CEmptyResult if location not available

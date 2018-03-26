@@ -10,8 +10,8 @@
                <input id="modify-page-text" type="text" class="form-control" placeholder="Enter Page name" data-i18n="[placeholder]modals.modify-page.placeholder">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel">Cancel</button>
-                <button id="btn-confirm-modify-page" type="button" class="btn btn-primary" data-i18n="common.ok">Ok</button>
+                <button type="button" class="btn btn-default btn-cancel" data-dismiss="modal" data-i18n="common.cancel"></button>
+                <button type="button" class="btn btn-primary btn-confirm" id="btn-confirm-modify-page" data-i18n="common.ok"></button>
             </div>
         </div>
     </div>
@@ -52,7 +52,7 @@
    /**
    * Callback to the click of the button to confirm modifying of a page
    */
-   $("button#btn-confirm-modify-page").click(function () {
+   $("button#btn-confirm-modify-page").unbind('click').bind('click', function () {
 
       //we close the modify page modal
       $("div#modify-page-modal").modal("hide");

@@ -80,7 +80,7 @@ class CreateRule(unittest.TestCase):
    def checkCreateErroneousRule(self, ruleName, ruleDescription, ruleCode, ruleLog):
       print '  Check notifications'
       notification.waitText(self.browser, notification.Type.Success, i18n.get()["modals"]["dashboard"]["sub-windows"]["automation-center"]["ruleSuccessfullyCreated"])
-      notification.waitSubText(self.browser, notification.Type.Error, i18n.get()["eventLogger"]["RuleFailed"].replace("__who__", ruleName))
+      notification.waitSubText(self.browser, notification.Type.Error, i18n.get()["eventLogger"]["RuleFailed"].replace("{{who}}", ruleName))
       
       print '  Check rule was inserted in rules table'
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)

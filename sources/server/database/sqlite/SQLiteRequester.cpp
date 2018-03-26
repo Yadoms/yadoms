@@ -135,16 +135,16 @@ namespace database
       /// \param [in]	 adapter:  pointer to the adapter to use to map raw values to a new entity
       /// \param [in]	 querytoExecute: the sql query
       //--------------------------------------------------------------
-      void CSQLiteRequester::queryEntities(common::adapters::IResultAdapter* pAdapter,
+      void CSQLiteRequester::queryEntities(common::adapters::IResultAdapter* adapter,
                                            const common::CQuery& querytoExecute)
       {
-         BOOST_ASSERT(pAdapter != NULL);
+         BOOST_ASSERT(adapter != NULL);
 
-         if (pAdapter != nullptr)
+         if (adapter != nullptr)
          {
             try
             {
-               int remainingTries = m_maxTries;
+               auto remainingTries = m_maxTries;
                bool retry;
 
                do
@@ -153,11 +153,11 @@ namespace database
                   retry = false;
 
                   sqlite3_stmt* stmt;
-                  auto rc = sqlite3_prepare_v2(m_pDatabaseHandler, querytoExecute.c_str(), -1, &stmt, nullptr);
+                  const auto rc = sqlite3_prepare_v2(m_pDatabaseHandler, querytoExecute.c_str(), -1, &stmt, nullptr);
                   if (rc == SQLITE_OK)
                   {
-                     boost::shared_ptr<CSQLiteResultHandler> handler(new CSQLiteResultHandler(stmt));
-                     if (!pAdapter->adapt(handler))
+                     const auto handler(boost::make_shared<CSQLiteResultHandler>(stmt));
+                     if (!adapter->adapt(handler))
                      {
                         YADOMS_LOG(error) << "Fail to adapt values";
                      }
@@ -194,7 +194,7 @@ namespace database
          else
          {
             //throw exception
-            throw shared::exception::CNullReference("pAdapter");
+            throw shared::exception::CNullReference("adapter");
          }
       }
 
@@ -398,7 +398,7 @@ namespace database
 
       void CSQLiteRequester::backupData(const std::string & backupFolder, ProgressFunc reporter)
       {
-         int rc = 0;
+         int rc;
          int currentTry = 0;
 
          do
@@ -426,16 +426,16 @@ namespace database
       {
          sqlite3* pFile; /* Database connection opened on zFilename */
 
-         std::string backpfile = backupFolder + "/" + "yadoms.db3";
+         std::string backupfile = backupFolder + "/" + "yadoms.db3";
 
          //remove backup file if already exists
-         if (boost::filesystem::exists(backpfile))
+         if (boost::filesystem::exists(backupfile))
          {
-            boost::filesystem::remove(backpfile);
+            boost::filesystem::remove(backupfile);
          }
 
          // Open the database file identified by zFilename.
-         int rc = sqlite3_open(backpfile.c_str(), &pFile);
+         int rc = sqlite3_open(backupfile.c_str(), &pFile);
          if (rc == SQLITE_OK)
          {
             // Open the sqlite3_backup object used to accomplish the transfer

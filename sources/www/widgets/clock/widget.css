@@ -1,6 +1,6 @@
 .widget-clock .date-field {
    margin-left:5px;
-    flex: 0 1 5%;
+    flex: 0 0 15%;
     font-size: 1px;
     overflow-x: hidden;
     white-space: nowrap;
@@ -8,8 +8,7 @@
 
 .widget-clock .time-field {
     margin: auto;
-    flex: 1;
+    flex: 0 0 85%;
     width: 100%;
     text-align: center;
 }
-

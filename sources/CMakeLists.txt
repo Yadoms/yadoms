@@ -176,7 +176,8 @@ SET (POCO_LIBS
 
 set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
 set(POCO_USE_STATIC_RUNTIME 1)
-add_definitions(-DPOCO_STATIC) 
+add_definitions(-DPOCO_STATIC)
+add_definitions(-DPOCO_EXTERNAL_OPENSSL)
 include(cmake/FindPoco.cmake)
 
 IF(NOT ${Poco_FOUND})
@@ -773,6 +774,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/versioning/Version_4_0_1.cpp
 	server/database/common/versioning/Version_4_1_0.h
 	server/database/common/versioning/Version_4_1_0.cpp
+	server/database/common/versioning/Version_4_2_0.h
+	server/database/common/versioning/Version_4_2_0.cpp
 	server/database/common/versioning/VersionUpgraderFactory.h
 	server/database/common/versioning/VersionUpgraderFactory.cpp
 	server/database/common/versioning/VersionException.h

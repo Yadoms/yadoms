@@ -210,7 +210,10 @@ WidgetManager.updateToServer = function (widget) {
              WidgetManager.updateWidgetConfiguration_(widget).always(function(){
                 //we ask for a refresh of widget data
                 updateWidgetPolling(widget)
-                .always(d.resolve);
+                .always(function() {
+                   widget.viewModel.widgetApi.setState(widgetStateEnum.Running);
+                   d.resolve();
+                });
              });
          }
          catch (e) {
@@ -245,8 +248,7 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
         widget.getlastValue = [];
         // Update widget specific values
         var defferedResult;
-        // default state is OK
-        widget.viewModel.widgetApi.setState(widgetStateEnum.OK);
+        widget.viewModel.widgetApi.setState(widgetStateEnum.ConfigurationChanged);
         if (!isNullOrUndefined(widget.viewModel.configurationChanged)) {
             var defferedResult = widget.viewModel.configurationChanged();
         }
@@ -259,11 +261,14 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
                
            //we manage the toolbar api specific icons
            widget.viewModel.widgetApi.manageBatteryConfiguration()
-           .always(d.resolve);
+           .always(function () {
+              d.resolve();
+           });
         });        
     }
     catch (e) {
         notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'configurationChanged' }));
+        widget.viewModel.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
         console.warn(e);
         d.reject();
     }
@@ -520,6 +525,7 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
             //we save the widget object into the viewModel
             widget.viewModel.widget = widget;
             widget.viewModel.widgetApi = new WidgetApi(widget);
+            widget.viewModel.widgetApi.setState(widgetStateEnum.Initialization);
             var defferedResult = widget.viewModel.initialize();
             //we manage answer if it is a promise or not
             defferedResult = defferedResult || new $.Deferred().resolve();
@@ -539,6 +545,8 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
                         notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", { widgetName: widget.type, methodName: 'resized' }));
                         console.warn(e);
                     }
+                    
+                    widget.viewModel.widgetApi.setState(widgetStateEnum.Running);
 
                     //we manage answer if it is a promise or not
                     defferedResized = defferedResized || new $.Deferred().resolve();
@@ -552,7 +560,6 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
                         }
 						
                         widget.$gridWidget.find(".textfit").fitText();
-                        widget.viewModel.widgetApi.manageRollingTitle();
                         d.resolve();
                     }).fail(d.reject);
                 }).fail(function () {
@@ -564,7 +571,7 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
                    }
             
                    widget.$gridWidget.find(".textfit").fitText();
-                   widget.viewModel.widgetApi.manageRollingTitle();
+                   widget.viewModel.widgetApi.setState(widgetStateEnum.Running);
                    d.reject();
                 });
             })

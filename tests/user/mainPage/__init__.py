@@ -10,7 +10,7 @@ import re
 
 
 def getCustomizeButton(browser):
-   return browser.find_element_by_id("customizeButton")
+   return browser.find_element_by_xpath(".//div[@class='navbar-right']//a[@id='customizeButton']")
 
 def isCustomizing(browser):
    pageTabsElement = browser.find_element_by_class_name('page-tabs')

@@ -61,10 +61,10 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
 
    BOOST_AUTO_TEST_CASE(NominalMessage)
    {
-      std::vector<unsigned char> txMessage{
+      const std::vector<unsigned char> txMessage{
          kSTX, kSTX, 0x00, 0x00, 0x00, kETX // STX, STX, Data0, Data1, checksum, ETX
       };
-      std::vector<unsigned char> expectedMessage{
+      const std::vector<unsigned char> expectedMessage{
          0x00, 0x00 // Data0, Data1
       };
       checkExpectedMessage(txMessage, expectedMessage);
@@ -72,10 +72,10 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
 
    BOOST_AUTO_TEST_CASE(NominalBigMessage)
    {
-      std::vector<unsigned char> txMessage{
+      const std::vector<unsigned char> txMessage{
          kSTX, kSTX, 0x00, 0x12, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0xAA, 0xCC, 0xB9, kETX // STX, STX, Datas, checksum, ETX
       };
-      std::vector<unsigned char> expectedMessage{
+      const std::vector<unsigned char> expectedMessage{
          0x00, 0x12, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0xAA, 0xCC // Datas
       };
       checkExpectedMessage(txMessage, expectedMessage);
@@ -83,7 +83,7 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
 
    BOOST_AUTO_TEST_CASE(BadChecksum)
    {
-      std::vector<unsigned char> txMessage{
+      const std::vector<unsigned char> txMessage{
          kSTX, kSTX, 0x00, 0x00, 0xaa, kETX // STX, STX, Data0, Data1, bad checksum, ETX
       };
       checkFilteredMessage(txMessage);
@@ -91,7 +91,7 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
 
    BOOST_AUTO_TEST_CASE(Uncomplete)
    {
-      std::vector<unsigned char> txMessage{
+      const std::vector<unsigned char> txMessage{
          kSTX, kSTX, 0x00, 0x00, 0x00, 0x00 // STX, STX, Data0, Data1... No ETX
       };
       checkFilteredMessage(txMessage);
@@ -99,31 +99,31 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
 
    BOOST_AUTO_TEST_CASE(Only2STX)
    {
-      std::vector<unsigned char> txMessage{
+      const std::vector<unsigned char> txMessage{
          kSTX, kSTX,
       };
       checkFilteredMessage(txMessage);
    }
 
-   BOOST_AUTO_TEST_CASE(bytesBeforeSTX)
+   BOOST_AUTO_TEST_CASE(BytesBeforeSTX)
    {
-      std::vector<unsigned char> txMessage{
+      const std::vector<unsigned char> txMessage{
          0x01, 0x23, 0x56, kSTX, kSTX, 0x45, 0x67, 0x54, kETX // STX, STX, Data0, Data1, checksum, ETX
       };
-      std::vector<unsigned char> expectedMessage{
+      const std::vector<unsigned char> expectedMessage{
          0x45, 0x67 // Data0, Data1
       };
       checkExpectedMessage(txMessage, expectedMessage);
    }
 
-   BOOST_AUTO_TEST_CASE(bytesBeforeUncompleteMessageBeforeMessage)
+   BOOST_AUTO_TEST_CASE(BytesBeforeUncompleteMessageBeforeMessage)
    {
-      std::vector<unsigned char> txMessage{
+      const std::vector<unsigned char> txMessage{
          0x01, 0x23, 0x56, // Invalid bytes
          kSTX, kSTX, 0x45, 0x67, 0x54, // Uncomplete message
          kSTX, kSTX, 0x00, 0x12, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0xAA, 0xCC, 0xB9, kETX // True message
       };
-      std::vector<unsigned char> expectedMessage{
+      const std::vector<unsigned char> expectedMessage{
          0x00, 0x12, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0xAA, 0xCC // True message
       };
       checkExpectedMessage(txMessage, expectedMessage);
@@ -131,20 +131,20 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
 
    BOOST_AUTO_TEST_CASE(MultiplesMessages)
    {
-      std::vector<unsigned char> txMessage{
+      const std::vector<unsigned char> txMessage{
          0x01, 0x23, 0x23, // Invalid bytes
          kSTX, kSTX, 0x45, 0x67, 0x54, kETX, // True message
          kSTX, kSTX, 0x00, 0x12, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0xAA, 0xCC, 0xB9, kETX, // True message
          kSTX, kSTX, 0x00, 0x12, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0x2E, kETX, // Bad checksum
          kSTX, kSTX, 0x00, 0x12, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0x2F, kETX // True message
       };
-      std::vector<unsigned char> expectedMessage1{
+      const std::vector<unsigned char> expectedMessage1{
          0x45, 0x67
       };
-      std::vector<unsigned char> expectedMessage2{
+      const std::vector<unsigned char> expectedMessage2{
          0x00, 0x12, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0xAA, 0xCC
       };
-      std::vector<unsigned char> expectedMessage3{
+      const std::vector<unsigned char> expectedMessage3{
          0x00, 0x12, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF
       };
       checkExpectedMessages(txMessage,
@@ -156,10 +156,10 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
 
    BOOST_AUTO_TEST_CASE(bytesAfterMessage)
    {
-      std::vector<unsigned char> txMessage{
+      const std::vector<unsigned char> txMessage{
          kSTX, kSTX, 0x45, 0x67, 0x54, kETX, 0x12, 0x45 // STX, STX, Data0, Data1, checksum, ETX, invalid bytes
       };
-      std::vector<unsigned char> expectedMessage{
+      const std::vector<unsigned char> expectedMessage{
          0x45, 0x67 // Data0, Data1
       };
       checkExpectedMessage(txMessage, expectedMessage);
@@ -167,13 +167,13 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
    
    BOOST_AUTO_TEST_CASE(CuttedMessage)
    {
-      std::vector<unsigned char> txMessagePart1{
+      const std::vector<unsigned char> txMessagePart1{
          kSTX, kSTX, 0x00
       };
-      std::vector<unsigned char> txMessagePart2{
+      const std::vector<unsigned char> txMessagePart2{
          0x12, 0x23, 0x45, 0x67
       };
-      std::vector<unsigned char> txMessagePart3{
+      const std::vector<unsigned char> txMessagePart3{
          0x89, 0xAB, 0xCD, 0xEF, 0xAA, 0xCC, 0xB9, kETX
       };
       std::vector<unsigned char> expectedMessage{
@@ -203,13 +203,13 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
 
    BOOST_AUTO_TEST_CASE(Timeout)
    {
-      std::vector<unsigned char> txMessagePart1{
+      const std::vector<unsigned char> txMessagePart1{
          kSTX, kSTX, 0x00
       };
-      std::vector<unsigned char> txMessagePart2{
+      const std::vector<unsigned char> txMessagePart2{
          0x12, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0xAA, 0xCC, 0xB9, kETX
       };
-      std::vector<unsigned char> txNextMessagePart{
+      const std::vector<unsigned char> txNextMessagePart{
          kSTX, kSTX, 0x00, 0x12, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0xAA, 0xCC, 0xB9, kETX
       };
       std::vector<unsigned char> expectedMessage{
@@ -240,10 +240,10 @@ BOOST_AUTO_TEST_SUITE(TestPicBootReceiveBufferHandler)
 
    BOOST_AUTO_TEST_CASE(EscapedCharacters)
    {
-      std::vector<unsigned char> txMessage{
+      const std::vector<unsigned char> txMessage{
          kSTX, kSTX, 0x00, 0x12, kDLE, kSTX, 0x23, 0x45, kDLE, kETX, 0x67, kDLE, kDLE, 0x89, 0xAB, 0xCD, 0xEF, 0xAA, 0xCC, 0x5B, kETX
       };
-      std::vector<unsigned char> expectedMessage{
+      const std::vector<unsigned char> expectedMessage{
          0x00, 0x12, kSTX, 0x23, 0x45, kETX, 0x67, kDLE, 0x89, 0xAB, 0xCD, 0xEF, 0xAA, 0xCC
       };
       checkExpectedMessage(txMessage, expectedMessage);
