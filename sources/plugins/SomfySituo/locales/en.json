@@ -1,0 +1,28 @@
+{
+  "name": "Somfy IO Situo",
+  "description": "Control a Somfy IO Situo remote with an specific adapter",
+  "configurationSchema": {
+    "SerialPort": {
+      "name": "Serial port",
+      "description": "The (virtual) serial port connected to the UPS"
+    }
+  },
+  "extraQueries": {
+    "progChannel": {
+      "name": "Add/Remove an application to/from a channel",
+      "commandData": {
+        "Channel": {
+          "name": "Channel",
+          "description": "Channel which will receive or for which we will suppress the application. First push during 2 to 5s the PROG button from the remote control of the application to add or remove (till a back-and-forth of the device)"
+        }
+      }
+    }
+  },
+  "customLabels": {
+    "pluginState": {
+      "connecting": "Connecting...",
+      "connectionFailed": "Connection failed, will retry in a while...",
+      "updateConfiguration": "Configuration updating..."
+    }
+  }
+}
