@@ -40,7 +40,7 @@ class ConfigureDevice(unittest.TestCase):
       deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
       configureDeviceModal = dashboard.devices.waitConfigureDeviceModal(self.browser)
-      assert configureDeviceModal.getConfigurationFieldsCount() == 2
+      self.assertEqual(configureDeviceModal.getConfigurationFieldsCount(), 2)
       configureDeviceModal.cancel()
 
 
@@ -54,24 +54,24 @@ class ConfigureDevice(unittest.TestCase):
       deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
       configureDeviceModal = dashboard.devices.waitConfigureDeviceModal(self.browser)
-      assert configureDeviceModal.getConfigurationFieldsCount() == 5
+      self.assertEqual(configureDeviceModal.getConfigurationFieldsCount(), 5)
 
       print '  Start change device configuration then cancel'
-      assert configureDeviceModal.getTextField('CounterDivider2') == '2'
+      self.assertEqual(configureDeviceModal.getTextField('CounterDivider2'), '2')
       configureDeviceModal.updateTextField('CounterDivider2', '5')
       configureDeviceModal.cancel()
       
       print '  Start change device configuration then confirm'
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
       configureDeviceModal = dashboard.devices.waitConfigureDeviceModal(self.browser)
-      assert configureDeviceModal.getTextField('CounterDivider2') == '2'
+      self.assertEqual(configureDeviceModal.getTextField('CounterDivider2'), '2')
       configureDeviceModal.updateTextField('CounterDivider2', '5')
       configureDeviceModal.ok()
 
       print '  Check change was saved'
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
       configureDeviceModal = dashboard.devices.waitConfigureDeviceModal(self.browser)
-      assert configureDeviceModal.getTextField('CounterDivider2') == '5'
+      self.assertEqual(configureDeviceModal.getTextField('CounterDivider2'), '5')
       configureDeviceModal.cancel()
 
       

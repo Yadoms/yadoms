@@ -26,27 +26,48 @@ namespace database
          CDataProvider::unload();
       }
 
-      shared::versioning::CVersion CDataProvider::GetVersion() const
+      shared::versioning::CVersion CDataProvider::getVersion() const
       {
-         //get the database version
-         shared::versioning::CVersion currentVersion;
-
          try
          {
-            if (m_databaseRequester->checkTableExists(CConfigurationTable::getTableName()))
+            // Configuration table changed from Database 4.2.0 version (updated to 4.2.0 in Yadoms 2.1.0 version).
+            // As database version is stored in the Configuration table and this table structure changed,
+            // we have to know the current table structure before get Database version
+            // To check table structure, just check if "Database" record exists (if yes, database is from old version)
+            auto newDatabaseQuery = m_databaseRequester->newQuery();
+            newDatabaseQuery->SelectCount().
+                              From(CConfigurationTable::getTableName()).
+                              Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "Database");
+            const auto isOldDatabase = m_databaseRequester->queryCount(*newDatabaseQuery) == 1;
+
+            if (isOldDatabase)
             {
                auto qVersion = m_databaseRequester->newQuery();
-               qVersion->Select(CConfigurationTable::getValueColumnName()).
-                  From(CConfigurationTable::getTableName()).
-                  Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "Database").
-                  And(CConfigurationTable::getNameColumnName(), CQUERY_OP_EQUAL, "Version");
+               qVersion->Select(CDatabaseColumn("value")).
+                         From(CDatabaseTable("Configuration")).
+                         Where(CDatabaseColumn("section"), CQUERY_OP_EQUAL, "Database").
+                         And(CDatabaseColumn("name"), CQUERY_OP_EQUAL, "Version");
 
                adapters::CSingleValueAdapter<std::string> adapter;
                m_databaseRequester->queryEntities(&adapter, *qVersion);
                auto results = adapter.getResults();
 
                if (results.size() >= 1)
-                  currentVersion = shared::versioning::CVersion(results[0]);
+                  return shared::versioning::CVersion(results[0]);
+            }
+            else
+            {
+               auto qVersion = m_databaseRequester->newQuery();
+               qVersion->Select(CConfigurationTable::getValueColumnName()).
+                         From(CConfigurationTable::getTableName()).
+                         Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "databaseVersion");
+
+               adapters::CSingleValueAdapter<std::string> adapter;
+               m_databaseRequester->queryEntities(&adapter, *qVersion);
+               auto results = adapter.getResults();
+
+               if (results.size() >= 1)
+                  return shared::versioning::CVersion(results[0]);
             }
          }
          catch (std::exception& ex)
@@ -58,7 +79,7 @@ namespace database
             YADOMS_LOG(debug) << "Fail to get version of database : Unkonown exception";
          }
 
-         return currentVersion;
+         return shared::versioning::CVersion();
       }
 
       // IDatabaseProvider implementation
@@ -75,7 +96,7 @@ namespace database
             //check for update
             YADOMS_LOG(information) << "Check for database update...";
 
-            versioning::CVersionUpgraderFactory::GetUpgrader()->checkForUpgrade(m_databaseRequester, GetVersion());
+            versioning::CVersionUpgraderFactory::GetUpgrader()->checkForUpgrade(m_databaseRequester, getVersion());
 
             //create entities requester (high level querier)
             loadRequesters();
@@ -136,8 +157,10 @@ namespace database
 
          //schedule the timer to launch task each hour +1min
          //Schedule : now and each hour (1000 * 3600)
-         auto msWait = static_cast<long>(timeToWaitBeforeFirstOccurrence.totalMilliseconds()); //force cast because value is maximum 1hour = 1000*3600 which is less than "long" maximum value
-         auto msWaitPeriod = static_cast<long>(oneHourOffset.totalMilliseconds());//force cast because value is 1 hour = 1000*3600 which is less than "long" maximum value
+         const auto msWait = static_cast<long>(timeToWaitBeforeFirstOccurrence.totalMilliseconds());
+         //force cast because value is maximum 1hour = 1000*3600 which is less than "long" maximum value
+         const auto msWaitPeriod = static_cast<long>(oneHourOffset.totalMilliseconds());
+         //force cast because value is 1 hour = 1000*3600 which is less than "long" maximum value
 
          m_maintenanceTimer->scheduleAtFixedRate(m_maintenanceSummaryComputingTask, msWait, msWaitPeriod);
       }
@@ -158,8 +181,10 @@ namespace database
          firstPurgeOccurence += oneDayOffset;//+1day
          Poco::Timespan timeToWaitBeforeFirstPurgeOccurrence = firstPurgeOccurence - now;
 
-         auto msWait = static_cast<long>(timeToWaitBeforeFirstPurgeOccurrence.totalMilliseconds()); //force cast because value is maximum 1hour = 1000*3600 which is less than "long" maximum value
-         auto msWaitPeriod = static_cast<long>(oneDayOffset.totalMilliseconds());//force cast because value is 1 hour = 1000*3600 which is less than "long" maximum value
+         const auto msWait = static_cast<long>(timeToWaitBeforeFirstPurgeOccurrence.totalMilliseconds());
+         //force cast because value is maximum 1hour = 1000*3600 which is less than "long" maximum value
+         const auto msWaitPeriod = static_cast<long>(oneDayOffset.totalMilliseconds());
+         //force cast because value is 1 hour = 1000*3600 which is less than "long" maximum value
 
          m_maintenanceTimer->scheduleAtFixedRate(m_maintenancePurgeTask, msWait, msWaitPeriod);
       }
@@ -209,5 +234,3 @@ namespace database
       }
    } //namespace common
 } //namespace database
-
-

@@ -1,6 +1,6 @@
 /** @module Widget class */
 
-var widgetStateEnum = Object.freeze({OK: 0, InvalidConfiguration: 1});
+var widgetStateEnum = Object.freeze({OK: 0, Initialization:1, ConfigurationChanged: 2, Running: 3, InvalidConfiguration: 4});
 
 /**
  * Create an instance of Widget
@@ -28,8 +28,8 @@ function Widget(id, idPage, type, title, sizeX, sizeY, position, configuration) 
     this.idPage = idPage;
     this.type = type;
     this.title = title;
-    this.toolbarActivated = true;     // by default the toolbar is activated
-    this.state = widgetStateEnum.OK;  // by default, the widget is ok
+    this.toolbarActivated = true;                 // by default the toolbar is activated
+    this.state = widgetStateEnum.Initialization;  // by default, the widget is Initialization
 
     //we save initial values that could change over the time
     this.initialValues = {};
@@ -58,6 +58,9 @@ function Widget(id, idPage, type, title, sizeX, sizeY, position, configuration) 
     
     //list of all keywords {keywordId} to get the last value
     this.getlastValue = [];
+    
+    //list of all waiting acquisitions during the startup of the widget 
+    this.waitingAcquisition = [];
 }
 
 /**

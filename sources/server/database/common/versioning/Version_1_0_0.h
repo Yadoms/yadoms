@@ -2,6 +2,7 @@
 
 #include "IVersionUpgrade.h"
 #include "database/IDatabaseRequester.h"
+#include <shared/currentTime/Provider.h>
 
 
 namespace database
@@ -32,8 +33,9 @@ namespace database
             // [END] ISQLiteVersionUpgrade implementation
 
          protected:
-            static void updateDatabaseVersion(const boost::shared_ptr<IDatabaseRequester> pRequester,
-                                              const shared::versioning::CVersion& newVersion);
+            static void updateDatabaseVersion(const boost::shared_ptr<IDatabaseRequester> requester,
+                                              const shared::versioning::CVersion& newVersion,
+                                              const boost::posix_time::ptime& insertDate = shared::currentTime::Provider().now());
 
          private:
             //-----------------------------------

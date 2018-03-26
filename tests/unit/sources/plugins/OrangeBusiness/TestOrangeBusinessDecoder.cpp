@@ -2,7 +2,6 @@
 #include <boost/test/unit_test.hpp>
 #include "../../../../sources/plugins/OrangeBusiness/Decoder.h"
 #include "../../mock/server/pluginSystem/DefaultYPluginApiMock.hpp"
-#include <shared/exception/OutOfRange.hpp>
 
 
 BOOST_AUTO_TEST_SUITE(TestOrangeBusiness)
@@ -27,7 +26,7 @@ BOOST_AUTO_TEST_SUITE(TestOrangeBusiness)
 
    BOOST_AUTO_TEST_CASE(DecoderDeviceFrameNominal)
    {
-      auto api(boost::make_shared<CDefaultYPluginApiMock>());
+      const auto api(boost::make_shared<CDefaultYPluginApiMock>());
       CDecoder decoder;
 
       shared::CDataContainer messageRecu;
@@ -88,7 +87,7 @@ BOOST_AUTO_TEST_SUITE(TestOrangeBusiness)
 
    BOOST_AUTO_TEST_CASE(DecoderCommandeListNominal)
    {
-      std::string message = "[{\
+      const std::string message = "[{\
          \"id\" : \"58e276370cf2cabaf8221840\",\
             \"streamId\" : \"urn:lora:70B3D532600013B5!uplink\",\
             \"timestamp\" : \"2017-04-03T16:20:07.513Z\",\

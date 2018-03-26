@@ -59,9 +59,9 @@ namespace update
                                           const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>&
                                           scriptInterpretersLocalVersions,
                                           const shared::CDataContainer& scriptInterpretersAvailableVersions);
-      static shared::CDataContainer buildYadomsList(const shared::versioning::CVersion& localVersion,
-                                                    const shared::CDataContainer& availableVersions,
-                                                    bool includePrereleases);
+      shared::CDataContainer buildYadomsList(const shared::versioning::CVersion& localVersion,
+                                             const shared::CDataContainer& availableVersions,
+                                             bool includePrereleases) const;
       shared::CDataContainer buildPluginList(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
                                              const shared::CDataContainer& availableVersions,
                                              bool includePrereleases);
@@ -72,9 +72,9 @@ namespace update
          const std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>>& localVersions,
          const shared::CDataContainer& availableVersions,
          bool includePrereleases);
-      static shared::CDataContainer addUpdatableYadoms(const shared::versioning::CVersion& localVersion,
-                                                       const shared::CDataContainer& availableVersions,
-                                                       bool includePrereleases);
+      shared::CDataContainer addUpdatableYadoms(const shared::versioning::CVersion& localVersion,
+                                                const shared::CDataContainer& availableVersions,
+                                                bool includePrereleases) const;
       shared::CDataContainer addUpdatablePlugins(const pluginSystem::IFactory::AvailablePluginMap& localVersions,
                                                  const shared::CDataContainer& availableVersions,
                                                  bool includePrereleases) const;
@@ -96,8 +96,8 @@ namespace update
          const shared::CDataContainer& availableVersions,
          bool includePrereleases);
       static shared::CDataContainer buildUpdatableVersionsNode(const std::string& installed,
-                                                               std::map<std::string, shared::CDataContainer> older,
-                                                               std::map<std::string, shared::CDataContainer> newer);
+                                                        std::map<std::string, shared::CDataContainer> older,
+                                                        std::map<std::string, shared::CDataContainer> newer);
       static shared::CDataContainer buildNewVersionsNode(const std::map<std::string, shared::CDataContainer>& newItemAvailableVersions);
       void notifyNewUpdateAvailable() const;
       static bool checkDependencies(const shared::CDataContainer& itemVersionNode);

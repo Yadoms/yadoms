@@ -23,7 +23,7 @@ namespace web { namespace rest {
       ///\param [in] data : optionnal additionnal data
       ///\return  the message as shared::CDataContainer format
       //-----------------------------------------
-      static shared::CDataContainer GenerateError(const std::string & errorMessage = std::string(), const shared::CDataContainer & data = shared::CDataContainer::EmptyContainer);
+      static boost::shared_ptr<shared::CDataContainer> GenerateError(const std::string & errorMessage = std::string(), const shared::CDataContainer & data = shared::CDataContainer::EmptyContainer);
 
       //-----------------------------------------
       ///\brief   Generate an error JSON message
@@ -31,21 +31,21 @@ namespace web { namespace rest {
       ///\param [in] data : optionnal additionnal data
       ///\return  the message as shared::CDataContainer format
       //-----------------------------------------
-      static shared::CDataContainer GenerateError(const std::exception & error, const shared::CDataContainer & data = shared::CDataContainer::EmptyContainer);
+      static boost::shared_ptr<shared::CDataContainer> GenerateError(const std::exception & error, const shared::CDataContainer & data = shared::CDataContainer::EmptyContainer);
 
       //-----------------------------------------
       ///\brief   Generate a success JSON message
       ///\param [in] data : optionnal additionnal data
       ///\return  the message as shared::CDataContainer format
       //-----------------------------------------
-      static shared::CDataContainer GenerateSuccess(const shared::CDataContainer & data = shared::CDataContainer::EmptyContainer);   
+      static boost::shared_ptr<shared::CDataContainer> GenerateSuccess(const shared::CDataContainer & data = shared::CDataContainer::EmptyContainer);
       
       //-----------------------------------------
       ///\brief   Generate a success JSON message
       ///\param [in] stringData : data as string
       ///\return  the message as shared::CDataContainer format
       //-----------------------------------------
-      static shared::CDataContainer GenerateSuccess(const std::string & stringData);
+      static boost::shared_ptr<shared::CDataContainer> GenerateSuccess(const std::string & stringData);
 
       //-----------------------------------------
       ///\brief   Generate a success JSON message
@@ -53,7 +53,7 @@ namespace web { namespace rest {
       ///\return  the message as shared::CDataContainer format
       //-----------------------------------------
       template<class T>
-      static shared::CDataContainer GenerateSuccess(boost::shared_ptr<T> dataContainableObject)
+      static boost::shared_ptr<shared::CDataContainer> GenerateSuccess(boost::shared_ptr<T> dataContainableObject)
       {
          return GenerateInternal(true, std::string(), dataContainableObject);
       }
@@ -72,7 +72,7 @@ namespace web { namespace rest {
       ///\param [in] data : additionnal data (can be empty)
       ///\return  the message as shared::CDataContainer format
       //-----------------------------------------
-      static shared::CDataContainer GenerateInternal(const bool result, const std::string & message, const shared::CDataContainer & data);
+      static boost::shared_ptr<shared::CDataContainer> GenerateInternal(const bool result, const std::string & message, const shared::CDataContainer & data);
       
       //-----------------------------------------
       ///\brief   Generate a JSON message
@@ -81,7 +81,7 @@ namespace web { namespace rest {
       ///\param [in] data : string
       ///\return  the message as shared::CDataContainer format
       //-----------------------------------------
-      static shared::CDataContainer GenerateInternal(const bool result, const std::string & message, const std::string & data);
+      static boost::shared_ptr<shared::CDataContainer> GenerateInternal(const bool result, const std::string & message, const std::string & data);
 
       //-----------------------------------------
       ///\brief   Generate a JSON message
@@ -91,12 +91,12 @@ namespace web { namespace rest {
       ///\return  the message as shared::CDataContainer format
       //-----------------------------------------
       template<class T>
-      static shared::CDataContainer GenerateInternal(const bool result, const std::string & message, boost::shared_ptr<T> data)
+      static boost::shared_ptr<shared::CDataContainer> GenerateInternal(const bool result, const std::string & message, boost::shared_ptr<T> data)
       {
-         shared::CDataContainer error;
-         error.set(m_resultFieldName, result);
-         error.set(m_errorMessageFieldName, message);
-         error.set(m_dataFieldName, data);
+         boost::shared_ptr<shared::CDataContainer> error = boost::make_shared<shared::CDataContainer>();
+         error->set(m_resultFieldName, result);
+         error->set(m_errorMessageFieldName, message);
+         error->set(m_dataFieldName, data);
          return error;
       }
 

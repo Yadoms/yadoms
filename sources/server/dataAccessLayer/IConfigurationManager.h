@@ -1,70 +1,66 @@
 #pragma once
-#include "database/entities/Entities.h"
+#include <shared/DataContainer.h>
 
-namespace dataAccessLayer {
-
+namespace dataAccessLayer
+{
    class IConfigurationManager
    {
    public:
-      //--------------------------------------------------------------
-      /// \brief      Create a new configuration entry
-      /// \param [in] configurationToCreate  New configuration informations
-      /// \throw      shared::exception::CEmptyResult if fails
-      //--------------------------------------------------------------
-      virtual void create(database::entities::CConfiguration& configurationToCreate) = 0;
-
-      //--------------------------------------------------------------
-      /// \brief      Checkl a a configuration entry already exists
-      /// \param [in] section    the configuration SECTION
-      /// \param [in] name       the configuration NAME
-      /// \return     true if the configuration exists, false other cases
-      //--------------------------------------------------------------
-      virtual bool exists(const std::string & section, const std::string & name) = 0;
-     
-      //--------------------------------------------------------------
-      /// \brief      Read a configuration entry
-      /// \param [in] section    the configuration SECTION
-      /// \param [in] name       the configuration NAME
-      /// \return     The configuration entry found
-      /// \throw      shared::exception::CEmptyResult if fails
-      //--------------------------------------------------------------
-      virtual boost::shared_ptr<database::entities::CConfiguration> getConfiguration(const std::string & section, const std::string & name) = 0;
-      
-      //--------------------------------------------------------------
-      /// \brief      Read all configuration entries for one section
-      /// \param [in] section    the configuration SECTION
-      /// \return     The entries found
-      /// \throw      shared::exception::CEmptyResult if fails
-      //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CConfiguration> > getConfigurations(const std::string & section) = 0;
-
-      //--------------------------------------------------------------
-      /// \brief      Read all configuration entries 
-      /// \return     The entries found
-      /// \throw      shared::exception::CEmptyResult if fails
-      //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CConfiguration> > getConfigurations() = 0;
-
-      //--------------------------------------------------------------
-      /// \brief      Update a configuration entry
-      /// \param [in] configurationToUpdate  Configuration informations
-      /// \throw      shared::exception::CEmptyResult if fails
-      //--------------------------------------------------------------
-      virtual void updateConfiguration(database::entities::CConfiguration& configurationToUpdate) = 0;
-      
-      //--------------------------------------------------------------
-      /// \brief      Remove a configuration entry
-      /// \param [in] configurationToRemove  The configuration to delete
-      /// \throw      shared::exception::CEmptyResult if fails
-      //--------------------------------------------------------------
-      virtual void removeConfiguration(database::entities::CConfiguration& configurationToRemove) = 0;
-
-      //--------------------------------------------------------------
-      /// \brief       Destructor
-      //--------------------------------------------------------------
       virtual ~IConfigurationManager()
       {
       }
+
+      //--------------------------------------------------------------
+      /// \brief      Read a configuration entry
+      /// \param [in] section    the configuration SECTION
+      /// \return     The configuration entry found
+      /// \throw      shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual std::string getExternalConfiguration(const std::string& section) const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief      Update a configuration entry
+      /// \param [in] section  Section to update
+      /// \param [in] value    New value
+      /// \throw      shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual void saveExternalConfiguration(const std::string& section,
+                                             const shared::CDataContainer& value) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief      Load server configuration
+      /// \return     The stored configuration if exist, else the default values
+      //--------------------------------------------------------------
+      virtual boost::shared_ptr<const shared::CDataContainer> getServerConfiguration() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief      Save system configuration
+      /// \param [in] newConfiguration the new configuration to save
+      //--------------------------------------------------------------
+      virtual void saveServerConfiguration(const shared::CDataContainer& newConfiguration) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief      Reset system configuration
+      //--------------------------------------------------------------
+      virtual void resetServerConfiguration() = 0;
+
+      //--------------------------------------------------------------
+      /// \brief      Get database version
+      /// \return     The current database version
+      //--------------------------------------------------------------
+      virtual std::string getDatabaseVersion() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief      Subscribe to system configuration changes
+      //--------------------------------------------------------------
+      virtual void subscribeOnServerConfigurationChanged(
+         boost::function1<void, boost::shared_ptr<const shared::CDataContainer>> onServerConfigurationChangedFct) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief      High-level server configuration accessors
+      //--------------------------------------------------------------
+      virtual shared::CDataContainer getLocation() const = 0;
+      virtual void saveAutoDetectedLocation(const shared::CDataContainer& newLocation) = 0;
+      virtual shared::CDataContainer getBasicAuthentication() const = 0;
    };
- 
 } //namespace dataAccessLayer 

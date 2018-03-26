@@ -108,7 +108,7 @@ function rainGaugeDisplayViewModel() {
         //we fill the deviceId of the battery indicator
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
        
-       self.shouldBeVisible(self.widget.configuration.dateDisplay);
+        self.shouldBeVisible(self.widget.configuration.dateDisplay);
        
        // Retrieve last values
        date24h = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'days').startOf('minute'));

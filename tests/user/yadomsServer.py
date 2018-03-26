@@ -61,7 +61,7 @@ def pluginsPath():
 def wwwLocalesPath():
    """return the locales path of the web client"""
    
-   return os.path.join(binaryPath(), "www", "locales")
+   return os.path.join(binaryPath(), "www", "translation", "locales")
    
    
 def start(startupArgs=[]):
@@ -80,22 +80,7 @@ def start(startupArgs=[]):
    print '  ', ' '.join(str(item) for item in cmdLine)
    serverProcess = psutil.Popen(cmdLine)
 
-   # DEBUG
-   import datetime
-   print datetime.datetime.now(), ': [DEBUG] server process status =', serverProcess.status()   #TODO virer
-   import imp
-   try:
-      imp.find_module('wmi')
-      import wmi
-      c = wmi.WMI ()
-      for process in c.Win32_Process ():
-         print process.ProcessId, process.Name
-   except ImportError:
-      print 'Unable to print running processes, "wmi" module not installed'
-
-   # END DEBUG
-
-   if waitServerStarted() == True:
+   if waitServerStarted():
       return serverProcess
 
    print 'Server failed to start'
@@ -155,13 +140,22 @@ def ensureStopped():
             pass
 
 
-def waitServerStarted():
+def getClientUrl(domain = "127.0.0.1", port = "8080", credentials = None):
+   url = "http://"
+   if credentials is not None:
+      url += credentials['user'] + ":" + credentials['password'] + "@"
+   url += domain + ":" + port
+   return url
+
+
+def waitServerStarted(clientCredentials = None, timemoutSeconds = 30):
    import datetime
    import requests
-   timeout = datetime.datetime.now() + datetime.timedelta(seconds = 30)
+   url = getClientUrl(credentials = clientCredentials)
+   timeout = datetime.datetime.now() + datetime.timedelta(seconds = timemoutSeconds)
    while datetime.datetime.now() < timeout:
       try:
-         response = requests.post('http://127.0.0.1:8080/rest/general/system', timeout=1)
+         response = requests.post(url + '/rest/general/system', timeout=1)
          if response.status_code == requests.codes.ok:
             print 'Server started'
             return True
@@ -172,16 +166,22 @@ def waitServerStarted():
    return False
 
 
-def openClient(browser, waitForReadyForNormalOperation = True):
+def waitPageLoaded(browser, waitForReadyForNormalOperation = True):
+   if WebDriverWait(browser, 60).until(lambda browser: browser.execute_script("return (document.readyState == 'complete' && jQuery.active == 0)")):
+      if not waitForReadyForNormalOperation:
+         return True
+      if WebDriverWait(browser, 60).until(lambda browser: len(browser.find_elements_by_class_name("tabPagePills")) > 0):
+         return True
+   return False
+
+
+def openClient(browser, waitForReadyForNormalOperation = True, credentials = None):
    """Open a client on local server and wait for full loading"""
 
    try:
-      browser.get("http://127.0.0.1:8080")
-      if WebDriverWait(browser, 60).until(lambda browser: browser.execute_script("return (document.readyState == 'complete' && jQuery.active == 0)")):
-         if not waitForReadyForNormalOperation:
-            return
-         if WebDriverWait(browser, 60).until(lambda browser: len(browser.find_elements_by_class_name("tabPagePills")) > 0):
-            return
+      browser.get(getClientUrl(credentials = credentials))
+      if waitPageLoaded(browser, waitForReadyForNormalOperation):
+         return
    except:
       print 'Exception waiting page loading'
 

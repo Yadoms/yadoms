@@ -17,6 +17,22 @@ namespace shared
                {
                }
 
+               CIntTypeInfo::CIntTypeInfo(int minValue,
+                                          int maxValue)
+                  : m_min(minValue, true),
+                    m_max(maxValue, true)
+               {
+               }
+
+               CIntTypeInfo::CIntTypeInfo(int minValue,
+                                          int maxValue,
+                                          int stepValue)
+                  : m_min(minValue, true),
+                    m_max(maxValue, true),
+                    m_step(stepValue, true)
+               {
+               }
+
                CIntTypeInfo::~CIntTypeInfo()
                {
                }
@@ -55,5 +71,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi::historization::typeInfo
-
-

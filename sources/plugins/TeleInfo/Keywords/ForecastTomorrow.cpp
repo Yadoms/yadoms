@@ -23,9 +23,10 @@ void CForecastTomorrow::set(const std::string& Value)
    try
    {
       auto it = EEnumColorMap.find(Value);
-      auto temp = static_cast<teleInfo::specificHistorizers::EColor>(it->second);
       if (it != EEnumColorMap.end())
       {
+         auto temp = static_cast<teleInfo::specificHistorizers::EColor>(it->second);
+
          if (m_forecastPeriod->get() != temp)
          {
             m_isChanged = true;
@@ -41,6 +42,17 @@ void CForecastTomorrow::set(const std::string& Value)
    {
       YADOMS_LOG(information) << e.what();
    }
+}
+
+void CForecastTomorrow::set(const teleInfo::specificHistorizers::EColor& Value)
+{
+   if (m_forecastPeriod->get() != Value)
+   {
+      m_isChanged = true;
+      m_forecastPeriod->set(Value);
+   }
+   else
+      m_isChanged = false;
 }
 
 CForecastTomorrow::~CForecastTomorrow()

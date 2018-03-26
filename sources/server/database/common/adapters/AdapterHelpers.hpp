@@ -146,8 +146,6 @@
 //                }
 
 
-
-
 #define ADAPTER_COLUMN_ID 0
 #define ADAPTER_COLUMN_TYPE 1
 #define ADAPTER_COLUMN_DEFAULT 2
@@ -265,7 +263,3 @@
    DECLARE_ADAPTER_IMPLEMENTATION_CTOR(_tablename)\
    DECLARE_ADAPTER_IMPLEMENTATION_DTOR(_tablename)\
    DECLARE_ADAPTER_IMPLEMENTATION_ADAPT(_tablename, _seq)
-
-
-
-

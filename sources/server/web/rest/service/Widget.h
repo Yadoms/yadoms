@@ -21,16 +21,16 @@ namespace web { namespace rest { namespace service {
       static const std::string & getRestKeyword();
 
    public:
-      shared::CDataContainer getOneWidget(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer getAllWidgets(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer addWidget(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer deleteOneWidget(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer deleteAllWidgets(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer replaceAllWidgets(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer updateOneWidget(const std::vector<std::string> & parameters, const std::string & requestContent);
-      shared::CDataContainer findWidgetPackages(const std::vector<std::string> & parameters, const std::string & requestContent);
+      boost::shared_ptr<shared::serialization::IDataSerializable> getOneWidget(const std::vector<std::string> & parameters, const std::string & requestContent);
+      boost::shared_ptr<shared::serialization::IDataSerializable> getAllWidgets(const std::vector<std::string> & parameters, const std::string & requestContent);
+      boost::shared_ptr<shared::serialization::IDataSerializable> addWidget(const std::vector<std::string> & parameters, const std::string & requestContent);
+      boost::shared_ptr<shared::serialization::IDataSerializable> deleteOneWidget(const std::vector<std::string> & parameters, const std::string & requestContent);
+      boost::shared_ptr<shared::serialization::IDataSerializable> deleteAllWidgets(const std::vector<std::string> & parameters, const std::string & requestContent);
+      boost::shared_ptr<shared::serialization::IDataSerializable> replaceAllWidgets(const std::vector<std::string> & parameters, const std::string & requestContent);
+      boost::shared_ptr<shared::serialization::IDataSerializable> updateOneWidget(const std::vector<std::string> & parameters, const std::string & requestContent);
+      boost::shared_ptr<shared::serialization::IDataSerializable> findWidgetPackages(const std::vector<std::string> & parameters, const std::string & requestContent);
 
-      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent);
+      boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent);
    private:
       boost::shared_ptr<database::IDataProvider> m_dataProvider;
       static std::string m_restKeyword;

@@ -29,13 +29,13 @@ namespace database
       PGconn* CPgsqlRequester::createNewConnection()
       {
          //connect to postgresql engine
-         auto result = m_pgsqlLibrary->PQconnectdb(createConnectionString().c_str());
+         const auto result = m_pgsqlLibrary->PQconnectdb(createConnectionString().c_str());
 
          //Check to see that the backend connection was successfully made
          if (m_pgsqlLibrary->PQstatus(result) != CONNECTION_OK)
          {
             //save the error message
-            auto error = getLastErrorMessage(result);
+            const auto error = getLastErrorMessage(result);
 
             //clear connection
             m_pgsqlLibrary->PQfinish(result);
@@ -145,7 +145,7 @@ namespace database
       void CPgsqlRequester::pingServer()
       {
          //fails to connect database
-         auto serverStatus = m_pgsqlLibrary->PQping(createConnectionString(kPing).c_str());
+         const auto serverStatus = m_pgsqlLibrary->PQping(createConnectionString(kPing).c_str());
          switch (serverStatus)
          {
          case PQPING_REJECT:
@@ -177,7 +177,7 @@ namespace database
             if (m_pgsqlLibrary->PQstatus(pConnection) != CONNECTION_OK)
             {
                //save the error message
-               auto firstError = getLastErrorMessage(pConnection);
+               const auto firstError = getLastErrorMessage(pConnection);
 
                //clear connection
                m_pgsqlLibrary->PQfinish(pConnection);
@@ -203,12 +203,12 @@ namespace database
                   CPgsqlQuery dbList;
 
                   dbList.SelectCount().From(CPgDatabaseTable::getTableName()).Where(CPgDatabaseTable::getDatabaseNameColumnName(), CQUERY_OP_ILIKE, startupOptions->getDatabasePostgresqlDbName());
-                  auto count = queryCount(dbList, pConnection);
+                  const auto count = queryCount(dbList, pConnection);
                   if (count == 0)
                   {
                      YADOMS_LOG(information) << "PostgreSQL Database do not exists, try to create it";
                      //create database
-                     auto result = queryStatement(CPgsqlQuery().CreateDatabase(startupOptions->getDatabasePostgresqlDbName()), true, pConnection);
+                     const auto result = queryStatement(CPgsqlQuery().CreateDatabase(startupOptions->getDatabasePostgresqlDbName()), true, pConnection);
                      if (result == 0)
                      {
                         YADOMS_LOG(information) << "PostgreSQL Database created";
@@ -256,15 +256,15 @@ namespace database
          {
             results.set("type", "PostgreSQL");
 
-            auto pcon = getConnection();
+            const auto pcon = getConnection();
 
 
             auto version = m_pgsqlLibrary->PQserverVersion(pcon);
-            auto revision = version % 100;
+            const auto revision = version % 100;
             version /= 100;
-            auto minor = version % 100;
+            const auto minor = version % 100;
             version /= 100;
-            auto major = version % 100;
+            const auto major = version % 100;
 
             results.set("version", (boost::format("%1%.%2%.%3%") % major % minor % revision).str());
 
@@ -298,11 +298,11 @@ namespace database
          YADOMS_LOG(debug) << "[REQUEST] executeQuery - " << querytoExecute;
          auto res = m_pgsqlLibrary->PQexec(pConnection, querytoExecute.c_str());
 
-         auto resultCode = m_pgsqlLibrary->PQresultStatus(res);
+         const auto resultCode = m_pgsqlLibrary->PQresultStatus(res);
          if (resultCode != expectedResultCode)
          {
             //make a copy of the err message
-            std::string errMessage(m_pgsqlLibrary->PQerrorMessage(pConnection));
+            const std::string errMessage(m_pgsqlLibrary->PQerrorMessage(pConnection));
 
             //log the message
             YADOMS_LOG(error) << "Query failed : " << "result code =" << resultCode << std::endl << "Query: " << querytoExecute << std::endl << "Error : " << errMessage;
@@ -356,24 +356,24 @@ namespace database
          return res;
       }
 
-      void CPgsqlRequester::queryEntities(common::adapters::IResultAdapter* pAdapter, const common::CQuery& querytoExecute)
+      void CPgsqlRequester::queryEntities(common::adapters::IResultAdapter* adapter, const common::CQuery& querytoExecute)
       {
-         queryEntities(pAdapter, querytoExecute, getConnection());
+         queryEntities(adapter, querytoExecute, getConnection());
       }
 
-      void CPgsqlRequester::queryEntities(common::adapters::IResultAdapter* pAdapter, const common::CQuery& querytoExecute, PGconn* pConnection)
+      void CPgsqlRequester::queryEntities(common::adapters::IResultAdapter* adapter, const common::CQuery& querytoExecute, PGconn* pConnection)
       {
-         BOOST_ASSERT(pAdapter != NULL);
+         BOOST_ASSERT(adapter != NULL);
 
-         if (pAdapter != nullptr)
+         if (adapter != nullptr)
          {
             PGresult* res = nullptr;
             try
             {
                //execute query
                res = executeQuery(pConnection, querytoExecute.c_str(), PGRES_TUPLES_OK, true);
-               auto handler(boost::make_shared<CPgsqlResultHandler>(m_pgsqlLibrary, res));
-               if (!pAdapter->adapt(handler))
+               const auto handler(boost::make_shared<CPgsqlResultHandler>(m_pgsqlLibrary, res));
+               if (!adapter->adapt(handler))
                {
                   YADOMS_LOG(error) << "Fail to adapt values";
                }
@@ -396,7 +396,7 @@ namespace database
          else
          {
             //throw exception
-            throw shared::exception::CNullReference("pAdapter");
+            throw shared::exception::CNullReference("adapter");
          }
       }
 
@@ -412,8 +412,8 @@ namespace database
 
 
          //execute query
-         auto res = executeQuery(pConnection, querytoExecute.c_str(), PGRES_COMMAND_OK, throwIfFails);
-         auto resultCode = m_pgsqlLibrary->PQresultStatus(res);
+         const auto res = executeQuery(pConnection, querytoExecute.c_str(), PGRES_COMMAND_OK, throwIfFails);
+         const auto resultCode = m_pgsqlLibrary->PQresultStatus(res);
          if (resultCode != PGRES_COMMAND_OK)
             return -1;
 
@@ -437,7 +437,7 @@ namespace database
 
          //execute query
          YADOMS_LOG(debug) << "[REQUEST] queryCount - " << querytoExecute.str();
-         auto res = executeQuery(pConnection, querytoExecute.c_str(), PGRES_TUPLES_OK, true);
+         const auto res = executeQuery(pConnection, querytoExecute.c_str(), PGRES_TUPLES_OK, true);
 
          CPgsqlResultHandler handler(m_pgsqlLibrary, res);
          handler.next_step();
@@ -483,7 +483,7 @@ namespace database
       {
          if (!transactionIsAlreadyCreated(pConnection))
          {
-            auto res = executeQuery(pConnection, "BEGIN", PGRES_COMMAND_OK, false);
+            const auto res = executeQuery(pConnection, "BEGIN", PGRES_COMMAND_OK, false);
             if (m_pgsqlLibrary->PQresultStatus(res) == PGRES_COMMAND_OK)
             {
                m_activeTransactionsList[pConnection] = true;
@@ -501,7 +501,7 @@ namespace database
       {
          if (transactionIsAlreadyCreated(pConnection))
          {
-            auto res = executeQuery(pConnection, "COMMIT", PGRES_COMMAND_OK, false);
+            const auto res = executeQuery(pConnection, "COMMIT", PGRES_COMMAND_OK, false);
             if (m_pgsqlLibrary->PQresultStatus(res) == PGRES_COMMAND_OK)
             {
                m_activeTransactionsList[pConnection] = false;
@@ -519,7 +519,7 @@ namespace database
       {
          if (transactionIsAlreadyCreated(pConnection))
          {
-            auto res = executeQuery(pConnection, "ROLLBACK", PGRES_COMMAND_OK, false);
+            const auto res = executeQuery(pConnection, "ROLLBACK", PGRES_COMMAND_OK, false);
             if (m_pgsqlLibrary->PQresultStatus(res) == PGRES_COMMAND_OK)
             {
                m_activeTransactionsList[pConnection] = false;

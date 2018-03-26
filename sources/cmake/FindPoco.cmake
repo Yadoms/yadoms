@@ -79,6 +79,7 @@ if(POCO_VERSION_CHECKED_SUCCESS)
    # Add in some path suffixes. These will have to be updated whenever a new Poco version comes out.
    SET(SUFFIX_FOR_LIBRARY_PATH
       lib
+      lib/Linux/aarch64
       lib/Linux/i686
       lib/Linux/x86_64
       lib/Linux/ARM

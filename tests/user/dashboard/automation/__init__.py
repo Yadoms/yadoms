@@ -69,7 +69,7 @@ def getRuleEditButton(rulesTable, ruleNumber):
 def getRuleLogButton(rulesTable, ruleNumber):
    """ Log button is the third button of the buttons group """
    button = getRuleButton(rulesTable, ruleNumber, 2)
-   assert "btn-edit" in button.get_attribute("class")
+   assert "btn-log" in button.get_attribute("class")
    return button
    
 def getRuleRemoveButton(rulesTable, ruleNumber):
@@ -83,11 +83,12 @@ def waitEditRuleModal(browser):
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, 'edit-automation-rule-modal')))
    modals.waitForOpened(browser.find_element_by_id('edit-automation-rule-modal'))
    return EditRuleModal(browser.find_element_by_id('edit-automation-rule-modal'))
+   
 
-def waitRemoveRuleConfirmationModal(browser):
-   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, 'confirmation-modal')))
-   modals.waitForOpened(browser.find_element_by_id('confirmation-modal'))
-   return RemoveRuleConfirmationModal(browser.find_element_by_id('confirmation-modal'))
+def waitLogRuleModal(browser):
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, 'show-log-automation-rule-modal')))
+   modals.waitForOpened(browser.find_element_by_id('show-log-automation-rule-modal'))
+   return LogRuleModal(browser.find_element_by_id('show-log-automation-rule-modal'))
    
    
    
@@ -122,13 +123,6 @@ class NewRuleModal():
          if (editorButton.find_element_by_tag_name("span").get_attribute("id") == expectedButtonId):
             return editorButton
       assert False
-
-
-   
-
-class RemoveRuleConfirmationModal(modals.RemoveObjectConfirmationModal):
-   """ Operations on delete rule confirmation modal """
-   pass
    
 
 
@@ -209,3 +203,25 @@ class AceCodeEditor:
          indentationCount += 1
       for indent in range(indentationCount):
          self.__codeEditorWebElement.send_keys(Keys.BACKSPACE)
+   
+   
+class LogRuleModal():
+   """ Operations on log modal (show and clear log) """
+   
+   def __init__(self, logModalWebElement):
+       self.__logModalWebElement = logModalWebElement
+
+   def getLogContent(self):
+      logContainer = WebDriverWait(self.__logModalWebElement, 10).until(Condition.visibility_of_element_located((By.XPATH, ".//textarea[contains(@class, 'logTextArea')]")))
+      return logContainer.text
+
+   def getClearButton(self):
+      return self.__logModalWebElement.find_element_by_xpath(".//div[@class='form-actions']//button[@id='btn-clear-log']")
+         
+   def getConfirmButton(self):
+      return self.__logModalWebElement.find_element_by_xpath(".//div[@class='form-actions']//button[@data-i18n='common.close']")
+
+   def ok(self):
+      self.getConfirmButton().click()
+      modals.waitForClosed(self.__logModalWebElement)
+

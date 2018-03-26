@@ -24,11 +24,11 @@ namespace web
 
             static const std::string& getRestKeyword();
 
-            shared::CDataContainer getDatabaseInformation(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            shared::CDataContainer startBackup(const std::vector<std::string>& parameters, const std::string& requestContent);
-            shared::CDataContainer getBackups(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            shared::CDataContainer deleteBackup(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            shared::CDataContainer deleteAllBackups(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getDatabaseInformation(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> startBackup(const std::vector<std::string>& parameters, const std::string& requestContent);
+            boost::shared_ptr<shared::serialization::IDataSerializable> getBackups(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> deleteBackup(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> deleteAllBackups(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
          private:
             static std::string m_restKeyword;

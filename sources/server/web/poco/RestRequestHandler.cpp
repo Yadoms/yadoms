@@ -79,19 +79,20 @@ namespace web
             }
 
             //dispatch url to rest dispatcher
-            shared::CDataContainer js = m_restDispatcher.dispath(request.getMethod(), parameters, content);
-            return js.serialize();
+            auto js = m_restDispatcher.dispath(request.getMethod(), parameters, content);
+            std::string temp = js->serialize();
+            return temp;
          }
 
          catch (std::exception& ex)
          {
             YADOMS_LOG(error) << "An exception occured in treating REST url : " << request_path << std::endl << "Exception : " << ex.what();
-            return web::rest::CResult::GenerateError(ex).serialize();
+            return web::rest::CResult::GenerateError(ex)->serialize();
          }
          catch (...)
          {
             YADOMS_LOG(error) << "An unknown exception occured in treating REST url : " << request_path;
-            return web::rest::CResult::GenerateError("An unknown exception occured in treating REST url : " + request_path).serialize();
+            return web::rest::CResult::GenerateError("An unknown exception occured in treating REST url : " + request_path)->serialize();
          }
       }
 

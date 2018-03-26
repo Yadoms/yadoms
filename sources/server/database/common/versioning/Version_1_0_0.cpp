@@ -64,17 +64,43 @@ namespace database
             }
          }
 
-         void CVersion_1_0_0::updateDatabaseVersion(const boost::shared_ptr<IDatabaseRequester> pRequester,
-                                                    const shared::versioning::CVersion& newVersion)
+         void CVersion_1_0_0::updateDatabaseVersion(const boost::shared_ptr<IDatabaseRequester> requester,
+                                                    const shared::versioning::CVersion& newVersion,
+                                                    const boost::posix_time::ptime& insertDate)
          {
-            auto qUpdate = pRequester->newQuery();
+            // Configuration table changed from Database 4.2.0 version (updated to 4.2.0 in Yadoms 2.1.0 version).
+            // As database version is stored in the Configuration table and this table structure changed,
+            // we have to know the current table structure before get Database version
+            // To check table structure, just check if "Database" record exists (if yes, database is from old version)
+            auto newDatabaseQuery = requester->newQuery();
+            newDatabaseQuery->SelectCount().
+                              From(CConfigurationTable::getTableName()).
+                              Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "Database");
+            const auto isOldDatabase = requester->queryCount(*newDatabaseQuery) == 1;
 
-            qUpdate->Update(CConfigurationTable::getTableName())
-                   .Set(CConfigurationTable::getValueColumnName(), newVersion.toString())
-                   .Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "Database")
-                   .And(CConfigurationTable::getNameColumnName(), CQUERY_OP_EQUAL, "Version");
+            if (isOldDatabase)
+            {
+               auto qUpdate = requester->newQuery();
 
-            pRequester->queryStatement(*qUpdate);
+               qUpdate->Update(CDatabaseTable("Configuration"))
+                      .Set(CDatabaseColumn("value"), newVersion.toString())
+                      .Where(CDatabaseColumn("section"), CQUERY_OP_EQUAL, "Database")
+                      .And(CDatabaseColumn("name"), CQUERY_OP_EQUAL, "Version");
+
+               requester->queryStatement(*qUpdate);
+            }
+            else
+            {
+               auto qInsert = requester->newQuery();
+               qInsert->InsertOrReplaceInto(CConfigurationTable::getTableName(),
+                                            CConfigurationTable::getSectionColumnName(),
+                                            CConfigurationTable::getValueColumnName(),
+                                            CConfigurationTable::getLastModificationDateColumnName()).
+                        Values("databaseVersion",
+                               newVersion.toString(),
+                               insertDate);
+               requester->queryStatement(*qInsert);
+            }
          }
 
          // [END] ISQLiteVersionUpgrade implementation
@@ -160,20 +186,11 @@ namespace database
                   pRequester->createIndex(CAcquisitionTable::getTableName(), *i);
                }
 
-               //set the database version
-               auto qInsert = pRequester->newQuery();
-               qInsert->InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName()).
-                      Values("Database", "Version", Version.toString(), "Database version");
-               pRequester->queryStatement(*qInsert);
-
-               //set the developer mode
-               qInsert->Clear().InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDefaultValueColumnName(), CConfigurationTable::getDescriptionColumnName()).
-                      Values("system", "developerMode", "false", "false", "Developer mode");
-               pRequester->queryStatement(*qInsert);
-
                //system plugin
-               qInsert->Clear().InsertInto(CPluginTable::getTableName(), CPluginTable::getDisplayNameColumnName(), CPluginTable::getTypeColumnName(), CPluginTable::getAutoStartColumnName(), CPluginTable::getCategoryColumnName()).
-                      Values("System", "System", true, database::entities::EPluginCategory::kSystem);
+               auto qInsert = pRequester->newQuery();
+               qInsert->Clear().InsertInto(CPluginTable::getTableName(), CPluginTable::getDisplayNameColumnName(), CPluginTable::getTypeColumnName(),
+                                           CPluginTable::getAutoStartColumnName(), CPluginTable::getCategoryColumnName()).
+                        Values("System", "System", true, entities::EPluginCategory::kSystem);
                pRequester->queryStatement(*qInsert);
 
                //commit transaction
@@ -195,5 +212,3 @@ namespace database
       } //namespace versioning
    } //namespace common
 } //namespace database 
-
-
