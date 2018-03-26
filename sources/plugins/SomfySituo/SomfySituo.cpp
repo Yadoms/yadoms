@@ -6,7 +6,6 @@
 #include <shared/communication/AsciiBufferLogger.h>
 #include "ProtocolException.hpp"
 #include <shared/Log.h>
-#include "SomfyRemoteControl.h"
 
 DECLARE_ENUM_IMPLEMENTATION(EChannel,
    ((Channel1))
@@ -152,31 +151,13 @@ void CSomfySituo::manageEvents(boost::shared_ptr<yApi::IYPluginApi> api)
          auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
          if (request->getData().getQuery() == "channels")
          {
-            //int nbChan = api->getAllDevices().size();
             std::vector<std::string> allDevices = api->getAllDevices();
             shared::CDataContainer ev;
-            //std::string str = "Channel0";
-            //std::for_each ( api->getAllDevices().begin(), api->getAllDevices().end())
             for (std::string& str : api->getAllDevices())
             {
                if (str.find(DeviceName) != std::string::npos)
                   ev.set(str.substr(str.length() - 1, 1), str);
             }
-            /*for (int i = 1; i <= nbChan; i++)
-            {
-               str[7] = itoc(i);
-               ev.set(str, std::to_string(i));
-            }*/
-
-            /*shared::CDataContainer en;
-            en.set("name", "Channel");
-            en.set("description", "Channel which will receive or for which we will suppress the application. First push during 2 to 5s the PROG button from the remote control of the application to add or remove (till a back-and-forth of the device)");
-            en.set("type", "enum");
-            en.set("values", ev);*/
-            //en.set("defaultValue",  "Channel1");
-
-            //shared::CDataContainer result;
-            //result.set("channels", ev);
 
             request->sendSuccess(ev);
          }
@@ -300,7 +281,6 @@ void CSomfySituo::send(const std::string& message,
    for (unsigned int i = 0; i < message.size(); i++)
       messageToSend.push_back(message[i]);
    messageToSend.push_back(ETX); // footer
-   //memcpy(buffer.begin(), message.c_str(), message.size());
    shared::communication::CByteBuffer buffer(messageToSend);
 
    send(buffer, needAnswer);
@@ -345,40 +325,6 @@ void CSomfySituo::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
       break;
    default:
       YADOMS_LOG(information) << "Unkown command : " << command;
-
-
-      /* // Command the remote control with the intelligence on the Yadmo's side
-      // Change channel to access the one used by the Device
-      YADOMS_LOG(information) << "Channel to activate : " << channelToActivate << " - Active Channel : " <<  m_activeChannel;
-      while (m_activeChannel != channelToActivate)
-      {
-         auto activeChannel = m_activeChannel;
-         bool chanSleep = m_channelSleep;
-         sendChannelCmd();
-         while (activeChannel == m_activeChannel) 
-         {
-            manageEvents(api);
-            if (m_channelSleep != chanSleep) // the led had been waken-up
-               break;
-         }
-   
-         YADOMS_LOG(information) << "Channel to activate : " << channelToActivate << " - Active Channel : " << m_activeChannel;
-      }
-   
-      // Managet he command
-      switch (m_curtain->get())
-      {
-      case yApi::historization::ECurtainCommand::kStopValue:
-         sendMyCmd();
-         break;
-      case yApi::historization::ECurtainCommand::kOpenValue:
-         sendUpCmd();
-         break;
-      case yApi::historization::ECurtainCommand::kCloseValue:
-         sendDownCmd();
-         break;
-      default :
-         YADOMS_LOG(information) << "Unkown command : " << command;*/
    }
 }
 
@@ -451,7 +397,7 @@ void CSomfySituo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
             // End of initialization, plugin is now running
             api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-            char sepArray[] = {'-', SOMFY_ADAPTER_EOF, 0};
+            char sepArray[] = {'-', '\r', 0};
             boost::char_separator<char> sep(sepArray);
             boost::tokenizer<boost::char_separator<char>> tokens(message, sep);
 

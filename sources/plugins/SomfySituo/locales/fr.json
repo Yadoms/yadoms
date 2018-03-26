@@ -1,6 +1,6 @@
 ﻿{
-  "name": "Somfy IO Controller",
-  "description": "Télécommande Somfy IO via l'adaptateur maison",
+  "name": "Somfy IO Situo",
+  "description": "Controle une télécommande Somfy IO Situo via un adaptateur spécifique",
   "configurationSchema": {
     "SerialPort": {
       "name": "Port série",

@@ -1,6 +1,6 @@
 {
-  "name": "Somfy IO Controller",
-  "description": "Control a Somfy IO Controller with an homemade adapter",
+  "name": "Somfy IO Situo",
+  "description": "Control a Somfy IO Situo remote with an specific adapter",
   "configurationSchema": {
     "SerialPort": {
       "name": "Serial port",
