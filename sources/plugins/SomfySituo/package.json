@@ -1,0 +1,36 @@
+{
+  "type": "SomfySituo",
+  "version": "1.0.0",
+  "author": "F.FOSCHIATTI",
+  "url": "",
+  "credits": "external libraries used here",
+  "supportedPlatforms": "all",
+  "configurationSchema": {
+    "SerialPort": {
+      "type": "enum",
+      "values": {
+        "__Binding__": {
+          "type": "system",
+          "query": "serialPorts"
+        }
+      }
+    }
+  },
+  "extraQueries": {
+    "progChannel": {
+      "iconClass": "fa fa-wrench",
+      "commandData": {
+        "Channel": {
+              "type": "enum",
+              "values": {
+                "__Binding__": {
+                  "type": "plugin",
+                  "query": "channels"
+                }
+              }
+           
+          }
+        }
+    }
+  }
+}
