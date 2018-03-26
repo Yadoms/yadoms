@@ -60,7 +60,7 @@ namespace update
          catch (std::exception& ex)
          {
             //fail to download package
-            YADOMS_LOG(error) << "Fail to download pwidget ackage : " << ex.what();
+            YADOMS_LOG(error) << "Fail to download pwidget package : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdateWidgetDownloadFailed, ex.what(), callbackData);
          }
       }
@@ -117,7 +117,7 @@ namespace update
          catch (std::exception& ex)
          {
             //fail to download package
-            YADOMS_LOG(error) << "Fail to download pwidget ackage : " << ex.what();
+            YADOMS_LOG(error) << "Fail to download pwidget package : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdateWidgetDownloadFailed, ex.what(), callbackData);
          }
       }
