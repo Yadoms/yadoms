@@ -35,7 +35,6 @@ LIBS:cp2102
 LIBS:PIC16F688
 LIBS:ESD_Protection
 LIBS:CP2102N-A01-GQFN20
-LIBS:ICSP_PicKit2
 LIBS:serial
 LIBS:SomfySituo5IoAdapter-cache
 EELAYER 25 0
@@ -645,32 +644,6 @@ Text Notes 7200 1550 0    60   ~ 0
 Somfy_led_battery
 Text Label 1350 4150 0    60   ~ 0
 VCC_IN
-$Comp
-L ICSP_PicKit2 P2
-U 1 1 5AAA85AF
-P 1600 1850
-F 0 "P2" H 1450 2200 60  0000 C CNN
-F 1 "ICSP_PicKit2" H 1450 1500 60  0000 C CNN
-F 2 "Connectors:Wafer_Horizontal17.5x5.8x7RM2.5-6" H 1600 1850 60  0001 C CNN
-F 3 "" H 1600 1850 60  0001 C CNN
-	1    1600 1850
-	1    0    0    -1  
-$EndComp
-Text Notes 1650 1150 0    60   ~ 0
-Adaptateur ICSP PicKit2
-Text Notes 1900 1250 0    60   ~ 0
-(carte à part)
-$Comp
-L Conn_01x06 J14
-U 1 1 5AAA8FB8
-P 2550 1800
-F 0 "J14" H 2550 2100 50  0000 C CNN
-F 1 "AVX 00-9188 006" H 2550 1400 50  0000 C CNN
-F 2 "" H 2550 1800 50  0001 C CNN
-F 3 "" H 2550 1800 50  0001 C CNN
-	1    2550 1800
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	1000 4750 1000 4850
 Wire Wire Line
@@ -857,40 +830,6 @@ Connection ~ 4900 3400
 Connection ~ 4300 2100
 Wire Wire Line
 	8500 1550 8800 1550
-Wire Notes Line
-	800  1000 3550 1000
-Wire Notes Line
-	3550 1000 3550 2750
-Wire Notes Line
-	3550 2750 800  2750
-Wire Notes Line
-	800  2750 800  1000
-Wire Wire Line
-	1950 1600 2350 1600
-Wire Wire Line
-	2350 1700 1950 1700
-Wire Wire Line
-	1950 1800 2350 1800
-Wire Wire Line
-	2350 1900 1950 1900
-Wire Wire Line
-	1950 2000 2350 2000
-Wire Wire Line
-	2350 2100 1950 2100
-$Comp
-L PWR_FLAG #FLG2
-U 1 1 5AAA9696
-P 2050 2200
-F 0 "#FLG2" H 2050 2500 60  0001 C CNN
-F 1 "PWR_FLAG" H 2050 2150 40  0001 C CNN
-F 2 "" H 1950 2400 60  0001 C CNN
-F 3 "" H 2050 2500 60  0001 C CNN
-	1    2050 2200
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	2050 2200 2050 1800
-Connection ~ 2050 1800
 $Comp
 L Conn_01x06 J15
 U 1 1 5AAA98B4
