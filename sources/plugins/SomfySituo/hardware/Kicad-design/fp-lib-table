@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name FT230XS-R)(type Legacy)(uri "$(KIPRJMOD)/FT230XS-R.mod")(options "")(descr ""))
+)
