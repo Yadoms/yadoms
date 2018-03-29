@@ -54,7 +54,7 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
                                                              shared::event::CEventTimer::kOneShot,
-                                                             boost::posix_time::seconds(45));
+                                                             boost::posix_time::seconds(20));
 
    m_periodicSamplingTimer = api->getEventHandler().createTimer(kSamplingTimer,
                                                                 shared::event::CEventTimer::kPeriodic,
@@ -112,9 +112,6 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                                 api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string>>>>());
 
             m_receiveBufferHandler->desactivate();
-
-			   //Lauch a new time the time out to detect connexion failure
-			   m_waitForAnswerTimer->start();
             break;
          }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
@@ -129,6 +126,9 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kSamplingTimer:
       {
          m_receiveBufferHandler->activate();
+
+         //Lauch a new time the time out to detect connexion failure
+         m_waitForAnswerTimer->start();
          break;
       }
       case kErrorRetryTimer:

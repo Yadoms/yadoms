@@ -313,7 +313,44 @@
               "description": "Use of standard data type",
               "content": {
                 "capacity": {
-                  "name": "Data type"
+                  "name": "Data type",
+                  "values": {
+                    "apparentpower": "Apparent power (VA)",
+                    "armingAlarm": "Alarm state",
+                    "batteryLevel": "Battery level (%)",
+                    "cameraMove": "Camera move",
+                    "colorrgb": "Color - RGB",
+                    "colorrgbw": "Color - RGBW",
+                    "count": "Counter",
+                    "current": "Current (A)",
+                    "curtain": "Curtain",
+                    "dimmable": "Dimmable (%)",
+                    "direction": "Direction (°)",
+                    "distance": "Distance (m)",
+                    "duration": "Duration",
+                    "energy": "Energy (Wh)",
+                    "event": "Event",
+                    "frequency": "Frequency (Hz)",
+                    "humidity": "Humidity (%)",
+                    "illumination": "Illumination (Lux)",
+                    "load": "Load (%)",
+                    "power": "Power (W)",
+                    "powerFactor": "Power factor",
+                    "pressure": "Pressure (hPa)",
+                    "rain": "Rain (mm)",
+                    "rainrate": "Rain rate (mm/s)",
+                    "rssi": "Signal strength (Db/mW)",
+                    "speed": "Speed (mm/s)",
+                    "switch": "On/Off",
+                    "temperature": "Temperature (°C)",
+                    "text": "Text",
+                    "upDownStop": "Up/Down/Stop",
+                    "uv": "UV",
+                    "voltage": "Voltage (V)",
+                    "volume": "Volume (m3)",
+                    "weathercondition": "Weather conditions",
+                    "weight": "Weight (kg)"
+                  }
                 }
               }
             },
