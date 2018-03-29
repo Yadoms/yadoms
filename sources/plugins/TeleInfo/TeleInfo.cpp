@@ -54,7 +54,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
                                                              shared::event::CEventTimer::kOneShot,
-                                                             boost::posix_time::seconds(45));
+                                                             boost::posix_time::seconds(20));
 
    m_periodicSamplingTimer = api->getEventHandler().createTimer(kSamplingTimer,
                                                                 shared::event::CEventTimer::kPeriodic,
@@ -114,11 +114,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                }
             }
 
-          m_receiveBufferHandler->desactivate();
-
-			//Lauch a new time the time out to detect connexion failure
-			m_waitForAnswerTimer->start();
-
+            m_receiveBufferHandler->desactivate();
             break;
          }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
@@ -138,6 +134,9 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kSamplingTimer:
          {
             m_receiveBufferHandler->activate();
+
+            //Lauch a new time the time out to detect connexion failure
+            m_waitForAnswerTimer->start();
             break;
          }
       case kAnswerTimeout:
