@@ -1,4 +1,4 @@
-update=27/03/2018 08:54:36
+update=29/03/2018 11:52:52
 version=1
 last_client=kicad
 [pcbnew]
@@ -25,6 +25,16 @@ version=1
 NetIExt=net
 [general]
 version=1
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceForceRefPrefix=0
+SpiceUseNetNumbers=0
+LabSize=60
 [eeschema]
 version=1
 LibDir=C:/Program Files/KiCad/share/automote/kicad-library/library;C:/Program Files/KiCad/share/kicad-library/library
@@ -65,15 +75,4 @@ LibName33=C:/Program Files/KiCad/share/automote/kicad-library/library/cp2102
 LibName34=PIC16F688
 LibName35=C:/Program Files/KiCad/share/kicad-library/library/ESD_Protection
 LibName36=CP2102N-A01-GQFN20
-LibName37=ICSP_PicKit2
-LibName38=serial
-[schematic_editor]
-version=1
-PageLayoutDescrFile=
-PlotDirectoryName=
-SubpartIdSeparator=0
-SubpartFirstId=65
-NetFmtName=
-SpiceForceRefPrefix=0
-SpiceUseNetNumbers=0
-LabSize=60
+LibName37=serial

@@ -213,7 +213,7 @@ U 1 1 59FD8F28
 P 9000 1450
 F 0 "J2" H 9100 1450 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 1450 50  0000 C CNN
-F 2 "Socket_Strips:Socket_Strip_Straight_1x01_Pitch2.54mm" H 9000 1450 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 1450 50  0001 C CNN
 F 3 "" H 9000 1450 50  0001 C CNN
 	1    9000 1450
 	1    0    0    -1  
@@ -226,7 +226,7 @@ U 1 1 59FD9464
 P 9000 1550
 F 0 "J3" H 9100 1550 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 1550 50  0000 C CNN
-F 2 "Socket_Strips:Socket_Strip_Straight_1x01_Pitch2.54mm" H 9000 1550 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 1550 50  0001 C CNN
 F 3 "" H 9000 1550 50  0001 C CNN
 	1    9000 1550
 	1    0    0    -1  
@@ -237,7 +237,7 @@ U 1 1 59FD94F5
 P 9000 1650
 F 0 "J4" H 9100 1650 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 1650 50  0000 C CNN
-F 2 "Socket_Strips:Socket_Strip_Straight_1x01_Pitch2.54mm" H 9000 1650 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 1650 50  0001 C CNN
 F 3 "" H 9000 1650 50  0001 C CNN
 	1    9000 1650
 	1    0    0    -1  
@@ -248,7 +248,7 @@ U 1 1 59FD9589
 P 9000 1750
 F 0 "J5" H 9100 1750 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 1750 50  0000 C CNN
-F 2 "Socket_Strips:Socket_Strip_Straight_1x01_Pitch2.54mm" H 9000 1750 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 1750 50  0001 C CNN
 F 3 "" H 9000 1750 50  0001 C CNN
 	1    9000 1750
 	1    0    0    -1  
@@ -259,7 +259,7 @@ U 1 1 59FD9620
 P 9000 1850
 F 0 "J6" H 9100 1850 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 1850 50  0000 C CNN
-F 2 "Socket_Strips:Socket_Strip_Straight_1x01_Pitch2.54mm" H 9000 1850 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 1850 50  0001 C CNN
 F 3 "" H 9000 1850 50  0001 C CNN
 	1    9000 1850
 	1    0    0    -1  
@@ -270,7 +270,7 @@ U 1 1 59FD96E8
 P 9000 1950
 F 0 "J7" H 9100 1950 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 1950 50  0000 C CNN
-F 2 "Socket_Strips:Socket_Strip_Straight_1x01_Pitch2.54mm" H 9000 1950 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 1950 50  0001 C CNN
 F 3 "" H 9000 1950 50  0001 C CNN
 	1    9000 1950
 	1    0    0    -1  
@@ -281,7 +281,7 @@ U 1 1 59FD9785
 P 9000 2050
 F 0 "J8" H 9100 2050 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 2050 50  0000 C CNN
-F 2 "Socket_Strips:Socket_Strip_Straight_1x01_Pitch2.54mm" H 9000 2050 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 2050 50  0001 C CNN
 F 3 "" H 9000 2050 50  0001 C CNN
 	1    9000 2050
 	1    0    0    -1  
@@ -292,7 +292,7 @@ U 1 1 59FD9825
 P 9000 2150
 F 0 "J9" H 9100 2150 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 2150 50  0000 C CNN
-F 2 "Socket_Strips:Socket_Strip_Straight_1x01_Pitch2.54mm" H 9000 2150 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 2150 50  0001 C CNN
 F 3 "" H 9000 2150 50  0001 C CNN
 	1    9000 2150
 	1    0    0    -1  
@@ -303,7 +303,7 @@ U 1 1 59FD98C8
 P 9000 2250
 F 0 "J10" H 9100 2250 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 2250 50  0000 C CNN
-F 2 "Socket_Strips:Socket_Strip_Straight_1x01_Pitch2.54mm" H 9000 2250 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 2250 50  0001 C CNN
 F 3 "" H 9000 2250 50  0001 C CNN
 	1    9000 2250
 	1    0    0    -1  
@@ -314,7 +314,7 @@ U 1 1 59FD996E
 P 9000 2350
 F 0 "J11" H 9100 2350 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 2350 50  0000 C CNN
-F 2 "Socket_Strips:Socket_Strip_Straight_1x01_Pitch2.54mm" H 9000 2350 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 2350 50  0001 C CNN
 F 3 "" H 9000 2350 50  0001 C CNN
 	1    9000 2350
 	1    0    0    -1  
@@ -325,7 +325,7 @@ U 1 1 59FD9A19
 P 9000 2450
 F 0 "J12" H 9100 2450 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 2450 50  0000 C CNN
-F 2 "Socket_Strips:Socket_Strip_Straight_1x01_Pitch2.54mm" H 9000 2450 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 2450 50  0001 C CNN
 F 3 "" H 9000 2450 50  0001 C CNN
 	1    9000 2450
 	1    0    0    -1  
@@ -617,10 +617,10 @@ F 3 "" H 9950 4350 50  0001 C CNN
 	0    1    -1   0   
 $EndComp
 $Comp
-L PWR_FLAG #FLG4
+L PWR_FLAG #FLG3
 U 1 1 5A8F0A07
 P 4300 2100
-F 0 "#FLG4" H 4300 2400 60  0001 C CNN
+F 0 "#FLG3" H 4300 2400 60  0001 C CNN
 F 1 "PWR_FLAG" H 4300 2050 40  0001 C CNN
 F 2 "" H 4200 2300 60  0001 C CNN
 F 3 "" H 4300 2400 60  0001 C CNN
@@ -635,7 +635,7 @@ U 1 1 5AA95685
 P 9000 2550
 F 0 "J13" H 9100 2550 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 2550 50  0000 C CNN
-F 2 "Socket_Strips:Socket_Strip_Straight_1x01_Pitch2.54mm" H 9000 2550 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 2550 50  0001 C CNN
 F 3 "" H 9000 2550 50  0001 C CNN
 	1    9000 2550
 	1    0    0    -1  
@@ -836,16 +836,16 @@ U 1 1 5AAA98B4
 P 6200 1800
 F 0 "J15" H 6200 2100 50  0000 C CNN
 F 1 "ICSP" H 6200 1400 50  0000 C CNN
-F 2 "" H 6200 1800 50  0001 C CNN
+F 2 "AVX 00-9188 006 receiver:AVX_00-9188_006_receiver" H 6200 1800 50  0001 C CNN
 F 3 "" H 6200 1800 50  0001 C CNN
 	1    6200 1800
 	1    0    0    -1  
 $EndComp
 $Comp
-L PWR_FLAG #FLG3
+L PWR_FLAG #FLG2
 U 1 1 5AAA9CFB
 P 4300 1600
-F 0 "#FLG3" H 4300 1900 60  0001 C CNN
+F 0 "#FLG2" H 4300 1900 60  0001 C CNN
 F 1 "PWR_FLAG" H 4300 1550 40  0001 C CNN
 F 2 "" H 4200 1800 60  0001 C CNN
 F 3 "" H 4300 1900 60  0001 C CNN
