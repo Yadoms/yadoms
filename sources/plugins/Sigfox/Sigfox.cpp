@@ -4,7 +4,6 @@
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include <shared/Log.h>
-#include "webServer/sigfoxHTTPServer.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -36,11 +35,10 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    YADOMS_LOG(information) << "Sigfox is starting...";
    m_configuration.initializeWith(api->getConfiguration());
-   CSigfoxHTTPServer webServer(m_configuration.getSocketPort());
+   m_webServer = boost::make_shared<CSigfoxHTTPServer>(m_configuration.getSocketPort());
       
    try {
-
-      m_isDeveloperMode = api->getYadomsInformation()->developperMode();
+      m_webServer->start();
 
       api->setPluginState(yApi::historization::EPluginState::kRunning);
       YADOMS_LOG(information) << "Sigfox plugin is running..." ;
@@ -66,7 +64,10 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          try {
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+            m_webServer->stop();
             onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+            m_webServer = boost::make_shared<CSigfoxHTTPServer>(m_configuration.getSocketPort());
+            m_webServer->start();
             api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
          }
          catch (...)
@@ -107,8 +108,7 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newMessage) const
 {
-   if (m_isDeveloperMode)
-      newMessage.printToLog(YADOMS_LOG(information));
+   newMessage.printToLog(YADOMS_LOG(trace));
 
    try {
       std::string deviceName = newMessage.get<std::string>("device");

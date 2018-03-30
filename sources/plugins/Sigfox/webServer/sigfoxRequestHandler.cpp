@@ -6,9 +6,9 @@ void CSigfoxRequestHandler::handleRequest(Poco::Net::HTTPServerRequest &req, Poc
 {
    resp.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
    resp.setContentType("text/html");
-
-   std::ostream& out = resp.send();
    /*
+   std::ostream& out = resp.send();
+   
    out << "<h1>Hello world!</h1>"
       << "<p>Count: " << ++std::count << "</p>"
       << "<p>Host: " << req.getHost() << "</p>"

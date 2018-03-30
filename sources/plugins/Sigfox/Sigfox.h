@@ -3,6 +3,7 @@
 #include <shared/event/EventTimer.h>
 #include "specificHistorizer/SNR.h"
 #include "SigfoxConfiguration.h"
+#include "webServer/sigfoxHTTPServer.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -57,10 +58,7 @@ private:
    //--------------------------------------------------------------
    CSigfoxConfiguration m_configuration;
 
-   //--------------------------------------------------------------
-   /// \brief developer mode for logs
-   //--------------------------------------------------------------
-   bool m_isDeveloperMode;
+   boost::shared_ptr<CSigfoxHTTPServer> m_webServer;
 
    //--------------------------------------------------------------
    /// \brief	    Message historization object
