@@ -28,7 +28,7 @@ CSigfox::~CSigfox()
 // Event IDs
 enum
 {
-   kConnectionRetryTimer = yApi::IYPluginApi::kPluginFirstEventId // Always start from shared::event::CEventHandler::kUserFirstId
+   kDataReceived = yApi::IYPluginApi::kPluginFirstEventId // Always start from shared::event::CEventHandler::kUserFirstId
 };
 
 void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -66,7 +66,7 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
             m_webServer = boost::make_shared<CSigfoxHTTPServer>(m_configuration.getSocketPort());
             m_webServer->start();
-            api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
+            api->setPluginState(yApi::historization::EPluginState::kRunning);
          }
          catch (...)
          {

@@ -16,10 +16,12 @@ CSigfoxHTTPServer::~CSigfoxHTTPServer()
 
 void CSigfoxHTTPServer::start()
 {
+   YADOMS_LOG(trace) << "web server started at port " << m_embeddedWebServer->port();
    m_embeddedWebServer->start();
 }
 
 void CSigfoxHTTPServer::stop()
 {
+   YADOMS_LOG(trace) << "web server stopped";
    m_embeddedWebServer->stop();
 }

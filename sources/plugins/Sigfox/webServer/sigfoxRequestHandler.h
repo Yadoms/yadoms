@@ -9,6 +9,7 @@
 //--------------------------------------------------------------
 class CSigfoxRequestHandler : public Poco::Net::HTTPRequestHandler
 {
+   //CSigfoxRequestHandler();
 public:
    virtual void handleRequest(Poco::Net::HTTPServerRequest &req, Poco::Net::HTTPServerResponse &resp);
 
