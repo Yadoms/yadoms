@@ -4,9 +4,12 @@
 #include "sigfoxRequestHandlerFactory.h"
 #include <shared/Log.h>
 
-CSigfoxHTTPServer::CSigfoxHTTPServer(const unsigned short port)
+CSigfoxHTTPServer::CSigfoxHTTPServer(shared::event::CEventHandler& receiveDataEventHandler,
+                                     int receiveDataEventId,
+                                     const unsigned short port)
 {
-   m_embeddedWebServer = boost::make_shared<Poco::Net::HTTPServer>(new CSigfoxRequestHandlerFactory(),
+   m_embeddedWebServer = boost::make_shared<Poco::Net::HTTPServer>(new CSigfoxRequestHandlerFactory(receiveDataEventHandler,
+                                                                                                    receiveDataEventId),
                                                                    Poco::Net::ServerSocket(port),
                                                                    new Poco::Net::HTTPServerParams);
 }

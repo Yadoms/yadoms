@@ -1,5 +1,5 @@
 #pragma once
-
+#include <shared/event/EventHandler.hpp>
 #include <Poco/Net/HTTPServer.h>
 
 //--------------------------------------------------------------
@@ -11,7 +11,9 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    //--------------------------------------------------------------
-   CSigfoxHTTPServer(const unsigned short port);
+   CSigfoxHTTPServer(shared::event::CEventHandler& receiveDataEventHandler,
+                     int receiveDataEventId,
+                     const unsigned short port);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

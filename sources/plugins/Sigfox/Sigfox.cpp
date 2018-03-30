@@ -36,7 +36,9 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    YADOMS_LOG(information) << "Sigfox is starting...";
    try {
       m_configuration.initializeWith(api->getConfiguration());
-      m_webServer = boost::make_shared<CSigfoxHTTPServer>(m_configuration.getSocketPort());
+      m_webServer = boost::make_shared<CSigfoxHTTPServer>(api->getEventHandler(),
+                                                          kDataReceived,
+                                                          m_configuration.getSocketPort());
       m_webServer->start();
       api->setPluginState(yApi::historization::EPluginState::kRunning);
       YADOMS_LOG(information) << "Sigfox plugin is running..." ;
@@ -64,7 +66,9 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
             m_webServer->stop();
             onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
-            m_webServer = boost::make_shared<CSigfoxHTTPServer>(m_configuration.getSocketPort());
+            m_webServer = boost::make_shared<CSigfoxHTTPServer>(api->getEventHandler(),
+                                                                kDataReceived,
+                                                                m_configuration.getSocketPort());
             m_webServer->start();
             api->setPluginState(yApi::historization::EPluginState::kRunning);
          }
@@ -88,6 +92,12 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
          }
          extraQuery->sendSuccess(shared::CDataContainer());
+         break;
+      }
+      case kDataReceived:
+      {
+         auto data = api->getEventHandler().getEventData<shared::CDataContainer>();
+         processIncomingMessage(api, data);
          break;
       }
       case yApi::IYPluginApi::kEventDeviceCommand:

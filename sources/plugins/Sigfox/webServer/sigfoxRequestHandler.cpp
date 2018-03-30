@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "sigfoxRequestHandler.h"
 #include <shared/Log.h>
+#include <shared/DataContainer.h>
 
-/*
-CSigfoxRequestHandler::CSigfoxRequestHandler()
-{
-
-}*/
+CSigfoxRequestHandler::CSigfoxRequestHandler(shared::event::CEventHandler& receiveDataEventHandler,
+                                             int receiveDataEventId):
+   m_receiveDataEventHandler(receiveDataEventHandler),
+   m_receiveDataEventId(receiveDataEventId)
+{}
 
 void CSigfoxRequestHandler::handleRequest(Poco::Net::HTTPServerRequest &req, Poco::Net::HTTPServerResponse &resp)
 {
@@ -26,9 +27,9 @@ void CSigfoxRequestHandler::handleRequest(Poco::Net::HTTPServerRequest &req, Poc
 
       YADOMS_LOG(information) << buffer;
 
+      m_receiveDataEventHandler.postEvent<shared::CDataContainer>(m_receiveDataEventId,
+                                                                  shared::CDataContainer(buffer));
    }
-
-   //api->getEventHandler().createTimer(kEvtInitialization, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
 
    /*
    std::ostream& out = resp.send();
