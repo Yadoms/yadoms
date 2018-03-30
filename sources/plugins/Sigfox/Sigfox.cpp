@@ -34,12 +34,10 @@ enum
 void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    YADOMS_LOG(information) << "Sigfox is starting...";
-   m_configuration.initializeWith(api->getConfiguration());
-   m_webServer = boost::make_shared<CSigfoxHTTPServer>(m_configuration.getSocketPort());
-      
    try {
+      m_configuration.initializeWith(api->getConfiguration());
+      m_webServer = boost::make_shared<CSigfoxHTTPServer>(m_configuration.getSocketPort());
       m_webServer->start();
-
       api->setPluginState(yApi::historization::EPluginState::kRunning);
       YADOMS_LOG(information) << "Sigfox plugin is running..." ;
    }
