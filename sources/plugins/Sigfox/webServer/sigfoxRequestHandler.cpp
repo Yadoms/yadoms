@@ -18,6 +18,14 @@ void CSigfoxRequestHandler::handleRequest(Poco::Net::HTTPServerRequest &req, Poc
    if (boost::icontains(req.getContentType(), "application/json"))
    {
       YADOMS_LOG(information) << "Receive a json file";
+
+      std::istream &i = req.stream();
+      int len = req.getContentLength();
+      char* buffer = new char[len];
+      i.read(buffer, len);
+
+      YADOMS_LOG(information) << buffer;
+
    }
 
    //api->getEventHandler().createTimer(kEvtInitialization, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
