@@ -22,14 +22,10 @@ void CSigfoxRequestHandler::handleRequest(Poco::Net::HTTPServerRequest &req, Poc
    auto iterator = tok.begin();
    if (iterator != tok.end())
    {
-      const auto key = *iterator;
-      ++iterator;
-
       if (iterator != tok.end())
-      {
-         const auto value = *iterator;
-         YADOMS_LOG(information) << "token : " << value;
-      }
+         YADOMS_LOG(information) << "token : " << *iterator;
+
+      ++iterator;
    }
 
    if (req.getMethod() == "POST")
