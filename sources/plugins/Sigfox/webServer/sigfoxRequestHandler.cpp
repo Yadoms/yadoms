@@ -11,17 +11,13 @@ CSigfoxRequestHandler::CSigfoxRequestHandler(shared::event::CEventHandler& recei
 
 void CSigfoxRequestHandler::handleRequest(Poco::Net::HTTPServerRequest &req, Poco::Net::HTTPServerResponse &resp)
 {
-   resp.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
-   resp.setContentType("text/html");
-
    //TODO : Check the URI name should finish by /sigfox
    YADOMS_LOG(trace) << "getURI : " << req.getURI();
-   YADOMS_LOG(trace) << "getHost : " << req.getHost();
-   YADOMS_LOG(trace) << "getMethod : " << req.getMethod();
 
    // Separate key/value
    boost::char_separator<char> sep("/");
-   boost::tokenizer<boost::char_separator<char>> tok(req.getURI(), sep);
+   std::string value = req.getURI();
+   boost::tokenizer<boost::char_separator<char>> tok( value, sep);
 
    auto iterator = tok.begin();
    if (iterator != tok.end())
@@ -53,4 +49,9 @@ void CSigfoxRequestHandler::handleRequest(Poco::Net::HTTPServerRequest &req, Poc
                                                                      shared::CDataContainer(buffer));
       }
    }
+
+   // Send the response
+   resp.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
+   resp.setContentType("text/html");
+   resp.send();
 }
