@@ -14,18 +14,21 @@ void CSigfoxRequestHandler::handleRequest(Poco::Net::HTTPServerRequest &req, Poc
    resp.setStatus(Poco::Net::HTTPResponse::HTTP_OK);
    resp.setContentType("text/html");
 
-   YADOMS_LOG(information) << "Receive something";
+   //TODO : Check the URI name should finish by /sigfox
+   YADOMS_LOG(trace) << "getURI : " << req.getURI();
+   YADOMS_LOG(trace) << "getHost : " << req.getHost();
+   YADOMS_LOG(trace) << "getMethod : " << req.getMethod();
 
    if (boost::icontains(req.getContentType(), "application/json"))
    {
-      YADOMS_LOG(information) << "Receive a json file";
+      YADOMS_LOG(trace) << "Receive a json file";
 
       std::istream &i = req.stream();
       int len = req.getContentLength();
       char* buffer = new char[len];
       i.read(buffer, len);
 
-      YADOMS_LOG(information) << buffer;
+      YADOMS_LOG(trace) << buffer;
 
       m_receiveDataEventHandler.postEvent<shared::CDataContainer>(m_receiveDataEventId,
                                                                   shared::CDataContainer(buffer));
