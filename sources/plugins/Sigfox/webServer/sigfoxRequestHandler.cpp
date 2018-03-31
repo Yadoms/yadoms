@@ -19,33 +19,38 @@ void CSigfoxRequestHandler::handleRequest(Poco::Net::HTTPServerRequest &req, Poc
    YADOMS_LOG(trace) << "getHost : " << req.getHost();
    YADOMS_LOG(trace) << "getMethod : " << req.getMethod();
 
-   if (boost::icontains(req.getContentType(), "application/json"))
+   // Separate key/value
+   boost::char_separator<char> sep("/");
+   boost::tokenizer<boost::char_separator<char>> tok(req.getURI(), sep);
+
+   auto iterator = tok.begin();
+   if (iterator != tok.end())
    {
-      YADOMS_LOG(trace) << "Receive a json file";
+      const auto key = *iterator;
+      ++iterator;
 
-      std::istream &i = req.stream();
-      int len = req.getContentLength();
-      char* buffer = new char[len];
-      i.read(buffer, len);
-
-      YADOMS_LOG(trace) << buffer;
-
-      m_receiveDataEventHandler.postEvent<shared::CDataContainer>(m_receiveDataEventId,
-                                                                  shared::CDataContainer(buffer));
+      if (iterator != tok.end())
+      {
+         const auto value = *iterator;
+         YADOMS_LOG(information) << "token : " << value;
+      }
    }
 
-   /*
-   std::ostream& out = resp.send();
-   
-   out << "<h1>Hello world!</h1>"
-      << "<p>Count: " << ++std::count << "</p>"
-      << "<p>Host: " << req.getHost() << "</p>"
-      << "<p>Method: " << req.getMethod() << "</p>"
-      << "<p>URI: " << req.getURI() << "</p>";
-   out.flush();
+   if (req.getMethod() == "POST")
+   {
+      if (boost::icontains(req.getContentType(), "application/json"))
+      {
+         YADOMS_LOG(trace) << "Receive a json file";
 
-   std::cout << std::endl
-      << "Response sent for count=" << std::count
-      << " and URI=" << req.getURI() << std::endl;
-      */
+         std::istream &i = req.stream();
+         int len = req.getContentLength();
+         char* buffer = new char[len];
+         i.read(buffer, len);
+
+         YADOMS_LOG(trace) << buffer;
+
+         m_receiveDataEventHandler.postEvent<shared::CDataContainer>(m_receiveDataEventId,
+                                                                     shared::CDataContainer(buffer));
+      }
+   }
 }

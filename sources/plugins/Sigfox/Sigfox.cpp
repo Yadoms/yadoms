@@ -34,12 +34,20 @@ enum
 void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    YADOMS_LOG(information) << "Sigfox is starting...";
+
+   m_configuration.initializeWith(api->getConfiguration());
    try {
-      m_configuration.initializeWith(api->getConfiguration());
       m_webServer = boost::make_shared<CSigfoxHTTPServer>(api->getEventHandler(),
                                                           kDataReceived,
                                                           m_configuration.getSocketPort());
       m_webServer->start();
+   }
+   catch (...)
+   {
+      YADOMS_LOG(information) << "Sigfox plugin is starting with v1.0 configuration";
+   }
+
+   try {
       api->setPluginState(yApi::historization::EPluginState::kRunning);
       YADOMS_LOG(information) << "Sigfox plugin is running..." ;
    }
@@ -64,12 +72,17 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          try {
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            m_webServer->stop();
+            if (m_webServer) m_webServer->stop();
             onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
-            m_webServer = boost::make_shared<CSigfoxHTTPServer>(api->getEventHandler(),
-                                                                kDataReceived,
-                                                                m_configuration.getSocketPort());
-            m_webServer->start();
+
+            if (m_webServer)
+            {
+               m_webServer = boost::make_shared<CSigfoxHTTPServer>(api->getEventHandler(),
+                                                                   kDataReceived,
+                                                                   m_configuration.getSocketPort());
+               m_webServer->start();
+            }
+
             api->setPluginState(yApi::historization::EPluginState::kRunning);
          }
          catch (...)
@@ -96,8 +109,14 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       }
       case kDataReceived:
       {
-         auto data = api->getEventHandler().getEventData<shared::CDataContainer>();
-         processIncomingMessage(api, data);
+         try {
+            auto data = api->getEventHandler().getEventData<shared::CDataContainer>();
+            processIncomingMessage(api, data);
+         }
+         catch (std::exception &e)
+         {
+            YADOMS_LOG(error) << e.what();
+         }
          break;
       }
       case yApi::IYPluginApi::kEventDeviceCommand:
