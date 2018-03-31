@@ -11,29 +11,24 @@ CSigfoxRequestHandler::CSigfoxRequestHandler(shared::event::CEventHandler& recei
 
 void CSigfoxRequestHandler::handleRequest(Poco::Net::HTTPServerRequest &req, Poco::Net::HTTPServerResponse &resp)
 {
-   //TODO : Check the URI name should finish by /sigfox
-   YADOMS_LOG(trace) << "getURI : " << req.getURI();
-
    // Separate key/value
    boost::char_separator<char> sep("/");
    std::string value = req.getURI();
    boost::tokenizer<boost::char_separator<char>> tok( value, sep);
 
    auto iterator = tok.begin();
+   std::vector<std::string> token;
    if (iterator != tok.end())
    {
-      if (iterator != tok.end())
-         YADOMS_LOG(information) << "token : " << *iterator;
-
+      token.push_back(*iterator);
       ++iterator;
    }
 
-   if (req.getMethod() == "POST")
+   // We accept only 1 token with sigfox
+   if (req.getMethod() == "POST" && token.size() == 1 && token[0] == "sigfox")
    {
       if (boost::icontains(req.getContentType(), "application/json"))
       {
-         YADOMS_LOG(trace) << "Receive a json file";
-
          std::istream &i = req.stream();
          int len = req.getContentLength();
          char* buffer = new char[len];
@@ -43,6 +38,20 @@ void CSigfoxRequestHandler::handleRequest(Poco::Net::HTTPServerRequest &req, Poc
 
          m_receiveDataEventHandler.postEvent<shared::CDataContainer>(m_receiveDataEventId,
                                                                      shared::CDataContainer(buffer));
+      }
+      else
+      {
+         YADOMS_LOG(information) << "The content type is " << req.getContentType() << " and it could not be parsed";
+      }
+   }
+   else
+   {
+      if (req.getMethod() != "POST") 
+         YADOMS_LOG(information) << "Method " << req.getContentType() << "is not treated";
+      if (token.size() != 1 || token[0] != "sigfox")
+      {
+         YADOMS_LOG(information) << "URI " << req.getURI() << "is not correct";
+         YADOMS_LOG(information) << "URI should be /sigfox";
       }
    }
 
