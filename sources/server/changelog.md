@@ -11,6 +11,7 @@
 * Optimize REST request handling at the startup of the web client
 * Fix rolling title, when change the title of the widget
 * Widgets configured with missing device/keyword(s) are automatically disabled
+* Fix #332 - Yadoms is now compatible with Edge
 
 ### 2.0.2
 
