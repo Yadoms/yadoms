@@ -1,36 +1,31 @@
 #pragma once
-
-#include "ISigfoxConfiguration.h"
-
+#include <shared/event/EventHandler.hpp>
+#include <Poco/Net/HTTPServer.h>
 
 //--------------------------------------------------------------
 /// \brief	Configuration of the plugin
 //--------------------------------------------------------------
-class CSigfoxConfiguration : public ISigfoxConfiguration
+class CSigfoxHTTPServer
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    //--------------------------------------------------------------
-   CSigfoxConfiguration();
+   CSigfoxHTTPServer(shared::event::CEventHandler& receiveDataEventHandler,
+                     int receiveDataEventId,
+                     const unsigned short port);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CSigfoxConfiguration();
+   virtual ~CSigfoxHTTPServer();
 
-   // ISigfoxConfiguration implementation
-   void initializeWith(const shared::CDataContainer& data) override;
-   double getRssiMin() const override;
-   double getRssiMax() const override;
-   double getTensionMin() const override;
-   double getTensionMax() const override;
-   int getSocketPort() const override;
-   // [END] ISigfoxConfiguration implementation
+   void start();
+   void stop();
 
 private:
    //--------------------------------------------------------------
    /// \brief	    Configuration raw data
    //--------------------------------------------------------------
-   shared::CDataContainer m_data;
+   boost::shared_ptr<Poco::Net::HTTPServer> m_embeddedWebServer;
 };
