@@ -34,8 +34,6 @@ void CSigfoxRequestHandler::handleRequest(Poco::Net::HTTPServerRequest &req, Poc
          char* buffer = new char[len];
          i.read(buffer, len);
 
-         YADOMS_LOG(trace) << buffer;
-
          m_receiveDataEventHandler.postEvent<shared::CDataContainer>(m_receiveDataEventId,
                                                                      shared::CDataContainer(buffer));
       }
