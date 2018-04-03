@@ -100,7 +100,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kEvtPortDataReceived:
          {
 			 m_waitForAnswerTimer->stop();
-          YADOMS_LOG(trace) << "TeleInfo plugin :  DataReceived";
+          YADOMS_LOG(trace) << "TeleInfo plugin : DataReceived";
 
           processDataReceived(api,
                               api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::string>>>());
@@ -133,6 +133,8 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kSamplingTimer:
          {
+            // Activate the port
+            m_FT2XManager.activateGPIO(1);
             m_receiveBufferHandler->activate();
 
             //Lauch a new time the time out to detect connexion failure

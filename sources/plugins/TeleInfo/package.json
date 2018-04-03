@@ -1,12 +1,20 @@
 {
 	"type": "teleinfo",
-	"version": "1.0.4-rc.2",
+	"version": "1.1.0-beta.1",
 	"author": "Jean-Michel BERHAULT",
     "url": "https://github.com/Yadoms/yadoms/wiki/TeleInfo",
 	"credits": "",
 	"SupportedPlatforms": "all",
 	"supportManuallyDeviceCreation": "false",
 	"configurationSchema": {
+      "EquipmentType": {
+         "type": "enum",
+         "values": {
+            "TIC1xInput": "",
+            "TIC2xInputs": ""
+         },
+         "defaultValue": "TIC1xInput"
+      },   
 		"SerialPort": {
 			"type": "enum",
 			"values": {

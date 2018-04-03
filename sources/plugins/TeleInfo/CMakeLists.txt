@@ -32,7 +32,30 @@ set(TELEINFO_SOURCES
    specificHistorizer/Color.cpp   
    specificHistorizer/Period.h
    specificHistorizer/Period.cpp
+   IFTD2XManager.h
+   ftdi/FTD2XX.H
 )
+
+IF (WIN32)
+    set(TELEINFO_SOURCES ${TELEINFO_SOURCES}
+	# Add Windows sources
+	Windows/FT2XManager.h
+	Windows/FT2XManager.cpp
+	)
+	
+	source_group(Windows Windows/*.*)
+	
+ENDIF()
+
+IF (UNIX AND NOT APPLE)
+    set(TELEINFO_SOURCES ${TELEINFO_SOURCES}
+	# Add Common Linux and RaspberryPI sources
+	Linux/FT2XManager.h
+	Linux/FT2XManager.cpp
+	)
+	
+	source_group(Linux Linux/*.*)
+ENDIF()
 
 #########################################
 ## Place here all additional groups (solution folder)
@@ -45,6 +68,18 @@ source_group(sources\\specificHistorizer specificHistorizer/*.*)
 ## Place here all additional include directories
 ## (by default yadoms-shared and boost are included)
 #########################################
+
+IF(WIN32)
+   set(TELEINFO_ADDITIONAL_INC_DIR
+	   ${CMAKE_CURRENT_SOURCE_DIR}/Windows
+   )
+ENDIF()
+	
+IF (UNIX AND NOT APPLE)
+   set(TELEINFO_ADDITIONAL_INC_DIR
+      ${CMAKE_CURRENT_SOURCE_DIR}/Linux
+   )
+ENDIF()
 
 #########################################
 ## Place here all additional libraries to link with
@@ -68,3 +103,4 @@ PLUGIN_POST_BUILD_COPY_FILE(teleinfo package.json)
 PLUGIN_POST_BUILD_COPY_FILE(teleinfo changelog.md)
 PLUGIN_POST_BUILD_COPY_FILE(teleinfo icon.png)
 PLUGIN_POST_BUILD_COPY_DIRECTORY(teleinfo locales)
+PLUGIN_POST_BUILD_COPY_FILE(teleinfo ftdi/ftd2xx.dll)

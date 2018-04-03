@@ -2,7 +2,6 @@
 
 #include "ITeleInfoConfiguration.h"
 
-
 //--------------------------------------------------------------
 /// \brief	Configuration of the plugin
 //--------------------------------------------------------------
@@ -22,6 +21,7 @@ public:
    // ITeleInfoConfiguration implementation
    void initializeWith(const shared::CDataContainer& data) override;
    std::string getSerialPort() const override;
+   EEquipmentType getEquipmentType() const override;
    // [END] ITeleInfoConfiguration implementation
 
 private:
@@ -30,4 +30,3 @@ private:
    //--------------------------------------------------------------
    shared::CDataContainer m_data;
 };
-

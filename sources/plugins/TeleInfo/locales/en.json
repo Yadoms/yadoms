@@ -2,6 +2,14 @@
 	"name": "TeleInfo",
 	"description": "EDF power meter information. This equipment is connected directly in the EDF power meter.",
 	"configurationSchema": {
+      "EquipmentType": {
+			"name": "Equipment type",
+			"description": "",
+         "values": {
+            "TIC1xInput": "Equipment with 1 power meter information input",
+            "TIC2xInputs": "Equipment with 2 power meter information inputs"
+         }
+      },   
 		"SerialPort": {
 			"name": "Serial port",
 			"description": "The serial port connected to the teleinfo reader"
