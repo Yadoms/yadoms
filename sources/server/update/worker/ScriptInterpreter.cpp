@@ -26,11 +26,12 @@ namespace update
          /////////////////////////////////////////////
          //1. download package
          /////////////////////////////////////////////
+         Poco::Path downloadedPackage;
          try
          {
             YADOMS_LOG(information) << "Downloading scriptInterpreter package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterDownload, std::string(), callbackData);
-            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback,
+            downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback,
                                                                          i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
             YADOMS_LOG(information) << "Downloading scriptInterpreter package with success";
 
@@ -61,18 +62,20 @@ namespace update
                YADOMS_LOG(error) << "Fail to deploy scriptInterpreter package : " << ex.what();
                progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterDeployFailed, ex.what(), callbackData);
             }
-
-
-            //delete downloaded zip file
-            Poco::File toDelete(downloadedPackage.toString());
-            if (toDelete.exists())
-               toDelete.remove();
          }
          catch (std::exception& ex)
          {
             //fail to download package
             YADOMS_LOG(error) << "Fail to download scriptInterpreter package : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterDownloadFailed, ex.what(), callbackData);
+         }
+
+         //delete downloaded zip file
+         if (!downloadedPackage.toString().empty())
+         {
+            Poco::File toDelete(downloadedPackage.toString());
+            if (toDelete.exists())
+               toDelete.remove();
          }
       }
 
@@ -92,11 +95,12 @@ namespace update
          /////////////////////////////////////////////
          //1. download package
          /////////////////////////////////////////////
+         Poco::Path downloadedPackage;
          try
          {
             YADOMS_LOG(information) << "Downloading scriptInterpreter package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdateScriptInterpreterDownload, std::string(), callbackData);
-            Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback,
+            downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback,
                                                                          i18n::CClientStrings::UpdateScriptInterpreterDownload, 0.0, 50.0);
             YADOMS_LOG(information) << "Downloading scriptInterpreter package with success";
 
@@ -145,18 +149,20 @@ namespace update
                YADOMS_LOG(error) << "Fail to deploy scriptInterpreter package : " << ex.what();
                progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterDeployFailed, ex.what(), callbackData);
             }
-
-
-            //delete downloaded zip file
-            Poco::File toDelete(downloadedPackage.toString());
-            if (toDelete.exists())
-               toDelete.remove();
          }
          catch (std::exception& ex)
          {
             //fail to download package
             YADOMS_LOG(error) << "Fail to download scriptInterpreter package : " << ex.what();
             progressCallback(false, 100.0f, i18n::CClientStrings::UpdateScriptInterpreterDownloadFailed, ex.what(), callbackData);
+         }
+
+         //delete downloaded zip file
+         if (!downloadedPackage.toString().empty())
+         {
+            Poco::File toDelete(downloadedPackage.toString());
+            if (toDelete.exists())
+               toDelete.remove();
          }
       }
 

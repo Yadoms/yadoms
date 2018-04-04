@@ -7,7 +7,7 @@ namespace tools
 {
    boost::filesystem::path CFileSystem::createTemporaryFolder()
    {
-      const auto tempPath = boost::filesystem::unique_path();
+      const auto tempPath = boost::filesystem::temp_directory_path() / boost::filesystem::unique_path();
       boost::filesystem::create_directories(tempPath);
       return tempPath;
    }
