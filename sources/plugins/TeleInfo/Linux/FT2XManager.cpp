@@ -1,60 +1,74 @@
 #include "stdafx.h"
-#include "SystemFactory.h"
-#include "DisksList.h"
+#include "FT2XManager.h"
+#include <shared/Log.h>
 
+const unsigned char CFT2XManager::m_mask_port1 = 0x11;
+const unsigned char CFT2XManager::m_mask_port2 = 0x22;
+const unsigned char CFT2XManager::m_mask_no_port = 0x00;
+const unsigned char CFT2XManager::m_enableBitBang = 0x20;
 
-static const std::string Model("SystemInformation");
-
-CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api,
-                               const std::string& device,
-                               const ISIConfiguration& configuration,
-                               shared::CDataContainer details)
-   : m_DeviceName(device),
-     m_MemoryLoad(boost::make_shared<CMemoryLoad>("MemoryLoad")),
-     m_CPULoad(boost::make_shared<CCPULoad>("CPULoad")),
-     m_highFrequencyUpdateKeywords({m_CPULoad->historizable()}),
-     m_lowFrequencyUpdateKeywords({m_MemoryLoad->historizable()})
+CFT2XManager::CFT2XManager()
 {
-   // As disk list can change (add a disk), update it each time Yadoms starts
+   FT_STATUS	ftStatus;
 
-   // Disk usage for all disks
-   auto diskList = CDisksList().getList();
+   //f_ftopen  FT_Open = (f_ftopen)GetProcAddress(hGetProcIDDLL, "FT_Open");
 
-   for (auto disk = diskList.begin(); disk != diskList.end(); ++disk)
+   ftStatus = FT_Open(0, &ftHandle);
+   if (ftStatus != FT_OK) {
+      // TODO : Send a exception - perhaps fail because the driver is not installed
+   }
+}
+
+CFT2XManager::~CFT2XManager()
+{
+   //f_ftclose FT_Close = (f_ftclose)GetProcAddress(hGetProcIDDLL, "FT_Close");
+
+   if (ftHandle != NULL) {
+      FT_Close(ftHandle);
+      ftHandle = NULL;
+   }
+}
+
+void CFT2XManager::activateGPIO(const int GPIONumber)
+{
+   unsigned char ucMask = 0xFF;
+   unsigned char ucMode;
+   FT_STATUS	ftStatus;
+
+   //f_ftsetBitMode FT_SetBitMode = (f_ftsetBitMode)GetProcAddress(hGetProcIDDLL, "FT_SetBitMode");
+   //f_ftgetBitMode FT_GetBitMode = (f_ftgetBitMode)GetProcAddress(hGetProcIDDLL, "FT_GetBitMode");
+   //f_ftsetbaudRate FT_SetBaudRate = (f_ftsetbaudRate)GetProcAddress(hGetProcIDDLL, "FT_SetBaudRate");
+
+   switch (GPIONumber)
    {
-      auto diskUsage = boost::make_shared<CDiskUsage>(disk->substr(0, 1) + "_DiskUsage", *disk);
-      m_diskUsageList.push_back(diskUsage);
-      m_lowFrequencyUpdateKeywords.push_back(diskUsage->historizable());
+   case 1:
+      ucMask = m_mask_port1;
+      break;
+   case 2:
+      ucMask = m_mask_port2;
+      break;
+   default:
+      ucMask = m_mask_no_port;
    }
 
-   api->declareDevice(device, Model, Model, m_highFrequencyUpdateKeywords, details);
-   api->declareDevice(device, Model, Model, m_lowFrequencyUpdateKeywords, details);
+   ucMode = m_enableBitBang;
+
+   ftStatus = FT_SetBitMode(ftHandle, ucMask, ucMode);
+
+   if (ftStatus != FT_OK)  
+      YADOMS_LOG(error) << "Failed to set bit mode for port: " << GPIONumber;
+
+   // TODO : Récupérer la configuration à partor du constructeur & du Factory
+   //FT_SetBaudRate(ftHandle, FT_BAUD_1200);
+
+   ftStatus = FT_GetBitMode(ftHandle, &ucMode);
+   if (ftStatus != FT_OK) {
+      YADOMS_LOG(error) << "Failed to get bit mode";
+   }
 }
 
-CSystemFactory::~CSystemFactory()
+void CFT2XManager::desactivateGPIO()
 {
+   // No GPIO activate => No access
+   activateGPIO(0);
 }
-
-void CSystemFactory::OnHighFrequencyUpdate(boost::shared_ptr<yApi::IYPluginApi> api) const
-{
-   m_CPULoad->read();
-   api->historizeData(m_DeviceName, m_highFrequencyUpdateKeywords);
-}
-
-void CSystemFactory::OnLowFrequencyUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                                          const ISIConfiguration& configuration)
-{
-   m_MemoryLoad->read();
-
-   for (auto disk = m_diskUsageList.begin(); disk != m_diskUsageList.end(); ++disk)
-      (*disk)->read();
-
-   api->historizeData(m_DeviceName, m_lowFrequencyUpdateKeywords);
-}
-
-void CSystemFactory::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                                           const ISIConfiguration& configuration,
-                                           shared::CDataContainer details)
-{
-}
-
