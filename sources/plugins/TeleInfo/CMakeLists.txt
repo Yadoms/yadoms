@@ -103,4 +103,7 @@ PLUGIN_POST_BUILD_COPY_FILE(teleinfo package.json)
 PLUGIN_POST_BUILD_COPY_FILE(teleinfo changelog.md)
 PLUGIN_POST_BUILD_COPY_FILE(teleinfo icon.png)
 PLUGIN_POST_BUILD_COPY_DIRECTORY(teleinfo locales)
-PLUGIN_POST_BUILD_COPY_FILE(teleinfo ftdi/ftd2xx.dll)
+
+IF(WIN32)
+   PLUGIN_POST_BUILD_COPY_FILE(teleinfo ftdi/ftd2xx.dll)
+ENDIF()

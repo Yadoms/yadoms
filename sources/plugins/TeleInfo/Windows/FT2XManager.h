@@ -3,7 +3,7 @@
 #include "../ftdi/FTD2XX.H"
 
 //--------------------------------------------------------------
-/// \brief	Class where all Keywords are created and updated
+/// \brief	Class to access specific fonctions to the FT2X driver
 /// \note   
 //--------------------------------------------------------------
 class CFT2XManager : public IFTD2XManager
@@ -19,17 +19,10 @@ public:
    //--------------------------------------------------------------
    virtual ~CFT2XManager();
 
-   //--------------------------------------------------------------
-   /// \brief	    Activate the GPIO pin in parameter
-   /// \param[in] GPIONumber          The GPIO Pin to activate
-   //--------------------------------------------------------------
+   // IFTD2XManager implementation
    void activateGPIO(const int GPIONumber) override;
-
-   //--------------------------------------------------------------
-   /// \brief	    Desactivate the GPIO pin in parameter
-   /// \param[in] GPIONumber          The GPIO Pin to desactivate
-   //--------------------------------------------------------------
-   void desactivateGPIO(const int GPIONumber) override;
+   void desactivateGPIO() override;
+   // [END] IFTD2XManager implementation
 
 private:
 

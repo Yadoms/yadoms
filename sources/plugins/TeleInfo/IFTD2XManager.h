@@ -1,9 +1,9 @@
 #pragma once
 
-//--------------------------------------------------------------
-/// \brief	Class where all Keywords are created and updated
+//-----------------------------------------------------------------
+/// \brief	Interface to the FT2X specific function access.
 /// \note   
-//--------------------------------------------------------------
+//-----------------------------------------------------------------
 class IFTD2XManager
 {
 public:
@@ -16,10 +16,8 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	    Desactivate the GPIO pin in parameter
-   /// \param[in] GPIONumber          The GPIO Pin to desactivate
    //--------------------------------------------------------------
-   virtual void desactivateGPIO(const int GPIONumber) = 0;
+   virtual void desactivateGPIO() = 0;
 
 private:
 };
-

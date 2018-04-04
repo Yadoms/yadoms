@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "TeleInfoConfiguration.h"
+#include <shared/Log.h>
 
 CTeleInfoConfiguration::CTeleInfoConfiguration()
 {
@@ -21,9 +22,40 @@ std::string CTeleInfoConfiguration::getSerialPort() const
 
 EEquipmentType CTeleInfoConfiguration::getEquipmentType() const
 {
-   std::string temp = m_data.get<std::string>("EquipmentType");
-   if (temp == "TIC1xInput")
+   try {
+      m_data.printToLog(YADOMS_LOG(information));
+      std::string temp = m_data.get<std::string>("EquipmentType");
+      if (temp == "TIC1xInput")
+         return OneInput;
+      else
+         return TwoInputs;
+   }
+   catch (std::exception &e)
+   {
+      // By default ! To be compatible with v1.0.x
       return OneInput;
-   else if (temp == "TIC2xInputs")
-      return TwoInputs;
+   }
+}
+
+EInputsActivated CTeleInfoConfiguration::getInputsActivated() const
+{
+   try {
+      if (getEquipmentType() == TwoInputs)
+      {
+         std::string temp = m_data.get<std::string>("EquipmentType.content.second.content.portEnabled");
+         if (temp == "1xInputEnabled")
+            return Input1Activated;
+         else if (temp == "2xInputsEnabled")
+            return Input2Activated;
+         else
+            return AllInputsActivated;
+      }
+      else // If it's the module with 1x port, we return port1Activated
+         return Input1Activated;
+   }
+   catch (std::exception &e)
+   {
+      // By default ! To be compatible with v1.0.x
+      return Input1Activated;
+   }
 }

@@ -1,4 +1,4 @@
-### 1.0.0-beta.1
+### 1.1.0-beta.1
 * Add a better for Windows installation
 * Add the support for module with double teleinfo input
 

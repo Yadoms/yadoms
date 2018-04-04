@@ -17,7 +17,8 @@ IMPLEMENT_PLUGIN(CTeleInfo)
 
 CTeleInfo::CTeleInfo():
    m_isDeveloperMode(false),
-   m_runningState(ETeleInfoPluginState::kUndefined)
+   m_runningState(ETeleInfoPluginState::kUndefined),
+   m_scanPort(0)
 {
 }
 
@@ -56,9 +57,16 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                                                              shared::event::CEventTimer::kOneShot,
                                                              boost::posix_time::seconds(20));
 
+   m_waitForAnswerTimer->stop();
+
    m_periodicSamplingTimer = api->getEventHandler().createTimer(kSamplingTimer,
                                                                 shared::event::CEventTimer::kPeriodic,
                                                                 boost::posix_time::seconds(30));
+
+   // Fire immediately a sampling time
+   api->getEventHandler().createTimer(kSamplingTimer,
+                                      shared::event::CEventTimer::kOneShot,
+                                      boost::posix_time::seconds(0));
 
    // Create the connection
    createConnection(api);
@@ -115,6 +123,20 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
 
             m_receiveBufferHandler->desactivate();
+            m_FT2XManager.desactivateGPIO();
+
+            if (m_scanPort==0 && 
+               (m_configuration.getEquipmentType() == TwoInputs) && 
+               ((m_configuration.getInputsActivated() == Input1Activated) ||
+               (m_configuration.getInputsActivated() == AllInputsActivated)))
+            {
+               m_scanPort = 1;
+
+               api->getEventHandler().createTimer(kSamplingTimer,
+                                                  shared::event::CEventTimer::kOneShot,
+                                                  boost::posix_time::seconds(0));
+            }
+
             break;
          }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
@@ -133,8 +155,17 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kSamplingTimer:
          {
+            // Initial port to scan
+            if (m_configuration.getInputsActivated() == Input1Activated ||
+                m_configuration.getInputsActivated() == AllInputsActivated)
+            {
+               m_scanPort = 0;
+            }
+            else
+               m_scanPort = 1;
+
             // Activate the port
-            m_FT2XManager.activateGPIO(1);
+            m_FT2XManager.activateGPIO(m_scanPort+1);
             m_receiveBufferHandler->activate();
 
             //Lauch a new time the time out to detect connexion failure
@@ -144,8 +175,24 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kAnswerTimeout:
          {
             m_waitForAnswerTimer->stop();
+            m_FT2XManager.desactivateGPIO();
+
             YADOMS_LOG(error) << "No answer received, try to reconnect in a while..." ;
-            errorProcess(api);
+
+            if (m_scanPort == 0 &&
+               (m_configuration.getEquipmentType() == TwoInputs) &&
+                ((m_configuration.getInputsActivated() == Input1Activated) ||
+                (m_configuration.getInputsActivated() == AllInputsActivated)))
+            {
+               m_scanPort = 1;
+
+               api->getEventHandler().createTimer(kSamplingTimer,
+                                                  shared::event::CEventTimer::kOneShot,
+                                                  boost::posix_time::seconds(0));
+            }
+            else {
+               errorProcess(api);
+            }
             break;
          }
       default:

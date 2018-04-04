@@ -20,7 +20,8 @@ CFT2XManager::CFT2XManager()
 
    hGetProcIDDLL = LoadLibraryA("ftd2xx.dll");
    
-   if (!hGetProcIDDLL) {
+   if (!hGetProcIDDLL) 
+   {
       YADOMS_LOG(error) << "could not load the dynamic library";
    }
    else
@@ -35,9 +36,6 @@ CFT2XManager::CFT2XManager()
 
 }
 
-//--------------------------------------------------------------
-/// \brief	    Destructor
-//--------------------------------------------------------------
 CFT2XManager::~CFT2XManager()
 {
    f_ftclose FT_Close = (f_ftclose)GetProcAddress(hGetProcIDDLL, "FT_Close");
@@ -48,20 +46,15 @@ CFT2XManager::~CFT2XManager()
    }
 }
 
-//--------------------------------------------------------------
-/// \brief	    Activate the GPIO pin in parameter
-/// \param[in] GPIONumber          The GPIO Pin to activate
-//--------------------------------------------------------------
 void CFT2XManager::activateGPIO(const int GPIONumber)
 {
    unsigned char ucMask = 0xFF;
    unsigned char ucMode;
-   DWORD dwBytesInQueue = 0;
    FT_STATUS	ftStatus;
 
    f_ftsetBitMode FT_SetBitMode = (f_ftsetBitMode)GetProcAddress(hGetProcIDDLL, "FT_SetBitMode");
    f_ftgetBitMode FT_GetBitMode = (f_ftgetBitMode)GetProcAddress(hGetProcIDDLL, "FT_GetBitMode");
-   f_ftsetbaudRate FT_SetBaudRate = (f_ftsetbaudRate)GetProcAddress(hGetProcIDDLL, "FT_SetBaudRate");
+   //f_ftsetbaudRate FT_SetBaudRate = (f_ftsetbaudRate)GetProcAddress(hGetProcIDDLL, "FT_SetBaudRate");
 
    switch (GPIONumber)
    {
@@ -83,9 +76,7 @@ void CFT2XManager::activateGPIO(const int GPIONumber)
       YADOMS_LOG(error) << "Failed to set bit mode for port: " << GPIONumber;
 
    // TODO : Récupérer la configuration à partor du constructeur & du Factory
-   FT_SetBaudRate(ftHandle, FT_BAUD_1200);
-
-   //FT_Write(ftHandle, &ucMode, 1, &dwBytesInQueue);
+   //FT_SetBaudRate(ftHandle, FT_BAUD_1200);
 
    ftStatus = FT_GetBitMode(ftHandle, &ucMode);
    if (ftStatus != FT_OK) {
@@ -93,46 +84,8 @@ void CFT2XManager::activateGPIO(const int GPIONumber)
    }
 }
 
-//--------------------------------------------------------------
-/// \brief	    Desactivate the GPIO pin in parameter
-/// \param[in] GPIONumber          The GPIO Pin to desactivate
-//--------------------------------------------------------------
-void CFT2XManager::desactivateGPIO(const int GPIONumber)
+void CFT2XManager::desactivateGPIO()
 {
-   unsigned char ucMask = 0xFF;
-   unsigned char ucMode;
-   DWORD dwBytesInQueue = 0;
-   FT_STATUS	ftStatus;
-
-   f_ftsetBitMode FT_SetBitMode = (f_ftsetBitMode)GetProcAddress(hGetProcIDDLL, "FT_SetBitMode");
-   f_ftgetBitMode FT_GetBitMode = (f_ftgetBitMode)GetProcAddress(hGetProcIDDLL, "FT_GetBitMode");
-   f_ftsetbaudRate FT_SetBaudRate = (f_ftsetbaudRate)GetProcAddress(hGetProcIDDLL, "FT_SetBaudRate");
-
-   switch (GPIONumber)
-   {
-   case 1:
-      ucMask = m_mask_port1;
-      break;
-   case 2:
-      ucMask = m_mask_port2;
-      break;
-   default:
-      ucMask = m_mask_no_port;
-   }
-
-   ucMode = m_enableBitBang;
-
-   ftStatus = FT_SetBitMode(ftHandle, ucMask, ucMode);
-
-   if (ftStatus != FT_OK)
-      YADOMS_LOG(error) << "Failed to set bit mode for port: " << GPIONumber;
-
-   FT_SetBaudRate(ftHandle, FT_BAUD_1200);
-
-   //FT_Write(ftHandle, &ucMode, 1, &dwBytesInQueue);
-
-   ftStatus = FT_GetBitMode(ftHandle, &ucMode);
-   if (ftStatus != FT_OK) {
-      YADOMS_LOG(error) << "Failed to get bit mode";
-   }
+   // No GPIO activate => No access
+   activateGPIO(0);
 }

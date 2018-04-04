@@ -6,6 +6,12 @@ typedef enum {
    TwoInputs
 }EEquipmentType;
 
+typedef enum {
+   Input1Activated = 0,
+   Input2Activated,
+   AllInputsActivated
+}EInputsActivated;
+
 //--------------------------------------------------------------
 /// \brief	Interface of plugin configuration
 //--------------------------------------------------------------
@@ -33,7 +39,13 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	    Equipment type connected for the teleinfo (1 or 2 inputs)
-   /// \return     The serial port name (system-dependent)
+   /// \return     the equipment type
    //--------------------------------------------------------------
    virtual EEquipmentType getEquipmentType() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	    Input activated for the teleinfo (1 or 2 inputs)
+   /// \return     input(s) activated
+   //--------------------------------------------------------------
+   virtual EInputsActivated getInputsActivated() const = 0;
 };
