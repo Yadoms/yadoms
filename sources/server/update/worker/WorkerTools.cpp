@@ -43,36 +43,34 @@ namespace update
 
       Poco::Path CWorkerTools::downloadPackage(const std::string& downloadUrl, shared::web::CFileDownloader::ProgressFunc progressReporter)
       {
-         //determine the filename to download
          Poco::URI toDownload(downloadUrl);
          auto packageName = shared::web::CUriHelpers::getFile(toDownload);
          if (packageName.empty())
             packageName = "temp.zip";
 
-         //determine local path
-         auto downloadedPackage(tools::CFileSystem::createTemporaryFolder(std::string(), true));
-         downloadedPackage.setFileName(packageName);
+         auto targetPath(tools::CFileSystem::createTemporaryFolder());
+         targetPath /= packageName;
+         const auto outPath = Poco::Path(targetPath.string());
 
-         shared::web::CFileDownloader::downloadFile(toDownload, downloadedPackage, progressReporter);
-         return downloadedPackage;
+         shared::web::CFileDownloader::downloadFile(toDownload, outPath, progressReporter);
+         return outPath;
       }
 
 
       Poco::Path CWorkerTools::downloadPackageAndVerify(const std::string& downloadUrl, const std::string& md5Hash,
                                                         shared::web::CFileDownloader::ProgressFunc progressReporter)
       {
-         //determine the filename to download
          Poco::URI toDownload(downloadUrl);
          auto packageName = shared::web::CUriHelpers::getFile(toDownload);
          if (packageName.empty())
             packageName = "temp.zip";
 
-         //determine local path
-         auto downloadedPackage(tools::CFileSystem::createTemporaryFolder(std::string(), true));
-         downloadedPackage.setFileName(packageName);
+         auto targetPath(tools::CFileSystem::createTemporaryFolder());
+         targetPath /= packageName;
+         const auto outPath = Poco::Path(targetPath.string());
 
-         shared::web::CFileDownloader::downloadFileAndVerify(toDownload, downloadedPackage, md5Hash, progressReporter);
-         return downloadedPackage;
+         shared::web::CFileDownloader::downloadFileAndVerify(toDownload, outPath, md5Hash, progressReporter);
+         return outPath;
       }
 
 

@@ -5,28 +5,11 @@
 
 namespace tools
 {
-   Poco::Path CFileSystem::createTemporaryFolder(const std::string& subFolderName, bool eraseIfExists)
+   boost::filesystem::path CFileSystem::createTemporaryFolder()
    {
-      //get the computer temp folder
-      Poco::Path p(Poco::Path::temp());
-
-      //append directory yadoms
-      p.pushDirectory("yadoms");
-
-      if (!subFolderName.empty())
-         p.pushDirectory(subFolderName);
-
-      //remove directory if exists
-      Poco::File f(p);
-      if (f.exists() && eraseIfExists)
-         f.remove(true);
-
-      if (!f.exists())
-      {
-         //create directories
-         f.createDirectories();
-      }
-      return p;
+      const auto tempPath = boost::filesystem::unique_path();
+      boost::filesystem::create_directories(tempPath);
+      return tempPath;
    }
 
 
@@ -152,5 +135,3 @@ namespace tools
       target.renameTo(destination);
    }
 } // namespace tools
-
-
