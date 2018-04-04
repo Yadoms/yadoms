@@ -73,41 +73,6 @@ namespace update
          //---------------------------------------------
          static Poco::Path deployPackage(Poco::Path downloadedPackage, const std::string& outputDirectory);
 
-         //---------------------------------------------
-         ///\brief   Deploy a plugin package
-         ///\param [in] downloadedPackage  The downloaded package
-         ///\return The deployed directory
-         //---------------------------------------------
-         static Poco::Path deployPluginPackage(Poco::Path downloadedPackage);
-         //---------------------------------------------
-         ///\brief   Deploy a widget package
-         ///\param [in] downloadedPackage  The downloaded package
-         ///\return The deployed directory
-         //---------------------------------------------
-         static Poco::Path deployWidgetPackage(Poco::Path downloadedPackage);
-         //---------------------------------------------
-         ///\brief   Deploy a script interpreter package
-         ///\param [in] downloadedPackage  The downloaded package
-         ///\return The deployed directory
-         //---------------------------------------------
-         static Poco::Path deployScriptInterpreterPackage(Poco::Path downloadedPackage);
-
-         //---------------------------------------------
-         ///\brief   Get the plugins base path
-         ///\return The path
-         //---------------------------------------------
-         static std::string getPluginBasePath();
-         //---------------------------------------------
-         ///\brief   Get the widget base path
-         ///\return The path
-         //---------------------------------------------
-         static std::string getWidgetBasePath();
-         //---------------------------------------------
-         ///\brief   Get the script interpreter base path
-         ///\return The path
-         //---------------------------------------------
-         static std::string getScriptInterpreterBasePath();
-
       private:
          //---------------------------------------------
          ///\brief   Report the progression of a download

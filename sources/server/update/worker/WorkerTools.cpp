@@ -14,7 +14,6 @@
 
 #include "startupOptions/IStartupOptions.h"
 
-#include <shared/ServiceLocator.h>
 #include <shared/tools/Random.h>
 #include <shared/exception/Extract.hpp>
 
@@ -159,45 +158,6 @@ namespace update
             tools::CFileSystem::remove(tempPluginFolder, true);
             throw;
          }
-      }
-
-      std::string CWorkerTools::getWidgetBasePath() //TODO récupérer du IPathProvider
-      {
-         //retreive startup options
-         const auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
-         Poco::Path websiteFolder(startupOptions->getWebServerInitialPath());
-         websiteFolder.append("widgets");
-         return websiteFolder.toString();
-      }
-
-      std::string CWorkerTools::getPluginBasePath() //TODO récupérer du IPathProvider
-      {
-         //retreive startup options
-         const auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
-         return startupOptions->getPluginsPath();
-      }
-
-      std::string CWorkerTools::getScriptInterpreterBasePath() //TODO récupérer du IPathProvider
-      {
-         //retreive startup options
-         const auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
-         return startupOptions->getScriptInterpretersPath();
-      }
-
-
-      Poco::Path CWorkerTools::deployPluginPackage(Poco::Path downloadedPackage)
-      {
-         return deployPackage(downloadedPackage, getPluginBasePath());
-      }
-
-      Poco::Path CWorkerTools::deployWidgetPackage(Poco::Path downloadedPackage)
-      {
-         return deployPackage(downloadedPackage, getWidgetBasePath());
-      }
-
-      Poco::Path CWorkerTools::deployScriptInterpreterPackage(Poco::Path downloadedPackage)
-      {
-         return deployPackage(downloadedPackage, getScriptInterpreterBasePath());
       }
 
       void CWorkerTools::reportDownloadProgress(const std::string& file, float progress, WorkerProgressFunc callback, const std::string& function,

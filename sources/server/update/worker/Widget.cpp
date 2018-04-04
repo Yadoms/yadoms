@@ -12,7 +12,8 @@ namespace update
    namespace worker
    {
       void CWidget::install(CWorkerTools::WorkerProgressFunc progressCallback,
-                            const std::string& downloadUrl)
+                            const std::string& downloadUrl,
+                            const boost::filesystem::path& widgetsPath)
       {
          YADOMS_LOG(information) << "Installing new widget from " << downloadUrl;
 
@@ -40,7 +41,7 @@ namespace update
             {
                YADOMS_LOG(information) << "Deploy widget package " << downloadedPackage.toString();
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdateWidgetDeploy, std::string(), callbackData);
-               Poco::Path widgetPath = CWorkerTools::deployWidgetPackage(downloadedPackage);
+               Poco::Path widgetPath = CWorkerTools::deployPackage(downloadedPackage, widgetsPath.string());
                YADOMS_LOG(information) << "Widget deployed with success";
                progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, std::string(), shared::CDataContainer::EmptyContainer);
             }
@@ -68,7 +69,8 @@ namespace update
 
       void CWidget::update(CWorkerTools::WorkerProgressFunc progressCallback,
                            const std::string& widgetName,
-                           const std::string& downloadUrl)
+                           const std::string& downloadUrl,
+                           const boost::filesystem::path& widgetsPath)
       {
          YADOMS_LOG(information) << "Updating widget " << widgetName << " from " << downloadUrl;
 
@@ -96,7 +98,7 @@ namespace update
             {
                YADOMS_LOG(information) << "Deploy widget package " << downloadedPackage.toString();
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdateWidgetDeploy, std::string(), callbackData);
-               Poco::Path widgetPath = CWorkerTools::deployWidgetPackage(downloadedPackage);
+               Poco::Path widgetPath = CWorkerTools::deployPackage(downloadedPackage, widgetsPath.string());
 
                YADOMS_LOG(information) << "Widget installed with success";
                progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, std::string(), callbackData);
@@ -123,7 +125,8 @@ namespace update
       }
 
       void CWidget::remove(CWorkerTools::WorkerProgressFunc progressCallback,
-                           const std::string& widgetName)
+                           const std::string& widgetName,
+                           const boost::filesystem::path& widgetsPath)
       {
          YADOMS_LOG(information) << "Removing widget " << widgetName;
 
@@ -138,7 +141,7 @@ namespace update
             /////////////////////////////////////////////
             //1. remove widget folder
             /////////////////////////////////////////////
-            Poco::Path widgetPath(CWorkerTools::getWidgetBasePath());
+            Poco::Path widgetPath(widgetsPath.string());
             widgetPath.append(widgetName);
 
             Poco::File toDelete(widgetPath);
@@ -155,11 +158,11 @@ namespace update
          }
       }
 
-      CWidget::AvailableWidgetMap CWidget::getWidgetList()
+      CWidget::AvailableWidgetMap CWidget::getWidgetList(const boost::filesystem::path& widgetsPath)
       {
          AvailableWidgetMap widgets;
 
-         for (Poco::DirectoryIterator it(CWorkerTools::getWidgetBasePath()); it != Poco::DirectoryIterator(); ++it)
+         for (Poco::DirectoryIterator it(Poco::Path(widgetsPath.string())); it != Poco::DirectoryIterator(); ++it)
          {
             try
             {
