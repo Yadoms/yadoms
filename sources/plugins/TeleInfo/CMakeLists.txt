@@ -33,7 +33,7 @@ set(TELEINFO_SOURCES
    specificHistorizer/Period.h
    specificHistorizer/Period.cpp
    IFTD2XManager.h
-   ftdi/FTD2XX.H
+   ftdi/ftd2xx.h
 )
 
 IF (WIN32)
