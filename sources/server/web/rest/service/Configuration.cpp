@@ -43,7 +43,7 @@ namespace web
             try
             {
                m_configurationManager->resetServerConfiguration();
-               return CResult::GenerateSuccess(m_configurationManager->getServerConfiguration());
+               return CResult::GenerateSuccess(*m_configurationManager->getServerConfiguration().get());
             }
             catch (shared::exception::CEmptyResult&)
             {
@@ -56,7 +56,7 @@ namespace web
          {
             try
             {
-               return CResult::GenerateSuccess(m_configurationManager->getServerConfiguration());
+               return CResult::GenerateSuccess(*m_configurationManager->getServerConfiguration().get());
             }
             catch (shared::exception::CEmptyResult&)
             {

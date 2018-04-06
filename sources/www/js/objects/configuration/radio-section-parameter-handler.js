@@ -61,7 +61,7 @@ function RadioSectionParameterHandler(i18nContext, i18nKey, paramName, content, 
       if (self.configurationValues.activeSection == key)
          radioActive = true;
 
-      if (value.show !== undefined && value.show.result === "false")
+      if (value.show !== undefined && !parseBool(value.show.result))
          return;
       
 	    var handler = ConfigurationHelper.createParameterHandler(newI18nContext, value.i18nKey, key, value, v, self.uuid, radioActive);

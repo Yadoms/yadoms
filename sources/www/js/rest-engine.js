@@ -164,7 +164,7 @@ RestEngine.restCall_ = function(type, url, data){
       .done(function (data) {
           if (ajaxOptions.dataType === "json" && !isNullOrUndefined(data) && data.result != undefined) {
             //if JSON dataType expected, we parse the json answer
-            if (data.result && data.result === "true") {
+            if (data.result && data.result === true) {
                //if answer is ok we return data field
                d.resolve(data.data);
             }

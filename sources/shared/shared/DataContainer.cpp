@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "DataContainer.h"
-#include <boost/property_tree/json_parser.hpp>
 #include <shared/exception/JSONParse.hpp>
 #include "exception/EmptyResult.hpp"
 #include "rapidJson/writer.h"
@@ -350,6 +349,23 @@ namespace shared
       auto& allocator = m_tree.GetAllocator();
       mergeObjects(m_tree, *source.getPointer(), allocator);
    }
+
+   void CDataContainer::setNull(const std::string& parameterName, const char pathChar)
+   {
+      auto v = this->findValue(parameterName, pathChar);
+      if(v)
+         v->SetNull();
+      throw exception::CInvalidParameter(parameterName + " : is not found");
+   }
+
+   bool CDataContainer::isNull(const std::string& parameterName, const char pathChar)
+   {
+      auto v = this->findValue(parameterName, pathChar);
+      if (v)
+         return v->IsNull();
+      throw exception::CInvalidParameter(parameterName + " : is not found");;
+   }
+
 
 
 } // namespace shared

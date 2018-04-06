@@ -58,7 +58,7 @@ function ComboSectionParameterHandler(i18nContext, i18nKey, paramName, content, 
       assert(ConfigurationHelper.isContainer(value), "Content section of the configuration " + self.name + " must contain only section items");
       assert((value.type.toLowerCase() !== "section") || ((value.type.toLowerCase() === "section") && (!value.enableWithCheckBox)), "enableWithCheckBox parameter can't be used in section inside comboSection");
 
-      if (value.show !== undefined && value.show.result === "false")
+      if (value.show !== undefined && !parseBool(value.show.result))
          return;
       
 	    var handler = ConfigurationHelper.createParameterHandler(newI18nContext, value.i18nKey, key, value, v);
