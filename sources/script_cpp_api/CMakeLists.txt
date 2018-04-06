@@ -32,7 +32,7 @@ target_link_libraries(script_cpp_api
    ${CMAKE_DL_LIBS}
    ${script_IPC_LIBRARY}
    )
-
+ADD_VS_NATVIS(script_cpp_api)
 if(COTIRE_USE)
    set_target_properties(script_cpp_api PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
    
@@ -46,6 +46,7 @@ if(COTIRE_USE)
    
    if(COTIRE_USE_UNITY)
       target_link_libraries(script_cpp_api_unity yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS} ${script_IPC_LIBRARY}_unity)
+      ADD_VS_NATVIS(script_cpp_api_unity)
    endif()	
 else()
 	add_precompiled_header(script_cpp_api stdafx.h)

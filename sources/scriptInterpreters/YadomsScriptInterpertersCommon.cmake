@@ -60,6 +60,7 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
       ${ARGN}
       )
 	
+   ADD_VS_NATVIS(${_targetName})
 
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
    
@@ -97,7 +98,7 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
 		
 		if(COTIRE_USE_UNITY)
 			target_link_libraries(${_targetName}_unity yadoms-shared_unity interpreter_cpp_api_unity ${LIBS} ${CMAKE_DL_LIBS} ${PROTOBUF_LIBRARIES} ${ARGN})
-
+         ADD_VS_NATVIS(${_targetName}_unity)
 		   if(CMAKE_CROSSCOMPILING)
 		      #Fix RPATH for cross compilation
 		      set_target_properties(${_targetName}_unity PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)

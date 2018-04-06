@@ -40,6 +40,7 @@ else()
 	include(cmake/PrecompiledHeader.cmake)
 endif()
 
+include(cmake/debugger.cmake)
 
 # Windows specific macro
 if(WIN32)
@@ -1029,6 +1030,9 @@ set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 ##################################################################################################
 target_link_libraries(yadoms yadoms-shared plugin_IPC interpreter_IPC script_IPC ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
 
+
+ADD_VS_NATVIS(yadoms)
+
 ##################################################################################################
 ## RPATH
 ##################################################################################################
@@ -1053,6 +1057,7 @@ if(COTIRE_USE)
 	
 	if(COTIRE_USE_UNITY)
 		set_property( TARGET yadoms_unity PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
+      ADD_VS_NATVIS(yadoms_unity)
 	    if(CMAKE_CROSSCOMPILING)
 	       #Fix RPATH for cross compilation of yadoms_unity
 	       set_target_properties(yadoms_unity PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
