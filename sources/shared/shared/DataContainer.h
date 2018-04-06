@@ -13,6 +13,8 @@
 #define RAPIDJSON_ASSERT(x) {if(!(x)) throw new shared::exception::CException("Assert");}
 #include "rapidjson/document.h"
 #include "rapidjson/pointer.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/writer.h"
 
 namespace shared
 {
@@ -548,6 +550,8 @@ namespace shared
       static void mergeObjects(rapidjson::Value &dstObject, rapidjson::Value &srcObject, rapidjson::Document::AllocatorType &allocator);
 
       rapidjson::Document * getPointer() const { return (rapidjson::Document *) &m_tree; }
+
+      std::string ConvertToString(rapidjson::Value* v) const;
       //--------------------------------------------------------------
       //
       //
@@ -1216,7 +1220,15 @@ namespace shared
    {
       rapidjson::Value* found = findValue(parameterName, pathChar);
       if (found)
-         return found->GetString();
+      {
+         if(found->IsString())
+            return found->GetString();
+         else
+         {
+            return ConvertToString(found);
+         }
+      }
+         
       throw exception::CInvalidParameter(parameterName + " : is not found");
    }
 

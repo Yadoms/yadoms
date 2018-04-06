@@ -320,7 +320,10 @@ namespace shared
          auto dstIt = dstObject.FindMember(srcIt->name);
          if (dstIt != dstObject.MemberEnd())
          {
-            assert(srcIt->value.GetType() == dstIt->value.GetType());
+            //check type match, but also check some specific cases (kTrueType and kFalseType are booleans; and many number combination can alsom match)
+            assert(srcIt->value.GetType() == dstIt->value.GetType() || 
+               (srcIt->value.IsBool() && dstIt->value.IsBool()) ||
+               (srcIt->value.IsNumber() && dstIt->value.IsNumber()));
             if (srcIt->value.IsArray())
             {
                for (auto arrayIt = srcIt->value.Begin(); arrayIt != srcIt->value.End(); ++arrayIt)
@@ -363,9 +366,39 @@ namespace shared
       auto v = this->findValue(parameterName, pathChar);
       if (v)
          return v->IsNull();
-      throw exception::CInvalidParameter(parameterName + " : is not found");;
+      throw exception::CInvalidParameter(parameterName + " : is not found");
    }
 
+   std::string CDataContainer::ConvertToString(rapidjson::Value* v) const
+   {
+      if (v)
+      {
+         if (v->IsString())
+            return std::string(v->GetString());
+     
+         if (v->IsBool())
+            return v->GetBool() ? "true" : "false";
 
+         if (v->IsDouble())
+            return boost::lexical_cast<std::string>(v->GetDouble());
+         if (v->IsFalse())
+            return "false";
+         if (v->IsFloat())
+            return boost::lexical_cast<std::string>(v->GetFloat());
+         if (v->IsInt())
+            return boost::lexical_cast<std::string>(v->GetInt());
+         if (v->IsInt64())
+            return boost::lexical_cast<std::string>(v->GetInt64());
+         if (v->IsTrue())
+            return "true";
+         if (v->IsUint())
+            return boost::lexical_cast<std::string>(v->GetUint());
+         if (v->IsUint64())
+            return boost::lexical_cast<std::string>(v->GetUint64());
+
+         throw exception::CInvalidParameter("Value is not a valid type");
+      }
+      throw exception::CInvalidParameter("Parameter is null");
+   }
 
 } // namespace shared
