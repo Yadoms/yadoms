@@ -4,30 +4,37 @@
 # It allows to custom display of some class (example for rapidjson, it displays the container as json tree, instead of unreadable bytes)
 # These enable custom debug visualizers for project-specific types
 #=============================================================================
-MACRO(ADD_VS_NATVIS _targetName)
+MACRO(ADD_VS_NATVIS_INTERNAL _targetName _path)
 
    if (MSVC)
-      target_sources(${_targetName} PUBLIC ${CMAKE_SOURCE_DIR}/../ideTools/vs_natvis/rapidjson.natvis)
-      target_sources(${_targetName} PUBLIC ${CMAKE_SOURCE_DIR}/../ideTools/vs_natvis/boost.natvis)
-      target_sources(${_targetName} PUBLIC ${CMAKE_SOURCE_DIR}/../ideTools/vs_natvis/boost_Containers.natvis)
-      target_sources(${_targetName} PUBLIC ${CMAKE_SOURCE_DIR}/../ideTools/vs_natvis/boost_DateTime.natvis)
-      target_sources(${_targetName} PUBLIC ${CMAKE_SOURCE_DIR}/../ideTools/vs_natvis/boost_Geometry.natvis)
-      target_sources(${_targetName} PUBLIC ${CMAKE_SOURCE_DIR}/../ideTools/vs_natvis/boost_Gil.natvis)
-      target_sources(${_targetName} PUBLIC ${CMAKE_SOURCE_DIR}/../ideTools/vs_natvis/boost_IntrusiveContainers.natvis)
-      target_sources(${_targetName} PUBLIC ${CMAKE_SOURCE_DIR}/../ideTools/vs_natvis/boost_MultiArray.natvis)
-      target_sources(${_targetName} PUBLIC ${CMAKE_SOURCE_DIR}/../ideTools/vs_natvis/boost_MultiIndex.natvis)
-      target_sources(${_targetName} PUBLIC ${CMAKE_SOURCE_DIR}/../ideTools/vs_natvis/boost_Multiprecision.natvis)
-      target_sources(${_targetName} PUBLIC ${CMAKE_SOURCE_DIR}/../ideTools/vs_natvis/boost_PointerContainerLibrary.natvis)
-      target_sources(${_targetName} PUBLIC ${CMAKE_SOURCE_DIR}/../ideTools/vs_natvis/boost_PropertyTree.natvis)
-      target_sources(${_targetName} PUBLIC ${CMAKE_SOURCE_DIR}/../ideTools/vs_natvis/boost_Rational.natvis)
-      target_sources(${_targetName} PUBLIC ${CMAKE_SOURCE_DIR}/../ideTools/vs_natvis/boost_Regex.natvis)
-      target_sources(${_targetName} PUBLIC ${CMAKE_SOURCE_DIR}/../ideTools/vs_natvis/boost_SmartPointers.natvis)
-      target_sources(${_targetName} PUBLIC ${CMAKE_SOURCE_DIR}/../ideTools/vs_natvis/boost_uBLAS.natvis)
-      target_sources(${_targetName} PUBLIC ${CMAKE_SOURCE_DIR}/../ideTools/vs_natvis/boost_Unordered.natvis)
-      target_sources(${_targetName} PUBLIC ${CMAKE_SOURCE_DIR}/../ideTools/vs_natvis/boost_Variant.natvis)
-      
+      target_sources(${_targetName} PUBLIC ${_path}/rapidjson.natvis)
+      target_sources(${_targetName} PUBLIC ${_path}/boost.natvis)
+      target_sources(${_targetName} PUBLIC ${_path}/boost_Containers.natvis)
+      target_sources(${_targetName} PUBLIC ${_path}/boost_DateTime.natvis)
+      target_sources(${_targetName} PUBLIC ${_path}/boost_Geometry.natvis)
+      target_sources(${_targetName} PUBLIC ${_path}/boost_Gil.natvis)
+      target_sources(${_targetName} PUBLIC ${_path}/boost_IntrusiveContainers.natvis)
+      target_sources(${_targetName} PUBLIC ${_path}/boost_MultiArray.natvis)
+      target_sources(${_targetName} PUBLIC ${_path}/boost_MultiIndex.natvis)
+      target_sources(${_targetName} PUBLIC ${_path}/boost_Multiprecision.natvis)
+      target_sources(${_targetName} PUBLIC ${_path}/boost_PointerContainerLibrary.natvis)
+      target_sources(${_targetName} PUBLIC ${_path}/boost_PropertyTree.natvis)
+      target_sources(${_targetName} PUBLIC ${_path}/boost_Rational.natvis)
+      target_sources(${_targetName} PUBLIC ${_path}/boost_Regex.natvis)
+      target_sources(${_targetName} PUBLIC ${_path}/boost_SmartPointers.natvis)
+      target_sources(${_targetName} PUBLIC ${_path}/boost_uBLAS.natvis)
+      target_sources(${_targetName} PUBLIC ${_path}/boost_Unordered.natvis)
+      target_sources(${_targetName} PUBLIC ${_path}/boost_Variant.natvis)
+
       source_group(natvis ${PROJECT_SOURCE_DIR}/../ideTools/vs_natvis/*.natvis)
    endif()
+
+ENDMACRO()
+
+
+MACRO(ADD_VS_NATVIS _targetName)
+
+   ADD_VS_NATVIS_INTERNAL(${_targetName} ${CMAKE_SOURCE_DIR}/../ideTools/vs_natvis)
 
 ENDMACRO()
 

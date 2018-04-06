@@ -187,16 +187,16 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
    BOOST_AUTO_TEST_CASE(Serialization)
    {
       const std::string defaultConf("{"
-         "\"BoolParameter\": \"true\","
-         "\"DecimalParameter\": \"18.4\","
-         "\"EnumParameter\": \"12\","
+         "\"BoolParameter\": true,"
+         "\"DecimalParameter\": 18.4,"
+         "\"EnumParameter\": 12,"
          "\"EnumAsStringParameter\": \"EnumValue1\","
-         "\"IntParameter\": \"42\","
+         "\"IntParameter\": 42,"
          "\"Serial port\": \"tty0\","
          "\"StringParameter\": \"Yadoms is so powerful !\","
          "\"DateTimeParameter\": \"20140702T113500\","
          "\"MySection\": {"
-         "\"SubIntParameter\": \"123\","
+         "\"SubIntParameter\": 123,"
          "\"SubStringParameter\": \"Just a string parameter in the sub-section\""
          "}"
          "}");
@@ -301,7 +301,6 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       auto supportedPf = testPf.get<shared::CDataContainer>("supportedPlatforms");
       BOOST_CHECK_EQUAL(supportedPf.containsChild(), true) ;
       BOOST_CHECK_EQUAL(supportedPf.containsValue(), false) ;
-      BOOST_CHECK_EQUAL(supportedPf.get<std::string>(), "") ; //it do not contains value, only childs
       BOOST_CHECK_EQUAL(supportedPf.get<std::string>("mac"), "none") ;
       BOOST_CHECK_EQUAL(supportedPf.get<std::string>("raspberry"), "all") ;
 
