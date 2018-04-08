@@ -46,7 +46,8 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    m_configuration.initializeWith(api->getConfiguration());
 
    // Create the transceiver
-   m_decoder = CTeleInfoFactory::constructDecoder(api);
+   m_decoder[0] = CTeleInfoFactory::constructDecoder(api);
+   m_decoder[1] = CTeleInfoFactory::constructDecoder(api);
 
    // Create the buffer handler
    m_receiveBufferHandler = CTeleInfoFactory::GetBufferHandler(api->getEventHandler(),
@@ -113,7 +114,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
           processDataReceived(api,
                               api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::string>>>());
 
-            if (m_decoder->isERDFCounterDesactivated())
+            if (m_decoder[m_scanPort]->isERDFCounterDesactivated())
             {
                if (m_runningState != kErDFCounterdesactivated)
                {
@@ -123,7 +124,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
 
             m_receiveBufferHandler->desactivate();
-            m_FT2XManager.desactivateGPIO();
+            m_port->desactivateGPIO();
 
             if (m_scanPort==0 && 
                (m_configuration.getEquipmentType() == TwoInputs) && 
@@ -156,6 +157,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kSamplingTimer:
          {
             // Initial port to scan
+            /* TODO : faire un object spécifique
             if (m_configuration.getInputsActivated() == Input1Activated ||
                 m_configuration.getInputsActivated() == AllInputsActivated)
             {
@@ -163,9 +165,9 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
             else
                m_scanPort = 1;
-
+            */
             // Activate the port
-            m_FT2XManager.activateGPIO(m_scanPort+1);
+            m_port->activateGPIO(m_scanPort + 1);
             m_receiveBufferHandler->activate();
 
             //Lauch a new time the time out to detect connexion failure
@@ -175,7 +177,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kAnswerTimeout:
          {
             m_waitForAnswerTimer->stop();
-            m_FT2XManager.desactivateGPIO();
+            m_port->desactivateGPIO();
 
             YADOMS_LOG(error) << "No answer received, try to reconnect in a while..." ;
 
@@ -219,7 +221,6 @@ void CTeleInfo::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
 void CTeleInfo::destroyConnection()
 {
    m_port.reset();
-
    m_waitForAnswerTimer->stop();
 }
 
@@ -254,7 +255,7 @@ void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const boost::shared_ptr<std::map<std::string, std::string>>& messages)
 {
-   m_decoder->decodeTeleInfoMessage(api, messages);
+   m_decoder[m_scanPort]->decodeTeleInfoMessage(api, messages);
 
    if (m_runningState != kRunning)
    {

@@ -23,9 +23,8 @@ std::string CTeleInfoConfiguration::getSerialPort() const
 EEquipmentType CTeleInfoConfiguration::getEquipmentType() const
 {
    try {
-      m_data.printToLog(YADOMS_LOG(information));
-      std::string temp = m_data.get<std::string>("EquipmentType");
-      if (temp == "TIC1xInput")
+      std::string temp = m_data.get<std::string>("EquipmentType.activeSectionText");
+      if (temp == "1xTIC")
          return OneInput;
       else
          return TwoInputs;

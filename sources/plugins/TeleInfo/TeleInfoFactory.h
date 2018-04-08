@@ -4,6 +4,7 @@
 #include <shared/communication/IAsyncPort.h>
 #include "IDecoder.h"
 #include "TeleInfoReceiveBufferHandler.h"
+#include "FT2xxSerialPort.h"
 
 //--------------------------------------------------------------
 /// \brief	General factory
@@ -24,10 +25,10 @@ public:
    /// \param[in] receiveBufferHandler    Receive buffer handler
    /// \return                            The created port
    //--------------------------------------------------------------
-   static boost::shared_ptr<shared::communication::IAsyncPort> constructPort(const ITeleInfoConfiguration& configuration,
-                                                                             shared::event::CEventHandler& eventHandler,
-                                                                             boost::shared_ptr<shared::communication::IReceiveBufferHandler> receiveBufferHandler,
-                                                                             int evtPortConnectionId);
+   static boost::shared_ptr<shared::communication::CFT2xxSerialPort> constructPort(const ITeleInfoConfiguration& configuration,
+                                                                                   shared::event::CEventHandler& eventHandler,
+                                                                                   boost::shared_ptr<shared::communication::IReceiveBufferHandler> receiveBufferHandler,
+                                                                                   int evtPortConnectionId);
 
    //--------------------------------------------------------------
    /// \brief	                          Create a decoder instance

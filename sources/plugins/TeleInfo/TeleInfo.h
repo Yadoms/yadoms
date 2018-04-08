@@ -5,7 +5,7 @@
 #include "IDecoder.h"
 #include <shared/communication/AsyncPortConnectionNotification.h>
 #include "TeleInfoReceiveBufferHandler.h"
-#include "FT2XManager.h"
+#include "FT2xxSerialPort.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -87,7 +87,7 @@ private:
    //--------------------------------------------------------------
    /// \brief  The communication port
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::communication::IAsyncPort> m_port;
+   boost::shared_ptr<shared::communication::CFT2xxSerialPort> m_port;
 
    //--------------------------------------------------------------
    /// \brief	Wait for answer timer
@@ -107,17 +107,12 @@ private:
    //--------------------------------------------------------------
    /// \brief	The TeleInfo protocol implementation object
    //--------------------------------------------------------------
-   boost::shared_ptr<IDecoder> m_decoder;
+   boost::shared_ptr<IDecoder> m_decoder[2];
 
    //--------------------------------------------------------------
    /// \brief  The receiver buffer
    //--------------------------------------------------------------
    boost::shared_ptr<CTeleInfoReceiveBufferHandler> m_receiveBufferHandler;
-
-   //--------------------------------------------------------------
-   /// \brief  The FT2X Manager
-   //--------------------------------------------------------------
-   CFT2XManager m_FT2XManager;
 
    //--------------------------------------------------------------
    /// \brief  developerMode state

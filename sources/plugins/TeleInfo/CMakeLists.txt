@@ -39,8 +39,8 @@ set(TELEINFO_SOURCES
 IF (WIN32)
     set(TELEINFO_SOURCES ${TELEINFO_SOURCES}
 	# Add Windows sources
-	Windows/FT2XManager.h
-	Windows/FT2XManager.cpp
+	Windows/FT2xxSerialPort.h
+	Windows/FT2xxSerialPort.cpp
 	)
 	
 	source_group(Windows Windows/*.*)
