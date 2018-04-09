@@ -26,8 +26,7 @@ namespace shared
          /// \param[in] connectRetryDelay    Delay between 2 connection retries
          /// \param[in] flushAtConnect       If true (default), flush serial port buffers before listening on port
          //--------------------------------------------------------------
-         explicit CFT2xxSerialPort(const std::string& port,
-                                   const boost::asio::serial_port_base::baud_rate& baudrate = boost::asio::serial_port_base::baud_rate(9600),
+         explicit CFT2xxSerialPort(const boost::asio::serial_port_base::baud_rate& baudrate = boost::asio::serial_port_base::baud_rate(9600),
                                    const boost::asio::serial_port_base::parity& parity = boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::none),
                                    const boost::asio::serial_port_base::character_size& characterSize = boost::asio::serial_port_base::character_size(8),
                                    const boost::asio::serial_port_base::stop_bits& stop_bits = boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
@@ -54,6 +53,8 @@ namespace shared
 
          void activateGPIO(const int GPIONumber);
          void desactivateGPIO();
+         std::vector<int> CFT2xxSerialPort::getPortComNumber();
+         void setPortNumber(int port);
       protected:
          //--------------------------------------------------------------
          /// \brief	Establish the connection
@@ -83,14 +84,6 @@ namespace shared
          void startRead();
 
          //--------------------------------------------------------------
-         /// \brief	                     End of read operation handler
-         /// \param[in] error             Result of operation
-         /// \param[in] bytesTransferred  Read bytes number
-         //--------------------------------------------------------------
-         //void readCompleted(const boost::system::error_code& error,
-         //                   std::size_t bytesTransferred);
-
-         //--------------------------------------------------------------
          /// \brief	                     Notify the event handler for connection event : SUCCESS
          //--------------------------------------------------------------
          void notifyEventHandler() const;
@@ -108,28 +101,15 @@ namespace shared
          //--------------------------------------------------------------
          void notifyEventHandler(const std::string & i18nErrorMessage, const std::map<std::string, std::string> & m_i18nMessageParameters) const;
 
-
-         //--------------------------------------------------------------
-         /// \brief	                     Send buffer content
-         /// \param[in] buffer            The buffer to send
-         //--------------------------------------------------------------
-         //void sendBuffer(boost::asio::const_buffers_1 & buffer);
       private:
          //--------------------------------------------------------------
          /// \brief	boost:asio service
          //--------------------------------------------------------------
-         //boost::asio::io_service m_ioService;
-         void receiverThread(/*PHANDLE hEvent*/);
-
-         //--------------------------------------------------------------
-         /// \brief	The boost serial port
-         //--------------------------------------------------------------
-         //boost::asio::serial_port m_boostSerialPort;
+         void receiverThread();
 
          //--------------------------------------------------------------
          /// \brief	Serial port configuration
          //--------------------------------------------------------------
-         std::string m_port;
          boost::asio::serial_port_base::baud_rate m_baudrate;
          boost::asio::serial_port_base::parity m_parity;
          boost::asio::serial_port_base::character_size m_characterSize;
@@ -162,11 +142,6 @@ namespace shared
          const boost::posix_time::time_duration m_connectRetryDelay;
 
          //--------------------------------------------------------------
-         /// \brief	Try to reconnect timer delay
-         //--------------------------------------------------------------
-         //boost::asio::deadline_timer m_connectRetryTimer;
-
-         //--------------------------------------------------------------
          /// \brief	Thread for asynchronous operations
          //--------------------------------------------------------------
          boost::shared_ptr<boost::thread> m_asyncThread;
@@ -192,6 +167,8 @@ namespace shared
          static const unsigned char m_enableBitBang;
 
          bool m_isConnected;
+         std::vector<int> m_SerialPortComNumber;
+         int m_port;
       };
    }
 } // namespace shared::communication

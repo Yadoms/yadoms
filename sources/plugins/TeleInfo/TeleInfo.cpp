@@ -5,6 +5,7 @@
 #include <shared/communication/PortException.hpp>
 #include "TeleInfoFactory.h"
 #include <shared/Log.h>
+#include "GPIOManager.hpp"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -17,8 +18,7 @@ IMPLEMENT_PLUGIN(CTeleInfo)
 
 CTeleInfo::CTeleInfo():
    m_isDeveloperMode(false),
-   m_runningState(ETeleInfoPluginState::kUndefined),
-   m_scanPort(0)
+   m_runningState(ETeleInfoPluginState::kUndefined)
 {
 }
 
@@ -42,8 +42,12 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    m_isDeveloperMode = api->getYadomsInformation()->developperMode();
 
+   m_configuration = boost::make_shared<CTeleInfoConfiguration>();
+
    // Load configuration values (provided by database)
-   m_configuration.initializeWith(api->getConfiguration());
+   m_configuration->initializeWith(api->getConfiguration());
+
+   m_GPIOManager = boost::make_shared<CGPIOManager>(m_configuration);
 
    // Create the transceiver
    m_decoder[0] = CTeleInfoFactory::constructDecoder(api);
@@ -114,29 +118,19 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
           processDataReceived(api,
                               api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::string>>>());
 
-            if (m_decoder[m_scanPort]->isERDFCounterDesactivated())
-            {
-               if (m_runningState != kErDFCounterdesactivated)
-               {
-                  api->setPluginState(yApi::historization::EPluginState::kCustom, "ErDFCounterdesactivated");
-                  m_runningState = kErDFCounterdesactivated;
-               }
-            }
-
             m_receiveBufferHandler->desactivate();
             m_port->desactivateGPIO();
 
-            if (m_scanPort==0 && 
-               (m_configuration.getEquipmentType() == TwoInputs) && 
-               ((m_configuration.getInputsActivated() == Input1Activated) ||
-               (m_configuration.getInputsActivated() == AllInputsActivated)))
+            if (!m_GPIOManager->isLast())
             {
-               m_scanPort = 1;
-
+               // Go to the next GPIO
+               m_GPIOManager->next();
                api->getEventHandler().createTimer(kSamplingTimer,
                                                   shared::event::CEventTimer::kOneShot,
                                                   boost::posix_time::seconds(0));
             }
+            else // Return to the beginning of the list
+               m_GPIOManager->front();
 
             break;
          }
@@ -157,17 +151,8 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kSamplingTimer:
          {
             // Initial port to scan
-            /* TODO : faire un object spécifique
-            if (m_configuration.getInputsActivated() == Input1Activated ||
-                m_configuration.getInputsActivated() == AllInputsActivated)
-            {
-               m_scanPort = 0;
-            }
-            else
-               m_scanPort = 1;
-            */
             // Activate the port
-            m_port->activateGPIO(m_scanPort + 1);
+            m_port->activateGPIO(m_GPIOManager->getGPIO());
             m_receiveBufferHandler->activate();
 
             //Lauch a new time the time out to detect connexion failure
@@ -180,7 +165,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             m_port->desactivateGPIO();
 
             YADOMS_LOG(error) << "No answer received, try to reconnect in a while..." ;
-
+            /*
             if (m_scanPort == 0 &&
                (m_configuration.getEquipmentType() == TwoInputs) &&
                 ((m_configuration.getInputsActivated() == Input1Activated) ||
@@ -195,6 +180,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             else {
                errorProcess(api);
             }
+            */
             break;
          }
       default:
@@ -210,7 +196,7 @@ void CTeleInfo::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
    // Create the port instance
-   m_port = CTeleInfoFactory::constructPort(m_configuration,
+   m_port = CTeleInfoFactory::constructPort(*m_configuration,
                                             api->getEventHandler(),
                                             m_receiveBufferHandler,
                                             kEvtPortConnection);
@@ -238,15 +224,19 @@ void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
    if (!m_port)
    {
       // Update configuration
-      m_configuration.initializeWith(newConfigurationData);
+      m_configuration->initializeWith(newConfigurationData);
       return;
    }
 
    // Port has changed, destroy and recreate connection
+   // TODO : Check port configuration to destroy it
    destroyConnection();
 
    // Update configuration
-   m_configuration.initializeWith(newConfigurationData);
+   m_configuration->initializeWith(newConfigurationData);
+
+   // Update GPIOManager
+   m_GPIOManager = boost::make_shared<CGPIOManager>(m_configuration);
 
    // Create new connection
    createConnection(api);
@@ -255,12 +245,21 @@ void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const boost::shared_ptr<std::map<std::string, std::string>>& messages)
 {
-   m_decoder[m_scanPort]->decodeTeleInfoMessage(api, messages);
+   m_decoder[m_GPIOManager->getGPIO()-1]->decodeTeleInfoMessage(api, messages);
 
    if (m_runningState != kRunning)
    {
       api->setPluginState(yApi::historization::EPluginState::kRunning);
       m_runningState = kRunning;
+   }
+
+   if (m_decoder[m_GPIOManager->getGPIO() - 1]->isERDFCounterDesactivated())
+   {
+      if (m_runningState != kErDFCounterdesactivated)
+      {
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "ErDFCounterdesactivated");
+         m_runningState = kErDFCounterdesactivated;
+      }
    }
 }
 

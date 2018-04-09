@@ -1,6 +1,6 @@
 #pragma once
 #include "../IFTD2XManager.h"
-#include "../ftdi/FTD2XX.H"
+#include "../ftdi/Ftd2xx.H"
 
 //--------------------------------------------------------------
 /// \brief	Class to access specific fonctions to the FT2X driver

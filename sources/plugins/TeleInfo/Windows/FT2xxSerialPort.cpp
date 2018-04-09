@@ -20,23 +20,29 @@ namespace shared
       typedef FT_STATUS(__stdcall *f_ftgetBitMode)(FT_HANDLE handle, PUCHAR pucMode);
       typedef FT_STATUS(__stdcall *f_ftsetbaudRate)(FT_HANDLE handle, ULONG baudRate);
       typedef FT_STATUS(__stdcall *f_ftsetDataCharacteristics)(FT_HANDLE ftHandle, UCHAR uWordLength, UCHAR uStopBits, UCHAR uParity);
-      typedef FT_STATUS(__stdcall *f_ftsetEventNotification)(FT_HANDLE ftHandle, DWORD dwEventMask, PVOID pvArg);      typedef FT_STATUS(__stdcall *f_ftGetStatus)(FT_HANDLE ftHandle, LPDWORD lpdwAmountInRxQueue, LPDWORD lpdwAmountInTxQueue, LPDWORD lpdwEventStatus);      typedef FT_STATUS(__stdcall *f_ftGetModemStatus)(FT_HANDLE ftHandle, LPDWORD lpdwModemStatus);      typedef FT_STATUS(__stdcall *f_ftRead)(FT_HANDLE ftHandle, LPVOID lpBuffer, DWORD dwBytesToRead, LPDWORD lpdwBytesReturned);      typedef FT_STATUS(__stdcall *f_ftCreateDeviceInfoList)(LPDWORD lpdwNumDevs);      typedef FT_STATUS(__stdcall *f_ftGetDeviceInfoList)(FT_DEVICE_LIST_INFO_NODE *pDest, LPDWORD lpdwNumDevs);      typedef FT_STATUS(__stdcall *f_ftGetDeviceInfoDetail)(DWORD dwIndex, LPDWORD lpdwFlags,
+      typedef FT_STATUS(__stdcall *f_ftsetEventNotification)(FT_HANDLE ftHandle, DWORD dwEventMask, PVOID pvArg);
+      typedef FT_STATUS(__stdcall *f_ftGetStatus)(FT_HANDLE ftHandle, LPDWORD lpdwAmountInRxQueue, LPDWORD lpdwAmountInTxQueue, LPDWORD lpdwEventStatus);
+      typedef FT_STATUS(__stdcall *f_ftGetModemStatus)(FT_HANDLE ftHandle, LPDWORD lpdwModemStatus);
+      typedef FT_STATUS(__stdcall *f_ftRead)(FT_HANDLE ftHandle, LPVOID lpBuffer, DWORD dwBytesToRead, LPDWORD lpdwBytesReturned);
+      typedef FT_STATUS(__stdcall *f_ftCreateDeviceInfoList)(LPDWORD lpdwNumDevs);
+      typedef FT_STATUS(__stdcall *f_ftGetDeviceInfoList)(FT_DEVICE_LIST_INFO_NODE *pDest, LPDWORD lpdwNumDevs);
+      typedef FT_STATUS(__stdcall *f_ftGetComPortNumber)(FT_HANDLE ftHandle, LPLONG lplComPortNumber);
+      typedef FT_STATUS(__stdcall *f_ftGetDeviceInfoDetail)(DWORD dwIndex, LPDWORD lpdwFlags,
                                                             LPDWORD lpdwType,
                                                             LPDWORD lpdwID, LPDWORD lpdwLocId,
                                                             PCHAR pcSerialNumber, PCHAR pcDescription,
-                                                            FT_HANDLE *ftHandle);
+                                                            FT_HANDLE *ftHandle);
 
-      CFT2xxSerialPort::CFT2xxSerialPort(const std::string& port,
-                                         const boost::asio::serial_port_base::baud_rate& baudrate,
+
+
+      CFT2xxSerialPort::CFT2xxSerialPort(const boost::asio::serial_port_base::baud_rate& baudrate,
                                          const boost::asio::serial_port_base::parity& parity,
                                          const boost::asio::serial_port_base::character_size& characterSize,
                                          const boost::asio::serial_port_base::stop_bits& stop_bits,
                                          const boost::asio::serial_port_base::flow_control& flowControl,
                                          const boost::posix_time::time_duration& connectRetryDelay,
                                          bool flushAtConnect)
-         : //m_boostSerialPort(m_ioService),
-           m_port(port),
-           m_baudrate(baudrate),
+         : m_baudrate(baudrate),
            m_parity(parity),
            m_characterSize(characterSize),
            m_stop_bits(stop_bits),
@@ -45,18 +51,21 @@ namespace shared
            m_connectStateEventHandler(nullptr),
            m_connectStateEventId(event::kNoEvent),
            m_connectRetryDelay(connectRetryDelay),
-           //m_connectRetryTimer(m_ioService),
            m_flushAtConnect(flushAtConnect),
            m_writeTimeout(boost::date_time::pos_infin),
            m_writeTimeouted(false),
-         m_isConnected(false)
+         m_isConnected(false),
+         m_port(0)
       {
          hGetProcIDDLL = LoadLibraryA("ftd2xx.dll");
 
+         // TODO : Writing the driver revision
+
          if (!hGetProcIDDLL)
          {
-            YADOMS_LOG(error) << "Could not load the dynamic library";
-            // TODO : throw an error
+            std::string message = "Could not load the dynamic library";
+            YADOMS_LOG(error) << message;
+            //TODO : throw an exception
          }
          else
          {
@@ -66,13 +75,66 @@ namespace shared
                false, // non-signalled state
                "");
 
-            /* TODO : Complete the creation of the event
-            if (ghWriteEvent == NULL)
+            if (hEvent == NULL)
             {
-               printf("CreateEvent failed (%d)\n", GetLastError());
-               return;
-            }*/
+               std::string message = "Create event failed";
+               YADOMS_LOG(error) << message;
+               //TODO : throw an exception
+            }
          }
+      }
+
+      void CFT2xxSerialPort::setPortNumber(int port)
+      {
+         m_port = port;
+      }
+
+      std::vector<int> CFT2xxSerialPort::getPortComNumber()
+      {
+         FT_STATUS	ftStatus;
+         DWORD numDevs;
+         f_ftopen  FT_Open = (f_ftopen)GetProcAddress(hGetProcIDDLL, "FT_Open");
+         f_ftCreateDeviceInfoList FT_CreateDeviceInfoList = (f_ftCreateDeviceInfoList)GetProcAddress(hGetProcIDDLL, "FT_CreateDeviceInfoList");
+         f_ftclose FT_Close = (f_ftclose)GetProcAddress(hGetProcIDDLL, "FT_Close");
+         f_ftGetComPortNumber FT_GetComPortNumber = (f_ftGetComPortNumber)GetProcAddress(hGetProcIDDLL, "FT_GetComPortNumber");
+
+         YADOMS_LOG(information) << "Scan all FT2X ports ...";
+
+         // create the device information list
+         ftStatus = FT_CreateDeviceInfoList(&numDevs);
+         if (ftStatus == FT_OK) {
+            YADOMS_LOG(information) << "Number of devices is " << numDevs;
+         }
+         else {
+            YADOMS_LOG(error) << "FT_CreateDeviceInfoList failed";
+         }
+
+         for (unsigned char counter = 0; counter < numDevs; ++counter)
+         {
+            ftStatus = FT_Open(counter, &ftHandle);
+            if (ftStatus != FT_OK) {
+               // TODO : Send a exception - perhaps fail because the driver is not installed
+               YADOMS_LOG(error) << "FT_Open failed";
+            }
+
+            LONG lplComPortNumber = 0;
+            ftStatus = FT_GetComPortNumber(ftHandle, &lplComPortNumber);
+            if (ftStatus != FT_OK) {
+               // TODO : Send a exception - perhaps fail because the driver is not installed
+               YADOMS_LOG(error) << "FT_Open failed";
+            }
+
+            YADOMS_LOG(information) << "Port Com number : " << (int)lplComPortNumber;
+            m_SerialPortComNumber.push_back(lplComPortNumber);
+
+            if (ftHandle != NULL) {
+               FT_Close(ftHandle);
+               ftHandle = NULL;
+               m_isConnected = false;
+            }
+         }
+
+         return m_SerialPortComNumber;
       }
 
       CFT2xxSerialPort::~CFT2xxSerialPort()
@@ -128,7 +190,8 @@ namespace shared
             DWORD TxBytes;
             DWORD Status;
             DWORD BytesReceived;
-            char RxBuffer[256];
+            char RxBuffer[256];
+
             FT_GetStatus(ftHandle, &RxBytes, &TxBytes, &EventDWord);
             if (EventDWord & FT_EVENT_MODEM_STATUS) {
                // modem status event detected, so get current modem status
@@ -166,14 +229,10 @@ namespace shared
          try
          {
             FT_STATUS	ftStatus;
-            FT_DEVICE_LIST_INFO_NODE *devInfo;
-            YADOMS_LOG(debug) << "Open " << m_port << "...";
-
             f_ftopen  FT_Open = (f_ftopen)GetProcAddress(hGetProcIDDLL, "FT_Open");
             f_ftsetbaudRate FT_SetBaudRate = (f_ftsetbaudRate)GetProcAddress(hGetProcIDDLL, "FT_SetBaudRate");
             f_ftsetDataCharacteristics  FT_SetDataCharacteristics = (f_ftsetDataCharacteristics)GetProcAddress(hGetProcIDDLL, "FT_SetDataCharacteristics");
             f_ftCreateDeviceInfoList FT_CreateDeviceInfoList = (f_ftCreateDeviceInfoList)GetProcAddress(hGetProcIDDLL, "FT_CreateDeviceInfoList");
-            f_ftGetDeviceInfoList FT_GetDeviceInfoList = (f_ftGetDeviceInfoList)GetProcAddress(hGetProcIDDLL, "FT_GetDeviceInfoList");
             f_ftGetDeviceInfoDetail FT_GetDeviceInfoDetail = (f_ftGetDeviceInfoDetail)GetProcAddress(hGetProcIDDLL, "FT_GetDeviceInfoDetail");
 
             DWORD Flags;
@@ -194,10 +253,11 @@ namespace shared
                YADOMS_LOG(error) << "FT_CreateDeviceInfoList failed";
             }
 
+            // TODO : To be used
             if (numDevs > 0) {
                FT_HANDLE ftHandleTemp;
                // get information for device 0
-               ftStatus = FT_GetDeviceInfoDetail(0, &Flags, &Type, &ID, &LocId, SerialNumber,
+               ftStatus = FT_GetDeviceInfoDetail(m_port, &Flags, &Type, &ID, &LocId, SerialNumber,
                                                  Description, &ftHandleTemp);
                if (ftStatus == FT_OK) {
                   YADOMS_LOG(debug) << "Dev 0:";
@@ -209,26 +269,9 @@ namespace shared
                   YADOMS_LOG(debug) << " Description=" << Description;
                   YADOMS_LOG(debug) << " ftHandle=" << ftHandleTemp;
                }
-
-               // allocate storage for list based on numDevs
-               devInfo = (FT_DEVICE_LIST_INFO_NODE*)malloc(sizeof(FT_DEVICE_LIST_INFO_NODE)*numDevs);
-               // get the device information list
-               ftStatus = FT_GetDeviceInfoList(devInfo, &numDevs);
-               if (ftStatus == FT_OK) {
-                  for (int i = 0; i < numDevs; i++) {
-                     YADOMS_LOG(debug) <<"Dev :" << i;
-                     YADOMS_LOG(debug) << " Flags=" << devInfo[i].Flags;
-                     YADOMS_LOG(debug) << " Type=" << devInfo[i].Type;
-                     YADOMS_LOG(debug) << " ID=" << devInfo[i].ID;
-                     YADOMS_LOG(debug) << " LocId=" << devInfo[i].LocId;
-                     YADOMS_LOG(debug) << " SerialNumber=" << devInfo[i].SerialNumber;
-                     YADOMS_LOG(debug) << " Description=" << devInfo[i].Description;
-                     YADOMS_LOG(debug) << " ftHandle=" << devInfo[i].ftHandle;
-                  }
-               }
             }
 
-            ftStatus = FT_Open(0, &ftHandle);
+            ftStatus = FT_Open(m_port, &ftHandle);
             if (ftStatus != FT_OK) {
                // TODO : Send a exception - perhaps fail because the driver is not installed
                YADOMS_LOG(error) << "FT_Open failed";
@@ -268,7 +311,7 @@ namespace shared
          }
          catch (boost::system::system_error& e)
          {
-            notifyEventHandler("asyncPort.serial.failToOpen", {{ "port", m_port }});
+            //notifyEventHandler("asyncPort.serial.failToOpen", {{ "port", m_port }});
             YADOMS_LOG(error) << " : Failed to open serial port : " << e.what();
             return false;
          }
@@ -291,7 +334,6 @@ namespace shared
                ftHandle = NULL;
                m_isConnected = false;
             }
-            YADOMS_LOG(debug) << " : m_boostSerialPort.close();";
          }
          catch (boost::system::system_error& e)
          {
@@ -325,14 +367,6 @@ namespace shared
          if (!!m_receiveBufferHandler)
             m_receiveBufferHandler->flush();
       }
-      /*
-      void CFT2xxSerialPort::reconnectTimerHandler(const boost::system::error_code& error)
-      {
-         if (error)
-            throw exception::CException("Error code should be 0 here");
-
-         tryConnect();
-      }*/
 
       void CFT2xxSerialPort::tryConnect()
       {
@@ -381,42 +415,6 @@ namespace shared
                                                        boost::asio::placeholders::bytes_transferred));
                                                        */
       }
-      /*
-      void CFT2xxSerialPort::readCompleted(const boost::system::error_code& error,
-                                           std::size_t bytesTransferred)
-      {
-         if (error)
-         {
-            // boost::asio::error::operation_aborted is fired when stop is required
-            if (error == boost::asio::error::operation_aborted)
-            {
-               if (m_writeTimeouted)
-                  // Read operation was cancelled because of stop async write operation on timeout ==> must be restarted
-                  startRead();
-               return; // Normal stop
-            }
-
-            // Error ==> disconnecting
-            YADOMS_LOG(error) << " : Serial port read error : " << error.message();
-            disconnect();
-
-            if (error == boost::asio::error::bad_descriptor)
-               notifyEventHandler("asyncPort.serial.failToCommunicateWithHardware", { {"message", error.message() }, { "code" , (boost::format("%1%") % error.value()).str() } });
-            else
-               notifyEventHandler("asyncPort.serial.error", { { "message", error.message() },{ "code" , (boost::format("%1%") % error.value()).str() } });
-            return;
-         }
-
-         // Read OK
-         CByteBuffer buffer(bytesTransferred);
-         memcpy(buffer.begin(), m_asyncReadBuffer.begin(), bytesTransferred);
-
-         if (!!m_receiveBufferHandler)
-            m_receiveBufferHandler->push(buffer);
-
-         // Restart read
-         startRead();
-      }*/
 
       void CFT2xxSerialPort::activateGPIO(const int GPIONumber)
       {

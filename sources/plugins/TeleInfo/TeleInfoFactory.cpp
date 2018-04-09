@@ -4,6 +4,7 @@
 #include "TeleInfoReceiveBufferHandler.h"
 #include "Decoder.h"
 #include <shared/Log.h>
+#include <boost/regex.hpp>
 
 CTeleInfoFactory::~CTeleInfoFactory()
 {
@@ -16,12 +17,43 @@ boost::shared_ptr<shared::communication::CFT2xxSerialPort> CTeleInfoFactory::con
 {
    YADOMS_LOG(information) << "Connecting TeleInfo on serial port " << configuration.getSerialPort() << "..." ;
 
-   auto port = boost::make_shared<shared::communication::CFT2xxSerialPort>(configuration.getSerialPort(),
-                                                                           boost::asio::serial_port_base::baud_rate(1200),
+   auto port = boost::make_shared<shared::communication::CFT2xxSerialPort>(boost::asio::serial_port_base::baud_rate(1200),
                                                                            boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::even),
                                                                            boost::asio::serial_port_base::character_size(7),
                                                                            boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
                                                                            boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none));
+
+   auto FTDIPortList = port->getPortComNumber();
+   bool isFTDISerialPort = false;
+   boost::regex reg("\\d+");
+   boost::smatch match;
+
+   //Set parameters
+   if (boost::regex_search(configuration.getSerialPort(), match, reg))
+   {
+      std::vector<int>::const_iterator iterator;
+      int counter = 0;
+
+      // change all hardware names
+      for (iterator = FTDIPortList.begin(); iterator != FTDIPortList.end(); ++iterator)
+      {
+         if (match[0] == boost::lexical_cast<std::string>((*iterator) - 1))
+         {
+            YADOMS_LOG(information) << "The serial port is a FTDI port. The FTDI driver will be used instead of the generic serial driver.";
+
+            // Set the port number
+            port->setPortNumber(counter);
+            isFTDISerialPort = true;
+            break;
+         }
+         ++counter;
+      }
+   }
+
+   if (!isFTDISerialPort)
+   {
+      //TODO : Create here the standard serial port
+   }
 
    port->subscribeForConnectionEvents(eventHandler,
                                       evtPortConnectionId);

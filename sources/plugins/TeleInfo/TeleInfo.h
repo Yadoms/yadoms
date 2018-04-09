@@ -6,6 +6,7 @@
 #include <shared/communication/AsyncPortConnectionNotification.h>
 #include "TeleInfoReceiveBufferHandler.h"
 #include "FT2xxSerialPort.h"
+#include "IGPIOManager.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -102,7 +103,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
-   CTeleInfoConfiguration m_configuration;
+   boost::shared_ptr<CTeleInfoConfiguration> m_configuration;
 
    //--------------------------------------------------------------
    /// \brief	The TeleInfo protocol implementation object
@@ -140,8 +141,7 @@ private:
    ETeleInfoPluginState m_runningState;
 
    //--------------------------------------------------------------
-   /// \brief	The plugin state
+   /// \brief	    List of port to read
    //--------------------------------------------------------------
-   char  m_scanPort;
+   boost::shared_ptr<IGPIOManager> m_GPIOManager;
 };
-

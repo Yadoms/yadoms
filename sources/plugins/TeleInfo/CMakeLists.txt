@@ -9,7 +9,9 @@ include("../YadomsPluginsCommon.cmake")
 set(TELEINFO_SOURCES
    Decoder.h
    Decoder.cpp
+   GPIOManager.hpp
    IDecoder.h
+   IGPIOManager.h
    ITeleInfoConfiguration.h
    ITeleInfoMessage.h
    stdafx.h

@@ -126,9 +126,9 @@ void CDecoder::createDeviceAndKeywords(const bool monoPhase)
       // This is only for EJP contracts
       if (!m_api->keywordExists(m_deviceName, m_ForecastPeriod->GetHistorizable()) && m_optarif == OP_EJP)
          m_api->declareKeyword(m_deviceName, m_ForecastPeriod->GetHistorizable());
-   }
 
-   m_deviceCreated = true;
+      m_deviceCreated = true;
+   }
 }
 
 void CDecoder::constructKeywordList(const EContracts contract, const bool monoPhase)
