@@ -3,7 +3,7 @@
 #include <shared/communication/IAsyncPort.h>
 #include <shared/communication/IReceiveBufferHandler.h>
 #include <shared/communication/AsyncPortConnectionNotification.h>
-#include "../ftdi/Ftd2xx.h"
+#include "../ftdi/ftd2xx.h"
 
 namespace shared
 {
@@ -158,8 +158,6 @@ namespace shared
          bool m_writeTimeouted;
 
          FT_HANDLE ftHandle = NULL;
-         HINSTANCE hGetProcIDDLL;
-         HANDLE hEvent;
 
          static const unsigned char m_mask_port1;
          static const unsigned char m_mask_port2;

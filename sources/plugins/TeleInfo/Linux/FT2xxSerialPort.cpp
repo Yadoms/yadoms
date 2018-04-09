@@ -361,10 +361,10 @@ namespace shared
       {
          // Start an asynchronous read and call readCompleted when it completes or fails
          FT_STATUS	ftStatus;
-         f_ftsetEventNotification  FT_SetEventNotification = (f_ftsetEventNotification)GetProcAddress(hGetProcIDDLL, "FT_SetEventNotification");
+         //f_ftsetEventNotification  FT_SetEventNotification = (f_ftsetEventNotification)GetProcAddress(hGetProcIDDLL, "FT_SetEventNotification");
          DWORD EventMask = FT_EVENT_RXCHAR | FT_EVENT_MODEM_STATUS;
 
-         ftStatus = FT_SetEventNotification(ftHandle, EventMask, hEvent);
+         //ftStatus = FT_SetEventNotification(ftHandle, EventMask, hEvent);
          /*
          m_boostSerialPort.async_read_some(boost::asio::buffer(m_asyncReadBuffer.begin(),
                                                                m_asyncReadBuffer.size()),
