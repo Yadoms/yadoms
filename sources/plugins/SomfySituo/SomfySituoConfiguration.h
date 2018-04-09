@@ -1,36 +1,29 @@
 #pragma once
 
-#include "ISigfoxConfiguration.h"
-
+#include "ISomfySituoConfiguration.h"
 
 //--------------------------------------------------------------
-/// \brief	Configuration of the plugin
+/// \brief	Configuration of the empty plugin
 //--------------------------------------------------------------
-class CSigfoxConfiguration : public ISigfoxConfiguration
+class CSomfySituoConfiguration : public ISomfySituoConfiguration
 {
 public:
    //--------------------------------------------------------------
-   /// \brief	    Constructor
-   //--------------------------------------------------------------
-   CSigfoxConfiguration();
-
-   //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CSigfoxConfiguration();
+   virtual ~CSomfySituoConfiguration();
 
-   // ISigfoxConfiguration implementation
+   //--------------------------------------------------------------
+   /// \brief		   Load configuration data
+   /// \param [in] data The data container
+   //--------------------------------------------------------------
    void initializeWith(const shared::CDataContainer& data) override;
-   double getRssiMin() const override;
-   double getRssiMax() const override;
-   double getTensionMin() const override;
-   double getTensionMax() const override;
-   int getSocketPort() const override;
-   // [END] ISigfoxConfiguration implementation
+   std::string getSerialPort() const override;
+
 
 private:
    //--------------------------------------------------------------
-   /// \brief	    Configuration raw data
+   /// \brief	    Configuration getter
    //--------------------------------------------------------------
    shared::CDataContainer m_data;
 };
