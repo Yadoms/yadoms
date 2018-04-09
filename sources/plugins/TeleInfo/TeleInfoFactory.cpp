@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "TeleInfoFactory.h"
+#include <shared/communication/AsyncSerialPort.h>
 #include <shared/communication/AsciiBufferLogger.h>
 #include "TeleInfoReceiveBufferHandler.h"
 #include "Decoder.h"
@@ -10,20 +11,20 @@ CTeleInfoFactory::~CTeleInfoFactory()
 {
 }
 
-boost::shared_ptr<shared::communication::CFT2xxSerialPort> CTeleInfoFactory::constructPort(const ITeleInfoConfiguration& configuration,
+boost::shared_ptr<shared::communication::IAsyncPort> CTeleInfoFactory::constructPort(const ITeleInfoConfiguration& configuration,
                                                                                            shared::event::CEventHandler& eventHandler,
                                                                                            boost::shared_ptr<shared::communication::IReceiveBufferHandler> receiveBufferHandler,
                                                                                            int evtPortConnectionId)
 {
    YADOMS_LOG(information) << "Connecting TeleInfo on serial port " << configuration.getSerialPort() << "..." ;
 
-   auto port = boost::make_shared<shared::communication::CFT2xxSerialPort>(boost::asio::serial_port_base::baud_rate(1200),
-                                                                           boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::even),
-                                                                           boost::asio::serial_port_base::character_size(7),
-                                                                           boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
-                                                                           boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none));
+   boost::shared_ptr<shared::communication::IAsyncPort> port = boost::make_shared<shared::communication::CFT2xxSerialPort>(boost::asio::serial_port_base::baud_rate(1200),
+                                                                                                                           boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::even),
+                                                                                                                           boost::asio::serial_port_base::character_size(7),
+                                                                                                                           boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
+                                                                                                                           boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none));
 
-   auto FTDIPortList = port->getPortComNumber();
+   auto FTDIPortList = boost::static_pointer_cast<shared::communication::CFT2xxSerialPort>(port)->getPortComNumber();
    bool isFTDISerialPort = false;
    boost::regex reg("\\d+");
    boost::smatch match;
@@ -42,7 +43,7 @@ boost::shared_ptr<shared::communication::CFT2xxSerialPort> CTeleInfoFactory::con
             YADOMS_LOG(information) << "The serial port is a FTDI port. The FTDI driver will be used instead of the generic serial driver.";
 
             // Set the port number
-            port->setPortNumber(counter);
+            boost::static_pointer_cast<shared::communication::CFT2xxSerialPort>(port)->setPortNumber(counter);
             isFTDISerialPort = true;
             break;
          }
@@ -52,7 +53,13 @@ boost::shared_ptr<shared::communication::CFT2xxSerialPort> CTeleInfoFactory::con
 
    if (!isFTDISerialPort)
    {
-      //TODO : Create here the standard serial port
+      port = boost::make_shared<shared::communication::CAsyncSerialPort>(configuration.getSerialPort(),
+                                                                         boost::asio::serial_port_base::baud_rate(1200),
+                                                                         boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::even),
+                                                                         boost::asio::serial_port_base::character_size(7),
+                                                                         boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
+                                                                         boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none));
+
    }
 
    port->subscribeForConnectionEvents(eventHandler,

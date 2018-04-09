@@ -88,7 +88,7 @@ private:
    //--------------------------------------------------------------
    /// \brief  The communication port
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::communication::CFT2xxSerialPort> m_port;
+   boost::shared_ptr<shared::communication::IAsyncPort> m_port;
 
    //--------------------------------------------------------------
    /// \brief	Wait for answer timer

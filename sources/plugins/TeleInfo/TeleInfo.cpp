@@ -119,7 +119,11 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                               api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::string>>>());
 
             m_receiveBufferHandler->desactivate();
-            m_port->desactivateGPIO();
+
+            auto port = boost::static_pointer_cast<shared::communication::CFT2xxSerialPort>(m_port);
+
+            if (port)
+               port->desactivateGPIO();
 
             if (!m_GPIOManager->isLast())
             {
@@ -152,7 +156,11 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             // Initial port to scan
             // Activate the port
-            m_port->activateGPIO(m_GPIOManager->getGPIO());
+            auto port = boost::static_pointer_cast<shared::communication::CFT2xxSerialPort>(m_port);
+
+            if (port)
+               port->activateGPIO(m_GPIOManager->getGPIO());
+
             m_receiveBufferHandler->activate();
 
             //Lauch a new time the time out to detect connexion failure
@@ -162,7 +170,11 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kAnswerTimeout:
          {
             m_waitForAnswerTimer->stop();
-            m_port->desactivateGPIO();
+
+            auto port = boost::static_pointer_cast<shared::communication::CFT2xxSerialPort>(m_port);
+
+            if (port)
+               port->desactivateGPIO();
 
             YADOMS_LOG(error) << "No answer received, try to reconnect in a while..." ;
             /*

@@ -52,8 +52,8 @@ ENDIF()
 IF (UNIX AND NOT APPLE)
     set(TELEINFO_SOURCES ${TELEINFO_SOURCES}
 	# Add Common Linux and RaspberryPI sources
-	Linux/FT2XManager.h
-	Linux/FT2XManager.cpp
+	Linux/FT2xxSerialPort.h
+	Linux/FT2xxSerialPort.cpp
 	)
 	
 	source_group(Linux Linux/*.*)
