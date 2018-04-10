@@ -747,9 +747,17 @@ void COpenZWaveController::sendCommand(const std::string& device, const std::str
    auto node = getNode(homeId, nodeId);
    if (node)
    {
+      getNodeInfo(node->getHomeId(), node->getNodeId()).printToLog(YADOMS_LOG(information));
+
+      YADOMS_LOG(information) << "Sending command to ZWave keyword : " << keyword << " Value : "  << value << " home.node = " << COpenZWaveHelpers::GenerateDeviceId(node->getHomeId(), node->getNodeId());
       if (!node->sendCommand(keyword, value))
       {
+         YADOMS_LOG(error) << "Fail to send command to ZWave keyword : " << keyword << " Value : " << value << " home.node = " << COpenZWaveHelpers::GenerateDeviceId(node->getHomeId(), node->getNodeId());
          throw shared::exception::CException((boost::format("Fail to send command keyword[%1%] = %2% ") % keyword % value).str());
+      }
+      else
+      {
+         YADOMS_LOG(information) << "Command sent with success to ZWave keyword : " << keyword << " Value : " << value << " home.node = " << COpenZWaveHelpers::GenerateDeviceId(node->getHomeId(), node->getNodeId());
       }
    }
 }
