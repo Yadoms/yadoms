@@ -213,7 +213,7 @@ U 1 1 59FD8F28
 P 9000 1450
 F 0 "J2" H 9100 1450 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 1450 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 1450 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 9000 1450 50  0001 C CNN
 F 3 "" H 9000 1450 50  0001 C CNN
 	1    9000 1450
 	1    0    0    -1  
@@ -226,7 +226,7 @@ U 1 1 59FD9464
 P 9000 1550
 F 0 "J3" H 9100 1550 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 1550 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 1550 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 9000 1550 50  0001 C CNN
 F 3 "" H 9000 1550 50  0001 C CNN
 	1    9000 1550
 	1    0    0    -1  
@@ -237,7 +237,7 @@ U 1 1 59FD94F5
 P 9000 1650
 F 0 "J4" H 9100 1650 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 1650 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 1650 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 9000 1650 50  0001 C CNN
 F 3 "" H 9000 1650 50  0001 C CNN
 	1    9000 1650
 	1    0    0    -1  
@@ -248,7 +248,7 @@ U 1 1 59FD9589
 P 9000 1750
 F 0 "J5" H 9100 1750 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 1750 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 1750 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 9000 1750 50  0001 C CNN
 F 3 "" H 9000 1750 50  0001 C CNN
 	1    9000 1750
 	1    0    0    -1  
@@ -259,7 +259,7 @@ U 1 1 59FD9620
 P 9000 1850
 F 0 "J6" H 9100 1850 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 1850 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 1850 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 9000 1850 50  0001 C CNN
 F 3 "" H 9000 1850 50  0001 C CNN
 	1    9000 1850
 	1    0    0    -1  
@@ -270,7 +270,7 @@ U 1 1 59FD96E8
 P 9000 1950
 F 0 "J7" H 9100 1950 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 1950 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 1950 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 9000 1950 50  0001 C CNN
 F 3 "" H 9000 1950 50  0001 C CNN
 	1    9000 1950
 	1    0    0    -1  
@@ -281,7 +281,7 @@ U 1 1 59FD9785
 P 9000 2050
 F 0 "J8" H 9100 2050 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 2050 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 2050 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 9000 2050 50  0001 C CNN
 F 3 "" H 9000 2050 50  0001 C CNN
 	1    9000 2050
 	1    0    0    -1  
@@ -292,7 +292,7 @@ U 1 1 59FD9825
 P 9000 2150
 F 0 "J9" H 9100 2150 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 2150 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 2150 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 9000 2150 50  0001 C CNN
 F 3 "" H 9000 2150 50  0001 C CNN
 	1    9000 2150
 	1    0    0    -1  
@@ -303,7 +303,7 @@ U 1 1 59FD98C8
 P 9000 2250
 F 0 "J10" H 9100 2250 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 2250 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 2250 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 9000 2250 50  0001 C CNN
 F 3 "" H 9000 2250 50  0001 C CNN
 	1    9000 2250
 	1    0    0    -1  
@@ -314,7 +314,7 @@ U 1 1 59FD996E
 P 9000 2350
 F 0 "J11" H 9100 2350 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 2350 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 2350 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 9000 2350 50  0001 C CNN
 F 3 "" H 9000 2350 50  0001 C CNN
 	1    9000 2350
 	1    0    0    -1  
@@ -325,7 +325,7 @@ U 1 1 59FD9A19
 P 9000 2450
 F 0 "J12" H 9100 2450 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 2450 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 2450 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 9000 2450 50  0001 C CNN
 F 3 "" H 9000 2450 50  0001 C CNN
 	1    9000 2450
 	1    0    0    -1  
@@ -635,7 +635,7 @@ U 1 1 5AA95685
 P 9000 2550
 F 0 "J13" H 9100 2550 50  0000 C CNN
 F 1 "Conn_01x01" H 9450 2550 50  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Big" H 9000 2550 50  0001 C CNN
+F 2 "Measurement_Points:Measurement_Point_Square-SMD-Pad_Small" H 9000 2550 50  0001 C CNN
 F 3 "" H 9000 2550 50  0001 C CNN
 	1    9000 2550
 	1    0    0    -1  
