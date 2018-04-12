@@ -1,6 +1,6 @@
 {
 	"type": "ZWave",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"author": "Jean-Michel DECORET",
    "url": "https://github.com/Yadoms/yadoms/wiki/Zwave",
 	"credits": "[openzwave](http://www.openzwave.com/)",
