@@ -80,8 +80,15 @@ namespace shared
             }
             else
             {
-               // TODO : To be represent in string
-               YADOMS_LOG(information) << "FTDI driver version : " << std::hex << dwDriverVersion;
+               //convert int to hex string
+               std::stringstream stream;
+               stream << std::hex << (dwDriverVersion & 0xFF0000) << "."
+                  << std::hex << (dwDriverVersion & 0x00FF00) << "."
+                  << std::hex << (dwDriverVersion & 0x0000FF);
+               auto hexNumber(stream.str());
+
+               YADOMS_LOG(debug) << "essai : " << std::hex << dwDriverVersion;
+               YADOMS_LOG(information) << "FTDI driver version : " << hexNumber;
             }
 
             f_ftGetLibraryVersion  FT_GetLibraryVersion = (f_ftGetLibraryVersion)GetProcAddress(hGetProcIDDLL, "FT_GetLibraryVersion");
@@ -92,8 +99,15 @@ namespace shared
             }
             else
             {
-               // TODO : To be represent in string
-               YADOMS_LOG(information) << "FTDI library version : " << std::hex << dwLibraryVersion;
+               //convert int to hex string
+               std::stringstream stream;
+               stream << std::hex << (dwLibraryVersion & 0xFF0000) << "."
+                  << std::hex << (dwLibraryVersion & 0x00FF00) << "."
+                  << std::hex << (dwLibraryVersion & 0x0000FF);
+               auto hexNumber(stream.str());
+
+               YADOMS_LOG(debug) << "essai2 : " << std::hex << dwLibraryVersion;
+               YADOMS_LOG(information) << "FTDI library version : " << hexNumber;
             }
 
             hEvent = CreateEventA(
@@ -282,7 +296,6 @@ namespace shared
                YADOMS_LOG(error) << "FT_CreateDeviceInfoList failed";
             }
 
-            // TODO : To be used
             if (numDevs > 0) {
                FT_HANDLE ftHandleTemp;
                // get information for device 0
@@ -298,6 +311,10 @@ namespace shared
                   YADOMS_LOG(debug) << " Description=" << Description;
                   YADOMS_LOG(debug) << " ftHandle=" << ftHandleTemp;
                }
+            }
+            else
+            {
+               shared::exception::CException("No FTDI serial port detected");
             }
 
             ftStatus = FT_Open(m_port, &ftHandle);
@@ -412,10 +429,6 @@ namespace shared
             if (!connect())
             {
                YADOMS_LOG(debug) << " : Fail to reconnect, retry in a while...";
-
-               //TODO : Mettre en place la relance
-               //m_connectRetryTimer.expires_from_now(m_connectRetryDelay);
-               //m_connectRetryTimer.async_wait(boost::bind(&CFT2xxSerialPort::reconnectTimerHandler, this, boost::asio::placeholders::error));
                return;
             }
 

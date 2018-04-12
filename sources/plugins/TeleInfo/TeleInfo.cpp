@@ -241,7 +241,6 @@ void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
    }
 
    // Port has changed, destroy and recreate connection
-   // TODO : Check port configuration to destroy it
    destroyConnection();
 
    // Update configuration
