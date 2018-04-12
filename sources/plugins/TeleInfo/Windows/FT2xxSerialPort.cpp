@@ -4,6 +4,7 @@
 #include <shared/Peripherals.h>
 #include <shared/communication/PortException.hpp>
 #include <shared/communication/Buffer.hpp>
+#include <shared/exception/Exception.hpp>
 
 namespace shared
 {
@@ -27,6 +28,8 @@ namespace shared
       typedef FT_STATUS(__stdcall *f_ftCreateDeviceInfoList)(LPDWORD lpdwNumDevs);
       typedef FT_STATUS(__stdcall *f_ftGetDeviceInfoList)(FT_DEVICE_LIST_INFO_NODE *pDest, LPDWORD lpdwNumDevs);
       typedef FT_STATUS(__stdcall *f_ftGetComPortNumber)(FT_HANDLE ftHandle, LPLONG lplComPortNumber);
+      typedef FT_STATUS(__stdcall *f_ftGetDriverVersion)(FT_HANDLE ftHandle, LPDWORD lpdwDriverVersion);
+      typedef FT_STATUS(__stdcall *f_ftGetLibraryVersion)(LPDWORD lpdwDLLVersion);
       typedef FT_STATUS(__stdcall *f_ftGetDeviceInfoDetail)(DWORD dwIndex, LPDWORD lpdwFlags,
                                                             LPDWORD lpdwType,
                                                             LPDWORD lpdwID, LPDWORD lpdwLocId,
@@ -52,23 +55,47 @@ namespace shared
            m_connectStateEventId(event::kNoEvent),
            m_connectRetryDelay(connectRetryDelay),
            m_flushAtConnect(flushAtConnect),
-           m_writeTimeout(boost::date_time::pos_infin),
-           m_writeTimeouted(false),
          m_isConnected(false),
          m_port(0)
       {
          hGetProcIDDLL = LoadLibraryA("ftd2xx.dll");
 
-         // TODO : Writing the driver revision
-
          if (!hGetProcIDDLL)
          {
             std::string message = "Could not load the dynamic library";
             YADOMS_LOG(error) << message;
-            //TODO : throw an exception
+            throw shared::exception::CException(message);
          }
          else
          {
+            DWORD dwDriverVersion;
+            DWORD dwLibraryVersion;
+            FT_STATUS	ftStatus;
+            f_ftGetDriverVersion  FT_GetDriverVersion = (f_ftGetDriverVersion)GetProcAddress(hGetProcIDDLL, "FT_GetDriverVersion");
+            ftStatus = FT_GetDriverVersion(ftHandle, &dwDriverVersion);
+
+            if (ftStatus != FT_OK) {
+               std::string message = "Could not get the driver version";
+               throw shared::exception::CException(message);
+            }
+            else
+            {
+               // TODO : To be represent in string
+               YADOMS_LOG(information) << "FTDI driver version : " << std::hex << dwDriverVersion;
+            }
+
+            f_ftGetLibraryVersion  FT_GetLibraryVersion = (f_ftGetLibraryVersion)GetProcAddress(hGetProcIDDLL, "FT_GetLibraryVersion");
+            FT_GetLibraryVersion(&dwLibraryVersion);
+            if (ftStatus != FT_OK) {
+               std::string message = "Could not get the library version";
+               throw shared::exception::CException(message);
+            }
+            else
+            {
+               // TODO : To be represent in string
+               YADOMS_LOG(information) << "FTDI library version : " << std::hex << dwLibraryVersion;
+            }
+
             hEvent = CreateEventA(
                NULL,
                false, // auto-reset event
@@ -79,7 +106,7 @@ namespace shared
             {
                std::string message = "Create event failed";
                YADOMS_LOG(error) << message;
-               //TODO : throw an exception
+               throw shared::exception::CException(message);
             }
          }
       }
@@ -113,15 +140,17 @@ namespace shared
          {
             ftStatus = FT_Open(counter, &ftHandle);
             if (ftStatus != FT_OK) {
-               // TODO : Send a exception - perhaps fail because the driver is not installed
-               YADOMS_LOG(error) << "FT_Open failed";
+               std::string message = "Fail to open the serial port with FTDI driver";
+               YADOMS_LOG(error) << message;
+               throw shared::exception::CException(message);
             }
 
             LONG lplComPortNumber = 0;
             ftStatus = FT_GetComPortNumber(ftHandle, &lplComPortNumber);
             if (ftStatus != FT_OK) {
-               // TODO : Send a exception - perhaps fail because the driver is not installed
-               YADOMS_LOG(error) << "FT_Open failed";
+               std::string message = "Fail to get the serial port number";
+               YADOMS_LOG(error) << message;
+               throw shared::exception::CException(message);
             }
 
             YADOMS_LOG(information) << "Port Com number : " << (int)lplComPortNumber;
@@ -273,14 +302,16 @@ namespace shared
 
             ftStatus = FT_Open(m_port, &ftHandle);
             if (ftStatus != FT_OK) {
-               // TODO : Send a exception - perhaps fail because the driver is not installed
-               YADOMS_LOG(error) << "FT_Open failed";
+               std::string message = "Fail to open the serial port with the FTDI driver";
+               YADOMS_LOG(error) << message;
+               throw shared::exception::CException(message);
             }
 
             ftStatus = FT_SetBaudRate(ftHandle, m_baudrate.value());
             if (ftStatus != FT_OK) {
-               // TODO : Send a exception - perhaps fail because the driver is not installed
-               YADOMS_LOG(error) << "FT_SetBaudRate failed";
+               std::string message = "Fail to set the baudrate";
+               YADOMS_LOG(error) << message;
+               throw shared::exception::CException(message);
             }
 
             UCHAR stop_bits;
@@ -302,9 +333,11 @@ namespace shared
             else 
                parity = FT_PARITY_NONE;
 
-            ftStatus = FT_SetDataCharacteristics(ftHandle, m_characterSize.value(), stop_bits, parity);
+            ftStatus = FT_SetDataCharacteristics(ftHandle, (UCHAR)m_characterSize.value(), stop_bits, parity);
             if (ftStatus != FT_OK) {
-               // TODO : Send a exception - perhaps fail because the driver is not installed
+               std::string message = "Fail to set Data format";
+               YADOMS_LOG(error) << message;
+               throw shared::exception::CException(message);
             }
 
             m_isConnected = true;
@@ -406,14 +439,13 @@ namespace shared
          DWORD EventMask = FT_EVENT_RXCHAR | FT_EVENT_MODEM_STATUS;
 
          ftStatus = FT_SetEventNotification(ftHandle, EventMask, hEvent);
-         /*
-         m_boostSerialPort.async_read_some(boost::asio::buffer(m_asyncReadBuffer.begin(),
-                                                               m_asyncReadBuffer.size()),
-                                           boost::bind(&CFT2xxSerialPort::readCompleted,
-                                                       this,
-                                                       boost::asio::placeholders::error,
-                                                       boost::asio::placeholders::bytes_transferred));
-                                                       */
+
+         if (ftStatus != FT_OK)
+         {
+            std::string message = "Fail to set event notification";
+            YADOMS_LOG(error) << message;
+            throw shared::exception::CException(message);
+         }
       }
 
       void CFT2xxSerialPort::activateGPIO(const int GPIONumber)

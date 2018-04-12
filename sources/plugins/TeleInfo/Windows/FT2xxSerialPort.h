@@ -3,7 +3,7 @@
 #include <shared/communication/IAsyncPort.h>
 #include <shared/communication/IReceiveBufferHandler.h>
 #include <shared/communication/AsyncPortConnectionNotification.h>
-#include "../ftdi/Ftd2xx.h"
+#include "../ftdi/ftd2xx.h"
 
 namespace shared
 {
@@ -53,7 +53,7 @@ namespace shared
 
          void activateGPIO(const int GPIONumber);
          void desactivateGPIO();
-         std::vector<int> CFT2xxSerialPort::getPortComNumber();
+         std::vector<int> getPortComNumber();
          void setPortNumber(int port);
       protected:
          //--------------------------------------------------------------
@@ -150,12 +150,6 @@ namespace shared
          /// \brief	Flush serial port buffers before listening on port (just after connection)
          //--------------------------------------------------------------
          bool m_flushAtConnect;
-
-         //--------------------------------------------------------------
-         /// \brief	The write timeout (if flow control is used)
-         //--------------------------------------------------------------
-         boost::posix_time::time_duration m_writeTimeout;
-         bool m_writeTimeouted;
 
          FT_HANDLE ftHandle = NULL;
          HINSTANCE hGetProcIDDLL;
