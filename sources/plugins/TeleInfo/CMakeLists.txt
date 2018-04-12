@@ -88,7 +88,7 @@ ENDIF()
 ## (by default yadoms-shared and boost are included)
 #########################################
 
-IF (UNIX AND NOT APPLE)
+IF (UNIX AND NOT APPLE AND NOT (CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry"))
    set(TELEINFO_ADDITIONAL_LIB
       ftd2xx
    )
