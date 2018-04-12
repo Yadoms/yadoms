@@ -88,6 +88,25 @@ ENDIF()
 ## (by default yadoms-shared and boost are included)
 #########################################
 
+IF (UNIX AND NOT APPLE)
+   set(TELEINFO_ADDITIONAL_LIB
+      ftd2xx
+   )
+
+  if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+    link_directories(${CMAKE_CURRENT_SOURCE_DIR}/ftdi/Linux_x86_64)
+  else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+    link_directories(${CMAKE_CURRENT_SOURCE_DIR}/ftdi/Linux_i386)
+  endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+ENDIF()
+
+if(CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
+   set(TELEINFO_ADDITIONAL_LIB
+      ftd2xx
+   )
+   link_directories(${CMAKE_CURRENT_SOURCE_DIR}/ftdi/ARM32)
+ENDIF()
+
 #########################################
 ## Always leave this three lines to configure plugin correctly
 ## even if TELEINFO_ADDITIONAL_INC_DIR or TELEINFO_ADDITIONAL_LIB are empty

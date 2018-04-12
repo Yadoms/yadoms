@@ -31,10 +31,9 @@ namespace shared
            m_connectStateEventId(event::kNoEvent),
            m_connectRetryDelay(connectRetryDelay),
            m_flushAtConnect(flushAtConnect),
-           m_writeTimeout(boost::date_time::pos_infin),
-           m_writeTimeouted(false),
-         m_isConnected(false),
-         m_port(0)
+           m_isConnected(false),
+           m_port(0),
+           mutex(PTHREAD_MUTEX_INITIALIZER)
       {
       }
 
@@ -45,14 +44,8 @@ namespace shared
 
       std::vector<int> CFT2xxSerialPort::getPortComNumber()
       {
-         /*
          FT_STATUS	ftStatus;
          DWORD numDevs;
-         f_ftopen  FT_Open = (f_ftopen)GetProcAddress(hGetProcIDDLL, "FT_Open");
-         f_ftCreateDeviceInfoList FT_CreateDeviceInfoList = (f_ftCreateDeviceInfoList)GetProcAddress(hGetProcIDDLL, "FT_CreateDeviceInfoList");
-         f_ftclose FT_Close = (f_ftclose)GetProcAddress(hGetProcIDDLL, "FT_Close");
-         f_ftGetComPortNumber FT_GetComPortNumber = (f_ftGetComPortNumber)GetProcAddress(hGetProcIDDLL, "FT_GetComPortNumber");
-
          YADOMS_LOG(information) << "Scan all FT2X ports ...";
 
          // create the device information list
@@ -88,7 +81,6 @@ namespace shared
                m_isConnected = false;
             }
          }
-         */
 
          return m_SerialPortComNumber;
       }
@@ -130,17 +122,14 @@ namespace shared
       void CFT2xxSerialPort::receiverThread()
       {
          FT_STATUS	ftStatus;
-
-         /*
-         f_ftGetStatus FT_GetStatus = (f_ftGetStatus)GetProcAddress(hGetProcIDDLL, "FT_GetStatus");
-         f_ftGetModemStatus FT_GetModemStatus = (f_ftGetModemStatus)GetProcAddress(hGetProcIDDLL, "FT_GetModemStatus");
-         f_ftRead FT_Read = (f_ftRead)GetProcAddress(hGetProcIDDLL, "FT_Read");
-         */
          YADOMS_LOG(debug) << "Create receiverThread";
 
          while (true)
          {
-            //WaitForSingleObject(hEvent, INFINITE);
+//            boost::lock_guard<boost::recursive_mutex> lock(mutex);
+            pthread_mutex_lock(&mutex);
+//            pthread_cond_wait(&eh.eCondVar, &eh.eMutex);
+            pthread_mutex_unlock(&mutex);
 
             DWORD EventDWord;
             DWORD RxBytes;
@@ -148,7 +137,7 @@ namespace shared
             DWORD Status;
             DWORD BytesReceived;
             char RxBuffer[256];
-/*
+
             FT_GetStatus(ftHandle, &RxBytes, &TxBytes, &EventDWord);
             if (EventDWord & FT_EVENT_MODEM_STATUS) {
                // modem status event detected, so get current modem status
@@ -174,7 +163,7 @@ namespace shared
                   YADOMS_LOG(debug) << "FT_Read failed";
                   break;
                }
-            }*/
+            }
          }
 
          YADOMS_LOG(debug) << "Finish receiverThread";
@@ -182,17 +171,11 @@ namespace shared
 
       bool CFT2xxSerialPort::connect()
       {
-/*         
+         
          // Open the port
          try
          {
             FT_STATUS	ftStatus;
-            f_ftopen  FT_Open = (f_ftopen)GetProcAddress(hGetProcIDDLL, "FT_Open");
-            f_ftsetbaudRate FT_SetBaudRate = (f_ftsetbaudRate)GetProcAddress(hGetProcIDDLL, "FT_SetBaudRate");
-            f_ftsetDataCharacteristics  FT_SetDataCharacteristics = (f_ftsetDataCharacteristics)GetProcAddress(hGetProcIDDLL, "FT_SetDataCharacteristics");
-            f_ftCreateDeviceInfoList FT_CreateDeviceInfoList = (f_ftCreateDeviceInfoList)GetProcAddress(hGetProcIDDLL, "FT_CreateDeviceInfoList");
-            f_ftGetDeviceInfoDetail FT_GetDeviceInfoDetail = (f_ftGetDeviceInfoDetail)GetProcAddress(hGetProcIDDLL, "FT_GetDeviceInfoDetail");
-
             DWORD Flags;
             DWORD ID;
             DWORD Type;
@@ -273,7 +256,6 @@ namespace shared
             YADOMS_LOG(error) << " : Failed to open serial port : " << e.what();
             return false;
          }
-*/
          return true;
       }
 
@@ -285,14 +267,11 @@ namespace shared
          // Close the port
          try
          {
-/*            
-            f_ftclose FT_Close = (f_ftclose)GetProcAddress(hGetProcIDDLL, "FT_Close");
-
             if (ftHandle != NULL) {
                FT_Close(ftHandle);
                ftHandle = NULL;
                m_isConnected = false;
-            }*/
+            }
          }
          catch (boost::system::system_error& e)
          {
@@ -361,10 +340,16 @@ namespace shared
       {
          // Start an asynchronous read and call readCompleted when it completes or fails
          FT_STATUS	ftStatus;
-         //f_ftsetEventNotification  FT_SetEventNotification = (f_ftsetEventNotification)GetProcAddress(hGetProcIDDLL, "FT_SetEventNotification");
          DWORD EventMask = FT_EVENT_RXCHAR | FT_EVENT_MODEM_STATUS;
 
-         //ftStatus = FT_SetEventNotification(ftHandle, EventMask, hEvent);
+         pthread_mutex_init(&mutex, NULL);
+         //pthread_cond_init(&eh.eCondVar, NULL);
+
+         ftStatus = FT_SetEventNotification(ftHandle, EventMask, &mutex);
+
+         if (ftStatus != FT_OK) {
+            // TODO : Send a exception - perhaps fail because the driver is not installed
+         }
          /*
          m_boostSerialPort.async_read_some(boost::asio::buffer(m_asyncReadBuffer.begin(),
                                                                m_asyncReadBuffer.size()),
@@ -376,14 +361,10 @@ namespace shared
       }
 
       void CFT2xxSerialPort::activateGPIO(const int GPIONumber)
-      {
-/*         
+      {       
          unsigned char ucMask = 0xFF;
          unsigned char ucMode;
          FT_STATUS	ftStatus;
-
-         f_ftsetBitMode FT_SetBitMode = (f_ftsetBitMode)GetProcAddress(hGetProcIDDLL, "FT_SetBitMode");
-         f_ftgetBitMode FT_GetBitMode = (f_ftgetBitMode)GetProcAddress(hGetProcIDDLL, "FT_GetBitMode");
 
          switch (GPIONumber)
          {
@@ -411,8 +392,7 @@ namespace shared
          ftStatus = FT_GetBitMode(ftHandle, &ucMode);
          if (ftStatus != FT_OK) {
             YADOMS_LOG(error) << "Failed to get bit mode";
-         }
-*/         
+         }       
       }
 
       void CFT2xxSerialPort::desactivateGPIO()

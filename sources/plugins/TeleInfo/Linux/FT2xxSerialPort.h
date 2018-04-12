@@ -53,7 +53,7 @@ namespace shared
 
          void activateGPIO(const int GPIONumber);
          void desactivateGPIO();
-         std::vector<int> CFT2xxSerialPort::getPortComNumber();
+         std::vector<int> getPortComNumber();
          void setPortNumber(int port);
       protected:
          //--------------------------------------------------------------
@@ -151,12 +151,6 @@ namespace shared
          //--------------------------------------------------------------
          bool m_flushAtConnect;
 
-         //--------------------------------------------------------------
-         /// \brief	The write timeout (if flow control is used)
-         //--------------------------------------------------------------
-         boost::posix_time::time_duration m_writeTimeout;
-         bool m_writeTimeouted;
-
          FT_HANDLE ftHandle = NULL;
 
          static const unsigned char m_mask_port1;
@@ -167,6 +161,8 @@ namespace shared
          bool m_isConnected;
          std::vector<int> m_SerialPortComNumber;
          int m_port;
+         pthread_mutex_t mutex;
+//         boost::recursive_mutex mutex;
       };
    }
 } // namespace shared::communication
