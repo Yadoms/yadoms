@@ -29,7 +29,8 @@ namespace shared
       typedef FT_STATUS(__stdcall *f_ftGetDeviceInfoList)(FT_DEVICE_LIST_INFO_NODE *pDest, LPDWORD lpdwNumDevs);
       typedef FT_STATUS(__stdcall *f_ftGetComPortNumber)(FT_HANDLE ftHandle, LPLONG lplComPortNumber);
       typedef FT_STATUS(__stdcall *f_ftGetDriverVersion)(FT_HANDLE ftHandle, LPDWORD lpdwDriverVersion);
-      typedef FT_STATUS(__stdcall *f_ftGetLibraryVersion)(LPDWORD lpdwDLLVersion);
+      typedef FT_STATUS(__stdcall *f_ftGetLibraryVersion)(LPDWORD lpdwDLLVersion);
+
       typedef FT_STATUS(__stdcall *f_ftGetDeviceInfoDetail)(DWORD dwIndex, LPDWORD lpdwFlags,
                                                             LPDWORD lpdwType,
                                                             LPDWORD lpdwID, LPDWORD lpdwLocId,
@@ -68,48 +69,6 @@ namespace shared
          }
          else
          {
-            DWORD dwDriverVersion;
-            DWORD dwLibraryVersion;
-            FT_STATUS	ftStatus;
-            f_ftGetDriverVersion  FT_GetDriverVersion = (f_ftGetDriverVersion)GetProcAddress(hGetProcIDDLL, "FT_GetDriverVersion");
-            ftStatus = FT_GetDriverVersion(ftHandle, &dwDriverVersion);
-
-            if (ftStatus != FT_OK) {
-               std::string message = "Could not get the driver version";
-               throw shared::exception::CException(message);
-            }
-            else
-            {
-               //convert int to hex string
-               std::stringstream stream;
-               stream << std::hex << (dwDriverVersion & 0xFF0000) << "."
-                  << std::hex << (dwDriverVersion & 0x00FF00) << "."
-                  << std::hex << (dwDriverVersion & 0x0000FF);
-               auto hexNumber(stream.str());
-
-               YADOMS_LOG(debug) << "essai : " << std::hex << dwDriverVersion;
-               YADOMS_LOG(information) << "FTDI driver version : " << hexNumber;
-            }
-
-            f_ftGetLibraryVersion  FT_GetLibraryVersion = (f_ftGetLibraryVersion)GetProcAddress(hGetProcIDDLL, "FT_GetLibraryVersion");
-            FT_GetLibraryVersion(&dwLibraryVersion);
-            if (ftStatus != FT_OK) {
-               std::string message = "Could not get the library version";
-               throw shared::exception::CException(message);
-            }
-            else
-            {
-               //convert int to hex string
-               std::stringstream stream;
-               stream << std::hex << (dwLibraryVersion & 0xFF0000) << "."
-                  << std::hex << (dwLibraryVersion & 0x00FF00) << "."
-                  << std::hex << (dwLibraryVersion & 0x0000FF);
-               auto hexNumber(stream.str());
-
-               YADOMS_LOG(debug) << "essai2 : " << std::hex << dwLibraryVersion;
-               YADOMS_LOG(information) << "FTDI library version : " << hexNumber;
-            }
-
             hEvent = CreateEventA(
                NULL,
                false, // auto-reset event
@@ -322,6 +281,48 @@ namespace shared
                std::string message = "Fail to open the serial port with the FTDI driver";
                YADOMS_LOG(error) << message;
                throw shared::exception::CException(message);
+            }
+
+            DWORD dwDriverVersion;
+            DWORD dwLibraryVersion;
+            f_ftGetDriverVersion  FT_GetDriverVersion = (f_ftGetDriverVersion)GetProcAddress(hGetProcIDDLL, "FT_GetDriverVersion");
+            f_ftGetLibraryVersion  FT_GetLibraryVersion = (f_ftGetLibraryVersion)GetProcAddress(hGetProcIDDLL, "FT_GetLibraryVersion");
+
+            ftStatus = FT_GetDriverVersion(ftHandle, &dwDriverVersion);
+
+            if (ftStatus != FT_OK) {
+               std::string message = "Could not get the driver version";
+               throw shared::exception::CException(message);
+            }
+            else
+            {
+               //convert int to hex string
+               std::stringstream stream;
+               stream << std::hex << ((dwDriverVersion & 0xFF0000)>>16) << "."
+                  << std::hex << ((dwDriverVersion & 0x00FF00)>>8) << "."
+                  << std::hex << (dwDriverVersion & 0x0000FF);
+               auto hexNumber(stream.str());
+
+               YADOMS_LOG(debug) << "essai : " << std::hex << dwDriverVersion;
+               YADOMS_LOG(information) << "FTDI driver version : " << hexNumber;
+            }
+
+            FT_GetLibraryVersion(&dwLibraryVersion);
+            if (ftStatus != FT_OK) {
+               std::string message = "Could not get the library version";
+               throw shared::exception::CException(message);
+            }
+            else
+            {
+               //convert int to hex string
+               std::stringstream stream;
+               stream << std::hex << ((dwLibraryVersion & 0xFF0000)>>16) << "."
+                  << std::hex << ((dwLibraryVersion & 0x00FF00)>>8) << "."
+                  << std::hex << (dwLibraryVersion & 0x0000FF);
+               auto hexNumber(stream.str());
+
+               YADOMS_LOG(debug) << "essai2 : " << std::hex << dwLibraryVersion;
+               YADOMS_LOG(information) << "FTDI library version : " << hexNumber;
             }
 
             ftStatus = FT_SetBaudRate(ftHandle, m_baudrate.value());

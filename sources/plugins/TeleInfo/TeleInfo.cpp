@@ -120,7 +120,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             m_receiveBufferHandler->desactivate();
 
-            auto port = boost::static_pointer_cast<shared::communication::CFT2xxSerialPort>(m_port);
+            auto port = boost::dynamic_pointer_cast<shared::communication::CFT2xxSerialPort>(m_port);
 
             if (port)
                port->desactivateGPIO();
@@ -156,7 +156,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             // Initial port to scan
             // Activate the port
-            auto port = boost::static_pointer_cast<shared::communication::CFT2xxSerialPort>(m_port);
+            auto port = boost::dynamic_pointer_cast<shared::communication::CFT2xxSerialPort>(m_port);
 
             if (port)
                port->activateGPIO(m_GPIOManager->getGPIO());
@@ -171,7 +171,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             m_waitForAnswerTimer->stop();
 
-            auto port = boost::static_pointer_cast<shared::communication::CFT2xxSerialPort>(m_port);
+            auto port = boost::dynamic_pointer_cast<shared::communication::CFT2xxSerialPort>(m_port);
 
             if (port)
                port->desactivateGPIO();
@@ -208,12 +208,19 @@ void CTeleInfo::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
    // Create the port instance
-   m_port = CTeleInfoFactory::constructPort(*m_configuration,
-                                            api->getEventHandler(),
-                                            m_receiveBufferHandler,
-                                            kEvtPortConnection);
-   m_port->start();
-   m_waitForAnswerTimer->start();
+
+   try {
+      m_port = CTeleInfoFactory::constructPort(*m_configuration,
+                                               api->getEventHandler(),
+                                               m_receiveBufferHandler,
+                                               kEvtPortConnection);
+      m_port->start();
+      m_waitForAnswerTimer->start();
+   }
+   catch (std::exception &e)
+   {
+      YADOMS_LOG(error) << e.what();
+   }
 }
 
 void CTeleInfo::destroyConnection()

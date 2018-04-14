@@ -222,7 +222,6 @@ source_group(testCommon testCommon/*.*)
 add_executable(yadomsTests ${YADOMS_TESTS_SRC})
 add_precompiled_header(yadomsTests stdafx.h)
 
-
 ##################################################################################################
 ## Include directories
 ##################################################################################################
@@ -238,10 +237,15 @@ ELSE()
    include_directories(${YADOMS_PATH}/shared/linux)
 ENDIF()
 
+#TODO : To be integrate into the teleInfo
 
+IF(WIN32)
+   include_directories(${YADOMS_PATH}/plugins/TeleInfo/Windows)
+ELSEIF (UNIX AND NOT APPLE)
+   include_directories(${YADOMS_PATH}/plugins/TeleInfo/Linux)
+ENDIF()
 
 ##################################################################################################
 ## Link
 ##################################################################################################
 target_link_libraries(yadomsTests ${LIBS} ${CMAKE_DL_LIBS})
-
