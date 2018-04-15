@@ -37,6 +37,7 @@ macro(ADD_YADOMS_INCL_DIR)
     endforeach()
     # propagate YADOMS_INCL_DIR to parent directory
     set (YADOMS_INCL_DIR ${YADOMS_INCL_DIR} 
-         PARENT_SCOPE
+         CACHE INTERNAL "" FORCE
+     #   TODO : Understand why with Linux PARENT_SCOPE doesn't work here !
     )
 endmacro()

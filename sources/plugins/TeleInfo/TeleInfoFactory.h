@@ -4,7 +4,7 @@
 #include <shared/communication/IAsyncPort.h>
 #include "IDecoder.h"
 #include "TeleInfoReceiveBufferHandler.h"
-#include <FT2xxSerialPort.h>
+#include "FT2xxSerialPort.h"
 
 //--------------------------------------------------------------
 /// \brief	General factory

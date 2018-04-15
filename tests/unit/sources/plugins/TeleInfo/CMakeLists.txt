@@ -34,7 +34,7 @@ IF(NOT DISABLE_TEST_PLUGIN_TELEINFO)
       )
       
       ADD_YADOMS_INCL_DIR(
-#         ${YADOMS_PATH}/plugins/TeleInfo/Windows
+         ${YADOMS_PATH}/plugins/TeleInfo/Windows
          ${PROJECT_SOURCE_DIR}/plugins/TeleInfo/Windows
       )
       
@@ -45,9 +45,14 @@ IF(NOT DISABLE_TEST_PLUGIN_TELEINFO)
 	       #plugins/TeleInfo/Linux/FT2xxSerialPort.h
 	   )
       source_group(Linux Linux/*.*)
-      
+
+      set(YADOMS_SOURCES ${YADOMS_SOURCES}
+          shared/linux/shared/Peripherals.h
+          shared/linux/shared/Peripherals.cpp
+      )      
+
       ADD_YADOMS_INCL_DIR(
-#         ${YADOMS_PATH}/plugins/TeleInfo/Linux
+         ${YADOMS_PATH}/plugins/TeleInfo/Linux
          ${PROJECT_SOURCE_DIR}/plugins/TeleInfo/Linux
       )
    ENDIF()

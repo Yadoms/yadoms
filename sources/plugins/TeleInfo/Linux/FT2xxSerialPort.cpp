@@ -54,22 +54,26 @@ namespace shared
             YADOMS_LOG(information) << "Number of devices is " << numDevs;
          }
          else {
-            YADOMS_LOG(error) << "FT_CreateDeviceInfoList failed";
+            std::string message = "Could not execute FT_CreateDeviceInfoList function";
+            YADOMS_LOG(error) << message;
+            throw shared::exception::CException(message);
          }
 
          for (unsigned char counter = 0; counter < numDevs; ++counter)
          {
             ftStatus = FT_Open(counter, &ftHandle);
             if (ftStatus != FT_OK) {
-               // TODO : Send a exception - perhaps fail because the driver is not installed
-               YADOMS_LOG(error) << "FT_Open failed";
+               std::string message = "Could not execute FT_Open function";
+               YADOMS_LOG(error) << message;
+               throw shared::exception::CException(message);
             }
 
             LONG lplComPortNumber = 0;
             ftStatus = FT_GetComPortNumber(ftHandle, &lplComPortNumber);
             if (ftStatus != FT_OK) {
-               // TODO : Send a exception - perhaps fail because the driver is not installed
-               YADOMS_LOG(error) << "FT_Open failed";
+               std::string message = "Could not execute FT_GetComPortNumber function";
+               YADOMS_LOG(error) << message;
+               throw shared::exception::CException(message);
             }
 
             YADOMS_LOG(information) << "Port Com number : " << (int)lplComPortNumber;
@@ -97,9 +101,11 @@ namespace shared
 
       void CFT2xxSerialPort::start()
       {
+         YADOMS_LOG(information) << "CFT2xxSerialPort::start()";
          if (!!m_asyncThread)
             return; // Already started
 
+         YADOMS_LOG(information) << "tryConnect()";
          // Try to connect
          tryConnect();
 
@@ -126,9 +132,7 @@ namespace shared
 
          while (true)
          {
-//            boost::lock_guard<boost::recursive_mutex> lock(mutex);
             pthread_mutex_lock(&mutex);
-//            pthread_cond_wait(&eh.eCondVar, &eh.eMutex);
             pthread_mutex_unlock(&mutex);
 
             DWORD EventDWord;
@@ -142,7 +146,7 @@ namespace shared
             if (EventDWord & FT_EVENT_MODEM_STATUS) {
                // modem status event detected, so get current modem status
                FT_GetModemStatus(ftHandle, &Status);
-               YADOMS_LOG(debug) << "FT_Read failed";
+               YADOMS_LOG(debug) << "Break thread ... modem status event detected";
                break;
             }
             if (RxBytes > 0) {
@@ -159,9 +163,9 @@ namespace shared
                      m_receiveBufferHandler->push(buffer);
                }
                else {
-                  // FT_Read Failed
-                  YADOMS_LOG(debug) << "FT_Read failed";
-                  break;
+                  std::string message = "Could not execute FT_Read function";
+                  YADOMS_LOG(error) << message;
+                  throw shared::exception::CException(message);
                }
             }
          }
@@ -171,7 +175,6 @@ namespace shared
 
       bool CFT2xxSerialPort::connect()
       {
-         
          // Open the port
          try
          {
@@ -185,16 +188,19 @@ namespace shared
 
             DWORD numDevs;
 
+            YADOMS_LOG(information) << "CFT2xxSerialPort::connect()";
+
             // create the device information list
             ftStatus = FT_CreateDeviceInfoList(&numDevs);
             if (ftStatus == FT_OK) {
                YADOMS_LOG(information) << "Number of devices is " << numDevs;
             }
             else {
-               YADOMS_LOG(error) << "FT_CreateDeviceInfoList failed";
+               std::string message = "Could not execute FT_CreateDeviceInfoList function";
+               YADOMS_LOG(error) << message;
+               throw shared::exception::CException(message);
             }
 
-            // TODO : To be used
             if (numDevs > 0) {
                FT_HANDLE ftHandleTemp;
                // get information for device 0
@@ -212,16 +218,18 @@ namespace shared
                }
             }
 
-            ftStatus = FT_Open(m_port, &ftHandle);
+            ftStatus = FT_Open(0, &ftHandle);
             if (ftStatus != FT_OK) {
-               // TODO : Send a exception - perhaps fail because the driver is not installed
-               YADOMS_LOG(error) << "FT_Open failed";
+               std::string message = "Could not execute FT_Open function";
+               YADOMS_LOG(error) << message;
+               throw shared::exception::CException(message);
             }
 
             ftStatus = FT_SetBaudRate(ftHandle, m_baudrate.value());
             if (ftStatus != FT_OK) {
-               // TODO : Send a exception - perhaps fail because the driver is not installed
-               YADOMS_LOG(error) << "FT_SetBaudRate failed";
+               std::string message = "Could not execute FT_SetBaudRate function";
+               YADOMS_LOG(error) << message;
+               throw shared::exception::CException(message);
             }
 
             UCHAR stop_bits;
@@ -245,7 +253,9 @@ namespace shared
 
             ftStatus = FT_SetDataCharacteristics(ftHandle, m_characterSize.value(), stop_bits, parity);
             if (ftStatus != FT_OK) {
-               // TODO : Send a exception - perhaps fail because the driver is not installed
+               std::string message = "Could not execute FT_SetDataCharacteristics function";
+               YADOMS_LOG(error) << message;
+               throw shared::exception::CException(message);
             }
 
             m_isConnected = true;
@@ -338,30 +348,24 @@ namespace shared
 
       void CFT2xxSerialPort::startRead()
       {
+         YADOMS_LOG(debug) << "CFT2xxSerialPort::startRead()";
+
          // Start an asynchronous read and call readCompleted when it completes or fails
          FT_STATUS	ftStatus;
          DWORD EventMask = FT_EVENT_RXCHAR | FT_EVENT_MODEM_STATUS;
 
          pthread_mutex_init(&mutex, NULL);
-         //pthread_cond_init(&eh.eCondVar, NULL);
-
          ftStatus = FT_SetEventNotification(ftHandle, EventMask, &mutex);
 
          if (ftStatus != FT_OK) {
-            // TODO : Send a exception - perhaps fail because the driver is not installed
+            std::string message = "Could not execute FT_SetEventNotification function";
+            YADOMS_LOG(error) << message;
+            throw shared::exception::CException(message);
          }
-         /*
-         m_boostSerialPort.async_read_some(boost::asio::buffer(m_asyncReadBuffer.begin(),
-                                                               m_asyncReadBuffer.size()),
-                                           boost::bind(&CFT2xxSerialPort::readCompleted,
-                                                       this,
-                                                       boost::asio::placeholders::error,
-                                                       boost::asio::placeholders::bytes_transferred));
-                                                       */
       }
 
       void CFT2xxSerialPort::activateGPIO(const int GPIONumber)
-      {       
+      {
          unsigned char ucMask = 0xFF;
          unsigned char ucMode;
          FT_STATUS	ftStatus;

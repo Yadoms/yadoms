@@ -162,7 +162,6 @@ namespace shared
          std::vector<int> m_SerialPortComNumber;
          int m_port;
          pthread_mutex_t mutex;
-//         boost::recursive_mutex mutex;
       };
    }
 } // namespace shared::communication
