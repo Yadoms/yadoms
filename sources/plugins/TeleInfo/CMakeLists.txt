@@ -45,7 +45,7 @@ IF (WIN32)
 	Windows/FT2xxSerialPort.cpp
 	)
 	
-	source_group(Windows Windows/*.*)
+	source_group(sources\\Windows Windows/*.*)
 	
 ENDIF()
 
@@ -56,7 +56,7 @@ IF (UNIX AND NOT APPLE)
 	Linux/FT2xxSerialPort.cpp
 	)
 	
-	source_group(Linux Linux/*.*)
+	source_group(sources\\Linux Linux/*.*)
 ENDIF()
 
 #########################################
