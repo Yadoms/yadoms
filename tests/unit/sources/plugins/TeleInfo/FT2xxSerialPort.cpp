@@ -15,7 +15,6 @@ namespace shared
                                          const boost::asio::serial_port_base::flow_control& flowControl,
                                          const boost::posix_time::time_duration& connectRetryDelay,
                                          bool flushAtConnect)
-         : m_asyncReadBuffer(0)
       {}
 
       void CFT2xxSerialPort::setPortNumber(int port)
@@ -39,9 +38,6 @@ namespace shared
       {}
 
       void CFT2xxSerialPort::stop()
-      {}
-
-      void CFT2xxSerialPort::receiverThread()
       {}
 
       bool CFT2xxSerialPort::connect()

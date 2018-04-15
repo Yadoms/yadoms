@@ -25,7 +25,7 @@ IF(NOT DISABLE_TEST_PLUGIN_TELEINFO)
    IF (WIN32)
       set(YADOMS_SOURCES ${YADOMS_SOURCES}
 	       # Add Windows sources
-	       plugins/TeleInfo/Windows/FT2xxSerialPort.h
+	       #plugins/TeleInfo/Windows/FT2xxSerialPort.h
 	   )
       
       set(YADOMS_SOURCES ${YADOMS_SOURCES}
@@ -34,7 +34,7 @@ IF(NOT DISABLE_TEST_PLUGIN_TELEINFO)
       )
       
       ADD_YADOMS_INCL_DIR(
-         ${YADOMS_PATH}/plugins/TeleInfo/Windows
+#         ${YADOMS_PATH}/plugins/TeleInfo/Windows
          ${PROJECT_SOURCE_DIR}/plugins/TeleInfo/Windows
       )
       
@@ -42,12 +42,12 @@ IF(NOT DISABLE_TEST_PLUGIN_TELEINFO)
    ELSEIF (UNIX AND NOT APPLE)
       set(YADOMS_SOURCES ${YADOMS_SOURCES}
 	       # Add Common Linux and RaspberryPI sources
-	       plugins/TeleInfo/Linux/FT2xxSerialPort.h
+	       #plugins/TeleInfo/Linux/FT2xxSerialPort.h
 	   )
       source_group(Linux Linux/*.*)
       
       ADD_YADOMS_INCL_DIR(
-         ${YADOMS_PATH}/plugins/TeleInfo/Linux
+#         ${YADOMS_PATH}/plugins/TeleInfo/Linux
          ${PROJECT_SOURCE_DIR}/plugins/TeleInfo/Linux
       )
    ENDIF()
@@ -57,7 +57,8 @@ IF(NOT DISABLE_TEST_PLUGIN_TELEINFO)
    ADD_SOURCES(
       TestTeleInfoReceiveBufferHandler.cpp
       TestTeleInfoFactory.cpp
-      FT2xxSerialPortMock.cpp
+      FT2xxSerialPort.cpp
+      FT2xxSerialPort.h
       DecoderMock.cpp
    )
    
