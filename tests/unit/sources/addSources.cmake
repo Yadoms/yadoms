@@ -27,3 +27,16 @@ macro(ADD_YADOMS_SOURCES)
     # propagate YADOMS_TESTS_SRC to parent directory
     set (YADOMS_TESTS_SRC ${YADOMS_TESTS_SRC} PARENT_SCOPE)
 endmacro()
+
+##################################################################################################
+## Macro adding yadoms include directories to the parent target
+##################################################################################################
+macro(ADD_YADOMS_INCL_DIR)
+    foreach (_src ${ARGN})
+       list (APPEND YADOMS_INCL_DIR ${_src})
+    endforeach()
+    # propagate YADOMS_INCL_DIR to parent directory
+    set (YADOMS_INCL_DIR ${YADOMS_INCL_DIR} 
+         PARENT_SCOPE
+    )
+endmacro()

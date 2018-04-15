@@ -1,4 +1,5 @@
 IF(NOT DISABLE_TEST_PLUGIN_TELEINFO)
+
    SET(YADOMS_SOURCES
       shared/shared/event/EventHandler.hpp
       shared/shared/communication/Buffer.hpp
@@ -32,13 +33,23 @@ IF(NOT DISABLE_TEST_PLUGIN_TELEINFO)
           shared/Windows/shared/Peripherals.cpp
       )
       
+      ADD_YADOMS_INCL_DIR(
+         ${YADOMS_PATH}/plugins/TeleInfo/Windows
+         ${PROJECT_SOURCE_DIR}/plugins/TeleInfo/Windows
+      )
+      
 	   source_group(Windows Windows/*.*)
    ELSEIF (UNIX AND NOT APPLE)
-      set(YADOMS_SOURCES   ${YADOMS_SOURCES}
+      set(YADOMS_SOURCES ${YADOMS_SOURCES}
 	       # Add Common Linux and RaspberryPI sources
 	       plugins/TeleInfo/Linux/FT2xxSerialPort.h
 	   )
       source_group(Linux Linux/*.*)
+      
+      ADD_YADOMS_INCL_DIR(
+         ${YADOMS_PATH}/plugins/TeleInfo/Linux
+         ${PROJECT_SOURCE_DIR}/plugins/TeleInfo/Linux
+      )
    ENDIF()
 
    ADD_YADOMS_SOURCES(${YADOMS_SOURCES})
@@ -49,4 +60,18 @@ IF(NOT DISABLE_TEST_PLUGIN_TELEINFO)
       FT2xxSerialPortMock.cpp
       DecoderMock.cpp
    )
+   
+   IF (WIN32)
+      ADD_SOURCES(
+         Windows/TeleInfoConfigurationMock.cpp
+         Windows/TeleInfoConfigurationMock.h
+      )
+      source_group(Windows Windows/*.*)
+   ELSEIF (UNIX AND NOT APPLE)
+      ADD_SOURCES(
+         Linux/TeleInfoConfigurationMock.cpp
+         Linux/TeleInfoConfigurationMock.h
+      )
+      source_group(Linux Linux/*.*)
+   ENDIF()   
 ENDIF()

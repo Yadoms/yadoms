@@ -44,9 +44,6 @@ endif()
 # Compilers/IDE configurations
 include(${YADOMS_PATH}/cmake/compilers.cmake)
 
-
-
-
 ##################################################################################################
 ## Project output configuration
 ##################################################################################################
@@ -146,15 +143,12 @@ IF(NOT ${Poco_FOUND})
 	message(SEND_ERROR "Unable to find the requested POCO libraries")
 ENDIF()
 
-
 # define libraries to link with
 set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Poco_FOUND_LIBS})
-
 
 ##################################################################################################
 ## Sources
 ##################################################################################################
-
 
 # Yadoms Tests sources
 set(YADOMS_TESTS_SRC
@@ -170,6 +164,7 @@ set(YADOMS_TESTS_SRC
    testCommon/serialTeleInfoMessage.cpp
 )
 
+set(YADOMS_INCL_DIR)
 
 ##################################################################################################
 ## Tests selection to build
@@ -212,9 +207,7 @@ source_group(mock\\server\\pluginSystem\\information mock/server/pluginSystem/in
 source_group(mock\\shared mock/shared/*.*)
 source_group(mock\\shared\\currentTime mock/shared/currentTime/*.*)
 
-
 source_group(testCommon testCommon/*.*)
-
 
 ##################################################################################################
 ## Output
@@ -226,6 +219,7 @@ add_precompiled_header(yadomsTests stdafx.h)
 ## Include directories
 ##################################################################################################
 include_directories(${BOOST_INCL_DIR} . mock ${YADOMS_PATH}/server ${YADOMS_PATH}/shared ${YADOMS_PATH}/server/tools ${Poco_INCLUDE_DIRS})
+
 IF(WIN32)
    include_directories(${YADOMS_PATH}/server/tools/windows)
    include_directories(${YADOMS_PATH}/shared/windows)
@@ -237,13 +231,7 @@ ELSE()
    include_directories(${YADOMS_PATH}/shared/linux)
 ENDIF()
 
-#TODO : To be integrate into the teleInfo
-
-IF(WIN32)
-   include_directories(${YADOMS_PATH}/plugins/TeleInfo/Windows)
-ELSEIF (UNIX AND NOT APPLE)
-   include_directories(${YADOMS_PATH}/plugins/TeleInfo/Linux)
-ENDIF()
+include_directories(${YADOMS_INCL_DIR})
 
 ##################################################################################################
 ## Link

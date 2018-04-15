@@ -32,6 +32,8 @@ EEquipmentType CTeleInfoConfiguration::getEquipmentType() const
    catch (std::exception &e)
    {
       // By default ! To be compatible with v1.0.x
+      YADOMS_LOG(trace) << e.what();
+      YADOMS_LOG(information) << "1xTIC used by default";
       return OneInput;
    }
 }
@@ -55,6 +57,8 @@ EInputsActivated CTeleInfoConfiguration::getInputsActivated() const
    catch (std::exception &e)
    {
       // By default ! To be compatible with v1.0.x
+      YADOMS_LOG(trace) << e.what();
+      YADOMS_LOG(information) << "first input activated used by default";
       return Input1Activated;
    }
 }

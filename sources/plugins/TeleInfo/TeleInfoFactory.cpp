@@ -38,7 +38,9 @@ boost::shared_ptr<shared::communication::IAsyncPort> CTeleInfoFactory::construct
       // change all hardware names
       for (iterator = FTDIPortList.begin(); iterator != FTDIPortList.end(); ++iterator)
       {
-         if (match[0] == boost::lexical_cast<std::string>((*iterator) - 1))
+         auto COMPort = std::string(match[0].first, match[0].second);
+
+         if (match.size()!=0 && (COMPort == boost::lexical_cast<std::string>((*iterator))))
          {
             YADOMS_LOG(information) << "The serial port is a FTDI port. The FTDI driver will be used instead of the generic serial driver.";
 

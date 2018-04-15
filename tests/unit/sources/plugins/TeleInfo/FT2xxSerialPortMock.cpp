@@ -23,7 +23,8 @@ namespace shared
 
       std::vector<int> CFT2xxSerialPort::getPortComNumber()
       {
-         return std::vector<int>();
+         m_SerialPortComNumber.push_back(20);
+         return m_SerialPortComNumber;
       }
 
       CFT2xxSerialPort::~CFT2xxSerialPort()
