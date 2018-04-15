@@ -177,22 +177,6 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                port->desactivateGPIO();
 
             YADOMS_LOG(error) << "No answer received, try to reconnect in a while..." ;
-            /*
-            if (m_scanPort == 0 &&
-               (m_configuration.getEquipmentType() == TwoInputs) &&
-                ((m_configuration.getInputsActivated() == Input1Activated) ||
-                (m_configuration.getInputsActivated() == AllInputsActivated)))
-            {
-               m_scanPort = 1;
-
-               api->getEventHandler().createTimer(kSamplingTimer,
-                                                  shared::event::CEventTimer::kOneShot,
-                                                  boost::posix_time::seconds(0));
-            }
-            else {
-               errorProcess(api);
-            }
-            */
             break;
          }
       default:

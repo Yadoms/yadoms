@@ -39,23 +39,25 @@ namespace shared
 
 
 
-      CFT2xxSerialPort::CFT2xxSerialPort(const boost::asio::serial_port_base::baud_rate& baudrate,
+      CFT2xxSerialPort::CFT2xxSerialPort(const std::string name,
+                                         const boost::asio::serial_port_base::baud_rate& baudrate,
                                          const boost::asio::serial_port_base::parity& parity,
                                          const boost::asio::serial_port_base::character_size& characterSize,
                                          const boost::asio::serial_port_base::stop_bits& stop_bits,
                                          const boost::asio::serial_port_base::flow_control& flowControl,
                                          const boost::posix_time::time_duration& connectRetryDelay,
-                                         bool flushAtConnect)
-         : m_baudrate(baudrate),
-           m_parity(parity),
-           m_characterSize(characterSize),
-           m_stop_bits(stop_bits),
-           m_flowControl(flowControl),
-           m_asyncReadBuffer(512),
-           m_connectStateEventHandler(nullptr),
-           m_connectStateEventId(event::kNoEvent),
-           m_connectRetryDelay(connectRetryDelay),
-           m_flushAtConnect(flushAtConnect),
+                                         bool flushAtConnect) :
+         m_name(name),
+         m_baudrate(baudrate),
+         m_parity(parity),
+         m_characterSize(characterSize),
+         m_stop_bits(stop_bits),
+         m_flowControl(flowControl),
+         m_asyncReadBuffer(512),
+         m_connectStateEventHandler(nullptr),
+         m_connectStateEventId(event::kNoEvent),
+         m_connectRetryDelay(connectRetryDelay),
+         m_flushAtConnect(flushAtConnect),
          m_isConnected(false),
          m_port(0)
       {
@@ -141,6 +143,8 @@ namespace shared
 
       CFT2xxSerialPort::~CFT2xxSerialPort()
       {
+         // We desactivate running GPIOs if activated
+         desactivateGPIO();
          CFT2xxSerialPort::stop();
       }
 
@@ -430,6 +434,11 @@ namespace shared
             if (!connect())
             {
                YADOMS_LOG(debug) << " : Fail to reconnect, retry in a while...";
+               SetEvent(hEvent);
+               m_asyncThread->join();
+               m_asyncThread.reset();
+               notifyEventHandler("asyncPort.serial.failToOpen", { { "port", m_name } });
+               tryConnect();
                return;
             }
 

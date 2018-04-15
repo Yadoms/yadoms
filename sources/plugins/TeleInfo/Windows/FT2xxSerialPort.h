@@ -26,7 +26,8 @@ namespace shared
          /// \param[in] connectRetryDelay    Delay between 2 connection retries
          /// \param[in] flushAtConnect       If true (default), flush serial port buffers before listening on port
          //--------------------------------------------------------------
-         explicit CFT2xxSerialPort(const boost::asio::serial_port_base::baud_rate& baudrate = boost::asio::serial_port_base::baud_rate(9600),
+         explicit CFT2xxSerialPort(const std::string name,
+                                   const boost::asio::serial_port_base::baud_rate& baudrate = boost::asio::serial_port_base::baud_rate(9600),
                                    const boost::asio::serial_port_base::parity& parity = boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::none),
                                    const boost::asio::serial_port_base::character_size& characterSize = boost::asio::serial_port_base::character_size(8),
                                    const boost::asio::serial_port_base::stop_bits& stop_bits = boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
@@ -73,12 +74,6 @@ namespace shared
          void tryConnect();
 
          //--------------------------------------------------------------
-         /// \brief	                     Handler called when connect retry timer expires
-         /// \param[in] error             Error code (should be 0)
-         //--------------------------------------------------------------
-         void reconnectTimerHandler(const boost::system::error_code& error);
-
-         //--------------------------------------------------------------
          /// \brief	Wait for something to read on the port
          //--------------------------------------------------------------
          void startRead();
@@ -106,6 +101,11 @@ namespace shared
          /// \brief	boost:asio service
          //--------------------------------------------------------------
          void receiverThread();
+
+         //--------------------------------------------------------------
+         /// \brief	Name of the serial port
+         //--------------------------------------------------------------
+         std::string m_name;
 
          //--------------------------------------------------------------
          /// \brief	Serial port configuration

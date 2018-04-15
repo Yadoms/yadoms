@@ -24,26 +24,27 @@ const std::string CDecoder::m_tag_PAPP = "PAPP";//apparent power
 const std::string CDecoder::m_tag_DEMAIN = "DEMAIN"; // Color of the next day
 const std::string CDecoder::m_tag_PEJP = "PEJP"; // EJP Warning
 
-CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_baseCounter(boost::make_shared<yApi::historization::CEnergy>("BaseCounter")),
-     m_lowCostCounter(boost::make_shared<yApi::historization::CEnergy>("LowCostCounter")),
-     m_normalCostCounter(boost::make_shared<yApi::historization::CEnergy>("NormalCostCounter")),
-     m_EJPPeakPeriod(boost::make_shared<yApi::historization::CEnergy>("EJPPeakPeriod")),
-     m_EJPNormalPeriod(boost::make_shared<yApi::historization::CEnergy>("EJPNormalPeriod")),
-     m_tempoBlueDaysLowCostPeriod(boost::make_shared<yApi::historization::CEnergy>("TempoBlueDaysLowCostPeriod")),
-     m_tempoBlueDaysNormalCostPeriod(boost::make_shared<yApi::historization::CEnergy>("TempoBlueDaysNormalCostPeriod")),
-     m_tempoRedDaysLowCostPeriod(boost::make_shared<yApi::historization::CEnergy>("TempoRedDaysLowCostPeriod")),
-     m_tempoRedDaysNormalCostPeriod(boost::make_shared<yApi::historization::CEnergy>("TempoRedDaysNormalCostPeriod")),
-     m_tempoWhiteDaysLowCostPeriod(boost::make_shared<yApi::historization::CEnergy>("TempoWhiteDaysLowCostPeriod")),
-     m_tempoWhiteDaysNormalCostPeriod(boost::make_shared<yApi::historization::CEnergy>("TempoWhiteDaysNormalCostPeriod")),
-     m_instantCurrent(boost::make_shared<yApi::historization::CCurrent>("InstantCurrent")),
-     m_apparentPower(boost::make_shared<yApi::historization::CApparentPower>("ApparentPower")),
-     m_TimePeriod(boost::make_shared<CRunningPeriod>(api, "RunningPeriod")),
-     m_ForecastPeriod(boost::make_shared<CForecastTomorrow>(api, "ForecastColor")),
-     m_api(api),
-     m_teleinfoEnableInCounter(false),
-     m_deviceCreated(false),
-     m_optarif(OP_NOT_DEFINED)
+CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api) :
+   m_baseCounter(boost::make_shared<yApi::historization::CEnergy>("BaseCounter")),
+   m_lowCostCounter(boost::make_shared<yApi::historization::CEnergy>("LowCostCounter")),
+   m_normalCostCounter(boost::make_shared<yApi::historization::CEnergy>("NormalCostCounter")),
+   m_EJPPeakPeriod(boost::make_shared<yApi::historization::CEnergy>("EJPPeakPeriod")),
+   m_EJPNormalPeriod(boost::make_shared<yApi::historization::CEnergy>("EJPNormalPeriod")),
+   m_tempoBlueDaysLowCostPeriod(boost::make_shared<yApi::historization::CEnergy>("TempoBlueDaysLowCostPeriod")),
+   m_tempoBlueDaysNormalCostPeriod(boost::make_shared<yApi::historization::CEnergy>("TempoBlueDaysNormalCostPeriod")),
+   m_tempoRedDaysLowCostPeriod(boost::make_shared<yApi::historization::CEnergy>("TempoRedDaysLowCostPeriod")),
+   m_tempoRedDaysNormalCostPeriod(boost::make_shared<yApi::historization::CEnergy>("TempoRedDaysNormalCostPeriod")),
+   m_tempoWhiteDaysLowCostPeriod(boost::make_shared<yApi::historization::CEnergy>("TempoWhiteDaysLowCostPeriod")),
+   m_tempoWhiteDaysNormalCostPeriod(boost::make_shared<yApi::historization::CEnergy>("TempoWhiteDaysNormalCostPeriod")),
+   m_instantCurrent(boost::make_shared<yApi::historization::CCurrent>("InstantCurrent")),
+   m_apparentPower(boost::make_shared<yApi::historization::CApparentPower>("ApparentPower")),
+   m_TimePeriod(boost::make_shared<CRunningPeriod>(api, "RunningPeriod")),
+   m_ForecastPeriod(boost::make_shared<CForecastTomorrow>(api, "ForecastColor")),
+   m_api(api),
+   m_teleinfoEnableInCounter(false),
+   m_deviceCreated(false),
+   ADCOalreadyReceived(false),
+   m_optarif(OP_NOT_DEFINED)
 {
    m_instantCurrentPhase[0] = boost::make_shared<yApi::historization::CCurrent>("InstantCurrentPhase1");
    m_instantCurrentPhase[1] = boost::make_shared<yApi::historization::CCurrent>("InstantCurrentPhase2");
@@ -114,7 +115,7 @@ void CDecoder::createDeviceAndKeywords(const bool monoPhase)
          m_keywords.push_back(m_instantCurrentPhase[counter]);
    }
 
-   if (!isERDFCounterDesactivated())
+   if (!isERDFCounterDesactivated() && m_deviceName!="")
    {
       m_api->declareDevice(m_deviceName, "teleInfoUSB", 
                            "TeleInfoUSB : Id = " + m_deviceName,
@@ -129,6 +130,9 @@ void CDecoder::createDeviceAndKeywords(const bool monoPhase)
 
       m_deviceCreated = true;
    }
+
+   if (m_deviceName == "")
+      YADOMS_LOG(debug) << "Device is null during registration";
 }
 
 void CDecoder::constructKeywordList(const EContracts contract, const bool monoPhase)
@@ -262,10 +266,9 @@ void CDecoder::processMessage(const std::string& key,
 		{
 			YADOMS_LOG(trace) << "ADCO" << "=" << value ;
 
-			static bool ADCOalreadyReceived = false;
-
 			if (!ADCOalreadyReceived)
 			{
+            YADOMS_LOG(debug) << "m_deviceName = " << value;
 				m_deviceName = value;
 				ADCOalreadyReceived = true;
 			}

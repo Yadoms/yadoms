@@ -158,7 +158,6 @@ namespace shared
 
                if (ftStatus == FT_OK) {
                   // FT_Read OK
-
                   if (!!m_receiveBufferHandler && BytesReceived>0)
                      m_receiveBufferHandler->push(buffer);
                }
