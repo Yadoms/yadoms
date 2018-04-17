@@ -3,7 +3,7 @@
 #include "../ITeleInfoConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
 #include "../IDecoder.h"
-#include "TeleInfoReceiveBufferHandler.h"
+#include "../TeleInfoReceiveBufferHandler.h"
 
 //--------------------------------------------------------------
 /// \brief	General factory

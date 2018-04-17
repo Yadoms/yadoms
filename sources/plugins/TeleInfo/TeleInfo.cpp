@@ -6,7 +6,6 @@
 #include "TeleInfoFactory.h"
 #include <shared/Log.h>
 #include "GPIOManager.hpp"
-#include "FT2xxSerialPort.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;

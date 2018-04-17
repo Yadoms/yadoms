@@ -2,7 +2,7 @@
 #include "TeleInfoFactory.h"
 #include <shared/communication/AsyncSerialPort.h>
 #include <shared/communication/AsciiBufferLogger.h>
-#include "TeleInfoReceiveBufferHandler.h"
+#include "../TeleInfoReceiveBufferHandler.h"
 #include "../Decoder.h"
 #include <shared/Log.h>
 
