@@ -3,7 +3,6 @@
 #include <shared/event/EventTimer.h>
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/communication/PortException.hpp>
-#include "LinkyFactory.h"
 #include <shared/Log.h>
 
 // Shortcut to yadomsApi namespace
@@ -18,12 +17,11 @@ IMPLEMENT_PLUGIN(CLinky)
 CLinky::CLinky():
    m_isDeveloperMode(false),
    m_runningState(ELinkyPluginState::kUndefined)
-{
-}
+//   m_protocolDetected(NoProtocol)
+{}
 
 CLinky::~CLinky()
-{
-}
+{}
 
 // Event IDs
 enum
@@ -38,14 +36,10 @@ enum
 void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    YADOMS_LOG(information) << "Linky is starting..." ;
-
    m_isDeveloperMode = api->getYadomsInformation()->developperMode();
 
    // Load configuration values (provided by database)
    m_configuration.initializeWith(api->getConfiguration());
-
-   // Create the transceiver
-   m_decoder = CLinkyFactory::constructDecoder(api);
 
    // Create the buffer handler
    m_receiveBufferHandler = CLinkyFactory::GetBufferHandler(api->getEventHandler(),
@@ -105,6 +99,7 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kEvtPortDataReceived:
          {
 			 m_waitForAnswerTimer->stop();
+          m_protocolManager.validateProtocol();
 
             if (m_isDeveloperMode) YADOMS_LOG(information) << "Linky plugin :  DataReceived" ;
 
@@ -155,11 +150,17 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 void CLinky::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+   m_protocolManager.changeProtocol();
+
    // Create the port instance
-   m_port = CLinkyFactory::constructPort(m_configuration,
+   m_port = CLinkyFactory::constructPort(m_protocolManager.getProtocol(),
+                                         m_configuration,
                                          api->getEventHandler(),
                                          m_receiveBufferHandler,
                                          kEvtPortConnection);
+
+   m_decoder = CLinkyFactory::constructDecoder(m_protocolManager.getProtocol(), api);
+
    m_port->start();
    m_waitForAnswerTimer->start();
 }
@@ -167,7 +168,6 @@ void CLinky::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
 void CLinky::destroyConnection()
 {
    m_port.reset();
-
    m_waitForAnswerTimer->stop();
 }
 
@@ -202,7 +202,7 @@ void CLinky::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 void CLinky::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
                                  const boost::shared_ptr<std::map<std::string, std::vector<std::string>>>& messages)
 {
-   m_decoder->decodeLinkyMessage(api, messages);
+   m_decoder->decodeMessage(api, messages);
 
    if (m_runningState != kRunning)
    {

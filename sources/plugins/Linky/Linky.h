@@ -5,6 +5,8 @@
 #include "IDecoder.h"
 #include "LinkyReceiveBufferHandler.h"
 #include <shared/communication/AsyncPortConnectionNotification.h>
+#include "LinkyFactory.h"
+#include "ProtocolManager.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -136,4 +138,11 @@ private:
    /// \brief	The plugin state
    //--------------------------------------------------------------
    ELinkyPluginState m_runningState;
+
+   CProtocolManager m_protocolManager;
+
+   //--------------------------------------------------------------
+   /// \brief	The protocol selected
+   //--------------------------------------------------------------
+   //EProtocolType m_protocolDetected;
 };

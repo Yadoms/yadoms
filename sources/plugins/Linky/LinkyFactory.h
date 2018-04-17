@@ -4,6 +4,7 @@
 #include <shared/communication/IAsyncPort.h>
 #include "IDecoder.h"
 #include "LinkyReceiveBufferHandler.h"
+#include "ProtocolManager.h"
 
 //--------------------------------------------------------------
 /// \brief	General factory
@@ -24,7 +25,8 @@ public:
    /// \param[in] receiveBufferHandler    Receive buffer handler
    /// \return                            The created port
    //--------------------------------------------------------------
-   static boost::shared_ptr<shared::communication::IAsyncPort> constructPort(const ILinkyConfiguration& configuration,
+   static boost::shared_ptr<shared::communication::IAsyncPort> constructPort(const EProtocolType type,
+                                                                             const ILinkyConfiguration& configuration,
                                                                              shared::event::CEventHandler& eventHandler,
                                                                              boost::shared_ptr<shared::communication::IReceiveBufferHandler> receiveBufferHandler,
                                                                              int evtPortConnectionId);
@@ -34,7 +36,8 @@ public:
    /// \param [in] api                    Plugin execution context (Yadoms API)
    /// \return                            The created transceiver
    //--------------------------------------------------------------
-   static boost::shared_ptr<IDecoder> constructDecoder(boost::shared_ptr<yApi::IYPluginApi> api);
+   static boost::shared_ptr<IDecoder> constructDecoder(const EProtocolType type,
+                                                       boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	                          Return the buffer handler of the linky
@@ -46,4 +49,8 @@ public:
    static boost::shared_ptr<CLinkyReceiveBufferHandler> GetBufferHandler(shared::event::CEventHandler& eventHandler,
                                                                          int evtPortDataReceived,
                                                                          const bool isDeveloperMode);
+
+private:
+   static const int m_baudRateStandard;
+   static const int m_baudRateHistoric;
 };

@@ -7,8 +7,8 @@ include("../YadomsPluginsCommon.cmake")
 #########################################
 
 set(LINKY_SOURCES
-   Decoder.h
-   Decoder.cpp
+   HistoricDecoder.h
+   HistoricDecoder.cpp
    IDecoder.h
    ILinkyConfiguration.h
    ILinkyMessage.h
@@ -16,15 +16,25 @@ set(LINKY_SOURCES
    Linky.cpp
    LinkyConfiguration.h
    LinkyConfiguration.cpp
+   LinkyDecoder.h
+   LinkyDecoder.cpp
    LinkyFactory.h
    LinkyFactory.cpp
    LinkyHelpers.hpp
    LinkyReceiveBufferHandler.h
    LinkyReceiveBufferHandler.cpp
+   ProtocolManager.cpp
+   ProtocolManager.h
    stdafx.h
    stdafx.cpp
+   Keywords/KeywordException.hpp
+   Keywords/RunningPeriod.cpp
+   Keywords/RunningPeriod.h
+   Keywords/IKeyword.h
    specificHistorizer/Color.h
    specificHistorizer/Color.cpp
+   specificHistorizer/Period.h
+   specificHistorizer/Period.cpp   
 )
 
 #########################################
@@ -32,6 +42,7 @@ set(LINKY_SOURCES
 #########################################
 source_group(sources ./*.*)
 source_group(sources\\specificHistorizer specificHistorizer/*.*)
+source_group(sources\\Keywords Keywords/*.*)
 
 #########################################
 ## Place here all additional include directories
