@@ -1,3 +1,6 @@
+### 1.1.2-beta.3
+* Fix current sensor scale (sTypeELEC4, OWL CM180i devices)
+
 ### 1.1.2-beta.2
 * Fix current sensor scale (sTypeELEC1, OWL CM113 devices)
 
