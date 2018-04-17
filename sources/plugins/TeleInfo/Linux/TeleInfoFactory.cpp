@@ -50,3 +50,14 @@ boost::shared_ptr<IDecoder> CTeleInfoFactory::constructDecoder(boost::shared_ptr
 {
    return boost::make_shared<CDecoder>(api);
 }
+
+void CTeleInfoFactory::FTDI_ActivateGPIO(boost::shared_ptr<shared::communication::IAsyncPort> serialPort,
+                                         int channel)
+{
+   // For Linux : Nothing could be done
+}
+
+void CTeleInfoFactory::FTDI_DisableGPIO(boost::shared_ptr<shared::communication::IAsyncPort> serialPort)
+{
+   // For Linux : Nothing could be done
+}

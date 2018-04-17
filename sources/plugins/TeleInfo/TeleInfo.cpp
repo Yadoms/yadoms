@@ -6,6 +6,7 @@
 #include "TeleInfoFactory.h"
 #include <shared/Log.h>
 #include "GPIOManager.hpp"
+#include "FT2xxSerialPort.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -120,10 +121,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             m_receiveBufferHandler->desactivate();
 
-            auto port = boost::dynamic_pointer_cast<shared::communication::CFT2xxSerialPort>(m_port);
-
-            if (port)
-               port->desactivateGPIO();
+            CTeleInfoFactory::FTDI_DisableGPIO(m_port);
 
             if (!m_GPIOManager->isLast())
             {
@@ -156,12 +154,9 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             // Initial port to scan
             // Activate the port
-            auto port = boost::dynamic_pointer_cast<shared::communication::CFT2xxSerialPort>(m_port);
-
-            if (port)
-               port->activateGPIO(m_GPIOManager->getGPIO());
-
+            CTeleInfoFactory::FTDI_ActivateGPIO(m_port, m_GPIOManager->getGPIO());
             m_receiveBufferHandler->activate();
+
 
             //Lauch a new time the time out to detect connexion failure
             m_waitForAnswerTimer->start();
@@ -171,10 +166,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             m_waitForAnswerTimer->stop();
 
-            auto port = boost::dynamic_pointer_cast<shared::communication::CFT2xxSerialPort>(m_port);
-
-            if (port)
-               port->desactivateGPIO();
+            CTeleInfoFactory::FTDI_DisableGPIO(m_port);
 
             YADOMS_LOG(error) << "No answer received, try to reconnect in a while..." ;
             break;

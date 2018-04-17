@@ -91,3 +91,20 @@ boost::shared_ptr<IDecoder> CTeleInfoFactory::constructDecoder(boost::shared_ptr
 {
    return boost::make_shared<CDecoder>(api);
 }
+
+void CTeleInfoFactory::FTDI_ActivateGPIO(boost::shared_ptr<shared::communication::IAsyncPort> serialPort,
+                                         int channel)
+{
+   auto port = boost::dynamic_pointer_cast<shared::communication::CFT2xxSerialPort>(serialPort);
+
+   if (port)
+      port->activateGPIO(channel);
+}
+
+void CTeleInfoFactory::FTDI_DisableGPIO(boost::shared_ptr<shared::communication::IAsyncPort> serialPort)
+{
+   auto port = boost::dynamic_pointer_cast<shared::communication::CFT2xxSerialPort>(serialPort);
+
+   if (port)
+      port->desactivateGPIO();
+}

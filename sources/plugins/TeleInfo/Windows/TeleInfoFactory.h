@@ -47,4 +47,18 @@ public:
    static boost::shared_ptr<CTeleInfoReceiveBufferHandler> GetBufferHandler(shared::event::CEventHandler& eventHandler,
                                                                             int evtPortDataReceived,
                                                                             const bool isDeveloperMode);
+
+   //--------------------------------------------------------------
+   /// \brief	                          Activate the GPIO to select the channel
+   /// \param [in] serialPort             event sent when a packet is ready
+   /// \param [in] channel                channel selected
+   //--------------------------------------------------------------
+   static void FTDI_ActivateGPIO(boost::shared_ptr<shared::communication::IAsyncPort> serialPort,
+                                 int channel);
+
+   //--------------------------------------------------------------
+   /// \brief	                          Activate the GPIO to select the channel
+   /// \param [in] serialPort             event sent when a packet is ready
+   //--------------------------------------------------------------
+   static void FTDI_DisableGPIO(boost::shared_ptr<shared::communication::IAsyncPort> serialPort);
 };

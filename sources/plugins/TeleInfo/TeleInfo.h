@@ -5,7 +5,6 @@
 #include "IDecoder.h"
 #include <shared/communication/AsyncPortConnectionNotification.h>
 #include "TeleInfoReceiveBufferHandler.h"
-#include "FT2xxSerialPort.h"
 #include "IGPIOManager.h"
 
 // Shortcut to yadomsApi namespace
