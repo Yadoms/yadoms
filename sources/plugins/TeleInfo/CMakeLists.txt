@@ -20,8 +20,6 @@ set(TELEINFO_SOURCES
    TeleInfo.cpp
    TeleInfoConfiguration.h
    TeleInfoConfiguration.cpp
-   TeleInfoFactory.h
-   TeleInfoFactory.cpp
    TeleInfoReceiveBufferHandler.h
    TeleInfoReceiveBufferHandler.cpp
    Keywords/ForecastTomorrow.cpp
@@ -41,8 +39,10 @@ set(TELEINFO_SOURCES
 IF (WIN32)
     set(TELEINFO_SOURCES ${TELEINFO_SOURCES}
 	# Add Windows sources
-	Windows/FT2xxSerialPort.h
-	Windows/FT2xxSerialPort.cpp
+        Windows/FT2xxSerialPort.h
+        Windows/FT2xxSerialPort.cpp
+        Windows/TeleInfoFactory.h
+        Windows/TeleInfoFactory.cpp
 	)
 	
 	source_group(sources\\Windows Windows/*.*)
@@ -51,9 +51,9 @@ ENDIF()
 
 IF (UNIX AND NOT APPLE)
     set(TELEINFO_SOURCES ${TELEINFO_SOURCES}
-	# Add Common Linux and RaspberryPI sources
-	Linux/FT2xxSerialPort.h
-	Linux/FT2xxSerialPort.cpp
+	     # Add Common Linux and RaspberryPI sources
+        Linux/TeleInfoFactory.h
+        Linux/TeleInfoFactory.cpp
 	)
 	
 	source_group(sources\\Linux Linux/*.*)
