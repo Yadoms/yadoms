@@ -18,7 +18,7 @@
                "content": {
                   "portEnabled": {
 			            "name": "Etats entrées télé-info",
-			            "description": "",                  
+			            "description": "Pour les systèmes Linux et Raspberry Pi, seul l'entrée n°1 est continuellement active. L'entrée n°2 n'est pas accessible",
                      "values": {
                         "1xInputEnabled": "Entrée télé-info n°1 activée",
                         "2xInputsEnabled": "Entrée télé-info n°2 activée",
