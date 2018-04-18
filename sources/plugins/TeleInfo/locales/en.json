@@ -18,7 +18,7 @@
                "content": {
                   "portEnabled": {
 			            "name": "Inputs state",
-			            "description": "",                  
+			            "description": "For Linux and Raspberry Pi systems, the first input is always available as the 1xTIC the second input is not accessible",
                      "values": {
                         "1xInputEnabled": "Input n°1 enabled",
                         "2xInputsEnabled": "Input n°2 enabled",
