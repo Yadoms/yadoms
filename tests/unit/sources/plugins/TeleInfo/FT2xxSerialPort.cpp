@@ -8,7 +8,8 @@ namespace shared
 {
    namespace communication
    {
-      CFT2xxSerialPort::CFT2xxSerialPort(const boost::asio::serial_port_base::baud_rate& baudrate,
+      CFT2xxSerialPort::CFT2xxSerialPort(const std::string name, 
+                                         const boost::asio::serial_port_base::baud_rate& baudrate,
                                          const boost::asio::serial_port_base::parity& parity,
                                          const boost::asio::serial_port_base::character_size& characterSize,
                                          const boost::asio::serial_port_base::stop_bits& stop_bits,

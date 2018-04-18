@@ -6,7 +6,7 @@
 #include "TeleInfoConfigurationMock.h"
 
 // Includes needed to compile tested classes
-#include "../../../../sources/plugins/TeleInfo/TeleInfoFactory.h"
+#include "TeleInfoFactory.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
