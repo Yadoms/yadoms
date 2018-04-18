@@ -131,8 +131,23 @@ private:
       kConnectionLost,
       kErDFCounterdesactivated,
       kupdateConfiguration,
-      kRunning
+      kRunning,
+      kError
    };
+
+   //--------------------------------------------------------------
+   /// \brief Manage the state of the plugin
+   /// \param[in] newState  the new state
+   //--------------------------------------------------------------
+   void setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, ETeleInfoPluginState newState);
+
+   //--------------------------------------------------------------
+   /// \brief Manage the state of the plugin
+   /// \param[in] newState  the new state
+   //--------------------------------------------------------------
+   void setPluginErrorState(boost::shared_ptr<yApi::IYPluginApi> api, 
+                            const std::string& ErrorMessageI18n,
+                            const std::map<std::string, std::string>& ErrorMessageI18nParameters);
 
    //--------------------------------------------------------------
    /// \brief	The plugin state

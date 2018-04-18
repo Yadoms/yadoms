@@ -144,6 +144,7 @@ namespace shared
 
       CFT2xxSerialPort::~CFT2xxSerialPort()
       {
+         YADOMS_LOG(debug) << "CFT2xxSerialPort::~CFT2xxSerialPort()";
          // We desactivate running GPIOs if activated
          desactivateGPIO();
          CFT2xxSerialPort::stop();
@@ -176,6 +177,7 @@ namespace shared
          SetEvent(hEvent);
          m_asyncThread->join();
          m_asyncThread.reset();
+         YADOMS_LOG(debug) << "CFT2xxSerialPort::stop()";
       }
 
       void CFT2xxSerialPort::receiverThread()
@@ -199,32 +201,37 @@ namespace shared
             DWORD BytesReceived;
             char RxBuffer[256];
 
-            FT_GetStatus(ftHandle, &RxBytes, &TxBytes, &EventDWord);
-            if (EventDWord & FT_EVENT_MODEM_STATUS) {
-               // modem status event detected, so get current modem status
-               FT_GetModemStatus(ftHandle, &Status);
-               YADOMS_LOG(debug) << "FT_Read failed";
-               break;
-            }
-            if (RxBytes > 0) {
-               ftStatus = FT_Read(ftHandle, RxBuffer, RxBytes, &BytesReceived);
-
-               // Read OK
-               CByteBuffer buffer(BytesReceived);
-               memcpy(buffer.begin(), RxBuffer, BytesReceived);
-
-               if (ftStatus == FT_OK) {
-                  // FT_Read OK
-
-                  if (!!m_receiveBufferHandler && BytesReceived>0)
-                     m_receiveBufferHandler->push(buffer);
-               }
-               else {
-                  // FT_Read Failed
-                  YADOMS_LOG(debug) << "FT_Read failed";
+            if (ftHandle)
+            {
+               FT_GetStatus(ftHandle, &RxBytes, &TxBytes, &EventDWord);
+               if (EventDWord & FT_EVENT_MODEM_STATUS) {
+                  // modem status event detected, so get current modem status
+                  FT_GetModemStatus(ftHandle, &Status);
+                  YADOMS_LOG(debug) << "Modem status event detected => exit";
                   break;
                }
+               if (RxBytes > 0) {
+                  ftStatus = FT_Read(ftHandle, RxBuffer, RxBytes, &BytesReceived);
+
+                  // Read OK
+                  CByteBuffer buffer(BytesReceived);
+                  memcpy(buffer.begin(), RxBuffer, BytesReceived);
+
+                  if (ftStatus == FT_OK) {
+                     // FT_Read OK
+
+                     if (!!m_receiveBufferHandler && BytesReceived > 0)
+                        m_receiveBufferHandler->push(buffer);
+                  }
+                  else {
+                     // FT_Read Failed
+                     YADOMS_LOG(debug) << "FT_Read failed";
+                     break;
+                  }
+               }
             }
+            else
+               break; // We quit the loop in case of null handle
          }
 
          YADOMS_LOG(debug) << "Finish receiverThread";
@@ -309,8 +316,6 @@ namespace shared
                   << std::hex << ((dwDriverVersion & 0x00FF00)>>8) << "."
                   << std::hex << (dwDriverVersion & 0x0000FF);
                auto hexNumber(stream.str());
-
-               YADOMS_LOG(debug) << "essai : " << std::hex << dwDriverVersion;
                YADOMS_LOG(information) << "FTDI driver version : " << hexNumber;
             }
 
@@ -327,8 +332,6 @@ namespace shared
                   << std::hex << ((dwLibraryVersion & 0x00FF00)>>8) << "."
                   << std::hex << (dwLibraryVersion & 0x0000FF);
                auto hexNumber(stream.str());
-
-               YADOMS_LOG(debug) << "essai2 : " << std::hex << dwLibraryVersion;
                YADOMS_LOG(information) << "FTDI library version : " << hexNumber;
             }
 
@@ -405,6 +408,7 @@ namespace shared
 
             if (ftHandle != NULL) {
                FT_Close(ftHandle);
+               YADOMS_LOG(debug) << "Close the FTDI serial port";
                ftHandle = NULL;
                m_isConnected = false;
             }
@@ -512,8 +516,6 @@ namespace shared
          }
 
          ucMode = m_enableBitBang;
-
-         YADOMS_LOG(debug) << "ftHandle " << ftHandle;
 
          ftStatus = FT_SetBitMode(ftHandle, ucMask, ucMode);
 
