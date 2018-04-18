@@ -30,6 +30,7 @@ namespace shared
       typedef FT_STATUS(__stdcall *f_ftGetComPortNumber)(FT_HANDLE ftHandle, LPLONG lplComPortNumber);
       typedef FT_STATUS(__stdcall *f_ftGetDriverVersion)(FT_HANDLE ftHandle, LPDWORD lpdwDriverVersion);
       typedef FT_STATUS(__stdcall *f_ftGetLibraryVersion)(LPDWORD lpdwDLLVersion);
+      typedef FT_STATUS(__stdcall *f_ftSetFlowControl)(FT_HANDLE ftHandle, USHORT usFlowControl, UCHAR uXon, UCHAR uXoff);
 
       typedef FT_STATUS(__stdcall *f_ftGetDeviceInfoDetail)(DWORD dwIndex, LPDWORD lpdwFlags,
                                                             LPDWORD lpdwType,
@@ -291,6 +292,8 @@ namespace shared
             DWORD dwLibraryVersion;
             f_ftGetDriverVersion  FT_GetDriverVersion = (f_ftGetDriverVersion)GetProcAddress(hGetProcIDDLL, "FT_GetDriverVersion");
             f_ftGetLibraryVersion  FT_GetLibraryVersion = (f_ftGetLibraryVersion)GetProcAddress(hGetProcIDDLL, "FT_GetLibraryVersion");
+            f_ftSetFlowControl  FT_SetFlowControl = (f_ftSetFlowControl)GetProcAddress(hGetProcIDDLL, "FT_SetFlowControl");
+            
 
             ftStatus = FT_GetDriverVersion(ftHandle, &dwDriverVersion);
 
@@ -362,11 +365,27 @@ namespace shared
                throw shared::exception::CException(message);
             }
 
+            UCHAR flowControl;
+
+            if (m_flowControl.value() == boost::asio::serial_port_base::flow_control::hardware)
+               flowControl = FT_FLOW_XON_XOFF;
+            else if (m_flowControl.value() == boost::asio::serial_port_base::flow_control::none)
+               flowControl = FT_FLOW_NONE;
+            else
+               flowControl = FT_FLOW_NONE;
+
+            ftStatus = FT_SetFlowControl(ftHandle, flowControl, 0x00, 0x00);
+            if (ftStatus != FT_OK) {
+               std::string message = "Fail to set Flow Control";
+               YADOMS_LOG(error) << message;
+               throw shared::exception::CException(message);
+            }
+
             m_isConnected = true;
          }
          catch (boost::system::system_error& e)
          {
-            //notifyEventHandler("asyncPort.serial.failToOpen", {{ "port", m_port }});
+            notifyEventHandler("asyncPort.serial.failToOpen", { { "port", m_name } });
             YADOMS_LOG(error) << " : Failed to open serial port : " << e.what();
             return false;
          }
