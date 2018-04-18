@@ -35,7 +35,7 @@ namespace rfxcomMessages
                           unsigned int subType,
                           const std::string& name,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_subType(subType),
+      : m_subType(static_cast<unsigned char>(subType)),
         m_deviceName(name),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_signalPower})
