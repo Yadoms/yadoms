@@ -46,7 +46,8 @@ public:
    /// \param [in] developerMode          running in developer mode
    /// \return                            The Buffer handler
    //--------------------------------------------------------------
-   static boost::shared_ptr<CLinkyReceiveBufferHandler> GetBufferHandler(shared::event::CEventHandler& eventHandler,
+   static boost::shared_ptr<CLinkyReceiveBufferHandler> GetBufferHandler(const EProtocolType type,
+                                                                         shared::event::CEventHandler& eventHandler,
                                                                          int evtPortDataReceived,
                                                                          const bool isDeveloperMode);
 

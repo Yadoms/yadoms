@@ -3,6 +3,7 @@
 #include <shared/communication/IReceiveBufferHandler.h>
 #include <shared/communication/Buffer.hpp>
 #include <shared/communication/IBufferLogger.h>
+#include "ProtocolManager.h"
 
 //--------------------------------------------------------------
 /// \brief	Receive buffer handler for linky
@@ -20,7 +21,8 @@ public:
    /// \param[in] logger                  logger in developer mode
    /// \param[in] isDeveloperMode         developer mode is active
    //--------------------------------------------------------------
-   CLinkyReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
+   CLinkyReceiveBufferHandler(const EProtocolType type, 
+                              shared::event::CEventHandler& receiveDataEventHandler,
                               int receiveDataEventId,
                               boost::shared_ptr<shared::communication::IBufferLogger> logger,
                               const bool isDeveloperMode);
@@ -50,14 +52,14 @@ protected:
    /// \param[in] frame             the frame to decode
    /// \return                      A map containing labels/values
    //--------------------------------------------------------------
-   static boost::shared_ptr<std::map<std::string, std::vector<std::string> > > getMessages(boost::shared_ptr<const std::vector<unsigned char>> frame);
+   boost::shared_ptr<std::map<std::string, std::vector<std::string> > > getMessages(boost::shared_ptr<const std::vector<unsigned char>> frame);
 
    //--------------------------------------------------------------
    /// \brief	                     Check if the CRC is ok
    /// \param[in] message           a message to be check
    /// \return                      true if the checksum is ok
    //--------------------------------------------------------------
-   static bool isCheckSumOk(const std::string& message);
+   bool isCheckSumOk(const std::string& message);
 
    //--------------------------------------------------------------
    /// \brief	                     Send a message to the target event handler
@@ -85,6 +87,8 @@ private:
    /// \brief  The communication port
    //--------------------------------------------------------------
    boost::shared_ptr<shared::communication::IBufferLogger> m_logger;
+
+   EProtocolType m_type;
 
    bool m_isDeveloperMode;
    bool m_pushActivated;

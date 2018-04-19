@@ -15,15 +15,17 @@ enum
    maxMessageSize = 3000
 };
 
-CLinkyReceiveBufferHandler::CLinkyReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
+CLinkyReceiveBufferHandler::CLinkyReceiveBufferHandler(const EProtocolType type, 
+                                                       shared::event::CEventHandler& receiveDataEventHandler,
                                                        int receiveDataEventId,
 															          boost::shared_ptr<shared::communication::IBufferLogger> logger,
                                                        const bool isDeveloperMode)
    : m_receiveDataEventHandler(receiveDataEventHandler),
      m_receiveDataEventId(receiveDataEventId),
      m_logger (logger),
-   m_isDeveloperMode(isDeveloperMode),
-   m_pushActivated(false)
+     m_type(type),
+     m_isDeveloperMode(isDeveloperMode),
+     m_pushActivated(false)
 {
 }
 
@@ -109,10 +111,6 @@ boost::shared_ptr<std::map<std::string, std::vector<std::string> > > CLinkyRecei
 	  if (endPos == frame->end())
 		  return noMessages;
 
-     // If a new complete message is present, then we delete old values
-     //if (!messages->empty() && std::find(endPos, frame->end(), kSTX) != frame->end() && std::find(endPos, frame->end(), kETX) != frame->end())
-     //   messages->clear();
-
 	  ++endPos;
       auto message = std::string(startPos, endPos);
       if (!isCheckSumOk(message))
@@ -191,11 +189,18 @@ lettre majuscule) allant de 20 à 5F en hexadécimal.
 */
 bool CLinkyReceiveBufferHandler::isCheckSumOk(const std::string& message)
 {
+   int endFrame = 2;
+
+   if (m_type == EProtocolType::Standard)
+      endFrame = 2;
+   else
+      endFrame = 3;
+
    if (message.size() < 4)
       return false;
 
    auto checksum = 0x00;
-   for (auto byte = message.begin() + 1; byte != (message.end() - 2); ++byte)
+   for (auto byte = message.begin() + 1; byte != (message.end() - endFrame); ++byte)
       checksum += *byte;
 
    checksum = (checksum & 0x3F) + 0x20;

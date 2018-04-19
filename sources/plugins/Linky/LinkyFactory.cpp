@@ -41,7 +41,8 @@ boost::shared_ptr<shared::communication::IAsyncPort> CLinkyFactory::constructPor
    return port;
 }
 
-boost::shared_ptr<CLinkyReceiveBufferHandler> CLinkyFactory::GetBufferHandler(shared::event::CEventHandler& eventHandler,
+boost::shared_ptr<CLinkyReceiveBufferHandler> CLinkyFactory::GetBufferHandler(const EProtocolType type, 
+                                                                              shared::event::CEventHandler& eventHandler,
                                                                               int evtPortDataReceived,
                                                                               const bool isDeveloperMode)
 {
@@ -49,7 +50,8 @@ boost::shared_ptr<CLinkyReceiveBufferHandler> CLinkyFactory::GetBufferHandler(sh
 
    logger = boost::make_shared<shared::communication::CAsciiBufferLogger>("trace");
 
-   return boost::make_shared<CLinkyReceiveBufferHandler>(eventHandler,
+   return boost::make_shared<CLinkyReceiveBufferHandler>(type,
+                                                         eventHandler,
                                                          evtPortDataReceived,
                                                          logger,
                                                          isDeveloperMode);

@@ -41,11 +41,6 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    // Load configuration values (provided by database)
    m_configuration.initializeWith(api->getConfiguration());
 
-   // Create the buffer handler
-   m_receiveBufferHandler = CLinkyFactory::GetBufferHandler(api->getEventHandler(),
-                                                            kEvtPortDataReceived,
-                                                            m_isDeveloperMode);
-
    m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
                                                              shared::event::CEventTimer::kOneShot,
                                                              boost::posix_time::seconds(20));
@@ -128,6 +123,7 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       }
       case kErrorRetryTimer:
          {
+            m_protocolManager.changeProtocol();
             createConnection(api);
             break;
          }
@@ -150,7 +146,6 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 void CLinky::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
-   m_protocolManager.changeProtocol();
 
    // Create the port instance
    m_port = CLinkyFactory::constructPort(m_protocolManager.getProtocol(),
@@ -158,6 +153,11 @@ void CLinky::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
                                          api->getEventHandler(),
                                          m_receiveBufferHandler,
                                          kEvtPortConnection);
+
+   m_receiveBufferHandler = CLinkyFactory::GetBufferHandler(m_protocolManager.getProtocol(),
+                                                            api->getEventHandler(),
+                                                            kEvtPortDataReceived,
+                                                            m_isDeveloperMode);
 
    m_decoder = CLinkyFactory::constructDecoder(m_protocolManager.getProtocol(), api);
 
