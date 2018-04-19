@@ -35,6 +35,7 @@ _Please note that changes on modules (plugins, widgets...) are now specified in 
 * Fix #441 - Fix English display
 * Fix #447 (evolution) - Add description field on extra query data entry modal for plugins
 * Fix #453 - Display of invalid or unknown dates (now displayed as '-')
+* Fix #459 - Fix display of messages containing values with '/' character
 
 #### Issues fixed
 * [Click here to see issues fixed in this version](https://github.com/Yadoms/yadoms/milestone/6?closed=1)
