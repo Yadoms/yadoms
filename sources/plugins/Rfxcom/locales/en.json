@@ -6,6 +6,14 @@
       "name": "Serial port",
       "description": "The virtual serial port connected to the RFXCom"
     },
+    "PairingMode": {
+      "name": "Pairing mode",
+      "description": "Pairing mode can be automatic (each newly detected device is automaticaly registered), or manual with a command on the plugin (green button). This manual mode is useful when using protocol not given messages reliability, which can register dummy devices",
+      "values": {
+        "auto": "Automatic mode, each newly detected device will registered",
+        "manual": "Manual mode, plugin must be set to pairing mode with the green button"
+      }
+    },
     "Protocols": {
       "name": "Protocols to listen",
       "description": "Supported protocols to listen, see RFXCom manual to configure. Be careful, some protocols are incompatible and must not be selected together.",

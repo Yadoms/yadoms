@@ -20,6 +20,13 @@
         }
       }
     },
+    "PairingMode": {
+      "type": "enum",
+      "values": {
+        "auto": "Automatic pairing mode",
+        "manual": "Manual pairing mode"
+      }
+    },
     "Protocols": {
       "type": "section",
       "enableWithCheckBox": "false",

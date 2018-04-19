@@ -6,6 +6,14 @@
       "name": "Port série",
       "description": "Le port série virtuel connecté au RFXCom"
     },
+    "PairingMode": {
+      "name": "Mode d'appairage",
+      "description": "Le mode d'apparairage peut être automatique (chaque nouvel équipement détecté est enregistré automatiquement), ou manuel via une commande sur le plugin (bouton vert). Ce mode manuel est utile lors de l'utilisation d'un protocole ne permettant pas de vérifier qu'un message est valide, ce qui peut entraîner l'enregistrement de faux équipements.",
+      "values": {
+        "auto": "Mode automatique, chaque équipement détecté est enregistré",
+        "manual": "Mode manuel, le plugin doit être mis en mode appairage via le bouton vert"
+      }
+    },
     "Protocols": {
       "name": "Protocoles en écoute",
       "description": "Protocoles à écouter, voir le manuel d'utilisation du RFXCom. Attention, certains protocoles ne sont pas compatibles entre eux, et ne doivent pas être activés simultanément.",
