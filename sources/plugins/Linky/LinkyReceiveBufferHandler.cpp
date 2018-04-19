@@ -121,8 +121,12 @@ boost::shared_ptr<std::map<std::string, std::vector<std::string> > > CLinkyRecei
       message.erase(message.begin());
 
       // Separate key/value
-      boost::char_separator<char> sep("\t");
-      boost::tokenizer<boost::char_separator<char> > tok(message, sep);
+      boost::char_separator<char> sep_Linky("\t");
+      boost::char_separator<char> sep_TeleInfo(" ");
+      boost::tokenizer<boost::char_separator<char> > tok(message, sep_Linky);
+      
+      if (m_type == Historic)
+         tok.assign(message, sep_TeleInfo);
 
       try
       {

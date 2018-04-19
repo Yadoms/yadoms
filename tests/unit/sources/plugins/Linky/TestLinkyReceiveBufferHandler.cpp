@@ -469,16 +469,16 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
    BOOST_AUTO_TEST_CASE(NominalHistorical)
    {
       const auto frame = serialTeleInfoMessage::normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
-      const std::map<std::string, std::string> expectedMap = {
-         { "ADCO", "031428097115" },
-         { "OPTARIF", "BASE" },
-         { "ISOUSC", "30" },
-         { "BASE", "006238747" },
-         { "PTEC", "TH.." },
-         { "IINST", "008" },
-         { "IMAX", "025" },
-         { "PAPP", "01940" },
-         { "MOTDETAT", "000000" } };
+      const std::map<std::string, std::vector<std::string>> expectedMap = {
+         { "ADCO", {"031428097115"} },
+         { "OPTARIF", {"BASE"} },
+         { "ISOUSC", {"30"} },
+         { "BASE", {"006238747"} },
+         { "PTEC", {"TH.."} },
+         { "IINST", {"008"} },
+         { "IMAX", {"025"} },
+         { "PAPP", {"01940"} },
+         { "MOTDETAT", {"000000"} } };
 
       shared::event::CEventHandler evtHandler;
       CLinkyReceiveBufferHandler bufferHandler(Historic, 
@@ -489,23 +489,23 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
       bufferHandler.activate();
       bufferHandler.push(shared::communication::CByteBuffer(frame));
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
-      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
+      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string>>>>();
       BOOST_CHECK_EQUAL(*out == expectedMap, true);
    }
 
    BOOST_AUTO_TEST_CASE(twoframesOnePushHistorical)
    {
       const auto frame = serialTeleInfoMessage::normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
-      const std::map<std::string, std::string> expectedMap = {
-         { "ADCO", "031428097115" },
-         { "OPTARIF", "BASE" },
-         { "ISOUSC", "30" },
-         { "BASE", "006238747" },
-         { "PTEC", "TH.." },
-         { "IINST", "008" },
-         { "IMAX", "025" },
-         { "PAPP", "01940" },
-         { "MOTDETAT", "000000" } };
+      const std::map<std::string, std::vector<std::string>> expectedMap = {
+         { "ADCO", {"031428097115"} },
+         { "OPTARIF", {"BASE"} },
+         { "ISOUSC", {"30"} },
+         { "BASE", {"006238747"} },
+         { "PTEC", {"TH.."} },
+         { "IINST", {"008"} },
+         { "IMAX", {"025"} },
+         { "PAPP", {"01940"} },
+         { "MOTDETAT", {"000000"} } };
 
       shared::event::CEventHandler evtHandler;
       CLinkyReceiveBufferHandler bufferHandler(Historic, 
@@ -516,23 +516,23 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
       bufferHandler.activate();
       bufferHandler.push(shared::communication::CByteBuffer(frame));
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
-      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
+      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string>>>>();
       BOOST_CHECK_EQUAL(*out == expectedMap, true);
    }
 
    BOOST_AUTO_TEST_CASE(twoframesTwoPushHistorical)
    {
       const auto frame1 = serialTeleInfoMessage::normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
-      const std::map<std::string, std::string> expectedMap = {
-         { "ADCO", "031428097115" },
-         { "OPTARIF", "BASE" },
-         { "ISOUSC", "30" },
-         { "BASE", "006238747" },
-         { "PTEC", "TH.." },
-         { "IINST", "008" },
-         { "IMAX", "025" },
-         { "PAPP", "01940" },
-         { "MOTDETAT", "000000" } };
+      const std::map<std::string, std::vector<std::string>> expectedMap = {
+         { "ADCO", {"031428097115"} },
+         { "OPTARIF", {"BASE"} },
+         { "ISOUSC", {"30"} },
+         { "BASE", {"006238747"} },
+         { "PTEC", {"TH.."} },
+         { "IINST", {"008"} },
+         { "IMAX", {"025"} },
+         { "PAPP", {"01940"} },
+         { "MOTDETAT", {"000000"} } };
 
       shared::event::CEventHandler evtHandler;
       CLinkyReceiveBufferHandler bufferHandler(Historic, 
@@ -543,11 +543,11 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
       bufferHandler.activate();
       bufferHandler.push(shared::communication::CByteBuffer(frame1));
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
-      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
+      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string>>>>();
       BOOST_CHECK_EQUAL(*out == expectedMap, true);
       bufferHandler.push(shared::communication::CByteBuffer(frame1));
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
-      const auto out1 = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
+      const auto out1 = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string>>>>();
       BOOST_CHECK_EQUAL(*out1 == expectedMap, true);
    }
 
@@ -569,16 +569,16 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
    BOOST_AUTO_TEST_CASE(extraCharactersbetweenstxLFHistorical)
    {                                                               //*******//                                                                                                                                                                                                
       const auto frame = serialTeleInfoMessage::normalizeFrame("<stx>D4R } $<lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
-      const std::map<std::string, std::string> expectedMap = {
-         { "ADCO", "031428097115" },
-         { "OPTARIF", "BASE" },
-         { "ISOUSC", "30" },
-         { "BASE", "006238747" },
-         { "PTEC", "TH.." },
-         { "IINST", "008" },
-         { "IMAX", "025" },
-         { "PAPP", "01940" },
-         { "MOTDETAT", "000000" } };
+      const std::map<std::string, std::vector<std::string>> expectedMap = {
+         { "ADCO", {"031428097115"} },
+         { "OPTARIF", {"BASE"} },
+         { "ISOUSC", {"30"} },
+         { "BASE", {"006238747"} },
+         { "PTEC", {"TH.."} },
+         { "IINST", {"008"} },
+         { "IMAX", {"025"} },
+         { "PAPP", {"01940"} },
+         { "MOTDETAT", {"000000"} } };
 
       shared::event::CEventHandler evtHandler;
       CLinkyReceiveBufferHandler bufferHandler(Historic, 
@@ -589,23 +589,23 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
       bufferHandler.activate();
       bufferHandler.push(shared::communication::CByteBuffer(frame));
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
-      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
+      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string>>>>();
       BOOST_CHECK_EQUAL(*out == expectedMap, true);
    }
 
    BOOST_AUTO_TEST_CASE(extraCharactersbeforestxHistorical)
    {                                    //******************************************************************************************************************************************************************************************************//                                                                                                                                                                                                
       const auto frame = serialTeleInfoMessage::normalizeFrame("<lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
-      const std::map<std::string, std::string> expectedMap = {
-         { "ADCO", "031428097115" },
-         { "OPTARIF", "BASE" },
-         { "ISOUSC", "30" },
-         { "BASE", "006238747" },
-         { "PTEC", "TH.." },
-         { "IINST", "008" },
-         { "IMAX", "025" },
-         { "PAPP", "01940" },
-         { "MOTDETAT", "000000" } };
+      const std::map<std::string, std::vector<std::string>> expectedMap = {
+         { "ADCO", {"031428097115"} },
+         { "OPTARIF", {"BASE"} },
+         { "ISOUSC", {"30"} },
+         { "BASE", {"006238747"} },
+         { "PTEC", {"TH.."} },
+         { "IINST", {"008"} },
+         { "IMAX", {"025"} },
+         { "PAPP", {"01940"} },
+         { "MOTDETAT", {"000000"} } };
 
       shared::event::CEventHandler evtHandler;
       CLinkyReceiveBufferHandler bufferHandler(Historic, 
@@ -616,23 +616,23 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
       bufferHandler.activate();
       bufferHandler.push(shared::communication::CByteBuffer(frame));
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
-      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
+      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string>>>>();
       BOOST_CHECK_EQUAL(*out == expectedMap, true);
    }
 
    BOOST_AUTO_TEST_CASE(extraCharactersbeforestx2Historical)
    {
       const auto frame = serialTeleInfoMessage::normalizeFrame("T 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006251729 +<cr><lf>PTEC TH.. $<cr><lf>IINST 002 Y<cr><lf>IMAX 025 F<cr><lf>PAPP 00460 +<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006251729 +<cr><lf>PTEC TH.. $<cr><lf>IINST 002 Y<cr><lf>IMAX 025 F<cr><lf>PAPP 00450 *<cr><lf>MOTDETAT 000000 B<cr><etx>");
-      const std::map<std::string, std::string> expectedMap = {
-         { "ADCO", "031428097115" },
-         { "OPTARIF", "BASE" },
-         { "ISOUSC", "30" },
-         { "BASE", "006251729" },
-         { "PTEC", "TH.." },
-         { "IINST", "002" },
-         { "IMAX", "025" },
-         { "PAPP", "00450" },
-         { "MOTDETAT", "000000" } };
+      const std::map<std::string, std::vector<std::string>> expectedMap = {
+         { "ADCO", {"031428097115"} },
+         { "OPTARIF", {"BASE"} },
+         { "ISOUSC", {"30"} },
+         { "BASE", {"006251729"} },
+         { "PTEC", {"TH.."} },
+         { "IINST", {"002"} },
+         { "IMAX", {"025"} },
+         { "PAPP", {"00450"} },
+         { "MOTDETAT", {"000000"} } };
 
       shared::event::CEventHandler evtHandler;
       CLinkyReceiveBufferHandler bufferHandler(Historic, 
@@ -643,7 +643,7 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
       bufferHandler.activate();
       bufferHandler.push(shared::communication::CByteBuffer(frame));
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
-      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
+      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string>>>>();
       BOOST_CHECK_EQUAL(*out == expectedMap, true);
    }
 
@@ -685,16 +685,16 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
       const auto frame4 = serialTeleInfoMessage::normalizeFrame("INST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 0");
       const auto frame5 = serialTeleInfoMessage::normalizeFrame("1940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
 
-      const std::map<std::string, std::string> expectedMap = {
-         { "ADCO", "031428097115" },
-         { "OPTARIF", "BASE" },
-         { "ISOUSC", "30" },
-         { "BASE", "006238747" },
-         { "PTEC", "TH.." },
-         { "IINST", "008" },
-         { "IMAX", "025" },
-         { "PAPP", "01940" },
-         { "MOTDETAT", "000000" } };
+      const std::map<std::string, std::vector<std::string>> expectedMap = {
+         { "ADCO", {"031428097115"} },
+         { "OPTARIF", {"BASE"} },
+         { "ISOUSC", {"30"} },
+         { "BASE", {"006238747"} },
+         { "PTEC", {"TH.."} },
+         { "IINST", {"008"} },
+         { "IMAX", {"025"} },
+         { "PAPP", {"01940"} },
+         { "MOTDETAT", {"000000"} } };
 
       shared::event::CEventHandler evtHandler;
       CLinkyReceiveBufferHandler bufferHandler(Historic, 
@@ -714,7 +714,7 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
       bufferHandler.push(shared::communication::CByteBuffer(frame5));
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
-      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
+      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string>>>>();
       BOOST_CHECK_EQUAL(*out == expectedMap, true);
    }
 
@@ -723,16 +723,16 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
       const auto frame1 = serialTeleInfoMessage::normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr>");
       const auto frame2 = serialTeleInfoMessage::normalizeFrame("<etx>");
 
-      const std::map<std::string, std::string> expectedMap = {
-         { "ADCO", "031428097115" },
-         { "OPTARIF", "BASE" },
-         { "ISOUSC", "30" },
-         { "BASE", "006238747" },
-         { "PTEC", "TH.." },
-         { "IINST", "008" },
-         { "IMAX", "025" },
-         { "PAPP", "01940" },
-         { "MOTDETAT", "000000" } };
+      const std::map<std::string, std::vector<std::string>> expectedMap = {
+         { "ADCO", {"031428097115"} },
+         { "OPTARIF", {"BASE"} },
+         { "ISOUSC", {"30"} },
+         { "BASE", {"006238747"} },
+         { "PTEC", {"TH.."} },
+         { "IINST", {"008"} },
+         { "IMAX", {"025"} },
+         { "PAPP", {"01940"} },
+         { "MOTDETAT", {"000000"} } };
 
       shared::event::CEventHandler evtHandler;
       CLinkyReceiveBufferHandler bufferHandler(Historic, 
@@ -748,7 +748,7 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
       bufferHandler.push(shared::communication::CByteBuffer(frame2));
       auto timeMock = useTimeMock();
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
-      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
+      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string>>>>();
       BOOST_CHECK_EQUAL(*out == expectedMap, true);
    }
 
@@ -759,16 +759,16 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
    BOOST_AUTO_TEST_CASE(LF_Change_to_STXHistorical)
    {
       const auto frame = serialTeleInfoMessage::normalizeFrame("<stx>PAPP 00160 (<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
-      const std::map<std::string, std::string> expectedMap = {
-         { "ADCO", "031428097115" },
-         { "OPTARIF", "BASE" },
-         { "ISOUSC", "30" },
-         { "BASE", "006238747" },
-         { "PTEC", "TH.." },
-         { "IINST", "008" },
-         { "IMAX", "025" },
-         { "PAPP", "01940" },
-         { "MOTDETAT", "000000" } };
+      const std::map<std::string, std::vector<std::string>> expectedMap = {
+         { "ADCO", {"031428097115"} },
+         { "OPTARIF", {"BASE"} },
+         { "ISOUSC", {"30"} },
+         { "BASE", {"006238747"} },
+         { "PTEC", {"TH.."} },
+         { "IINST", {"008"} },
+         { "IMAX", {"025"} },
+         { "PAPP", {"01940"} },
+         { "MOTDETAT", {"000000"} } };
 
       shared::event::CEventHandler evtHandler;
       CLinkyReceiveBufferHandler bufferHandler(Historic, 
@@ -780,23 +780,23 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
       bufferHandler.activate();
       bufferHandler.push(shared::communication::CByteBuffer(frame));
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
-      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
+      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string>>>>();
       BOOST_CHECK_EQUAL(*out == expectedMap, true);
    }
 
    BOOST_AUTO_TEST_CASE(LF_Change_to_STX2Historical)
    {
       const auto frame = serialTeleInfoMessage::normalizeFrame("<stx>F<cr><lf>PAPP 00280 +<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 008453671 -<cr><lf>PTEC TH.. $<cr><lf>IINST 001 X<cr><lf>IMAX 025 F<cr><lf>PAPP 00280 +<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 008453671 -<cr><lf>PTEC TH.. $<cr><lf>IINST 001 X<cr><lf>IMAX 025 F<cr><lf>PAPP 00270 *<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 008453671 -<cr><lf>PTEC TH.. $<cr><lf>IINST 001 X<cr><lf>IMAX 025 F<cr><lf>PAPP 00270 *<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @");
-      const std::map<std::string, std::string> expectedMap = {
-         { "ADCO", "031428097115" },
-         { "OPTARIF", "BASE" },
-         { "ISOUSC", "30" },
-         { "BASE", "008453671" },
-         { "PTEC", "TH.." },
-         { "IINST", "001" },
-         { "IMAX", "025" },
-         { "PAPP", "00270" },
-         { "MOTDETAT", "000000" } };
+      const std::map<std::string, std::vector<std::string>> expectedMap = {
+         { "ADCO", {"031428097115"} },
+         { "OPTARIF", {"BASE"} },
+         { "ISOUSC", {"30"} },
+         { "BASE", {"008453671"} },
+         { "PTEC", {"TH.."} },
+         { "IINST", {"001"} },
+         { "IMAX", {"025"} },
+         { "PAPP", {"00270"} },
+         { "MOTDETAT", {"000000"} } };
 
       shared::event::CEventHandler evtHandler;
       CLinkyReceiveBufferHandler bufferHandler(Historic, 
@@ -808,7 +808,7 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
       bufferHandler.activate();
       bufferHandler.push(shared::communication::CByteBuffer(frame));
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
-      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
+      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string>>>>();
       BOOST_CHECK_EQUAL(*out == expectedMap, true);
    }
 
@@ -816,16 +816,16 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
    {
       //<stx>F<cr><lf>PAPP 00280 +<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 008453671 -<cr><lf>PTEC TH.. $<cr><lf>IINST 001 X<cr><lf>IMAX 025 F<cr><lf>PAPP 00280 +<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 008453671 -<cr><lf>PTEC TH.. $<cr><lf>IINST 001 X<cr><lf>IMAX 025 F<cr><lf>PAPP 00270 *<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 008453671 -<cr><lf>PTEC TH.. $<cr><lf>IINST 001 X<cr><lf>IMAX 025 F<cr><lf>PAPP 00270 *<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @
       const auto frame = serialTeleInfoMessage::normalizeFrame("@<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 008718847 6<cr><lf>PTEC TH.. $<cr><lf>IINST 001 X<cr><lf>IMAX 025 F<cr><lf>PAPP 00270 *<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 008718847 6<cr><lf>PTEC TH.. $<cr><lf>IINST 001 X<cr><lf>IMAX 025 F<cr><lf>PAPP 00270 *<cr><lf>MOTDETAT 000000 B<cr><etx><stx><lf>");
-      const std::map<std::string, std::string> expectedMap = {
-         { "ADCO", "031428097115" },
-         { "OPTARIF", "BASE" },
-         { "ISOUSC", "30" },
-         { "BASE", "008718847" },
-         { "PTEC", "TH.." },
-         { "IINST", "001" },
-         { "IMAX", "025" },
-         { "PAPP", "00270" },
-         { "MOTDETAT", "000000" } };
+      const std::map<std::string, std::vector<std::string>> expectedMap = {
+         { "ADCO", {"031428097115"} },
+         { "OPTARIF", {"BASE"} },
+         { "ISOUSC", {"30"} },
+         { "BASE", {"008718847"} },
+         { "PTEC", {"TH.."} },
+         { "IINST", {"001"} },
+         { "IMAX", {"025"} },
+         { "PAPP", {"00270"} },
+         { "MOTDETAT", {"000000"} } };
 
       shared::event::CEventHandler evtHandler;
       CLinkyReceiveBufferHandler bufferHandler(Historic, 
@@ -846,7 +846,7 @@ BOOST_AUTO_TEST_CASE(getMessagesLinky)
          bufferHandler.push(shared::communication::CByteBuffer(vect));
       }
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
-      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
+      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string>>>>();
       BOOST_CHECK_EQUAL(*out == expectedMap, true);
    }
 
