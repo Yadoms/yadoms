@@ -1,3 +1,9 @@
+### 1.1.2-beta.3
+* Fix current sensor scale (sTypeELEC4, OWL CM180i devices)
+
+### 1.1.2-beta.2
+* Fix current sensor scale (sTypeELEC1, OWL CM113 devices)
+
 ### 1.1.2-beta.1
 * Fix manually creation of sTypeLivolo, sTypeTRC02, sTypeAoke, sTypeTRC02_2, sTypeRGB432W, sTypeMDREMOTE107, sTypeLegrandCAD and sTypeMDREMOTE108 devices
 * Add min/max information for each future created devices containing BatteryLevel or SignalPower keyword

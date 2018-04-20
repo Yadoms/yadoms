@@ -34,9 +34,9 @@ namespace rfxcomMessages
 
       m_id = rbuf.CURRENT_ENERGY.id1 | (rbuf.CURRENT_ENERGY.id2 << 8);
 
-      m_current1->set(rbuf.CURRENT.ch1h << 8 | rbuf.CURRENT.ch1l);
-      m_current2->set(rbuf.CURRENT.ch2h << 8 | rbuf.CURRENT.ch2l);
-      m_current3->set(rbuf.CURRENT.ch3h << 8 | rbuf.CURRENT.ch3l);
+      m_current1->set((rbuf.CURRENT.ch1h << 8 | rbuf.CURRENT.ch1l) / 10.0);
+      m_current2->set((rbuf.CURRENT.ch2h << 8 | rbuf.CURRENT.ch2l) / 10.0);
+      m_current3->set((rbuf.CURRENT.ch3h << 8 | rbuf.CURRENT.ch3l) / 10.0);
 
       // No total power on CM180 if count > 0
       if (rbuf.CURRENT_ENERGY.count == 0)

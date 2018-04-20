@@ -103,6 +103,7 @@ private:
    std::string m_deviceName;
    bool m_teleinfoEnableInCounter;
    bool m_deviceCreated;
+   bool ADCOalreadyReceived;
    EContracts m_optarif;
 
    static const std::string m_tag_ADCO;
