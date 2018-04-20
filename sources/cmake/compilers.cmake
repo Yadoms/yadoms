@@ -106,17 +106,8 @@ if (CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER)
 	add_definitions("-Wno-psabi")
 endif()
 
-# with -fPIC
-IF(UNIX AND NOT WIN32)
-   FIND_PROGRAM(CMAKE_UNAME uname /bin /usr/bin /usr/local/bin )
-   IF(CMAKE_UNAME)
-     EXEC_PROGRAM(uname ARGS -m OUTPUT_VARIABLE CMAKE_SYSTEM_PROCESSOR)
-     SET(CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR} CACHE INTERNAL "processor type (i386 and x86_64)")
-     IF(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
-       ADD_DEFINITIONS(-fPIC)
-     ENDIF(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
-   ENDIF(CMAKE_UNAME)
-ENDIF(UNIX AND NOT WIN32)
+# with -fPIC (don't distinguish platforms, already managed by cmake)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 #check eclispe debug options
 if(DEBUG_WITH_GCC)
