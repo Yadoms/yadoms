@@ -1,5 +1,6 @@
 #pragma once
 #include <shared/DataContainer.h>
+#include "PairingHelper.h"
 
 //--------------------------------------------------------------
 /// \brief	Interface of plugin configuration
@@ -7,12 +8,6 @@
 class IRfxcomConfiguration
 {
 public:
-   enum EPairingMode
-   {
-      kAuto = 0,
-      kManual
-   };
-
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
@@ -54,7 +49,7 @@ public:
    /// \brief	    Pairing mode
    /// \return     The pairing mode
    //--------------------------------------------------------------
-   virtual EPairingMode getPairingMode() const = 0;
+   virtual CPairingHelper::EPairingMode getPairingMode() const = 0;
 
    //--------------------------------------------------------------
    /// \brief	    Get the protocols configured by user

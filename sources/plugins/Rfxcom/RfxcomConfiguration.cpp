@@ -30,9 +30,9 @@ std::string CRfxcomConfiguration::getSerialPort() const
    return m_configuration.get<std::string>("SerialPort");
 }
 
-IRfxcomConfiguration::EPairingMode CRfxcomConfiguration::getPairingMode() const
+CPairingHelper::EPairingMode CRfxcomConfiguration::getPairingMode() const
 {
-   return m_configuration.get<std::string>("PairingMode") == "manual" ? kManual : kAuto;
+   return m_configuration.get<std::string>("PairingMode") == "manual" ? CPairingHelper::kManual : CPairingHelper::kAuto;
 }
 
 bool CRfxcomConfiguration::isAEenabled() const { return m_configuration.get<bool>("Protocols.content.AE Blyss"); }

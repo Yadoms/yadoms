@@ -788,13 +788,16 @@
   },
 	"extraQueries": {
 		"firmwareUpdate": {
-			"iconClass": "fa  fa-upload",
+			"iconClass": "fa fa-upload",
 			"commandData": {
 				"fileContent": {
 					"type": "file",
 					"filter": ".hex"
 				}
 			}
+		},
+		"startPairing": {
+			"iconClass": "fa fa-handshake-o"
 		}
 	}
 }

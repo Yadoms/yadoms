@@ -22,7 +22,7 @@ namespace rfxcomMessages
       m_id = deviceDetails.get<unsigned short>("id");
       m_groupCode = deviceDetails.get<unsigned char>("groupCode");
       m_unitCode = deviceDetails.get<unsigned char>("unitCode");
-      
+
       // Build device description
       buildDeviceModel();
       buildDeviceName();
@@ -56,7 +56,8 @@ namespace rfxcomMessages
 
    CLighting6::CLighting6(boost::shared_ptr<yApi::IYPluginApi> api,
                           const RBUF& rbuf,
-                          size_t rbufSize)
+                          size_t rbufSize,
+                          boost::shared_ptr<IPairingHelper> pairingHelper)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_state , m_signalPower})
@@ -74,18 +75,18 @@ namespace rfxcomMessages
       m_unitCode = rbuf.LIGHTING6.unitcode;
       m_state->set(fromProtocolState(rbuf.LIGHTING6.cmnd));
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING6.rssi));
-      
+
       // Build device description
       buildDeviceModel();
       buildDeviceName();
       buildDeviceDetails();
 
       // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
+      if (pairingHelper->needPairing(m_deviceName))
       {
          api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
          YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));         
+         m_deviceDetails.printToLog(YADOMS_LOG(information));
       }
    }
 
@@ -189,5 +190,3 @@ namespace rfxcomMessages
       }
    }
 } // namespace rfxcomMessages
-
-
