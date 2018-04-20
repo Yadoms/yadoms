@@ -1,3 +1,6 @@
+### 1.1.2-beta.4
+* Add pairing mode selection : automatic (default), or manual via extra query
+
 ### 1.1.2-beta.3
 * Fix current sensor scale (sTypeELEC4, OWL CM180i devices)
 
