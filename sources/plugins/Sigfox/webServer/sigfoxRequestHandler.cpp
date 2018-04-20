@@ -30,7 +30,7 @@ void CSigfoxRequestHandler::handleRequest(Poco::Net::HTTPServerRequest &req, Poc
       if (boost::icontains(req.getContentType(), "application/json"))
       {
          std::istream &i = req.stream();
-         int len = req.getContentLength();
+         std::streamsize len = req.getContentLength();
          char* buffer = new char[len];
          i.read(buffer, len);
 
