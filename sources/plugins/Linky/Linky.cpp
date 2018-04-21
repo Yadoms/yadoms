@@ -147,17 +147,17 @@ void CLinky::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
+   m_receiveBufferHandler = CLinkyFactory::GetBufferHandler(m_protocolManager.getProtocol(),
+                                                            api->getEventHandler(),
+                                                            kEvtPortDataReceived,
+                                                            m_isDeveloperMode);
+
    // Create the port instance
    m_port = CLinkyFactory::constructPort(m_protocolManager.getProtocol(),
                                          m_configuration,
                                          api->getEventHandler(),
                                          m_receiveBufferHandler,
                                          kEvtPortConnection);
-
-   m_receiveBufferHandler = CLinkyFactory::GetBufferHandler(m_protocolManager.getProtocol(),
-                                                            api->getEventHandler(),
-                                                            kEvtPortDataReceived,
-                                                            m_isDeveloperMode);
 
    m_decoder = CLinkyFactory::constructDecoder(m_protocolManager.getProtocol(), api);
 

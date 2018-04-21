@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "LinkyReceiveBufferHandler.h"
+#include <shared/Log.h>
 
 enum
 {
@@ -113,20 +114,22 @@ boost::shared_ptr<std::map<std::string, std::vector<std::string> > > CLinkyRecei
 
 	  ++endPos;
       auto message = std::string(startPos, endPos);
+
       if (!isCheckSumOk(message))
          return noMessages;
 
       // Remove <cr> and <lf>
-	   message.pop_back();
+      message.pop_back();
       message.erase(message.begin());
 
       // Separate key/value
       boost::char_separator<char> sep_Linky("\t");
-      boost::char_separator<char> sep_TeleInfo(" ");
       boost::tokenizer<boost::char_separator<char> > tok(message, sep_Linky);
       
-      if (m_type == Historic)
+      if (m_type == Historic) {
+         boost::char_separator<char> sep_TeleInfo(" ");
          tok.assign(message, sep_TeleInfo);
+      }
 
       try
       {
