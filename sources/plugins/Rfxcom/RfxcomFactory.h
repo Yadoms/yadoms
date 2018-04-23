@@ -4,6 +4,7 @@
 #include "IRfxcomConfiguration.h"
 #include "ITransceiver.h"
 #include "IRfxcomFirmwareUpdater.h"
+#include "IPluginStateHelper.h"
 
 //--------------------------------------------------------------
 /// \brief	General factory
@@ -29,4 +30,6 @@ public:
 
    boost::shared_ptr<CPairingHelper> constructPairingHelper(boost::shared_ptr<yApi::IYPluginApi> api,
                                                             CPairingHelper::EPairingMode pairingMode) const;
+
+   boost::shared_ptr<IPluginStateHelper> constructPluginStateHelper(boost::shared_ptr<yApi::IYPluginApi> api) const;
 };

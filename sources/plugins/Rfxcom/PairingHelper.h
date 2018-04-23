@@ -22,7 +22,7 @@ public:
 
    void setMode(EPairingMode mode);
    EPairingMode getMode() const;
-   void startPairing();
+   void startPairing(boost::shared_ptr<yApi::IExtraQuery> associatedExtraQuery);
    void stopPairing();
    bool isPairingEnable() const;
 
@@ -34,4 +34,5 @@ private:
    boost::shared_ptr<yApi::IYPluginApi> m_api;
    EPairingMode m_mode;
    bool m_pairingEnable;
+   boost::shared_ptr<yApi::IExtraQuery> m_associatedExtraQuery;
 };

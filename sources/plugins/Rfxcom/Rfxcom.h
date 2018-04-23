@@ -224,6 +224,11 @@ private:
    shared::communication::CByteBuffer m_lastRequest;
 
    //--------------------------------------------------------------
+   /// \brief  The plugin state helper
+   //--------------------------------------------------------------
+   boost::shared_ptr<IPluginStateHelper> m_pluginStateHelper;
+
+   //--------------------------------------------------------------
    /// \brief  The pairing helper
    //--------------------------------------------------------------
    boost::shared_ptr<CPairingHelper> m_pairingHelper;

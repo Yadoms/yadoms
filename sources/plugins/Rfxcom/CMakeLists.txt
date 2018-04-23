@@ -201,6 +201,7 @@ set(RFXCOM_SOURCES
    stdafx.h
    stdafx.cpp
    IPairingHelper.h
+   IPluginStateHelper.h
    IncrementSequenceNumber.h
    IRfxcomConfiguration.h
    IRfxcomFirmwareUpdater.h
@@ -212,6 +213,8 @@ set(RFXCOM_SOURCES
    NullSequenceNumber.h
    PairingHelper.h
    PairingHelper.cpp
+   PluginStateHelper.h
+   PluginStateHelper.cpp
    PicBoot.h
    PicBoot.cpp
    PicBootPacketControlCharacters.h
