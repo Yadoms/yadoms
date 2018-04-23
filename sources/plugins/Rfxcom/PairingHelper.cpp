@@ -3,8 +3,11 @@
 
 
 CPairingHelper::CPairingHelper(boost::shared_ptr<yApi::IYPluginApi> api,
+                               boost::shared_ptr<IPluginStateHelper> pluginStateHelper,
                                EPairingMode configuredMode)
-   : m_api(api)
+   : m_api(api),
+     m_pluginStateHelper(pluginStateHelper),
+     m_progressPairingCount(0)
 {
    setMode(configuredMode);
 }
@@ -17,7 +20,6 @@ void CPairingHelper::setMode(EPairingMode mode) //TODO en mode auto, il faut sup
 {
    m_mode = mode;
    m_pairingEnable = mode == kAuto;
-   m_associatedExtraQuery.reset();
 }
 
 CPairingHelper::EPairingMode CPairingHelper::getMode() const
@@ -25,19 +27,51 @@ CPairingHelper::EPairingMode CPairingHelper::getMode() const
    return m_mode;
 }
 
-void CPairingHelper::startPairing(boost::shared_ptr<yApi::IExtraQuery> associatedExtraQuery)
+bool CPairingHelper::startPairing(boost::shared_ptr<yApi::IExtraQuery> manualPairingExtraQuery)
 {
    if (m_mode == kAuto)
    {
-      associatedExtraQuery->sendError("customLabels.pairing.invalidCommandAutoMode");
-      throw std::invalid_argument("Try to start pairing with auto mode : not compatible");
+      YADOMS_LOG(warning) << "Try to start pairing with auto mode : not compatible, ignored";
+      manualPairingExtraQuery->sendError("customLabels.pairing.invalidCommandAutoMode");
+      m_manualPairingExtraQuery.reset();
+      return false;
    }
 
-   m_associatedExtraQuery = associatedExtraQuery;
+   if (m_pairingEnable)
+   {
+      YADOMS_LOG(warning) << "Pairing already started, ignored";
+      manualPairingExtraQuery->sendError("customLabels.pairing.alreadyRunning");
+      m_manualPairingExtraQuery.reset();
+      return false;
+   }
+
    m_pairingEnable = true;
+   m_manualPairingExtraQuery = manualPairingExtraQuery;
+   m_progressPairingCount = 6;
+   m_manualPairingExtraQuery->reportProgress(1.0f, "customLabels.pairing.pairing");
+
+   return true;
 }
 
-void CPairingHelper::stopPairing()
+bool CPairingHelper::onProgressPairing()
+{
+   if (m_mode == kAuto || !m_pairingEnable)
+      return true;
+
+   --m_progressPairingCount;
+
+   if (m_progressPairingCount == 0)
+   {
+      stopPairing();
+      return true;
+   }
+
+   if (m_manualPairingExtraQuery)
+      m_manualPairingExtraQuery->reportProgress((6 - m_progressPairingCount) * 100.0f / 6, "customLabels.pairing.pairing");
+   return false;
+}
+
+void CPairingHelper::stopPairing(const std::string& devicePaired)
 {
    if (m_mode == kAuto)
    {
@@ -45,8 +79,15 @@ void CPairingHelper::stopPairing()
       return;
    }
 
-   m_associatedExtraQuery.reset();
    m_pairingEnable = false;
+   if (m_manualPairingExtraQuery)
+   {
+      m_manualPairingExtraQuery->reportProgress(100.0f, devicePaired.empty() ? "customLabels.pairing.noDevicePaired" : "customLabels.pairing.devicePaired");
+
+      m_manualPairingExtraQuery->sendSuccess(shared::CDataContainer::EmptyContainer);
+   }
+   m_pluginStateHelper->set(IPluginStateHelper::kStopPairing);
+   m_manualPairingExtraQuery.reset();
 }
 
 bool CPairingHelper::isPairingEnable() const
@@ -59,19 +100,13 @@ bool CPairingHelper::needPairing(const std::string deviceName)
    if (!m_pairingEnable)
       return false;
 
-   const auto deviceExist = m_api->deviceExists(deviceName);
-
-   if (deviceExist)
+   if (m_api->deviceExists(deviceName))
       return false;
 
    if (m_mode == kManual)
    {
-      if (m_associatedExtraQuery)
-      {
-         m_associatedExtraQuery->sendSuccess(shared::CDataContainer::EmptyContainer); //TODO voir si on peut mettre un message
-         m_associatedExtraQuery.reset();
-      }
-      m_pairingEnable = false;
+      stopPairing(deviceName);
+      m_api->setPluginState(shared::plugin::yPluginApi::historization::EPluginState::kRunning);//TODO virer ?
    }
 
    return true;

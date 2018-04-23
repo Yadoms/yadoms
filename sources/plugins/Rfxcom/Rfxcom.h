@@ -105,7 +105,7 @@ protected:
    /// \param [in] extraQuery       Extra query
    //--------------------------------------------------------------
    void startManualPairing(boost::shared_ptr<yApi::IYPluginApi> api,
-                           boost::shared_ptr<yApi::IExtraQuery> extraQuery) const;
+                           boost::shared_ptr<yApi::IExtraQuery> extraQuery);
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection to the RFXCom
@@ -232,4 +232,5 @@ private:
    /// \brief  The pairing helper
    //--------------------------------------------------------------
    boost::shared_ptr<CPairingHelper> m_pairingHelper;
+   boost::shared_ptr<shared::event::CEventTimer> m_progressPairingTimer;
 };

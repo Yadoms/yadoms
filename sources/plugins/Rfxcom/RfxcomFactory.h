@@ -29,6 +29,7 @@ public:
                                                                       const std::string& serialPort) const;
 
    boost::shared_ptr<CPairingHelper> constructPairingHelper(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                            boost::shared_ptr<IPluginStateHelper> pluginStateHelper,
                                                             CPairingHelper::EPairingMode pairingMode) const;
 
    boost::shared_ptr<IPluginStateHelper> constructPluginStateHelper(boost::shared_ptr<yApi::IYPluginApi> api) const;

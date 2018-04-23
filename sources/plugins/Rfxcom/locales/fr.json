@@ -669,10 +669,9 @@
         }
       }
     },
-		"startPairing": {
-      "name": "Appairage",
-      "description": "Démarrage d'un appairage avec un nouvel équipement (pour 30 secondes si aucun équipement n'est détecté). La commande est ignorée si le plugin est configuré en appairage automatique."
-		}
+    "pairing": {
+      "name": "Appairage"
+    }
   },
   "customLabels": {
     "pluginState": {
@@ -695,7 +694,11 @@
       "ErrorInvalidInputFile": "Impossible de mettre à jour le firmware, le fichier d'entrée est invalide"
     },
     "pairing": {
-      "invalidCommandAutoMode": "Commande invalide, l'apparaige est configuré en automatique"
+      "invalidCommandAutoMode": "Commande invalide, l'apparaige est configuré en automatique",
+      "alreadyRunning": "L'appairage est déjà en cours",
+      "pairing": "Appairage en cours...",
+      "devicePaired": "Nouvel équipement appairé !",
+      "noDevicePaired": "Aucun équipement trouvé"
     }
   }
 }

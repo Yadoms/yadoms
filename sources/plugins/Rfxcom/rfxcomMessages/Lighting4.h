@@ -4,6 +4,7 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
 #include "../IUnsecuredProtocolFilter.h"
+#include "../IPairingHelper.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -15,49 +16,21 @@ namespace rfxcomMessages
    class CLighting4 : public IRfxcomMessage
    {
    public:
-      //--------------------------------------------------------------
-      /// \brief	                        Constructor
-      /// \param[in] api                  Yadoms APi context
-      /// \param[in] command              The command
-      /// \param[in] deviceDetails        The device parameters
-      /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
-      /// \note                           Use this constructor for command (to build RFXCom message)
-      //--------------------------------------------------------------
       CLighting4(boost::shared_ptr<yApi::IYPluginApi> api,
                  const std::string& command,
                  const shared::CDataContainer& deviceDetails);
 
-      //--------------------------------------------------------------
-      /// \brief	                        Constructor
-      /// \param[in] api                  Yadoms APi context
-      /// \param[in] subType              Device subType
-      /// \param[in] name                 Device name
-      /// \param[in] manuallyDeviceCreationConfiguration The device concfiguration
-      /// \throw                          shared::exception::CInvalidParameter or shared::exception::COutOfRange if fail to interpret configuration
-      /// \note                           Use this constructor for manually device creation
-      //--------------------------------------------------------------
       CLighting4(boost::shared_ptr<yApi::IYPluginApi> api,
                  unsigned int subType,
                  const std::string& name,
                  const shared::CDataContainer& manuallyDeviceCreationConfiguration);
 
-      //--------------------------------------------------------------
-      /// \brief	                        Constructor
-      /// \param[in] api                  Yadoms APi context
-      /// \param[in] rbuf                 The received buffer
-      /// \param[in] rbufSize             Message size, received from Rfxcom
-      /// \param[in] messageFilter        The filter for unsecured protocols
-      /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
-      /// \throw                          shared::exception::CInvalidParameter
-      //--------------------------------------------------------------
       CLighting4(boost::shared_ptr<yApi::IYPluginApi> api,
                  const RBUF& rbuf,
                  size_t rbufSize,
-                 boost::shared_ptr<IUnsecuredProtocolFilter> messageFilter);
+                 boost::shared_ptr<IUnsecuredProtocolFilter> messageFilter,
+                 boost::shared_ptr<IPairingHelper> pairingHelper);
 
-      //--------------------------------------------------------------
-      /// \brief	Destructor
-      //--------------------------------------------------------------
       virtual ~CLighting4();
 
       //--------------------------------------------------------------
@@ -129,5 +102,3 @@ namespace rfxcomMessages
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    };
 } // namespace rfxcomMessages
-
-

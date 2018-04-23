@@ -57,9 +57,11 @@ boost::shared_ptr<IRfxcomFirmwareUpdater> CRfxcomFactory::constructFirmwareUpdat
 }
 
 boost::shared_ptr<CPairingHelper> CRfxcomFactory::constructPairingHelper(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                                         boost::shared_ptr<IPluginStateHelper> pluginStateHelper,
                                                                          CPairingHelper::EPairingMode pairingMode) const
 {
    return boost::make_shared<CPairingHelper>(api,
+                                             pluginStateHelper,
                                              pairingMode);
 }
 

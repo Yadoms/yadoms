@@ -17,7 +17,7 @@ enum
    // Always start from yApi::IYPluginApi::kPluginFirstEventId
    kEvtPortDataReceived,
    kProtocolErrorRetryTimer,
-   kEndOfPairingTimer,
+   kProgressPairingTimer,
    kAnswerTimeout,
 };
 
@@ -47,6 +47,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    // Create the transceiver
    m_pairingHelper = m_factory.constructPairingHelper(api,
+                                                      m_pluginStateHelper,
                                                       m_configuration.getPairingMode());
    m_transceiver = m_factory.constructTransceiver(m_pairingHelper);
 
@@ -114,7 +115,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                {
                   if (extraQuery->getData()->query() == "firmwareUpdate")
                      processFirmwareUpdate(api, extraQuery);
-                  else if (extraQuery->getData()->query() == "startPairing")
+                  else if (extraQuery->getData()->query() == "pairing")
                      startManualPairing(api, extraQuery);
                   else
                   {
@@ -157,12 +158,19 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                createConnection(api->getEventHandler());
                break;
             }
-         case kEndOfPairingTimer:
+         case kProgressPairingTimer:
             {
-               if (m_pairingHelper->getMode() == CPairingHelper::kAuto)
-                  return;
-               m_pairingHelper->stopPairing();
-               m_pluginStateHelper->set(IPluginStateHelper::kStopPairing);
+               if (m_pairingHelper->onProgressPairing())
+               {
+                  // Finished
+                  m_progressPairingTimer.reset();
+               }
+               else
+               {
+                  // Next loop
+                  if (m_progressPairingTimer)
+                     m_progressPairingTimer->start();
+               }
                break;
             }
          default:
@@ -420,29 +428,12 @@ void CRfxcom::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void CRfxcom::startManualPairing(boost::shared_ptr<yApi::IYPluginApi> api,
-                                 boost::shared_ptr<yApi::IExtraQuery> extraQuery) const
+                                 boost::shared_ptr<yApi::IExtraQuery> extraQuery)
 {
-   try
-   {
-      if (m_pairingHelper->isPairingEnable())
-      {
-         m_pairingHelper->stopPairing();
-         extraQuery->sendSuccess(shared::CDataContainer::EmptyContainer);
-         m_pluginStateHelper->set(IPluginStateHelper::kStopPairing);
-         return;
-      }
-
-      m_pairingHelper->startPairing(extraQuery);
-   }
-   catch (std::invalid_argument& exception)
-   {
-      YADOMS_LOG(error) << exception.what();
-      extraQuery->sendError("customLabels.pairing.invalidCommandAutoMode");
-      return;
-   }
-
-   m_pluginStateHelper->set(IPluginStateHelper::kStartPairing);
-   api->getEventHandler().createTimer(kEndOfPairingTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
+   if (m_pairingHelper->startPairing(extraQuery))
+      m_progressPairingTimer = api->getEventHandler().createTimer(kProgressPairingTimer,
+                                                                  shared::event::CEventTimer::kOneShot,
+                                                                  boost::posix_time::seconds(5));
 }
 
 void CRfxcom::initRfxcom(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -564,7 +555,7 @@ void CRfxcom::processRfxcomUnknownRfyRemoteMessage(boost::shared_ptr<yApi::IYPlu
 void CRfxcom::processRfxcomAckMessage(const rfxcomMessages::CAck& ack)
 {
    if (ack.isOk())
-      YADOMS_LOG(information) << "RFXCom acknowledge";
+   YADOMS_LOG(information) << "RFXCom acknowledge";
    else
-      YADOMS_LOG(information) << "RFXCom Received acknowledge is KO";
+   YADOMS_LOG(information) << "RFXCom Received acknowledge is KO";
 }

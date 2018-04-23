@@ -279,7 +279,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
          break;
       case pTypeLighting3: message = boost::make_shared<rfxcomMessages::CLighting3>(api, *buf, bufSize);
          break;
-      case pTypeLighting4: message = boost::make_shared<rfxcomMessages::CLighting4>(api, *buf, bufSize, m_unsecuredProtocolFilters.at(pTypeLighting4));
+      case pTypeLighting4: message = boost::make_shared<rfxcomMessages::CLighting4>(api, *buf, bufSize, m_unsecuredProtocolFilters.at(pTypeLighting4), m_pairingHelper);
          break;
       case pTypeLighting5: message = boost::make_shared<rfxcomMessages::CLighting5>(api, *buf, bufSize, m_unsecuredProtocolFilters.at(pTypeLighting5));
          break;

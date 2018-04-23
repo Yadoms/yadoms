@@ -667,10 +667,9 @@
         }
       }
     },
-		"startPairing": {
-      "name": "Start pairing",
-      "description": "Start pairing for a new device (and for 30 seconds if no device detected). Ignored if plugin configured in automatic pairing mode."
-		}
+    "pairing": {
+      "name": "Start/stop pairing"
+    }
   },
   "customLabels": {
     "pluginState": {
@@ -693,7 +692,11 @@
       "ErrorInvalidInputFile": "Unable to update firmware, input file is invalid"
     },
     "pairing": {
-      "invalidCommandAutoMode": "Invalid command, pairing is configured as automatic"
+      "invalidCommandAutoMode": "Invalid command, pairing is configured as automatic",
+      "alreadyRunning": "Pairing already running",
+      "pairing": "Pairing...",
+      "devicePaired": "New device paired !",
+      "noDevicePaired": "No device found"
     }
   }
 }

@@ -18,8 +18,12 @@ void CPluginStateHelper::set(EState internalState,
 {
    switch (internalState)
    {
-   case kStartPairing:      
-      notifyServer(kStartPairing);
+   case kStartPairing:
+      
+      m_lastInternalState = internalState;
+      m_lastMessage = customMessageId;
+      m_lastMessageData = customMessageDataParams;
+      //TODO virer ? notifyServer(kStartPairing);
       // Don't update "last-" data
       return;
    case kStopPairing:
@@ -75,10 +79,7 @@ void CPluginStateHelper::notifyServer(EState internalState,
       m_api->setPluginState(yApi::historization::EPluginState::kCustom, "updateFirmware");
       break;
    case kStartPairing:
-      m_api->setPluginState(yApi::historization::EPluginState::kCustom, "startPairing");
-      break;
-   case kStopPairing:
-      m_api->setPluginState(yApi::historization::EPluginState::kCustom, "startPairing");
+      m_api->setPluginState(yApi::historization::EPluginState::kCustom, "startPairing"); //TODO utile ? (virer les libellés sinon)
       break;
    default:
       YADOMS_LOG(error) << "Invalid plugin state : " << internalState;

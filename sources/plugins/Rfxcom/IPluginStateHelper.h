@@ -17,8 +17,8 @@ public:
       kUpdateConfiguration,
       kFailToConfigure,
       kUpdateFirmware,
-      kStartPairing,
-      kStopPairing
+      kStartPairing, //TODO utile ?
+      kStopPairing //TODO utile ?
    };
 
    //--------------------------------------------------------------
