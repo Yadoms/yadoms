@@ -490,6 +490,10 @@
                                           updateProgressInfo($line, false);
                                           console.error("Unable to realize extra query : " +
                                                 taskUpdateInformation.exception);
+                                          if (taskUpdateInformation.exception) {
+                                                translatedMessage = $.t("plugins." + pi.type + ":" +
+                                                      taskUpdateInformation.exception);
+                                          }
                                           notifyError(translatedMessage);
                                     }
 
@@ -643,7 +647,9 @@
 
             i18nOpt.defaultValue = $.t(defaultMessage); //define default value parameter (for step 3)
             i18nOpt.defaultValue = $.t(messageId, i18nOpt); //define default value parameter (for step 2)
-            i18nOpt.interpolation= {escapeValue: false};
+            i18nOpt.interpolation = {
+                  escapeValue: false
+            };
 
             if (messageId && messageId !== "") {
                   return $.t("plugins." + pluginInstance.type + ":customLabels.pluginState." + messageId, i18nOpt); //step 1
