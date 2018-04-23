@@ -263,6 +263,8 @@ void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
    YADOMS_LOG(information) << "Update configuration...";
    BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
+   m_pairingHelper->setMode(m_configuration.getPairingMode());
+
    // If plugin instance is not running, just update configuration
    if (!m_port)
    {
@@ -293,7 +295,6 @@ void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 
    // Update configuration
    m_configuration.initializeWith(newConfigurationData);
-   m_pairingHelper->setMode(m_configuration.getPairingMode());
 
    // Create new connection
    createConnection(api->getEventHandler());

@@ -32,7 +32,14 @@ std::string CRfxcomConfiguration::getSerialPort() const
 
 CPairingHelper::EPairingMode CRfxcomConfiguration::getPairingMode() const
 {
-   return m_configuration.get<std::string>("PairingMode") == "manual" ? CPairingHelper::kManual : CPairingHelper::kAuto;
+   try
+   {
+      return m_configuration.get<std::string>("PairingMode") == "manual" ? CPairingHelper::kManual : CPairingHelper::kAuto;
+   }
+   catch (shared::exception::CInvalidParameter&)
+   {
+      return CPairingHelper::kAuto;
+   }
 }
 
 bool CRfxcomConfiguration::isAEenabled() const { return m_configuration.get<bool>("Protocols.content.AE Blyss"); }
