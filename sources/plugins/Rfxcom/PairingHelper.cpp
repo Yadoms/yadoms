@@ -110,7 +110,7 @@ bool CPairingHelper::needPairing(const std::string deviceName)
    if (m_mode == kManual)
    {
       stopPairing(deviceName);
-      m_api->setPluginState(shared::plugin::yPluginApi::historization::EPluginState::kRunning);//TODO virer ?
+      //m_api->setPluginState(shared::plugin::yPluginApi::historization::EPluginState::kRunning);//TODO virer ?
    }
 
    return true;
