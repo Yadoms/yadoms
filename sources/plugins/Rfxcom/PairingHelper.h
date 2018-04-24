@@ -11,11 +11,6 @@ namespace yApi = shared::plugin::yPluginApi;
 class CPairingHelper : public IPairingHelper
 {
 public:
-   enum EPairingMode
-   {
-      kAuto = 0,
-      kManual
-   };
 
    CPairingHelper(boost::shared_ptr<yApi::IYPluginApi> api,
                   boost::shared_ptr<IPluginStateHelper> pluginStateHelper,
@@ -23,13 +18,13 @@ public:
    virtual ~CPairingHelper();
 
    void setMode(EPairingMode mode);
-   EPairingMode getMode() const;
    bool startPairing(boost::shared_ptr<yApi::IExtraQuery> manualPairingExtraQuery);
    bool onProgressPairing();
    bool isPairingEnable() const;
 
    // IPairingHelper implementation
    bool needPairing(const std::string deviceName) override;
+   EPairingMode getMode() const override;
    // [END] IPairingHelper implementation
 
 protected:

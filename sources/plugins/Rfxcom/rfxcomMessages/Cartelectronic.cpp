@@ -80,6 +80,14 @@ namespace rfxcomMessages
       api->historizeData(m_id, m_keywords);
    }
 
+   void CCartelectronic::filter() const
+   {
+   }
+
+   void CCartelectronic::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+   }
+
    const std::string& CCartelectronic::getDeviceName() const
    {
       return m_id;

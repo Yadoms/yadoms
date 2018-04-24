@@ -4,7 +4,6 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
 #include "../IUnsecuredProtocolFilter.h"
-#include "../IPairingHelper.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -28,8 +27,7 @@ namespace rfxcomMessages
       CLighting4(boost::shared_ptr<yApi::IYPluginApi> api,
                  const RBUF& rbuf,
                  size_t rbufSize,
-                 boost::shared_ptr<IUnsecuredProtocolFilter> messageFilter,
-                 boost::shared_ptr<IPairingHelper> pairingHelper);
+                 boost::shared_ptr<IUnsecuredProtocolFilter> messageFilter);
 
       virtual ~CLighting4();
 
@@ -41,6 +39,8 @@ namespace rfxcomMessages
       // IRfxcomMessage implementation
       boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const override;
       void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
+      void filter() const override;
+      void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const override;
       const std::string& getDeviceName() const override;
       const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords() override;
       // [END] IRfxcomMessage implementation

@@ -56,8 +56,7 @@ namespace rfxcomMessages
 
    CLighting6::CLighting6(boost::shared_ptr<yApi::IYPluginApi> api,
                           const RBUF& rbuf,
-                          size_t rbufSize,
-                          boost::shared_ptr<IPairingHelper> pairingHelper)
+                          size_t rbufSize)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_state , m_signalPower})
@@ -80,14 +79,6 @@ namespace rfxcomMessages
       buildDeviceModel();
       buildDeviceName();
       buildDeviceDetails();
-
-      // Create device and keywords if needed
-      if (pairingHelper->needPairing(m_deviceName))
-      {
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));
-      }
    }
 
    CLighting6::~CLighting6()
@@ -131,6 +122,17 @@ namespace rfxcomMessages
    void CLighting6::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       api->historizeData(m_deviceName, m_keywords);
+   }
+
+   void CLighting6::filter() const
+   {
+   }
+
+   void CLighting6::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+      api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+      m_deviceDetails.printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CLighting6::getDeviceName() const

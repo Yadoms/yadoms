@@ -52,8 +52,7 @@ namespace rfxcomMessages
    CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> api,
                           const RBUF& rbuf,
                           size_t rbufSize,
-                          boost::shared_ptr<IUnsecuredProtocolFilter> messageFilter,
-                          boost::shared_ptr<IPairingHelper> pairingHelper)
+                          boost::shared_ptr<IUnsecuredProtocolFilter> messageFilter)
       : m_messageFilter(messageFilter),
         m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
@@ -74,19 +73,6 @@ namespace rfxcomMessages
       buildDeviceModel();
       buildDeviceName();
       buildDeviceDetails();
-
-      // Create device and keywords if needed
-      if (pairingHelper->needPairing(m_deviceName))
-      {
-         //TODO remettre le filtrage pour appairage automatique
-         /*if (m_messageFilter && !m_messageFilter->isValid(m_deviceName))
-            throw CMessageFilteredException((boost::format("Receive unknown device (id %1%) for unsecured protocol (LIGHTING4 / %2%), may be a transmission error : ignored")
-               % m_id % m_deviceModel).str());*/
-
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));
-      }
    }
 
    CLighting4::~CLighting4()
@@ -133,6 +119,20 @@ namespace rfxcomMessages
    void CLighting4::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       api->historizeData(m_deviceName, m_keywords);
+   }
+
+   void CLighting4::filter() const
+   {
+      if (m_messageFilter && !m_messageFilter->isValid(m_deviceName))
+         throw CMessageFilteredException((boost::format("Receive unknown device (id %1%) for unsecured protocol (LIGHTING4 / %2%), may be a transmission error : ignored")
+            % m_id % m_deviceModel).str());
+   }
+
+   void CLighting4::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
+         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+         m_deviceDetails.printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CLighting4::getDeviceName() const

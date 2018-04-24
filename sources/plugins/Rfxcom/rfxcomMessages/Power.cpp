@@ -81,6 +81,14 @@ namespace rfxcomMessages
       api->historizeData(m_deviceName, m_keywords);
    }
 
+   void CPower::filter() const
+   {
+   }
+
+   void CPower::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+   }
+
    const std::string& CPower::getDeviceName() const
    {
       return m_deviceName;
