@@ -136,6 +136,14 @@ namespace rfxcomMessages
       // Nothing to historize (transmitter-only device)
    }
 
+   void CFan::filter() const
+   {
+   }
+
+   void CFan::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+   }
+
    const std::string& CFan::getDeviceName() const
    {
       return m_deviceName;

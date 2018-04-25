@@ -72,6 +72,14 @@ namespace rfxcomMessages
       api->historizeData(m_deviceName, m_keywords);
    }
 
+   void CBarometric::filter() const
+   {
+   }
+
+   void CBarometric::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+   }
+
    const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CBarometric::keywords()
    {
       return m_keywords;

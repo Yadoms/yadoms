@@ -14,14 +14,7 @@ namespace yApi = shared::plugin::yPluginApi;
 class CTransceiver : public ITransceiver
 {
 public:
-   //--------------------------------------------------------------
-   /// \brief	                           Constructor
-   //--------------------------------------------------------------
-   CTransceiver();
-
-   //--------------------------------------------------------------
-   /// \brief	                           Destructor
-   //--------------------------------------------------------------
+   explicit CTransceiver(boost::shared_ptr<IPairingHelper> pairingHelper);
    virtual ~CTransceiver();
 
    // ITransceiver implementation
@@ -46,13 +39,7 @@ private:
 
    static std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter>> createUnsecuredProtocolFilters();
 
-   //--------------------------------------------------------------
-   /// \brief  The message sequence number
-   //--------------------------------------------------------------
+   boost::shared_ptr<IPairingHelper> m_pairingHelper;
    boost::shared_ptr<ISequenceNumber> m_seqNumberProvider;
-
-   //--------------------------------------------------------------
-   /// \brief  The list of filters used for unsecured protocols, to filter bad receptions and avoid bad device creations
-   //--------------------------------------------------------------
    const std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter>> m_unsecuredProtocolFilters;
 };
