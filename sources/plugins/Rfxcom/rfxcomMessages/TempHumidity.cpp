@@ -70,6 +70,14 @@ namespace rfxcomMessages
       api->historizeData(m_deviceName, m_keywords);
    }
 
+   void CTempHumidity::filter() const
+   {
+   }
+
+   void CTempHumidity::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+   }
+
    const std::string& CTempHumidity::getDeviceName() const
    {
       return m_deviceName;

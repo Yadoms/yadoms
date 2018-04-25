@@ -68,6 +68,14 @@ namespace rfxcomMessages
       api->historizeData(m_deviceName, m_keywords);
    }
 
+   void CWeight::filter() const
+   {
+   }
+
+   void CWeight::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+   }
+
    const std::string& CWeight::getDeviceName() const
    {
       return m_deviceName;

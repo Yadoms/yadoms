@@ -16,7 +16,7 @@ CPairingHelper::~CPairingHelper()
 {
 }
 
-void CPairingHelper::setMode(EPairingMode mode) //TODO en mode auto, il faut supprimer les filtres "rareDeviceFilter"
+void CPairingHelper::setMode(EPairingMode mode)
 {
    m_mode = mode;
    m_pairingEnable = mode == kAuto;
@@ -49,6 +49,8 @@ bool CPairingHelper::startPairing(boost::shared_ptr<yApi::IExtraQuery> manualPai
    m_manualPairingExtraQuery = manualPairingExtraQuery;
    m_progressPairingCount = 6;
    m_manualPairingExtraQuery->reportProgress(1.0f, "customLabels.pairing.pairing");
+
+   YADOMS_LOG(information) << "Start pairing";
 
    return true;
 }
@@ -88,6 +90,8 @@ void CPairingHelper::stopPairing(const std::string& devicePaired)
    }
    m_pluginStateHelper->set(IPluginStateHelper::kStopPairing);
    m_manualPairingExtraQuery.reset();
+
+   YADOMS_LOG(information) << "Stop pairing";
 }
 
 bool CPairingHelper::isPairingEnable() const
@@ -106,7 +110,7 @@ bool CPairingHelper::needPairing(const std::string deviceName)
    if (m_mode == kManual)
    {
       stopPairing(deviceName);
-      m_api->setPluginState(shared::plugin::yPluginApi::historization::EPluginState::kRunning);//TODO virer ?
+      //m_api->setPluginState(shared::plugin::yPluginApi::historization::EPluginState::kRunning);//TODO virer ?
    }
 
    return true;
