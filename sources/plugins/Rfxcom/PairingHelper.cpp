@@ -84,7 +84,7 @@ void CPairingHelper::stopPairing(const std::string& devicePaired)
    m_pairingEnable = false;
    if (m_manualPairingExtraQuery)
    {
-      m_manualPairingExtraQuery->reportProgress(100.0f, devicePaired.empty() ? "customLabels.pairing.noDevicePaired" : "customLabels.pairing.devicePaired");
+      m_manualPairingExtraQuery->reportProgress(99.0f, devicePaired.empty() ? "customLabels.pairing.noDevicePaired" : "customLabels.pairing.devicePaired");
 
       m_manualPairingExtraQuery->sendSuccess(shared::CDataContainer::EmptyContainer);
    }
@@ -108,10 +108,7 @@ bool CPairingHelper::needPairing(const std::string deviceName)
       return false;
 
    if (m_mode == kManual)
-   {
       stopPairing(deviceName);
-      //m_api->setPluginState(shared::plugin::yPluginApi::historization::EPluginState::kRunning);//TODO virer ?
-   }
 
    return true;
 }
