@@ -486,7 +486,7 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> ap
    {
       if (status.needConfigurationUpdate(m_configuration))
       {
-         YADOMS_LOG(information) << "Unable to set configuration as expected, maybe incompatible protocols were selected";
+         YADOMS_LOG(error) << "Unable to set configuration as expected, maybe incompatible protocols were selected";
          m_pluginStateHelper->set(IPluginStateHelper::kFailToConfigure);
          throw boost::thread_interrupted();
       }
