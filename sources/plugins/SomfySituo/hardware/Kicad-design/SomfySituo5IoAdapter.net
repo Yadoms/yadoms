@@ -1,7 +1,7 @@
 (export (version D)
   (design
-    (source D:/Projets/Domotique/yadoms_master/sources/plugins/SomfySituo/hardware/Kicad-design/SomfySituo5IoAdapter.sch)
-    (date "09/04/2018 13:45:29")
+    (source D:\Projets\Domotique\yadoms_master\sources\plugins\SomfySituo\hardware\Kicad-design\SomfySituo5IoAdapter.sch)
+    (date "25/04/2018 13:43:08")
     (tool "Eeschema 4.0.7")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -29,7 +29,7 @@
       (tstamp 59F85470))
     (comp (ref J1)
       (value USB_OTG)
-      (footprint Connectors:USB_Micro-B)
+      (footprint USB_Micro-B_AC0002646:USB_Micro-B_AC0002646)
       (libsource (lib conn) (part USB_OTG))
       (sheetpath (names /) (tstamps /))
       (tstamp 59F865FD))
@@ -332,14 +332,14 @@
         (pin (num 5) (name GND) (type power_in))
         (pin (num 6) (name Shield) (type passive)))))
   (libraries
-    (library (logical conn)
-      (uri "C:\\Program Files\\KiCad\\share\\kicad\\library\\conn.lib"))
-    (library (logical device)
-      (uri "C:\\Program Files\\KiCad\\share\\kicad-library\\library\\device.lib"))
     (library (logical PIC16F688)
       (uri D:\Projets\Domotique\yadoms_master\sources\plugins\SomfySituo\hardware\Kicad-design\PIC16F688.lib))
     (library (logical serial)
-      (uri D:\Projets\Domotique\yadoms_master\sources\plugins\SomfySituo\hardware\Kicad-design\serial.lib)))
+      (uri D:\Projets\Domotique\yadoms_master\sources\plugins\SomfySituo\hardware\Kicad-design\serial.lib))
+    (library (logical device)
+      (uri "C:\\Program Files\\KiCad\\share\\kicad-library\\library\\device.lib"))
+    (library (logical conn)
+      (uri "C:\\Program Files\\KiCad\\share\\kicad\\library\\conn.lib")))
   (nets
     (net (code 1) (name Somfy_led1)
       (node (ref R5) (pin 1))

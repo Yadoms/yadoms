@@ -1,4 +1,5 @@
 (fp_lib_table
   (lib (name FT230XS-R)(type Legacy)(uri "$(KIPRJMOD)/FT230XS-R.mod")(options "")(descr ""))
   (lib (name "AVX 00-9188 006 receiver")(type KiCad)(uri "$(KIPRJMOD)/AVX 00-9188 006 receiver.pretty")(options "")(descr ""))
+  (lib (name USB_Micro-B_AC0002646)(type KiCad)(uri "$(KIPRJMOD)/USB_Micro-B_AC0002646.pretty")(options "")(descr ""))
 )
