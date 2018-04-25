@@ -401,4 +401,351 @@ namespace shared
       throw exception::CInvalidParameter("Parameter is null");
    }
 
+   bool CDataContainer::ConvertToBool(rapidjson::Value* v) const
+   {
+      if (v)
+      {
+         if (v->IsString()) {
+            std::string s = v->GetString();
+            return boost::iequals(s, "true") || boost::iequals(s, "1");
+         }
+         if (v->IsBool())
+            return v->GetBool();
+         if (v->IsDouble())
+            return v->GetDouble() != 0.0f;
+         if (v->IsFalse())
+            return false;
+         if (v->IsFloat())
+            return v->GetFloat() != 0.0f;
+         if (v->IsInt())
+            return v->GetInt() != 0;
+         if (v->IsInt64())
+            return v->GetInt64() != 0;
+         if (v->IsTrue())
+            return true;
+         if (v->IsUint())
+            return v->GetUint() != 0;
+         if (v->IsUint64())
+            return v->GetUint64() != 0;
+
+         throw exception::CInvalidParameter("Value is not a valid type");
+      }
+      throw exception::CInvalidParameter("Parameter is null");
+   }
+
+
+   int CDataContainer::ConvertToInt(rapidjson::Value* v) const 
+   {
+      if (v)
+      {
+         if (v->IsString()) {
+            std::string s = v->GetString();
+            return boost::lexical_cast<int>(s);
+         }
+         if (v->IsBool())
+            return v->GetBool() ? 1 : 0;
+         if (v->IsDouble())
+            return (int)v->GetDouble();
+         if (v->IsFalse())
+            return 0;
+         if (v->IsFloat())
+            return (int)v->GetFloat();
+         if (v->IsInt())
+            return v->GetInt();
+         if (v->IsInt64())
+            return (int)v->GetInt64();
+         if (v->IsTrue())
+            return 1;
+         if (v->IsUint())
+            return v->GetUint();
+         if (v->IsUint64())
+            return (int)v->GetUint64();
+
+         throw exception::CInvalidParameter("Value is not a valid type");
+      }
+      throw exception::CInvalidParameter("Parameter is null");
+   }
+
+   int64_t CDataContainer::ConvertToInt64(rapidjson::Value* v) const
+   {
+      if (v)
+      {
+         if (v->IsString()) {
+            std::string s = v->GetString();
+            return boost::lexical_cast<int64_t>(s);
+         }
+         if (v->IsBool())
+            return v->GetBool() ? 1 : 0;
+         if (v->IsDouble())
+            return (int64_t)v->GetDouble();
+         if (v->IsFalse())
+            return 0;
+         if (v->IsFloat())
+            return (int64_t)v->GetFloat();
+         if (v->IsInt())
+            return v->GetInt();
+         if (v->IsInt64())
+            return v->GetInt64();
+         if (v->IsTrue())
+            return 1;
+         if (v->IsUint())
+            return v->GetUint();
+         if (v->IsUint64())
+            return v->GetUint64();
+
+         throw exception::CInvalidParameter("Value is not a valid type");
+      }
+      throw exception::CInvalidParameter("Parameter is null");
+   }
+
+   char CDataContainer::ConvertToByte(rapidjson::Value* v) const
+   {
+      if (v)
+      {
+         if (v->IsString()) {
+            std::string s = v->GetString();
+            return s[0];
+         }
+         if (v->IsBool())
+            return v->GetBool() ? 1 : 0;
+         if (v->IsDouble())
+            return (char)v->GetDouble();
+         if (v->IsFalse())
+            return 0;
+         if (v->IsFloat())
+            return (char)v->GetFloat();
+         if (v->IsInt())
+            return (char)v->GetInt();
+         if (v->IsInt64())
+            return (char)v->GetInt64();
+         if (v->IsTrue())
+            return 1;
+         if (v->IsUint())
+            return (char)v->GetUint();
+         if (v->IsUint64())
+            return (char)v->GetUint64();
+
+         throw exception::CInvalidParameter("Value is not a valid type");
+      }
+      throw exception::CInvalidParameter("Parameter is null");
+   }
+
+   short CDataContainer::ConvertToShort(rapidjson::Value* v) const
+   {
+      if (v)
+      {
+         if (v->IsString()) {
+            std::string s = v->GetString();
+            return boost::lexical_cast<short>(s);
+         }
+         if (v->IsBool())
+            return v->GetBool() ? 1 : 0;
+         if (v->IsDouble())
+            return (short)v->GetDouble();
+         if (v->IsFalse())
+            return 0;
+         if (v->IsFloat())
+            return (short)v->GetFloat();
+         if (v->IsInt())
+            return (short)v->GetInt();
+         if (v->IsInt64())
+            return (short)v->GetInt64();
+         if (v->IsTrue())
+            return 1;
+         if (v->IsUint())
+            return (short)v->GetUint();
+         if (v->IsUint64())
+            return (short)v->GetUint64();
+
+         throw exception::CInvalidParameter("Value is not a valid type");
+      }
+      throw exception::CInvalidParameter("Parameter is null");
+   }
+   unsigned int CDataContainer::ConvertToUInt(rapidjson::Value* v) const
+   {
+      if (v)
+      {
+         if (v->IsString()) {
+            std::string s = v->GetString();
+            return boost::lexical_cast<unsigned int>(s);
+         }
+         if (v->IsBool())
+            return v->GetBool() ? 1 : 0;
+         if (v->IsDouble())
+            return (unsigned int)v->GetDouble();
+         if (v->IsFalse())
+            return 0;
+         if (v->IsFloat())
+            return (unsigned int)v->GetFloat();
+         if (v->IsInt())
+            return v->GetInt();
+         if (v->IsInt64())
+            return (unsigned int)v->GetInt64();
+         if (v->IsTrue())
+            return 1;
+         if (v->IsUint())
+            return (unsigned int)v->GetUint();
+         if (v->IsUint64())
+            return (unsigned int)v->GetUint64();
+
+         throw exception::CInvalidParameter("Value is not a valid type");
+      }
+      throw exception::CInvalidParameter("Parameter is null");
+   }
+   uint64_t CDataContainer::ConvertToUInt64(rapidjson::Value* v) const
+   {
+      if (v)
+      {
+         if (v->IsString()) {
+            std::string s = v->GetString();
+            return boost::lexical_cast<uint64_t>(s);
+         }
+         if (v->IsBool())
+            return v->GetBool() ? 1 : 0;
+         if (v->IsDouble())
+            return (uint64_t)v->GetDouble();
+         if (v->IsFalse())
+            return 0;
+         if (v->IsFloat())
+            return (uint64_t)v->GetFloat();
+         if (v->IsInt())
+            return v->GetInt();
+         if (v->IsInt64())
+            return v->GetInt64();
+         if (v->IsTrue())
+            return 1;
+         if (v->IsUint())
+            return v->GetUint();
+         if (v->IsUint64())
+            return v->GetUint64();
+
+         throw exception::CInvalidParameter("Value is not a valid type");
+      }
+      throw exception::CInvalidParameter("Parameter is null");
+   }
+   unsigned char CDataContainer::ConvertToUByte(rapidjson::Value* v) const
+   {
+      if (v)
+      {
+         if (v->IsString()) {
+            std::string s = v->GetString();
+            return boost::lexical_cast<unsigned char>(s);
+         }
+         if (v->IsBool())
+            return v->GetBool() ? 1 : 0;
+         if (v->IsDouble())
+            return v->GetDouble();
+         if (v->IsFalse())
+            return 0;
+         if (v->IsFloat())
+            return (unsigned char)v->GetFloat();
+         if (v->IsInt())
+            return (unsigned char)v->GetInt();
+         if (v->IsInt64())
+            return (unsigned char)v->GetInt64();
+         if (v->IsTrue())
+            return 1;
+         if (v->IsUint())
+            return (unsigned char)v->GetUint();
+         if (v->IsUint64())
+            return (unsigned char)v->GetUint64();
+
+         throw exception::CInvalidParameter("Value is not a valid type");
+      }
+      throw exception::CInvalidParameter("Parameter is null");
+   }
+   unsigned short CDataContainer::ConvertToUShort(rapidjson::Value* v) const
+   {
+      if (v)
+      {
+         if (v->IsString()) {
+            std::string s = v->GetString();
+            return boost::lexical_cast<unsigned short>(s);
+         }
+         if (v->IsBool())
+            return v->GetBool() ? 1 : 0;
+         if (v->IsDouble())
+            return (unsigned short)v->GetDouble();
+         if (v->IsFalse())
+            return 0;
+         if (v->IsFloat())
+            return (unsigned short)v->GetFloat();
+         if (v->IsInt())
+            return (unsigned short)v->GetInt();
+         if (v->IsInt64())
+            return (unsigned short)v->GetInt64();
+         if (v->IsTrue())
+            return 1;
+         if (v->IsUint())
+            return (unsigned short)v->GetUint();
+         if (v->IsUint64())
+            return (unsigned short)v->GetUint64();
+
+         throw exception::CInvalidParameter("Value is not a valid type");
+      }
+      throw exception::CInvalidParameter("Parameter is null");
+   }
+
+   float CDataContainer::ConvertToFloat(rapidjson::Value* v) const
+   {
+      if (v)
+      {
+         if (v->IsString()) {
+            std::string s = v->GetString();
+            return boost::lexical_cast<float>(s);
+         }
+         if (v->IsBool())
+            return v->GetBool() ? 1.0f : 0.0f;
+         if (v->IsDouble())
+            return (float)v->GetDouble();
+         if (v->IsFalse())
+            return 0.0f;
+         if (v->IsFloat())
+            return v->GetFloat();
+         if (v->IsInt())
+            return (float)v->GetInt();
+         if (v->IsInt64())
+            return (float)v->GetInt64();
+         if (v->IsTrue())
+            return 1.0f;
+         if (v->IsUint())
+            return (float)v->GetUint();
+         if (v->IsUint64())
+            return (float)v->GetUint64();
+
+         throw exception::CInvalidParameter("Value is not a valid type");
+      }
+      throw exception::CInvalidParameter("Parameter is null");
+   }
+   double CDataContainer::ConvertToDouble(rapidjson::Value* v) const
+   {
+      if (v)
+      {
+         if (v->IsString()) {
+            std::string s = v->GetString();
+            return boost::lexical_cast<double>(s);
+         }
+         if (v->IsBool())
+            return v->GetBool() ? 1.0f : 0.0f;
+         if (v->IsDouble())
+            return v->GetDouble();
+         if (v->IsFalse())
+            return 0.0f;
+         if (v->IsFloat())
+            return v->GetFloat();
+         if (v->IsInt())
+            return v->GetInt();
+         if (v->IsInt64())
+            return (double)v->GetInt64();
+         if (v->IsTrue())
+            return 1.0f;
+         if (v->IsUint())
+            return v->GetUint();
+         if (v->IsUint64())
+            return (double)v->GetUint64();
+
+         throw exception::CInvalidParameter("Value is not a valid type");
+      }
+      throw exception::CInvalidParameter("Parameter is null");
+   }
 } // namespace shared

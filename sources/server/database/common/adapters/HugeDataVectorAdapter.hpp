@@ -19,7 +19,8 @@ namespace database
             //--------------------------------------------------------------
             /// \Brief		Constructor
             //--------------------------------------------------------------
-            CHugeDataVectorAdapter()
+            CHugeDataVectorAdapter(bool addTypeAndKeywordId = false)
+               :m_addTypeAndKeywordId(addTypeAndKeywordId)
             {
             }
 
@@ -41,14 +42,28 @@ namespace database
                   long size = 0;
                   while (resultHandler->next_step())
                   {
-                     m_internalValue += "{\"type\":\"";
-                     m_internalValue += resultHandler->extractValueAsString(0);
-                     m_internalValue += "\",\"keywordId\":\"";
-                     m_internalValue += resultHandler->extractValueAsString(2); 
-                     m_internalValue += "\",\"avg\":\"" + resultHandler->extractValueAsString(3);
+                     /*
+                     if (m_addTypeAndKeywordId) 
+                     {
+                        m_internalValue += "{\"type\":\"";
+                        m_internalValue += resultHandler->extractValueAsString(0);
+                        m_internalValue += "\",\"keywordId\":\"";
+                        m_internalValue += resultHandler->extractValueAsString(2);
+                        m_internalValue += "\",\"avg\":\"" + resultHandler->extractValueAsString(3);
+                     }
+                     else 
+                     {
+                        m_internalValue += "{\"avg\":\"" + resultHandler->extractValueAsString(3);
+                     }
                      m_internalValue += "\",\"min\":\"" + resultHandler->extractValueAsString(4) + "\",\"date\":\"";
                      m_internalValue += resultHandler->extractValueAsString(1);
                      m_internalValue += "\",\"max\":\"" + resultHandler->extractValueAsString(5) + "\"},";
+                     */
+                     m_internalValue += "[" + resultHandler->extractValueAsString(1) + ",";
+                     m_internalValue += resultHandler->extractValueAsString(3); //avg
+                     m_internalValue += "," + resultHandler->extractValueAsString(4); //min
+                     m_internalValue += "," + resultHandler->extractValueAsString(5); //max
+                     m_internalValue += "],";
                      ++size;
                   }
                   //check if any data
@@ -105,6 +120,7 @@ namespace database
 
          private:
             std::string m_internalValue;
+            bool m_addTypeAndKeywordId;
          };
       } //namespace adapters
    } //namespace common

@@ -197,7 +197,7 @@ PageManager.addToDom = function (page) {
         var $widget = $(event.target);
         if (!$widget)
             return;
-        var targetPageId = $page.attr("page-id");
+        var targetPageId = parseInt($page.attr("page-id"));
         if (!targetPageId)
             return;
         var targetPage = PageManager.getPage(targetPageId);
@@ -207,7 +207,7 @@ PageManager.addToDom = function (page) {
 
         //a widget has been dropped onto antoher page pill
         //we move the widget to the other pill
-        var widgetId = $widget.attr("widget-id");
+        var widgetId = parseInt($widget.attr("widget-id"));
         var widgetToMove = page.getWidget(widgetId);
         widgetToMove.setInitialPosition(1000); //we indicate that the widget has never been placed and must be placed to the end
         widgetToMove.idPage = targetPageId;
@@ -251,25 +251,27 @@ PageManager.addToDom = function (page) {
 
     //manage all fitText classes
     page.$tab.on('shown.bs.tab', function (e) {
-        var pid = $(e.currentTarget).attr("page-id");
+        var pid = parseInt($(e.currentTarget).attr("page-id"));
         var p = PageManager.getPage(pid);
-        p.$grid.find('.textfit').fitText();
-        p.$grid.packery('layout');
+        if(p) {
+           p.$grid.find('.textfit').fitText();
+           p.$grid.packery('layout');
+        }
     });
 
     //we listen click event on tab click
     page.$tab.find("a").bind('click', function (e) {
-        return tabClick($(e.currentTarget).parent().attr("page-id"));
+        return tabClick(parseInt($(e.currentTarget).parent().attr("page-id")));
     });
 
     //we listen click event on rename click
     page.$tab.find('div.rename-page').bind('click', function (e) {
-        createOrUpdatePage($(e.currentTarget).parents("li.tabPagePills").attr("page-id"));
+        createOrUpdatePage(parseInt($(e.currentTarget).parents("li.tabPagePills").attr("page-id")));
     });
 
     //we listen click event on delete click
     page.$tab.find('div.delete-page').bind('click', function (e) {
-        var pageId = $(e.currentTarget).parents("li.tabPagePills").attr("page-id");
+        var pageId = parseInt($(e.currentTarget).parents("li.tabPagePills").attr("page-id"));
 
         if ($("ul.page-tabs").find("li.tabPagePills").length === 1) {
             notifyWarning($.t("modals.delete-page.deletingLastPageNotAllowed"));
@@ -283,14 +285,14 @@ PageManager.addToDom = function (page) {
 
     //we listen click event on move left click
     page.$tab.find('div.move-left-page').bind('click', function (e) {
-        var pageToMove = PageManager.getPage($(e.currentTarget).parents("li.tabPagePills").attr("page-id"));
+        var pageToMove = PageManager.getPage(parseInt($(e.currentTarget).parents("li.tabPagePills").attr("page-id")));
         assert(!isNullOrUndefined(pageToMove), "page doesn't exist in PageManager");
         PageManager.movePage(pageToMove, "left");
     });
 
     //we listen click event on move right click
     page.$tab.find('div.move-right-page').bind('click', function (e) {
-        var pageToMove = PageManager.getPage($(e.currentTarget).parents("li.tabPagePills").attr("page-id"));
+        var pageToMove = PageManager.getPage(parseInt($(e.currentTarget).parents("li.tabPagePills").attr("page-id")));
         assert(!isNullOrUndefined(pageToMove), "page doesn't exist in PageManager");
         PageManager.movePage(pageToMove, "right");
     });
@@ -389,7 +391,7 @@ PageManager.getCurrentPage = function () {
     var pageId = $("ul.page-tabs li.active").attr("page-id");
     if (isNullOrUndefined(pageId))
         return null;
-    return PageManager.getPage(pageId);
+    return PageManager.getPage(parseInt(pageId));
 };
 
 /**

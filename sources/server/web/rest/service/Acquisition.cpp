@@ -6,7 +6,7 @@
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
 #include "web/rest/StringContainer.h"
-
+#include <Poco/Stopwatch.h>
 namespace web
 {
    namespace rest
@@ -242,11 +242,19 @@ namespace web
                   if (parameters.size() > 5)
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
+                  Poco::Stopwatch sw;
+                  sw.start();
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByHour(keywordId,
                                                                                                      timeFrom,
                                                                                                      timeTo);
+                  Poco::UInt64 load = sw.elapsed();
 
+                  YADOMS_LOG(information) << "============================== " << load << " ms";
+
+                  //shared::CDataContainer d;
+                  //d.set("data", allData);
                   boost::shared_ptr<CStringContainer> result=boost::make_shared<CStringContainer>(allData);
+                  //return CResult::GenerateSuccess(d);
                   return result;
                }
                return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");

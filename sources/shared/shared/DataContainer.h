@@ -10,7 +10,7 @@
 #include "Field.hpp"
 
 #define RAPIDJSON_HAS_STDSTRING 1
-#define RAPIDJSON_ASSERT(x) {if(!(x)) throw new shared::exception::CException("Assert");}
+#define RAPIDJSON_ASSERT(x) {if(!(x)) throw shared::exception::CException("Assert");}
 #include "rapidjson/document.h"
 #include "rapidjson/pointer.h"
 #include "rapidjson/stringbuffer.h"
@@ -552,6 +552,17 @@ namespace shared
       rapidjson::Document * getPointer() const { return (rapidjson::Document *) &m_tree; }
 
       std::string ConvertToString(rapidjson::Value* v) const;
+      bool ConvertToBool(rapidjson::Value* v) const;
+      int ConvertToInt(rapidjson::Value* v) const;
+      int64_t ConvertToInt64(rapidjson::Value* v) const;
+      char ConvertToByte(rapidjson::Value* v) const;
+      short ConvertToShort(rapidjson::Value* v) const;
+      unsigned int ConvertToUInt(rapidjson::Value* v) const;
+      uint64_t ConvertToUInt64(rapidjson::Value* v) const;
+      unsigned char ConvertToUByte(rapidjson::Value* v) const;
+      unsigned short ConvertToUShort(rapidjson::Value* v) const;
+      float ConvertToFloat(rapidjson::Value* v) const;
+      double ConvertToDouble(rapidjson::Value* v) const;
       //--------------------------------------------------------------
       //
       //
@@ -709,6 +720,11 @@ namespace shared
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       inline void setValuesSPIDataContainableInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<IDataContainable> > & values, const char pathChar);
+
+
+
+      template <class T>
+      inline T convert(rapidjson::Value* found) const;
 
       //--------------------------------------------------------------
       //
@@ -1211,29 +1227,10 @@ namespace shared
    {
       rapidjson::Value* found = findValue(parameterName, pathChar);
       if (found)
-         return found->Get<T>();
+         return convert<T>(found);
       throw exception::CInvalidParameter(parameterName + " : is not found");
    }
-
-   template<>
-   inline std::string CDataContainer::getInternal(const std::string& parameterName, const char pathChar) const
-   {
-      rapidjson::Value* found = findValue(parameterName, pathChar);
-      if (found)
-      {
-         if(found->IsString())
-            return found->GetString();
-         else
-         {
-            return ConvertToString(found);
-         }
-      }
-         
-      throw exception::CInvalidParameter(parameterName + " : is not found");
-   }
-
-
-
+   
    template<>
    inline CDataContainer CDataContainer::getInternal(const std::string& parameterName, const char pathChar) const
    {
@@ -1292,7 +1289,7 @@ namespace shared
          {
             for (auto& v : found->GetArray())
             {
-               result.push_back(v.Get<T>());
+               result.push_back(convert<T>(&v));
             }
          }
          else
@@ -1374,7 +1371,7 @@ namespace shared
          {
             for (auto& v : found->GetArray())
             {
-               boost::shared_ptr<T> sp = boost::make_shared<T>(v.Get<T>());
+               boost::shared_ptr<T> sp = boost::make_shared<T>(convert<T>(&v));
                result.push_back(sp);
             }
          }
@@ -1585,6 +1582,111 @@ namespace shared
          v.PushBack(*i->get(), allocator);
       }
    }
+
+   template<class T>
+   inline T CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return found->Get<T>();
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+
+   template<>
+   inline bool CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToBool(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+
+   template<>
+   inline std::string CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToString(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+   
+   template<>
+   inline int CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToInt(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+   
+   template<>
+   inline int64_t CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToInt64(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   } 
+   
+   template<>
+   inline char CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToByte(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+
+   template<>
+   inline short CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToShort(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }   
+
+   template<>
+   inline unsigned int CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToUInt(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+   
+   template<>
+   inline uint64_t CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToUInt64(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   } 
+   
+   template<>
+   inline unsigned char CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToUByte(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+
+   template<>
+   inline unsigned short CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToUShort(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+
+   template<>
+   inline float CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToFloat(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+
+   template<>
+   inline double CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToDouble(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+
 
    inline void CDataContainer::setValuesSPIDataContainableInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<IDataContainable> > & values, const char pathChar)
    {

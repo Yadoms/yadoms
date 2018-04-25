@@ -119,7 +119,6 @@ function requestWidgets(page) {
  * @param pageId tab id clicked
  */
 function tabClick(pageId) {
-
     //we check for widget loading if page is different than the current
     var currentPage = PageManager.getCurrentPage();
 

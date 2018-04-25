@@ -161,11 +161,11 @@ function ConfigurationManager() {
         var d = new $.Deferred();
 
         RestEngine.getJson("rest/configuration/server")
-            .done(function (data) {
-                serverConfiguration = JSON.parse(data);
-                d.resolve();
-            })
-            .fail(d.reject);
+         .done(function (data) {
+             serverConfiguration = data;
+             d.resolve();
+         })
+         .fail(d.reject);
 
         return d.promise();
     }
