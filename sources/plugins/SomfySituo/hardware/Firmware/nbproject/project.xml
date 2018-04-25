@@ -3,7 +3,7 @@
     <type>com.microchip.mplab.nbide.embedded.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>Test_LED</name>
+            <name>Situo5Adapter</name>
             <creation-uuid>b2607887-0868-42b2-a93b-12c009d6f4dc</creation-uuid>
             <make-project-type>0</make-project-type>
             <c-extensions>c</c-extensions>

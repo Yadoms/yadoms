@@ -1,0 +1,814 @@
+%CMF
+# %PSECTS Section
+# For each object file, details of its psects are enumerated here.
+# The begining of the section is indicated by %PSECTS.  The first
+# line indicates the name of the first object file, e.g.
+#    $foo.obj
+# Each line that follows describes a psect in that object file, until
+# the next object file.  The lines that describe a psect have the
+# format:
+#    <psect name> <class name> <space> <link address> <load addresses> <length> <delta>
+# All addresses and the length are given in unqualified hexadecimal
+# in delta units.  Any other numeric values are decimal.
+%PSECTS
+$dist/default/production\Situo5Adapter.X.production.obj
+cinit CODE 0 13 13 14 2
+text1 CODE 0 27 27 24C 2
+text2 CODE 0 6D6 6D6 11 2
+text3 CODE 0 590 590 4F 2
+text4 CODE 0 6F7 6F7 10 2
+text5 CODE 0 71F 71F B 2
+text6 CODE 0 72A 72A B 2
+text7 CODE 0 5DF 5DF 41 2
+text8 CODE 0 273 273 116 2
+text9 CODE 0 68E 68E 1D 2
+text10 CODE 0 75C 75C 5 2
+text11 CODE 0 620 620 29 2
+text12 CODE 0 746 746 8 2
+text13 CODE 0 3F8 3F8 69 2
+text14 CODE 0 649 649 23 2
+text15 CODE 0 6C2 6C2 14 2
+text16 CODE 0 66C 66C 22 2
+text17 CODE 0 707 707 C 2
+text18 CODE 0 389 389 6F 2
+text19 CODE 0 461 461 68 2
+text20 CODE 0 6AB 6AB 17 2
+text21 CODE 0 74E 74E 8 2
+text22 CODE 0 761 761 3 2
+text23 CODE 0 713 713 C 2
+text24 CODE 0 756 756 6 2
+maintext CODE 0 4C9 4C9 67 2
+cstackCOMMON COMMON 1 70 70 E 1
+cstackBANK0 BANK0 1 20 20 30 1
+inittext CODE 0 6E7 6E7 10 2
+intentry CODE 0 4 4 D 2
+bssBANK0 BANK0 1 50 50 11 1
+idataBANK0 CODE 0 735 735 9 2
+strings STRING 0 530 530 60 2
+dataBANK0 BANK0 1 61 61 9 1
+clrtext CODE 0 73E 73E 8 2
+$C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.obj
+reset_vec CODE 0 0 0 2 2
+end_init CODE 0 11 11 2 2
+config CONFIG 0 2007 2007 1 2
+# %UNUSED Section
+# This section enumerates the unused ranges of each CLASS. Each entry
+# is described on a single line as follows:
+#    <class name> <range> <delta>
+# Addresses given in the range are in hexadecimal and units of delta.
+%UNUSED
+RAM 6A-6F 1
+RAM A0-EF 1
+RAM 120-16F 1
+BANK0 6A-6F 1
+BANK1 A0-EF 1
+BANK2 120-16F 1
+CONST 2-3 2
+CONST 764-FFF 2
+ENTRY 2-3 2
+ENTRY 764-FFF 2
+IDLOC 2000-2003 2
+STACK A0-EF 1
+CODE 2-3 2
+CODE 764-FFF 2
+SFR0 0-1F 1
+SFR1 80-9F 1
+SFR2 100-11F 1
+SFR3 180-1EF 1
+EEDATA 2100-21FF 2
+STRCODE 2-3 2
+STRCODE 764-FFF 2
+STRING 2-3 2
+STRING 764-FFF 2
+# %LINETAB Section
+# This section enumerates the file/line to address mappings.
+# The beginning of the section is indicated by %LINETAB.
+# The first line indicates the name of the first object file, e.g.
+#   $foo.obj
+# Each line that follows describes a single mapping until the next
+# object file.  Mappings have the following format:
+#    <address> <psect name> <class name> ><line number>:<file name>
+# The address is absolute and given given in unqualified hex 
+# in delta units of the psect. All mappings within an object file
+# are in ascending order of addresses.
+# All other numeric values are in decimal.
+%LINETAB
+$dist/default/production\Situo5Adapter.X.production.obj
+13 cinit CODE >527:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+13 cinit CODE >530:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+13 cinit CODE >625:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+14 cinit CODE >626:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+15 cinit CODE >627:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+16 cinit CODE >628:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+17 cinit CODE >629:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+18 cinit CODE >630:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+19 cinit CODE >631:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+1A cinit CODE >632:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+1B cinit CODE >633:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+1C cinit CODE >634:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+1F cinit CODE >653:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+20 cinit CODE >654:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+21 cinit CODE >655:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+22 cinit CODE >656:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+24 cinit CODE >662:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+24 cinit CODE >664:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+25 cinit CODE >665:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+4 intentry CODE >532:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+756 text24 CODE >40:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+756 text24 CODE >42:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+756 text24 CODE >43:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+75A text24 CODE >44:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+713 text23 CODE >175:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+713 text23 CODE >177:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+719 text23 CODE >178:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+71D text23 CODE >179:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+71E text23 CODE >181:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+761 text22 CODE >5:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+761 text22 CODE >7:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+74E text21 CODE >10:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+74F text21 CODE >12:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+74F text21 CODE >13:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+753 text21 CODE >14:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+755 text21 CODE >15:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+6AB text20 CODE >32:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+6AC text20 CODE >34:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+6B0 text20 CODE >35:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+6B4 text20 CODE >36:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+6BE text20 CODE >37:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+6C1 text20 CODE >38:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+461 text19 CODE >467:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+462 text19 CODE >469:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+463 text19 CODE >474:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+469 text19 CODE >475:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+46A text19 CODE >476:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+46B text19 CODE >481:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+471 text19 CODE >482:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+473 text19 CODE >485:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+474 text19 CODE >486:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+476 text19 CODE >494:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+480 text19 CODE >496:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+484 text19 CODE >499:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+48C text19 CODE >500:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+490 text19 CODE >501:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+494 text19 CODE >502:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+495 text19 CODE >503:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+499 text19 CODE >506:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+49A text19 CODE >507:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+49E text19 CODE >512:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+49F text19 CODE >469:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4A7 text19 CODE >519:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4AC text19 CODE >521:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4AF text19 CODE >522:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4BA text19 CODE >523:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4BE text19 CODE >524:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4C8 text19 CODE >525:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+389 text18 CODE >532:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+389 text18 CODE >534:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+391 text18 CODE >537:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+397 text18 CODE >538:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+39A text18 CODE >539:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+39E text18 CODE >541:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3A2 text18 CODE >542:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3A6 text18 CODE >543:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3A7 text18 CODE >544:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3A8 text18 CODE >547:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3AA text18 CODE >548:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3AE text18 CODE >549:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3AF text18 CODE >550:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3B0 text18 CODE >553:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3B1 text18 CODE >564:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3B4 text18 CODE >566:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3B7 text18 CODE >567:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3B8 text18 CODE >568:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3CC text18 CODE >571:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3D2 text18 CODE >572:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3D4 text18 CODE >573:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3D6 text18 CODE >575:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3EA text18 CODE >576:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3EB text18 CODE >580:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+707 text17 CODE >175:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+707 text17 CODE >177:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+70D text17 CODE >178:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+711 text17 CODE >179:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+712 text17 CODE >181:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+66C text16 CODE >161:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+66C text16 CODE >164:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+67C text16 CODE >166:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+685 text16 CODE >164:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+6C2 text15 CODE >190:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+6C2 text15 CODE >192:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+6C5 text15 CODE >193:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+6CC text15 CODE >194:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+6CF text15 CODE >195:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+6D5 text15 CODE >196:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+649 text14 CODE >15:C:\Program Files (x86)\Microchip\xc8\v1.45\sources\common\Umul16.c
+649 text14 CODE >43:C:\Program Files (x86)\Microchip\xc8\v1.45\sources\common\Umul16.c
+64D text14 CODE >45:C:\Program Files (x86)\Microchip\xc8\v1.45\sources\common\Umul16.c
+64F text14 CODE >46:C:\Program Files (x86)\Microchip\xc8\v1.45\sources\common\Umul16.c
+655 text14 CODE >47:C:\Program Files (x86)\Microchip\xc8\v1.45\sources\common\Umul16.c
+65C text14 CODE >48:C:\Program Files (x86)\Microchip\xc8\v1.45\sources\common\Umul16.c
+663 text14 CODE >49:C:\Program Files (x86)\Microchip\xc8\v1.45\sources\common\Umul16.c
+667 text14 CODE >52:C:\Program Files (x86)\Microchip\xc8\v1.45\sources\common\Umul16.c
+3F8 text13 CODE >183:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3F8 text13 CODE >185:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+448 text13 CODE >186:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+451 text13 CODE >187:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+746 text12 CODE >10:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+749 text12 CODE >12:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+749 text12 CODE >13:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+74B text12 CODE >14:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+74D text12 CODE >15:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+620 text11 CODE >17:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+623 text11 CODE >19:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+627 text11 CODE >20:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+633 text11 CODE >21:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+63C text11 CODE >20:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+645 text11 CODE >22:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+648 text11 CODE >23:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+75C text10 CODE >5:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+75C text10 CODE >7:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+68E text9 CODE >32:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+691 text9 CODE >34:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+695 text9 CODE >35:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+69B text9 CODE >36:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+6A7 text9 CODE >37:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+6AA text9 CODE >38:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+273 text8 CODE >199:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+273 text8 CODE >201:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+277 text8 CODE >202:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+27A text8 CODE >203:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+29B text8 CODE >204:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+2A1 text8 CODE >206:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+2AC text8 CODE >207:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+2B9 text8 CODE >208:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+2BC text8 CODE >209:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+2DD text8 CODE >213:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+2E7 text8 CODE >215:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+2EF text8 CODE >216:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+306 text8 CODE >217:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+30E text8 CODE >218:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+31D text8 CODE >220:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+327 text8 CODE >222:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+33C text8 CODE >224:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+348 text8 CODE >226:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+353 text8 CODE >227:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+35C text8 CODE >224:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+365 text8 CODE >229:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+368 text8 CODE >230:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+36D text8 CODE >232:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+375 text8 CODE >233:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+37F text8 CODE >234:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+5DF text7 CODE >15:C:\Program Files (x86)\Microchip\xc8\v1.45\sources\common\Umul32.c
+5DF text7 CODE >119:C:\Program Files (x86)\Microchip\xc8\v1.45\sources\common\Umul32.c
+5E9 text7 CODE >121:C:\Program Files (x86)\Microchip\xc8\v1.45\sources\common\Umul32.c
+5EB text7 CODE >122:C:\Program Files (x86)\Microchip\xc8\v1.45\sources\common\Umul32.c
+5FF text7 CODE >123:C:\Program Files (x86)\Microchip\xc8\v1.45\sources\common\Umul32.c
+608 text7 CODE >124:C:\Program Files (x86)\Microchip\xc8\v1.45\sources\common\Umul32.c
+611 text7 CODE >125:C:\Program Files (x86)\Microchip\xc8\v1.45\sources\common\Umul32.c
+617 text7 CODE >128:C:\Program Files (x86)\Microchip\xc8\v1.45\sources\common\Umul32.c
+72A text6 CODE >148:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+72D text6 CODE >150:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+71F text5 CODE >170:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+71F text5 CODE >172:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+729 text5 CODE >173:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+6F7 text4 CODE >8:C:\Program Files (x86)\Microchip\xc8\v1.45\sources\common\isdigit.c
+6FA text4 CODE >14:C:\Program Files (x86)\Microchip\xc8\v1.45\sources\common\isdigit.c
+590 text3 CODE >152:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+590 text3 CODE >154:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+596 text3 CODE >155:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+5A1 text3 CODE >156:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+5B3 text3 CODE >157:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+5C6 text3 CODE >156:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+5D8 text3 CODE >158:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+6D6 text2 CODE >25:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+6D9 text2 CODE >27:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+6DD text2 CODE >28:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+6E3 text2 CODE >29:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+6E6 text2 CODE >30:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\usart.c
+27 text1 CODE >238:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+27 text1 CODE >240:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+31 text1 CODE >241:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+33 text1 CODE >242:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+38 text1 CODE >250:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+39 text1 CODE >256:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3C text1 CODE >258:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+3D text1 CODE >261:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+41 text1 CODE >263:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+42 text1 CODE >264:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+44 text1 CODE >272:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+48 text1 CODE >274:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4A text1 CODE >275:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+52 text1 CODE >276:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+53 text1 CODE >277:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+59 text1 CODE >279:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+5A text1 CODE >280:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+62 text1 CODE >281:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+63 text1 CODE >284:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+65 text1 CODE >291:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+66 text1 CODE >268:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+6B text1 CODE >297:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+6C text1 CODE >305:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+74 text1 CODE >306:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+7B text1 CODE >307:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+8E text1 CODE >309:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+99 text1 CODE >311:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+EF text1 CODE >312:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+F0 text1 CODE >315:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+F3 text1 CODE >316:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+F7 text1 CODE >307:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+FE text1 CODE >327:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+102 text1 CODE >329:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+103 text1 CODE >330:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+105 text1 CODE >332:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+10B text1 CODE >334:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+10E text1 CODE >335:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+112 text1 CODE >336:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+113 text1 CODE >339:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+11F text1 CODE >340:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+127 text1 CODE >344:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+128 text1 CODE >244:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+151 text1 CODE >347:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+157 text1 CODE >354:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+15F text1 CODE >360:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+160 text1 CODE >364:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+164 text1 CODE >365:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+165 text1 CODE >369:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+169 text1 CODE >370:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+16A text1 CODE >374:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+177 text1 CODE >375:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+17A text1 CODE >376:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+17B text1 CODE >380:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+18C text1 CODE >381:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+18F text1 CODE >382:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+192 text1 CODE >383:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+195 text1 CODE >384:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+199 text1 CODE >385:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+19A text1 CODE >387:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+19A text1 CODE >389:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+19B text1 CODE >390:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1A2 text1 CODE >391:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1A5 text1 CODE >392:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1A9 text1 CODE >393:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1AA text1 CODE >398:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1BB text1 CODE >399:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1BE text1 CODE >400:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1C1 text1 CODE >401:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1C4 text1 CODE >402:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1C8 text1 CODE >403:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1C9 text1 CODE >405:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1C9 text1 CODE >407:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1CA text1 CODE >408:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1D1 text1 CODE >409:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1D4 text1 CODE >410:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1D8 text1 CODE >411:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1D9 text1 CODE >415:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1EA text1 CODE >416:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1ED text1 CODE >417:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1F0 text1 CODE >418:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1F3 text1 CODE >419:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1F7 text1 CODE >420:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1F8 text1 CODE >422:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1F8 text1 CODE >424:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+1F9 text1 CODE >425:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+200 text1 CODE >426:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+203 text1 CODE >427:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+207 text1 CODE >428:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+208 text1 CODE >432:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+219 text1 CODE >433:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+21C text1 CODE >434:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+21F text1 CODE >435:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+222 text1 CODE >436:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+226 text1 CODE >437:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+227 text1 CODE >439:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+227 text1 CODE >446:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+228 text1 CODE >447:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+22F text1 CODE >448:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+232 text1 CODE >449:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+236 text1 CODE >450:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+237 text1 CODE >455:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+241 text1 CODE >458:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+242 text1 CODE >349:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+26D text1 CODE >462:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+270 text1 CODE >463:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+272 text1 CODE >464:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4C9 maintext CODE >583:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4C9 maintext CODE >586:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4CA maintext CODE >587:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4CD maintext CODE >588:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4CF maintext CODE >589:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4D1 maintext CODE >590:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4D4 maintext CODE >591:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4D6 maintext CODE >598:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4D7 maintext CODE >599:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4D8 maintext CODE >600:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4D9 maintext CODE >601:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4DA maintext CODE >602:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4DB maintext CODE >603:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4DE maintext CODE >604:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4DF maintext CODE >605:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4E0 maintext CODE >606:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4E1 maintext CODE >607:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4E3 maintext CODE >608:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4E4 maintext CODE >609:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4E5 maintext CODE >612:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4E6 maintext CODE >613:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4E7 maintext CODE >614:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4E8 maintext CODE >615:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4E9 maintext CODE >618:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4F3 maintext CODE >619:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+4FB maintext CODE >620:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+508 maintext CODE >621:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+508 maintext CODE >622:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+509 maintext CODE >624:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+512 maintext CODE >626:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+515 maintext CODE >627:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+518 maintext CODE >629:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+519 maintext CODE >630:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+526 maintext CODE >633:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+52C maintext CODE >634:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+52F maintext CODE >621:D:\Documents\Yadoms\Test_LED\Situo5Adapter.X\main.c
+73E clrtext CODE >640:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+73E clrtext CODE >641:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+73F clrtext CODE >642:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+73F clrtext CODE >643:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+740 clrtext CODE >644:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+741 clrtext CODE >645:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+742 clrtext CODE >646:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+743 clrtext CODE >647:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+744 clrtext CODE >648:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+745 clrtext CODE >649:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+6E7 inittext CODE >599:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+6E7 inittext CODE >600:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+6E8 inittext CODE >601:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+6E9 inittext CODE >602:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+6EA inittext CODE >603:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+6EB inittext CODE >610:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+6EB inittext CODE >611:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+6ED inittext CODE >612:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+6EE inittext CODE >613:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+6EF inittext CODE >614:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+6F0 inittext CODE >615:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+6F1 inittext CODE >616:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+6F2 inittext CODE >617:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+6F3 inittext CODE >618:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+6F4 inittext CODE >619:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+6F5 inittext CODE >620:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+6F6 inittext CODE >621:C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.
+# %SYMTAB Section
+# An enumeration of all symbols in the program.
+# The beginning of the section is indicated by %SYMTAB.
+# Each line describes a single symbol as follows:
+#    <label> <value> [-]<load-adj> <class> <space> <psect> <file-name>
+# The value and load-adj are both in unqualified hexadecimal.
+# All other numeric values are in decimal.  The load-adj is the
+# quantity one needs to add to the symbol value in order to obtain the load
+# address of the symbol.  This value may be signed. If the symbol
+# was defined in a psect then <psect> will be "-". File-name
+# is the name of the object file in which the symbol was defined.
+%SYMTAB
+___latbits 1 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+putch@byte 20 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__LdataBANK0 0 0 ABS 0 dataBANK0 -
+__Hspace_0 2008 0 ABS 0 - -
+__Hspace_1 7E 0 ABS 0 - -
+__Hspace_2 0 0 ABS 0 - -
+__Hspace_3 0 0 ABS 0 - -
+__CFG_IESO$OFF 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__HidataBANK0 0 0 ABS 0 idataBANK0 -
+i1_putch E9C 0 CODE 0 text21 dist/default/production\Situo5Adapter.X.production.obj
+itoc@i 20 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__Heeprom_data 0 0 EEDATA 3 eeprom_data -
+CmdMultiChannel@delay 34 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__size_of_fast_delay_ms 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+?_pow 26 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+ISR@c 7D 0 COMMON 1 cstackCOMMON dist/default/production\Situo5Adapter.X.production.obj
+__Hstrings 0 0 ABS 0 strings -
+_CREN BC 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_RCIF 65 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_RXIN 67 0 BANK0 1 dataBANK0 dist/default/production\Situo5Adapter.X.production.obj
+_SPEN BF 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_TMR0 1 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_TXIF 61 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+___sp 0 0 STACK 2 stack C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.obj
+_ctoi E54 0 CODE 0 text6 dist/default/production\Situo5Adapter.X.production.obj
+_itoc EB8 0 CODE 0 text10 dist/default/production\Situo5Adapter.X.production.obj
+_main 992 0 CODE 0 maintext dist/default/production\Situo5Adapter.X.production.obj
+btemp 7E 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+i1_itoc EC2 0 CODE 0 text22 dist/default/production\Situo5Adapter.X.production.obj
+pow@a 26 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+pow@b 28 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+pow@i 2D 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+start 22 0 CODE 0 init C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.obj
+_flagRXFramingError 59 0 BANK0 1 bssBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__CFG_BOREN$OFF 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__size_of_ctoi 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__size_of_itoc 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__size_of_main 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+?___lmul 2F 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+?___wmul 20 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+_OPTION_REGbits 81 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__LidataBANK0 0 0 ABS 0 idataBANK0 -
+__Hpowerup 0 0 CODE 0 powerup -
+i1itoc@i 70 0 COMMON 1 cstackCOMMON dist/default/production\Situo5Adapter.X.production.obj
+_printci_tx D1C 0 CODE 0 text9 dist/default/production\Situo5Adapter.X.production.obj
+i1flashAliveLED@changeScaler 72 0 COMMON 1 cstackCOMMON dist/default/production\Situo5Adapter.X.production.obj
+__end_of_fast_delay_ms E54 0 CODE 0 text5 dist/default/production\Situo5Adapter.X.production.obj
+intlevel0 0 0 ENTRY 0 functab C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.obj
+intlevel1 0 0 ENTRY 0 functab C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.obj
+intlevel2 0 0 ENTRY 0 functab C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.obj
+intlevel3 0 0 ENTRY 0 functab C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.obj
+intlevel4 0 0 ENTRY 0 functab C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.obj
+intlevel5 0 0 ENTRY 0 functab C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.obj
+_NewTs232Frame 69 0 BANK0 1 dataBANK0 dist/default/production\Situo5Adapter.X.production.obj
+processCmdIN@lenDelay 42 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+CmdMultiChannel@nbChange 3E 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+wtemp0 7E 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__Hfunctab 0 0 ENTRY 0 functab -
+__size_ofi1_itoc 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+printc_tx@c 21 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__Hclrtext 0 0 ABS 0 clrtext -
+___wmul@multiplicand 22 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+_ADCON0 1F 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_Err_Code 68 0 BANK0 1 dataBANK0 dist/default/production\Situo5Adapter.X.production.obj
+_scaleCount 61 0 BANK0 1 dataBANK0 dist/default/production\Situo5Adapter.X.production.obj
+_CMCON0 19 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__end_of___lmul C40 0 CODE 0 text7 dist/default/production\Situo5Adapter.X.production.obj
+__end_of___wmul CD8 0 CODE 0 text14 dist/default/production\Situo5Adapter.X.production.obj
+__Lmaintext 0 0 ABS 0 maintext -
+__end_of_printci_tx D56 0 CODE 0 text9 dist/default/production\Situo5Adapter.X.production.obj
+__size_of_isdigit 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_INTCON B 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__end_ofi1_flashAliveLED E3E 0 CODE 0 text23 dist/default/production\Situo5Adapter.X.production.obj
+__size_of_CommandChannel 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_BAUDCTLbits 11 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__size_of_getch 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__size_of_putch 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__size_of_ProcessReadChannel 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__end_of_CmdMultiChannel 712 0 CODE 0 text8 dist/default/production\Situo5Adapter.X.production.obj
+__CFG_FCMEN$OFF 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__CFG_MCLRE$OFF 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+start_initialization 26 0 CODE 0 cinit dist/default/production\Situo5Adapter.X.production.obj
+__CFG_FOSC$INTOSCIO 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+processCmdIN@i 46 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+_processCmdIN 4E 0 CODE 0 text1 dist/default/production\Situo5Adapter.X.production.obj
+clear_ram0 E7C 0 CODE 0 clrtext dist/default/production\Situo5Adapter.X.production.obj
+__pcstackBANK0 20 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__end_of_processRXIN 992 0 CODE 0 text19 dist/default/production\Situo5Adapter.X.production.obj
+CmdMultiChannel@i 3C 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+i1_flashAliveLED E26 0 CODE 0 text23 dist/default/production\Situo5Adapter.X.production.obj
+_isdigit$573 20 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+___int_sp 0 0 STACK 2 stack C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.obj
+i1flashAliveLED@toggleCount 70 0 COMMON 1 cstackCOMMON dist/default/production\Situo5Adapter.X.production.obj
+__Hbank0 0 0 ABS 0 bank0 -
+__Hbank1 0 0 ABS 0 bank1 -
+__Hbank2 0 0 ABS 0 bank2 -
+__Hbank3 0 0 BANK3 1 bank3 -
+__Hcinit 4E 0 CODE 0 cinit -
+__Hidloc 0 0 IDLOC 0 idloc -
+__Hstack 0 0 STACK 2 stack -
+__stringbase A6A 0 STRING 0 strings dist/default/production\Situo5Adapter.X.production.obj
+processRXIN@c_in 77 0 COMMON 1 cstackCOMMON dist/default/production\Situo5Adapter.X.production.obj
+__Hmaintext 0 0 ABS 0 maintext -
+_CmdMultiChannel 4E6 0 CODE 0 text8 dist/default/production\Situo5Adapter.X.production.obj
+_DebugMode 5F 0 BANK0 1 bssBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__Hcommon 0 0 ABS 0 common -
+__Hconfig 4010 0 CONFIG 0 config -
+__end_of_printc_tx DCE 0 CODE 0 text2 dist/default/production\Situo5Adapter.X.production.obj
+_flashAliveLED E0E 0 CODE 0 text17 dist/default/production\Situo5Adapter.X.production.obj
+__size_of_processCmdIN 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__size_of_printc_tx 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__Lbank0 0 0 ABS 0 bank0 -
+__Lbank1 0 0 ABS 0 bank1 -
+__Lbank2 0 0 ABS 0 bank2 -
+__Lbank3 0 0 BANK3 1 bank3 -
+__end_of_isdigit E0E 0 CODE 0 text4 dist/default/production\Situo5Adapter.X.production.obj
+__Lcinit 26 0 CODE 0 cinit -
+__Lidloc 0 0 IDLOC 0 idloc -
+__Lstack 0 0 STACK 2 stack -
+__Linittext 0 0 ABS 0 inittext -
+_INTCONbits B 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__Habs1 0 0 ABS 0 abs1 -
+__Hcode 0 0 ABS 0 code -
+__Hinit 22 0 CODE 0 init -
+__Hsfr0 0 0 ABS 0 sfr0 -
+__Hsfr1 0 0 ABS 0 sfr1 -
+__Hsfr2 0 0 ABS 0 sfr2 -
+__Hsfr3 0 0 ABS 0 sfr3 -
+__Htext 0 0 ABS 0 text -
+__size_ofi1_putch 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__Labs1 0 0 ABS 0 abs1 -
+__Lcode 0 0 ABS 0 code -
+__Linit 22 0 CODE 0 init -
+__Lsfr0 0 0 ABS 0 sfr0 -
+__Lsfr1 0 0 ABS 0 sfr1 -
+__Lsfr2 0 0 ABS 0 sfr2 -
+__Lsfr3 0 0 ABS 0 sfr3 -
+__Ltext 0 0 ABS 0 text -
+___lmul BBE 0 CODE 0 text7 dist/default/production\Situo5Adapter.X.production.obj
+___wmul C92 0 CODE 0 text14 dist/default/production\Situo5Adapter.X.production.obj
+__LcstackBANK0 0 0 ABS 0 cstackBANK0 -
+__HcstackCOMMON 0 0 ABS 0 cstackCOMMON -
+_ISR 712 0 CODE 0 text18 dist/default/production\Situo5Adapter.X.production.obj
+_RA0 28 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_RA1 29 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_RA2 2A 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_RA3 2B 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_RA4 2C 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_RA5 2D 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_RC0 38 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_RC1 39 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_RC2 3A 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_RC3 3B 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_RC4 3C 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_RC5 3D 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__S0 2008 0 ABS 0 - -
+__S1 7E 0 ABS 0 - -
+__S2 0 0 ABS 0 - -
+__S3 0 0 ABS 0 - -
+_pow B20 0 CODE 0 text3 dist/default/production\Situo5Adapter.X.production.obj
+_printc_tx DAC 0 CODE 0 text2 dist/default/production\Situo5Adapter.X.production.obj
+__end_of_processCmdIN 4E6 0 CODE 0 text1 dist/default/production\Situo5Adapter.X.production.obj
+saved_w 7E 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__end_of_ISR 7F0 0 CODE 0 text18 dist/default/production\Situo5Adapter.X.production.obj
+__end_of_pow BBE 0 CODE 0 text3 dist/default/production\Situo5Adapter.X.production.obj
+i1_printci_tx D56 0 CODE 0 text20 dist/default/production\Situo5Adapter.X.production.obj
+__Lintentry 8 0 CODE 0 intentry -
+__stringtab A60 0 STRING 0 strings dist/default/production\Situo5Adapter.X.production.obj
+__size_of_printci_tx 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+reset_vec 0 0 CODE 0 reset_vec C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.obj
+print_tx@len 21 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+print_tx@str 25 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__size_ofi1_flashAliveLED 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__pdataBANK0 61 0 BANK0 1 dataBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__size_of___lmul 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__size_of___wmul 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__LbssBANK0 0 0 ABS 0 bssBANK0 -
+_RCSTAbits 17 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_PIE1bits 8C 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__ptext10 EB8 0 CODE 0 text10 dist/default/production\Situo5Adapter.X.production.obj
+__ptext11 C40 0 CODE 0 text11 dist/default/production\Situo5Adapter.X.production.obj
+__ptext12 E8C 0 CODE 0 text12 dist/default/production\Situo5Adapter.X.production.obj
+__ptext13 7F0 0 CODE 0 text13 dist/default/production\Situo5Adapter.X.production.obj
+__ptext14 C92 0 CODE 0 text14 dist/default/production\Situo5Adapter.X.production.obj
+__ptext15 D84 0 CODE 0 text15 dist/default/production\Situo5Adapter.X.production.obj
+__ptext16 CD8 0 CODE 0 text16 dist/default/production\Situo5Adapter.X.production.obj
+__ptext17 E0E 0 CODE 0 text17 dist/default/production\Situo5Adapter.X.production.obj
+__ptext18 712 0 CODE 0 text18 dist/default/production\Situo5Adapter.X.production.obj
+__ptext19 8C2 0 CODE 0 text19 dist/default/production\Situo5Adapter.X.production.obj
+__ptext20 D56 0 CODE 0 text20 dist/default/production\Situo5Adapter.X.production.obj
+__ptext21 E9C 0 CODE 0 text21 dist/default/production\Situo5Adapter.X.production.obj
+__ptext22 EC2 0 CODE 0 text22 dist/default/production\Situo5Adapter.X.production.obj
+__ptext23 E26 0 CODE 0 text23 dist/default/production\Situo5Adapter.X.production.obj
+__ptext24 EAC 0 CODE 0 text24 dist/default/production\Situo5Adapter.X.production.obj
+__size_of_CmdMultiChannel 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+pow@result 2B 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__pmaintext 992 0 CODE 0 maintext dist/default/production\Situo5Adapter.X.production.obj
+___lmul@multiplier 2F 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+?_ctoi 20 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__size_of_flashAliveLED 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__Lcommon 0 0 ABS 0 common -
+__Lconfig 400E 0 CONFIG 0 config -
+__CFG_CP$OFF 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__CFG_WDTE$OFF 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__Hinittext 0 0 ABS 0 inittext -
+___wmul@multiplier 20 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__size_ofi1_printci_tx 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__size_of_processRXIN 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__end_ofi1_putch EAC 0 CODE 0 text21 dist/default/production\Situo5Adapter.X.production.obj
+_scaler 63 0 BANK0 1 dataBANK0 dist/default/production\Situo5Adapter.X.production.obj
+_tCount 65 0 BANK0 1 dataBANK0 dist/default/production\Situo5Adapter.X.production.obj
+CmdMultiChannel@chanToActive 32 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+flashAliveLED@changeScaler 22 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+printci_tx@c 24 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+printci_tx@i 22 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+stackhi 0 0 ABS 0 - C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.obj
+stacklo 0 0 ABS 0 - C:\Users\KPTN__~1\AppData\Local\Temp\s9ek.obj
+__size_of_print_tx 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_flagRXOverrunError 57 0 BANK0 1 bssBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__end_of__stringtab A6C 0 STRING 0 strings dist/default/production\Situo5Adapter.X.production.obj
+_lastActiveChannel 5B 0 BANK0 1 bssBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__Lspace_0 0 0 ABS 0 - -
+__Lspace_1 0 0 ABS 0 - -
+__Lspace_2 0 0 ABS 0 - -
+__Lspace_3 0 0 ABS 0 - -
+__end_ofi1_printci_tx D84 0 CODE 0 text20 dist/default/production\Situo5Adapter.X.production.obj
+_LenRs232 60 0 BANK0 1 bssBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__end_of_flashAliveLED E26 0 CODE 0 text17 dist/default/production\Situo5Adapter.X.production.obj
+init_fetch0 DCE 0 CODE 0 inittext dist/default/production\Situo5Adapter.X.production.obj
+__HcstackBANK0 0 0 ABS 0 cstackBANK0 -
+delay_ms@i 23 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+delay_ms@x 20 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+_PIR1bits C 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__Lend_init 22 0 CODE 0 end_init -
+__size_of_delay_ms 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__LcstackCOMMON 0 0 ABS 0 cstackCOMMON -
+end_of_initialization 48 0 CODE 0 cinit dist/default/production\Situo5Adapter.X.production.obj
+_CommandChannel D84 0 CODE 0 text15 dist/default/production\Situo5Adapter.X.production.obj
+__Hintentry 22 0 CODE 0 intentry -
+__Lstrings 0 0 ABS 0 strings -
+i1putch@byte 70 0 COMMON 1 cstackCOMMON dist/default/production\Situo5Adapter.X.production.obj
+__Hreset_vec 4 0 CODE 0 reset_vec -
+__HbssBANK0 0 0 ABS 0 bssBANK0 -
+__ptext1 4E 0 CODE 0 text1 dist/default/production\Situo5Adapter.X.production.obj
+__ptext2 DAC 0 CODE 0 text2 dist/default/production\Situo5Adapter.X.production.obj
+__ptext3 B20 0 CODE 0 text3 dist/default/production\Situo5Adapter.X.production.obj
+__ptext4 DEE 0 CODE 0 text4 dist/default/production\Situo5Adapter.X.production.obj
+__ptext5 E3E 0 CODE 0 text5 dist/default/production\Situo5Adapter.X.production.obj
+__ptext6 E54 0 CODE 0 text6 dist/default/production\Situo5Adapter.X.production.obj
+__ptext7 BBE 0 CODE 0 text7 dist/default/production\Situo5Adapter.X.production.obj
+__ptext8 4E6 0 CODE 0 text8 dist/default/production\Situo5Adapter.X.production.obj
+__ptext9 D1C 0 CODE 0 text9 dist/default/production\Situo5Adapter.X.production.obj
+__Lpowerup 0 0 CODE 0 powerup -
+__Leeprom_data 0 0 EEDATA 3 eeprom_data -
+_print_tx C40 0 CODE 0 text11 dist/default/production\Situo5Adapter.X.production.obj
+_isdigit DEE 0 CODE 0 text4 dist/default/production\Situo5Adapter.X.production.obj
+__end_ofi1_itoc EC8 0 CODE 0 text22 dist/default/production\Situo5Adapter.X.production.obj
+flashAliveLED@toggleCount 20 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__Lreset_vec 0 0 CODE 0 reset_vec -
+__end_of_print_tx C92 0 CODE 0 text11 dist/default/production\Situo5Adapter.X.production.obj
+__end_of__initialization 48 0 CODE 0 cinit dist/default/production\Situo5Adapter.X.production.obj
+_delay_ms CD8 0 CODE 0 text16 dist/default/production\Situo5Adapter.X.production.obj
+__Lfunctab 0 0 ENTRY 0 functab -
+_fast_delay_ms E3E 0 CODE 0 text5 dist/default/production\Situo5Adapter.X.production.obj
+__end_of_CommandChannel DAC 0 CODE 0 text15 dist/default/production\Situo5Adapter.X.production.obj
+CommandChannel@d 25 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__pidataBANK0 E6A 0 CODE 0 idataBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__end_of_ProcessReadChannel 8C2 0 CODE 0 text13 dist/default/production\Situo5Adapter.X.production.obj
+__Lclrtext 0 0 ABS 0 clrtext -
+i1printci_tx@c 74 0 COMMON 1 cstackCOMMON dist/default/production\Situo5Adapter.X.production.obj
+i1printci_tx@i 72 0 COMMON 1 cstackCOMMON dist/default/production\Situo5Adapter.X.production.obj
+___lmul@product 38 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__end_of_delay_ms D1C 0 CODE 0 text16 dist/default/production\Situo5Adapter.X.production.obj
+___lmul@multiplicand 33 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__pcstackCOMMON 70 0 COMMON 1 cstackCOMMON dist/default/production\Situo5Adapter.X.production.obj
+__Hend_init 26 0 CODE 0 end_init -
+init_ram0 DD6 0 CODE 0 inittext dist/default/production\Situo5Adapter.X.production.obj
+_channel 5D 0 BANK0 1 bssBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__end_of_ctoi E6A 0 CODE 0 text6 dist/default/production\Situo5Adapter.X.production.obj
+__end_of_itoc EC2 0 CODE 0 text10 dist/default/production\Situo5Adapter.X.production.obj
+__end_of_main A60 0 CODE 0 maintext dist/default/production\Situo5Adapter.X.production.obj
+isdigit@c 21 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+processCmdIN@selected_channel 44 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+print_tx@i 23 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+_ANSEL 91 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__end_of_getch EB8 0 CODE 0 text24 dist/default/production\Situo5Adapter.X.production.obj
+_RCREG 14 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_RCSTA 17 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_SPBRG 13 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_TRISA 85 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_TRISC 87 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_TXREG 15 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+_TXSTA 16 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__end_of_putch E9C 0 CODE 0 text12 dist/default/production\Situo5Adapter.X.production.obj
+__Hram 0 0 ABS 0 ram -
+__Lram 0 0 ABS 0 ram -
+interrupt_function 8 0 CODE 0 intentry dist/default/production\Situo5Adapter.X.production.obj
+_getch EAC 0 CODE 0 text24 dist/default/production\Situo5Adapter.X.production.obj
+_putch E8C 0 CODE 0 text12 dist/default/production\Situo5Adapter.X.production.obj
+__CFG_CPD$OFF 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__pintentry 8 0 CODE 0 intentry dist/default/production\Situo5Adapter.X.production.obj
+__size_of_ISR 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__size_of_pow 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__HdataBANK0 0 0 ABS 0 dataBANK0 -
+_ProcessReadChannel 7F0 0 CODE 0 text13 dist/default/production\Situo5Adapter.X.production.obj
+processCmdIN@my_delay 48 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__initialization 26 0 CODE 0 cinit dist/default/production\Situo5Adapter.X.production.obj
+__CFG_PWRTE$OFF 0 0 ABS 0 - dist/default/production\Situo5Adapter.X.production.obj
+__pbssBANK0 50 0 BANK0 1 bssBANK0 dist/default/production\Situo5Adapter.X.production.obj
+ctoi@c 23 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+__pstrings A60 0 STRING 0 strings dist/default/production\Situo5Adapter.X.production.obj
+___wmul@product 24 0 BANK0 1 cstackBANK0 dist/default/production\Situo5Adapter.X.production.obj
+_processRXIN 8C2 0 CODE 0 text19 dist/default/production\Situo5Adapter.X.production.obj
+_Rs232Frame 50 0 BANK0 1 bssBANK0 dist/default/production\Situo5Adapter.X.production.obj
+# %SPLITSTAB Section
+# This section enumerates all the psect splits performed by the assembler.
+# The beginning of the section is indicated by %SPLITSTAB.
+# Each line is a record a particular split, where the parent psect is on
+# the left and the child on the right.  Note that a child psect is always
+# split form the top of the parent psect. All splits from a given parent
+# are listed in the order in which they occurred.
+%SPLITSTAB
+# %DABS Section
+# This section contains a table of all usuage of the assember
+# directive DABS in the program. Each line has the following format:
+#   <name> <space> <address> <size>
+# If the DABS was originally labelled then that shall be <name>,
+# otherwise name will be "-".  The <space> number is in decimal.
+# <address> and <size> are in byte units as unqaulified hexadecimal
+%DABS
+- 1 7E 2
+# %SEGMENTS Section
+# This sections enumerates the segments of the program.  Each segment
+# is described on a single line as follows:
+#    <name> <space> <link address> <file address> <size> <delta>
+# Addresses and size are in unqualified hexadecimal.  The link address
+# and size are in units of delta. The file address is in units of bytes.
+# All other numeric quantities are in decimal.
+%SEGMENTS
+text3 0 590 B20 1D4 2
+cstackCOMMON 1 70 70 E 1
+cstackBANK0 1 20 20 4A 1
+intentry 0 4 8 52C 2
+reset_vec 0 0 0 2 2
+strings 0 530 A60 60 2
+config 0 2007 400E 1 2

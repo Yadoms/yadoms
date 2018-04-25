@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=Test_LED.X
+PROJECTNAME=Situo5Adapter.X
 
 # Active Configuration
 DEFAULTCONF=default
