@@ -678,8 +678,7 @@
       "connectionLost": "RFXCom connection was lost",
       "updateConfiguration": "Configuration updating...",
       "updateFirmware": "Firmware updating...",
-      "failToConfigure": "Unable to set configuration as expected, maybe incompatible protocols were selected, see RFXCom manual",
-      "startPairing":  "Pairing, waiting for a new device..."
+      "failToConfigure": "Unable to set configuration as expected, maybe incompatible protocols were selected, see RFXCom manual"
     },
     "firmwareUpdate": {
       "loadInputFile": "Loading file...",

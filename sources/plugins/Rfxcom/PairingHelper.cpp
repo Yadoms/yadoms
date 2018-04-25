@@ -3,10 +3,8 @@
 
 
 CPairingHelper::CPairingHelper(boost::shared_ptr<yApi::IYPluginApi> api,
-                               boost::shared_ptr<IPluginStateHelper> pluginStateHelper,
                                EPairingMode configuredMode)
    : m_api(api),
-     m_pluginStateHelper(pluginStateHelper),
      m_progressPairingCount(0)
 {
    setMode(configuredMode);
@@ -88,7 +86,6 @@ void CPairingHelper::stopPairing(const std::string& devicePaired)
 
       m_manualPairingExtraQuery->sendSuccess(shared::CDataContainer::EmptyContainer);
    }
-   m_pluginStateHelper->set(IPluginStateHelper::kStopPairing);
    m_manualPairingExtraQuery.reset();
 
    YADOMS_LOG(information) << "Stop pairing";

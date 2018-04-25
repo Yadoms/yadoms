@@ -35,8 +35,7 @@ CRfxcom::~CRfxcom()
 
 void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   m_pluginStateHelper = m_factory.constructPluginStateHelper(api);
-   m_pluginStateHelper->set(IPluginStateHelper::kConnecting);
+   api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
    YADOMS_LOG(information) << "RFXCom is starting...";
 
@@ -47,7 +46,6 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    // Create the transceiver
    m_pairingHelper = m_factory.constructPairingHelper(api,
-                                                      m_pluginStateHelper,
                                                       m_configuration.getPairingMode());
    m_transceiver = m_factory.constructTransceiver(m_pairingHelper);
 
@@ -70,7 +68,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          case yApi::IYPluginApi::kEventStopRequested:
             {
                YADOMS_LOG(information) << "Stop requested";
-               m_pluginStateHelper->set(IPluginStateHelper::kStopped);
+               api->setPluginState(yApi::historization::EPluginState::kStopped);
                return;
             }
          case yApi::IYPluginApi::kEventDeviceCommand:
@@ -101,7 +99,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
          case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
-               m_pluginStateHelper->set(IPluginStateHelper::kUpdateConfiguration);
+               api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
                onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
 
                break;
@@ -313,7 +311,7 @@ void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    YADOMS_LOG(information) << "RFXCom port opened";
-   m_pluginStateHelper->set(IPluginStateHelper::kInitializing);
+   api->setPluginState(yApi::historization::EPluginState::kCustom, "initializing");
 
    try
    {
@@ -340,11 +338,11 @@ void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi
 {
    YADOMS_LOG(information) << "RFXCom connection was lost";
    if (notification)
-      m_pluginStateHelper->set(IPluginStateHelper::kError,
-                               notification->getErrorMessageI18n(),
-                               notification->getErrorMessageI18nParameters());
+      api->setPluginState(yApi::historization::EPluginState::kError,
+                          notification->getErrorMessageI18n(),
+                          notification->getErrorMessageI18nParameters());
    else
-      m_pluginStateHelper->set(IPluginStateHelper::kConnectionLost);
+      api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionLost");
 
    errorProcess(api);
 }
@@ -387,7 +385,7 @@ void CRfxcom::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    boost::shared_ptr<IRfxcomFirmwareUpdater> updater;
 
-   m_pluginStateHelper->set(IPluginStateHelper::kUpdateFirmware);
+   api->setPluginState(yApi::historization::EPluginState::kCustom, "updateFirmware");
 
    // First step : initialization. No connection restart if fail.
    try
@@ -487,12 +485,12 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> ap
       if (status.needConfigurationUpdate(m_configuration))
       {
          YADOMS_LOG(error) << "Unable to set configuration as expected, maybe incompatible protocols were selected";
-         m_pluginStateHelper->set(IPluginStateHelper::kFailToConfigure);
+         api->setPluginState(yApi::historization::EPluginState::kError, "failToConfigure");
          throw boost::thread_interrupted();
       }
 
       YADOMS_LOG(information) << "RFXCom is running";
-      m_pluginStateHelper->set(IPluginStateHelper::kRunning);
+      api->setPluginState(yApi::historization::EPluginState::kRunning);
    }
    else
    {
@@ -503,7 +501,7 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> ap
       }
       m_configurationUpdated = true;
       YADOMS_LOG(information) << "RFXCom is running";
-      m_pluginStateHelper->set(IPluginStateHelper::kRunning);
+      api->setPluginState(yApi::historization::EPluginState::kRunning);
    }
 }
 

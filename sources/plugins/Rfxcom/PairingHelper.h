@@ -1,7 +1,6 @@
 #pragma once
 #include "IPairingHelper.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include "IPluginStateHelper.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -13,7 +12,6 @@ class CPairingHelper : public IPairingHelper
 public:
 
    CPairingHelper(boost::shared_ptr<yApi::IYPluginApi> api,
-                  boost::shared_ptr<IPluginStateHelper> pluginStateHelper,
                   EPairingMode configuredMode);
    virtual ~CPairingHelper();
 
@@ -32,7 +30,6 @@ protected:
 
 private:
    boost::shared_ptr<yApi::IYPluginApi> m_api;
-   boost::shared_ptr<IPluginStateHelper> m_pluginStateHelper;
    EPairingMode m_mode;
    bool m_pairingEnable;
    int m_progressPairingCount;

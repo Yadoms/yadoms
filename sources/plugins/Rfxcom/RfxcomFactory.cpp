@@ -6,7 +6,6 @@
 #include "RfxComReceiveBufferHandler.h"
 #include "RfxcomFirmwareUpdater.h"
 #include <shared/Log.h>
-#include "PluginStateHelper.h"
 
 CRfxcomFactory::~CRfxcomFactory()
 {
@@ -57,15 +56,8 @@ boost::shared_ptr<IRfxcomFirmwareUpdater> CRfxcomFactory::constructFirmwareUpdat
 }
 
 boost::shared_ptr<CPairingHelper> CRfxcomFactory::constructPairingHelper(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                                         boost::shared_ptr<IPluginStateHelper> pluginStateHelper,
                                                                          CPairingHelper::EPairingMode pairingMode) const
 {
    return boost::make_shared<CPairingHelper>(api,
-                                             pluginStateHelper,
                                              pairingMode);
-}
-
-boost::shared_ptr<IPluginStateHelper> CRfxcomFactory::constructPluginStateHelper(boost::shared_ptr<yApi::IYPluginApi> api) const
-{
-   return boost::make_shared<CPluginStateHelper>(api);
 }

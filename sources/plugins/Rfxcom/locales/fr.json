@@ -680,8 +680,7 @@
       "connectionLost": "Connexion perdue",
       "updateConfiguration": "Mise à jour de la configuration...",
       "updateFirmware": "Mise à jour du firmware...",
-      "failToConfigure": "Impossible de configurer le RFXCom, des protocoles incompatibles ont propablement été sélectionnés. Voir le manuel du RFXCom.",
-      "startPairing":  "Appairage en cours, attente d'un nouvel équipement..."
+      "failToConfigure": "Impossible de configurer le RFXCom, des protocoles incompatibles ont propablement été sélectionnés. Voir le manuel du RFXCom."
     },
     "firmwareUpdate": {
       "loadInputFile": "Chargement du fichier...",
