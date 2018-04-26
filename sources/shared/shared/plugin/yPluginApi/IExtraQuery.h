@@ -42,7 +42,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Report the extra query progression
             ///\param [in] progression  The progression (0->100)
-            ///\param [in] errorMessage The associated message (can be i18n string)
+            ///\param [in] message The associated message (can be i18n string)
             //-----------------------------------------------------
             virtual void reportProgress(const float progression, const std::string& message) = 0;
          };

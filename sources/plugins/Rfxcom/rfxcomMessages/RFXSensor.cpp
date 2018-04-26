@@ -104,6 +104,14 @@ namespace rfxcomMessages
       api->historizeData(m_deviceName, m_keywords);
    }
 
+   void CRFXSensor::filter() const
+   {
+   }
+
+   void CRFXSensor::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+   }
+
    const std::string& CRFXSensor::getDeviceName() const
    {
       return m_deviceName;

@@ -94,6 +94,14 @@ namespace rfxcomMessages
       api->historizeData(m_deviceName, m_keywords);
    }
 
+   void CRain::filter() const
+   {
+   }
+
+   void CRain::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+   }
+
    const std::string& CRain::getDeviceName() const
    {
       return m_deviceName;

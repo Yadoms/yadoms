@@ -200,6 +200,7 @@ set(PIC_CONFIGURATIONS_SOURCES
 set(RFXCOM_SOURCES
    stdafx.h
    stdafx.cpp
+   IPairingHelper.h
    IncrementSequenceNumber.h
    IRfxcomConfiguration.h
    IRfxcomFirmwareUpdater.h
@@ -209,6 +210,8 @@ set(RFXCOM_SOURCES
    ManuallyDeviceCreationException.hpp
    MessageFilteredException.hpp
    NullSequenceNumber.h
+   PairingHelper.h
+   PairingHelper.cpp
    PicBoot.h
    PicBoot.cpp
    PicBootPacketControlCharacters.h

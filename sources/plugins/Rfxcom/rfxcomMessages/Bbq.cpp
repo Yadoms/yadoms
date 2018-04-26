@@ -74,6 +74,14 @@ namespace rfxcomMessages
       api->historizeData(m_deviceName, m_keywords);
    }
 
+   void CBbq::filter() const
+   {
+   }
+
+   void CBbq::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+   }
+
    const std::string& CBbq::getDeviceName() const
    {
       return m_deviceName;

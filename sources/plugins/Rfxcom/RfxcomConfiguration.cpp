@@ -5,7 +5,7 @@ CRfxcomConfiguration::~CRfxcomConfiguration()
 {
 }
 
-void CRfxcomConfiguration::initializeWith(const shared::CDataContainer &data)
+void CRfxcomConfiguration::initializeWith(const shared::CDataContainer& data)
 {
    m_configuration.initializeWith(data);
 }
@@ -28,6 +28,18 @@ std::string CRfxcomConfiguration::getEthernetPort() const
 std::string CRfxcomConfiguration::getSerialPort() const
 {
    return m_configuration.get<std::string>("SerialPort");
+}
+
+CPairingHelper::EPairingMode CRfxcomConfiguration::getPairingMode() const
+{
+   try
+   {
+      return m_configuration.get<std::string>("PairingMode") == "manual" ? CPairingHelper::kManual : CPairingHelper::kAuto;
+   }
+   catch (shared::exception::CInvalidParameter&)
+   {
+      return CPairingHelper::kAuto;
+   }
 }
 
 bool CRfxcomConfiguration::isAEenabled() const { return m_configuration.get<bool>("Protocols.content.AE Blyss"); }
