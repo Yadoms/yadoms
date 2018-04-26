@@ -35,6 +35,18 @@ namespace rfxcomMessages
       virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const = 0;
 
       //--------------------------------------------------------------
+      /// \brief	                        Filter new device if necessary
+      /// \throw                          CMessageFilteredException if message need to be filtered
+      //--------------------------------------------------------------
+      virtual void filter() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	                        Declare the device
+      /// \param[in] api                  Yadoms APi context
+      //--------------------------------------------------------------
+      virtual void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const = 0;
+
+      //--------------------------------------------------------------
       /// \brief	                        Returns the device name
       /// \return                         Device name
       //--------------------------------------------------------------

@@ -131,6 +131,14 @@ namespace rfxcomMessages
       // Nothing to historize (transmitter-only device)
    }
 
+   void CRadiator1::filter() const
+   {
+   }
+
+   void CRadiator1::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+   }
+
    const std::string& CRadiator1::getDeviceName() const
    {
       return m_deviceName;

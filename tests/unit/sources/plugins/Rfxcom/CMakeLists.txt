@@ -2,6 +2,8 @@
 IF(NOT DISABLE_TEST_RFXCOM)
    ADD_YADOMS_SOURCES(
       plugins/Rfxcom/rfxcomMessages/RareDeviceIdFilter.cpp
+      plugins/Rfxcom/PairingHelper.h
+      plugins/Rfxcom/PairingHelper.cpp
       plugins/Rfxcom/PicBootReceiveBufferHandler.h
       plugins/Rfxcom/PicBootReceiveBufferHandler.cpp
       plugins/Rfxcom/RfxComReceiveBufferHandler.h
@@ -14,6 +16,7 @@ IF(NOT DISABLE_TEST_RFXCOM)
       TestRareDeviceIdFilter.cpp
       TestRfxComReceiveBufferHandler.cpp
       TestPicBootReceiveBufferHandler.cpp
+      TestPairingHelper.cpp
    )
    
 ENDIF()
