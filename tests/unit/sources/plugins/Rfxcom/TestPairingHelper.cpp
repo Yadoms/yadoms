@@ -5,20 +5,6 @@
 #include "../../../../sources/plugins/Rfxcom/PairingHelper.h"
 #include "server/pluginSystem/DefaultYPluginApiMock.hpp"
 
-class CPluginStateHelperMock : public IPluginStateHelper
-{
-public:
-   virtual ~CPluginStateHelperMock()
-   {
-   }
-
-   void set(EState internalState,
-            const std::string& customMessageId = std::string(),
-            const std::map<std::string, std::string>& customMessageDataParams = std::map<std::string, std::string>()) override
-   {
-   }
-};
-
 class CExtraQueryMock : public yApi::IExtraQuery
 {
 public:
@@ -46,7 +32,7 @@ BOOST_AUTO_TEST_SUITE(TestPairingHelper)
    BOOST_AUTO_TEST_CASE(AutoMode)
    {
       const auto api(boost::make_shared<CDefaultYPluginApiMock>());
-      CPairingHelper ph(api, boost::make_shared<CPluginStateHelperMock>(), CPairingHelper::kAuto);
+      CPairingHelper ph(api, CPairingHelper::kAuto);
 
       BOOST_CHECK_EQUAL(ph.getMode(), CPairingHelper::kAuto);
       BOOST_CHECK_EQUAL(ph.isPairingEnable(), true);
@@ -68,7 +54,7 @@ BOOST_AUTO_TEST_SUITE(TestPairingHelper)
    BOOST_AUTO_TEST_CASE(ManualMode)
    {
       const auto api(boost::make_shared<CDefaultYPluginApiMock>());
-      CPairingHelper ph(api, boost::make_shared<CPluginStateHelperMock>(), CPairingHelper::kManual);
+      CPairingHelper ph(api, CPairingHelper::kManual);
 
       BOOST_CHECK_EQUAL(ph.getMode(), CPairingHelper::kManual);
 
@@ -105,7 +91,7 @@ BOOST_AUTO_TEST_SUITE(TestPairingHelper)
       const auto api(boost::make_shared<CDefaultYPluginApiMock>());
 
       // Create in auto mode
-      CPairingHelper ph1(api, boost::make_shared<CPluginStateHelperMock>(), CPairingHelper::kAuto);
+      CPairingHelper ph1(api, CPairingHelper::kAuto);
 
       BOOST_CHECK_EQUAL(ph1.getMode(), CPairingHelper::kAuto);
       BOOST_CHECK_EQUAL(ph1.isPairingEnable(), true);
@@ -120,7 +106,7 @@ BOOST_AUTO_TEST_SUITE(TestPairingHelper)
 
 
       // Create in manual mode
-      CPairingHelper ph2(api, boost::make_shared<CPluginStateHelperMock>(), CPairingHelper::kManual);
+      CPairingHelper ph2(api, CPairingHelper::kManual);
 
       BOOST_CHECK_EQUAL(ph2.getMode(), CPairingHelper::kManual);
       BOOST_CHECK_EQUAL(ph2.isPairingEnable(), false);
