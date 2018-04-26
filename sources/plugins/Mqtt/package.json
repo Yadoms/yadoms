@@ -1,0 +1,21 @@
+{
+  "type": "mqtt",
+  "version": "1.0.0-beta",
+  "author": "Jean-Michel DECORET",
+  "url": "https://linkToUrlHere.com",
+  "credits": "mosquitto",
+  "supportedPlatforms": "all",
+  "configurationSchema": {
+    "server": {
+      "type": "section",
+      "enableWithCheckBox" : "true",
+      "enableWithCheckBoxDefaultValue" : "true",
+      "content": {
+        "ServerPort": {
+          "type": "int",
+          "defaultValue": "1366"
+        }
+      }
+    }
+  }
+}
