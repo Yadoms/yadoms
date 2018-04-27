@@ -11,12 +11,12 @@ namespace shared
          namespace historization
          {
             namespace typeInfo
-            {               
+            {
                class YADOMS_SHARED_EXPORT CPercentageTypeInfo : public ITypeInfo
                {
                public:
-               CPercentageTypeInfo();
-               ~CPercentageTypeInfo();
+                  CPercentageTypeInfo();
+                  virtual ~CPercentageTypeInfo();
 
                   // ITypeInfo implementation 
                   CDataContainer serialize() const override;

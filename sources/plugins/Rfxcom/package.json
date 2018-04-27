@@ -1,6 +1,6 @@
 {
   "type": "rfxcom",
-  "version": "1.1.2-beta.1",
+  "version": "1.1.2-beta.4",
   "author": "Sébastien GALLOU",
   "url": "https://github.com/Yadoms/yadoms/wiki/Rfxcom",
   "credits": "",
@@ -18,6 +18,13 @@
           "type": "system",
           "query": "serialPorts"
         }
+      }
+    },
+    "PairingMode": {
+      "type": "enum",
+      "values": {
+        "auto": "Automatic pairing mode",
+        "manual": "Manual pairing mode"
       }
     },
     "Protocols": {
@@ -781,13 +788,16 @@
   },
 	"extraQueries": {
 		"firmwareUpdate": {
-			"iconClass": "fa  fa-upload",
+			"iconClass": "fa fa-upload",
 			"commandData": {
 				"fileContent": {
 					"type": "file",
 					"filter": ".hex"
 				}
 			}
+		},
+		"pairing": {
+			"iconClass": "fa fa-handshake-o"
 		}
 	}
 }

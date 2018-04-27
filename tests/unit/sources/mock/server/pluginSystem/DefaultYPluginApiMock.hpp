@@ -59,7 +59,7 @@ public:
                       boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
                       const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override
    {
-      Device dev = {type, model, details};
+      const Device dev = {type, model, details};
       m_devices[device] = dev;
    }
 
@@ -69,7 +69,7 @@ public:
                       const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords = std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>(),
                       const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override
    {
-      Device dev = {type, model, details};
+      const Device dev = {type, model, details};
       m_devices[device] = dev;
       std::for_each(keywords.begin(),
                     keywords.end(),
@@ -176,7 +176,7 @@ public:
                        boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
                        const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override
    {
-      Keyword kw = {device, keyword->getKeyword(), keyword->getCapacity(), details};
+      const Keyword kw = {device, keyword->getKeyword(), keyword->getCapacity(), details};
       m_keywords[keyword->getKeyword()] = kw;
    }
 
@@ -208,7 +208,7 @@ public:
    void historizeData(const std::string& device,
                       boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> data) override
    {
-      Data kwData = {device, data->getKeyword(), data->getCapacity(), data->formatValue()};
+      const Data kwData = {device, data->getKeyword(), data->getCapacity(), data->formatValue()};
       m_data.push_back(kwData);
    }
 

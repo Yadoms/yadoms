@@ -41,13 +41,9 @@ namespace database
                   long size = 0;
                   while (resultHandler->next_step())
                   {
-                     m_internalValue += "{\"type\":\"";
-                     m_internalValue += resultHandler->extractValueAsString(0);
-                     m_internalValue += "\",\"keywordId\":\"";
-                     m_internalValue += resultHandler->extractValueAsString(2); 
-                     m_internalValue += "\",\"avg\":\"" + resultHandler->extractValueAsString(3);
-                     m_internalValue += "\",\"min\":\"" + resultHandler->extractValueAsString(4) + "\",\"date\":\"";
-                     m_internalValue += resultHandler->extractValueAsString(1);
+                     m_internalValue += "{\"avg\":\"" + resultHandler->extractValueAsString(3);
+                     m_internalValue += "\",\"min\":\"" + resultHandler->extractValueAsString(4);
+                     m_internalValue += "\",\"date\":\"" + resultHandler->extractValueAsString(1);
                      m_internalValue += "\",\"max\":\"" + resultHandler->extractValueAsString(5) + "\"},";
                      ++size;
                   }

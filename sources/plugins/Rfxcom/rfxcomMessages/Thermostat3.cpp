@@ -66,15 +66,6 @@ namespace rfxcomMessages
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.THERMOSTAT3.rssi));
 
       Init(api);
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         auto model = m_subTypeManager->getModel();
-         api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));
-      }
    }
 
    CThermostat3::~CThermostat3()
@@ -134,6 +125,18 @@ namespace rfxcomMessages
    void CThermostat3::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       api->historizeData(m_deviceName, m_keywords);
+   }
+
+   void CThermostat3::filter() const
+   {
+   }
+
+   void CThermostat3::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+      auto model = m_subTypeManager->getModel();
+      api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
+      m_deviceDetails.printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CThermostat3::getDeviceName() const

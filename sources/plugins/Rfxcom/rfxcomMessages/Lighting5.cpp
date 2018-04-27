@@ -35,7 +35,7 @@ namespace rfxcomMessages
                           unsigned int subType,
                           const std::string& name,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_subType(subType),
+      : m_subType(static_cast<unsigned char>(subType)),
         m_deviceName(name),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_signalPower})
@@ -95,19 +95,6 @@ namespace rfxcomMessages
       // Build device description
       buildDeviceName();
       buildDeviceDetails();
-      auto model = m_subTypeManager->getModel();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         if (m_messageFilter && !m_messageFilter->isValid(m_deviceName))
-            throw CMessageFilteredException((boost::format("Receive unknown device (id %1%) for unsecured protocol (LIGHTING5 / %2%), may be a transmission error : ignored")
-               % m_id % model).str());
-
-         api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));
-      }
    }
 
    CLighting5::~CLighting5()
@@ -207,6 +194,20 @@ namespace rfxcomMessages
    void CLighting5::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       api->historizeData(m_deviceName, m_keywords);
+   }
+
+   void CLighting5::filter() const
+   {
+      if (m_messageFilter && !m_messageFilter->isValid(m_deviceName))
+         throw CMessageFilteredException((boost::format("Receive unknown device (id %1%) for unsecured protocol (LIGHTING5 / %2%), may be a transmission error : ignored")
+            % m_id % m_subTypeManager->getModel()).str());
+   }
+
+   void CLighting5::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+      api->declareDevice(m_deviceName, m_subTypeManager->getModel(), m_subTypeManager->getModel(), m_keywords, m_deviceDetails);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_subTypeManager->getModel() << ")";
+      m_deviceDetails.printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CLighting5::getDeviceName() const

@@ -68,6 +68,14 @@ namespace rfxcomMessages
       api->historizeData(m_deviceName, m_keywords);
    }
 
+   void CHumidity::filter() const
+   {
+   }
+
+   void CHumidity::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+   }
+
    const std::string& CHumidity::getDeviceName() const
    {
       return m_deviceName;

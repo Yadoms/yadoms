@@ -5,6 +5,7 @@ CPathProvider::CPathProvider(boost::shared_ptr<const startupOptions::IStartupOpt
    : m_logsPath(startupOptions->getLogPath()),
      m_dataPath("data"),
      m_webServerPath(startupOptions->getWebServerInitialPath()),
+     m_widgetsPath(m_webServerPath / "widgets"),
      m_pluginsLogPath(m_logsPath / "plugins"),
      m_pluginsDataPath(m_dataPath / "plugins"),
      m_scriptsLogPath(m_logsPath / "scripts"),
@@ -52,6 +53,11 @@ const boost::filesystem::path& CPathProvider::webServerPath() const
    return m_webServerPath;
 }
 
+const boost::filesystem::path& CPathProvider::widgetsPath() const
+{
+   return m_widgetsPath;
+}
+
 const boost::filesystem::path& CPathProvider::pluginsLogPath() const
 {
    return m_pluginsLogPath;
@@ -96,4 +102,3 @@ const boost::filesystem::path& CPathProvider::backupPath() const
 {
    return m_backupPath;
 }
-

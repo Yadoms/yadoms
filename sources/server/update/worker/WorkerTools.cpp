@@ -14,7 +14,6 @@
 
 #include "startupOptions/IStartupOptions.h"
 
-#include <shared/ServiceLocator.h>
 #include <shared/tools/Random.h>
 #include <shared/exception/Extract.hpp>
 
@@ -43,36 +42,34 @@ namespace update
 
       Poco::Path CWorkerTools::downloadPackage(const std::string& downloadUrl, shared::web::CFileDownloader::ProgressFunc progressReporter)
       {
-         //determine the filename to download
          Poco::URI toDownload(downloadUrl);
          auto packageName = shared::web::CUriHelpers::getFile(toDownload);
          if (packageName.empty())
             packageName = "temp.zip";
 
-         //determine local path
-         auto downloadedPackage(tools::CFileSystem::createTemporaryFolder(std::string(), true));
-         downloadedPackage.setFileName(packageName);
+         auto targetPath(tools::CFileSystem::createTemporaryFolder());
+         targetPath /= packageName;
+         const auto outPath = Poco::Path(targetPath.string());
 
-         shared::web::CFileDownloader::downloadFile(toDownload, downloadedPackage, progressReporter);
-         return downloadedPackage;
+         shared::web::CFileDownloader::downloadFile(toDownload, outPath, progressReporter);
+         return outPath;
       }
 
 
       Poco::Path CWorkerTools::downloadPackageAndVerify(const std::string& downloadUrl, const std::string& md5Hash,
                                                         shared::web::CFileDownloader::ProgressFunc progressReporter)
       {
-         //determine the filename to download
          Poco::URI toDownload(downloadUrl);
          auto packageName = shared::web::CUriHelpers::getFile(toDownload);
          if (packageName.empty())
             packageName = "temp.zip";
 
-         //determine local path
-         auto downloadedPackage(tools::CFileSystem::createTemporaryFolder(std::string(), true));
-         downloadedPackage.setFileName(packageName);
+         auto targetPath(tools::CFileSystem::createTemporaryFolder());
+         targetPath /= packageName;
+         const auto outPath = Poco::Path(targetPath.string());
 
-         shared::web::CFileDownloader::downloadFileAndVerify(toDownload, downloadedPackage, md5Hash, progressReporter);
-         return downloadedPackage;
+         shared::web::CFileDownloader::downloadFileAndVerify(toDownload, outPath, md5Hash, progressReporter);
+         return outPath;
       }
 
 
@@ -161,45 +158,6 @@ namespace update
             tools::CFileSystem::remove(tempPluginFolder, true);
             throw;
          }
-      }
-
-      std::string CWorkerTools::getWidgetBasePath() //TODO récupérer du IPathProvider
-      {
-         //retreive startup options
-         const auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
-         Poco::Path websiteFolder(startupOptions->getWebServerInitialPath());
-         websiteFolder.append("widgets");
-         return websiteFolder.toString();
-      }
-
-      std::string CWorkerTools::getPluginBasePath() //TODO récupérer du IPathProvider
-      {
-         //retreive startup options
-         const auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
-         return startupOptions->getPluginsPath();
-      }
-
-      std::string CWorkerTools::getScriptInterpreterBasePath() //TODO récupérer du IPathProvider
-      {
-         //retreive startup options
-         const auto startupOptions = shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>();
-         return startupOptions->getScriptInterpretersPath();
-      }
-
-
-      Poco::Path CWorkerTools::deployPluginPackage(Poco::Path downloadedPackage)
-      {
-         return deployPackage(downloadedPackage, getPluginBasePath());
-      }
-
-      Poco::Path CWorkerTools::deployWidgetPackage(Poco::Path downloadedPackage)
-      {
-         return deployPackage(downloadedPackage, getWidgetBasePath());
-      }
-
-      Poco::Path CWorkerTools::deployScriptInterpreterPackage(Poco::Path downloadedPackage)
-      {
-         return deployPackage(downloadedPackage, getScriptInterpreterBasePath());
       }
 
       void CWorkerTools::reportDownloadProgress(const std::string& file, float progress, WorkerProgressFunc callback, const std::string& function,

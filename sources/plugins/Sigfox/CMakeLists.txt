@@ -15,6 +15,12 @@ set(SIGFOX_PLUGIN_SOURCES
    stdafx.h
    specificHistorizer/SNR.cpp
    specificHistorizer/SNR.h
+   webServer/sigfoxHTTPServer.cpp
+   webServer/sigfoxHTTPServer.h
+   webServer/sigfoxRequestHandler.cpp
+   webServer/sigfoxRequestHandler.h
+   webServer/sigfoxRequestHandlerFactory.cpp
+   webServer/sigfoxRequestHandlerFactory.h
 )
 
 #########################################
@@ -22,6 +28,7 @@ set(SIGFOX_PLUGIN_SOURCES
 #########################################
 source_group(sources ./*.*)
 source_group(sources\\specificHistorizer specificHistorizer/*.*)
+source_group(sources\\webServer webServer/*.*)
 	
 #########################################
 ## Place here all additional include directories

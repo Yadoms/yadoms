@@ -43,5 +43,11 @@ public:
    /// \return     The serial port name (system-dependent)
    //--------------------------------------------------------------
    virtual double getTensionMax() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	    port socket number
+   /// \return     The socket port
+   //--------------------------------------------------------------
+   virtual int getSocketPort() const = 0;
 };
 
