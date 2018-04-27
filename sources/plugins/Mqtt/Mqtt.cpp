@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "EmptyPlugin.h"
+#include "Mqtt.h"
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/Log.h>
-
+#include "MosquittoServer.h"
 /* ----------------------------------
 
 Insert here all include files
@@ -12,14 +12,14 @@ Insert here all include files
 
 // Use this macro to define all necessary to make your plugin a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
-IMPLEMENT_PLUGIN(CEmptyPlugin)
+IMPLEMENT_PLUGIN(CMqtt)
 
 
-CEmptyPlugin::CEmptyPlugin()
+CMqtt::CMqtt()
 {
 }
 
-CEmptyPlugin::~CEmptyPlugin()
+CMqtt::~CMqtt()
 {
 }
 
@@ -36,12 +36,12 @@ enum
    ---------------------------------- */
 };
 
-void CEmptyPlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
+void CMqtt::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Informs Yadoms about the plugin actual state
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-   YADOMS_LOG(information) << "CEmptyPlugin is starting...";
+   YADOMS_LOG(information) << "CMqtt is starting...";
 
    // Load configuration values (provided by database)
    m_configuration.initializeWith(api->getConfiguration());
@@ -54,6 +54,9 @@ void CEmptyPlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       ----------------------------- */
 
    api->setPluginState(yApi::historization::EPluginState::kRunning);
+
+   CMosquittoServer srv;
+   srv.start();
 
    // the main loop
    while (true)

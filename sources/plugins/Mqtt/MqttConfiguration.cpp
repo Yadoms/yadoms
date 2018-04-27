@@ -1,45 +1,32 @@
 #include "stdafx.h"
-#include "EmptyPluginConfiguration.h"
+#include "MqttConfiguration.h"
 #include <shared/Log.h>
 
-CEmptyPluginConfiguration::~CEmptyPluginConfiguration()
+CMqttConfiguration::~CMqttConfiguration()
 {
 }
 
-void CEmptyPluginConfiguration::initializeWith(const shared::CDataContainer& data)
+void CMqttConfiguration::initializeWith(const shared::CDataContainer& data)
 {
    m_configuration.initializeWith(data);
 }
 
-/*
-    You will find here an example how to retrieve enum variables from the configuration
-*/
-
-EEnumType CEmptyPluginConfiguration::getEnumParameter() const
+bool CMqttConfiguration::getStartServer() const
 {
-   // Enum type, declare keys labels
-   static const shared::CDataContainer::EnumValuesNames EEnumTypeNames = boost::assign::map_list_of
-      ("EnumValue1", kEnumValue1)
-      ("EnumValue2", kEnumValue2)
-      ("EnumValue3", kEnumValue3);
-
-   return m_configuration.getEnumValue<EEnumType>("EnumParameter", EEnumTypeNames);
+   return m_configuration.get<bool>("server.checked");
 }
 
-void CEmptyPluginConfiguration::trace() const
+int CMqttConfiguration::getServerPort() const
+{
+   return m_configuration.get<int>("server.content.serverPort");
+}
+
+void CMqttConfiguration::trace() const
 {
    try
    {
-      // Get simple parameters
-      YADOMS_LOG(information) << "CEmptyPlugin::doWork, parameter 'StringParameter' is "
-         << (m_configuration.get<std::string>("StringParameter").empty() ? "empty" : m_configuration.get<std::string>("StringParameter"))
-        ;
-      YADOMS_LOG(information) << "CEmptyPlugin::doWork, parameter 'BoolParameter' is " << m_configuration.get<bool>("BoolParameter");
-      YADOMS_LOG(information) << "CEmptyPlugin::doWork, parameter 'DecimalParameter' is " << m_configuration.get<double>("DecimalParameter");
-      YADOMS_LOG(information) << "CEmptyPlugin::doWork, parameter 'IntParameter' is " << m_configuration.get<int>("IntParameter");
-
-      // Enum
-      YADOMS_LOG(information) << "CEmptyPlugin::doWork, parameter 'EnumParameter' is " << getEnumParameter();
+      YADOMS_LOG(information) << "CMqtt configuration : ";
+      
    }
    catch (const shared::exception::CInvalidParameter& e)
    {

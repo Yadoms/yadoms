@@ -6,27 +6,16 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-
-//--------------------------------------------------------------
-/// \brief	An example of an enum type of parameter
-//--------------------------------------------------------------
-enum EEnumType
-{
-   kEnumValue1 = 7,
-   kEnumValue2 = 12,
-   kEnumValue3
-};
-
 //--------------------------------------------------------------
 /// \brief	Configuration of the empty plugin
 //--------------------------------------------------------------
-class CEmptyPluginConfiguration
+class CMqttConfiguration
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CEmptyPluginConfiguration();
+   virtual ~CMqttConfiguration();
 
    //--------------------------------------------------------------
    /// \brief		   Load configuration data
@@ -46,9 +35,14 @@ public:
    //--------------------------------------------------------------
 
    //--------------------------------------------------------------
-   /// \brief	    Enum parameter
+   /// \brief	    get whether to start the mqtt server or not
    //--------------------------------------------------------------
-   EEnumType getEnumParameter() const;
+   bool getStartServer() const;
+
+   //--------------------------------------------------------------
+   /// \brief	    get the mqtt server port
+   //--------------------------------------------------------------
+   int getServerPort() const;
 
 private:
    //--------------------------------------------------------------

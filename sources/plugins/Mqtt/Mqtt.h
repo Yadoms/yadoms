@@ -1,6 +1,6 @@
 #pragma once
 #include <plugin_cpp_api/IPlugin.h>
-#include "EmptyPluginConfiguration.h"
+#include "MqttConfiguration.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -11,18 +11,18 @@ namespace yApi = shared::plugin::yPluginApi;
 ///         - rename all classes of this plugin
 ///         - populate all code/functions
 //--------------------------------------------------------------
-class CEmptyPlugin : public plugin_cpp_api::IPlugin
+class CMqtt : public plugin_cpp_api::IPlugin
 {
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    //--------------------------------------------------------------
-   CEmptyPlugin();
+   CMqtt();
 
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~CEmptyPlugin();
+   virtual ~CMqtt();
 
    // IPlugin implementation
    void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
@@ -32,5 +32,5 @@ private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
-   CEmptyPluginConfiguration m_configuration;
+   CMqttConfiguration m_configuration;
 };
