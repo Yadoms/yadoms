@@ -18,6 +18,9 @@ _Please note that changes on modules (plugins, widgets...) are now specified in 
 * Widgets configured with missing device/keyword(s) are automatically disabled
 * Fix new modules translations (Install&update page)
 * Fix some notification parameters not replaced by their values
+* Plugin dashboard page : let time to see async operation result before re-display plugin state
+* Plugin dashboard page : Improve extra-queries error notification
+* Update icons (Update font-awesome to v4.7)
 * Fix #324 - Update i18n engine
 * Fix #325 (evolution) - Change widget display if related device doesn't exist
 * Fix #326 (evolution) - Add 'Clear' button on rule logs

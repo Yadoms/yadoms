@@ -100,6 +100,14 @@ namespace rfxcomMessages
       api->historizeData(m_deviceName, m_keywords);
    }
 
+   void CCurrentEnergy::filter() const
+   {
+   }
+
+   void CCurrentEnergy::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+   }
+
    const std::string& CCurrentEnergy::getDeviceName() const
    {
       return m_deviceName;

@@ -63,7 +63,7 @@ namespace rfxcomMessages
          details.set("subType", m_subType);
          details.set("id", m_id);
 
-         auto model = m_subTypeManager->getModel();
+         const auto model = m_subTypeManager->getModel();
          api->declareDevice(m_id, model, model, m_keywords, details);
          YADOMS_LOG(information) << "New device : " << m_id << " (" << model << ")";
          details.printToLog(YADOMS_LOG(information));
@@ -78,6 +78,14 @@ namespace rfxcomMessages
    void CCartelectronic::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       api->historizeData(m_id, m_keywords);
+   }
+
+   void CCartelectronic::filter() const
+   {
+   }
+
+   void CCartelectronic::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
    }
 
    const std::string& CCartelectronic::getDeviceName() const

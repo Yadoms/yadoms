@@ -21,10 +21,12 @@ public:
                                                                       int evtPortConnectionId,
                                                                       int evtPortDataReceived) const;
 
-   boost::shared_ptr<ITransceiver> constructTransceiver() const;
+   boost::shared_ptr<ITransceiver> constructTransceiver(boost::shared_ptr<IPairingHelper> pairingHelper) const;
 
    boost::shared_ptr<IRfxcomFirmwareUpdater> constructFirmwareUpdater(boost::shared_ptr<yApi::IYPluginApi> api,
                                                                       boost::shared_ptr<yApi::IExtraQuery> extraQuery,
                                                                       const std::string& serialPort) const;
-};
 
+   boost::shared_ptr<CPairingHelper> constructPairingHelper(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                            CPairingHelper::EPairingMode pairingMode) const;
+};

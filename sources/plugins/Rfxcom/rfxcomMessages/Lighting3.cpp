@@ -21,7 +21,7 @@ namespace rfxcomMessages
       m_subType = deviceDetails.get<unsigned char>("subType");
       m_system = deviceDetails.get<unsigned char>("system");
       m_channel = deviceDetails.get<unsigned short>("channel");
-      
+
       // Build device description
       buildDeviceModel();
       buildDeviceName();
@@ -71,19 +71,11 @@ namespace rfxcomMessages
       m_channel = rbuf.LIGHTING3.channel8_1 & (rbuf.LIGHTING3.channel10_9 << 8);
       m_state->set(fromProtocolState(rbuf.LIGHTING3.cmnd));
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING2.rssi));
-      
+
       // Build device description
       buildDeviceModel();
       buildDeviceName();
       buildDeviceDetails();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));         
-      }
    }
 
    CLighting3::~CLighting3()
@@ -123,6 +115,17 @@ namespace rfxcomMessages
    void CLighting3::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       api->historizeData(m_deviceName, m_keywords);
+   }
+
+   void CLighting3::filter() const
+   {
+   }
+
+   void CLighting3::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+      api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+      m_deviceDetails.printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CLighting3::getDeviceName() const
@@ -195,5 +198,3 @@ namespace rfxcomMessages
       }
    }
 } // namespace rfxcomMessages
-
-

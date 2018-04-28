@@ -14,12 +14,8 @@ set(LINKY_SOURCES
    ILinkyMessage.h
    Linky.h
    Linky.cpp
-   LinkyConfiguration.h
-   LinkyConfiguration.cpp
    LinkyDecoder.h
    LinkyDecoder.cpp
-   LinkyFactory.h
-   LinkyFactory.cpp
    LinkyHelpers.hpp
    LinkyReceiveBufferHandler.h
    LinkyReceiveBufferHandler.cpp
@@ -37,9 +33,37 @@ set(LINKY_SOURCES
    specificHistorizer/Period.cpp   
 )
 
+IF (WIN32)
+    set(LINKY_SOURCES ${LINKY_SOURCES}
+	# Add Windows sources
+        Windows/FT2xxSerialPort.h
+        Windows/FT2xxSerialPort.cpp
+        Windows/LinkyFactory.h
+        Windows/LinkyFactory.cpp
+        Windows/LinkyConfiguration.h
+        Windows/LinkyConfiguration.cpp
+	)
+	
+	source_group(sources\\Windows Windows/*.*)
+	
+ENDIF()
+
+IF (UNIX AND NOT APPLE)
+    set(LINKY_SOURCES ${LINKY_SOURCES}
+	     # Add Common Linux and RaspberryPI sources
+        Linux/LinkyFactory.h
+        Linux/LinkyFactory.cpp
+        Linux/LinkyConfiguration.h
+        Linux/LinkyConfiguration.cpp        
+	)
+	
+	source_group(sources\\Linux Linux/*.*)
+ENDIF()
+
 #########################################
 ## Place here all additional groups (solution folder)
 #########################################
+
 source_group(sources ./*.*)
 source_group(sources\\specificHistorizer specificHistorizer/*.*)
 source_group(sources\\Keywords Keywords/*.*)
@@ -48,6 +72,18 @@ source_group(sources\\Keywords Keywords/*.*)
 ## Place here all additional include directories
 ## (by default yadoms-shared and boost are included)
 #########################################
+
+IF(WIN32)
+   set(TELEINFO_ADDITIONAL_INC_DIR
+	   ${CMAKE_CURRENT_SOURCE_DIR}/Windows
+   )
+ENDIF()
+	
+IF (UNIX AND NOT APPLE)
+   set(TELEINFO_ADDITIONAL_INC_DIR
+      ${CMAKE_CURRENT_SOURCE_DIR}/Linux
+   )
+ENDIF()
 
 #########################################
 ## Place here all additional libraries to link with
@@ -71,3 +107,7 @@ PLUGIN_POST_BUILD_COPY_FILE(Linky package.json)
 PLUGIN_POST_BUILD_COPY_FILE(Linky changelog.md)
 PLUGIN_POST_BUILD_COPY_FILE(Linky icon.png)
 PLUGIN_POST_BUILD_COPY_DIRECTORY(Linky locales)
+
+IF(WIN32)
+   PLUGIN_POST_BUILD_COPY_FILE(Linky ftdi/ftd2xx.dll)
+ENDIF()
