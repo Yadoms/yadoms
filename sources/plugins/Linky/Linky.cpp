@@ -43,7 +43,7 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
                                                              shared::event::CEventTimer::kOneShot,
-                                                             boost::posix_time::seconds(20));
+                                                             boost::posix_time::seconds(5));
 
    m_periodicSamplingTimer = api->getEventHandler().createTimer(kSamplingTimer,
                                                                 shared::event::CEventTimer::kPeriodic,
@@ -131,6 +131,8 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             m_waitForAnswerTimer->stop();
             YADOMS_LOG(error) << "No answer received, try to reconnect in a while..." ;
+
+            //TODO : Send an error ONLY when the two protocols are in error state.
             errorProcess(api);
             break;
          }
@@ -244,7 +246,7 @@ void CLinky::errorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
    api->setPluginState(yApi::historization::EPluginState::kError, "connectionLost");
    destroyConnection();
    m_runningState = kConnectionLost;
-   api->getEventHandler().createTimer(kErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
+   api->getEventHandler().createTimer(kErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(5));
 }
 
 void CLinky::initLinkyReceiver() const
