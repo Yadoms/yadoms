@@ -74,13 +74,13 @@ source_group(sources\\Keywords Keywords/*.*)
 #########################################
 
 IF(WIN32)
-   set(TELEINFO_ADDITIONAL_INC_DIR
+   set(LINKY_ADDITIONAL_INC_DIR
 	   ${CMAKE_CURRENT_SOURCE_DIR}/Windows
    )
 ENDIF()
 	
 IF (UNIX AND NOT APPLE)
-   set(TELEINFO_ADDITIONAL_INC_DIR
+   set(LINKY_ADDITIONAL_INC_DIR
       ${CMAKE_CURRENT_SOURCE_DIR}/Linux
    )
 ENDIF()

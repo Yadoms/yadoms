@@ -29,12 +29,12 @@ public:
    void validateProtocol();
 
    //-----------------------------------------------------
-   ///\brief                     validate Protocol
+   ///\brief                     get the protocol used
    //-----------------------------------------------------
    EProtocolType getProtocol();
 
    //-----------------------------------------------------
-   ///\brief                     validate Protocol
+   ///\brief                     change the protocol to test into the list
    //-----------------------------------------------------
    void changeProtocol();
 
