@@ -1,3 +1,6 @@
+### 1.1.2-beta.5
+* Fix regression (no historization was done since 1.1.2-beta.4)
+
 ### 1.1.2-beta.4
 * Add pairing mode selection : automatic (default), or manual via extra query
 
