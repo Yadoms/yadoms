@@ -376,7 +376,7 @@ void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> api
    }
 
    // Sensor message, historize all data contained in the message
-   if (!api->deviceExists(message->getDeviceName()))
+   if (api->deviceExists(message->getDeviceName()))
       message->historizeData(api);
 }
 
