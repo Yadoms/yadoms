@@ -2,8 +2,8 @@
 #include "LinkyFactory.h"
 #include <shared/communication/AsyncSerialPort.h>
 #include <shared/communication/AsciiBufferLogger.h>
-#include "LinkyDecoder.h"
-#include "HistoricDecoder.h"
+#include "../LinkyDecoder.h"
+#include "../HistoricDecoder.h"
 #include <shared/Log.h>
 
 const int CLinkyFactory::m_baudRateStandard = 9600;

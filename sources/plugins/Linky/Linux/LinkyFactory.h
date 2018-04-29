@@ -1,10 +1,10 @@
 #pragma once
 
-#include "ILinkyConfiguration.h"
+#include "../ILinkyConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
-#include "IDecoder.h"
-#include "LinkyReceiveBufferHandler.h"
-#include "ProtocolManager.h"
+#include "../IDecoder.h"
+#include "../LinkyReceiveBufferHandler.h"
+#include "../ProtocolManager.h"
 
 //--------------------------------------------------------------
 /// \brief	General factory

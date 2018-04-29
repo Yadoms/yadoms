@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ILinkyConfiguration.h"
+#include "../ILinkyConfiguration.h"
 
 
 //--------------------------------------------------------------
