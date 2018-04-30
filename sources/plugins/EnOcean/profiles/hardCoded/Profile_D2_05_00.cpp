@@ -59,11 +59,11 @@ void CProfile_D2_05_00::sendCommand(const std::string& keyword,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   if (keyword != m_curtain->getKeyword())
+   if (keyword == m_curtain->getKeyword())
    {
       m_curtain->setCommand(commandBody);
    }
-   else if (keyword != m_lockingMode->getKeyword())
+   else if (keyword == m_lockingMode->getKeyword())
    {
       m_lockingMode->setCommand(commandBody);
    }
