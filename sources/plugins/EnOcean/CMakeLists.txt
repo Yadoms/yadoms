@@ -64,6 +64,8 @@ set(ENOCEAN_SOURCES
    message/UTE_ReceivedMessage.h
    message/UTE_ReceivedMessage.cpp
    
+   specificHistorizers/BlindLockingMode.h
+   specificHistorizers/BlindLockingMode.cpp
    specificHistorizers/DimmerModeHistorizer.h
    specificHistorizers/DimmerModeHistorizer.cpp
    specificHistorizers/PilotWireHistorizer.h
@@ -142,6 +144,11 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/hardCoded/Profile_D2_01_11.h
    profiles/hardCoded/Profile_D2_01_12.cpp
    profiles/hardCoded/Profile_D2_01_12.h
+
+   profiles/hardCoded/Profile_D2_05_Common.cpp
+   profiles/hardCoded/Profile_D2_05_Common.h
+   profiles/hardCoded/Profile_D2_05_00.cpp
+   profiles/hardCoded/Profile_D2_05_00.h
 
    profiles/hardCoded/Profile_F6_02_01.cpp
    profiles/hardCoded/Profile_F6_02_01.h
