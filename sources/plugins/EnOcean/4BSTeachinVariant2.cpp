@@ -1,4 +1,3 @@
-// Generated file, don't modify
 #include "stdafx.h"
 #include "4BSTeachinVariant2.h"
 #include "profiles/bitsetHelpers.hpp"

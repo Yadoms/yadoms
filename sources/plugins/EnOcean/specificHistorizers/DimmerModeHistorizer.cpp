@@ -11,13 +11,16 @@ namespace specificHistorizers
       ((DimToValueWithTimer3))
       ((StopDimming))
    );
+   
 
+   DECLARE_CAPACITY(DimmerModeCapacity,
+      "DimmerMode",
+      shared::plugin::yPluginApi::CStandardUnits::NoUnit(),
+      shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
    CDimmerModeHistorizer::CDimmerModeHistorizer(const std::string& keywordName)
       : CSingleHistorizableData<EDimmerMode>(keywordName,
-                                             shared::plugin::yPluginApi::CStandardCapacity("DimmerMode",
-                                                                                           shared::plugin::yPluginApi::CStandardUnits::NoUnit(),
-                                                                                           shared::plugin::yPluginApi::EKeywordDataType::kEnum),
+                                             DimmerModeCapacity(),
                                              shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
    {
    }

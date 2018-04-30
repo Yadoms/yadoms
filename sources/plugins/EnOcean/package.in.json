@@ -1,6 +1,6 @@
 {
   "type": "enOcean",
-  "version": "1.0.2-beta.2",
+  "version": "1.0.2-beta.3",
   "author": "Sébastien Gallou",
   "url": "https://github.com/Yadoms/yadoms/",
   "credits": "",
@@ -588,6 +588,37 @@
     },
     "D2-01-12": {
       "sameAs": "D2-01-0F"
-    }
+    },
+    "D2-05-00": {
+      "type": "section",
+      "content": {
+        "measuredDurationOfVerticalRunMs": {
+          "name": "Mesured duration of a vertical run (ms)",
+          "type": "integer",
+          "minimumValue": "5000",
+          "maximumValue": "300000",
+          "precision": "10",
+          "defaultValue": "15000"
+        },
+        "measuredDurationOfRotationMs": {
+          "name": "Mesured duration of a rotation (ms)",
+          "type": "integer",
+          "minimumValue": "10",
+          "maximumValue": "2540",
+          "precision": "10",
+          "defaultValue": "1500"
+        },
+        "alarmAction": {
+          "name": "Alarm action",
+          "type": "enum",
+          "values": {
+            "noAction": "No action",
+            "immediateStop": "Immediate stop",
+            "goUp": "Go Up",
+            "goDown": "Go Down"
+          },
+          "defaultValue": "noAction"
+        }
+      }
   }
-}
+}}
