@@ -141,8 +141,6 @@ namespace equipments
 
          if (pluginConfiguration->isRetrieveNamesFromdevice())
          {
-            credentials.printToLog(YADOMS_LOG(information));
-
             // request to obtain names
             CGXfileName = "WESNAMES" + boost::lexical_cast<std::string>(m_version) + ".CGX";
             results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
@@ -169,8 +167,11 @@ namespace equipments
 
             ClampName[0] = results.get<std::string>("nPCE1");
             ClampName[1] = results.get<std::string>("nPCE2");
-            ClampName[2] = results.get<std::string>("nPCE3");
-            ClampName[3] = results.get<std::string>("nPCE4");
+
+            if (m_version == 2) {
+               ClampName[2] = results.get<std::string>("nPCE3");
+               ClampName[3] = results.get<std::string>("nPCE4");
+            }
 
             AnalogName[0] = results.get<std::string>("ANA1");
             AnalogName[1] = results.get<std::string>("ANA2");
@@ -179,13 +180,15 @@ namespace equipments
 
             PulseName[0] = results.get<std::string>("npls1");
             PulseName[1] = results.get<std::string>("npls2");
-            PulseName[2] = results.get<std::string>("npls3");
-            PulseName[3] = results.get<std::string>("npls4");
-
             PulseType[0] = results.get<subdevices::EUnit>("PLSU1");
             PulseType[1] = results.get<subdevices::EUnit>("PLSU2");
-            PulseType[2] = results.get<subdevices::EUnit>("PLSU3");
-            PulseType[3] = results.get<subdevices::EUnit>("PLSU4");
+
+            if (m_version == 2) {
+               PulseName[2] = results.get<std::string>("npls3");
+               PulseName[3] = results.get<std::string>("npls4");
+               PulseType[2] = results.get<subdevices::EUnit>("PLSU3");
+               PulseType[3] = results.get<subdevices::EUnit>("PLSU4");
+            }
          }
          else // Defaults names
          {
@@ -205,8 +208,11 @@ namespace equipments
 
             ClampName[0] = "PCE1";
             ClampName[1] = "PCE2";
-            ClampName[2] = "PCE3";
-            ClampName[3] = "PCE4";
+
+            if (m_version == 2) {
+               ClampName[2] = "PCE3";
+               ClampName[3] = "PCE4";
+            }
 
             AnalogName[0] = "ANA1";
             AnalogName[1] = "ANA2";
@@ -215,13 +221,15 @@ namespace equipments
 
             PulseName[0] = "pls1";
             PulseName[1] = "pls2";
-            PulseName[2] = "pls3";
-            PulseName[3] = "pls4";
-
             PulseType[0] = subdevices::EUnit::undefined;
             PulseType[1] = subdevices::EUnit::undefined;
-            PulseType[2] = subdevices::EUnit::undefined;
-            PulseType[3] = subdevices::EUnit::undefined;
+
+            if (m_version == 2) {
+               PulseName[2] = "pls3";
+               PulseName[3] = "pls4";
+               PulseType[2] = subdevices::EUnit::undefined;
+               PulseType[3] = subdevices::EUnit::undefined;
+            }
          }
 
          // Relay Configuration
