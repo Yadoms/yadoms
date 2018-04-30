@@ -237,7 +237,8 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             cppHistorizerClass = cppClass.CppClass(cppHistorizerClassName, createDefaultCtor=False)
             cppHistorizerClass.inheritFrom("yApi::historization::CSingleHistorizableData<" + historizerEnumName + ">", cppClass.PUBLIC)
             cppHistorizerClass.addConstructor(cppClass.CppClassConstructor("const std::string& keywordName", \
-               "CSingleHistorizableData<" + historizerEnumName + ">(keywordName, yApi::CStandardCapacity(\"" + historizerEnumName + "\", yApi::CStandardUnits::NoUnit(), yApi::EKeywordDataType::kNoData), yApi::EKeywordAccessMode::kGet)"))
+               "CSingleHistorizableData<" + historizerEnumName + ">(keywordName, " + historizerEnumName + "Capacity(), yApi::EKeywordAccessMode::kGet)"))
+            cppHistorizerClass.addDependency(cppClass.CppNoDataCapacity(historizerEnumName))
             cppHistorizerClass.addDependency(cppClass.CppExtendedEnumType(historizerEnumName, enumValues))
             return cppHistorizerClass
 
