@@ -140,12 +140,10 @@ function thermostatViewModel() {
     */
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
-
+        
         if (keywordId === self.widget.configuration.LivetemperatureSection.content.temperatureDevice.keywordId) {
-           
             //it is the right device
-            if (data.value !=="")
-            {
+            if (data.value !==""){
                var temp = parseFloat(data.value).toFixed(1);
                self.temperature(temp.toString());
             }
@@ -153,10 +151,8 @@ function thermostatViewModel() {
                self.temperature("-");
         }
         else if (keywordId === self.widget.configuration.controlSection.content.temperatureSet.keywordId) {
-           
             //it is the right device
-            if (data.value !=="")
-            {
+            if (data.value !==""){
                var temp = parseFloat(data.value).toFixed(1);
                self.temperatureSet(temp);
             }
@@ -165,9 +161,8 @@ function thermostatViewModel() {
         } 
         else if (keywordId === self.widget.configuration.thermostatStateSection.content.state.keywordId) {
             //it is the right device
-            if (data.value !=="")
-            {
-               if (self.thermostatStateType === "bool") {
+            if (data.value !==""){
+               if (self.thermostatStateType === "Bool") {
                   if (!parseBool(data.value))
                      this.widgetApi.find(".icon-div").css("visibility", "hidden");
                   else 

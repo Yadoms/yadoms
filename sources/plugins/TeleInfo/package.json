@@ -1,6 +1,6 @@
 {
 	"type": "teleinfo",
-	"version": "1.0.3",
+	"version": "1.1.0-beta.1",
 	"author": "Jean-Michel BERHAULT",
     "url": "https://github.com/Yadoms/yadoms/wiki/TeleInfo",
 	"credits": "",
@@ -15,6 +15,30 @@
 					"query": "serialPorts"
 				}
 			}
-		}
+		},   
+      "EquipmentType": {
+         "type": "comboSection",
+         "content": {
+            "first": {
+               "name": "1xTIC",
+               "type": "section"
+            }, 
+            "second": {
+               "name": "2xTIC",
+               "type": "section",
+               "content": {
+                  "portEnabled": {
+                     "type": "enum",
+                     "values": {
+                        "1xInputEnabled": "",
+                        "2xInputsEnabled": "",
+                        "AllInputsEnabled": ""
+                     },
+                     "defaultValue": "AllInputsEnabled"
+                  }             
+               }
+            }
+         }
+      }
 	}
 }

@@ -62,8 +62,9 @@
 
 const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> rfxcomMessages::IRfxcomMessage::NoKeywords;
 
-CTransceiver::CTransceiver()
-   : m_seqNumberProvider(boost::make_shared<CIncrementSequenceNumber>()),
+CTransceiver::CTransceiver(boost::shared_ptr<IPairingHelper> pairingHelper)
+   : m_pairingHelper(pairingHelper),
+     m_seqNumberProvider(boost::make_shared<CIncrementSequenceNumber>()),
      m_unsecuredProtocolFilters(createUnsecuredProtocolFilters())
 {
 }
@@ -182,12 +183,13 @@ shared::communication::CByteBuffer CTransceiver::buildStartReceiverCmd() const
 
 
 boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiver::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                                                                     boost::shared_ptr<const yApi::IDeviceCommand> command) const
+                                                                                                     boost::shared_ptr<const yApi::IDeviceCommand>
+                                                                                                     command) const
 {
    try
    {
       const auto& deviceDetails = api->getDeviceDetails(command->getDevice());
-      auto deviceType = deviceDetails.get<unsigned char>("type");
+      const auto deviceType = deviceDetails.get<unsigned char>("type");
 
       // Create the RFXCom message
       switch (deviceType)
@@ -247,7 +249,8 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiver::
    }
 }
 
-boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiver::buildRfyProgramMessage(const shared::communication::CByteBuffer& lastRequest) const
+boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiver::buildRfyProgramMessage(
+   const shared::communication::CByteBuffer& lastRequest) const
 {
    return rfxcomMessages::CRfy::encodeProgramMessage(m_seqNumberProvider,
                                                      lastRequest);
@@ -356,13 +359,21 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
          }
       }
 
+      if (m_pairingHelper->needPairing(message->getDeviceName()))
+      {
+         if (m_pairingHelper->getMode() == IPairingHelper::kAuto)
+            message->filter();
+         message->declareDevice(api);
+      }
+
       logMessage(api, message);
       return message;
    }
    catch (CMessageFilteredException& exception)
    {
       YADOMS_LOG(warning) << exception.what();
-      YADOMS_LOG(warning) << "Message received, but filtered as protocol is unsecured and can create false devices. Device should be seen often enough to get out of filter.";
+      YADOMS_LOG(warning) <<
+         "Message received, but filtered as protocol is unsecured and can create false devices. Device should be seen often enough to get out of filter.";
       return boost::shared_ptr<rfxcomMessages::IRfxcomMessage>();
    }
    catch (std::exception& exception)
@@ -378,7 +389,7 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
    boost::shared_ptr<rfxcomMessages::IRfxcomMessage> msg;
    try
    {
-      auto deviceType = data.getDeviceType();
+      const auto deviceType = data.getDeviceType();
       // Lighting1
       if (deviceType == "x10")
          msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeX10, data.getDeviceName(), data.getConfiguration());

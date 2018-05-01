@@ -1,87 +1,88 @@
 <!--Configure device Modal -->
 <div class="modal fade" id="set-value-keyword-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-           <form class="form-horizontal" novalidate >
-              <div class="modal-header">
-                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                   <h4 class="modal-title" data-i18n="modals.set-value-keyword.title"></h4>
-              </div>
-              <div class="modal-body form-group">
-                 <!--configuration will be inserted here-->
-              </div>
-              <div class="modal-footer">
-                 <div class="form-actions">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
-                    <button type="submit" id="btn-confirm-set-keyword-value" class="btn btn-primary" data-i18n="common.ok"></button>
-                 </div>
-              </div>
-           </form>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form class="form-horizontal" novalidate>
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" data-i18n="modals.set-value-keyword.title"></h4>
         </div>
+        <div class="modal-body form-group">
+          <!--configuration will be inserted here-->
+        </div>
+        <div class="modal-footer">
+          <div class="form-actions">
+            <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
+            <button type="submit" id="btn-confirm-set-keyword-value" class="btn btn-primary" data-i18n="common.ok"></button>
+          </div>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
 
 <script>
-   Yadoms.showSetKeywordValueModal = function(keyword, value, pluginInstance) {
-	  var d = new $.Deferred();
-	  
-      assert(!isNullOrUndefined(keyword), "keyword must be defined");
+  Yadoms.showSetKeywordValueModal = function (keyword, value, pluginInstance) {
+    var d = new $.Deferred();
 
-      var $modalBody = $("div#set-value-keyword-modal .modal-body");
-      $modalBody.empty();
+    assert(!isNullOrUndefined(keyword), "keyword must be defined");
 
-      PluginInstanceManager.downloadPackage(pluginInstance)
-      .done(function() {
-        var configObject = ConfigurationHelper.createKeywordValueParameterHandler("modals.set-value-keyword.", undefined, "keyword-configuration", keyword, value, pluginInstance);
+    var $modalBody = $("div#set-value-keyword-modal .modal-body");
+    $modalBody.empty();
 
-        if(configObject) {
-           //we append the text section
-           $modalBody.append(configObject.getDOMObject());
-           //we finish configObject instantiation
-           if ($.isFunction(configObject.applyScript))
-             configObject.applyScript();
+    PluginInstanceManager.downloadPackage(pluginInstance)
+      .done(function () {
+        var configObject = ConfigurationHelper.createKeywordValueParameterHandler("modals.set-value-keyword.",
+          undefined, "keyword-configuration", keyword, value, pluginInstance);
 
-           //i18n
-           $modalBody.i18n();
+        if (configObject) {
+          //we append the text section
+          $modalBody.append(configObject.getDOMObject());
+          //we finish configObject instantiation
+          if ($.isFunction(configObject.applyScript))
+            configObject.applyScript();
 
-           //validation form
-           //erase previous jqBootstrapValidation
-           $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
-             preventSubmit: true,
-             submitError: function($form, event, errors) {
-               console.warn("Unable to validate form: " + errors);
-             },
-             submitSuccess: function($form, event) {
-               event.preventDefault();
-               configObject.getCurrentConfiguration()
-               .done(function(value) {
+          //i18n
+          $modalBody.i18n();
+
+          //validation form
+          //erase previous jqBootstrapValidation
+          $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
+            preventSubmit: true,
+            submitError: function ($form, event, errors) {
+              console.warn("Unable to validate form: " + errors);
+            },
+            submitSuccess: function ($form, event) {
+              event.preventDefault();
+              configObject.getCurrentConfiguration()
+                .done(function (value) {
                   $("div#set-value-keyword-modal").modal("hide");
                   d.resolve(keyword, value);
-               })
-               .fail(d.reject);
-             },
-             filter: function() {
-               //we check only control that have class enable-validation and are visible
-               return $(this).is(".enable-validation") && $(this).is(":visible");
-             }
-           });
+                })
+                .fail(d.reject);
+            },
+            filter: function () {
+              //we check only control that have class enable-validation and are visible
+              return $(this).is(".enable-validation") && $(this).is(":visible");
+            }
+          });
 
-           //if modal cancelled, then reject promise
-           $('div#set-value-keyword-modal').off("hidden.bs.modal").on("hidden.bs.modal", function () {
-              d.reject();
-           });
+          //if modal cancelled, then reject promise
+          $('div#set-value-keyword-modal').off("hidden.bs.modal").on("hidden.bs.modal", function () {
+            d.reject();
+          });
 
-           //we display the modal
-           $('div#set-value-keyword-modal').modal({ backdrop: 'static' });
+          //we display the modal
+          $('div#set-value-keyword-modal').modal({ backdrop: 'static' });
 
 
         } else {
-         d.reject();
+          d.reject();
         }
-              
+
       })
       .fail(d.reject);
 
-	  return d.promise();
-   };
+    return d.promise();
+  };
 </script>

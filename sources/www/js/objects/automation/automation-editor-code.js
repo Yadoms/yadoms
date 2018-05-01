@@ -109,7 +109,7 @@ AutomationEditorCode.prototype.applyScript = function() {
  */
 AutomationEditorCode.prototype.showDoc = function () {
     var url = "help.html";
-    url += "?lang=" + Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value;
+    url += "?lang=" + configurationManager.currentLanguage();
     url += "&helpUrl=" + encodeURIComponent(this.getApiDocUrl());
     window.open(url);
 };

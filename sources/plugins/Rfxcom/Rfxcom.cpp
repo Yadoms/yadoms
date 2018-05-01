@@ -13,9 +13,11 @@ IMPLEMENT_PLUGIN(CRfxcom)
 // Event IDs
 enum
 {
-   kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId, // Always start from yApi::IYPluginApi::kPluginFirstEventId
+   kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId,
+   // Always start from yApi::IYPluginApi::kPluginFirstEventId
    kEvtPortDataReceived,
    kProtocolErrorRetryTimer,
+   kProgressPairingTimer,
    kAnswerTimeout,
 };
 
@@ -43,7 +45,9 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    m_configuration.initializeWith(api->getConfiguration());
 
    // Create the transceiver
-   m_transceiver = m_factory.constructTransceiver();
+   m_pairingHelper = m_factory.constructPairingHelper(api,
+                                                      m_configuration.getPairingMode());
+   m_transceiver = m_factory.constructTransceiver(m_pairingHelper);
 
    m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
                                                              shared::event::CEventTimer::kOneShot,
@@ -70,7 +74,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          case yApi::IYPluginApi::kEventDeviceCommand:
             {
                // Command received from Yadoms
-               auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
+               const auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
                onCommand(api, command);
 
                break;
@@ -108,10 +112,9 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                if (extraQuery)
                {
                   if (extraQuery->getData()->query() == "firmwareUpdate")
-                  {
-                     api->setPluginState(yApi::historization::EPluginState::kCustom, "updateFirmware");
                      processFirmwareUpdate(api, extraQuery);
-                  }
+                  else if (extraQuery->getData()->query() == "pairing")
+                     startManualPairing(api, extraQuery);
                   else
                   {
                      YADOMS_LOG(error) << "Unsupported query : " << extraQuery->getData()->query();
@@ -127,7 +130,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
          case kEvtPortConnection:
             {
-               auto notif = api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>>();
+               const auto notif = api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>>();
 
                if (notif && notif->isConnected())
                   processRfxcomConnectionEvent(api);
@@ -151,6 +154,21 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          case kProtocolErrorRetryTimer:
             {
                createConnection(api->getEventHandler());
+               break;
+            }
+         case kProgressPairingTimer:
+            {
+               if (m_pairingHelper->onProgressPairing())
+               {
+                  // Finished
+                  m_progressPairingTimer.reset();
+               }
+               else
+               {
+                  // Next loop
+                  if (m_progressPairingTimer)
+                     m_progressPairingTimer->start();
+               }
                break;
             }
          default:
@@ -236,7 +254,7 @@ void CRfxcom::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
 
    try
    {
-      auto message(m_transceiver->buildMessageToDevice(api, command));
+      const auto message(m_transceiver->buildMessageToDevice(api, command));
       send(api, message);
    }
    catch (std::exception& e)
@@ -257,6 +275,7 @@ void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       // Update configuration
       m_configuration.initializeWith(newConfigurationData);
+      m_pairingHelper->setMode(m_configuration.getPairingMode());
       return;
    }
 
@@ -269,6 +288,7 @@ void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 
       // Update configuration
       m_configuration.initializeWith(newConfigurationData);
+      m_pairingHelper->setMode(m_configuration.getPairingMode());
       m_configurationUpdated = false;
 
       // Ask status, to compare with new configuration
@@ -282,6 +302,7 @@ void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 
    // Update configuration
    m_configuration.initializeWith(newConfigurationData);
+   m_pairingHelper->setMode(m_configuration.getPairingMode());
 
    // Create new connection
    createConnection(api->getEventHandler());
@@ -317,7 +338,9 @@ void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi
 {
    YADOMS_LOG(information) << "RFXCom connection was lost";
    if (notification)
-      api->setPluginState(yApi::historization::EPluginState::kError, notification->getErrorMessageI18n(), notification->getErrorMessageI18nParameters());
+      api->setPluginState(yApi::historization::EPluginState::kError,
+                          notification->getErrorMessageI18n(),
+                          notification->getErrorMessageI18nParameters());
    else
       api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionLost");
 
@@ -329,7 +352,7 @@ void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> api
 {
    m_logger.logReceived(data);
 
-   auto message = m_transceiver->decodeRfxcomMessage(api, data);
+   const auto message = m_transceiver->decodeRfxcomMessage(api, data);
 
    if (!message)
       return;
@@ -338,14 +361,14 @@ void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> api
    m_waitForAnswerTimer->stop();
 
    // Decoding is OK, process received message
-   auto statusMessage = boost::dynamic_pointer_cast<rfxcomMessages::CTransceiverStatus>(message);
+   const auto statusMessage = boost::dynamic_pointer_cast<rfxcomMessages::CTransceiverStatus>(message);
    if (!!statusMessage)
    {
       processRfxcomCommandResponseMessage(api, *statusMessage);
       return;
    }
 
-   auto ackMessage = boost::dynamic_pointer_cast<rfxcomMessages::CAck>(message);
+   const auto ackMessage = boost::dynamic_pointer_cast<rfxcomMessages::CAck>(message);
    if (!!ackMessage)
    {
       processRfxcomAckMessage(*ackMessage);
@@ -353,13 +376,16 @@ void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> api
    }
 
    // Sensor message, historize all data contained in the message
-   message->historizeData(api);
+   if (api->deviceExists(message->getDeviceName()))
+      message->historizeData(api);
 }
 
 void CRfxcom::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                     boost::shared_ptr<yApi::IExtraQuery> extraQuery)
 {
    boost::shared_ptr<IRfxcomFirmwareUpdater> updater;
+
+   api->setPluginState(yApi::historization::EPluginState::kCustom, "updateFirmware");
 
    // First step : initialization. No connection restart if fail.
    try
@@ -397,6 +423,15 @@ void CRfxcom::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
 
    // Restart connection
    createConnection(api->getEventHandler());
+}
+
+void CRfxcom::startManualPairing(boost::shared_ptr<yApi::IYPluginApi> api,
+                                 boost::shared_ptr<yApi::IExtraQuery> extraQuery)
+{
+   if (m_pairingHelper->startPairing(extraQuery))
+      m_progressPairingTimer = api->getEventHandler().createTimer(kProgressPairingTimer,
+                                                                  shared::event::CEventTimer::kOneShot,
+                                                                  boost::posix_time::seconds(5));
 }
 
 void CRfxcom::initRfxcom(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -441,14 +476,15 @@ void CRfxcom::processRfxcomCommandResponseMessage(boost::shared_ptr<yApi::IYPlug
 void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                                          const rfxcomMessages::CTransceiverStatus& status)
 {
-   YADOMS_LOG(information) << "RFXCom status, type (" << status.rfxcomTypeToString() << "), firmware type (" << status.getFirmwareType() << "), firmware version (" << status.getFirmwareVersion() << "), hardware version (" << status.getHardwareVersion() << ")";
+   YADOMS_LOG(information) << "RFXCom status, type (" << status.rfxcomTypeToString() << "), firmware type (" << status.getFirmwareType() <<
+      "), firmware version (" << status.getFirmwareVersion() << "), hardware version (" << status.getHardwareVersion() << ")";
    status.traceEnabledProtocols();
 
    if (m_configurationUpdated)
    {
       if (status.needConfigurationUpdate(m_configuration))
       {
-         YADOMS_LOG(information) << "Unable to set configuration as expected, maybe incompatible protocols were selected";
+         YADOMS_LOG(error) << "Unable to set configuration as expected, maybe incompatible protocols were selected";
          api->setPluginState(yApi::historization::EPluginState::kError, "failToConfigure");
          throw boost::thread_interrupted();
       }
@@ -521,4 +557,3 @@ void CRfxcom::processRfxcomAckMessage(const rfxcomMessages::CAck& ack)
    else
    YADOMS_LOG(information) << "RFXCom Received acknowledge is KO";
 }
-

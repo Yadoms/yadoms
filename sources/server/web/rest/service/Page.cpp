@@ -42,10 +42,10 @@ namespace web { namespace rest { namespace service {
    }
 
 
-   shared::CDataContainer CPage::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CPage::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       boost::shared_ptr<database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
-      shared::CDataContainer result;
+      boost::shared_ptr<shared::serialization::IDataSerializable> result;
       try
       {
          if(pTransactionalEngine)
@@ -63,7 +63,7 @@ namespace web { namespace rest { namespace service {
 
       if(pTransactionalEngine)
       {
-         if(CResult::isSuccess(result))
+         if(CResult::isSuccess(*boost::dynamic_pointer_cast<shared::CDataContainer>(result)))
             pTransactionalEngine->transactionCommit();
          else
             pTransactionalEngine->transactionRollback();
@@ -73,7 +73,7 @@ namespace web { namespace rest { namespace service {
 
 
 
-   shared::CDataContainer CPage::getOnePage(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CPage::getOnePage(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       if(parameters.size()>1)
       {
@@ -84,7 +84,7 @@ namespace web { namespace rest { namespace service {
       return CResult::GenerateError("Invalid parameter count (need page id in url)");
    }
 
-         shared::CDataContainer CPage::getAllPages(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CPage::getAllPages(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       std::vector< boost::shared_ptr<database::entities::CPage> > pageList = m_dataProvider->getPageRequester()->getPages();
       shared::CDataContainer collection;
@@ -92,7 +92,7 @@ namespace web { namespace rest { namespace service {
       return CResult::GenerateSuccess(collection);
    }
 
-   shared::CDataContainer CPage::getPageWidget(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CPage::getPageWidget(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       std::string pageId;
       if(parameters.size()>1)
@@ -108,7 +108,7 @@ namespace web { namespace rest { namespace service {
       return CResult::GenerateError("Invalid parameter count (need page id in url)");
    }
 
-   shared::CDataContainer CPage::addPage(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CPage::addPage(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -128,7 +128,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CPage::updatePage(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CPage::updatePage(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -161,7 +161,7 @@ namespace web { namespace rest { namespace service {
 
 
 
-   shared::CDataContainer CPage::updateAllPages(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CPage::updateAllPages(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -189,7 +189,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CPage::deletePage(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CPage::deletePage(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -216,7 +216,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CPage::deleteAllPages(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CPage::deleteAllPages(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -237,7 +237,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CPage::addWidgetForPage(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CPage::addWidgetForPage(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -257,7 +257,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CPage::replaceAllWidgetsForPage(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CPage::replaceAllWidgetsForPage(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -289,7 +289,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CPage::deleteAllWidgetsForPage(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CPage::deleteAllWidgetsForPage(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {

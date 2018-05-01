@@ -649,19 +649,15 @@
    }
 
 
-   /**
-    *
-    */
    function updateKeywordDomLine($keywordRow, acquisition, keyword, pluginInstance) {
       //$keywordRow exists
       var keywordValue = "<span></span>";
       
-      if (acquisition.value)
-      {
+      if (acquisition.value){
          try {
             //manage boolean keyword
             var $tdvalue = $keywordRow.find("td.keyword-value");
-
+            
             if(keyword.type.toLowerCase() === "bool") {
                if(parseBool(acquisition.value) === true) {
                   keywordValue = "<input type=\"checkbox\" disabled readonly checked/>"
@@ -676,7 +672,10 @@
             else if(keyword.type.toLowerCase() === "json") {
                keywordValue = "<pre class=\"json-value-container\">" + library.json.prettyPrint(JSON.parse(acquisition.value)) + "</pre>";
             } else {
-               keywordValue = "<span>" + acquisition.value + "</span>";
+               if (acquisition.value !== "not-a-date-time")
+                  keywordValue = "<span>" + acquisition.value + "</span>";
+               else 
+                  keywordValue = "<span>-</span>";
             }
          } catch (err) {
             keywordValue = "<span>" + acquisition.value + "</span>";

@@ -9,6 +9,7 @@ from selenium.webdriver.support import expected_conditions as Condition
 from selenium.webdriver.common.keys import Keys
 import database
 import config
+import modals
 import scripts
 import yadomsServer
 import dashboard.systemConfiguration
@@ -29,31 +30,61 @@ class RefreshPageOption(unittest.TestCase):
       yadomsServer.openClient(self.browser)
       
       
-   def test_refreshPageOptionDefaultValue(self):
-      print '=== RefreshPage option default value check ==='
+   def test_refreshPageOptionSaveRestoreReset(self):
+      print '=== RefreshPage option default value check (cold start), save value, restore value and reset to default ==='
 
-      print 'Open systemConfiguration dashboard'
+      print 'Open systemConfiguration dashboard and active advanced parameters'
       dashboard.open(self.browser)
       dashboard.openSystemConfiguration(self.browser)
-      
-      print 'Active advanced parameters'
-      advancedParameterSection = dashboard.systemConfiguration.enableAdvancedParametersSection(self.browser)
+      panel = dashboard.systemConfiguration.getPanel(self.browser)
+      advancedParameterSection = panel.enableAdvancedParametersSection()
 
-      print 'Check RefreshPage option default value'
-      self.assertTrue(dashboard.systemConfiguration.getRefreshPageOptionState(advancedParameterSection), True)
+      print 'Check RefreshPage option default value (cold start)'
+      self.assertTrue(panel.getRefreshPageOptionState(advancedParameterSection))
 
+      print 'Change RefreshPage option value'
+      panel.setRefreshPageOption(advancedParameterSection, False)
+      panel.apply()
       
+      print 'Close dashboard'
+      dashboard.close(self.browser)
+
+      print 'Re-open systemConfiguration dashboard and active advanced parameters'
+      dashboard.open(self.browser)
+      dashboard.openSystemConfiguration(self.browser)
+      panel = dashboard.systemConfiguration.getPanel(self.browser)
+      advancedParameterSection = panel.enableAdvancedParametersSection()
+
+      print 'Check RefreshPage option was saved'
+      self.assertFalse(panel.getRefreshPageOptionState(advancedParameterSection))
+
+      print 'Reset to default value'
+      panel.resetToDefaultValues()
+      modals.waitOkCancelModal(self.browser).ok()
+      # Reseting to default values make page reload, wait for page reloaded
+      yadomsServer.waitPageLoaded(self.browser)
+
+      print 'Re-open systemConfiguration dashboard and active advanced parameters'
+      dashboard.open(self.browser)
+      dashboard.openSystemConfiguration(self.browser)
+      panel = dashboard.systemConfiguration.getPanel(self.browser)
+      advancedParameterSection = panel.enableAdvancedParametersSection()
+
+      print 'Check default value was restored'
+      self.assertTrue(panel.getRefreshPageOptionState(advancedParameterSection))
+
    def test_refreshPageOptionEnable(self):
       print '=== RefreshPage option (enabled) test ==='
 
       print 'Open systemConfiguration dashboard'
       dashboard.open(self.browser)
       dashboard.openSystemConfiguration(self.browser)
+      panel = dashboard.systemConfiguration.getPanel(self.browser)
       
       print 'Enable RefreshPage option'      
-      advancedParameterSection = dashboard.systemConfiguration.enableAdvancedParametersSection(self.browser)
-      dashboard.systemConfiguration.setRefreshPageOption(advancedParameterSection, True)
-      dashboard.systemConfiguration.applySystemConfiguration(self.browser)
+      advancedParameterSection = panel.enableAdvancedParametersSection()
+      panel.setRefreshPageOption(advancedParameterSection, True)
+      panel.apply()
       dashboard.close(self.browser)
 
       print 'Create 3 more pages (for a total of 4 pages)'
@@ -83,11 +114,12 @@ class RefreshPageOption(unittest.TestCase):
       print 'Open systemConfiguration dashboard'
       dashboard.open(self.browser)
       dashboard.openSystemConfiguration(self.browser)
+      panel = dashboard.systemConfiguration.getPanel(self.browser)
       
       print 'Disable RefreshPage option'      
-      advancedParameterSection = dashboard.systemConfiguration.enableAdvancedParametersSection(self.browser)
-      dashboard.systemConfiguration.setRefreshPageOption(advancedParameterSection, False)
-      dashboard.systemConfiguration.applySystemConfiguration(self.browser)
+      advancedParameterSection = panel.enableAdvancedParametersSection()
+      panel.setRefreshPageOption(advancedParameterSection, False)
+      panel.apply()
       dashboard.close(self.browser)
 
       print 'Create 3 more pages (for a total of 4 pages)'

@@ -33,3 +33,6 @@ tests/unit/builds
 .scannerwork
 sources/www/.vscode
 sources/www/.vs
+
+*.kicad_pcb-bak
+/sources/www/Web.config

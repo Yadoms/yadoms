@@ -112,6 +112,14 @@ namespace rfxcomMessages
       // Nothing to historize (transmitter-only device)
    }
 
+   void CRfy::filter() const
+   {
+   }
+
+   void CRfy::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+   }
+
    const std::string& CRfy::getDeviceName() const
    {
       return m_deviceName;

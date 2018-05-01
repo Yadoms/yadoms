@@ -15,38 +15,21 @@ namespace rfxcomMessages
    class CRemote : public IRfxcomMessage
    {
    public:
-      //--------------------------------------------------------------
-      /// \brief	                        Constructor
-      /// \param[in] api                  Yadoms APi context
-      /// \param[in] command              The command
-      /// \param[in] deviceDetails        The device parameters
-      /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
-      /// \note                           Use this constructor for command (to build RFXCom message)
-      //--------------------------------------------------------------
       CRemote(boost::shared_ptr<yApi::IYPluginApi> api,
               const std::string& command,
               const shared::CDataContainer& deviceDetails);
 
-      //--------------------------------------------------------------
-      /// \brief	                        Constructor
-      /// \param[in] api                  Yadoms APi context
-      /// \param[in] rbuf                 The received buffer
-      /// \param[in] rbufSize             Message size, received from Rfxcom
-      /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
-      /// \throw                          shared::exception::CInvalidParameter
-      //--------------------------------------------------------------
       CRemote(boost::shared_ptr<yApi::IYPluginApi> api,
               const RBUF& rbuf,
               size_t rbufSize);
 
-      //--------------------------------------------------------------
-      /// \brief	Destructor
-      //--------------------------------------------------------------
       virtual ~CRemote();
 
       // IRfxcomMessage implementation
       boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const override;
       void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
+      void filter() const override;
+      void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const override;
       const std::string& getDeviceName() const override;
       const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords() override;
       // [END] IRfxcomMessage implementation

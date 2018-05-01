@@ -20,7 +20,8 @@ boost::shared_ptr<shared::communication::IAsyncPort> CRfxcomFactory::constructPo
    boost::shared_ptr<shared::communication::IAsyncPort> port;
    if (configuration.comIsEthernet())
    {
-      YADOMS_LOG(information) << "Connecting RFXCom on network at " << configuration.getEthernetAddress() << ", port " << configuration.getEthernetPort() << "...";
+      YADOMS_LOG(information) << "Connecting RFXCom on network at " << configuration.getEthernetAddress() << ", port " << configuration.
+         getEthernetPort() << "...";
       port = boost::make_shared<shared::communication::CAsyncTcpClient>(configuration.getEthernetAddress(),
                                                                         configuration.getEthernetPort());
    }
@@ -33,16 +34,16 @@ boost::shared_ptr<shared::communication::IAsyncPort> CRfxcomFactory::constructPo
 
    port->subscribeForConnectionEvents(eventHandler, evtPortConnectionId);
 
-   auto receiveBufferHandler = boost::make_shared<CRfxcomReceiveBufferHandler>(eventHandler,
-                                                                               evtPortDataReceived);
+   const auto receiveBufferHandler = boost::make_shared<CRfxcomReceiveBufferHandler>(eventHandler,
+                                                                                     evtPortDataReceived);
    port->setReceiveBufferHandler(receiveBufferHandler);
 
    return port;
 }
 
-boost::shared_ptr<ITransceiver> CRfxcomFactory::constructTransceiver() const
+boost::shared_ptr<ITransceiver> CRfxcomFactory::constructTransceiver(boost::shared_ptr<IPairingHelper> pairingHelper) const
 {
-   return boost::make_shared<CTransceiver>();
+   return boost::make_shared<CTransceiver>(pairingHelper);
 }
 
 boost::shared_ptr<IRfxcomFirmwareUpdater> CRfxcomFactory::constructFirmwareUpdater(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -54,3 +55,9 @@ boost::shared_ptr<IRfxcomFirmwareUpdater> CRfxcomFactory::constructFirmwareUpdat
                                                      serialPort);
 }
 
+boost::shared_ptr<CPairingHelper> CRfxcomFactory::constructPairingHelper(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                                         CPairingHelper::EPairingMode pairingMode) const
+{
+   return boost::make_shared<CPairingHelper>(api,
+                                             pairingMode);
+}

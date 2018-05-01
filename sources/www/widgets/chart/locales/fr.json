@@ -15,12 +15,23 @@
 			"name": "Période d'affichage du graphique",
 			"description": "Permet de changer la période d'affichage du graphique.",
 			"values": {
-				"HOUR": "1 heure",
-				"DAY": "1 jour",
-				"WEEK": "1 semaine",
-				"MONTH": "1 mois",
-				"HALF_YEAR": "6 mois",
-				"YEAR": "1 an"
+				"HOUR/minute": "1 heure/Toutes les données",
+				"DAY/minute": "1 jour/Toutes les données",
+            "DAY/hour": "1 jour/données horaires",
+				"WEEK/hour": "1 semaine/données horaires",
+            "WEEK/day": "1 semaine/données journalières",
+				"MONTH/hour": "1 mois/données horaires",
+            "MONTH/day": "1 mois/données journalières",
+            "MONTH/week": "1 mois/données hebdomadaires",
+				"HALF_YEAR/day": "6 mois/données journalières",
+            "HALF_YEAR/week": "6 mois/données hebdomadaires",
+            "HALF_YEAR/month": "6 mois/données mensuelles",
+				"YEAR/day": "1 an/données journalières",
+            "YEAR/week": "1 an/données hebdomadaires",
+            "YEAR/month": "1 an/données mensuelles",
+            "FIVE_YEAR/day": "5 years/données journalières",
+            "FIVE_YEAR/week": "5 years/données hebdomadaires",
+            "FIVE_YEAR/month": "5 years/données mensuelles"            
 			}
 		},
       "legends" : {
@@ -117,7 +128,13 @@
 		"week": "1s",
 		"month": "1m",
 		"half_month": "6m",
-		"year": "1a"
+		"year": "1a",
+      "five_year": "5a",
+      "all": "tout",
+      "hourly": "horaire",
+      "daily": "journalier",
+      "weekly": "hebdomadaire",
+      "monthly": "mensuel"      
 	},
    "export": {
       "print": "Imprimer",

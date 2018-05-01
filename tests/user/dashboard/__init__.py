@@ -27,7 +27,11 @@ def close(browser):
    """Close the dashboard"""
    
    browser.find_element_by_xpath(".//div[@id='main-dashboard-modal']//div[@class='modal-footer']//button[@data-i18n='common.close']").click();
-   WebDriverWait(browser, 10).until(Condition.invisibility_of_element_located((By.ID, "main-dashboard-modal")))
+   waitForClosed(browser)
+
+
+def waitForClosed(browser):
+   return WebDriverWait(browser, 10).until(Condition.invisibility_of_element_located((By.ID, "main-dashboard-modal")))
 
 
 def openPage(browser, pageElementId, elementIdToWait):

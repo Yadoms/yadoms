@@ -76,6 +76,14 @@ namespace rfxcomMessages
       api->historizeData(m_deviceName, m_keywords);
    }
 
+   void CUV::filter() const
+   {
+   }
+
+   void CUV::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+   }
+
    const std::string& CUV::getDeviceName() const
    {
       return m_deviceName;

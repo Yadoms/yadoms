@@ -176,7 +176,8 @@ SET (POCO_LIBS
 
 set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
 set(POCO_USE_STATIC_RUNTIME 1)
-add_definitions(-DPOCO_STATIC) 
+add_definitions(-DPOCO_STATIC)
+add_definitions(-DPOCO_EXTERNAL_OPENSSL)
 include(cmake/FindPoco.cmake)
 
 IF(NOT ${Poco_FOUND})
@@ -572,6 +573,8 @@ set(YADOMS_SRC
    server/web/rest/RestDispatcherHelpers.hpp
    server/web/rest/Result.h
    server/web/rest/Result.cpp
+   server/web/rest/StringContainer.h
+   server/web/rest/StringContainer.cpp
 
    server/web/rest/service/Acquisition.h
    server/web/rest/service/Acquisition.cpp
@@ -731,7 +734,7 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/adapters/DatabaseAdapters.cpp
 	server/database/common/adapters/GenericAdapter.h
 	server/database/common/adapters/GenericAdapter.cpp
-	server/database/common/adapters/HighchartValueAdapter.hpp
+	server/database/common/adapters/HugeDataVectorAdapter.hpp
 	server/database/common/adapters/IResultAdapter.h
 	server/database/common/adapters/MultipleValueAdapter.hpp
 	server/database/common/adapters/SingleValueAdapter.hpp
@@ -773,6 +776,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/versioning/Version_4_0_1.cpp
 	server/database/common/versioning/Version_4_1_0.h
 	server/database/common/versioning/Version_4_1_0.cpp
+	server/database/common/versioning/Version_4_2_0.h
+	server/database/common/versioning/Version_4_2_0.cpp
 	server/database/common/versioning/VersionUpgraderFactory.h
 	server/database/common/versioning/VersionUpgraderFactory.cpp
 	server/database/common/versioning/VersionException.h

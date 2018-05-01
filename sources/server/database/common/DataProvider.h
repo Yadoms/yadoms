@@ -105,7 +105,7 @@ namespace database
 
          // [END] IDatabaseProvider implementation
 
-         shared::versioning::CVersion GetVersion() const;
+         shared::versioning::CVersion getVersion() const;
       private:
          //--------------------------------------------------------------
          /// \Brief		Load all requesters
@@ -205,5 +205,3 @@ namespace database
       };
    } //namespace common
 } //namespace database
-
-

@@ -154,7 +154,7 @@ class NewPluginModal():
             
             
 
-class RemovePluginConfirmationModal(modals.RemoveObjectConfirmationModal):
+class RemovePluginConfirmationModal(modals.OkCancelModal):
    """ Operations on delete plugin confirmation modal """
    pass
    

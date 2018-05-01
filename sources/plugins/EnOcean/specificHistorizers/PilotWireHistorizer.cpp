@@ -12,13 +12,15 @@ namespace specificHistorizers
       ((Eco))
       ((AntiFreeze))
    );
-
+   
+   DECLARE_CAPACITY(PilotWireCapacity,
+      "PilotWire",
+      shared::plugin::yPluginApi::CStandardUnits::NoUnit(),
+      shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
    CPilotWireHistorizer::CPilotWireHistorizer(const std::string& keywordName)
       : CSingleHistorizableData<EPilotWire>(keywordName,
-                                            shared::plugin::yPluginApi::CStandardCapacity("PilotWire",
-                                                                                          shared::plugin::yPluginApi::CStandardUnits::NoUnit(),
-                                                                                          shared::plugin::yPluginApi::EKeywordDataType::kEnum),
+                                            PilotWireCapacity(),
                                             shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
    {
    }

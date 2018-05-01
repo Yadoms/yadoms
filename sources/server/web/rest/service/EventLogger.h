@@ -19,11 +19,11 @@ namespace web
             // [END] IRestService implementation
 
          protected:
-            shared::CDataContainer getEvents(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            shared::CDataContainer getLastEvent(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            shared::CDataContainer getEventsFrom(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            shared::CDataContainer getEventsRange(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            shared::CDataContainer addEvent(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getEvents(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getLastEvent(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getEventsFrom(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getEventsRange(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> addEvent(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
          private:
             boost::shared_ptr<dataAccessLayer::IEventLogger> m_dataProvider;

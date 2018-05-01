@@ -36,7 +36,7 @@ namespace interpreter_cpp_api
                                                                fileChannel));
 
       m_logger.setChannel(formattingFileChannel);
-      m_logger.setLevel(shared::CLog::logger().getLevel());
+      m_logger.setLevel("information");
    }
 
    CScriptLogger::~CScriptLogger()

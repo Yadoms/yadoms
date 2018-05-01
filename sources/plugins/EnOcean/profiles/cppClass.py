@@ -196,6 +196,23 @@ class CppEnumType(CppSubType):
 
 
 #-------------------------------------------------------------------------------
+class CppNoDataCapacity(CppType):
+   """ Object for declaring a Yadoms standard capacity """
+
+   def __init__(self, capacityName):
+      super(CppNoDataCapacity, self).__init__(capacityName)
+
+   def generateHeader(self, f):
+      pass
+
+   def generateSource(self, f):
+      f.write("DECLARE_CAPACITY(" + self._cppTypeName + "Capacity,\n")
+      f.write("   \"" + self._cppTypeName + "\",\n")
+      f.write("   shared::plugin::yPluginApi::CStandardUnits::NoUnit(),\n")
+      f.write("   shared::plugin::yPluginApi::EKeywordDataType::kNoData);\n")
+
+
+#-------------------------------------------------------------------------------
 class CppExtendedEnumType(CppType):
    """ Object for generating a Yadoms extended enum type """
 

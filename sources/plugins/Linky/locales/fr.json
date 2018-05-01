@@ -1,6 +1,6 @@
 ﻿{
 	"name": "linky",
-	"description": "Module de suivi de consommation électrique. Cet équipement se connecte directement sur le compteur électrique Linky.",
+	"description": "Module de suivi de consommation électrique. Cet équipement se connecte directement sur le compteur électrique Linky en communication standard. Si celui communique en mode historique, il faut utiliser le plugin teleInfo.",
 	"configurationSchema": {
 		"SerialPort": {
 			"name": "Port Série",
@@ -8,20 +8,13 @@
 		}
 	},
 	"enumerations": {
-		"EPeriod": {
-			"name" : "Période tarifaire",
+		"EColor": {
+			"name" : "Couleur de demain",
 			"values" : {
-				"AllHours": "Toutes heures",
-				"LowCostHours": "Heures creuses",
-				"PeakCostHour": "Heures pleines",
-				"NormalCostHours": "Heures pleines",
-            "MobilePeakCostHours": "heures pointe mobile",
-            "LowCostBlueDays": "Heures creuses bleues",
-            "LowCostWhiteDays": "Heures creuses blanches",
-            "LowCostRedDays": "Heures creuses rouges",
-            "NormalCostBlueDays": "Heures pleines bleues",
-            "NormalCostWhiteDays": "Heures pleines blanches",
-            "NormalCostRedDays": "Heures pleines rouges"
+				"NOTDEFINED": "Pas définie",
+				"BLUE": "Bleu",
+				"WHITE": "Blanc",
+				"RED": "Rouge"
 			}
 		}
    },    

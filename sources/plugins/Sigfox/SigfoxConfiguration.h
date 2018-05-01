@@ -25,6 +25,7 @@ public:
    double getRssiMax() const override;
    double getTensionMin() const override;
    double getTensionMax() const override;
+   int getSocketPort() const override;
    // [END] ISigfoxConfiguration implementation
 
 private:

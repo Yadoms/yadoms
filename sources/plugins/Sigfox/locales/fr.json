@@ -2,6 +2,10 @@
    "name": "Sigfox",
    "description": "Plugin permettant de recevoir des CALLBACK du site Sigfox. Ce plugin reçoit les data au format brut.",
    "configurationSchema":{
+       "port": {
+         "name": "port réseau d'entrée du plugin",
+         "description": ""
+       },   
       "advancedConfiguration": {
          "type": "section",
          "name": "Configuration avancée",

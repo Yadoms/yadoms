@@ -262,6 +262,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/typeInfo/IntTypeInfo.cpp
    shared/plugin/yPluginApi/historization/typeInfo/DoubleTypeInfo.h
    shared/plugin/yPluginApi/historization/typeInfo/DoubleTypeInfo.cpp
+   shared/plugin/yPluginApi/historization/typeInfo/PercentageTypeInfo.h
+   shared/plugin/yPluginApi/historization/typeInfo/PercentageTypeInfo.cpp
    shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.h
    shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.cpp
    shared/plugin/yPluginApi/historization/typeInfo/EnumTypeInfo.hpp

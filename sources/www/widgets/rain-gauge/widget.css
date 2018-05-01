@@ -6,12 +6,16 @@
     flex-direction: row;
 }
 
+.widget-rain-gauge .icon-div {
+   opacity: 0.25;
+   flex: 0 0 10%;
+   margin : auto;
+}
+
 .widget-rain-gauge .main-div {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
     flex: 0 0 90%;
-    height:100%;
 }
 
 .widget-rain-gauge .values-div {
@@ -22,14 +26,8 @@
     flex-direction: row;
 }
 
-.widget-rain-gauge .icon-div {
-   opacity: 0.25;
-   flex: 0 0 10%;
-   margin : auto;
-}
-
 .widget-rain-gauge .title-div {
-    width: 100%;
+   width: 100%;
     text-align: center;
     vertical-align:middle;
     flex: 0 0 20%;
@@ -47,7 +45,6 @@
 
 .widget-rain-gauge .value {
     flex : 1;
-    width: auto;
 }
 
 .widget-rain-gauge .unit {

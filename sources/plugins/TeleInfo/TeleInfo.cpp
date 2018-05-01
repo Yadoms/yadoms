@@ -5,6 +5,7 @@
 #include <shared/communication/PortException.hpp>
 #include "TeleInfoFactory.h"
 #include <shared/Log.h>
+#include "GPIOManager.hpp"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -41,11 +42,16 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    m_isDeveloperMode = api->getYadomsInformation()->developperMode();
 
+   m_configuration = boost::make_shared<CTeleInfoConfiguration>();
+
    // Load configuration values (provided by database)
-   m_configuration.initializeWith(api->getConfiguration());
+   m_configuration->initializeWith(api->getConfiguration());
+
+   m_GPIOManager = boost::make_shared<CGPIOManager>(m_configuration);
 
    // Create the transceiver
-   m_decoder = CTeleInfoFactory::constructDecoder(api);
+   m_decoder[0] = CTeleInfoFactory::constructDecoder(api);
+   m_decoder[1] = CTeleInfoFactory::constructDecoder(api);
 
    // Create the buffer handler
    m_receiveBufferHandler = CTeleInfoFactory::GetBufferHandler(api->getEventHandler(),
@@ -54,11 +60,18 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
                                                              shared::event::CEventTimer::kOneShot,
-                                                             boost::posix_time::seconds(45));
+                                                             boost::posix_time::seconds(20));
+
+   m_waitForAnswerTimer->stop();
 
    m_periodicSamplingTimer = api->getEventHandler().createTimer(kSamplingTimer,
                                                                 shared::event::CEventTimer::kPeriodic,
                                                                 boost::posix_time::seconds(30));
+
+   // Fire immediately a sampling time
+   api->getEventHandler().createTimer(kSamplingTimer,
+                                      shared::event::CEventTimer::kOneShot,
+                                      boost::posix_time::seconds(0));
 
    // Create the connection
    createConnection(api);
@@ -74,15 +87,13 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventStopRequested:
          {
             YADOMS_LOG(information) << "Stop requested" ;
-            api->setPluginState(yApi::historization::EPluginState::kStopped);
-            m_runningState = kStop;
+            setPluginState(api, ETeleInfoPluginState::kStop);
             return;
          }
       case kEvtPortConnection:
          {
             YADOMS_LOG(information) << "Teleinfo plugin :  Port Connection" ;
-            api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
-            m_runningState = kConnecting;
+            setPluginState(api, ETeleInfoPluginState::kConnecting);
 
             auto notif = api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>>();
 
@@ -100,33 +111,33 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kEvtPortDataReceived:
          {
 			 m_waitForAnswerTimer->stop();
-          YADOMS_LOG(trace) << "TeleInfo plugin :  DataReceived";
+          YADOMS_LOG(trace) << "TeleInfo plugin : DataReceived";
 
           processDataReceived(api,
                               api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::string>>>());
 
-            if (m_decoder->isERDFCounterDesactivated())
+            m_receiveBufferHandler->desactivate();
+
+            CTeleInfoFactory::FTDI_DisableGPIO(m_port);
+
+            if (!m_GPIOManager->isLast())
             {
-               if (m_runningState != kErDFCounterdesactivated)
-               {
-                  api->setPluginState(yApi::historization::EPluginState::kCustom, "ErDFCounterdesactivated");
-                  m_runningState = kErDFCounterdesactivated;
-               }
+               // Go to the next GPIO
+               m_GPIOManager->next();
+               api->getEventHandler().createTimer(kSamplingTimer,
+                                                  shared::event::CEventTimer::kOneShot,
+                                                  boost::posix_time::seconds(0));
             }
-
-          m_receiveBufferHandler->desactivate();
-
-			//Lauch a new time the time out to detect connexion failure
-			m_waitForAnswerTimer->start();
+            else // Return to the beginning of the list
+               m_GPIOManager->front();
 
             break;
          }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
-            m_runningState = kupdateConfiguration;
-            api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+            setPluginState(api, ETeleInfoPluginState::kupdateConfiguration);
             onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
-            api->setPluginState(yApi::historization::EPluginState::kRunning);
+            setPluginState(api, ETeleInfoPluginState::kRunning);
 
             break;
          }
@@ -137,13 +148,22 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kSamplingTimer:
          {
+            // Initial port to scan
+            // Activate the port
+            CTeleInfoFactory::FTDI_ActivateGPIO(m_port, m_GPIOManager->getGPIO());
             m_receiveBufferHandler->activate();
+
+            //Lauch a new time the time out to detect connexion failure
+            m_waitForAnswerTimer->start();
             break;
          }
       case kAnswerTimeout:
          {
             m_waitForAnswerTimer->stop();
-            YADOMS_LOG(error) << "No answer received, try to reconnect in a while..." ;
+            m_periodicSamplingTimer->stop();
+            CTeleInfoFactory::FTDI_DisableGPIO(m_port);
+
+            YADOMS_LOG(error) << "No answer received, try to reconnect in a while...";
             errorProcess(api);
             break;
          }
@@ -158,20 +178,26 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 void CTeleInfo::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+   setPluginState(api, ETeleInfoPluginState::kConnecting);
    // Create the port instance
-   m_port = CTeleInfoFactory::constructPort(m_configuration,
-                                            api->getEventHandler(),
-                                            m_receiveBufferHandler,
-                                            kEvtPortConnection);
-   m_port->start();
-   m_waitForAnswerTimer->start();
+
+   try {
+      m_port = CTeleInfoFactory::constructPort(*m_configuration,
+                                               api->getEventHandler(),
+                                               m_receiveBufferHandler,
+                                               kEvtPortConnection);
+      m_port->start();
+      m_waitForAnswerTimer->start();
+   }
+   catch (std::exception &e)
+   {
+      YADOMS_LOG(error) << e.what();
+   }
 }
 
 void CTeleInfo::destroyConnection()
 {
    m_port.reset();
-
    m_waitForAnswerTimer->stop();
 }
 
@@ -189,7 +215,7 @@ void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
    if (!m_port)
    {
       // Update configuration
-      m_configuration.initializeWith(newConfigurationData);
+      m_configuration->initializeWith(newConfigurationData);
       return;
    }
 
@@ -197,7 +223,10 @@ void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
    destroyConnection();
 
    // Update configuration
-   m_configuration.initializeWith(newConfigurationData);
+   m_configuration->initializeWith(newConfigurationData);
+
+   // Update GPIOManager
+   m_GPIOManager = boost::make_shared<CGPIOManager>(m_configuration);
 
    // Create new connection
    createConnection(api);
@@ -206,12 +235,15 @@ void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const boost::shared_ptr<std::map<std::string, std::string>>& messages)
 {
-   m_decoder->decodeTeleInfoMessage(api, messages);
+   m_decoder[m_GPIOManager->getGPIO()-1]->decodeTeleInfoMessage(api, messages);
+   setPluginState(api, ETeleInfoPluginState::kRunning);
 
-   if (m_runningState != kRunning)
+   if (m_decoder[m_GPIOManager->getGPIO() - 1]->isERDFCounterDesactivated())
    {
-      api->setPluginState(yApi::historization::EPluginState::kRunning);
-      m_runningState = kRunning;
+      if (m_runningState != kErDFCounterdesactivated)
+      {
+         setPluginState(api, ETeleInfoPluginState::kErDFCounterdesactivated);
+      }
    }
 }
 
@@ -223,6 +255,12 @@ void CTeleInfo::processTeleInfoConnectionEvent(boost::shared_ptr<yApi::IYPluginA
    {
       // Init The TeleInfo Receiver
       initTeleInfoReceiver();
+      
+      // Restart timer and fire immediately a sampling period
+      m_periodicSamplingTimer->start();
+      api->getEventHandler().createTimer(kSamplingTimer,
+                                         shared::event::CEventTimer::kOneShot,
+                                         boost::posix_time::seconds(0));
    }
    catch (shared::communication::CPortException& e)
    {
@@ -235,10 +273,9 @@ void CTeleInfo::processTeleInfoUnConnectionEvent(boost::shared_ptr<yApi::IYPlugi
 {
    YADOMS_LOG(information) << "TeleInfo connection was lost" ;
    if (notification)
-      api->setPluginState(yApi::historization::EPluginState::kError, notification->getErrorMessageI18n(), notification->getErrorMessageI18nParameters());
+      setPluginErrorState(api, notification->getErrorMessageI18n(), notification->getErrorMessageI18nParameters());
    else
-      api->setPluginState(yApi::historization::EPluginState::kError, "connectionLost");
-   m_runningState = kConnectionLost;
+      setPluginState(api, ETeleInfoPluginState::kConnectionLost);
 
    m_receiveBufferHandler->desactivate();
 
@@ -247,9 +284,8 @@ void CTeleInfo::processTeleInfoUnConnectionEvent(boost::shared_ptr<yApi::IYPlugi
 
 void CTeleInfo::errorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   api->setPluginState(yApi::historization::EPluginState::kError, "connectionLost");
+   setPluginState(api, ETeleInfoPluginState::kConnectionLost);
    destroyConnection();
-   m_runningState = kConnectionLost;
    api->getEventHandler().createTimer(kErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
 }
 
@@ -259,4 +295,48 @@ void CTeleInfo::initTeleInfoReceiver() const
 
    // Flush receive buffer
    m_port->flush();
+}
+
+void CTeleInfo::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, ETeleInfoPluginState newState)
+{
+   if (m_runningState != newState)
+   {
+      switch (newState)
+      {
+      case ETeleInfoPluginState::kErDFCounterdesactivated:
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "ErDFCounterdesactivated");
+         break;
+      case ETeleInfoPluginState::kupdateConfiguration:
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "updateconfiguration");
+         break;
+      case ETeleInfoPluginState::kConnectionLost:
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionLost");
+         break;
+      case ETeleInfoPluginState::kConnecting:
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+         break;
+      case ETeleInfoPluginState::kRunning:
+         api->setPluginState(yApi::historization::EPluginState::kRunning);
+         break;
+      case ETeleInfoPluginState::kStop:
+         api->setPluginState(yApi::historization::EPluginState::kStopped);
+         break;
+      default:
+         YADOMS_LOG(error) << "this plugin status does not exist : " << newState;
+         break;
+      }
+
+      m_runningState = newState;
+   }
+}
+
+void CTeleInfo::setPluginErrorState(boost::shared_ptr<yApi::IYPluginApi> api,
+                                    const std::string& ErrorMessageI18n,
+                                    const std::map<std::string, std::string>& ErrorMessageI18nParameters)
+{
+   if (m_runningState != kError)
+   {
+      m_runningState = kError;
+      api->setPluginState(yApi::historization::EPluginState::kError, ErrorMessageI18n, ErrorMessageI18nParameters);
+   }
 }

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <boost/test/unit_test.hpp>
 #include "../../../../sources/plugins/OrangeBusiness/deviceManager.h"
-#include "../../../../sources/plugins/OrangeBusiness/defaultEquipment.h"
+#include "../../../../sources/plugins/OrangeBusiness/DefaultEquipment.h"
 #include "../../../../sources/plugins/OrangeBusiness/Decoder.h"
 #include "../../mock/server/pluginSystem/DefaultYPluginApiMock.hpp"
 #include <shared/exception/OutOfRange.hpp>

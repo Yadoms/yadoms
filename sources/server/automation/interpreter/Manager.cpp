@@ -27,7 +27,7 @@ namespace automation
 
          for (const auto& interpreterDirectory : findInterpreterDirectories())
          {
-            auto interpreterKeyName = interpreterDirectory.filename().string();
+            const auto interpreterKeyName = interpreterDirectory.filename().string();
             if (m_loadedInterpreters.find(interpreterKeyName) == m_loadedInterpreters.end())
             {
                // Not already loaded
@@ -64,7 +64,7 @@ namespace automation
                runningInterpreter.second->requestToStop();
          }
 
-         auto timeout = shared::currentTime::Provider().now() + boost::posix_time::seconds(30);
+         const auto timeout = shared::currentTime::Provider().now() + boost::posix_time::seconds(30);
          do
          {
             {
@@ -93,8 +93,7 @@ namespace automation
          shared::CDataContainer container;
          try
          {
-            boost::filesystem::path packageFile;
-            packageFile = m_pathProvider->scriptInterpretersPath() / interpreterType / "package.json";
+            const auto packageFile = m_pathProvider->scriptInterpretersPath() / interpreterType / "package.json";
             container.deserializeFromFile(packageFile.string());
          }
          catch (shared::exception::CException& e)
@@ -205,14 +204,14 @@ namespace automation
                                              const std::string& scriptPath)
       {
          // Load the file content (delegated to the interpreter)
-         auto scriptInterpreter = getInterpreterInstance(interpreterType);
+         const auto scriptInterpreter = getInterpreterInstance(interpreterType);
          return scriptInterpreter->loadScriptContent(scriptPath);
       }
 
       std::string CManager::getScriptTemplateContent(const std::string& interpreterType)
       {
          // Load the template file content (delegated to the interpreter)
-         auto scriptInterpreter = getInterpreterInstance(interpreterType);
+         const auto scriptInterpreter = getInterpreterInstance(interpreterType);
          return scriptInterpreter->loadScriptContent(std::string());
       }
 
@@ -237,7 +236,7 @@ namespace automation
          while (ec != boost::system::errc::success);
 
          // Create the file and put the code in (delegated to the interpreter)
-         auto scriptInterpreter = getInterpreterInstance(interpreterType);
+         const auto scriptInterpreter = getInterpreterInstance(interpreterType);
          scriptInterpreter->saveScriptContent(scriptPath,
                                               code);
       }
@@ -271,7 +270,7 @@ namespace automation
          if (!file.is_open())
             throw shared::exception::CInvalidParameter(logFile.string());
 
-         std::istreambuf_iterator<char> eos;
+         const std::istreambuf_iterator<char> eos;
          return std::string(std::istreambuf_iterator<char>(file), eos);
       }
 

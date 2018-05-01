@@ -1,247 +1,324 @@
 /**
- * Created by nicolasHILAIRE on 25/02/14.
- */
-
-/**
- * Ctor which does nothing because it is used as a static class
+ * Configuration manager : manage all configurations (server and client)
  * @constructor
  */
-function ConfigurationManager(){}
+function ConfigurationManager() {
 
-/**
- * Create a ConfigurationItem from json content
- * @param {Json} json The configuration item as json
- * @returns {ConfigurationItem} The newly created configuration item
- */
-ConfigurationManager.factory = function(json) {
-   assert(!isNullOrUndefined(json), "json must be defined");
-   assert(!isNullOrUndefined(json.section), "json.section must be defined");
-   assert(!isNullOrUndefined(json.name), "json.name must be defined");
-   assert(!isNullOrUndefined(json.value), "json.value must be defined");
-   assert(!isNullOrUndefined(json.defaultValue), "json.defaultValue must be defined");
-   assert(!isNullOrUndefined(json.description), "json.description must be defined");
-   assert(!isNullOrUndefined(json.securityAccess), "json.securityAccess must be defined");
-   assert(!isNullOrUndefined(json.lastModificationDate), "json.lastModificationDate must be defined");
+    this.load = function () {
+        serverConfigurationChanged = false;
+        webClientConfigurationChanged = false;
 
-   return new ConfigurationItem(json.section, json.name, ConfigurationItem.decodeValue(json.value),
-       ConfigurationItem.decodeValue(json.defaultValue), json.description, json.securityAccess, json.lastModificationDate);
-};
+        var deferredArray = [];
+        deferredArray.push(loadServerConfiguration());
+        deferredArray.push(loadWebClientConfiguration());
+        deferredArray.push(loadDatabaseVersion());
 
-//Here is the list of items of system configuration
-ConfigurationManager.items = {};
-ConfigurationManager.items.system = {};
-ConfigurationManager.items.systemSection = "system";
-ConfigurationManager.items.system.language = "language";
-ConfigurationManager.items.system.timezone = "timezone";
+        var d = new $.Deferred();
+        $.whenAll(deferredArray)
+            .done(d.resolve)
+            .fail(d.reject);
 
-ConfigurationManager.items.system.basicAuthentication = "basicAuthentication";
-ConfigurationManager.items.system.basicAuthenticationUser = "basicAuthenticationUser";
-ConfigurationManager.items.system.basicAuthenticationPassword = "basicAuthenticationPassword";
-ConfigurationManager.items.system.basicAuthenticationPassword2 = "basicAuthenticationPassword2";
+        return d;
+    }
 
-ConfigurationManager.items.system.location = {};
-ConfigurationManager.items.system.locationSection = "location";
-ConfigurationManager.items.system.location.latitude  = "latitude";
-ConfigurationManager.items.system.location.longitude = "longitude";
-ConfigurationManager.items.system.location.altitude  = "altitude"; 
-ConfigurationManager.items.system.location.timezone = "timezone";
+    this.save = function () {
+        var deferredArray = [];
+        deferredArray.push(saveServerConfiguration());
+        deferredArray.push(saveWebClientConfiguration());
 
-ConfigurationManager.items.system.advancedParameters = "advancedParameters";
-ConfigurationManager.items.system.dateFormatString = "dateFormatString";
-ConfigurationManager.items.system.refreshPage = "refreshPage";
+        var d = new $.Deferred();
+        $.whenAll(deferredArray)
+            .done(d.resolve)
+            .fail(d.reject);
 
-ConfigurationManager.items.install = {};
-ConfigurationManager.items.installSection = "install";
-ConfigurationManager.items.install.firstStart = "firstStart";
+        return d;
+    }
 
-/**
- * Get all configuration values from a section
- * @param {Section} section The section
- * @returns {Promise} 
- */
-ConfigurationManager.getSection = function(section) {
-   assert(!isNullOrUndefined(section), "section must be defined");
+    this.reset = function () {
+        var deferredArray = [];
+        deferredArray.push(resetServerConfiguration());
+        deferredArray.push(resetWebClientConfiguration());
 
-   var d = new $.Deferred();
+        var d = new $.Deferred();
+        $.whenAll(deferredArray)
+            .done(d.resolve)
+            .fail(d.reject);
 
-   RestEngine.getJson("rest/configuration/" + section)
-      .done(function(data) {
-         var result = [];
+        return d;
+    }
 
-         $.each(data.configuration, function (index, value) {
-            var ci = ConfigurationManager.factory(value);
-            result[ci.name] = ci;
-         });
+    this.isServerFirstStart = function () {
+        return serverConfiguration[items.server.firstStart] === "true";
+    };
 
-         d.resolve(result);
-      })
-      .fail(d.reject);
+    this.setServerFirstStartDone = function () {
+        if (serverConfiguration[items.server.firstStart] !== "false") {
+            serverConfiguration[items.server.firstStart] = "false";
+            serverConfigurationChanged = true;
+        }
+        return this;
+    };
 
-   return d.promise();
-};
+    this.currentLanguage = function () {
+        return webClientConfiguration[items.webclient.language];
+    };
 
-/**
- * Get a configuration value from server
- * @param {String} configurationSection The item section
- * @param {String} configurationName The item key
- * @returns {Promise} 
- */
-ConfigurationManager.get = function(configurationSection, configurationName) {
-   assert(!isNullOrUndefined(configurationSection), "configurationSection must be defined");
-   assert(!isNullOrUndefined(configurationName), "configurationName must be defined");
+    this.setCurrentLanguage = function (value) {
+        if (webClientConfiguration[items.webclient.language] != value) {
+            webClientConfiguration[items.webclient.language] = value;
+            webClientConfigurationChanged = true;
+        }
+    };
 
-   var d = new $.Deferred();
-   RestEngine.getJson("rest/configuration/" + configurationSection + "/" + configurationName)
-      .done(function(data) {
-         var result = ConfigurationManager.factory(data);
-         d.resolve(result);
-      })
-      .fail(d.reject);
-   return d.promise();
-};
+    this.dateFormat = function () {
+        return webClientConfiguration[items.webclient.dateFormat];
+    };
+
+    this.setDateFormat = function (value) {
+        if (webClientConfiguration[items.webclient.dateFormat] != value) {
+            webClientConfiguration[items.webclient.dateFormat] = value;
+            webClientConfigurationChanged = true;
+        }
+    };
+
+    this.refreshPage = function () {
+        return webClientConfiguration[items.webclient.refreshPage] === "true";
+    };
+
+    this.setRefreshPage = function (active) {
+        var currentlyActive = webClientConfiguration[items.webclient.refreshPage] === "true";
+        if (active !== currentlyActive) {
+            webClientConfiguration[items.webclient.refreshPage] = active ? "true" : "false";
+            webClientConfigurationChanged = true;
+        }
+        return this;
+    };
+
+    this.databaseVersion = function () {
+        return databaseVersion;
+    };
+
+    this.advancedParametersActive = function () {
+        return webClientConfiguration[items.webclient.advancedParametersActive] === "true";
+    };
+
+    this.setAdvancedParametersActive = function (active) {
+        var currentlyActive = webClientConfiguration[items.webclient.advancedParametersActive] === "true";
+        if (active !== currentlyActive) {
+            webClientConfiguration[items.webclient.advancedParametersActive] = active ? "true" : "false";
+            webClientConfigurationChanged = true;
+        }
+        return this;
+    };
+
+    this.location = function () {
+        return {
+            latitude: serverConfiguration[items.server.locationSection].latitude,
+            longitude: serverConfiguration[items.server.locationSection].longitude,
+            altitude: serverConfiguration[items.server.locationSection].altitude,
+            timezone: serverConfiguration[items.server.locationSection].timezone
+        };
+    };
+
+    this.setCurrentLocation = function (latitude, longitude, altitude, timezone) {
+        if (serverConfiguration[items.server.location.latitude] != latitude ||
+            serverConfiguration[items.server.location.longitude] != longitude ||
+            serverConfiguration[items.server.location.altitude] != altitude ||
+            serverConfiguration[items.server.location.timezone] != timezone) {
+
+            serverConfiguration[items.server.location.latitude] = latitude;
+            serverConfiguration[items.server.location.longitude] = longitude;
+            serverConfiguration[items.server.location.altitude] = altitude;
+            serverConfiguration[items.server.location.timezone] = timezone;
+            serverConfigurationChanged = true;
+        }
+    };
+
+    this.basicAuthentication = function () {
+        return {
+            active: serverConfiguration[items.server.basicAuthenticationSection].active === "true",
+            user: serverConfiguration[items.server.basicAuthenticationSection].user,
+            password: serverConfiguration[items.server.basicAuthenticationSection].password
+        };
+    };
+
+    this.setBasicAuthentication = function (active, user, password) {
+        var currentlyActive = serverConfiguration[items.server.basicAuthenticationSection].active === "true";
+
+        if (currentlyActive != active ||
+            serverConfiguration[items.server.basicAuthenticationSection].user != user ||
+            serverConfiguration[items.server.basicAuthenticationSection].password != password) {
+
+            serverConfiguration[items.server.basicAuthenticationSection].active = active ? "true" : "false";
+            serverConfiguration[items.server.basicAuthenticationSection].user = user;
+            serverConfiguration[items.server.basicAuthenticationSection].password = password;
+            serverConfigurationChanged = true;
+        }
+    };
 
 
-/**
- * Update a configuration item
- * @param {Object} configurationItem The configuration item to update
- * @returns {Promise} 
- */
-ConfigurationManager.updateToServer = function (configurationItem) {
-   assert(!isNullOrUndefined(configurationItem), "configurationItem must be defined");
-   return RestEngine.putJson("/rest/configuration/" + configurationItem.section + "/" + configurationItem.name, { data: JSON.stringify(configurationItem) });
-};
+    loadServerConfiguration = function () {
+        var d = new $.Deferred();
+
+        RestEngine.getJson("rest/configuration/server")
+            .done(function (data) {
+                serverConfiguration = JSON.parse(data);
+                d.resolve();
+            })
+            .fail(d.reject);
+
+        return d.promise();
+    }
+
+    saveServerConfiguration = function () {
+        var d = new $.Deferred();
+
+        if (!serverConfigurationChanged) {
+            d.resolve();
+        } else {
+            RestEngine.putJson("/rest/configuration/server", {
+                    data: JSON.stringify(serverConfiguration)
+                })
+                .done(function () {
+                    serverConfigurationChanged = false;
+                    d.resolve();
+                })
+                .fail(d.reject);
+        }
+
+        return d;
+    }
+
+    resetServerConfiguration = function () {
+        var d = new $.Deferred();
+
+        RestEngine.putJson("/rest/configuration/server/reset")
+            .done(function (newConfiguration) {
+                serverConfiguration = newConfiguration;
+                serverConfigurationChanged = false;
+                d.resolve();
+            })
+            .fail(function () {
+                console.error("failed to reset server configuration");
+                d.reject();
+            })
+        return d;
+    }
 
 
-/**
- * Save a configuration item 
- * @param {String} section The configuration item section
- * @param {String} name The configuration item identifier
- * @param {String} value The value 
- * @param {String} defaultValue The default value
- * @param {String} description The descrption
- * @param {String} securityAccess The securit access
- * @returns {Promise} 
- */
-ConfigurationManager.createToServer = function(section, name, value, defaultValue, description, securityAccess) {
-   assert(!isNullOrUndefined(section), "section must be defined");
-   assert(!isNullOrUndefined(name), "name must be defined");
-   assert(!isNullOrUndefined(value), "value must be defined");
+    loadDatabaseVersion = function () {
+        var d = new $.Deferred();
 
-   if (isNullOrUndefined(securityAccess))
-      securityAccess = "none";
+        RestEngine.getJson("rest/configuration/databaseVersion")
+            .done(function (data) {
+                databaseVersion = data;
+                d.resolve();
+            })
+            .fail(d.reject);
 
-   if (isNullOrUndefined(defaultValue))
-      defaultValue = value;
-   
-   return RestEngine.putJson("/rest/configuration/" + section + "/" + name, {
-      data: JSON.stringify({
-         "section": section,
-         "name": name,
-         "value": value,
-         "defaultValue": defaultValue,
-         "description": description,
-         "securityAccess": securityAccess
-      })
-   });
-};
+        return d.promise();
+    }
 
-ConfigurationManager.saveRefreshPageDefaultValue = function (arrayOfDeffered) {
-   var deffered = ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.refreshPage, true, true, "", null);
-   
-   deffered
-      .done(function() {
-          console.info("refresh page : " + "true");
-      })
-     .fail(function(error) {
-         notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
-             section: ConfigurationManager.items.systemSection,
-             key: ConfigurationManager.items.system.refreshPage
-         }), error);
-     });
-     
-     Yadoms.systemConfiguration[ConfigurationManager.items.system.refreshPage] = true;
-     arrayOfDeffered.push(deffered);
-};
+    loadWebClientConfiguration = function () {
+        var d = new $.Deferred();
 
-ConfigurationManager.saveDefaultAdvancedParameters = function (arrayOfDeffered){
-  var deffered = ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.advancedParameters, false);
-  
-  deffered
-     .done(function() {
-        console.info("Advanced parameters : false");
-     })
-     .fail(function(error) {
-        notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
-            section: ConfigurationManager.items.systemSection,
-            key: ConfigurationManager.items.system.advancedParameters
-        }), error);
-     });
-  arrayOfDeffered.push(deffered);
-};
+        RestEngine.getJson("rest/configuration/external/webClient")
+            .done(function (data) {
+                loadedClientConfiguration = JSON.parse(data);
 
-ConfigurationManager.saveDefaultDateFormatString = function (arrayOfDeffered) {
-  var deffered = ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.dateFormatString, "LLL");
-  
-  deffered
-      .done(function() {
-          console.info("Date Format String : " + "LLL");
-      })
-      .fail(function(error) {
-          notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
-              section: ConfigurationManager.items.systemSection,
-              key: ConfigurationManager.items.system.dateFormatString
-          }), error);
-      }); 
-   arrayOfDeffered.push(deffered);
-};
+                // Merge loaded configuration with default one, in case of some new fields not in loaded configuration
+                Object.assign(webClientConfiguration, defaultWebClientConfiguration);
+                Object.assign(webClientConfiguration, loadedClientConfiguration);
 
-ConfigurationManager.saveDefaultBasicAuthentification = function (arrayOfDeffered) {
-   var basicAuth = {
-      "active": false,
-      "user": "admin",
-      "password": ""
-   };
-   
-   var deffered = ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.basicAuthentication, JSON.stringify(basicAuth));
-   
-   deffered
-        .done(function() {
-            console.info("Basic authentication : " + JSON.stringify(basicAuth));
+                d.resolve();
+            })
+            .fail(function () {
+                Object.assign(webClientConfiguration, defaultWebClientConfiguration);
+                d.reject();
+            });
+
+        return d.promise();
+    }
+
+    saveWebClientConfiguration = function () {
+        var d = new $.Deferred();
+
+        if (!webClientConfigurationChanged) {
+            d.resolve();
+        } else {
+            RestEngine.putJson("/rest/configuration/external/webClient", {
+                    data: JSON.stringify(webClientConfiguration)
+                })
+                .done(function () {
+                    webClientConfigurationChanged = false;
+                    d.resolve();
+                })
+                .fail(d.reject);
+        }
+
+        return d;
+    }
+
+    resetWebClientConfiguration = function () {
+        var d = new $.Deferred();        
+        
+        Object.assign(webClientConfiguration, defaultWebClientConfiguration);
+        webClientConfigurationChanged = true;
+        saveWebClientConfiguration()
+        .done(function(){
+            webClientConfigurationChanged = false;
         })
-        .fail(function(error) {
-            notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
-                section: ConfigurationManager.items.systemSection,
-                key: ConfigurationManager.items.system.basicAuthentication
-            }), error);
-        });
-   arrayOfDeffered.push(deffered);
-};
+        .always(d.resolve);
 
-ConfigurationManager.saveDefaultLanguage = function (arrayOfDeffered, defaultLanguage) {
-    var deffered = ConfigurationManager.createToServer(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.language, defaultLanguage, "", "language used by default");
-    
-    deffered
-        .done(function() {
-            console.info("Language detected : " + defaultLanguage);
-        })                                 
-        .fail(function(error) {
-            notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
-                section: ConfigurationManager.items.systemSection,
-                key: ConfigurationManager.items.system.language
-            }), error);
-        }); 
-     arrayOfDeffered.push(deffered);   
-};
+        return d;       
+    }
 
-ConfigurationManager.saveFirstStart = function (arrayOfDeffered) {
-   var deffered = ConfigurationManager.createToServer(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart, "false", "true", "First start of Web app has been done");
-   
-   deffered
-    .fail(function(error) {
-        notifyError($.t("objects.ConfigurationManager.errorDuringGettingConfiguration", {
-            section: ConfigurationManager.items.installSection,
-            key: ConfigurationManager.items.install.firstStart
-        }), error);
-    });
-    arrayOfDeffered.push(deffered);   
-};
+    var getdefaultLanguageFromSupported = function () {
+        var navigatorLanguage = navigator.language || navigator.userLanguage;
+        var langs = window.getSupportedLanguages();
+        return isNullOrUndefined(langs[navigatorLanguage]) ? Object.keys(langs)[0] :
+            navigatorLanguage;
+    }
+
+
+    // Items of server configuration
+    var items = {};
+    items.serverSection = "server";
+    items.server = {};
+    items.server.firstStart = "firstStart";
+    items.server.timezone = "timezone";
+
+    items.server.locationSection = "location";
+    items.server.location = {};
+    items.server.location.latitude = "latitude";
+    items.server.location.longitude = "longitude";
+    items.server.location.altitude = "altitude";
+    items.server.location.timezone = "timezone";
+
+    items.server.basicAuthenticationSection = "basicAuthentication";
+    items.server.basicAuthentication = {};
+    items.server.basicAuthentication.active = "active";
+    items.server.basicAuthentication.user = "user";
+    items.server.basicAuthentication.password = "password";
+
+    // Items of configuration specific to this web client
+    items.webclientSection = "webclient";
+    items.webclient = {};
+    items.webclient.language = "language";
+    items.webclient.advancedParametersActive = "advancedParametersActive";
+    items.webclient.dateFormat = "dateFormat";
+    items.webclient.refreshPage = "refreshPage";
+    // Associated default values
+    const defaultWebClientConfiguration = {};
+    defaultWebClientConfiguration[items.webclient.language] = getdefaultLanguageFromSupported();
+    defaultWebClientConfiguration[items.webclient.advancedParametersActive] = "false";
+    defaultWebClientConfiguration[items.webclient.dateFormat] = "LLL";
+    defaultWebClientConfiguration[items.webclient.refreshPage] = "true";
+
+    // Main configuration instances
+    var serverConfiguration;
+    var webClientConfiguration = {};
+    var databaseVersion;
+    var serverConfigurationChanged;
+    var webClientConfigurationChanged;
+}

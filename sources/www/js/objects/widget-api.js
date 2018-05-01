@@ -34,10 +34,21 @@ WidgetApi.prototype.setState = function (newState) {
          this.widget.$gridWidget.find(".fa-exclamation-triangle").attr("title", message);
          notifyWarning(message);
       }
-      else if (newState == widgetStateEnum.OK)
-         this.widget.$gridWidget.find(".panel-widget-desactivated").addClass("hidden");
       else
-      {}
+         this.widget.$gridWidget.find(".panel-widget-desactivated").addClass("hidden");
+   
+      if (newState == widgetStateEnum.Running && this.widget.waitingAcquisition.length!=0){
+         //Execute pending acquisition received during widget loading
+         this.widget.setState(widgetStateEnum.Initialization);
+         widget = this.widget;
+         $.each(this.widget.waitingAcquisition,function (index, acquisition) {
+             //we signal the new acquisition to the widget if the widget support the method
+             if (widget.viewModel.onNewAcquisition !== undefined) {
+                 widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
+             }
+         });
+         this.widget.setState(widgetStateEnum.Running);
+      }
    }
 }
 
@@ -161,9 +172,11 @@ WidgetApi.prototype.loadCss = function (cssFiles) {
  */
 WidgetApi.prototype.toolbar = function (options) {
     assert(!isNullOrUndefined(options), "options must be defined");
-
     var self = this;
-
+    
+    // remove all elements from the toolbar
+    self.widget.$toolbar.empty();
+       
     //we define default values
     options.activated = options.activated || false;
     options.displayTitle = options.displayTitle || true;
@@ -187,6 +200,8 @@ WidgetApi.prototype.toolbar = function (options) {
         if (options.batteryItem) {
             self.widget.$toolbar.append("<div class=\"" + self.widgetBatteryClass + "\" deviceId=\"\"></div>");
         }
+        
+        console.log (self.widget.$toolbar);
 
         //all other items
         $.each(options.items, function(index, value) {
@@ -213,52 +228,37 @@ WidgetApi.prototype.toolbar = function (options) {
  */
 WidgetApi.prototype.manageBatteryConfiguration = function () {
 
-    var self = this;
-	
+   var self = this;
 	var d = new $.Deferred();
-    var $battery = self.widget.$toolbar.find("." + self.widgetBatteryClass);
-        $battery.empty();
-        var deviceId = $battery.attr("deviceId");
-        if (!isNullOrUndefinedOrEmpty(deviceId)) {
-           //we check for the device to look if it has battery keyword
-           DeviceManager.getKeywordsBydeviceIdAndCapacity(deviceId, "Get", "batteryLevel")
-           .done(function (keyword) {
-               // We assume that we have only 1 batteryLevel keyword for one device, it's the first one
-               if (keyword.length>0) {
-                 $battery.removeClass("hidden");
-                 //it has capacity
-                 $battery.append("<span class=\"\"/>");
-                 $battery.attr("keywordId", keyword[0].id);
-                 //we add it to the filter of keyword for websockets
-                 self.widget.viewModel.widgetApi.registerKeywordForNewAcquisitions(keyword[0].id);
-
-                 //we ask immediately for the battery value
-                 AcquisitionManager.getLastValue(keyword[0].id)
-                 .done(function (lastValue) {
-                    if (lastValue.value !== "")
-                        self.widget.viewModel.widgetApi.updateBatteryLevel(lastValue.value);
-                     else 
-                        $battery.addClass("hidden"); // if no value => we hide the icon
-                     
-                     d.resolve();
-                 })
-                 .fail(function (error) {
-                    $battery.addClass("hidden");
-                    notifyError($.t("objects.generic.errorGetting", { objectName: "Acquisition KeywordId = " + keyword[0].id }), error);
-                    d.reject();
-                 });
-             }
-             else {
-               //we can hide the div to prevent margin spaces before the title
-               $battery.addClass("hidden");
-               d.resolve();
-             }
-         })
-         .fail(function (error){
+   var $battery = self.widget.$toolbar.find("." + self.widgetBatteryClass);
+   $battery.empty();
+   var deviceId = $battery.attr("deviceId");
+     if (!isNullOrUndefinedOrEmpty(deviceId)) {
+        //we check for the device to look if it has battery keyword
+        DeviceManager.getKeywordsBydeviceIdAndCapacity(deviceId, "Get", "batteryLevel")
+        .done(function (keyword) {
+            // We assume that we have only 1 batteryLevel keyword for one device, it's the first one
+            if (keyword.length>0) {
+              $battery.removeClass("hidden");
+              //it has capacity
+              $battery.append("<span class=\"\"/>");
+              $battery.attr("keywordId", keyword[0].id);
+              //we add it to the filter of keyword for websockets
+              self.widget.viewModel.widgetApi.registerKeywordForNewAcquisitions(keyword[0].id);
+              self.widget.viewModel.widgetApi.getLastValue(keyword[0].id);
+              d.resolve();
+          }
+          else {
+            //we can hide the div to prevent margin spaces before the title
             $battery.addClass("hidden");
-            notifyError($.t("objects.generic.errorGetting", { objectName: "keyword for device = " + deviceId }), error);
-            d.reject();
-         });
+            d.resolve();
+          }
+      })
+      .fail(function (error){
+         $battery.addClass("hidden");
+         notifyError($.t("objects.generic.errorGetting", { objectName: "keyword for device = " + deviceId }), error);
+         d.reject();
+      });
     }
     else
     {
@@ -275,23 +275,33 @@ WidgetApi.prototype.manageBatteryConfiguration = function () {
  */
 WidgetApi.prototype.updateBatteryLevel = function (batteryLevel) {
     assert(!isNullOrUndefined(batteryLevel), "batteryLevel must be defined");
-    var self = this;
+    var self = this;    
+    var $battery = self.widget.$toolbar.find("." + self.widgetBatteryClass);
 
-    //we compute the battery fill
-    var fill;
-    var lvl = parseInt(batteryLevel);
-    if (lvl < 20.0)
-        fill = 0;
-    else if (lvl < 40.0)
-        fill = 1;
-    else if (lvl < 60.0)
-        fill = 2;
-    else if (lvl < 80.0)
-        fill = 3;
-    else
-        fill = 4;
+    if (isNullOrUndefinedOrEmpty(batteryLevel)){
+       $battery.addClass("hidden");
+    }else{
+       //we compute the battery fill
+       var fill;
+       var lvl = parseInt(batteryLevel);
+       if (lvl < 20.0)
+           fill = 0;
+       else if (lvl < 40.0)
+           fill = 1;
+       else if (lvl < 60.0)
+           fill = 2;
+       else if (lvl < 80.0)
+           fill = 3;
+       else
+           fill = 4;
 
-    this.widget.$toolbar.find("div." + self.widgetBatteryClass + " span").removeClass().addClass("fa fa-battery-" + fill);
+       $battery.addClass("fa fa-battery-" + fill);
+       
+       if (fill==0)
+          $battery.css("color", "red");
+       else
+          $battery.css("color", "");
+    }
 };
 
 /**
