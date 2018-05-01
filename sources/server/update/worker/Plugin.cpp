@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Plugin.h"
 #include <shared/Log.h>
+#include <shared/Executable.h>
 
 #include <shared/ServiceLocator.h>
 
@@ -9,6 +10,7 @@
 
 #include "pluginSystem/Manager.h"
 #include "i18n/ClientStrings.h"
+#include "pluginSystem/Information.h"
 
 namespace update
 {
@@ -48,6 +50,11 @@ namespace update
                const auto pluginPath = CWorkerTools::deployPackage(downloadedPackage, pluginsPath.string());
                YADOMS_LOG(information) << "Plugin deployed with success";
 
+               // Change executable file permission to authorize execution
+               pluginSystem::CInformation pluginInformation(pluginPath.toString());
+               boost::filesystem::permissions(pluginInformation.getPath() / shared::CExecutable::ToFileName(pluginInformation.getType()),
+                                              boost::filesystem::perms::add_perms
+                                              | boost::filesystem::perms::owner_exe | boost::filesystem::perms::group_exe);
 
                YADOMS_LOG(information) << "Refresh plugin list";
                progressCallback(true, 90.0f, i18n::CClientStrings::UpdatePluginFinalize, std::string(), callbackData);
@@ -103,7 +110,7 @@ namespace update
             YADOMS_LOG(information) << "Downloading package";
             progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginDownload, std::string(), callbackData);
             downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdatePluginDownload,
-                                                                         0.0, 50.0);
+                                                              0.0, 50.0);
             YADOMS_LOG(information) << "Downloading package with success";
 
             /////////////////////////////////////////////

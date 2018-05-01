@@ -12,8 +12,7 @@ namespace pluginSystem
    {
       try
       {
-         boost::filesystem::path packageFile;
-         packageFile = m_path / "package.json";
+         const auto packageFile = m_path / "package.json";
          m_package->deserializeFromFile(packageFile.string());
       }
       catch (shared::exception::CException& e)
@@ -69,7 +68,7 @@ namespace pluginSystem
          throw shared::exception::CInvalidParameter(pluginPath.stem().string() + std::string(" : Error reading package.json : data not found : ") + e.what());
       }
 
-      auto pluginFolder = m_path.filename().string();
+      const auto pluginFolder = m_path.filename().string();
       if (!boost::equal(pluginFolder, m_type))
       {
          // Set plugin as not supported
