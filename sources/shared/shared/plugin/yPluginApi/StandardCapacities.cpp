@@ -20,6 +20,7 @@ namespace shared
          DECLARE_CAPACITY(CStandardCapacities::Current, "current", CStandardUnits::Ampere(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Curtain, "curtain", CStandardUnits::NoUnit(), EKeywordDataType::kEnum);
          DECLARE_CAPACITY(CStandardCapacities::DateTime, "datetime", CStandardUnits::NoUnit(), EKeywordDataType::kDateTime);
+         DECLARE_CAPACITY(CStandardCapacities::Debit, "debit", CStandardUnits::CubicMeterPerSecond(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Dimmable, "dimmable", CStandardUnits::Percent(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Direction, "direction", CStandardUnits::Degrees(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Distance, "distance", CStandardUnits::Meter(), EKeywordDataType::kNumeric);

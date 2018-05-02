@@ -10,6 +10,7 @@
 #include "Current.h"
 #include "Curtain.h"
 #include "DateTime.h"
+#include "Debit.h"
 #include "DeviceState.h"
 #include "Dimmable.h"
 #include "Direction.h"

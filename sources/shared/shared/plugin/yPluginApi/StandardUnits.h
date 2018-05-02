@@ -20,6 +20,7 @@ namespace shared
             static const std::string& NoUnit();
             static const std::string& Ampere(); // A
             static const std::string& CubicMetre(); // m3
+            static const std::string& CubicMeterPerSecond(); // m3/s
             static const std::string& Decibel(); // dB
             static const std::string& DecibelPerMilliWatt(); // dBm
             static const std::string& Degrees(); // °

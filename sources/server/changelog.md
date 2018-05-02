@@ -1,3 +1,8 @@
+### 2.1.0-beta.2
+
+#### New features and fixes
+* Add debit historizer
+
 ### 2.1.0-beta.1
 
 #### New features and fixes

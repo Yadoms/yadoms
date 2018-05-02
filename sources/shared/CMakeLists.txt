@@ -180,6 +180,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Curtain.h
    shared/plugin/yPluginApi/historization/DateTime.cpp
    shared/plugin/yPluginApi/historization/DateTime.h
+   shared/plugin/yPluginApi/historization/Debit.cpp
+   shared/plugin/yPluginApi/historization/Debit.h
    shared/plugin/yPluginApi/historization/DeviceState.cpp
    shared/plugin/yPluginApi/historization/DeviceState.h
    shared/plugin/yPluginApi/historization/DeviceStateMessage.cpp
