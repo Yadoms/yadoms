@@ -1,6 +1,6 @@
 {
   "type": "enOcean",
-  "version": "1.0.2-beta.3",
+  "version": "1.0.2-beta.4",
   "author": "Sébastien Gallou",
   "url": "https://github.com/Yadoms/yadoms/",
   "credits": "",
@@ -594,7 +594,7 @@
       "content": {
         "measuredDurationOfVerticalRunMs": {
           "name": "Mesured duration of a vertical run (ms)",
-          "type": "integer",
+          "type": "int",
           "minimumValue": "5000",
           "maximumValue": "300000",
           "precision": "10",
@@ -602,7 +602,7 @@
         },
         "measuredDurationOfRotationMs": {
           "name": "Mesured duration of a rotation (ms)",
-          "type": "integer",
+          "type": "int",
           "minimumValue": "10",
           "maximumValue": "2540",
           "precision": "10",
