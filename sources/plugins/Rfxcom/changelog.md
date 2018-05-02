@@ -1,3 +1,7 @@
+### 1.1.2-beta.6
+* Fix ELEC4 error on _total_ keyword historization
+* Fix ELEC4 filtering device declaration in auto-pairing mode
+
 ### 1.1.2-beta.5
 * Fix regression (no historization was done since 1.1.2-beta.4)
 
