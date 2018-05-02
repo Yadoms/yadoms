@@ -54,7 +54,8 @@ namespace rfxcomMessages
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.CURRENT_ENERGY.battery_level));
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.CURRENT_ENERGY.rssi));
 
-      Init(api);
+      buildDeviceModel();
+      buildDeviceName();
    }
 
    CCurrentEnergy::~CCurrentEnergy()
@@ -65,29 +66,6 @@ namespace rfxcomMessages
    {
       return boost::make_shared<CRareDeviceIdFilter>(3,
                                                      boost::posix_time::minutes(10));
-   }
-
-   void CCurrentEnergy::Init(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      // Build device description
-      buildDeviceModel();
-      buildDeviceName();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         if (!m_messageFilter->isValid(m_deviceName))
-            throw CMessageFilteredException((boost::format("Receive unknown device (id %1%) for unsecured protocol (CURRENTENERGY / %2%), may be a transmission error : ignored")
-               % m_id % m_deviceModel).str());
-
-         shared::CDataContainer details;
-         details.set("type", pTypeCURRENTENERGY);
-         details.set("subType", m_subType);
-         details.set("id", m_id);
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         details.printToLog(YADOMS_LOG(information));
-      }
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CCurrentEnergy::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
@@ -102,10 +80,20 @@ namespace rfxcomMessages
 
    void CCurrentEnergy::filter() const
    {
+      if (m_messageFilter && !m_messageFilter->isValid(m_deviceName))
+         throw CMessageFilteredException((boost::format("Receive unknown device (id %1%) for unsecured protocol (CURRENTENERGY / %2%), may be a transmission error : ignored")
+            % m_id % m_deviceModel).str());
    }
 
    void CCurrentEnergy::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
+      shared::CDataContainer details;
+      details.set("type", pTypeCURRENTENERGY);
+      details.set("subType", m_subType);
+      details.set("id", m_id);
+      api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+      details.printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CCurrentEnergy::getDeviceName() const
@@ -140,5 +128,3 @@ namespace rfxcomMessages
       m_deviceModel = ssModel.str();
    }
 } // namespace rfxcomMessages
-
-

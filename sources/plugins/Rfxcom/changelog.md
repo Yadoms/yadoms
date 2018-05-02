@@ -1,3 +1,6 @@
+### 1.1.2-beta.6
+* Fix Historization of some device types even if pairing is disabled
+
 ### 1.1.2-beta.5
 * Fix regression (no historization was done since 1.1.2-beta.4)
 

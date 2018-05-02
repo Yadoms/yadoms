@@ -12,9 +12,9 @@ namespace rfxcomMessages
                     const RBUF& rbuf,
                     size_t rbufSize)
       : m_weight(boost::make_shared<yApi::historization::CWeight>("weight")),
-      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_weight , m_batteryLevel , m_signalPower })
+        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_weight , m_batteryLevel , m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -32,33 +32,16 @@ namespace rfxcomMessages
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.WEIGHT.filler)); // In SDK specification battery_level is at filler location
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.WEIGHT.rssi));
 
-      Init(api);
+      // Build device description
+      buildDeviceModel();
+      buildDeviceName();
    }
 
    CWeight::~CWeight()
    {
    }
 
-   void CWeight::Init(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      // Build device description
-      buildDeviceModel();
-      buildDeviceName();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypeWEIGHT);
-         details.set("subType", m_subType);
-         details.set("id", m_id);
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         details.printToLog(YADOMS_LOG(information));
-      }
-   }
-
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CWeight::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CWeight::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("Weight is a read-only message, can not be encoded");
    }
@@ -74,6 +57,13 @@ namespace rfxcomMessages
 
    void CWeight::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
+      shared::CDataContainer details;
+      details.set("type", pTypeWEIGHT);
+      details.set("subType", m_subType);
+      details.set("id", m_id);
+      api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+      details.printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CWeight::getDeviceName() const
@@ -110,5 +100,3 @@ namespace rfxcomMessages
       m_deviceModel = ssModel.str();
    }
 } // namespace rfxcomMessages
-
-
