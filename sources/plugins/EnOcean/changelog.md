@@ -1,3 +1,6 @@
+### 1.0.2-beta.5
+* Add A5-12-xx profiles
+
 ### 1.0.2-beta.4
 * Fix D2-05-00 configuration
 * D2-05-00 profile (blinds) : add stop managment

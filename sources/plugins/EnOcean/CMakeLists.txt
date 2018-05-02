@@ -103,6 +103,11 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/IRorg.h
    profiles/IFunc.h
    profiles/IType.h
+
+   profiles/hardCoded/Profile_A5_12_Common.cpp
+   profiles/hardCoded/Profile_A5_12_Common.h
+   profiles/hardCoded/Profile_A5_12_01.cpp
+   profiles/hardCoded/Profile_A5_12_01.h
    
    profiles/hardCoded/Profile_D2_01_Common.cpp
    profiles/hardCoded/Profile_D2_01_Common.h
