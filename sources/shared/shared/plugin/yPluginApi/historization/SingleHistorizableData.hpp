@@ -36,6 +36,7 @@ namespace shared
                                        const typeInfo::ITypeInfo& typeInfo = typeInfo::CEmptyTypeInfo::Empty)
                   : m_keywordName(keywordName),
                     m_capacity(capacity),
+                    m_value(),
                     m_accessMode(accessMode),
                     m_measureType(measureType),
                     m_typeInfo(typeInfo.serialize())
@@ -80,11 +81,13 @@ namespace shared
                {
                }
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
                virtual ~CSingleHistorizableData()
                {
+               }
+
+               CSingleHistorizableData operator = (const CSingleHistorizableData<T>& rhs)
+               {
+                  return CSingleHistorizableData(rhs);
                }
 
                // IHistorizable implementation

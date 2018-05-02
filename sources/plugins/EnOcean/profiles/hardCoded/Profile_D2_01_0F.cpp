@@ -46,7 +46,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                                                    const boost::dynamic_bitset<>& data,
                                                                                                    const boost::dynamic_bitset<>& status,
                                                                                                    const std::string& senderId,
-                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler) const
+                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler)
+const
 {
    return CProfile_D2_01_Common::extractActuatorStatusResponse(rorg,
                                                                data,
@@ -77,18 +78,18 @@ void CProfile_D2_01_0F::sendConfiguration(const shared::CDataContainer& deviceCo
                                           const std::string& senderId,
                                           boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   auto localControl = deviceConfiguration.get<std::string>("localControl") == "enable";
-   auto taughtInAllDevices = deviceConfiguration.get<std::string>("taughtIn") == "allDevices";
-   auto userInterfaceDayMode = deviceConfiguration.get<std::string>("userInterfaceMode") == "dayMode";
-   auto defaultState = deviceConfiguration.get<CProfile_D2_01_Common::EDefaultState>("defaultState");
-   auto connectedSwitchsType = deviceConfiguration.get<CProfile_D2_01_Common::EConnectedSwitchsType>("connectedSwitchsType");
-   auto switchingStateToggle = deviceConfiguration.get<std::string>("switchingState") == "tooggle";
-   auto autoOffTimerValue = deviceConfiguration.get<bool>("autoOffTimer.checkbox")
-                               ? deviceConfiguration.get<double>("autoOffTimer.content.value")
-                               : 0;
-   auto delayOffTimer = deviceConfiguration.get<bool>("delayOffTimer.checkbox")
-                           ? deviceConfiguration.get<double>("delayOffTimer.content.value")
-                           : 0;
+   const auto localControl = deviceConfiguration.get<std::string>("localControl") == "enable";
+   const auto taughtInAllDevices = deviceConfiguration.get<std::string>("taughtIn") == "allDevices";
+   const auto userInterfaceDayMode = deviceConfiguration.get<std::string>("userInterfaceMode") == "dayMode";
+   const auto defaultState = deviceConfiguration.get<CProfile_D2_01_Common::EDefaultState>("defaultState");
+   const auto connectedSwitchsType = deviceConfiguration.get<CProfile_D2_01_Common::EConnectedSwitchsType>("connectedSwitchsType");
+   const auto switchingStateToggle = deviceConfiguration.get<std::string>("switchingState") == "tooggle";
+   const auto autoOffTimerValue = deviceConfiguration.get<bool>("autoOffTimer.checkbox")
+                                     ? deviceConfiguration.get<double>("autoOffTimer.content.value")
+                                     : 0;
+   const auto delayOffTimer = deviceConfiguration.get<bool>("delayOffTimer.checkbox")
+                                 ? deviceConfiguration.get<double>("delayOffTimer.content.value")
+                                 : 0;
 
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,

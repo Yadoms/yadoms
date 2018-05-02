@@ -34,34 +34,12 @@ namespace rfxcomMessages
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.BBQ.battery_level));
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.BBQ.rssi));
 
-      Init(api);
+      buildDeviceModel();
+      buildDeviceName();
    }
 
    CBbq::~CBbq()
    {
-   }
-
-   void CBbq::Init(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      // Build device description
-      buildDeviceModel();
-      buildDeviceName();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypeBBQ);
-         details.set("subType", m_subType);
-         details.set("id", m_id);
-         api->declareDevice(m_deviceName,
-                            "maverickET732",
-                            m_deviceModel,
-                            m_keywords,
-                            details);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         details.printToLog(YADOMS_LOG(information));
-      }
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CBbq::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
@@ -80,6 +58,17 @@ namespace rfxcomMessages
 
    void CBbq::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
+      shared::CDataContainer details;
+      details.set("type", pTypeBBQ);
+      details.set("subType", m_subType);
+      details.set("id", m_id);
+      api->declareDevice(m_deviceName,
+                         "maverickET732",
+                         m_deviceModel,
+                         m_keywords,
+                         details);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+      details.printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CBbq::getDeviceName() const

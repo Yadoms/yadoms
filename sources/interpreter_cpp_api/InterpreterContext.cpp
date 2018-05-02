@@ -148,7 +148,8 @@ namespace interpreter_cpp_api
          std::cout << "Opening message queues id " << m_commandLine->yInterpreterApiAccessorId() << std::endl;
 
          m_sendMessageQueue = boost::make_shared<boost::interprocess::message_queue>(boost::interprocess::open_only, sendMessageQueueId.c_str());
-         m_receiveMessageQueue = boost::make_shared<boost::interprocess::message_queue>(boost::interprocess::open_only, receiveMessageQueueId.c_str());
+         m_receiveMessageQueue = boost::make_shared<boost::interprocess::message_queue
+         >(boost::interprocess::open_only, receiveMessageQueueId.c_str());
       }
       catch (boost::interprocess::interprocess_exception& ex)
       {
@@ -171,8 +172,6 @@ namespace interpreter_cpp_api
    void CInterpreterContext::msgReceiverThreaded(boost::shared_ptr<CApiImplementation> api) const
    {
       auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue->get_max_msg_size()));
-      size_t messageSize;
-      unsigned int messagePriority;
       const auto messageAssembler = boost::make_shared<shared::communication::SmallHeaderMessageAssembler>(m_receiveMessageQueue->get_max_msg_size());
 
       try
@@ -181,14 +180,18 @@ namespace interpreter_cpp_api
          {
             try
             {
+               size_t messageSize;
+               unsigned int messagePriority;
+
                // boost::interprocess::message_queue::receive is not responding to boost thread interruption, so we need to do some
                // polling and call boost::this_thread::interruption_point to exit properly
                // Note that boost::interprocess::message_queue::timed_receive requires universal time to work (can not use shared::currentTime::Provider)
-               auto messageWasReceived = m_receiveMessageQueue->timed_receive(message.get(),
-                                                                              m_receiveMessageQueue->get_max_msg_size(),
-                                                                              messageSize,
-                                                                              messagePriority,
-                                                                              boost::posix_time::microsec_clock::universal_time() + boost::posix_time::seconds(1));
+               const auto messageWasReceived = m_receiveMessageQueue->timed_receive(message.get(),
+                                                                                    m_receiveMessageQueue->get_max_msg_size(),
+                                                                                    messageSize,
+                                                                                    messagePriority,
+                                                                                    boost::posix_time::microsec_clock::universal_time() + boost::
+                                                                                    posix_time::seconds(1));
                boost::this_thread::interruption_point();
 
                if (messageWasReceived)
@@ -214,5 +217,3 @@ namespace interpreter_cpp_api
       }
    }
 } // namespace interpreter_cpp_api
-
-

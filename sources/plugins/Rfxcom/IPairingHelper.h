@@ -24,7 +24,7 @@ public:
    /// \param[in] deviceName  Device to check for pairing
    /// \return    true if device need to be paired and pairing is enable
    //--------------------------------------------------------------
-   virtual bool needPairing(const std::string deviceName) = 0;
+   virtual bool needPairing(const std::string& deviceName) = 0;
 
    //--------------------------------------------------------------
    /// \brief     Get the pairing mode

@@ -377,7 +377,26 @@ void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> api
 
    // Sensor message, historize all data contained in the message
    if (api->deviceExists(message->getDeviceName()))
+   {
+      createPossiblyMissingKeywords(api,
+                                    message);
       message->historizeData(api);
+   }
+   else
+   {
+      YADOMS_LOG(information) << "Device not declared, message ignored";
+   }
+}
+
+void CRfxcom::createPossiblyMissingKeywords(boost::shared_ptr<yApi::IYPluginApi> api,
+                                            boost::shared_ptr<rfxcomMessages::IRfxcomMessage> message)
+{
+   const auto knownKeywords = api->getAllKeywords(message->getDeviceName());
+   for (const auto& keyword : message->keywords())
+   {
+      if (std::find(knownKeywords.begin(), knownKeywords.end(), keyword->getKeyword()) == knownKeywords.end())
+         api->declareKeyword(message->getDeviceName(), keyword);
+   }
 }
 
 void CRfxcom::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -553,7 +572,7 @@ void CRfxcom::processRfxcomUnknownRfyRemoteMessage(boost::shared_ptr<yApi::IYPlu
 void CRfxcom::processRfxcomAckMessage(const rfxcomMessages::CAck& ack)
 {
    if (ack.isOk())
-   YADOMS_LOG(information) << "RFXCom acknowledge";
+      YADOMS_LOG(information) << "RFXCom acknowledge";
    else
-   YADOMS_LOG(information) << "RFXCom Received acknowledge is KO";
+      YADOMS_LOG(information) << "RFXCom Received acknowledge is KO";
 }

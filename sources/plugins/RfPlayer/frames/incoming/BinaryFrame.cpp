@@ -50,7 +50,7 @@ namespace incoming {
    {
       YADOMS_LOG(debug) << "Received frame:" << std::endl << shared::communication::CBufferLogger::msgToString(*m_content.get());
 
-      REGULAR_INCOMING_RF_TO_BINARY_USB_FRAME * pFrame = (REGULAR_INCOMING_RF_TO_BINARY_USB_FRAME*)m_content->begin();
+      REGULAR_INCOMING_RF_TO_BINARY_USB_FRAME * pFrame = reinterpret_cast<REGULAR_INCOMING_RF_TO_BINARY_USB_FRAME*>(m_content->begin());
 
       switch (pFrame->header.frameType)
       {
@@ -62,9 +62,9 @@ namespace incoming {
          if (pFrame->header.dataFlag == 1)
             out << "    " << "866 MHz" << std::endl;
 
-         out << "    " << "RfLevel : " << (int)pFrame->header.rfLevel << " dBm" << std::endl;
-         out << "    " << "FloorNoise : " << (int)pFrame->header.floorNoise << " dBm" << std::endl;
-         out << "    " << "RfQuality : " << (int)pFrame->header.rfQuality << "/10" << std::endl;
+         out << "    " << "RfLevel : " << static_cast<int>(pFrame->header.rfLevel) << " dBm" << std::endl;
+         out << "    " << "FloorNoise : " << static_cast<int>(pFrame->header.floorNoise) << " dBm" << std::endl;
+         out << "    " << "RfQuality : " << static_cast<int>(pFrame->header.rfQuality) << "/10" << std::endl;
 
          switch (pFrame->header.protocol)
          {
@@ -90,7 +90,7 @@ namespace incoming {
 
             out << "    " << " Used by X10 / DOMIA LITE protocol / PARROT" << std::endl;
             out << "    " << " ID=" << (boost::format("0x%0X%") % pFrame->infos.type0.id).str() << std::endl;
-            out << "    " << " ID HOME=" << (char)(0x30 + ((pFrame->infos.type0.id & 0x00F0) >> 4)) << std::endl;
+            out << "    " << " ID HOME=" << static_cast<char>(0x30 + ((pFrame->infos.type0.id & 0x00F0) >> 4)) << std::endl;
             out << "    " << " ID DEVICE=" << (pFrame->infos.type0.id & 0x000F) << std::endl;
 
             switch (pFrame->infos.type0.subtype)
@@ -265,7 +265,7 @@ namespace incoming {
 
    void CBinaryFrame::buildDeviceInfo()
    {
-      REGULAR_INCOMING_RF_TO_BINARY_USB_FRAME * pFrame = (REGULAR_INCOMING_RF_TO_BINARY_USB_FRAME*)m_content->begin();
+      REGULAR_INCOMING_RF_TO_BINARY_USB_FRAME * pFrame = reinterpret_cast<REGULAR_INCOMING_RF_TO_BINARY_USB_FRAME*>(m_content->begin());
 
       switch (pFrame->header.frameType)
       {
@@ -278,15 +278,15 @@ namespace incoming {
 
 
          auto rssiKeyword = boost::make_shared<yApi::historization::CSignalPower>("rfQuality");
-         rssiKeyword->set((int)pFrame->header.rfQuality * 10); //rfQuality is [1;10], SignalPower [10;100]
+         rssiKeyword->set(static_cast<int>(pFrame->header.rfQuality) * 10); //rfQuality is [1;10], SignalPower [10;100]
          m_keywords.push_back(rssiKeyword);
 
          auto rfLevelKeyword = boost::make_shared<yApi::historization::CSignalLevel>("rfLevel");
-         rfLevelKeyword->set((int)pFrame->header.rfLevel); //rfLevel is in dB
+         rfLevelKeyword->set(static_cast<int>(pFrame->header.rfLevel)); //rfLevel is in dB
          m_keywords.push_back(rfLevelKeyword);
 
          auto floorNoiseKeyword = boost::make_shared<yApi::historization::CSignalLevel>("floorNoise");
-         floorNoiseKeyword->set((int)pFrame->header.floorNoise); //floorNoise is in dB
+         floorNoiseKeyword->set(static_cast<int>(pFrame->header.floorNoise)); //floorNoise is in dB
          m_keywords.push_back(floorNoiseKeyword);
 
          switch (pFrame->header.protocol)
@@ -348,13 +348,13 @@ namespace incoming {
          case INFOS_TYPE0:
          {
             //Used for X10 / DomiaLight
-            char houseCode = (char)((pFrame->infos.type0.id & 0x00F0) >> 4) + 0x30;
-            unsigned char device = (unsigned char)(pFrame->infos.type0.id & 0x000F);
+            char houseCode = static_cast<char>((pFrame->infos.type0.id & 0x00F0) >> 4) + 0x30;
+            unsigned char device = static_cast<unsigned char>(pFrame->infos.type0.id & 0x000F);
             m_deviceName = (boost::format("%1%%2%") % houseCode % device).str();
             m_deviceDetails.set("id", pFrame->infos.type0.id);
 
             auto stateKeyword = boost::make_shared<specificHistorizers::incoming::CType0State>("state");
-            specificHistorizers::incoming::EType0StateValues state((int)pFrame->infos.type0.subtype);
+            specificHistorizers::incoming::EType0StateValues state(static_cast<int>(pFrame->infos.type0.subtype));
             stateKeyword->set(state);
             m_keywords.push_back(stateKeyword);
 
@@ -369,7 +369,7 @@ namespace incoming {
             m_deviceDetails.set("id", device);
 
             auto stateKeyword = boost::make_shared<specificHistorizers::incoming::CType1State>("state");
-            specificHistorizers::incoming::EType1StateValues state((int)pFrame->infos.type1.subtype);
+            specificHistorizers::incoming::EType1StateValues state(static_cast<int>(pFrame->infos.type1.subtype));
             stateKeyword->set(state);
             m_keywords.push_back(stateKeyword);
 
@@ -412,7 +412,7 @@ namespace incoming {
                m_deviceModel += " Remote Control";
 
                auto keyCodeKeyword = boost::make_shared<specificHistorizers::incoming::CType2KeyCode>("keyCode");
-               keyCodeKeyword->set(specificHistorizers::incoming::EType2KeyCodeValues((int)pFrame->infos.type2.qualifier));
+               keyCodeKeyword->set(specificHistorizers::incoming::EType2KeyCodeValues(static_cast<int>(pFrame->infos.type2.qualifier)));
                m_keywords.push_back(keyCodeKeyword);
 
             }
@@ -431,7 +431,7 @@ namespace incoming {
                m_deviceModel += " Somfy Shutter";
 
                auto codeKeyword = boost::make_shared<specificHistorizers::incoming::CType3ShutterCode>("shutter");
-               codeKeyword->set(specificHistorizers::incoming::EType3ShutterCodeValues((int)pFrame->infos.type3.qualifier & 0x000F));
+               codeKeyword->set(specificHistorizers::incoming::EType3ShutterCodeValues(static_cast<int>(pFrame->infos.type3.qualifier) & 0x000F));
                m_keywords.push_back(codeKeyword);
 
             }
@@ -441,7 +441,7 @@ namespace incoming {
                m_deviceModel += " Somfy portal reomte control";
 
                auto codeKeyword = boost::make_shared<specificHistorizers::incoming::CType3RemoteCode>("remote");
-               codeKeyword->set(specificHistorizers::incoming::EType3RemoteCodeValues((int)pFrame->infos.type3.qualifier & 0x000F));
+               codeKeyword->set(specificHistorizers::incoming::EType3RemoteCodeValues(static_cast<int>(pFrame->infos.type3.qualifier) & 0x000F));
                m_keywords.push_back(codeKeyword);
             }
 
@@ -598,7 +598,7 @@ namespace incoming {
             unsigned char area = pFrame->infos.type10.idLsb & 0x000F;
             unsigned int device = (pFrame->infos.type10.idMsb << 16) + pFrame->infos.type10.idLsb;
             m_deviceDetails.set("id", device);
-            m_deviceDetails.set("area", (int)area);
+            m_deviceDetails.set("area", static_cast<int>(area));
             m_deviceName = (boost::format("%1%") % device).str();
 
             auto batteryLevelKeyword = boost::make_shared<yApi::historization::CBatteryLevel>("battery");
@@ -635,7 +635,7 @@ namespace incoming {
             case 2: //operating  mode
             {
                auto operatingModeKeyword = boost::make_shared<specificHistorizers::incoming::CType10OperatingMode>("keyCode");
-               operatingModeKeyword->set(specificHistorizers::incoming::EType10OperatingModeValues((int)(pFrame->infos.type10.mode & 0x00FF)));
+               operatingModeKeyword->set(specificHistorizers::incoming::EType10OperatingModeValues(static_cast<int>(pFrame->infos.type10.mode & 0x00FF)));
                m_keywords.push_back(operatingModeKeyword);
 
                break;
@@ -669,7 +669,7 @@ namespace incoming {
                m_deviceModel += " Alarm remote control";
 
                auto remoteControlKeyword = boost::make_shared<specificHistorizers::incoming::CType11State>("remoteControl");
-               remoteControlKeyword->set(specificHistorizers::incoming::EType11StateValues((int)pFrame->infos.type11.qualifier));
+               remoteControlKeyword->set(specificHistorizers::incoming::EType11StateValues(static_cast<int>(pFrame->infos.type11.qualifier)));
                m_keywords.push_back(remoteControlKeyword);
             }
             break;

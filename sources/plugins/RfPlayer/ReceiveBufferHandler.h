@@ -19,7 +19,7 @@ public:
    /// \brief	                  Constructor
    /// \param[in] messageHandler The called message handler when a message is received
    //--------------------------------------------------------------
-   CReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler);
+   explicit CReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
