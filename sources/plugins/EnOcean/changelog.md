@@ -1,3 +1,6 @@
+### 1.0.2-beta.4
+* Fix D2-05-00 configuration
+
 ### 1.0.2-beta.3
 * Add D2-05-00 profile support
 * Fix 'bad allocation' exception doing some messages ignored
