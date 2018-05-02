@@ -1144,9 +1144,11 @@
     "units": {
       "noUnit": "",
       "ampere": "A",
+      "ampereHour": "Ah",
+      "cubicMetre": "m³",
+      "cubicMeterPerSecond": "m³/s",
       "decibel": "dB",
       "decibelPerMilliWatt": "dBm",
-      "cubicMetre": "m3",
       "degrees": "°",
       "degreesCelcius": "°C",
       "degreesFarenheit": "°F",

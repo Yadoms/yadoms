@@ -35,6 +35,7 @@ namespace shared
             static const CStandardCapacity& Direction();        // direction         | degrees               | Direction (for compass, wind direction)
             static const CStandardCapacity& Distance();         // length            | meter                 | A distance, in meter	  
             static const CStandardCapacity& Duration();         // duration          | s                     | A Duration in second
+            static const CStandardCapacity& ElectricLoad();     // electric load     | Ampere/hour           | Electric load in Ah
             static const CStandardCapacity& Energy();           // energy            | Watt/hour             | Energy measure
             static const CStandardCapacity& Event();            // event             | -                     | Just an event (no associated data)
             static const CStandardCapacity& Frequency();        // frequency         | Hertz                 | Frequency

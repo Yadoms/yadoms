@@ -16,6 +16,7 @@
 #include "Direction.h"
 #include "Distance.h"
 #include "Duration.h"
+#include "ElectricLoad.h"
 #include "Energy.h"
 #include "Event.h"
 #include "Frequency.h"

@@ -194,6 +194,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Distance.h
    shared/plugin/yPluginApi/historization/Duration.cpp
    shared/plugin/yPluginApi/historization/Duration.h
+   shared/plugin/yPluginApi/historization/ElectricLoad.cpp
+   shared/plugin/yPluginApi/historization/ElectricLoad.h
    shared/plugin/yPluginApi/historization/Energy.cpp
    shared/plugin/yPluginApi/historization/Energy.h
    shared/plugin/yPluginApi/historization/Event.cpp
