@@ -21,18 +21,16 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
       X8DSlotused[counter] = false;
    }
 
-   std::vector<std::string> devices = api->getAllDevices();
-   std::vector<std::string>::iterator devicesIterator;
+   auto devices = api->getAllDevices();
 
    // Creation of the IPX800 module
    // This module is created by default
-   boost::shared_ptr<equipments::IEquipment> extension;
-   extension = boost::make_shared<equipments::CIPX800Equipment>(api, device);
+   boost::shared_ptr<equipments::IEquipment> extension = boost::make_shared<equipments::CIPX800Equipment>(api, device);
    m_devicesList.push_back(extension);
    //
 
    // Create all extensions devices
-   for (devicesIterator = devices.begin(); devicesIterator != devices.end(); ++devicesIterator)
+   for (std::vector<std::string>::iterator devicesIterator = devices.begin(); devicesIterator != devices.end(); ++devicesIterator)
    {
       std::string type = "";
       // plugin state have no type
@@ -204,12 +202,12 @@ shared::CDataContainer CIPX800Factory::bindSlotsX24D()
    return en;
 }
 
-boost::shared_ptr<CIOManager> CIPX800Factory::getIOManager(void)
+boost::shared_ptr<CIOManager> CIPX800Factory::getIOManager() const
 {
    return m_ioManager;
 }
 
-void CIPX800Factory::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved)
+void CIPX800Factory::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceRemoved)
 {
    for (unsigned char counter = 0; counter < m_devicesList.size(); ++counter)
    {
@@ -224,7 +222,7 @@ void CIPX800Factory::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std:
          if (m_devicesList[counter]->getDeviceType() != "IPX800")
          {
             // free slot(s) associated to this device for future configurations
-            int position = m_devicesList[counter]->getSlot();
+            const int position = m_devicesList[counter]->getSlot();
 
             if (m_devicesList[counter]->getDeviceType() == "X-8R") X8RSlotused[position - 1] = false;
             if (m_devicesList[counter]->getDeviceType() == "X-8D") X8DSlotused[position - 1] = false;
@@ -247,17 +245,17 @@ void CIPX800Factory::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std:
 void CIPX800Factory::onDeviceConfigurationChange(const std::string& name,
                                                  const shared::CDataContainer& newConfiguration)
 {
-   std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorExtension;
-
-   for (iteratorExtension = m_devicesList.begin(); iteratorExtension != m_devicesList.end(); ++iteratorExtension)
+   for (std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorExtension = m_devicesList.begin();
+      iteratorExtension != m_devicesList.end();
+      ++iteratorExtension)
    {
       if ((*iteratorExtension)->getDeviceName() == name)
       {
          YADOMS_LOG(trace) << "Configuration changed for device " << name;
 
          // free slot(s) associated to this device for future configurations
-         int position = (*iteratorExtension)->getSlot();
-         std::string type = (*iteratorExtension)->getDeviceType();
+         auto position = (*iteratorExtension)->getSlot();
+         const auto type = (*iteratorExtension)->getDeviceType();
 
          YADOMS_LOG(trace) << "free slot" << position;
 

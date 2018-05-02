@@ -1,5 +1,6 @@
 ### 1.0.2-beta.4
 * Fix D2-05-00 configuration
+* D2-05-00 profile (blinds) : add stop managment
 
 ### 1.0.2-beta.3
 * Add D2-05-00 profile support

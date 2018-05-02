@@ -46,7 +46,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                                                    const boost::dynamic_bitset<>& data,
                                                                                                    const boost::dynamic_bitset<>& status,
                                                                                                    const std::string& senderId,
-                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler) const
+                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler)
+const
 {
    return CProfile_D2_05_Common::extractReplyPositionAndAngleResponse(rorg,
                                                                       data,
@@ -62,6 +63,14 @@ void CProfile_D2_05_00::sendCommand(const std::string& keyword,
    if (keyword == m_curtain->getKeyword())
    {
       m_curtain->setCommand(commandBody);
+
+      if (m_curtain->get() == yApi::historization::ECurtainCommand::kStopValue)
+      {
+         CProfile_D2_05_Common::sendStop(messageHandler,
+                                         senderId,
+                                         m_deviceId);
+         return;
+      }
    }
    else if (keyword == m_lockingMode->getKeyword())
    {

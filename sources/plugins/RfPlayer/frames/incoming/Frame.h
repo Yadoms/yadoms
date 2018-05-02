@@ -18,13 +18,13 @@ namespace incoming {
       /// \brief	                  Construct a Frame from a binary buffer
       /// \param[in] binaryBuffer   The binary buffer
       //--------------------------------------------------------------
-      CFrame(boost::shared_ptr<CBinaryFrame> binaryBuffer);
+      explicit CFrame(boost::shared_ptr<CBinaryFrame> binaryBuffer);
 
       //--------------------------------------------------------------
       /// \brief	                  Construct a Frame from an Ascii buffer
       /// \param[in] asciiBuffer    The ascii buffer
       //--------------------------------------------------------------
-      CFrame(boost::shared_ptr<CAsciiFrame> asciiBuffer);
+      explicit CFrame(boost::shared_ptr<CAsciiFrame> asciiBuffer);
 
       //--------------------------------------------------------------
       /// \brief	               Destructor

@@ -41,7 +41,8 @@ namespace rfxcomMessages
       // No total power on CM180 if count > 0
       if (rbuf.CURRENT_ENERGY.count == 0)
       {
-         Poco::Int64 totalPower = rbuf.CURRENT_ENERGY.total3 << 24 | rbuf.CURRENT_ENERGY.total4 << 16 | rbuf.CURRENT_ENERGY.total5 << 8 | rbuf.CURRENT_ENERGY.total6;
+         Poco::Int64 totalPower = rbuf.CURRENT_ENERGY.total3 << 24 | rbuf.CURRENT_ENERGY.total4 << 16 | rbuf.CURRENT_ENERGY.total5 << 8 | rbuf.
+            CURRENT_ENERGY.total6;
          totalPower += rbuf.CURRENT_ENERGY.total2 * 2 ^ 32;
          totalPower += rbuf.CURRENT_ENERGY.total1 * 2 ^ 40;
 
@@ -68,7 +69,8 @@ namespace rfxcomMessages
                                                      boost::posix_time::minutes(10));
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CCurrentEnergy::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CCurrentEnergy::encode(
+      boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("CurrentEnergy is a read-only message, can not be encoded");
    }
@@ -80,9 +82,10 @@ namespace rfxcomMessages
 
    void CCurrentEnergy::filter() const
    {
-      if (m_messageFilter && !m_messageFilter->isValid(m_deviceName))
-         throw CMessageFilteredException((boost::format("Receive unknown device (id %1%) for unsecured protocol (CURRENTENERGY / %2%), may be a transmission error : ignored")
-            % m_id % m_deviceModel).str());
+      if (!m_messageFilter->isValid(m_deviceName))
+         throw CMessageFilteredException(
+            (boost::format("Receive unknown device (id %1%) for unsecured protocol (CURRENTENERGY / %2%), may be a transmission error : ignored")
+               % m_id % m_deviceModel).str());
    }
 
    void CCurrentEnergy::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
