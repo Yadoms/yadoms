@@ -29,20 +29,7 @@ namespace rfxcomMessages
       // [END] IRfxcomMessage implementation
 
    protected:
-      //--------------------------------------------------------------
-      /// \brief	                        Global initialization method
-      /// \param[in] api                  Yadoms APi context
-      //--------------------------------------------------------------
-      void Init(boost::shared_ptr<yApi::IYPluginApi> api);
-
-      //--------------------------------------------------------------
-      /// \brief	                        Build the device name
-      //--------------------------------------------------------------
       void buildDeviceName();
-
-      //--------------------------------------------------------------
-      /// \brief	                        Build the sensor model
-      //--------------------------------------------------------------
       void buildDeviceModel();
 
    private:
