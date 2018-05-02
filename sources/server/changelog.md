@@ -1,3 +1,10 @@
+### 2.1.0-beta.2
+
+#### New features and fixes
+* Add debit historizer (m³/s)
+* Add electric load historizer (Ah)
+
+
 ### 2.1.0-beta.1
 
 #### New features and fixes
