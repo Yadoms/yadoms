@@ -1,3 +1,8 @@
+### 1.1.2-beta.6
+* Fix Historization of some device types even if pairing is disabled
+* Fix ELEC4 error on total keyword historization
+* Fix ELEC4 filtering device declaration in auto-pairing mode
+
 ### 1.1.2-beta.5
 * Fix regression (no historization was done since 1.1.2-beta.4)
 

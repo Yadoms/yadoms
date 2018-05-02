@@ -102,9 +102,9 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    // Return only the concerned historizer
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
-   int position = bitset_extract(data, 1, 7);
-   int angle = bitset_extract(data, 9, 7);
-   auto locking = static_cast<specificHistorizers::EBlindLockingMode>(bitset_extract(data, 21, 3));
+   const int position = bitset_extract(data, 1, 7);
+   const int angle = bitset_extract(data, 9, 7);
+   const auto locking = static_cast<specificHistorizers::EBlindLockingMode>(bitset_extract(data, 21, 3));
 
    if (position != 127)
    {
@@ -198,7 +198,7 @@ void CProfile_D2_05_Common::sendMessage(boost::shared_ptr<IMessageHandler> messa
                           }))
       throw std::runtime_error((boost::format("Fail to send message to %1% : no answer to \"%2%\"") % targetId % commandName).str());
 
-   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
+   const auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
 
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
    YADOMS_LOG(error) << "Fail to send message to " << targetId << " : \"" << commandName << "\" returns " << response->returnCode();

@@ -90,6 +90,14 @@ protected:
    //--------------------------------------------------------------
    void processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
                                   const shared::communication::CByteBuffer& data);
+   
+   //--------------------------------------------------------------
+   /// \brief	                     Create inexisting keywords for this device (in case of device created with less keywords than needed for historization)
+   /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \param [in] message          Message for which complete declared keywords list
+   //--------------------------------------------------------------
+   static void createPossiblyMissingKeywords(boost::shared_ptr<yApi::IYPluginApi> api,
+                                      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> message);
 
    //--------------------------------------------------------------
    /// \brief	                     Process the firmware update

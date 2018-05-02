@@ -1,12 +1,8 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/event/EventHandler.hpp>
 #include "IIPX800Configuration.h"
 #include "IOManager.h"
-#include "specificHistorizers/Analog.h"
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
-#include "specificHistorizers/inputOutput.h"
-#include "specificHistorizers/counter.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -63,7 +59,7 @@ public:
    /// \brief	    getIOManager
    /// \return     the IOManager
    //--------------------------------------------------------------
-   boost::shared_ptr<CIOManager> getIOManager(void);
+   boost::shared_ptr<CIOManager> getIOManager() const;
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
@@ -71,12 +67,12 @@ public:
    /// \param [in] deviceRemoved    The name of the device removed
    //--------------------------------------------------------------
    void removeDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                     std::string deviceRemoved);
+                     const std::string& deviceRemoved);
 
    //--------------------------------------------------------------
    /// \brief	                     Change the device configuration
    /// \param [in] name             name of the device
-   /// \param [in] newPosition      new slot position of the device
+   /// \param [in] newConfiguration new slot position of the device
    //--------------------------------------------------------------
    void onDeviceConfigurationChange(const std::string& name,
                                     const shared::CDataContainer& newConfiguration);

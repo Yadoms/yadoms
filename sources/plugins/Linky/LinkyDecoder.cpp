@@ -29,6 +29,7 @@ CLinkyDecoder::CLinkyDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    m_todayColor(boost::make_shared<linky::specificHistorizers::CColor>("todayColor")),
    m_api(api),
    m_deviceCreated(false),
+   m_revision(0),
    m_production(false),
    m_runningPeriodChanged(true),
    m_tomorrowColorChanged(true),
@@ -40,12 +41,13 @@ CLinkyDecoder::CLinkyDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
 
    for (int counter = 0; counter < 3; ++counter)
    {
-      m_apparentPower[counter] = boost::make_shared<yApi::historization::CApparentPower>("apparentPowerPhase" + boost::lexical_cast<std::string>(counter + 1));
+      m_apparentPower[counter] = boost::make_shared<yApi::historization::CApparentPower>(
+         "apparentPowerPhase" + boost::lexical_cast<std::string>(counter + 1));
       m_meanVoltage[counter] = boost::make_shared<yApi::historization::CVoltage>("voltagePhase" + boost::lexical_cast<std::string>(counter + 1));
    }
 
    for (int counter = 0; counter < 10; ++counter)
-      m_counter[counter] = boost::make_shared<yApi::historization::CEnergy>("Counter" + boost::lexical_cast<std::string>(counter+1));
+      m_counter[counter] = boost::make_shared<yApi::historization::CEnergy>("Counter" + boost::lexical_cast<std::string>(counter + 1));
 }
 
 CLinkyDecoder::~CLinkyDecoder()
@@ -55,7 +57,7 @@ CLinkyDecoder::~CLinkyDecoder()
 void CLinkyDecoder::decodeMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                                   const boost::shared_ptr<std::map<std::string, std::vector<std::string>>>& messages)
 {
-   bool triphases = (messages->find(m_tag_SINST2) != messages->end()) ? true : false;
+   const auto triphases = (messages->find(m_tag_SINST2) != messages->end()) ? true : false;
 
    for (const auto message : *messages)
    {
@@ -211,7 +213,7 @@ void CLinkyDecoder::processMessage(const std::string& key,
 		{
 			YADOMS_LOG(trace) << key << "=" << values[0];
 
-         int counterIndex = boost::lexical_cast<int>(key.c_str()+4);
+		   const auto counterIndex = boost::lexical_cast<int>(key.c_str()+4);
          m_counter[counterIndex - 1]->set(boost::lexical_cast<unsigned long>(values[0]));
 		}
       else if (key == m_tag_STGE)
@@ -235,7 +237,7 @@ void CLinkyDecoder::processMessage(const std::string& key,
          else
             m_production = false;
 
-         linky::specificHistorizers::EColor temp = linky::specificHistorizers::EColor((status >> 24) & 0x03);
+         auto temp = linky::specificHistorizers::EColor((status >> 24) & 0x03);
          if (temp != m_todayColor->get())
          {
             m_todayColorChanged = true;
@@ -286,7 +288,7 @@ void CLinkyDecoder::processMessage(const std::string& key,
       else if (key == m_tag_NGTF)
       {
          YADOMS_LOG(trace) << "NGTF" << "= <" << values[0] << ">";
-         std::string value = values[0];
+         auto value = values[0];
          m_newPeriod = trim(value);
       }
       else if (m_revision == 1) // specific functions v1
