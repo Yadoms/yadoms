@@ -10,10 +10,10 @@ CProfile_A5_12_00::CProfile_A5_12_00(const std::string& deviceId,
 {
    for (auto indexChannel = 0; indexChannel < NB_CHANNELS; ++indexChannel)
    {
-      const auto strTariff = std::to_string(indexChannel);
-      m_cumulative[indexChannel] = boost::make_shared<yApi::historization::CCounter>("Cumulative (" + strTariff + ")");
+      const auto strChannel = std::to_string(indexChannel);
+      m_cumulative[indexChannel] = boost::make_shared<yApi::historization::CCounter>("Cumulative (" + strChannel + ")");
       m_historizers.push_back(m_cumulative[indexChannel]);
-      m_currentValue[indexChannel] = boost::make_shared<yApi::historization::CFrequency>("Current value (" + strTariff + ")");
+      m_currentValue[indexChannel] = boost::make_shared<yApi::historization::CFrequency>("Current value (" + strChannel + ")");
       m_historizers.push_back(m_currentValue[indexChannel]);
    }
 }

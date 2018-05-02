@@ -8,13 +8,13 @@ CProfile_A5_12_01::CProfile_A5_12_01(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_deviceId(deviceId)
 {
-   for (auto indexTariffInfo = 0; indexTariffInfo < NB_TARIFFS; ++indexTariffInfo)
+   for (auto indexTariff = 0; indexTariff < NB_TARIFFS; ++indexTariff)
    {
-      const auto strTariff = std::to_string(indexTariffInfo);
-      m_energy[indexTariffInfo] = boost::make_shared<yApi::historization::CEnergy>("Energy (" + strTariff + ")");
-      m_historizers.push_back(m_energy[indexTariffInfo]);
-      m_instantPower[indexTariffInfo] = boost::make_shared<yApi::historization::CPower>("InstantPower (" + strTariff + ")");
-      m_historizers.push_back(m_instantPower[indexTariffInfo]);
+      const auto strTariff = std::to_string(indexTariff);
+      m_energy[indexTariff] = boost::make_shared<yApi::historization::CEnergy>("Energy (" + strTariff + ")");
+      m_historizers.push_back(m_energy[indexTariff]);
+      m_instantPower[indexTariff] = boost::make_shared<yApi::historization::CPower>("InstantPower (" + strTariff + ")");
+      m_historizers.push_back(m_instantPower[indexTariff]);
    }
 }
 

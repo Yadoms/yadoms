@@ -8,13 +8,13 @@ CProfile_A5_12_02::CProfile_A5_12_02(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_deviceId(deviceId)
 {
-   for (auto indexChannel = 0; indexChannel < NB_TARIFFS; ++indexChannel)
+   for (auto indexTariff = 0; indexTariff < NB_TARIFFS; ++indexTariff)
    {
-      const auto strTariff = std::to_string(indexChannel);
-      m_volume[indexChannel] = boost::make_shared<yApi::historization::CVolume>("Volume (" + strTariff + ")");
-      m_historizers.push_back(m_volume[indexChannel]);
-      m_debit[indexChannel] = boost::make_shared<yApi::historization::CDebit>("Debit (" + strTariff + ")");
-      m_historizers.push_back(m_debit[indexChannel]);
+      const auto strTariff = std::to_string(indexTariff);
+      m_volume[indexTariff] = boost::make_shared<yApi::historization::CVolume>("Volume (" + strTariff + ")");
+      m_historizers.push_back(m_volume[indexTariff]);
+      m_debit[indexTariff] = boost::make_shared<yApi::historization::CDebit>("Debit (" + strTariff + ")");
+      m_historizers.push_back(m_debit[indexTariff]);
    }
 }
 
