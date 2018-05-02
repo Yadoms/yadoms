@@ -114,6 +114,8 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/hardCoded/Profile_A5_12_02.h
    profiles/hardCoded/Profile_A5_12_03.cpp
    profiles/hardCoded/Profile_A5_12_03.h
+   profiles/hardCoded/Profile_A5_12_04.cpp
+   profiles/hardCoded/Profile_A5_12_04.h
    
    profiles/hardCoded/Profile_D2_01_Common.cpp
    profiles/hardCoded/Profile_D2_01_Common.h
