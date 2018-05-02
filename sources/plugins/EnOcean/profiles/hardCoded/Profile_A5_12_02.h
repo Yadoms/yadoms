@@ -2,12 +2,12 @@
 #include "../IType.h"
 
 
-class CProfile_A5_12_01 : public IType
+class CProfile_A5_12_02 : public IType
 {
 public:
-   CProfile_A5_12_01(const std::string& deviceId,
+   CProfile_A5_12_02(const std::string& deviceId,
                      boost::shared_ptr<yApi::IYPluginApi> api);
-   virtual ~CProfile_A5_12_01();
+   virtual ~CProfile_A5_12_02();
 
    // IType implementation
    const std::string& profile() const override;
@@ -32,7 +32,7 @@ public:
 private:
    static const int NB_TARIFFS = 16;
    const std::string m_deviceId;
-   boost::shared_ptr<yApi::historization::CEnergy> m_energy[NB_TARIFFS];
-   boost::shared_ptr<yApi::historization::CPower> m_instantPower[NB_TARIFFS];
+   boost::shared_ptr<yApi::historization::CVolume> m_volume[NB_TARIFFS];
+   boost::shared_ptr<yApi::historization::CDebit> m_debit[NB_TARIFFS];
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
 };
