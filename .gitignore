@@ -36,3 +36,5 @@ sources/www/.vs
 
 *.kicad_pcb-bak
 /sources/www/Web.config
+
+/analysis/.vscode

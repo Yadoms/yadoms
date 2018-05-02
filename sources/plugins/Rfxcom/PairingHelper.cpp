@@ -91,12 +91,7 @@ void CPairingHelper::stopPairing(const std::string& devicePaired)
    YADOMS_LOG(information) << "Stop pairing";
 }
 
-bool CPairingHelper::isPairingEnable() const
-{
-   return m_pairingEnable;
-}
-
-bool CPairingHelper::needPairing(const std::string deviceName)
+bool CPairingHelper::needPairing(const std::string& deviceName)
 {
    if (!m_pairingEnable)
       return false;

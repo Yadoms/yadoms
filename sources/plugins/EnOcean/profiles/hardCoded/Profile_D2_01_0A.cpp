@@ -78,11 +78,11 @@ void CProfile_D2_01_0A::sendConfiguration(const shared::CDataContainer& deviceCo
                                           const std::string& senderId,
                                           boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   auto localControl = deviceConfiguration.get<std::string>("localControl") == "enable";
-   auto taughtInAllDevices = deviceConfiguration.get<std::string>("taughtIn") == "allDevices";
-   auto userInterfaceDayMode = deviceConfiguration.get<std::string>("userInterfaceMode") == "dayMode";
-   auto defaultState = deviceConfiguration.get<CProfile_D2_01_Common::EDefaultState>("defaultState");
-   auto powerFailureDetection = deviceConfiguration.get<std::string>("powerFailureDetection") == "enable";
+   const auto localControl = deviceConfiguration.get<std::string>("localControl") == "enable";
+   const auto taughtInAllDevices = deviceConfiguration.get<std::string>("taughtIn") == "allDevices";
+   const auto userInterfaceDayMode = deviceConfiguration.get<std::string>("userInterfaceMode") == "dayMode";
+   const auto defaultState = deviceConfiguration.get<CProfile_D2_01_Common::EDefaultState>("defaultState");
+   const auto powerFailureDetection = deviceConfiguration.get<std::string>("powerFailureDetection") == "enable";
 
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
