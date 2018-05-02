@@ -22,6 +22,8 @@ public:
    // ILinkyConfiguration implementation
    void initializeWith(const shared::CDataContainer& data) override;
    std::string getSerialPort() const override;
+   EEquipmentType getEquipmentType() const override;
+   EInputsActivated getInputsActivated() const override;
    // [END] ILinkyConfiguration implementation
 
 private:

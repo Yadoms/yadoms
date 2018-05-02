@@ -4,6 +4,7 @@
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/communication/PortException.hpp>
 #include <shared/Log.h>
+#include "GPIOManager.hpp"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -39,7 +40,9 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    m_isDeveloperMode = api->getYadomsInformation()->developperMode();
 
    // Load configuration values (provided by database)
-   m_configuration.initializeWith(api->getConfiguration());
+   m_configuration->initializeWith(api->getConfiguration());
+
+   m_GPIOManager = boost::make_shared<CGPIOManager>(m_configuration);
 
    m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
                                                              shared::event::CEventTimer::kOneShot,
@@ -94,7 +97,8 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kEvtPortDataReceived:
          {
 			 m_waitForAnswerTimer->stop();
-          m_protocolManager.validateProtocol();
+          
+          m_protocolManager[m_GPIOManager->getGPIO()-1]->validateProtocol();
 
             if (m_isDeveloperMode) YADOMS_LOG(information) << "Linky plugin :  DataReceived" ;
 
@@ -102,6 +106,20 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                                 api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string>>>>());
 
             m_receiveBufferHandler->desactivate();
+
+            CLinkyFactory::FTDI_DisableGPIO(m_port);
+
+            if (!m_GPIOManager->isLast())
+            {
+               // Go to the next GPIO
+               m_GPIOManager->next();
+               api->getEventHandler().createTimer(kSamplingTimer,
+                                                  shared::event::CEventTimer::kOneShot,
+                                                  boost::posix_time::seconds(0));
+            }
+            else // Return to the beginning of the list
+               m_GPIOManager->front();
+
             break;
          }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
@@ -115,6 +133,7 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kSamplingTimer:
       {
+         CLinkyFactory::FTDI_ActivateGPIO(m_port, m_GPIOManager->getGPIO());
          m_receiveBufferHandler->activate();
 
          //Lauch a new time the time out to detect connexion failure
@@ -123,16 +142,19 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       }
       case kErrorRetryTimer:
          {
-            m_protocolManager.changeProtocol();
+            m_protocolManager[m_GPIOManager->getGPIO() - 1]->changeProtocol();
             createConnection(api);
             break;
          }
       case kAnswerTimeout:
          {
             m_waitForAnswerTimer->stop();
+            m_periodicSamplingTimer->stop();
+            CLinkyFactory::FTDI_DisableGPIO(m_port);
             YADOMS_LOG(error) << "No answer received, try to reconnect in a while..." ;
 
             //TODO : Send an error ONLY when the two protocols are in error state.
+            // To be managed properly
             errorProcess(api);
             break;
          }
@@ -149,19 +171,20 @@ void CLinky::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-   m_receiveBufferHandler = CLinkyFactory::GetBufferHandler(m_protocolManager.getProtocol(),
+   m_receiveBufferHandler = CLinkyFactory::GetBufferHandler(m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol(),
                                                             api->getEventHandler(),
                                                             kEvtPortDataReceived,
                                                             m_isDeveloperMode);
 
    // Create the port instance
-   m_port = CLinkyFactory::constructPort(m_protocolManager.getProtocol(),
+   m_port = CLinkyFactory::constructPort(m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol(),
                                          m_configuration,
                                          api->getEventHandler(),
                                          m_receiveBufferHandler,
                                          kEvtPortConnection);
 
-   m_decoder = CLinkyFactory::constructDecoder(m_protocolManager.getProtocol(), api);
+   m_decoder[0] = CLinkyFactory::constructDecoder(m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol(), api);
+   m_decoder[1] = CLinkyFactory::constructDecoder(m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol(), api);
 
    m_port->start();
    m_waitForAnswerTimer->start();
@@ -187,7 +210,7 @@ void CLinky::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
    if (!m_port)
    {
       // Update configuration
-      m_configuration.initializeWith(newConfigurationData);
+      m_configuration->initializeWith(newConfigurationData);
       return;
    }
 
@@ -195,7 +218,7 @@ void CLinky::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
    destroyConnection();
 
    // Update configuration
-   m_configuration.initializeWith(newConfigurationData);
+   m_configuration->initializeWith(newConfigurationData);
 
    // Create new connection
    createConnection(api);
@@ -204,12 +227,15 @@ void CLinky::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 void CLinky::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
                                  const boost::shared_ptr<std::map<std::string, std::vector<std::string>>>& messages)
 {
-   m_decoder->decodeMessage(api, messages);
+   m_decoder[m_GPIOManager->getGPIO() - 1]->decodeMessage(api, messages);
 
-   if (m_runningState != kRunning)
+   if (m_decoder[m_GPIOManager->getGPIO() - 1]->isERDFCounterDesactivated())
    {
-      api->setPluginState(yApi::historization::EPluginState::kRunning);
-      m_runningState = kRunning;
+      if (m_runningState != kRunning)
+      {
+         api->setPluginState(yApi::historization::EPluginState::kRunning);
+         m_runningState = kRunning;
+      }
    }
 }
 
@@ -255,4 +281,48 @@ void CLinky::initLinkyReceiver() const
 
    // Flush receive buffer
    m_port->flush();
+}
+
+void CLinky::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, ELinkyPluginState newState)
+{
+   if (m_runningState != newState)
+   {
+      switch (newState)
+      {
+      case ELinkyPluginState::kErDFCounterdesactivated:
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "ErDFCounterdesactivated");
+         break;
+      case ELinkyPluginState::kupdateConfiguration:
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "updateconfiguration");
+         break;
+      case ELinkyPluginState::kConnectionLost:
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionLost");
+         break;
+      case ELinkyPluginState::kConnecting:
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+         break;
+      case ELinkyPluginState::kRunning:
+         api->setPluginState(yApi::historization::EPluginState::kRunning);
+         break;
+      case ELinkyPluginState::kStop:
+         api->setPluginState(yApi::historization::EPluginState::kStopped);
+         break;
+      default:
+         YADOMS_LOG(error) << "this plugin status does not exist : " << newState;
+         break;
+      }
+
+      m_runningState = newState;
+   }
+}
+
+void CLinky::setPluginErrorState(boost::shared_ptr<yApi::IYPluginApi> api,
+                                 const std::string& ErrorMessageI18n,
+                                 const std::map<std::string, std::string>& ErrorMessageI18nParameters)
+{
+   if (m_runningState != kError)
+   {
+      m_runningState = kError;
+      api->setPluginState(yApi::historization::EPluginState::kError, ErrorMessageI18n, ErrorMessageI18nParameters);
+   }
 }

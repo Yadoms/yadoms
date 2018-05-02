@@ -15,6 +15,30 @@
 					"query": "serialPorts"
 				}
 			}
-		}
+		},   
+      "EquipmentType": {
+         "type": "comboSection",
+         "content": {
+            "first": {
+               "name": "1xTIC",
+               "type": "section"
+            }, 
+            "second": {
+               "name": "2xTIC",
+               "type": "section",
+               "content": {
+                  "portEnabled": {
+                     "type": "enum",
+                     "values": {
+                        "1xInputEnabled": "",
+                        "2xInputsEnabled": "",
+                        "AllInputsEnabled": ""
+                     },
+                     "defaultValue": "AllInputsEnabled"
+                  }             
+               }
+            }
+         }
+      }
 	}
 }

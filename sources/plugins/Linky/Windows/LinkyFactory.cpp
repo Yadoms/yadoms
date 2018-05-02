@@ -14,15 +14,15 @@ CLinkyFactory::~CLinkyFactory()
 {}
 
 boost::shared_ptr<shared::communication::IAsyncPort> CLinkyFactory::constructPort(const EProtocolType type,
-                                                                                  const ILinkyConfiguration& configuration,
+                                                                                  boost::shared_ptr<ILinkyConfiguration> configuration,
                                                                                   shared::event::CEventHandler& eventHandler,
                                                                                   boost::shared_ptr<shared::communication::IReceiveBufferHandler> receiveBufferHandler,
                                                                                   int evtPortConnectionId)
 {
    int baudRate = m_baudRateStandard;
-   YADOMS_LOG(information) << "Connecting Linky on serial port " << configuration.getSerialPort() << "..." ;
+   YADOMS_LOG(information) << "Connecting Linky on serial port " << configuration->getSerialPort() << "..." ;
 
-   boost::shared_ptr<shared::communication::IAsyncPort> port = boost::make_shared<shared::communication::CFT2xxSerialPort>(configuration.getSerialPort(),
+   boost::shared_ptr<shared::communication::IAsyncPort> port = boost::make_shared<shared::communication::CFT2xxSerialPort>(configuration->getSerialPort(),
                                                                                                                            boost::asio::serial_port_base::baud_rate(1200),
                                                                                                                            boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::even),
                                                                                                                            boost::asio::serial_port_base::character_size(7),
@@ -35,7 +35,7 @@ boost::shared_ptr<shared::communication::IAsyncPort> CLinkyFactory::constructPor
    boost::smatch match;
 
    //Set parameters
-   if (boost::regex_search(configuration.getSerialPort(), match, reg))
+   if (boost::regex_search(configuration->getSerialPort(), match, reg))
    {
       std::vector<int>::const_iterator iterator;
       int counter = 0;
@@ -65,7 +65,7 @@ boost::shared_ptr<shared::communication::IAsyncPort> CLinkyFactory::constructPor
 
    if (!isFTDISerialPort)
    {
-      port = boost::make_shared<shared::communication::CAsyncSerialPort>(configuration.getSerialPort(),
+      port = boost::make_shared<shared::communication::CAsyncSerialPort>(configuration->getSerialPort(),
                                                                          boost::asio::serial_port_base::baud_rate(baudRate),
                                                                          boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::even),
                                                                          boost::asio::serial_port_base::character_size(7),

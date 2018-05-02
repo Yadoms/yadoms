@@ -7,9 +7,11 @@ include("../YadomsPluginsCommon.cmake")
 #########################################
 
 set(LINKY_SOURCES
+   GPIOManager.hpp
    HistoricDecoder.h
    HistoricDecoder.cpp
    IDecoder.h
+   IGPIOManager.h
    ILinkyConfiguration.h
    ILinkyMessage.h
    Linky.h
@@ -30,7 +32,7 @@ set(LINKY_SOURCES
    specificHistorizer/Color.h
    specificHistorizer/Color.cpp
    specificHistorizer/Period.h
-   specificHistorizer/Period.cpp   
+   specificHistorizer/Period.cpp
 )
 
 IF (WIN32)
