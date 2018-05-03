@@ -43,6 +43,16 @@ namespace rfxcomMessages
             break;
          case OP_EJP: NameCounter1 = "EJPPM";
             NameCounter2 = "EJPHn";
+
+            // Warning EJP information
+            m_warningEJP = boost::make_shared<yApi::historization::CSwitch>("WarningEJP");
+            m_keywords.push_back(m_warningEJP);
+
+            if (teleInfo::specificHistorizers::EColor((rbuf.TIC.state & 0x18) >> 3) == teleInfo::specificHistorizers::EColor::kRED)
+               m_warningEJP->set(true);
+            else
+               m_warningEJP->set(false);
+            //---------------------
             break;
          case OP_TEMPO:
 
@@ -151,5 +161,3 @@ namespace rfxcomMessages
       return "TeleInfo Module";
    }
 } // namespace rfxcomMessages
-
-

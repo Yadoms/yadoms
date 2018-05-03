@@ -84,6 +84,11 @@ namespace rfxcomMessages
       boost::shared_ptr<teleInfo::specificHistorizers::CTeleInfoStatus> m_teleInfoStatus;
 
       //--------------------------------------------------------------
+      /// \brief	The warning EJP
+      //--------------------------------------------------------------
+      boost::shared_ptr<yApi::historization::CSwitch> m_warningEJP;
+
+      //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances
       //--------------------------------------------------------------
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;

@@ -1,3 +1,6 @@
+### 1.1.2-beta.7
+* Fix Cartelectronic protocol => Add EJP Warning
+
 ### 1.1.2-beta.6
 * Fix Historization of some device types even if pairing is disabled
 * Fix ELEC4 error on total keyword historization
