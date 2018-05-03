@@ -28,7 +28,7 @@ public:
                           const std::string& apikey,
                           boost::shared_ptr<CDecoder> decoder);
 
-   void refreshEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
+   static void refreshEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
                          const boost::shared_ptr<equipments::IEquipment> equipment,
                          boost::shared_ptr<IurlManager> frameManager,
                          const std::string& apikey,
@@ -36,7 +36,7 @@ public:
 
    void removeAllDevices(boost::shared_ptr<yApi::IYPluginApi> api);
 
-   const int size() const;
+   int size() const;
 
    //-----------------------------------------------------
    ///\brief                     Destructor
