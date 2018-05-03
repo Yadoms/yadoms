@@ -12,6 +12,7 @@ namespace shared
          namespace configuration
          {
             CFile::CFile()
+               : m_filesize(0)
             {
             }
 
@@ -19,7 +20,7 @@ namespace shared
             {
             }
 
-            void CFile::extractContent(CDataContainer & containerToFill) const
+            void CFile::extractContent(CDataContainer& containerToFill) const
             {
                containerToFill.set("name", getFileName());
                containerToFill.set("size", getSize());
@@ -28,24 +29,24 @@ namespace shared
                containerToFill.set("content", m_base64content);
             }
 
-            void CFile::fillFromContent(const CDataContainer & initialData)
+            void CFile::fillFromContent(const CDataContainer& initialData)
             {
                m_filename = initialData.get<std::string>("name");
                m_filesize = initialData.get<unsigned int>("size");
                m_mimeType = initialData.get<std::string>("type");
-               std::string dateIso = initialData.get<std::string>("lastModified");
-               boost::posix_time::ptime a = boost::posix_time::from_iso_string(dateIso);
+               const auto dateIso = initialData.get<std::string>("lastModified");
+               auto a = boost::posix_time::from_iso_string(dateIso);
                m_lastModified = dateTime::CDateTimeContainer(a);
                m_base64content = initialData.get<std::string>("content");
             }
 
-            void CFile::fillFromSerializedString(const std::string & serializedData)
+            void CFile::fillFromSerializedString(const std::string& serializedData)
             {
-               CDataContainer deserializeData(serializedData);
+               const CDataContainer deserializeData(serializedData);
                fillFromContent(deserializeData);
             }
 
-            const std::string & CFile::getFileName() const
+            const std::string& CFile::getFileName() const
             {
                return m_filename;
             }
@@ -55,17 +56,17 @@ namespace shared
                return m_filesize;
             }
 
-            const std::string & CFile::getMimeType() const
+            const std::string& CFile::getMimeType() const
             {
                return m_mimeType;
             }
 
-            const dateTime::CDateTimeContainer & CFile::getLastModificationDate() const
+            const dateTime::CDateTimeContainer& CFile::getLastModificationDate() const
             {
                return m_lastModified;
             }
 
-            const std::string & CFile::getContentAsBase64() const
+            const std::string& CFile::getContentAsBase64() const
             {
                return m_base64content;
             }
@@ -78,5 +79,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi::configuration
-
-

@@ -22,7 +22,7 @@ namespace device
       };
 
    public:
-      CSmartBatteryMonitorConfiguration(const shared::CDataContainer& configuration);
+      explicit CSmartBatteryMonitorConfiguration(const shared::CDataContainer& configuration);
       virtual ~CSmartBatteryMonitorConfiguration();
 
       EVadSensorType vadSensor() const;
