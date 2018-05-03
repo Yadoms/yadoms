@@ -7,9 +7,9 @@
 #include "worker/Widget.h"
 #include "worker/ScriptInterpreter.h"
 #include "info/UpdateSite.h"
-#include "shared/tools/Filesystem.h"
+#include <shared/tools/Filesystem.h>
 #include "i18n/ClientStrings.h"
-#include "shared/ServiceLocator.h"
+#include <shared/ServiceLocator.h>
 
 
 namespace update

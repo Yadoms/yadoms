@@ -34,7 +34,7 @@ typedef FT_STATUS (__stdcall *f_ftGetDeviceInfoDetail)(DWORD dwIndex, LPDWORD lp
                                                        FT_HANDLE* m_ftHandle);
 
 
-CFT2xxSerialPort::CFT2xxSerialPort(const std::string name,
+CFT2xxSerialPort::CFT2xxSerialPort(const std::string& name,
                                    const boost::asio::serial_port_base::baud_rate& baudrate,
                                    const boost::asio::serial_port_base::parity& parity,
                                    const boost::asio::serial_port_base::character_size& characterSize,

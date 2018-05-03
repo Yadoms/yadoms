@@ -1,5 +1,5 @@
 #pragma once
-#include "shared/versioning/Version.h"
+#include <shared/versioning/Version.h>
 
 namespace update
 {

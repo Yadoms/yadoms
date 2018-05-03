@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ITask.h"
 #include "TaskFactory.h"
-#include "shared/exception/Exception.hpp"
+#include <shared/exception/Exception.hpp>
 
 namespace task { 
 

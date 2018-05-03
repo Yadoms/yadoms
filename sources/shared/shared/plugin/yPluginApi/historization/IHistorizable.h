@@ -2,7 +2,7 @@
 #include "../StandardCapacities.h"
 #include "../KeywordAccessMode.h"
 #include "MeasureType.h"
-#include "shared/DataContainer.h"
+#include <shared/DataContainer.h>
 
 namespace shared
 {
