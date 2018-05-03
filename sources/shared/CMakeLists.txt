@@ -180,6 +180,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Curtain.h
    shared/plugin/yPluginApi/historization/DateTime.cpp
    shared/plugin/yPluginApi/historization/DateTime.h
+   shared/plugin/yPluginApi/historization/Debit.cpp
+   shared/plugin/yPluginApi/historization/Debit.h
    shared/plugin/yPluginApi/historization/DeviceState.cpp
    shared/plugin/yPluginApi/historization/DeviceState.h
    shared/plugin/yPluginApi/historization/DeviceStateMessage.cpp
@@ -192,6 +194,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Distance.h
    shared/plugin/yPluginApi/historization/Duration.cpp
    shared/plugin/yPluginApi/historization/Duration.h
+   shared/plugin/yPluginApi/historization/ElectricLoad.cpp
+   shared/plugin/yPluginApi/historization/ElectricLoad.h
    shared/plugin/yPluginApi/historization/Energy.cpp
    shared/plugin/yPluginApi/historization/Energy.h
    shared/plugin/yPluginApi/historization/Event.cpp
