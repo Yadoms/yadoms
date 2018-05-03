@@ -577,7 +577,7 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
          msg = boost::make_shared<rfxcomMessages::CThermostat4>(api, sTypeMCZ1, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "mcz2PelletStove")
          msg = boost::make_shared<rfxcomMessages::CThermostat4>(api, sTypeMCZ2, data.getDeviceName(), data.getConfiguration());
-      else if (deviceType == "mcz2PelletStove")
+      else if (deviceType == "mcz3PelletStove")
          msg = boost::make_shared<rfxcomMessages::CThermostat4>(api, sTypeMCZ3, data.getDeviceName(), data.getConfiguration());
 
       // Radiator1
