@@ -7,8 +7,8 @@
 
 namespace equipments
 {
-   const CWESEquipment::WESIOMapping CWESEquipment::WESv1 = {2, 2, 2, 2, 2, 4};
-   const CWESEquipment::WESIOMapping CWESEquipment::WESv2 = {2, 2, 2, 4, 4, 4};
+   const CWESEquipment::WESIOMapping CWESEquipment::WESv1 = {2, 3, 2, 2, 2, 4};
+   const CWESEquipment::WESIOMapping CWESEquipment::WESv2 = {2, 3, 2, 4, 4, 4};
 
    CWESEquipment::CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
                                 const std::string& device,
@@ -105,11 +105,11 @@ namespace equipments
         m_version(0)
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToDeclare;
-      std::string relayName[2], TICName[2], ClampName[4], AnalogName[4], inputName[2];
-      subdevices::ContractAvailable contract[2];
+      std::string relayName[2], TICName[3], ClampName[4], AnalogName[4], inputName[2];
+      subdevices::ContractAvailable contract[3];
       subdevices::EUnit PulseType[4];
       std::string PulseName[4];
-      std::string counterId[2];
+      std::string counterId[3];
 
       try
       {
@@ -150,9 +150,11 @@ namespace equipments
 
             contract[0] = results.get<subdevices::ContractAvailable>("CPT1_abo_name");
             contract[1] = results.get<subdevices::ContractAvailable>("CPT2_abo_name");
+            contract[1] = results.get<subdevices::ContractAvailable>("CPT3_abo_name");
 
             counterId[0] = results.get<std::string>("CPT1_adco");
             counterId[1] = results.get<std::string>("CPT2_adco");
+            counterId[2] = results.get<std::string>("CPT3_adco");
 
             results.printToLog(YADOMS_LOG(information));
 
@@ -164,6 +166,7 @@ namespace equipments
 
             TICName[0] = results.get<std::string>("CPT1_name");
             TICName[1] = results.get<std::string>("CPT2_name");
+            TICName[2] = results.get<std::string>("CPT3_name");
 
             ClampName[0] = results.get<std::string>("nPCE1");
             ClampName[1] = results.get<std::string>("nPCE2");
@@ -196,6 +199,7 @@ namespace equipments
             contract[1] = subdevices::NotAvailable;
             counterId[0] = "000000000000";
             counterId[1] = "000000000000";
+            counterId[2] = "000000000000";
 
             relayName[0] = "R01";
             relayName[1] = "R02";
@@ -205,6 +209,7 @@ namespace equipments
 
             TICName[0] = "TIC01";
             TICName[1] = "TIC02";
+            TICName[2] = "TIC03";
 
             ClampName[0] = "PCE1";
             ClampName[1] = "PCE2";
