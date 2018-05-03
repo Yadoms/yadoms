@@ -29,9 +29,9 @@ void CSigfoxRequestHandler::handleRequest(Poco::Net::HTTPServerRequest &req, Poc
    {
       if (boost::icontains(req.getContentType(), "application/json"))
       {
-         std::istream &i = req.stream();
-         std::streamsize len = req.getContentLength();
-         char* buffer = new char[len];
+         auto& i = req.stream();
+         const auto len = req.getContentLength();
+         const auto buffer = new char[len];
          i.read(buffer, len);
 
          m_receiveDataEventHandler.postEvent<shared::CDataContainer>(m_receiveDataEventId,

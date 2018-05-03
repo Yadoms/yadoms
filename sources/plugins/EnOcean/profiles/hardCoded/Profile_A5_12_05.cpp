@@ -57,7 +57,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
    for (auto indexPossessed = 0; indexPossessed < NB_POSSESSED; ++indexPossessed)
    {
-      m_possessed[indexPossessed]->set(bitset_extract(data, indexPossessed, 1));
+      m_possessed[indexPossessed]->set(bitset_extract(data, indexPossessed, 1) ? true : false);
    }
 
    const int temperatureValue = bitset_extract(data, 16, 8);
