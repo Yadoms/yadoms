@@ -40,10 +40,11 @@ CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api) :
    m_apparentPower(boost::make_shared<yApi::historization::CApparentPower>("ApparentPower")),
    m_TimePeriod(boost::make_shared<CRunningPeriod>(api, "RunningPeriod")),
    m_ForecastPeriod(boost::make_shared<CForecastTomorrow>(api, "ForecastColor")),
+   m_warningEJP(boost::make_shared<yApi::historization::CSwitch>("warningEJP")),
    m_api(api),
    m_teleinfoEnableInCounter(false),
    m_deviceCreated(false),
-   ADCOalreadyReceived(false),
+   m_ADCOalreadyReceived(false),
    m_optarif(OP_NOT_DEFINED)
 {
    m_instantCurrentPhase[0] = boost::make_shared<yApi::historization::CCurrent>("InstantCurrentPhase1");
@@ -65,6 +66,7 @@ void CDecoder::decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> api,
    // By default (for EJP/Tempo), the forecast is not defined, if not present
    // It's not used for Base or HPHC contract
    m_ForecastPeriod->set(teleInfo::specificHistorizers::EColor::kNOTDEFINED);
+   m_warningEJP->set(false);
 
    for (const auto message : *messages)
    {
@@ -125,8 +127,8 @@ void CDecoder::createDeviceAndKeywords(const bool monoPhase)
       // for compatibility with old plugin revision, we create separately the keyword if not existing
       // If the device already exist, we have to create keywords manually
       // This is only for EJP contracts
-      if (!m_api->keywordExists(m_deviceName, m_ForecastPeriod->GetHistorizable()) && m_optarif == OP_EJP)
-         m_api->declareKeyword(m_deviceName, m_ForecastPeriod->GetHistorizable());
+      if (!m_api->keywordExists(m_deviceName, m_warningEJP) && m_optarif == OP_EJP)
+         m_api->declareKeyword(m_deviceName, m_warningEJP);
 
       m_deviceCreated = true;
    }
@@ -163,7 +165,7 @@ void CDecoder::constructKeywordList(const EContracts contract, const bool monoPh
       m_keywords.push_back(m_EJPNormalPeriod);
       m_keywords.push_back(m_apparentPower);
       if (m_TimePeriod->isChanged()) m_keywords.push_back(m_TimePeriod->GetHistorizable());
-      if (m_ForecastPeriod->isChanged()) m_keywords.push_back(m_ForecastPeriod->GetHistorizable());
+      if (m_warningEJP->get()) m_keywords.push_back(m_warningEJP);
       break;
    }
    case OP_TEMPO:
@@ -266,11 +268,11 @@ void CDecoder::processMessage(const std::string& key,
 		{
 			YADOMS_LOG(trace) << "ADCO" << "=" << value ;
 
-			if (!ADCOalreadyReceived)
+			if (!m_ADCOalreadyReceived)
 			{
             YADOMS_LOG(debug) << "m_deviceName = " << value;
 				m_deviceName = value;
-				ADCOalreadyReceived = true;
+				m_ADCOalreadyReceived = true;
 			}
 		}
 		else if (key == m_tag_OPTARIF)
@@ -372,7 +374,7 @@ void CDecoder::processMessage(const std::string& key,
       else if (key == m_tag_PEJP)
       {
          YADOMS_LOG(information) << "PEJP" << "=" << value;
-         m_ForecastPeriod->set(teleInfo::specificHistorizers::EColor::kRED);
+         m_warningEJP->set(true);
       }
 		else
 		{
