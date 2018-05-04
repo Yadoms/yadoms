@@ -23,7 +23,6 @@ IF(NOT DISABLE_TEST_PLUGIN_TELEINFO)
    IF (WIN32)
       set(YADOMS_SOURCES ${YADOMS_SOURCES}
 	      # Add Windows sources
-         plugins/TeleInfo/Windows/FT2xxSerialPort.cpp
          plugins/TeleInfo/Windows/FT2xxSerialPort.h
          plugins/TeleInfo/Windows/TeleInfoFactory.h
          plugins/TeleInfo/Windows/TeleInfoFactory.cpp          
@@ -69,6 +68,7 @@ IF(NOT DISABLE_TEST_PLUGIN_TELEINFO)
    
    IF (WIN32)
       ADD_SOURCES(
+         FT2xxSerialPort.cpp
          Windows/TeleInfoConfigurationMock.cpp
          Windows/TeleInfoConfigurationMock.h
       )
