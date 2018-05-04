@@ -1,9 +1,9 @@
 {
   "type": "SomfySituo",
   "version": "1.0.0",
-  "author": "F.FOSCHIATTI",
-  "url": "",
-  "credits": "external libraries used here",
+  "author": "F.Foschiatti",
+  "url": "https://github.com/Yadoms/yadoms/wiki/SomfySituo",
+  "credits": "",
   "supportedPlatforms": "all",
   "configurationSchema": {
     "SerialPort": {
