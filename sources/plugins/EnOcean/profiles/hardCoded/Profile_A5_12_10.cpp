@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "Profile_A5_12_10.h"
 #include "Profile_A5_12_Common.h"
-#include "profiles/eep.h"
-#include "profiles/bitsetHelpers.hpp"
+#include <profiles/eep.h>
+#include <profiles/bitsetHelpers.hpp>
 
 CProfile_A5_12_10::CProfile_A5_12_10(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)

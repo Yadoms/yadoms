@@ -11,7 +11,8 @@ EXCLUDE_DIRECTORIES = \
     '-i"plugins/ZWave/OpenZWave" ' + \
     '-i"plugins/Piface2/libmcp23s17" ' + \
     '-i"plugins/Piface2/libpifacedigital" ' + \
-    '-i"plugins/SomfySituo/hardware"'
+    '-i"plugins/TeleInfo/ftdi" ' + \
+    '-i"plugins/SomfySituo/hardware" '
 
 INCLUDE_DIRECTORIES = \
     '-I' + SOURCE_PATH + '"/shared" ' + \
@@ -30,7 +31,6 @@ INCLUDE_DIRECTORIES = \
     '-I' + SOURCE_PATH + '"/plugins/SystemInformation/Helpers" ' + \
     '-I' + SOURCE_PATH + '"/plugins/Piface2/libmcp23s17" ' + \
     '-I' + SOURCE_PATH + '"/plugins/Piface2/libpifacedigital" ' + \
-    '-I' + SOURCE_PATH + '"/plugins/Rfxcom/libpifacedigital" ' + \
     '-I' + SOURCE_PATH + '"/plugins/TeleInfo/Windows" ' + \
     '-I' + SOURCE_PATH + '"/plugins/TeleInfo/Linux" ' + \
     '-I' + SOURCE_PATH + '"/scriptInterpreters/yPython27/platformSpecific/linux" ' + \
@@ -43,11 +43,14 @@ INCLUDE_DIRECTORIES = \
     '-I' + SOURCE_PATH + '"/server/tools/linux" ' + \
     '-I' + SOURCE_PATH + '"/external-libs/SQLite/sqlite-amalgamation-3230000" ' + \
     '-I' + SOURCE_PATH + '"/script_cpp_api" ' + \
-    '-I../projects/plugins/EnOcean/generated ' + \
-    '-I../projects/plugins/EnOcean/generated/profiles ' + \
-    '-I../projects/plugin_IPC ' + \
-    '-I../projects/interpreter_IPC ' + \
-    '-I../projects/script_IPC '
+    '-I"../projects/plugins/EnOcean/generated" ' + \
+    '-I"../projects/plugins/EnOcean/generated/profiles" ' + \
+    '-I"../projects/plugin_IPC" ' + \
+    '-I"../projects/interpreter_IPC" ' + \
+    '-I"../projects/script_IPC" '
+
+EXCLUDE_CONFIGURATIONS = \
+    '-USQLITE_INT64_TYPE '
 
 os.system('cppcheck --check-config --enable=all ' +
           SOURCE_PATH +
@@ -56,6 +59,7 @@ os.system('cppcheck --check-config --enable=all ' +
           ' --suppress=missingIncludeSystem ' +
           EXCLUDE_DIRECTORIES +
           INCLUDE_DIRECTORIES +
+          EXCLUDE_CONFIGURATIONS +
           ' > ../projects/cppcheck_out.txt 2>../projects/cppcheck_missing_includes.xml')
 
 print 'Normal check...'
@@ -64,6 +68,7 @@ os.system('cppcheck --enable=all ' +
           ' --std=c++11 --xml -v --suppressions-list=cppcheck.suppressions --suppress=missingIncludeSystem --suppress=unreadVariable:\"server/database/sqlite/SQLiteDatabaseTables.h\" --suppress=unreadVariable:\"server/database/sqlite/SQLiteSystemTables.h\" --suppress=*:\"scriptInterpreters/yPython27/yScriptApiWrapper/swigpyrun.h\" --suppress=noExplicitConstructor:\"shared/shared/enumeration/EnumHelpers.hpp\" ' +
           EXCLUDE_DIRECTORIES +
           INCLUDE_DIRECTORIES +
+          EXCLUDE_CONFIGURATIONS +
           ' >../projects/cppcheck_out.txt 2>../projects/cppcheck_result.xml')
 
 print 'Generate HMTL report...'

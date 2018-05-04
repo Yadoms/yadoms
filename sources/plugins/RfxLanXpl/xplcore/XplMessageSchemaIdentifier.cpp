@@ -21,6 +21,13 @@ namespace xplcore
    {
    }
 
+   CXplMessageSchemaIdentifier& CXplMessageSchemaIdentifier::operator=(const CXplMessageSchemaIdentifier& rhs)
+   {
+      m_classId = rhs.m_classId;
+      m_typeId = rhs.m_typeId;
+      return *this;
+   }
+
    CXplMessageSchemaIdentifier::~CXplMessageSchemaIdentifier()
    {
    }

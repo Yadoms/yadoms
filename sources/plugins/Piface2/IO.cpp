@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "IO.h"
-#include "pifacedigital.h"
+#include <pifacedigital.h>
 #include "InitializationException.hpp"
 #include <mcp23s17.h>
 #include <shared/Log.h>

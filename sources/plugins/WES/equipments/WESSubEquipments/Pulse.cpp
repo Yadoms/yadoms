@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Pulse.h"
-#include "shared/plugin/yPluginApi/historization/MeasureType.h"
+#include <shared/plugin/yPluginApi/historization/MeasureType.h>
 #include <shared/Log.h>
 
 namespace equipments

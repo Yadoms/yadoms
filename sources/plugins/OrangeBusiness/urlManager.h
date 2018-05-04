@@ -24,7 +24,7 @@ public:
    shared::CDataContainer getRegisteredEquipments(const std::string &apikey,
                                                   const int page,
                                                   const bool activated,
-                                                  const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout);
+                                                  const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout) override;
 
    //--------------------------------------------------------------
    /// \brief	    get information from a specific device
@@ -35,7 +35,7 @@ public:
    //--------------------------------------------------------------
    shared::CDataContainer getDeviceInformation(const std::string &apikey, 
                                                const std::string &devEUI,
-                                               const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout);
+                                               const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout) override;
 
    //--------------------------------------------------------------
    /// \brief	    list command information
@@ -47,7 +47,7 @@ public:
    shared::CDataContainer listDeviceCommands(const std::string &apikey,
                                              const std::string &devEUI,
                                              const int page,
-                                             const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout);
+                                             const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout) override;
 
 private:
 

@@ -9,6 +9,7 @@
 class IurlManager
 {
 public:
+   virtual ~IurlManager() = default;
 
    //--------------------------------------------------------------
    /// \brief	    get all equipments from the website
@@ -45,6 +46,4 @@ public:
                                                      const std::string &devEUI,
                                                      const int page,
                                                      const boost::posix_time::time_duration& timeout = shared::httpRequestDefaultTimeout) = 0;
-
-private:
 };

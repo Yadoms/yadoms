@@ -2,7 +2,7 @@
 #include "FT2xxSerialPort.h"
 #include <shared/Log.h>
 #include <shared/communication/Buffer.hpp>
-#include "shared/communication/AsyncPortConnectionNotification.h"
+#include <shared/communication/AsyncPortConnectionNotification.h>
 
 
 const unsigned char CFT2xxSerialPort::MaskPort1 = 0x11;
@@ -193,7 +193,6 @@ void CFT2xxSerialPort::receiverThread() const
       DWORD txBytes;
       DWORD status;
       DWORD bytesReceived;
-      char rxBuffer[256];
 
       if (m_ftHandle)
       {
@@ -207,6 +206,7 @@ void CFT2xxSerialPort::receiverThread() const
          }
          if (rxBytes > 0)
          {
+            char rxBuffer[256];
             const auto ftStatus = ftRead(m_ftHandle, rxBuffer, rxBytes, &bytesReceived);
 
             // Read OK
@@ -250,8 +250,6 @@ bool CFT2xxSerialPort::connect()
       DWORD id;
       DWORD type;
       DWORD locId;
-      char serialNumber[16];
-      char description[64];
 
       DWORD numDevs;
 
@@ -270,6 +268,8 @@ bool CFT2xxSerialPort::connect()
       {
          FT_HANDLE ftHandleTemp;
          // get information for device 0
+         char serialNumber[16];
+         char description[64];
          ftStatus = ftGetDeviceInfoDetail(m_port, &flags, &type, &id, &locId, serialNumber,
                                           description, &ftHandleTemp);
          if (ftStatus == FT_OK)
