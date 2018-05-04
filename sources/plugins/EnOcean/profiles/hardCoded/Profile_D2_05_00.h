@@ -1,6 +1,6 @@
 #pragma once
 #include "../IType.h"
-#include "specificHistorizers/BlindLockingMode.h"
+#include <specificHistorizers/BlindLockingMode.h>
 
 
 class CProfile_D2_05_00 : public IType

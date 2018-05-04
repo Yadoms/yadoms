@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CartelectronicTIC.h"
-#include "boost/lexical_cast.hpp"
+#include <boost/lexical_cast.hpp>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;

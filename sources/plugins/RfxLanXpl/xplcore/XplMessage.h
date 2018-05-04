@@ -40,6 +40,7 @@ namespace xplcore
       /// \param [in] message : message to copy
       //--------------------------------------------------------------
       CXplMessage(const CXplMessage& message);
+      CXplMessage& operator=(const CXplMessage&) = delete;
 
       //--------------------------------------------------------------
       /// \brief      Destructor

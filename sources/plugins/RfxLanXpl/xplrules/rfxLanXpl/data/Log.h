@@ -33,6 +33,8 @@ namespace xplrules
             CLog(const std::string& keywordName,
                  const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode);
 
+            CLog& operator=(const CLog&) = delete;
+
             //-----------------------------------------------------
             ///\brief                     Destructor
             //-----------------------------------------------------

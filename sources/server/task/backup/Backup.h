@@ -31,10 +31,10 @@ namespace task
 
       private:
          void doWork(int currentTry = 0);
-         boost::filesystem::path prepareBackup();
+         boost::filesystem::path prepareBackup() const;
          bool backupFiles(boost::filesystem::path & tempPath);
          boost::filesystem::path makeZipArchive(boost::filesystem::path & tempPath);
-         void cleanup(boost::filesystem::path & tempPath);
+         void cleanup(boost::filesystem::path & tempPath) const;
 
          //------------------------------------------
          ///\brief   Internal progress handler 

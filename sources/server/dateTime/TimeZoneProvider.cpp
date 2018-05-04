@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "TimeZoneProvider.h"
 #include "TimeZoneProviderFromId.h"
-#include "shared/Log.h"
-#include "shared/exception/EmptyResult.hpp"
+#include <shared/Log.h>
+#include <shared/exception/EmptyResult.hpp>
 
 namespace dateTime
 {

@@ -1,6 +1,14 @@
 #include "stdafx.h"
 #include "PairingHelper.h"
 
+// Global pairing duration is PairingTimeoutSeconds seconds.
+// And RFXCom main thread must call onProgressPairing every PairingPeriodTimeSeconds seconds.
+static const unsigned int PairingTimeoutSeconds = 60;
+static const unsigned int PairingPeriodTimeSeconds = 5;
+
+// Deduced periods number to reach timeout
+static const unsigned int PairingProgressNbMaxPeriods = PairingTimeoutSeconds / PairingPeriodTimeSeconds;
+
 
 CPairingHelper::CPairingHelper(boost::shared_ptr<yApi::IYPluginApi> api,
                                EPairingMode configuredMode)
@@ -45,7 +53,7 @@ bool CPairingHelper::startPairing(boost::shared_ptr<yApi::IExtraQuery> manualPai
 
    m_pairingEnable = true;
    m_manualPairingExtraQuery = manualPairingExtraQuery;
-   m_progressPairingCount = 6;
+   m_progressPairingCount = PairingProgressNbMaxPeriods;
    m_manualPairingExtraQuery->reportProgress(1.0f, "customLabels.pairing.pairing");
 
    YADOMS_LOG(information) << "Start pairing";
@@ -67,8 +75,13 @@ bool CPairingHelper::onProgressPairing()
    }
 
    if (m_manualPairingExtraQuery)
-      m_manualPairingExtraQuery->reportProgress((6 - m_progressPairingCount) * 100.0f / 6, "customLabels.pairing.pairing");
+      m_manualPairingExtraQuery->reportProgress((PairingProgressNbMaxPeriods - m_progressPairingCount) * 100.0f / PairingProgressNbMaxPeriods, "customLabels.pairing.pairing");
    return false;
+}
+
+unsigned CPairingHelper::getPairingPeriodTimeSeconds()
+{
+   return PairingPeriodTimeSeconds;
 }
 
 void CPairingHelper::stopPairing(const std::string& devicePaired)

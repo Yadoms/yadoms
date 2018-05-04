@@ -2,7 +2,7 @@
 #include "Factory.h"
 #include "PythonExecutable.h"
 #include "ProcessObserver.h"
-#include "ScriptLogger.h"
+#include <ScriptLogger.h>
 #include "ScriptProcess.h"
 #include "ScriptFile.h"
 

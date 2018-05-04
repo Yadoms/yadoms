@@ -72,7 +72,7 @@ namespace equipments
       ///\param[in] newValue            The new value
       ///\param[in] forceHistorization  force historization if necessary
       //-----------------------------------------------------
-      void updateSwitchValue(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize, 
+      static void updateSwitchValue(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize, 
                              boost::shared_ptr<yApi::historization::CSwitch> keyword, 
                              bool newValue, 
                              bool forceHistorization);
@@ -82,7 +82,7 @@ namespace equipments
       ///\param[in] newState            the new state
       //-----------------------------------------------------
       void setDeviceState(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize, 
-                          specificHistorizers::EWESdeviceStatus newState);
+                          specificHistorizers::EWESdeviceStatus newState) const;
 
       //-----------------------------------------------------
       ///\brief                     The device name
