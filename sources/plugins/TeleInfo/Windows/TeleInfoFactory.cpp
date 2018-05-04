@@ -13,18 +13,19 @@ CTeleInfoFactory::~CTeleInfoFactory()
 }
 
 boost::shared_ptr<shared::communication::IAsyncPort> CTeleInfoFactory::constructPort(const ITeleInfoConfiguration& configuration,
-                                                                                           shared::event::CEventHandler& eventHandler,
-                                                                                           boost::shared_ptr<shared::communication::IReceiveBufferHandler> receiveBufferHandler,
-                                                                                           int evtPortConnectionId)
+                                                                                     shared::event::CEventHandler& eventHandler,
+                                                                                     boost::shared_ptr<shared::communication::IReceiveBufferHandler>
+                                                                                     receiveBufferHandler,
+                                                                                     int evtPortConnectionId)
 {
-   YADOMS_LOG(information) << "Connecting TeleInfo on serial port " << configuration.getSerialPort() << "..." ;
+   YADOMS_LOG(information) << "Connecting TeleInfo on serial port " << configuration.getSerialPort() << "...";
 
    boost::shared_ptr<shared::communication::IAsyncPort> port = boost::make_shared<CFT2xxSerialPort>(configuration.getSerialPort(),
-                                                                                                                           boost::asio::serial_port_base::baud_rate(1200),
-                                                                                                                           boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::even),
-                                                                                                                           boost::asio::serial_port_base::character_size(7),
-                                                                                                                           boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
-                                                                                                                           boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none));
+                                                                                                    boost::asio::serial_port_base::baud_rate(1200),
+                                                                                                    boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::even),
+                                                                                                    boost::asio::serial_port_base::character_size(7),
+                                                                                                    boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
+                                                                                                    boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none));
 
    auto ftdiPortList = boost::static_pointer_cast<CFT2xxSerialPort>(port)->getPortComNumber();
    auto isFtdiSerialPort = false;
@@ -41,7 +42,7 @@ boost::shared_ptr<shared::communication::IAsyncPort> CTeleInfoFactory::construct
       {
          const auto comPort = std::string(match[0].first, match[0].second);
 
-         if (match.size()!=0 && (comPort == boost::lexical_cast<std::string>((*iterator))))
+         if (match.size() != 0 && (comPort == boost::lexical_cast<std::string>((*iterator))))
          {
             YADOMS_LOG(information) << "The serial port is a FTDI port. The FTDI driver will be used instead of the generic serial driver.";
 
@@ -58,11 +59,13 @@ boost::shared_ptr<shared::communication::IAsyncPort> CTeleInfoFactory::construct
    {
       port = boost::make_shared<shared::communication::CAsyncSerialPort>(configuration.getSerialPort(),
                                                                          boost::asio::serial_port_base::baud_rate(1200),
-                                                                         boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::even),
+                                                                         boost::asio::serial_port_base::parity(
+                                                                            boost::asio::serial_port_base::parity::even),
                                                                          boost::asio::serial_port_base::character_size(7),
-                                                                         boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
-                                                                         boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none));
-
+                                                                         boost::asio::serial_port_base::stop_bits(
+                                                                            boost::asio::serial_port_base::stop_bits::one),
+                                                                         boost::asio::serial_port_base::flow_control(
+                                                                            boost::asio::serial_port_base::flow_control::none));
    }
 
    port->subscribeForConnectionEvents(eventHandler,
