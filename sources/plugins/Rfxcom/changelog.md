@@ -1,6 +1,7 @@
 ### 1.1.2-beta.7
 * Fix manually device creation of MCZ pellet stove 3 fan model 
 * Fix Cartelectronic protocol => Add EJP Warning
+* Increase pairing timeout to 1 minute
 
 ### 1.1.2-beta.6
 * Fix Historization of some device types even if pairing is disabled
