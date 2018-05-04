@@ -37,7 +37,6 @@ set(TELEINFO_SOURCES
 IF (WIN32)
     set(TELEINFO_SOURCES ${TELEINFO_SOURCES}
 	# Add Windows sources
-        Windows/FT2xxSerialPort.h
         Windows/FT2xxSerialPort.cpp
         Windows/TeleInfoFactory.h
         Windows/TeleInfoFactory.cpp
