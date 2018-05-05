@@ -23,7 +23,6 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
       // plugin state have no type
       try
       {
-         api->getDeviceDetails(device).printToLog(YADOMS_LOG(information));
          type = api->getDeviceDetails(device).getWithDefault<std::string>("type", "");
 
          if (type == "WES")
@@ -61,8 +60,6 @@ std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginAp
 
    try
    {
-      data.getConfiguration().printToLog(YADOMS_LOG(information));
-
       if (data.getDeviceType() == "WES")
       {
          equipment = boost::make_shared<equipments::CWESEquipment>(api,

@@ -7,7 +7,7 @@
 
 namespace equipments
 {
-   const CWESEquipment::WESIOMapping CWESEquipment::WESv1 = {2, 3, 2, 2, 2, 4};
+   const CWESEquipment::WESIOMapping CWESEquipment::WESv1 = {0, 3, 2, 2, 2, 4};
    const CWESEquipment::WESIOMapping CWESEquipment::WESv2 = {2, 3, 2, 4, 4, 4};
 
    CWESEquipment::CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -82,14 +82,17 @@ namespace equipments
                                                             clampContainerName.get<std::string>("C" + boost::lexical_cast<std::string>(counter)));
          m_ClampList.push_back(temp);
       }
-
-      auto analogContainerName = details.get<shared::CDataContainer>("Analogs");
-      for (int counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
+      
+      if (m_WESIOMapping.anaQty > 0)
       {
-         auto temp = boost::make_shared<specificHistorizers::CAnalog>(analogContainerName.get<std::string>("A" + boost::lexical_cast<std::string>(counter)),
-                                                                      yApi::EKeywordAccessMode::kGet);
-         m_AnalogList.push_back(temp);
-         keywordsToDeclare.push_back(temp);
+         auto analogContainerName = details.get<shared::CDataContainer>("Analogs");
+         for (int counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
+         {
+            auto temp = boost::make_shared<specificHistorizers::CAnalog>(analogContainerName.get<std::string>("A" + boost::lexical_cast<std::string>(counter)),
+                                                                         yApi::EKeywordAccessMode::kGet);
+            m_AnalogList.push_back(temp);
+            keywordsToDeclare.push_back(temp);
+         }
       }
 
       YADOMS_LOG(information) << "Load configuration for " << m_deviceName;
@@ -129,6 +132,8 @@ namespace equipments
                                                   CGXfileName,
                                                   urlManager::httpRequestCreationTimeout);
 
+         results.printToLog(YADOMS_LOG(trace));
+
          // get the revision, for E/S numbers
          m_version = results.get<int>("version");
 
@@ -148,6 +153,8 @@ namespace equipments
                                                 CGXfileName,
                                                 urlManager::httpRequestCreationTimeout);
 
+            results.printToLog(YADOMS_LOG(information));
+
             contract[0] = results.get<subdevices::ContractAvailable>("CPT1_abo_name");
             contract[1] = results.get<subdevices::ContractAvailable>("CPT2_abo_name");
             contract[1] = results.get<subdevices::ContractAvailable>("CPT3_abo_name");
@@ -155,8 +162,6 @@ namespace equipments
             counterId[0] = results.get<std::string>("CPT1_adco");
             counterId[1] = results.get<std::string>("CPT2_adco");
             counterId[2] = results.get<std::string>("CPT3_adco");
-
-            results.printToLog(YADOMS_LOG(information));
 
             relayName[0] = results.get<std::string>("RL1");
             relayName[1] = results.get<std::string>("RL2");
