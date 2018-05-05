@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/script/yScriptApi/IYScriptApi.h>
-#include "script_IPC/yadomsToScript.pb.h"
-#include "script_IPC/scriptToYadoms.pb.h"
+#include <script_IPC/yadomsToScript.pb.h>
+#include <script_IPC/scriptToYadoms.pb.h>
 #include <shared/communication/IMessageCutter.h>
 
 

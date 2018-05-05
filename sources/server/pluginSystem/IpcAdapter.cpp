@@ -5,7 +5,7 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include "serializers/Information.h"
 #include "FromPluginHistorizer.h"
-#include "shared/exception/EmptyResult.hpp"
+#include <shared/exception/EmptyResult.hpp>
 #include <plugin_IPC/yadomsToPlugin.pb.h>
 #include <shared/communication/SmallHeaderMessageCutter.h>
 #include <shared/communication/SmallHeaderMessageAssembler.h>

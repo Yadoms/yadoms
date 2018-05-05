@@ -296,7 +296,7 @@ void CRfxcomFirmwareUpdater::prepareDataForWriteIntoPic(const boost::shared_ptr<
                   ++outAddr;
                   ++inAddr;
 
-                  if (inAddr % 16 == 0 && inAddr != 0)
+                  if (inAddr % 16 == 0)
                      programMemory[rowAddress] = outLine;
                }
 
@@ -393,7 +393,7 @@ void CRfxcomFirmwareUpdater::prepareDataForWriteIntoPic(const boost::shared_ptr<
          ++outAddr;
          ++inAddr;
 
-         if (inAddr % 16 == 0 && inAddr != 0)
+         if (inAddr % 16 == 0)
             programMemory[rowAddress] = outLine;
       }
    }

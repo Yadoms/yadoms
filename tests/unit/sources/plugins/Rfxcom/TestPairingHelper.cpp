@@ -59,13 +59,13 @@ BOOST_AUTO_TEST_SUITE(TestPairingHelper)
 
       // Pairing disable
       BOOST_CHECK_EQUAL(ph.needPairing("device1"), false);
-      for (auto i = 0; i < 10; ++i)
+      for (auto i = 0; i < 20; ++i)
       BOOST_CHECK_EQUAL(ph.onProgressPairing(), true);
 
       // Start pairing but no device found
       BOOST_CHECK_EQUAL(ph.startPairing(boost::make_shared<CExtraQueryMock>()), true);
       BOOST_CHECK_EQUAL(ph.startPairing(boost::make_shared<CExtraQueryMock>()), false); // Already started
-      for (auto i = 0; i < 5; ++i)
+      for (auto i = 0; i < 11; ++i)
       {
          BOOST_CHECK_EQUAL(ph.onProgressPairing(), false);
       }

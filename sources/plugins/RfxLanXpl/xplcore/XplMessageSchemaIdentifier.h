@@ -3,7 +3,7 @@
 namespace xplcore
 {
    //--------------------------------------------------------------
-   /// \class Message Schema Identifier for Xpl message (x10.basic)
+   /// \brief Message Schema Identifier for Xpl message (x10.basic)
    //--------------------------------------------------------------
    class CXplMessageSchemaIdentifier
    {
@@ -27,6 +27,7 @@ namespace xplcore
       /// \param [in] identifier : Message Schema Identifier to copy
       //--------------------------------------------------------------
       CXplMessageSchemaIdentifier(const CXplMessageSchemaIdentifier& identifier);
+      CXplMessageSchemaIdentifier& operator=(const CXplMessageSchemaIdentifier& rhs);
 
       //--------------------------------------------------------------
       /// \brief      Destructor

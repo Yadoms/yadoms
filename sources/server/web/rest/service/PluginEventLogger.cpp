@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "PluginEventLogger.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
-#include "shared/Log.h"
 #include "web/rest/Result.h"
 
 namespace web { namespace rest { namespace service {

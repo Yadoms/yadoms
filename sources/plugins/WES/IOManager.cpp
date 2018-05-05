@@ -15,7 +15,7 @@ void CIOManager::addEquipment(boost::shared_ptr<equipments::IEquipment> equipmen
    m_deviceManager.push_back(equipment);
 }
 
-void CIOManager::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved)
+void CIOManager::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceRemoved)
 {
    for (unsigned char counter = 0; counter < m_deviceManager.size(); ++counter)
    {
@@ -47,12 +47,11 @@ void CIOManager::readAllDevices(boost::shared_ptr<yApi::IYPluginApi> api,
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                            boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
-   auto deviceName = command->getDevice();
+   const auto deviceName = command->getDevice();
 
    YADOMS_LOG(information) << "Command received : " << yApi::IDeviceCommand::toString(command) ;
-   std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice;
 
-   for (iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
+   for (std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
    {
       if (deviceName == (*iteratorDevice)->getDeviceName())
       {
@@ -66,8 +65,7 @@ void CIOManager::OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi
                                              const std::string& deviceName,
                                              const shared::CDataContainer& newConfiguration)
 {
-   std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice;
-   for (iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
+   for (std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
    {
       if (deviceName == (*iteratorDevice)->getDeviceName())
       {
@@ -79,10 +77,9 @@ void CIOManager::OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi
 shared::CDataContainer CIOManager::bindMasterDevice()
 {
    shared::CDataContainer ev;
-   int counter = 0;
-   std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice;
+   const auto counter = 0;
 
-   for (iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
+   for (std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
    {
       ev.set(boost::lexical_cast<std::string>(counter + 1), (*iteratorDevice)->getDeviceName());
    }
@@ -98,9 +95,8 @@ shared::CDataContainer CIOManager::bindMasterDevice()
 std::vector<specificHistorizers::EWESdeviceStatus> CIOManager::getMasterdeviceStates()
 {
    std::vector<specificHistorizers::EWESdeviceStatus> devicesStatus;
-   std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice;
 
-   for (iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
+   for (std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
    {
       devicesStatus.push_back((*iteratorDevice)->getStatus());
    }

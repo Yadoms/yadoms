@@ -6,7 +6,7 @@
 #include "VersionException.h"
 #include <shared/Log.h>
 #include "database/common/adapters/SingleValueAdapter.hpp"
-#include "shared/currentTime/Provider.h"
+#include <shared/currentTime/Provider.h>
 
 namespace database
 {

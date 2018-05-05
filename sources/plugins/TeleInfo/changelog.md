@@ -1,3 +1,6 @@
+### 1.1.0-beta.2
+* Change Warning EJP to a switch historizer
+
 ### 1.1.0-beta.1
 * Add a better for Windows installation
 * Add the support for module with double teleinfo input

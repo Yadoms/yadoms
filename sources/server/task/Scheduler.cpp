@@ -3,7 +3,7 @@
 #include "Instance.h"
 #include "IInstance.h"
 #include "IUnique.h"
-#include "shared/ThreadBase.h"
+#include <shared/ThreadBase.h>
 #include "TaskEvent.h"
 #include "database/entities/Entities.h"
 #include <shared/Log.h>

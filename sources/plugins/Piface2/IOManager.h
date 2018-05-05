@@ -26,7 +26,7 @@ public:
    /// \param[in]  IOlist           Set a new list of IOs
    //--------------------------------------------------------------
    void Initialize(boost::shared_ptr<yApi::IYPluginApi> api, 
-                   std::map<std::string, boost::shared_ptr<CIO> > IOlist);
+                   const std::map<std::string, boost::shared_ptr<CIO> >& IOlist);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
