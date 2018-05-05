@@ -305,7 +305,7 @@ namespace update
 
       for (auto& version : availableVersions.get<std::vector<shared::CDataContainer>>())
       {
-         if (version.empty()) // Ignore value data (like "changelogUrl")
+         if (version.empty()) // Ignore value data (like "changelog.md")
             continue;
 
          try
@@ -396,7 +396,7 @@ namespace update
                   const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
                   for (auto& version : availableVersionsForItem)
                   {
-                     if (version.empty()) // Ignore value data (like "changelogUrl")
+                     if (version.empty()) // Ignore value data (like "changelog.md")
                         continue;
 
                      shared::versioning::CVersion v(version.get<std::string>("version"));
@@ -458,13 +458,19 @@ namespace update
          std::map<std::string, shared::CDataContainer> newModuleAvailableVersions;
          try
          {
-            const auto availableVersionsForModule = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
-            for (auto& version : availableVersionsForModule)
+            const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
+            for (auto& version : availableVersionsForItem)
             {
+               if (version.empty()) // Ignore value data (like "changelog.md")
+                  continue;
+
                shared::versioning::CVersion v(version.get<std::string>("version"));
 
                // Don't add prereleases versions if not asked
                if (!v.prerelease().empty() && !includePrereleases)
+                  continue;
+
+               if (!checkDependencies(version))
                   continue;
 
                shared::CDataContainer versionData;
@@ -491,11 +497,14 @@ namespace update
             const auto& newestVersionData = std::find_if(availableVersionsForItem.begin(),
                                                          availableVersionsForItem.end(),
                                                          [&newestVersionLabel](
-                                                         const shared::CDataContainer& availableVersionForItem)
-                                                         {
-                                                            return availableVersionForItem.get<std::string>(
-                                                               "version") == newestVersionLabel;
-                                                         });
+                                                            const shared::CDataContainer& availableVersionForItem)
+                                                      {
+                                                         if (availableVersionForItem.empty()) // Ignore value data (like "changelog.md")
+                                                            return false;
+
+                                                         return availableVersionForItem.get<std::string>(
+                                                            "version") == newestVersionLabel;
+                                                      });
             item.set("iconUrl", newestVersionData->get<std::string>("iconUrl"));
             item.set("versions", buildNewVersionsNode(newModuleAvailableVersions));
 
@@ -549,7 +558,7 @@ namespace update
                   const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
                   for (auto& version : availableVersionsForItem)
                   {
-                     if (version.empty()) // Ignore value data (like "changelogUrl")
+                     if (version.empty()) // Ignore value data (like "changelog.md")
                         continue;
 
                      shared::versioning::CVersion v(version.get<std::string>("version"));
@@ -614,10 +623,16 @@ namespace update
             const auto availableVersionsForModule = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
             for (auto& version : availableVersionsForModule)
             {
+               if (version.empty()) // Ignore value data (like "changelog.md")
+                  continue;
+
                shared::versioning::CVersion v(version.get<std::string>("version"));
 
                // Don't add prereleases versions if not asked
                if (!v.prerelease().empty() && !includePrereleases)
+                  continue;
+
+               if (!checkDependencies(version))
                   continue;
 
                shared::CDataContainer versionData;
@@ -644,11 +659,14 @@ namespace update
             const auto& newestVersionData = std::find_if(availableVersionsForItem.begin(),
                                                          availableVersionsForItem.end(),
                                                          [&newestVersionLabel](
-                                                         const shared::CDataContainer& availableVersionForItem)
-                                                         {
-                                                            return availableVersionForItem.get<std::string>(
-                                                               "version") == newestVersionLabel;
-                                                         });
+                                                            const shared::CDataContainer& availableVersionForItem)
+                                                      {
+                                                         if (availableVersionForItem.empty()) // Ignore value data (like "changelog.md")
+                                                            return false;
+
+                                                         return availableVersionForItem.get<std::string>(
+                                                            "version") == newestVersionLabel;
+                                                      });
             item.set("iconUrl", newestVersionData->get<std::string>("previewUrl"));
             item.set("versions", buildNewVersionsNode(newModuleAvailableVersions));
 
@@ -697,7 +715,7 @@ namespace update
                   const auto availableVersionsForItem = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
                   for (auto& version : availableVersionsForItem)
                   {
-                     if (version.empty()) // Ignore value data (like "changelogUrl")
+                     if (version.empty()) // Ignore value data (like "changelog.md")
                         continue;
 
                      shared::versioning::CVersion v(version.get<std::string>("version"));
@@ -763,10 +781,16 @@ namespace update
             const auto availableVersionsForModule = availableVersions.get<std::vector<shared::CDataContainer>>(moduleType);
             for (auto& version : availableVersionsForModule)
             {
+               if (version.empty()) // Ignore value data (like "changelog.md")
+                  continue;
+
                shared::versioning::CVersion v(version.get<std::string>("version"));
 
                // Don't add prereleases versions if not asked
                if (!v.prerelease().empty() && !includePrereleases)
+                  continue;
+
+               if (!checkDependencies(version))
                   continue;
 
                shared::CDataContainer versionData;
@@ -793,11 +817,14 @@ namespace update
             const auto& newestVersionData = std::find_if(availableVersionsForItem.begin(),
                                                          availableVersionsForItem.end(),
                                                          [&newestVersionLabel](
-                                                         const shared::CDataContainer& availableVersionForItem)
-                                                         {
-                                                            return availableVersionForItem.get<std::string>(
-                                                               "version") == newestVersionLabel;
-                                                         });
+                                                            const shared::CDataContainer& availableVersionForItem)
+                                                      {
+                                                         if (availableVersionForItem.empty()) // Ignore value data (like "changelog.md")
+                                                            return false;
+
+                                                         return availableVersionForItem.get<std::string>(
+                                                            "version") == newestVersionLabel;
+                                                      });
             item.set("iconUrl", newestVersionData->get<std::string>("iconUrl"));
             item.set("versions", buildNewVersionsNode(newModuleAvailableVersions));
 
@@ -825,7 +852,7 @@ namespace update
          // Sort (newer version first)
          shared::CDataContainer olderVersions;
          for (auto v = older.rbegin(); v != older.rend(); ++v)
-            // Force different path char to not cut version string into subPaths
+         // Force different path char to not cut version string into subPaths
             olderVersions.set(v->first, v->second, 0);
          versions.set("older", olderVersions);
       }
@@ -835,7 +862,7 @@ namespace update
          // Sort (newer version first)
          shared::CDataContainer newerVersions;
          for (auto v = newer.rbegin(); v != newer.rend(); ++v)
-            // Force different path char to not cut version string into subPaths
+         // Force different path char to not cut version string into subPaths
             newerVersions.set(v->first, v->second, 0);
          versions.set("newer", newerVersions);
 
@@ -856,7 +883,7 @@ namespace update
       // Sort (newer version first)
       shared::CDataContainer sortedVersions;
       for (auto v = newItemAvailableVersions.rbegin(); v != newItemAvailableVersions.rend(); ++v)
-         // Force different path char to not cut version string into subPaths
+      // Force different path char to not cut version string into subPaths
          sortedVersions.set(v->first, v->second, 0);
       versions.set("versions", sortedVersions);
 
@@ -883,9 +910,9 @@ namespace update
       {
          result = m_taskScheduler->runTask(task, taskUid);
          if (result)
-            YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " << taskUid;
+         YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " << taskUid;
          else
-            YADOMS_LOG(error) << "Task : " << task->getName() << " fail to start";
+         YADOMS_LOG(error) << "Task : " << task->getName() << " fail to start";
       }
       else
       {
@@ -1029,11 +1056,11 @@ namespace update
          auto versionInfo = std::find_if(versions.begin(),
                                          versions.end(),
                                          [&downloadUrl](
-                                         const shared::CDataContainer& version)
-                                         {
-                                            return version.get<std::string>(
-                                               "downloadUrl") == downloadUrl;
-                                         });
+                                            const shared::CDataContainer& version)
+                                      {
+                                         return version.get<std::string>(
+                                            "downloadUrl") == downloadUrl;
+                                      });
 
          if (versionInfo == versions.end())
             return std::string();
