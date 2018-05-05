@@ -98,6 +98,7 @@ private:
 
    boost::shared_ptr<CRunningPeriod> m_TimePeriod;
    boost::shared_ptr<linky::specificHistorizers::CColor> m_ForecastPeriod;
+   boost::shared_ptr<yApi::historization::CSwitch> m_warningEJP;
 
    boost::shared_ptr<yApi::IYPluginApi> m_api;
    std::string m_deviceName;
@@ -106,6 +107,7 @@ private:
    EContracts m_optarif;
    bool m_todayColorChanged;
    bool m_firstRun;
+   bool m_newWarningEJPValue;
 
    static const std::string m_tag_ADCO;
    static const std::string m_tag_OPTARIF;
