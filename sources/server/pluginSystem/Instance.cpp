@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Instance.h"
 #include "startupOptions/IStartupOptions.h"
-#include "shared/ServiceLocator.h"
+#include <shared/ServiceLocator.h>
 
 namespace pluginSystem
 {

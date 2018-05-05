@@ -19,7 +19,7 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	Constructor for error (with i18n message)
          //--------------------------------------------------------------
-         CAsyncPortConnectionNotification(const std::string & i18nErrorMessage);
+         explicit CAsyncPortConnectionNotification(const std::string & i18nErrorMessage);
          
          //--------------------------------------------------------------
          /// \brief	Constructor for error (with i18n message + i18n parameters)

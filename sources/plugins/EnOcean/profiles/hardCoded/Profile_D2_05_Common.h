@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "../../IMessageHandler.h"
-#include "specificHistorizers/BlindLockingMode.h"
+#include <specificHistorizers/BlindLockingMode.h>
 
 namespace yApi = shared::plugin::yPluginApi;
 

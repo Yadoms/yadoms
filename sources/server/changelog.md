@@ -3,6 +3,7 @@
 #### New features and fixes
 * Add debit historizer (m³/s)
 * Add electric load historizer (Ah)
+* Fix discovering new plugins and new widgets when they have a changelog.md
 
 
 ### 2.1.0-beta.1

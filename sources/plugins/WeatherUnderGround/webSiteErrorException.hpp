@@ -9,9 +9,9 @@ class CWebSiteErrorException : public shared::exception::CException
 public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
-   /// \param[in]  message             Exception message
+   /// \param[in]  error               Exception message
    //--------------------------------------------------------------
-   explicit CWebSiteErrorException(std::string error)
+   explicit CWebSiteErrorException(const std::string& error)
       : CException(error)
    {
    }

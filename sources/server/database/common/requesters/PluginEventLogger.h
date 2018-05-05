@@ -17,7 +17,7 @@ namespace database
          public:
             //--------------------------------------------------------------
             /// \Brief		   Constructor
-            /// \param [in]	pDatabaseHandler: the database handler
+            /// \param [in]	databaseRequester: the database requester
             //--------------------------------------------------------------
             explicit CPluginEventLogger(boost::shared_ptr<IDatabaseRequester> databaseRequester);
 

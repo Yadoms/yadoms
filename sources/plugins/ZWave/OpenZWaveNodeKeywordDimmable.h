@@ -2,7 +2,7 @@
 
 #include "OpenZWaveNodeKeywordBase.h"
 #include <shared/plugin/yPluginApi/historization/Dimmable.h>
-#include "../typeinfo/IntegerTypeInfo.h"
+#include "typeinfo/IntegerTypeInfo.h"
 
 
 class COpenZWaveNodeKeywordDimmable : public COpenZWaveNodeKeywordBase

@@ -6,7 +6,7 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <shared/exception/Exception.hpp>
 #include <shared/Log.h>
-#include "Poco/StreamCopier.h"
+#include <Poco/StreamCopier.h>
 #include "timeOutException.hpp"
 
 namespace http
@@ -145,8 +145,6 @@ namespace http
                                         Poco::Net::HTTPResponse& httpresponse,
                                         boost::property_tree::ptree& treeResponse)
    {
-      std::string content;
-
       if (boost::icontains(httpresponse.getContentType(), "text/xml"))
       {
          boost::property_tree::xml_parser::read_xml(stream, treeResponse);

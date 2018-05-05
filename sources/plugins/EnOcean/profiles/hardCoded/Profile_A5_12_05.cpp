@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "Profile_A5_12_05.h"
 #include "Profile_A5_12_Common.h"
-#include "profiles/eep.h"
-#include "profiles/bitsetHelpers.hpp"
+#include <profiles/eep.h>
+#include <profiles/bitsetHelpers.hpp>
 
 CProfile_A5_12_05::CProfile_A5_12_05(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
@@ -57,7 +57,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
    for (auto indexPossessed = 0; indexPossessed < NB_POSSESSED; ++indexPossessed)
    {
-      m_possessed[indexPossessed]->set(bitset_extract(data, indexPossessed, 1));
+      m_possessed[indexPossessed]->set(bitset_extract(data, indexPossessed, 1) ? true : false);
    }
 
    const int temperatureValue = bitset_extract(data, 16, 8);

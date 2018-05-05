@@ -450,7 +450,7 @@ void CRfxcom::startManualPairing(boost::shared_ptr<yApi::IYPluginApi> api,
    if (m_pairingHelper->startPairing(extraQuery))
       m_progressPairingTimer = api->getEventHandler().createTimer(kProgressPairingTimer,
                                                                   shared::event::CEventTimer::kOneShot,
-                                                                  boost::posix_time::seconds(5));
+                                                                  boost::posix_time::seconds(m_pairingHelper->getPairingPeriodTimeSeconds()));
 }
 
 void CRfxcom::initRfxcom(boost::shared_ptr<yApi::IYPluginApi> api)

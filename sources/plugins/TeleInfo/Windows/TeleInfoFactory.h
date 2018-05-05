@@ -4,7 +4,6 @@
 #include <shared/communication/IAsyncPort.h>
 #include "../IDecoder.h"
 #include "../TeleInfoReceiveBufferHandler.h"
-#include "FT2xxSerialPort.h"
 
 //--------------------------------------------------------------
 /// \brief	General factory
@@ -26,9 +25,9 @@ public:
    /// \return                            The created port
    //--------------------------------------------------------------
    static boost::shared_ptr<shared::communication::IAsyncPort> constructPort(const ITeleInfoConfiguration& configuration,
-                                                                                   shared::event::CEventHandler& eventHandler,
-                                                                                   boost::shared_ptr<shared::communication::IReceiveBufferHandler> receiveBufferHandler,
-                                                                                   int evtPortConnectionId);
+                                                                             shared::event::CEventHandler& eventHandler,
+                                                                             boost::shared_ptr<shared::communication::IReceiveBufferHandler> receiveBufferHandler,
+                                                                             int evtPortConnectionId);
 
    //--------------------------------------------------------------
    /// \brief	                          Create a decoder instance
@@ -39,10 +38,10 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	                          Return the buffer handler of the teleInfo
-   /// \param [in] eventhandler           eventHandler used by the bufferHandler
-   /// \param [in] evtPortDataReceived    event sent when a packet is ready
-   /// \param [in] developerMode          running in developer mode
-   /// \return                            The Buffer handler
+   /// \param [in] eventHandler          eventHandler used by the bufferHandler
+   /// \param [in] evtPortDataReceived   event sent when a packet is ready
+   /// \param [in] isDeveloperMode       running in developer mode
+   /// \return                           The Buffer handler
    //--------------------------------------------------------------
    static boost::shared_ptr<CTeleInfoReceiveBufferHandler> GetBufferHandler(shared::event::CEventHandler& eventHandler,
                                                                             int evtPortDataReceived,
