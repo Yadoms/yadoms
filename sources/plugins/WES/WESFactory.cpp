@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "WESFactory.h"
 #include "equipments/WESEquipment.h"
-#include "equipments/manuallyDeviceCreationException.hpp"
+#include "equipments/tooLowRevisionException.hpp"
 #include <shared/Log.h>
 
 CWESFactory::CWESFactory()
@@ -58,25 +58,17 @@ std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginAp
 {
    boost::shared_ptr<equipments::IEquipment> equipment;
 
-   try
+   if (data.getDeviceType() == "WES")
    {
-      if (data.getDeviceType() == "WES")
-      {
-         equipment = boost::make_shared<equipments::CWESEquipment>(api,
-                                                                   data.getDeviceName(),
-                                                                   data.getConfiguration(),
-                                                                   configuration);
-         ioManager->addEquipment(equipment);
-      }
-      else
-      {
-         YADOMS_LOG(error) << "no section defined for " << data.getDeviceType();
-      }
+      equipment = boost::make_shared<equipments::CWESEquipment>(api,
+                                                                  data.getDeviceName(),
+                                                                  data.getConfiguration(),
+                                                                  configuration);
+      ioManager->addEquipment(equipment);
    }
-   catch (std::exception& e)
+   else
    {
-      YADOMS_LOG(error) << "Error : " << e.what();
-      throw CManuallyDeviceCreationException(e.what());
+      YADOMS_LOG(error) << "no section defined for " << data.getDeviceType();
    }
 
    return equipment->getDeviceName();

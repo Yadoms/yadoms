@@ -4,6 +4,8 @@
 #include "../urlManager.h"
 #include <shared/Log.h>
 #include "../http/timeOutException.hpp"
+#include "tooLowRevisionException.hpp"
+#include "manuallyDeviceCreationException.hpp"
 
 namespace equipments
 {
@@ -143,6 +145,22 @@ namespace equipments
             m_WESIOMapping = WESv2;
          else
             throw shared::exception::CException("WES Revision not properly set : " + boost::lexical_cast<std::string>(m_version));
+
+         // get the firmware revision to desactivate the plugin if the revision is too low
+         std::string m_serverVersion = results.get<std::string>("version_serveur");
+
+         //separation of letters and digits
+         boost::regex reg("V([0-9]\\d*(\\.\\d+))([A-Z])");
+         boost::smatch match;
+
+         //Check the version
+         if (boost::regex_search(m_serverVersion, match, reg))
+         {
+            // match[1] => 0.83 The revision
+            // match[3] => E The revision letter
+            if (boost::lexical_cast<float>(match[1]) < 0.8)
+               throw CtooLowRevisionException("WES revision is < 0.80");
+         }
 
          if (pluginConfiguration->isRetrieveNamesFromdevice())
          {
@@ -366,10 +384,14 @@ namespace equipments
          else
             api->declareDevice(m_deviceName, "WES", "WES", keywordsToDeclare, details);
       }
+      catch (CtooLowRevisionException& e)
+      {
+         throw e;
+      }
       catch (std::exception& e)
       {
          YADOMS_LOG(error) << e.what();
-         throw e;
+         throw CManuallyDeviceCreationException(e.what());
       }
    }
 

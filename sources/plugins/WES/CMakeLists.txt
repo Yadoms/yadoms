@@ -27,6 +27,7 @@ set(WES_PLUGIN_SOURCES
    equipments/masterDeviceConfiguration.cpp
    equipments/masterDeviceConfiguration.h	
    equipments/noInformationException.hpp
+   equipments/tooLowRevisionException.hpp
    equipments/specificHistorizers/Analog.cpp
    equipments/specificHistorizers/Analog.h
    equipments/specificHistorizers/Color.cpp
