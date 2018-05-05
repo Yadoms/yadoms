@@ -45,7 +45,9 @@ CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api) :
    m_teleinfoEnableInCounter(false),
    m_deviceCreated(false),
    m_ADCOalreadyReceived(false),
-   m_optarif(OP_NOT_DEFINED)
+   m_optarif(OP_NOT_DEFINED),
+   m_newWarningEJPValue(false),
+   m_firstRun(true)
 {
    m_instantCurrentPhase[0] = boost::make_shared<yApi::historization::CCurrent>("InstantCurrentPhase1");
    m_instantCurrentPhase[1] = boost::make_shared<yApi::historization::CCurrent>("InstantCurrentPhase2");
@@ -66,7 +68,7 @@ void CDecoder::decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> api,
    // By default (for EJP/Tempo), the forecast is not defined, if not present
    // It's not used for Base or HPHC contract
    m_ForecastPeriod->set(teleInfo::specificHistorizers::EColor::kNOTDEFINED);
-   m_warningEJP->set(false);
+   m_newWarningEJPValue = false;
 
    for (const auto message : *messages)
    {
@@ -131,6 +133,7 @@ void CDecoder::createDeviceAndKeywords(const bool monoPhase)
          m_api->declareKeyword(m_deviceName, m_warningEJP);
 
       m_deviceCreated = true;
+      m_firstRun = false;
    }
 
    if (m_deviceName == "")
@@ -165,7 +168,11 @@ void CDecoder::constructKeywordList(const EContracts contract, const bool monoPh
       m_keywords.push_back(m_EJPNormalPeriod);
       m_keywords.push_back(m_apparentPower);
       if (m_TimePeriod->isChanged()) m_keywords.push_back(m_TimePeriod->GetHistorizable());
-      if (m_warningEJP->get()) m_keywords.push_back(m_warningEJP);
+      if (m_newWarningEJPValue != m_warningEJP->get() || m_firstRun)
+      {
+         m_warningEJP->set(m_newWarningEJPValue);
+         m_keywords.push_back(m_warningEJP);
+      }
       break;
    }
    case OP_TEMPO:
@@ -374,7 +381,7 @@ void CDecoder::processMessage(const std::string& key,
       else if (key == m_tag_PEJP)
       {
          YADOMS_LOG(information) << "PEJP" << "=" << value;
-         m_warningEJP->set(true);
+         m_newWarningEJPValue = true;
       }
 		else
 		{
