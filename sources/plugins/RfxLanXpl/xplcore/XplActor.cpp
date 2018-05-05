@@ -19,6 +19,15 @@ namespace xplcore
    {
    }
 
+   CXplActor& CXplActor::operator=(const CXplActor& rhs)
+   {
+      m_vendorId = rhs.m_vendorId;
+      m_deviceId = rhs.m_deviceId;
+      m_instanceId = rhs.m_instanceId;
+      m_broadcastActive = rhs.m_broadcastActive;
+      return *this;
+   }
+
    CXplActor::~CXplActor()
    {
    }
@@ -123,7 +132,7 @@ namespace xplcore
       // vendorId 8 char max ( "-" is not authorized)
       // deviceId 8 char max ( "-" is not authorized)
       // instanceId 16 char max
-      auto lineString = boost::trim_copy(rawActorString);
+      const auto lineString = boost::trim_copy(rawActorString);
 
       //check for broadcast actor
       if (lineString == CXplHelper::WildcardString)
@@ -144,5 +153,3 @@ namespace xplcore
       return actor;
    }
 } // namespace xplcore
-
-

@@ -1,3 +1,11 @@
+### 1.0.2-beta.5
+_Requires Yadoms 2.1.0-beta.2 or geater_
+* Add A5-12-xx profiles
+
+### 1.0.2-beta.4
+* Fix D2-05-00 configuration
+* D2-05-00 profile (blinds) : add stop managment
+
 ### 1.0.2-beta.3
 * Add D2-05-00 profile support
 * Fix 'bad allocation' exception doing some messages ignored

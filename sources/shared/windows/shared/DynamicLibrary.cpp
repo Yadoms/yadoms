@@ -62,12 +62,12 @@ namespace shared
 
    bool CDynamicLibrary::load(const std::string& libraryFile)
    {
+      unload();
       m_libraryHandle = LoadLibrary(libraryFile.c_str());
 
       if (m_libraryHandle == NULL)
       {
-         DWORD lastError = GetLastError();
-         YADOMS_LOG(error) << "Fail to load library : " << libraryFile << ", erreur : " << lastError;
+         YADOMS_LOG(error) << "Fail to load library : " << libraryFile << ", erreur : " << GetLastError();
          return false;
       }
 

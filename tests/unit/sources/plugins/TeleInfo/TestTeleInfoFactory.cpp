@@ -14,24 +14,21 @@ BOOST_AUTO_TEST_SUITE(TestTeleInfoFactory)
 
    BOOST_AUTO_TEST_CASE(creation_FTDI_Driver)
    {
-      boost::shared_ptr<TeleInfoConfigurationMock> m_configuration;
-      boost::shared_ptr<CTeleInfoReceiveBufferHandler> m_receiveBufferHandler;
-
-      m_configuration = boost::make_shared<TeleInfoConfigurationMock>();
-      int kEvtPortConnection = 100;
-      int kEvtPortDataReceived = 101;
-      bool m_isDeveloperMode = false;
+      const auto configuration = boost::make_shared<TeleInfoConfigurationMock>();
+      const auto evtPortConnection = 100;
+      const auto evtPortDataReceived = 101;
+      const auto isDeveloperMode = false;
 
       auto api(boost::make_shared<CDefaultYPluginApiMock>());
 
-      m_receiveBufferHandler = CTeleInfoFactory::GetBufferHandler(api->getEventHandler(),
-                                                                  kEvtPortDataReceived,
-                                                                  m_isDeveloperMode);
+      const auto receiveBufferHandler = CTeleInfoFactory::GetBufferHandler(api->getEventHandler(),
+                                                                           evtPortDataReceived,
+                                                                           isDeveloperMode);
 
-      auto m_port = CTeleInfoFactory::constructPort(*m_configuration,
-                                                    api->getEventHandler(),
-                                                    m_receiveBufferHandler,
-                                                    kEvtPortConnection);
+      auto port = CTeleInfoFactory::constructPort(*configuration,
+                                                  api->getEventHandler(),
+                                                  receiveBufferHandler,
+                                                  evtPortConnection);
    }
 
 BOOST_AUTO_TEST_SUITE_END()

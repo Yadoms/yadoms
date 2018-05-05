@@ -1,7 +1,5 @@
 #pragma once
-
 #include <boost/random/mersenne_twister.hpp>
-#include <boost/random/uniform_int_distribution.hpp>
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 namespace yApi = shared::plugin::yPluginApi;
@@ -16,7 +14,7 @@ public:
    /// \brief	    Constructor
    /// \param[in] deviceName    The device name
    //--------------------------------------------------------------
-   CFakeCurtain(const std::string& deviceName);
+   explicit CFakeCurtain(const std::string& deviceName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

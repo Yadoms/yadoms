@@ -38,9 +38,8 @@ bool CMessageHandler::sendFile(const std::string & fileContent, boost::function<
 
    //write file to rfp1000
    YADOMS_LOG(information) << " RfPlayer Command >>> send file";
-   unsigned int totalSize = fileContent.size();
+   const unsigned int totalSize = fileContent.size();
    const unsigned int bufferSize = 8192;
-   std::string stepi18n = "customLabels.firmwareUpdate.writeFile";
 
    for (unsigned int i = 0; i < totalSize;)
    {
@@ -87,7 +86,7 @@ void CMessageHandler::onReceived(boost::shared_ptr<const frames::incoming::CFram
    }
 
    m_isExpectedMessageHookFct.clear();
-   auto onReceiveFct = m_onReceiveHookFct;
+   const auto onReceiveFct = m_onReceiveHookFct;
    m_onReceiveHookFct.clear();
 
    onReceiveFct(receivedMessage);

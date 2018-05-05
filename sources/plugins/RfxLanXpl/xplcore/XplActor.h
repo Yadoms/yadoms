@@ -3,7 +3,7 @@
 namespace xplcore
 {
    //--------------------------------------------------------------
-   /// \class Actor for Xpl management used for source and target fields
+   /// \brief Actor for Xpl management used for source and target fields
    //--------------------------------------------------------------
    class CXplActor
    {
@@ -18,6 +18,7 @@ namespace xplcore
       /// \param [in] actor : Actor to copy
       //--------------------------------------------------------------
       CXplActor(const CXplActor& actor);
+      CXplActor& operator=(const CXplActor& rhs);
 
       //--------------------------------------------------------------
       /// \brief      Destructor

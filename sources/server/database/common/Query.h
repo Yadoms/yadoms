@@ -90,6 +90,8 @@ namespace database
          //
          CQuery(const CQuery& toCopy);
 
+         CQuery& operator=(const CQuery&) = delete;
+
 
          //
          /// \brief           Destructor
@@ -691,6 +693,8 @@ namespace database
                : m_sql(cpy.m_sql)
             {
             }
+
+            CFunction& operator=(const CFunction&) = delete;
 
             virtual ~CFunction()
             {

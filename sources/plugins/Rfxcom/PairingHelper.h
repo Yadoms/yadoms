@@ -18,10 +18,10 @@ public:
    void setMode(EPairingMode mode);
    bool startPairing(boost::shared_ptr<yApi::IExtraQuery> manualPairingExtraQuery);
    bool onProgressPairing();
-   bool isPairingEnable() const;
+   static unsigned int getPairingPeriodTimeSeconds();
 
    // IPairingHelper implementation
-   bool needPairing(const std::string deviceName) override;
+   bool needPairing(const std::string& deviceName) override;
    EPairingMode getMode() const override;
    // [END] IPairingHelper implementation
 

@@ -14,7 +14,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    //--------------------------------------------------------------
-   CGPIOManager(boost::shared_ptr<ITeleInfoConfiguration> configuration) : m_currentPosition(0)
+   explicit CGPIOManager(boost::shared_ptr<ITeleInfoConfiguration> configuration) : m_currentPosition(0)
    {
       m_GPIO.clear();
 
@@ -63,8 +63,7 @@ public:
    {
       if (m_currentPosition <= m_GPIO.size()-1)
          return m_GPIO[m_currentPosition];
-      else
-         return INT32_MAX;
+      return INT32_MAX;
    }
 
    bool isLast() const override

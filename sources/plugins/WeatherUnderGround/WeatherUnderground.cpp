@@ -234,7 +234,7 @@ void CWeatherUnderground::setPluginState(boost::shared_ptr<yApi::IYPluginApi> ap
    }
 }
 
-shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api, const std::string url, const int event, int &nbRetry)
+shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& url, const int event, int &nbRetry)
 {
    try
    {

@@ -1,10 +1,15 @@
 {
   "type": "enOcean",
-  "version": "1.0.2-beta.3",
+  "version": "1.0.2-beta.5",
   "author": "Sébastien Gallou",
   "url": "https://github.com/Yadoms/yadoms/",
   "credits": "",
   "supportedPlatforms": "all",
+  "dependencies": {
+    "yadoms": {
+      "minimumVersion": "2.1.0-beta.2"
+    }
+  },
   "configurationSchema": {
     "SerialPort": {
       "type": "enum",
@@ -594,7 +599,7 @@
       "content": {
         "measuredDurationOfVerticalRunMs": {
           "name": "Mesured duration of a vertical run (ms)",
-          "type": "integer",
+          "type": "int",
           "minimumValue": "5000",
           "maximumValue": "300000",
           "precision": "10",
@@ -602,7 +607,7 @@
         },
         "measuredDurationOfRotationMs": {
           "name": "Mesured duration of a rotation (ms)",
-          "type": "integer",
+          "type": "int",
           "minimumValue": "10",
           "maximumValue": "2540",
           "precision": "10",
@@ -620,5 +625,6 @@
           "defaultValue": "noAction"
         }
       }
+    }
   }
-}}
+}

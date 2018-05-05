@@ -17,7 +17,7 @@ namespace task
       std::string CBackup::m_taskName = "backup";
 
       CBackup::CBackup(boost::shared_ptr<const IPathProvider> pathProvider, boost::shared_ptr<database::IDataBackup> dataBackupInterface)
-         : m_pathProvider(pathProvider), m_dataBackupInterface(dataBackupInterface)
+         : m_pathProvider(pathProvider), m_dataBackupInterface(dataBackupInterface), m_fileCountToZip(0), m_currentFileCount(0)
       {
          if (!m_dataBackupInterface)
             throw shared::exception::CInvalidParameter("dataBackupInterface");
@@ -34,7 +34,7 @@ namespace task
 
       void CBackup::OnProgressionUpdatedInternal(int remaining, int total, float currentPart, float totalPart, const std::string& message) const
       {
-         float progression = currentPart + (total != 0 ? static_cast<float>(total - remaining) * static_cast<float>(totalPart - currentPart) / static_cast<float>(total) : 0);
+         const auto progression = currentPart + (total != 0 ? static_cast<float>(total - remaining) * static_cast<float>(totalPart - currentPart) / static_cast<float>(total) : 0);
 
          if (m_reportRealProgress)
             m_reportRealProgress(true, progression, message, std::string(), shared::CDataContainer::EmptyContainer);
@@ -85,7 +85,7 @@ namespace task
          }
       }
 
-      boost::filesystem::path CBackup::prepareBackup()
+      boost::filesystem::path CBackup::prepareBackup() const
       {
          //create "backup temp" folder
          boost::filesystem::path backupTempFolder = boost::filesystem::temp_directory_path() / "yadomsBackup";
@@ -202,7 +202,7 @@ namespace task
 
             //remove falsy zip file
             boost::filesystem::remove(zipFilename);
-            throw zex;
+            throw;
          }
          catch (std::exception & ex)
          {
@@ -211,7 +211,7 @@ namespace task
 
             //remove falsy zip file
             boost::filesystem::remove(zipFilename);
-            throw ex;
+            throw;
          }
         
       }
@@ -228,7 +228,7 @@ namespace task
       }
 
 
-      void CBackup::cleanup(boost::filesystem::path & backupTempFolder)
+      void CBackup::cleanup(boost::filesystem::path & backupTempFolder) const
       {
          OnProgressionUpdatedInternal(0, 100, 98.0f, 99.0f, i18n::CClientStrings::BackupClean);
          //remove "backup temp" folder

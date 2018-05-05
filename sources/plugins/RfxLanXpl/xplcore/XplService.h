@@ -12,9 +12,9 @@ namespace xplcore
 {
    class CXplService
    {
-      CXplService(CXplService&): m_xplTask(nullptr)
-      {
-      }// Non-copyable
+      // Non-copyable
+      CXplService(CXplService&) = delete;
+      CXplService& operator=(const CXplService&) = delete;
 
    public:
 

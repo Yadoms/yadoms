@@ -112,14 +112,14 @@ namespace pluginSystem
             YADOMS_LOG(debug) << "InternalPlugin is running...";
 
             // Declare all device/keywords
-            static const std::string& systemDevice("system");
-            auto keywordShutdown(boost::make_shared<yApi::historization::CEvent>("shutdown"));
-            auto keywordRestart(boost::make_shared<yApi::historization::CEvent>("restart"));
-            std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> keywords({keywordShutdown, keywordRestart});
+            static const std::string& SystemDevice("system");
+            const auto keywordShutdown(boost::make_shared<yApi::historization::CEvent>("shutdown"));
+            const auto keywordRestart(boost::make_shared<yApi::historization::CEvent>("restart"));
+            const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> keywords({keywordShutdown, keywordRestart});
 
             // Device creation if needed
-            if (!api->deviceExists(systemDevice))
-               api->declareDevice(systemDevice,
+            if (!api->deviceExists(SystemDevice))
+               api->declareDevice(SystemDevice,
                                   "system",
                                   "yadoms system",
                                   keywords);
@@ -130,7 +130,7 @@ namespace pluginSystem
                {
                case yApi::IYPluginApi::kEventDeviceCommand:
                   {
-                     auto command = eventHandler.getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
+                     const auto command = eventHandler.getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
 
                      if (boost::iequals(command->getKeyword(), keywordShutdown->getKeyword()))
                      {
@@ -192,11 +192,9 @@ namespace pluginSystem
          if (data.getDeviceType() != "virtualDeviceType")
             throw std::invalid_argument("Wrong device type");
 
-         std::string standardCapacity;
-         bool isStandardCapacity;
          try
          {
-            isStandardCapacity = data.getConfiguration().get<std::string>("capacity.activeSection") == "standardCapacity";
+            const auto isStandardCapacity = data.getConfiguration().get<std::string>("capacity.activeSection") == "standardCapacity";
             boost::shared_ptr<const yApi::historization::IHistorizable> keyword;
             if (isStandardCapacity)
                createStandardCapacityDevice(api,
@@ -313,7 +311,7 @@ namespace pluginSystem
          for (auto& enumValue : enumValues)
             boost::trim(enumValue);
 
-         auto keyword = boost::make_shared<CCustomEnumHistorizer>("state",
+         const auto keyword = boost::make_shared<CCustomEnumHistorizer>("state",
                                                                   yApi::EKeywordAccessMode::kGetSet,
                                                                   enumValues);
 

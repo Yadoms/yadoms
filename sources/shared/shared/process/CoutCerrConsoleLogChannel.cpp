@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CoutCerrConsoleLogChannel.h"
-#include "Poco/Message.h"
+#include <Poco/Message.h>
 
 
 namespace shared

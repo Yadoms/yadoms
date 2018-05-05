@@ -32,14 +32,12 @@ public:
    //--------------------------------------------------------------
    /// \brief Update the configuration of the plugin after a change
    /// \param[in] api                   pointer to the API
-   /// \param[in] neMessage             The new message to be processed
    //--------------------------------------------------------------
    void registerAllDevices(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief Update the configuration of the plugin after a change
    /// \param[in] api                   pointer to the API
-   /// \param[in] neMessage             The new message to be processed
    //--------------------------------------------------------------
    void registerActivatedDevices(boost::shared_ptr<yApi::IYPluginApi> api);
 
@@ -68,9 +66,4 @@ private:
    boost::shared_ptr<CEquipmentManager> m_equipmentManager;
 
    boost::shared_ptr<CDecoder> m_decoder;
-
-   //--------------------------------------------------------------
-   /// \brief developer mode for logs
-   //--------------------------------------------------------------
-   bool m_isDeveloperMode;
 };

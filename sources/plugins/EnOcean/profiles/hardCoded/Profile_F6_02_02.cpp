@@ -49,8 +49,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    // Return only the concerned historizer
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
-   auto T21 = bitset_extract(status, 2, 1) ? true : false;
-   auto NU = bitset_extract(status, 3, 1) ? true : false;
+   const auto T21 = bitset_extract(status, 2, 1) ? true : false;
+   const auto NU = bitset_extract(status, 3, 1) ? true : false;
 
    if (!T21)
    {
@@ -64,11 +64,11 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
 
-   auto nenergyBow = bitset_extract(data, 3, 1) ? true : false;
-   if (!nenergyBow)
+   const auto energyBow = bitset_extract(data, 3, 1) ? true : false;
+   if (!energyBow)
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
 
-   auto rocker1stAction = bitset_extract(data, 0, 3);
+   const auto rocker1stAction = bitset_extract(data, 0, 3);
    switch (rocker1stAction)
    {
    case 0:
@@ -92,10 +92,10 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       break;
    }
 
-   auto secondAction = bitset_extract(data, 7, 1) ? true : false;
+   const auto secondAction = bitset_extract(data, 7, 1) ? true : false;
    if (secondAction)
    {
-      auto rocker2ndAction = bitset_extract(data, 4, 3);
+      const auto rocker2ndAction = bitset_extract(data, 4, 3);
       switch (rocker2ndAction)
       {
       case 0:

@@ -377,7 +377,26 @@ void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> api
 
    // Sensor message, historize all data contained in the message
    if (api->deviceExists(message->getDeviceName()))
+   {
+      createPossiblyMissingKeywords(api,
+                                    message);
       message->historizeData(api);
+   }
+   else
+   {
+      YADOMS_LOG(information) << "Device not declared, message ignored";
+   }
+}
+
+void CRfxcom::createPossiblyMissingKeywords(boost::shared_ptr<yApi::IYPluginApi> api,
+                                            boost::shared_ptr<rfxcomMessages::IRfxcomMessage> message)
+{
+   const auto knownKeywords = api->getAllKeywords(message->getDeviceName());
+   for (const auto& keyword : message->keywords())
+   {
+      if (std::find(knownKeywords.begin(), knownKeywords.end(), keyword->getKeyword()) == knownKeywords.end())
+         api->declareKeyword(message->getDeviceName(), keyword);
+   }
 }
 
 void CRfxcom::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -431,7 +450,7 @@ void CRfxcom::startManualPairing(boost::shared_ptr<yApi::IYPluginApi> api,
    if (m_pairingHelper->startPairing(extraQuery))
       m_progressPairingTimer = api->getEventHandler().createTimer(kProgressPairingTimer,
                                                                   shared::event::CEventTimer::kOneShot,
-                                                                  boost::posix_time::seconds(5));
+                                                                  boost::posix_time::seconds(m_pairingHelper->getPairingPeriodTimeSeconds()));
 }
 
 void CRfxcom::initRfxcom(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -553,7 +572,7 @@ void CRfxcom::processRfxcomUnknownRfyRemoteMessage(boost::shared_ptr<yApi::IYPlu
 void CRfxcom::processRfxcomAckMessage(const rfxcomMessages::CAck& ack)
 {
    if (ack.isOk())
-   YADOMS_LOG(information) << "RFXCom acknowledge";
+      YADOMS_LOG(information) << "RFXCom acknowledge";
    else
-   YADOMS_LOG(information) << "RFXCom Received acknowledge is KO";
+      YADOMS_LOG(information) << "RFXCom Received acknowledge is KO";
 }
