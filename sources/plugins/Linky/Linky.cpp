@@ -59,6 +59,8 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                                                                 shared::event::CEventTimer::kOneShot,
                                                                 boost::posix_time::seconds(0));
 
+   m_waitForAnswerTimer->stop();
+
    // Create the connection
    createConnection(api);
 
@@ -126,11 +128,9 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
-            m_runningState = kupdateConfiguration;
-            api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+            setPluginState(api, kupdateConfiguration);
             onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
-            api->setPluginState(yApi::historization::EPluginState::kRunning);
-
+            setPluginState(api, kRunning);
             break;
          }
       case kSamplingTimer:
@@ -150,7 +150,6 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kAnswerTimeout:
          {
-            m_waitForAnswerTimer->stop();
             m_periodicSamplingTimer->stop();
             CLinkyFactory::FTDI_DisableGPIO(m_port);
             YADOMS_LOG(information) << "No answer received, try to reconnect in a while..." ;
@@ -172,7 +171,7 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 void CLinky::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+   setPluginState(api, kConnecting);
 
    m_receiveBufferHandler = CLinkyFactory::GetBufferHandler(m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol(),
                                                             api->getEventHandler(),
@@ -190,7 +189,7 @@ void CLinky::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
    m_decoder[1] = CLinkyFactory::constructDecoder(m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol(), api);
 
    m_port->start();
-   m_waitForAnswerTimer->start();
+   m_periodicSamplingTimer->start();
 }
 
 void CLinky::destroyConnection()
@@ -232,7 +231,7 @@ void CLinky::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    m_decoder[m_GPIOManager->getGPIO() - 1]->decodeMessage(api, messages);
 
-   if (m_decoder[m_GPIOManager->getGPIO() - 1]->isERDFCounterDesactivated())
+   if (!m_decoder[m_GPIOManager->getGPIO() - 1]->isERDFCounterDesactivated())
    {
       if (m_runningState != kRunning)
       {
@@ -278,9 +277,8 @@ void CLinky::changeProtocol(boost::shared_ptr<yApi::IYPluginApi> api)
 
 void CLinky::errorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   api->setPluginState(yApi::historization::EPluginState::kError, "connectionLost");
    destroyConnection();
-   m_runningState = kConnectionLost;
+   setPluginState(api, kConnectionLost);
    api->getEventHandler().createTimer(kErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(5));
 }
 
