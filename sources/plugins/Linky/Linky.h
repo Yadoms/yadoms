@@ -84,6 +84,12 @@ protected:
    /// \param [in] context          Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
    void errorProcess(boost::shared_ptr<yApi::IYPluginApi> context);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Change protocol (disconnect and retry connect later)
+   /// \param [in] context          Plugin execution context (Yadoms API)
+   //--------------------------------------------------------------
+   void changeProtocol(boost::shared_ptr<yApi::IYPluginApi> api);
 private:
 
    //-----------------------------------------------------

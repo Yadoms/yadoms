@@ -17,8 +17,8 @@ IMPLEMENT_PLUGIN(CLinky)
 
 CLinky::CLinky():
    m_isDeveloperMode(false),
-   m_runningState(ELinkyPluginState::kUndefined)
-//   m_protocolDetected(NoProtocol)
+   m_runningState(ELinkyPluginState::kUndefined),
+   m_configuration(boost::make_shared<CLinkyConfiguration>())
 {}
 
 CLinky::~CLinky()
@@ -43,6 +43,8 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    m_configuration->initializeWith(api->getConfiguration());
 
    m_GPIOManager = boost::make_shared<CGPIOManager>(m_configuration);
+   m_protocolManager[0] = boost::make_shared<CProtocolManager>();
+   m_protocolManager[1] = boost::make_shared<CProtocolManager>();
 
    m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
                                                              shared::event::CEventTimer::kOneShot,
@@ -151,11 +153,12 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             m_waitForAnswerTimer->stop();
             m_periodicSamplingTimer->stop();
             CLinkyFactory::FTDI_DisableGPIO(m_port);
-            YADOMS_LOG(error) << "No answer received, try to reconnect in a while..." ;
+            YADOMS_LOG(information) << "No answer received, try to reconnect in a while..." ;
 
-            //TODO : Send an error ONLY when the two protocols are in error state.
-            // To be managed properly
-            errorProcess(api);
+            if (!m_protocolManager[m_GPIOManager->getGPIO() - 1]->end())
+               changeProtocol(api);
+            else
+               errorProcess(api);
             break;
          }
       default:
@@ -265,6 +268,12 @@ void CLinky::processLinkyUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> 
    m_runningState = kConnectionLost;
 
    destroyConnection();
+}
+
+void CLinky::changeProtocol(boost::shared_ptr<yApi::IYPluginApi> api)
+{
+   destroyConnection();
+   api->getEventHandler().createTimer(kErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(5));
 }
 
 void CLinky::errorProcess(boost::shared_ptr<yApi::IYPluginApi> api)

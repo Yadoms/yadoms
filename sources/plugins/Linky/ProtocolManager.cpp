@@ -29,3 +29,14 @@ EProtocolType CProtocolManager::getProtocol()
 
 CProtocolManager::~CProtocolManager()
 {}
+
+bool CProtocolManager::end()
+{
+   if (!m_firstRun)
+      return true;
+
+   if (m_protocoleSelected == Historic)
+      return true;
+   else
+      return false;
+}

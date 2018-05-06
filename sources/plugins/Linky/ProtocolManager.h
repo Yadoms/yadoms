@@ -38,6 +38,11 @@ public:
    //-----------------------------------------------------
    void changeProtocol();
 
+   //-----------------------------------------------------
+   ///\brief                     return true, if end of the list
+   //-----------------------------------------------------
+   bool end();
+
 private:
    bool m_firstRun;
    EProtocolType m_protocoleSelected;
