@@ -117,7 +117,11 @@ widgetViewModelCtor =
 
            // registration of the first keyword
            if  (!isNullOrUndefined(this.widget.configuration.device)) {
-             self.widgetApi.registerKeywordAcquisitions(this.widget.configuration.device.keywordId);                 
+			  //we register keyword new acquisition
+			  self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+		   
+			  //we register keyword for get last value at web client startup 
+			  self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);         
            }
            
            if (self.state.length==0)
@@ -126,7 +130,11 @@ widgetViewModelCtor =
            // registration of additional keywords
            if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.additionalDevices.content.devices))) {
                $.each(this.widget.configuration.additionalDevices.content.devices, function (index, device) {
-                  self.widgetApi.registerKeywordAcquisitions(device.content.source.keywordId);
+                  //we register keyword new acquisition
+                  self.widgetApi.registerKeywordForNewAcquisitions(device.content.source.keywordId);	   
+			   
+                  //we register keyword for get last value at web client startup 
+				  self.widgetApi.getLastValue(device.content.source.keywordId); 				  
                    
                   if (self.state.length!=index+1)
                      self.state.push(1);

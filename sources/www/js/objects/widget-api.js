@@ -84,19 +84,6 @@ WidgetApi.prototype.getPluginInstanceInformation = function (pluginId) {
 };
 
 /**
- * @param {} keywordIds to register (can be a single value or an array of values)
- */
-WidgetApi.prototype.registerKeywordAcquisitions = function (keywordIds) {
-   assert(!isNullOrUndefinedOrEmpty(keywordIds), "keywordIds must be defined");
-   
-   var self = this;
-   console.warn("this function is deprecated and will be removed soon");
-
-   self.widget.viewModel.widgetApi.registerKeywordForNewAcquisitions (keywordIds);
-   self.widget.viewModel.widgetApi.getLastValue(keywordIds);
-};
-
-/**
  * Register keywords to receive notifications when a new acquisition triggers (don't do a getLastValue)
  * @param {} keywordIds to register (can be a single value or an array of values)
  */
@@ -200,8 +187,6 @@ WidgetApi.prototype.toolbar = function (options) {
         if (options.batteryItem) {
             self.widget.$toolbar.append("<div class=\"" + self.widgetBatteryClass + "\" deviceId=\"\"></div>");
         }
-        
-        console.log (self.widget.$toolbar);
 
         //all other items
         $.each(options.items, function(index, value) {
