@@ -4,11 +4,13 @@
 #include "../urlManager.h"
 #include <shared/Log.h>
 #include "../http/timeOutException.hpp"
+#include "tooLowRevisionException.hpp"
+#include "manuallyDeviceCreationException.hpp"
 
 namespace equipments
 {
-   const CWESEquipment::WESIOMapping CWESEquipment::WESv1 = {2, 2, 2, 2, 2, 4};
-   const CWESEquipment::WESIOMapping CWESEquipment::WESv2 = {2, 2, 2, 4, 4, 4};
+   const CWESEquipment::WESIOMapping CWESEquipment::WESv1 = {2, 3, 2, 2, 2, 0};
+   const CWESEquipment::WESIOMapping CWESEquipment::WESv2 = {2, 3, 2, 4, 4, 4};
 
    CWESEquipment::CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
                                 const std::string& device,
@@ -82,14 +84,17 @@ namespace equipments
                                                             clampContainerName.get<std::string>("C" + boost::lexical_cast<std::string>(counter)));
          m_ClampList.push_back(temp);
       }
-
-      auto analogContainerName = details.get<shared::CDataContainer>("Analogs");
-      for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
+      
+      if (m_WESIOMapping.anaQty > 0)
       {
+         auto analogContainerName = details.get<shared::CDataContainer>("Analogs");
+      for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
+         {
          const auto temp = boost::make_shared<specificHistorizers::CAnalog>(analogContainerName.get<std::string>("A" + boost::lexical_cast<std::string>(counter)),
-                                                                      yApi::EKeywordAccessMode::kGet);
-         m_AnalogList.push_back(temp);
-         keywordsToDeclare.push_back(temp);
+                                                                         yApi::EKeywordAccessMode::kGet);
+            m_AnalogList.push_back(temp);
+            keywordsToDeclare.push_back(temp);
+         }
       }
 
       YADOMS_LOG(information) << "Load configuration for " << m_deviceName;
@@ -105,11 +110,11 @@ namespace equipments
         m_version(0)
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToDeclare;
-      std::string relayName[2], TICName[2], ClampName[4], AnalogName[4], inputName[2];
-      subdevices::ContractAvailable contract[2];
+      std::string relayName[2], TICName[3], ClampName[4], AnalogName[4], inputName[2];
+      subdevices::ContractAvailable contract[3];
       subdevices::EUnit PulseType[4];
       std::string PulseName[4];
-      std::string counterId[2];
+      std::string counterId[3];
 
       try
       {
@@ -129,6 +134,8 @@ namespace equipments
                                                   CGXfileName,
                                                   urlManager::httpRequestCreationTimeout);
 
+         results.printToLog(YADOMS_LOG(trace));
+
          // get the revision, for E/S numbers
          m_version = results.get<int>("version");
 
@@ -139,10 +146,24 @@ namespace equipments
          else
             throw shared::exception::CException("WES Revision not properly set : " + boost::lexical_cast<std::string>(m_version));
 
+         // get the firmware revision to desactivate the plugin if the revision is too low
+         std::string m_serverVersion = results.get<std::string>("version_serveur");
+
+         //separation of letters and digits
+         boost::regex reg("V([0-9]\\d*(\\.\\d+))([A-Z])");
+         boost::smatch match;
+
+         //Check the version
+         if (boost::regex_search(m_serverVersion, match, reg))
+         {
+            // match[1] => 0.83 The revision
+            // match[3] => E The revision letter
+            if (boost::lexical_cast<float>(match[1]) < 0.8)
+               throw CtooLowRevisionException("WES revision is < 0.80");
+         }
+
          if (pluginConfiguration->isRetrieveNamesFromdevice())
          {
-            credentials.printToLog(YADOMS_LOG(information));
-
             // request to obtain names
             CGXfileName = "WESNAMES" + boost::lexical_cast<std::string>(m_version) + ".CGX";
             results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
@@ -150,13 +171,15 @@ namespace equipments
                                                 CGXfileName,
                                                 urlManager::httpRequestCreationTimeout);
 
+            results.printToLog(YADOMS_LOG(information));
+
             contract[0] = results.get<subdevices::ContractAvailable>("CPT1_abo_name");
             contract[1] = results.get<subdevices::ContractAvailable>("CPT2_abo_name");
+            contract[1] = results.get<subdevices::ContractAvailable>("CPT3_abo_name");
 
             counterId[0] = results.get<std::string>("CPT1_adco");
             counterId[1] = results.get<std::string>("CPT2_adco");
-
-            results.printToLog(YADOMS_LOG(information));
+            counterId[2] = results.get<std::string>("CPT3_adco");
 
             relayName[0] = results.get<std::string>("RL1");
             relayName[1] = results.get<std::string>("RL2");
@@ -166,11 +189,15 @@ namespace equipments
 
             TICName[0] = results.get<std::string>("CPT1_name");
             TICName[1] = results.get<std::string>("CPT2_name");
+            TICName[2] = results.get<std::string>("CPT3_name");
 
             ClampName[0] = results.get<std::string>("nPCE1");
             ClampName[1] = results.get<std::string>("nPCE2");
-            ClampName[2] = results.get<std::string>("nPCE3");
-            ClampName[3] = results.get<std::string>("nPCE4");
+
+            if (m_version == 2) {
+               ClampName[2] = results.get<std::string>("nPCE3");
+               ClampName[3] = results.get<std::string>("nPCE4");
+            }
 
             AnalogName[0] = results.get<std::string>("ANA1");
             AnalogName[1] = results.get<std::string>("ANA2");
@@ -179,13 +206,15 @@ namespace equipments
 
             PulseName[0] = results.get<std::string>("npls1");
             PulseName[1] = results.get<std::string>("npls2");
-            PulseName[2] = results.get<std::string>("npls3");
-            PulseName[3] = results.get<std::string>("npls4");
-
             PulseType[0] = results.get<subdevices::EUnit>("PLSU1");
             PulseType[1] = results.get<subdevices::EUnit>("PLSU2");
-            PulseType[2] = results.get<subdevices::EUnit>("PLSU3");
-            PulseType[3] = results.get<subdevices::EUnit>("PLSU4");
+
+            if (m_version == 2) {
+               PulseName[2] = results.get<std::string>("npls3");
+               PulseName[3] = results.get<std::string>("npls4");
+               PulseType[2] = results.get<subdevices::EUnit>("PLSU3");
+               PulseType[3] = results.get<subdevices::EUnit>("PLSU4");
+            }
          }
          else // Defaults names
          {
@@ -193,6 +222,7 @@ namespace equipments
             contract[1] = subdevices::NotAvailable;
             counterId[0] = "000000000000";
             counterId[1] = "000000000000";
+            counterId[2] = "000000000000";
 
             relayName[0] = "R01";
             relayName[1] = "R02";
@@ -202,11 +232,15 @@ namespace equipments
 
             TICName[0] = "TIC01";
             TICName[1] = "TIC02";
+            TICName[2] = "TIC03";
 
             ClampName[0] = "PCE1";
             ClampName[1] = "PCE2";
-            ClampName[2] = "PCE3";
-            ClampName[3] = "PCE4";
+
+            if (m_version == 2) {
+               ClampName[2] = "PCE3";
+               ClampName[3] = "PCE4";
+            }
 
             AnalogName[0] = "ANA1";
             AnalogName[1] = "ANA2";
@@ -215,13 +249,15 @@ namespace equipments
 
             PulseName[0] = "pls1";
             PulseName[1] = "pls2";
-            PulseName[2] = "pls3";
-            PulseName[3] = "pls4";
-
             PulseType[0] = subdevices::EUnit::undefined;
             PulseType[1] = subdevices::EUnit::undefined;
-            PulseType[2] = subdevices::EUnit::undefined;
-            PulseType[3] = subdevices::EUnit::undefined;
+
+            if (m_version == 2) {
+               PulseName[2] = "pls3";
+               PulseName[3] = "pls4";
+               PulseType[2] = subdevices::EUnit::undefined;
+               PulseType[3] = subdevices::EUnit::undefined;
+            }
          }
 
          // Relay Configuration
@@ -348,10 +384,14 @@ namespace equipments
          else
             api->declareDevice(m_deviceName, "WES", "WES", keywordsToDeclare, details);
       }
+      catch (CtooLowRevisionException& e)
+      {
+         throw e;
+      }
       catch (std::exception& e)
       {
          YADOMS_LOG(error) << e.what();
-         throw;
+         throw CManuallyDeviceCreationException(e.what());
       }
    }
 
@@ -446,7 +486,7 @@ namespace equipments
          {
             try
             {
-               m_AnalogList[counter]->set(results.get<unsigned int>("ad" + boost::lexical_cast<std::string>(counter + 1)));
+               m_AnalogList[counter]->set((unsigned int)results.get<float>("ad" + boost::lexical_cast<std::string>(counter + 1)));
                keywordsToHistorize.push_back(m_AnalogList[counter]);
             }
             catch (std::exception& e)
