@@ -355,8 +355,6 @@ function dispatchTimeToWidgets(timeData) {
 
     $.each(page.widgets,
         function (widgetIndex, widget) {
-            serverLocalTime = new Time(timeData);
-            console.debug("onTime : " + serverLocalTime.toJSON().time);
             try {
                 //we signal the time event to the widget if the widget supports the method
                 if (typeof widget.viewModel.onTime === 'function')

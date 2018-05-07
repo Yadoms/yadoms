@@ -200,8 +200,6 @@ WidgetApi.prototype.toolbar = function (options) {
         if (options.batteryItem) {
             self.widget.$toolbar.append("<div class=\"" + self.widgetBatteryClass + "\" deviceId=\"\"></div>");
         }
-        
-        console.log (self.widget.$toolbar);
 
         //all other items
         $.each(options.items, function(index, value) {
