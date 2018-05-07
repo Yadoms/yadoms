@@ -378,7 +378,7 @@ void CHistoricDecoder::processMessage(const std::string& key,
 		else if (key == m_tag_DEMAIN)
 		{
 			YADOMS_LOG(trace) << "DEMAIN" << "=" << value[0] ;
-         linky::specificHistorizers::EColor temp = linky::specificHistorizers::EColor(value[0]); // TODO : To be validated by tests
+         linky::specificHistorizers::EColor temp = linky::specificHistorizers::EColor(value[0]);
          if (temp != m_ForecastPeriod->get())
          {
             m_ForecastPeriod->set(temp);

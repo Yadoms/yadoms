@@ -34,7 +34,8 @@ CLinkyDecoder::CLinkyDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    m_runningPeriodChanged(true),
    m_tomorrowColorChanged(true),
    m_todayColorChanged(true),
-   m_firstRun(true)
+   m_firstRun(true),
+   m_ADSCalreadyReceived(false)
 {
    m_activeIndex[0] = 0;
    m_activeIndex[1] = 0;
@@ -65,7 +66,7 @@ void CLinkyDecoder::decodeMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                      message.second);
    }
 
-   if (!m_deviceCreated)
+   if (!m_deviceCreated && m_deviceName!="")
    {
       // Create all keywords
       createFirstKeywordList(triphases);
@@ -196,12 +197,10 @@ void CLinkyDecoder::processMessage(const std::string& key,
 		{
 			YADOMS_LOG(trace) << "ADSC" << "=" << values[0];
 
-			static bool ADSCalreadyReceived = false;
-
-			if (!ADSCalreadyReceived)
+			if (!m_ADSCalreadyReceived)
 			{
 				m_deviceName = values[0];
-				ADSCalreadyReceived = true;
+            m_ADSCalreadyReceived = true;
 			}
 		}
 		else if (key == m_tag_VTIC)

@@ -230,3 +230,8 @@ void CLinkyReceiveBufferHandler::desactivate()
 {
    m_pushActivated = false;
 }
+
+void CLinkyReceiveBufferHandler::changeProtocol(const EProtocolType type)
+{
+   m_type = type;
+}

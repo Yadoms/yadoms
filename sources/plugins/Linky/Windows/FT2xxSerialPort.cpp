@@ -199,39 +199,36 @@ namespace shared
             DWORD TxBytes;
             DWORD Status;
             DWORD BytesReceived;
-            char RxBuffer[256];
+            char RxBuffer[2048] = { 0 };
 
-            if (ftHandle)
-            {
-               FT_GetStatus(ftHandle, &RxBytes, &TxBytes, &EventDWord);
-               if (EventDWord & FT_EVENT_MODEM_STATUS) {
-                  // modem status event detected, so get current modem status
-                  FT_GetModemStatus(ftHandle, &Status);
-                  YADOMS_LOG(debug) << "Modem status event detected => exit";
+            if (!m_isConnected) break;
+
+            FT_GetStatus(ftHandle, &RxBytes, &TxBytes, &EventDWord);
+            if (EventDWord & FT_EVENT_MODEM_STATUS) {
+               // modem status event detected, so get current modem status
+               FT_GetModemStatus(ftHandle, &Status);
+               YADOMS_LOG(debug) << "Modem status event detected => exit";
+               break;
+            }
+            if (RxBytes > 0) {
+               ftStatus = FT_Read(ftHandle, RxBuffer, RxBytes, &BytesReceived);
+
+               // Read OK
+               CByteBuffer buffer(BytesReceived);
+               memcpy(buffer.begin(), RxBuffer, BytesReceived);
+
+               if (ftStatus == FT_OK) {
+                  // FT_Read OK
+
+                  if (!!m_receiveBufferHandler && BytesReceived > 0)
+                     m_receiveBufferHandler->push(buffer);
+               }
+               else {
+                  // FT_Read Failed
+                  YADOMS_LOG(debug) << "FT_Read failed";
                   break;
                }
-               if (RxBytes > 0) {
-                  ftStatus = FT_Read(ftHandle, RxBuffer, RxBytes, &BytesReceived);
-
-                  // Read OK
-                  CByteBuffer buffer(BytesReceived);
-                  memcpy(buffer.begin(), RxBuffer, BytesReceived);
-
-                  if (ftStatus == FT_OK) {
-                     // FT_Read OK
-
-                     if (!!m_receiveBufferHandler && BytesReceived > 0)
-                        m_receiveBufferHandler->push(buffer);
-                  }
-                  else {
-                     // FT_Read Failed
-                     YADOMS_LOG(debug) << "FT_Read failed";
-                     break;
-                  }
-               }
             }
-            else
-               break; // We quit the loop in case of null handle
          }
 
          YADOMS_LOG(debug) << "Finish receiverThread";
@@ -407,10 +404,10 @@ namespace shared
             f_ftclose FT_Close = (f_ftclose)GetProcAddress(hGetProcIDDLL, "FT_Close");
 
             if (ftHandle != NULL) {
-               FT_Close(ftHandle);
-               YADOMS_LOG(debug) << "Close the FTDI serial port";
-               ftHandle = NULL;
                m_isConnected = false;
+               FT_Close(ftHandle);
+               ftHandle = NULL;
+               YADOMS_LOG(debug) << "Close the FTDI serial port";
             }
          }
          catch (boost::system::system_error& e)
@@ -570,6 +567,22 @@ namespace shared
          {
             auto param = boost::make_shared<CAsyncPortConnectionNotification>(i18nErrorMessage, i18nMessageParameters);
             m_connectStateEventHandler->postEvent(m_connectStateEventId, param);
+         }
+      }
+
+      void CFT2xxSerialPort::setBaudRate(const boost::asio::serial_port_base::baud_rate& baudrate = boost::asio::serial_port_base::baud_rate(9600))
+      {
+         FT_STATUS	ftStatus;
+         f_ftsetbaudRate FT_SetBaudRate = (f_ftsetbaudRate)GetProcAddress(hGetProcIDDLL, "FT_SetBaudRate");
+         m_baudrate = baudrate;
+
+         YADOMS_LOG(information) << m_baudrate.value();
+
+         ftStatus = FT_SetBaudRate(ftHandle, m_baudrate.value());
+         if (ftStatus != FT_OK) {
+            std::string message = "Fail to set the baudrate";
+            YADOMS_LOG(error) << message;
+            throw shared::exception::CException(message);
          }
       }
    }

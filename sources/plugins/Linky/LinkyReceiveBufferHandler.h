@@ -39,6 +39,7 @@ public:
 
    void activate();
    void desactivate();
+   void changeProtocol(const EProtocolType type);
 
 protected:
    //--------------------------------------------------------------

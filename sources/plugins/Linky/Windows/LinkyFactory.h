@@ -60,9 +60,17 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	                          Activate the GPIO to select the channel
-   /// \param [in] serialPort             event sent when a packet is ready
+   /// \param [in] serialPort            the serial port
    //--------------------------------------------------------------
    static void FTDI_DisableGPIO(boost::shared_ptr<shared::communication::IAsyncPort> serialPort);
+
+   //--------------------------------------------------------------
+   /// \brief	                          change the speed of the link
+   /// \param [in] serialPort            the serial port
+   /// \param [in] type                  the protocol type we need
+   //--------------------------------------------------------------
+   static void FTDI_setNewProtocol(boost::shared_ptr<shared::communication::IAsyncPort> serialPort,
+                                   const EProtocolType type);
 
 private:
    static const int m_baudRateStandard;

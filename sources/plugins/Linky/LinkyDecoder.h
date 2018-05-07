@@ -92,4 +92,5 @@ private:
    bool m_tomorrowColorChanged;
    bool m_todayColorChanged;
    bool m_firstRun;
+   bool m_ADSCalreadyReceived;
 };

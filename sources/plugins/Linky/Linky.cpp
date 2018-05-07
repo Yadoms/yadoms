@@ -135,7 +135,11 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kSamplingTimer:
       {
+         m_decoder[m_GPIOManager->getGPIO() - 1] = CLinkyFactory::constructDecoder(m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol(), api);
+
+         CLinkyFactory::FTDI_setNewProtocol(m_port, m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol());
          CLinkyFactory::FTDI_ActivateGPIO(m_port, m_GPIOManager->getGPIO());
+         m_receiveBufferHandler->changeProtocol(m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol());
          m_receiveBufferHandler->activate();
 
          //Lauch a new time the time out to detect connexion failure
@@ -185,8 +189,10 @@ void CLinky::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
                                          m_receiveBufferHandler,
                                          kEvtPortConnection);
 
-   m_decoder[0] = CLinkyFactory::constructDecoder(m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol(), api);
-   m_decoder[1] = CLinkyFactory::constructDecoder(m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol(), api);
+   YADOMS_LOG(information) << "GPIO : " << m_GPIOManager->getGPIO();
+   YADOMS_LOG(information) << "Protocol : " << m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol();
+
+   m_decoder[m_GPIOManager->getGPIO() - 1] = CLinkyFactory::constructDecoder(m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol(), api);
 
    m_port->start();
    m_periodicSamplingTimer->start();
@@ -233,11 +239,7 @@ void CLinky::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
 
    if (!m_decoder[m_GPIOManager->getGPIO() - 1]->isERDFCounterDesactivated())
    {
-      if (m_runningState != kRunning)
-      {
-         api->setPluginState(yApi::historization::EPluginState::kRunning);
-         m_runningState = kRunning;
-      }
+      setPluginState(api, kRunning);
    }
 }
 
@@ -260,10 +262,10 @@ void CLinky::processLinkyConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> ap
 void CLinky::processLinkyUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification)
 {
    YADOMS_LOG(information) << "Linky connection was lost" ;
-   if(notification)
+   if (notification)
       api->setPluginState(yApi::historization::EPluginState::kError, notification->getErrorMessageI18n(), notification->getErrorMessageI18nParameters());
    else
-      api->setPluginState(yApi::historization::EPluginState::kError, "connectionLost");
+      setPluginState(api, kConnectionLost);
    m_runningState = kConnectionLost;
 
    destroyConnection();
@@ -303,7 +305,7 @@ void CLinky::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, ELinkyPlug
          api->setPluginState(yApi::historization::EPluginState::kCustom, "updateconfiguration");
          break;
       case ELinkyPluginState::kConnectionLost:
-         api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionLost");
+         api->setPluginState(yApi::historization::EPluginState::kError, "connectionLost");
          break;
       case ELinkyPluginState::kConnecting:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");

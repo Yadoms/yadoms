@@ -56,6 +56,7 @@ namespace shared
          void desactivateGPIO();
          std::vector<int> getPortComNumber();
          void setPortNumber(int port);
+         void setBaudRate(const boost::asio::serial_port_base::baud_rate& baudrate);
       protected:
          //--------------------------------------------------------------
          /// \brief	Establish the connection

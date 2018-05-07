@@ -20,10 +20,22 @@ boost::shared_ptr<shared::communication::IAsyncPort> CLinkyFactory::constructPor
                                                                                   int evtPortConnectionId)
 {
    int baudRate = m_baudRateStandard;
+
+   if (type == Standard)
+   {
+      YADOMS_LOG(information) << "Standard Mode";
+      baudRate = m_baudRateStandard;
+   }
+   else
+   {
+      YADOMS_LOG(information) << "Historical Mode";
+      baudRate = m_baudRateHistoric;
+   }
+
    YADOMS_LOG(information) << "Connecting Linky on serial port " << configuration->getSerialPort() << "..." ;
 
    boost::shared_ptr<shared::communication::IAsyncPort> port = boost::make_shared<shared::communication::CFT2xxSerialPort>(configuration->getSerialPort(),
-                                                                                                                           boost::asio::serial_port_base::baud_rate(1200),
+                                                                                                                           boost::asio::serial_port_base::baud_rate(baudRate),
                                                                                                                            boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::even),
                                                                                                                            boost::asio::serial_port_base::character_size(7),
                                                                                                                            boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
@@ -57,11 +69,6 @@ boost::shared_ptr<shared::communication::IAsyncPort> CLinkyFactory::constructPor
          ++counter;
       }
    }
-
-   if (type == Standard)
-      baudRate = m_baudRateStandard;
-   else
-      baudRate = m_baudRateHistoric;
 
    if (!isFTDISerialPort)
    {
@@ -120,4 +127,23 @@ void CLinkyFactory::FTDI_DisableGPIO(boost::shared_ptr<shared::communication::IA
 
    if (port)
       port->desactivateGPIO();
+}
+
+void CLinkyFactory::FTDI_setNewProtocol(boost::shared_ptr<shared::communication::IAsyncPort> serialPort,
+                                        const EProtocolType type)
+{
+   auto port = boost::dynamic_pointer_cast<shared::communication::CFT2xxSerialPort>(serialPort);
+
+   if (port) {
+      if (type == Standard)
+      {
+         YADOMS_LOG(information) << "Standard Mode";
+         port->setBaudRate(boost::asio::serial_port_base::baud_rate(m_baudRateStandard));
+      }
+      else
+      {
+         YADOMS_LOG(information) << "Historical Mode";
+         port->setBaudRate(boost::asio::serial_port_base::baud_rate(m_baudRateHistoric));
+      }
+   }
 }
