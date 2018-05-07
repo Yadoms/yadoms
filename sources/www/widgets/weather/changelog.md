@@ -1,2 +1,2 @@
-### 1.0.2
-* Fix boiler state display
+### 1.0.4
+* Remove obsolete function

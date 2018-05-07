@@ -116,12 +116,16 @@ widgetViewModelCtor = function weatherViewModel() {
         if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
             return;
         
-        // we register keyword new acquisition
-        self.widgetApi.registerKeywordAcquisitions([self.widget.configuration.windDirection.keywordId]);
-        
+        //we register keyword new acquisition
+        self.widgetApi.registerKeywordForNewAcquisitions([self.widget.configuration.windDirection.keywordId]);	   
+	   
+		//we register keyword for get last value at web client startup
+		self.widgetApi.getLastValue([self.widget.configuration.windDirection.keywordId]);  		
+		
         // we add only the speed if we have ckeck it
         if (parseBool(self.widget.configuration.speedDisplay.checkbox)){
-           self.widgetApi.registerKeywordAcquisitions([self.widget.configuration.speedDisplay.content.windSpeed.keywordId]);
+		   self.widgetApi.registerKeywordForNewAcquisitions([self.widget.configuration.speedDisplay.content.windSpeed.keywordId]);
+		   self.widgetApi.getLastValue([self.widget.configuration.speedDisplay.content.windSpeed.keywordId]);
            self.widgetApi.find(".windspeed").css("visibility","visible");
         }else
            self.widgetApi.find(".windspeed").css("visibility","hidden");

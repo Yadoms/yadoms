@@ -73,9 +73,12 @@ function thermostatViewModel() {
         
         if (parseBool(self.widget.configuration.LivetemperatureSection.checkbox))
            keywordRegistered.push(self.widget.configuration.LivetemperatureSection.content.temperatureDevice.keywordId);
-        
+		
         //we register keyword new acquisition
-        self.widgetApi.registerKeywordAcquisitions(keywordRegistered);
+        self.widgetApi.registerKeywordForNewAcquisitions(keywordRegistered);	   
+	   
+		//we register keyword for get last value at web client startup
+		self.widgetApi.getLastValue(keywordRegistered);
         
         //we get the unit of the keyword
         var deffered1 = self.widgetApi.getKeywordInformation(self.widget.configuration.controlSection.content.temperatureSet.keywordId);

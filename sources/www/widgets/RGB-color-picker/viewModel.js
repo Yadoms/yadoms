@@ -88,9 +88,12 @@ function RGBcolorPickerViewModel() {
 
        if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
           return;
-       
-       //we register keyword new acquisition
-       self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
+	   
+        //we register keyword new acquisition
+        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+	   
+		//we register keyword for get last value at web client startup
+		self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);   
        
        // destroy the precedent colorPicker if any
        // it's the only solution, to create/delete preselected colors

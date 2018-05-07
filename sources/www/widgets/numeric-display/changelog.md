@@ -1,3 +1,6 @@
+### 1.0.3
+* Remove obsolete function
+
 ### 1.0.2
 * Fix display for values with no units.
 * Better size proportions/fix display with firefox.
