@@ -12,12 +12,12 @@ c TP1 <html><id>CPT1_PTarif</id><value>%d</value></html>
 c ed1 <html><id>CPT1_abo_name</id><value>%d</value></html>
 c ii0 <html><id>CPT1_IINST_mono</id><value>%d A</value></html>
 c ip1 <html><id>CPT1_P</id><value>%d</value></html>
-c Ti11<html><id>CPT1_INDEX_1</id><value>%s</value></html>
-c Ti12<html><id>CPT1_INDEX_2</id><value>%s</value></html>
-c Ti13<html><id>CPT1_INDEX_3</id><value>%s</value></html>
-c Ti14<html><id>CPT1_INDEX_4</id><value>%s</value></html>
-c Ti15<html><id>CPT1_INDEX_5</id><value>%s</value></html>
-c Ti16<html><id>CPT1_INDEX_6</id><value>%s</value></html>
+c TI11<html><id>CPT1_INDEX_1</id><value>%d</value></html>
+c TI12<html><id>CPT1_INDEX_2</id><value>%d</value></html>
+c TI13<html><id>CPT1_INDEX_3</id><value>%d</value></html>
+c TI14<html><id>CPT1_INDEX_4</id><value>%d</value></html>
+c TI15<html><id>CPT1_INDEX_5</id><value>%d</value></html>
+c TI16<html><id>CPT1_INDEX_6</id><value>%d</value></html>
 c Tp1 <html><id>DEMAIN_1</id><value>%d</value></html>
 # COMPTEUR 2
 c es2 <html><id>CPT2_adco</id><value>%s</value></html>
@@ -25,12 +25,12 @@ c TP2 <html><id>CPT2_PTarif</id><value>%d</value></html>
 c ed2 <html><id>CPT2_abo_name</id><value>%d</value></html>
 c Ii0 <html><id>CPT2_IINST_mono</id><value>%d A</value></html>
 c ip2 <html><id>CPT2_P</id><value>%d</value></html>
-c Ti21<html><id>CPT2_INDEX_1</id><value>%s</value></html>
-c Ti22<html><id>CPT2_INDEX_2</id><value>%s</value></html>
-c Ti23<html><id>CPT2_INDEX_3</id><value>%s</value></html>
-c Ti24<html><id>CPT2_INDEX_4</id><value>%s</value></html>
-c Ti25<html><id>CPT2_INDEX_5</id><value>%s</value></html>
-c Ti26<html><id>CPT2_INDEX_6</id><value>%s</value></html>
+c TI21<html><id>CPT2_INDEX_1</id><value>%d</value></html>
+c TI22<html><id>CPT2_INDEX_2</id><value>%d</value></html>
+c TI23<html><id>CPT2_INDEX_3</id><value>%d</value></html>
+c TI24<html><id>CPT2_INDEX_4</id><value>%d</value></html>
+c TI25<html><id>CPT2_INDEX_5</id><value>%d</value></html>
+c TI26<html><id>CPT2_INDEX_6</id><value>%d</value></html>
 c Tp2 <html><id>DEMAIN_2</id><value>%d</value></html>
 # COMPTEUR 3
 c es3 <html><id>CPT3_adco</id><value>%s</value></html>
@@ -38,12 +38,12 @@ c TP3 <html><id>CPT3_PTarif</id><value>%d</value></html>
 c ed3 <html><id>CPT3_abo_name</id><value>%d</value></html>
 c II0 <html><id>CPT3_IINST_mono</id><value>%d A</value></html>
 c ip3 <html><id>CPT3_P</id><value>%d</value></html>
-c Ti31<html><id>CPT3_INDEX_1</id><value>%s</value></html>
-c Ti32<html><id>CPT3_INDEX_2</id><value>%s</value></html>
-c Ti33<html><id>CPT3_INDEX_3</id><value>%s</value></html>
-c Ti34<html><id>CPT3_INDEX_4</id><value>%s</value></html>
-c Ti35<html><id>CPT3_INDEX_5</id><value>%s</value></html>
-c Ti36<html><id>CPT3_INDEX_6</id><value>%s</value></html>
+c TI31<html><id>CPT3_INDEX_1</id><value>%d</value></html>
+c TI32<html><id>CPT3_INDEX_2</id><value>%d</value></html>
+c TI33<html><id>CPT3_INDEX_3</id><value>%d</value></html>
+c TI34<html><id>CPT3_INDEX_4</id><value>%d</value></html>
+c TI35<html><id>CPT3_INDEX_5</id><value>%d</value></html>
+c TI36<html><id>CPT3_INDEX_6</id><value>%d</value></html>
 c Tp3 <html><id>DEMAIN_3</id><value>%d</value></html>
 # PINCES AMPEREMETRIQUES
 c P P1 <html><id>VAPC1_val</id><value>%d</value></html>

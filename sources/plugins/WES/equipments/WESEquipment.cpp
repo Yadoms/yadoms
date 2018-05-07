@@ -486,7 +486,7 @@ namespace equipments
          {
             try
             {
-               m_AnalogList[counter]->set(results.get<unsigned int>("ad" + boost::lexical_cast<std::string>(counter + 1)));
+               m_AnalogList[counter]->set((unsigned int)results.get<float>("ad" + boost::lexical_cast<std::string>(counter + 1)));
                keywordsToHistorize.push_back(m_AnalogList[counter]);
             }
             catch (std::exception& e)
