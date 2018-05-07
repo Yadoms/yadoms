@@ -9,7 +9,7 @@
 
 namespace equipments
 {
-   const CWESEquipment::WESIOMapping CWESEquipment::WESv1 = {0, 3, 2, 2, 2, 4};
+   const CWESEquipment::WESIOMapping CWESEquipment::WESv1 = {2, 3, 2, 2, 2, 0};
    const CWESEquipment::WESIOMapping CWESEquipment::WESv2 = {2, 3, 2, 4, 4, 4};
 
    CWESEquipment::CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
