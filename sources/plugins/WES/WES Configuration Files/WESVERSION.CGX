@@ -1,11 +1,12 @@
 # ------------------------------------
 # --
-# --  Configuration files for Yadoms v1.00 beta
+# --  Configuration files for Yadoms v1.0.1
 # --  This file is for retrieve all names from the WES equipment.
 # --
 # ------------------------------------
 t <form>
 # WES REVISION
 c GgV <java><var>version</var><value>%d</value></java>
+c v v <java><var>version_serveur</var><value>%s</value></java>
 t </form>
 .

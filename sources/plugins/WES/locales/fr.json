@@ -97,7 +97,8 @@
 			"noInformation": "L'équipement est connecté, mais aucune information n'est retournée. Vérifiez la clé apikey.",
 			"updateConfiguration": "Mise à jour de la configuration...",
          "kAtLeastOneConnectionFaulty": "Au moins un équipement est en erreur",
-         "manuallyCreationError": "La création manuelle de l'équipement est un échec"
+         "manuallyCreationError": "La création manuelle de l'équipement est un échec",
+         "serverRevisionTooLow": "La version du firmware sur le serveur WES doit être >=0.80"
 		}
 	}
 }

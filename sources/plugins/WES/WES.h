@@ -24,7 +24,8 @@ enum EWESPluginState
    kupdateConfiguration,
    kAtLeastOneConnectionFaulty,
    kmanuallyCreationDeviceFailed,
-   kRunning
+   kRunning,
+   kserverRevisionTooLow
 };
 
 //--------------------------------------------------------------
