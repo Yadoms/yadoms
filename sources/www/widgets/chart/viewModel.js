@@ -646,9 +646,6 @@ function chartViewModel() {
                            //
                            // in case of week, we have to change manually the array
                            //
-                           
-                           debugger;
-                           
                            if (self.prefix === "week") {
                               dataVector = getWeeks(data.data);
                            }else{
@@ -659,8 +656,6 @@ function chartViewModel() {
                                lastDate = d;
                                d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
                                var vplot;
-                               
-                               console.log ("type :", self.periodValueType[index]);
                        
                                if (!isNullOrUndefined(value[self.periodValueType[index]])) {
                                    // read the computed desired value (avg/min/max)
