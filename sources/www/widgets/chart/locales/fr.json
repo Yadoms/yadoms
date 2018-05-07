@@ -5,7 +5,6 @@
    "errorInitialization" : "Erreur lors de l'initialisation du widget chart",
    "incompatibilityDifferential": "L'affichage différentiel n'est pas compatible avec l'affichage min/max",  
    "loadingData": "Chargement des données",
-   "RangeTooBroad" : "Echelle trop large",
    "noAvailableData": "Aucune donnée pour l'échelle sélectionnée",
    "formatNotSupported": "Le format {{format}} n'est pas supporté",
    "deviceNotFound": "Equipement Id {{Id}} introuvable",
