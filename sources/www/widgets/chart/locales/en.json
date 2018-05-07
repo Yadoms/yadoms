@@ -5,7 +5,6 @@
   "errorInitialization" : "Error During widget chart initialization",
   "incompatibilityDifferential": "Differential display and range configuration are incompatible",  
   "loadingData": "Loading data",
-  "RangeTooBroad": "Range is too broad",
   "noAvailableData": "No available data for the selected range",
   "formatNotSupported": "This format {{format}} is not supported",
   "deviceNotFound": "Device Id {{Id}} not found",
