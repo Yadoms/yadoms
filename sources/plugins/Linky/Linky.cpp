@@ -43,8 +43,16 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    m_configuration->initializeWith(api->getConfiguration());
 
    m_GPIOManager = boost::make_shared<CGPIOManager>(m_configuration);
+
+   // For port 0
    m_protocolManager[0] = boost::make_shared<CProtocolManager>();
+
+   // For port 1
    m_protocolManager[1] = boost::make_shared<CProtocolManager>();
+
+   // Create decoders
+   m_decoder.insert(std::pair<EProtocolType, boost::shared_ptr<IDecoder>>(EProtocolType::Historic, CLinkyFactory::constructDecoder(EProtocolType::Historic, api)));
+   m_decoder.insert(std::pair<EProtocolType, boost::shared_ptr<IDecoder>>(EProtocolType::Standard, CLinkyFactory::constructDecoder(EProtocolType::Standard, api)));
 
    m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
                                                              shared::event::CEventTimer::kOneShot,
@@ -135,11 +143,11 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kSamplingTimer:
       {
-         m_decoder[m_GPIOManager->getGPIO() - 1] = CLinkyFactory::constructDecoder(m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol(), api);
-
-         CLinkyFactory::FTDI_setNewProtocol(m_port, m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol());
+         auto detectedProtocol = m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol();
+         CLinkyFactory::FTDI_setNewProtocol(m_port, detectedProtocol);
          CLinkyFactory::FTDI_ActivateGPIO(m_port, m_GPIOManager->getGPIO());
-         m_receiveBufferHandler->changeProtocol(m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol());
+
+         m_receiveBufferHandler->changeProtocol(detectedProtocol);
          m_receiveBufferHandler->activate();
 
          //Lauch a new time the time out to detect connexion failure
@@ -177,22 +185,19 @@ void CLinky::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    setPluginState(api, kConnecting);
 
-   m_receiveBufferHandler = CLinkyFactory::GetBufferHandler(m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol(),
+   auto detectedProtocol = m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol();
+
+   m_receiveBufferHandler = CLinkyFactory::GetBufferHandler(detectedProtocol,
                                                             api->getEventHandler(),
                                                             kEvtPortDataReceived,
                                                             m_isDeveloperMode);
 
    // Create the port instance
-   m_port = CLinkyFactory::constructPort(m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol(),
+   m_port = CLinkyFactory::constructPort(detectedProtocol,
                                          m_configuration,
                                          api->getEventHandler(),
                                          m_receiveBufferHandler,
                                          kEvtPortConnection);
-
-   YADOMS_LOG(information) << "GPIO : " << m_GPIOManager->getGPIO();
-   YADOMS_LOG(information) << "Protocol : " << m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol();
-
-   m_decoder[m_GPIOManager->getGPIO() - 1] = CLinkyFactory::constructDecoder(m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol(), api);
 
    m_port->start();
    m_periodicSamplingTimer->start();
@@ -235,12 +240,13 @@ void CLinky::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 void CLinky::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
                                  const boost::shared_ptr<std::map<std::string, std::vector<std::string>>>& messages)
 {
-   m_decoder[m_GPIOManager->getGPIO() - 1]->decodeMessage(api, messages);
+   auto detectedProtocol = m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol();
 
-   if (!m_decoder[m_GPIOManager->getGPIO() - 1]->isERDFCounterDesactivated())
-   {
+   // Select the decoder from the protocol detected
+   m_decoder[detectedProtocol]->decodeMessage(api, messages);
+
+   if (!m_decoder[detectedProtocol]->isERDFCounterDesactivated())
       setPluginState(api, kRunning);
-   }
 }
 
 void CLinky::processLinkyConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api) const
