@@ -340,7 +340,7 @@
                     "rain": "Rain (mm)",
                     "rainrate": "Rain rate (mm/s)",
                     "rssi": "Signal strength (Db/mW)",
-                    "speed": "Speed (mm/s)",
+                    "speed": "Speed (m/s)",
                     "switch": "On/Off",
                     "temperature": "Temperature (°C)",
                     "text": "Text",
