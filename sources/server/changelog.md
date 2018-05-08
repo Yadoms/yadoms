@@ -1,11 +1,15 @@
+### 2.1.0-beta.3
+
+#### New features and fixes
+* Fix 463 Rolling title doesn't work for some widgets
+
+
 ### 2.1.0-beta.2
 
 #### New features and fixes
 * Add debit historizer (m³/s)
 * Add electric load historizer (Ah)
 * Fix discovering new plugins and new widgets when they have a changelog.md
-* Fix 463 Rolling title doesn't work for some widgets
-
 
 ### 2.1.0-beta.1
 
