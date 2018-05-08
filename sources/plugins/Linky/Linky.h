@@ -135,7 +135,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The Linky protocol implementation object
    //--------------------------------------------------------------
-   std::map<EProtocolType, boost::shared_ptr<IDecoder>> m_decoder;
+   boost::shared_ptr<IDecoder> m_decoder[2];
 
    //--------------------------------------------------------------
    /// \brief  The receiver buffer
