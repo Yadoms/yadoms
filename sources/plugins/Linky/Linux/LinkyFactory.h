@@ -64,6 +64,14 @@ public:
    //--------------------------------------------------------------
    static void FTDI_DisableGPIO(boost::shared_ptr<shared::communication::IAsyncPort> serialPort);
 
+   //--------------------------------------------------------------
+   /// \brief	                          change the speed of the link
+   /// \param [in] serialPort            the serial port
+   /// \param [in] type                  the protocol type we need
+   //--------------------------------------------------------------
+   static void FTDI_setNewProtocol(boost::shared_ptr<shared::communication::IAsyncPort> serialPort,
+                                   const EProtocolType type);
+                                   
 private:
    static const int m_baudRateStandard;
    static const int m_baudRateHistoric;

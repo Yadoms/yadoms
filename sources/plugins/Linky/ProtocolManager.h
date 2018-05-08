@@ -29,6 +29,11 @@ public:
    void validateProtocol();
 
    //-----------------------------------------------------
+   ///\brief                     return if the protocol is validated
+   //-----------------------------------------------------
+   bool isValidated();
+
+   //-----------------------------------------------------
    ///\brief                     get the protocol used
    //-----------------------------------------------------
    EProtocolType getProtocol();

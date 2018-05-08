@@ -75,3 +75,18 @@ void CLinkyFactory::FTDI_DisableGPIO(boost::shared_ptr<shared::communication::IA
 {
    // not used for linux side
 }
+
+void CLinkyFactory::FTDI_setNewProtocol(boost::shared_ptr<shared::communication::IAsyncPort> serialPort,
+                                        const EProtocolType type)
+{
+   if (type == Standard)
+   {
+      YADOMS_LOG(information) << "Standard Mode";
+      //TODO : To be writing
+   }
+   else
+   {
+      YADOMS_LOG(information) << "Historical Mode";
+      //TODO : To be writing
+   }
+}

@@ -44,10 +44,8 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    m_GPIOManager = boost::make_shared<CGPIOManager>(m_configuration);
 
-   // For port 0
+   // For port 0 & 1
    m_protocolManager[0] = boost::make_shared<CProtocolManager>();
-
-   // For port 1
    m_protocolManager[1] = boost::make_shared<CProtocolManager>();
 
    // Create decoders
@@ -62,15 +60,15 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                                                                 shared::event::CEventTimer::kPeriodic,
                                                                 boost::posix_time::seconds(30));
 
-   // For immediat sampling
-   m_periodicSamplingTimer = api->getEventHandler().createTimer(kSamplingTimer,
-                                                                shared::event::CEventTimer::kOneShot,
-                                                                boost::posix_time::seconds(0));
-
    m_waitForAnswerTimer->stop();
 
    // Create the connection
    createConnection(api);
+
+   // For immediat sampling
+   m_periodicSamplingTimer = api->getEventHandler().createTimer(kSamplingTimer,
+                                                                shared::event::CEventTimer::kOneShot,
+                                                                boost::posix_time::seconds(0));
 
    // the main loop
    YADOMS_LOG(information) << "Linky plugin is running..." ;
@@ -109,25 +107,22 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kEvtPortDataReceived:
          {
 			 m_waitForAnswerTimer->stop();
-          
           m_protocolManager[m_GPIOManager->getGPIO()-1]->validateProtocol();
-
-            if (m_isDeveloperMode) YADOMS_LOG(information) << "Linky plugin :  DataReceived" ;
+          YADOMS_LOG(trace) << "Linky plugin :  DataReceived";
 
             processDataReceived(api,
                                 api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::vector<std::string>>>>());
 
-            m_receiveBufferHandler->desactivate();
-
             CLinkyFactory::FTDI_DisableGPIO(m_port);
+            m_receiveBufferHandler->desactivate();
 
             if (!m_GPIOManager->isLast())
             {
-               // Go to the next GPIO
+               // Go to the next GPIO & fire it rapidly
                m_GPIOManager->next();
                api->getEventHandler().createTimer(kSamplingTimer,
                                                   shared::event::CEventTimer::kOneShot,
-                                                  boost::posix_time::seconds(0));
+                                                  boost::posix_time::seconds(1));
             }
             else // Return to the beginning of the list
                m_GPIOManager->front();
@@ -156,8 +151,15 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       }
       case kErrorRetryTimer:
          {
-            m_protocolManager[m_GPIOManager->getGPIO() - 1]->changeProtocol();
-            createConnection(api);
+            try {
+               m_protocolManager[m_GPIOManager->getGPIO() - 1]->changeProtocol();
+               createConnection(api);
+            }
+            catch (...)
+            {
+               YADOMS_LOG(trace) << "create connexion error";
+               errorProcess(api);
+            }
             break;
          }
       case kAnswerTimeout:
@@ -169,7 +171,19 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             if (!m_protocolManager[m_GPIOManager->getGPIO() - 1]->end())
                changeProtocol(api);
             else
+            {
                errorProcess(api);
+
+               //Reset the protocol manager of the selected GPIO
+               if (!m_protocolManager[m_GPIOManager->getGPIO() - 1]->isValidated())
+                  m_protocolManager[m_GPIOManager->getGPIO() - 1]->changeProtocol();
+
+               // We continue to scan the other port if any
+               if (!m_GPIOManager->isLast())
+                  m_GPIOManager->next();
+               else
+                  m_GPIOManager->front();
+            }
             break;
          }
       default:
@@ -186,7 +200,6 @@ void CLinky::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
    setPluginState(api, kConnecting);
 
    auto detectedProtocol = m_protocolManager[m_GPIOManager->getGPIO() - 1]->getProtocol();
-
    m_receiveBufferHandler = CLinkyFactory::GetBufferHandler(detectedProtocol,
                                                             api->getEventHandler(),
                                                             kEvtPortDataReceived,
@@ -205,8 +218,9 @@ void CLinky::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
 
 void CLinky::destroyConnection()
 {
-   m_port.reset();
+   m_periodicSamplingTimer->stop();
    m_waitForAnswerTimer->stop();
+   m_port.reset();
 }
 
 void CLinky::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -214,6 +228,7 @@ void CLinky::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    // Stop running timers, if any
    m_waitForAnswerTimer->stop();
+   m_periodicSamplingTimer->stop();
 
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration..." ;
@@ -224,17 +239,25 @@ void CLinky::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       // Update configuration
       m_configuration->initializeWith(newConfigurationData);
+      m_GPIOManager = boost::make_shared<CGPIOManager>(m_configuration);
       return;
    }
+   else
+   {
+      // Port has changed, destroy and recreate connection
+      destroyConnection();
 
-   // Port has changed, destroy and recreate connection
-   destroyConnection();
+      // Update configuration
+      m_configuration->initializeWith(newConfigurationData);
+      m_GPIOManager = boost::make_shared<CGPIOManager>(m_configuration);
 
-   // Update configuration
-   m_configuration->initializeWith(newConfigurationData);
+      // Create a new time protocol manager, to reset them
+      m_protocolManager[0] = boost::make_shared<CProtocolManager>();
+      m_protocolManager[1] = boost::make_shared<CProtocolManager>();
 
-   // Create new connection
-   createConnection(api);
+      // Create new connection
+      createConnection(api);
+   }
 }
 
 void CLinky::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,

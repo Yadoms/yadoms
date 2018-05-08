@@ -116,8 +116,8 @@ namespace shared
          {
             ftStatus = FT_Open(counter, &ftHandle);
             if (ftStatus != FT_OK) {
-               std::string message = "Fail to open the serial port with FTDI driver";
-               YADOMS_LOG(error) << message;
+               std::string message = "Fail to open the serial port with FTDI driver : ";
+               YADOMS_LOG(error) << message << ftStatus;
                throw shared::exception::CException(message);
             }
 
