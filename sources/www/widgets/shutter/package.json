@@ -22,7 +22,7 @@
   "configurationSchema": {
     "device": {
       "type": "keyword",
-	  "expectedCapacity": ["switch", "curtain"],
+	  "expectedCapacity": ["switch", "curtain", "dimmable"],
       "expectedKeywordAccess": "get"
     },
     "invert": {

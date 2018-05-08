@@ -31,7 +31,14 @@ widgetViewModelCtor =
 							}else{
 								cmd = "Open";
 							}
-							break;					  
+							break;
+                   case "dimmable":
+                     if (newState == 0) {
+                        cmd = 0;
+                     }else{
+                        cmd = 100;
+                     }
+                     break;                   
 						 default:
 							 cmd = newState;
 							 break;
@@ -138,21 +145,21 @@ widgetViewModelCtor =
 
               if ((this.widget.configuration != undefined) && (this.widget.configuration.device != undefined)) {
                   if (keywordId === this.widget.configuration.device.keywordId) {
-					  switch (self.capacity) {
-						 case "curtain":
-					        if (data.value.toLowerCase()==="open")
-							   self.command(1);
-						    else
-							   self.command(0);
-						    break;
-						  default:
-                       // Adapt for dimmable or switch capacities
-                       if (parseInt(data.value) !== 0)
-                          self.command(1);
-                       else
-                          self.command(0);
-						   break;
-					  }
+                    switch (self.capacity) {
+                      case "curtain":
+                          if (data.value.toLowerCase()==="open")
+                           self.command(1);
+                         else
+                           self.command(0);
+                         break;
+                       default:
+                          // Adapt for dimmable or switch capacities
+                          if (parseInt(data.value) !== 0)
+                             self.command(1);
+                          else
+                             self.command(0);
+                        break;
+                    }
                   }
               }
           };
