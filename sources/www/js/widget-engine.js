@@ -456,8 +456,8 @@ function updateWidgetsPolling(pageId) {
                          widget.viewModel.widgetApi.updateBatteryLevel(acquisition.value);
                       }
                    }
-                   widget.viewModel.widgetApi.manageRollingTitle();
                 }
+                widget.viewModel.widgetApi.manageRollingTitle();
              });
           });
           d.resolve();

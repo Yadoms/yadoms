@@ -105,6 +105,8 @@ private:
    bool m_deviceCreated;
    bool m_ADCOalreadyReceived;
    EContracts m_optarif;
+   bool m_newWarningEJPValue;
+   bool m_firstRun;
 
    static const std::string m_tag_ADCO;
    static const std::string m_tag_OPTARIF;
