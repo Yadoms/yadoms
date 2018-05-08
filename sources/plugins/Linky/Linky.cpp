@@ -16,8 +16,8 @@ namespace yApi = shared::plugin::yPluginApi;
 IMPLEMENT_PLUGIN(CLinky)
 
 CLinky::CLinky():
-   m_isDeveloperMode(false),
    m_configuration(boost::make_shared<CLinkyConfiguration>()),
+   m_isDeveloperMode(false),
    m_runningState(ELinkyPluginState::kUndefined)
 {}
 

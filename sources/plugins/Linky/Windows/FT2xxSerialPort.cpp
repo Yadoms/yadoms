@@ -62,9 +62,9 @@ namespace shared
          m_isConnected(false),
          m_port(0)
       {
-         hGetProcIDDLL = LoadLibraryA("ftd2xx.dll");
+         m_hGetProcIDDLL = LoadLibraryA("ftd2xx.dll");
 
-         if (!hGetProcIDDLL)
+         if (!m_hGetProcIDDLL)
          {
             std::string message = "Could not load the dynamic library";
             YADOMS_LOG(error) << message;
@@ -72,13 +72,13 @@ namespace shared
          }
          else
          {
-            hEvent = CreateEventA(
+            m_hEvent = CreateEventA(
                NULL,
                false, // auto-reset event
                false, // non-signalled state
                "");
 
-            if (hEvent == NULL)
+            if (m_hEvent == NULL)
             {
                std::string message = "Create event failed";
                YADOMS_LOG(error) << message;
@@ -96,10 +96,10 @@ namespace shared
       {
          FT_STATUS	ftStatus;
          DWORD numDevs;
-         f_ftopen  FT_Open = (f_ftopen)GetProcAddress(hGetProcIDDLL, "FT_Open");
-         f_ftCreateDeviceInfoList FT_CreateDeviceInfoList = (f_ftCreateDeviceInfoList)GetProcAddress(hGetProcIDDLL, "FT_CreateDeviceInfoList");
-         f_ftclose FT_Close = (f_ftclose)GetProcAddress(hGetProcIDDLL, "FT_Close");
-         f_ftGetComPortNumber FT_GetComPortNumber = (f_ftGetComPortNumber)GetProcAddress(hGetProcIDDLL, "FT_GetComPortNumber");
+         f_ftopen  FT_Open = (f_ftopen)GetProcAddress(m_hGetProcIDDLL, "FT_Open");
+         f_ftCreateDeviceInfoList FT_CreateDeviceInfoList = (f_ftCreateDeviceInfoList)GetProcAddress(m_hGetProcIDDLL, "FT_CreateDeviceInfoList");
+         f_ftclose FT_Close = (f_ftclose)GetProcAddress(m_hGetProcIDDLL, "FT_Close");
+         f_ftGetComPortNumber FT_GetComPortNumber = (f_ftGetComPortNumber)GetProcAddress(m_hGetProcIDDLL, "FT_GetComPortNumber");
 
          YADOMS_LOG(information) << "Scan all FT2X ports ...";
 
@@ -114,7 +114,7 @@ namespace shared
 
          for (unsigned char counter = 0; counter < numDevs; ++counter)
          {
-            ftStatus = FT_Open(counter, &ftHandle);
+            ftStatus = FT_Open(counter, &m_ftHandle);
             if (ftStatus != FT_OK) {
                std::string message = "Fail to open the serial port with FTDI driver : ";
                YADOMS_LOG(error) << message << ftStatus;
@@ -122,7 +122,7 @@ namespace shared
             }
 
             LONG lplComPortNumber = 0;
-            ftStatus = FT_GetComPortNumber(ftHandle, &lplComPortNumber);
+            ftStatus = FT_GetComPortNumber(m_ftHandle, &lplComPortNumber);
             if (ftStatus != FT_OK) {
                std::string message = "Fail to get the serial port number";
                YADOMS_LOG(error) << message;
@@ -132,9 +132,9 @@ namespace shared
             YADOMS_LOG(information) << "Port Com number : " << (int)lplComPortNumber;
             m_SerialPortComNumber.push_back(lplComPortNumber);
 
-            if (ftHandle != NULL) {
-               FT_Close(ftHandle);
-               ftHandle = NULL;
+            if (m_ftHandle != NULL) {
+               FT_Close(m_ftHandle);
+               m_ftHandle = NULL;
                m_isConnected = false;
             }
          }
@@ -174,7 +174,7 @@ namespace shared
 
          disconnect();
 
-         SetEvent(hEvent);
+         SetEvent(m_hEvent);
          m_asyncThread->join();
          m_asyncThread.reset();
          YADOMS_LOG(debug) << "CFT2xxSerialPort::stop()";
@@ -184,15 +184,15 @@ namespace shared
       {
          FT_STATUS	ftStatus;
 
-         f_ftGetStatus FT_GetStatus = (f_ftGetStatus)GetProcAddress(hGetProcIDDLL, "FT_GetStatus");
-         f_ftGetModemStatus FT_GetModemStatus = (f_ftGetModemStatus)GetProcAddress(hGetProcIDDLL, "FT_GetModemStatus");
-         f_ftRead FT_Read = (f_ftRead)GetProcAddress(hGetProcIDDLL, "FT_Read");
+         f_ftGetStatus FT_GetStatus = (f_ftGetStatus)GetProcAddress(m_hGetProcIDDLL, "FT_GetStatus");
+         f_ftGetModemStatus FT_GetModemStatus = (f_ftGetModemStatus)GetProcAddress(m_hGetProcIDDLL, "FT_GetModemStatus");
+         f_ftRead FT_Read = (f_ftRead)GetProcAddress(m_hGetProcIDDLL, "FT_Read");
          
          YADOMS_LOG(debug) << "Create receiverThread";
 
          while (true)
          {
-            WaitForSingleObject(hEvent, INFINITE);
+            WaitForSingleObject(m_hEvent, INFINITE);
 
             DWORD EventDWord;
             DWORD RxBytes;
@@ -203,15 +203,15 @@ namespace shared
 
             if (!m_isConnected) break;
 
-            FT_GetStatus(ftHandle, &RxBytes, &TxBytes, &EventDWord);
+            FT_GetStatus(m_ftHandle, &RxBytes, &TxBytes, &EventDWord);
             if (EventDWord & FT_EVENT_MODEM_STATUS) {
                // modem status event detected, so get current modem status
-               FT_GetModemStatus(ftHandle, &Status);
+               FT_GetModemStatus(m_ftHandle, &Status);
                YADOMS_LOG(debug) << "Modem status event detected => exit";
                break;
             }
             if (RxBytes > 0) {
-               ftStatus = FT_Read(ftHandle, RxBuffer, RxBytes, &BytesReceived);
+               ftStatus = FT_Read(m_ftHandle, RxBuffer, RxBytes, &BytesReceived);
 
                // Read OK
                CByteBuffer buffer(BytesReceived);
@@ -240,11 +240,11 @@ namespace shared
          try
          {
             FT_STATUS	ftStatus;
-            f_ftopen  FT_Open = (f_ftopen)GetProcAddress(hGetProcIDDLL, "FT_Open");
-            f_ftsetbaudRate FT_SetBaudRate = (f_ftsetbaudRate)GetProcAddress(hGetProcIDDLL, "FT_SetBaudRate");
-            f_ftsetDataCharacteristics  FT_SetDataCharacteristics = (f_ftsetDataCharacteristics)GetProcAddress(hGetProcIDDLL, "FT_SetDataCharacteristics");
-            f_ftCreateDeviceInfoList FT_CreateDeviceInfoList = (f_ftCreateDeviceInfoList)GetProcAddress(hGetProcIDDLL, "FT_CreateDeviceInfoList");
-            f_ftGetDeviceInfoDetail FT_GetDeviceInfoDetail = (f_ftGetDeviceInfoDetail)GetProcAddress(hGetProcIDDLL, "FT_GetDeviceInfoDetail");
+            f_ftopen  FT_Open = (f_ftopen)GetProcAddress(m_hGetProcIDDLL, "FT_Open");
+            f_ftsetbaudRate FT_SetBaudRate = (f_ftsetbaudRate)GetProcAddress(m_hGetProcIDDLL, "FT_SetBaudRate");
+            f_ftsetDataCharacteristics  FT_SetDataCharacteristics = (f_ftsetDataCharacteristics)GetProcAddress(m_hGetProcIDDLL, "FT_SetDataCharacteristics");
+            f_ftCreateDeviceInfoList FT_CreateDeviceInfoList = (f_ftCreateDeviceInfoList)GetProcAddress(m_hGetProcIDDLL, "FT_CreateDeviceInfoList");
+            f_ftGetDeviceInfoDetail FT_GetDeviceInfoDetail = (f_ftGetDeviceInfoDetail)GetProcAddress(m_hGetProcIDDLL, "FT_GetDeviceInfoDetail");
 
             DWORD Flags;
             DWORD ID;
@@ -285,7 +285,7 @@ namespace shared
                shared::exception::CException("No FTDI serial port detected");
             }
 
-            ftStatus = FT_Open(m_port, &ftHandle);
+            ftStatus = FT_Open(m_port, &m_ftHandle);
             if (ftStatus != FT_OK) {
                std::string message = "Fail to open the serial port with the FTDI driver";
                YADOMS_LOG(error) << message;
@@ -294,12 +294,12 @@ namespace shared
 
             DWORD dwDriverVersion;
             DWORD dwLibraryVersion;
-            f_ftGetDriverVersion  FT_GetDriverVersion = (f_ftGetDriverVersion)GetProcAddress(hGetProcIDDLL, "FT_GetDriverVersion");
-            f_ftGetLibraryVersion  FT_GetLibraryVersion = (f_ftGetLibraryVersion)GetProcAddress(hGetProcIDDLL, "FT_GetLibraryVersion");
-            f_ftSetFlowControl  FT_SetFlowControl = (f_ftSetFlowControl)GetProcAddress(hGetProcIDDLL, "FT_SetFlowControl");
+            f_ftGetDriverVersion  FT_GetDriverVersion = (f_ftGetDriverVersion)GetProcAddress(m_hGetProcIDDLL, "FT_GetDriverVersion");
+            f_ftGetLibraryVersion  FT_GetLibraryVersion = (f_ftGetLibraryVersion)GetProcAddress(m_hGetProcIDDLL, "FT_GetLibraryVersion");
+            f_ftSetFlowControl  FT_SetFlowControl = (f_ftSetFlowControl)GetProcAddress(m_hGetProcIDDLL, "FT_SetFlowControl");
             
 
-            ftStatus = FT_GetDriverVersion(ftHandle, &dwDriverVersion);
+            ftStatus = FT_GetDriverVersion(m_ftHandle, &dwDriverVersion);
 
             if (ftStatus != FT_OK) {
                std::string message = "Could not get the driver version";
@@ -332,7 +332,7 @@ namespace shared
                YADOMS_LOG(information) << "FTDI library version : " << hexNumber;
             }
 
-            ftStatus = FT_SetBaudRate(ftHandle, m_baudrate.value());
+            ftStatus = FT_SetBaudRate(m_ftHandle, m_baudrate.value());
             if (ftStatus != FT_OK) {
                std::string message = "Fail to set the baudrate";
                YADOMS_LOG(error) << message;
@@ -358,7 +358,7 @@ namespace shared
             else 
                parity = FT_PARITY_NONE;
 
-            ftStatus = FT_SetDataCharacteristics(ftHandle, (UCHAR)m_characterSize.value(), stop_bits, parity);
+            ftStatus = FT_SetDataCharacteristics(m_ftHandle, (UCHAR)m_characterSize.value(), stop_bits, parity);
             if (ftStatus != FT_OK) {
                std::string message = "Fail to set Data format";
                YADOMS_LOG(error) << message;
@@ -374,7 +374,7 @@ namespace shared
             else
                flowControl = FT_FLOW_NONE;
 
-            ftStatus = FT_SetFlowControl(ftHandle, flowControl, 0x00, 0x00);
+            ftStatus = FT_SetFlowControl(m_ftHandle, flowControl, 0x00, 0x00);
             if (ftStatus != FT_OK) {
                std::string message = "Fail to set Flow Control";
                YADOMS_LOG(error) << message;
@@ -401,12 +401,12 @@ namespace shared
          // Close the port
          try
          {
-            f_ftclose FT_Close = (f_ftclose)GetProcAddress(hGetProcIDDLL, "FT_Close");
+            f_ftclose FT_Close = (f_ftclose)GetProcAddress(m_hGetProcIDDLL, "FT_Close");
 
-            if (ftHandle != NULL) {
+            if (m_ftHandle != NULL) {
                m_isConnected = false;
-               FT_Close(ftHandle);
-               ftHandle = NULL;
+               FT_Close(m_ftHandle);
+               m_ftHandle = NULL;
                YADOMS_LOG(debug) << "Close the FTDI serial port";
             }
          }
@@ -454,7 +454,7 @@ namespace shared
             if (!connect())
             {
                YADOMS_LOG(debug) << " : Fail to reconnect, retry in a while...";
-               SetEvent(hEvent);
+               SetEvent(m_hEvent);
                m_asyncThread->join();
                m_asyncThread.reset();
                notifyEventHandler("asyncPort.serial.failToOpen", { { "port", m_name } });
@@ -478,10 +478,10 @@ namespace shared
       {
          // Start an asynchronous read and call readCompleted when it completes or fails
          FT_STATUS	ftStatus;
-         f_ftsetEventNotification  FT_SetEventNotification = (f_ftsetEventNotification)GetProcAddress(hGetProcIDDLL, "FT_SetEventNotification");
+         f_ftsetEventNotification  FT_SetEventNotification = (f_ftsetEventNotification)GetProcAddress(m_hGetProcIDDLL, "FT_SetEventNotification");
          DWORD EventMask = FT_EVENT_RXCHAR | FT_EVENT_MODEM_STATUS;
 
-         ftStatus = FT_SetEventNotification(ftHandle, EventMask, hEvent);
+         ftStatus = FT_SetEventNotification(m_ftHandle, EventMask, m_hEvent);
 
          if (ftStatus != FT_OK)
          {
@@ -497,8 +497,8 @@ namespace shared
          unsigned char ucMode;
          FT_STATUS	ftStatus;
 
-         f_ftsetBitMode FT_SetBitMode = (f_ftsetBitMode)GetProcAddress(hGetProcIDDLL, "FT_SetBitMode");
-         f_ftgetBitMode FT_GetBitMode = (f_ftgetBitMode)GetProcAddress(hGetProcIDDLL, "FT_GetBitMode");
+         f_ftsetBitMode FT_SetBitMode = (f_ftsetBitMode)GetProcAddress(m_hGetProcIDDLL, "FT_SetBitMode");
+         f_ftgetBitMode FT_GetBitMode = (f_ftgetBitMode)GetProcAddress(m_hGetProcIDDLL, "FT_GetBitMode");
 
          switch (GPIONumber)
          {
@@ -514,14 +514,14 @@ namespace shared
 
          ucMode = m_enableBitBang;
 
-         ftStatus = FT_SetBitMode(ftHandle, ucMask, ucMode);
+         ftStatus = FT_SetBitMode(m_ftHandle, ucMask, ucMode);
 
          if (ftStatus != FT_OK)
             YADOMS_LOG(error) << "Failed to set bit mode for port: " << GPIONumber;
          else
             YADOMS_LOG(debug) << "Set bit mode for port: " << GPIONumber;
 
-         ftStatus = FT_GetBitMode(ftHandle, &ucMode);
+         ftStatus = FT_GetBitMode(m_ftHandle, &ucMode);
          if (ftStatus != FT_OK) {
             YADOMS_LOG(error) << "Failed to get bit mode";
          }
@@ -573,12 +573,12 @@ namespace shared
       void CFT2xxSerialPort::setBaudRate(const boost::asio::serial_port_base::baud_rate& baudrate = boost::asio::serial_port_base::baud_rate(9600))
       {
          FT_STATUS	ftStatus;
-         f_ftsetbaudRate FT_SetBaudRate = (f_ftsetbaudRate)GetProcAddress(hGetProcIDDLL, "FT_SetBaudRate");
+         f_ftsetbaudRate FT_SetBaudRate = (f_ftsetbaudRate)GetProcAddress(m_hGetProcIDDLL, "FT_SetBaudRate");
          m_baudrate = baudrate;
 
          YADOMS_LOG(information) << m_baudrate.value();
 
-         ftStatus = FT_SetBaudRate(ftHandle, m_baudrate.value());
+         ftStatus = FT_SetBaudRate(m_ftHandle, m_baudrate.value());
          if (ftStatus != FT_OK) {
             std::string message = "Fail to set the baudrate";
             YADOMS_LOG(error) << message;

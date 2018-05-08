@@ -52,10 +52,33 @@ namespace shared
          void flush() override;
          // [END] IAsyncPort Implementation
 
+         //-----------------------------------------------------
+         ///\brief                            activate a GPIO
+         /// \param [in] GPIONumber             the GPIO number
+         //-----------------------------------------------------
          void activateGPIO(const int GPIONumber);
+
+         //-----------------------------------------------------
+         ///\brief                            desactivate GPIOs
+         //-----------------------------------------------------
          void desactivateGPIO();
+
+         //-----------------------------------------------------
+         ///\brief                            get a vector with port FTDI serial port number existing for the driver
+         /// \return                          the vector with all port number
+         //-----------------------------------------------------
          std::vector<int> getPortComNumber();
+
+         //-----------------------------------------------------
+         ///\brief                            set the port number
+         /// \param [in] port                   the port number for the FTDI driver
+         //-----------------------------------------------------
          void setPortNumber(int port);
+
+         //-----------------------------------------------------
+         ///\brief                            set the baud rate speed
+         /// \param [in] baudrate              the new baudrate to applicate
+         //-----------------------------------------------------
          void setBaudRate(const boost::asio::serial_port_base::baud_rate& baudrate);
       protected:
          //--------------------------------------------------------------
@@ -152,9 +175,9 @@ namespace shared
          //--------------------------------------------------------------
          bool m_flushAtConnect;
 
-         FT_HANDLE ftHandle = NULL;
-         HINSTANCE hGetProcIDDLL;
-         HANDLE hEvent;
+         FT_HANDLE m_ftHandle = NULL;
+         HINSTANCE m_hGetProcIDDLL;
+         HANDLE m_hEvent;
 
          static const unsigned char m_mask_port1;
          static const unsigned char m_mask_port2;
