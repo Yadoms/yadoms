@@ -1,56 +1,66 @@
 {
-	"type": "wind",
-	"version": "1.0.1",
-	"author": "Jean-Michel BERHAULT",
-	"url": "https://github.com/Yadoms/yadoms/wiki/wind",
-	"credits": "",
+  "type": "wind",
+  "version": "1.1.0",
+  "author": "Jean-Michel BERHAULT",
+  "url": "https://github.com/Yadoms/yadoms/wiki/wind",
+  "credits": "",
   "dimensions": {
     "min": {
-      "x": 3,
-      "y": 3
+      "x": 2,
+      "y": 2
     },
     "max": {
       "x": 3,
       "y": 3
     },
     "default": {
-      "x": 3,
-      "y": 3
+      "x": 2,
+      "y": 2
     }
   },
-  "hasTitle" :  true,
-	"configurationSchema": {
-      "windDirection": {
-         "type": "keyword",
-         "expectedCapacity": ["direction"],
-         "expectedKeywordAccess": "get"
-      },
-      "speedDisplay" : {
-			"type": "section",
-			"defaultValue": "true",
-			"enableWithCheckBox": "true",
-			"enableWithCheckBoxDefaultValue": "false",
-         "content": {        
-            "windSpeed": {
-               "type": "keyword",
-               "expectedCapacity": ["speed"],
-               "expectedKeywordAccess": "get"
-            }
-         }
-      },
-      "options" : {
-			"type": "section",
-			"defaultValue": "true",
-			"enableWithCheckBox": "true",
-			"enableWithCheckBoxDefaultValue": "false",
-         "content": {        
-            "directionCorrection": {
-               "type": "int",
-               "defaultValue": "0",
-               "maximumValue": "360",
-               "minimumValue": "0"
-            }
-         }
-      }      
-	}
+  "hasTitle": true,
+  "configurationSchema": {
+    "windDirection": {
+      "type": "keyword",
+      "expectedCapacity": ["direction"],
+      "expectedKeywordAccess": "get"
+    },
+    "speedDisplay": {
+      "type": "section",
+      "defaultValue": "true",
+      "enableWithCheckBox": "true",
+      "enableWithCheckBoxDefaultValue": "false",
+      "content": {
+        "windSpeed": {
+          "type": "keyword",
+          "expectedCapacity": ["speed"],
+          "expectedKeywordAccess": "get"
+        }
+      }
+    },
+    "options": {
+      "type": "section",
+      "defaultValue": "true",
+      "enableWithCheckBox": "true",
+      "enableWithCheckBoxDefaultValue": "false",
+      "content": {
+        "speedUnit": {
+          "type": "enum",
+          "values": {
+            "ms": "m/s",
+            "kmh": "km/h",
+            "knots": "knots",
+            "beaufort": "beaufort"
+          },
+          "defaultValue": "kmh"
+        },
+        "directionCorrection": {
+          "type": "int",
+          "defaultValue": "0",
+          "maximumValue": "360",
+          "minimumValue": "0"
+        }
+      }
+    }
+  }
 }
