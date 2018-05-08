@@ -9,22 +9,23 @@ namespace yApi = shared::plugin::yPluginApi;
 //--------------------------------------------------------------
 /// \brief	This class implement the Linky protocol
 //--------------------------------------------------------------
-class CDecoder : public IDecoder
+class CLinkyDecoder : public IDecoder
 {
 public:
    //--------------------------------------------------------------
    /// \brief	                           Constructor
    //--------------------------------------------------------------
-   explicit CDecoder(boost::shared_ptr<yApi::IYPluginApi> api);
+   explicit CLinkyDecoder(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
    //--------------------------------------------------------------
-   virtual ~CDecoder();
+   virtual ~CLinkyDecoder();
 
    // IDecoder implementation
-   void decodeLinkyMessage(boost::shared_ptr<yApi::IYPluginApi> api,
-                           const boost::shared_ptr<std::map<std::string, std::vector<std::string>>>& messages) override;
+   void decodeMessage(boost::shared_ptr<yApi::IYPluginApi> api,
+                      const boost::shared_ptr<std::map<std::string, std::vector<std::string>>>& messages) override;
+   bool isERDFCounterDesactivated() const override;
    // [END] IDecoder implementation
 
 private:
@@ -90,4 +91,6 @@ private:
    bool m_runningPeriodChanged;
    bool m_tomorrowColorChanged;
    bool m_todayColorChanged;
+   bool m_firstRun;
+   bool m_ADSCalreadyReceived;
 };

@@ -1,3 +1,6 @@
+### 1.1.0-beta.1
+* the plugin support now Standard and Historic protocols.
+
 ### 1.0.2-beta.3
 * Fix wrong time out start/time out is now 20s
 

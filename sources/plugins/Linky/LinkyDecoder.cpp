@@ -1,26 +1,26 @@
 #include "stdafx.h"
-#include "Decoder.h"
+#include "LinkyDecoder.h"
 #include <shared/Log.h>
 #include <boost/algorithm/string.hpp>
 #include "specificHistorizer/Color.h"
 #include "LinkyHelpers.hpp"
 
-const std::string CDecoder::m_tag_ADSC = "ADSC";    // meter id
-const std::string CDecoder::m_tag_VTIC = "VTIC";    // Linky revision
-const std::string CDecoder::m_tag_LTARF = "LTARF";  // Running period for v1
-const std::string CDecoder::m_tag_NGTF = "NGTF";  // Running period for v2
-const std::string CDecoder::m_tag_EASF = "EASF";    // counter ...
-const std::string CDecoder::m_tag_STGE = "STGE";    // Status 32 bits word
-const std::string CDecoder::m_tag_EAIT = "EAIT";    // counter active energy injected to the network
-const std::string CDecoder::m_tag_SINST1 = "SINST1";// apparent power for phase 1
-const std::string CDecoder::m_tag_SINST2 = "SINST2";// apparent power for phase 2
-const std::string CDecoder::m_tag_SINST3 = "SINST3";// apparent power for phase 3
-const std::string CDecoder::m_tag_SINSTS = "SINSTS";// global apparent power
-const std::string CDecoder::m_tag_UMOY1  = "UMOY1"; // mean voltage for phase 1
-const std::string CDecoder::m_tag_UMOY2  = "UMOY2"; // mean voltage for phase 2
-const std::string CDecoder::m_tag_UMOY3  = "UMOY3"; // mean voltage for phase 3
+const std::string CLinkyDecoder::m_tag_ADSC = "ADSC";    // meter id
+const std::string CLinkyDecoder::m_tag_VTIC = "VTIC";    // Linky revision
+const std::string CLinkyDecoder::m_tag_LTARF = "LTARF";  // Running period for v1
+const std::string CLinkyDecoder::m_tag_NGTF = "NGTF";  // Running period for v2
+const std::string CLinkyDecoder::m_tag_EASF = "EASF";    // counter ...
+const std::string CLinkyDecoder::m_tag_STGE = "STGE";    // Status 32 bits word
+const std::string CLinkyDecoder::m_tag_EAIT = "EAIT";    // counter active energy injected to the network
+const std::string CLinkyDecoder::m_tag_SINST1 = "SINST1";// apparent power for phase 1
+const std::string CLinkyDecoder::m_tag_SINST2 = "SINST2";// apparent power for phase 2
+const std::string CLinkyDecoder::m_tag_SINST3 = "SINST3";// apparent power for phase 3
+const std::string CLinkyDecoder::m_tag_SINSTS = "SINSTS";// global apparent power
+const std::string CLinkyDecoder::m_tag_UMOY1  = "UMOY1"; // mean voltage for phase 1
+const std::string CLinkyDecoder::m_tag_UMOY2  = "UMOY2"; // mean voltage for phase 2
+const std::string CLinkyDecoder::m_tag_UMOY3  = "UMOY3"; // mean voltage for phase 3
 
-CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
+CLinkyDecoder::CLinkyDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    :
    m_activeEnergyInjected(boost::make_shared<yApi::historization::CEnergy>("activeEnergyInjected")),
    m_runningPeriod(boost::make_shared<yApi::historization::CText>("runningPeriod")),
@@ -33,7 +33,9 @@ CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    m_production(false),
    m_runningPeriodChanged(true),
    m_tomorrowColorChanged(true),
-   m_todayColorChanged(true)
+   m_todayColorChanged(true),
+   m_firstRun(true),
+   m_ADSCalreadyReceived(false)
 {
    m_activeIndex[0] = 0;
    m_activeIndex[1] = 0;
@@ -49,11 +51,11 @@ CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
       m_counter[counter] = boost::make_shared<yApi::historization::CEnergy>("Counter" + boost::lexical_cast<std::string>(counter + 1));
 }
 
-CDecoder::~CDecoder()
+CLinkyDecoder::~CLinkyDecoder()
 {
 }
 
-void CDecoder::decodeLinkyMessage(boost::shared_ptr<yApi::IYPluginApi> api,
+void CLinkyDecoder::decodeMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                                   const boost::shared_ptr<std::map<std::string, std::vector<std::string>>>& messages)
 {
    const auto triphases = (messages->find(m_tag_SINST2) != messages->end()) ? true : false;
@@ -64,7 +66,7 @@ void CDecoder::decodeLinkyMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                      message.second);
    }
 
-   if (!m_deviceCreated)
+   if (!m_deviceCreated && m_deviceName!="")
    {
       // Create all keywords
       createFirstKeywordList(triphases);
@@ -76,7 +78,7 @@ void CDecoder::decodeLinkyMessage(boost::shared_ptr<yApi::IYPluginApi> api,
    m_api->historizeData(m_deviceName, m_keywords);
 }
 
-void CDecoder::createDeviceAndKeywords()
+void CLinkyDecoder::createDeviceAndKeywords()
 {
    YADOMS_LOG(trace) << "Nb keywords : " << "=" << m_keywords.size() ;
 
@@ -88,7 +90,7 @@ void CDecoder::createDeviceAndKeywords()
    m_deviceCreated = true;
 }
 
-void CDecoder::createFirstKeywordList(bool isTriphases)
+void CLinkyDecoder::createFirstKeywordList(bool isTriphases)
 {
    m_keywords.clear();
 
@@ -121,12 +123,11 @@ void CDecoder::createFirstKeywordList(bool isTriphases)
       m_keywords.push_back(m_activeEnergyInjected);
 }
 
-void CDecoder::createRunningKeywordList(bool isTriphases)
+void CLinkyDecoder::createRunningKeywordList(bool isTriphases)
 {
-   static bool firstRun = true;
    m_keywords.clear();
 
-   if (m_newPeriod != m_runningPeriod->get() || firstRun)
+   if (m_newPeriod != m_runningPeriod->get() || m_firstRun)
    {
       YADOMS_LOG(information) << "m_newPeriod : " << m_newPeriod;
       m_runningPeriod->set(m_newPeriod);
@@ -134,10 +135,10 @@ void CDecoder::createRunningKeywordList(bool isTriphases)
       m_keywords.push_back(m_runningPeriod);
    }
 
-   if (m_todayColorChanged || firstRun)
+   if (m_todayColorChanged || m_firstRun)
       m_keywords.push_back(m_todayColor);
 
-   if (m_tomorrowColorChanged || firstRun)
+   if (m_tomorrowColorChanged || m_firstRun)
       m_keywords.push_back(m_tomorrowColor);
 
    m_keywords.push_back(m_apparentPower[0]);
@@ -161,7 +162,7 @@ void CDecoder::createRunningKeywordList(bool isTriphases)
          m_keywords.push_back(m_meanVoltage[2]);
    }
 
-   if (firstRun)
+   if (m_firstRun)
    {
       for (unsigned char counter = 0; counter < 10; ++counter)
       {
@@ -181,10 +182,10 @@ void CDecoder::createRunningKeywordList(bool isTriphases)
    if (m_production)
       m_keywords.push_back(m_activeEnergyInjected);
 
-   firstRun = false;
+   m_firstRun = false;
 }
 
-void CDecoder::processMessage(const std::string& key,
+void CLinkyDecoder::processMessage(const std::string& key,
                               const std::vector<std::string>& values)
 {
 	try
@@ -196,12 +197,10 @@ void CDecoder::processMessage(const std::string& key,
 		{
 			YADOMS_LOG(trace) << "ADSC" << "=" << values[0];
 
-			static bool ADSCalreadyReceived = false;
-
-			if (!ADSCalreadyReceived)
+			if (!m_ADSCalreadyReceived)
 			{
 				m_deviceName = values[0];
-				ADSCalreadyReceived = true;
+            m_ADSCalreadyReceived = true;
 			}
 		}
 		else if (key == m_tag_VTIC)
@@ -316,4 +315,8 @@ void CDecoder::processMessage(const std::string& key,
 	{
 		YADOMS_LOG(error) << "Exception received !" << e.what() ;
 	}
+}
+
+bool CLinkyDecoder::isERDFCounterDesactivated() const {
+   return false;
 }
