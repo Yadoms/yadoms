@@ -270,6 +270,8 @@ void CLinky::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
 
    if (!m_decoder[position]->isERDFCounterDesactivated())
       setPluginState(api, kRunning);
+   else
+      setPluginState(api, kErDFCounterdesactivated);
 }
 
 void CLinky::processLinkyConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api) const
