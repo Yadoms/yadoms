@@ -1,3 +1,14 @@
+### 1.1.0-beta.3
+* Change timers values (time out 20s => 5s / Retry => 5s).
+* Fix timers misplaced.
+* Fix receiverHandler desactivation
+* Catch exception during the creation of the connection
+* Scan the other port when the first one is faulty
+* Fix #470 : update configuration => change GPIO Manager
+* Fix thread exit when using FTDI drivers
+* Update size of the receiver buffer into the receiver thread for FTDI driver
+* Change the plugin state color in red when the connection is lost
+
 ### 1.1.0-beta.2
 * Change Warning EJP to a switch historizer
 

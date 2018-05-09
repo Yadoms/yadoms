@@ -73,7 +73,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    // Fire immediately a sampling time
    api->getEventHandler().createTimer(kSamplingTimer,
                                       shared::event::CEventTimer::kOneShot,
-                                      boost::posix_time::seconds(0));
+                                      boost::posix_time::seconds(1));
 
    // the main loop
    YADOMS_LOG(information) << "Teleinfo plugin is running..." ;
@@ -315,7 +315,7 @@ void CTeleInfo::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, ETeleIn
          api->setPluginState(yApi::historization::EPluginState::kCustom, "updateconfiguration");
          break;
       case ETeleInfoPluginState::kConnectionLost:
-         api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionLost");
+         api->setPluginState(yApi::historization::EPluginState::kError, "connectionLost");
          break;
       case ETeleInfoPluginState::kConnecting:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
