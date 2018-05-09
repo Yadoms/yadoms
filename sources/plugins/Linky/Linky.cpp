@@ -152,6 +152,7 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             try {
                createConnection(api);
+               m_periodicSamplingTimer->start();
             }
             catch (std::exception &e)
             {
@@ -213,7 +214,6 @@ void CLinky::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
                                          kEvtPortConnection);
 
    m_port->start();
-   m_periodicSamplingTimer->start();
 }
 
 void CLinky::destroyConnection()
@@ -253,6 +253,7 @@ void CLinky::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 
       // Create new connection
       createConnection(api);
+      m_periodicSamplingTimer->start();
    }
 }
 
