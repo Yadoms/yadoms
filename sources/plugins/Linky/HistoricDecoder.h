@@ -108,6 +108,7 @@ private:
    bool m_todayColorChanged;
    bool m_firstRun;
    bool m_newWarningEJPValue;
+   bool m_ADCOalreadyReceived;
 
    static const std::string m_tag_ADCO;
    static const std::string m_tag_OPTARIF;
