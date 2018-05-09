@@ -17,6 +17,7 @@ namespace yApi = shared::plugin::yPluginApi;
 IMPLEMENT_PLUGIN(CTeleInfo)
 
 CTeleInfo::CTeleInfo():
+   m_configuration(boost::make_shared<CTeleInfoConfiguration>()),
    m_isDeveloperMode(false),
    m_runningState(ETeleInfoPluginState::kUndefined)
 {
@@ -42,11 +43,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    m_isDeveloperMode = api->getYadomsInformation()->developperMode();
 
-   m_configuration = boost::make_shared<CTeleInfoConfiguration>();
-
-   // Load configuration values (provided by database)
    m_configuration->initializeWith(api->getConfiguration());
-
    m_GPIOManager = boost::make_shared<CGPIOManager>(m_configuration);
 
    // Create the transceiver
@@ -136,30 +133,28 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             setPluginState(api, ETeleInfoPluginState::kupdateConfiguration);
             onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
             setPluginState(api, ETeleInfoPluginState::kRunning);
-
             break;
          }
       case kErrorRetryTimer:
          {
-         try {
-            createConnection(api);
-         }
-         catch (std::exception& e)
-         {
-            YADOMS_LOG(trace) << e.what();
-            errorProcess(api);
-         }
-         break;
+            try {
+               createConnection(api);
+               m_periodicSamplingTimer->start();
+            }
+            catch (std::exception& e)
+            {
+               YADOMS_LOG(trace) << e.what();
+               errorProcess(api);
+            }
             break;
          }
       case kSamplingTimer:
          {
-            // Initial port to scan
             // Activate the port
             CTeleInfoFactory::FTDI_ActivateGPIO(m_port, m_GPIOManager->getGPIO());
             m_receiveBufferHandler->activate();
 
-            //Lauch a new time the time out to detect connexion failure
+            //Lauch the time out to detect connexion failure
             m_waitForAnswerTimer->start();
             break;
          }
@@ -198,7 +193,6 @@ void CTeleInfo::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
                                              m_receiveBufferHandler,
                                              kEvtPortConnection);
    m_port->start();
-   m_periodicSamplingTimer->start();
 }
 
 void CTeleInfo::destroyConnection()
@@ -211,10 +205,6 @@ void CTeleInfo::destroyConnection()
 void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
                                       const shared::CDataContainer& newConfigurationData)
 {
-   // Stop running timers, if any
-   m_waitForAnswerTimer->stop();
-   m_periodicSamplingTimer->stop();
-
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration..." ;
    BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
@@ -239,6 +229,7 @@ void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 
    // Create new connection
    createConnection(api);
+   m_periodicSamplingTimer->start();
 }
 
 void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -262,10 +253,10 @@ void CTeleInfo::processTeleInfoConnectionEvent(boost::shared_ptr<yApi::IYPluginA
       initTeleInfoReceiver();
       
       // Restart timer and fire immediately a sampling period
-      m_periodicSamplingTimer->start();
-      api->getEventHandler().createTimer(kSamplingTimer,
+      //m_periodicSamplingTimer->start();
+      /*api->getEventHandler().createTimer(kSamplingTimer,
                                          shared::event::CEventTimer::kOneShot,
-                                         boost::posix_time::seconds(1));
+                                         boost::posix_time::seconds(1));*/
    }
    catch (shared::communication::CPortException& e)
    {
@@ -283,7 +274,6 @@ void CTeleInfo::processTeleInfoUnConnectionEvent(boost::shared_ptr<yApi::IYPlugi
       setPluginState(api, ETeleInfoPluginState::kConnectionLost);
 
    m_receiveBufferHandler->desactivate();
-
    destroyConnection();
 }
 

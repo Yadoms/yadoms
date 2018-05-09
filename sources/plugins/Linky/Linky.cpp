@@ -226,10 +226,6 @@ void CLinky::destroyConnection()
 void CLinky::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
                                    const shared::CDataContainer& newConfigurationData)
 {
-   // Stop running timers, if any
-   m_waitForAnswerTimer->stop();
-   m_periodicSamplingTimer->stop();
-
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration..." ;
    BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
