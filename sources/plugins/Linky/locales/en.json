@@ -39,7 +39,23 @@
 				"WHITE": "White",
 				"RED": "Red"
 			}
-		}   
+		},
+		"EPeriod": {
+			"name" : "Running period",
+			"values" : {
+				"AllHours": "All hours",
+				"LowCostHours": "Low cost hours",
+				"PeakCostHours": "Peak cost hour",
+				"NormalCostHours": "Normal cost hours",
+            "MobilePeakCostHours": "Mobile peak cost hours",
+            "LowCostBlueDays": "Low cost blue day",
+            "LowCostWhiteDays": "Low cost white day",
+            "LowCostRedDays": "Low cost red day",
+            "NormalCostBlueDays": "Normal cost blue day",
+            "NormalCostWhiteDays": "Normal cost white day",
+            "NormalCostRedDays": "Normal cost red day"
+			}
+		}
    },      
 	"customLabels": {
 		"pluginState": {

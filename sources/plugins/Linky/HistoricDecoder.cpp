@@ -47,7 +47,8 @@ CHistoricDecoder::CHistoricDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    m_optarif(OP_NOT_DEFINED),
    m_todayColorChanged(true),
    m_firstRun(true),
-   m_newWarningEJPValue(false)
+   m_newWarningEJPValue(false),
+   m_ADCOalreadyReceived(false)
 {
    m_instantCurrentPhase[0] = boost::make_shared<yApi::historization::CCurrent>("InstantCurrentPhase1");
    m_instantCurrentPhase[1] = boost::make_shared<yApi::historization::CCurrent>("InstantCurrentPhase2");
@@ -272,128 +273,101 @@ void CHistoricDecoder::processMessage(const std::string& key,
 {
 	try
 	{
-		if (key == m_tag_ADCO)
-		{
+		if (key == m_tag_ADCO){
 			YADOMS_LOG(trace) << "ADCO" << "=" << value[0] ;
 
-			static bool ADCOalreadyReceived = false;
-
-			if (!ADCOalreadyReceived)
-			{
+			if (!m_ADCOalreadyReceived){
 				m_deviceName = value[0];
-				ADCOalreadyReceived = true;
+            m_ADCOalreadyReceived = true;
 			}
 		}
-		else if (key == m_tag_OPTARIF)
-		{
+		else if (key == m_tag_OPTARIF){
 			YADOMS_LOG(trace) << "OPTARIF" << "=" << value[0] ;
 			if (m_keywords.empty())
 				declareKeywordList(value[0]);
 		}
-		else if (key == m_tag_BASE)
-		{
+		else if (key == m_tag_BASE){
 			YADOMS_LOG(trace) << "BASE" << "=" << value[0] ;
 			m_baseCounter->set(std::stoll(value[0]));
 		}
-		else if (key == m_tag_HCHC)
-		{
+		else if (key == m_tag_HCHC){
 			YADOMS_LOG(trace) << "HCHC" << "=" << value[0] ;
 			m_lowCostCounter->set(std::stoll(value[0]));
 		}
-		else if (key == m_tag_HCHP)
-		{
+		else if (key == m_tag_HCHP){
 			YADOMS_LOG(trace) << "HCHP" << "=" << value[0] ;
 			m_normalCostCounter->set(std::stoll(value[0]));
 		}
-		else if (key == m_tag_EJPHPM)
-		{
+		else if (key == m_tag_EJPHPM){
 			YADOMS_LOG(trace) << "EJPHPM" << "=" << value[0] ;
 			m_EJPPeakPeriod->set(std::stoll(value[0]));
 		}
-		else if (key == m_tag_EJPHN)
-		{
+		else if (key == m_tag_EJPHN){
 			YADOMS_LOG(trace) << "EJPHN" << "=" << value[0] ;
 			m_EJPNormalPeriod->set(std::stoll(value[0]));
 		}
-		else if (key == m_tag_BBRHCJB)
-		{
+		else if (key == m_tag_BBRHCJB){
 			YADOMS_LOG(trace) << "BBRHCJB" << "=" << value[0] ;
 			m_tempoBlueDaysLowCostPeriod->set(std::stoll(value[0]));
 		}
-		else if (key == m_tag_BBRHPJB)
-		{
+		else if (key == m_tag_BBRHPJB){
 			YADOMS_LOG(trace) << "BBRHPJB" << "=" << value[0] ;
 			m_tempoBlueDaysNormalCostPeriod->set(std::stoll(value[0]));
-		}
-		else if (key == m_tag_BBRHCJW)
+		}else if (key == m_tag_BBRHCJW)
 		{
 			YADOMS_LOG(trace) << "BBRHCJW" << "=" << value[0] ;
 			m_tempoWhiteDaysLowCostPeriod->set(std::stoll(value[0]));
 		}
-		else if (key == m_tag_BBRHPJW)
-		{
+		else if (key == m_tag_BBRHPJW){
 			YADOMS_LOG(trace) << "BBRHPJW" << "=" << value[0] ;
 			m_tempoWhiteDaysNormalCostPeriod->set(std::stoll(value[0]));
 		}
-		else if (key == m_tag_BBRHCJR)
-		{
+		else if (key == m_tag_BBRHCJR){
 			YADOMS_LOG(trace) << "BBRHCJR" << "=" << value[0] ;
 			m_tempoRedDaysLowCostPeriod->set(std::stoll(value[0]));
 		}
-		else if (key == m_tag_BBRHPJR)
-		{
+		else if (key == m_tag_BBRHPJR){
 			YADOMS_LOG(trace) << "BBRHPJR" << "=" << value[0] ;
 			m_tempoRedDaysNormalCostPeriod->set(std::stoll(value[0]));
 		}
-		else if (key == m_tag_PTEC)
-		{
+		else if (key == m_tag_PTEC){
 			YADOMS_LOG(trace) << "PTEC" << "=" << value[0] ;
 			m_TimePeriod->set(value[0]);
 		}
-		else if (key == m_tag_IINST)
-		{
+		else if (key == m_tag_IINST){
 			YADOMS_LOG(trace) << "IINST" << "=" << value[0] ;
 			m_instantCurrent->set(std::stod(value[0]));
 		}
-      else if (key == m_tag_IINST1)
-      {
+      else if (key == m_tag_IINST1){
          YADOMS_LOG(trace) << "IINST1" << "=" << value[0];
          m_instantCurrentPhase[0]->set(std::stod(value[0]));
       }
-      else if (key == m_tag_IINST2)
-      {
+      else if (key == m_tag_IINST2){
          YADOMS_LOG(trace) << "IINST2" << "=" << value[0];
          m_instantCurrentPhase[1]->set(std::stod(value[0]));
       }
-      else if (key == m_tag_IINST3)
-      {
+      else if (key == m_tag_IINST3){
          YADOMS_LOG(trace) << "IINST3" << "=" << value[0];
          m_instantCurrentPhase[2]->set(std::stod(value[0]));
       }
-		else if (key == m_tag_PAPP)
-		{
+		else if (key == m_tag_PAPP){
 			YADOMS_LOG(trace) << "PAPP" << "=" << value[0] ;
 			m_apparentPower->set(std::stol(value[0]));
 		}
-		else if (key == m_tag_DEMAIN)
-		{
+		else if (key == m_tag_DEMAIN){
 			YADOMS_LOG(trace) << "DEMAIN" << "=" << value[0] ;
          linky::specificHistorizers::EColor temp = linky::specificHistorizers::EColor(value[0]);
-         if (temp != m_ForecastPeriod->get())
-         {
+         if (temp != m_ForecastPeriod->get()){
             m_ForecastPeriod->set(temp);
             m_todayColorChanged = true;
          }
 		}
-      else if (key == m_tag_PEJP)
-      {
+      else if (key == m_tag_PEJP){
          YADOMS_LOG(information) << "PEJP" << "=" << value[0];
          m_newWarningEJPValue = true;
       }
 		else
-		{
 			YADOMS_LOG(warning) << "label " << key << " not processed" ;
-		}
 	}
 	catch (std::exception& e )
 	{
