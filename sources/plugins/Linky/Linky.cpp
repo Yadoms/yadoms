@@ -152,6 +152,7 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             try {
                createConnection(api);
+               m_periodicSamplingTimer->start();
             }
             catch (std::exception &e)
             {
@@ -213,7 +214,6 @@ void CLinky::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
                                          kEvtPortConnection);
 
    m_port->start();
-   m_periodicSamplingTimer->start();
 }
 
 void CLinky::destroyConnection()
@@ -226,10 +226,6 @@ void CLinky::destroyConnection()
 void CLinky::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
                                    const shared::CDataContainer& newConfigurationData)
 {
-   // Stop running timers, if any
-   m_waitForAnswerTimer->stop();
-   m_periodicSamplingTimer->stop();
-
    // Configuration was updated
    YADOMS_LOG(information) << "Update configuration..." ;
    BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
@@ -257,6 +253,7 @@ void CLinky::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 
       // Create new connection
       createConnection(api);
+      m_periodicSamplingTimer->start();
    }
 }
 
