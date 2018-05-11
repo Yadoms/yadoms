@@ -108,10 +108,29 @@ BOOST_AUTO_TEST_CASE(NominalEventHandler1TimerPeriodic)
    const int evtId = 123456;
    evtHandler.createTimer(evtId, shared::event::CEventTimer::kPeriodic, period);
 
-   for (int noOccurence = 1; noOccurence <= 5; ++noOccurence)
+   boost::posix_time::ptime creationTime = shared::currentTime::Provider().now();
+   const boost::posix_time::time_duration precision = boost::posix_time::milliseconds(50);
+   int counter = 0;
+   bool exit = false;
+
+   while (!exit)
    {
-      BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents((period * noOccurence) - boost::posix_time::milliseconds(1)), shared::event::kTimeout); // Event not yet received
-      BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents((period * noOccurence) + boost::posix_time::milliseconds(1)), evtId); // Event not yet received
+      switch (evtHandler.waitForEvents())
+      {
+         case evtId:
+         {
+            auto receivedTime = shared::currentTime::Provider().now();
+            BOOST_REQUIRE_LT((receivedTime - creationTime), precision);
+            ++counter;
+
+            if (counter > 5)
+               exit = true;
+         }
+         break;
+      default:
+         BOOST_FAIL("default case should not be fired !");
+         break;
+      }
    }
 }
 

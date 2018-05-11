@@ -29,13 +29,17 @@ namespace shared
             throw exception::CInvalidParameter("no period value was provided to start timer");
          const auto& periodToUse = (period != boost::date_time::not_a_date_time) ? period : m_period;
 
-         // If periodic (and not the first time), next start point begins from last start point
-         // Else next start point begins from now
-         auto startPoint = (m_periodicity == kPeriodic && m_nextStopPoint != boost::date_time::not_a_date_time)
-                              ? m_nextStopPoint
-                              : currentTime::Provider().now();
+         // reload the nextStopPoint only when it was stopped before
+         if (m_nextStopPoint == boost::date_time::not_a_date_time)
+         {
+            // If periodic (and not the first time), next start point begins from last start point
+            // Else next start point begins from now
+            auto startPoint = (m_periodicity == kPeriodic && m_nextStopPoint != boost::date_time::not_a_date_time)
+               ? m_nextStopPoint
+               : currentTime::Provider().now();
 
-         m_nextStopPoint = startPoint + periodToUse;
+            m_nextStopPoint = startPoint + periodToUse;
+         }
       }
 
       void CEventTimer::stop()
@@ -68,5 +72,3 @@ namespace shared
       }
    }
 } // namespace shared::event
-
-
