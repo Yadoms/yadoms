@@ -115,4 +115,28 @@ BOOST_AUTO_TEST_CASE(NominalEventHandler1TimerPeriodic)
    }
 }
 
+//--------------------------------------------------------------
+/// \brief	    Start function without stop timer
+/// \result     No Error
+//--------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(StartTimerAfterCreation)
+{
+   const boost::posix_time::time_duration period = boost::posix_time::seconds(30);
+   const auto evtId = 123456;
+
+   CEventTimerAccessProtectedMembers timer(evtId, shared::event::CEventTimer::kPeriodic, period);
+   auto nextTimePoint(shared::currentTime::Provider().now() + period);
+
+   BOOST_CHECK_EQUAL(timer.getId(), evtId);
+   BOOST_CHECK_EQUAL(timer.getNextStopPoint(), nextTimePoint);
+   BOOST_CHECK_EQUAL(timer.canBeRemoved(), false);
+
+   timer.start();
+
+   // Should be the same time point than before
+   BOOST_CHECK_EQUAL(timer.getId(), evtId);
+   BOOST_CHECK_EQUAL(timer.getNextStopPoint(), nextTimePoint);
+   BOOST_CHECK_EQUAL(timer.canBeRemoved(), false);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
