@@ -1,7 +1,9 @@
 ### 2.1.0-beta.3
 
-#### New features and fixes
-* Fix 463 Rolling title doesn't work for some widgets
+#### Web Client
+* Fix #463 - Rolling title doesn't work for some widgets
+* Fix #472 - Correct alignment for checkboxes and designation
+* Fix #475 - "Add plugin" stay at the top of the dashboard form instead of "Dashboard"
 
 
 ### 2.1.0-beta.2
