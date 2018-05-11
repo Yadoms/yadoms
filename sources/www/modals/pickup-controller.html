@@ -85,8 +85,8 @@ Yadoms.askPackages = function (elements, instanceManager, thumbnail, title, call
         $detailsDiv.hide();	
 
 		// Add the correct title
-	    $("h4#myModalLabel").attr("data-i18n", title);
-		$("h4#myModalLabel").i18n();
+	    $("div#new-pickup-modal h4#myModalLabel").attr("data-i18n", title);
+		$("div#new-pickup-modal h4#myModalLabel").i18n();
 	
         $("button#btn-close-details").addClass("hidden");
         $("ul#ul-add-element").empty();
