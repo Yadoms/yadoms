@@ -160,7 +160,7 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
             catch (std::exception& e)
             {
-               YADOMS_LOG(information) << "Unknow error : " << e.what();
+               YADOMS_LOG(error) << "Unknow error : " << e.what();
                request->sendError(e.what());
                setPluginState(api, kmanuallyCreationDeviceFailed);
             }
@@ -308,6 +308,7 @@ void CWES::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, EWESPluginSt
          break;
       case kAtLeastOneConnectionFaulty:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "kAtLeastOneConnectionFaulty");
+         break;
       case kmanuallyCreationDeviceFailed:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "manuallyCreationError");
          break;
