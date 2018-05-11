@@ -1,0 +1,44 @@
+{
+	"type": "Nitram",
+	"version": "1.0.0-rc.1",
+	"author": "Jean-Michel BERHAULT",
+   "url": "https://github.com/Yadoms/yadoms/wiki/Nitram",
+	"credits": "",
+	"supportedPlatforms": "all",
+	"configurationSchema": {
+		"SerialPort": {
+			"type": "enum",
+			"values": {
+				"__Binding__": {
+					"type": "system",
+					"query": "serialPorts"
+				}
+			}
+		},
+		"UpsShutdownTimers": {
+			"type": "section",
+			"content": {
+				"ShutdownDelay": {
+					"type": "int",
+					"defaultValue": "0",
+					"minimumValue": "0",
+					"maximumValue": "32767",
+					"precision": "1"
+				},
+            "UpsRestoreTimer": {
+               "type": "section",
+               "enableWithCheckBox": "true",
+               "enableWithCheckBoxDefaultValue": "true",
+               "content": {            
+                  "RestoreDelay": {
+                     "type": "int",
+                     "defaultValue": "0",
+                     "minimumValue": "0",
+                     "maximumValue": "32767"
+                  }
+               } 
+            }               
+         }
+		}
+   }
+}

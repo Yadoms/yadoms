@@ -1,0 +1,47 @@
+﻿{
+	"name": "Nitram Elite",
+	"description": "Onduleurs Nitram de la gamme Elite",
+	"configurationSchema": {
+		"SerialPort": {
+			"name": "Port série",
+			"description": "Le port série (virtuel) connecté à l'onduleur"
+		},
+		"UpsShutdownTimers": {
+			"name": "Délai d'arrêt",
+			"description": "Lorsque Yadoms envoi la commande d'arrêt, le plugin indique à l'onduleur ces délais de façon à retarder la coupure, et le redémarrage de l'alimentation de la sortie de l'onduleur",
+			"content": {
+				"ShutdownDelay": {
+					"name": "Délai de coupure (minutes)",
+					"description": "Lorque le plugin commandera la coupure d'alimentation de la sortie de l'onduleur, celui-ci respectera ce délai avant la coupure effective, afin de permettre au système alimenté de s'arrêter correctement"
+				},
+            "UpsRestoreTimer": {
+               "name": "Configuration de restauration de l'UPS",
+               "description": "Lors du retour de la tension secteur, l'onduleur attendra ce délai avant d'alimenter sa sortie",
+               "content":{
+                  "RestoreDelay": {
+                     "name": "Délai de restauration (minutes)",
+                     "description": ""
+                  }
+               }
+            }
+			}
+		}     
+	},
+	"enumerations": {
+		"EUPSState": {
+			"name" : "UPS Status",
+			"values" : {
+				"Charging": "En chargement",
+				"Discharging": "En déchargement",
+				"FullyCharged": "Complètement chargé"
+			}
+		}
+   },   
+	"customLabels": {
+		"pluginState": {
+			"connecting": "Connexion en cours...",
+			"connectionFailed": "Erreur de connexion, réessai dans un moment...",
+			"updateConfiguration": "Mise à jour de la configuration..."
+		}
+	}
+}
