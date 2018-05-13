@@ -67,6 +67,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    case CProfile_A5_12_Common::kCumulativeValue:
       m_cumulative[channel]->set(CProfile_A5_12_Common::applyDivisorInInt(meterReading, divisor));
       historizers.push_back(m_cumulative[channel]);
+      break;
    case CProfile_A5_12_Common::kCurrentValue:
       m_currentValue[channel]->set(CProfile_A5_12_Common::applyDivisorInDouble(meterReading, divisor));
       historizers.push_back(m_currentValue[channel]);
