@@ -1,3 +1,5 @@
+#pragma once
+
 // Includes needed to compile tested classes
 #include "../../../../sources/shared/shared/currentTime/ICurrentTime.h"
 

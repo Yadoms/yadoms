@@ -5,6 +5,8 @@
 #include "../../../../sources/shared/shared/event/EventTimer.h"
 #include "../../../../sources/shared/shared/event/EventHandler.hpp"
 
+#include "../mock/shared/currentTime/DefaultCurrentTimeMock.h"
+
 shared::event::CEventHandler EvtHandler;
 
 BOOST_AUTO_TEST_SUITE(TestEventTimer)
@@ -14,7 +16,7 @@ BOOST_AUTO_TEST_SUITE(TestEventTimer)
 class CEventTimerAccessProtectedMembers : public shared::event::CEventTimer
 {
 public:
-   CEventTimerAccessProtectedMembers(int eventId, EPeriodicity periodicity = kOneShot,
+   explicit CEventTimerAccessProtectedMembers(int eventId, EPeriodicity periodicity = kOneShot,
       const boost::posix_time::time_duration& period = boost::date_time::not_a_date_time)
       :CEventTimer(eventId, periodicity, period) {}
    virtual ~CEventTimerAccessProtectedMembers() {}
@@ -82,14 +84,75 @@ BOOST_AUTO_TEST_CASE(StopAndRestartTimer)
 }
 
 //--------------------------------------------------------------
+/// \brief	    Multi starts on one-shot timer
+/// \result     No Error
+//--------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(MultiStartsOnOneShotTimer)
+{
+   auto timeProviderMock = useTimeMock();
+
+   const boost::posix_time::time_duration period = boost::posix_time::seconds(5);
+   const auto evtId = 123456;
+
+   CEventTimerAccessProtectedMembers timer(evtId, shared::event::CEventTimer::kOneShot, period); // Timer started here
+   auto nextTimePoint(shared::currentTime::Provider().now() + period);
+
+   BOOST_CHECK_EQUAL(timer.getId(), evtId);
+   BOOST_CHECK_EQUAL(timer.getNextStopPoint(), nextTimePoint);
+   BOOST_CHECK_EQUAL(timer.canBeRemoved(), false);
+
+   // Restart 2 seconds after first start
+   timeProviderMock->sleep(boost::posix_time::seconds(2));
+
+   timer.start(); // Restart timer
+
+   nextTimePoint += boost::posix_time::seconds(2);
+
+   BOOST_CHECK_EQUAL(timer.getId(), evtId);
+   BOOST_CHECK_EQUAL(timer.getNextStopPoint(), nextTimePoint);
+   BOOST_CHECK_EQUAL(timer.canBeRemoved(), false);
+}
+
+//--------------------------------------------------------------
+/// \brief	    Multi starts on periodic timer
+/// \result     No Error
+//--------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(MultiStartsOnPeriodicTimer)
+{
+   auto timeProviderMock = useTimeMock();
+
+   const boost::posix_time::time_duration period = boost::posix_time::seconds(5);
+   const auto evtId = 123456;
+
+   CEventTimerAccessProtectedMembers timer(evtId, shared::event::CEventTimer::kPeriodic, period); // Timer started here
+   auto nextTimePoint(shared::currentTime::Provider().now() + period);
+
+   BOOST_CHECK_EQUAL(timer.getId(), evtId);
+   BOOST_CHECK_EQUAL(timer.getNextStopPoint(), nextTimePoint);
+   BOOST_CHECK_EQUAL(timer.canBeRemoved(), false);
+
+   // Restart 2 seconds after first start
+   timeProviderMock->sleep(boost::posix_time::seconds(2));
+   
+   timer.start(); // Restart timer
+   // nextTimePoint should not have changed
+
+   BOOST_CHECK_EQUAL(timer.getId(), evtId);
+   BOOST_CHECK_EQUAL(timer.getNextStopPoint(), nextTimePoint);
+   BOOST_CHECK_EQUAL(timer.canBeRemoved(), false);
+}
+
+//--------------------------------------------------------------
 /// \brief	    Test timer with CEventHandler
 /// \result     No Error : Only One Timer Detected
+/// \Note that we can not use CDefaultCurrentTimeMock here as CEventHandler.waitForEvents uses
+/// some system functions depending on real time (not depending on our time provider)
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(NominalEventHandlerTimerOneShot)
 {
    shared::event::CEventHandler evtHandler;
    const boost::posix_time::time_duration period = boost::posix_time::seconds(1);
-   const int evtId = 123456;
+   const auto evtId = 123456;
 
    evtHandler.createTimer(evtId, shared::event::CEventTimer::kOneShot, period);
    BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::posix_time::seconds(2)), evtId); // One Timer
@@ -99,38 +162,20 @@ BOOST_AUTO_TEST_CASE(NominalEventHandlerTimerOneShot)
 //--------------------------------------------------------------
 /// \brief	    Test timer with CEventHandler
 /// \result     No Error : 1 periodic timer, test 5 occurences 
+/// \Note that we can not use CDefaultCurrentTimeMock here as CEventHandler.waitForEvents uses
+/// some system functions depending on real time (not depending on our time provider)
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(NominalEventHandler1TimerPeriodic)
 {
    shared::event::CEventHandler evtHandler;
 
-   const boost::posix_time::time_duration period = boost::posix_time::seconds(1);
-   const int evtId = 123456;
-   evtHandler.createTimer(evtId, shared::event::CEventTimer::kPeriodic, period);
+   const auto evtId = 123456;
+   evtHandler.createTimer(evtId, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(1));
 
-   boost::posix_time::ptime creationTime = shared::currentTime::Provider().now();
-   const boost::posix_time::time_duration precision = boost::posix_time::milliseconds(50);
-   int counter = 0;
-   bool exit = false;
-
-   while (!exit)
+   for (auto noOccurence = 1; noOccurence <= 5; ++noOccurence)
    {
-      switch (evtHandler.waitForEvents())
-      {
-         case evtId:
-         {
-            auto receivedTime = shared::currentTime::Provider().now();
-            BOOST_REQUIRE_LT((receivedTime - creationTime), precision);
-            ++counter;
-
-            if (counter > 5)
-               exit = true;
-         }
-         break;
-      default:
-         BOOST_FAIL("default case should not be fired !");
-         break;
-      }
+      BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(950)), shared::event::kTimeout); // Event not yet received
+      BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(100)), evtId); // Event received
    }
 }
 
