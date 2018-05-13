@@ -67,6 +67,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    case CProfile_A5_12_Common::kCumulativeValue:
       m_volume[channel]->set(CProfile_A5_12_Common::applyDivisorInDouble(meterReading, divisor));
       historizers.push_back(m_volume[channel]);
+      break;
    case CProfile_A5_12_Common::kCurrentValue:
       m_debit[channel]->set(CProfile_A5_12_Common::applyDivisorInDouble(meterReading, divisor) / 1000); // Provided in liter/s
       historizers.push_back(m_debit[channel]);
