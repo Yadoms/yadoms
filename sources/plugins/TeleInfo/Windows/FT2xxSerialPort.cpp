@@ -140,10 +140,10 @@ std::vector<int> CFT2xxSerialPort::getPortComNumber()
 
 CFT2xxSerialPort::~CFT2xxSerialPort()
 {
-   YADOMS_LOG(debug) << "CFT2xxSerialPort::~CFT2xxSerialPort()";
    // We desactivate running GPIOs if activated
    desactivateGPIO();
    CFT2xxSerialPort::stop();
+   YADOMS_LOG(debug) << "CFT2xxSerialPort::~CFT2xxSerialPort()";
 }
 
 void CFT2xxSerialPort::setReceiveBufferMaxSize(std::size_t size)
@@ -194,42 +194,39 @@ void CFT2xxSerialPort::receiverThread() const
       DWORD status;
       DWORD bytesReceived;
 
-      if (m_ftHandle)
+      if (!m_isConnected) break;
+
+      ftGetStatus(m_ftHandle, &rxBytes, &txBytes, &eventDWord);
+      if (eventDWord & FT_EVENT_MODEM_STATUS)
       {
-         ftGetStatus(m_ftHandle, &rxBytes, &txBytes, &eventDWord);
-         if (eventDWord & FT_EVENT_MODEM_STATUS)
+         // modem status event detected, so get current modem status
+         ftGetModemStatus(m_ftHandle, &status);
+         YADOMS_LOG(debug) << "Modem status event detected => exit";
+         break;
+      }
+      if (rxBytes > 0)
+      {
+         char rxBuffer[2048] = { 0 };
+         const auto ftStatus = ftRead(m_ftHandle, rxBuffer, rxBytes, &bytesReceived);
+
+         // Read OK
+         shared::communication::CByteBuffer buffer(bytesReceived);
+         memcpy(buffer.begin(), rxBuffer, bytesReceived);
+
+         if (ftStatus == FT_OK)
          {
-            // modem status event detected, so get current modem status
-            ftGetModemStatus(m_ftHandle, &status);
-            YADOMS_LOG(debug) << "Modem status event detected => exit";
+            // FT_Read OK
+
+            if (!!m_receiveBufferHandler && bytesReceived > 0)
+               m_receiveBufferHandler->push(buffer);
+         }
+         else
+         {
+            // FT_Read Failed
+            YADOMS_LOG(debug) << "FT_Read failed";
             break;
          }
-         if (rxBytes > 0)
-         {
-            char rxBuffer[256];
-            const auto ftStatus = ftRead(m_ftHandle, rxBuffer, rxBytes, &bytesReceived);
-
-            // Read OK
-            shared::communication::CByteBuffer buffer(bytesReceived);
-            memcpy(buffer.begin(), rxBuffer, bytesReceived);
-
-            if (ftStatus == FT_OK)
-            {
-               // FT_Read OK
-
-               if (!!m_receiveBufferHandler && bytesReceived > 0)
-                  m_receiveBufferHandler->push(buffer);
-            }
-            else
-            {
-               // FT_Read Failed
-               YADOMS_LOG(debug) << "FT_Read failed";
-               break;
-            }
-         }
       }
-      else
-         break; // We quit the loop in case of null handle
    }
 
    YADOMS_LOG(debug) << "Finish receiverThread";
@@ -411,10 +408,10 @@ void CFT2xxSerialPort::disconnect()
 
       if (m_ftHandle != NULL)
       {
-         ftClose(m_ftHandle);
-         YADOMS_LOG(debug) << "Close the FTDI serial port";
-         m_ftHandle = NULL;
          m_isConnected = false;
+         ftClose(m_ftHandle);
+         m_ftHandle = NULL;
+         YADOMS_LOG(debug) << "Close the FTDI serial port";
       }
    }
    catch (boost::system::system_error& e)

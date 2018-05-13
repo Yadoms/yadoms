@@ -384,8 +384,14 @@ namespace equipments
          else
             api->declareDevice(m_deviceName, "WES", "WES", keywordsToDeclare, details);
       }
+      catch (CTimeOutException& e)
+      {
+         YADOMS_LOG(error) << e.what();
+         throw e;
+      }
       catch (CtooLowRevisionException& e)
       {
+         YADOMS_LOG(error) << e.what();
          throw e;
       }
       catch (std::exception& e)
@@ -663,5 +669,3 @@ namespace equipments
    {
    }
 }// namespace equipments
-
-
