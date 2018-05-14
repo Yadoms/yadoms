@@ -1,6 +1,7 @@
 ### 2.1.0-beta.3
 
 #### Web Client
+* Fix unsupported browser detection
 * Fix #463 - Rolling title doesn't work for some widgets
 * Fix #472 - Correct alignment for checkboxes and designation
 * Fix #475 - "Add plugin" stay at the top of the dashboard form instead of "Dashboard"
