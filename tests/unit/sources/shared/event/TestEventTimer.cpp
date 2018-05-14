@@ -32,11 +32,13 @@ public:
 
 
 //--------------------------------------------------------------
-/// \brief	    Nominal case 1
+/// \brief	    Nominal case
 /// \result     No Error
 //--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(Nominal1)
+BOOST_AUTO_TEST_CASE(Nominal)
 {
+   useTimeMock();
+
    const boost::posix_time::time_duration period = boost::posix_time::seconds(5);
    const auto evtId = 123456;
 
@@ -60,6 +62,8 @@ BOOST_AUTO_TEST_CASE(Nominal1)
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(StopAndRestartTimer)
 {
+   useTimeMock();
+
    const boost::posix_time::time_duration period = boost::posix_time::seconds(5);
    const auto evtId = 123456;
 
@@ -165,7 +169,7 @@ BOOST_AUTO_TEST_CASE(NominalEventHandlerTimerOneShot)
 /// \Note that we can not use CDefaultCurrentTimeMock here as CEventHandler.waitForEvents uses
 /// some system functions depending on real time (not depending on our time provider)
 //--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(NominalEventHandler1TimerPeriodic)
+BOOST_AUTO_TEST_CASE(NominalEventHandlerTimerPeriodic)
 {
    shared::event::CEventHandler evtHandler;
 
@@ -177,30 +181,6 @@ BOOST_AUTO_TEST_CASE(NominalEventHandler1TimerPeriodic)
       BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(950)), shared::event::kTimeout); // Event not yet received
       BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(100)), evtId); // Event received
    }
-}
-
-//--------------------------------------------------------------
-/// \brief	    Start function without stop timer
-/// \result     No Error
-//--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(StartTimerAfterCreation)
-{
-   const boost::posix_time::time_duration period = boost::posix_time::seconds(30);
-   const auto evtId = 123456;
-
-   CEventTimerAccessProtectedMembers timer(evtId, shared::event::CEventTimer::kPeriodic, period);
-   auto nextTimePoint(shared::currentTime::Provider().now() + period);
-
-   BOOST_CHECK_EQUAL(timer.getId(), evtId);
-   BOOST_CHECK_EQUAL(timer.getNextStopPoint(), nextTimePoint);
-   BOOST_CHECK_EQUAL(timer.canBeRemoved(), false);
-
-   timer.start();
-
-   // Should be the same time point than before
-   BOOST_CHECK_EQUAL(timer.getId(), evtId);
-   BOOST_CHECK_EQUAL(timer.getNextStopPoint(), nextTimePoint);
-   BOOST_CHECK_EQUAL(timer.canBeRemoved(), false);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -317,7 +317,7 @@ namespace shared
 
          //--------------------------------------------------------------
          /// \brief	   Get the next time event stop point
-         ///            This function compute the next event to arrive, between registred time events
+         ///            This function computes the next event to arrive, between registred time events
          /// \return    The next time event (null pointer if none)
          //--------------------------------------------------------------
          boost::shared_ptr<ITimeEvent> getNextTimeEventStopPoint() const
@@ -409,7 +409,7 @@ namespace shared
             {
                if ((*it).unique() && (*it)->canBeRemoved())
                {
-               // Time event no more make sense, and is not referenced by user, so erase it from the list
+               // Time event no more makes sense, and is not referenced by user, so erase it from the list
                   it = m_timeEvents.erase(it);
                }
                else
