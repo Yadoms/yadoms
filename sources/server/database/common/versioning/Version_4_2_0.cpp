@@ -219,7 +219,7 @@ namespace database
             newLocation.set("latitude", oldLocationContainer->get<std::string>("latitude"));
             newLocation.set("longitude", oldLocationContainer->get<std::string>("longitude"));
             newLocation.set("altitude", oldLocationContainer->get<std::string>("altitude"));
-            newLocation.set("timezone", oldLocationContainer->get<std::string>("timezone"));
+            newLocation.set("timezone", oldLocationContainer->getWithDefault<std::string>("timezone", "Europe/Paris"));
 
             return newLocation;
          }
