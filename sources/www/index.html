@@ -114,10 +114,18 @@
 
     <div id="templates" class="hidden"></div>
 
+    <script src="libs/bowser-1.3.0/js/bowser.min.js"></script>
+    <script type="text/javascript">
+        if (bowser.name === "Internet Explorer") {
+            debugger;
+            console.log("incompatible browser !");
+            window.location.href = "browser.html";
+        }
+    </script>
+
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="libs/bowser-1.3.0/js/bowser.min.js"></script>
     <script src="libs/jquery/js/jquery-2.2.4.min.js"></script>
     <!-- must be included before bootstrap -->
     <script src="libs/jquery-ui/js/jquery-ui.min.js"></script>
@@ -192,6 +200,7 @@
     <script src="js/objects/widget-api.js"></script>
 
     <script type="text/javascript">
+        
         //base configuration
         $.ajaxSetup({
             contentType: "application/json; charset=utf-8",
@@ -244,12 +253,6 @@
                                         processFirstStart();
                                     }
                                 });
-
-                            if (bowser.name === "Internet Explorer") {
-                                console.log("incompatible browser !");
-                                window.location.href = "browser.html";
-                                return;
-                            }
 
                         });
 

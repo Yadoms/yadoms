@@ -90,6 +90,7 @@
     <script src="libs/i18next/js/i18next.min.js"></script>
     <script src="libs/i18next/js/jquery-i18next.min.js"></script>
     <script src="libs/i18next/js/i18nextXHRBackend.min.js"></script>
+    <script src="js/utility.js"></script>
     <script src="js/i18n-manager.js"></script>
 
 	<script type="text/javascript">
@@ -101,7 +102,7 @@
        i18nManager.init()
        .done(function() {   
          $("html").i18n();
-         var timeRemaining = 5;
+         var timeRemaining = 10;
          $("p.line2").text($.t("404Page.line2", {count : timeRemaining}));
 
          setInterval(function() {
