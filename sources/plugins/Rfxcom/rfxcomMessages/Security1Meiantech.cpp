@@ -8,9 +8,9 @@ namespace rfxcomMessages
 {
    CSecurity1Meiantech::CSecurity1Meiantech()
       : m_statusByte(0),
-      m_panic(boost::make_shared<yApi::historization::CSwitch>("panic")),
-      m_armAlarm(boost::make_shared<yApi::historization::CArmingAlarm>("armAlarm", yApi::EKeywordAccessMode::kGetSet)),
-      m_keywords({ m_panic, m_armAlarm })
+        m_panic(boost::make_shared<yApi::historization::CSwitch>("panic")),
+        m_armAlarm(boost::make_shared<yApi::historization::CArmingAlarm>("armAlarm", yApi::EKeywordAccessMode::kGetSet)),
+        m_keywords({m_panic, m_armAlarm})
    {
    }
 
@@ -25,7 +25,7 @@ namespace rfxcomMessages
       return "Meiantech";
    }
 
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CSecurity1Meiantech::keywords() const
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CSecurity1Meiantech::keywords() const
    {
       return m_keywords;
    }
@@ -63,27 +63,42 @@ namespace rfxcomMessages
    void CSecurity1Meiantech::setFromProtocolState(unsigned char statusByte)
    {
       m_statusByte = statusByte;
+
       switch (m_statusByte)
       {
+      case sStatusNormal:
+      case sStatusNormalDelayed:
+      case sStatusNoMotion:
       case sStatusPanicOff:
-      case sStatusNoMotionTamper:
-      case sStatusNoMotion: m_panic->set(false);
+         m_panic->set(false);
          break;
+
+      case sStatusAlarm:
+      case sStatusAlarmDelayed:
+      case sStatusMotion:
       case sStatusPanic:
+      case sStatusNormalTamper:
+      case sStatusNormalDelayedTamper:
+      case sStatusAlarmTamper:
       case sStatusMotionTamper:
-      case sStatusMotion: m_panic->set(true);
+      case sStatusNoMotionTamper:
+         m_panic->set(true);
          break;
+
       case sStatusArmAway:
-      case sStatusArmAwayDelayed: m_armAlarm->set(yApi::historization::EArmingAlarmStatus::kArmedAway);
+      case sStatusArmAwayDelayed:
+         m_armAlarm->set(yApi::historization::EArmingAlarmStatus::kArmedAway);
          break;
       case sStatusArmHome:
-      case sStatusArmHomeDelayed: m_armAlarm->set(yApi::historization::EArmingAlarmStatus::kArmedAtHome);
+      case sStatusArmHomeDelayed:
+         m_armAlarm->set(yApi::historization::EArmingAlarmStatus::kArmedAtHome);
          break;
-      case sStatusDisarm: m_armAlarm->set(yApi::historization::EArmingAlarmStatus::kDisarmed);
+      case sStatusDisarm:
+         m_armAlarm->set(yApi::historization::EArmingAlarmStatus::kDisarmed);
          break;
 
       default:
-         throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(m_statusByte));
+         throw shared::exception::CInvalidParameter("state, " + boost::lexical_cast<std::string>(static_cast<unsigned int>(m_statusByte)));
       }
    }
 
@@ -97,5 +112,3 @@ namespace rfxcomMessages
       return static_cast<unsigned long>((rbuf.SECURITY1.id1 << 16) + (rbuf.SECURITY1.id2 << 8) + rbuf.SECURITY1.id3);
    }
 } // namespace rfxcomMessages
-
-
