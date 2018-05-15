@@ -44,9 +44,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	                        The keywords
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CSwitch> m_motion;
       boost::shared_ptr<yApi::historization::CSwitch> m_panic;
-      boost::shared_ptr<yApi::historization::CSwitch> m_tamper;
       boost::shared_ptr<yApi::historization::CArmingAlarm> m_armAlarm;
 
       //--------------------------------------------------------------

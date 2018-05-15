@@ -8,11 +8,9 @@ namespace rfxcomMessages
 {
    CSecurity1Meiantech::CSecurity1Meiantech()
       : m_statusByte(0),
-        m_motion(boost::make_shared<yApi::historization::CSwitch>("motion")),
         m_panic(boost::make_shared<yApi::historization::CSwitch>("panic")),
-        m_tamper(boost::make_shared<yApi::historization::CSwitch>("tamper")),
         m_armAlarm(boost::make_shared<yApi::historization::CArmingAlarm>("armAlarm", yApi::EKeywordAccessMode::kGetSet)),
-        m_keywords({m_motion, m_panic, m_tamper, m_armAlarm})
+        m_keywords({m_panic, m_armAlarm})
    {
    }
 
@@ -68,49 +66,35 @@ namespace rfxcomMessages
 
       switch (m_statusByte)
       {
-      case sStatusMotion:
-         m_motion->set(true);
-         m_tamper->set(false);
-         break;
-
+      case sStatusNormal:
+      case sStatusNormalDelayed:
       case sStatusNoMotion:
-         m_motion->set(false);
-         m_tamper->set(false);
-         break;
-
-      case sStatusPanic:
-         m_panic->set(true);
-         m_tamper->set(false);
-         break;
-
       case sStatusPanicOff:
          m_panic->set(false);
-         m_tamper->set(false);
          break;
 
+      case sStatusAlarm:
+      case sStatusAlarmDelayed:
+      case sStatusMotion:
+      case sStatusPanic:
       case sStatusNormalTamper:
       case sStatusNormalDelayedTamper:
       case sStatusAlarmTamper:
-         m_tamper->set(true);
-         break;
-
       case sStatusMotionTamper:
-         m_motion->set(true);
-         m_tamper->set(true);
-         break;
-
       case sStatusNoMotionTamper:
-         m_motion->set(false);
-         m_tamper->set(true);
+         m_panic->set(true);
          break;
 
       case sStatusArmAway:
-      case sStatusArmAwayDelayed: m_armAlarm->set(yApi::historization::EArmingAlarmStatus::kArmedAway);
+      case sStatusArmAwayDelayed:
+         m_armAlarm->set(yApi::historization::EArmingAlarmStatus::kArmedAway);
          break;
       case sStatusArmHome:
-      case sStatusArmHomeDelayed: m_armAlarm->set(yApi::historization::EArmingAlarmStatus::kArmedAtHome);
+      case sStatusArmHomeDelayed:
+         m_armAlarm->set(yApi::historization::EArmingAlarmStatus::kArmedAtHome);
          break;
-      case sStatusDisarm: m_armAlarm->set(yApi::historization::EArmingAlarmStatus::kDisarmed);
+      case sStatusDisarm:
+         m_armAlarm->set(yApi::historization::EArmingAlarmStatus::kDisarmed);
          break;
 
       default:
