@@ -52,7 +52,6 @@ namespace shared
          bool isRunning() const;
 
       protected:
-         friend class CEventHandler;
          // ITimeEvent Implementation
          boost::posix_time::ptime getNextStopPoint() const override;
          void reset() override;
