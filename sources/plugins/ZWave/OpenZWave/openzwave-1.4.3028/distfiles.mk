@@ -88,6 +88,7 @@ DISTFILES =	.gitignore \
 	config/aeotec/zwa001.xml \
 	config/aeotec/zwa003.xml \
 	config/aeotec/zwa004.xml \
+	config/aeotec/zwa005.xml \
 	config/assa_abloy/ConexisL1.xml \
 	config/assa_abloy/KeyfreeConnected-plus.xml \
 	config/assa_abloy/KeyfreeConnected.xml \
@@ -116,6 +117,7 @@ DISTFILES =	.gitignore \
 	config/devolo/mt02792.xml \
 	config/devolo/mt2646.xml \
 	config/devolo/mt2647.xml \
+	config/devolo/mt2651.xml \
 	config/devolo/mt2652.xml \
 	config/devolo/mt2653.xml \
 	config/devolo/mt2756.xml \
@@ -251,6 +253,7 @@ DISTFILES =	.gitignore \
 	config/greenwave/powernode1.xml \
 	config/greenwave/powernode6.xml \
 	config/hank/hkzw-dws01.xml \
+	config/hank/hkzw-fld01.xml \
 	config/hank/hkzw-ms01.xml \
 	config/hank/hkzw-rgb01.xml \
 	config/hank/hkzw-so01-smartplug.xml \
