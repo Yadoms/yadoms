@@ -25,6 +25,13 @@ public:
    // [END] IOpenZWaveKeyword implementation
 
 private:
+   //--------------------------------------------------------------
+   /// \brief	    Fix values (ensure full range 0->100 is reached)
+   /// \param [in]   value The initial value
+   /// \return       The value in full range
+   //--------------------------------------------------------------
+   int fixValue(int value);
+
    boost::shared_ptr<shared::plugin::yPluginApi::historization::CDimmable> m_keyword;
 };
 

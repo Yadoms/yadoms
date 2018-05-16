@@ -1,3 +1,6 @@
+### 1.1.2-beta.8
+* Fix Security1-Meiantech receive (manage more status values)
+
 ### 1.1.2-beta.7
 * Fix manually device creation of MCZ pellet stove 3 fan model 
 * Fix Cartelectronic protocol => Add EJP Warning

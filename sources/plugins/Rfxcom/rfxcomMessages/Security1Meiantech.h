@@ -21,18 +21,13 @@ namespace rfxcomMessages
          rfxValue = sTypeMeiantech
       };
 
-      //--------------------------------------------------------------
-      /// \brief	                        Constructor
-      //--------------------------------------------------------------
       CSecurity1Meiantech();
-      //--------------------------------------------------------------
-      /// \brief	Destructor
-      //--------------------------------------------------------------
+
       virtual ~CSecurity1Meiantech();
 
       // ISecurity1Subtype implementation
       std::string getModel() const override;
-      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override;
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords() const override;
       void set(const std::string& keyword, const std::string& yadomsCommand) override;
       void reset() override;
       void setFromProtocolState(unsigned char statusByte) override;
@@ -55,8 +50,6 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    };
 } // namespace rfxcomMessages
-
-
