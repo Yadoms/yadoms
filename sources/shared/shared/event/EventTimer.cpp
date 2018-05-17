@@ -55,9 +55,9 @@ namespace shared
 
          // If periodic (and not the first time), next start point begins from last start point
          // Else next start point begins from now
-         auto startPoint = (m_periodicity == kPeriodic && m_nextStopPoint != boost::date_time::not_a_date_time)
-                              ? m_nextStopPoint
-                              : currentTime::Provider().now();
+         const auto startPoint = (m_periodicity == kPeriodic && m_nextStopPoint != boost::date_time::not_a_date_time)
+                                    ? m_nextStopPoint
+                                    : currentTime::Provider().now();
 
          m_nextStopPoint = startPoint + periodToUse;
       }
