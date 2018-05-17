@@ -65,7 +65,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    switch (dataType)
    {
    case CProfile_A5_12_Common::kCumulativeValue:
-      m_energy[tarifInfo]->set(1000 * CProfile_A5_12_Common::applyDivisorInInt(meterReading, divisor)); // Energy is in Wh but provided in kWh
+      m_energy[tarifInfo]->set(CProfile_A5_12_Common::applyDivisorInInt(meterReading, divisor, 1000)); // Energy is in Wh but provided in kWh
       historizers.push_back(m_energy[tarifInfo]);
       break;
    case CProfile_A5_12_Common::kCurrentValue:

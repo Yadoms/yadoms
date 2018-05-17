@@ -20,8 +20,9 @@ public:
       kDivBy1000 = 3,
    };
 
-   static int applyDivisorInInt(const int meterReading,
-                                const E_A5_12_Divisor divisor);
-   static double applyDivisorInDouble(const int meterReading,
-                                      const E_A5_12_Divisor divisor);
+   static int applyDivisorInInt(int meterReading,
+                                E_A5_12_Divisor divisor,
+                                unsigned int multiplier = 1);
+   static double applyDivisorInDouble(int meterReading,
+                                      E_A5_12_Divisor divisor);
 };

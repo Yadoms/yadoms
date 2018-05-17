@@ -2,24 +2,25 @@
 #include "Profile_A5_12_Common.h"
 
 
-int CProfile_A5_12_Common::applyDivisorInInt(const int meterReading,
-                                             const E_A5_12_Divisor divisor)
+int CProfile_A5_12_Common::applyDivisorInInt(int meterReading,
+                                             E_A5_12_Divisor divisor,
+                                             unsigned int multiplier)
 {
    switch (divisor)
    {
    case kDivBy10:
-      return meterReading / 10;
+      return meterReading * (multiplier / 10);
    case kDivBy100:
-      return meterReading / 100;
+      return meterReading * (multiplier / 100);
    case kDivBy1000:
-      return meterReading / 1000;
+      return meterReading * (multiplier / 1000);
    default:
       return meterReading;
    }
 }
 
-double CProfile_A5_12_Common::applyDivisorInDouble(const int meterReading,
-                                                   const E_A5_12_Divisor divisor)
+double CProfile_A5_12_Common::applyDivisorInDouble(int meterReading,
+                                                   E_A5_12_Divisor divisor)
 {
    switch (divisor)
    {

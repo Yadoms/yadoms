@@ -1,3 +1,7 @@
+### 1.0.2-beta.7
+* Fix pairing of non-configurable devices
+* Fix A5-12-01 counter divisor usage
+
 ### 1.0.2-beta.6
 * Fix cumulative historization for A5-12-xx profiles
 
