@@ -374,9 +374,10 @@ void CEnOcean::processDeviceConfiguration(const std::string& deviceId,
       // Send configuration to device
       try
       {
-         m_devices[deviceId]->sendConfiguration(configuration.get<shared::CDataContainer>("profile.content." + m_devices[deviceId]->profile() + ".content"),
-                                                m_senderId,
-                                                m_messageHandler);
+         if (configuration.exists("profile.content." + m_devices[deviceId]->profile() + ".content"))
+            m_devices[deviceId]->sendConfiguration(configuration.get<shared::CDataContainer>("profile.content." + m_devices[deviceId]->profile() + ".content"),
+                                                   m_senderId,
+                                                   m_messageHandler);
       }
       catch (std::exception& e)
       {
