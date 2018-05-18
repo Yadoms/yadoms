@@ -1,3 +1,6 @@
+### 1.1.2-beta.9
+* Add Cartelectronic-Encoder devices counters configuration (water, gas...)
+
 ### 1.1.2-beta.8
 * Fix Security1-Meiantech receive (manage more status values)
 
