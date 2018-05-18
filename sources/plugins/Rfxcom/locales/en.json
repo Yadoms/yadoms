@@ -653,6 +653,35 @@
               "regexErrorMessage": "The house code must be between A and P (included)"
             }
           }
+        },
+        "Encoder Module": {
+          "types": { "Encoder Module": { "title": "Encoder Module" } },
+          "content": {
+            "counter1Configuration": {
+              "name": "Counter 1 configuration",
+              "description": "Set here the sensor type connected to module input 1",
+              "values": {
+                "energyWh": "Energy (Wh)",
+                "waterLiter": "Water (one pulse per Liter)",
+                "waterQuarterLiter": "Water (one pulse per ¼ liter)",
+                "gasDeciM3": "Gas (one pulse per 1/10 m3)",
+                "gasCentiM3": "Gas (one pulse per 1/100 m3)",
+                "raw": "Other (Raw counter only)"
+              }
+            },
+            "counter2Configuration": {
+              "name": "Counter 2 configuration",
+              "description": "Set here the sensor type connected to module input 2",
+              "values": {
+                "energyWh": "Energy (Wh)",
+                "waterLiter": "Water (one pulse per Liter)",
+                "waterQuarterLiter": "Water (one pulse per ¼ liter)",
+                "gasDeciM3": "Gas (one pulse per 1/10 m3)",
+                "gasCentiM3": "Gas (one pulse per 1/100 m3)",
+                "raw": "Other (Raw counter only)"
+              }
+            }
+          }
         }
       }
     }

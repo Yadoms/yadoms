@@ -15,44 +15,37 @@ namespace rfxcomMessages
    {
    public:
 
-      //--------------------------------------------------------------
-      /// \brief	                        Constructor
-      /// \param[in] rbuf                 The received buffer
-      /// \param[in] rbufSize             Message size, received from Rfxcom
-      /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
-      /// \throw                          shared::exception::CInvalidParameter
-      //--------------------------------------------------------------
+      /// Constructor used for received messages
       CCartelectronicEncoder(const RBUF& rbuf, size_t rbufSize);
 
-      //--------------------------------------------------------------
-      /// \brief	Destructor
-      //--------------------------------------------------------------
+      /// Constructor used for device configuration
+      explicit CCartelectronicEncoder(const boost::shared_ptr<const yApi::ISetDeviceConfiguration>& deviceConfiguration);
+
       virtual ~CCartelectronicEncoder();
 
       // ICartelectronicSubtype implementation
-      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override;
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords(
+         const shared::CDataContainer& deviceConfiguration) override;
       std::string idFromProtocol(const RBUF& rbuf) const override;
-      char BatteryLevelFromProtocol(const RBUF& rbuf) override;
+      char batteryLevelFromProtocol(const RBUF& rbuf) override;
       char signalPowerFromProtocol(const RBUF& rbuf) override;
       std::string getModel() const override;
       // [END] ICartelectronicSubtype implementation
 
    private:
-      //--------------------------------------------------------------
-      /// \brief	The keyword Counter 1
-      //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CCounter> m_counter1;
+      boost::shared_ptr<yApi::historization::CCounter> m_counterKw1;
+      boost::shared_ptr<yApi::historization::CEnergy> m_energyKw1;
+      boost::shared_ptr<yApi::historization::CVolume> m_waterLiterKw1;
+      boost::shared_ptr<yApi::historization::CVolume> m_waterQuarterLiterKw1;
+      boost::shared_ptr<yApi::historization::CVolume> m_gasDeciM3Kw1;
+      boost::shared_ptr<yApi::historization::CVolume> m_gasCentiM3Kw1;
+      boost::shared_ptr<yApi::historization::CCounter> m_counterKw2;
+      boost::shared_ptr<yApi::historization::CEnergy> m_energyKw2;
+      boost::shared_ptr<yApi::historization::CVolume> m_waterLiterKw2;
+      boost::shared_ptr<yApi::historization::CVolume> m_waterQuarterLiterKw2;
+      boost::shared_ptr<yApi::historization::CVolume> m_gasDeciM3Kw2;
+      boost::shared_ptr<yApi::historization::CVolume> m_gasCentiM3Kw2;
 
-      //--------------------------------------------------------------
-      /// \brief	The keyword Counter 2
-      //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CCounter> m_counter2;
-
-      //--------------------------------------------------------------
-      /// \brief	The keywords list to historize in one step for better performances
-      //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    };
 } // namespace rfxcomMessages
-
-

@@ -57,29 +57,29 @@ namespace rfxcomMessages
       static const BYTE ForecastColorShift = 3;
       enum
          {
-            undefined = 0,
-            white = 1,
-            blue = 2,
-            red = 3
+            kUndefined = 0,
+            kWhite = 1,
+            kBlue = 2,
+            kRed = 3
          };
       switch ((rbuf.LINKY.state & TodayColorMask) >> TodayColorShift)
       {
-      case white: m_todayColor->set(teleInfo::specificHistorizers::EColor::kWHITE);
+      case kWhite: m_todayColor->set(teleInfo::specificHistorizers::EColor::kWHITE);
          break;
-      case blue: m_todayColor->set(teleInfo::specificHistorizers::EColor::kBLUE);
+      case kBlue: m_todayColor->set(teleInfo::specificHistorizers::EColor::kBLUE);
          break;
-      case red: m_todayColor->set(teleInfo::specificHistorizers::EColor::kRED);
+      case kRed: m_todayColor->set(teleInfo::specificHistorizers::EColor::kRED);
          break;
       default: m_todayColor->set(teleInfo::specificHistorizers::EColor::kNOTDEFINED);
          break;
       }
       switch ((rbuf.LINKY.state & ForecastColorMask) >> ForecastColorShift)
       {
-      case white: m_forecastColor->set(teleInfo::specificHistorizers::EColor::kWHITE);
+      case kWhite: m_forecastColor->set(teleInfo::specificHistorizers::EColor::kWHITE);
          break;
-      case blue: m_forecastColor->set(teleInfo::specificHistorizers::EColor::kBLUE);
+      case kBlue: m_forecastColor->set(teleInfo::specificHistorizers::EColor::kBLUE);
          break;
-      case red: m_forecastColor->set(teleInfo::specificHistorizers::EColor::kRED);
+      case kRed: m_forecastColor->set(teleInfo::specificHistorizers::EColor::kRED);
          break;
       default: m_forecastColor->set(teleInfo::specificHistorizers::EColor::kNOTDEFINED);
          break;
@@ -90,7 +90,7 @@ namespace rfxcomMessages
    {
    }
 
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CCartelectronicLinky::keywords() const
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CCartelectronicLinky::keywords(const shared::CDataContainer& deviceConfiguration)
    {
       return m_keywords;
    }
@@ -99,13 +99,13 @@ namespace rfxcomMessages
    {
       std::stringstream s;
 
-      auto receivedId = static_cast<unsigned long>(rbuf.LINKY.id1 << 24) + (rbuf.LINKY.id2 << 16) + (rbuf.LINKY.id3 << 8) + rbuf.LINKY.id4;
+      const auto receivedId = static_cast<unsigned long>(rbuf.LINKY.id1 << 24) + (rbuf.LINKY.id2 << 16) + (rbuf.LINKY.id3 << 8) + rbuf.LINKY.id4;
       
       //Construct the real counter id
       unsigned long long id = receivedId & 0x000FFFFF; // copy the serial number
       unsigned char type = (receivedId >> 20) & 0x07;
-      unsigned int year = (receivedId >> 23) & 0x1F;
-      unsigned char constructorCode = (receivedId >> 28) & 0x0F;
+      const unsigned int year = (receivedId >> 23) & 0x1F;
+      const unsigned char constructorCode = (receivedId >> 28) & 0x0F;
 
       switch (type)
       {
@@ -118,16 +118,16 @@ namespace rfxcomMessages
          default: break;
       }
 
-      id += (type * 1000000LL);
-      id += (year * 100000000LL);
-      id += (constructorCode * 10000000000LL);
-      //
+      id += type * 1000000LL;
+      id += year * 100000000LL;
+      id += constructorCode * 10000000000LL;
+
       s << std::setfill('0') << std::setw(12) << id;
 
       return s.str();
    }
 
-   char CCartelectronicLinky::BatteryLevelFromProtocol(const RBUF& rbuf)
+   char CCartelectronicLinky::batteryLevelFromProtocol(const RBUF& rbuf)
    {
       return rbuf.LINKY.battery_level;
    }

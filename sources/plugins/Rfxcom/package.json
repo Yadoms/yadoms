@@ -782,6 +782,35 @@
               "defaultValue": "A"
             }
           }
+        },
+        "Encoder Module": {
+          "types": { "Encoder Module": { "canBeCreatedManually": "false" } },
+          "content": {
+            "counter1Configuration": {
+              "type": "enum",
+              "values": {
+                "energyWh": "Energy (Wh)",
+                "waterLiter": "Water (Liter)",
+                "waterQuarterLiter": "Water (¼ Liter)",
+                "gasDeciM3": "Gas (1/10 m3)",
+                "gasCentiM3": "Gas (1/100 m3)",
+                "raw": "Other"
+              },
+              "defaultValue": "Other"
+            },
+            "counter2Configuration": {
+              "type": "enum",
+              "values": {
+                "energyWh": "Energy (Wh)",
+                "waterLiter": "Water (Liter)",
+                "waterQuarterLiter": "Water (¼ Liter)",
+                "gasDeciM3": "Gas (1/10 m3)",
+                "gasCentiM3": "Gas (1/100 m3)",
+                "raw": "Other"
+              },
+              "defaultValue": "Other"
+            }
+          }
         }
       }
     }
