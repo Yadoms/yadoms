@@ -23,7 +23,8 @@ namespace rfxcomMessages
       /// \brief	                        Get the keywords
       /// \return                         The keyword list
       //--------------------------------------------------------------
-      virtual const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const = 0;
+      virtual const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords(
+         const shared::CDataContainer& deviceConfiguration) = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Get ID from protocol data
@@ -37,7 +38,7 @@ namespace rfxcomMessages
       /// \param[in] rbuf                 buffer of the message
       /// \return                         The battery level
       //--------------------------------------------------------------
-      virtual char BatteryLevelFromProtocol(const RBUF& rbuf) = 0;
+      virtual char batteryLevelFromProtocol(const RBUF& rbuf) = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Get signalPower from protocol data
@@ -53,5 +54,3 @@ namespace rfxcomMessages
       virtual std::string getModel() const = 0;
    };
 } // namespace rfxcomMessages
-
-

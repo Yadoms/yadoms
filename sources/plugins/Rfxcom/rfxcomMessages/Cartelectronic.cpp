@@ -18,19 +18,61 @@ namespace rfxcomMessages
         m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_keywords({m_signalPower, m_batteryLevel})
    {
-      createSubType(rbuf.TIC.subtype, rbuf, rbufSize);
+      createSubType(api, rbuf.TIC.subtype, rbuf, rbufSize);
 
       m_id = m_subTypeManager->idFromProtocol(rbuf);
-      m_batteryLevel->set(NormalizeBatteryLevel(m_subTypeManager->BatteryLevelFromProtocol(rbuf)));
+      m_batteryLevel->set(NormalizeBatteryLevel(m_subTypeManager->batteryLevelFromProtocol(rbuf)));
       m_signalPower->set(NormalizesignalPowerLevel(m_subTypeManager->signalPowerFromProtocol(rbuf)));
       declare(api);
+   }
+
+   CCartelectronic::CCartelectronic(boost::shared_ptr<yApi::IYPluginApi> api,
+                                    unsigned char subType,
+                                    const boost::shared_ptr<const yApi::ISetDeviceConfiguration>& newDeviceConfiguration)
+      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+        m_keywords({m_signalPower, m_batteryLevel})
+   {
+      createSubType(subType, newDeviceConfiguration);
+
+      // Remove obsolete keywords, add new keywords, don't touch existing keywords (to keep history)
+      const auto existingKeywords = api->getAllKeywords(newDeviceConfiguration->name());
+      auto newKeywords = m_subTypeManager->keywords(newDeviceConfiguration->configuration());
+      // Never delete signalPower and batteryLevel
+      newKeywords.push_back(m_signalPower);
+      newKeywords.push_back(m_batteryLevel);
+
+      // Remove obsolete keywords
+      for (const auto existingKeyword : existingKeywords)
+      {
+         if (std::find_if(newKeywords.begin(),
+                          newKeywords.end(),
+                          [&existingKeyword](const boost::shared_ptr<const yApi::historization::IHistorizable>& newKeyword)
+                          {
+                             return newKeyword->getKeyword() == existingKeyword;
+                          }) == newKeywords.end())
+            api->removeKeyword(newDeviceConfiguration->name(), existingKeyword);
+      }
+
+      // Create new keywords
+      for (const auto newKeyword : newKeywords)
+      {
+         if (std::find_if(existingKeywords.begin(),
+                          existingKeywords.end(),
+                          [&newKeyword](const std::string& existingKeyword)
+                          {
+                             return newKeyword->getKeyword() == existingKeyword;
+                          }) == existingKeywords.end())
+            api->declareKeyword(newDeviceConfiguration->name(), newKeyword);
+      }
    }
 
    CCartelectronic::~CCartelectronic()
    {
    }
 
-   void CCartelectronic::createSubType(unsigned char subType,
+   void CCartelectronic::createSubType(boost::shared_ptr<yApi::IYPluginApi> api,
+                                       unsigned char subType,
                                        const RBUF& rbuf,
                                        size_t rbufSize)
    {
@@ -47,7 +89,30 @@ namespace rfxcomMessages
       default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
       }
-      m_keywords.insert(m_keywords.end(), m_subTypeManager->keywords().begin(), m_subTypeManager->keywords().end());
+
+      const auto id = m_subTypeManager->idFromProtocol(rbuf);
+      const auto subTypeKeywords = m_subTypeManager->keywords(api->deviceExists(id) ? api->getDeviceConfiguration(id) : shared::CDataContainer::EmptyContainer);
+      m_keywords.insert(m_keywords.end(),
+                        subTypeKeywords.begin(),
+                        subTypeKeywords.end());
+   }
+
+   void CCartelectronic::createSubType(unsigned char subType,
+                                       const boost::shared_ptr<const yApi::ISetDeviceConfiguration>& deviceConfiguration)
+   {
+      m_subType = subType;
+
+      switch (m_subType)
+      {
+      case sTypeCEencoder: m_subTypeManager = boost::make_shared<CCartelectronicEncoder>(deviceConfiguration);
+         break;
+      default:
+         throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
+      }
+      const auto subTypeKeywords = m_subTypeManager->keywords(deviceConfiguration->configuration());
+      m_keywords.insert(m_keywords.end(),
+                        subTypeKeywords.begin(),
+                        subTypeKeywords.end());
    }
 
    void CCartelectronic::declare(boost::shared_ptr<yApi::IYPluginApi> api) const
@@ -70,7 +135,8 @@ namespace rfxcomMessages
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CCartelectronic::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CCartelectronic::encode(
+      boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("Cartelectronic is a read-only message, can not be encoded");
    }

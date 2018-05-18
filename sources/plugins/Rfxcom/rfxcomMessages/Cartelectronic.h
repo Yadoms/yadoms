@@ -17,11 +17,14 @@ namespace rfxcomMessages
       CCartelectronic(boost::shared_ptr<yApi::IYPluginApi> api,
                       const RBUF& rbuf,
                       size_t rbufSize);
+      CCartelectronic(boost::shared_ptr<yApi::IYPluginApi> api,
+                      unsigned char subType,
+                      const boost::shared_ptr<const yApi::ISetDeviceConfiguration>& newDeviceConfiguration);
 
       virtual ~CCartelectronic();
 
       // IRfxcomMessage implementation
-      boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const override;
+      boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const override;
       void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
       void filter() const override;
       void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const override;
@@ -30,15 +33,12 @@ namespace rfxcomMessages
       // [END] IRfxcomMessage implementation
 
    protected:
-      //--------------------------------------------------------------
-      /// \brief	Set and create the subtype
-      /// \param[in] subType              Device subType
-      /// \param[in] rbuf                 The received buffer
-      /// \param[in] rbufSize             Message size, received from Rfxcom
-      //--------------------------------------------------------------
-      void createSubType(unsigned char subType,
+      void createSubType(boost::shared_ptr<yApi::IYPluginApi> api,
+                         unsigned char subType,
                          const RBUF& rbuf,
                          size_t rbufSize);
+      void createSubType(unsigned char subType,
+                         const boost::shared_ptr<const yApi::ISetDeviceConfiguration>& newDeviceConfiguration);
 
       //--------------------------------------------------------------
       /// \brief	Declare the device
@@ -75,8 +75,6 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    };
 } // namespace rfxcomMessages
-
-

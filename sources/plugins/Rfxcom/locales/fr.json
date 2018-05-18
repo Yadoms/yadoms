@@ -655,6 +655,35 @@
               "regexErrorMessage": "L'identifiant doit être entre A et P (inclus)"
             }
           }
+        },
+        "Encoder Module": {
+          "types": { "Encoder Module": { "title": "Encoder Module" } },
+          "content": {
+            "counter1Configuration": {
+              "name": "Configuration compteur 1",
+              "description": "Préciser ici le type de capteur connecté à l'entrée 1 du module",
+              "values": {
+                "energyWh": "Energie (Wh)",
+                "waterLiter": "Eau (une impulsion par Litre)",
+                "waterQuarterLiter": "Eau (une impulsion par ¼ litre)",
+                "gasDeciM3": "Gaz (une impulsion par 1/10 m3)",
+                "gasCentiM3": "Gaz (une impulsion par 1/100 m3)",
+                "raw": "Autre (Compteur sans unité seulement)"
+              }
+            },
+            "counter2Configuration": {
+              "name": "Configuration compteur 2",
+              "description": "Préciser ici le type de capteur connecté à l'entrée 2 du module",
+              "values": {
+                "energyWh": "Energie (Wh)",
+                "waterLiter": "Eau (une impulsion par Litre)",
+                "waterQuarterLiter": "Eau (une impulsion par ¼ litre)",
+                "gasDeciM3": "Gaz (une impulsion par 1/10 m3)",
+                "gasCentiM3": "Gaz (une impulsion par 1/100 m3)",
+                "raw": "Autre (Compteur sans unité seulement)"
+              }
+            }
+          }
         }
       }
     }

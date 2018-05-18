@@ -97,6 +97,16 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
                break;
             }
+         case yApi::IYPluginApi::kSetDeviceConfiguration:
+            {
+               // Yadoms notify for device configuration changed
+               const auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
+               YADOMS_LOG(information) << "Change device configuration for device : " << deviceConfiguration->name();
+               m_transceiver->changeDeviceConfiguration(api,
+                                                        deviceConfiguration);
+
+               break;
+            }
          case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
