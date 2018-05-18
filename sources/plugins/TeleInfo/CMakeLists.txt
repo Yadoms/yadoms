@@ -49,7 +49,7 @@ IF (WIN32)
 	
 ENDIF()
 
-IF (UNIX AND NOT APPLE)
+IF (UNIX)
     set(TELEINFO_SOURCES ${TELEINFO_SOURCES}
 	     # Add Common Linux and RaspberryPI sources
         Linux/TeleInfoFactory.h
@@ -79,7 +79,7 @@ IF(WIN32)
    )
 ENDIF()
 	
-IF (UNIX AND NOT APPLE)
+IF (UNIX)
    set(TELEINFO_ADDITIONAL_INC_DIR
       ${CMAKE_CURRENT_SOURCE_DIR}/Linux
    )

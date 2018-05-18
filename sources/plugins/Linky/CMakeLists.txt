@@ -50,7 +50,7 @@ IF (WIN32)
 	
 ENDIF()
 
-IF (UNIX AND NOT APPLE)
+IF (UNIX)
     set(LINKY_SOURCES ${LINKY_SOURCES}
 	     # Add Common Linux and RaspberryPI sources
         Linux/LinkyFactory.h
@@ -81,7 +81,7 @@ IF(WIN32)
    )
 ENDIF()
 	
-IF (UNIX AND NOT APPLE)
+IF (UNIX)
    set(LINKY_ADDITIONAL_INC_DIR
       ${CMAKE_CURRENT_SOURCE_DIR}/Linux
    )
