@@ -7,6 +7,7 @@
 * Fix #472 - Correct alignment for checkboxes and designation
 * Fix #475 - "Add plugin" stay at the top of the dashboard form instead of "Dashboard"
 * Fix #476 - Upgrading from 2.0.2 when timezone was not filled
+* Fix #480 - Devices page : the refresh doesn't support the recreation of keywords by plugins
 
 
 ### 2.1.0-beta.2
