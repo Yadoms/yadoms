@@ -84,6 +84,7 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
      //we listen keyword Deletion event
      $(document).on("keyworddeleted", function(e, websocketData) {
          dispatchkeywordDeletedToWidgets(websocketData.data);
+         dispatchkeywordDeletedToDevicesView(websocketData.data);
      });
      /*
       */     

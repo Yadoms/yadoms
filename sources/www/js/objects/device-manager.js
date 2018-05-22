@@ -143,7 +143,7 @@ DeviceManager.getKeywords = function (device, forceReload) {
         DeviceManager.getKeywordsByDeviceId(device.id)
         .done(function (list) {
             device.keywords = list;
-            d.resolve();
+            d.resolve(list);
         })
         .fail(d.reject);
     }
@@ -228,7 +228,6 @@ DeviceManager.getConfigurationSchema = function(device) {
                                   }                            
                                   schema = _.merge(schema, config.content);
                                }
-                               
                             }
                         }
                     }
@@ -254,8 +253,6 @@ DeviceManager.getConfigurationSchema = function(device) {
                     //device configuration not exists in package.json
                     d.resolve(schema);
                 }
-
-
             }).fail(d.reject);
 
         }).fail(d.reject);
