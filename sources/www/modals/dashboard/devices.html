@@ -33,29 +33,50 @@
 
       //we get the device
       var deviceWithInfo = $("table#device-list").find("tr[device-id='" + keyword.keyword.deviceId + "'].info");
-      if (deviceWithInfo.length !=0) {
-         // Get all keywords to display the new configuration
-         DeviceManager.getKeywordsByDeviceId(keyword.keyword.deviceId)
-         .done(function (updatedKeywords) {
-         
-            var keywordList = updatedKeywords;
-            keywordList = sortListItemsWithFriendlyName ( keywordList );         
-         
-            // get the keyword list for equipments : some equipments change dynamically the keyword list.
-            var i = deviceList.map(function (e) { return e.id; }).indexOf(keyword.keyword.deviceId);
-            var device;
-            if (i !== -1){
-               deviceList[i].keywords = keywordList; // update keywords
-               device = deviceList[i];
-            }
-         
+      
+      // Get all keywords to display the new configuration
+      DeviceManager.getKeywordsByDeviceId(keyword.keyword.deviceId)
+      .done(function (updatedKeywords) {
+      
+         var keywordList = updatedKeywords;
+         keywordList = sortListItemsWithFriendlyName ( keywordList );         
+      
+         // get the keyword list for equipments : some equipments change dynamically the keyword list.
+         var i = deviceList.map(function (e) { return e.id; }).indexOf(keyword.keyword.deviceId);
+         var device;
+         if (i !== -1){
+            deviceList[i].keywords = keywordList; // update keywords
+            device = deviceList[i];
+         }
+      
+         if (deviceWithInfo.length !=0) {
             //we remove all rows except header
             $("table#keyword-list").find("tr:gt(0)").remove();
             fillTable(device);
             
-            Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);         
-         });
-      }
+            AcquisitionManager.getLastValues(device.keywords)
+            .done(function (data) {
+               $.each(data, function (index, acquisition) {
+                  $.each(device.keywords, function (idx, keyword) {
+                     if (keyword.id === acquisition.keywordId) {
+                        var $keywordRow = getKeywordDomRow(keyword);
+                        if (!$keywordRow) {
+                           $keywordRow = createKeywordDomLine($deviceDetailsTable, keyword);
+                        }
+                        updateKeywordDomLine($keywordRow, acquisition, keyword, device.attachedPlugin);
+                     } else {
+                        return; //break $.each
+                     }
+                  });
+               });
+            })
+            .fail(function (error) {
+               notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for device = " + device.id }), error);
+            });               
+         }
+         
+         Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);         
+      });
    };
    
    Yadoms.initializeDeviceDashboard = function () {
@@ -474,8 +495,7 @@
          $deviceRow.find("span.deploy").removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
       }
    }
-   
-   
+
    function deleteDevice(device) {
       // Stop periodic task before the deletion and refresh
       // This disabled the periodic refresh during the deletion and wrong display
