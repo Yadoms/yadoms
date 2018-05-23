@@ -7,7 +7,7 @@
 * Fix #472 - Correct alignment for checkboxes and designation
 * Fix #475 - "Add plugin" stay at the top of the dashboard form instead of "Dashboard"
 * Fix #476 - Upgrading from 2.0.2 when timezone was not filled
-* Fix duration historizer (refer now to seconds unit)
+* Fix #480 - Devices page : the refresh doesn't support the recreation of keywords by plugins
 * Slim Emptyplugin (let only basic functionnalities in dowork loop to make it easier to understand)
 
 
