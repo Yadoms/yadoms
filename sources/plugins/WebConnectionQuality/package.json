@@ -8,6 +8,8 @@
   "configurationSchema": {
     "periodicityMinutes": {
       "type": "int",
+      "minimumValue": "10",
+      "maximumValue": "44640",
       "defaultValue": "120"
     }
   }

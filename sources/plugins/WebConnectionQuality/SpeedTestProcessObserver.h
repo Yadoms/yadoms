@@ -1,13 +1,15 @@
 #pragma once
 #include <shared/process/IProcessObserver.h>
 #include <shared/event/EventHandler.hpp>
+#include "SpeedTestProcessLogger.h"
 
 
 class CSpeedTestProcessObserver : public shared::process::IProcessObserver
 {
 public:
    explicit CSpeedTestProcessObserver(shared::event::CEventHandler& pluginEventHandler,
-                                      int eventId);
+                                      int eventId,
+                                      boost::shared_ptr<CSpeedTestProcessLogger> speedTestProcessLoggerlogger);
    virtual ~CSpeedTestProcessObserver();
 
 protected:
@@ -20,4 +22,5 @@ protected:
 private:
    shared::event::CEventHandler& m_pluginEventHandler;
    int m_eventId;
+   boost::shared_ptr<CSpeedTestProcessLogger> m_speedTestProcessLoggerlogger;
 };

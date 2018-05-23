@@ -12,7 +12,6 @@
 IMPLEMENT_PLUGIN(CWebConnectionQuality)
 
 static const auto DeviceName("Web connection quality");
-static const auto SpeedTestResultFile("speedtest.result");
 
 
 CWebConnectionQuality::CWebConnectionQuality()
@@ -93,14 +92,15 @@ void CWebConnectionQuality::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             YADOMS_LOG(information) << "End of measure";
             m_speedTestProcess.reset();
-            const auto eventData = api->getEventHandler().getEventData<CSpeedTestEventData>();
-            if (!eventData.succes())
+            const auto eventData = api->getEventHandler().getEventData<boost::shared_ptr<CSpeedTestEventData>>();
+            if (!eventData->success())
             {
-               YADOMS_LOG(warning) << "speedtest returns " << eventData.returnCode() << ", " << eventData.error();
+               YADOMS_LOG(warning) << "speedtest returns " << eventData->returnCode() << ", " << eventData->error();
                break;
             }
 
-            processResult(api);
+            processResult(api,
+                          eventData->result());
             break;
          }
 
@@ -128,57 +128,46 @@ void CWebConnectionQuality::startMeasure(boost::shared_ptr<yApi::IYPluginApi> ap
 {
    YADOMS_LOG(information) << "Start measure...";
 
-   try
-   {
-      if (boost::filesystem::exists(SpeedTestResultFile))
-         boost::filesystem::remove(SpeedTestResultFile);
-   }
-   catch (std::exception& e)
-   {
-      YADOMS_LOG(warning) << "Error removing " << SpeedTestResultFile << " file, " << e.what();
-   }
-
    std::vector<std::string> args;
-   args.push_back("speedtest.py");
+   args.push_back((api->getInformation()->getPath() / "speedtest.py").string());
    args.push_back("--json");
-   args.push_back(std::string("> ") + SpeedTestResultFile);
 
    const auto commandLine = boost::make_shared<shared::process::CNativeExecutableCommandLine>(
       shared::CExecutable::ToFileName("python"),
       ".",
       args);
 
-   const auto processObserver = boost::make_shared<CSpeedTestProcessObserver>(api->getEventHandler(),
-                                                                              kMeasureEndEventId);
-
    const auto processLogger = boost::make_shared<CSpeedTestProcessLogger>("[speedtest process] ");
+
+   const auto processObserver = boost::make_shared<CSpeedTestProcessObserver>(api->getEventHandler(),
+                                                                              kMeasureEndEventId,
+                                                                              processLogger);
 
    m_speedTestProcess = boost::make_shared<shared::process::CProcess>(commandLine,
                                                                       processObserver,
                                                                       processLogger);
 }
 
-void CWebConnectionQuality::processResult(boost::shared_ptr<yApi::IYPluginApi> api) const
+void CWebConnectionQuality::processResult(boost::shared_ptr<yApi::IYPluginApi> api,
+                                          const std::string& result) const
 {
    YADOMS_LOG(information) << "Process result...";
 
-   if (boost::filesystem::exists(SpeedTestResultFile))
-   {
-      YADOMS_LOG(error) << "Unable to find " << SpeedTestResultFile << " file";
-      return;
-   }
-
    try
    {
-      shared::CDataContainer result;
-      result.deserializeFromFile(SpeedTestResultFile);
+      shared::CDataContainer resultContainer(result);
 
-      YADOMS_LOG(debug) << "Result file gives :";
-      result.printToLog(YADOMS_LOG(debug));
+      YADOMS_LOG(information) << "Result file gives :";
+      resultContainer.printToLog(YADOMS_LOG(debug));
 
-      m_pingKw->set(boost::posix_time::millisec(result.get<unsigned int>("ping")));
-      m_downloadKw->set(result.get<unsigned int>("download"));
-      m_uploadKw->set(result.get<unsigned int>("upload"));
+      m_pingKw->set(boost::posix_time::millisec(static_cast<unsigned int>(resultContainer.get<double>("ping"))));
+      m_downloadKw->set(static_cast<unsigned int>(resultContainer.get<double>("download")));
+      m_uploadKw->set(static_cast<unsigned int>(resultContainer.get<double>("upload")));
+
+      YADOMS_LOG(information) << "  - ping : " << m_pingKw->get();
+      YADOMS_LOG(information) << "  - download : " << m_downloadKw->get();
+      YADOMS_LOG(information) << "  - upload : " << m_uploadKw->get();
+
 
       api->historizeData(DeviceName,
                          m_keywords);

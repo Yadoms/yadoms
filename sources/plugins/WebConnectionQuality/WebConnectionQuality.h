@@ -20,13 +20,15 @@ public:
 protected:
    void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const;
    void startMeasure(boost::shared_ptr<yApi::IYPluginApi> api);
-   void processResult(boost::shared_ptr<yApi::IYPluginApi> api) const;
+   void processResult(boost::shared_ptr<yApi::IYPluginApi> api,
+                      const std::string& result) const;
 
 private:
    CWebConnectionQualityConfiguration m_configuration;
    boost::shared_ptr<yApi::historization::CDuration> m_pingKw;
    boost::shared_ptr<specificHistorizers::CNetworkBandwithHistorizer> m_uploadKw;
    boost::shared_ptr<specificHistorizers::CNetworkBandwithHistorizer> m_downloadKw;
+   //TODO ajouter KW connection active
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    boost::shared_ptr<shared::process::CProcess> m_speedTestProcess;
 };

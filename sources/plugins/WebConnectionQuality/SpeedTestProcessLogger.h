@@ -1,8 +1,6 @@
 #pragma once
 #include <shared/process/IExternalProcessLogger.h>
 
-//TODO mettre dans shared ?
-
 class CSpeedTestProcessLogger : public shared::process::IExternalProcessLogger
 {
 public:
@@ -16,6 +14,9 @@ public:
    void purgeLogFile() override;
    // [END] IExternalProcessLogger Implementation
 
+   const std::string& stdoutContent() const;
+
 private:
    const std::string m_logPrefix;
+   std::string m_stdoutContent;
 };
