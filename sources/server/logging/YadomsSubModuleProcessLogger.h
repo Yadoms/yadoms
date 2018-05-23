@@ -23,12 +23,12 @@ namespace logging
       //-----------------------------------------------------
       virtual ~CYadomsSubModuleProcessLogger();
 
-      // ILogger Implementation
+      // IExternalProcessLogger Implementation
       void init() override;
       void information(const std::string& line) override;
       void error(const std::string& line) override;
       void purgeLogFile() override;
-      // [END] ILogger Implementation
+      // [END] IExternalProcessLogger Implementation
 
    protected:
       virtual std::string extractMessage(const std::string& line,

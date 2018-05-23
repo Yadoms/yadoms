@@ -1,0 +1,9 @@
+﻿{
+  "name": "Qualité connexion Internet",
+  "description": "Ce plugin permet de suivre la qualité de votre connexion Internet, en mesurant les temps de ping, et de téléchargement (montant et descendant). Il utilise l'outil speedtest-cli.",
+  "configurationSchema": {
+    "periodicityMinutes": {
+      "name": "Périodicité de la mesure (en minutes)"
+    }
+  }
+}

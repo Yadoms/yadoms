@@ -45,9 +45,9 @@ namespace logging
                                                              std::string& outMessage) const
    {
       // Line is formatted like : "[LogLevel]Message"
-      static const boost::regex pattern("\\[([^\\]]*)\\](.*)");
+      static const boost::regex Pattern("\\[([^\\]]*)\\](.*)");
       boost::smatch result;
-      if (!boost::regex_search(line, result, pattern))
+      if (!boost::regex_search(line, result, Pattern))
          return std::string();
 
       outMessage = std::string(result[2].first, result[2].second);

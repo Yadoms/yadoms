@@ -31,15 +31,15 @@ void CEmptyPluginConfiguration::trace() const
    try
    {
       // Get simple parameters
-      YADOMS_LOG(information) << "CEmptyPlugin::doWork, parameter 'StringParameter' is "
+      YADOMS_LOG(information) << "EmptyPlugin configuration, parameter 'StringParameter' is "
          << (m_configuration.get<std::string>("StringParameter").empty() ? "empty" : m_configuration.get<std::string>("StringParameter"))
         ;
-      YADOMS_LOG(information) << "CEmptyPlugin::doWork, parameter 'BoolParameter' is " << m_configuration.get<bool>("BoolParameter");
-      YADOMS_LOG(information) << "CEmptyPlugin::doWork, parameter 'DecimalParameter' is " << m_configuration.get<double>("DecimalParameter");
-      YADOMS_LOG(information) << "CEmptyPlugin::doWork, parameter 'IntParameter' is " << m_configuration.get<int>("IntParameter");
+      YADOMS_LOG(information) << "EmptyPlugin configuration, parameter 'BoolParameter' is " << m_configuration.get<bool>("BoolParameter");
+      YADOMS_LOG(information) << "EmptyPlugin configuration, parameter 'DecimalParameter' is " << m_configuration.get<double>("DecimalParameter");
+      YADOMS_LOG(information) << "EmptyPlugin configuration, parameter 'IntParameter' is " << m_configuration.get<int>("IntParameter");
 
       // Enum
-      YADOMS_LOG(information) << "CEmptyPlugin::doWork, parameter 'EnumParameter' is " << getEnumParameter();
+      YADOMS_LOG(information) << "EmptyPlugin configuration, parameter 'EnumParameter' is " << getEnumParameter();
    }
    catch (const shared::exception::CInvalidParameter& e)
    {
