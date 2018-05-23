@@ -15,10 +15,11 @@ static const auto DeviceName("Web connection quality");
 
 
 CWebConnectionQuality::CWebConnectionQuality()
-   : m_pingKw(boost::make_shared<yApi::historization::CDuration>("Ping")),
+   : m_connectedKw(boost::make_shared<yApi::historization::CSwitch>("Connected")),
+     m_pingKw(boost::make_shared<yApi::historization::CDuration>("Ping")),
      m_uploadKw(boost::make_shared<specificHistorizers::CNetworkBandwithHistorizer>("Upload")),
      m_downloadKw(boost::make_shared<specificHistorizers::CNetworkBandwithHistorizer>("Download")),
-     m_keywords({m_pingKw, m_uploadKw, m_downloadKw})
+     m_keywords({m_connectedKw, m_pingKw, m_uploadKw, m_downloadKw})
 {
 }
 
@@ -96,6 +97,8 @@ void CWebConnectionQuality::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             if (!eventData->success())
             {
                YADOMS_LOG(warning) << "speedtest returns " << eventData->returnCode() << ", " << eventData->error();
+               m_connectedKw->set(false);
+               api->historizeData(DeviceName, m_connectedKw);
                break;
             }
 
@@ -159,7 +162,8 @@ void CWebConnectionQuality::processResult(boost::shared_ptr<yApi::IYPluginApi> a
 
       YADOMS_LOG(information) << "Result file gives :";
       resultContainer.printToLog(YADOMS_LOG(debug));
-
+      
+      m_connectedKw->set(true);
       m_pingKw->set(boost::posix_time::millisec(static_cast<unsigned int>(resultContainer.get<double>("ping"))));
       m_downloadKw->set(static_cast<unsigned int>(resultContainer.get<double>("download")));
       m_uploadKw->set(static_cast<unsigned int>(resultContainer.get<double>("upload")));
@@ -168,12 +172,13 @@ void CWebConnectionQuality::processResult(boost::shared_ptr<yApi::IYPluginApi> a
       YADOMS_LOG(information) << "  - download : " << m_downloadKw->get();
       YADOMS_LOG(information) << "  - upload : " << m_uploadKw->get();
 
-
       api->historizeData(DeviceName,
                          m_keywords);
    }
    catch (std::exception& e)
    {
       YADOMS_LOG(error) << "Error processing speedtest result : " << e.what();
+      m_connectedKw->set(false);
+      api->historizeData(DeviceName, m_connectedKw);
    }
 }

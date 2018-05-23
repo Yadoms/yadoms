@@ -25,10 +25,10 @@ protected:
 
 private:
    CWebConnectionQualityConfiguration m_configuration;
+   boost::shared_ptr<yApi::historization::CSwitch> m_connectedKw;
    boost::shared_ptr<yApi::historization::CDuration> m_pingKw;
    boost::shared_ptr<specificHistorizers::CNetworkBandwithHistorizer> m_uploadKw;
    boost::shared_ptr<specificHistorizers::CNetworkBandwithHistorizer> m_downloadKw;
-   //TODO ajouter KW connection active
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    boost::shared_ptr<shared::process::CProcess> m_speedTestProcess;
 };
