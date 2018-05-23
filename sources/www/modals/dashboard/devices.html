@@ -37,7 +37,6 @@
       // Get all keywords to display the new configuration
       DeviceManager.getKeywordsByDeviceId(keyword.keyword.deviceId)
       .done(function (updatedKeywords) {
-      
          var keywordList = updatedKeywords;
          keywordList = sortListItemsWithFriendlyName ( keywordList );         
       
@@ -754,26 +753,33 @@
          if ($deviceDetailsTable.length === 1) {
             //we get the device
             var device = getDeviceFromId($deviceDetailsTable.attr("device-id"));
-            
             if (device && device.keywords) {
-               AcquisitionManager.getLastValues(device.keywords)
-               .done(function (data) {
-                  $.each(data, function (index, acquisition) {
-                     $.each(device.keywords, function (idx, keyword) {
-                        if (keyword.id === acquisition.keywordId) {
-                           var $keywordRow = getKeywordDomRow(keyword);
-                           if (!$keywordRow) {
-                              $keywordRow = createKeywordDomLine($deviceDetailsTable, keyword);
+            
+               DeviceManager.getKeywordsByDeviceId(device.id)
+               .done(function (updatedKeywords) {
+                  
+                  if (updatedKeywords.length !== device.keywords.length){
+                     device.keywords = updatedKeywords;
+                     $("table#keyword-list").find("tr:gt(0)").remove();
+                     fillTable(device);
+                  }
+                  
+                  AcquisitionManager.getLastValues(updatedKeywords)
+                  .done(function (data) {
+                     $.each(data, function (index, acquisition) {
+                        $.each(updatedKeywords, function (idx, keyword) {
+                           if (keyword.id === acquisition.keywordId) {
+                              var $keywordRow = getKeywordDomRow(keyword);
+                              updateKeywordDomLine($keywordRow, acquisition, keyword, device.attachedPlugin);
+                           } else {
+                              return; //break $.each
                            }
-                           updateKeywordDomLine($keywordRow, acquisition, keyword, device.attachedPlugin);
-                        } else {
-                           return; //break $.each
-                        }
+                        });
                      });
+                  })
+                  .fail(function (error) {
+                     notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for device = " + device.id }), error);
                   });
-               })
-               .fail(function (error) {
-                  notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for device = " + device.id }), error);
                });
             }
          }
