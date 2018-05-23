@@ -91,7 +91,7 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
 
       case yApi::IYInterpreterApi::kEventStartScript:
          {
-            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IStartScript>>();
+            const auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IStartScript>>();
             startScript(request->getScriptInstanceId(),
                         request->getScriptPath(),
                         request->getScriptApiId(),
@@ -101,14 +101,14 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
 
       case yApi::IYInterpreterApi::kEventStopScript:
          {
-            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IStopScript>>();
+            const auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IStopScript>>();
             stopScript(request->getScriptInstanceId());
             break;
          }
 
       case yApi::IYInterpreterApi::kEventPurgeScriptLog:
          {
-            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IPurgeScriptLog>>();
+            const auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IPurgeScriptLog>>();
             deleteScriptLog(request->getScriptInstanceId(),
                             request->getScriptLogPath());
             break;
@@ -131,14 +131,14 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
 
 const boost::filesystem::path& CPython27::getInterpreterPath() const
 {
-   static const auto interpreterPath = m_api->getInformation()->getPath();
-   return interpreterPath;
+   static const auto InterpreterPath = m_api->getInformation()->getPath();
+   return InterpreterPath;
 }
 
 const std::string& CPython27::getScriptTemplate() const
 {
-   static const auto scriptTemplate = CScriptFile::PythonFileRead(boost::filesystem::path(getInterpreterPath() / "template.py").string());
-   return scriptTemplate;
+   static const auto ScriptTemplate = CScriptFile::pythonFileRead(boost::filesystem::path(getInterpreterPath() / "template.py").string());
+   return ScriptTemplate;
 }
 
 bool CPython27::isAvailable() const
@@ -147,8 +147,8 @@ bool CPython27::isAvailable() const
       return false;
 
    // Now check version
-   static const std::string expectedVersionString("Python 2.7");
-   if (m_pythonExecutable->version().find(expectedVersionString) == std::string::npos)
+   static const std::string ExpectedVersionString("Python 2.7");
+   if (m_pythonExecutable->version().find(ExpectedVersionString) == std::string::npos)
       return false;
 
    return true;

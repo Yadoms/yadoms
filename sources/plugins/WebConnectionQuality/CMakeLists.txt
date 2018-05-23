@@ -7,10 +7,19 @@ include("../YadomsPluginsCommon.cmake")
 set(WEBCONNECTIONQUALITY_PLUGIN_SOURCES
 	stdafx.h
 	stdafx.cpp
+   SpeedTestEventData.h
+   SpeedTestEventData.cpp
+   SpeedTestProcessLogger.h
+   SpeedTestProcessLogger.cpp
+   SpeedTestProcessObserver.h
+   SpeedTestProcessObserver.cpp
 	WebConnectionQuality.h
 	WebConnectionQuality.cpp 
 	WebConnectionQualityConfiguration.h
 	WebConnectionQualityConfiguration.cpp 
+   
+   specificHistorizers/NetworkBandwithHistorizer.h
+   specificHistorizers/NetworkBandwithHistorizer.cpp
 )
 
 #########################################
@@ -36,16 +45,17 @@ set(WEBCONNECTIONQUALITY_PLUGIN_LINK
 ## Always leave these lines to configure plugin correctly
 ## even if WEBCONNECTIONQUALITY_PLUGIN_INCLDIR or WEBCONNECTIONQUALITY_PLUGIN_LINK are empty
 #########################################
-PLUGIN_SOURCES(WebConnectionQualityPlugin ${WEBCONNECTIONQUALITY_PLUGIN_SOURCES})
-PLUGIN_INCLDIR(WebConnectionQualityPlugin ${WEBCONNECTIONQUALITY_PLUGIN_ADDITIONAL_INC_DIR})
-PLUGIN_LINK(WebConnectionQualityPlugin ${WEBCONNECTIONQUALITY_PLUGIN_ADDITIONAL_LIB})
+PLUGIN_SOURCES(WebConnectionQuality ${WEBCONNECTIONQUALITY_PLUGIN_SOURCES})
+PLUGIN_INCLDIR(WebConnectionQuality ${WEBCONNECTIONQUALITY_PLUGIN_ADDITIONAL_INC_DIR})
+PLUGIN_LINK(WebConnectionQuality ${WEBCONNECTIONQUALITY_PLUGIN_ADDITIONAL_LIB})
 
 #########################################
 ## Post-build commands
 ## Copy files to build directory
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
-PLUGIN_POST_BUILD_COPY_FILE(WebConnectionQualityPlugin package.json)
-PLUGIN_POST_BUILD_COPY_FILE(WebConnectionQualityPlugin changelog.md)
-PLUGIN_POST_BUILD_COPY_FILE(WebConnectionQualityPlugin icon.png)
-PLUGIN_POST_BUILD_COPY_DIRECTORY(WebConnectionQualityPlugin locales)
+PLUGIN_POST_BUILD_COPY_FILE(WebConnectionQuality package.json)
+PLUGIN_POST_BUILD_COPY_FILE(WebConnectionQuality changelog.md)
+PLUGIN_POST_BUILD_COPY_FILE(WebConnectionQuality icon.png)
+PLUGIN_POST_BUILD_COPY_FILE(WebConnectionQuality speedtest.py)
+PLUGIN_POST_BUILD_COPY_DIRECTORY(WebConnectionQuality locales)
