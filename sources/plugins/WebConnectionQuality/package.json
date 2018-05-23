@@ -1,0 +1,14 @@
+{
+  "type": "WebConnectionQuality",
+  "version": "1.0.0-beta.1",
+  "author": "Sébastien Gallou",
+  "url": "",
+  "credits": "speedtest-cli (fomr https://github.com/sivel/speedtest-cli)",
+  "supportedPlatforms": "all",
+  "configurationSchema": {
+    "periodicityMinutes": {
+      "type": "int",
+      "defaultValue": "120"
+    }
+  }
+}
