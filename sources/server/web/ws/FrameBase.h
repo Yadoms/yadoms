@@ -31,6 +31,8 @@ namespace web
             ((IsAlive))
             ((TimeNotification))
             ((KeywordDeleted))
+            ((DeviceDeleted))
+            ((KeywordNew))
          ) ;
 
       protected:

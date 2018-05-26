@@ -151,18 +151,19 @@ namespace dataAccessLayer
          m_acquisitionRequester->saveData((*i)->Id, dsm.formatValue(), currentDate);
    }
 
-  
-
-
    void CDeviceManager::removeDevice(int deviceId)
    {
-      cleanupDevice(deviceId);
+      auto device = m_deviceRequester->getDevice(deviceId);
 
+      cleanupDevice(deviceId);
       auto keywords = m_keywordRequester->getKeywords(deviceId);
       for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
          m_keywordManager->removeKeyword((*keyword)->Id);
 
       m_deviceRequester->removeDevice(deviceId);
+
+      //post notification
+      notification::CHelpers::postChangeNotification(device, notification::change::EChangeType::kDelete);
    }
 
    void CDeviceManager::removeDevice(int pluginId, const std::string& deviceName)

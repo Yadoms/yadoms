@@ -21,16 +21,41 @@
 
 <script>
    var deviceList = [];
-
-   ///
-   // Sometimes, for configuration change, the plugin delete the existing keyword and create a new one.
-   // So, we have to catch the destruction event to send a new request to check the new configuration.
-   // This is only a patch waiting to recreate a better devices view in the futur.
-   ///
+   
+   dispatchkeywordNewToDevicesView = function (keyword) {
+   };
    
    dispatchkeywordDeletedToDevicesView = function (keyword) {
-      clearInterval(Yadoms.periodicDashboardTask);
-
+      getKeywordIdDomRow(keyword.keyword.id).remove();
+      
+      // Remove the keyword from the keyword list of the specific device
+      var i = deviceList.map(function (e) { return e.id; }).indexOf(keyword.keyword.id);
+      var device;
+      if (i !== -1){
+         deviceList[i].keywords = keywordList; // update keywords
+      }
+      
+      console.log (deviceList);      
+   };
+   
+   dispatchDevicesNewToDevicesView = function (device) {
+      addDeviceToDom(device.device, null);
+      deviceList.push(device.device);
+   };
+   
+   dispatchDevicesDeletedToDevicesView = function (device) {
+      getDeviceDomRow(device.device).remove();
+      
+      // Remove the device from the device list to display
+      var i = deviceList.map(function (e) { return e.id; }).indexOf(device.device.id);
+      var device;
+      if (i !== -1){
+         deviceList.splice(i, 1);
+      }
+      
+      console.log (deviceList);
+   };
+      /*
       //we get the device
       var deviceWithInfo = $("table#device-list").find("tr[device-id='" + keyword.keyword.deviceId + "'].info");
       
@@ -74,9 +99,9 @@
             });               
          }
          
-         Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);         
-      });
-   };
+         //Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);         
+      });*/
+   //};
    
    Yadoms.initializeDeviceDashboard = function () {
       $("input.cb-showblacklist").unbind('change').bind('change', function () 
@@ -462,7 +487,6 @@
                $deviceRow.addClass(selectedClass).siblings(".device").removeClass(selectedClass);
 
                if(device.keywords && device.keywords.length > 0) {
-
                   //we create device details table
                   $deviceRow.after("<tr device-id=\"" + device.id + "\" class=\"device-details " + selectedClass + "\"><td colspan=\"4\">" +
                            "<table id=\"keyword-list\" device-id=\"" + device.id + "\" class=\"table table-bordered table-striped\">" +
@@ -500,22 +524,13 @@
       // This disabled the periodic refresh during the deletion and wrong display
       clearInterval(Yadoms.periodicDashboardTask); 
       
-      if(parseBool(device.blacklist)===true)
-      {
+      if(parseBool(device.blacklist)===true){
          Yadoms.modals.confirmation.loadAsync()
          .done(function () {
             Yadoms.showConfirmModal(Yadoms.btnKind.confirmCancel, $.t("modals.confirm-delete-device.title"), $.t("modals.confirm-delete-device.text", { deviceName: device.friendlyName }), function () {
                DeviceManager.deleteDevice(device, true)
                .done(function () {
-                  //force a device and associated keyword refresh
-                  DeviceManager.getKeywords(device, true)
-                  .always(function () {   
-                     refreshDeviceList()
-                     .always(function() {
-                        // Restart the periodic refresh
-                        Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
-                     });
-                  });
+                  Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                })
                .fail(function (error) {
                   Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
@@ -529,15 +544,7 @@
             Yadoms.showDeleteDeviceModal(device, function (deleteDevice) {
                DeviceManager.deleteDevice(device, deleteDevice)
                .done(function () {
-                  //force a device and associated keyword refresh
-                  DeviceManager.getKeywords(device, true)
-                  .always(function () {   
-                     refreshDeviceList()
-                     .always(function() {
-                        // Restart the periodic refresh
-                        Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);                     
-                     });                     
-                  });
+                  Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                })
                .fail(function (error) {
                   Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
@@ -634,6 +641,8 @@
                    Yadoms.showVirtualDeviceConfigurationModal(null, function (newDeviceName, newDeviceModel, newDeviceConfiguration) {
                      PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, "virtualDeviceType", newDeviceConfiguration)
                      .done(function () {
+                        // TODO
+                        //Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                         refreshDeviceList()
                            .always(function() {
                                Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
@@ -657,6 +666,8 @@
                           //we ask for manually device creation
                         PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
                         .done(function () {
+                           //TODO
+                           //Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                            refreshDeviceList()
                            .always(function() {
                               Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
@@ -728,26 +739,9 @@
       $keywordRow.find("td.keyword-update").html(lastStateValue);
    }
 
-
    function periodicDashboardDevicesTask() {
       //periodically we check the status of each plugin
       if (serverIsOnline) {
-         //Check for new devices
-         DeviceManager.getAll()
-         .done(function (allDevices) {
-            //Only if the number of devices is different, we check which one
-            if (deviceList.length !== allDevices.length) {
-               //foreach result we append a <tr>
-               $.each(allDevices, function (index, value) {
-                  // If not in the list, we add to the list, and to the dom
-                  if (!getDeviceFromId(value.id)) {
-                     deviceList.push(value);
-                     addDeviceToDom(value, null);
-                  }
-               });
-            }
-         });
-
          var $deviceDetailsTable = $("table#keyword-list");
          //if the table isn't displayed for the moment we don't ask keyword values
          if ($deviceDetailsTable.length === 1) {
