@@ -93,19 +93,19 @@
       });
       addDeviceToDom(device.device, indexToInsert);
       deviceList.push(device.device);
-      
       deviceList = sortListItemsWithFriendlyName ( deviceList );
    };
    
    dispatchDevicesDeletedToDevicesView = function (device) {
-      getDeviceDomRow(device.device).remove();
+      // remove device and device-details if any ...
+      $("table#device-list").find("tr[device-id='" + device.device.id + "']").remove();
       
       // Remove the device from the device list to display
       var i = deviceList.map(function (e) { return e.id; }).indexOf(device.device.id);
       var device;
       if (i !== -1){
          deviceList.splice(i, 1);
-      }
+      }    
    };
    
    Yadoms.initializeDeviceDashboard = function () {
@@ -154,19 +154,19 @@
       $("table#device-list").find("tr:gt(0)").remove();
 
       //we clear pluginInstance array
-      deviceList = [];
+      var tempList = [];
 
       DeviceManager.getAll()
       .done(function (allDevices) {
          YadomsInformationManager.getList()
-            .done(function (data) {      
-               deviceList = sortListItemsWithFriendlyName ( allDevices );
-             
+            .done(function (data) {
+               tempList = sortListItemsWithFriendlyName ( allDevices );
                //foreach result we append a <tr>
-               $.each(allDevices, function (index, value) {
+               $.each(tempList, function (index, value) {
                   if( (!data.developerMode && (value.name !== "pluginState" || value.model !== "Plugin state")) || data.developerMode) {
                      if(showblacklistedDevices || (!showblacklistedDevices && parseBool(value.blacklist) === false)) {
                         addDeviceToDom(value, null);
+                        deviceList.push(value);
                      }
                   }
                });
@@ -180,7 +180,7 @@
    }
 
    function getDeviceDomRow(device) {
-      return $("table#device-list").find("tr[device-id='" + device.id + "']");
+      return $("table#device-list").find("tr[device-id='" + device.id + "'].device");
    }
 
    function getDeviceDetailsDomRow() {
@@ -213,31 +213,25 @@
                                  "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
                                  "</div>";
 
-      
       //in case the device is blacklisted, then strike it
       var fn = device.friendlyName;
       if(parseBool(device.blacklist)===true)
          fn = "<del>"+device.friendlyName+"</del>";
               
       var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + fn + "</span>";
-      
       var model = "<span>" + device.model + "</span>";
 
       //we add it to the DOM
       var $deviceList = $("table#device-list");
-	  
-	  var frameworkDevice = "<tr device-id=\"" + device.id + "\" class=\"device\"><td class=\"device-friendlyName vert-align text-left\"></td><td class=\"device-attachedTo vert-align\"></td><td class=\"device-model vert-align\"></td><td class=\"device-actions vert-align\"></td></tr>";
+	   var frameworkDevice = "<tr device-id=\"" + device.id + "\" class=\"device\"><td class=\"device-friendlyName vert-align text-left\"></td><td class=\"device-attachedTo vert-align\"></td><td class=\"device-model vert-align\"></td><td class=\"device-actions vert-align\"></td></tr>";
 
-	  if ( positionDevice == null || deviceList.length == 0 )
+	   if ( positionDevice == null || deviceList.length == 0 )
          $deviceList.append( frameworkDevice );
-	  else{
+	   else{
 	     var $row = null;
-
-       $row = getDeviceDomRow(deviceList[positionDevice]);
-       console.log ("positionDevice : ", positionDevice);
-       console.log ($row);
-       $( frameworkDevice ).insertBefore($row);
-	  }
+        $row = getDeviceDomRow(deviceList[positionDevice]);
+        $(frameworkDevice).insertBefore($row);
+	   }
 
       var $deviceRow = getDeviceDomRow(device);
       //we fill the data

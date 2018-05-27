@@ -185,5 +185,3 @@ namespace dataAccessLayer
          m_acquisitionRequester->removeKeywordData((*keyword)->Id);
    }
 } //namespace dataAccessLayer 
-
-
