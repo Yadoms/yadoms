@@ -30,9 +30,14 @@ function numericDisplayViewModel() {
     };
 
     this.displayDuration = function (value) {
-      var self = this; 
-      var d = moment.duration(value);
+      var self = this;
       
+      if (value ==="not-a-date-time"){
+         self.data("-");
+         return;
+      }
+      
+      var d = moment.duration(value);
       if (d.asSeconds() < 1) {  // Display in millisecond
          self.data(d.milliseconds().toString() + " ms");
       } else if (d.asSeconds() < 30) { // Display in seconds + milliseconds
