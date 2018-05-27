@@ -23,19 +23,56 @@
    var deviceList = [];
    
    dispatchkeywordNewToDevicesView = function (keyword) {
+      var i = deviceList.map(function (e) { return e.id; }).indexOf(keyword.keyword.deviceId);
+      var device;
+      if (i !== -1){
+         deviceList[i].keywords.push(keyword.keyword);
+         device = deviceList[i];
+      }
+      
+      // sort keywords
+      deviceList[i].keywords = sortListItemsWithFriendlyName ( deviceList[i].keywords );
+      
+      if (getDeviceDomRow(device).length !=0) {
+         //we remove all rows except header
+         $("table#keyword-list").find("tr:gt(0)").remove();
+         fillTable(device);
+         
+         AcquisitionManager.getLastValues(device.keywords)
+         .done(function (data) {
+            $.each(data, function (index, acquisition) {
+               $.each(device.keywords, function (idx, keyword) {
+                  if (keyword.id === acquisition.keywordId) {
+                     var $keywordRow = getKeywordDomRow(keyword);
+                     if (!$keywordRow) {
+                        $keywordRow = createKeywordDomLine($deviceDetailsTable, keyword);
+                     }
+                     updateKeywordDomLine($keywordRow, acquisition, keyword, device.attachedPlugin);
+                  } else {
+                     return; //break $.each
+                  }
+               });
+            });
+         })
+         .fail(function (error) {
+            notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for device = " + device.id }), error);
+         });               
+      }
    };
    
    dispatchkeywordDeletedToDevicesView = function (keyword) {
       getKeywordIdDomRow(keyword.keyword.id).remove();
       
       // Remove the keyword from the keyword list of the specific device
-      var i = deviceList.map(function (e) { return e.id; }).indexOf(keyword.keyword.id);
+      var i = deviceList.map(function (e) { return e.id; }).indexOf(keyword.keyword.deviceId);
       var device;
       if (i !== -1){
-         deviceList[i].keywords = keywordList; // update keywords
+         var keywordCell = deviceList[i].keywords.map(function (e) { return e.id; }).indexOf(keyword.keyword.id);
+         
+         if (keywordCell !== -1){
+            deviceList[i].keywords.splice(keywordCell, 1);
+         }
       }
-      
-      console.log (deviceList);      
    };
    
    dispatchDevicesNewToDevicesView = function (device) {
@@ -52,56 +89,7 @@
       if (i !== -1){
          deviceList.splice(i, 1);
       }
-      
-      console.log (deviceList);
    };
-      /*
-      //we get the device
-      var deviceWithInfo = $("table#device-list").find("tr[device-id='" + keyword.keyword.deviceId + "'].info");
-      
-      // Get all keywords to display the new configuration
-      DeviceManager.getKeywordsByDeviceId(keyword.keyword.deviceId)
-      .done(function (updatedKeywords) {
-         var keywordList = updatedKeywords;
-         keywordList = sortListItemsWithFriendlyName ( keywordList );         
-      
-         // get the keyword list for equipments : some equipments change dynamically the keyword list.
-         var i = deviceList.map(function (e) { return e.id; }).indexOf(keyword.keyword.deviceId);
-         var device;
-         if (i !== -1){
-            deviceList[i].keywords = keywordList; // update keywords
-            device = deviceList[i];
-         }
-      
-         if (deviceWithInfo.length !=0) {
-            //we remove all rows except header
-            $("table#keyword-list").find("tr:gt(0)").remove();
-            fillTable(device);
-            
-            AcquisitionManager.getLastValues(device.keywords)
-            .done(function (data) {
-               $.each(data, function (index, acquisition) {
-                  $.each(device.keywords, function (idx, keyword) {
-                     if (keyword.id === acquisition.keywordId) {
-                        var $keywordRow = getKeywordDomRow(keyword);
-                        if (!$keywordRow) {
-                           $keywordRow = createKeywordDomLine($deviceDetailsTable, keyword);
-                        }
-                        updateKeywordDomLine($keywordRow, acquisition, keyword, device.attachedPlugin);
-                     } else {
-                        return; //break $.each
-                     }
-                  });
-               });
-            })
-            .fail(function (error) {
-               notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for device = " + device.id }), error);
-            });               
-         }
-         
-         //Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);         
-      });*/
-   //};
    
    Yadoms.initializeDeviceDashboard = function () {
       $("input.cb-showblacklist").unbind('change').bind('change', function () 
@@ -641,8 +629,6 @@
                    Yadoms.showVirtualDeviceConfigurationModal(null, function (newDeviceName, newDeviceModel, newDeviceConfiguration) {
                      PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, "virtualDeviceType", newDeviceConfiguration)
                      .done(function () {
-                        // TODO
-                        //Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                         refreshDeviceList()
                            .always(function() {
                                Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
@@ -666,8 +652,6 @@
                           //we ask for manually device creation
                         PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
                         .done(function () {
-                           //TODO
-                           //Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                            refreshDeviceList()
                            .always(function() {
                               Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
@@ -751,7 +735,6 @@
             
                DeviceManager.getKeywordsByDeviceId(device.id)
                .done(function (updatedKeywords) {
-                  
                   if (updatedKeywords.length !== device.keywords.length){
                      device.keywords = updatedKeywords;
                      $("table#keyword-list").find("tr:gt(0)").remove();
