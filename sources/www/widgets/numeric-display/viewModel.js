@@ -30,12 +30,19 @@ function numericDisplayViewModel() {
     };
 
     this.displayDuration = function (value) {
-       var self = this;
-       
+      var self = this; 
       var d = moment.duration(value);
-      console.log(d);
-      //console.log (d.humanize("HH:mm:ss.SSS"));//'H:mm:ss'
-       self.data(value);
+      
+      if (d.asSeconds() < 1) {  // Display in millisecond
+         self.data(d.milliseconds().toString() + " ms");
+      } else if (d.asSeconds() < 30) { // Display in seconds + milliseconds
+         self.data((d.seconds() + d.milliseconds()/1000).toFixed(2).toString() + " s");
+      } else { // Standard display
+         // format function doesn't look to works for duration ...
+         self.data(d.hours().toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false}) + ":" + 
+                   d.minutes().toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false}) + ":" + 
+                   d.seconds().toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false}));
+      }
     };
     
     this.configurationChanged = function () {
@@ -44,8 +51,7 @@ function numericDisplayViewModel() {
        try{
           self.shouldBeVisible(parseBool(self.widget.configuration.dateDisplay));
        }
-       catch(error)
-       {
+       catch(error){
           self.shouldBeVisible(false);
           console.warn (error);
        }
@@ -60,17 +66,16 @@ function numericDisplayViewModel() {
         //we register keyword new acquisition
         self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
 	   
-		//we register keyword for get last value at web client startup
-		self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);  	   
+		  //we register keyword for get last value at web client startup
+        self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);  	   
         
-       //we fill the deviceId of the battery indicator
-       self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);        
+        //we fill the deviceId of the battery indicator
+        self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);        
         
-       //we get the unit of the keyword
-       self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
+        //we get the unit of the keyword
+        self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
           self.unit($.t(keyword.units));
           self.capacity = keyword.capacityName;
-          console.log("capacity : ", self.capacity);
            
           // If no unit, we hide the unit display
           if (keyword.units === "data.units.noUnit")
