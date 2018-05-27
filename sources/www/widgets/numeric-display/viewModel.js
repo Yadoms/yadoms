@@ -13,6 +13,7 @@ function numericDisplayViewModel() {
     this.unit = ko.observable("");
     this.shouldBeVisible = ko.observable(false);
     this.lastReceiveDate = ko.observable("");
+    this.capacity = "";
     //
 
     /**
@@ -28,6 +29,15 @@ function numericDisplayViewModel() {
         });
     };
 
+    this.displayDuration = function (value) {
+       var self = this;
+       
+      var d = moment.duration(value);
+      console.log(d);
+      //console.log (d.humanize("HH:mm:ss.SSS"));//'H:mm:ss'
+       self.data(value);
+    };
+    
     this.configurationChanged = function () {
        var self = this;
 
@@ -59,6 +69,8 @@ function numericDisplayViewModel() {
        //we get the unit of the keyword
        self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
           self.unit($.t(keyword.units));
+          self.capacity = keyword.capacityName;
+          console.log("capacity : ", self.capacity);
            
           // If no unit, we hide the unit display
           if (keyword.units === "data.units.noUnit")
@@ -85,20 +97,20 @@ function numericDisplayViewModel() {
         var self = this;
 
         if (keywordId === self.widget.configuration.device.keywordId) {
-           
             //it is the right device
-            if (data.value !=="")
-            {
-               var temp = parseFloat(data.value).toFixed(self.precision);
-               self.data(temp.toString());
-            }
-            else 
+            if (data.value !==""){
+               if (self.capacity ==="duration"){
+                  self.displayDuration(data.value);
+               }else {
+                  var temp = parseFloat(data.value).toFixed(self.precision);
+                  self.data(temp.toString());
+               }
+            }else 
                self.data("-");
             
             self.widgetApi.fitText();
             
-            if (self.shouldBeVisible())
-            {
+            if (self.shouldBeVisible()){
                if (data.date!=="")
                   self.lastReceiveDate(moment(data.date).calendar().toString());
                else
