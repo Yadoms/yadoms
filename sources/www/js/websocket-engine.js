@@ -85,23 +85,35 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
      
      //we listen keyword Deletion event
      $(document).on("keyworddeleted", function(e, websocketData) {
-         dispatchkeywordDeletedToWidgets(websocketData.data);
-         dispatchkeywordDeletedToDevicesView(websocketData.data);
+        if (!isNullOrUndefinedOrEmpty(typeof dispatchkeywordDeletedToWidgets))
+           dispatchkeywordDeletedToWidgets(websocketData.data);
+         
+        if (!isNullOrUndefinedOrEmpty(typeof dispatchkeywordDeletedToDevicesView))
+           dispatchkeywordDeletedToDevicesView(websocketData.data);
      });
      
      //we listen device Deletion event
      $(document).on("devicedeleted", function(e, websocketData) {
-         dispatchDevicesDeletedToDevicesView(websocketData.data);
+        if (!isNullOrUndefinedOrEmpty(typeof dispatchDevicesDeletedToDevicesView))
+           dispatchDevicesDeletedToDevicesView(websocketData.data);
      });
+     
+     //we listen device blacklist event
+     $(document).on("deviceblacklisted", function(e, websocketData) {
+        if (!isNullOrUndefinedOrEmpty(typeof dispatchDevicesDeletedToDevicesView))
+           dispatchDevicesBlacklistedToDevicesView(websocketData.data);
+     });     
      
      //we listen device new event
      $(document).on("devicenew", function(e, websocketData) {
+        if (!isNullOrUndefinedOrEmpty(typeof dispatchDevicesNewToDevicesView))
          dispatchDevicesNewToDevicesView(websocketData.data);
      });
      
      //we listen keyword new event
      $(document).on("keywordnew", function(e, websocketData) {
-         dispatchkeywordNewToDevicesView(websocketData.data);
+        if (!isNullOrUndefinedOrEmpty(typeof dispatchDevicesNewToDevicesView))
+           dispatchkeywordNewToDevicesView(websocketData.data);
      });          
      
     if (!isNullOrUndefined(WebSocketEngine.webSocket_))
@@ -141,6 +153,7 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
             if (!isNullOrUndefined(e)) {
                 var websocketData = JSON.parse(e.data);
                 if (!isNullOrUndefined(websocketData)) {
+                   console.log(websocketData);
                     switch (websocketData.type.toLowerCase()) {
                         case "acquisitionupdate":
                            $(document).trigger("acquisitionupdate", websocketData);
@@ -151,6 +164,9 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
                         case "devicedeleted":
                            $(document).trigger("devicedeleted", websocketData);
                            break;
+                        case "deviceblacklisted":
+                           $(document).trigger("deviceblacklisted", websocketData);
+                           break;                           
                         case "keywordnew":
                            $(document).trigger("keywordnew", websocketData);
                            break;                           

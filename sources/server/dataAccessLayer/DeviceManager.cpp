@@ -104,7 +104,7 @@ namespace dataAccessLayer
    void CDeviceManager::updateDeviceBlacklistState(int deviceId, const bool blacklist)
    {
       //cleanup data
-      if(blacklist)
+      if (blacklist)
          cleanupDevice(deviceId);
 
       //update blacklist state of all attached keywords
@@ -114,6 +114,13 @@ namespace dataAccessLayer
 
       //update device blacklist state
       m_deviceRequester->updateDeviceBlacklistState(deviceId, blacklist);
+
+      //post notification
+      if (blacklist)
+      {
+         boost::shared_ptr<database::entities::CDevice> device = m_deviceRequester->getDevice(deviceId, true);
+         notification::CHelpers::postChangeNotification(device, notification::change::EChangeType::kBlacklist);
+      }
    }
 
    void CDeviceManager::updateDeviceState(int deviceId, const shared::plugin::yPluginApi::historization::EDeviceState& state, const std::string& customMessageId, const shared::CDataContainer &data) const

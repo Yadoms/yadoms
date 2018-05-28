@@ -33,6 +33,7 @@ namespace web
             ((KeywordDeleted))
             ((DeviceDeleted))
             ((KeywordNew))
+            ((DeviceBlackListed))
          ) ;
 
       protected:

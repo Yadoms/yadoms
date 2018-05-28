@@ -21,6 +21,15 @@
 
 <script>
    var deviceList = [];
+   var actionsBtns =   "<div class=\"btn-group\">\n" +
+                       "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-cog\"></span></button>\n" +
+                       "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
+                       "</div>";
+
+   var actionsBtnsBlacklist = "<div class=\"btn-group\">\n" +
+                              "<button type=\"button\" class=\"btn btn-success btn-restore\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.restore\"><span class=\"fa fa-reply\"></span></button>\n" +
+                              "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
+                              "</div>";   
    
    dispatchkeywordNewToDevicesView = function (keyword) {
       var i = deviceList.map(function (e) { return e.id; }).indexOf(keyword.keyword.deviceId);
@@ -94,6 +103,16 @@
       addDeviceToDom(device.device, indexToInsert);
       deviceList.push(device.device);
       deviceList = sortListItemsWithFriendlyName ( deviceList );
+   };   
+   
+   dispatchDevicesBlacklistedToDevicesView = function (device) {
+      var showblacklistedDevices = $("input.cb-showblacklist").prop("checked");
+      
+      if (!showblacklistedDevices) {
+         dispatchDevicesDeletedToDevicesView(device);
+      }else { // display the device with correct icons
+         transformDeviceInDom(device.device);
+      }
    };
    
    dispatchDevicesDeletedToDevicesView = function (device) {
@@ -106,6 +125,54 @@
       if (i !== -1){
          deviceList.splice(i, 1);
       }    
+   };
+   
+   function transformDeviceInDom(device) {
+      // remove device details if any 
+      getDeviceDetailsDomRow().remove();
+      
+      var $deviceRow = $("table#device-list").find("tr[device-id='" + device.id + "'].device");
+      console.log (device);
+      
+      $deviceRow.find("td.device-friendlyName").find("span").remove();
+      
+      console.log ($deviceRow.find("td.device-friendlyName"));
+      
+      var fn = device.friendlyName;
+      if(parseBool(device.blacklist)==true)
+         fn = "<del>"+device.friendlyName+"</del>";
+           
+      var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + fn + "</span>";
+      
+      // display the new name
+      $deviceRow.find("td.device-friendlyName").append(friendlyName);
+      
+      //we remove old buttons
+      $deviceRow.find("td.device-actions").find(".btn-group").remove();
+      
+      //we add new actions to the device
+      if(parseBool(device.blacklist) == true) {
+         $deviceRow.find("td.device-actions").append(actionsBtnsBlacklist);
+      } else {
+         if((device.name != "pluginState" && device.model != "Plugin state")) 
+           $deviceRow.find("td.device-actions").append(actionsBtns);
+      }
+      
+      //we bind event on the different actions
+      $deviceRow.find("button.btn-configure").unbind('click').bind('click', function (e) { 
+            e.stopPropagation();       
+            updateDeviceConfiguration(device);
+      });
+
+      $deviceRow.find("button.btn-delete").unbind('click').bind('click', function (e) {
+            e.stopPropagation();
+            deleteDevice(device);
+      });
+
+      $deviceRow.find("button.btn-restore").unbind('click').bind('click', function (e) { 
+            e.stopPropagation();
+            restoreDevice(device);           
+      });      
    };
    
    Yadoms.initializeDeviceDashboard = function () {
@@ -147,7 +214,6 @@
 
    function refreshDeviceList() {
       var d = new $.Deferred();
-
       var showblacklistedDevices = $("input.cb-showblacklist").prop("checked");
 
       //we remove all rows except header
@@ -201,18 +267,8 @@
          return deviceList[i];
       return undefined;
    }
-
+   
    function addDeviceToDom(device, positionDevice) {
-      var actionsBtns =   "<div class=\"btn-group\">\n" +
-                          "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-cog\"></span></button>\n" +
-                          "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
-                          "</div>";
-
-      var actionsBtnsBlacklist = "<div class=\"btn-group\">\n" +
-                                 "<button type=\"button\" class=\"btn btn-success btn-restore\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.restore\"><span class=\"fa fa-reply\"></span></button>\n" +
-                                 "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
-                                 "</div>";
-
       //in case the device is blacklisted, then strike it
       var fn = device.friendlyName;
       if(parseBool(device.blacklist)===true)

@@ -13,6 +13,7 @@
 #include "web/ws/LogEventFrame.h"
 #include "web/ws/NewDeviceFrame.h"
 #include "web/ws/DeviceDeletedFrame.h"
+#include "web/ws/DeviceBlackListedFrame.h"
 #include "web/ws/KeywordDeletedFrame.h"
 #include "web/ws/KeywordNewFrame.h"
 #include "web/ws/TaskUpdateNotificationFrame.h"
@@ -75,6 +76,11 @@ namespace web
             observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CDevice>(notification::change::EChangeType::kDelete,
                                                                                                              *eventHandler,
                                                                                                              kDeleteDevice));
+
+            // Subscribe to device blacklist notifications
+            observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CDevice>(notification::change::EChangeType::kBlacklist,
+                                                                                                             *eventHandler,
+                                                                                                             kBlackListDevice));
 
             // Subscribe to keyword creation notifications
             observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CKeyword>(notification::change::EChangeType::kCreate,
@@ -238,6 +244,12 @@ namespace web
                {
                   auto newDevice = eventHandler->getEventData<boost::shared_ptr<database::entities::CDevice>>();
                   clientSeemConnected = send(webSocket, ws::CDeviceDeletedFrame(newDevice));
+                  break;
+               }
+               case kBlackListDevice:
+               {
+                  auto newDevice = eventHandler->getEventData<boost::shared_ptr<database::entities::CDevice>>();
+                  clientSeemConnected = send(webSocket, ws::CDeviceBlackListedFrame(newDevice));
                   break;
                }
                case kNewKeyword:
