@@ -1,3 +1,6 @@
+### 1.0.4
+* Fix #353 - Bad duration display
+
 ### 1.0.3
 * Remove obsolete function
 
