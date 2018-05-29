@@ -27,7 +27,7 @@ namespace shared
 
             //-----------------------------------------------------
             ///\brief Answer the request with success, providing the result
-            ///\param [in] result  The query result
+            ///\param [in] content  The query result
             //-----------------------------------------------------
             virtual void sendSuccess(const std::string& content) = 0;
 

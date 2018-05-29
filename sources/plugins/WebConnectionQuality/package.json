@@ -1,6 +1,6 @@
 {
   "type": "WebConnectionQuality",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0",
   "author": "Sébastien Gallou",
   "url": "",
   "credits": "speedtest-cli (from https://github.com/sivel/speedtest-cli)",

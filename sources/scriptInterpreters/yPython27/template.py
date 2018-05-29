@@ -24,7 +24,7 @@ def yMain(yApi):
    heatingKw = yApi.getKeywordId('fakeOnOffReadWriteSwitch', 'Switch')
    
    # Our thermostat runs infinitely
-   while(True):
+   while True:
    
       # Wait for change on temperature. waitForNextAcquisition returns a string, that we have to convert to float.
       newTemperature = float(yApi.waitForNextAcquisition(temperatureKw))
