@@ -107,7 +107,7 @@ class ConfigureWidgetModal():
       return self.__configurationPanel    
 
    def getWidgetTitle(self):
-      return self.__configurationPanel.getItemByName('modals.configure-widget.titleName.name')
+      return self.__configurationPanel.getTextItemByName('modals.configure-widget.titleName.name')
       
    def setWidgetTitle(self, newTitle):
       titleField = self.getWidgetTitle()

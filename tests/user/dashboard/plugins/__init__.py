@@ -168,7 +168,7 @@ class ConfigurePluginModal():
       self.__configurePluginModalWebElement = configurePluginModalWebElement
 
    def getPluginName(self):
-      return ConfigurationPanel(self.__configurePluginModalWebElement).getItemByName("modals.configure-plugin.name-configuration.name")
+      return ConfigurationPanel(self.__configurePluginModalWebElement).getTextItemByName("modals.configure-plugin.name-configuration.name")
       
    def setPluginName(self, newName):
       tools.waitReadyForInput(self.getPluginName())
