@@ -1,4 +1,4 @@
-### 1.1.0-beta.3
+### 1.1.0
 * Change timers values (time out 20s => 5s / Retry => 5s).
 * Fix timers misplaced.
 * Fix receiverHandler desactivation
@@ -9,11 +9,7 @@
 * Update size of the receiver buffer into the receiver thread for FTDI driver
 * Change the plugin state color in red when the connection is lost
 * fix wait of 1 mn instead of 30s after the first sampling after start of the plugin
-
-### 1.1.0-beta.2
 * Change Warning EJP to a switch historizer
-
-### 1.1.0-beta.1
 * Add a better for Windows installation
 * Add the support for module with double teleinfo input
 
