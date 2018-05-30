@@ -202,7 +202,7 @@ class ConfigureDeviceModal():
       self.__configureDeviceModalWebElement = configureDeviceModalWebElement
 
    def getDeviceName(self):
-      return ConfigurationPanel(self.__configureDeviceModalWebElement).getItemByName("modals.configure-manually-device.friendlyName-configuration.name")
+      return ConfigurationPanel(self.__configureDeviceModalWebElement).getTextItemByName("modals.configure-manually-device.friendlyName-configuration.name")
       
    def setDeviceName(self, newName):
       tools.waitReadyForInput(self.getDeviceName())
@@ -212,7 +212,7 @@ class ConfigureDeviceModal():
       nameField.send_keys(newName)
 
    def getDeviceModel(self):
-      return ConfigurationPanel(self.__configureDeviceModalWebElement).getItemByName("modals.configure-manually-device.model-configuration.name")
+      return ConfigurationPanel(self.__configureDeviceModalWebElement).getTextItemByName("modals.configure-manually-device.model-configuration.name")
       
    def setDeviceModel(self, newModel):
       tools.waitReadyForInput(self.getDeviceName())
@@ -225,10 +225,10 @@ class ConfigureDeviceModal():
       return ConfigurationPanel(self.__configureDeviceModalWebElement).getFielsCount()
 
    def getTextField(self, field):
-      return ConfigurationPanel(self.__configureDeviceModalWebElement).getItemByName(field).get_attribute('value')
+      return ConfigurationPanel(self.__configureDeviceModalWebElement).getTextItemByName(field).get_attribute('value')
 
    def updateTextField(self, field, value):
-      field = ConfigurationPanel(self.__configureDeviceModalWebElement).getItemByName(field)
+      field = ConfigurationPanel(self.__configureDeviceModalWebElement).getTextItemByName(field)
       tools.waitReadyForInput(field)
       field.send_keys(Keys.CONTROL + "a")
       field.send_keys(Keys.DELETE)

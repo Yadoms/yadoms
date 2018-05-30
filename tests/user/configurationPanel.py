@@ -52,9 +52,9 @@ class ConfigurationPanel(object):
       """ Get a button of a configuration section """
       return self._panelWebElement.find_element_by_xpath(".//button[@data-i18n='" + dataI18nString + "']")
       
-   def getItemByName(self, dataI18nString):
-      """ Find a configuration single item by its "data-i18n" title """
-      return self.findField(dataI18nString).find_element_by_class_name('configuration-control').find_element_by_class_name('form-control')
+   def getTextItemByName(self, dataI18nString):
+      """ Find a configuration single text box by its "data-i18n" title """
+      return self.findField(dataI18nString).find_element_by_xpath(".//input[@type='text']")
       
    def getCheckboxItemByName(self, dataI18nString):
       """ Find a configuration single checkbox by its "data-i18n" title """
