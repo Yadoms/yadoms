@@ -16,6 +16,7 @@ namespace web
          public:
             explicit CPlugin(boost::shared_ptr<database::IDataProvider> dataProvider,
                              boost::shared_ptr<pluginSystem::CManager> pluginManager,
+                             boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                              communication::ISendMessageAsync& messageSender);
             virtual ~CPlugin();
 
@@ -70,6 +71,12 @@ namespace web
          private:
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
             boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
+
+            //-----------------------------------------
+            ///\brief   Device manager
+            //-----------------------------------------
+            boost::shared_ptr<dataAccessLayer::IDeviceManager> m_deviceManager;
+
             std::string m_restKeyword;
 
             //-----------------------------------------

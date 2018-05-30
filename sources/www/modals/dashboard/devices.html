@@ -21,34 +21,27 @@
 
 <script>
    var deviceList = [];
+   var actionsBtns =   "<div class=\"btn-group\">\n" +
+                       "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-cog\"></span></button>\n" +
+                       "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
+                       "</div>";
 
-   ///
-   // Sometimes, for configuration change, the plugin delete the existing keyword and create a new one.
-   // So, we have to catch the destruction event to send a new request to check the new configuration.
-   // This is only a patch waiting to recreate a better devices view in the futur.
-   ///
+   var actionsBtnsBlacklist = "<div class=\"btn-group\">\n" +
+                              "<button type=\"button\" class=\"btn btn-success btn-restore\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.restore\"><span class=\"fa fa-reply\"></span></button>\n" +
+                              "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
+                              "</div>";   
    
-   dispatchkeywordDeletedToDevicesView = function (keyword) {
-      clearInterval(Yadoms.periodicDashboardTask);
-
-      //we get the device
-      var deviceWithInfo = $("table#device-list").find("tr[device-id='" + keyword.keyword.deviceId + "'].info");
+   dispatchkeywordNewToDevicesView = function (keyword) {
+      var i = deviceList.map(function (e) { return e.id; }).indexOf(keyword.keyword.deviceId);
+      var device;
+      if (i !== -1 && !isNullOrUndefined(deviceList[i].keywords)){
+         deviceList[i].keywords.push(keyword.keyword);
+         device = deviceList[i];
       
-      // Get all keywords to display the new configuration
-      DeviceManager.getKeywordsByDeviceId(keyword.keyword.deviceId)
-      .done(function (updatedKeywords) {
-         var keywordList = updatedKeywords;
-         keywordList = sortListItemsWithFriendlyName ( keywordList );         
-      
-         // get the keyword list for equipments : some equipments change dynamically the keyword list.
-         var i = deviceList.map(function (e) { return e.id; }).indexOf(keyword.keyword.deviceId);
-         var device;
-         if (i !== -1){
-            deviceList[i].keywords = keywordList; // update keywords
-            device = deviceList[i];
-         }
-      
-         if (deviceWithInfo.length !=0) {
+         // sort keywords
+         deviceList[i].keywords = sortListItemsWithFriendlyName ( deviceList[i].keywords );
+         
+         if (getDeviceDomRow(device).length !=0) {
             //we remove all rows except header
             $("table#keyword-list").find("tr:gt(0)").remove();
             fillTable(device);
@@ -73,9 +66,113 @@
                notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for device = " + device.id }), error);
             });               
          }
+      }
+   };
+   
+   dispatchkeywordDeletedToDevicesView = function (keyword) {
+      getKeywordIdDomRow(keyword.keyword.id).remove();
+      
+      // Remove the keyword from the keyword list of the specific device
+      var i = deviceList.map(function (e) { return e.id; }).indexOf(keyword.keyword.deviceId);
+      var device;
+      if (i !== -1){
+         if (!isNullOrUndefined(deviceList[i].keywords)){
+            var keywordCell = deviceList[i].keywords.map(function (e) { return e.id; }).indexOf(keyword.keyword.id);
+            
+            if (keywordCell !== -1){
+               deviceList[i].keywords.splice(keywordCell, 1);
+            }
+         }
+      }
+   };
+   
+   dispatchDevicesNewToDevicesView = function (device) {
+      var indexToInsert = 0;
+      //Insert into the tab
+      $.each(deviceList, function (index, element) {
+         var $deviceRow = getDeviceDomRow(element);
+         var $span = $deviceRow.find("td.device-friendlyName").find("span");
          
-         Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);         
+         if ($span.length != 0){
+            var friendlyName = $span[1].innerText;
+            if (device.device.friendlyName > friendlyName){
+               indexToInsert = index + 1;
+            }
+         }
       });
+      addDeviceToDom(device.device, indexToInsert);
+      deviceList.push(device.device);
+      deviceList = sortListItemsWithFriendlyName ( deviceList );
+   };   
+   
+   dispatchDevicesBlacklistedToDevicesView = function (device) {
+      var showblacklistedDevices = $("input.cb-showblacklist").prop("checked");
+      
+      if (!showblacklistedDevices) {
+         dispatchDevicesDeletedToDevicesView(device);
+      }else { // display the device with correct icons
+         transformDeviceInDom(device.device);
+      }
+   };
+   
+   dispatchDevicesDeletedToDevicesView = function (device) {
+      // remove device and device-details if any ...
+      $("table#device-list").find("tr[device-id='" + device.device.id + "']").remove();
+      
+      // Remove the device from the device list to display
+      var i = deviceList.map(function (e) { return e.id; }).indexOf(device.device.id);
+      var device;
+      if (i !== -1){
+         deviceList.splice(i, 1);
+      }    
+   };
+   
+   function transformDeviceInDom(device) {
+      // remove device details if any 
+      getDeviceDetailsDomRow().remove();
+      
+      var $deviceRow = $("table#device-list").find("tr[device-id='" + device.id + "'].device");
+      console.log (device);
+      
+      $deviceRow.find("td.device-friendlyName").find("span").remove();
+      
+      console.log ($deviceRow.find("td.device-friendlyName"));
+      
+      var fn = device.friendlyName;
+      if(parseBool(device.blacklist)==true)
+         fn = "<del>"+device.friendlyName+"</del>";
+           
+      var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + fn + "</span>";
+      
+      // display the new name
+      $deviceRow.find("td.device-friendlyName").append(friendlyName);
+      
+      //we remove old buttons
+      $deviceRow.find("td.device-actions").find(".btn-group").remove();
+      
+      //we add new actions to the device
+      if(parseBool(device.blacklist) == true) {
+         $deviceRow.find("td.device-actions").append(actionsBtnsBlacklist);
+      } else {
+         if((device.name != "pluginState" && device.model != "Plugin state")) 
+           $deviceRow.find("td.device-actions").append(actionsBtns);
+      }
+      
+      //we bind event on the different actions
+      $deviceRow.find("button.btn-configure").unbind('click').bind('click', function (e) { 
+            e.stopPropagation();       
+            updateDeviceConfiguration(device);
+      });
+
+      $deviceRow.find("button.btn-delete").unbind('click').bind('click', function (e) {
+            e.stopPropagation();
+            deleteDevice(device);
+      });
+
+      $deviceRow.find("button.btn-restore").unbind('click').bind('click', function (e) { 
+            e.stopPropagation();
+            restoreDevice(device);           
+      });      
    };
    
    Yadoms.initializeDeviceDashboard = function () {
@@ -117,26 +214,25 @@
 
    function refreshDeviceList() {
       var d = new $.Deferred();
-
       var showblacklistedDevices = $("input.cb-showblacklist").prop("checked");
 
       //we remove all rows except header
       $("table#device-list").find("tr:gt(0)").remove();
 
       //we clear pluginInstance array
-      deviceList = [];
+      var tempList = [];
 
       DeviceManager.getAll()
       .done(function (allDevices) {
          YadomsInformationManager.getList()
-            .done(function (data) {      
-               deviceList = sortListItemsWithFriendlyName ( allDevices );
-             
+            .done(function (data) {
+               tempList = sortListItemsWithFriendlyName ( allDevices );
                //foreach result we append a <tr>
-               $.each(allDevices, function (index, value) {
+               $.each(tempList, function (index, value) {
                   if( (!data.developerMode && (value.name !== "pluginState" || value.model !== "Plugin state")) || data.developerMode) {
                      if(showblacklistedDevices || (!showblacklistedDevices && parseBool(value.blacklist) === false)) {
                         addDeviceToDom(value, null);
+                        deviceList.push(value);
                      }
                   }
                });
@@ -150,7 +246,7 @@
    }
 
    function getDeviceDomRow(device) {
-      return $("table#device-list").find("tr[device-id='" + device.id + "']");
+      return $("table#device-list").find("tr[device-id='" + device.id + "'].device");
    }
 
    function getDeviceDetailsDomRow() {
@@ -171,47 +267,27 @@
          return deviceList[i];
       return undefined;
    }
-
+   
    function addDeviceToDom(device, positionDevice) {
-      var actionsBtns =   "<div class=\"btn-group\">\n" +
-                          "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-cog\"></span></button>\n" +
-                          "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
-                          "</div>";
-
-      var actionsBtnsBlacklist = "<div class=\"btn-group\">\n" +
-                                 "<button type=\"button\" class=\"btn btn-success btn-restore\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.restore\"><span class=\"fa fa-reply\"></span></button>\n" +
-                                 "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
-                                 "</div>";
-
-      
       //in case the device is blacklisted, then strike it
       var fn = device.friendlyName;
       if(parseBool(device.blacklist)===true)
          fn = "<del>"+device.friendlyName+"</del>";
               
       var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + fn + "</span>";
-      
       var model = "<span>" + device.model + "</span>";
 
       //we add it to the DOM
       var $deviceList = $("table#device-list");
-	  
-	  var frameworkDevice = "<tr device-id=\"" + device.id + "\" class=\"device\"><td class=\"device-friendlyName vert-align text-left\"></td><td class=\"device-attachedTo vert-align\"></td><td class=\"device-model vert-align\"></td><td class=\"device-actions vert-align\"></td></tr>";
+	   var frameworkDevice = "<tr device-id=\"" + device.id + "\" class=\"device\"><td class=\"device-friendlyName vert-align text-left\"></td><td class=\"device-attachedTo vert-align\"></td><td class=\"device-model vert-align\"></td><td class=\"device-actions vert-align\"></td></tr>";
 
-	  if ( positionDevice == null )
+	   if ( positionDevice == null || deviceList.length == 0 )
          $deviceList.append( frameworkDevice );
-	  else{
+	   else{
 	     var $row = null;
-		 
-		  if (positionDevice>0){
-			 $row = getDeviceDomRow(deviceList[positionDevice-1]);
-			 $( frameworkDevice ).insertAfter($row);			 
-		  }
-		  else {
-			 $row = getDeviceDomRow(deviceList[1]);
-			 $( frameworkDevice ).insertBefore($row);			 
-		  }		 
-	  }
+        $row = getDeviceDomRow(deviceList[positionDevice]);
+        $(frameworkDevice).insertBefore($row);
+	   }
 
       var $deviceRow = getDeviceDomRow(device);
       //we fill the data
@@ -462,7 +538,6 @@
                $deviceRow.addClass(selectedClass).siblings(".device").removeClass(selectedClass);
 
                if(device.keywords && device.keywords.length > 0) {
-
                   //we create device details table
                   $deviceRow.after("<tr device-id=\"" + device.id + "\" class=\"device-details " + selectedClass + "\"><td colspan=\"4\">" +
                            "<table id=\"keyword-list\" device-id=\"" + device.id + "\" class=\"table table-bordered table-striped\">" +
@@ -500,22 +575,13 @@
       // This disabled the periodic refresh during the deletion and wrong display
       clearInterval(Yadoms.periodicDashboardTask); 
       
-      if(parseBool(device.blacklist)===true)
-      {
+      if(parseBool(device.blacklist)===true){
          Yadoms.modals.confirmation.loadAsync()
          .done(function () {
             Yadoms.showConfirmModal(Yadoms.btnKind.confirmCancel, $.t("modals.confirm-delete-device.title"), $.t("modals.confirm-delete-device.text", { deviceName: device.friendlyName }), function () {
                DeviceManager.deleteDevice(device, true)
                .done(function () {
-                  //force a device and associated keyword refresh
-                  DeviceManager.getKeywords(device, true)
-                  .always(function () {   
-                     refreshDeviceList()
-                     .always(function() {
-                        // Restart the periodic refresh
-                        Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
-                     });
-                  });
+                  Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                })
                .fail(function (error) {
                   Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
@@ -529,15 +595,7 @@
             Yadoms.showDeleteDeviceModal(device, function (deleteDevice) {
                DeviceManager.deleteDevice(device, deleteDevice)
                .done(function () {
-                  //force a device and associated keyword refresh
-                  DeviceManager.getKeywords(device, true)
-                  .always(function () {   
-                     refreshDeviceList()
-                     .always(function() {
-                        // Restart the periodic refresh
-                        Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);                     
-                     });                     
-                  });
+                  Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                })
                .fail(function (error) {
                   Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
@@ -634,10 +692,7 @@
                    Yadoms.showVirtualDeviceConfigurationModal(null, function (newDeviceName, newDeviceModel, newDeviceConfiguration) {
                      PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, "virtualDeviceType", newDeviceConfiguration)
                      .done(function () {
-                        refreshDeviceList()
-                           .always(function() {
-                               Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
-                           });
+                         Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                      })
                      .fail(function (error) {
                         Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
@@ -657,10 +712,7 @@
                           //we ask for manually device creation
                         PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
                         .done(function () {
-                           refreshDeviceList()
-                           .always(function() {
-                              Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
-                           });
+                            Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                         })
                         .fail(function (error) {
                            Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
@@ -728,58 +780,30 @@
       $keywordRow.find("td.keyword-update").html(lastStateValue);
    }
 
-
    function periodicDashboardDevicesTask() {
       //periodically we check the status of each plugin
       if (serverIsOnline) {
-         //Check for new devices
-         DeviceManager.getAll()
-         .done(function (allDevices) {
-            //Only if the number of devices is different, we check which one
-            if (deviceList.length !== allDevices.length) {
-               //foreach result we append a <tr>
-               $.each(allDevices, function (index, value) {
-                  // If not in the list, we add to the list, and to the dom
-                  if (!getDeviceFromId(value.id)) {
-                     deviceList.push(value);
-                     addDeviceToDom(value, null);
-                  }
-               });
-            }
-         });
-
          var $deviceDetailsTable = $("table#keyword-list");
          //if the table isn't displayed for the moment we don't ask keyword values
          if ($deviceDetailsTable.length === 1) {
             //we get the device
             var device = getDeviceFromId($deviceDetailsTable.attr("device-id"));
             if (device && device.keywords) {
-            
-               DeviceManager.getKeywordsByDeviceId(device.id)
-               .done(function (updatedKeywords) {
-                  
-                  if (updatedKeywords.length !== device.keywords.length){
-                     device.keywords = updatedKeywords;
-                     $("table#keyword-list").find("tr:gt(0)").remove();
-                     fillTable(device);
-                  }
-                  
-                  AcquisitionManager.getLastValues(updatedKeywords)
-                  .done(function (data) {
-                     $.each(data, function (index, acquisition) {
-                        $.each(updatedKeywords, function (idx, keyword) {
-                           if (keyword.id === acquisition.keywordId) {
-                              var $keywordRow = getKeywordDomRow(keyword);
-                              updateKeywordDomLine($keywordRow, acquisition, keyword, device.attachedPlugin);
-                           } else {
-                              return; //break $.each
-                           }
-                        });
+               AcquisitionManager.getLastValues(device.keywords)
+               .done(function (data) {
+                  $.each(data, function (index, acquisition) {
+                     $.each(device.keywords, function (idx, keyword) {
+                        if (keyword.id === acquisition.keywordId) {
+                           var $keywordRow = getKeywordDomRow(keyword);
+                           updateKeywordDomLine($keywordRow, acquisition, keyword, device.attachedPlugin);
+                        } else {
+                           return; //break $.each
+                        }
                      });
-                  })
-                  .fail(function (error) {
-                     notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for device = " + device.id }), error);
                   });
+               })
+               .fail(function (error) {
+                  notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for device = " + device.id }), error);
                });
             }
          }
