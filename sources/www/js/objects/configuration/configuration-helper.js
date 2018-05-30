@@ -60,7 +60,7 @@ ConfigurationHelper.createControlGroup = function (parameterHandler, controlToIn
       "</label>" +
       "</div>";
    if (!placeInsideLabel) {
-      s += "<div class=\"col-sm-6 control-label\" style=\"text-align: left;\">" +
+        s += "<div class=\"controls col-sm-6 control-label\" style=\"text-align: left;\">" +
          controlToInsert +
          "</div>";
    }

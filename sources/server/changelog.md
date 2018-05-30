@@ -8,6 +8,7 @@
 * Fix #475 - "Add plugin" stay at the top of the dashboard form instead of "Dashboard"
 * Fix #476 - Upgrading from 2.0.2 when timezone was not filled
 * Fix #480 - Devices page : the refresh doesn't support the recreation of keywords by plugins
+* Fix #483 - Install&Update page : can show changelog of new items
 * Slim Emptyplugin (let only basic functionnalities in dowork loop to make it easier to understand)
 
 

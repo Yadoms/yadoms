@@ -497,15 +497,17 @@ namespace update
             const auto& newestVersionData = std::find_if(availableVersionsForItem.begin(),
                                                          availableVersionsForItem.end(),
                                                          [&newestVersionLabel](
-                                                            const shared::CDataContainer& availableVersionForItem)
-                                                      {
-                                                         if (availableVersionForItem.empty()) // Ignore value data (like "changelog.md")
-                                                            return false;
+                                                         const shared::CDataContainer& availableVersionForItem)
+                                                         {
+                                                            if (availableVersionForItem.empty()) // Ignore value data (like "changelog.md")
+                                                               return false;
 
-                                                         return availableVersionForItem.get<std::string>(
-                                                            "version") == newestVersionLabel;
-                                                      });
+                                                            return availableVersionForItem.get<std::string>(
+                                                               "version") == newestVersionLabel;
+                                                         });
             item.set("iconUrl", newestVersionData->get<std::string>("iconUrl"));
+            if (availableVersions.exists(moduleType + ".changelogUrl"))
+               item.set("changelogUrl", availableVersions.get<std::string>(moduleType + ".changelogUrl"));
             item.set("versions", buildNewVersionsNode(newModuleAvailableVersions));
 
             newItems.set(moduleType, item);
@@ -659,15 +661,17 @@ namespace update
             const auto& newestVersionData = std::find_if(availableVersionsForItem.begin(),
                                                          availableVersionsForItem.end(),
                                                          [&newestVersionLabel](
-                                                            const shared::CDataContainer& availableVersionForItem)
-                                                      {
-                                                         if (availableVersionForItem.empty()) // Ignore value data (like "changelog.md")
-                                                            return false;
+                                                         const shared::CDataContainer& availableVersionForItem)
+                                                         {
+                                                            if (availableVersionForItem.empty()) // Ignore value data (like "changelog.md")
+                                                               return false;
 
-                                                         return availableVersionForItem.get<std::string>(
-                                                            "version") == newestVersionLabel;
-                                                      });
+                                                            return availableVersionForItem.get<std::string>(
+                                                               "version") == newestVersionLabel;
+                                                         });
             item.set("iconUrl", newestVersionData->get<std::string>("previewUrl"));
+            if (availableVersions.exists(moduleType + ".changelogUrl"))
+               item.set("changelogUrl", availableVersions.get<std::string>(moduleType + ".changelogUrl"));
             item.set("versions", buildNewVersionsNode(newModuleAvailableVersions));
 
             newItems.set(moduleType, item);
@@ -817,15 +821,17 @@ namespace update
             const auto& newestVersionData = std::find_if(availableVersionsForItem.begin(),
                                                          availableVersionsForItem.end(),
                                                          [&newestVersionLabel](
-                                                            const shared::CDataContainer& availableVersionForItem)
-                                                      {
-                                                         if (availableVersionForItem.empty()) // Ignore value data (like "changelog.md")
-                                                            return false;
+                                                         const shared::CDataContainer& availableVersionForItem)
+                                                         {
+                                                            if (availableVersionForItem.empty()) // Ignore value data (like "changelog.md")
+                                                               return false;
 
-                                                         return availableVersionForItem.get<std::string>(
-                                                            "version") == newestVersionLabel;
-                                                      });
+                                                            return availableVersionForItem.get<std::string>(
+                                                               "version") == newestVersionLabel;
+                                                         });
             item.set("iconUrl", newestVersionData->get<std::string>("iconUrl"));
+            if (availableVersions.exists(moduleType + ".changelogUrl"))
+               item.set("changelogUrl", availableVersions.get<std::string>(moduleType + ".changelogUrl"));
             item.set("versions", buildNewVersionsNode(newModuleAvailableVersions));
 
             newItems.set(moduleType, item);
@@ -852,7 +858,7 @@ namespace update
          // Sort (newer version first)
          shared::CDataContainer olderVersions;
          for (auto v = older.rbegin(); v != older.rend(); ++v)
-         // Force different path char to not cut version string into subPaths
+            // Force different path char to not cut version string into subPaths
             olderVersions.set(v->first, v->second, 0);
          versions.set("older", olderVersions);
       }
@@ -862,7 +868,7 @@ namespace update
          // Sort (newer version first)
          shared::CDataContainer newerVersions;
          for (auto v = newer.rbegin(); v != newer.rend(); ++v)
-         // Force different path char to not cut version string into subPaths
+            // Force different path char to not cut version string into subPaths
             newerVersions.set(v->first, v->second, 0);
          versions.set("newer", newerVersions);
 
@@ -883,7 +889,7 @@ namespace update
       // Sort (newer version first)
       shared::CDataContainer sortedVersions;
       for (auto v = newItemAvailableVersions.rbegin(); v != newItemAvailableVersions.rend(); ++v)
-      // Force different path char to not cut version string into subPaths
+         // Force different path char to not cut version string into subPaths
          sortedVersions.set(v->first, v->second, 0);
       versions.set("versions", sortedVersions);
 
@@ -910,9 +916,9 @@ namespace update
       {
          result = m_taskScheduler->runTask(task, taskUid);
          if (result)
-         YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " << taskUid;
+            YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " << taskUid;
          else
-         YADOMS_LOG(error) << "Task : " << task->getName() << " fail to start";
+            YADOMS_LOG(error) << "Task : " << task->getName() << " fail to start";
       }
       else
       {
@@ -1056,11 +1062,11 @@ namespace update
          auto versionInfo = std::find_if(versions.begin(),
                                          versions.end(),
                                          [&downloadUrl](
-                                            const shared::CDataContainer& version)
-                                      {
-                                         return version.get<std::string>(
-                                            "downloadUrl") == downloadUrl;
-                                      });
+                                         const shared::CDataContainer& version)
+                                         {
+                                            return version.get<std::string>(
+                                               "downloadUrl") == downloadUrl;
+                                         });
 
          if (versionInfo == versions.end())
             return std::string();
