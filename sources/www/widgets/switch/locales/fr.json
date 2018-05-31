@@ -6,27 +6,31 @@
 	"configurationSchema": {
 		"device": {
 			"name": "Equipement",
-         "description": "Sélectionner ci-dessous l'équipement à piloter"
+			"description": "Sélectionner ci-dessous l'équipement à piloter"
+		},
+		"invert": {
+			"name": "Inversion",
+			"description": "Inverse l'état de cet équipement"
 		},
 		"additionalDevices": {
-         "name": "Equipements complémentaires",
-         "description": "Le widget interrupteur peut piloter simultanément plusieurs équipements. Sélectionner ici la liste des équipements complémentaires à piloter",      
-         "content": {
-            "devices": {
-               "name": "Equipements",
-               "description": "Si un équipement est en lecture seule, le bouton ne pourra pas être utilisé",
-               "item": {
-                  "name": "",
-                  "description": "",
-                  "content": {
-                     "source": {
-                        "name": "Equipement",
-                        "description": "Equipement à piloter"
-                     }
-                  }
-               }
-            }
-         }
+			"name": "Equipements complémentaires",
+			"description": "Le widget interrupteur peut piloter simultanément plusieurs équipements. Sélectionner ici la liste des équipements complémentaires à piloter",
+			"content": {
+				"devices": {
+					"name": "Equipements",
+					"description": "Si un équipement est en lecture seule, le bouton ne pourra pas être utilisé",
+					"item": {
+						"name": "",
+						"description": "",
+						"content": {
+							"source": {
+								"name": "Equipement",
+								"description": "Equipement à piloter"
+							}
+						}
+					}
+				}
+			}
 		},
 		"kind": {
 			"name": "Type d'interrupteur",

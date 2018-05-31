@@ -1,3 +1,6 @@
+### 1.0.6
+* Fix translation regression
+
 ### 1.0.5
 * Remove obsolete function
 
