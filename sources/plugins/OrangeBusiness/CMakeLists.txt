@@ -69,5 +69,6 @@ PLUGIN_LINK   (OrangeBusiness ${ORANGE_BUSINESS_ADDITIONAL_LIB})
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(OrangeBusiness package.json)
+PLUGIN_POST_BUILD_COPY_FILE(OrangeBusiness changelog.md)
 PLUGIN_POST_BUILD_COPY_FILE(OrangeBusiness icon.png)
 PLUGIN_POST_BUILD_COPY_DIRECTORY(OrangeBusiness locales)
