@@ -312,44 +312,123 @@
               "name": "Standard data type",
               "description": "Use of standard data type",
               "content": {
-                "capacity": {
-                  "name": "Data type",
-                  "values": {
-                    "apparentpower": "Apparent power (VA)",
-                    "armingAlarm": "Alarm state",
-                    "batteryLevel": "Battery level (%)",
-                    "cameraMove": "Camera move",
-                    "colorrgb": "Color - RGB",
-                    "colorrgbw": "Color - RGBW",
-                    "count": "Counter",
-                    "current": "Current (A)",
-                    "curtain": "Curtain",
-                    "dimmable": "Dimmable (%)",
-                    "direction": "Direction (°)",
-                    "distance": "Distance (m)",
-                    "duration": "Duration",
-                    "energy": "Energy (Wh)",
-                    "event": "Event",
-                    "frequency": "Frequency (Hz)",
-                    "humidity": "Humidity (%)",
-                    "illumination": "Illumination (Lux)",
-                    "load": "Load (%)",
-                    "power": "Power (W)",
-                    "powerFactor": "Power factor",
-                    "pressure": "Pressure (hPa)",
-                    "rain": "Rain (mm)",
-                    "rainrate": "Rain rate (mm/s)",
-                    "rssi": "Signal strength (Db/mW)",
-                    "speed": "Speed (m/s)",
-                    "switch": "On/Off",
-                    "temperature": "Temperature (°C)",
-                    "text": "Text",
-                    "upDownStop": "Up/Down/Stop",
-                    "uv": "UV",
-                    "voltage": "Voltage (V)",
-                    "volume": "Volume (m3)",
-                    "weathercondition": "Weather conditions",
-                    "weight": "Weight (kg)"
+                "selectCapacity": {
+                  "name": "Select the data type",
+                  "content": {
+                    "apparentpower": {
+                      "name": "Apparent power (VA)"
+                    },
+                    "armingAlarm": {
+                      "name": "Alarm state"
+                    },
+                    "batteryLevel": {
+                      "name": "Battery level (%)"
+                    },
+                    "cameraMove": {
+                      "name": "Camera move"
+                    },
+                    "colorrgb": {
+                      "name": "Color - RGB"
+                    },
+                    "colorrgbw": {
+                      "name": "Color - RGBW"
+                    },
+                    "count": {
+                      "name": "Counter"
+                    },
+                    "current": {
+                      "name": "Current (A)"
+                    },
+                    "curtain": {
+                      "name": "Curtain"
+                    },
+                    "dimmable": {
+                      "name": "Dimmable (%)"
+                    },
+                    "direction": {
+                      "name": "Direction (°)"
+                    },
+                    "distance": {
+                      "name": "Distance (m)"
+                    },
+                    "duration": {
+                      "name": "Duration"
+                    },
+                    "energy": {
+                      "name": "Energy (Wh)"
+                    },
+                    "event": {
+                      "name": "Event"
+                    },
+                    "frequency": {
+                      "name": "Frequency (Hz)"
+                    },
+                    "humidity": {
+                      "name": "Humidity (%)"
+                    },
+                    "illumination": {
+                      "name": "Illumination (Lux)"
+                    },
+                    "load": {
+                      "name": "Load (%)"
+                    },
+                    "power": {
+                      "name": "Power (W)"
+                    },
+                    "powerFactor": {
+                      "name": "Power factor"
+                    },
+                    "pressure": {
+                      "name": "Pressure (hPa)"
+                    },
+                    "rain": {
+                      "name": "Rain (mm)"
+                    },
+                    "rainrate": {
+                      "name": "Rain rate (mm/s)"
+                    },
+                    "rssi": {
+                      "name": "Signal strength (Db/mW)"
+                    },
+                    "speed": {
+                      "name": "Speed (m/s)"
+                    },
+                    "switch": {
+                      "name": "On/Off"
+                    },
+                    "temperature": {
+                      "name": "Temperature (°C)"
+                    },
+                    "text": {
+                      "name": "Text"
+                    },
+                    "upDownStop": {
+                      "name": "Up/Down/Stop"
+                    },
+                    "uv": {
+                      "name": "UV"
+                    },
+                    "voltage": {
+                      "name": "Voltage (V)"
+                    },
+                    "volume": {
+                      "name": "Volume (m3)"
+                    },
+                    "weathercondition": {
+                      "name": "Weather conditions"
+                    },
+                    "weight": {
+                      "name": "Weight (kg)}"
+                    }
+                  }
+                },
+                "selectMeasureType": {
+                  "name": "Select the measure type",
+                  "description": "Select __Absolute__  for absolute data, like temperature, humidity, etc.\nSelect  __Incremental__ to say Yadoms that value must be added to current value. Ex : pulse counters (water, energy counters...), rain.\nSelect __Cumulative__ when current value is a total value (like some energy power).",
+                  "content": {
+                    "Absolute": "Absolute",
+                    "Increment": "Incremental",
+                    "Cumulative": "Cumulative"
                   }
                 }
               }

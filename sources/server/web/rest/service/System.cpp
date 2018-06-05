@@ -211,12 +211,23 @@ namespace web
             }
          }
 
-         void CSystem::addVirtualDevicesSupportedCapacity(const shared::plugin::yPluginApi::CStandardCapacity& capacity)
+         void CSystem::addVirtualDevicesSupportedCapacity(const shared::plugin::yPluginApi::CStandardCapacity& capacity,
+                                                          const std::vector<shared::plugin::yPluginApi::historization::EMeasureType>&
+                                                          acceptedMeasureTypes)
          {
             auto capacityContainer = boost::make_shared<shared::CDataContainer>();
             capacityContainer->set("name", capacity.getName());
             capacityContainer->set("unit", capacity.getUnit());
             capacityContainer->set("dataType", capacity.getType());
+
+            if (!acceptedMeasureTypes.empty())
+            {
+               std::vector<std::string> strAcceptedMeasureTypes;
+               for (const auto& acceptedMeasureType : acceptedMeasureTypes)
+                  strAcceptedMeasureTypes.push_back(acceptedMeasureType.toString());
+               capacityContainer->set("acceptedMeasureTypes", strAcceptedMeasureTypes);
+            }
+
             m_virtualDevicesSupportedCapacities.set(capacity.getName(), capacityContainer);
          }
 
@@ -230,7 +241,13 @@ namespace web
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::CameraMove());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ColorRGB());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ColorRGBW());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Counter());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Counter(),
+                                                  std::vector<shared::plugin::yPluginApi::historization::EMeasureType>
+                                                  {
+                                                     shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute,
+                                                     shared::plugin::yPluginApi::historization::EMeasureType::kIncrement,
+                                                     shared::plugin::yPluginApi::historization::EMeasureType::kCumulative
+                                                  });
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Current());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Curtain());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Dimmable());
