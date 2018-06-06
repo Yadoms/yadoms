@@ -199,7 +199,7 @@ namespace pluginSystem
             if (isStandardCapacity)
                createStandardCapacityDevice(api,
                                             data.getDeviceName(),
-                                            data.getConfiguration().get<std::string>("capacity.content.standardCapacity.content.capacity"));
+                                            data.getConfiguration().get<shared::CDataContainer>("capacity.content.standardCapacity.content.selectCapacity"));
             else
                createCustomEnumCapacityDevice(api,
                                               data.getDeviceName(),
@@ -213,79 +213,87 @@ namespace pluginSystem
 
       void CInstance::createStandardCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                                    const std::string& deviceName,
-                                                   const std::string& standardCapacity) const
+                                                   const shared::CDataContainer& standardCapacity) const
       {
          boost::shared_ptr<const yApi::historization::IHistorizable> keyword;
 
-         if (standardCapacity == yApi::CStandardCapacities::ApparentPower().getName())
+         const auto selectedCapacity = standardCapacity.get<std::string>("activeSection");
+
+         if (selectedCapacity == yApi::CStandardCapacities::ApparentPower().getName())
             keyword = boost::make_shared<yApi::historization::CApparentPower>("ApparentPower", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::ArmingAlarm().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::ArmingAlarm().getName())
             keyword = boost::make_shared<yApi::historization::CArmingAlarm>("armAlarm", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::BatteryLevel().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::BatteryLevel().getName())
             keyword = boost::make_shared<yApi::historization::CBatteryLevel>("battery", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::CameraMove().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::CameraMove().getName())
             keyword = boost::make_shared<yApi::historization::CCameraMove>("camera", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::ColorRGB().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::ColorRGB().getName())
             keyword = boost::make_shared<yApi::historization::CColorRGB>("ColorRGB", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::ColorRGBW().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::ColorRGBW().getName())
             keyword = boost::make_shared<yApi::historization::CColorRGBW>("ColorRGBW", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Counter().getName())
-            keyword = boost::make_shared<yApi::historization::CCounter>("counter", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Current().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Counter().getName())
+            keyword = boost::make_shared<yApi::historization::CCounter>("counter",
+               yApi::EKeywordAccessMode::kGetSet,
+               yApi::historization::EMeasureType(standardCapacity.get<std::string>("content." + yApi::CStandardCapacities::Counter().getName() + ".content.measureType")));
+         else if (selectedCapacity == yApi::CStandardCapacities::Current().getName())
             keyword = boost::make_shared<yApi::historization::CCurrent>("current", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Curtain().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Curtain().getName())
             keyword = boost::make_shared<yApi::historization::CCurtain>("state");
-         else if (standardCapacity == yApi::CStandardCapacities::Dimmable().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Dimmable().getName())
             keyword = boost::make_shared<yApi::historization::CDimmable>("state", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Direction().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Direction().getName())
             keyword = boost::make_shared<yApi::historization::CDirection>("direction", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Distance().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Distance().getName())
             keyword = boost::make_shared<yApi::historization::CDistance>("distance", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Duration().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Duration().getName())
             keyword = boost::make_shared<yApi::historization::CDuration>("duration", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Energy().getName())
-            keyword = boost::make_shared<yApi::historization::CEnergy>("energy", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Event().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Energy().getName())
+            keyword = boost::make_shared<yApi::historization::CEnergy>("energy",
+               yApi::EKeywordAccessMode::kGetSet,
+               yApi::historization::EMeasureType(standardCapacity.get<std::string>("content." + yApi::CStandardCapacities::Energy().getName() + ".content.measureType")));
+         else if (selectedCapacity == yApi::CStandardCapacities::Event().getName())
             keyword = boost::make_shared<yApi::historization::CEvent>("event", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Frequency().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Frequency().getName())
             keyword = boost::make_shared<yApi::historization::CFrequency>("frequency", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Humidity().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Humidity().getName())
             keyword = boost::make_shared<yApi::historization::CHumidity>("humidity", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Illumination().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Illumination().getName())
             keyword = boost::make_shared<yApi::historization::CIllumination>("illumination", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Load().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Load().getName())
             keyword = boost::make_shared<yApi::historization::CLoad>("load", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Power().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Power().getName())
             keyword = boost::make_shared<yApi::historization::CPower>("power", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::PowerFactor().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::PowerFactor().getName())
             keyword = boost::make_shared<yApi::historization::CPowerFactor>("powerFactor", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Pressure().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Pressure().getName())
             keyword = boost::make_shared<yApi::historization::CPressure>("pressure", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Rain().getName())
-            keyword = boost::make_shared<yApi::historization::CRain>("rain", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::RainRate().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Rain().getName())
+            keyword = boost::make_shared<yApi::historization::CRain>("rain",
+               yApi::EKeywordAccessMode::kGetSet,
+               yApi::historization::EMeasureType(standardCapacity.get<std::string>("content." + yApi::CStandardCapacities::Rain().getName() + ".content.measureType")));
+         else if (selectedCapacity == yApi::CStandardCapacities::RainRate().getName())
             keyword = boost::make_shared<yApi::historization::CRainRate>("rainRate", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Rssi().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Rssi().getName())
             keyword = boost::make_shared<yApi::historization::CRssi>("rssi", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Speed().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Speed().getName())
             keyword = boost::make_shared<yApi::historization::CSpeed>("speed", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Switch().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Switch().getName())
             keyword = boost::make_shared<yApi::historization::CSwitch>("state", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Temperature().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Temperature().getName())
             keyword = boost::make_shared<yApi::historization::CTemperature>("temperature", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Text().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Text().getName())
             keyword = boost::make_shared<yApi::historization::CText>("text", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::UpDownStop().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::UpDownStop().getName())
             keyword = boost::make_shared<yApi::historization::CUpDownStop>("UpDownStop", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Uv().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Uv().getName())
             keyword = boost::make_shared<yApi::historization::CUv>("uv", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Voltage().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Voltage().getName())
             keyword = boost::make_shared<yApi::historization::CVoltage>("voltage", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Volume().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Volume().getName())
             keyword = boost::make_shared<yApi::historization::CVolume>("volume", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::WeatherCondition().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::WeatherCondition().getName())
             keyword = boost::make_shared<yApi::historization::CWeatherCondition>("weatherCondition", yApi::EKeywordAccessMode::kGetSet);
-         else if (standardCapacity == yApi::CStandardCapacities::Weight().getName())
+         else if (selectedCapacity == yApi::CStandardCapacities::Weight().getName())
             keyword = boost::make_shared<yApi::historization::CWeight>("weight", yApi::EKeywordAccessMode::kGetSet);
 
          if (!keyword)
@@ -294,7 +302,7 @@ namespace pluginSystem
          api->declareKeyword(deviceName,
                              keyword);
 
-         if (standardCapacity != yApi::CStandardCapacities::Event().getName())
+         if (selectedCapacity != yApi::CStandardCapacities::Event().getName())
          {
             // Historize the default value (already set in historizer), except for event (event has no value)
             api->historizeData(deviceName,

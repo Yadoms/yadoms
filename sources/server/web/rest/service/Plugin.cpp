@@ -526,14 +526,13 @@ namespace web
             {
                if (parameters.size() > 1)
                {
-                  auto pluginId = boost::lexical_cast<int>(parameters[1]);
+                  const auto pluginId = boost::lexical_cast<int>(parameters[1]);
 
                   shared::CDataContainer content(requestContent);
                   if (!content.exists("name") || !content.exists("type") || !content.exists("configuration"))
                      return CResult::GenerateError("invalid request content. There must be a name, a type and a configuration field");
 
                   YADOMS_LOG(information) << "Manually device creation request received";
-                  content.printToLog(YADOMS_LOG(debug));
 
                   const auto& deviceName = generateUniqueDeviceName(pluginId);
 

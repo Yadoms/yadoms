@@ -87,7 +87,6 @@
                             .done(function (deviceName) {
                                 modelParameter.getCurrentConfiguration()
                                     .done(function (deviceModel) {
-                                        debugger;
                                         configMgr.getCurrentConfiguration()
                                             .done(function (config) {
                                                 $("div#virtual-device-configure-modal")
@@ -154,17 +153,17 @@
                 for (var cap in capacities.capacities) {
                     if (capacities.capacities[cap].acceptedMeasureTypes && capacities.capacities[cap].acceptedMeasureTypes
                         .length > 1) {
-                        debugger;
-
-                        measureTypes = [];
+                            
+                        measureTypes = {};
                         for (var measureType in capacities.capacities[cap].acceptedMeasureTypes) {
-                            measureTypes[measureType] = $.t(
+                            key = capacities.capacities[cap].acceptedMeasureTypes[measureType];
+                            measureTypes[key] = $.t(
                                 "modals.virtual-device-configure.schema.capacity.content.standardCapacity.content.selectMeasureType.content." +
-                                capacities.capacities[cap].acceptedMeasureTypes[measureType]);
+                                key);
                         }
-                        
+
                         capacityContent = {
-                            capacity: {
+                            measureType: {
                                 type: 'enum',
                                 sort: 'true',
                                 name: $.t(
