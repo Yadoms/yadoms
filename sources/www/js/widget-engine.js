@@ -36,8 +36,7 @@ function initializeWidgetEngine() {
                         else
                             PageManager.ensureOnePageIsSelected();
                     }
-                    else
-                    {
+                    else{
                         PageManager.selectFirstPage();
                     }
 
@@ -119,17 +118,16 @@ function requestWidgets(page) {
  * @param pageId tab id clicked
  */
 function tabClick(pageId) {
-
     //we check for widget loading if page is different than the current
     var currentPage = PageManager.getCurrentPage();
-
+    
     if ((currentPage != null) && (currentPage.id === pageId))
         return;
 
     SessionDataManager.addVariable("CurrentPage", pageId.toString());
 
     var page = PageManager.getPage(pageId);
-
+    
     assert(page != null, "page Id doesn't exit");
     if (page) {
         //and if it's not loaded for the moment
@@ -457,7 +455,6 @@ function updateWidgetsPolling(pageId) {
                       }
                    }
                 }
-                widget.viewModel.widgetApi.manageRollingTitle();
              });
           });
           d.resolve();
@@ -471,33 +468,28 @@ function updateWidgetPolling(widget) {
     var d = new $.Deferred();
     
     if (!isNullOrUndefined(widget.listenedKeywords)) {
-       if (widget.listenedKeywords.length!=0) // only if this list is not empty
-       {
+       if (widget.listenedKeywords.length!=0){ // only if this list is not empty
           AcquisitionManager.getLastValues(widget.listenedKeywords)
             .done(function (data) {
                 if (data) {
-                    $.each(data,
-                        function (index, acquisition) {
-                            //we signal the new acquisition to the widget if the widget support the method
-                            if (widget.viewModel.onNewAcquisition !== undefined) {
-                                widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
-                            }
-                            
-                            widget.viewModel.widgetApi.manageBatteryConfiguration();
-                            widget.viewModel.widgetApi.manageRollingTitle();
-                        });
+                    $.each(data,function (index, acquisition) {
+                         //we signal the new acquisition to the widget if the widget support the method
+                         if (widget.viewModel.onNewAcquisition !== undefined) {
+                             widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
+                         }
+                         widget.viewModel.widgetApi.manageBatteryConfiguration();
+                    });
                 }
                 d.resolve();
             })
             .fail(function (error) {
-                notifyError($.t("objects.generic.errorGetting",
-                    {
+                notifyError($.t("objects.generic.errorGetting",{
                         objectName: "last acquisition for widget = " + widget.id
-                    }),
-                    error);
+                    }),error);
              d.reject(error);
           });
-       }  
+       } else 
+         d.resolve();          
     } else {
        d.resolve();
     }
@@ -508,15 +500,15 @@ function updateWidgetPollingByKeywordsId(keywordIds) {
     var d = new $.Deferred();
     
     if (!isNullOrUndefined(keywordIds)) {
-       if (keywordIds!=0) // only if this list is not empty
-       {
+       if (keywordIds!=0){
           AcquisitionManager.getLastValues(keywordIds)
           .done(d.resolve)
           .fail(function (error) {
              notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for widget = " + keywordIds }), error);
              d.reject(error);
           });
-       }  
+       } else 
+          d.resolve();
     } else {
         d.resolve();
     }
