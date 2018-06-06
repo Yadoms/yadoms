@@ -388,6 +388,7 @@
                                         updateWidgetPolling(w)
                                             .always(function () {
                                                 updateWebSocketFilter();
+                                                WidgetManager.updateWidgetLayout(w);
                                             });
                                     })
                                     .fail(function (errorMessage) {

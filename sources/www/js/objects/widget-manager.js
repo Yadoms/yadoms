@@ -752,4 +752,7 @@ WidgetManager.createGridWidget = function (widget) {
  */
 WidgetManager.updateWidgetLayout = function (widget) {
     widget.$gridWidget.find(".textfit").fitText();
+   
+    // manage the rolling title
+    widget.viewModel.widgetApi.manageRollingTitle();
 };
