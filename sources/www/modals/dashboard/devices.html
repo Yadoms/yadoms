@@ -42,8 +42,17 @@
          deviceList[i].keywords = sortListItemsWithFriendlyName ( deviceList[i].keywords );
          
          if (getDeviceDomRow(device).length !=0) {
-            //we remove all rows except header
-            $("table#keyword-list").find("tr:gt(0)").remove();
+            if ($("table#keyword-list").length!= 0) { // If the table exist, we clean up the table
+               //we remove all rows except header
+               $("table#keyword-list").find("tr:gt(0)").remove();
+            } else { // create the table
+               var $deviceRow = getDeviceDomRow(device);
+               $deviceRow.siblings(".device").find("span.deploy").removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
+               //we select the line
+               $deviceRow.find("span.deploy").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
+               $deviceRow.addClass(selectedClass).siblings(".device").removeClass(selectedClass);            
+               createKeywordsTable(device);
+            }
             fillTable(device);
             
             AcquisitionManager.getLastValues(device.keywords)
@@ -454,6 +463,24 @@
       }
    }
    
+   function createKeywordsTable(device, deviceRow) {
+      var selectedClass = "info";
+   
+      //we create device details table
+      deviceRow.after("<tr device-id=\"" + device.id + "\" class=\"device-details " + selectedClass + "\"><td colspan=\"4\">" +
+               "<table id=\"keyword-list\" device-id=\"" + device.id + "\" class=\"table table-bordered table-striped\">" +
+               "<tr>" +
+                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.name\" class=\"col-md-2\"></td>" +
+                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.value\" class=\"col-md-2\"></td>" +
+                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.units\" class=\"col-md-2\"></td>" +
+                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.update\" class=\"col-md-2\"></td>" +
+                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.actions\" class=\"col-md-2\"></td>" +
+               "</tr>" +
+               "<!-- keywords will be listed here-->" +
+               "</table>" +
+               "</td></tr>");   
+   };
+   
    function fillTable(device) {
       var $deviceDetailsTable = $("table#keyword-list");
       $deviceDetailsTable.i18n();
@@ -474,8 +501,6 @@
          $deviceDetailsTable.append("<tr keyword-id=\"" + keyword.id + "\"><td class=\"keyword-friendlyName vert-align\"></td><td class=\"keyword-value vert-align\"><td class=\"keyword-units vert-align\"><td class=\"keyword-update vert-align\"></td><td class=\"keyword-actions vert-align\"></td></tr>");
 
          var $keywordRow = getKeywordDomRow(keyword);
-
-         //we fill the data
          var fn = keyword.friendlyName;
          
          if(parseBool(keyword.blacklist)===true)
@@ -539,19 +564,7 @@
 
                if(device.keywords && device.keywords.length > 0) {
                   //we create device details table
-                  $deviceRow.after("<tr device-id=\"" + device.id + "\" class=\"device-details " + selectedClass + "\"><td colspan=\"4\">" +
-                           "<table id=\"keyword-list\" device-id=\"" + device.id + "\" class=\"table table-bordered table-striped\">" +
-                           "<tr>" +
-                              "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.name\" class=\"col-md-2\"></td>" +
-                              "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.value\" class=\"col-md-2\"></td>" +
-                              "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.units\" class=\"col-md-2\"></td>" +
-                              "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.update\" class=\"col-md-2\"></td>" +
-                              "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.actions\" class=\"col-md-2\"></td>" +
-                           "</tr>" +
-                           "<!-- keywords will be listed here-->" +
-                           "</table>" +
-                           "</td></tr>");
-                           
+                  createKeywordsTable(device, $deviceRow);
                   fillTable(device);
                } else {
                   $deviceRow.after('<p class="nokeyword-for-device" data-i18n="modals.dashboard.sub-windows.devices.details.nokeywords">Aucun keyword associé</p>');
