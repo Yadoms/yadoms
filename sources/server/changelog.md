@@ -2,6 +2,7 @@
 
 #### Web Client
 * Fix #463 - Rolling title doesn't work for some widgets
+* Fix #486 - Change configuration doesn't refresh keywords list if no keyword before
 
 ### 2.1.0-beta.3
 

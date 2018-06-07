@@ -40,10 +40,17 @@
       
          // sort keywords
          deviceList[i].keywords = sortListItemsWithFriendlyName ( deviceList[i].keywords );
-         
-         if (getDeviceDomRow(device).length !=0) {
-            //we remove all rows except header
-            $("table#keyword-list").find("tr:gt(0)").remove();
+         var $deviceRow = getDeviceDomRow(device);
+
+         if ($deviceRow.length !=0) {
+            if ($("table#keyword-list").length!= 0) { // If the table exist, we clean up the table
+               //we remove all rows except header
+               $("table#keyword-list").find("tr:gt(0)").remove();
+            } else { 
+               $("p.nokeyword-for-device").remove();
+               // create the table
+               createKeywordsTable(device, $deviceRow);
+            }
             fillTable(device);
             
             AcquisitionManager.getLastValues(device.keywords)
@@ -132,11 +139,7 @@
       getDeviceDetailsDomRow().remove();
       
       var $deviceRow = $("table#device-list").find("tr[device-id='" + device.id + "'].device");
-      console.log (device);
-      
       $deviceRow.find("td.device-friendlyName").find("span").remove();
-      
-      console.log ($deviceRow.find("td.device-friendlyName"));
       
       var fn = device.friendlyName;
       if(parseBool(device.blacklist)==true)
@@ -372,26 +375,22 @@
       DeviceManager.updateToServer(device)
       .done(function (updateDevice) {
             //We update the information that can have changed after the configuration
-            // Copy of the list before the new sort
-            var TempdeviceList = deviceList.slice ( 0, deviceList.length );					 
+            var i = deviceList.map(function (e) { return e.id; }).indexOf(updateDevice.Id);
             
-            //sort after rename
-            deviceList = sortListItemsWithFriendlyName ( deviceList );					 
-            
-            var isIdentical = (TempdeviceList.length == deviceList.length) && TempdeviceList.every(function(element, index) {
-                  return element.friendlyName === deviceList[index].friendlyName && element.model === deviceList[index].model; 					 
-            })					 
-            var $row = getDeviceDomRow(updateDevice);
-            
-            if (!isIdentical)
-            {  // If the two lists are differents, we change the order
-                  $row.remove ();
-                  addDeviceToDom ( device, deviceList.indexOf (device) );
-            } else {
+            if (i !== -1){ // The device exist !
+               var $row = getDeviceDomRow(updateDevice);
+               if (deviceList[i].friendlyName === updateDevice.friendlyName && updateDevice.model === deviceList[i].model) {
                   var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + device.friendlyName + "</span>";
                   $row.find("td.device-friendlyName").html(friendlyName);
                   var model = "<span>" + device.model + "</span>"
-                  $row.find("td.device-model").html(model);
+                  $row.find("td.device-model").html(model);               
+               }else {
+                  $row.remove ();
+                  addDeviceToDom ( device, deviceList.indexOf (updateDevice) );
+                  deviceList[i] = updateDevice;
+                  //sort after rename
+                  deviceList = sortListItemsWithFriendlyName ( deviceList );                  
+               }
             }
             d.resolve();
       })                        
@@ -399,7 +398,6 @@
           notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
           d.reject();
       });
-      
       return d.promise();
    }
 
@@ -454,6 +452,24 @@
       }
    }
    
+   function createKeywordsTable(device, deviceRow) {
+      var selectedClass = "info";
+   
+      //we create device details table
+      deviceRow.after("<tr device-id=\"" + device.id + "\" class=\"device-details " + selectedClass + "\"><td colspan=\"4\">" +
+               "<table id=\"keyword-list\" device-id=\"" + device.id + "\" class=\"table table-bordered table-striped\">" +
+               "<tr>" +
+                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.name\" class=\"col-md-2\"></td>" +
+                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.value\" class=\"col-md-2\"></td>" +
+                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.units\" class=\"col-md-2\"></td>" +
+                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.update\" class=\"col-md-2\"></td>" +
+                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.actions\" class=\"col-md-2\"></td>" +
+               "</tr>" +
+               "<!-- keywords will be listed here-->" +
+               "</table>" +
+               "</td></tr>");   
+   };
+   
    function fillTable(device) {
       var $deviceDetailsTable = $("table#keyword-list");
       $deviceDetailsTable.i18n();
@@ -474,8 +490,6 @@
          $deviceDetailsTable.append("<tr keyword-id=\"" + keyword.id + "\"><td class=\"keyword-friendlyName vert-align\"></td><td class=\"keyword-value vert-align\"><td class=\"keyword-units vert-align\"><td class=\"keyword-update vert-align\"></td><td class=\"keyword-actions vert-align\"></td></tr>");
 
          var $keywordRow = getKeywordDomRow(keyword);
-
-         //we fill the data
          var fn = keyword.friendlyName;
          
          if(parseBool(keyword.blacklist)===true)
@@ -527,7 +541,6 @@
       if (!$deviceRow.hasClass(selectedClass)) {
          //we stop the timer task
          clearInterval(Yadoms.periodicDashboardTask);
-
          PluginInstanceManager.downloadPackage(device.attachedPlugin)
          .done(function() {
             DeviceManager.getKeywords(device)
@@ -539,19 +552,7 @@
 
                if(device.keywords && device.keywords.length > 0) {
                   //we create device details table
-                  $deviceRow.after("<tr device-id=\"" + device.id + "\" class=\"device-details " + selectedClass + "\"><td colspan=\"4\">" +
-                           "<table id=\"keyword-list\" device-id=\"" + device.id + "\" class=\"table table-bordered table-striped\">" +
-                           "<tr>" +
-                              "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.name\" class=\"col-md-2\"></td>" +
-                              "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.value\" class=\"col-md-2\"></td>" +
-                              "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.units\" class=\"col-md-2\"></td>" +
-                              "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.update\" class=\"col-md-2\"></td>" +
-                              "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.actions\" class=\"col-md-2\"></td>" +
-                           "</tr>" +
-                           "<!-- keywords will be listed here-->" +
-                           "</table>" +
-                           "</td></tr>");
-                           
+                  createKeywordsTable(device, $deviceRow);
                   fillTable(device);
                } else {
                   $deviceRow.after('<p class="nokeyword-for-device" data-i18n="modals.dashboard.sub-windows.devices.details.nokeywords">Aucun keyword associé</p>');
