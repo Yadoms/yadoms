@@ -15,7 +15,7 @@ static const auto DeviceName("Web connection quality");
 
 
 CWebConnectionQuality::CWebConnectionQuality()
-   : m_connectedKw(boost::make_shared<yApi::historization::CSwitch>("Connected")),
+   : m_connectedKw(boost::make_shared<yApi::historization::CSwitch>("Connected", yApi::EKeywordAccessMode::kGet)),
      m_pingKw(boost::make_shared<yApi::historization::CDuration>("Ping")),
      m_uploadKw(boost::make_shared<specificHistorizers::CNetworkBandwithHistorizer>("Upload")),
      m_downloadKw(boost::make_shared<specificHistorizers::CNetworkBandwithHistorizer>("Download")),
