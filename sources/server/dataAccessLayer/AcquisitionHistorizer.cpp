@@ -105,12 +105,12 @@ namespace dataAccessLayer
          //post notification
 
          //post notification
-         auto notificationData = boost::make_shared<notification::acquisition::CNotification>(acq);
+         const auto notificationData = boost::make_shared<notification::acquisition::CNotification>(acq);
          notification::CHelpers::postNotification(notificationData);
 
          if (!acquisitionSummary.empty())
          {
-            auto notificationDataSummary = boost::make_shared<notification::summary::CNotification>(acquisitionSummary);
+            const auto notificationDataSummary = boost::make_shared<notification::summary::CNotification>(acquisitionSummary);
             notification::CHelpers::postNotification(notificationDataSummary);
          }
       }

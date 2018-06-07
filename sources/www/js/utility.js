@@ -192,12 +192,6 @@ if (typeof String.prototype.endsWith != 'function') {
    };
 }
 
-Array.prototype.insert = function (index) {
-   this.splice.apply(this, [index, 0].concat(
-      Array.prototype.slice.call(arguments, 1)));
-   return this;
-};
-
 /**
  * Take an array as input and provide another array without duplicated elements
  * @param {object} arr  The array to treat

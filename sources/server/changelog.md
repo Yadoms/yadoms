@@ -1,3 +1,12 @@
+### 2.2.0-beta.1
+
+##### Yadoms Core
+* NewFeature #402 - Add measure type choice for some capacities (counter, energy, rain) when creating a virtual device
+* Fix incremental historization from automation rules or web client
+
+#### Web Client
+* In configuration sections, don't display sub-section of a combo section if no content
+
 ### 2.1.0
 
 _Please note that changes on modules (plugins, widgets...) are now specified in their respective change-logs files, no more in this file._

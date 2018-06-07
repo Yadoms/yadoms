@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IDeviceCommand.h>
 #include "CommandHistorizer.h"
+#include "database/common/requesters/Keyword.h"
 
 namespace pluginSystem
 {
@@ -13,11 +14,11 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief                  Constructor
       ///\param[in] targetDevice The target device (ex "Switch")
-      ///\param[in] keyword      The target keyword (ex "dim")
+      ///\param[in] keyword      The target keyword
       ///\param[in] body         The details of the command (value)
       //-----------------------------------------------------
       CDeviceCommand(const std::string& targetDevice,
-                     const std::string& keyword,
+                     boost::shared_ptr<const database::entities::CKeyword> keyword,
                      const std::string& body);
 
       //-----------------------------------------------------
@@ -42,7 +43,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief               Target keyword
       //-----------------------------------------------------
-      std::string m_keyword;
+      boost::shared_ptr<const database::entities::CKeyword> m_keyword;
 
       //-----------------------------------------------------
       ///\brief               Command body

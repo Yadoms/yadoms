@@ -30,21 +30,12 @@ namespace communication
                                            const std::string& body) = 0;
 
       //----------------------------------------------
-      ///\brief                     Send a command to a device
-      ///\param [in] deviceId       Target device Id
-      ///\param [in] body           The command body to send
-      ///\throw shared::exception::CEmptyResult if deviceId not found
-      //----------------------------------------------
-      virtual void sendDeviceCommandAsync(int deviceId,
-                                          const std::string& body) = 0;
-
-      //----------------------------------------------
       ///\brief                     Send an extra command
       ///\param [in] pluginId       Plugin Id to send extra command
       ///\param [in] data           The extra query data
       ///\return                    The task id
       //----------------------------------------------
-      virtual const std::string sendExtraQueryAsync(int pluginId, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> data) = 0;
+      virtual std::string sendExtraQueryAsync(int pluginId, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> data) = 0;
 
       //----------------------------------------------
       ///\brief                     Send a manually device creation request to a plugin with a mandatory callback

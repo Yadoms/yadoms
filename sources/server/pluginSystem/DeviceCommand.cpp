@@ -4,7 +4,7 @@
 namespace pluginSystem
 {
    CDeviceCommand::CDeviceCommand(const std::string& targetDevice,
-                                  const std::string& keyword,
+                                  boost::shared_ptr<const database::entities::CKeyword> keyword,
                                   const std::string& body)
       : m_device(targetDevice),
         m_keyword(keyword),
@@ -24,7 +24,7 @@ namespace pluginSystem
 
    const std::string& CDeviceCommand::getKeyword() const
    {
-      return m_keyword;
+      return m_keyword->Name();
    }
 
    const std::string& CDeviceCommand::getBody() const
