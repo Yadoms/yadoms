@@ -26,9 +26,9 @@ public:
    /// \param[in] password          password used to access the equipment
    //--------------------------------------------------------------
    explicit CIOManager(const std::string& device, 
-                       Poco::Net::SocketAddress socket,
+                       const Poco::Net::SocketAddress& socket,
                        bool passwordActivated, 
-                       std::string password);
+                       const std::string& password);
 
    //--------------------------------------------------------------
    /// \brief	    Initialize all elements
@@ -71,7 +71,7 @@ public:
    /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] deviceRemoved    the name of the device removed
    //--------------------------------------------------------------
-   void removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved);
+   void removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceRemoved);
 
    //--------------------------------------------------------------
    /// \brief	    OnConfigurationUpdate

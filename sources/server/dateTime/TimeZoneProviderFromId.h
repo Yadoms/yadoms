@@ -11,7 +11,7 @@ namespace dateTime
    {
    public:
       CTimeZoneProviderFromId(const std::string& timezoneId,
-                              const boost::shared_ptr<CTimeZoneDatabase> timezoneDatabase);
+                              const boost::shared_ptr<const CTimeZoneDatabase> timezoneDatabase);
       virtual ~CTimeZoneProviderFromId();
 
       // ITimeZoneProvider Implementation

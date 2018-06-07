@@ -21,26 +21,6 @@ EOneWireFamily ToFamily(const std::string& str)
    return static_cast<EOneWireFamily>(xID);
 }
 
-void DeviceIdToByteArray(std::string deviceId,/*out*/unsigned char* byteArray)
-{
-   std::string str = deviceId;
-   if (str.length() < (2 * DEVICE_ID_SIZE))
-   {
-      size_t fillupSize = (2 * DEVICE_ID_SIZE) - str.length();
-      str.insert(0, fillupSize, '0');
-   }
-
-   for (unsigned int idx = 0; idx < DEVICE_ID_SIZE; idx++)
-   {
-      std::stringstream ss;
-      unsigned int i;
-      ss << std::hex << str.substr(2 * idx, 2);
-      if (!(ss >> i))
-         byteArray[DEVICE_ID_SIZE - idx - 1] = 0;
-      byteArray[DEVICE_ID_SIZE - idx - 1] = static_cast<unsigned char>(i);
-   }
-}
-
 std::string ByteArrayToDeviceId(const unsigned char* byteArray)
 {
    std::stringstream sID;

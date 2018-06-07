@@ -9,17 +9,15 @@ include("../YadomsPluginsCommon.cmake")
 set(TELEINFO_SOURCES
    Decoder.h
    Decoder.cpp
+   GPIOManager.hpp
    IDecoder.h
+   IGPIOManager.h
    ITeleInfoConfiguration.h
    ITeleInfoMessage.h
    stdafx.h
    stdafx.cpp
    TeleInfo.h
    TeleInfo.cpp
-   TeleInfoConfiguration.h
-   TeleInfoConfiguration.cpp
-   TeleInfoFactory.h
-   TeleInfoFactory.cpp
    TeleInfoReceiveBufferHandler.h
    TeleInfoReceiveBufferHandler.cpp
    Keywords/ForecastTomorrow.cpp
@@ -32,7 +30,36 @@ set(TELEINFO_SOURCES
    specificHistorizer/Color.cpp   
    specificHistorizer/Period.h
    specificHistorizer/Period.cpp
+   IFTD2XManager.h
+   ftdi/ftd2xx.h
 )
+
+IF (WIN32)
+    set(TELEINFO_SOURCES ${TELEINFO_SOURCES}
+	# Add Windows sources
+        Windows/FT2xxSerialPort.h
+        Windows/FT2xxSerialPort.cpp
+        Windows/TeleInfoFactory.h
+        Windows/TeleInfoFactory.cpp
+        Windows/TeleInfoConfiguration.h
+        Windows/TeleInfoConfiguration.cpp
+	)
+	
+	source_group(sources\\Windows Windows/*.*)
+	
+ENDIF()
+
+IF (UNIX)
+    set(TELEINFO_SOURCES ${TELEINFO_SOURCES}
+	     # Add Common Linux and RaspberryPI sources
+        Linux/TeleInfoFactory.h
+        Linux/TeleInfoFactory.cpp
+        Linux/TeleInfoConfiguration.h
+        Linux/TeleInfoConfiguration.cpp        
+	)
+	
+	source_group(sources\\Linux Linux/*.*)
+ENDIF()
 
 #########################################
 ## Place here all additional groups (solution folder)
@@ -46,10 +73,23 @@ source_group(sources\\specificHistorizer specificHistorizer/*.*)
 ## (by default yadoms-shared and boost are included)
 #########################################
 
+IF(WIN32)
+   set(TELEINFO_ADDITIONAL_INC_DIR
+	   ${CMAKE_CURRENT_SOURCE_DIR}/Windows
+   )
+ENDIF()
+	
+IF (UNIX)
+   set(TELEINFO_ADDITIONAL_INC_DIR
+      ${CMAKE_CURRENT_SOURCE_DIR}/Linux
+   )
+ENDIF()
+
 #########################################
 ## Place here all additional libraries to link with
 ## (by default yadoms-shared and boost are included)
 #########################################
+
 
 #########################################
 ## Always leave this three lines to configure plugin correctly
@@ -68,3 +108,7 @@ PLUGIN_POST_BUILD_COPY_FILE(teleinfo package.json)
 PLUGIN_POST_BUILD_COPY_FILE(teleinfo changelog.md)
 PLUGIN_POST_BUILD_COPY_FILE(teleinfo icon.png)
 PLUGIN_POST_BUILD_COPY_DIRECTORY(teleinfo locales)
+
+IF(WIN32)
+   PLUGIN_POST_BUILD_COPY_FILE(teleinfo ftdi/ftd2xx.dll)
+ENDIF()

@@ -1,20 +1,52 @@
 ﻿{
 	"name": "linky",
-	"description": "Module de suivi de consommation électrique. Cet équipement se connecte directement sur le compteur électrique Linky.",
+	"description": "Module de suivi de consommation électrique. Cet équipement se connecte directement sur le compteur électrique Linky en communication standard. Si celui communique en mode historique, il faut utiliser le plugin teleInfo.",
 	"configurationSchema": {
 		"SerialPort": {
 			"name": "Port Série",
 			"description": "Le port série sur lequel est connecté l'équipement de lecture des informations."
-		}
+		},   
+      "EquipmentType": {
+         "name": "type de l'équipement",
+         "type": "comboSection",
+         "content": {
+            "first": {
+               "name": "Module avec 1 entrée télé-Info"
+            }, 
+            "second": {
+               "name": "Module avec 2 entrées télé-Info",
+               "content": {
+                  "portEnabled": {
+			            "name": "Etats entrées télé-info",
+			            "description": "Pour les systèmes Linux et Raspberry Pi, seul l'entrée n°1 est continuellement active. L'entrée n°2 n'est pas accessible",
+                     "values": {
+                        "1xInputEnabled": "Entrée télé-info n°1 activée",
+                        "2xInputsEnabled": "Entrée télé-info n°2 activée",
+                        "AllInputsEnabled": "Toutes les entrées télé-info activées"
+                     }
+                  }
+               }
+            }
+         }
+      }
 	},
 	"enumerations": {
+		"EColor": {
+			"name" : "Couleur de demain",
+			"values" : {
+				"NOTDEFINED": "Pas définie",
+				"BLUE": "Bleu",
+				"WHITE": "Blanc",
+				"RED": "Rouge"
+			}
+		},
 		"EPeriod": {
 			"name" : "Période tarifaire",
 			"values" : {
-				"AllHours": "Toutes heures",
-				"LowCostHours": "Heures creuses",
-				"PeakCostHour": "Heures pleines",
-				"NormalCostHours": "Heures pleines",
+            "AllHours": "Toutes heures",
+            "LowCostHours": "Heures creuses",
+            "PeakCostHours": "Heures pleines",
+            "NormalCostHours": "Heures pleines",
             "MobilePeakCostHours": "heures pointe mobile",
             "LowCostBlueDays": "Heures creuses bleues",
             "LowCostWhiteDays": "Heures creuses blanches",

@@ -6,6 +6,14 @@
       "name": "Serial port",
       "description": "The virtual serial port connected to the RFXCom"
     },
+    "PairingMode": {
+      "name": "Pairing mode",
+      "description": "Pairing mode can be automatic (each newly detected device is automaticaly registered), or manual with a command on the plugin (green button). This manual mode is useful when using protocol not given messages reliability, which can register dummy devices",
+      "values": {
+        "auto": "Automatic mode, each newly detected device will registered",
+        "manual": "Manual mode, plugin must be set to pairing mode with the green button"
+      }
+    },
     "Protocols": {
       "name": "Protocols to listen",
       "description": "Supported protocols to listen, see RFXCom manual to configure. Be careful, some protocols are incompatible and must not be selected together.",
@@ -645,6 +653,35 @@
               "regexErrorMessage": "The house code must be between A and P (included)"
             }
           }
+        },
+        "Encoder Module": {
+          "types": { "Encoder Module": { "title": "Encoder Module" } },
+          "content": {
+            "counter1Configuration": {
+              "name": "Counter 1 configuration",
+              "description": "Set here the sensor type connected to module input 1",
+              "values": {
+                "energyWh": "Energy (Wh)",
+                "waterLiter": "Water (one pulse per Liter)",
+                "waterQuarterLiter": "Water (one pulse per ¼ liter)",
+                "gasDeciM3": "Gas (one pulse per 1/10 m3)",
+                "gasCentiM3": "Gas (one pulse per 1/100 m3)",
+                "raw": "Other (Raw counter only)"
+              }
+            },
+            "counter2Configuration": {
+              "name": "Counter 2 configuration",
+              "description": "Set here the sensor type connected to module input 2",
+              "values": {
+                "energyWh": "Energy (Wh)",
+                "waterLiter": "Water (one pulse per Liter)",
+                "waterQuarterLiter": "Water (one pulse per ¼ liter)",
+                "gasDeciM3": "Gas (one pulse per 1/10 m3)",
+                "gasCentiM3": "Gas (one pulse per 1/100 m3)",
+                "raw": "Other (Raw counter only)"
+              }
+            }
+          }
         }
       }
     }
@@ -658,6 +695,9 @@
           "description": "The firmware file to use"
         }
       }
+    },
+    "pairing": {
+      "name": "Start/stop pairing"
     }
   },
   "customLabels": {
@@ -678,6 +718,13 @@
       "ErrorInternal": "Unable to update firmware because of internal error",
       "ErrorOnlyAvailableForSerial": "Firmware updating is only available with serial connection",
       "ErrorInvalidInputFile": "Unable to update firmware, input file is invalid"
+    },
+    "pairing": {
+      "invalidCommandAutoMode": "Invalid command, pairing is configured as automatic",
+      "alreadyRunning": "Pairing already running",
+      "pairing": "Pairing...",
+      "devicePaired": "New device paired !",
+      "noDevicePaired": "No device found"
     }
   }
 }

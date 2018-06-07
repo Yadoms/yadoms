@@ -40,7 +40,7 @@ namespace database
             /// \brief     Create the database (when tables are not found)
             ///\param [in] pRequester : database requester object
             //-----------------------------------
-            static void UpdateFrom4_0_1(const boost::shared_ptr<IDatabaseRequester>& pRequester);
+            void UpdateFrom4_0_1(const boost::shared_ptr<IDatabaseRequester>& pRequester) const;
          };
       } //namespace versioning
    } //namespace common

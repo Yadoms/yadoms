@@ -464,8 +464,8 @@
 
         //we try to get information from server loop until the server answer
         EventLoggerManager.getLast({
-            timeout: 2000
-        })
+                timeout: 2000
+            })
             .done(function () {
                 //we received an answer, the server is back
                 //we reload full page (clearing cache)
@@ -494,15 +494,25 @@
             return objectType + "s." + moduleType;
         });
 
-        addItemsInTable($table, objectType, list.new, function (moduleType, data) {
-            // For new items, we need to import translations
+
+        // For new items, we need to import translations
+        var deferredArray = [];
+        $.each(list.new, function (moduleType, data) {
             var newestVersion = Object.keys(data.versions.newest)[0];
-            i18n.options.resGetPath = getBaseUrl(data.versions.newest[newestVersion].downloadUrl) +
-                '/__ns__/locales/__lng__.json';
-            i18n.loadNamespace(moduleType + "/" + newestVersion);
-            i18n.options.resGetPath = "locales/__lng__.json";
-            return moduleType + "." + newestVersion;
+            deferredArray.push(i18nManager.loadNamespaceFromExternal(getBaseUrl(data.versions.newest[
+                    newestVersion].downloadUrl) +
+                "/" + moduleType + "/" + newestVersion, moduleType));
         });
+
+        $.whenAll(deferredArray)
+            .done(function () {
+                addItemsInTable($table, objectType, list.new, function (moduleType, data) {
+                    return moduleType;
+                });
+            })
+            .fail(function () {
+                console.error("Fail to load translations for some new plugins");
+            });
     }
 
     function getBaseUrl(fullUrl) {

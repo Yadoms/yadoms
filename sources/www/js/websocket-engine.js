@@ -77,16 +77,43 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
          var acq = AcquisitionManager.factory(websocketData.data);
          dispatchNewAcquisitionsToWidgets(acq);
      });
+     
      //we listen time event
      $(document).on("timenotification", function(e, websocketData) {
          dispatchTimeToWidgets(websocketData.time);
      });
+     
      //we listen keyword Deletion event
      $(document).on("keyworddeleted", function(e, websocketData) {
-         dispatchkeywordDeletedToWidgets(websocketData.data);
+        dispatchkeywordDeletedToWidgets(websocketData.data);
+         
+        if (typeof dispatchkeywordDeletedToDevicesView !== "undefined")
+           dispatchkeywordDeletedToDevicesView(websocketData.data);
      });
-     /*
-      */     
+     
+     //we listen device Deletion event
+     $(document).on("devicedeleted", function(e, websocketData) {
+        if (typeof dispatchDevicesDeletedToDevicesView !== "undefined")
+           dispatchDevicesDeletedToDevicesView(websocketData.data);
+     });
+     
+     //we listen device blacklist event
+     $(document).on("deviceblacklisted", function(e, websocketData) {
+        if (typeof dispatchDevicesDeletedToDevicesView !== "undefined")
+           dispatchDevicesBlacklistedToDevicesView(websocketData.data);
+     });     
+     
+     //we listen device new event
+     $(document).on("devicenew", function(e, websocketData) {
+        if (typeof dispatchDevicesNewToDevicesView !== "undefined")
+         dispatchDevicesNewToDevicesView(websocketData.data);
+     });
+     
+     //we listen keyword new event
+     $(document).on("keywordnew", function(e, websocketData) {
+        if (typeof dispatchDevicesNewToDevicesView !== "undefined")
+           dispatchkeywordNewToDevicesView(websocketData.data);
+     });          
      
     if (!isNullOrUndefined(WebSocketEngine.webSocket_))
         WebSocketEngine.webSocket_.close();
@@ -132,7 +159,17 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
                         case "keyworddeleted":
                            $(document).trigger("keyworddeleted", websocketData);
                            break;
+                        case "devicedeleted":
+                           $(document).trigger("devicedeleted", websocketData);
+                           break;
+                        case "deviceblacklisted":
+                           $(document).trigger("deviceblacklisted", websocketData);
+                           break;                           
+                        case "keywordnew":
+                           $(document).trigger("keywordnew", websocketData);
+                           break;                           
                         case "devicenew":
+                           $(document).trigger("devicenew", websocketData);
                            break;
                         case "taskupdatenotification":
                            $(document).trigger("taskupdatenotification." + websocketData.uuid, websocketData);

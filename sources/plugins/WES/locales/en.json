@@ -97,7 +97,8 @@
 			"noInformation": "The equipment is connected. No information returned. Please check the apikey",
 			"updateConfiguration": "Configuration updating...",
          "kAtLeastOneConnectionFaulty": "At least one connection is faulty",
-         "manuallyCreationError": "The manual creation of the device have failed"
+         "manuallyCreationError": "The manual creation of the device have failed",
+         "serverRevisionTooLow": "The server firmware revision is would be 0.80 or greater"
 		}
 	}
 }

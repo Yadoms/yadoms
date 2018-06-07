@@ -1,6 +1,6 @@
 #pragma once
 #include "../IType.h"
-#include "specificHistorizers/DimmerModeHistorizer.h"
+#include <specificHistorizers/DimmerModeHistorizer.h>
 
 
 class CProfile_D2_01_05 : public IType

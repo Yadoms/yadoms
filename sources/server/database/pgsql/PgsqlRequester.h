@@ -22,7 +22,7 @@ namespace database
 
          // IDatabaseRequester implementation
          boost::shared_ptr<common::CQuery> newQuery() override;
-         void queryEntities(common::adapters::IResultAdapter* pAdapter, const common::CQuery& querytoExecute) override;
+         void queryEntities(common::adapters::IResultAdapter* adapter, const common::CQuery& querytoExecute) override;
          int queryStatement(const common::CQuery& querytoExecute, bool throwIfFails = true) override;
          int queryCount(const common::CQuery& querytoExecute) override;
          QueryRow querySingleLine(const common::CQuery& querytoExecute) override;
@@ -47,11 +47,11 @@ namespace database
 
       // IDataBackup implementation
       bool backupSupported() override;
-      void backupData(const std::string & backupFolder, IDataBackup::ProgressFunc reporter) override;
+      void backupData(const std::string & backupFolder, ProgressFunc reporter) override;
       // [END] IDataBackup implementation
 
       private:
-         void queryEntities(common::adapters::IResultAdapter* pAdapter, const common::CQuery& querytoExecute, PGconn* pConnection);
+         void queryEntities(common::adapters::IResultAdapter* adapter, const common::CQuery& querytoExecute, PGconn* pConnection);
          int queryStatement(const common::CQuery& querytoExecute, bool throwIfFails, PGconn* pConnection);
          int queryCount(const common::CQuery& querytoExecute, PGconn* pConnection);
          void transactionBegin(PGconn* pConnection);

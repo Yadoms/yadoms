@@ -31,9 +31,12 @@ function stateDisplayViewModel() {
        var defferedConfigurationChangedFinished = new $.Deferred();
        var arrayOfDeffered = [];
         
-       //we register keyword new acquisition
-       self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
-        
+        //we register keyword new acquisition
+        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+	   
+		//we register keyword for get last value at web client startup
+		self.widgetApi.getLastValue(self.widget.configuration.device.keywordId); 		
+		
        //we fill the deviceId of the battery indicator
        self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
        

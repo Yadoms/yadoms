@@ -7,31 +7,44 @@
 t <form>
 # COMPTEURS TELEINFO
 # COMPTEUR 1
-c e a <html><id>CPT1_adco</id><value>%s</value></html>
+c es1 <html><id>CPT1_adco</id><value>%s</value></html>
 c TP1 <html><id>CPT1_PTarif</id><value>%d</value></html>
-c e d <html><id>CPT1_abo_name</id><value>%d</value></html>
+c ed1 <html><id>CPT1_abo_name</id><value>%d</value></html>
 c ii0 <html><id>CPT1_IINST_mono</id><value>%d A</value></html>
-c i p <html><id>CPT1_P</id><value>%d</value></html>
-c Ti1 <html><id>CPT1_INDEX_1</id><value>%09d</value></html>
-c Ti2 <html><id>CPT1_INDEX_2</id><value>%09d</value></html>
-c Ti3 <html><id>CPT1_INDEX_3</id><value>%09d</value></html>
-c Ti4 <html><id>CPT1_INDEX_4</id><value>%09d</value></html>
-c Ti5 <html><id>CPT1_INDEX_5</id><value>%09d</value></html>
-c Ti6 <html><id>CPT1_INDEX_6</id><value>%09d</value></html>
+c ip1 <html><id>CPT1_P</id><value>%d</value></html>
+c TI11<html><id>CPT1_INDEX_1</id><value>%d</value></html>
+c TI12<html><id>CPT1_INDEX_2</id><value>%d</value></html>
+c TI13<html><id>CPT1_INDEX_3</id><value>%d</value></html>
+c TI14<html><id>CPT1_INDEX_4</id><value>%d</value></html>
+c TI15<html><id>CPT1_INDEX_5</id><value>%d</value></html>
+c TI16<html><id>CPT1_INDEX_6</id><value>%d</value></html>
 c Tp1 <html><id>DEMAIN_1</id><value>%d</value></html>
-c Tp2 <html><id>DEMAIN_2</id><value>%d</value></html>
 # COMPTEUR 2
-c e A <html><id>CPT2_adco</id><value>%s</value></html>
+c es2 <html><id>CPT2_adco</id><value>%s</value></html>
 c TP2 <html><id>CPT2_PTarif</id><value>%d</value></html>
-c e D <html><id>CPT2_abo_name</id><value>%d</value></html>
+c ed2 <html><id>CPT2_abo_name</id><value>%d</value></html>
 c Ii0 <html><id>CPT2_IINST_mono</id><value>%d A</value></html>
-c I p <html><id>CPT2_P</id><value>%d</value></html>
-c TI1 <html><id>CPT2_INDEX_1</id><value>%09d</value></html>
-c TI2 <html><id>CPT2_INDEX_2</id><value>%09d</value></html>
-c TI3 <html><id>CPT2_INDEX_3</id><value>%09d</value></html>
-c TI4 <html><id>CPT2_INDEX_4</id><value>%09d</value></html>
-c TI5 <html><id>CPT2_INDEX_5</id><value>%09d</value></html>
-c TI6 <html><id>CPT2_INDEX_6</id><value>%09d</value></html>
+c ip2 <html><id>CPT2_P</id><value>%d</value></html>
+c TI21<html><id>CPT2_INDEX_1</id><value>%d</value></html>
+c TI22<html><id>CPT2_INDEX_2</id><value>%d</value></html>
+c TI23<html><id>CPT2_INDEX_3</id><value>%d</value></html>
+c TI24<html><id>CPT2_INDEX_4</id><value>%d</value></html>
+c TI25<html><id>CPT2_INDEX_5</id><value>%d</value></html>
+c TI26<html><id>CPT2_INDEX_6</id><value>%d</value></html>
+c Tp2 <html><id>DEMAIN_2</id><value>%d</value></html>
+# COMPTEUR 3
+c es3 <html><id>CPT3_adco</id><value>%s</value></html>
+c TP3 <html><id>CPT3_PTarif</id><value>%d</value></html>
+c ed3 <html><id>CPT3_abo_name</id><value>%d</value></html>
+c II0 <html><id>CPT3_IINST_mono</id><value>%d A</value></html>
+c ip3 <html><id>CPT3_P</id><value>%d</value></html>
+c TI31<html><id>CPT3_INDEX_1</id><value>%d</value></html>
+c TI32<html><id>CPT3_INDEX_2</id><value>%d</value></html>
+c TI33<html><id>CPT3_INDEX_3</id><value>%d</value></html>
+c TI34<html><id>CPT3_INDEX_4</id><value>%d</value></html>
+c TI35<html><id>CPT3_INDEX_5</id><value>%d</value></html>
+c TI36<html><id>CPT3_INDEX_6</id><value>%d</value></html>
+c Tp3 <html><id>DEMAIN_3</id><value>%d</value></html>
 # PINCES AMPEREMETRIQUES
 c P P1 <html><id>VAPC1_val</id><value>%d</value></html>
 c P P2 <html><id>VAPC2_val</id><value>%d</value></html>
@@ -58,9 +71,9 @@ c o E2 <bssw><id>RL2</id><value>%d</value></bssw>
 c l E1 <text><id>I1</id><value>%d</value></text>
 c l E2 <text><id>I2</id><value>%d</value></text>
 # ANALOGIQUE
-c l A1 <html><id>ad1</id><value>%d</value></html>
-c l A2 <html><id>ad2</id><value>%d</value></html>
-c l A3 <html><id>ad3</id><value>%d</value></html>
-c l A4 <html><id>ad4</id><value>%d</value></html>
+c l A1 <html><id>ad1</id><value>%f</value></html>
+c l A2 <html><id>ad2</id><value>%f</value></html>
+c l A3 <html><id>ad3</id><value>%f</value></html>
+c l A4 <html><id>ad4</id><value>%f</value></html>
 t </form>
 .

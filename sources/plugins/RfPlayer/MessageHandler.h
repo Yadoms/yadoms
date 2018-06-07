@@ -22,11 +22,11 @@ public:
    virtual ~CMessageHandler();
 
    // IMessageHandler implementation
-   void onReceived(boost::shared_ptr<const frames::incoming::CFrame> receivedMessage);
-   bool send(const std::string & sendMessage, boost::function<bool(boost::shared_ptr<const frames::incoming::CFrame>)> isExpectedMessageFct, boost::function<void(boost::shared_ptr<const frames::incoming::CFrame>)> onReceiveFct);
-   void send(const std::string& sendMessage);
-   bool sendFile(const std::string & sendMessage, boost::function<void(float)> onProgressHandler);
-   void sendBinary(const shared::communication::CByteBuffer& buffer);
+   void onReceived(boost::shared_ptr<const frames::incoming::CFrame> receivedMessage) override;
+   bool send(const std::string & sendMessage, boost::function<bool(boost::shared_ptr<const frames::incoming::CFrame>)> isExpectedMessageFct, boost::function<void(boost::shared_ptr<const frames::incoming::CFrame>)> onReceiveFct) override;
+   void send(const std::string& sendMessage) override;
+   bool sendFile(const std::string & sendMessage, boost::function<void(float)> onProgressHandler) override;
+   void sendBinary(const shared::communication::CByteBuffer& buffer) override;
    // [END] IMessageHandler implementation
 
 protected:

@@ -10,90 +10,91 @@
 
 BOOST_AUTO_TEST_SUITE(TestTimePoint)
 
-// Class used to gain access to protected members of CEventTimer
-class CEventTimePointAccessProtectedMembers : public shared::event::CEventTimePoint
-{
-public:
-   explicit CEventTimePointAccessProtectedMembers(int eventId, const boost::posix_time::ptime& dateTime = boost::date_time::not_a_date_time)
-      :CEventTimePoint(eventId, dateTime) {}
-   virtual ~CEventTimePointAccessProtectedMembers() {}
-   boost::posix_time::ptime getNextStopPoint() const override
-   { return CEventTimePoint::getNextStopPoint(); }
-   void reset() override
-   { CEventTimePoint::reset(); }
-   bool canBeRemoved() const override
-   { return CEventTimePoint::canBeRemoved(); }
-   int getId() const override
-   { return CEventTimePoint::getId(); }
-};
+   // Class used to gain access to protected members of CEventTimer
+   class CEventTimePointAccessProtectedMembers : public shared::event::CEventTimePoint
+   {
+   public:
+      explicit CEventTimePointAccessProtectedMembers(int eventId, const boost::posix_time::ptime& dateTime = boost::date_time::not_a_date_time)
+         : CEventTimePoint(eventId, dateTime)
+      {
+      }
 
-//--------------------------------------------------------------
-/// \brief	    Nominal case
-/// \result     No Error
-//--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(Nominal)
-{
-   useTimeMock();
-   const auto timePoint(shared::currentTime::Provider().now() + boost::posix_time::seconds(3));
-   const auto evtId = 123456;
-   CEventTimePointAccessProtectedMembers event(evtId, timePoint);
+      virtual ~CEventTimePointAccessProtectedMembers()
+      {
+      }
 
-	BOOST_CHECK_EQUAL(event.getId(), evtId);
-   BOOST_CHECK_EQUAL(event.getNextStopPoint(), timePoint);
-	BOOST_CHECK_EQUAL(event.canBeRemoved(), false);
+      boost::posix_time::ptime getNextStopPoint() const override
+      {
+         return CEventTimePoint::getNextStopPoint();
+      }
 
-   event.reset();
+      void reset() override
+      {
+         CEventTimePoint::reset();
+      }
 
-   BOOST_CHECK_EQUAL(event.getId(), evtId);
-   BOOST_CHECK_EQUAL(event.getNextStopPoint(), boost::date_time::not_a_date_time);
-   BOOST_CHECK_EQUAL(event.canBeRemoved(), true);
-}
+      bool canBeRemoved() const override
+      {
+         return CEventTimePoint::canBeRemoved();
+      }
 
-//--------------------------------------------------------------
-/// \brief	    Try to create CEventTimePoint with time point in the past
-/// \result     Throw an error
-//--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(timePointInThePast)
-{
-   useTimeMock();
-   const auto timePoint(shared::currentTime::Provider().now() - boost::posix_time::seconds(3));
-   const auto evtId = 123456;
-   BOOST_REQUIRE_THROW(shared::event::CEventTimePoint timer(evtId, timePoint), shared::exception::CInvalidParameter);
-}
+      int getId() const override
+      {
+         return CEventTimePoint::getId();
+      }
+   };
 
-//--------------------------------------------------------------
-/// \brief	    Nominal case + EventHandler
-/// \result     No Error
-//--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(NominalWithEventHandler)
-{
-   useTimeMock();
-   const auto timePoint(shared::currentTime::Provider().now() + boost::posix_time::seconds(1));
-   shared::event::CEventHandler evtHandler;
-   const auto evtId1 = 123456;
+   //--------------------------------------------------------------
+   /// \brief	    Nominal case
+   /// \result     No Error
+   //--------------------------------------------------------------
+   BOOST_AUTO_TEST_CASE(Nominal)
+   {
+      useTimeMock();
+      const auto timePoint(shared::currentTime::Provider().now() + boost::posix_time::seconds(3));
+      const auto evtId = 123456;
+      CEventTimePointAccessProtectedMembers event(evtId, timePoint);
 
-   evtHandler.createTimePoint( evtId1, timePoint );
+      BOOST_CHECK_EQUAL(event.getId(), evtId);
+      BOOST_CHECK_EQUAL(event.getNextStopPoint(), timePoint);
+      BOOST_CHECK_EQUAL(event.canBeRemoved(), false);
 
-	BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::posix_time::seconds(3)), evtId1); // Must be Event
-}
+      event.reset();
 
-//--------------------------------------------------------------
-/// \brief	    Received a Message after a waiting Time
-/// \result     No Error
-//--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(TimePointBeforeAWait)
-{
-   auto timeProviderMock = useTimeMock();
+      BOOST_CHECK_EQUAL(event.getId(), evtId);
+      BOOST_CHECK_EQUAL(event.getNextStopPoint(), boost::date_time::not_a_date_time);
+      BOOST_CHECK_EQUAL(event.canBeRemoved(), true);
+   }
 
-   shared::event::CEventHandler evtHandler;
-   const auto timePoint(shared::currentTime::Provider().now() + boost::posix_time::seconds(1));
-   const auto evtId1 = 123456;
+   //--------------------------------------------------------------
+   /// \brief	    Try to create CEventTimePoint with time point in the past
+   /// \result     Throw an error
+   //--------------------------------------------------------------
+   BOOST_AUTO_TEST_CASE(timePointInThePast)
+   {
+      useTimeMock();
+      const auto timePoint(shared::currentTime::Provider().now() - boost::posix_time::seconds(3));
+      const auto evtId = 123456;
+      BOOST_REQUIRE_THROW(shared::event::CEventTimePoint timer(evtId, timePoint), shared::exception::CInvalidParameter);
+   }
 
-   evtHandler.createTimePoint(evtId1, timePoint);
+   //--------------------------------------------------------------
+   /// \brief	    Nominal case + EventHandler
+   /// \result     No Error
+   //--------------------------------------------------------------
+   BOOST_AUTO_TEST_CASE(NominalWithEventHandler)
+   {
+      auto timeProviderMock = useTimeMock();
+      const auto timePoint(shared::currentTime::Provider().now() + boost::posix_time::seconds(1));
+      shared::event::CEventHandler evtHandler;
+      const auto evtId1 = 123456;
 
-   timeProviderMock->sleep(boost::posix_time::seconds(2));
+      evtHandler.createTimePoint(evtId1, timePoint);
 
-   BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), evtId1); // Must be Event
-}
+      timeProviderMock->sleep(boost::posix_time::milliseconds(1000));
+      BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
+      timeProviderMock->sleep(boost::posix_time::milliseconds(1));
+      BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), evtId1);
+   }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -8,6 +8,7 @@
 #include "BufferLoggerMock.hpp"
 #include "AsyncPortMock.hpp"
 #include "ReceiveBufferHandlerMock.hpp"
+#include "shared/currentTime/DefaultCurrentTimeMock.h"
 
 
 class CFakeMessage : public message::CEsp3SendPacket
@@ -82,6 +83,7 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
 
    BOOST_AUTO_TEST_CASE(TestNominalSendAndReceive)
    {
+      auto timeProviderMock = useTimeMock();
       auto portMock = boost::make_shared<CAsyncPortMock>();
       shared::event::CEventHandler mainEvtHandler;
       enum
@@ -132,7 +134,8 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
       }
 
       // Check that received message was not transmitted to main event handler by the message handler
-      BOOST_CHECK(mainEvtHandler.waitForEvents(boost::posix_time::milliseconds(100)) == shared::event::kTimeout) ;
+      timeProviderMock->sleep(boost::posix_time::seconds(100));
+      BOOST_REQUIRE_EQUAL(mainEvtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
 
       // Break circular shared_ptr reference to free memory
       portMock->setReceiveBufferHandler(boost::shared_ptr<shared::communication::IReceiveBufferHandler>());
@@ -141,6 +144,7 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
 
    BOOST_AUTO_TEST_CASE(TestSendAndTimeoutWhenReceive)
    {
+      auto timeProviderMock = useTimeMock();
       auto portMock = boost::make_shared<CAsyncPortMock>();
       shared::event::CEventHandler mainEvtHandler;
       enum
@@ -155,7 +159,7 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
       BOOST_CHECK(mainEvtHandler.empty()) ;
 
       CFakeMessage request;
-      auto answer = boost::make_shared<message::CEsp3ReceivedPacket>(std::vector<unsigned char>
+      const auto answer = boost::make_shared<message::CEsp3ReceivedPacket>(std::vector<unsigned char>
          {0x55, 0x00, 0x00, 0x00, message::RADIO_ERP1, 0x07, 0x00});
 
       // Send the message and process answer
@@ -174,7 +178,8 @@ BOOST_AUTO_TEST_SUITE(TestMessageHandler)
       BOOST_CHECK(!sendSuccess) ;
 
       // Check that received message was not transmitted to main event handler by the message handler
-      BOOST_CHECK(mainEvtHandler.waitForEvents(boost::posix_time::milliseconds(600)) == shared::event::kTimeout) ;
+      timeProviderMock->sleep(boost::posix_time::seconds(100));
+      BOOST_REQUIRE_EQUAL(mainEvtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
 
       // Break circular shared_ptr reference to free memory
       portMock->setReceiveBufferHandler(boost::shared_ptr<shared::communication::IReceiveBufferHandler>());

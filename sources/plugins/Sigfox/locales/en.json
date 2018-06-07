@@ -1,7 +1,11 @@
 {
    "name": "Sigfox",
-   "description": "This plugin could be accessed by callbacks configured in SIGFOX backend platform. The plugin receive the data in raw format. \n",
+   "description": "This plugin could be accessed by callbacks configured in SIGFOX backend platform. The plugin receive the data in raw format.\n",
    "configurationSchema":{	
+       "port": {
+         "name": "socket number",
+         "description": "enter the port socket associated to this plugin"
+       },
       "advancedConfiguration": {
          "type": "section",
          "name": "Advanced configuration",

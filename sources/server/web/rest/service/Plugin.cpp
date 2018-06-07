@@ -16,9 +16,11 @@ namespace web
       {
          CPlugin::CPlugin(boost::shared_ptr<database::IDataProvider> dataProvider,
                           boost::shared_ptr<pluginSystem::CManager> pluginManager,
+                          boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                           communication::ISendMessageAsync& messageSender)
             : m_dataProvider(dataProvider),
               m_pluginManager(pluginManager),
+              m_deviceManager(deviceManager),
               m_restKeyword("plugin"),
               m_messageSender(messageSender)
          {
@@ -58,12 +60,12 @@ namespace web
          }
 
 
-         shared::CDataContainer CPlugin::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
-                                                             const std::vector<std::string>& parameters,
-                                                             const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
+                                                                                                  const std::vector<std::string>& parameters,
+                                                                                                  const std::string& requestContent) const
          {
             auto pTransactionalEngine = m_dataProvider->getTransactionalEngine();
-            shared::CDataContainer result;
+            boost::shared_ptr<shared::serialization::IDataSerializable> result;
             try
             {
                if (pTransactionalEngine)
@@ -81,7 +83,7 @@ namespace web
 
             if (pTransactionalEngine)
             {
-               if (CResult::isSuccess(result))
+               if (CResult::isSuccess(*boost::dynamic_pointer_cast<shared::CDataContainer>(result)))
                   pTransactionalEngine->transactionCommit();
                else
                   pTransactionalEngine->transactionRollback();
@@ -89,8 +91,8 @@ namespace web
             return result;
          }
 
-         shared::CDataContainer CPlugin::getOnePlugin(const std::vector<std::string>& parameters,
-                                                      const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getOnePlugin(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const
          {
             try
             {
@@ -115,8 +117,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CPlugin::getAllPluginsInstance(const std::vector<std::string>& parameters,
-                                                               const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstance(const std::vector<std::string>& parameters,
+                                                                                                    const std::string& requestContent) const
          {
             auto hwList = m_pluginManager->getInstanceList();
             shared::CDataContainer t;
@@ -124,8 +126,8 @@ namespace web
             return CResult::GenerateSuccess(t);
          }
 
-         shared::CDataContainer CPlugin::getAllPluginsInstanceForManualDeviceCreation(const std::vector<std::string>& parameters,
-                                                                                      const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstanceForManualDeviceCreation(const std::vector<std::string>& parameters,
+                                                                                                                           const std::string& requestContent) const
          {
             std::vector<boost::shared_ptr<database::entities::CPlugin>> result;
 
@@ -154,8 +156,8 @@ namespace web
             return CResult::GenerateSuccess(t);
          }
 
-         shared::CDataContainer CPlugin::getAllAvailablePlugins(const std::vector<std::string>& parameters,
-                                                                const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllAvailablePlugins(const std::vector<std::string>& parameters,
+                                                                                                     const std::string& requestContent) const
          {
             try
             {
@@ -180,8 +182,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CPlugin::getAllAvailablePluginsWithPackage(const std::vector<std::string>& parameters,
-                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllAvailablePluginsWithPackage(const std::vector<std::string>& parameters,
+                                                                                                                const std::string& requestContent) const
          {
             try
             {
@@ -210,8 +212,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CPlugin::createPlugin(const std::vector<std::string>& parameters,
-                                                      const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::createPlugin(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const
          {
             try
             {
@@ -232,8 +234,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CPlugin::updatePlugin(const std::vector<std::string>& parameters,
-                                                      const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::updatePlugin(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const
          {
             try
             {
@@ -255,8 +257,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CPlugin::sendExtraQuery(const std::vector<std::string>& parameters,
-                                                        const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::sendExtraQuery(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             try
             {
@@ -291,8 +293,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CPlugin::deletePlugin(const std::vector<std::string>& parameters,
-                                                      const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::deletePlugin(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const
          {
             try
             {
@@ -315,8 +317,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CPlugin::deleteAllPlugins(const std::vector<std::string>& parameters,
-                                                          const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::deleteAllPlugins(const std::vector<std::string>& parameters,
+                                                                                               const std::string& requestContent) const
          {
             auto hwList = m_pluginManager->getInstanceList();
 
@@ -326,7 +328,7 @@ namespace web
             return CResult::GenerateSuccess();
          }
 
-         shared::CDataContainer CPlugin::getInstanceState(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getInstanceState(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -353,7 +355,7 @@ namespace web
             }
          }
 
-         shared::CDataContainer CPlugin::getInstanceRunning(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getInstanceRunning(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -378,8 +380,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CPlugin::getPluginDevices(const std::vector<std::string>& parameters,
-                                                          const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getPluginDevices(const std::vector<std::string>& parameters,
+                                                                                               const std::string& requestContent) const
          {
             try
             {
@@ -408,8 +410,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CPlugin::startInstance(const std::vector<std::string>& parameters,
-                                                       const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::startInstance(const std::vector<std::string>& parameters,
+                                                                                            const std::string& requestContent) const
          {
             try
             {
@@ -444,8 +446,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CPlugin::stopInstance(const std::vector<std::string>& parameters,
-                                                      const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::stopInstance(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const
          {
             try
             {
@@ -473,8 +475,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CPlugin::getInstanceLog(const std::vector<std::string>& parameters,
-                                                        const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getInstanceLog(const std::vector<std::string>& parameters,
+                                                                                             const std::string& requestContent) const
          {
             try
             {
@@ -519,8 +521,8 @@ namespace web
             return std::string("manuallyCreatedDevice_") + std::to_string(lastNumber + 1);
          }
 
-         shared::CDataContainer CPlugin::createDevice(const std::vector<std::string>& parameters,
-                                                      const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::createDevice(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const
          {
             try
             {
@@ -540,13 +542,13 @@ namespace web
                   try
                   {
                      // Declare device
-                     const auto& device = m_dataProvider->getDeviceRequester()->createDevice(pluginId,
-                                                                                             deviceName,
-                                                                                             content.get<std::string>("name"),
-                                                                                             content.get<std::string>("type"),
-                                                                                             content.exists("model") && !content.get<std::string>("model").empty() ?
-                                                                                                content.get<std::string>("name") : content.get<std::string>("model"),
-                                                                                             shared::CDataContainer());
+                     const auto& device = m_deviceManager->createDevice(pluginId,
+                                                                        deviceName,
+                                                                        content.get<std::string>("name"),
+                                                                        content.get<std::string>("type"),
+                                                                        content.exists("model") && !content.get<std::string>("model").empty() ?
+                                                                        content.get<std::string>("name") : content.get<std::string>("model"),
+                                                                        shared::CDataContainer());
                      m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(device->Id(),
                                                                                      content.get<shared::CDataContainer>("configuration"));
 
@@ -610,8 +612,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CPlugin::getBinding(const std::vector<std::string>& parameters,
-                                                    const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getBinding(const std::vector<std::string>& parameters,
+                                                                                         const std::string& requestContent) const
          {
             try
             {

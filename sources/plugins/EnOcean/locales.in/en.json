@@ -374,6 +374,25 @@
     },
     "D2-01-12": {
       "sameAs": "D2-01-0F"
+    },
+    "D2-05-00": {
+      "content": {
+        "measuredDurationOfVerticalRunMs": {
+          "name": "Mesured duration of a vertical run (ms)"
+        },
+        "measuredDurationOfRotationMs": {
+          "name": "Mesured duration of a rotation (ms)"
+        },
+        "alarmAction": {
+          "name": "Alarm action",
+          "values": {
+            "noAction": "No action",
+            "immediateStop": "Immediate stop",
+            "goUp": "Go Up",
+            "goDown": "Go Down"
+          }
+        }
+      }
     }
   }
 }

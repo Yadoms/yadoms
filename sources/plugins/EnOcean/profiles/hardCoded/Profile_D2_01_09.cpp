@@ -136,11 +136,11 @@ void CProfile_D2_01_09::sendConfiguration(const shared::CDataContainer& deviceCo
                                           const std::string& senderId,
                                           boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   auto taughtInAllDevices = deviceConfiguration.get<std::string>("taughtIn") == "allDevices";
-   auto defaultState = deviceConfiguration.get<CProfile_D2_01_Common::EDefaultState>("defaultState");
-   auto dimTimer1 = deviceConfiguration.get<double>("dimTimer1");
-   auto dimTimer2 = deviceConfiguration.get<double>("dimTimer2");
-   auto dimTimer3 = deviceConfiguration.get<double>("dimTimer3");
+   const auto taughtInAllDevices = deviceConfiguration.get<std::string>("taughtIn") == "allDevices";
+   const auto defaultState = deviceConfiguration.get<CProfile_D2_01_Common::EDefaultState>("defaultState");
+   const auto dimTimer1 = deviceConfiguration.get<double>("dimTimer1");
+   const auto dimTimer2 = deviceConfiguration.get<double>("dimTimer2");
+   const auto dimTimer3 = deviceConfiguration.get<double>("dimTimer3");
 
    // CMD 0x2 - Actuator Set Local
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
@@ -157,8 +157,8 @@ void CProfile_D2_01_09::sendConfiguration(const shared::CDataContainer& deviceCo
                                                       dimTimer3);
 
 
-   auto minEnergyMeasureRefreshTime = deviceConfiguration.get<double>("minEnergyMeasureRefreshTime");
-   auto maxEnergyMeasureRefreshTime = deviceConfiguration.get<double>("maxEnergyMeasureRefreshTime");
+   const auto minEnergyMeasureRefreshTime = deviceConfiguration.get<double>("minEnergyMeasureRefreshTime");
+   const auto maxEnergyMeasureRefreshTime = deviceConfiguration.get<double>("maxEnergyMeasureRefreshTime");
 
    if (minEnergyMeasureRefreshTime > maxEnergyMeasureRefreshTime)
    {

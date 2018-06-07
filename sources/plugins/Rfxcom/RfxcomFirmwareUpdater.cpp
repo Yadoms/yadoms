@@ -196,7 +196,7 @@ boost::shared_ptr<CRfxcomFirmwareUpdater::CHexData> CRfxcomFirmwareUpdater::load
                   throw std::invalid_argument(
                      (boost::format("Line %1% : Address %2% was already defined") % lineCount % address).str());
 
-               for (auto byteIndex = 0; byteIndex < readDataSize; ++byteIndex)
+               for (unsigned byteIndex = 0; byteIndex < readDataSize; ++byteIndex)
                   (*hexData)[address].push_back(
                      static_cast<unsigned char>(hexStringToUInt(line.substr(kIdxData + 2 * byteIndex, 2))));
 
@@ -296,7 +296,7 @@ void CRfxcomFirmwareUpdater::prepareDataForWriteIntoPic(const boost::shared_ptr<
                   ++outAddr;
                   ++inAddr;
 
-                  if (inAddr % 16 == 0 && inAddr != 0)
+                  if (inAddr % 16 == 0)
                      programMemory[rowAddress] = outLine;
                }
 
@@ -393,7 +393,7 @@ void CRfxcomFirmwareUpdater::prepareDataForWriteIntoPic(const boost::shared_ptr<
          ++outAddr;
          ++inAddr;
 
-         if (inAddr % 16 == 0 && inAddr != 0)
+         if (inAddr % 16 == 0)
             programMemory[rowAddress] = outLine;
       }
    }
@@ -536,7 +536,7 @@ void CRfxcomFirmwareUpdater::rfxcomWriteMemory(boost::shared_ptr<CPicBoot> picBo
    {
       const auto writeBlockAddress = dataBlockIterator->first / picConfiguration->bytesPerAddr();
       std::vector<unsigned char> writeBlockData;
-      for (auto idxBlock = 0; idxBlock < picConfiguration->writeBlockSize() / lineSize; ++idxBlock)
+      for (unsigned idxBlock = 0; idxBlock < picConfiguration->writeBlockSize() / lineSize; ++idxBlock)
       {
          if (dataBlockIterator != data.end())
          {

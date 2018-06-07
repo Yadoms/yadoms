@@ -40,10 +40,10 @@ namespace web { namespace rest { namespace service {
 
 
 
-   shared::CDataContainer CRecipient::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       boost::shared_ptr<database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
-      shared::CDataContainer result;
+      boost::shared_ptr<shared::serialization::IDataSerializable> result;
       try
       {
          if (pTransactionalEngine)
@@ -61,7 +61,7 @@ namespace web { namespace rest { namespace service {
 
       if (pTransactionalEngine)
       {
-         if (CResult::isSuccess(result))
+         if (CResult::isSuccess(*boost::dynamic_pointer_cast<shared::CDataContainer>(result)))
             pTransactionalEngine->transactionCommit();
          else
             pTransactionalEngine->transactionRollback();
@@ -69,7 +69,7 @@ namespace web { namespace rest { namespace service {
       return result;
    }
 
-   shared::CDataContainer CRecipient::getOneRecipient(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::getOneRecipient(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       if(parameters.size() <= 1)
          return CResult::GenerateError("Invalid parameter count (need id of the recipient in url)");
@@ -79,7 +79,7 @@ namespace web { namespace rest { namespace service {
       return CResult::GenerateSuccess(recipient);
    }
 
-   shared::CDataContainer CRecipient::getAllRecipientsByField(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::getAllRecipientsByField(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       if(parameters.size() != 3)
          return CResult::GenerateError("Invalid parameter count (need name of the field in url)");
@@ -91,7 +91,7 @@ namespace web { namespace rest { namespace service {
       return CResult::GenerateSuccess(collection);
    }
 
-   shared::CDataContainer CRecipient::getAllRecipients(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::getAllRecipients(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       std::vector< boost::shared_ptr<database::entities::CRecipient> > dvList = m_dataProvider->getRecipientRequester()->getRecipients();
       shared::CDataContainer collection;
@@ -99,7 +99,7 @@ namespace web { namespace rest { namespace service {
       return CResult::GenerateSuccess(collection);
    }
 
-   shared::CDataContainer CRecipient::getAllRecipientFields(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::getAllRecipientFields(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       std::vector< boost::shared_ptr<database::entities::CRecipientField> > dvList = m_dataProvider->getRecipientRequester()->getFields();
       shared::CDataContainer collection;
@@ -107,7 +107,7 @@ namespace web { namespace rest { namespace service {
       return CResult::GenerateSuccess(collection);
    }
 
-   shared::CDataContainer CRecipient::addRecipient(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::addRecipient(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -126,7 +126,7 @@ namespace web { namespace rest { namespace service {
       }
    }  
    
-   shared::CDataContainer CRecipient::updateRecipient(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::updateRecipient(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       if (parameters.size() <= 1)
          return CResult::GenerateError("Invalid parameter count (need id of the recipient to update in url)");
@@ -152,7 +152,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CRecipient::removeOneRecipient(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::removeOneRecipient(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -174,7 +174,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CRecipient::removeAllRecipients(const std::vector<std::string> & parameters, const std::string & requestContent)
+   boost::shared_ptr<shared::serialization::IDataSerializable> CRecipient::removeAllRecipients(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {

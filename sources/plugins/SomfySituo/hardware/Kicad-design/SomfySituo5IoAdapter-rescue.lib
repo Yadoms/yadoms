@@ -1,0 +1,17 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#
+# PWR_FLAG-RESCUE-SomfySituo5IoAdapter
+#
+DEF ~PWR_FLAG-RESCUE-SomfySituo5IoAdapter #FLG 0 0 N N 1 F N
+F0 "#FLG" 0 300 60 H I C CNN
+F1 "PWR_FLAG-RESCUE-SomfySituo5IoAdapter" 0 -50 40 H I C CNN
+F2 "" -100 200 60 H I C CNN
+F3 "" 0 300 60 H I C CNN
+DRAW
+P 5 0 0 0 0 150 -50 200 0 250 50 200 0 150 F
+X ~ ~ 0 0 150 U 45 50 1 1 w
+ENDDRAW
+ENDDEF
+#
+#End Library

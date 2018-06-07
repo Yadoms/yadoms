@@ -38,13 +38,13 @@ namespace database
       /// \param [in]	 adapter:  pointer to the adapter to use to map raw values to a new entity
       /// \param [in]	 querytoExecute: the sql query
       //--------------------------------------------------------------
-      virtual void queryEntities(common::adapters::IResultAdapter* pAdapter,
+      virtual void queryEntities(common::adapters::IResultAdapter* adapter,
                                  const common::CQuery& querytoExecute) = 0;
 
 
       //--------------------------------------------------------------
       /// \brief		      execute a single statement (create, update, delete) which returns the number of affected lines
-      /// \param [in]	   the query (with vaargs)
+      /// \param [in]	   querytoExecute The query (with vaargs)
       /// \param [in]	   throwIfFails If true, generate an exception when it fails; else return -1 (= number of afected rows)
       /// \return 	      the number of affected lines
       //--------------------------------------------------------------  
@@ -53,21 +53,21 @@ namespace database
 
       //--------------------------------------------------------------
       /// \brief		      execute a count statement
-      /// \param [in]	   the query (with vaargs)
+      /// \param [in]	   querytoExecute The query (with vaargs)
       /// \return 	      the count result
       //--------------------------------------------------------------  
       virtual int queryCount(const common::CQuery& querytoExecute) = 0;
 
       //--------------------------------------------------------------
-      /// \brief		      query only one databse row
-      /// \param [in]	   the query (with vaargs)
+      /// \brief		      query only one database row
+      /// \param [in]	   querytoExecute The query (with vaargs)
       /// \return 	      the row values
       //--------------------------------------------------------------  
       virtual QueryRow querySingleLine(const common::CQuery& querytoExecute) = 0;
 
       //--------------------------------------------------------------
       /// \brief		      query databse
-      /// \param [in]	   the query (with vaargs)
+      /// \param [in]	   querytoExecute The query (with vaargs)
       /// \return 	      a list of rows
       //--------------------------------------------------------------  
       virtual QueryResults query(const common::CQuery& querytoExecute) = 0;
@@ -143,7 +143,6 @@ namespace database
       //--------------------------------------------------------------
       /// \Brief		get the table creation script provider
       /// \return 	the table creation script provider
-      /// \throws 		
       //--------------------------------------------------------------  
       virtual boost::shared_ptr<ITableCreationScriptProvider> getTableCreationScriptProvider() = 0;
 

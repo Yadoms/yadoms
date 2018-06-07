@@ -6,26 +6,29 @@ function i18nManager() {}
 
 //we start i18n engine
 i18nManager.option = {
-  resGetPath: "locales/__lng__.json",
   backend: {
     // load from i18next-gitbook repo
     loadPath: '{{ns}}/locales/{{lng}}.json'
   },
-  useDataAttrOptions: true,
   debug: false,
   fallbackNS: "translation",
   load: 'languageOnly',
-  getAsync: false,
-  useLocalStorage: true,
-  localStorageExpirationTime: 86400000 // in ms, default 1 week
 };
 
 i18nManager.init = function () {
   var d = new $.Deferred();
 
   if (isNullOrUndefined(i18nManager.option.fallbackLng))
-    i18nManager.option.fallbackLng = navigator.language || navigator.userLanguage || "en";
-
+  {
+    var regString = "[a-z]+";
+    if (!isNullOrUndefined(navigator.language))
+       i18nManager.option.fallbackLng = navigator.language.match(regString)[0];
+    else if (!isNullOrUndefined(navigator.userLanguage))
+       i18nManager.option.fallbackLng = navigator.userLanguage.match(regString)[0];
+    else
+       i18nManager.option.fallbackLng = "en";
+  }
+  
   i18next
     .use(i18nextXHRBackend)
     .init(i18nManager.option, function () {
@@ -36,7 +39,7 @@ i18nManager.init = function () {
         selectorAttr: 'data-i18n', // selector for translating elements
         targetAttr: 'i18n-target', // data-() attribute to grab target element to translate (if diffrent then itself)
         optionsAttr: 'i18n-options', // data-() attribute that contains options, will load/set if useOptionsAttr = true
-        useOptionsAttr: false, // see optionsAttr
+        useOptionsAttr: true, // see optionsAttr
         parseDefaultValueFromContent: true // parses default values from content ele.val or ele.text
       });
       d.resolve();
@@ -48,6 +51,18 @@ i18nManager.loadNamespace = function (category, object) {
   var d = new $.Deferred();
   i18next.options.backend.loadPath = category + '/' + object + '/locales/{{lng}}.json';
   i18next.loadNamespaces(category + '.' + object, function (err, t) {
+    if (err)
+      d.reject(err);
+    else
+      d.resolve();
+  });
+  return d.promise();
+}
+
+i18nManager.loadNamespaceFromExternal = function (externalUrl, namespace) {
+  var d = new $.Deferred();
+  i18next.options.backend.loadPath = externalUrl + '/locales/{{lng}}.json';
+  i18next.loadNamespaces(namespace, function (err, t) {
     if (err)
       d.reject(err);
     else

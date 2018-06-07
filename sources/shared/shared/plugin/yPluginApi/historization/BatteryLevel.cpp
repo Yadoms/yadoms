@@ -10,10 +10,12 @@ namespace shared
       {
          namespace historization
          {
+            typeInfo::CPercentageTypeInfo CBatteryLevel::PercentageTypeInfo;
+
             CBatteryLevel::CBatteryLevel(const std::string& keywordName,
                                          const EKeywordAccessMode& accessMode,
                                          const EMeasureType& measureType,
-                                         typeInfo::CIntTypeInfo& additionalInfo)
+                                         const typeInfo::ITypeInfo& additionalInfo)
                : CSingleHistorizableData<int>(keywordName,
                                               CStandardCapacities::BatteryLevel(),
                                               accessMode,
@@ -39,5 +41,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

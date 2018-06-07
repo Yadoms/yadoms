@@ -8,10 +8,14 @@ def waitForOpened(modalWebElement):
    assert tools.waitUntil(lambda: 'display: block;' in modalWebElement.get_attribute('style'))
 
 def waitForClosed(modalWebElement):
-   assert tools.waitUntil(lambda: 'display: none;' in modalWebElement.get_attribute('style'))
+   def l(modalWebElement):
+      try:
+         return 'display: none;' in modalWebElement.get_attribute('style')
+      except Condition.StaleElementReferenceException:
+         return True
+   assert tools.waitUntil(lambda: l(modalWebElement))
 
-
-class RemoveObjectConfirmationModal():
+class OkCancelModal():
    """ Operations on delete object (plugins, rule...) confirmation modal """
    
    def __init__(self, removeObjectConfirmationModalWebElement):
@@ -35,6 +39,12 @@ class RemoveObjectConfirmationModal():
    def cancel(self):
       self.getCancelButton().click()
       waitForClosed(self.__removeObjectConfirmationModalWebElement)
+
+
+def waitOkCancelModal(browser):
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, 'confirmation-modal')))
+   waitForOpened(browser.find_element_by_id('confirmation-modal'))
+   return OkCancelModal(browser.find_element_by_id('confirmation-modal'))
 
 
 class PickupSelectorModal():

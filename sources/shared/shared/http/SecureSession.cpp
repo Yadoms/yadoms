@@ -1,4 +1,4 @@
-#pragma once
+#include "stdafx.h"
 #include "SecureSession.h"
 #include <Poco/Net/Context.h>
 #include <Poco/URI.h>

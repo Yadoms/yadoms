@@ -16,8 +16,8 @@ namespace shared
       //--------------------------------------------------------------
       enum
       {
-         kNoEvent = -2, ///< No event in the queue
-         kTimeout = -1, ///< Timeout
+         kNoEvent = -2,   ///< No event in the queue
+         kTimeout = -1,   ///< Timeout
          kUserFirstId = 0 ///< Base of user-defined IDs
       };
 
@@ -35,12 +35,10 @@ namespace shared
          {
          }
 
-      private:
          // Avoid copy
-         CEventHandler(const CEventHandler&);
-         const CEventHandler& operator=(const CEventHandler&);
+         CEventHandler(const CEventHandler&) = delete;
+         const CEventHandler& operator=(const CEventHandler&) = delete;
 
-      public:
          //--------------------------------------------------------------
          /// \brief	    Send empty event (without data)
          /// \param[in] id Event id
@@ -60,7 +58,7 @@ namespace shared
          template <typename DataType>
          void postEvent(int id, const DataType& data)
          {
-            boost::shared_ptr<CEventBase> evt = boost::make_shared<CEvent<DataType> >(id, data);
+            boost::shared_ptr<CEventBase> evt = boost::make_shared<CEvent<DataType>>(id, data);
             postEvent(evt);
          }
 
@@ -131,7 +129,7 @@ namespace shared
             }
 
             // Have time event or timeout
-            auto closerTimeEvent = getNextTimeEventStopPoint();
+            const auto closerTimeEvent = getNextTimeEventStopPoint();
             if (!!closerTimeEvent && (closerTimeEvent->getNextStopPoint() < (currentTime::Provider().now() + timeout)))
             {
                // Next stop point will be the closer time event
@@ -184,7 +182,7 @@ namespace shared
 
             try
             {
-               auto evt = boost::dynamic_pointer_cast<CEvent<DataType> >(m_lastEvent);
+               auto evt = boost::dynamic_pointer_cast<CEvent<DataType>>(m_lastEvent);
                return evt.get() != NULL;
             }
             catch (std::bad_cast&)
@@ -261,7 +259,7 @@ namespace shared
          {
             BOOST_ASSERT(timePointEventId >= kUserFirstId);
             if (dateTime <= currentTime::Provider().now())
-            throw exception::COutOfRange("CEventHandler::createTimePoint : timePoint not in the future, ignored");
+               throw exception::COutOfRange("CEventHandler::createTimePoint : timePoint not in the future, ignored");
 
             auto timePoint(boost::make_shared<CEventTimePoint>(timePointEventId,
                                                                dateTime));
@@ -317,7 +315,7 @@ namespace shared
 
          //--------------------------------------------------------------
          /// \brief	   Get the next time event stop point
-         ///            This function compute the next event to arrive, between registred time events
+         ///            This function computes the next event to arrive, between registred time events
          /// \return    The next time event (null pointer if none)
          //--------------------------------------------------------------
          boost::shared_ptr<ITimeEvent> getNextTimeEventStopPoint() const
@@ -332,7 +330,7 @@ namespace shared
                  it != m_timeEvents.end();
                  ++it)
             {
-               auto nextStopPoint = (*it)->getNextStopPoint();
+               const auto nextStopPoint = (*it)->getNextStopPoint();
                if (nextStopPoint != boost::date_time::not_a_date_time)
                {
                   if (nextStopPoint < lower)
@@ -377,7 +375,7 @@ namespace shared
                  it != m_timeEvents.end();
                  ++it)
             {
-               auto nextStopPoint = (*it)->getNextStopPoint();
+               const auto nextStopPoint = (*it)->getNextStopPoint();
                if (nextStopPoint != boost::date_time::not_a_date_time && nextStopPoint < currentTime::Provider().now())
                   signalTimeEvent(*it); // Elapsed time point, signal it
             }
@@ -404,12 +402,12 @@ namespace shared
             if (m_timeEvents.empty())
                return;
 
-         for (auto it = m_timeEvents.begin();
-              it != m_timeEvents.end();)
+            for (auto it = m_timeEvents.begin();
+                 it != m_timeEvents.end();)
             {
                if ((*it).unique() && (*it)->canBeRemoved())
                {
-               // Time event no more make sense, and is not referenced by user, so erase it from the list
+                  // Time event no more makes sense, and is not referenced by user, so erase it from the list
                   it = m_timeEvents.erase(it);
                }
                else
@@ -423,7 +421,7 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	   The events queue
          //--------------------------------------------------------------
-         std::queue<boost::shared_ptr<CEventBase> > m_eventsQueue;
+         std::queue<boost::shared_ptr<CEventBase>> m_eventsQueue;
 
          //--------------------------------------------------------------
          /// \brief	   The last received event
@@ -443,10 +441,8 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	   The time events associated with this event handler
          //--------------------------------------------------------------
-         typedef std::vector<boost::shared_ptr<ITimeEvent> > TimeEventList;
+         typedef std::vector<boost::shared_ptr<ITimeEvent>> TimeEventList;
          TimeEventList m_timeEvents;
       };
    }
 } // namespace shared::event
-
-

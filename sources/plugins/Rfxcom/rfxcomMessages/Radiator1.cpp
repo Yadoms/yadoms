@@ -131,6 +131,14 @@ namespace rfxcomMessages
       // Nothing to historize (transmitter-only device)
    }
 
+   void CRadiator1::filter() const
+   {
+   }
+
+   void CRadiator1::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+   }
+
    const std::string& CRadiator1::getDeviceName() const
    {
       return m_deviceName;
@@ -177,10 +185,10 @@ namespace rfxcomMessages
       {
          radiator1.RADIATOR1.cmnd = Radiator1_sSetTemp;
          // Round set point to nearest 0.5
-         double roundedSetPoint = floor(m_setPoint->get() * 2) / 2;
+         const double roundedSetPoint = floor(m_setPoint->get() * 2) / 2;
          double setPointIntegerPartAsFloat;
-         int setPointDecimalPart = static_cast<int>(modf(roundedSetPoint, &setPointIntegerPartAsFloat));
-         int setPointIntegerPart = static_cast<int>(setPointIntegerPartAsFloat);
+         const auto setPointDecimalPart = static_cast<int>(modf(roundedSetPoint, &setPointIntegerPartAsFloat));
+         const auto setPointIntegerPart = static_cast<int>(setPointIntegerPartAsFloat);
 
          radiator1.RADIATOR1.temperature = static_cast<BYTE>(setPointIntegerPart);
          radiator1.RADIATOR1.tempPoint5 = setPointDecimalPart == 0 ? 0 : 5;

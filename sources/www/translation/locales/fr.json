@@ -108,8 +108,7 @@
       "customization": "Personalisation"
     },
     "actions": {
-      "loadingPages": "Chargement des pages ...",
-      "loadingWidgetsOfPage": "Chargement des widgets de la page {{pageName}} ...",
+      "loadingPage": "Chargement de la page {{pageName}} ...",
       "firstRunConfiguration": "Premier démarrage"
     },
     "customization": {
@@ -314,7 +313,44 @@
               "description": "Utilisation d'un type de donnée standard",
               "content": {
                 "capacity": {
-                  "name": "Type de donnée"
+                  "name": "Type de donnée",
+                  "values": {
+                    "apparentpower": "Puissance apparente (VA)",
+                    "armingAlarm": "Etat alarme",
+                    "batteryLevel": "Niveau de batterie (%)",
+                    "cameraMove": "Mouvement de caméra",
+                    "colorrgb": "Couleur RGB",
+                    "colorrgbw": "Couleur RGBW",
+                    "count": "Compteur",
+                    "current": "Courant (A)",
+                    "curtain": "Ouvertures, volets, portails",
+                    "dimmable": "Variateur (%)",
+                    "direction": "Direction (°)",
+                    "distance": "Distance (m)",
+                    "duration": "Durée",
+                    "energy": "Energie (Wh)",
+                    "event": "Evénement",
+                    "frequency": "Fréquence (Hz)",
+                    "humidity": "Humidité (%)",
+                    "illumination": "Luminosité (Lux)",
+                    "load": "Charge (%)",
+                    "power": "Puissance (W)",
+                    "powerFactor": "Facteur de puissance",
+                    "pressure": "Pression (hPa)",
+                    "rain": "Pluie (mm)",
+                    "rainrate": "Pluviométrie (mm/s)",
+                    "rssi": "Puissance de signal (Db/mW)",
+                    "speed": "Vitesse (m/s)",
+                    "switch": "On/Off",
+                    "temperature": "Temperature (°C)",
+                    "text": "Texte",
+                    "upDownStop": "Haut/Bas/Stop",
+                    "uv": "UV",
+                    "voltage": "Tension (V)",
+                    "volume": "Volume (m3)",
+                    "weathercondition": "Conditions météo",
+                    "weight": "Masse (kg)"
+                  }
                 }
               }
             },
@@ -467,9 +503,9 @@
             }
           },
           "confirmResetToDefault": "Cette opération va restaurer la configuration par défaut. Continuer ?",
-          "configurationSaved": "Configuration système sauvegardée",
+          "configurationSaved": "Configuration sauvegardée",
           "defaultConfigurationRestored": "Configuration par défaut restaurée",
-          "errorDuringSavingConfiguration": "Erreur lors de la sauvegarde de la configuration système"
+          "errorDuringSavingConfiguration": "Erreur lors de la sauvegarde de la configuration"
         },
         "user-configuration": {
           "title": "Configuration utilisateur"
@@ -1033,7 +1069,7 @@
     "YadomsCrash": "Yadoms a rencontré une erreur et s'est arrêté",
     "PluginCrash": "{{who}} a rencontré une erreur et s'est arrêté",
     "TaskFailed": "La tâche {{who}} a rencontré une erreur et s'est arrêtée",
-    "RuleFailed": "La règle d'automatisation __who__ a échoué",
+    "RuleFailed": "La règle d'automatisation {{who}} a échoué",
     "UpdateAvailable": "La mise à jour d'un logiciel est disponible, rendez-vous à la page 'Installation & mise à jour' pour plus d'informations"
   },
   "webSockets": {
@@ -1108,9 +1144,11 @@
     "units": {
       "noUnit": "",
       "ampere": "A",
+      "ampereHour": "Ah",
+      "cubicMetre": "m³",
+      "cubicMeterPerSecond": "m³/s",
       "decibel": "dB",
       "decibelPerMilliWatt": "dBm",
-      "cubicMetre": "m3",
       "degrees": "°",
       "degreesCelcius": "°C",
       "degreesFarenheit": "°F",

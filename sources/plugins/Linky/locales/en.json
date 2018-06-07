@@ -1,19 +1,51 @@
 {
 	"name": "linky",
-	"description": "Linky - EDF power meter information. The equipment is connected directly on the EDF power meter.",
+	"description": "Linky - EDF power meter information. The equipment is connected directly on the EDF power meter. This plugin communicate in standard mode. If the Linky power meter communicate in historical mode, you have to connect with the teleInfo plugin.",
 	"configurationSchema": {
 		"SerialPort": {
 			"name": "Serial port",
 			"description": "The serial port connected to the linky reader"
-		}
+		},   
+      "EquipmentType": {
+         "name": "Equipment type",
+         "type": "comboSection",
+         "content": {
+            "first": {
+               "name": "Equipment with 1 input"
+            }, 
+            "second": {
+               "name": "Equipment with 2 inputs",
+               "content": {
+                  "portEnabled": {
+			            "name": "Inputs state",
+			            "description": "For Linux and Raspberry Pi systems, the first input is always available as the 1xTIC the second input is not accessible",
+                     "values": {
+                        "1xInputEnabled": "Input n°1 enabled",
+                        "2xInputsEnabled": "Input n°2 enabled",
+                        "AllInputsEnabled": "All inputs enabled"
+                     }
+                  }
+               }               
+            }
+         }
+      }
 	},
 	"enumerations": {
+		"EColor": {
+			"name" : "Period color for tomorrow",
+			"values" : {
+				"NOTDEFINED": "Not defined",
+				"BLUE": "blue",
+				"WHITE": "White",
+				"RED": "Red"
+			}
+		},
 		"EPeriod": {
 			"name" : "Running period",
 			"values" : {
 				"AllHours": "All hours",
 				"LowCostHours": "Low cost hours",
-				"PeakCostHour": "Peak cost hour",
+				"PeakCostHours": "Peak cost hour",
 				"NormalCostHours": "Normal cost hours",
             "MobilePeakCostHours": "Mobile peak cost hours",
             "LowCostBlueDays": "Low cost blue day",
@@ -23,7 +55,7 @@
             "NormalCostWhiteDays": "Normal cost white day",
             "NormalCostRedDays": "Normal cost red day"
 			}
-		}    
+		}
    },      
 	"customLabels": {
 		"pluginState": {

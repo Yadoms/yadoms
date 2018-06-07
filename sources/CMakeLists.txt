@@ -176,7 +176,8 @@ SET (POCO_LIBS
 
 set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
 set(POCO_USE_STATIC_RUNTIME 1)
-add_definitions(-DPOCO_STATIC) 
+add_definitions(-DPOCO_STATIC)
+add_definitions(-DPOCO_EXTERNAL_OPENSSL)
 include(cmake/FindPoco.cmake)
 
 IF(NOT ${Poco_FOUND})
@@ -572,6 +573,8 @@ set(YADOMS_SRC
    server/web/rest/RestDispatcherHelpers.hpp
    server/web/rest/Result.h
    server/web/rest/Result.cpp
+   server/web/rest/StringContainer.h
+   server/web/rest/StringContainer.cpp
 
    server/web/rest/service/Acquisition.h
    server/web/rest/service/Acquisition.cpp
@@ -609,8 +612,14 @@ set(YADOMS_SRC
    server/web/ws/AcquisitionUpdateFrame.cpp
    server/web/ws/AcquisitionSummaryUpdateFrame.h
    server/web/ws/AcquisitionSummaryUpdateFrame.cpp
+   server/web/ws/DeviceBlackListedFrame.h
+   server/web/ws/DeviceBlackListedFrame.cpp
+   server/web/ws/DeviceDeletedFrame.h
+   server/web/ws/DeviceDeletedFrame.cpp
    server/web/ws/KeywordDeletedFrame.h
    server/web/ws/KeywordDeletedFrame.cpp
+   server/web/ws/KeywordNewFrame.h
+   server/web/ws/KeywordNewFrame.cpp
    server/web/ws/FrameBase.h
    server/web/ws/FrameBase.cpp
    server/web/ws/FrameFactory.h
@@ -731,7 +740,7 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/adapters/DatabaseAdapters.cpp
 	server/database/common/adapters/GenericAdapter.h
 	server/database/common/adapters/GenericAdapter.cpp
-	server/database/common/adapters/HighchartValueAdapter.hpp
+	server/database/common/adapters/HugeDataVectorAdapter.hpp
 	server/database/common/adapters/IResultAdapter.h
 	server/database/common/adapters/MultipleValueAdapter.hpp
 	server/database/common/adapters/SingleValueAdapter.hpp
@@ -773,6 +782,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/versioning/Version_4_0_1.cpp
 	server/database/common/versioning/Version_4_1_0.h
 	server/database/common/versioning/Version_4_1_0.cpp
+	server/database/common/versioning/Version_4_2_0.h
+	server/database/common/versioning/Version_4_2_0.cpp
 	server/database/common/versioning/VersionUpgraderFactory.h
 	server/database/common/versioning/VersionUpgraderFactory.cpp
 	server/database/common/versioning/VersionException.h
@@ -1291,12 +1302,7 @@ ELSE(WIN32 AND NOT UNIX)
 
     SET(CPACK_STRIP_FILES "Yadoms")
     SET(CPACK_SOURCE_STRIP_FILES "")
-    SET(CPACK_GENERATOR "RPM;TGZ;DEB")
-    SET(CPACK_DEBIAN_PACKAGE_SECTION "Automation")
-    SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
-    SET(CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://www.yadoms.com")  
-    SET(CPACK_RPM_PACKAGE_GROUP "Applications/Productivity")
-    SET(CPACK_RPM_PACKAGE_LICENSE "GPL/LGPL. See https://github.com/Yadoms/yadoms/blob/master/LICENSE.md for details")
+    SET(CPACK_GENERATOR "TGZ")
 
   ENDIF()
 

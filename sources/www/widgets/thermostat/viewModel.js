@@ -73,9 +73,12 @@ function thermostatViewModel() {
         
         if (parseBool(self.widget.configuration.LivetemperatureSection.checkbox))
            keywordRegistered.push(self.widget.configuration.LivetemperatureSection.content.temperatureDevice.keywordId);
-        
+		
         //we register keyword new acquisition
-        self.widgetApi.registerKeywordAcquisitions(keywordRegistered);
+        self.widgetApi.registerKeywordForNewAcquisitions(keywordRegistered);	   
+	   
+		//we register keyword for get last value at web client startup
+		self.widgetApi.getLastValue(keywordRegistered);
         
         //we get the unit of the keyword
         var deffered1 = self.widgetApi.getKeywordInformation(self.widget.configuration.controlSection.content.temperatureSet.keywordId);
@@ -140,12 +143,10 @@ function thermostatViewModel() {
     */
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
-
+        
         if (keywordId === self.widget.configuration.LivetemperatureSection.content.temperatureDevice.keywordId) {
-           
             //it is the right device
-            if (data.value !=="")
-            {
+            if (data.value !==""){
                var temp = parseFloat(data.value).toFixed(1);
                self.temperature(temp.toString());
             }
@@ -153,10 +154,8 @@ function thermostatViewModel() {
                self.temperature("-");
         }
         else if (keywordId === self.widget.configuration.controlSection.content.temperatureSet.keywordId) {
-           
             //it is the right device
-            if (data.value !=="")
-            {
+            if (data.value !==""){
                var temp = parseFloat(data.value).toFixed(1);
                self.temperatureSet(temp);
             }
@@ -165,9 +164,8 @@ function thermostatViewModel() {
         } 
         else if (keywordId === self.widget.configuration.thermostatStateSection.content.state.keywordId) {
             //it is the right device
-            if (data.value !=="")
-            {
-               if (self.thermostatStateType === "bool") {
+            if (data.value !==""){
+               if (self.thermostatStateType === "Bool") {
                   if (!parseBool(data.value))
                      this.widgetApi.find(".icon-div").css("visibility", "hidden");
                   else 

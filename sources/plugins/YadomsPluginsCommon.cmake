@@ -102,7 +102,7 @@ MACRO(PLUGIN_INCLDIR _targetName)
 ENDMACRO()
 
 MACRO(PLUGIN_LINK _targetName)
-	target_link_libraries(${_targetName}
+      target_link_libraries(${_targetName}
       yadoms-shared
       plugin_cpp_api
       ${LIBS}

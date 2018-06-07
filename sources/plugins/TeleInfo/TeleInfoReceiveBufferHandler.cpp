@@ -51,6 +51,8 @@ void CTeleInfoReceiveBufferHandler::push(const shared::communication::CByteBuffe
 
    if (m_isDeveloperMode) m_logger->logReceived(buffer);
 
+   m_logger->logReceived(shared::communication::CByteBuffer(m_content));
+
    // Send message if complete (separate aggregated messages)
    while (true)
    {

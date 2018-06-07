@@ -21,6 +21,12 @@ public:
    virtual const boost::filesystem::path& webServerPath() const = 0;
 
    //-----------------------------------------------------------------------------
+   /// \brief		                     get the web server path
+   /// \return  	                     the web server path, ususally {yadoms_binary_path}/www/widgets
+   //-----------------------------------------------------------------------------
+   virtual const boost::filesystem::path& widgetsPath() const = 0;
+
+   //-----------------------------------------------------------------------------
    /// \brief		                     get the plugins path
    /// \return  	                     the plugins path, ususally {yadoms_binary_path}/plugins
    //-----------------------------------------------------------------------------

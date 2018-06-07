@@ -150,6 +150,14 @@ namespace rfxcomMessages
       api->historizeData(m_deviceName, m_keywords);
    }
 
+   void CThermostat4::filter() const
+   {
+   }
+
+   void CThermostat4::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+   }
+
    const std::string& CThermostat4::getDeviceName() const
    {
       return m_deviceName;

@@ -5,7 +5,6 @@
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include <shared/Log.h>
-#include <shared/currentTime/Provider.h>
 #include <shared/http/HttpException.hpp>
 #include "UnauthorizedException.hpp"
 

@@ -6,7 +6,7 @@
  * Ctor which does nothing because it is used as a static class
  * @constructor
  */
-function PageManager() { }
+function PageManager() {}
 
 /**
  * Array of pages
@@ -18,10 +18,10 @@ PageManager.pages = [];
  * The packery options
  */
 PageManager.packeryOptions = {
-   itemSelector: ".widget",
-   columnWidth: 100,
-   //transitionDuration: '0.6s',
-   gutter: 0
+    itemSelector: ".widget",
+    columnWidth: 100,
+    //transitionDuration: '0.6s',
+    gutter: 0
 };
 
 PageManager.factory = function (json) {
@@ -41,21 +41,23 @@ PageManager.getAll = function () {
     var d = new $.Deferred();
 
     RestEngine.getJson("rest/page")
-    .done(function (data) {
-        //we add it to the page list
-        PageManager.pages = [];
+        .done(function (data) {
+            //we add it to the page list
+            PageManager.pages = [];
 
-        if (!isNullOrUndefinedOrEmpty(data.page)) {
-            //we sort page by pageOrder
-            data.page.sort(function (a, b) { return a.pageOrder > b.pageOrder; });
+            if (!isNullOrUndefinedOrEmpty(data.page)) {
+                //we sort page by pageOrder
+                data.page.sort(function (a, b) {
+                    return a.pageOrder > b.pageOrder;
+                });
 
-            $.each(data.page, function (index, value) {
-                PageManager.addPage(PageManager.factory(value));
-            });
-        }
-        d.resolve();
-    })
-    .fail(d.reject);
+                $.each(data.page, function (index, value) {
+                    PageManager.addPage(PageManager.factory(value));
+                });
+            }
+            d.resolve();
+        })
+        .fail(d.reject);
     return d.promise();
 };
 
@@ -87,13 +89,18 @@ PageManager.createPage = function (pageName, pageOrder) {
 
     var d = new $.Deferred();
 
-    RestEngine.postJson("rest/page", { data: JSON.stringify({ name: pageName, pageOrder: pageOrder }) })
-    .done(function (data) {
-        //we add it to the page list
-        //we add the page dynamically
-        d.resolve(PageManager.factory(data));
-    })
-    .fail(d.reject);
+    RestEngine.postJson("rest/page", {
+            data: JSON.stringify({
+                name: pageName,
+                pageOrder: pageOrder
+            })
+        })
+        .done(function (data) {
+            //we add it to the page list
+            //we add the page dynamically
+            d.resolve(PageManager.factory(data));
+        })
+        .fail(d.reject);
     return d.promise();
 };
 
@@ -107,7 +114,13 @@ PageManager.createPage = function (pageName, pageOrder) {
 PageManager.updatePage = function (pageId, pageName, pageOrder) {
     assert(!isNullOrUndefined(pageId), "pageId must be defined");
     assert(!isNullOrUndefined(pageName), "pageId must be defined");
-    return RestEngine.putJson("/rest/page/" + pageId, { data: JSON.stringify({ id: pageId, name: pageName, pageOrder: pageOrder }) });
+    return RestEngine.putJson("/rest/page/" + pageId, {
+        data: JSON.stringify({
+            id: pageId,
+            name: pageName,
+            pageOrder: pageOrder
+        })
+    });
 };
 
 /**
@@ -131,21 +144,23 @@ PageManager.addToDom = function (page) {
     assert(!isNullOrUndefined(page), "page must be defined");
     var tabIdAsText = "tab-" + page.id;
     //pill creation
-    var dataI18NOptions = { "pageName": page.name };
+    var dataI18NOptions = {
+        "pageName": page.name
+    };
 
 
     $("<li class=\"tabPagePills\" page-id=\"" + page.id + "\">" +
-          "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" +
-             "<span>" + page.name + "</span>" +
-             "<div class=\"customizationToolbar pageCustomizationToolbar customization-item hidden\">" +
-                "<div class=\"customizationButton pageCustomizationButton move-left-page\" title=\"Move to left\" data-i18n=\"[title]mainPage.customization.moveToLeft\"><i class=\"fa fa-lg fa-arrow-left\"></i></div>" +
-                "<div class=\"customizationButton pageCustomizationButton move-right-page\" title=\"Move to right\" data-i18n=\"[title]mainPage.customization.moveToRight\"><i class=\"fa fa-lg fa-arrow-right\"></i></div>" +
-                "<div class=\"customizationButton pageCustomizationButton rename-page\" title=\"Rename\" data-i18n=\"[title]mainPage.customization.rename\"><i class=\"fa fa-lg fa-pencil\"></i></div>" +
-                "<div class=\"customizationButton pageCustomizationButton delete-page\" title=\"Delete\" data-i18n=\"[title]mainPage.customization.delete\"><i class=\"fa fa-lg fa-trash-o\"></i></div>" +
-             "</div>" +
-          "</a>" +
-          "<div class=\"hidden tabPagePillsDropper\" data-i18n=\"mainPage.customization.dropHereToMovePage\" data-i18n-options=\'" + JSON.stringify(dataI18NOptions) + "\'></div>" +
-          "</li>").insertBefore($("li#btn-add-page"));
+        "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" +
+        "<span>" + page.name + "</span>" +
+        "<div class=\"customizationToolbar pageCustomizationToolbar customization-item hidden\">" +
+        "<div class=\"customizationButton pageCustomizationButton move-left-page\" title=\"Move to left\" data-i18n=\"[title]mainPage.customization.moveToLeft\"><i class=\"fa fa-lg fa-arrow-left\"></i></div>" +
+        "<div class=\"customizationButton pageCustomizationButton move-right-page\" title=\"Move to right\" data-i18n=\"[title]mainPage.customization.moveToRight\"><i class=\"fa fa-lg fa-arrow-right\"></i></div>" +
+        "<div class=\"customizationButton pageCustomizationButton rename-page\" title=\"Rename\" data-i18n=\"[title]mainPage.customization.rename\"><i class=\"fa fa-lg fa-pencil\"></i></div>" +
+        "<div class=\"customizationButton pageCustomizationButton delete-page\" title=\"Delete\" data-i18n=\"[title]mainPage.customization.delete\"><i class=\"fa fa-lg fa-trash-o\"></i></div>" +
+        "</div>" +
+        "</a>" +
+        "<div class=\"hidden tabPagePillsDropper\" data-i18n=\"mainPage.customization.dropHereToMovePage\" data-i18n-options=\'" + JSON.stringify(dataI18NOptions) + "\'></div>" +
+        "</li>").insertBefore($("li#btn-add-page"));
 
     page.$tab = $(".page-tabs").find("li[page-id=\"" + page.id + "\"]");
 
@@ -154,16 +169,16 @@ PageManager.addToDom = function (page) {
 
     //page creation
     var container = $("div#tabContainer").find(".tab-content").append(
-       "<div class=\"widgetPage tab-pane active\" id=\"" + tabIdAsText + "\" page-id=\"" + page.id + "\">" +
-          "<div class=\"grid\">" +
-          "</div>" +
-          "</div>");
+        "<div class=\"widgetPage tab-pane active\" id=\"" + tabIdAsText + "\" page-id=\"" + page.id + "\">" +
+        "<div class=\"grid\">" +
+        "</div>" +
+        "</div>");
 
     //we save the content of the page dom node
     page.$content = container.find("div#" + tabIdAsText);
 
     page.$grid = page.$content.find(".grid");
-    
+
     page.$grid.packery(PageManager.packeryOptions);
 
     page.$grid.on('dragstop', function (event) {
@@ -199,28 +214,30 @@ PageManager.addToDom = function (page) {
 
         //we remove it from current page
         page.$grid.packery("remove", $widget);
-        
+
         page.widgets.splice($.inArray(widgetToMove, page.widgets), 1);
 
         //we update the widget on the server
         WidgetManager.updateToServer(widgetToMove)
-        .done(function () {
-            //the widget has been moved successfully
-            //we add it to the new page
-            if (targetPage.loaded) {
-                //if the page has been already loaded we add it to the page
-                WidgetManager.loadWidget(widgetToMove, targetPage)
-                    .done(function () {
-                        //we update the filter for the websocket
-                        updateWebSocketFilter();
-                    })
-                    .fail(function (errorMessage) {
-                        console.error(errorMessage);
-                        notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": widgetToMove.type }));
-                    });
-            }
+            .done(function () {
+                //the widget has been moved successfully
+                //we add it to the new page
+                if (targetPage.loaded) {
+                    //if the page has been already loaded we add it to the page
+                    WidgetManager.loadWidget(widgetToMove, targetPage)
+                        .done(function () {
+                            //we update the filter for the websocket
+                            updateWebSocketFilter();
+                        })
+                        .fail(function (errorMessage) {
+                            console.error(errorMessage);
+                            notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {
+                                "widgetType": widgetToMove.type
+                            }));
+                        });
+                }
 
-        });
+            });
     });
 
     page.$grid.on('dragstart', function () {
@@ -229,17 +246,17 @@ PageManager.addToDom = function (page) {
             $(".tabPagePills").not("[page-id=\"" + page.id + "\"]").find(".tabPagePillsDropper").removeClass("hidden");
         }
     });
-    
+
     PageManager.enableCustomization(page, customization);
 
     //manage all fitText classes
-    page.$tab.on('shown.bs.tab', function(e) {
-       var pid = $(e.currentTarget).attr("page-id");
-       var p = PageManager.getPage(pid);
-       p.$grid.find('.textfit').fitText();
-       p.$grid.packery('layout');
+    page.$tab.on('shown.bs.tab', function (e) {
+        var pid = $(e.currentTarget).attr("page-id");
+        var p = PageManager.getPage(pid);
+        p.$grid.find('.textfit').fitText();
+        p.$grid.packery('layout');
     });
-   
+
     //we listen click event on tab click
     page.$tab.find("a").bind('click', function (e) {
         return tabClick($(e.currentTarget).parent().attr("page-id"));
@@ -253,14 +270,14 @@ PageManager.addToDom = function (page) {
     //we listen click event on delete click
     page.$tab.find('div.delete-page').bind('click', function (e) {
         var pageId = $(e.currentTarget).parents("li.tabPagePills").attr("page-id");
-        
-        if($("ul.page-tabs").find("li.tabPagePills").length === 1) {
-           notifyWarning($.t("modals.delete-page.deletingLastPageNotAllowed"));
+
+        if ($("ul.page-tabs").find("li.tabPagePills").length === 1) {
+            notifyWarning($.t("modals.delete-page.deletingLastPageNotAllowed"));
         } else {
-           Yadoms.modals.pageDelete.loadAsync()
-              .done(function () {
-                  Yadoms.showDeletePageModal(pageId);
-              });
+            Yadoms.modals.pageDelete.loadAsync()
+                .done(function () {
+                    Yadoms.showDeletePageModal(pageId);
+                });
         }
     });
 
@@ -279,7 +296,7 @@ PageManager.addToDom = function (page) {
     });
 
     //we listen for click event with no code inside to help event transmission until exit customization
-    page.$tab.bind('click', function () { });
+    page.$tab.bind('click', function () {});
 };
 
 PageManager.movePage = function (page, direction) {
@@ -300,8 +317,7 @@ PageManager.movePage = function (page, direction) {
                 nearestId = currentPage.id;
             }
         });
-    }
-    else {
+    } else {
         //we search the nearest lower pageOrder than our
         nearestPageOrder = -Infinity;
 
@@ -325,19 +341,21 @@ PageManager.movePage = function (page, direction) {
             page.pageOrder = nearestPageOrder;
 
             //we make an array of pages to send to rest server
-            RestEngine.putJson("/rest/page", { data: JSON.stringify(PageManager.pages) })
-               .done(function () {
-                   //we move the tab dynamically
-                   var tabDomElement = page.$tab.detach();
-                   if (direction === "right") {
-                       tabDomElement.insertAfter(nearestPage.$tab);
-                   } else {
-                       tabDomElement.insertBefore(nearestPage.$tab);
-                   }
-               })
-               .fail(function (error) {
-                   notifyError($.t("mainPage.errors.errorDuringSavingPagePosition"), error);
-               });
+            RestEngine.putJson("/rest/page", {
+                    data: JSON.stringify(PageManager.pages)
+                })
+                .done(function () {
+                    //we move the tab dynamically
+                    var tabDomElement = page.$tab.detach();
+                    if (direction === "right") {
+                        tabDomElement.insertAfter(nearestPage.$tab);
+                    } else {
+                        tabDomElement.insertBefore(nearestPage.$tab);
+                    }
+                })
+                .fail(function (error) {
+                    notifyError($.t("mainPage.errors.errorDuringSavingPagePosition"), error);
+                });
         }
     }
 };
@@ -351,11 +369,16 @@ PageManager.ensureOnePageIsSelected = function () {
     }
 };
 
+PageManager.selectFirstPage = function () {
+    if (PageManager.pages.length > 0)
+        PageManager.pages[0].$tab.find("a").trigger("click");
+};
+
 PageManager.selectPageId = function (pageId) {
-   $.each(PageManager.pages, function (index, currentPage) {
-      if (currentPage.id == pageId)
-         currentPage.$tab.find("a").trigger("click");
-   });
+    $.each(PageManager.pages, function (index, currentPage) {
+        if (currentPage.id == pageId)
+            currentPage.$tab.find("a").trigger("click");
+    });
 };
 
 /**
@@ -393,7 +416,9 @@ PageManager.enableCustomization = function (page, enable) {
  * @returns {Promise} 
  */
 PageManager.saveCustomization = function (page) {
-    return RestEngine.putJson("/rest/page/" + page.id + "/widget", { data: JSON.stringify(page.widgets) });
+    return RestEngine.putJson("/rest/page/" + page.id + "/widget", {
+        data: JSON.stringify(page.widgets)
+    });
 };
 
 /**

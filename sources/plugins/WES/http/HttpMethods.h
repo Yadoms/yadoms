@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/Export.h>
 #include <shared/DataContainer.h>
 #include <Poco/Net/HTTPClientSession.h>
 #include <Poco/Net/HTTPResponse.h>

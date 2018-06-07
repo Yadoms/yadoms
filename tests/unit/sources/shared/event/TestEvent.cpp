@@ -2,8 +2,6 @@
 #include <boost/test/unit_test.hpp>
 
 // Includes needed to compile tested classes
-#include <iostream>
-#include <queue>
 #include "../../../../sources/shared/shared/event/EventHandler.hpp"
 
 #include <mock/shared/currentTime/DefaultCurrentTimeMock.h>
@@ -58,8 +56,6 @@ void postEventWithDataThreaded(shared::event::CEventHandler* receiver,
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(EventFromSameThread)
 {
-   useTimeMock();
-
    shared::event::CEventHandler evtHandler;
 
    evtHandler.postEvent(idEvent);
@@ -109,7 +105,7 @@ BOOST_AUTO_TEST_CASE(EventFromSeparateThread)
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::pos_infin), idEvent);
    }
 
-   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(1)), shared::event::kTimeout);
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::min_date_time), shared::event::kNoEvent);
 }
 
 //--------------------------------------------------------------
@@ -124,9 +120,9 @@ BOOST_AUTO_TEST_CASE(_100EventsFromSameThread)
       evtHandler.postEvent(idEvent);
 
    for (auto i = 0; i < 100; ++i)
-      BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::seconds(1)), idEvent);
-
-   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(1)), shared::event::kTimeout);
+      BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::min_date_time), idEvent);
+   
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::min_date_time), shared::event::kNoEvent);
 }
 
 //--------------------------------------------------------------
@@ -141,8 +137,8 @@ BOOST_AUTO_TEST_CASE(_100EventsFromSeparateThread)
 
    for (auto i = 0; i < 100; ++i)
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::seconds(1)), idEvent);
-
-   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(1)), shared::event::kTimeout);
+   
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::min_date_time), shared::event::kNoEvent);
 
    postEventThread.join();
 }
@@ -154,7 +150,7 @@ BOOST_AUTO_TEST_CASE(_100EventsFromSeparateThread)
 BOOST_AUTO_TEST_CASE(EventWithDataFromSameThread)
 {
    shared::event::CEventHandler evtHandler;
-   CEventData data(42, "Yadoms test");
+   const CEventData data(42, "Yadoms test");
    CEventData receivedData;
 
    evtHandler.postEvent(idEvent, data);
@@ -171,7 +167,7 @@ BOOST_AUTO_TEST_CASE(EventWithDataFromSameThread)
 BOOST_AUTO_TEST_CASE(EventClearHandler)
 {
    shared::event::CEventHandler evtHandler;
-   CEventData data(42, "Yadoms test");
+   const CEventData data(42, "Yadoms test");
 
    evtHandler.postEvent(idEvent, data);
    evtHandler.clear();
@@ -186,7 +182,7 @@ BOOST_AUTO_TEST_CASE(EventClearHandler)
 BOOST_AUTO_TEST_CASE(EventWithDataFromSeparateThread)
 {
    shared::event::CEventHandler evtHandler;
-   CEventData data(42, "Yadoms test");
+   const CEventData data(42, "Yadoms test");
    CEventData receivedData;
 
    boost::thread postEventWithDataThread(postEventWithDataThreaded, &evtHandler, data, 1);
@@ -207,15 +203,15 @@ BOOST_AUTO_TEST_CASE(EventFromSeveralThreads)
 
    // 100 threads sending each one event
    std::vector<boost::thread> threads;
-   for (int i = 0; i < 100; ++i)
+   for (auto i = 0; i < 100; ++i)
       threads.push_back(boost::thread(postEventThreaded, &evtHandler, 1));
 
-   for (int i = 0; i < 100; ++i)
+   for (auto i = 0; i < 100; ++i)
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(100)), idEvent);
+   
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
 
-   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(1)), shared::event::kTimeout);
-
-   for (std::vector<boost::thread>::iterator itThread = threads.begin(); itThread != threads.end(); ++itThread)
+   for (auto itThread = threads.begin(); itThread != threads.end(); ++itThread)
       itThread->join();
 }
 
@@ -228,7 +224,7 @@ BOOST_AUTO_TEST_CASE(EventWithDataFromSeveralThreads)
    shared::event::CEventHandler evtHandler;
    std::vector<CEventData> data;
    std::set<int> expectedDataIntValue;
-   for (int i = 0; i < 100; ++i)
+   for (auto i = 0; i < 100; ++i)
    {
       data.push_back(CEventData(42 + i, "Yadoms test"));
       expectedDataIntValue.insert(42 + i);
@@ -236,11 +232,11 @@ BOOST_AUTO_TEST_CASE(EventWithDataFromSeveralThreads)
 
    // 100 threads sending each one event
    std::vector<boost::thread> threads;
-   for (int i = 0; i < 100; ++i)
+   for (auto i = 0; i < 100; ++i)
       threads.push_back(boost::thread(postEventWithDataThreaded, &evtHandler, data[i], 1));
 
    // Note that received event are not ncessary in sent order
-   for (int i = 0; i < 100; ++i)
+   for (auto i = 0; i < 100; ++i)
    {
       CEventData receivedData;
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(100)), idEvent);
@@ -251,9 +247,9 @@ BOOST_AUTO_TEST_CASE(EventWithDataFromSeveralThreads)
    }
 
    BOOST_CHECK(expectedDataIntValue.empty());
-   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(1)), shared::event::kTimeout);
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
 
-   for (std::vector<boost::thread>::iterator itThread = threads.begin(); itThread != threads.end(); ++itThread)
+   for (auto itThread = threads.begin(); itThread != threads.end(); ++itThread)
       itThread->join();
 }
 
@@ -348,7 +344,7 @@ BOOST_AUTO_TEST_CASE(EventIdGetter)
 /// \brief	    Test several events with data sent from several separate threads (heavy load test)
 /// \result         No Error
 //--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(SeveralEventWithDataFromSeveralThreads)
+BOOST_AUTO_TEST_CASE(SeveralEventsWithDataFromSeveralThreads)
 {
    const unsigned int nbthreads = 100;
    const unsigned int nbMessagesPerThread = 1000;
@@ -378,12 +374,12 @@ BOOST_AUTO_TEST_CASE(SeveralEventWithDataFromSeveralThreads)
    }
 
    BOOST_CHECK_EQUAL(expectedDataIntValueCounters.size(), nbthreads);
-   for (std::map<int, int>::iterator itCounter = expectedDataIntValueCounters.begin(); itCounter != expectedDataIntValueCounters.end(); ++itCounter)
+   for (auto itCounter = expectedDataIntValueCounters.begin(); itCounter != expectedDataIntValueCounters.end(); ++itCounter)
       BOOST_CHECK_EQUAL(itCounter->second, 0);
+   
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
 
-   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(1)), shared::event::kTimeout);
-
-   for (std::vector<boost::thread>::iterator itThread = threads.begin(); itThread != threads.end(); ++itThread)
+   for (auto itThread = threads.begin(); itThread != threads.end(); ++itThread)
       itThread->join();
 }
 
@@ -393,14 +389,14 @@ BOOST_AUTO_TEST_CASE(SeveralEventWithDataFromSeveralThreads)
 //--------------------------------------------------------------
 void shutdownWhenSendingThreaded(boost::shared_ptr<shared::event::CEventHandler> eventHandler, int nbEvents)
 {
-   for (int iEvent = 0; iEvent < nbEvents; iEvent++)
+   for (auto iEvent = 0; iEvent < nbEvents; iEvent++)
       eventHandler->postEvent(idEvent);
 }
 BOOST_AUTO_TEST_CASE(ShutdownWhenSending)
 {
    const unsigned int nbthreads = 100;
    const unsigned int nbMessagesPerThread = 1000;
-   boost::shared_ptr<shared::event::CEventHandler> evtHandler(boost::make_shared<shared::event::CEventHandler>());
+   auto evtHandler(boost::make_shared<shared::event::CEventHandler>());
 
    // nbthreads threads sending each nbMessagesPerThread events
    std::vector<boost::thread> threads;
@@ -418,7 +414,7 @@ BOOST_AUTO_TEST_CASE(ShutdownWhenSending)
    // Delete event handler here
    evtHandler.reset();
 
-   for (std::vector<boost::thread>::iterator itThread = threads.begin(); itThread != threads.end(); ++itThread)
+   for (auto itThread = threads.begin(); itThread != threads.end(); ++itThread)
       itThread->join();
    
    BOOST_CHECK_EQUAL(nbReceivedEvents, (nbthreads * nbMessagesPerThread) - 150);

@@ -27,115 +27,106 @@ namespace web
 
          void CConfiguration::configureDispatcher(CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CConfiguration::getAllConfigurations);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CConfiguration::getSectionConfigurations);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*"), CConfiguration::getConfiguration);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword), CConfiguration::createOneConfiguration);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("*"), CConfiguration::updateOneConfiguration);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword), CConfiguration::updateAllConfigurations);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("*")("*"), CConfiguration::deleteOneConfiguration);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("server"), CConfiguration::getServerConfiguration);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("server")("reset"), CConfiguration::resetServerConfiguration);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("server"), CConfiguration::saveServerConfiguration);
+
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("databaseVersion"), CConfiguration::getDatabaseVersion);
+
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("external")("*"), CConfiguration::getExternalConfiguration);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("external")("*"), CConfiguration::saveExternalConfiguration);
          }
 
-         const std::string& CConfiguration::getRestKeyword()
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::resetServerConfiguration(const std::vector<std::string>& parameters,
+                                                                                                              const std::string& requestContent) const
          {
-            return m_restKeyword;
+            try
+            {
+               m_configurationManager->resetServerConfiguration();
+               return CResult::GenerateSuccess(m_configurationManager->getServerConfiguration());
+            }
+            catch (shared::exception::CEmptyResult&)
+            {
+               return CResult::GenerateError("Fail to reset server configuration");
+            }
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getServerConfiguration(const std::vector<std::string>& parameters,
+                                                                                                            const std::string& requestContent) const
+         {
+            try
+            {
+               return CResult::GenerateSuccess(m_configurationManager->getServerConfiguration());
+            }
+            catch (shared::exception::CEmptyResult&)
+            {
+               return CResult::GenerateError("Fail to get server configuration");
+            }
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::saveServerConfiguration(const std::vector<std::string>& parameters,
+                                                                                                             const std::string& requestContent) const
+         {
+            try
+            {
+               m_configurationManager->saveServerConfiguration(shared::CDataContainer(requestContent));
+               return CResult::GenerateSuccess();
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("Fail to save server configuration");
+            }
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getDatabaseVersion(const std::vector<std::string>& parameters,
+                                                                                                        const std::string& requestContent) const
+         {
+            try
+            {
+               return CResult::GenerateSuccess(m_configurationManager->getDatabaseVersion());
+            }
+            catch (shared::exception::CEmptyResult&)
+            {
+               return CResult::GenerateError("Fail to get server configuration");
+            }
          }
 
 
-         shared::CDataContainer CConfiguration::getConfiguration(const std::vector<std::string>& parameters,
-                                                                 const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::getExternalConfiguration(const std::vector<std::string>& parameters,
+                                                                                                              const std::string& requestContent) const
          {
-            std::string section = "";
-            std::string keyname = "";
-            if (parameters.size() > 1)
-               section = parameters[1];
-            if (parameters.size() > 2)
-               keyname = parameters[2];
+            if (parameters.size() < 3)
+               return CResult::GenerateError("GET /rest/configuration request : missing section name");
+            const auto section = parameters[2];
 
             try
             {
-               auto configFound = m_configurationManager->getConfiguration(section, keyname);
+               const auto configFound = m_configurationManager->getExternalConfiguration(section);
                return CResult::GenerateSuccess(configFound);
             }
             catch (shared::exception::CEmptyResult&)
             {
-               return CResult::GenerateError((boost::format("[Section = %1% ; Name = %2%] not found.") % section % keyname).str());
+               return CResult::GenerateError((boost::format("[Section = %1%] not found.") % section).str());
             }
          }
 
-         shared::CDataContainer CConfiguration::getSectionConfigurations(const std::vector<std::string>& parameters,
-                                                                         const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CConfiguration::saveExternalConfiguration(const std::vector<std::string>& parameters,
+                                                                                                               const std::string& requestContent) const
          {
-            std::string section = "";
-            if (parameters.size() > 1)
-               section = parameters[1];
+            if (parameters.size() < 3)
+               return CResult::GenerateError("PUT /rest/configuration request : missing section name");
+            const auto section = parameters[2];
 
-
-            auto hwList = m_configurationManager->getConfigurations(section);
-            shared::CDataContainer collection;
-            collection.set(getRestKeyword(), hwList);
-            return CResult::GenerateSuccess(collection);
-         }
-
-         shared::CDataContainer CConfiguration::getAllConfigurations(const std::vector<std::string>& parameters,
-                                                                     const std::string& requestContent) const
-         {
-            auto hwList = m_configurationManager->getConfigurations();
-            shared::CDataContainer collection;
-            collection.set(getRestKeyword(), hwList);
-            return CResult::GenerateSuccess(collection);
-         }
-
-         shared::CDataContainer CConfiguration::createOneConfiguration(const std::vector<std::string>& parameters,
-                                                                       const std::string& requestContent) const
-         {
-            //get data from request content
-            database::entities::CConfiguration configToCreate;
-            configToCreate.fillFromSerializedString(requestContent);
-
-            //check that configuration entry do not already exists
-            if (m_configurationManager->exists(configToCreate.Section(), configToCreate.Name()))
-               return CResult::GenerateError("The entry to create already exists");
-
-            //commit changes to database
-            m_configurationManager->create(configToCreate);
-
-            auto widgetFound = m_configurationManager->getConfiguration(configToCreate.Section(),
-                                                                        configToCreate.Name());
-            return CResult::GenerateSuccess(widgetFound);
-         }
-
-         shared::CDataContainer CConfiguration::updateOneConfiguration(const std::vector<std::string>& parameters,
-                                                                       const std::string& requestContent) const
-         {
             try
             {
-               database::entities::CConfiguration configToUpdate;
-               configToUpdate.fillFromSerializedString(requestContent);
+               m_configurationManager->saveExternalConfiguration(section,
+                                                                 shared::CDataContainer(requestContent));
 
-               std::string section = "";
-               std::string keyname = "";
-               if (parameters.size() > 1)
-                  section = parameters[1];
-               if (parameters.size() > 2)
-                  keyname = parameters[2];
-
-
-               if ((configToUpdate.Section().empty() && configToUpdate.Name().empty()) ||
-                  (boost::iequals(configToUpdate.Section(), section) && boost::iequals(configToUpdate.Name(), keyname)))
-               {
-                  //ensure section and name are corretly filled
-                  configToUpdate.Section = section;
-                  configToUpdate.Name = keyname;
-                  //commit changes to database
-                  m_configurationManager->updateConfiguration(configToUpdate);
-
-                  return CResult::GenerateSuccess(m_configurationManager->getConfiguration(section, keyname));
-               }
-               else
-               {
-                  return CResult::GenerateError("section and name in query content does not match to rest url");
-               }
+               return CResult::GenerateSuccess(m_configurationManager->getExternalConfiguration(section));
             }
             catch (std::exception& ex)
             {
@@ -143,57 +134,9 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in updating a configuration value");
+               return CResult::GenerateError("Unknown exception in updating a configuration value");
             }
-         }
-
-         shared::CDataContainer CConfiguration::updateAllConfigurations(const std::vector<std::string>& parameters,
-                                                                        const std::string& requestContent) const
-         {
-            try
-            {
-               auto listToUpdate = shared::CDataContainer(requestContent).get<std::vector<boost::shared_ptr<database::entities::CConfiguration> > >(getRestKeyword());
-
-               for (auto i = listToUpdate.begin(); i != listToUpdate.end(); ++i)
-               {
-                  m_configurationManager->updateConfiguration(*i->get());
-               }
-
-               return getAllConfigurations(parameters, requestContent);
-            }
-            catch (std::exception& ex)
-            {
-               return CResult::GenerateError(ex);
-            }
-            catch (...)
-            {
-               return CResult::GenerateError("unknown exception in updating all configuration");
-            }
-         }
-
-
-         shared::CDataContainer CConfiguration::deleteOneConfiguration(const std::vector<std::string>& parameters,
-                                                                       const std::string& requestContent) const
-         {
-            std::string section = "";
-            std::string keyname = "";
-            if (parameters.size() > 1)
-               section = parameters[1];
-            if (parameters.size() > 2)
-               keyname = parameters[2];
-
-            if (!section.empty() && !keyname.empty())
-            {
-               database::entities::CConfiguration configToRemove;
-               configToRemove.Section = section;
-               configToRemove.Name = keyname;
-               m_configurationManager->removeConfiguration(configToRemove);
-            }
-
-            return CResult::GenerateSuccess();
          }
       } //namespace service
    } //namespace rest
 } //namespace web 
-
-

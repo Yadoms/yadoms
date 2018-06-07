@@ -49,6 +49,7 @@
 #include "ManuallyDeviceCreationException.hpp"
 #include "MessageFilteredException.hpp"
 #include <shared/Log.h>
+#include "rfxcomMessages/CartelectronicEncoder.h"
 
 //
 // =======================================================================
@@ -62,8 +63,9 @@
 
 const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> rfxcomMessages::IRfxcomMessage::NoKeywords;
 
-CTransceiver::CTransceiver()
-   : m_seqNumberProvider(boost::make_shared<CIncrementSequenceNumber>()),
+CTransceiver::CTransceiver(boost::shared_ptr<IPairingHelper> pairingHelper)
+   : m_pairingHelper(pairingHelper),
+     m_seqNumberProvider(boost::make_shared<CIncrementSequenceNumber>()),
      m_unsecuredProtocolFilters(createUnsecuredProtocolFilters())
 {
 }
@@ -182,12 +184,13 @@ shared::communication::CByteBuffer CTransceiver::buildStartReceiverCmd() const
 
 
 boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiver::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                                                                     boost::shared_ptr<const yApi::IDeviceCommand> command) const
+                                                                                                     boost::shared_ptr<const yApi::IDeviceCommand>
+                                                                                                     command) const
 {
    try
    {
       const auto& deviceDetails = api->getDeviceDetails(command->getDevice());
-      auto deviceType = deviceDetails.get<unsigned char>("type");
+      const auto deviceType = deviceDetails.get<unsigned char>("type");
 
       // Create the RFXCom message
       switch (deviceType)
@@ -247,7 +250,8 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiver::
    }
 }
 
-boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiver::buildRfyProgramMessage(const shared::communication::CByteBuffer& lastRequest) const
+boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiver::buildRfyProgramMessage(
+   const shared::communication::CByteBuffer& lastRequest) const
 {
    return rfxcomMessages::CRfy::encodeProgramMessage(m_seqNumberProvider,
                                                      lastRequest);
@@ -276,9 +280,11 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
          break;
       case pTypeLighting3: message = boost::make_shared<rfxcomMessages::CLighting3>(api, *buf, bufSize);
          break;
-      case pTypeLighting4: message = boost::make_shared<rfxcomMessages::CLighting4>(api, *buf, bufSize, m_unsecuredProtocolFilters.at(pTypeLighting4));
+      case pTypeLighting4: message = boost::make_shared<rfxcomMessages::CLighting4
+         >(api, *buf, bufSize, m_unsecuredProtocolFilters.at(pTypeLighting4));
          break;
-      case pTypeLighting5: message = boost::make_shared<rfxcomMessages::CLighting5>(api, *buf, bufSize, m_unsecuredProtocolFilters.at(pTypeLighting5));
+      case pTypeLighting5: message = boost::make_shared<rfxcomMessages::CLighting5
+         >(api, *buf, bufSize, m_unsecuredProtocolFilters.at(pTypeLighting5));
          break;
       case pTypeLighting6: message = boost::make_shared<rfxcomMessages::CLighting6>(api, *buf, bufSize);
          break;
@@ -318,7 +324,8 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
          break;
       case pTypeENERGY: message = boost::make_shared<rfxcomMessages::CEnergy>(api, *buf, bufSize);
          break;
-      case pTypeCURRENTENERGY: message = boost::make_shared<rfxcomMessages::CCurrentEnergy>(api, *buf, bufSize, m_unsecuredProtocolFilters.at(pTypeCURRENTENERGY));
+      case pTypeCURRENTENERGY: message = boost::make_shared<rfxcomMessages::CCurrentEnergy>(
+            api, *buf, bufSize, m_unsecuredProtocolFilters.at(pTypeCURRENTENERGY));
          break;
       case pTypePOWER: message = boost::make_shared<rfxcomMessages::CPower>(api, *buf, bufSize);
          break;
@@ -328,7 +335,8 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
          break;
       case pTypeRFXSensor: message = boost::make_shared<rfxcomMessages::CRFXSensor>(api, *buf, bufSize);
          break;
-      case pTypeSecurity1: message = boost::make_shared<rfxcomMessages::CSecurity1>(api, *buf, bufSize, m_unsecuredProtocolFilters.at(pTypeSecurity1));
+      case pTypeSecurity1: message = boost::make_shared<rfxcomMessages::CSecurity1
+         >(api, *buf, bufSize, m_unsecuredProtocolFilters.at(pTypeSecurity1));
          break;
       case pTypeSecurity2: message = boost::make_shared<rfxcomMessages::CSecurity2>(api, *buf, bufSize);
          break;
@@ -356,13 +364,21 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
          }
       }
 
+      if (m_pairingHelper->needPairing(message->getDeviceName()))
+      {
+         if (m_pairingHelper->getMode() == IPairingHelper::kAuto)
+            message->filter();
+         message->declareDevice(api);
+      }
+
       logMessage(api, message);
       return message;
    }
    catch (CMessageFilteredException& exception)
    {
       YADOMS_LOG(warning) << exception.what();
-      YADOMS_LOG(warning) << "Message received, but filtered as protocol is unsecured and can create false devices. Device should be seen often enough to get out of filter.";
+      YADOMS_LOG(warning) <<
+         "Message received, but filtered as protocol is unsecured and can create false devices. Device should be seen often enough to get out of filter.";
       return boost::shared_ptr<rfxcomMessages::IRfxcomMessage>();
    }
    catch (std::exception& exception)
@@ -378,7 +394,7 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
    boost::shared_ptr<rfxcomMessages::IRfxcomMessage> msg;
    try
    {
-      auto deviceType = data.getDeviceType();
+      const auto deviceType = data.getDeviceType();
       // Lighting1
       if (deviceType == "x10")
          msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeX10, data.getDeviceName(), data.getConfiguration());
@@ -403,7 +419,7 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
       else if (deviceType == "gdr2")
          msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeGDR2, data.getDeviceName(), data.getConfiguration());
 
-      // Lighting2
+         // Lighting2
       else if (deviceType == "AC")
          msg = boost::make_shared<rfxcomMessages::CLighting2>(api, sTypeX10, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "homeEasyEU")
@@ -413,15 +429,15 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
       else if (deviceType == "kambrookRf3672")
          msg = boost::make_shared<rfxcomMessages::CLighting2>(api, sTypeARC, data.getDeviceName(), data.getConfiguration());
 
-      // Lighting3
+         // Lighting3
       else if (deviceType == "koppla")
          msg = boost::make_shared<rfxcomMessages::CLighting3>(api, sTypeKoppla, data.getDeviceName(), data.getConfiguration());
 
-      // Lighting4
+         // Lighting4
       else if (deviceType == "pt2262")
          msg = boost::make_shared<rfxcomMessages::CLighting4>(api, sTypePT2262, data.getDeviceName(), data.getConfiguration());
 
-      // Lighting5
+         // Lighting5
       else if (deviceType == "lightwaveRf")
          msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeLightwaveRF, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "emw100")
@@ -455,11 +471,11 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
       else if (deviceType == "kangtai")
          msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeKangtai, data.getDeviceName(), data.getConfiguration());
 
-      // Lighting6
+         // Lighting6
       else if (deviceType == "blyss")
          msg = boost::make_shared<rfxcomMessages::CLighting6>(api, sTypeBlyss, data.getDeviceName(), data.getConfiguration());
 
-      // Chime
+         // Chime
       else if (deviceType == "byronSx")
          msg = boost::make_shared<rfxcomMessages::CChime>(api, sTypeByronSX, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "byronMp001")
@@ -469,7 +485,7 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
       else if (deviceType == "envivo")
          msg = boost::make_shared<rfxcomMessages::CChime>(api, sTypeEnvivo, data.getDeviceName(), data.getConfiguration());
 
-      // Fan
+         // Fan
       else if (deviceType == "siemensSf01")
          msg = boost::make_shared<rfxcomMessages::CFan>(api, sTypeSiemensSF01, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "lucciAir")
@@ -479,11 +495,11 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
       else if (deviceType == "westinghouse7226640")
          msg = boost::make_shared<rfxcomMessages::CFan>(api, sTypeWestinghouse, data.getDeviceName(), data.getConfiguration());
 
-      // Curtain1
+         // Curtain1
       else if (deviceType == "harrisonCurtain")
          msg = boost::make_shared<rfxcomMessages::CCurtain1>(api, sTypeHarrison, data.getDeviceName(), data.getConfiguration());
 
-      // Blinds1
+         // Blinds1
       else if (deviceType == "rollerTrolHastaNew")
          msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT0, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "hastaOld")
@@ -513,7 +529,7 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
       else if (deviceType == "screenline")
          msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT13, data.getDeviceName(), data.getConfiguration());
 
-      // Rfy
+         // Rfy
       else if (deviceType == "rfy")
          msg = boost::make_shared<rfxcomMessages::CRfy>(api, sTypeRFY, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "rfyExt")
@@ -521,37 +537,37 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
       else if (deviceType == "asa")
          msg = boost::make_shared<rfxcomMessages::CRfy>(api, sTypeASA, data.getDeviceName(), data.getConfiguration());
 
-      // HomeConfort
+         // HomeConfort
       else if (deviceType == "homeConfort")
          msg = boost::make_shared<rfxcomMessages::CHomeConfort>(api, sTypeHomeConfortTEL010, data.getDeviceName(), data.getConfiguration());
 
-      // Security1
+         // Security1
       else if (deviceType == "x10SecurityRemote")
          msg = boost::make_shared<rfxcomMessages::CSecurity1>(api, sTypeSecX10R, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "meiantech")
          msg = boost::make_shared<rfxcomMessages::CSecurity1>(api, sTypeMeiantech, data.getDeviceName(), data.getConfiguration());
 
-      // Security2
+         // Security2
       else if (deviceType == "keeLoq")
          msg = boost::make_shared<rfxcomMessages::CSecurity2>(api, sTypeSec2Classic, data.getDeviceName(), data.getConfiguration());
 
-      // Camera1
+         // Camera1
       else if (deviceType == "cameraX10Ninja")
          msg = boost::make_shared<rfxcomMessages::CCamera1>(api, sTypeNinja, data.getDeviceName(), data.getConfiguration());
 
-      // Thermostat1
+         // Thermostat1
       else if (deviceType == "digimax")
          msg = boost::make_shared<rfxcomMessages::CThermostat1>(api, sTypeDigimax, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "digimaxShort")
          msg = boost::make_shared<rfxcomMessages::CThermostat1>(api, sTypeDigimaxShort, data.getDeviceName(), data.getConfiguration());
 
-      // Thermostat2
+         // Thermostat2
       else if (deviceType == "he105")
          msg = boost::make_shared<rfxcomMessages::CThermostat2>(api, sTypeHE105, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "rts10")
          msg = boost::make_shared<rfxcomMessages::CThermostat2>(api, sTypeRTS10, data.getDeviceName(), data.getConfiguration());
 
-      // Thermostat3
+         // Thermostat3
       else if (deviceType == "g6rH4t1")
          msg = boost::make_shared<rfxcomMessages::CThermostat3>(api, sTypeMertikG6RH4T1, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "g6rH4tb")
@@ -561,19 +577,19 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
       else if (deviceType == "g6rH4s")
          msg = boost::make_shared<rfxcomMessages::CThermostat3>(api, sTypeMertikG6RH4S, data.getDeviceName(), data.getConfiguration());
 
-      // Thermostat4
+         // Thermostat4
       else if (deviceType == "mcz1PelletStove")
          msg = boost::make_shared<rfxcomMessages::CThermostat4>(api, sTypeMCZ1, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "mcz2PelletStove")
          msg = boost::make_shared<rfxcomMessages::CThermostat4>(api, sTypeMCZ2, data.getDeviceName(), data.getConfiguration());
-      else if (deviceType == "mcz2PelletStove")
+      else if (deviceType == "mcz3PelletStove")
          msg = boost::make_shared<rfxcomMessages::CThermostat4>(api, sTypeMCZ3, data.getDeviceName(), data.getConfiguration());
 
-      // Radiator1
+         // Radiator1
       else if (deviceType == "smartwares")
          msg = boost::make_shared<rfxcomMessages::CRadiator1>(api, sTypeSmartwares, data.getDeviceName(), data.getConfiguration());
 
-      // FS20
+         // FS20
       else if (deviceType == "fs20")
          msg = boost::make_shared<rfxcomMessages::CFS20>(api, sTypeFS20, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "fht8v")
@@ -600,6 +616,25 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
    return msg->getDeviceName();
 }
 
+void CTransceiver::changeDeviceConfiguration(const boost::shared_ptr<yApi::IYPluginApi>& api,
+                                             const boost::shared_ptr<const yApi::ISetDeviceConfiguration>& deviceConfiguration) const
+{
+   try
+   {
+      const auto deviceType = deviceConfiguration->name();
+      // Encoder Module
+      if (api->getDeviceType(deviceConfiguration->name()) == "Encoder Module")
+         boost::make_shared<rfxcomMessages::CCartelectronic>(api, static_cast<unsigned char>(sTypeCEencoder), deviceConfiguration);
+      else
+         throw shared::exception::CInvalidParameter("Unknown device type");
+   }
+   catch (std::exception& e)
+   {
+      YADOMS_LOG(error) << "Fail to update device configuration of " << deviceConfiguration->name() << " : " << e.what();
+      YADOMS_LOG(error) << "device configuration : " << deviceConfiguration->configuration().serialize();
+   }
+}
+
 void CTransceiver::logMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                               const boost::shared_ptr<rfxcomMessages::IRfxcomMessage>& message)
 {
@@ -607,6 +642,6 @@ void CTransceiver::logMessage(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       YADOMS_LOG(information) << "Receive data for " << message->getDeviceName();
       for (const auto& keyword : message->keywords())
-      YADOMS_LOG(information) << "  - " << keyword->getKeyword() << " : " << keyword->formatValue();
+         YADOMS_LOG(information) << "  - " << keyword->getKeyword() << " : " << keyword->formatValue();
    }
 }

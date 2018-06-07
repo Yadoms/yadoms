@@ -4,7 +4,7 @@
 
 CPythonCommandLine::CPythonCommandLine(const boost::filesystem::path& executablePath,
                                        const boost::filesystem::path& workingDirectory,
-                                       const std::vector<std::string> parameters)
+                                       const std::vector<std::string>& parameters)
    : m_executable(executablePath),
      m_workingDirectory(workingDirectory),
      m_args(parameters)

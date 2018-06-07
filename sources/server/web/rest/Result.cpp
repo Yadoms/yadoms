@@ -9,41 +9,41 @@ namespace web { namespace rest {
    std::string CResult::m_dataFieldName = "data";
 
 
-   shared::CDataContainer CResult::GenerateError(const std::string & errorMessage, const shared::CDataContainer & data)
+   boost::shared_ptr<shared::CDataContainer> CResult::GenerateError(const std::string & errorMessage, const shared::CDataContainer & data)
    {
       return GenerateInternal(false, errorMessage, data);
    }
 
-   shared::CDataContainer CResult::GenerateError(const std::exception & error, const shared::CDataContainer & data)
+   boost::shared_ptr<shared::CDataContainer> CResult::GenerateError(const std::exception & error, const shared::CDataContainer & data)
    {
       return GenerateInternal(false, error.what(), data);
    }
 
-   shared::CDataContainer CResult::GenerateSuccess(const shared::CDataContainer & data)
+   boost::shared_ptr<shared::CDataContainer> CResult::GenerateSuccess(const shared::CDataContainer & data)
    {
       return GenerateInternal(true, std::string(), data);
    }
 
-   shared::CDataContainer CResult::GenerateSuccess(const std::string & stringData)
+   boost::shared_ptr<shared::CDataContainer> CResult::GenerateSuccess(const std::string & stringData)
    {
       return GenerateInternal(true, std::string(), stringData);
    }
 
-   shared::CDataContainer CResult::GenerateInternal(const bool result, const std::string & message, const shared::CDataContainer & data)
+   boost::shared_ptr<shared::CDataContainer> CResult::GenerateInternal(const bool result, const std::string & message, const shared::CDataContainer & data)
    {
-      shared::CDataContainer error;
-	   error.set(m_resultFieldName, result);
-      error.set(m_errorMessageFieldName, message);
-      error.set(m_dataFieldName, data);
+      boost::shared_ptr<shared::CDataContainer> error = boost::make_shared<shared::CDataContainer>();
+	   error->set(m_resultFieldName, result);
+      error->set(m_errorMessageFieldName, message);
+      error->set(m_dataFieldName, data);
       return error;
    }
 
-   shared::CDataContainer CResult::GenerateInternal(const bool result, const std::string & message, const std::string & data)
+   boost::shared_ptr<shared::CDataContainer> CResult::GenerateInternal(const bool result, const std::string & message, const std::string & data)
    {
-      shared::CDataContainer error;
-	   error.set(m_resultFieldName, result);
-      error.set(m_errorMessageFieldName, message);
-      error.set(m_dataFieldName, data);
+      boost::shared_ptr<shared::CDataContainer> error = boost::make_shared<shared::CDataContainer>();
+	   error->set(m_resultFieldName, result);
+      error->set(m_errorMessageFieldName, message);
+      error->set(m_dataFieldName, data);
       return error;
    }
 

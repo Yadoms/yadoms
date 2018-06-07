@@ -60,7 +60,7 @@ ConfigurationHelper.createControlGroup = function (parameterHandler, controlToIn
       "</label>" +
       "</div>";
    if (!placeInsideLabel) {
-      s += "<div class=\"controls col-sm-6 configuration-control\">" +
+        s += "<div class=\"controls col-sm-6 control-label\" style=\"text-align: left;\">" +
          controlToInsert +
          "</div>";
    }
@@ -176,7 +176,10 @@ ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, 
       name: keyword.friendlyName,
       description: $.t(keyword.units, { defaultValue: keyword.units }),
       type: keyword.type,
-      values : keyword.typeInfo.values
+      values : keyword.typeInfo.values,
+      minimumValue : keyword.typeInfo.min,
+      maximumValue : keyword.typeInfo.max,
+      precision : keyword.typeInfo.precision,
    }
    
    switch (keyword.type.toLowerCase()) {

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "DatabaseAdapters.h"
+#include "SqlExtension.hpp"
 #include "../IResultHandler.h"
+#include "database/common/DatabaseTables.h"
 #include <shared/currentTime/Provider.h>
 #include <shared/Log.h>
 
@@ -22,11 +24,7 @@ namespace database
 
          DECLARE_ADAPTER_IMPLEMENTATION(Configuration,
             ((Section)(std::string)(""))
-            ((Name)(std::string)(""))
             ((Value)(std::string)(""))
-            ((DefaultValue)(std::string)(""))
-            ((Description)(std::string)(""))
-            ((SecurityAccess)(database::entities::ESecurityAccess)(database::entities::ESecurityAccess::kNone)(std::string))
             ((LastModificationDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
          );
 
@@ -88,7 +86,8 @@ namespace database
             ((Type)(shared::plugin::yPluginApi::EKeywordDataType)(shared::plugin::yPluginApi::EKeywordDataType::kString)(std::string))
             ((Units)(std::string)(""))
             ((TypeInfo)(shared::CDataContainer)(shared::CDataContainer()))
-            ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType)(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute)(std::string))
+            ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType)(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute)(
+               std::string))
             ((Details)(shared::CDataContainer)(shared::CDataContainer()))
             ((Blacklist)(bool)(false))
             ((LastAcquisitionValue)(std::string)(""))
@@ -144,5 +143,3 @@ namespace database
       } //namespace adapters
    } //namespace common
 } //namespace database 
-
-

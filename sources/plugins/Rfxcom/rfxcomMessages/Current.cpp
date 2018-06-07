@@ -29,37 +29,19 @@ namespace rfxcomMessages
 
       m_id = rbuf.CURRENT.id1 | (rbuf.CURRENT.id2 << 8);
 
-      m_current1->set(rbuf.CURRENT.ch1h << 8 | rbuf.CURRENT.ch1l);
-      m_current2->set(rbuf.CURRENT.ch2h << 8 | rbuf.CURRENT.ch2l);
-      m_current3->set(rbuf.CURRENT.ch3h << 8 | rbuf.CURRENT.ch3l);
+      m_current1->set((rbuf.CURRENT.ch1h << 8 | rbuf.CURRENT.ch1l) / 10.0);
+      m_current2->set((rbuf.CURRENT.ch2h << 8 | rbuf.CURRENT.ch2l) / 10.0);
+      m_current3->set((rbuf.CURRENT.ch3h << 8 | rbuf.CURRENT.ch3l) / 10.0);
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.CURRENT.battery_level));
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.CURRENT.rssi));
 
-      Init(api);
+      buildDeviceModel();
+      buildDeviceName();
    }
 
    CCurrent::~CCurrent()
    {
-   }
-
-   void CCurrent::Init(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      // Build device description
-      buildDeviceModel();
-      buildDeviceName();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypeCURRENT);
-         details.set("subType", m_subType);
-         details.set("id", m_id);
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         details.printToLog(YADOMS_LOG(information));
-      }
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CCurrent::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
@@ -70,6 +52,21 @@ namespace rfxcomMessages
    void CCurrent::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       api->historizeData(m_deviceName, m_keywords);
+   }
+
+   void CCurrent::filter() const
+   {
+   }
+
+   void CCurrent::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+      shared::CDataContainer details;
+      details.set("type", pTypeCURRENT);
+      details.set("subType", m_subType);
+      details.set("id", m_id);
+      api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+      details.printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CCurrent::getDeviceName() const

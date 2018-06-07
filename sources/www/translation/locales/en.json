@@ -60,12 +60,12 @@
       "crash": "Task crashed",
       "unknownError": "Unknown Task error",
       "end": "Task end",
-      "backup" : {
-         "prepare" : "Preparing backup...",
-         "copyfiles" : "Copying files...",
-         "compress" : "Compressing files...",
-         "clean" : "Clening...",
-         "success" : "Backup succeeded"
+      "backup": {
+        "prepare": "Preparing backup...",
+        "copyfiles": "Copying files...",
+        "compress": "Compressing files...",
+        "clean": "Clening...",
+        "success": "Backup succeeded"
       }
     },
     "database": {
@@ -108,8 +108,7 @@
       "customization": "Enter customization mode"
     },
     "actions": {
-      "loadingPages": "Loading Pages ...",
-      "loadingWidgetsOfPage": "Loading widgets of {{pageName}} page ...",
+      "loadingPage": "Loading {{pageName}} page ...",
       "firstRunConfiguration": "First run configuration"
     },
     "customization": {
@@ -314,7 +313,44 @@
               "description": "Use of standard data type",
               "content": {
                 "capacity": {
-                  "name": "Data type"
+                  "name": "Data type",
+                  "values": {
+                    "apparentpower": "Apparent power (VA)",
+                    "armingAlarm": "Alarm state",
+                    "batteryLevel": "Battery level (%)",
+                    "cameraMove": "Camera move",
+                    "colorrgb": "Color - RGB",
+                    "colorrgbw": "Color - RGBW",
+                    "count": "Counter",
+                    "current": "Current (A)",
+                    "curtain": "Curtain",
+                    "dimmable": "Dimmable (%)",
+                    "direction": "Direction (°)",
+                    "distance": "Distance (m)",
+                    "duration": "Duration",
+                    "energy": "Energy (Wh)",
+                    "event": "Event",
+                    "frequency": "Frequency (Hz)",
+                    "humidity": "Humidity (%)",
+                    "illumination": "Illumination (Lux)",
+                    "load": "Load (%)",
+                    "power": "Power (W)",
+                    "powerFactor": "Power factor",
+                    "pressure": "Pressure (hPa)",
+                    "rain": "Rain (mm)",
+                    "rainrate": "Rain rate (mm/s)",
+                    "rssi": "Signal strength (Db/mW)",
+                    "speed": "Speed (m/s)",
+                    "switch": "On/Off",
+                    "temperature": "Temperature (°C)",
+                    "text": "Text",
+                    "upDownStop": "Up/Down/Stop",
+                    "uv": "UV",
+                    "voltage": "Voltage (V)",
+                    "volume": "Volume (m3)",
+                    "weathercondition": "Weather conditions",
+                    "weight": "Weight (kg)"
+                  }
                 }
               }
             },
@@ -452,7 +488,7 @@
             "refreshPage": {
               "name": "Keep the active page during session",
               "description": "If you refresh the browser by pressiong F5, Yadoms will automatically load in the precedent active page"
-            },            
+            },
             "location": {
               "name": "Location",
               "description": "Enter below coordonates of your city ([Site web latlong](http://www.latlong.net/))"
@@ -467,9 +503,9 @@
             }
           },
           "confirmResetToDefault": "This operation will restore all default configuration. Continue ?",
-          "configurationSaved": "System configuration successfully saved",
+          "configurationSaved": "Configuration saved",
           "defaultConfigurationRestored": "Default configuration restored",
-          "errorDuringSavingConfiguration": "An error has occurred during saving system configuration"
+          "errorDuringSavingConfiguration": "An error has occurred during saving configuration"
         },
         "user-configuration": {
           "title": "User configuration"
@@ -632,9 +668,9 @@
         "maintenance": {
           "title": "Maintenance",
           "backup": "Start a database backup",
-          "deleteAll" : "Delete all backups ?",
-          "deleteAllConfirmTitle" : "Confirm delete",
-          "deleteAllConfirm" : "Are you sure you want to delete all backups ?",
+          "deleteAll": "Delete all backups ?",
+          "deleteAllConfirmTitle": "Confirm delete",
+          "deleteAllConfirm": "Are you sure you want to delete all backups ?",
           "backuplist": {
             "date": "Date",
             "size": "File size",
@@ -970,7 +1006,7 @@
       "errorDuringGettingDeviceInformation": "Error during getting device information",
       "loadingWidgetsError": "Error during the loading of a widget",
       "widgetDisabled": "The widget {{widgetName}} have been disabled because of the configuration is not correct (deleted/missing equipment configured)",
-      "unknownError" : "Unknow error"
+      "unknownError": "Unknow error"
     },
     "widgetPackageManager": {
       "incorrectPackage": "Incorrect package",
@@ -1033,7 +1069,7 @@
     "YadomsCrash": "Yadoms has crashed",
     "PluginCrash": "Plugin {{who}} has been crashed",
     "TaskFailed": "{{who}} task has been crashed",
-    "RuleFailed": "The automation rule __who__ has failed",
+    "RuleFailed": "The automation rule {{who}} has failed",
     "UpdateAvailable": "An software update is available, check the install&update page"
   },
   "webSockets": {
@@ -1108,9 +1144,11 @@
     "units": {
       "noUnit": "",
       "ampere": "A",
+      "ampereHour": "Ah",
+      "cubicMetre": "m³",
+      "cubicMeterPerSecond": "m³/s",
       "decibel": "dB",
       "decibelPerMilliWatt": "dBm",
-      "cubicMetre": "m3",
       "degrees": "°",
       "degreesCelcius": "°C",
       "degreesFarenheit": "°F",

@@ -42,7 +42,11 @@ widgetViewModelCtor =
 
               // registration of the keyword
               if  (!isNullOrUndefined(this.widget.configuration.device)) {
-                self.widgetApi.registerKeywordAcquisitions(this.widget.configuration.device.keywordId);                 
+                 //we register keyword new acquisition
+                 self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+		   
+                 //we register keyword for get last value at web client startup 
+                 self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);              
               }
           };
 

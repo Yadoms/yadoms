@@ -49,7 +49,7 @@ public:
    /// \param [in] deviceRemoved    the name of the device removed
    //--------------------------------------------------------------
    void removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
-                     std::string deviceRemoved);
+                     const std::string& deviceRemoved);
 
    //--------------------------------------------------------------
    /// \brief	    OnConfigurationUpdate
@@ -58,7 +58,7 @@ public:
    /// \param[in] newConfiguration        the new plugin configuration
    //--------------------------------------------------------------
    void OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                                    const std::string &deviceName,
+                                    const std::string& deviceName,
                                     const shared::CDataContainer& newConfiguration);
 
    //--------------------------------------------------------------

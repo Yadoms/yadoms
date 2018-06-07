@@ -1,6 +1,6 @@
 {
   "type": "shutter",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": "Jean-Michel BERHAULT",
   "url": "https://github.com/Yadoms/yadoms/wiki/shutter",
   "credits": "",
@@ -22,7 +22,7 @@
   "configurationSchema": {
     "device": {
       "type": "keyword",
-	  "expectedCapacity": ["switch", "curtain"],
+	  "expectedCapacity": ["switch", "curtain", "dimmable"],
       "expectedKeywordAccess": "get"
     },
     "invert": {

@@ -22,6 +22,12 @@ public:
    /// \param [in] api             Plugin execution context (Yadoms API)
    /// \param [in] messages        Received messages
    //--------------------------------------------------------------
-   virtual void decodeLinkyMessage(boost::shared_ptr<yApi::IYPluginApi> api,
-                                   const boost::shared_ptr<std::map<std::string, std::vector<std::string>>>& messages) = 0;
+   virtual void decodeMessage(boost::shared_ptr<yApi::IYPluginApi> api,
+                              const boost::shared_ptr<std::map<std::string, std::vector<std::string>>>& messages) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Return if the ERDF counter TeleInfo is desactivated
+   /// \return                      the counter state
+   //--------------------------------------------------------------
+   virtual bool isERDFCounterDesactivated() const = 0;
 };

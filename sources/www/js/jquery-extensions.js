@@ -59,7 +59,7 @@ function getTextWidth(text, font) {
                     if ((after) && (after.content) && (after.content!=="none") && (after.content[1]!=undefined))
                         text += after.content[1];
                      
-                    var minFont = $this.attr("min-font") || 10;
+                    var minFont = $this.attr("min-font") || 9;
                     if (text === "")
                         text = "W";
                      

@@ -104,9 +104,9 @@ namespace database
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > getKeywordDataByHour(int keywordId,
-                                                                                                  boost::posix_time::ptime timeFrom,
-                                                                                                  boost::posix_time::ptime timeTo) = 0;
+      virtual std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > getKeywordDataByHour(int keywordId,
+                                                                                                             boost::posix_time::ptime timeFrom,
+                                                                                                             boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Get the data  by day (avg, min, max per day)
@@ -116,9 +116,9 @@ namespace database
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > getKeywordDataByDay(int keywordId,
-                                                                                                 boost::posix_time::ptime timeFrom,
-                                                                                                 boost::posix_time::ptime timeTo) = 0;
+      virtual std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > getKeywordDataByDay(int keywordId,
+                                                                                                            boost::posix_time::ptime timeFrom,
+                                                                                                            boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Get the data by month (avg, min, max per day)
@@ -128,9 +128,9 @@ namespace database
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > getKeywordDataByMonth(int keywordId,
-                                                                                                   boost::posix_time::ptime timeFrom,
-                                                                                                   boost::posix_time::ptime timeTo) = 0;
+      virtual std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > getKeywordDataByMonth(int keywordId,
+                                                                                                              boost::posix_time::ptime timeFrom,
+                                                                                                              boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Get the data by year (avg, min, max per day)
@@ -140,69 +140,57 @@ namespace database
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > getKeywordDataByYear(int keywordId,
-                                                                                                  boost::posix_time::ptime timeFrom,
-                                                                                                  boost::posix_time::ptime timeTo) = 0;
+      virtual std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > getKeywordDataByYear(int keywordId,
+                                                                                                             boost::posix_time::ptime timeFrom,
+                                                                                                             boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
-      /// \brief                 Get the data (highchart js format) : [[date,value],[date,value],...]
+      /// \brief                 Get the data  by hour (avg, min, max per hour)
       /// \param [in] keywordId  keywordId Id
       /// \param [in] timeFrom   The start date (optionnal)
       /// \param [in] timeTo     The end date (optionnal)
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::string getKeywordHighchartData(int keywordId,
+      virtual std::string getHugeVectorKeywordDataByHour(int keywordId,
+                                                   boost::posix_time::ptime timeFrom,
+                                                   boost::posix_time::ptime timeTo) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                 Get the data  by day (avg, min, max per day)
+      /// \param [in] keywordId  keywordId Id
+      /// \param [in] timeFrom   The start date (optionnal)
+      /// \param [in] timeTo     The end date (optionnal)
+      /// \return                Map of data : (date, value)
+      /// \throw                 CInvalidParameter if deviceId is unknown
+      //--------------------------------------------------------------
+      virtual std::string getHugeVectorKeywordDataByDay(int keywordId,
                                                   boost::posix_time::ptime timeFrom,
                                                   boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
-      /// \brief                 Get the summary data (highchart js format) : [[date,value],[date,value],...] by hour (one value per hour)
+      /// \brief                 Get the data by month (avg, min, max per day)
       /// \param [in] keywordId  keywordId Id
       /// \param [in] timeFrom   The start date (optionnal)
       /// \param [in] timeTo     The end date (optionnal)
-      /// \return                Map of data : (date, value). One value per hour
+      /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::string getKeywordHighchartDataByHour(int keywordId,
-                                                        boost::posix_time::ptime timeFrom,
-                                                        boost::posix_time::ptime timeTo) = 0;
+      virtual std::string getHugeVectorKeywordDataByMonth(int keywordId,
+                                                    boost::posix_time::ptime timeFrom,
+                                                    boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
-      /// \brief                 Get the summary data (highchart js format) : [[date,value],[date,value],...] by day (one value per day)
+      /// \brief                 Get the data by year (avg, min, max per day)
       /// \param [in] keywordId  keywordId Id
       /// \param [in] timeFrom   The start date (optionnal)
       /// \param [in] timeTo     The end date (optionnal)
-      /// \return                Map of data : (date, value). One value per day
+      /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::string getKeywordHighchartDataByDay(int keywordId,
-                                                       boost::posix_time::ptime timeFrom,
-                                                       boost::posix_time::ptime timeTo) = 0;
-
-      //--------------------------------------------------------------
-      /// \brief                 Get the summary data (highchart js format) : [[date,value],[date,value],...] by month (one value per month)
-      /// \param [in] keywordId  keywordId Id
-      /// \param [in] timeFrom   The start date (optionnal)
-      /// \param [in] timeTo     The end date (optionnal)
-      /// \return                Map of data : (date, value). One value per day
-      /// \throw                 CInvalidParameter if deviceId is unknown
-      //--------------------------------------------------------------
-      virtual std::string getKeywordHighchartDataByMonth(int keywordId,
-                                                         boost::posix_time::ptime timeFrom,
-                                                         boost::posix_time::ptime timeTo) = 0;
-
-      //--------------------------------------------------------------
-      /// \brief                 Get the summary data (highchart js format) : [[date,value],[date,value],...] by year (one value per year)
-      /// \param [in] keywordId  keywordId Id
-      /// \param [in] timeFrom   The start date (optionnal)
-      /// \param [in] timeTo     The end date (optionnal)
-      /// \return                Map of data : (date, value). One value per day
-      /// \throw                 CInvalidParameter if deviceId is unknown
-      //--------------------------------------------------------------
-      virtual std::string getKeywordHighchartDataByYear(int keywordId,
-                                                        boost::posix_time::ptime timeFrom,
-                                                        boost::posix_time::ptime timeTo) = 0;
+      virtual std::string getHugeVectorKeywordDataByYear(int keywordId,
+                                                   boost::posix_time::ptime timeFrom,
+                                                   boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Delete old acquisition
