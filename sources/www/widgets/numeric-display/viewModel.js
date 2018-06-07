@@ -79,7 +79,7 @@ function numericDisplayViewModel() {
         
         //we get the unit of the keyword
         self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
-          self.unit($.t(keyword.units));
+          self.unit(keyword.units);
           self.capacity = keyword.capacityName;
            
           // If no unit, we hide the unit display
@@ -113,12 +113,13 @@ function numericDisplayViewModel() {
                   self.displayDuration(data.value);
                }else {
                   var temp = parseFloat(data.value).toFixed(self.precision);
-                  self.data(temp.toString());
+                  adaptValueAndUnit(temp, self.unit(), function(newValue, newUnit) {
+                     self.unit($.t(newUnit));
+                     self.data(newValue.toString());
+                  });
                }
             }else 
                self.data("-");
-            
-            self.widgetApi.fitText();
             
             if (self.shouldBeVisible()){
                if (data.date!=="")

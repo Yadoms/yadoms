@@ -1144,6 +1144,8 @@
     "units": {
       "noUnit": "",
       "ampere": "A",
+      "kampere": "KA",
+      "mampere": "mA",      
       "ampereHour": "Ah",
       "cubicMetre": "m³",
       "cubicMeterPerSecond": "m³/s",
@@ -1155,6 +1157,7 @@
       "hectoPascal": "hPa",
       "hertz": "Hz",
       "kg": "Kg",
+      "liter": "litre",
       "lux": "lux",
       "meter": "m",
       "metersPerSecond": "m/s",
@@ -1166,7 +1169,9 @@
       "volt": "V",
       "voltAmpere": "VA",
       "watt": "W",
-      "wattPerHour": "Wh"
+      "Kwatt": "KW",
+      "wattPerHour": "Wh",
+      "KwattPerHour": "KWh"
     }
   },
   "enumerations": {
