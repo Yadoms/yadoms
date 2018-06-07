@@ -1,3 +1,6 @@
+### 1.2.0
+* add the new feature #466 : adapt units if needed
+
 ### 1.1.0
 * fix #462 : doesn't display the first value for some summary values
 * clean unused variable and elements
