@@ -1,5 +1,6 @@
 #pragma once
 #include <shared/plugin/yPluginApi/historization/IHistorizable.h>
+#include "database/common/requesters/Keyword.h"
 
 namespace pluginSystem
 {
@@ -11,9 +12,11 @@ namespace pluginSystem
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
-      ///\param[in] keywordName     Keyword name
+      ///\param[in] keyword      Keyword
+      ///\param[in] value        Command value
       //-----------------------------------------------------
-      explicit CCommandHistorizer(const std::string& keywordName, const std::string& value);
+      explicit CCommandHistorizer(boost::shared_ptr<const database::entities::CKeyword> keyword,
+                                  const std::string& value);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
@@ -21,26 +24,23 @@ namespace pluginSystem
       virtual ~CCommandHistorizer();
 
       // IHistorizable implementation
-      virtual const std::string& getKeyword() const;
-      virtual const shared::plugin::yPluginApi::CStandardCapacity& getCapacity() const;
-      virtual const shared::plugin::yPluginApi::EKeywordAccessMode& getAccessMode() const;
-      virtual std::string formatValue() const;
-      virtual const shared::plugin::yPluginApi::historization::EMeasureType& getMeasureType() const;
-      virtual shared::CDataContainer getTypeInfo() const;
+      const std::string& getKeyword() const override;
+      const shared::plugin::yPluginApi::CStandardCapacity& getCapacity() const override;
+      const shared::plugin::yPluginApi::EKeywordAccessMode& getAccessMode() const override;
+      std::string formatValue() const override;
+      const shared::plugin::yPluginApi::historization::EMeasureType& getMeasureType() const override;
+      shared::CDataContainer getTypeInfo() const override;
       // [END] IHistorizable implementation
 
    private:
       //-----------------------------------------------------
       ///\brief                     The keyword name
       //-----------------------------------------------------
-      const std::string m_keywordName;
+      boost::shared_ptr<const database::entities::CKeyword> m_keyword;
 
       //-----------------------------------------------------
       ///\brief                     The value
       //-----------------------------------------------------
       std::string m_value;
    };
-
 } // namespace pluginSystem	
-	
-	
