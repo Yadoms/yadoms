@@ -670,7 +670,7 @@
       } else {
          Yadoms.modals.keywordSetValue.loadAsync()
          .done(function () {
-            Yadoms.showSetKeywordValueModal(keyword, value, device.attachedPlugin)
+            Yadoms.showSetKeywordValueModal(keyword, keyword.measure.toLowerCase() === "increment" ? 0 : value, device.attachedPlugin)
             .done(function (keyword, newValue) {
                KeywordManager.sendCommand(keyword.id, newValue.toString());
             })

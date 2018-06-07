@@ -211,12 +211,23 @@ namespace web
             }
          }
 
-         void CSystem::addVirtualDevicesSupportedCapacity(const shared::plugin::yPluginApi::CStandardCapacity& capacity)
+         void CSystem::addVirtualDevicesSupportedCapacity(const shared::plugin::yPluginApi::CStandardCapacity& capacity,
+                                                          const std::vector<shared::plugin::yPluginApi::historization::EMeasureType>&
+                                                          acceptedMeasureTypes)
          {
             auto capacityContainer = boost::make_shared<shared::CDataContainer>();
             capacityContainer->set("name", capacity.getName());
             capacityContainer->set("unit", capacity.getUnit());
             capacityContainer->set("dataType", capacity.getType());
+
+            if (!acceptedMeasureTypes.empty())
+            {
+               std::vector<std::string> strAcceptedMeasureTypes;
+               for (const auto& acceptedMeasureType : acceptedMeasureTypes)
+                  strAcceptedMeasureTypes.push_back(acceptedMeasureType.toString());
+               capacityContainer->set("acceptedMeasureTypes", strAcceptedMeasureTypes);
+            }
+
             m_virtualDevicesSupportedCapacities.set(capacity.getName(), capacityContainer);
          }
 
@@ -230,14 +241,26 @@ namespace web
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::CameraMove());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ColorRGB());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ColorRGBW());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Counter());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Counter(),
+                                                  std::vector<shared::plugin::yPluginApi::historization::EMeasureType>
+                                                  {
+                                                     shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute,
+                                                     shared::plugin::yPluginApi::historization::EMeasureType::kIncrement,
+                                                     shared::plugin::yPluginApi::historization::EMeasureType::kCumulative
+                                                  });
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Current());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Curtain());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Dimmable());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Direction());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Distance());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Duration());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Energy());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Energy(),
+                                                  std::vector<shared::plugin::yPluginApi::historization::EMeasureType>
+                                                  {
+                                                     shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute,
+                                                     shared::plugin::yPluginApi::historization::EMeasureType::kIncrement,
+                                                     shared::plugin::yPluginApi::historization::EMeasureType::kCumulative
+                                                  });
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Event());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Frequency());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Humidity());
@@ -246,7 +269,12 @@ namespace web
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Power());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::PowerFactor());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Pressure());
-               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Rain());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Rain(),
+                                                  std::vector<shared::plugin::yPluginApi::historization::EMeasureType>
+                                                  {
+                                                     shared::plugin::yPluginApi::historization::EMeasureType::kIncrement,
+                                                     shared::plugin::yPluginApi::historization::EMeasureType::kCumulative
+                                                  });
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::RainRate());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Rssi());
                addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Speed());

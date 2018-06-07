@@ -1,5 +1,5 @@
 ### 1.1.0
-_Requires Yadoms 2.1.0-beta.2 or geater_
+_Requires Yadoms 2.1.0-beta.2 or greater_
 * Fix pairing of non-configurable devices
 * Fix A5-12-01 counter divisor usage
 * Fix cumulative historization for A5-12-xx profiles

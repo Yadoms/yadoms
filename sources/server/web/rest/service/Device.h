@@ -84,11 +84,6 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> sendKeywordCommand(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
             //-----------------------------------------
-            ///\brief   send a command to a device
-            //-----------------------------------------
-            boost::shared_ptr<shared::serialization::IDataSerializable> sendDeviceCommand(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-
-            //-----------------------------------------
             ///\brief   Delete a device in database
             //-----------------------------------------
             boost::shared_ptr<shared::serialization::IDataSerializable> deleteDevice(const std::vector<std::string>& parameters, const std::string& requestContent) const;
