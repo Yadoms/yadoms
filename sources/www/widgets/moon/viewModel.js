@@ -59,8 +59,10 @@ widgetViewModelCtor = function moonViewModel() {
     }
 
     this.configurationChanged = function () {
-        //we register keyword new acquisition
-        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+       var self = this;
+        
+       //we register keyword new acquisition
+       self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
 	   
 		//we register keyword for get last value at web client startup
 		self.widgetApi.getLastValue(self.widget.configuration.device.keywordId); 
