@@ -11,6 +11,10 @@ function chartViewModel() {
     this.interval = 0;
     this.deviceInfo = [];       
     this.keywordInfo = [];
+    
+    // The unit of the plot
+    this.unit = [];
+    
     this.differentialDisplay = [];
     this.incompatibility = false;
     this.serverTime = null;
@@ -97,9 +101,6 @@ function chartViewModel() {
        }
        
        self.prefix = interval.substring(interval.indexOf("/") +1, interval.length);
-       
-       console.log ("self.prefix :", self.prefix);
-       
        menuItem.push({ separator: ""});
        
        //push last menu items
@@ -638,8 +639,6 @@ function chartViewModel() {
                                   plot.push([d, v]);
                            });
                        } else {
-                          
-                           //it is summarized data so we can get min and max curve
                            var vMin;
                            var vMax;
                            
@@ -711,9 +710,17 @@ function chartViewModel() {
                               }
                            }
                        }
+                       
+                       // Adapt units if needed
+                       adaptValuesAndUnit(plot, range, self.keywordInfo[index].units, function(newValues, newRange, newUnit){
+                          plot = newValues;
+                          range = newRange;
+                          self.unit[index] = newUnit;
+                       });
+                       
                        var axisName;
                        try{
-                          axisName = createAxis(index, self.chart, self.seriesUuid, self.widget.configuration, self.precision[index], device);
+                          axisName = createAxis(index, self.chart, self.seriesUuid, self.widget.configuration, self.precision[index], self.unit[index], device);
                        }catch(error){
                           console.error (error);
                        }
@@ -813,7 +820,7 @@ function chartViewModel() {
                        if (serie){
                           //we save the unit in the serie for tooltip formatting
                           try{
-                             serie.units = $.t(self.keywordInfo[index].units);
+                             serie.units = $.t(self.unit);
                           }catch(error){
                              serie.units = "";
                           }

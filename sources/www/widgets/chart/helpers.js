@@ -107,7 +107,6 @@
   */   
   
 function getWeeks(vectorToParse){
-    
     var weekplot = [];
     if (vectorToParse.length == 0)
        return weekplot;
@@ -170,6 +169,7 @@ function createAxis (index,         // index of the plot
                      seriesUuid,    // Uuid array
                      configuration, // configuration of the widget
                      precision,     // display precision for this value
+                     units,         // unit of this axis
                      device) {      // device associated to the keyword
 
   var colorAxis = "#606060"; // default color
@@ -204,7 +204,7 @@ function createAxis (index,         // index of the plot
 
           var unit="";
           try {
-             unit = $.t(chart.keyword[index].units);
+             unit = $.t(units);
           }
           catch(error){
              console.log ("unit is empty for keyword ", device.content.source.keywordId);
@@ -262,4 +262,84 @@ function createAxis (index,         // index of the plot
   }
   
   return yAxisName; // Return the name of the axis
+};
+
+/**
+ * Adapt the unit and an array of values to an appropriate unit
+ * @param values The Id to find
+ * @param baseUnit Unit received from yadoms server
+ */
+adaptValuesAndUnit = function (values, range, baseUnit, callback) {
+   assert(!isNullOrUndefined(values), "value must be defined");
+   assert(!isNullOrUndefined(baseUnit), "baseUnit must be defined");
+   var unit = baseUnit;
+   var newValues = values;
+   var newRange = range;
+   
+   evaluateArray = function(arrayToEvaluate) {
+      var moy = 0;
+      
+      $.each(arrayToEvaluate, function (index,value) {
+         moy = moy + parseFloat(value[1]);
+      });
+      
+      if (arrayToEvaluate.length != 0)
+         moy = moy / arrayToEvaluate.length;
+      
+      return moy;
+   };
+   
+   adaptArray = function(arrayToAdapt, coeff) {
+      var newArray = [];
+      $.each(arrayToAdapt, function (index,value) {
+         newArray.push([value[0],parseFloat(value[1])*coeff]);
+      });
+      return newArray;
+   };
+   
+   adaptRange = function(rangeToAdapt, coeff) {
+      var newRange = [];
+      $.each(rangeToAdapt, function (index,value) {
+         newArray.push([value[0],parseFloat(value[1])*coeff,parseFloat(value[2])*coeff]);
+      });
+      return newRange;
+   };
+   
+   switch (baseUnit){
+      case "data.units.cubicMetre":
+         if (evaluateArray(values) <1) {
+            newValues = adaptArray(values, 1000);
+            newRange = adaptRange(range, 1000);
+            unit = "data.units.liter";
+         }
+         break;
+      case "data.units.wattPerHour":
+         if (evaluateArray(values) >2000) {
+            newValues = adaptArray(values, 0.001);
+            newRange = adaptRange(range, 0.001);
+            unit = "data.units.KwattPerHour";
+         }      
+         break;
+      case "data.units.watt":
+         if (evaluateArray(values)>2000) {
+            newValues = adaptArray(values, 0.001);
+            newRange = adaptRange(range, 0.001);
+            unit = "data.units.Kwatt";
+         }      
+         break;
+      case "data.units.ampere":
+         if (Math.abs(value)>2000) {
+            newValues = adaptArray(values, 0.001);
+            newRange = adaptRange(range, 0.001);
+            unit = "data.units.Kampere";
+         } else if (Math.abs(value)<1) {
+            newValues = adaptArray(values, 1000);
+            newRange = adaptRange(range, 1000);
+            unit = "data.units.mampere";
+         }         
+      default:
+         break;
+   }
+   
+   callback(newValues, newRange, unit);
 };

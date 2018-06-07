@@ -1,4 +1,7 @@
-### 2.1.1
+### 2.2.0
+
+#### New features and fixes
+* New Feature #466 - Adapt unit if it's necessary
 
 #### Web Client
 * Fix #463 - Rolling title doesn't work for some widgets

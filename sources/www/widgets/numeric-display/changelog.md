@@ -1,3 +1,6 @@
+### 1.1.0
+* New Feature #466 - Adapt unit if it's necessary
+
 ### 1.0.4
 * Fix #353 - Bad duration display
 
