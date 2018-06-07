@@ -90,12 +90,18 @@ namespace dataAccessLayer
 
    void CKeywordManager::addKeyword(const database::entities::CKeyword& newKeyword) const
    {
-      return m_keywordRequester->addKeyword(newKeyword);
+      m_keywordRequester->addKeyword(newKeyword);
+      auto keywords = m_keywordRequester->getKeywordIdFromFriendlyName(newKeyword.DeviceId,
+                                                                      newKeyword.FriendlyName);
+
+      //post notification
+      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
+         notification::CHelpers::postChangeNotification(keyword[0], notification::change::EChangeType::kCreate);
    }
 
    void CKeywordManager::addKeyword(int deviceId, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details)
    {
-      return addKeyword(*makeKeywordEntity(deviceId, keyword, details));
+      addKeyword(*makeKeywordEntity(deviceId, keyword, details));
    }
 
    void CKeywordManager::addKeywords(int deviceId, const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords)

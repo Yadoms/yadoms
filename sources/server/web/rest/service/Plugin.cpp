@@ -16,9 +16,11 @@ namespace web
       {
          CPlugin::CPlugin(boost::shared_ptr<database::IDataProvider> dataProvider,
                           boost::shared_ptr<pluginSystem::CManager> pluginManager,
+                          boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                           communication::ISendMessageAsync& messageSender)
             : m_dataProvider(dataProvider),
               m_pluginManager(pluginManager),
+              m_deviceManager(deviceManager),
               m_restKeyword("plugin"),
               m_messageSender(messageSender)
          {
@@ -539,13 +541,13 @@ namespace web
                   try
                   {
                      // Declare device
-                     const auto& device = m_dataProvider->getDeviceRequester()->createDevice(pluginId,
-                                                                                             deviceName,
-                                                                                             content.get<std::string>("name"),
-                                                                                             content.get<std::string>("type"),
-                                                                                             content.exists("model") && !content.get<std::string>("model").empty() ?
-                                                                                                content.get<std::string>("name") : content.get<std::string>("model"),
-                                                                                             shared::CDataContainer());
+                     const auto& device = m_deviceManager->createDevice(pluginId,
+                                                                        deviceName,
+                                                                        content.get<std::string>("name"),
+                                                                        content.get<std::string>("type"),
+                                                                        content.exists("model") && !content.get<std::string>("model").empty() ?
+                                                                        content.get<std::string>("name") : content.get<std::string>("model"),
+                                                                        shared::CDataContainer());
                      m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(device->Id(),
                                                                                      content.get<shared::CDataContainer>("configuration"));
 

@@ -7,6 +7,7 @@ namespace notification { namespace change {
       ((Create))
       ((Update))
       ((Delete))
+      ((Blacklist))
    )     
    
 } // namespace change   
