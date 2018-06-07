@@ -711,15 +711,16 @@ function chartViewModel() {
                            }
                        }
                        
-                        // Adapt units if needed
-                       adaptValuesAndUnit(plot, self.keywordInfo[index].units, function(newValues, newUnit){
+                       // Adapt units if needed
+                       adaptValuesAndUnit(plot, range, self.keywordInfo[index].units, function(newValues, newRange, newUnit){
                           plot = newValues;
-                          self.unit = newUnit;
-                       });                       
+                          range = newRange;
+                          self.unit[index] = newUnit;
+                       });
                        
                        var axisName;
                        try{
-                          axisName = createAxis(index, self.chart, self.seriesUuid, self.widget.configuration, self.precision[index], device);
+                          axisName = createAxis(index, self.chart, self.seriesUuid, self.widget.configuration, self.precision[index], self.unit[index], device);
                        }catch(error){
                           console.error (error);
                        }
