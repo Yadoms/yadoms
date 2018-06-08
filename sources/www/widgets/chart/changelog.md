@@ -1,5 +1,6 @@
-### 1.2.0
-* add the new feature #466 : adapt units if needed
+### 1.2.0-beta.1
+* NewFeature #466 : adapt units if needed
+* NewFeature #485 - Adapt unit for bit/s display
 
 ### 1.1.0
 * fix #462 : doesn't display the first value for some summary values

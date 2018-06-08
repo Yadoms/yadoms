@@ -1,19 +1,18 @@
 ### 2.2.0-beta.1
 
 #### New features and fixes
-* New Feature #466 - Adapt unit if it's necessary
+* NewFeature #466 - Adapt unit if it's necessary
+* NewFeature #485 - Adapt unit for bit/s display
 
 #### Web Client
 * Fix #463 - Rolling title doesn't work for some widgets
 * Fix #486 - Change configuration doesn't refresh keywords list if no keyword before
+* In configuration sections, don't display sub-section of a combo section if no content
 
 
 ##### Yadoms Core
 * NewFeature #402 - Add measure type choice for some capacities (counter, energy, rain) when creating a virtual device
 * Fix incremental historization from automation rules or web client
-
-#### Web Client
-* In configuration sections, don't display sub-section of a combo section if no content
 
 ### 2.1.0
 
