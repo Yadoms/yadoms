@@ -1,5 +1,25 @@
 # Macros for setting up a plugin
 
+#TODO ménage
+MACRO(USE_SPECIFIC_PACKAGE_JSON file)
+   # set()
+   # message status ("AAA=${AAA}")
+ENDMACRO()
+
+MACRO(MAKE_PACKAGE _targetName)
+#TODO gérer le cas du EnOcean :
+# - Le package.json pourrait être généré from scratch (sans package.in.json en entrée)
+
+   # Workaround to force CMake to rebuild makefile when changelog.md is updated
+   configure_file(changelog.md ${CMAKE_BINARY_DIR}/changelog.md.dummy)
+   
+   configure_file(package.in.json
+      ${CMAKE_BINARY_DIR}/package.json
+      @ONLY
+      NEWLINE_STYLE UNIX)
+
+ENDMACRO()
+
 function(PLUGIN_IS_IN_DEV_STATE _targetName)
    string(FIND ${_targetName} "dev-" DEV_SUBSTRING_POSITION)
    if (${DEV_SUBSTRING_POSITION} EQUAL 0)
@@ -16,21 +36,18 @@ MACRO(PLUGIN_SOURCES _targetName)
        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${YADOMS_OUTPUT_DIR}/${OUTPUTCONFIG}/plugins/${_targetName})
    endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
    
+   # Retrieve plugin version
+   GET_PACKAGE_VERSION("changelog.md" PLUGIN_VERSION)
+   EXTRACT_VERSION(${PLUGIN_VERSION} PLUGIN_VERSION_MAJOR PLUGIN_VERSION_MINOR PLUGIN_VERSION_PATCH)
+   
    FILE(GLOB TRANSLATION_FILES locales/*)
    source_group(locales locales/*)
-
-   if(NOT PACKAGE_JSON_FILE)
-      # Add package.json if exists (can be absent if generated)
-      FILE(GLOB PACKAGE_JSON_FILE package.json)
-   endif(NOT PACKAGE_JSON_FILE)
-
-   # Add changelog.md if exists (can be absent if generated)
-   FILE(GLOB CHANGELOG_MD_FILE changelog.md)
    
    set(PLUGIN_SOURCE_FILES
       ${ARGN}
-      ${PACKAGE_JSON_FILE}
-      ${CHANGELOG_MD_FILE}
+      package.in.json
+      changelog.md
+      icon.png
       ${TRANSLATION_FILES}
       )
 
@@ -43,19 +60,16 @@ MACRO(PLUGIN_SOURCES _targetName)
       ## Pre build commands (only visual studio)
       ##################################################################################################
       if(MSVC)
-         #update the Windows specific 'plugin.rc' file which add properties to executable (version, releaseType=
-         #as pre build step (plugin.rc is modified only if needed, to avoid unjustified build
-         include(../common/version.cmake)            
-
          set(PLUGIN_NAME ${_targetName})
-        
+
          #Try to use plugin icon
          FILE(GLOB PLUGIN_EXE_ICON icon.ico)
          if(NOT EXISTS ${PLUGIN_EXE_ICON})
             SET(PLUGIN_EXE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/../common/resources/windows/plugin.ico")
-         endif(NOT EXISTS ${PLUGIN_EXE_ICON})
+         endif(NOT EXISTS ${PLUGIN_EXE_ICON})         
          
-         
+         #update the Windows specific 'plugin.rc' file which add properties to executable (version, releaseType)
+         #as pre build step (plugin.rc is modified only if needed, to avoid unjustified build
          # apply templating to the manifest for setting the version
          # PLUGIN_EXE_ICON is used in "plugin.rc.in"
          configure_file(../common/resources/windows/plugin.rc.in
@@ -76,6 +90,9 @@ MACRO(PLUGIN_SOURCES _targetName)
    
    add_executable(${_targetName} ${PLUGIN_SOURCE_FILES})
    project(${_targetName})
+   
+   # Build package.json (add version from changelog.md)
+   MAKE_PACKAGE(${_targetName})
 	
 	IF(MSVC OR XCODE)
 		SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "plugins")
@@ -186,7 +203,13 @@ MACRO(PLUGIN_LINK _targetName)
             endif(COTIRE_USE_UNITY)
          endif(COTIRE_USE)
       endif(MSVC)
-   endif(WIN32)   
+   endif(WIN32)  
+   
+   # Post-build copy of required files
+   PLUGIN_POST_BUILD_COPY_FILE(${_targetName} ${CMAKE_BINARY_DIR}/package.json)
+   PLUGIN_POST_BUILD_COPY_FILE(${_targetName} changelog.md)
+   PLUGIN_POST_BUILD_COPY_FILE(${_targetName} icon.png)
+   PLUGIN_POST_BUILD_COPY_DIRECTORY(${_targetName} locales) 
 	
 ENDMACRO()
 
@@ -268,3 +291,5 @@ MACRO(PLUGIN_POST_BUILD_COPY_DIRECTORY _targetName _resource)
 	  endif()	
    endif()		  
 ENDMACRO()
+
+

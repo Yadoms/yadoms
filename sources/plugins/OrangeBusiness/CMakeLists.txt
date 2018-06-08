@@ -62,13 +62,3 @@ set(ORANGE_BUSINESS_PLUGIN_LINK
 PLUGIN_SOURCES(OrangeBusiness ${ORANGE_BUSINESS_PLUGIN_SOURCES})
 PLUGIN_INCLDIR(OrangeBusiness ${ORANGE_BUSINESS_INCLDIR})
 PLUGIN_LINK   (OrangeBusiness ${ORANGE_BUSINESS_ADDITIONAL_LIB})
-
-#########################################
-## Post-build commands
-## Copy files to build directory
-## "package.json" and "icon.png" are needed, but you can add extra-files
-#########################################
-PLUGIN_POST_BUILD_COPY_FILE(OrangeBusiness package.json)
-PLUGIN_POST_BUILD_COPY_FILE(OrangeBusiness changelog.md)
-PLUGIN_POST_BUILD_COPY_FILE(OrangeBusiness icon.png)
-PLUGIN_POST_BUILD_COPY_DIRECTORY(OrangeBusiness locales)

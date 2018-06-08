@@ -71,14 +71,4 @@ if(CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
    PLUGIN_INCLDIR(Piface2 ${PIFACE2_PLUGIN_INCLDIR} ${PIFACE2_PLUGIN_ADDITIONAL_INC_DIR})
    PLUGIN_LINK   (Piface2 ${PIFACE2_PLUGIN_LINK})
 
-   #########################################
-   ## Post-build commands
-   ## Copy files to build directory
-   ## "package.json" and "icon.png" are needed, but you can add extra-files
-   #########################################
-   PLUGIN_POST_BUILD_COPY_FILE(Piface2 package.json)
-   PLUGIN_POST_BUILD_COPY_FILE(Piface2 changelog.md)
-   PLUGIN_POST_BUILD_COPY_FILE(Piface2 icon.png)
-   PLUGIN_POST_BUILD_COPY_DIRECTORY(Piface2 locales)
-
 endif()

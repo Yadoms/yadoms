@@ -1,8 +1,8 @@
 {
 	"type": "megatecUps",
-	"version": "1.0.0",
+	"version": "@PLUGIN_VERSION@",
 	"author": "Sébastien GALLOU",
-   "url": "https://github.com/Yadoms/yadoms/wiki/MegatecUps",
+	"url": "https://github.com/Yadoms/yadoms/wiki/MegatecUps",
 	"credits": "",
 	"supportedPlatforms": "all",
 	"configurationSchema": {
