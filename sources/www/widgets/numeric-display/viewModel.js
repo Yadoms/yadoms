@@ -94,8 +94,7 @@ function numericDisplayViewModel() {
        .fail(function (error) {
           notifyError($.t("widgets/chart:errorInitialization"), error);
           d.reject();
-       });
-       
+       });       
        return d.promise();
     }
 
@@ -113,10 +112,10 @@ function numericDisplayViewModel() {
                if (self.capacity ==="duration"){
                   self.displayDuration(data.value);
                }else {
-                  var temp = parseFloat(data.value).toFixed(self.precision);
+                  var temp = parseFloat(data.value);
                   adaptValueAndUnit(temp, self.rawUnit, function(newValue, newUnit) {
                      self.unit($.t(newUnit));
-                     self.data(newValue.toString());
+                     self.data(newValue.toFixed(self.precision).toString());
                   });
                }
             }else 

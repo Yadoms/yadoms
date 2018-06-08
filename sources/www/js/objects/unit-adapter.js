@@ -40,7 +40,19 @@ adaptValueAndUnit = function (value, baseUnit, callback) {
             newValue = parseFloat(value)*1000;
             unit = "data.units.mampere";
          }
-         break;      
+         break;
+      case "bit/s":
+         if (Math.abs(value)>2000000000) {
+            newValue = parseFloat(value)/1000000000;
+            unit = "Gb/s";
+         }else if (Math.abs(value)>2000000) {
+            newValue = parseFloat(value)/1000000;
+            unit = "Mb/s";            
+         }else if (Math.abs(value)>2000) {
+            newValue = parseFloat(value)/1000;
+            unit = "Kb/s";            
+         }
+         break;
       default:
          break;
    }

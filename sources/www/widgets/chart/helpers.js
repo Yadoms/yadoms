@@ -278,13 +278,17 @@ adaptValuesAndUnit = function (values, range, baseUnit, callback) {
    
    evaluateArray = function(arrayToEvaluate) {
       var moy = 0;
+      var nbre = 0;
       
       $.each(arrayToEvaluate, function (index,value) {
-         moy = moy + parseFloat(value[1]);
+         if (value[1] != null) {
+            moy = moy + parseFloat(value[1]);
+            nbre = nbre + 1;
+         }
       });
       
-      if (arrayToEvaluate.length != 0)
-         moy = moy / arrayToEvaluate.length;
+      if (nbre != 0)
+         moy = moy / nbre;
       
       return moy;
    };
@@ -328,18 +332,33 @@ adaptValuesAndUnit = function (values, range, baseUnit, callback) {
          }      
          break;
       case "data.units.ampere":
-         if (Math.abs(value)>2000) {
+         if (evaluateArray(values)>2000) {
             newValues = adaptArray(values, 0.001);
             newRange = adaptRange(range, 0.001);
             unit = "data.units.Kampere";
-         } else if (Math.abs(value)<1) {
+         } else if (evaluateArray(values)<1) {
             newValues = adaptArray(values, 1000);
             newRange = adaptRange(range, 1000);
             unit = "data.units.mampere";
-         }         
+         }
+         break;
+      case "bit/s":
+         if (evaluateArray(values)>2000000000) {
+            newValues = adaptArray(values, 0.000000001);
+            newRange = adaptRange(range, 0.000000001);
+            unit = "Gb/s";
+         }else if (evaluateArray(values)>2000000) {
+            newValues = adaptArray(values, 0.000001);
+            newRange = adaptRange(range, 0.000001);
+            unit = "Mb/s";            
+         }else if (evaluateArray(values)>2000) {
+            newValues = adaptArray(values, 0.001);
+            newRange = adaptRange(range, 0.001);
+            unit = "Kb/s";            
+         }
+         break;         
       default:
          break;
    }
-   
    callback(newValues, newRange, unit);
 };
