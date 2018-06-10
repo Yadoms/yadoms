@@ -82,7 +82,53 @@
 									"description": ""
 								}
 							}
-						}                  
+						},
+						"analog": {
+							"name": "analog values definition",
+							"description": "Define here the type of each analog input (for the wes v2). The value send by the WES should be the same unit. If not checked no analog values will be synchronized",
+							"content": {
+								"ana1": {
+                           "name": "analog input n°1",
+                           "description": "",
+                           "values": {
+                             "ampere": "Ampere (A)",
+                             "temperature": "temperature (Celcius)",
+                             "voltage": "Voltage (V)",
+                             "watthour": "Watt-hour (Wh)"
+                           }
+								},
+								"ana2": {
+                           "name": "analog input n°2",
+                           "description": "",
+                           "values": {
+                             "ampere": "Ampere (A)",
+                             "temperature": "temperature (Celcius)",
+                             "voltage": "Voltage (V)",
+                             "watthour": "Watt-hour (Wh)"
+                           }
+								},
+								"ana3": {
+                           "name": "analog input n°3",
+                           "description": "",
+                           "values": {
+                             "ampere": "Ampere (A)",
+                             "temperature": "temperature (Celcius)",
+                             "voltage": "Voltage (V)",
+                             "watthour": "Watt-hour (Wh)"
+                           }
+								},
+								"ana4": {
+                           "name": "analog input n°4",
+                           "description": "",
+                           "values": {
+                             "ampere": "Ampere (A)",
+                             "temperature": "temperature (Celcius)",
+                             "voltage": "Voltage (V)",
+                             "watthour": "Watt-hour (Wh)"
+                           }
+								}
+							}
+						}
 					}
 				}
 			}

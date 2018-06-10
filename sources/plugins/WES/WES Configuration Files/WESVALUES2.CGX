@@ -1,6 +1,6 @@
 # ------------------------------------
 # --
-# --  Configuration files for Yadoms v1.00 beta
+# --  Configuration files for Yadoms v1.01
 # --  This file is for retrieve all values from the WES equipment revision 2.
 # --
 # ------------------------------------
@@ -71,9 +71,7 @@ c o E2 <bssw><id>RL2</id><value>%d</value></bssw>
 c l E1 <text><id>I1</id><value>%d</value></text>
 c l E2 <text><id>I2</id><value>%d</value></text>
 # ANALOGIQUE
-c l A1 <html><id>ad1</id><value>%f</value></html>
-c l A2 <html><id>ad2</id><value>%f</value></html>
-c l A3 <html><id>ad3</id><value>%f</value></html>
-c l A4 <html><id>ad4</id><value>%f</value></html>
+c lm  <array><var>CAL</var><value>0,%.04f,%.04f,%.04f,%.04f</value></array>
+c lu  <array><var>AUNT</var><value>0,%s,%s,%s,%s</value></array>
 t </form>
 .

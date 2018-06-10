@@ -82,7 +82,53 @@
 									"description": ""
 								}
 							}
-						}
+						},
+						"analog": {
+							"name": "Définition des entrées analogiques",
+							"description": "Définissez ici, le type de chaque entrée analogique (pour le WES v2). Il faut que la valeur envoyée par le WES soit de la même unité. Si cette section n'est pas cochée, aucune valeur analogique sera synchronisée",
+							"content": {
+								"ana1": {
+                           "name": "entrée analogique n°1",
+                           "description": "",
+                           "values": {
+                             "ampere": "Ampère (A)",
+                             "temperature": "température (Celcius)",
+                             "voltage": "Volt (V)",
+                             "watthour": "Watt-heure (Wh)"
+                           }
+								},
+								"ana2": {
+                           "name": "entrée analogique n°2",
+                           "description": "",
+                           "values": {
+                             "ampere": "Ampère (A)",
+                             "temperature": "température (Celcius)",
+                             "voltage": "Volt (V)",
+                             "watthour": "Watt-heure (Wh)"
+                           }
+								},
+								"ana3": {
+                           "name": "entrée analogique n°3",
+                           "description": "",
+                           "values": {
+                             "ampere": "Ampère (A)",
+                             "temperature": "température (Celcius)",
+                             "voltage": "Volt (V)",
+                             "watthour": "Watt-heure (Wh)"
+                           }
+								},
+								"ana4": {
+                           "name": "entrée analogique n°4",
+                           "description": "",
+                           "values": {
+                             "ampere": "Ampère (A)",
+                             "temperature": "température (Celcius)",
+                             "voltage": "Volt (V)",
+                             "watthour": "Watt-heure (Wh)"
+                           }
+								}
+							}
+						}                  
 					}
 				}
 			}

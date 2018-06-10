@@ -1,6 +1,6 @@
 {
 	"type": "WES",
-	"version": "1.0.1",
+	"version": "1.1.0-beta.1",
 	"author": "Jean-Michel BERHAULT",
 	"url": "https://github.com/Yadoms/yadoms/wiki/WES",
 	"credits": "",
@@ -47,11 +47,57 @@
 									"required": "true"
 								}
 							}
-						}                  
+						},
+						"analog": {
+							"type": "section",
+		               "enableWithCheckBox": "true",
+		               "enableWithCheckBoxDefaultValue": "false",                     
+							"content": {
+								"ana1": {
+                           "type": "enum",
+                           "values": {
+                             "ampere": "",
+                             "temperature": "",
+                             "voltage": "",
+                             "watthour": ""
+                           },
+                           "defaultValue": "voltage"
+								},
+								"ana2": {
+                           "type": "enum",
+                           "values": {
+                             "ampere": "",
+                             "temperature": "",
+                             "voltage": "",
+                             "watthour": ""
+                           },
+                           "defaultValue": "voltage"
+								},
+								"ana3": {
+                           "type": "enum",
+                           "values": {
+                             "ampere": "",
+                             "temperature": "",
+                             "voltage": "",
+                             "watthour": ""
+                           },
+                           "defaultValue": "voltage"
+								},
+								"ana4": {
+                           "type": "enum",
+                           "values": {
+                             "ampere": "",
+                             "temperature": "",
+                             "voltage": "",
+                             "watthour": ""
+                           },
+                           "defaultValue": "voltage"
+								}
+							}
+						}
 					}
 				}
 			}
 		}
 	}
-
 }
