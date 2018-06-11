@@ -3,17 +3,18 @@
  * @constructor
  */
 widgetViewModelCtor = function weatherViewModel() {
-
-    var self = this;
     //observable data
     this.data = ko.observable("");
     this.city = ko.observable("");
     this.temperature = ko.observable("");
-
     this.condition = ko.observable("sunny");
 
     this.conditionClass = ko.computed(function () {
-        return "wi wi-wu-" + self.condition().toLowerCase();
+       var localCondition = self.condition();
+       if (localCondition.lowerCase() === "storm" || localCondition.lowerCase() === "chancestorm"){
+          localCondition = "tstorms";
+       }
+       return "wi wi-wu-" + localCondition;
     });
 
     /**
@@ -36,7 +37,6 @@ widgetViewModelCtor = function weatherViewModel() {
             d.resolve();
         })
         .fail(d.reject);
-        
         return d.promise();
     };
 
