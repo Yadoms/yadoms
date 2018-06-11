@@ -28,3 +28,13 @@ std::string CmasterDeviceConfiguration::getUser() const
 {
    return m_data.get<std::string>("authentication.content.User");
 }
+
+bool CmasterDeviceConfiguration::isAnalogInputsActivated() const
+{
+   return m_data.get<bool>("analog.checkbox");
+}
+
+std::string CmasterDeviceConfiguration::analogInputsType(unsigned char index) const
+{
+   return m_data.get<std::string>("analog.content.ana" + boost::lexical_cast<std::string>(index));
+}

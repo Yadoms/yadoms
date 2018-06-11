@@ -24,6 +24,8 @@ public:
    virtual Poco::Net::SocketAddress getIPAddressWithSocket() const override;
    std::string getPassword() const override;
    std::string getUser() const override;
+   bool isAnalogInputsActivated() const override;
+   std::string analogInputsType(unsigned char index) const override;
    // [END] ImasterDeviceConfiguration implementation
 
 private:
@@ -32,4 +34,3 @@ private:
    //--------------------------------------------------------------
    shared::CDataContainer m_data;
 };
-
