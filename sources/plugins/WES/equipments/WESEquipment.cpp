@@ -85,15 +85,17 @@ namespace equipments
          m_ClampList.push_back(temp);
       }
       
-      if (m_WESIOMapping.anaQty > 0)
+      if (m_WESIOMapping.anaQty > 0 && m_configuration.isAnalogInputsActivated())
       {
          auto analogContainerName = details.get<shared::CDataContainer>("Analogs");
-      for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
+         for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
          {
-         const auto temp = boost::make_shared<specificHistorizers::CAnalog>(analogContainerName.get<std::string>("A" + boost::lexical_cast<std::string>(counter)),
-                                                                         yApi::EKeywordAccessMode::kGet);
+            const auto temp = boost::make_shared<subdevices::CAnalog>(api,
+                                                                      keywordsToDeclare,
+                                                                      m_configuration.analogInputsType(counter+1),
+                                                                      m_deviceName,
+                                                                      analogContainerName.get<std::string>("A" + boost::lexical_cast<std::string>(counter)));
             m_AnalogList.push_back(temp);
-            keywordsToDeclare.push_back(temp);
          }
       }
 
@@ -312,10 +314,12 @@ namespace equipments
          // Analog Values Configuration
          for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
          {
-            const auto temp = boost::make_shared<specificHistorizers::CAnalog>(AnalogName[counter],
-                                                                         yApi::EKeywordAccessMode::kGet);
+            const auto temp = boost::make_shared<subdevices::CAnalog>(api,
+                                                                      keywordsToDeclare,
+                                                                      m_configuration.analogInputsType(counter + 1),
+                                                                      m_deviceName,
+                                                                      AnalogName[counter]);
             m_AnalogList.push_back(temp);
-            keywordsToDeclare.push_back(temp);
          }
 
          // Save names into details
@@ -364,7 +368,7 @@ namespace equipments
          shared::CDataContainer analogContainerName;
          for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
          {
-            analogContainerName.set("A" + boost::lexical_cast<std::string>(counter), m_AnalogList[counter]->getKeyword());
+            analogContainerName.set("A" + boost::lexical_cast<std::string>(counter), m_AnalogList[counter]->name());
          }
          details.set("Analogs", analogContainerName);
          details.set("version", m_version);
@@ -488,16 +492,20 @@ namespace equipments
          }
 
          //Reading analog values
-         for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
+         if (m_configuration.isAnalogInputsActivated())
          {
-            try
+            for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
             {
-               m_AnalogList[counter]->set((unsigned int)results.get<float>("ad" + boost::lexical_cast<std::string>(counter + 1)));
-               keywordsToHistorize.push_back(m_AnalogList[counter]);
-            }
-            catch (std::exception& e)
-            {
-               YADOMS_LOG(warning) << "Exception reading analog " << "ad" + boost::lexical_cast<std::string>(counter + 1) << e.what();
+               try
+               {
+                  m_AnalogList[counter]->updateFromDevice(api,
+                                                          keywordsToHistorize,
+                                                          results.get<float>("ad" + boost::lexical_cast<std::string>(counter + 1)));
+               }
+               catch (std::exception& e)
+               {
+                  YADOMS_LOG(warning) << "Exception reading analog " << "ad" + boost::lexical_cast<std::string>(counter + 1) << e.what();
+               }
             }
          }
 
@@ -564,6 +572,9 @@ namespace equipments
       m_configuration.initializeWith(newConfiguration);
       api->updateDeviceConfiguration(m_deviceName, newConfiguration);
       YADOMS_LOG(information) << "Configuration updated for " << m_deviceName;
+
+      // TODO : Update the configuration for each instance. create/delete keywords if needed into each instance
+      // For Analog
    }
 
    void CWESEquipment::sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,

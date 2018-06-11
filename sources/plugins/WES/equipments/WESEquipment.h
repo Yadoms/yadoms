@@ -2,9 +2,9 @@
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "IEquipment.h"
-#include "specificHistorizers/Analog.h"
 #include "../IWESConfiguration.h"
 #include "masterDeviceConfiguration.h"
+#include "WESSubEquipments/Analog.h"
 #include "WESSubEquipments/TIC.h"
 #include "WESSubEquipments/Pulse.h"
 #include "WESSubEquipments/Clamp.h"
@@ -132,7 +132,7 @@ namespace equipments
       //--------------------------------------------------------------
       /// \brief	Analog Values
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<specificHistorizers::CAnalog> > m_AnalogList;
+      std::vector<boost::shared_ptr<equipments::subdevices::CAnalog> > m_AnalogList;
 
       //--------------------------------------------------------------
       /// \brief	WES IP Mapping. Differentiation v1/v2

@@ -34,7 +34,7 @@ bool CmasterDeviceConfiguration::isAnalogInputsActivated() const
    return m_data.get<bool>("analog.checkbox");
 }
 
-std::string CmasterDeviceConfiguration::analogInputsType(unsigned char index) const
+std::string CmasterDeviceConfiguration::analogInputsType(int index) const
 {
    return m_data.get<std::string>("analog.content.ana" + boost::lexical_cast<std::string>(index));
 }

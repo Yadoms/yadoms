@@ -48,5 +48,5 @@ public:
    /// \brief      return the type of the keyword used for the input
    /// \return     the type return
    //--------------------------------------------------------------
-   virtual std::string analogInputsType(unsigned char index) const = 0;
+   virtual std::string analogInputsType(int index) const = 0;
 };
