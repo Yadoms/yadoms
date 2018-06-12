@@ -3,6 +3,8 @@
  * @constructor
  */
 widgetViewModelCtor = function weatherViewModel() {
+    // This variable is needed because of the ko variable
+    var environment = this;
     //observable data
     this.data = ko.observable("");
     this.city = ko.observable("");
@@ -10,11 +12,11 @@ widgetViewModelCtor = function weatherViewModel() {
     this.condition = ko.observable("sunny");
 
     this.conditionClass = ko.computed(function () {
-       var localCondition = self.condition();
-       if (localCondition.lowerCase() === "storm" || localCondition.lowerCase() === "chancestorm"){
+       var localCondition = environment.condition().toLowerCase();
+       if (localCondition === "storm" || localCondition === "chancestorm"){
           localCondition = "tstorms";
        }
-       return "wi wi-wu-" + localCondition;
+       return "wi wi-wu-" + localCondition.toString();
     });
 
     /**
@@ -28,12 +30,10 @@ widgetViewModelCtor = function weatherViewModel() {
         // create the chart
         self.$chart = self.widgetApi.find("div.container");
         self.widgetApi.loadCss("libs/weather-icons/css/weather-icons.min.css").done(function() {
-
             //we configure the toolbar
             self.widgetApi.toolbar({
                 activated: false
             });
-
             d.resolve();
         })
         .fail(d.reject);
