@@ -6,6 +6,7 @@
 
 #### Web Client
 * Fix #463 - Rolling title doesn't work for some widgets
+* Fix #481 - Set a duration keyword to a non duration value is possible
 * Fix #486 - Change configuration doesn't refresh keywords list if no keyword before
 * In configuration sections, don't display sub-section of a combo section if no content
 
