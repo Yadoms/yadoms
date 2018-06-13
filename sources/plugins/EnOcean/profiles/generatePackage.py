@@ -45,7 +45,7 @@ def sortProfiles(inProfiles):
 # Take the general structure from package.in.json, and the specific configurations for certain devices (idem for locales files)
 #
 def generate(packageJsonInPath, packageJsonPath, localesInPath, localesPath, supportedProfiles):
-   # packege.json
+   # package.json
 
    profiles = sortProfiles(supportedProfiles)
 
