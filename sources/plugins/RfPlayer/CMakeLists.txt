@@ -100,13 +100,6 @@ set(RFPLAYER_PLUGIN_ADDITIONAL_INC_DIR
 set(RFPLAYER_PLUGIN_ADDITIONAL_LIB
 )
 
-
-#########################################
-## Place here all additional compiler flags
-## i.e. : for raspberry to link with wiringPi : use add_definition("-lwiringPi")
-#########################################
-##add_definitions("-lwiringPi")
-
 #########################################
 ## Always leave these lines to configure plugin correctly
 ## even if FAKE_PLUGIN_INCLDIR or FAKE_PLUGIN_LINK are empty

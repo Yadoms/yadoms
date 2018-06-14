@@ -6,16 +6,16 @@
 # package.in.json to include plugin version number at makefile generation time.
 # Plugin can work with this file to produced a specific package.json file.
 MACRO(USE_SPECIFIC_PACKAGE_JSON _packageJsonFile)
-   set(SPECIFIC_PACKAGE_JSON $_packageJsonFile)
+   set(SPECIFIC_PACKAGE_JSON ${_packageJsonFile})
 ENDMACRO()
 
 # Use a specific locales directory
 # If used, plugin must do its post-build copy
 MACRO(USE_SPECIFIC_LOCALES_DIRECTORY _localesDirectory)
-   set(SPECIFIC_LOCALES_DIRECTORY $_localesDirectory)
+   set(SPECIFIC_LOCALES_DIRECTORY ${_localesDirectory})
 ENDMACRO()
 
-MACRO(MAKE_PACKAGE _targetName)
+MACRO(MAKE_PACKAGE_JSON _targetName)
    # Workaround to force CMake to rebuild makefile when changelog.md is updated
    configure_file(changelog.md
                   ${CMAKE_CURRENT_BINARY_DIR}/changelog.md.dummy)
@@ -99,7 +99,7 @@ MACRO(PLUGIN_SOURCES _targetName)
    project(${_targetName})
    
    # Build package.json (add version to package.in.json from changelog.md)
-   MAKE_PACKAGE(${_targetName})
+   MAKE_PACKAGE_JSON(${_targetName})
 	
 	IF(MSVC OR XCODE)
 		SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "plugins")
@@ -213,7 +213,7 @@ MACRO(PLUGIN_LINK _targetName)
    endif(WIN32)  
    
    # Post-build copy of required files
-   if(DEFINED $SPECIFIC_PACKAGE_JSON)
+   if(DEFINED SPECIFIC_PACKAGE_JSON)
       PLUGIN_POST_BUILD_COPY_FILE(${_targetName} ${SPECIFIC_PACKAGE_JSON})
    else()
       PLUGIN_POST_BUILD_COPY_FILE(${_targetName} ${CMAKE_CURRENT_BINARY_DIR}/package.json)
@@ -222,7 +222,7 @@ MACRO(PLUGIN_LINK _targetName)
    PLUGIN_POST_BUILD_COPY_FILE(${_targetName} changelog.md)
    PLUGIN_POST_BUILD_COPY_FILE(${_targetName} icon.png)
    
-   if(DEFINED $SPECIFIC_LOCALES_DIRECTORY)
+   if(DEFINED SPECIFIC_LOCALES_DIRECTORY)
       PLUGIN_POST_BUILD_COPY_DIRECTORY(${_targetName} ${SPECIFIC_LOCALES_DIRECTORY}) 
    else()
       PLUGIN_POST_BUILD_COPY_DIRECTORY(${_targetName} locales) 
