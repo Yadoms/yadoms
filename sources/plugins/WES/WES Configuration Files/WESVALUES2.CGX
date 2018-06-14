@@ -71,7 +71,6 @@ c o E2 <bssw><id>RL2</id><value>%d</value></bssw>
 c l E1 <text><id>I1</id><value>%d</value></text>
 c l E2 <text><id>I2</id><value>%d</value></text>
 # ANALOGIQUE
-c lm  <array><var>CAL</var><value>0,%.04f,%.04f,%.04f,%.04f</value></array>
-c lu  <array><var>AUNT</var><value>0,%s,%s,%s,%s</value></array>
+c la  <array><var>ANA</var><value>%.04f,%.04f,%.04f,%.04f</value></array>
 t </form>
 .

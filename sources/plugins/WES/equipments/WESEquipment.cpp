@@ -357,18 +357,26 @@ namespace equipments
          //Reading analog values
          if (m_configuration.isAnalogInputsActivated())
          {
-            for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
+            try
             {
-               try
+               auto values = results.get<std::string>("ANA");
+
+               //separation of letters and digits
+               boost::regex reg("[-+]?([0-9]*\\.[0-9]+|[0-9]+),[-+]?([0-9]*\\.[0-9]+|[0-9]+),[-+]?([0-9]*\\.[0-9]+|[0-9]+),[-+]?([0-9]*\\.[0-9]+|[0-9]+)");
+               boost::smatch match;
+
+               //Check the version
+               if (boost::regex_search(values, match, reg))
                {
-                  m_AnalogList[counter]->updateFromDevice(api,
-                                                          keywordsToHistorize,
-                                                          results.get<float>("ad" + boost::lexical_cast<std::string>(counter + 1)));
+                  m_AnalogList[0]->updateFromDevice(api, keywordsToHistorize, boost::lexical_cast<double>(match[1]));
+                  m_AnalogList[1]->updateFromDevice(api, keywordsToHistorize, boost::lexical_cast<double>(match[2]));
+                  m_AnalogList[2]->updateFromDevice(api, keywordsToHistorize, boost::lexical_cast<double>(match[3]));
+                  m_AnalogList[3]->updateFromDevice(api, keywordsToHistorize, boost::lexical_cast<double>(match[4]));
                }
-               catch (std::exception& e)
-               {
-                  YADOMS_LOG(warning) << "Exception reading analog " << "ad" + boost::lexical_cast<std::string>(counter + 1) << e.what();
-               }
+            }
+            catch (std::exception& e)
+            {
+               YADOMS_LOG(warning) << "Exception reading analog ANA" << e.what();
             }
          }
 
