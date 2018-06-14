@@ -351,10 +351,6 @@
                $deviceRow.find("button.btn-configure").unbind('click');
                $deviceRow.find("button.btn-delete").addClass("hide");
                $deviceRow.find("button.btn-delete").unbind('click');
-            } else {
-               // Disable virtual devices editing
-               $deviceRow.find("button.btn-configure").prop('disabled', true);
-               $deviceRow.find("button.btn-configure").unbind('click');
             }
          }
 
@@ -409,7 +405,7 @@
          // Virtual device
          Yadoms.modals.virtualDeviceConfigure.loadAsync()
          .done(function () {
-             Yadoms.showVirtualDeviceConfigurationModal(device, function (friendlyName, model, configuration) {
+             Yadoms.showVirtualDeviceConfigurationModal(device, false, function (friendlyName, model, configuration) {
                device.friendlyName = friendlyName;
                device.model = model;
                device.configuration = configuration;
@@ -690,7 +686,7 @@
                // Virtual device creation
                Yadoms.modals.virtualDeviceConfigure.loadAsync()
                .done(function () {
-                   Yadoms.showVirtualDeviceConfigurationModal(null, function (newDeviceName, newDeviceModel, newDeviceConfiguration) {
+                   Yadoms.showVirtualDeviceConfigurationModal(null, true, function (newDeviceName, newDeviceModel, newDeviceConfiguration) {
                      PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, "virtualDeviceType", newDeviceConfiguration)
                      .done(function () {
                          Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
