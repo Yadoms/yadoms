@@ -1,31 +1,35 @@
 {
-	"type": "RfxLanXpl",
-	"version": "1.0.0",
-	"author": "Jean-Michel DECORET, Nicolas HILAIRE",
+   "type": "RfxLanXpl",
+   "version": "@PLUGIN_VERSION@",
+   "author": "Jean-Michel DECORET, Nicolas HILAIRE",
    "url": "https://github.com/Yadoms/yadoms/wiki/RfxLanXpl",
-	"credits": "",
-	"supportedPlatforms": "all",
-	"configurationSchema": {
-		"networkInterface": {
-			"type": "enum",
-			"values": {
-				"__Binding__": {
-					"type": "system",
-					"query": "NetworkInterfacesWithoutLoopback"
-				}
-			}
-		},
-		"XplHub": {
-			"type": "bool",
-			"defaultValue": "true"
-		}
-	},
-	"supportManuallyDeviceCreation": "true",
+   "credits": "",
+   "supportedPlatforms": "all",
+   "configurationSchema": {
+      "networkInterface": {
+         "type": "enum",
+         "values": {
+            "__Binding__": {
+               "type": "system",
+               "query": "NetworkInterfacesWithoutLoopback"
+            }
+         }
+      },
+      "XplHub": {
+         "type": "bool",
+         "defaultValue": "true"
+      }
+   },
+   "supportManuallyDeviceCreation": "true",
    "deviceConfiguration": {
       "staticConfigurationSchema": {
-         "schemas" : {
+         "schemas": {
             "ac": {
-               "types": {"ac": { "canBeCreatedManually" : "true" } },
+               "types": {
+                  "ac": {
+                     "canBeCreatedManually": "true"
+                  }
+               },
                "content": {
                   "deviceAddress": {
                      "type": "string",
@@ -34,7 +38,11 @@
                }
             },
             "x10": {
-               "types": {"x10": { "canBeCreatedManually" : "true" } },
+               "types": {
+                  "x10": {
+                     "canBeCreatedManually": "true"
+                  }
+               },
                "content": {
                   "Protocol": {
                      "type": "radioSection",
@@ -400,6 +408,6 @@
                }
             }
          }
-		}
-	}
+      }
+   }
 }

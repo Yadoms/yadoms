@@ -45,12 +45,3 @@ PLUGIN_SOURCES(megatecUps ${MEGATECUPS_SOURCES})
 PLUGIN_INCLDIR(megatecUps ${MEGATECUPS_ADDITIONAL_INC_DIR})
 PLUGIN_LINK(megatecUps ${MEGATECUPS_ADDITIONAL_LIB})
 
-#########################################
-## Post-build commands
-## Copy files to build directory
-## "package.json" and "icon.png" are needed, but you can add extra-files
-#########################################
-PLUGIN_POST_BUILD_COPY_FILE(megatecUps package.json)
-PLUGIN_POST_BUILD_COPY_FILE(megatecUps changelog.md)
-PLUGIN_POST_BUILD_COPY_FILE(megatecUps icon.png)
-PLUGIN_POST_BUILD_COPY_DIRECTORY(megatecUps locales)

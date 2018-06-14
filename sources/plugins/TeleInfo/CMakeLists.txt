@@ -100,15 +100,11 @@ PLUGIN_INCLDIR(teleinfo ${TELEINFO_ADDITIONAL_INC_DIR})
 PLUGIN_LINK(teleinfo ${TELEINFO_ADDITIONAL_LIB})
 
 #########################################
-## Post-build commands
-## Copy files to build directory
-## "package.json" and "icon.png" are needed, but you can add extra-files
+## post-build commands
+## copy files to build directory
+## Use PLUGIN_POST_BUILD_COPY_FILE and PLUGIN_POST_BUILD_COPY_DIRECTORY macros
+## to copy extra-files to the binary folder
 #########################################
-PLUGIN_POST_BUILD_COPY_FILE(teleinfo package.json)
-PLUGIN_POST_BUILD_COPY_FILE(teleinfo changelog.md)
-PLUGIN_POST_BUILD_COPY_FILE(teleinfo icon.png)
-PLUGIN_POST_BUILD_COPY_DIRECTORY(teleinfo locales)
-
 IF(WIN32)
    PLUGIN_POST_BUILD_COPY_FILE(teleinfo ftdi/ftd2xx.dll)
 ENDIF()

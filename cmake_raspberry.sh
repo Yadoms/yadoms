@@ -21,33 +21,46 @@ else
 	choice=$1
 fi
 
+getCMakeExecutable () {
+   local cmakePath=$( grep -oP '^[\t ]*set\(ALTERNATIVE_CMAKE_ROOT[[:space:]]\"\K.*(?=")' ../sources/CMakeListsUserConfig.txt )
+   if [ -z "$cmakePath" ]
+   then
+      echo cmake
+   else
+      echo $cmakePath/bin/cmake
+   fi
+}
+cmake_executable=$(getCMakeExecutable)
+echo "Use cmake executable $cmake_executable"
+$cmake_executable --version
+
 #run cmake depending on user choice (or script parameter)
 case "$choice" in
 
     p)
 	# cmake for makefile
-	cmake -DCMAKE_YADOMS_PLATFORM=Raspberry -DCMAKE_CXX_COMPILER=g++-4.9 -DCMAKE_CC_COMPILER=gcc-4.9 ../sources
+	$cmake_executable -DCMAKE_YADOMS_PLATFORM=Raspberry -DCMAKE_CXX_COMPILER=g++-4.9 -DCMAKE_CC_COMPILER=gcc-4.9 ../sources
 	;;
 
     q)
 	# cmake for makefile
-	cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_YADOMS_PLATFORM=Raspberry -DCMAKE_CXX_COMPILER=g++-4.9 -DCMAKE_CC_COMPILER=gcc-4.9 ../sources
+	$cmake_executable -DCMAKE_BUILD_TYPE="Release" -DCMAKE_YADOMS_PLATFORM=Raspberry -DCMAKE_CXX_COMPILER=g++-4.9 -DCMAKE_CC_COMPILER=gcc-4.9 ../sources
 	;;
 
 
     a)
 	# cmake for makefile
-	cmake -DCMAKE_YADOMS_PLATFORM=Raspberry ../sources
+	$cmake_executable -DCMAKE_YADOMS_PLATFORM=Raspberry ../sources
 	;;
 
     b)
 	# cmake for makefile
-	cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_YADOMS_PLATFORM=Raspberry ../sources
+	$cmake_executable -DCMAKE_BUILD_TYPE="Release" -DCMAKE_YADOMS_PLATFORM=Raspberry ../sources
 	;;
 
     c)
 	# cmake for cross compilation
-	cmake  -DCMAKE_YADOMS_PLATFORM=Raspberry -DCC_RPI_GCC=arm-linux-gnueabihf-gcc -DCC_RPI_GXX=arm-linux-gnueabihf-g++  -DCMAKE_TOOLCHAIN_FILE=../sources/cmake/raspberrypi.cmake ../sources
+	$cmake_executable  -DCMAKE_YADOMS_PLATFORM=Raspberry -DCC_RPI_GCC=arm-linux-gnueabihf-gcc -DCC_RPI_GXX=arm-linux-gnueabihf-g++  -DCMAKE_TOOLCHAIN_FILE=../sources/cmake/raspberrypi.cmake ../sources
 	;;
 
     r)
