@@ -9,6 +9,7 @@ ConfigurationHelper.loadConfigurationLibs = function() {
         "js/objects/configuration/configuration-control-manager.js",
         "js/objects/configuration/int-parameter-handler.js",
         "js/objects/configuration/decimal-parameter-handler.js",
+        "js/objects/configuration/duration-parameter-handler.js",
         "js/objects/configuration/enum-parameter-handler.js",
         "js/objects/configuration/string-parameter-handler.js",
         "js/objects/configuration/file-parameter-handler.js",
@@ -184,7 +185,11 @@ ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, 
    
    switch (keyword.type.toLowerCase()) {
       case "numeric":
-         return new DecimalParameterHandler(i18NContext, i18nKey, paramName, obj, currentValue);
+         if (keyword.capacityName === "duration"){
+            return new DurationParameterHandler(i18NContext, i18nKey, paramName, obj, currentValue);
+         }
+         else
+            return new DecimalParameterHandler(i18NContext, i18nKey, paramName, obj, currentValue);
 
       case "enum":
          var enumValues = {};

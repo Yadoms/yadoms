@@ -185,6 +185,7 @@
     <script src="js/objects/plugin-manager.js"></script>
     <script src="js/objects/task.js"></script>
     <script src="js/objects/task-manager.js"></script>
+    <script src="js/objects/unit-adapter.js"></script>
     <script src="js/objects/update/update-information-manager.js"></script>
     <script src="js/objects/update/update-information.js"></script>
     <script src="js/objects/update/yadoms-update-information-manager.js"></script>
@@ -387,6 +388,7 @@
                                         updateWidgetPolling(w)
                                             .always(function () {
                                                 updateWebSocketFilter();
+                                                WidgetManager.updateWidgetLayout(w);
                                             });
                                     })
                                     .fail(function (errorMessage) {

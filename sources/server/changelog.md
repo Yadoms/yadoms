@@ -2,11 +2,21 @@
 
 ##### Yadoms Core
 * NewFeature #402 - Add measure type choice for some capacities (counter, energy, rain) when creating a virtual device
+* NewFeature #466 - Adapt unit if it's necessary
+* NewFeature #485 - Adapt unit for bit/s display
 * Fix incremental historization from automation rules or web client
 * Automatic set version number into package.json (from changelog.md) for modules (plugins and script interpreters)
 
 #### Web Client
+* Fix #463 - Rolling title doesn't work for some widgets
+* Fix #481 - Set a duration keyword to a non duration value is possible
+* Fix #486 - Change configuration doesn't refresh keywords list if no keyword before
 * In configuration sections, don't display sub-section of a combo section if no content
+
+
+##### Yadoms Core
+* NewFeature #402 - Add measure type choice for some capacities (counter, energy, rain) when creating a virtual device
+* Fix incremental historization from automation rules or web client
 
 ### 2.1.0
 
