@@ -19,7 +19,7 @@ else
 fi
 
 getCMakeExecutable () {
-   local cmakePath=$( grep -oP 'ALTERNATIVE_CMAKE_ROOT[[:space:]]\"\K.*(?=")' ../sources/CMakeListsUserConfig.txt )
+   local cmakePath=$( grep -oP '^[\t ]*set\(ALTERNATIVE_CMAKE_ROOT[[:space:]]\"\K.*(?=")' ../sources/CMakeListsUserConfig.txt )
    if [ -z "$cmakePath" ]
    then
       echo cmake
