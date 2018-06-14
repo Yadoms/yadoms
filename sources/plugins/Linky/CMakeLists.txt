@@ -101,15 +101,11 @@ PLUGIN_INCLDIR(Linky ${LINKY_ADDITIONAL_INC_DIR})
 PLUGIN_LINK(Linky ${LINKY_ADDITIONAL_LIB})
 
 #########################################
-## Post-build commands
-## Copy files to build directory
-## "package.json" and "icon.png" are needed, but you can add extra-files
+## post-build commands
+## copy files to build directory
+## Use PLUGIN_POST_BUILD_COPY_FILE and PLUGIN_POST_BUILD_COPY_DIRECTORY macros
+## to copy extra-files to the binary folder
 #########################################
-PLUGIN_POST_BUILD_COPY_FILE(Linky package.json)
-PLUGIN_POST_BUILD_COPY_FILE(Linky changelog.md)
-PLUGIN_POST_BUILD_COPY_FILE(Linky icon.png)
-PLUGIN_POST_BUILD_COPY_DIRECTORY(Linky locales)
-
 IF(WIN32)
    PLUGIN_POST_BUILD_COPY_FILE(Linky ftdi/ftd2xx.dll)
 ENDIF()

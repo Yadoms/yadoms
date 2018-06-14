@@ -1,0 +1,78 @@
+{
+	"type": "Piface2",
+	"version": "@PLUGIN_VERSION@",
+	"author": "Jean-Michel BERHAULT",
+	"url": "https://github.com/Yadoms/yadoms/wiki/Piface2",
+	"credits": "[libmcp23s17](https://github.com/piface/libmcp23s17) [libpifacedigital](https://github.com/piface/libpifacedigital)",
+	"supportedPlatforms": {
+		"linux": "supported",
+		"others": "unsupported"
+	},
+	"supportManuallyDeviceCreation": "false",
+	"configurationSchema": {
+		"DI0": {
+			"type": "enum",
+			"values": {
+				"Disable": "",
+				"Pullup": ""
+			},
+			"defaultValue": "Disable"
+		},
+		"DI1": {
+			"type": "enum",
+			"values": {
+				"Disable": "",
+				"Pullup": ""
+			},
+			"defaultValue": "Disable"
+		},
+		"DI2": {
+			"type": "enum",
+			"values": {
+				"Disable": "",
+				"Pullup": ""
+			},
+			"defaultValue": "Disable"
+		},
+		"DI3": {
+			"type": "enum",
+			"values": {
+				"Disable": "",
+				"Pullup": ""
+			},
+			"defaultValue": "Disable"
+		},
+		"DI4": {
+			"type": "enum",
+			"values": {
+				"Disable": "",
+				"Pullup": ""
+			},
+			"defaultValue": "Disable"
+		},
+		"DI5": {
+			"type": "enum",
+			"values": {
+				"Disable": "",
+				"Pullup": ""
+			},
+			"defaultValue": "Disable"
+		},
+		"DI6": {
+			"type": "enum",
+			"values": {
+				"Disable": "",
+				"Pullup": ""
+			},
+			"defaultValue": "Disable"
+		},
+		"DI7": {
+			"type": "enum",
+			"values": {
+				"Disable": "",
+				"Pullup": ""
+			},
+			"defaultValue": "Disable"
+		}
+	}
+}

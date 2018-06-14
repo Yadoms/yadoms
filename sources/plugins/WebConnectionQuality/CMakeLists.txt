@@ -50,12 +50,9 @@ PLUGIN_INCLDIR(WebConnectionQuality ${WEBCONNECTIONQUALITY_PLUGIN_ADDITIONAL_INC
 PLUGIN_LINK(WebConnectionQuality ${WEBCONNECTIONQUALITY_PLUGIN_ADDITIONAL_LIB})
 
 #########################################
-## Post-build commands
-## Copy files to build directory
-## "package.json" and "icon.png" are needed, but you can add extra-files
+## post-build commands
+## copy files to build directory
+## Use PLUGIN_POST_BUILD_COPY_FILE and PLUGIN_POST_BUILD_COPY_DIRECTORY macros
+## to copy extra-files to the binary folder
 #########################################
-PLUGIN_POST_BUILD_COPY_FILE(WebConnectionQuality package.json)
-PLUGIN_POST_BUILD_COPY_FILE(WebConnectionQuality changelog.md)
-PLUGIN_POST_BUILD_COPY_FILE(WebConnectionQuality icon.png)
 PLUGIN_POST_BUILD_COPY_FILE(WebConnectionQuality speedtest.py)
-PLUGIN_POST_BUILD_COPY_DIRECTORY(WebConnectionQuality locales)
