@@ -28,6 +28,8 @@ set(WES_PLUGIN_SOURCES
    equipments/masterDeviceConfiguration.h	
    equipments/noInformationException.hpp
    equipments/tooLowRevisionException.hpp
+   equipments/TIC.cpp
+   equipments/TIC.h
    equipments/specificHistorizers/Color.cpp
    equipments/specificHistorizers/Color.h
    equipments/specificHistorizers/deviceStatus.cpp
@@ -42,8 +44,6 @@ set(WES_PLUGIN_SOURCES
    equipments/WESSubEquipments/Clamp.h
    equipments/WESSubEquipments/Pulse.cpp
    equipments/WESSubEquipments/Pulse.h
-   equipments/WESSubEquipments/TIC.cpp
-   equipments/WESSubEquipments/TIC.h
    http/failedSendingException.hpp
    http/HttpMethods.cpp
    http/HttpMethods.h

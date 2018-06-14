@@ -4,8 +4,8 @@
 #include "IEquipment.h"
 #include "../IWESConfiguration.h"
 #include "masterDeviceConfiguration.h"
+#include "TIC.h"
 #include "WESSubEquipments/Analog.h"
-#include "WESSubEquipments/TIC.h"
 #include "WESSubEquipments/Pulse.h"
 #include "WESSubEquipments/Clamp.h"
 
@@ -21,15 +21,16 @@ namespace equipments
    {
    public:
 
+      // TODO: To be deleted !
       //-----------------------------------------------------
       ///\brief                          Constructor from restart (devices and keywords already registered)
       ///\param[in]   api               Yadoms API
       ///\param[in] device              The device name
       ///\param[in] deviceConfiguration The device configuration
       //-----------------------------------------------------
-      CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
-                    const std::string& device,
-                    const shared::CDataContainer& deviceConfiguration);
+      //CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
+      //              const std::string& device,
+      //              const shared::CDataContainer& deviceConfiguration);
 
       //-----------------------------------------------------
       ///\brief                          Constructor from manual creation
@@ -117,7 +118,8 @@ namespace equipments
       //--------------------------------------------------------------
       /// \brief  TIC counters
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<equipments::subdevices::CTIC> > m_TICList;
+      //TODO : To be included to the WES ???
+      std::vector<boost::shared_ptr<equipments::CTIC> > m_TICList;
 
       //--------------------------------------------------------------
       /// \brief	Pulse counters

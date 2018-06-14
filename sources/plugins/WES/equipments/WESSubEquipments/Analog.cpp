@@ -76,6 +76,11 @@ namespace equipments
          return m_keywordName;
       }
 
+      std::string CAnalog::type()
+      {
+         return m_type;
+      }
+
       CAnalog::~CAnalog()
       {}
    }

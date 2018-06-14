@@ -12,7 +12,6 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
                                                              const boost::shared_ptr<IWESConfiguration> configuration) const
 {
    std::vector<boost::shared_ptr<equipments::IEquipment>> deviceList;
-
    boost::shared_ptr<equipments::IEquipment> equipment;
 
    // Create all devices and equipments
@@ -27,16 +26,17 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
 
          if (type == "WES")
          {
+            // we create the equipment by sending a frame through the network to each device
             equipment = boost::make_shared<equipments::CWESEquipment>(api,
                                                                       device,
-                                                                      api->getDeviceConfiguration(device));
+                                                                      api->getDeviceConfiguration(device),
+                                                                      configuration);
             deviceList.push_back(equipment);
          }
 
          // Do Noting, all is done into CWESEquipments
          if (type == "TIC")
-         {
-         }
+         {}
       }
       catch (std::exception& e)
       {
@@ -60,10 +60,11 @@ std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginAp
 
    if (data.getDeviceType() == "WES")
    {
+      // TODO : Manage the case where the device is not connected when restart. The device should be created with just the statuts in the plugin
       equipment = boost::make_shared<equipments::CWESEquipment>(api,
-                                                                  data.getDeviceName(),
-                                                                  data.getConfiguration(),
-                                                                  configuration);
+                                                                data.getDeviceName(),
+                                                                data.getConfiguration(),
+                                                                configuration);
       ioManager->addEquipment(equipment);
    }
    else

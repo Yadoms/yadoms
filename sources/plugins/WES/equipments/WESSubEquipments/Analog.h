@@ -51,6 +51,12 @@ namespace equipments
          std::string name();
 
          //-----------------------------------------------------
+         ///\brief                     get the device name
+         ///\return                    the clamp keyword Name
+         //-----------------------------------------------------
+         std::string type();
+
+         //-----------------------------------------------------
          ///\brief                     Destructor
          //-----------------------------------------------------
          virtual ~CAnalog();
