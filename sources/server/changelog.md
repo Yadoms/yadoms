@@ -3,6 +3,7 @@
 ##### Yadoms Core
 * NewFeature #402 - Add measure type choice for some capacities (counter, energy, rain) when creating a virtual device
 * Fix incremental historization from automation rules or web client
+* Automatic set version number into package.json (from changelog.md) for modules (plugins and script interpreters)
 
 #### Web Client
 * In configuration sections, don't display sub-section of a combo section if no content
