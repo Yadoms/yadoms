@@ -1,6 +1,6 @@
 {
   "type": "OneWire",
-  "version": "1.0.0",
+  "version": "@PLUGIN_VERSION@",
   "author": "Sébastien GALLOU",
   "url": "https://github.com/Yadoms/yadoms/wiki/OneWire",
   "credits": "[OWFS 1-Wire File System](http://owfs.org)",
@@ -51,7 +51,7 @@
           "content": {
             "vadSensor": {
               "type": "enum",
-              "values" : {
+              "values": {
                 "none": "none",
                 "humidity": "humidity",
                 "HIH3600-humidity": "HIH3600 (humidity)",
@@ -72,5 +72,5 @@
       }
     }
   },
-  "supportDeviceRemovedNotification":"true"
+  "supportDeviceRemovedNotification": "true"
 }

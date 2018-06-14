@@ -1,0 +1,44 @@
+{
+    "type": "Linky",
+    "version": "@PLUGIN_VERSION@",
+    "author": "Jean-Michel BERHAULT",
+    "url": "https://github.com/Yadoms/yadoms/wiki/Linky",
+    "credits": "",
+    "SupportedPlatforms": "all",
+    "supportManuallyDeviceCreation": "false",
+    "configurationSchema": {
+        "SerialPort": {
+            "type": "enum",
+            "values": {
+                "__Binding__": {
+                    "type": "system",
+                    "query": "serialPorts"
+                }
+            }
+        },
+        "EquipmentType": {
+            "type": "comboSection",
+            "content": {
+                "first": {
+                    "name": "1xTIC",
+                    "type": "section"
+                },
+                "second": {
+                    "name": "2xTIC",
+                    "type": "section",
+                    "content": {
+                        "portEnabled": {
+                            "type": "enum",
+                            "values": {
+                                "1xInputEnabled": "",
+                                "2xInputsEnabled": "",
+                                "AllInputsEnabled": ""
+                            },
+                            "defaultValue": "AllInputsEnabled"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

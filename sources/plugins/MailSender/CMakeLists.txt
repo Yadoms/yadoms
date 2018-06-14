@@ -55,12 +55,3 @@ PLUGIN_SOURCES(MailSender ${MAILSENDER_SOURCES})
 PLUGIN_INCLDIR(MailSender ${MAILSENDER_ADDITIONAL_INC_DIR})
 PLUGIN_LINK(MailSender ${MAILSENDER_ADDITIONAL_LIB})
 
-#########################################
-## Post-build commands
-## Copy files to build directory
-## "package.json" and "icon.png" are needed, but you can add extra-files
-#########################################
-PLUGIN_POST_BUILD_COPY_FILE(MailSender package.json)
-PLUGIN_POST_BUILD_COPY_FILE(MailSender changelog.md)
-PLUGIN_POST_BUILD_COPY_FILE(MailSender icon.png)
-PLUGIN_POST_BUILD_COPY_DIRECTORY(MailSender locales)

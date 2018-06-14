@@ -39,7 +39,7 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    try {
       m_webServer = boost::make_shared<CSigfoxHTTPServer>(api->getEventHandler(),
                                                           kDataReceived,
-                                                          static_cast<unsigned short>(m_configuration.getSocketPort()));
+                                                          m_configuration.getSocketPort());
       m_webServer->start();
    }
    catch (...)

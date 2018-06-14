@@ -1,11 +1,11 @@
 {
-	"type": "MailSender",
-	"version": "1.0.0",
-	"author": "Jean-Michel DECORET",
-   "url": "https://github.com/Yadoms/yadoms/wiki/MailSender",
-	"credits": "",
-	"supportedPlatforms": "all",
-	"supportManuallyDeviceCreation": "false",
+  "type": "MailSender",
+  "version": "@PLUGIN_VERSION@",
+  "author": "Jean-Michel DECORET",
+  "url": "https://github.com/Yadoms/yadoms/wiki/MailSender",
+  "credits": "",
+  "supportedPlatforms": "all",
+  "supportManuallyDeviceCreation": "false",
   "configurationSchema": {
     "Sender": {
       "type": "string",

@@ -1,0 +1,52 @@
+{
+	"type": "ZWave",
+	"version": "@PLUGIN_VERSION@",
+	"author": "Jean-Michel DECORET",
+	"url": "https://github.com/Yadoms/yadoms/wiki/Zwave",
+	"credits": "[openzwave](http://www.openzwave.com/)",
+	"supportedPlatforms": "all",
+	"configurationSchema": {
+		"Serial Port": {
+			"type": "enum",
+			"values": {
+				"__Binding__": {
+					"type": "system",
+					"query": "serialPorts"
+				}
+			}
+		},
+		"IncludeSystemKeywords": {
+			"type": "bool",
+			"defaultValue": "false"
+		}
+	},
+	"extraQueries": {
+		"inclusionMode": {
+			"iconClass": "fa fa-plus"
+		},
+		"exclusionMode": {
+			"iconClass": "fa fa-minus"
+		},
+		"testNetwork": {
+			"iconClass": "fa fa-check",
+			"commandData": {
+				"frameCount": {
+					"type": "numeric"
+				}
+			}
+
+		},
+		"healNetowrk": {
+			"iconClass": "fa fa-flask"
+		},
+		"cancelCommand": {
+			"iconClass": "fa fa-undo"
+		},
+		"hardReset": {
+			"iconClass": "fa fa-fire"
+		}
+	},
+	"deviceConfiguration": {
+		"dynamicConfigurationSchema": "true"
+	}
+}

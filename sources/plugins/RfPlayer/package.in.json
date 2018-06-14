@@ -1,6 +1,6 @@
 {
 	"type": "RfPlayer",
-	"version": "1.0.0",
+	"version": "@PLUGIN_VERSION@",
 	"author": "Jean-Michel DECORET",
 	"url": "https://github.com/Yadoms/yadoms/wiki/RfPlayer",
 	"credits": "[RfPlayer](https://ziblue.com/)",
@@ -332,34 +332,34 @@
 						}
 					},
 					"content": {
-                  "identifier": {
-                    "type": "radioSection",
-                    "content": {
-                      "id32": {
-                        "type": "section",
-                        "content": {
-                          "id": {
-                             "type": "int"
-                          }
-                        }
-                      },
-                      "idx10form": {
-                        "type": "section",
-                        "content": {
-                          "groupCode": {
-                             "type": "string",
-                             "regex": "[A-P]",
-                             "defaultValue": "A"
-                          },
-                          "unitCode": {
-                             "type": "int",
-                             "minimumValue": "1",
-                             "maximumValue": "15"
-                          }
-                        }
-                      }
-                    }
-                  },
+						"identifier": {
+							"type": "radioSection",
+							"content": {
+								"id32": {
+									"type": "section",
+									"content": {
+										"id": {
+											"type": "int"
+										}
+									}
+								},
+								"idx10form": {
+									"type": "section",
+									"content": {
+										"groupCode": {
+											"type": "string",
+											"regex": "[A-P]",
+											"defaultValue": "A"
+										},
+										"unitCode": {
+											"type": "int",
+											"minimumValue": "1",
+											"maximumValue": "15"
+										}
+									}
+								}
+							}
+						},
 						"burst": {
 							"type": "int"
 						},

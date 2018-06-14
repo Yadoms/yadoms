@@ -1,6 +1,6 @@
 {
   "type": "SomfySituo",
-  "version": "1.0.1",
+  "version": "@PLUGIN_VERSION@",
   "author": "F.Foschiatti",
   "url": "https://github.com/Yadoms/yadoms/wiki/SomfySituo",
   "credits": "",
@@ -21,16 +21,16 @@
       "iconClass": "fa fa-wrench",
       "commandData": {
         "Channel": {
-              "type": "enum",
-              "values": {
-                "__Binding__": {
-                  "type": "plugin",
-                  "query": "channels"
-                }
-              }
-           
+          "type": "enum",
+          "values": {
+            "__Binding__": {
+              "type": "plugin",
+              "query": "channels"
+            }
           }
+
         }
+      }
     }
   }
 }

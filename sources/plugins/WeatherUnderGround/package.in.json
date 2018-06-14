@@ -1,0 +1,66 @@
+{
+   "type": "WeatherUnderground",
+   "version": "@PLUGIN_VERSION@",
+   "author": "Jean-Michel BERHAULT",
+   "url": "https://github.com/Yadoms/yadoms/wiki/WeatherUnderground",
+   "credits": "",
+   "supportedPlatforms": "all",
+   "supportManuallyDeviceCreation": "false",
+   "supportDeviceRemovedNotification": "false",
+   "configurationSchema": {
+      "APIKey": {
+         "type": "string",
+         "required": "true"
+      },
+      "location": {
+         "type": "section",
+         "enableWithCheckBox": "true",
+         "enableWithCheckBoxDefaultValue": "false",
+         "content": {
+            "longitude": {
+               "type": "decimal",
+               "defaultValue": "0"
+            },
+            "latitude": {
+               "type": "decimal",
+               "defaultValue": "0"
+            }
+         }
+      },
+      "LiveConditions": {
+         "type": "section",
+         "enableWithCheckBox": "true",
+         "enableWithCheckBoxDefaultValue": "false",
+         "content": {
+            "individualKeywords": {
+               "type": "bool",
+               "defaultValue": "false"
+            }
+         }
+      },
+      "Astronomy": {
+         "type": "section",
+         "enableWithCheckBox": "true",
+         "enableWithCheckBoxDefaultValue": "false"
+      },
+      "Forecast10Days": {
+         "type": "section",
+         "enableWithCheckBox": "true",
+         "enableWithCheckBoxDefaultValue": "false",
+         "content": {
+            "individualRainForecast": {
+               "type": "bool",
+               "defaultValue": "false"
+            },
+            "individualTempForecast": {
+               "type": "bool",
+               "defaultValue": "false"
+            },
+            "individualConditionsForecast": {
+               "type": "bool",
+               "defaultValue": "false"
+            }
+         }
+      }
+   }
+}
