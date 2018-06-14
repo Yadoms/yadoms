@@ -1,0 +1,34 @@
+{
+  "type": "dev-emptyPlugin",
+  "version": "@PLUGIN_VERSION@",
+  "author": "Your name here",
+  "url": "https://linkToUrlHere.com",
+  "credits": "external libraries used here",
+  "supportedPlatforms": "all",
+  "configurationSchema": {
+    "StringParameter": {
+      "type": "string"
+    },
+    "BoolParameter": {
+      "type": "bool",
+      "defaultValue": "false"
+    },
+    "IntParameter": {
+      "type": "int",
+      "defaultValue": "258"
+    },
+    "DecimalParameter": {
+      "type": "decimal",
+      "defaultValue": "25.3"
+    },
+    "EnumParameter": {
+      "type": "enum",
+      "values": {
+        "EnumValue1": "",
+        "EnumValue2": "",
+        "EnumValue3": ""
+      },
+      "defaultValue": "EnumValue2"
+    }
+  }
+}
