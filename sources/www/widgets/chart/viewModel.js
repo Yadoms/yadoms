@@ -492,7 +492,7 @@ function chartViewModel() {
                   }
               });
               
-            self.refreshData(self.widget.configuration.interval).always(function () {
+            self.refreshData(self.interval).always(function () {
               d.resolve();
             })
             .fail(function (error) {
@@ -550,7 +550,6 @@ function chartViewModel() {
        var d = new $.Deferred();
 
        if (self.chart) {
-            self.interval = interval;
             //we save interval in the chart
             self.chart.interval = interval;
 
