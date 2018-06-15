@@ -28,7 +28,6 @@
       case "HOUR":
           returnValue = "HOUR/minute";
           break;
-      default:
       case "DAY":
           returnValue = "DAY/hour";
           break;
@@ -46,7 +45,10 @@
           break;
       case "FIVE_YEAR": //This one doesn't exist
           returnValue = "FIVE_YEAR/day";
-          break;          
+          break;
+      default:
+         returnValue = intervalConfiguration;
+         break;          
   }
   return returnValue;
  };
@@ -99,6 +101,7 @@
           dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(5, 'years').startOf(prefix));
           break;          
   }
+  
   return dateValue;
  };
 
