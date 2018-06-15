@@ -97,9 +97,6 @@ function chartViewModel() {
        }
        
        self.prefix = interval.substring(interval.indexOf("/") +1, interval.length);
-       
-       console.log ("self.prefix :", self.prefix);
-       
        menuItem.push({ separator: ""});
        
        //push last menu items
