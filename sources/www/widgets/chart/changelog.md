@@ -1,4 +1,4 @@
-### 1.1.1-beta.1
+### 1.1.1
 * fix #494 - The period selected is not the period into the configuration
 
 ### 1.1.0
