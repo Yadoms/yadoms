@@ -28,6 +28,7 @@ namespace equipments
       subdevices::EUnit PulseType[4];
       std::string PulseName[4];
       std::string counterId[3];
+      shared::CDataContainer details;
 
       try
       {
@@ -198,6 +199,8 @@ namespace equipments
                                                                    m_deviceName + " - " + TICName[counter],
                                                                    counterId[counter],
                                                                    contract[counter]);
+            
+            details.set("TIC" + boost::lexical_cast<std::string>(counter), m_deviceName + " - " + TICName[counter]);
             m_TICList.push_back(temp);
          }
 
@@ -234,7 +237,6 @@ namespace equipments
          }
 
          // Save names into details
-         shared::CDataContainer details;
          details.set("provider", "WES");
          details.set("type", m_deviceType);
 
@@ -254,6 +256,26 @@ namespace equipments
       catch (CTimeOutException& e)
       {
          YADOMS_LOG(error) << e.what();
+         m_deviceStatus->set(specificHistorizers::EWESdeviceStatus::kTimeOut);
+         api->historizeData(m_deviceName, m_deviceStatus);
+
+         if (api->deviceExists(m_deviceName))
+         {
+            // We read TIC device names, to set the state for each
+            details = api->getDeviceDetails(m_deviceName);
+
+            // default mapping
+            m_WESIOMapping = WESv2;
+
+            // TIC Counters SetDevice Timeout
+            for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
+            {
+               TICName[counter] = details.get<std::string>("TIC" + boost::lexical_cast<std::string>(counter));
+               boost::make_shared<equipments::CTIC>(api,
+                                                    TICName[counter]);
+            }
+         }
+
          throw e;
       }
       catch (CtooLowRevisionException& e)
@@ -438,13 +460,13 @@ namespace equipments
    }
 
    void CWESEquipment::updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                           const shared::CDataContainer& newConfiguration)
+                                           const shared::CDataContainer& newConfiguration,
+                                           const int refreshEvent)
    {
       m_configuration.initializeWith(newConfiguration);
       api->updateDeviceConfiguration(m_deviceName, newConfiguration);
       YADOMS_LOG(information) << "Configuration updated for " << m_deviceName;
 
-      // TODO : Update the configuration for each instance. create/delete keywords if needed into each instance
       // For Analog
       //Reading analog values
       if (m_configuration.isAnalogInputsActivated())
@@ -455,7 +477,10 @@ namespace equipments
             auto analogConfigurationType = m_configuration.analogInputsType(counter + 1);
             // remove the keyword, if the type is different. It should be recreated automatically at next reading
             if (m_AnalogList[counter]->type() != analogConfigurationType)
+            {
                api->removeKeyword(m_deviceName, m_AnalogList[counter]->name());
+               api->getEventHandler().postEvent(refreshEvent);
+            }
          }
       }
       else {

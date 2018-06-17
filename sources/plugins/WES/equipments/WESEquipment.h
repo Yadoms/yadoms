@@ -21,17 +21,6 @@ namespace equipments
    {
    public:
 
-      // TODO: To be deleted !
-      //-----------------------------------------------------
-      ///\brief                          Constructor from restart (devices and keywords already registered)
-      ///\param[in]   api               Yadoms API
-      ///\param[in] device              The device name
-      ///\param[in] deviceConfiguration The device configuration
-      //-----------------------------------------------------
-      //CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
-      //              const std::string& device,
-      //              const shared::CDataContainer& deviceConfiguration);
-
       //-----------------------------------------------------
       ///\brief                          Constructor from manual creation
       ///\param[in]   api               Yadoms API
@@ -51,7 +40,8 @@ namespace equipments
                             const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
                             bool forceHistorization = false) override;
       void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                               const shared::CDataContainer& newConfiguration) override;
+                               const shared::CDataContainer& newConfiguration,
+                               const int refreshEvent) override;
       void sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                        const std::string& keyword,
                        boost::shared_ptr<const yApi::IDeviceCommand> command) override;

@@ -38,9 +38,18 @@ namespace equipments
       ///\param[in] contract       The contract subscribe
       //-----------------------------------------------------
       CTIC(boost::shared_ptr<yApi::IYPluginApi> api,
-            const std::string& deviceName,
-            const std::string& counterId,
-            const ContractAvailable contract);
+           const std::string& deviceName,
+           const std::string& counterId,
+           const ContractAvailable contract);
+
+      //-----------------------------------------------------
+      ///\brief                     Constructor when in error at startup
+      ///\param[in]   api          Yadoms API
+      ///\param[in] device         The device name
+      ///\param[in] parentName     The contract subscribe
+      //-----------------------------------------------------
+      CTIC(boost::shared_ptr<yApi::IYPluginApi> api,
+           const std::string& deviceName);
 
       //-----------------------------------------------------
       ///\brief                                      updateFromDevice
@@ -102,7 +111,7 @@ namespace equipments
       ///\param[in]   counterId    the counterId with 12 digits
       //-----------------------------------------------------
       void initializeTIC(boost::shared_ptr<yApi::IYPluginApi> api,
-                           const std::string& counterId);
+                         const std::string& counterId);
 
       //-----------------------------------------------------
       ///\brief                     set the state of the device only when this one change

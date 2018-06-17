@@ -61,10 +61,9 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          setPluginState(api, kRunning);
       }
    }
-   catch (std::exception& e)
+   catch (std::exception&)
    {
-      YADOMS_LOG(error) << e.what();
-      setPluginState(api, kInitializationError);
+      setPluginState(api, kAtLeastOneConnectionFaulty);
    }
 
    // the main loop
@@ -105,7 +104,6 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kRefreshStatesReceived:
          {
             YADOMS_LOG(information) << "Timer received";
-
             auto forceRefresh = false;
 
             try
@@ -247,7 +245,8 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             setPluginState(api, kupdateConfiguration);
             m_ioManager->OnDeviceConfigurationUpdate(api,
                                                      deviceConfiguration->name(),
-                                                     deviceConfiguration->configuration());
+                                                     deviceConfiguration->configuration(),
+                                                     kRefreshStatesReceived);
 
             setPluginState(api, kRunning);
 

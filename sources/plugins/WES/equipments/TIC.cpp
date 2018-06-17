@@ -5,9 +5,9 @@
 namespace equipments
 {
    CTIC::CTIC(boost::shared_ptr<yApi::IYPluginApi> api,
-               const std::string& deviceName,
-               const std::string& counterId,
-               const ContractAvailable contract) :
+              const std::string& deviceName,
+              const std::string& counterId,
+              const ContractAvailable contract) :
       m_deviceName(deviceName),
       m_deviceType("TIC"),
       m_contractName(contract),
@@ -31,12 +31,19 @@ namespace equipments
       initializeTIC(api, counterId);
    }
 
+   CTIC::CTIC(boost::shared_ptr<yApi::IYPluginApi> api,
+              const std::string& deviceName) :
+              m_deviceStatus(boost::make_shared<specificHistorizers::CdeviceStatus>("DeviceStatus"))
+   {
+      m_deviceStatus->set(specificHistorizers::EWESdeviceStatus::kTimeOut);
+      api->historizeData(deviceName, m_deviceStatus);
+   }
+
    void CTIC::initializeTIC(boost::shared_ptr<yApi::IYPluginApi> api,
-                              const std::string& counterId)
+                            const std::string& counterId)
    {
       shared::CDataContainer details;
       m_keywords.clear();
-
       m_keywords.push_back(m_deviceStatus);
 
       switch (m_contractName)
@@ -181,9 +188,7 @@ namespace equipments
       }
 
       YADOMS_LOG(information) << "Time period :" << timePeriod;
-
       m_apparentPower->set(apparentPower);
-
       api->historizeData(m_deviceName, m_keywords);
    }
 

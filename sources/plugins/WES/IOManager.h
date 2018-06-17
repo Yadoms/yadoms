@@ -59,7 +59,8 @@ public:
    //--------------------------------------------------------------
    void OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const std::string& deviceName,
-                                    const shared::CDataContainer& newConfiguration);
+                                    const shared::CDataContainer& newConfiguration,
+                                    const int refreshEvent);
 
    //--------------------------------------------------------------
    /// \brief	    addEquipment

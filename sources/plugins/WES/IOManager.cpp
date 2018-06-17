@@ -63,13 +63,14 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
 
 void CIOManager::OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                              const std::string& deviceName,
-                                             const shared::CDataContainer& newConfiguration)
+                                             const shared::CDataContainer& newConfiguration,
+                                             const int refreshEvent)
 {
    for (std::vector<boost::shared_ptr<equipments::IEquipment>>::const_iterator iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
    {
       if (deviceName == (*iteratorDevice)->getDeviceName())
       {
-         (*iteratorDevice)->updateConfiguration(api, newConfiguration);
+         (*iteratorDevice)->updateConfiguration(api, newConfiguration, refreshEvent);
       }
    }
 }
