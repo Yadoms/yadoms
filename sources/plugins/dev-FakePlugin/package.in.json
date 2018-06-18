@@ -1,13 +1,13 @@
 {
   "type": "dev-fakePlugin",
-  "version": "1.0.0-beta",
+  "version": "@PLUGIN_VERSION@",
   "author": "Sébastien GALLOU",
   "url": "https://github.com/Yadoms/yadoms/wiki/FakePlugin",
   "credits": "",
   "supportedPlatforms": "all",
   "dependencies": {
-    "yadoms" : {
-      "minimumVersion" : "2.0.0"
+    "yadoms": {
+      "minimumVersion": "2.0.0"
     }
   },
   "configurationSchema": {
@@ -149,58 +149,58 @@
           "filter": ".txt"
         }
       }
-    }      
+    }
   },
   "deviceConfiguration": {
     "staticConfigurationSchema": {
-      "schemas" : {
-         "fakeConfigurableDevice" : {
-           "types" : { 
-               "fakeConfigurableDeviceType" : {
-                  "canBeCreatedManually" : "false"
-               }, 
-               "anotherFakeConfigurableDeviceType" : {
-                  "canBeCreatedManually" : "true"
-               }
-           },
-           "content": {
-             "CounterDivider2": {
-               "type": "int",
-               "defaultValue": "2",
-               "minimumValue": "1",
-               "maximumValue": "10"
+      "schemas": {
+        "fakeConfigurableDevice": {
+          "types": {
+            "fakeConfigurableDeviceType": {
+              "canBeCreatedManually": "false"
+            },
+            "anotherFakeConfigurableDeviceType": {
+              "canBeCreatedManually": "true"
+            }
+          },
+          "content": {
+            "CounterDivider2": {
+              "type": "int",
+              "defaultValue": "2",
+              "minimumValue": "1",
+              "maximumValue": "10"
             },
             "MySection": {
-               "type": "section",
-               "content": {
-                  "SubIntParameter": {
-                     "type": "int",
-                     "defaultValue": "65535"
-                  },
-                  "SubStringParameter": {
-                     "type": "string"
-                  },
-                  "SubComboParameter": {
-                     "type": "comboSection",
-                     "content": {
-                        "first": {
-                           "name": "First section",
-                           "type": "section"
-                        }, 
-                        "second": {
-                           "name": "Second section",
-                           "type": "section"
-                        },
-                        "third": {
-                           "name": "Third section",
-                           "type": "section"
-                        }
-                     }
+              "type": "section",
+              "content": {
+                "SubIntParameter": {
+                  "type": "int",
+                  "defaultValue": "65535"
+                },
+                "SubStringParameter": {
+                  "type": "string"
+                },
+                "SubComboParameter": {
+                  "type": "comboSection",
+                  "content": {
+                    "first": {
+                      "name": "First section",
+                      "type": "section"
+                    },
+                    "second": {
+                      "name": "Second section",
+                      "type": "section"
+                    },
+                    "third": {
+                      "name": "Third section",
+                      "type": "section"
+                    }
                   }
-               }
-             }
-           }
-         }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "dynamicConfigurationSchema": "true"

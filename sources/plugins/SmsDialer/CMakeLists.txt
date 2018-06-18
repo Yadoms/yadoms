@@ -58,16 +58,7 @@ if(GAMMU_FOUND)
    PLUGIN_SOURCES(smsDialer ${SMS_DIALER_SOURCES})
    PLUGIN_INCLDIR(smsDialer ${SMS_DIALER_ADDITIONAL_INC_DIR})
    PLUGIN_LINK(smsDialer ${SMS_DIALER_ADDITIONAL_LIB})
-
-   #########################################
-   ## Post-build commands
-   ## Copy files to build directory
-   ## "package.json" and "icon.png" are needed, but you can add extra-files
-   #########################################
-   PLUGIN_POST_BUILD_COPY_FILE(smsDialer package.json)
-   PLUGIN_POST_BUILD_COPY_FILE(smsDialer changelog.md)
-   PLUGIN_POST_BUILD_COPY_FILE(smsDialer icon.png)
-   PLUGIN_POST_BUILD_COPY_DIRECTORY(smsDialer locales)
+   
 else()
    message(WARNING "smsDialer plugin is not available. Gammu is Missing")
 endif()

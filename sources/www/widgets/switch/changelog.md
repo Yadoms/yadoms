@@ -1,3 +1,6 @@
+### 1.1.0-beta.1
+* NewFeature #365 - Add a checkbox "ask confirmation"
+
 ### 1.0.6
 * Fix translation regression
 

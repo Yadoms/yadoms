@@ -72,7 +72,6 @@ set(ENOCEAN_SOURCES
    specificHistorizers/PilotWireHistorizer.cpp
    )
    
-   
 #########################################
 ## Place here all additional groups (solution folder)
 #########################################
@@ -175,7 +174,34 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    package.in.json
 
    ${IN_TRANSLATION_FILES}
+   )                   
+                   
+set(ENOCEAN_GENERATED_SOURCES
+   ${ENOCEAN_GENERATED_OUT_DIR}/package.json
+   ${ENOCEAN_GENERATED_OUT_DIR}/manufacturers.cpp
+   ${ENOCEAN_GENERATED_OUT_DIR}/manufacturers.h
+   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/eep.cpp
+   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/eep.h
+   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/C1BSTelegram.cpp
+   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/C1BSTelegram.h
+   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/C4BSTelegram.cpp
+   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/C4BSTelegram.h
+   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/CRPSTelegram.cpp
+   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/CRPSTelegram.h
+   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/CVLDTelegram.cpp
+   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/CVLDTelegram.h
    )
+set_source_files_properties(${ENOCEAN_GENERATED_SOURCES} PROPERTIES GENERATED TRUE)
+
+set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES} ${ENOCEAN_GENERATED_SOURCES})
+
+PLUGIN_SOURCES(enOcean ${ENOCEAN_SOURCES})
+
+   
+# package.in.json is firstly patched at makefile generation time to set plugin version number.
+# Set result file in PACKAGE_JSON_IN_FILE.
+set(PACKAGE_JSON_IN_FILE ${CMAKE_CURRENT_BINARY_DIR}/package.json)
+USE_SPECIFIC_PACKAGE_JSON(${ENOCEAN_GENERATED_OUT_DIR}/package.json)
 
 add_custom_command(OUTPUT ${ENOCEAN_GENERATED_OUT_DIR}/manufacturers.h
                           ${ENOCEAN_GENERATED_OUT_DIR}/manufacturers.cpp
@@ -200,36 +226,17 @@ add_custom_command(OUTPUT ${ENOCEAN_GENERATED_OUT_DIR}/package.json
                    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateEep.py
                           ${CMAKE_CURRENT_SOURCE_DIR}/profiles/eep${EEP_VERSION}.xml
                           ${ENOCEAN_GENERATED_OUT_DIR}/profiles
-                          ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json
+                          ${PACKAGE_JSON_IN_FILE}
                           ${ENOCEAN_GENERATED_OUT_DIR}/package.json
                           ${CMAKE_CURRENT_SOURCE_DIR}/locales.in
                           ${ENOCEAN_GENERATED_OUT_DIR}/locales
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/profiles/eep${EEP_VERSION}.xml
-                           ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json
+                           ${PACKAGE_JSON_IN_FILE}
                            ${PYTHON_GENERATOR_FILES}
                            ${IN_TRANSLATION_FILES}
                    COMMENT "Generating EEP profiles source code...")
-                   
-                   
-set(ENOCEAN_GENERATED_SOURCES
-   ${ENOCEAN_GENERATED_OUT_DIR}/package.json
-   ${ENOCEAN_GENERATED_OUT_DIR}/manufacturers.cpp
-   ${ENOCEAN_GENERATED_OUT_DIR}/manufacturers.h
-   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/eep.cpp
-   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/eep.h
-   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/C1BSTelegram.cpp
-   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/C1BSTelegram.h
-   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/C4BSTelegram.cpp
-   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/C4BSTelegram.h
-   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/CRPSTelegram.cpp
-   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/CRPSTelegram.h
-   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/CVLDTelegram.cpp
-   ${ENOCEAN_GENERATED_OUT_DIR}/profiles/CVLDTelegram.h
-   )
-set_source_files_properties(${ENOCEAN_GENERATED_SOURCES} PROPERTIES GENERATED TRUE)
 
-set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES} ${ENOCEAN_GENERATED_SOURCES})
-
+USE_SPECIFIC_LOCALES_DIRECTORY(${ENOCEAN_GENERATED_OUT_DIR}/locales)                  
 
 source_group(profiles profiles/*.*)
 source_group(profiles\\hardCoded profiles/hardCoded/*.*)
@@ -257,19 +264,6 @@ set(ENOCEAN_ADDITIONAL_LIB
 ## Always leave this three lines to configure plugin correctly
 ## even if ENOCEAN_ADDITIONAL_INC_DIR or ENOCEAN_ADDITIONAL_LIB are empty
 #########################################
-# Workaround to tell CMake to not looking for package.json as it will be generated at compile time
-set_source_files_properties(package.json PROPERTIES GENERATED TRUE)
-set(PACKAGE_JSON_FILE package.in.json)
-PLUGIN_SOURCES(enOcean ${ENOCEAN_SOURCES})
 PLUGIN_INCLDIR(enOcean ${ENOCEAN_ADDITIONAL_INC_DIR})
 PLUGIN_LINK(enOcean ${ENOCEAN_ADDITIONAL_LIB})
 
-#########################################
-## Post-build commands
-## Copy files to build directory
-## "package.json" and "icon.png" are needed, but you can add extra-files
-#########################################
-PLUGIN_POST_BUILD_COPY_FILE(enOcean ${ENOCEAN_GENERATED_OUT_DIR}/package.json)
-PLUGIN_POST_BUILD_COPY_FILE(enOcean changelog.md)
-PLUGIN_POST_BUILD_COPY_FILE(enOcean icon.png)
-PLUGIN_POST_BUILD_COPY_DIRECTORY(enOcean ${ENOCEAN_GENERATED_OUT_DIR}/locales)

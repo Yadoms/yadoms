@@ -1,20 +1,20 @@
 {
   "type": "freeMobileSms",
-  "version": "1.0.0",
+  "version": "@PLUGIN_VERSION@",
   "author": "Jean-Michel DECORET",
   "url": "https://github.com/Yadoms/yadoms/wiki/FreeMobileSMS",
   "credits": "",
   "supportedPlatforms": "all",
   "configurationSchema": {},
   "supportManuallyDeviceCreation": "false",
-  "recipientFields" : {
+  "recipientFields": {
     "userId": {
       "type": "string",
-      "regex" : ""
+      "regex": ""
     },
-    "apiKey" : {
-      "type" : "string",
-      "regex" : ""
+    "apiKey": {
+      "type": "string",
+      "regex": ""
     }
   }
 }

@@ -1,13 +1,13 @@
 {
   "type": "rfxcom",
-  "version": "1.1.2",
+  "version": "@PLUGIN_VERSION@",
   "author": "Sébastien GALLOU",
   "url": "https://github.com/Yadoms/yadoms/wiki/Rfxcom",
   "credits": "",
   "supportedPlatforms": "all",
   "dependencies": {
-    "yadoms" : {
-      "minimumVersion" : "2.0.0"
+    "yadoms": {
+      "minimumVersion": "2.0.0"
     }
   },
   "configurationSchema": {
@@ -141,17 +141,39 @@
       "schemas": {
         "hcA_P-uc1_16": {
           "types": {
-            "x10": { "canBeCreatedManually": "true" },
-            "ARC": { "canBeCreatedManually": "true" },
-            "ab400d": { "canBeCreatedManually": "true" },
-            "waveman": { "canBeCreatedManually": "true" },
-            "emw200": { "canBeCreatedManually": "true" },
-            "impuls": { "canBeCreatedManually": "true" },
-            "risingSun": { "canBeCreatedManually": "true" },
-            "philips": { "canBeCreatedManually": "true" },
-            "energenie": { "canBeCreatedManually": "true" },
-            "energenie5": { "canBeCreatedManually": "true" },
-            "harrisonCurtain": { "canBeCreatedManually": "true" }
+            "x10": {
+              "canBeCreatedManually": "true"
+            },
+            "ARC": {
+              "canBeCreatedManually": "true"
+            },
+            "ab400d": {
+              "canBeCreatedManually": "true"
+            },
+            "waveman": {
+              "canBeCreatedManually": "true"
+            },
+            "emw200": {
+              "canBeCreatedManually": "true"
+            },
+            "impuls": {
+              "canBeCreatedManually": "true"
+            },
+            "risingSun": {
+              "canBeCreatedManually": "true"
+            },
+            "philips": {
+              "canBeCreatedManually": "true"
+            },
+            "energenie": {
+              "canBeCreatedManually": "true"
+            },
+            "energenie5": {
+              "canBeCreatedManually": "true"
+            },
+            "harrisonCurtain": {
+              "canBeCreatedManually": "true"
+            }
           },
           "content": {
             "houseCode": {
@@ -168,8 +190,12 @@
         },
         "hcA_D-uc1_4": {
           "types": {
-            "gdr2": { "canBeCreatedManually": "true" },
-            "hqCoco20": { "canBeCreatedManually": "true" }
+            "gdr2": {
+              "canBeCreatedManually": "true"
+            },
+            "hqCoco20": {
+              "canBeCreatedManually": "true"
+            }
           },
           "content": {
             "houseCode": {
@@ -186,7 +212,9 @@
         },
         "id1_67108863-unitCode1_16": {
           "types": {
-            "smartwares": { "canBeCreatedManually": "true" }
+            "smartwares": {
+              "canBeCreatedManually": "true"
+            }
           },
           "content": {
             "id": {
@@ -203,9 +231,15 @@
         },
         "id1_67108863-unitCode1_16-onOffOrDimmable": {
           "types": {
-            "AC": { "canBeCreatedManually": "true" },
-            "homeEasyEU": { "canBeCreatedManually": "true" },
-            "anslut": { "canBeCreatedManually": "true" }
+            "AC": {
+              "canBeCreatedManually": "true"
+            },
+            "homeEasyEU": {
+              "canBeCreatedManually": "true"
+            },
+            "anslut": {
+              "canBeCreatedManually": "true"
+            }
           },
           "content": {
             "id": {
@@ -228,7 +262,11 @@
           }
         },
         "id1_16777215-unitCode1_5": {
-          "types": { "kambrookRf3672": { "canBeCreatedManually": "true" } },
+          "types": {
+            "kambrookRf3672": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "houseCode": {
               "type": "string",
@@ -248,7 +286,11 @@
           }
         },
         "id1_16777215-unitCode1_6": {
-          "types": { "sunperyBtx": { "canBeCreatedManually": "true" } },
+          "types": {
+            "sunperyBtx": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "id": {
               "type": "int",
@@ -264,7 +306,9 @@
         },
         "id1_16777215-unitCode1_15": {
           "types": {
-            "aOkAc114": { "canBeCreatedManually": "true" }
+            "aOkAc114": {
+              "canBeCreatedManually": "true"
+            }
           },
           "content": {
             "id": {
@@ -280,7 +324,11 @@
           }
         },
         "s0_16-c0_1023": {
-          "types": { "koppla": { "canBeCreatedManually": "true" } },
+          "types": {
+            "koppla": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "system": {
               "type": "int",
@@ -296,11 +344,21 @@
         },
         "id0_16777215": {
           "types": {
-            "pt2262": { "canBeCreatedManually": "true" },
-            "mcz1PelletStove": { "canBeCreatedManually": "true" },
-            "mcz2PelletStove": { "canBeCreatedManually": "true" },
-            "mcz3PelletStove": { "canBeCreatedManually": "true" },
-            "meiantech": { "canBeCreatedManually": "true" }
+            "pt2262": {
+              "canBeCreatedManually": "true"
+            },
+            "mcz1PelletStove": {
+              "canBeCreatedManually": "true"
+            },
+            "mcz2PelletStove": {
+              "canBeCreatedManually": "true"
+            },
+            "mcz3PelletStove": {
+              "canBeCreatedManually": "true"
+            },
+            "meiantech": {
+              "canBeCreatedManually": "true"
+            }
           },
           "content": {
             "id": {
@@ -312,8 +370,12 @@
         },
         "id1_16777215-unitCode1_16": {
           "types": {
-            "lightwaveRf": { "canBeCreatedManually": "true" },
-            "rsl": { "canBeCreatedManually": "true" }
+            "lightwaveRf": {
+              "canBeCreatedManually": "true"
+            },
+            "rsl": {
+              "canBeCreatedManually": "true"
+            }
           },
           "content": {
             "id": {
@@ -329,7 +391,11 @@
           }
         },
         "id1_16383-unitCode1_4": {
-          "types": { "emw100": { "canBeCreatedManually": "true" } },
+          "types": {
+            "emw100": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "id": {
               "type": "int",
@@ -344,7 +410,11 @@
           }
         },
         "id1_524287-unitCode1_6": {
-          "types": { "bbsb": { "canBeCreatedManually": "true" } },
+          "types": {
+            "bbsb": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "id": {
               "type": "int",
@@ -360,8 +430,12 @@
         },
         "id0_16": {
           "types": {
-            "lucciAir": { "canBeCreatedManually": "true" },
-            "westinghouse7226640": { "canBeCreatedManually": "true" }
+            "lucciAir": {
+              "canBeCreatedManually": "true"
+            },
+            "westinghouse7226640": {
+              "canBeCreatedManually": "true"
+            }
           },
           "content": {
             "id": {
@@ -372,7 +446,11 @@
           }
         },
         "id0_255": {
-          "types": { "byronSx": { "canBeCreatedManually": "true" } },
+          "types": {
+            "byronSx": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "id": {
               "type": "int",
@@ -382,7 +460,11 @@
           }
         },
         "id0_1023": {
-          "types": { "selectPlus": { "canBeCreatedManually": "true" } },
+          "types": {
+            "selectPlus": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "id": {
               "type": "int",
@@ -393,11 +475,21 @@
         },
         "id0_65535": {
           "types": {
-            "byronMp001": { "canBeCreatedManually": "true" },
-            "envivo": { "canBeCreatedManually": "true" },
-            "x10SecurityRemote": { "canBeCreatedManually": "true" },
-            "digimax": { "canBeCreatedManually": "true" },
-            "digimaxShort": { "canBeCreatedManually": "true" }
+            "byronMp001": {
+              "canBeCreatedManually": "true"
+            },
+            "envivo": {
+              "canBeCreatedManually": "true"
+            },
+            "x10SecurityRemote": {
+              "canBeCreatedManually": "true"
+            },
+            "digimax": {
+              "canBeCreatedManually": "true"
+            },
+            "digimaxShort": {
+              "canBeCreatedManually": "true"
+            }
           },
           "content": {
             "id": {
@@ -409,14 +501,30 @@
         },
         "id1_65535": {
           "types": {
-            "mdRemote106": { "canBeCreatedManually": "true" },
-            "livolo": { "canBeCreatedManually": "true" },
-            "aoke": { "canBeCreatedManually": "true" },
-            "rgb432w": { "canBeCreatedManually": "true" },
-            "mdremote107": { "canBeCreatedManually": "true" },
-            "legrandCad": { "canBeCreatedManually": "true" },
-            "it": { "canBeCreatedManually": "true" },
-            "mdRemote108": { "canBeCreatedManually": "true" }
+            "mdRemote106": {
+              "canBeCreatedManually": "true"
+            },
+            "livolo": {
+              "canBeCreatedManually": "true"
+            },
+            "aoke": {
+              "canBeCreatedManually": "true"
+            },
+            "rgb432w": {
+              "canBeCreatedManually": "true"
+            },
+            "mdremote107": {
+              "canBeCreatedManually": "true"
+            },
+            "legrandCad": {
+              "canBeCreatedManually": "true"
+            },
+            "it": {
+              "canBeCreatedManually": "true"
+            },
+            "mdRemote108": {
+              "canBeCreatedManually": "true"
+            }
           },
           "content": {
             "id": {
@@ -427,7 +535,11 @@
           }
         },
         "id1_1048575": {
-          "types": { "avantek": { "canBeCreatedManually": "true" } },
+          "types": {
+            "avantek": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "id": {
               "type": "int",
@@ -438,12 +550,24 @@
         },
         "id1_16777215": {
           "types": {
-            "trc02": { "canBeCreatedManually": "true" },
-            "aOkRf01": { "canBeCreatedManually": "true" },
-            "raex": { "canBeCreatedManually": "true" },
-            "mediaMount": { "canBeCreatedManually": "true" },
-            "dolatDlm1": { "canBeCreatedManually": "true" },
-            "asp": { "canBeCreatedManually": "true" }
+            "trc02": {
+              "canBeCreatedManually": "true"
+            },
+            "aOkRf01": {
+              "canBeCreatedManually": "true"
+            },
+            "raex": {
+              "canBeCreatedManually": "true"
+            },
+            "mediaMount": {
+              "canBeCreatedManually": "true"
+            },
+            "dolatDlm1": {
+              "canBeCreatedManually": "true"
+            },
+            "asp": {
+              "canBeCreatedManually": "true"
+            }
           },
           "content": {
             "id": {
@@ -454,7 +578,11 @@
           }
         },
         "id0_32767": {
-          "types": { "siemensSf01": { "canBeCreatedManually": "true" } },
+          "types": {
+            "siemensSf01": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "id": {
               "type": "int",
@@ -464,7 +592,11 @@
           }
         },
         "id1_32767": {
-          "types": { "trc02_2": { "canBeCreatedManually": "true" } },
+          "types": {
+            "trc02_2": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "id": {
               "type": "int",
@@ -474,7 +606,11 @@
           }
         },
         "id1_524287-unitCode1_4": {
-          "types": { "eurodomest": { "canBeCreatedManually": "true" } },
+          "types": {
+            "eurodomest": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "id": {
               "type": "int",
@@ -489,7 +625,11 @@
           }
         },
         "id1_32767-unitCode1_10": {
-          "types": { "livoloAppliance": { "canBeCreatedManually": "true" } },
+          "types": {
+            "livoloAppliance": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "id": {
               "type": "int",
@@ -504,7 +644,11 @@
           }
         },
         "id0_65535-gcA_P-uc1_5": {
-          "types": { "blyss": { "canBeCreatedManually": "true" } },
+          "types": {
+            "blyss": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "id": {
               "type": "int",
@@ -524,7 +668,11 @@
           }
         },
         "seavTxs4": {
-          "types": { "seavTxs4": { "canBeCreatedManually": "true" } },
+          "types": {
+            "seavTxs4": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "sw2-1": {
               "type": "bool"
@@ -542,9 +690,15 @@
 
         "id1_65535-uc1_15": {
           "types": {
-            "rollerTrolHastaNew": { "canBeCreatedManually": "true" },
-            "hastaOld": { "canBeCreatedManually": "true" },
-            "confexx": { "canBeCreatedManually": "true" }
+            "rollerTrolHastaNew": {
+              "canBeCreatedManually": "true"
+            },
+            "hastaOld": {
+              "canBeCreatedManually": "true"
+            },
+            "confexx": {
+              "canBeCreatedManually": "true"
+            }
           },
           "content": {
             "id": {
@@ -561,7 +715,11 @@
         },
 
         "id1_65535-uc1_30": {
-          "types": { "kangtai": { "canBeCreatedManually": "true" } },
+          "types": {
+            "kangtai": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "id": {
               "type": "int",
@@ -577,7 +735,11 @@
         },
 
         "id1_65535-uc1_99": {
-          "types": { "screenline": { "canBeCreatedManually": "true" } },
+          "types": {
+            "screenline": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "id": {
               "type": "int",
@@ -594,8 +756,12 @@
 
         "id1_4294967295-uc1_15": {
           "types": {
-            "dc106": { "canBeCreatedManually": "true" },
-            "forest": { "canBeCreatedManually": "true" }
+            "dc106": {
+              "canBeCreatedManually": "true"
+            },
+            "forest": {
+              "canBeCreatedManually": "true"
+            }
           },
           "content": {
             "id": {
@@ -612,7 +778,11 @@
         },
 
         "id1_4095-uc1_6": {
-          "types": { "chamberlaincs4330cn": { "canBeCreatedManually": "true" } },
+          "types": {
+            "chamberlaincs4330cn": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "id": {
               "type": "int",
@@ -627,7 +797,11 @@
           }
         },
         "id1_1048575-uc0_4": {
-          "types": { "rfy": { "canBeCreatedManually": "true" } },
+          "types": {
+            "rfy": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "id": {
               "type": "int",
@@ -642,7 +816,11 @@
           }
         },
         "id1_1048575-uc1_5": {
-          "types": { "asa": { "canBeCreatedManually": "true" } },
+          "types": {
+            "asa": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "id": {
               "type": "int",
@@ -657,7 +835,11 @@
           }
         },
         "id1_1048575-uc0_15": {
-          "types": { "rfyExt": { "canBeCreatedManually": "true" } },
+          "types": {
+            "rfyExt": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "id": {
               "type": "int",
@@ -672,7 +854,11 @@
           }
         },
         "id1_524287-hcA_D-uc1_4": {
-          "types": { "homeConfort": { "canBeCreatedManually": "true" } },
+          "types": {
+            "homeConfort": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "id": {
               "type": "int",
@@ -692,7 +878,11 @@
           }
         },
         "id0_268435456": {
-          "types": { "keeLoq": { "canBeCreatedManually": "true" } },
+          "types": {
+            "keeLoq": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "id": {
               "type": "int",
@@ -702,7 +892,11 @@
           }
         },
         "uc0_31": {
-          "types": { "he105": { "canBeCreatedManually": "true" } },
+          "types": {
+            "he105": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "unitCode": {
               "type": "int",
@@ -713,8 +907,12 @@
         },
         "uc0_255": {
           "types": {
-            "rts10": { "canBeCreatedManually": "true" },
-            "g6rH4t1": { "canBeCreatedManually": "true" }
+            "rts10": {
+              "canBeCreatedManually": "true"
+            },
+            "g6rH4t1": {
+              "canBeCreatedManually": "true"
+            }
           },
           "content": {
             "unitCode": {
@@ -726,8 +924,12 @@
         },
         "uc0_262143": {
           "types": {
-            "g6rH4tb": { "canBeCreatedManually": "true" },
-            "g6rH4s": { "canBeCreatedManually": "true" }
+            "g6rH4tb": {
+              "canBeCreatedManually": "true"
+            },
+            "g6rH4s": {
+              "canBeCreatedManually": "true"
+            }
           },
           "content": {
             "unitCode": {
@@ -739,7 +941,11 @@
         },
 
         "uc0_65535": {
-          "types": { "g6rH4td": { "canBeCreatedManually": "true" } },
+          "types": {
+            "g6rH4td": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "unitCode": {
               "type": "int",
@@ -751,9 +957,15 @@
 
         "hcrx-garx-sarx": {
           "types": {
-            "fs20": { "canBeCreatedManually": "true" },
-            "fht8v": { "canBeCreatedManually": "true" },
-            "fht80": { "canBeCreatedManually": "true" }
+            "fs20": {
+              "canBeCreatedManually": "true"
+            },
+            "fht8v": {
+              "canBeCreatedManually": "true"
+            },
+            "fht80": {
+              "canBeCreatedManually": "true"
+            }
           },
           "content": {
             "houseCode": {
@@ -774,7 +986,11 @@
           }
         },
         "cameraX10Ninja": {
-          "types": { "cameraX10Ninja": { "canBeCreatedManually": "true" } },
+          "types": {
+            "cameraX10Ninja": {
+              "canBeCreatedManually": "true"
+            }
+          },
           "content": {
             "houseCode": {
               "type": "string",
@@ -784,7 +1000,11 @@
           }
         },
         "Encoder Module": {
-          "types": { "Encoder Module": { "canBeCreatedManually": "false" } },
+          "types": {
+            "Encoder Module": {
+              "canBeCreatedManually": "false"
+            }
+          },
           "content": {
             "counter1Configuration": {
               "type": "enum",
@@ -815,18 +1035,18 @@
       }
     }
   },
-	"extraQueries": {
-		"firmwareUpdate": {
-			"iconClass": "fa fa-upload",
-			"commandData": {
-				"fileContent": {
-					"type": "file",
-					"filter": ".hex"
-				}
-			}
-		},
-		"pairing": {
-			"iconClass": "fa fa-handshake-o"
-		}
-	}
+  "extraQueries": {
+    "firmwareUpdate": {
+      "iconClass": "fa fa-upload",
+      "commandData": {
+        "fileContent": {
+          "type": "file",
+          "filter": ".hex"
+        }
+      }
+    },
+    "pairing": {
+      "iconClass": "fa fa-handshake-o"
+    }
+  }
 }

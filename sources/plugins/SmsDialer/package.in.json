@@ -1,26 +1,26 @@
 {
    "type": "smsDialer",
-   "version": "1.0.0-beta",
+   "version": "@PLUGIN_VERSION@",
    "author": "Sébastien GALLOU",
    "url": "https://github.com/Yadoms/yadoms/wiki/SmsDialer",
    "credits": "[gammu](http://wammu.eu/gammu/)",
-   "supportedPlatforms":
-   {
+   "supportedPlatforms": {
       "mac": "none",
       "others": "supported"
    },
-   "configurationSchema":
-   {
-      "Serial Port":
-      {
-         "type" : "enum",
-         "values" : {"__Binding__" : {"type" : "system", "query" : "serialPorts"}}
-      },
-      "Protocol":
-      {
+   "configurationSchema": {
+      "Serial Port": {
          "type": "enum",
-         "values":
-         {
+         "values": {
+            "__Binding__": {
+               "type": "system",
+               "query": "serialPorts"
+            }
+         }
+      },
+      "Protocol": {
+         "type": "enum",
+         "values": {
             "at19200": "",
             "at115200": "",
             "mbus": "",
@@ -58,19 +58,16 @@
             "irdagnapbus": ""
          }
       },
-      "PINCode":
-      {
-         "type" : "section",
-         "enableWithCheckBox" : "true",
-         "enableWithCheckBoxDefaultValue" : "false",
-         "content" :
-         {
-            "PIN":
-            {
+      "PINCode": {
+         "type": "section",
+         "enableWithCheckBox": "true",
+         "enableWithCheckBoxDefaultValue": "false",
+         "content": {
+            "PIN": {
                "type": "string",
-               "regex" : "[0-9]{4}",
-               "encrypted" : "true"
-            }      
+               "regex": "[0-9]{4}",
+               "encrypted": "true"
+            }
          }
       }
    }
