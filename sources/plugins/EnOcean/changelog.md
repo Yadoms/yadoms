@@ -1,5 +1,5 @@
 ### 1.1.1
-* Fix some french translations
+* Fix some French translations
 
 ### 1.1.0
 _Requires Yadoms 2.1.0-beta.2 or greater_
