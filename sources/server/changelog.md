@@ -8,6 +8,7 @@
 * Automatic set version number into package.json (from changelog.md) for modules (plugins and script interpreters)
 
 #### Web Client
+* Fix #389 - Bad display after computer wake up
 * Fix #463 - Rolling title doesn't work for some widgets
 * Fix #481 - Set a duration keyword to a non duration value is possible
 * Fix #486 - Change configuration doesn't refresh keywords list if no keyword before

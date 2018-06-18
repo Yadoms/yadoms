@@ -430,3 +430,13 @@ PageManager.updateWidgetLayout = function (page) {
         WidgetManager.updateWidgetLayout(value);
     });
 };
+
+/**
+ * Execute onWakeUp instruction for all widgets
+ * @param {Object} page The page to wakeup
+ */
+PageManager.onWakeUp = function (page) {
+    $.each(page.widgets, function (index, value) {
+        WidgetManager.onWakeUp(value);
+    });
+};

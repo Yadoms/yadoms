@@ -751,8 +751,17 @@ WidgetManager.createGridWidget = function (widget) {
  * Update the layout of the widget
  */
 WidgetManager.updateWidgetLayout = function (widget) {
-    widget.$gridWidget.find(".textfit").fitText();
-   
-    // manage the rolling title
-    widget.viewModel.widgetApi.manageRollingTitle();
+   widget.$gridWidget.find(".textfit").fitText();
+
+   // manage the rolling title
+   widget.viewModel.widgetApi.manageRollingTitle();
+};
+
+/**
+ * Execute onWakeUp function of a widget
+ */
+WidgetManager.onWakeUp = function (widget) {
+   //Wake the widget for some extended functions if needed
+   if (widget.viewModel.onWakeUp !== undefined && widget.getState()==widgetStateEnum.Running)
+      widget.viewModel.onWakeUp();
 };
