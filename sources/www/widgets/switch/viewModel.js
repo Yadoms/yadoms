@@ -13,6 +13,7 @@ widgetViewModelCtor =
        this.readonly = ko.observable(true);
        this.invert = ko.observable(false);
        this.update = ko.observable(false);
+       this.askConfirmation = false;
        
        this.capacity = [];
        this.accessMode = [];
@@ -41,9 +42,8 @@ widgetViewModelCtor =
               
               // We send the command only for Set and GetSet variables
               if ( self.accessMode[index] === "GetSet" || self.accessMode[index] === "Set" ){
-                 if (parseBool(self.widget.configuration.askConfirmation)){
+                 if (self.askConfirmation){
                     Yadoms.showConfirmModal(Yadoms.btnKind.confirmCancel, $.t("modals.confirmation.title"), $.t("widgets.switch:confirmationExplanation"), function(){
-                          console.log("confirmed");
                           KeywordManager.sendCommand(keywordId, cmd.toString());
                        }
                     );
@@ -177,6 +177,13 @@ widgetViewModelCtor =
            catch(error){
               self.invert(false);
            }
+           
+           try{
+              self.askConfirmation = parseBool(self.widget.configuration.askConfirmation);
+           }
+           catch(error){
+              self.askConfirmation = false;
+           }           
            
            // we ask for the first device information
            if  (!isNullOrUndefined(this.widget.configuration.device.deviceId)) {
