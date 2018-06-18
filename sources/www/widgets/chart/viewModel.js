@@ -1066,7 +1066,7 @@ function chartViewModel() {
        })
        .fail(function(error) {
        });
-    };       
+    };
 
     /**
     * New acquisition handler

@@ -39,6 +39,31 @@ function rainGaugeDisplayViewModel() {
     this.getValues = function (keywordId) {
        var self = this;
        
+       // Retrieve last values
+       var date24h = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'days').startOf('minute'));
+       var deffered2 = RestEngine.getJson("rest/acquisition/keyword/" + keywordId + "/" + date24h);
+       
+       deffered2
+       .done(function (data) {
+          if (data.data !==""){
+             self.acquisitionData.splice(0, self.acquisitionData.length);
+             Array.prototype.push.apply(self.acquisitionData, data.data);
+          }
+          
+          // treat the tab
+          self.analyzeBuffer(keywordId);
+       })
+      .fail(function(error) {
+         var message = "Fail to get server data : " + error;
+         console.warn(message);
+      });
+      
+      return deffered2;
+    };
+       
+    this.analyzeBuffer = function (keywordId) {
+       var self = this;       
+       
        // When all values are outside the range, only 1 value is sent.
        if (self.acquisitionData.length == 1)
        {
@@ -107,28 +132,8 @@ function rainGaugeDisplayViewModel() {
         
         //we fill the deviceId of the battery indicator
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
-       
         self.shouldBeVisible(self.widget.configuration.dateDisplay);
-       
-       // Retrieve last values
-       date24h = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'days').startOf('minute'));
-       var deffered2 = RestEngine.getJson("rest/acquisition/keyword/" + self.widget.configuration.device.keywordId + "/" + date24h);
-       arrayOfDeffered.push(deffered2);
-       
-       deffered2
-       .done(function (data) {
-          if (data.data !==""){
-             self.acquisitionData.splice(0, self.acquisitionData.length);
-             Array.prototype.push.apply(self.acquisitionData, data.data);
-          }
-          
-          // treat the tab
-          self.getValues(self.widget.configuration.device.keywordId);
-       })
-      .fail(function(error) {
-         var message = "Fail to get server data : " + error;
-         console.warn(message);
-      });
+        arrayOfDeffered.push(getValues(self.widget.configuration.device.keywordId));
       
       $.when.apply($, arrayOfDeffered) // The first failing array fail the when.apply
       .done(d.resolve)
@@ -149,7 +154,22 @@ function rainGaugeDisplayViewModel() {
           else
              break;
        }         
-     };         
+     };
+     
+    /**
+    * event wakeUp (after a reconnexion, wake down of a smartphone, tab, ...)
+    */    
+    this.onWakeUp = function () {
+       var self = this;
+       
+       self.widgetApi.askServerLocalTime(function (serverLocalTime) {
+          self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
+       }).done(function(data) {
+          getValues(self.widget.configuration.device.keywordId);
+       })
+       .fail(function(error) {
+       });
+    };     
     
     /**
     * New acquisition handler
@@ -171,7 +191,7 @@ function rainGaugeDisplayViewModel() {
                   self.acquisitionData.push({date: DateTimeFormatter.dateToIsoDate(data.date), key: data.value});
                }
             }
-            self.getValues(keywordId);
+            self.analyzeBuffer(keywordId);
         }
     };
 };
