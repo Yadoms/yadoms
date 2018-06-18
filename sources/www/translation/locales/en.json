@@ -709,6 +709,7 @@
           "description": "This section allow you to install or update all parts of the software",
           "developerModeWarning": "Warning : in developer mode, this page is not working",
           "includePreRelease": "Include pre-release versions",
+          "failTtoGetUpdates": "Fail to get updates",
           "yadoms": {
             "title": "Yadoms",
             "currentVersion": "Current version",
