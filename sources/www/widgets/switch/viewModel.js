@@ -40,8 +40,17 @@ widgetViewModelCtor =
               }
               
               // We send the command only for Set and GetSet variables
-              if ( self.accessMode[index] === "GetSet" || self.accessMode[index] === "Set" )
-                 KeywordManager.sendCommand(keywordId, cmd.toString());
+              if ( self.accessMode[index] === "GetSet" || self.accessMode[index] === "Set" ){
+                 if (parseBool(self.widget.configuration.askConfirmation)){
+                    Yadoms.showConfirmModal(Yadoms.btnKind.confirmCancel, $.t("modals.confirmation.title"), $.t("widgets.switch:confirmationExplanation"), function(){
+                          console.log("confirmed");
+                          KeywordManager.sendCommand(keywordId, cmd.toString());
+                       }
+                    );
+                 }
+                 else
+                    KeywordManager.sendCommand(keywordId, cmd.toString());
+              }
            }
         };
         
@@ -100,6 +109,9 @@ widgetViewModelCtor =
         
           // Initialization of the toogle button if exist
           this.widget.$content.find("input[type=checkbox]").bootstrapToggle();
+          
+          // load the modal if it's not already loaded
+          return Yadoms.modals.confirmation.loadAsync();
        };
 
        /**
@@ -134,8 +146,7 @@ widgetViewModelCtor =
                   self.widgetApi.registerKeywordForNewAcquisitions(device.content.source.keywordId);	   
 			   
                   //we register keyword for get last value at web client startup 
-				  self.widgetApi.getLastValue(device.content.source.keywordId); 				  
-                   
+                  self.widgetApi.getLastValue(device.content.source.keywordId);
                   if (self.state.length!=index+1)
                      self.state.push(1);
                });

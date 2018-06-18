@@ -3,6 +3,7 @@
 	"description": "A widget that provide buttons to make actions",
 	"errorDuringGettingDeviceInformation": "Error during getting device information",
 	"errorDuringSendingCommand": "Error sending command",
+   "confirmationExplanation": "Confirm the operation ?",
 	"configurationSchema": {
 		"device": {
 			"name": "Device",
@@ -12,6 +13,10 @@
 			"name": "Invert",
 			"description": "Invert state of this device"
 		},
+      "askConfirmation": {
+         "name": "Ask confirmation before applying the new value",
+         "description": ""
+      },       
 		"additionalDevices": {
 			"name": "additional devices",
 			"description": "Switch widget is able to drive several devices simultaneously. Select below the devices list to drive",
