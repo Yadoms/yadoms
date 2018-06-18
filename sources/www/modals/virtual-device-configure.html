@@ -27,7 +27,7 @@
 
         buildVirtualDeviceConfigurationSchema()
             .done(function (configurationSchema) {
-                if (!isNullOrUndefined(currentDevice)) {
+                if (!isNullOrUndefined(currentDevice) && displayConfiguration) {
                     // Editing existing device
                     applyCurrentConfiguration(configurationSchema, currentDevice);
                 }

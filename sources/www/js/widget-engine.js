@@ -9,7 +9,6 @@ var OfflineServerNotification = null;
 var LastEventLogId = null;
 
 function initializeWidgetEngine() {
-
     //we ask all widgets packages
     WidgetPackageManager.getAll()
         .done(function () {
@@ -142,13 +141,13 @@ function tabClick(pageId) {
                     });
                 });
         } else {
-
             //we poll all widget data
             updateWidgetsPolling(page).always(function() {
                 page.$grid.packery('destroy');
                 page.$grid.packery(PageManager.packeryOptions);
                 updateWebSocketFilter();
                 PageManager.updateWidgetLayout(page);
+                PageManager.onWakeUp(page);
             });
         }
     }
@@ -180,29 +179,19 @@ function periodicUpdateTask() {
 
                 //we reinitialize the websocket
                 WebSocketEngine.initializeWebSocketEngine(function () {
-                    //web socket opened
-                    //we listen acquisitionupdate event
-                    $(document).on("acquisitionupdate",
-                        function (e, websocketData) {
-                            var acq = AcquisitionManager.factory(websocketData.data);
-                            dispatchNewAcquisitionsToWidgets(acq);
-                        });
-                    //we listen time event
-                    $(document).on("timenotification",
-                        function (e, websocketData) {
-                            dispatchTimeToWidgets(websocketData.time);
-                        });
                     //Maybe there is a lot of time between the turn off of the server and the turn on, so we must ask all widget
                     //data to be sure that all information displayed are fresh
                     updateWidgetsPolling().always(function () {
                         //we update the filter of the websockets to receive only wanted data
                         updateWebSocketFilter();
+                        console.log ("reconnexion !");
+                        var page = PageManager.getPage(pageId);
+                        PageManager.onWakeUp(page);
                     });
                 });
             }
 
             if (!isNullOrUndefinedOrEmpty(data.EventLogger)) {
-
                 $.each(data.EventLogger,
                     function (index, value) {
                         console.debug("incoming event: " + JSON.stringify(value));
@@ -306,40 +295,39 @@ function dispatchNewAcquisitionsToWidgets(acq) {
         function (widgetIndex, widget) {
             //we ask which devices are needed for this widget instance
             if (!isNullOrUndefined(widget.listenedKeywords)) {
-                $.each(widget.listenedKeywords,
-                    function (keywordIndex, keywordId) {
-                        if (!isNullOrUndefined(keywordId)) {
-                            //foreach device we ask for last values
-                            if (keywordId == acq.keywordId) {
-                                try {
-                                    //we signal the new acquisition to the widget if the widget supports the method
-                                    if (typeof widget.viewModel.onNewAcquisition === 'function') {
-                                       if (widget.getState() == widgetStateEnum.Running){
-                                          widget.viewModel.onNewAcquisition(keywordId, acq);
-                                          widget.viewModel.widgetApi.fitText();
-                                       }else{
-                                          console.log ("push acquisition !");
-                                          console.log ("widget.getState() : ", widget.getState());
-                                          console.log ("widget :", widget);
-                                          widget.waitingAcquisition.push(acq);
-                                       }                                        
-                                    }
-                                } catch (e) {
-                                    console.error(widget.type +
-                                        " has encouter an error in onNewAcquisition() method:" +
-                                        e.message);
-                                }
+                $.each(widget.listenedKeywords, function (keywordIndex, keywordId) {
+                     if (!isNullOrUndefined(keywordId)) {
+                         //foreach device we ask for last values
+                         if (keywordId == acq.keywordId) {
+                             try {
+                                 //we signal the new acquisition to the widget if the widget supports the method
+                                 if (typeof widget.viewModel.onNewAcquisition === 'function') {
+                                    if (widget.getState() == widgetStateEnum.Running){
+                                       widget.viewModel.onNewAcquisition(keywordId, acq);
+                                       widget.viewModel.widgetApi.fitText();
+                                    }else{
+                                       console.log ("push acquisition !");
+                                       console.log ("widget.getState() : ", widget.getState());
+                                       console.log ("widget :", widget);
+                                       widget.waitingAcquisition.push(acq);
+                                    }                                        
+                                 }
+                             } catch (e) {
+                                 console.error(widget.type +
+                                     " has encouter an error in onNewAcquisition() method:" +
+                                     e.message);
+                             }
 
-                                //we manage battery api toolbar
-                                var $battery = widget.$toolbar.find(".widget-toolbar-battery");
-                                if ($battery) {
-                                    if ($battery.attr("keywordId") == acq.keywordId) {
-                                        widget.viewModel.widgetApi.updateBatteryLevel(acq.value);
-                                    }
-                                }
-                            }
-                        }
-                    });
+                             //we manage battery api toolbar
+                             var $battery = widget.$toolbar.find(".widget-toolbar-battery");
+                             if ($battery) {
+                                 if ($battery.attr("keywordId") == acq.keywordId) {
+                                     widget.viewModel.widgetApi.updateBatteryLevel(acq.value);
+                                 }
+                             }
+                         }
+                     }
+                 });
             }
         });
 }
@@ -370,7 +358,6 @@ function dispatchkeywordDeletedToWidgets(eventData){
    if (page == null)
       return;
 
-   console.debug("onKeywordDeletion : ", eventData);
    $.each(page.widgets, function (widgetIndex, widget) {
       try {
           if ($.inArray(eventData.keyword.id, widget.listenedKeywords)!=-1){
@@ -396,7 +383,6 @@ function updateWebSocketFilter() {
             return;
 
         var collection = [];
-
         //we build the collection of keywordId to ask
         $.each(page.widgets,
             function (widgetIndex, widget) {
@@ -410,7 +396,6 @@ function updateWebSocketFilter() {
                         });
                 }
             });
-
         WebSocketEngine.updateAcquisitionFilter(duplicateRemoval(collection));
     }
 }

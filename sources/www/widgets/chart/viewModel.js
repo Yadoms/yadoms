@@ -549,6 +549,8 @@ function chartViewModel() {
        var self = this;
        var d = new $.Deferred();
 
+       console.log ("refreshData");
+       
        if (self.chart) {
             //we save interval in the chart
             self.chart.interval = interval;
@@ -1049,7 +1051,22 @@ function chartViewModel() {
              }
           });
        }
-    };       
+    };
+    
+    /**
+    * event wakeUp (after a reconnexion, wake down of a smartphone, tab, ...)
+    */    
+    this.onWakeUp = function () {
+       var self = this;
+       
+       self.widgetApi.askServerLocalTime(function (serverLocalTime) {
+          self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
+       }).done(function(data) {
+          self.refreshData(self.interval);
+       })
+       .fail(function(error) {
+       });
+    };
 
     /**
     * New acquisition handler
@@ -1058,7 +1075,6 @@ function chartViewModel() {
     */
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
-          
          try {
              $.each(self.widget.configuration.devices, function (index, device) {
                  if (keywordId === device.content.source.keywordId && self.chart) {
