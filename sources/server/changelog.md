@@ -14,6 +14,7 @@
 * Fix #486 - Change configuration doesn't refresh keywords list if no keyword before
 * Fix #491 - Add error notification when fail to get updates
 * In configuration sections, don't display sub-section of a combo section if no content
+* Optimize Devices Page in dashboard (less requests to the server)
 
 
 ### 2.1.0
