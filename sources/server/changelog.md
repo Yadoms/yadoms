@@ -1,6 +1,7 @@
 ### 2.2.0-beta.1
 
 #### Yadoms Core
+* Fix #319 - No widget displayed with SAFARI
 * NewFeature #402 - Add measure type choice for some capacities (counter, energy, rain) when creating a virtual device
 * NewFeature #466 - Adapt unit if it's necessary
 * NewFeature #485 - Adapt unit for bit/s display
