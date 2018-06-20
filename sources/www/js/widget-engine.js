@@ -185,7 +185,7 @@ function periodicUpdateTask() {
                         //we update the filter of the websockets to receive only wanted data
                         updateWebSocketFilter();
                         console.log ("reconnexion !");
-                        var page = PageManager.getPage(pageId);
+                        var page = PageManager.getCurrentPage();
                         PageManager.onWakeUp(page);
                     });
                 });
@@ -376,28 +376,21 @@ function dispatchkeywordDeletedToWidgets(eventData){
    });   
 }
 
-function updateWebSocketFilter() {
-    if (WebSocketEngine.isActive()) {
-       var page = PageManager.getCurrentPage();
-       if (page == null)
-            return;
+/**
+ * update the websocket filter of the server with additionnal keywords (for devices page, ...)
+ * @param {Array} additionnalKeywords the additionnalkeywords to add
+ */
 
-        var collection = [];
-        //we build the collection of keywordId to ask
-        $.each(page.widgets,
-            function (widgetIndex, widget) {
-                //we ask which devices are needed for this widget instance
-                if (!isNullOrUndefined(widget.listenedKeywords)) {
-                    $.each(widget.listenedKeywords,
-                        function (keywordIndex, keywordId) {
-                            if (!isNullOrUndefined(keywordId)) {
-                                collection.push(keywordId);
-                            }
-                        });
-                }
-            });
-        WebSocketEngine.updateAcquisitionFilter(duplicateRemoval(collection));
-    }
+function updateWebSocketFilter(additionnalKeywords) {
+    if (!WebSocketEngine.isActive())
+         return;
+      
+     //we build the collection of keywordId to ask
+     var subscriptionCollection = PageManager.getKeywords(PageManager.getCurrentPage());
+     
+     if (!isNullOrUndefinedOrEmpty(additionnalKeywords))
+        subscriptionCollection = subscriptionCollection.concat(additionnalKeywords);
+     WebSocketEngine.updateAcquisitionFilter(duplicateRemoval(subscriptionCollection));
 }
 
 function updateWidgetsPolling() {

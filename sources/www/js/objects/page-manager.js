@@ -331,7 +331,6 @@ PageManager.movePage = function (page, direction) {
     }
 
     if (nearestId != null) {
-
         var nearestPage = PageManager.getPage(nearestId);
         assert(nearestPage != null, "Unable to find nearest page to move");
         if (nearestPage) {
@@ -439,4 +438,25 @@ PageManager.onWakeUp = function (page) {
     $.each(page.widgets, function (index, value) {
         WidgetManager.onWakeUp(value);
     });
+};
+
+/**
+ * retrieve all keywords to registered for this page
+ * @param {Object} page The page to wakeup
+ */
+PageManager.getKeywords = function (page) {
+   var keywords =[];
+   if (page != null){
+      $.each(page.widgets,function (widgetIndex, widget) {
+         //we ask which devices are needed for this widget instance
+         if (!isNullOrUndefined(widget.listenedKeywords)) {
+            $.each(widget.listenedKeywords,function (keywordIndex, keywordId) {
+                if (!isNullOrUndefined(keywordId)) {
+                   keywords.push(keywordId);
+                }
+            });
+         }
+     });
+   }
+   return keywords;
 };
