@@ -189,6 +189,8 @@
       addDeviceButtonsEvents($deviceRow, device);  
    };
    
+   // https://stackoverflow.com/questions/11621652/how-to-prevent-a-double-click-using-jquery
+   
    Yadoms.initializeDeviceDashboard = function () {
       $("input.cb-showblacklist").unbind('change').bind('change', function (){ 
          refreshDeviceList();
@@ -200,20 +202,8 @@
          updateWebSocketFilter();         
       });
       
-      var d = new $.Deferred();
-      
-      //we check if there is at least one plugin instantiated that handle manual creation
-      PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation()
-         .done(function (list) {
-            refreshDeviceList()
-               .done(d.resolve)
-               .fail(d.reject);
-         })
-         .fail(function (error) {
-            notifyError($.t("modals.pluginInstance.errorGettingManuallyDeviceCreation"), error);
-            d.reject();
-         });
-      return d.promise();
+      // refresh the device list
+      return refreshDeviceList();
    };
 
    function refreshDeviceList() {
@@ -225,27 +215,37 @@
 
       //we clear pluginInstance array
       var tempList = [];
-
-      DeviceManager.getAll()
-      .done(function (allDevices) {
-         YadomsInformationManager.getList()
-            .done(function (data) {
-               tempList = sortListItemsWithFriendlyName ( allDevices );
-               //foreach result we append a <tr>
-               $.each(tempList, function (index, value) {
-                  if( (!data.developerMode && (value.name !== "pluginState" || value.model !== "Plugin state")) || data.developerMode) {
-                     if(showblacklistedDevices || (!showblacklistedDevices && parseBool(value.blacklist) === false)) {
-                        addDeviceToDom(value, null);
-                        deviceList.push(value);
-                     }
-                  }
-               });
-               d.resolve();
-            })
-            .fail(d.reject);
+      var arrayOfDeffered = [];
+      var isDeveloperMode = false;
+      
+      var deffered1 = DeviceManager.getAll();
+      arrayOfDeffered.push(deffered1);
+      deffered1.done(function (allDevices) {
+         tempList = sortListItemsWithFriendlyName ( allDevices );
       })
-      .fail(d.reject);
-
+      
+      var deffered2 = YadomsInformationManager.getList();
+      arrayOfDeffered.push(deffered2);
+      deffered2.done(function (data) {
+         isDeveloperMode = data.developerMode;
+      })
+      
+      $.when.apply($, arrayOfDeffered).done(function () {
+         //foreach result we append a <tr>
+         $.each(tempList, function (index, value) {
+            if( (!isDeveloperMode && (value.name !== "pluginState" || value.model !== "Plugin state")) || isDeveloperMode) {
+               if(showblacklistedDevices || (!showblacklistedDevices && parseBool(value.blacklist) === false)) {
+                  addDeviceToDom(value, null);
+                  deviceList.push(value);
+               }
+            }
+         });
+         d.resolve();
+      })
+      .fail(function (error) {
+         notifyError($.t("widgets.chart:errorDuringGettingDeviceData"), error);
+         d.reject();
+      });
       return d.promise();
    }
 
@@ -671,7 +671,6 @@
    }
 
    function addNewDevice() {
-      //clearInterval(Yadoms.periodicDashboardTask);
       Yadoms.modals.deviceAddManually.loadAsync()
       .done(function () {
          Yadoms.askPluginTypesForManuallyDeviceCreation(function (pi) {
@@ -689,17 +688,17 @@
             } else {
                // Manually plugin-related device creation
                //we get package.json
-               PluginInstanceManager.downloadPackage(pi).done(function () {
-                  //we ask for configuration modal async
-                  Yadoms.modals.deviceConfigureManually.loadAsync()
-                  .done(function () {
-                     //we launch configureInstance GUI
-                      Yadoms.showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration) {
-                          //we ask for manually device creation
-                        PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
-                        .fail(function (error) {
-                           notifyError($.t("objects.pluginInstance.errorCreatingManuallyDevice", { deviceName: newDeviceName }), error);
-                        });
+               var arrayOfDeffered = [];
+               arrayOfDeffered.push(PluginInstanceManager.downloadPackage(pi));
+               arrayOfDeffered.push(Yadoms.modals.deviceConfigureManually.loadAsync());
+               
+               $.when.apply($, arrayOfDeffered).done(function () {
+                  //we launch configureInstance GUI
+                   Yadoms.showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration) {
+                       //we ask for manually device creation
+                     PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
+                     .fail(function (error) {
+                        notifyError($.t("objects.pluginInstance.errorCreatingManuallyDevice", { deviceName: newDeviceName }), error);
                      });
                   });
                });
