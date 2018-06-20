@@ -329,7 +329,7 @@ namespace database
 
 
                   boost::posix_time::ptime fromDate, toDate;
-                  auto pt_tm = boost::posix_time::to_tm(dataTime);
+                  const auto pt_tm = boost::posix_time::to_tm(dataTime);
 
                   //Hour summary data are commputed from raw acquisitions
                   //Other ones, are taken from summarydata (really simplify calculous, and queries)
@@ -435,6 +435,8 @@ namespace database
                                                           boost::posix_time::hours(23) + boost::posix_time::minutes(59) + boost::posix_time::seconds(59));
                         toQuery = entities::EAcquisitionSummaryType::kMonth;
                         break;
+                  default: 
+                     break;
                      }
 
 
@@ -520,6 +522,8 @@ namespace database
                   case entities::EAcquisitionSummaryType::kYearValue:
                      all = getKeywordDataByYear(keywordId, fromDate, toDate);
                      break;
+                  default: 
+                     throw shared::exception::CEmptyResult("Invalid summary type " + curType.toString());
                   }
                   if (!all.empty())
                      return all[0];
@@ -534,7 +538,7 @@ namespace database
          {
             //determine the real date of summary data 
             boost::posix_time::ptime fromDate;
-            auto pt_tm = boost::posix_time::to_tm(dataTime);
+            const auto pt_tm = boost::posix_time::to_tm(dataTime);
             if (curType == entities::EAcquisitionSummaryType::kHour)
             {
                fromDate = boost::posix_time::ptime(dataTime.date(), boost::posix_time::hours(pt_tm.tm_hour));
@@ -560,7 +564,7 @@ namespace database
             q->DeleteFrom(CAcquisitionTable::getTableName()).
                Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF, purgeDate);
 
-            auto count = m_databaseRequester->queryStatement(*q);
+            const auto count = m_databaseRequester->queryStatement(*q);
             if (count < 0)
                throw shared::exception::CException("Fail to purge database");
             return count;

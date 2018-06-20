@@ -32,16 +32,23 @@ namespace database
                YADOMS_LOG_CONFIGURE("Database purge task");
 
                //determine minimum datetime
-               boost::posix_time::ptime now(shared::currentTime::Provider().now().date());
-               boost::posix_time::time_duration realDuration = boost::posix_time::hours(24 * m_acquisitionLifetimeDays);
-               boost::posix_time::ptime purgeDate = now - realDuration;
+               const boost::posix_time::ptime now(shared::currentTime::Provider().now().date());
+               const boost::posix_time::time_duration realDuration = boost::posix_time::hours(24 * m_acquisitionLifetimeDays);
+               const auto purgeDate = now - realDuration;
 
-               YADOMS_LOG(information) << "Purging database : removing acquisition of more than " << m_acquisitionLifetimeDays << " days : prior to " << purgeDate;
-               int count = m_acquisitionRequester->purgeAcquisitions(purgeDate);
+               YADOMS_LOG(information) << "Start purging database : removing acquisition of more than " << m_acquisitionLifetimeDays <<
+                  " days : prior to " << purgeDate;
+
+               const auto count = m_acquisitionRequester->purgeAcquisitions(purgeDate);
 
                //if any data have been deleted, then call vacuum to free disk space
                if (count > 0)
+               {
+                  YADOMS_LOG(trace) << "Vaccum...";
                   m_sqlRequester->vacuum();
+               }
+
+               YADOMS_LOG(information) << "End of purging database";
             }
          }
          catch (std::exception& ex)
@@ -51,5 +58,3 @@ namespace database
       }
    } //namespace common
 } //namespace database 
-
-
