@@ -250,9 +250,6 @@ function periodicUpdateTask() {
                         LastEventLogId = value.id;
                     });
             }
-            //we ask for widget's devices if web sockets are unsupported
-            if (!WebSocketEngine.isActive())
-                updateWidgetsPolling();
             if (!WebSocketEngine.isConnected())
                 serverIsOnline = false;
         })

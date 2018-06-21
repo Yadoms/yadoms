@@ -26,49 +26,57 @@
 
       Yadoms.initializePluginDashboard = function () {
             var d = new $.Deferred();
+            var arrayOfDeffered = [];
+            var allInstances;
 
-            YadomsInformationManager.getList()
-                  .done(function (yadomsInfo) {
-                        developerMode = yadomsInfo.developerMode;
-                        //we remove all rows except header
-                        $("table#plugin-instance-list").find("tr:gt(0)").remove();
-                        //we clear pluginInstance array
-                        pluginInstanceList = [];
+            var def1 = YadomsInformationManager.getList();
+            arrayOfDeffered.push(def1);
+            
+            def1.done(function (yadomsInfo) {
+                  developerMode = yadomsInfo.developerMode;
+            }).fail(d.reject);
+            
+            //we remove all rows except header
+            $("table#plugin-instance-list").find("tr:gt(0)").remove();
+            pluginInstanceList = [];
 
-                        $("#btn-add-new-plugin").unbind("click").bind("click", function () {
-                              clearInterval(Yadoms.periodicDashboardTask);
-                              addNewPlugin();
-                              Yadoms.periodicDashboardTask = setInterval(
-                                    periodicDashboardPluginTask, 2000);
-                        });
+            $("#btn-add-new-plugin").unbind("click").bind("click", function () {
+                  clearInterval(Yadoms.periodicDashboardTask);
+                  addNewPlugin();
+                  Yadoms.periodicDashboardTask = setInterval(
+                        periodicDashboardPluginTask, 2000);
+            });
 
-                        //we dynamically ask for plugins (async)
-                        PluginInstanceManager.getAll().done(function (allInstances) {
+            //we dynamically ask for plugins (async)
+            var def2 = PluginInstanceManager.getAll();
+            arrayOfDeffered.push(def2);
+            def2.done(function (instances) {
+               allInstances = instances;
+            });
 
-                              pluginInstanceList = sortListItemsWithdisplayName(allInstances);
-                              indexSystemPlugin = 0;
+            $.when.apply($, arrayOfDeffered).done(function () {
+                  pluginInstanceList = sortListItemsWithdisplayName(allInstances);
+                  indexSystemPlugin = 0;
 
-                              //foreach result we append a <tr>
-                              $.each(pluginInstanceList, function (index, value) {
-                                    //we don't show system plugins to user
-                                    if (!value.isSystemCategory()) {
-                                          addPluginInstanceToDom(value, null);
-                                    } else
-                                          indexSystemPlugin = index;
-                              });
+                  //foreach result we append a <tr>
+                  $.each(pluginInstanceList, function (index, value) {
+                        //we don't show system plugins to user
+                        if (!value.isSystemCategory()) {
+                              addPluginInstanceToDom(value, null);
+                        } else
+                              indexSystemPlugin = index;
+                  });
 
-                              // we remove the system plugin from the list
-                              pluginInstanceList.splice(indexSystemPlugin, 1);
+                  // we remove the system plugin from the list
+                  pluginInstanceList.splice(indexSystemPlugin, 1);
 
-                              //we use the periodic task of the dashboard
-                              clearInterval(Yadoms.periodicDashboardTask);
-                              Yadoms.periodicDashboardTask = setInterval(
-                                    periodicDashboardPluginTask, 2000);
-                              periodicDashboardPluginTask();
-                              d.resolve();
-                        }).fail(d.reject);
-                  }).fail(d.reject);
-            return d.promise();
+                  //we use the periodic task of the dashboard
+                  clearInterval(Yadoms.periodicDashboardTask);
+                  Yadoms.periodicDashboardTask = setInterval(periodicDashboardPluginTask, 2000);
+                  periodicDashboardPluginTask();
+                  d.resolve();
+            }).fail(d.reject);
+return d.promise();
       };
 
       function getPluginDomRow(pluginInstance) {
