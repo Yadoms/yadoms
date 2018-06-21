@@ -40,8 +40,9 @@
             device = getDeviceFromId($deviceDetailsTable.attr("device-id"));
          }
          if (!isNullOrUndefined(device)){
-            var keyword = device.keywords.map(function (e) { return e.id; }).indexOf(acquisition.keywordId);
-            updateKeywordDomLine($keywordRow, acquisition, keyword, device.attachedPlugin);
+            var index = device.keywords.map(function (e) { return e.id; }).indexOf(acquisition.keywordId);
+            if (index != -1)
+               updateKeywordDomLine($keywordRow, acquisition, device.keywords[index], device.attachedPlugin);
          }
       }      
    };
@@ -132,7 +133,7 @@
             }
          }
       });
-      DeviceManager.getAttachedPlugin(device, true)
+      DeviceManager.getAttachedPlugin(device.device, true)
       .done(function () {
          addDeviceToDom(device.device, indexToInsert);
          deviceList.push(device.device);
