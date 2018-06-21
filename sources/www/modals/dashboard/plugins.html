@@ -76,7 +76,7 @@
                   periodicDashboardPluginTask();
                   d.resolve();
             }).fail(d.reject);
-return d.promise();
+         return d.promise();
       };
 
       function getPluginDomRow(pluginInstance) {
@@ -374,49 +374,49 @@ return d.promise();
       }
 
       function deletePlugin(pi) {
-            clearInterval(periodicDashboardPluginTask);
-            //pi represent the pluginInstance concerned
-            Yadoms.modals.confirmation.loadAsync()
-                  .done(function () {
-                        Yadoms.showConfirmModal(Yadoms.btnKind.yesNo, null, $.t(
-                                    "modals.dashboard.sub-windows.plugins.confirmPluginDeletion", {
-                                          pluginName: pi.displayName
-                                    }),
-                              function () {
-                                    //deletion has been confirmed
-                                    var deletePromise = PluginInstanceManager.deleteFromServer(pi);
+         clearInterval(periodicDashboardPluginTask);
+         //pi represent the pluginInstance concerned
+         Yadoms.modals.confirmation.loadAsync()
+            .done(function () {
+                  Yadoms.showConfirmModal(Yadoms.btnKind.yesNo, null, $.t(
+                              "modals.dashboard.sub-windows.plugins.confirmPluginDeletion", {
+                                    pluginName: pi.displayName
+                              }),
+                     function () {
+                           //deletion has been confirmed
+                           var deletePromise = PluginInstanceManager.deleteFromServer(pi);
 
-                                    //disable button access until promise result
-                                    getPluginDomRow(pi).find("button").prop('disabled', true);
+                           //disable button access until promise result
+                           getPluginDomRow(pi).find("button").prop('disabled', true);
 
-                                    deletePromise.done(function () {
-                                          //we remove pi from array
-                                          var i = pluginInstanceList.indexOf(pi);
-                                          if (i !== -1) {
-                                                pluginInstanceList.splice(i, 1);
-                                          }
+                           deletePromise.done(function () {
+                                 //we remove pi from array
+                                 var i = pluginInstanceList.indexOf(pi);
+                                 if (i !== -1) {
+                                       pluginInstanceList.splice(i, 1);
+                                 }
 
-                                          //we remove pi from dom
-                                          getPluginDomRow(pi).remove();
+                                 //we remove pi from dom
+                                 getPluginDomRow(pi).remove();
 
-                                          // Restart the periodic task after the action
-                                          Yadoms.periodicDashboardTask = setInterval(
-                                                periodicDashboardPluginTask, 2000);
-                                    });
+                                 // Restart the periodic task after the action
+                                 Yadoms.periodicDashboardTask = setInterval(
+                                       periodicDashboardPluginTask, 2000);
+                           });
 
-                                    //if it fails, restore button access
-                                    deletePromise.fail(function (error) {
-                                          notifyError($.t(
-                                                "modals.configure-plugin.pluginFailToDelete", {
-                                                      pluginName: pi.displayName
-                                                }), error);
-                                          getPluginDomRow(pi).find("button").prop('disabled',
-                                                false);
-                                          Yadoms.periodicDashboardTask = setInterval(
-                                                periodicDashboardPluginTask, 2000);
-                                    });
-                              });
-                  });
+                           //if it fails, restore button access
+                           deletePromise.fail(function (error) {
+                                 notifyError($.t(
+                                       "modals.configure-plugin.pluginFailToDelete", {
+                                             pluginName: pi.displayName
+                                       }), error);
+                                 getPluginDomRow(pi).find("button").prop('disabled',
+                                       false);
+                                 Yadoms.periodicDashboardTask = setInterval(
+                                       periodicDashboardPluginTask, 2000);
+                           });
+                     });
+            });
       }
 
       function autoStartChange(pi) {
@@ -455,68 +455,68 @@ return d.promise();
       }
 
       function postExtraQuery(pi, commandName, data) {
-            PluginInstanceManager.postExtraQuery(pi, commandName, data)
-                  .done(function (taskIdContainer) {
-                        var taskId = taskIdContainer.taskId;
-                        if (taskId) {
-                              var $line = getPluginDomRow(pi);
+         PluginInstanceManager.postExtraQuery(pi, commandName, data)
+            .done(function (taskIdContainer) {
+               var taskId = taskIdContainer.taskId;
+               if (taskId) {
+                  var $line = getPluginDomRow(pi);
 
-                              //we listen for webSocket event
-                              $(document).on("taskupdatenotification." + taskId, function (e,
-                                    taskUpdateInformation) {
+                  //we listen for webSocket event
+                  $(document).on("taskupdatenotification." + taskId, function (e,
+                        taskUpdateInformation) {
 
-                                    //translate resolution order
-                                    // 1. try plugin one
-                                    // 2. try core
-                                    // 3. try directly
-                                    var translatedMessage = $.t("plugins." + pi.type + ":" +
+                        //translate resolution order
+                        // 1. try plugin one
+                        // 2. try core
+                        // 3. try directly
+                        var translatedMessage = $.t("plugins." + pi.type + ":" +
+                              taskUpdateInformation.message, {
+                                    defaultValue: $.t("core." +
                                           taskUpdateInformation.message, {
-                                                defaultValue: $.t("core." +
-                                                      taskUpdateInformation.message, {
-                                                            defaultValue: $.t(
-                                                                  taskUpdateInformation
-                                                                  .message),
-                                                            extraquery: $.t(
-                                                                  taskUpdateInformation
-                                                                  .name)
-                                                      }),
-                                                extraquery: $.t(taskUpdateInformation.name)
-                                          });
-
-                                    //only manage progression if we get value between 1 and 99.
-                                    //if extra query is not done with progress, never display progress bar
-                                    if (taskUpdateInformation.progression > 0 &&
-                                          taskUpdateInformation.progression < 100) {
-                                          updateProgressInfo($line, true, taskUpdateInformation.progression,
-                                                translatedMessage);
-                                    } else {
-                                          updateProgressInfo($line, false);
-                                    }
-
-                                    //we manage the end of the task
-                                    if (taskUpdateInformation.taskState.toLowerCase() === "fail") {
-                                          updateProgressInfo($line, false);
-                                          console.error("Unable to realize extra query : " +
-                                                taskUpdateInformation.exception);
-                                          if (taskUpdateInformation.exception) {
-                                                translatedMessage = $.t("plugins." + pi.type + ":" +
-                                                      taskUpdateInformation.exception);
-                                          }
-                                          notifyError(translatedMessage);
-                                          setTimeout(function () {
-                                                updatePluginState(pi)
-                                          }, 5000);
-                                    } else if (taskUpdateInformation.taskState.toLowerCase() ===
-                                          "success") {
-                                          updateProgressInfo($line, false);
-                                          notifySuccess(translatedMessage);
-                                          setTimeout(function () {
-                                                updatePluginState(pi)
-                                          }, 5000);
-                                    }
+                                                defaultValue: $.t(
+                                                      taskUpdateInformation
+                                                      .message),
+                                                extraquery: $.t(
+                                                      taskUpdateInformation
+                                                      .name)
+                                          }),
+                                    extraquery: $.t(taskUpdateInformation.name)
                               });
+
+                        //only manage progression if we get value between 1 and 99.
+                        //if extra query is not done with progress, never display progress bar
+                        if (taskUpdateInformation.progression > 0 &&
+                              taskUpdateInformation.progression < 100) {
+                              updateProgressInfo($line, true, taskUpdateInformation.progression,
+                                    translatedMessage);
+                        } else {
+                              updateProgressInfo($line, false);
+                        }
+
+                        //we manage the end of the task
+                        if (taskUpdateInformation.taskState.toLowerCase() === "fail") {
+                              updateProgressInfo($line, false);
+                              console.error("Unable to realize extra query : " +
+                                    taskUpdateInformation.exception);
+                              if (taskUpdateInformation.exception) {
+                                    translatedMessage = $.t("plugins." + pi.type + ":" +
+                                          taskUpdateInformation.exception);
+                              }
+                              notifyError(translatedMessage);
+                              setTimeout(function () {
+                                    updatePluginState(pi)
+                              }, 5000);
+                        } else if (taskUpdateInformation.taskState.toLowerCase() ===
+                              "success") {
+                              updateProgressInfo($line, false);
+                              notifySuccess(translatedMessage);
+                              setTimeout(function () {
+                                    updatePluginState(pi)
+                              }, 5000);
                         }
                   });
+               }
+            });
       }
 
       function onExtraQuery(pi, commandName, commandConfig) {
@@ -531,14 +531,12 @@ return d.promise();
             } else {
                   postExtraQuery(pi, commandName);
             }
-
       }
 
       function periodicDashboardPluginTask() {
             //periodically we check the status of each plugin
             if (serverIsOnline) {
                   $.each(pluginInstanceList, function (index, pluginInstance) {
-
                         PluginInstanceManager.getState(pluginInstance)
                               .done(function (status) {
                                     if (status) {
@@ -645,7 +643,6 @@ return d.promise();
             //2. try general translation
             //3. use default message
 
-
             var i18nOpt = {}; //ensure i18nOpt is not undefined
             if (pluginInstance.lastMessageData) {
                   try {
@@ -669,25 +666,24 @@ return d.promise();
       }
 
       function addNewPlugin() {
-            Yadoms.modals.pickupController.loadAsync()
-                  .done(function () {
-                        //search all plugin information
-                        Yadoms.askPackages("plugins",
-                              PluginManager,
-                              "icon.png", // Name of thumbnail
-                              "modals.add-plugin.title",
-                              createPlugin
-                        );
-                  })
-                  .fail(function () {
-                        notifyError($.t("objects.lazyLoaderManager.unableToLoadModal", {
-                              modalPath: self.modalPath
-                        }), error);
-                  })
+         Yadoms.modals.pickupController.loadAsync()
+            .done(function () {
+               //search all plugin information
+               Yadoms.askPackages("plugins",
+                     PluginManager,
+                     "icon.png", // Name of thumbnail
+                     "modals.add-plugin.title",
+                     createPlugin
+               );
+            })
+            .fail(function () {
+               notifyError($.t("objects.lazyLoaderManager.unableToLoadModal", {
+                     modalPath: self.modalPath
+               }), error);
+            })
       };
 
       function createPlugin(packageName, pluginType) {
-
             var pi = new PluginInstance(null, $.t("plugins." + pluginType.type + ":name", {
                   defaultValue: pluginType.package.name
             }), pluginType.type, "", 1, "user");
@@ -696,34 +692,31 @@ return d.promise();
 
             //we ask for configuration modal async
             Yadoms.modals.pluginConfigure.loadAsync()
-                  .done(function () {
+               .done(function () {
+                  //we launch configureInstance GUI
+                  Yadoms.configurePluginInstance(pi, function () {
+                     //we ask for pluginInstance creation
+                     PluginInstanceManager.createToServer(pi)
+                        .done(function () {
+                              notifySuccess($.t(
+                                    "modals.configure-plugin.pluginSuccessfullyCreated"
+                              ));
 
-                        //we launch configureInstance GUI
-                        Yadoms.configurePluginInstance(pi, function () {
-                              //we ask for pluginInstance creation
-                              PluginInstanceManager.createToServer(pi)
-                                    .done(function () {
-                                          notifySuccess($.t(
-                                                "modals.configure-plugin.pluginSuccessfullyCreated"
-                                          ));
+                              pluginInstanceList.push(pi);
 
-                                          pluginInstanceList.push(pi);
-
-                                          // the first one ?
-                                          if (pluginInstanceList.length === 1)
-                                                addPluginInstanceToDom(pi, null);
-                                          else
-                                                addPluginInstanceToDom(pi,
-                                                      pluginInstanceList.indexOf(
-                                                            pi));
-                                    })
-                                    .fail(function (error) {
-                                          notifyError($.t(
-                                                "modals.configure-plugin.pluginFailToCreate", {
-                                                      pluginName: pi.displayName
-                                                }), error);
-                                    });
+                              // the first one ?
+                              if (pluginInstanceList.length === 1)
+                                 addPluginInstanceToDom(pi, null);
+                              else
+                                 addPluginInstanceToDom(pi, pluginInstanceList.indexOf(pi));
+                        })
+                        .fail(function (error) {
+                              notifyError($.t(
+                                    "modals.configure-plugin.pluginFailToCreate", {
+                                          pluginName: pi.displayName
+                                    }), error);
                         });
                   });
+               });
       };
 </script>
