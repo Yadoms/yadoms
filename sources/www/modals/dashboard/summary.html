@@ -28,70 +28,68 @@
                               <input type="checkbox" disabled readonly checked/>
                         </td>
                   </tr>
-
             </table>
       </div>
 </div>
 
 <script>
-      Yadoms.initializeSummaryDashboard = function () {
-            var d = new $.Deferred();
-            var arrayOfDeffered = [];
+   Yadoms.initializeSummaryDashboard = function () {
+      var d = new $.Deferred();
+      var arrayOfDeffered = [];
 
-            //we update all fields
-            $("tr.line-developer-mode").hide();
+      //we update all fields
+      $("tr.line-developer-mode").hide();
 
-            $("td#dashboard-summary-database-version").text(configurationManager.databaseVersion());
+      $("td#dashboard-summary-database-version").text(configurationManager.databaseVersion());
 
-            var deffered1 = YadomsInformationManager.getList();
-            arrayOfDeffered.push(deffered1);
-            deffered1.done(function (data) {
+      var deffered1 = YadomsInformationManager.getList();
+      arrayOfDeffered.push(deffered1);
+      deffered1.done(function (data) {
+         $("td#dashboard-summary-platform").text(data.runningPlatform);
+         $("td#dashboard-summary-software-version").text(data.yadoms.version);
+         $("td#dashboard-summary-started-from").text(DateTimeFormatter.isoDateToDate(data.startupTime)
+               .fromNow());
 
-                        $("td#dashboard-summary-platform").text(data.runningPlatform);
-                        $("td#dashboard-summary-software-version").text(data.yadoms.version);
-                        $("td#dashboard-summary-started-from").text(DateTimeFormatter.isoDateToDate(data.startupTime)
-                              .fromNow());
+         if (data.developerMode) {
+               $("tr.line-developer-mode").show();
+         }
+      })
+      .fail(function (error) {
+            notifyError($.t("objects.generic.errorGetting", {
+                  objectName: $.t("core.yadoms.information")
+            }), error);
+      });
 
-                        if (data.developerMode) {
-                              $("tr.line-developer-mode").show();
-                        }
-                  })
-                  .fail(function (error) {
-                        notifyError($.t("objects.generic.errorGetting", {
-                              objectName: $.t("core.yadoms.information")
-                        }), error);
-                  });
+      var deffered2 = MaintenanceManager.getDatabaseDetails();
+      arrayOfDeffered.push(deffered2);
+      deffered2.done(function (databaseDetails) {
+         $(".table-summary-advanced-parameter").remove();
+         $.each(databaseDetails, function (index, value) {
+               if (index !== "backupSupport") {
+                     var txt = value;
+                     if (index === "size") {
+                           txt = humanFileSize(value);
+                     }
+                     $(".table-summary").append(
+                           '<tr class="table-summary-advanced-parameter"><td class="header" data-i18n="modals.dashboard.sub-windows.summary.' +
+                           index + '"></td><td>' + txt + '</td></tr>');
+               }
+         });
+      })
+      .fail(function (error) {
+            notifyError($.t("objects.generic.errorGetting", {
+                  objectName: $.t("core.yadoms.information")
+            }), error);
+      });
 
-            var deffered2 = MaintenanceManager.getDatabaseDetails();
-            arrayOfDeffered.push(deffered2);
-            deffered2.done(function (databaseDetails) {
-                        $(".table-summary-advanced-parameter").remove();
-                        $.each(databaseDetails, function (index, value) {
-                              if (index !== "backupSupport") {
-                                    var txt = value;
-                                    if (index === "size") {
-                                          txt = humanFileSize(value);
-                                    }
-                                    $(".table-summary").append(
-                                          '<tr class="table-summary-advanced-parameter"><td class="header" data-i18n="modals.dashboard.sub-windows.summary.' +
-                                          index + '"></td><td>' + txt + '</td></tr>');
-                              }
-                        });
-                  })
-                  .fail(function (error) {
-                        notifyError($.t("objects.generic.errorGetting", {
-                              objectName: $.t("core.yadoms.information")
-                        }), error);
-                  });
+      $.whenAll(arrayOfDeffered).done(function () {
+         $(".summary-table").i18n();
+         d.resolve();
+      })
+      .fail(function (error) {
+            d.reject();
+      });
 
-            $.whenAll(arrayOfDeffered).done(function () {
-                        $(".summary-table").i18n();
-                        d.resolve();
-                  })
-                  .fail(function (error) {
-                        d.reject();
-                  });
-
-            return d.promise();
-      }
+      return d.promise();
+   }
 </script>

@@ -177,7 +177,6 @@ RestEngine.restCall_ = function(type, url, data){
          }
       })
       .fail(function(jqXhr, textStatus, errorThrown) {
-         //console.error("Options : " + ajaxOptions);
          //we build an error using HTTP error code
          d.reject(jqXhr.status + errorThrown);
       });

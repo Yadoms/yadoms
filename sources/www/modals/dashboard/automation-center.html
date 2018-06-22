@@ -15,6 +15,10 @@
 </div>
 <script>
 
+   Yadoms.AutomationCenterDashboardRegisterButtonAddNewRule = function () {
+      $("#btn-add-new-automation-rule").one("click", function() { addNewAutomationRule(); }).prop('disabled', false);
+   };
+
    Yadoms.initializeAutomationCenterDashboard = function () {
       var d = new $.Deferred();
 
@@ -35,7 +39,7 @@
 			 AutomationInterpreterManager.getAll()
 				.done(function(interpreters) {
 				   if (Object.keys(interpreters).length > 0)
-					  $("#btn-add-new-automation-rule").unbind("click").bind("click", function() { addNewAutomationRule(); }).prop('disabled', false);
+					  Yadoms.AutomationCenterDashboardRegisterButtonAddNewRule();
 
 				   //we dynamically ask for automation-rule
 				   AutomationRuleManager.get()

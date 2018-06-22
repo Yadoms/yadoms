@@ -194,10 +194,11 @@
    };
    
    Yadoms.initializeDeviceDashboard = function () {
-      $("input.cb-showblacklist").unbind('change').bind('change', function (){ 
+      $("input.cb-showblacklist").off('change').on('change', function (){ 
          refreshDeviceList();
       });
-      $("#btn-add-new-device").unbind("click").bind("click", function () {addNewDevice();});
+      
+      Yadoms.DeviceDashboardRegisterButtonAddNewDevice();
       
       $("table#device-list").on("remove", function () {
          //subscribe only the page, no extra device at the remove of this page
@@ -206,6 +207,10 @@
       
       // refresh the device list
       return refreshDeviceList();
+   };
+   
+   Yadoms.DeviceDashboardRegisterButtonAddNewDevice = function () {
+      $("#btn-add-new-device").one("click", function () {addNewDevice();});
    };
 
    function refreshDeviceList() {
@@ -280,17 +285,17 @@
    
    function addDeviceButtonsEvents(deviceRow, device) {
       //we bind event on the different actions
-      deviceRow.find("button.btn-configure").unbind('click').bind('click', function (e) { 
+      deviceRow.find("button.btn-configure").one('click', function (e) { 
             e.stopPropagation();       
             updateDeviceConfiguration(device);
       });
 
-      deviceRow.find("button.btn-delete").unbind('click').bind('click', function (e) {
+      deviceRow.find("button.btn-delete").one('click', function (e) {
             e.stopPropagation();
             deleteDevice(device);
       });
 
-      deviceRow.find("button.btn-restore").unbind('click').bind('click', function (e) { 
+      deviceRow.find("button.btn-restore").one('click', function (e) { 
             e.stopPropagation();
             restoreDevice(device);           
       });      
@@ -331,7 +336,7 @@
       }
      
       addDeviceButtonsEvents($deviceRow, device);
-      $deviceRow.unbind('click').bind('click', function () { clickDevice(device); });
+      $deviceRow.one('click', function () { clickDevice(device); });
       $deviceRow.i18n();
 
       var iconName;
@@ -355,9 +360,9 @@
          // Only virtual devices are configurable/removable
          if (device.type !== "virtualDeviceType") {
             $deviceRow.find("button.btn-configure").addClass("hide");
-            $deviceRow.find("button.btn-configure").unbind('click');
+            $deviceRow.find("button.btn-configure").off('click');
             $deviceRow.find("button.btn-delete").addClass("hide");
-            $deviceRow.find("button.btn-delete").unbind('click');
+            $deviceRow.find("button.btn-delete").off('click');
          }
       }
 
@@ -504,11 +509,11 @@
          }
          else {
             //we bind event on the different actions
-            $keywordRow.find("button.btn-configure").unbind('click').bind('click', function () { configureKeyword(keyword); });
+            $keywordRow.find("button.btn-configure").one('click', function () { configureKeyword(keyword); });
          }
 
          if ($keywordRow.find("button.btn-setvalue")) {
-            $keywordRow.find("button.btn-setvalue").unbind('click').bind('click', function () { setKeywordValue(keyword, device); });
+            $keywordRow.find("button.btn-setvalue").one('click', function () { setKeywordValue(keyword, device); });
          }
       });
    };
@@ -570,6 +575,9 @@
                   $deviceRow.after('<p class="nokeyword-for-device" data-i18n="modals.dashboard.sub-windows.devices.details.nokeywords">Aucun keyword associé</p>');
                   $(".nokeyword-for-device").i18n();
                }
+               
+               //Activate a new time the possibility to collapse the keyword list
+               $deviceRow.one('click', function () { clickDevice(device); });
             });
          });
       }
@@ -579,6 +587,9 @@
          
          // Remove extra keywords to query from the server
          updateWebSocketFilter();
+         
+         //Activate the possibility to expand the device
+         $deviceRow.one('click', function () { clickDevice(device); });
       }
    }
 

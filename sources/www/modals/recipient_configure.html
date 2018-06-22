@@ -27,9 +27,13 @@
     * @param recipient  The recipient to update
     */
    Yadoms.showRecipientConfigurationModal = function(recipient) {
-
       var d = new $.Deferred();
 
+      //Activate the button to create a new recipient
+      $('div#recipient-configure-modal').one('hidden.bs.modal', function() {
+         Yadoms.RecipientsDashboardRegisterButtonAddNewRecipient();
+      });      
+      
       //construct the dom
       var $modalBody = $("div#recipient-configure-modal .modal-body");
       $modalBody.empty();
