@@ -40,7 +40,7 @@ namespace database
                YADOMS_LOG(information) << "Start purging database : removing acquisition of more than " << m_acquisitionLifetimeDays <<
                   " days : prior to " << purgeDate;
 
-               // We have to purge by steps, to not lock the database too much time so other requests will fail
+               // We have to purge by steps, to not lock the database too much time so other requests can fail
                const auto limitByStep = 10000;
                while (true)
                {

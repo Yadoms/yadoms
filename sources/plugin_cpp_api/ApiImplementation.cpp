@@ -38,8 +38,6 @@ namespace plugin_cpp_api
 
    void CApiImplementation::send(const plugin_IPC::toYadoms::msg& msg) const
    {
-      std::cout << "Send " << msg.OneOf_case() << "..." << std::endl;//TODO virer
-
       try
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_sendMutex);
@@ -92,21 +90,17 @@ namespace plugin_cpp_api
          boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
          m_onReceiveHook = [&](const plugin_IPC::toPlugin::msg& receivedMsg)-> bool
          {
-            std::cout << "m_onReceiveHook, received " << receivedMsg.OneOf_case() << std::endl;//TODO virer
             if (!receivedMsg.error().empty())
             {
-               std::cerr << " ==> error message received" << std::endl;//TODO virer
                receivedEvtHandler.postEvent<const plugin_IPC::toPlugin::msg>(kErrorReceived, receivedMsg);
                return true;
             }
 
             if (!checkExpectedMessageFunction(receivedMsg))
             {
-               std::cerr << " ==> not expected message" << std::endl;//TODO virer
                return false;
             }
 
-            std::cout << " ==> expected message " << receivedMsg.OneOf_case() << std::endl;//TODO virer
             receivedEvtHandler.postEvent<const plugin_IPC::toPlugin::msg>(kExpectedEventReceived, receivedMsg);
             return true;
          };
@@ -114,19 +108,16 @@ namespace plugin_cpp_api
 
       send(msg);
 
-      std::cout << "Wait answer..." << std::endl;//TODO virer
       switch (receivedEvtHandler.waitForEvents(boost::posix_time::minutes(1)))
       {
       case kExpectedEventReceived:
          {
-            std::cout << " Answer ==> expected message" << std::endl;//TODO virer
             onReceiveFunction(receivedEvtHandler.getEventData<const plugin_IPC::toPlugin::msg>());
             break;
          }
 
       case kErrorReceived:
          {
-            std::cerr << " Answer ==> error message" << std::endl;//TODO virer
             boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
             m_onReceiveHook.clear();
             throw std::runtime_error(
@@ -136,7 +127,6 @@ namespace plugin_cpp_api
 
       case shared::event::kTimeout:
          {
-            std::cerr << " Timeout" << std::endl;//TODO virer
             boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
             m_onReceiveHook.clear();
             throw std::runtime_error((boost::format("No answer from Yadoms when sending message %1%") % msg.OneOf_case()).str());
@@ -144,7 +134,6 @@ namespace plugin_cpp_api
 
       default:
          {
-            std::cerr << " Answer ==> invalid event" << std::endl;//TODO virer
             boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
             m_onReceiveHook.clear();
             throw std::runtime_error(
