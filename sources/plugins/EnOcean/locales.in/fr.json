@@ -140,10 +140,10 @@
           }
         },
         "minEnergyMeasureRefreshTime": {
-          "name": "Période minimum de raffraichissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de raffraichissement"
+          "name": "Période minimum de rafraîchissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de rafraîchissement"
         },
         "maxEnergyMeasureRefreshTime": {
-          "name": "Période maximum de raffraichissement de la mesure d'énergie (secondes), doit être inférieure à la période minimum de raffraichissement"
+          "name": "Période maximum de rafraîchissement de la mesure d'énergie (secondes), doit être supérieure à la période minimum de rafraîchissement"
         }
       }
     },
@@ -216,10 +216,10 @@
           }
         },
         "minEnergyMeasureRefreshTime": {
-          "name": "Période minimum de raffraichissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de raffraichissement"
+          "name": "Période minimum de rafraîchissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de rafraîchissement"
         },
         "maxEnergyMeasureRefreshTime": {
-          "name": "Période maximum de raffraichissement de la mesure d'énergie (secondes), doit être inférieure à la période minimum de raffraichissement"
+          "name": "Période maximum de rafraîchissement de la mesure d'énergie (secondes), doit être supérieure à la période minimum de rafraîchissement"
         }
       }
     },
@@ -296,10 +296,10 @@
           }
         },
         "minEnergyMeasureRefreshTime": {
-          "name": "Période minimum de raffraichissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de raffraichissement"
+          "name": "Période minimum de rafraîchissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de rafraîchissement"
         },
         "maxEnergyMeasureRefreshTime": {
-          "name": "Période maximum de raffraichissement de la mesure d'énergie (secondes), doit être inférieure à la période minimum de raffraichissement"
+          "name": "Période maximum de rafraîchissement de la mesure d'énergie (secondes), doit être supérieure à la période minimum de rafraîchissement"
         }
       }
     },

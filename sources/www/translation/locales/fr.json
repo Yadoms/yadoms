@@ -709,6 +709,7 @@
           "description": "Installation et mise à jour des composants de Yadoms",
           "developerModeWarning": "Attention en mode développeur, cette page ne fonctionne pas",
           "includePreRelease": "Inclure les versions préliminaires",
+          "failTtoGetUpdates": "Echec de récupération des mises à jour",
           "yadoms": {
             "title": "Yadoms",
             "currentVersion": "Version courante",

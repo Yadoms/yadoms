@@ -1,6 +1,7 @@
 ### 1.2.0-beta.1
-* NewFeature #466 : adapt units if needed
+* NewFeature #466 - Adapt units if needed
 * NewFeature #485 - Adapt unit for bit/s display
+* Fix #389 - Bad display after computer wake up
 
 ### 1.1.0
 * fix #462 : doesn't display the first value for some summary values

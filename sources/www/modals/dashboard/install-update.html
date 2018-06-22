@@ -213,7 +213,7 @@
                     var taskFinished = false;
                     //we manage the end of the task
                     if (taskUpdateInformation.taskState.toLowerCase() === "fail") {
-                        console.error("Fail to get updates");
+                        notifyError($.t("modals.dashboard.sub-windows.install-update.failTtoGetUpdates"));
                         taskFinished = true;
                     } else if (taskUpdateInformation.taskState.toLowerCase() === "success") {
                         taskFinished = true;
@@ -229,7 +229,7 @@
             })
 
             .fail(function (error) {
-                console.error("Fail to get updates");
+                notifyError($.t("modals.dashboard.sub-windows.install-update.failTtoGetUpdates"));
                 $asyncActionIndicator.addClass("hidden");
                 d.reject();
             });

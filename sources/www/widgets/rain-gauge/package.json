@@ -1,12 +1,12 @@
 {
 	"type": "rain-gauge",
-	"version": "1.0.1",
+	"version": "1.0.2-beta.1",
 	"author": "Jean-Michel BERHAULT",
 	"url": "https://github.com/Yadoms/yadoms/wiki/rain-gauge",
 	"credits": "",
     "dependencies": {
        "yadoms" : {
-          "minimumVersion" : "2.1.0"
+          "minimumVersion" : "2.2.0-beta.1"
        }
     },   
     "dimensions": {

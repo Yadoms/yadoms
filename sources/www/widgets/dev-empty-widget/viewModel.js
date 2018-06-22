@@ -53,6 +53,17 @@ widgetViewModelCtor = function () {
        /* Custom code here */
        
     };
+
+    /**
+    * Callback called every minute that received the time server
+    * @param keywordId the keyword Id deleted
+    */    
+    this.onKeywordDeletion = function (keywordId) {
+       var self = this;
+       
+       /* Custom code here */
+       
+    }
     
     /**
     * New acquisition handler

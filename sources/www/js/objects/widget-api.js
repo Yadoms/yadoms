@@ -26,9 +26,7 @@ WidgetApi.prototype.find = function (pattern) {
 WidgetApi.prototype.setState = function (newState) {
    if (this.widget.getState() != newState) {
       this.widget.setState(newState);
-      
-      if (newState == widgetStateEnum.InvalidConfiguration)
-      {
+      if (newState == widgetStateEnum.InvalidConfiguration){
          this.widget.$gridWidget.find(".panel-widget-desactivated").removeClass("hidden");
          var message = $.t("objects.widgetManager.widgetDisabled", {widgetName: this.widget.title});
          this.widget.$gridWidget.find(".fa-exclamation-triangle").attr("title", message);
@@ -91,7 +89,6 @@ WidgetApi.prototype.registerKeywordAcquisitions = function (keywordIds) {
    
    var self = this;
    console.warn("this function is deprecated and will be removed soon. please use function registerKeywordForNewAcquisitions() and getLastValue()");
-
    self.widget.viewModel.widgetApi.registerKeywordForNewAcquisitions (keywordIds);
    self.widget.viewModel.widgetApi.getLastValue(keywordIds);
 };
@@ -343,8 +340,6 @@ WidgetApi.prototype.notify = function(message, gravity, timeout) {
  
 WidgetApi.prototype.manageRollingTitle = function () {
 	var self = this;
-   
-   //console.log ("widget !", self.widget);
    
 	if (self.widget.displayTitle && self.widget.toolbarActivated){
 		if (self.widget.$toolbar[0].scrollWidth <= 3) // Round size of the padding-right of the panel-widget-title-toolbar
