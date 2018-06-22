@@ -70,7 +70,7 @@ namespace pluginSystem
                // boost::interprocess::message_queue::receive is not responding to boost thread interruption, so we need to do some
                // polling and call boost::this_thread::interruption_point to exit properly
                // Note that boost::interprocess::message_queue::timed_receive requires universal time to work (can not use shared::currentTime::Provider)
-               auto messageWasReceived = m_receiveMessageQueue.timed_receive(message.get(),
+               const auto messageWasReceived = m_receiveMessageQueue.timed_receive(message.get(),
                                                                              m_receiveMessageQueue.get_max_msg_size(),
                                                                              messageSize,
                                                                              messagePriority,
@@ -285,7 +285,7 @@ namespace pluginSystem
 
       shared::CDataContainer dc(msg.custommessagedata());
 
-      auto values = dc.get<std::map<std::string, std::string>>();
+      const auto values = dc.get<std::map<std::string, std::string>>();
 
       m_pluginApi->setPluginState(state, msg.custommessageid(), values);
    }
@@ -312,7 +312,7 @@ namespace pluginSystem
       }
 
       shared::CDataContainer dc(msg.custommessagedata());
-      auto values = dc.get<std::map<std::string, std::string>>();
+      const auto values = dc.get<std::map<std::string, std::string>>();
       m_pluginApi->updateDeviceState(msg.device(), state, msg.custommessageid(), values);
    }
 
@@ -437,15 +437,15 @@ namespace pluginSystem
    {
       plugin_IPC::toPlugin::msg ans;
       auto answer = ans.mutable_yadomsinformationanswer();
-      auto yadomsInformation = m_pluginApi->getYadomsInformation();
+      const auto yadomsInformation = m_pluginApi->getYadomsInformation();
       answer->set_developpermode(yadomsInformation->developperMode());
       answer->set_version(yadomsInformation->version().toString());
 
       try
       {
-         auto longitude = yadomsInformation->location()->longitude();
-         auto latitude = yadomsInformation->location()->latitude();
-         auto altitude = yadomsInformation->location()->altitude();
+         const auto longitude = yadomsInformation->location()->longitude();
+         const auto latitude = yadomsInformation->location()->latitude();
+         const auto altitude = yadomsInformation->location()->altitude();
 
          auto location = answer->mutable_location();
 

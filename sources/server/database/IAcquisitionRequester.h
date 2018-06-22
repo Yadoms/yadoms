@@ -36,7 +36,7 @@ namespace database
       ///            second is summary on Hour
       //--------------------------------------------------------------
       typedef boost::tuple<boost::shared_ptr<entities::CAcquisitionSummary>,
-                           boost::shared_ptr<entities::CAcquisitionSummary> > LastSummaryData;
+                           boost::shared_ptr<entities::CAcquisitionSummary>> LastSummaryData;
 
       //--------------------------------------------------------------
       /// \brief           Save a new summary data into base
@@ -92,9 +92,9 @@ namespace database
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector<boost::tuple<boost::posix_time::ptime, std::string> > getKeywordData(int keywordId,
-                                                                                               boost::posix_time::ptime timeFrom,
-                                                                                               boost::posix_time::ptime timeTo) = 0;
+      virtual std::vector<boost::tuple<boost::posix_time::ptime, std::string>> getKeywordData(int keywordId,
+                                                                                              boost::posix_time::ptime timeFrom,
+                                                                                              boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Get the data  by hour (avg, min, max per hour)
@@ -104,9 +104,9 @@ namespace database
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > getKeywordDataByHour(int keywordId,
-                                                                                                             boost::posix_time::ptime timeFrom,
-                                                                                                             boost::posix_time::ptime timeTo) = 0;
+      virtual std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary>> getKeywordDataByHour(int keywordId,
+                                                                                                           boost::posix_time::ptime timeFrom,
+                                                                                                           boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Get the data  by day (avg, min, max per day)
@@ -116,9 +116,9 @@ namespace database
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > getKeywordDataByDay(int keywordId,
-                                                                                                            boost::posix_time::ptime timeFrom,
-                                                                                                            boost::posix_time::ptime timeTo) = 0;
+      virtual std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary>> getKeywordDataByDay(int keywordId,
+                                                                                                          boost::posix_time::ptime timeFrom,
+                                                                                                          boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Get the data by month (avg, min, max per day)
@@ -128,9 +128,9 @@ namespace database
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > getKeywordDataByMonth(int keywordId,
-                                                                                                              boost::posix_time::ptime timeFrom,
-                                                                                                              boost::posix_time::ptime timeTo) = 0;
+      virtual std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary>> getKeywordDataByMonth(int keywordId,
+                                                                                                            boost::posix_time::ptime timeFrom,
+                                                                                                            boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Get the data by year (avg, min, max per day)
@@ -140,9 +140,9 @@ namespace database
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > getKeywordDataByYear(int keywordId,
-                                                                                                             boost::posix_time::ptime timeFrom,
-                                                                                                             boost::posix_time::ptime timeTo) = 0;
+      virtual std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary>> getKeywordDataByYear(int keywordId,
+                                                                                                           boost::posix_time::ptime timeFrom,
+                                                                                                           boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Get the data  by hour (avg, min, max per hour)
@@ -153,8 +153,8 @@ namespace database
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
       virtual std::string getHugeVectorKeywordDataByHour(int keywordId,
-                                                   boost::posix_time::ptime timeFrom,
-                                                   boost::posix_time::ptime timeTo) = 0;
+                                                         boost::posix_time::ptime timeFrom,
+                                                         boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Get the data  by day (avg, min, max per day)
@@ -165,8 +165,8 @@ namespace database
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
       virtual std::string getHugeVectorKeywordDataByDay(int keywordId,
-                                                  boost::posix_time::ptime timeFrom,
-                                                  boost::posix_time::ptime timeTo) = 0;
+                                                        boost::posix_time::ptime timeFrom,
+                                                        boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Get the data by month (avg, min, max per day)
@@ -177,8 +177,8 @@ namespace database
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
       virtual std::string getHugeVectorKeywordDataByMonth(int keywordId,
-                                                    boost::posix_time::ptime timeFrom,
-                                                    boost::posix_time::ptime timeTo) = 0;
+                                                          boost::posix_time::ptime timeFrom,
+                                                          boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Get the data by year (avg, min, max per day)
@@ -189,15 +189,16 @@ namespace database
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
       virtual std::string getHugeVectorKeywordDataByYear(int keywordId,
-                                                   boost::posix_time::ptime timeFrom,
-                                                   boost::posix_time::ptime timeTo) = 0;
+                                                         boost::posix_time::ptime timeFrom,
+                                                         boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Delete old acquisition
       /// \param [in] purgeDate  The date of purge (any data prior ro his date will be deleted)
       /// \return                Number of deleted rows
       //--------------------------------------------------------------
-      virtual int purgeAcquisitions(boost::posix_time::ptime purgeDate) = 0;
+      virtual int purgeAcquisitions(boost::posix_time::ptime purgeDate,
+                                    int limit = -1) = 0;
 
       //--------------------------------------------------------------
       /// \brief       Destructor
@@ -207,5 +208,3 @@ namespace database
       }
    };
 } //namespace database 
-
-
