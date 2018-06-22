@@ -14,6 +14,8 @@
 * Fix #481 - Set a duration keyword to a non duration value is possible
 * Fix #486 - Change configuration doesn't refresh keywords list if no keyword before
 * Fix #491 - Add error notification when fail to get updates
+* Fix #498 - [Devices page] could get more than 1 keyword table with Internet network connexion
+* Fix #499 - [Dashboard pages] Click fastly on the button "Create a device" generate more than 1 sub page
 * In configuration sections, don't display sub-section of a combo section if no content
 * Optimize Devices Page in dashboard (less requests to the server)
 
