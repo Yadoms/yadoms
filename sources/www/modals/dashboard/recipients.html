@@ -18,25 +18,30 @@
     */
    Yadoms.initializeRecipientsDashboard = function () {
      var d = new $.Deferred();
-
+     
      //we remove all rows except header
      $("table#recipients-list").find("tr:gt(0)").remove();
      Yadoms.RecipientsDashboardRegisterButtonAddNewRecipient();
 
-     //get all recipients from server and add them to dom
-     RecipientManager.getAll()
-         .done(function(recipientList) {
-            //foreach result we append a <tr>
-            $.each(recipientList, function(index, value) {
-               addRecipientToDom(value);
-            });
-            d.resolve();
-         })
-         .fail(function(error) {
-            notifyError($.t("modals.recipient.errorGettingList"), error);
-            d.reject();
-         });     
-         
+     asyncLoadJSLibs([
+        "js/objects/recipient-manager.js",
+        "js/objects/recipient-field.js",
+        "js/objects/recipient.js"
+     ]).done(function() {     
+        //get all recipients from server and add them to dom
+        RecipientManager.getAll()
+            .done(function(recipientList) {
+               //foreach result we append a <tr>
+               $.each(recipientList, function(index, value) {
+                  addRecipientToDom(value);
+               });
+               d.resolve();
+            })
+            .fail(function(error) {
+               notifyError($.t("modals.recipient.errorGettingList"), error);
+               d.reject();
+            });     
+      });
       return d.promise();
    };
 

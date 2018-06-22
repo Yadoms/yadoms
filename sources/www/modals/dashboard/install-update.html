@@ -181,7 +181,24 @@
     var includePreReleases = false;
 
     Yadoms.initializeInstallUpdateDashboard = function () {
-        return scanForUpdates();
+       var arrayOfDeffered = [];
+       var d = new $.Deferred();
+       
+       arrayOfDeffered.push(asyncLoadJSLibs(["libs/markdown-it/markdown-it.min.js",
+                                             "libs/markdown-it/markdown-it-for-inline.min.js",
+                                             "js/objects/update/update-information.js",
+                                             "js/objects/update/update-information-manager.js",
+                                             "js/objects/update/yadoms-update-information-manager.js"
+       ]));
+       arrayOfDeffered.push(scanForUpdates());
+       
+       $.when.apply($, defferedArray).done(function () {
+          d.resolve();
+       })
+       .fail(function () {
+          d.reject();
+       });
+       return d.promise();          
     };
 
     YadomsInformationManager.getList()

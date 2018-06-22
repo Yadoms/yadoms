@@ -1,3 +1,6 @@
+### 1.1.0-beta.2
+* Load icon picker in the widget if the IHM need it
+
 ### 1.1.0-beta.1
 * NewFeature #365 - Add a checkbox "ask confirmation"
 

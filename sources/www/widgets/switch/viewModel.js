@@ -218,7 +218,13 @@ widgetViewModelCtor =
                    }
                });
             }
-            
+
+        // load library if needed, if it's a push button with icon
+        if (self.kind() === 'pushButton'){
+           arrayOfDeffered.push(asyncLoadJSLibs(["libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker-iconset-all.min.js",
+                                                 "libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker.min.js"]));
+           arrayOfDeffered.push(asyncLoadCss("libs/bootstrap-iconpicker-1.9.0/css/bootstrap-iconpicker.min.css"));            
+        }
          // This variable is used only for the display
          $.when.apply($, arrayOfDeffered)
          .done(function () {
@@ -270,8 +276,7 @@ widgetViewModelCtor =
               }
               
                //knockout doesn't work witj bootstrap. So change values have to be done manually
-               if (self.kind() === 'toggle')
-               {
+               if (self.kind() === 'toggle'){
                  self.update(true);
                  if (self.readonly())
                     this.widget.$content.find("input[type=checkbox]").prop('disabled', false);

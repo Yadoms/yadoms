@@ -5,7 +5,8 @@ function ConfigurationHelper(){}
 
 ConfigurationHelper.loadConfigurationLibs = function() {
     var d = new $.Deferred();
-    asyncLoadJSLibs([
+    var arrayOfDeffered = [];
+    arrayOfDeffered.push(asyncLoadJSLibs([
         "js/objects/configuration/configuration-control-manager.js",
         "js/objects/configuration/int-parameter-handler.js",
         "js/objects/configuration/decimal-parameter-handler.js",
@@ -21,16 +22,29 @@ ConfigurationHelper.loadConfigurationLibs = function() {
         "js/objects/configuration/combo-section-parameter-handler.js",
         "js/objects/configuration/color-parameter-handler.js",
         "js/objects/configuration/icon-parameter-handler.js",
-        "js/objects/configuration/list-parameter-handler.js"
-    ]).done(function () {
-        d.resolve();
-    });
+        "js/objects/configuration/list-parameter-handler.js",
+        // external libraries
+        "libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker-iconset-all.min.js",
+        "libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker.min.js",
+        "libs/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js",
+        "libs/markdown-it/markdown-it.min.js",
+        "libs/markdown-it/markdown-it-for-inline.min.js"
+    ]));
+    
+    arrayOfDeffered.push(asyncLoadManyCss(["libs/bootstrap-iconpicker-1.9.0/css/bootstrap-iconpicker.min.css",
+                                           "libs/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css"]));
 
+    $.when.apply($, arrayOfDeffered)
+    .done(function () {
+       d.resolve();
+    })
+    .fail(function () {
+       d.reject();
+    });
     return d.promise();
 }
 
 ConfigurationHelper.createControlGroup = function (parameterHandler, controlToInsert, placeInsideLabel, classOfControlGroup) {
-
    assert(parameterHandler !== undefined, "parameterHandler must be defined");
    assert(controlToInsert !== undefined, "controlToInsert must be defined");
       
