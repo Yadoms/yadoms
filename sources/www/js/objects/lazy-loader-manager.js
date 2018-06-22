@@ -57,7 +57,6 @@ LazyLoaderManager.prototype.loadAsync = function () {
 
    var self = this;
    if (self.modalHasBeenLoaded) {
-      //we simply call the callback function
       d.resolve();
    }
    else {
@@ -69,7 +68,6 @@ LazyLoaderManager.prototype.loadAsync = function () {
          $('body').append($data);
          //we save the information that the modal has been loaded
          self.modalHasBeenLoaded = true;
-         //we call the callback
          d.resolve();
       })
       .fail(function(error) {

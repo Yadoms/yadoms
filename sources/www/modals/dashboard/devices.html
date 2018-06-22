@@ -40,8 +40,9 @@
             device = getDeviceFromId($deviceDetailsTable.attr("device-id"));
          }
          if (!isNullOrUndefined(device)){
-            var keyword = device.keywords.map(function (e) { return e.id; }).indexOf(acquisition.keywordId);
-            updateKeywordDomLine($keywordRow, acquisition, keyword, device.attachedPlugin);
+            var index = device.keywords.map(function (e) { return e.id; }).indexOf(acquisition.keywordId);
+            if (index != -1)
+               updateKeywordDomLine($keywordRow, acquisition, device.keywords[index], device.attachedPlugin);
          }
       }      
    };
@@ -108,7 +109,7 @@
             }
             
             var keywords = [];
-            $.each(device.keywords, function (idx, keyword) {
+            $.each(deviceList[i].keywords, function (idx, keyword) {
                keywords.push(keyword.id);
             });
             
@@ -132,9 +133,12 @@
             }
          }
       });
-      addDeviceToDom(device.device, indexToInsert);
-      deviceList.push(device.device);
-      deviceList = sortListItemsWithFriendlyName ( deviceList );
+      DeviceManager.getAttachedPlugin(device.device, true)
+      .done(function () {
+         addDeviceToDom(device.device, indexToInsert);
+         deviceList.push(device.device);
+         deviceList = sortListItemsWithFriendlyName ( deviceList );
+      });
    };   
    
    dispatchDevicesBlacklistedToDevicesView = function (device) {
@@ -200,20 +204,8 @@
          updateWebSocketFilter();         
       });
       
-      var d = new $.Deferred();
-      
-      //we check if there is at least one plugin instantiated that handle manual creation
-      PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation()
-         .done(function (list) {
-            refreshDeviceList()
-               .done(d.resolve)
-               .fail(d.reject);
-         })
-         .fail(function (error) {
-            notifyError($.t("modals.pluginInstance.errorGettingManuallyDeviceCreation"), error);
-            d.reject();
-         });
-      return d.promise();
+      // refresh the device list
+      return refreshDeviceList();
    };
 
    function refreshDeviceList() {
@@ -225,27 +217,41 @@
 
       //we clear pluginInstance array
       var tempList = [];
-
-      DeviceManager.getAll()
-      .done(function (allDevices) {
-         YadomsInformationManager.getList()
-            .done(function (data) {
-               tempList = sortListItemsWithFriendlyName ( allDevices );
-               //foreach result we append a <tr>
-               $.each(tempList, function (index, value) {
-                  if( (!data.developerMode && (value.name !== "pluginState" || value.model !== "Plugin state")) || data.developerMode) {
-                     if(showblacklistedDevices || (!showblacklistedDevices && parseBool(value.blacklist) === false)) {
-                        addDeviceToDom(value, null);
-                        deviceList.push(value);
-                     }
+      var arrayOfDeffered = [];
+      var isDeveloperMode = false;
+      
+      var deffered2 = YadomsInformationManager.getList();
+      arrayOfDeffered.push(deffered2);
+      deffered2.done(function (data) {
+         isDeveloperMode = data.developerMode;
+      });      
+      
+      var deffered1 = DeviceManager.getAll();
+      arrayOfDeffered.push(deffered1);
+      deffered1.done(function (allDevices) {
+         tempList = sortListItemsWithFriendlyName (allDevices);
+         var deffered3 = DeviceManager.getAttachedPlugins(tempList);
+         arrayOfDeffered.push(deffered3);
+         
+         // The "when.apply" is here to wait the deffered3
+         $.when.apply($, arrayOfDeffered).done(function () {
+            //foreach result we append a <tr>
+            $.each(tempList, function (index, value) {
+               if( (!isDeveloperMode && (value.name !== "pluginState" || value.model !== "Plugin state")) || isDeveloperMode) {
+                  if(showblacklistedDevices || (!showblacklistedDevices && parseBool(value.blacklist) === false)) {
+                     addDeviceToDom(value, null);
+                     deviceList.push(value);
                   }
-               });
-               d.resolve();
-            })
-            .fail(d.reject);
-      })
-      .fail(d.reject);
-
+               }
+            });
+            d.resolve();
+         })
+         .fail(function (error) {
+            notifyError($.t("widgets.chart:errorDuringGettingDeviceData"), error);
+            d.reject();
+         });         
+      });
+      
       return d.promise();
    }
 
@@ -328,45 +334,37 @@
       $deviceRow.unbind('click').bind('click', function () { clickDevice(device); });
       $deviceRow.i18n();
 
-      //we async ask for attached plugins
-      DeviceManager.getAttachedPlugin(device, true)
-      .done(function () {
-         var iconName;
-         if (!device.attachedPlugin.isSystemCategory()) {
-            iconName = "plugins/" + device.attachedPlugin.type + "/icon.png";
-            
-            //disable it before async update
-            $deviceRow.find("button.btn-configure").prop('disabled', true);
-            PluginInstanceManager.getState(device.attachedPlugin)
-            .done(function(instanceState) {
-               if (instanceState.state !== "Stopped" && instanceState.state !== "Error" && instanceState.state) {
-                  $deviceRow.find("button.btn-configure").prop('disabled', false);
-               }
-            });
-         }
-         else {
-            //we use application logo
-            iconName = "img/icon_256.png";
-            
-            // The system plugin contains hard-coded devices (ie device containing shutdown and reboot keywords) and virtual devices
-            // Only virtual devices are configurable/removable
-            if (device.type !== "virtualDeviceType") {
-               $deviceRow.find("button.btn-configure").addClass("hide");
-               $deviceRow.find("button.btn-configure").unbind('click');
-               $deviceRow.find("button.btn-delete").addClass("hide");
-               $deviceRow.find("button.btn-delete").unbind('click');
+      var iconName;
+      if (!device.attachedPlugin.isSystemCategory()) {
+         iconName = "plugins/" + device.attachedPlugin.type + "/icon.png";
+         
+         //disable it before async update
+         $deviceRow.find("button.btn-configure").prop('disabled', true);
+         PluginInstanceManager.getState(device.attachedPlugin)
+         .done(function(instanceState) {
+            if (instanceState.state !== "Stopped" && instanceState.state !== "Error" && instanceState.state) {
+               $deviceRow.find("button.btn-configure").prop('disabled', false);
             }
+         });
+      }
+      else {
+         //we use application logo
+         iconName = "img/icon_256.png";
+         
+         // The system plugin contains hard-coded devices (ie device containing shutdown and reboot keywords) and virtual devices
+         // Only virtual devices are configurable/removable
+         if (device.type !== "virtualDeviceType") {
+            $deviceRow.find("button.btn-configure").addClass("hide");
+            $deviceRow.find("button.btn-configure").unbind('click');
+            $deviceRow.find("button.btn-delete").addClass("hide");
+            $deviceRow.find("button.btn-delete").unbind('click');
          }
+      }
 
-         var attachedTo = "<img src=\"" + iconName + "\" class=\"img-thumbnail dashboard-table-icon\">&nbsp;&nbsp;" +
-                 "<span>" + device.attachedPlugin.displayName + "</span>";
+      var attachedTo = "<img src=\"" + iconName + "\" class=\"img-thumbnail dashboard-table-icon\">&nbsp;&nbsp;" +
+              "<span>" + device.attachedPlugin.displayName + "</span>";
 
-         $deviceRow.find("td.device-attachedTo").html(attachedTo);
-      })
-      .fail(function (error) {
-         $deviceRow.find("button.btn-configure").addClass("hide");
-         $deviceRow.find("td.device-attachedTo").html(error);
-      });
+      $deviceRow.find("td.device-attachedTo").html(attachedTo);
    }
    
    function recordNewDeviceConfiguration(device) {
@@ -385,11 +383,14 @@
                   var model = "<span>" + device.model + "</span>"
                   $row.find("td.device-model").html(model);               
                }else {
-                  $row.remove ();
-                  addDeviceToDom ( device, deviceList.indexOf (updateDevice) );
-                  deviceList[i] = updateDevice;
-                  //sort after rename
-                  deviceList = sortListItemsWithFriendlyName ( deviceList );                  
+                  DeviceManager.getAttachedPlugin(device, true)
+                  .done(function () {
+                     $row.remove ();
+                     addDeviceToDom ( device, deviceList.indexOf (updateDevice) );
+                     deviceList[i] = updateDevice;
+                     //sort after rename
+                     deviceList = sortListItemsWithFriendlyName ( deviceList );                  
+                  });
                }
             }
             d.resolve();
@@ -609,11 +610,8 @@
       //device represent the device concerned
       DeviceManager.restoreDevice(device)
       .done(function () {
-         //force a device and associated keyword refresh
-         DeviceManager.getKeywords(device, true)
-         .always(function () {   
-            refreshDeviceList();
-         });
+         // The refresh device list refresh devices & keywords
+         refreshDeviceList();
       })
       .fail(function (error) {
          notifyError($.t("modals.dashboard.sub-windows.devices.errorDeletingDevice", { device: device.friendlyName }), error);
@@ -671,7 +669,6 @@
    }
 
    function addNewDevice() {
-      //clearInterval(Yadoms.periodicDashboardTask);
       Yadoms.modals.deviceAddManually.loadAsync()
       .done(function () {
          Yadoms.askPluginTypesForManuallyDeviceCreation(function (pi) {
@@ -689,17 +686,17 @@
             } else {
                // Manually plugin-related device creation
                //we get package.json
-               PluginInstanceManager.downloadPackage(pi).done(function () {
-                  //we ask for configuration modal async
-                  Yadoms.modals.deviceConfigureManually.loadAsync()
-                  .done(function () {
-                     //we launch configureInstance GUI
-                      Yadoms.showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration) {
-                          //we ask for manually device creation
-                        PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
-                        .fail(function (error) {
-                           notifyError($.t("objects.pluginInstance.errorCreatingManuallyDevice", { deviceName: newDeviceName }), error);
-                        });
+               var arrayOfDeffered = [];
+               arrayOfDeffered.push(PluginInstanceManager.downloadPackage(pi));
+               arrayOfDeffered.push(Yadoms.modals.deviceConfigureManually.loadAsync());
+               
+               $.when.apply($, arrayOfDeffered).done(function () {
+                  //we launch configureInstance GUI
+                   Yadoms.showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration) {
+                       //we ask for manually device creation
+                     PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
+                     .fail(function (error) {
+                        notifyError($.t("objects.pluginInstance.errorCreatingManuallyDevice", { deviceName: newDeviceName }), error);
                      });
                   });
                });
@@ -722,9 +719,7 @@
    }
 
    function updateKeywordDomLine($keywordRow, acquisition, keyword, pluginInstance) {
-      //$keywordRow exists
       var keywordValue = "<span></span>";
-      
       if (acquisition.value){
          try {
             //manage boolean keyword

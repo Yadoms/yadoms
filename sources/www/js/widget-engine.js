@@ -10,64 +10,68 @@ var LastEventLogId = null;
 
 function initializeWidgetEngine() {
     //we ask all widgets packages
-    WidgetPackageManager.getAll()
-        .done(function () {
-            PageManager.getAll()
-                .done(function () {
-                    if (loadPagesNotification != null) {
-                        loadPagesNotification.close();
-                        if (loadPagesNotification.showing)
-                            loadPagesNotification.$bar.dequeue();
-                        loadPagesNotification = null;
-                    }
-                    //we add all pages to the DOM
-                    $.each(PageManager.pages,
-                        function (index, currentPage) {
-                            PageManager.addToDom(currentPage);
-                        });
+    var defferedArray = [];
+    var def1 = WidgetPackageManager.getAll();
+    defferedArray.push(def1);
+    
+    def1.fail(function (error) {
+       notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), error);
+    });
+    
+    var def2 = PageManager.getAll();
+    defferedArray.push(def2);
+    def2.fail(function (error) {
+       notifyError($.t("objects.pageManager.errorDuringGettingPages"), error);
+    });
+    
+    $.when.apply($, defferedArray).done(function () {
+        if (loadPagesNotification != null) {
+            loadPagesNotification.close();
+            if (loadPagesNotification.showing)
+                loadPagesNotification.$bar.dequeue();
+            loadPagesNotification = null;
+        }
+        //we add all pages to the DOM
+        $.each(PageManager.pages,
+            function (index, currentPage) {
+                PageManager.addToDom(currentPage);
+            });
 
-                    //we deactivate the customization without launch save process
-                    exitCustomization(false);
+        //we deactivate the customization without launch save process
+        exitCustomization(false);
 
-                    if (configurationManager.refreshPage()) {
-                        if (PageManager.pages.length > 0 && SessionDataManager.getVariable("CurrentPage") != null)
-                            PageManager.selectPageId(parseInt(SessionDataManager.getVariable("CurrentPage")));
-                        else
-                            PageManager.ensureOnePageIsSelected();
-                    }
-                    else{
-                        PageManager.selectFirstPage();
-                    }
+        if (configurationManager.refreshPage()) {
+            if (PageManager.pages.length > 0 && SessionDataManager.getVariable("CurrentPage") != null)
+                PageManager.selectPageId(parseInt(SessionDataManager.getVariable("CurrentPage")));
+            else
+                PageManager.ensureOnePageIsSelected();
+        }
+        else{
+            PageManager.selectFirstPage();
+        }
 
-                    //we ask for the last event to ask only those occurs after this one
-                    EventLoggerManager.getLast()
-                        .done(function (data) {
-                            //we save the id of the last event
-                            LastEventLogId = data.id;
+        //we ask for the last event to ask only those occurs after this one
+        EventLoggerManager.getLast()
+            .done(function (data) {
+                //we save the id of the last event
+                LastEventLogId = data.id;
 
-                            //we can start the periodic update
-                            serverIsOnline = true;
-                            if (!WebSocketEngine.isActive())
-                                widgetUpdateInterval = setInterval(periodicUpdateTask,
-                                    Yadoms.updateIntervalWithWebSocketDisabled);
-                            else
-                                widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateInterval);
-                        })
-                        .fail(function (error) {
-                            notifyError($.t("objects.generic.errorGetting",
-                                {
-                                    objectName: $.t("core.event")
-                                },
-                                error));
-                        });
-                })
-                .fail(function (error) {
-                    notifyError($.t("objects.pageManager.errorDuringGettingPages"), error);
-                });
-        })
-        .fail(function (error) {
-            notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), error);
-        });
+                //we can start the periodic update
+                serverIsOnline = true;
+                if (!WebSocketEngine.isActive())
+                    widgetUpdateInterval = setInterval(periodicUpdateTask,
+                        Yadoms.updateIntervalWithWebSocketDisabled);
+                else
+                    widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateInterval);
+            })
+            .fail(function (error) {
+                notifyError($.t("objects.generic.errorGetting",
+                    {
+                        objectName: $.t("core.event")
+                    },
+                    error));
+            });
+    });
 }
 
 function requestWidgets(page) {
@@ -246,9 +250,6 @@ function periodicUpdateTask() {
                         LastEventLogId = value.id;
                     });
             }
-            //we ask for widget's devices if web sockets are unsupported
-            if (!WebSocketEngine.isActive())
-                updateWidgetsPolling();
             if (!WebSocketEngine.isConnected())
                 serverIsOnline = false;
         })
