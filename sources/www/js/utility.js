@@ -237,6 +237,67 @@ function concatenateUrl(url1, url2) {
 var loadedJSLibs = [];
 
 /**
+ * Load js library in gz format and return a promise
+ * @param {string} url of the library
+ */
+function asyncLoadJSGzLib(libraryName) {
+   assert(libraryName != undefined, "libraryName must be defined");
+   var d = new $.Deferred();
+   if (!loadedJSLibs[libraryName]) {
+      //we create a new deffered
+      RestEngine.getBinaryFiles(libraryName)
+      .done(function(data) {
+         var script = document.createElement("script");
+         script.type = "text/javascript";
+         script.innerHTML = data;
+         // ASYNC: load in parallel and execute as soon as possible
+         script.async = false;
+         // DEFER: load in parallel but maintain execution order
+         script.defer = false;
+
+         //we insert into head (from HeadJS)
+         var head = document.head || document.getElementsByTagName("head")[0];
+         head.insertBefore(script, head.lastChild);
+         
+         //we save the promise for other load requests
+         loadedJSLibs[libraryName] = d.promise();
+         console.log(libraryName);
+         d.resolve();
+      })
+      .fail(function(error) {
+         console.error(error);
+         d.reject();
+      });
+      return d.promise();
+   } else {
+      return loadedJSLibs[libraryName];
+   }
+}
+
+/**
+ * Load js libraries in gz format and return a promise
+ * @param {array of string} urls of the libraries
+ */
+function asyncLoadJSGzLibs(libraryNames) {
+   assert(Array.isArray(libraryNames), "librayNames must be an array of string");
+
+   var d = new $.Deferred();
+   var arrayOfDeffered = [];
+
+   $.each(libraryNames, function (index, lib) {
+      arrayOfDeffered.push(asyncLoadJSGzLib(lib));
+   });
+
+   $.when.apply($,arrayOfDeffered).done(function () {
+      d.resolve();
+   })
+   .fail(function(error){
+      d.reject(error);
+   });
+   return d.promise();
+}
+
+/**
  * Load js library and return a promise
  * @param {string} url of the library
  */
@@ -301,18 +362,74 @@ function asyncLoadJSLibs(librayNames) {
       arrayOfDeffered.push(asyncLoadJSLib(lib));
    });
 
-   $.whenAll(arrayOfDeffered).done(function () {
+   $.when.apply($,arrayOfDeffered).done(function () {
       d.resolve();
    });
 
    return d.promise();
 }
 
-
-
 var loadedCss = [];
 /**
- * Load js library and return a promise
+ * Load css library in a compressed format and return a promise
+ * @param {string} url of the library
+ */
+function asyncLoadGzCss(cssFile) {
+   assert(cssFile != undefined, "cssFile must be defined");
+
+   if (!loadedCss[cssFile]) {
+      //we create a new deffered
+      var d = new $.Deferred();
+      RestEngine.getBinaryFiles(cssFile)
+      .done(function(data) {
+         var script = document.createElement("link");
+         script.rel = "stylesheet";
+         script.innerHTML = data;
+         // ASYNC: load in parallel and execute as soon as possible
+         script.async = false;
+         // DEFER: load in parallel but maintain execution order
+         script.defer = false;
+
+         //we insert into head (from HeadJS)
+         var head = document.head || document.getElementsByTagName("head")[0];
+         head.insertBefore(script, head.lastChild);
+
+         //we save the promise for other load requests
+         loadedCss[cssFile] = d.promise();
+         d.resolve();
+      })
+      .fail(function(error) {
+         console.error(error);
+         d.reject();
+      });
+      return d.promise();
+   } else {
+      return loadedCss[cssFile];
+   }
+}
+
+/**
+ * Load css libraries in gz format and return a promise
+ * @param {array of string} urls of the libraries
+ */
+function asyncLoadManyGzCss(cssNames) {
+   assert(Array.isArray(cssNames), "librayNames must be an array of string");
+
+   var d = new $.Deferred();
+   var arrayOfDeffered = [];
+
+   $.each(cssNames, function (index, lib) {
+      arrayOfDeffered.push(asyncLoadGzCss(lib));
+   });
+
+   $.when.apply($,arrayOfDeffered).done(function () {
+      d.resolve();
+   });
+   return d.promise();
+}
+
+/**
+ * Load css library and return a promise
  * @param {string} url of the library
  */
 function asyncLoadCss(cssFile) {
@@ -362,7 +479,7 @@ function asyncLoadCss(cssFile) {
 }
 
 /**
- * Load js libraries and return a promise
+ * Load css libraries and return a promise
  * @param {array of string} urls of the libraries
  */
 function asyncLoadManyCss(cssNames) {
@@ -375,7 +492,7 @@ function asyncLoadManyCss(cssNames) {
       arrayOfDeffered.push(asyncLoadCss(lib));
    });
 
-   $.whenAll(arrayOfDeffered).done(function () {
+   $.when.apply($,arrayOfDeffered).done(function () {
       d.resolve();
    });
 

@@ -40,10 +40,10 @@
       //we update all fields
       $("tr.line-developer-mode").hide();
 
-      $("td#dashboard-summary-database-version").text(configurationManager.databaseVersion());
-
       var deffered1 = YadomsInformationManager.getList();
       arrayOfDeffered.push(deffered1);
+      arrayOfDeffered.push(asyncLoadJSLib("js/objects/maintenance-manager.js"));
+      
       deffered1.done(function (data) {
          $("td#dashboard-summary-platform").text(data.runningPlatform);
          $("td#dashboard-summary-software-version").text(data.yadoms.version);
@@ -60,31 +60,26 @@
             }), error);
       });
 
-      var deffered2 = MaintenanceManager.getDatabaseDetails();
-      arrayOfDeffered.push(deffered2);
-      deffered2.done(function (databaseDetails) {
-         $(".table-summary-advanced-parameter").remove();
-         $.each(databaseDetails, function (index, value) {
-               if (index !== "backupSupport") {
-                     var txt = value;
-                     if (index === "size") {
-                           txt = humanFileSize(value);
-                     }
-                     $(".table-summary").append(
-                           '<tr class="table-summary-advanced-parameter"><td class="header" data-i18n="modals.dashboard.sub-windows.summary.' +
-                           index + '"></td><td>' + txt + '</td></tr>');
-               }
+      $.when.apply($,arrayOfDeffered).done(function () {
+         $("td#dashboard-summary-database-version").text(configurationManager.databaseVersion());
+         MaintenanceManager.getDatabaseDetails().done(function(databaseDetails){
+            $.each(databaseDetails, function (index, value) {
+                  if (index !== "backupSupport") {
+                        var txt = value;
+                        if (index === "size") {
+                              txt = humanFileSize(value);
+                        }
+                        $(".table-summary").append(
+                              '<tr class="table-summary-advanced-parameter"><td class="header" data-i18n="modals.dashboard.sub-windows.summary.' +
+                              index + '"></td><td>' + txt + '</td></tr>');
+                  }
+            });         
+            $(".summary-table").i18n();
+            d.resolve();
+         })
+         .fail(function (error) {
+            notifyError($.t("objects.generic.errorGetting", {objectName: $.t("core.yadoms.information")}), error);
          });
-      })
-      .fail(function (error) {
-            notifyError($.t("objects.generic.errorGetting", {
-                  objectName: $.t("core.yadoms.information")
-            }), error);
-      });
-
-      $.whenAll(arrayOfDeffered).done(function () {
-         $(".summary-table").i18n();
-         d.resolve();
       })
       .fail(function (error) {
             d.reject();

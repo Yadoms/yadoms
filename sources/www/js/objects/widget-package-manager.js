@@ -39,11 +39,10 @@ WidgetPackageManager.factory = function(json) {
 WidgetPackageManager.packageList = [];
 
 WidgetPackageManager.getAll = function () {
-
    var d = new $.Deferred();
-
    RestEngine.getJson("rest/widget/package")
       .done(function(data) {
+         console.log(data);
          //we add it to the package list
          var newWidgetPackages = [];
 
@@ -56,11 +55,10 @@ WidgetPackageManager.getAll = function () {
             })
             .fail(function(f) {
                notifyError($.t("objects.widgetPackageManager.incorrectPackage"), value);
-         });
+            });
          });
          
-         
-        $.whenAll(deferredArray)
+        $.when.apply($,deferredArray)
          .done(function() {
          //
          $.each(newWidgetPackages, function(index, newPackage) {

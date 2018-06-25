@@ -53,7 +53,6 @@
 <script>
 
    Yadoms.initializeAboutDashboard = function () {
-   
    var d = new $.Deferred();
       
       function getWidgetDomRow(widgetPackage) {
@@ -77,8 +76,7 @@
               "</tr>";     
       
         $widgetPackageList.append( frameworkWidgetPackage );
-
-          var $widgetPackageRow = getWidgetDomRow( name );       
+        var $widgetPackageRow = getWidgetDomRow( name );       
         
         //we fill the data
         $widgetPackageRow.find("td.widget-displayName").html( "<a href=\"" + url + "\" target=\"_blank\">" + name + "</a>" );
@@ -101,8 +99,7 @@
               "</tr>";     
       
         $pluginPackageList.append( frameworkPluginPackage );
-
-          var $pluginPackageRow = getPluginDomRow( type );       
+        var $pluginPackageRow = getPluginDomRow( type );       
         
         //we fill the data
         $pluginPackageRow.find("td.plugin-displayName").html( "<a href=\"" + url + "\" target=\"_blank\">" + name + "</a>" );
@@ -113,34 +110,29 @@
       };
       
        AddYadomsLibrary = function( name1, url1, name2, url2 ) {
-
         //we add it to the DOM
         var $YadomsLicenseList = $("table#yadoms-license-list");
-
         var licenseframe = "<tr>";
         
-        if ( url1 !== undefined && name1 !== undefined )
-        {
+        if ( url1 !== undefined && name1 !== undefined ){
            licenseframe = licenseframe + "<td class=\"vert-align\"><a href=\"" + url1 + "\" target=\"_blank\">" + name1 + "</a></td>";
         }
         
-        if ( url2 !== undefined && name2 !== undefined )
-        {
+        if ( url2 !== undefined && name2 !== undefined ){
            licenseframe = licenseframe + "<td class=\"vert-align\"><a href=\"" + url2 + "\" target=\"_blank\">" + name2 + "</a></td>";
         }        
 
         licenseframe = licenseframe + "</tr>";
-      
         $YadomsLicenseList.append( licenseframe );    
       };
       
       YadomsInformationManager.getList()
-           .done(function (data) {
+         .done(function (data) {
          
-          var tabLicense = [];
+         var tabLicense = [];
          
-            // delete all existing yadoms license
-          $("table#yadoms-license-list").find("tr:gt(0)").remove();        
+         // delete all existing yadoms license
+         $("table#yadoms-license-list").find("tr:gt(0)").remove();        
          
          // Add all licenses !
          tabLicense.push ( {friendlyName: "Boost"                 , url: "https://www.boost.org/"  });
@@ -154,10 +146,8 @@
          tabLicense.push ( {friendlyName: "jQuery MD5"            , url: "https://github.com/blueimp/jQuery-MD5" });
          tabLicense.push ( {friendlyName: "jQuery ui"             , url: "http://jqueryui.com" });
          tabLicense.push ( {friendlyName: "jQuery touch punch"    , url: "http://touchpunch.furf.com/" });
-         tabLicense.push ( {friendlyName: "jsPDF"                 , url: "https://parall.ax/products/jspdf" });
          tabLicense.push ( {friendlyName: "knockout"              , url: "http://knockoutjs.com/" });
-		 tabLicense.push ( {friendlyName: "lodash"                , url: "https://lodash.com/" });
-         tabLicense.push ( {friendlyName: "lazyload"              , url: "https://github.com/rgrove/lazyload/" });
+		   tabLicense.push ( {friendlyName: "lodash"                , url: "https://lodash.com/" });
          tabLicense.push ( {friendlyName: "moment"                , url: "http://momentjs.com" });
          tabLicense.push ( {friendlyName: "noty"                  , url: "http://needim.github.com/noty/" });
          tabLicense.push ( {friendlyName: "packery"               , url: "http://packery.metafizzy.co" });
@@ -175,13 +165,11 @@
          var nbLicensehigh = Math.round(tabLicense.length / 2);
          var counter = 0;
           
-          while ( counter < nbLicensehigh )
-         {
+          while ( counter < nbLicensehigh ){
             var url2  = "";
             var name2 = "";
             
-            if ( tabLicense[counter + nbLicensehigh] !== undefined )
-            {
+            if ( tabLicense[counter + nbLicensehigh] !== undefined ){
                name2 = tabLicense[counter + nbLicensehigh].friendlyName;
                url2  = tabLicense[counter + nbLicensehigh].url;
             }
@@ -190,8 +178,7 @@
                                tabLicense[counter].friendlyName, 
                                tabLicense[counter].url, 
                                name2, 
-                               url2
-                        );
+                               url2);
             
             counter = counter + 1;
          }   
@@ -230,7 +217,6 @@
                
          // delete all existing information
          $("table#widget-package-list").find("tr:gt(0)").remove();               
-               
          var WidgetList = [];
         
          // scan all widgets packages
@@ -250,17 +236,15 @@
          
          //display all widgets
          $.each(WidgetList, function(index, value) {
-            
             var result = "";
             if ( !isNullOrUndefined ( value.widget.credits ))
                result = ConfigurationHelper.makdownIt( value.widget.credits ); 
             
-                AddWidgetPackage ( value.displayName, value.widget.version, value.widget.author, result, value.widget.url );
+            AddWidgetPackage ( value.displayName, value.widget.version, value.widget.author, result, value.widget.url );
          });
          
       d.resolve();
       });
-      
       return d.promise();
    }
 
