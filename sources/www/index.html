@@ -109,14 +109,6 @@
 
     <div id="templates" class="hidden"></div>
 
-    <script src="libs/bowser-1.3.0/js/bowser.min.js"></script>
-    <script type="text/javascript">
-        if (bowser.name === "Internet Explorer") {
-            console.log("incompatible browser !");
-            window.location.href = "browser.html";
-        }
-    </script>
-
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -124,7 +116,7 @@
     <!-- must be included before bootstrap -->
     <!-- the minimal needed for the boot-->
     <script src="libs/zlib/gunzip.min.js"></script>
-
+    
     <script src="js/i18n-manager.js"></script>
     <script src="js/iso-language-codes.js"></script>
     <script src="js/rest-engine.js"></script>
@@ -154,17 +146,12 @@
          gridMargin: 5,
          baseUrl: ''
      };
-
-     var configurationManager = new ConfigurationManager();
-     var i18nManagerInitialised = new $.Deferred();
-     asyncLoadJSGzLibs(["libs/noty/js/packaged/jquery.noty.packaged.min.js.gz",
-                        "libs/i18next/js/i18next.min.js.gz",
-                        "libs/i18next/js/jquery-i18next.min.js.gz",
-                        "libs/i18next/js/i18nextXHRBackend.min.js.gz"
-                       ]).done(function () {
-        i18nManagerInitialised = i18nManager.init();
-     });
      
+     var configurationManager = new ConfigurationManager();
+     var arrayOfDeffered = [];
+     arrayOfDeffered.push(asyncLoadJSGzLibs(["libs/noty/js/packaged/jquery.noty.packaged.min.js.gz",
+                                             "libs/i18next/js/i18next.min.js.gz",
+                                             "libs/bowser-1.3.0/js/bowser.min.js.gz"]));
     /**
      * On page loaded
      */
@@ -173,24 +160,32 @@
         asyncLoadJSLib("config.js")
             .always(function () {
                 loadModals();
-                i18nManagerInitialised.done(function () {
-                   configurationManager.load().done(function() {
-                       //we get install/firstStart key to have information if firstStart has already been done
-                       if (!configurationManager.isServerFirstStart()) {
-                           //we start app normally
-                           main();
-                       } else {
-                           //we make the first start configuration
-                           notifyInformation($.t(
-                               "mainPage.actions.firstRunConfiguration"));
+                $.when.apply($,arrayOfDeffered).done(function () {
+                    if (bowser.name === "Internet Explorer") {
+                       console.log("incompatible browser !");
+                       window.location.href = "browser.html";
+                    }
+                    asyncLoadJSGzLibs(["libs/i18next/js/jquery-i18next.min.js.gz",
+                                       "libs/i18next/js/i18nextXHRBackend.min.js.gz"]).done(function(){
+                      console.log("init");
+                      $.when(i18nManager.init(),configurationManager.load()).done(function() {
+                          //we get install/firstStart key to have information if firstStart has already been done
+                          if (!configurationManager.isServerFirstStart()) {
+                              //we start app normally
+                              main();
+                          } else {
+                              //we make the first start configuration
+                              notifyInformation($.t(
+                                  "mainPage.actions.firstRunConfiguration"));
 
-                           configurationManager.setServerFirstStartDone().save();
-                           processFirstStart();
-                        }
-                     })
-                     .fail(function (error) {
-                        notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
-                     });                        
+                              configurationManager.setServerFirstStartDone().save();
+                              processFirstStart();
+                           }
+                        })
+                        .fail(function (error) {
+                           notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
+                        });                        
+                    });
                 });
             });
 
@@ -240,22 +235,33 @@
          * Make lazy loading of the add widget modal
          */
         $("#btn-add-widget").click(function () {
-            Yadoms.modals.pickupController.loadAsync()
-                .done(function () {
-                    //search all plugin information
-                    Yadoms.askPackages("widgets",
-                        WidgetPackageManager,
-                        "preview.png", // Name of thumbnail
-                        "modals.add-widget.title",
-                        createobject
-                    );
-                })
-                .fail(function (error) {
-                    notifyError($.t(
-                        "objects.lazyLoaderManager.unableToLoadModal", {
-                            modalPath: self.modalPath
-                        }), error);
-                });
+           var arrayofDeffered = [];
+           
+           // load all language packages if it's not already done
+           $.each(_.keys(WidgetPackageManager.packageList), function(index, Package) {
+              arrayofDeffered.push(WidgetPackageManager.loadLanguage(Package));
+           });
+           
+           arrayofDeffered.push(Yadoms.modals.pickupController.loadAsync());
+           arrayOfDeffered.push(asyncLoadJSGzLibs(
+                          ["libs/markdown-it/markdown-it.min.js.gz",
+                           "libs/markdown-it/markdown-it-for-inline.min.js.gz"]));
+           
+           $.when.apply($,arrayofDeffered).done(function () {
+                 //search all plugin information
+                 Yadoms.askPackages("widgets",
+                     WidgetPackageManager,
+                     "preview.png", // Name of thumbnail
+                     "modals.add-widget.title",
+                     createobject
+                 );
+             })
+             .fail(function (error) {
+                 notifyError($.t(
+                     "objects.lazyLoaderManager.unableToLoadModal", {
+                         modalPath: self.modalPath
+                     }), error);
+             });
         });
 
         function createobject(packageName, widgetType) {
@@ -446,7 +452,6 @@
            "js/objects/plugin-instance-manager.js",
            "js/objects/device.js",
            "js/objects/device-manager.js",
-           "js/objects/encryption-manager.js",
            "js/objects/widget-manager.js",
            "js/objects/widget-package-manager.js",
            "js/objects/keyword.js",
@@ -470,34 +475,29 @@
           ]));
 
           arrayOfDeffered.push(asyncLoadManyGzCss(
-                               ["libs/jquery-ui/css/jquery-ui.min.css.gz",
-                                "libs/bootstrap-toggle/css/bootstrap2-toggle.min.css.gz"]));
+          ["libs/jquery-ui/css/jquery-ui.min.css.gz",
+           "libs/bootstrap-toggle/css/bootstrap2-toggle.min.css.gz"]));
           
           arrayOfDeffered.push(asyncLoadJSGzLibs(
-                          ["libs/moment.js/js/moment-with-langs.min.js.gz",
-                           "libs/jquery-ui/js/jquery-ui.min.js.gz",
-                           "libs/bootstrap/js/bootstrap.min.js.gz",
-                           "libs/knockout/js/knockout-3.4.0.js.gz",
-                           "libs/jqBootstrapValidation/js/jqBootstrapValidation.min.js.gz",
-                           "libs/bootstrap-toggle/js/bootstrap2-toggle.min.js.gz",
-                           "libs/jquery-MD5/js/jquery.md5.min.js.gz",
-                           "libs/packery/packery.pkgd.min.js.gz",
-                           "libs/lodash/lodash.min.js.gz"]));
+          ["libs/jquery-ui/js/jquery-ui.min.js.gz",
+           "libs/bootstrap/js/bootstrap.min.js.gz",
+           "libs/knockout/js/knockout-3.4.0.js.gz",
+           "libs/jqBootstrapValidation/js/jqBootstrapValidation.min.js.gz",
+           "libs/bootstrap-toggle/js/bootstrap2-toggle.min.js.gz",
+           "libs/jquery-MD5/js/jquery.md5.min.js.gz",
+           "libs/packery/packery.pkgd.min.js.gz",
+           "libs/lodash/lodash.min.js.gz"]));
              
              $.when.apply($,arrayOfDeffered).done(function() {
                 var arrayOfDef = [];
                 console.log("0");
-                arrayOfDef.push(asyncLoadJSGzLib("libs/moment.js/js/moment-timezone.min.js.gz"));
                 arrayOfDef.push(asyncLoadManyGzCss(["libs/jquery-ui/css/jquery-ui.min.css.gz",
                                                     "libs/bootstrap-toggle/css/bootstrap2-toggle.min.css.gz"]));
                 arrayOfDef.push(asyncLoadJSLib("js/knock-out-extenders.js"));
                    
                 $.when.apply($,arrayOfDef).done(function() {
                    //load after libraries with dependancies
-                   asyncLoadJSGzLibs(["libs/moment.js/js/moment-timezone-data.min.js.gz",
-                                      "libs/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js.gz"]);
-                                      
-                   moment.lang(configurationManager.currentLanguage());
+                   asyncLoadJSGzLibs(["libs/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js.gz"]);
 
                    //Load Plugin instances to load initially all languages files. Needed for some widgets
                    PluginInstanceManager.getAll().done(function (allInstances) {

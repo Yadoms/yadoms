@@ -23,13 +23,16 @@ ConfigurationHelper.loadConfigurationLibs = function() {
         "js/objects/configuration/color-parameter-handler.js",
         "js/objects/configuration/icon-parameter-handler.js",
         "js/objects/configuration/list-parameter-handler.js",
+        "js/objects/encryption-manager.js",
         // external libraries
         "libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker-iconset-all.min.js",
         "libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker.min.js",
-        "libs/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js",
-        "libs/markdown-it/markdown-it.min.js",
-        "libs/markdown-it/markdown-it-for-inline.min.js"
+        "libs/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"
     ]));
+    
+    arrayOfDeffered.push(asyncLoadJSGzLibs([
+        "libs/markdown-it/markdown-it.min.js.gz",
+        "libs/markdown-it/markdown-it-for-inline.min.js.gz"]));    
     
     arrayOfDeffered.push(asyncLoadManyCss(["libs/bootstrap-iconpicker-1.9.0/css/bootstrap-iconpicker.min.css",
                                            "libs/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css"]));

@@ -11,6 +11,7 @@ var LastEventLogId = null;
 function initializeWidgetEngine() {
     //we ask all widgets packages
     var defferedArray = [];
+    
     var def1 = WidgetPackageManager.getAll();
     defferedArray.push(def1);
     
@@ -24,7 +25,10 @@ function initializeWidgetEngine() {
        notifyError($.t("objects.pageManager.errorDuringGettingPages"), error);
     });
     
+    arrayOfDeffered.push(asyncLoadJSGzLib("libs/moment.js/js/moment-with-langs.min.js.gz"));
+    
     $.when.apply($, defferedArray).done(function () {
+       moment.lang(configurationManager.currentLanguage());
         if (loadPagesNotification != null) {
             loadPagesNotification.close();
             if (loadPagesNotification.showing)

@@ -149,6 +149,21 @@ WidgetApi.prototype.loadLibrary = function (librayNames) {
 };
 
 /**
+ * Lazy load required libraries in gz format
+ * @param {} librayNames to load (can be a single value or an array of values)
+ * @returns {} a promise that's return done when libraries are loaded
+ */
+WidgetApi.prototype.loadGzLibrary = function (librayNames) {
+   assert(!isNullOrUndefined(librayNames), "librayNames must be defined");
+
+   if (Array.isArray(librayNames)) {
+      return asyncLoadJSGzLibs(librayNames);
+   } else {
+      return asyncLoadJSGzLib(librayNames);
+   }
+};
+
+/**
  * Lazy load required CSS stylesheet
  * @param {} librayNames to load (can be a single value or an array of values)
  * @returns {} a promise that's return done when libraries are loaded

@@ -155,22 +155,29 @@ function chartViewModel() {
      */
     this.initialize = function () {
         var self = this;
+        var arrayOfDeffered = [];
         var d = new $.Deferred();
         
         // create the chart
         self.$chart = self.widgetApi.find("div.container");
         
-        self.widgetApi.loadLibrary([
-            "libs/highstock/js/highstock.js",
-            "libs/highstock/js/highcharts-more.js",
-            "libs/highstock/js/modules/exporting.js",
-            "libs/highstock/js/modules/offline-exporting.js",
-            "libs/highstock/js/modules/canvas-tools.js",
-            "libs/highstock/js/modules/boost.js",
-            "libs/export-csv/js/export-csv.min.js",
-            "libs/highcharts-export-clientside/js/highcharts-export-clientside.min.js",
-            "widgets/chart/helpers.js"
-        ]).done(function () {
+        arrayOfDeffered.push(self.widgetApi.loadGzLibrary([
+            "libs/highstock/js/highstock.js.gz",
+            "libs/highstock/js/highcharts-more.js.gz",
+            "libs/highstock/js/modules/exporting.js.gz",
+            "libs/highstock/js/modules/offline-exporting.js.gz",
+            "libs/highstock/js/modules/canvas-tools.js.gz",
+            "libs/highstock/js/modules/boost.js.gz",
+            "libs/export-csv/js/export-csv.min.js.gz",
+            "libs/highcharts-export-clientside/js/highcharts-export-clientside.min.js.gz"
+        ]));        
+        
+        arrayOfDeffered.push(self.widgetApi.loadLibrary("widgets/chart/helpers.js"));
+        arrayOfDeffered.push(self.widgetApi.askServerLocalTime(function (serverLocalTime) {
+           self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
+        }));
+        
+        $.when.apply($,deferredArray).done(function () {
             self.chartOption = {
                 chart: {
                     type: 'line',
@@ -279,15 +286,8 @@ function chartViewModel() {
             self.chart.keyword = [];
             
             $('input.highcharts-range-selector:eq(0)').on('change', function(){ console.log("Essai capture !"); });
-            $('g.highcharts-label .highcharts-range-input').on('change', function(){ console.log("Essai capture !"); });            
-            self.widgetApi.askServerLocalTime(function (serverLocalTime) {
-               self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
-            }).done(function(data) {
-               d.resolve();
-            })
-            .fail(function(error) {
-               d.reject();
-            });
+            $('g.highcharts-label .highcharts-range-input').on('change', function(){ console.log("Essai capture !"); });
+            d.resolve();
         })
         .fail(function (error) {
             self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);

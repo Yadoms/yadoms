@@ -11,13 +11,12 @@ function clockViewModel() {
    this.time = ko.observable("00:00");
    this.date = ko.observable("");
 
-   var self = this;
-
    /**
    * Update the time onto the widget
    * @param target
    */
-   this.updateTime = function(serverTime) {      
+   this.updateTime = function(serverTime) {
+      var self = this;      
       serverTimeMoment = DateTimeFormatter.isoDateToDate(serverTime);
       self.time(serverTimeMoment.format("LT"));
       self.date(serverTimeMoment.format("LL"));
@@ -28,7 +27,9 @@ function clockViewModel() {
    * @param widget widget class object
    */
    this.initialize = function () {
-
+      var self = this;
+      var d = new $.Deferred();
+      var arrayOfDeffered = [];
       self.widgetApi.toolbar({
          activated: false
       });
@@ -41,6 +42,7 @@ function clockViewModel() {
    * @param serverLocalTime Time data
    */
    this.onTime = function (serverLocalTime) {
+      var self = this;
       self.updateTime(serverLocalTime);
    }
 };
