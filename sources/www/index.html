@@ -24,91 +24,14 @@
     <title>Yadoms</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap-non-responsive.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="css/yadoms.css" rel="stylesheet">
-    <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="css/widget.css" rel="stylesheet">
+    <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <!-- Fixed navbar -->
-    <div class="navbar navbar-default navbar-static-top" role="navigation">
-        <div class="container">
-            <div class="row" id="mainNavBar">
-                <div class="col-md-12">
-                    <div class="navbar-header">
-                        <img src="img/icon_256.png" class="img-responsive pull-left application-logo" />
-                        <a class="navbar-brand" href="#">Yadoms</a>
-                    </div>
-                    <div class="navbar-right">
-                        <button href="#" class="btn btn-success pull-left customization-item hidden" id="btn-add-widget">
-                            <i class="fa fa-puzzle-piece"></i>
-                            <span data-i18n="mainPage.customization.addNewWidget"></span>
-                        </button>
-                        <ul class="nav navbar-nav">
-                            <li>
-                                <a href="#" class="" id="btn-show-dashboard" data-i18n="[title]mainPage.menu.dashboard">
-                                    <i class="fa fa-cog"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="" id="customizeButton" data-i18n="[title]mainPage.menu.customization">
-                                    <i class="fa fa-wrench"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="nav navbar-nav" id="pageMenu">
-                        <ul class="nav nav-pills nav-justified page-tabs">
-                            <!-- Nav pills of pages will be inserted here -->
-                            <li class="customization-item hidden" id="btn-add-page">
-                                <a>
-                                    <span>&nbsp;</span>
-                                    <div class="customizationToolbar pageCustomizationToolbar">
-                                        <div class="customizationButton pageCustomizationButton" data-i18n="[title]mainPage.customization.addNewPage">
-                                            <i class="fa fa-plus"></i>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--/.nav-collapse -->
-    </div>
-
-
-
-    <div id="tabContainer" class="container">
-        <div class="tab-content">
-            <!-- widget grids tabs will be inserted here -->
-        </div>
-        <footer class="footer">
-            <button class="btn btn-primary" id="btn-show-qrcode">
-                <i class="fa fa-qrcode"></i>
-            </button>
-            <label id="copyrightLabel" class="label label-default">&copy; Yadoms 2016</label>
-        </footer>
-    </div>
-
-
-    <div id="serverNotReady" class="server-not-ready text-center">
-        <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw waiting-animation"></i>
-        <p>
-            <span data-i18n="initialization.loading">Yadoms is loading...</span>
-        </p>
-    </div>
-
-    <div id="templates" class="hidden"></div>
-
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -124,7 +47,82 @@
     <script src="js/objects/configuration-manager.js"></script>
     <script src="js/objects/lazy-loader-manager.js"></script>
     <script type="text/javascript">
-        
+
+    addMainPage = function(){    
+       page = "<!-- Fixed navbar -->" +
+       "<div class=\"navbar navbar-default navbar-static-top\" role=\"navigation\" >" + //style=\"height:100vh\"
+           "<div class=\"container\">" +
+               "<div class=\"row\" id=\"mainNavBar\">" +
+                   "<div class=\"col-md-12\">" +
+                       "<div class=\"navbar-header\">" +
+                           "<img src=\"img/icon_256.png\" class=\"img-responsive pull-left application-logo\" />" +
+                           "<a class=\"navbar-brand\" href=\"#\">Yadoms</a>" +
+                       "</div>" +
+                       "<div class=\"navbar-right\">" +
+                           "<button href=\"#\" class=\"btn btn-success pull-left customization-item hidden\" id=\"btn-add-widget\">" +
+                               "<i class=\"fa fa-puzzle-piece\"></i>" +
+                               "<span data-i18n=\"mainPage.customization.addNewWidget\"></span>" +
+                           "</button>" +
+                           "<ul class=\"nav navbar-nav\">" +
+                               "<li>" +
+                                   "<a href=\"#\" class=\"\" id=\"btn-show-dashboard\" data-i18n=\"[title]mainPage.menu.dashboard\">" +
+                                       "<i class=\"fa fa-cog\"></i>" +
+                                   "</a>" +
+                               "</li>" +
+                               "<li>" +
+                                   "<a href=\"#\" class=\"\" id=\"customizeButton\" data-i18n=\"[title]mainPage.menu.customization\">" +
+                                       "<i class=\"fa fa-wrench\"></i>" +
+                                   "</a>" +
+                               "</li>" +
+                           "</ul>" +
+                       "</div>" +
+                   "</div>" +
+               "</div>" +
+               "<div class=\"row\">" +
+                   "<div class=\"col-md-12\">" +
+                       "<div class=\"nav navbar-nav\" id=\"pageMenu\">" +
+                           "<ul class=\"nav nav-pills nav-justified page-tabs\">" +
+                               "<!-- Nav pills of pages will be inserted here -->" +
+                               "<li class=\"customization-item hidden\" id=\"btn-add-page\">" +
+                                   "<a>" +
+                                       "<span>&nbsp;</span>" +
+                                       "<div class=\"customizationToolbar pageCustomizationToolbar\">" +
+                                           "<div class=\"customizationButton pageCustomizationButton\" data-i18n=\"[title]mainPage.customization.addNewPage\">" +
+                                               "<i class=\"fa fa-plus\"></i>" +
+                                           "</div>" +
+                                       "</div>" +
+                                   "</a>" +
+                               "</li>" +
+                           "</ul>" +
+                       "</div>" +
+                   "</div>" +
+               "</div>" +
+           "</div>" +
+           "<div id=\"serverNotReady\" class=\"server-not-ready text-center\">" +
+              "<i class=\"fa fa-circle-o-notch fa-spin fa-3x fa-fw waiting-animation\"></i>" +
+                "<p>" +
+                  "<span data-i18n=\"initialization.loading\">Yadoms is loading...</span>" +
+                "</p>" +
+           "</div>" +
+           "<!--/.nav-collapse -->" +
+       "</div>" +
+       "<div id=\"tabContainer\" class=\"container\">" +
+           "<div class=\"tab-content\">" +
+               "<!-- widget grids tabs will be inserted here -->" +
+           "</div>" +
+           "<footer class=\"footer\">" +
+               "<button class=\"btn btn-primary\" id=\"btn-show-qrcode\">" +
+                   "<i class=\"fa fa-qrcode\"></i>" +
+               "</button>" +
+               "<label id=\"copyrightLabel\" class=\"label label-default\">&copy; Yadoms 2016</label>" +
+           "</footer>" +
+       "</div>" +
+       //
+       "<div id=\"templates\" class=\"hidden\"></div>";    
+       
+       $('body').append(page);
+    };
+    
      //base configuration
      $.ajaxSetup({
          contentType: "application/json; charset=utf-8",
@@ -149,6 +147,19 @@
      
      var configurationManager = new ConfigurationManager();
      var arrayOfDeffered = [];
+     var firstCss = asyncLoadManyGzCss(["libs/bootstrap/css/bootstrap.min.css.gz"/*,
+                                        "libs/font-awesome/css/font-awesome.min.css.gz"*/]);
+     //We add the first page like this to download first css in gz file to be smaller. No difference in a LAN. speeder through Internet
+     firstCss.done(function(){
+        addMainPage();
+        console.log("add main page");
+        
+     })
+     .fail(function(){
+        console.log("error !");
+     });
+
+     arrayOfDeffered.push(firstCss);
      arrayOfDeffered.push(asyncLoadJSGzLibs(["libs/noty/js/packaged/jquery.noty.packaged.min.js.gz",
                                              "libs/i18next/js/i18next.min.js.gz",
                                              "libs/bowser-1.3.0/js/bowser.min.js.gz"]));
