@@ -3,7 +3,6 @@
 #include "web/rest/Result.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/RestDispatcher.h"
-#include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
 #include "web/rest/StringContainer.h"
 
@@ -27,27 +26,45 @@ namespace web
 
          void CAcquisition::configureDispatcher(CRestDispatcher& dispatcher)
          {
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("keyword")("lastdata"), CAcquisition::getKeywordListLastData); //get the last data of a list of keywords
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("lastdata"), CAcquisition::getKeywordLastData); //get all keyword data
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("keyword")("lastdata"), CAcquisition::getKeywordListLastData);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("keyword")("info"), CAcquisition::getKeywordListInfo);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("keyword")("*")("info"), CAcquisition::getKeywordInfo);
+            //get the last data of a list of keywords
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("lastdata"), CAcquisition::getKeywordLastData);
+            //get all keyword data
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*"), CAcquisition::getKeywordData); //get all keyword data
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("*"), CAcquisition::getKeywordData); //get keyword data from date
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("*")("*"), CAcquisition::getKeywordData); //get keyword data between two dates
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("*"), CAcquisition::getKeywordData);
+            //get keyword data from date
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("*")("*"), CAcquisition::getKeywordData);
+            //get keyword data between two dates
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("hour"), CAcquisition::getKeywordDataByHour); //get all keyword data
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("hour")("*"), CAcquisition::getKeywordDataByHour); //get keyword data from date
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("hour")("*")("*"), CAcquisition::getKeywordDataByHour); //get keyword data between two dates
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("hour"), CAcquisition::getKeywordDataByHour);
+            //get all keyword data
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("hour")("*"), CAcquisition::getKeywordDataByHour);
+            //get keyword data from date
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("hour")("*")("*"), CAcquisition::getKeywordDataByHour);
+            //get keyword data between two dates
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("day"), CAcquisition::getKeywordDataByDay); //get all keyword data
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("day")("*"), CAcquisition::getKeywordDataByDay); //get keyword data from date
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("day")("*")("*"), CAcquisition::getKeywordDataByDay); //get keyword data between two dates
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("day"), CAcquisition::getKeywordDataByDay);
+            //get all keyword data
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("day")("*"), CAcquisition::getKeywordDataByDay);
+            //get keyword data from date
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("day")("*")("*"), CAcquisition::getKeywordDataByDay);
+            //get keyword data between two dates
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("month"), CAcquisition::getKeywordDataByMonth); //get all keyword data
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("month")("*"), CAcquisition::getKeywordDataByMonth); //get keyword data from date
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("month")("*")("*"), CAcquisition::getKeywordDataByMonth); //get keyword data between two dates
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("month"), CAcquisition::getKeywordDataByMonth);
+            //get all keyword data
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("month")("*"), CAcquisition::getKeywordDataByMonth);
+            //get keyword data from date
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("month")("*")("*"), CAcquisition::getKeywordDataByMonth);
+            //get keyword data between two dates
 
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("year"), CAcquisition::getKeywordDataByYear); //get all keyword data
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("year")("*"), CAcquisition::getKeywordDataByYear); //get keyword data from date
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("year")("*")("*"), CAcquisition::getKeywordDataByYear); //get keyword data between two dates
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("year"), CAcquisition::getKeywordDataByYear);
+            //get all keyword data
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("year")("*"), CAcquisition::getKeywordDataByYear);
+            //get keyword data from date
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("year")("*")("*"), CAcquisition::getKeywordDataByYear);
+            //get keyword data between two dates
          }
 
          const std::string& CAcquisition::getRestKeyword()
@@ -62,31 +79,18 @@ namespace web
             {
                if (parameters.size() > 2)
                {
-                  auto keywordId = boost::lexical_cast<int>(parameters[2]);
-                  auto acq = m_dataProvider->getKeywordRequester()->getKeywordLastAcquisition(keywordId);
-                  return CResult::GenerateSuccess(acq);
-               }
-               return CResult::GenerateError("invalid parameter. Can not retreive acquisitionId in url");
-            }
-            catch (shared::exception::CEmptyResult& /*noData*/)
-            {
-               try {
-                  auto keywordId = boost::lexical_cast<int>(parameters[2]);
-                  auto keyword = m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
+                  const auto keywordId = boost::lexical_cast<int>(parameters[2]);
 
-                  if (keyword)
-                  {
-                     shared::CDataContainer emptyResult;
-                     emptyResult.set("keywordId", keywordId);
-                     return CResult::GenerateSuccess(emptyResult);
-                  }
+                  shared::CDataContainer content(requestContent);
+                  const auto infoRequested = content.getWithDefault<std::vector<std::string>>("info",
+                                                                                              std::vector<std::string>());
+
+                  shared::CDataContainer result;
+                  readKeywordInfo(keywordId, "lastValue", result);
+
+                  return CResult::GenerateSuccess(result);
                }
-               catch (shared::exception::CEmptyResult& ex)
-               {
-                  return CResult::GenerateError(ex);
-               }
-               //if no data just return success
-               return CResult::GenerateSuccess();
+               return CResult::GenerateError("invalid parameter.");
             }
             catch (std::exception& ex)
             {
@@ -98,6 +102,65 @@ namespace web
             }
          }
 
+         void CAcquisition::readKeywordInfo(int keywordId,
+                                            const std::string& info,
+                                            shared::CDataContainer& keywordResult) const
+         {
+            try
+            {
+               if (info == "lastValue")
+               {
+                  const auto lastAcq = m_dataProvider->getKeywordRequester()->getKeywordLastAcquisition(keywordId, false);
+                  keywordResult.set(info, lastAcq ? lastAcq->Value : std::string());
+               }
+               else if (info == "lastValueDate")
+               {
+                  const auto lastAcq = m_dataProvider->getKeywordRequester()->getKeywordLastAcquisition(keywordId, false);
+                  if (lastAcq)
+                     keywordResult.set(info, lastAcq->Date);
+                  else
+                     keywordResult.set(info, std::string());
+               }
+               else if (info == "deviceId")
+                  keywordResult.set(info,
+                                    m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->DeviceId);
+               else if (info == "pluginId")
+                  keywordResult.set(info,
+                                    m_dataProvider->getDeviceRequester()->getDevice(
+                                       m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->DeviceId)->PluginId);
+               else if (info == "capacity")
+                  keywordResult.set(info,
+                                    m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->CapacityName);
+               else if (info == "accessMode")
+                  keywordResult.set(info,
+                                    m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->AccessMode().toString());
+               else if (info == "dataType")
+                  keywordResult.set(info,
+                                    m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->Type().toString());
+               else if (info == "unit")
+                  keywordResult.set(info,
+                                    m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->Units());
+               else if (info == "typeInfo")
+                  keywordResult.set(info,
+                                    m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->TypeInfo());
+               else if (info == "measure")
+                  keywordResult.set(info,
+                                    m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->Measure().toString());
+               else if (info == "details")
+                  keywordResult.set(info,
+                                    m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->Details());
+               else
+                  YADOMS_LOG(warning) << "readKeywordInfo, can not get requested keyword " << keywordId << " info \"" << info <<
+                     "\", ignored : unknown info label";
+            }
+            catch (std::exception& exception)
+            {
+               YADOMS_LOG(warning) << "readKeywordInfo, can not get requested keyword " << keywordId << " info \"" << info <<
+                  "\", ignored : " << exception.what();
+            }
+         }
+
+
          boost::shared_ptr<shared::serialization::IDataSerializable> CAcquisition::getKeywordListLastData(const std::vector<std::string>& parameters,
                                                                                                           const std::string& requestContent) const
          {
@@ -108,54 +171,63 @@ namespace web
                   shared::CDataContainer content(requestContent);
                   if (content.containsChild("keywords"))
                   {
-                     auto list = content.get<std::vector<int> >("keywords");
+                     auto keywords = content.get<std::vector<int>>("keywords");
 
                      // erase all duplicates, if any
-                     sort(list.begin(), list.end());
-                     list.erase(unique(list.begin(), list.end()), list.end());
+                     sort(keywords.begin(), keywords.end());
+                     keywords.erase(unique(keywords.begin(), keywords.end()), keywords.end());
 
                      shared::CDataContainer result;
-                     for (auto i = list.begin(); i != list.end(); ++i)
+                     for (const auto& keywordId : keywords)
                      {
-                        try
-                        {
-                           auto lastData = m_dataProvider->getKeywordRequester()->getKeywordLastAcquisition(*i, false);
-                           if (lastData)
-                           {
-                              result.set(boost::lexical_cast<std::string>(*i),
-                                         lastData);
-                           }
-                           else
-                           {
-                              try {
-                                 auto keyword = m_dataProvider->getKeywordRequester()->getKeyword(*i);
+                        shared::CDataContainer keywordResult;
+                        readKeywordInfo(keywordId, "lastValue", keywordResult);
+                        result.set(boost::lexical_cast<std::string>(keywordId),
+                                   keywordResult);
+                     }
+                     return CResult::GenerateSuccess(result);
+                  }
+                  return CResult::GenerateError("invalid parameter. Can not retreive keywords in request content");
+               }
+               return CResult::GenerateError("invalid parameter.");
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in retreiving one acquisition");
+            }
+         }
 
-                                 if (keyword)
-                                 {
-                                    shared::CDataContainer emptyResult;
-                                    emptyResult.set("keywordId", *i);
-                                    result.set(boost::lexical_cast<std::string>(*i),
-                                               emptyResult);
-                                 }
-                              }
-                              catch(std::exception& /*nokeyword*/)
-                              {
-                                 shared::CDataContainer noKeyword;
-                                 noKeyword.set("keywordId", *i);
-                                 noKeyword.set("error", "keyword id doesn't exist");
-                                 result.set(boost::lexical_cast<std::string>(*i),
-                                            noKeyword);
-                              }
-                           }
-                        }
-                        catch (std::exception& /*noData*/)
-                        {
-                           //ensure returning entity object, because we need to indicate that a keyword have no data, not others (in case of multiple keyword without data)
-                           shared::CDataContainer emptyResult;
-                           emptyResult.set("keywordId", *i);
-                           result.set(boost::lexical_cast<std::string>(*i),
-                                      emptyResult);
-                        }
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAcquisition::getKeywordListInfo(const std::vector<std::string>& parameters,
+                                                                                                      const std::string& requestContent) const
+         {
+            try
+            {
+               if (parameters.size() > 1)
+               {
+                  shared::CDataContainer content(requestContent);
+                  if (content.containsChild("keywords"))
+                  {
+                     auto keywords = content.get<std::vector<int>>("keywords");
+                     const auto infoRequested = content.getWithDefault<std::vector<std::string>>("info",
+                                                                                                 std::vector<std::string>());
+
+                     // erase all duplicates, if any
+                     sort(keywords.begin(), keywords.end());
+                     keywords.erase(unique(keywords.begin(), keywords.end()), keywords.end());
+
+                     shared::CDataContainer result;
+                     for (const auto& keywordId : keywords)
+                     {
+                        shared::CDataContainer keywordResult;
+                        for (const auto& info : infoRequested)
+                           readKeywordInfo(keywordId, info, keywordResult);
+
+                        result.set(boost::lexical_cast<std::string>(keywordId),
+                                   keywordResult);
                      }
                      return CResult::GenerateSuccess(result);
                   }
@@ -181,7 +253,7 @@ namespace web
                if (parameters.size() >= 2)
                {
                   //get device id from URL
-                  auto keywordId = boost::lexical_cast<int>(parameters[2]);
+                  const auto keywordId = boost::lexical_cast<int>(parameters[2]);
 
                   //try to get from and to limits.
                   //as this method is common for three rest url, those variable may keep unfilled
@@ -207,7 +279,7 @@ namespace web
                   }
 
                   shared::CDataContainer result;
-                  result.set<std::vector<shared::CDataContainer> >("data", objectList);
+                  result.set<std::vector<shared::CDataContainer>>("data", objectList);
                   return CResult::GenerateSuccess(result);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
@@ -222,6 +294,42 @@ namespace web
             }
          }
 
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAcquisition::getKeywordInfo(const std::vector<std::string>& parameters,
+                                                                                                  const std::string& requestContent) const
+         {
+            try
+            {
+               if (parameters.size() > 2)
+               {
+                  const auto keywordId = boost::lexical_cast<int>(parameters[2]);
+
+                  shared::CDataContainer content(requestContent);
+                  const auto infoRequested = content.getWithDefault<std::vector<std::string>>("info",
+                                                                                              std::vector<std::string>());
+
+                  shared::CDataContainer result;
+                  
+                  shared::CDataContainer keywordResult;
+                  for (const auto& info : infoRequested)
+                     readKeywordInfo(keywordId, info, keywordResult);
+
+                  result.set(boost::lexical_cast<std::string>(keywordId),
+                             keywordResult);
+
+                  return CResult::GenerateSuccess(result);
+               }
+               return CResult::GenerateError("invalid parameter.");
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in retreiving one acquisition");
+            }
+         }
+
          boost::shared_ptr<shared::serialization::IDataSerializable> CAcquisition::getKeywordDataByHour(const std::vector<std::string>& parameters,
                                                                                                         const std::string& requestContent) const
          {
@@ -230,7 +338,7 @@ namespace web
                if (parameters.size() >= 2)
                {
                   //get device id from URL
-                  auto keywordId = boost::lexical_cast<int>(parameters[2]);
+                  const auto keywordId = boost::lexical_cast<int>(parameters[2]);
 
                   //try to get from and to limits.
                   //as this method is common for three rest url, those variable may keep unfilled
@@ -243,10 +351,10 @@ namespace web
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByHour(keywordId,
-                                                                                                     timeFrom,
-                                                                                                     timeTo);
+                                                                                                           timeFrom,
+                                                                                                           timeTo);
 
-                  boost::shared_ptr<CStringContainer> result=boost::make_shared<CStringContainer>(allData);
+                  boost::shared_ptr<CStringContainer> result = boost::make_shared<CStringContainer>(allData);
                   return result;
                }
                return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
@@ -263,14 +371,14 @@ namespace web
 
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CAcquisition::getKeywordDataByDay(const std::vector<std::string>& parameters,
-                                                                                                      const std::string& requestContent) const
+                                                                                                       const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() >= 2)
                {
                   //get device id from URL
-                  auto keywordId = boost::lexical_cast<int>(parameters[2]);
+                  const auto keywordId = boost::lexical_cast<int>(parameters[2]);
 
                   //try to get from and to limits.
                   //as this method is common for three rest url, those variable may keep unfilled
@@ -283,8 +391,8 @@ namespace web
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByDay(keywordId,
-                                                                                                    timeFrom,
-                                                                                                    timeTo);
+                                                                                                          timeFrom,
+                                                                                                          timeTo);
 
                   boost::shared_ptr<CStringContainer> result = boost::make_shared<CStringContainer>(allData);
                   return result;
@@ -310,7 +418,7 @@ namespace web
                if (parameters.size() >= 2)
                {
                   //get device id from URL
-                  auto keywordId = boost::lexical_cast<int>(parameters[2]);
+                  const auto keywordId = boost::lexical_cast<int>(parameters[2]);
 
                   //try to get from and to limits.
                   //as this method is common for three rest url, those variable may keep unfilled
@@ -323,8 +431,8 @@ namespace web
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByMonth(keywordId,
-                                                                                                      timeFrom,
-                                                                                                      timeTo);
+                                                                                                            timeFrom,
+                                                                                                            timeTo);
                   boost::shared_ptr<CStringContainer> result = boost::make_shared<CStringContainer>(allData);
                   return result;
                }
@@ -349,7 +457,7 @@ namespace web
                if (parameters.size() >= 2)
                {
                   //get device id from URL
-                  auto keywordId = boost::lexical_cast<int>(parameters[2]);
+                  const auto keywordId = boost::lexical_cast<int>(parameters[2]);
 
                   //try to get from and to limits.
                   //as this method is common for three rest url, those variable may keep unfilled
@@ -362,8 +470,8 @@ namespace web
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
                   auto allData = m_dataProvider->getAcquisitionRequester()->getHugeVectorKeywordDataByYear(keywordId,
-                                                                                                     timeFrom,
-                                                                                                     timeTo);
+                                                                                                           timeFrom,
+                                                                                                           timeTo);
                   boost::shared_ptr<CStringContainer> result = boost::make_shared<CStringContainer>(allData);
                   return result;
                }

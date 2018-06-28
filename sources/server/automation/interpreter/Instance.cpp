@@ -67,7 +67,8 @@ namespace automation
                   auto res = callback.getCallbackResult();
                   if (res.Success)
                      return res.Result();
-                  YADOMS_LOG(error) << "Unable to load script content from interpreter " << m_interpreterInformation->getName() << " : " << res.ErrorMessage();
+                  YADOMS_LOG(error) << "Unable to load script content from interpreter " << m_interpreterInformation->getName() << " : " << res.
+                     ErrorMessage();
                }
             default:
                YADOMS_LOG(error) << "Unable to load script content from interpreter " << m_interpreterInformation->getName() << " : timeout";
@@ -75,7 +76,9 @@ namespace automation
          }
          catch (std::exception& e)
          {
-            request->sendError((boost::format("Error when loading script content from interpreter %1% : %2%") % m_interpreterInformation->getName() % e.what()).str());
+            request->sendError(
+               (boost::format("Error when loading script content from interpreter %1% : %2%") % m_interpreterInformation->getName() % e.what()).
+               str());
          }
 
          return std::string();
@@ -101,7 +104,8 @@ namespace automation
                   auto res = callback.getCallbackResult();
                   if (res.Success)
                      return;
-                  YADOMS_LOG(error) << "Unable to save script content from interpreter " << m_interpreterInformation->getName() << " : " << res.ErrorMessage();
+                  YADOMS_LOG(error) << "Unable to save script content from interpreter " << m_interpreterInformation->getName() << " : " << res.
+                     ErrorMessage();
                }
             default:
                YADOMS_LOG(error) << "Unable to save script content from interpreter " << m_interpreterInformation->getName() << " : timeout";
@@ -109,7 +113,8 @@ namespace automation
          }
          catch (std::exception& e)
          {
-            request->sendError((boost::format("Error when saving script content from interpreter %1% : %2%") % m_interpreterInformation->getName() % e.what()).str());
+            request->sendError(
+               (boost::format("Error when saving script content from interpreter %1% : %2%") % m_interpreterInformation->getName() % e.what()).str());
          }
       }
 
@@ -118,10 +123,10 @@ namespace automation
                                   const std::string& yScriptApiId,
                                   const boost::filesystem::path& scriptLogPath) const
       {
-         auto request = boost::make_shared<CStartScript>(scriptInstanceId,
-                                                         scriptPath,
-                                                         yScriptApiId,
-                                                         scriptLogPath);
+         const auto request = boost::make_shared<CStartScript>(scriptInstanceId,
+                                                               scriptPath,
+                                                               yScriptApiId,
+                                                               scriptLogPath);
 
          try
          {
@@ -136,7 +141,7 @@ namespace automation
 
       void CInstance::stopScript(int scriptInstanceId) const
       {
-         auto request(boost::make_shared<CStopScript>(scriptInstanceId));
+         const auto request(boost::make_shared<CStopScript>(scriptInstanceId));
 
          try
          {
@@ -152,8 +157,8 @@ namespace automation
       void CInstance::purgeScriptLog(int scriptInstanceId,
                                      const boost::filesystem::path& scriptLogPath) const
       {
-         auto request(boost::make_shared<CPurgeScriptLog>(scriptInstanceId,
-                                                          scriptLogPath));
+         const auto request(boost::make_shared<CPurgeScriptLog>(scriptInstanceId,
+                                                                scriptLogPath));
 
          try
          {
@@ -183,7 +188,8 @@ namespace automation
                   auto res = callback.getCallbackResult();
                   if (res.Success)
                      return res.Result();
-                  YADOMS_LOG(error) << "Unable to get avalaibility of interpreter " << m_interpreterInformation->getName() << " : " << res.ErrorMessage();
+                  YADOMS_LOG(error) << "Unable to get avalaibility of interpreter " << m_interpreterInformation->getName() << " : " << res.
+                     ErrorMessage();
                }
             default:
                YADOMS_LOG(error) << "Unable to get avalaibility of interpreter " << m_interpreterInformation->getName() << " : timeout";
@@ -191,12 +197,12 @@ namespace automation
          }
          catch (std::exception& e)
          {
-            request->sendError((boost::format("Error when requesting AvalaibleRequest on interpreter %1% : %2%") % m_interpreterInformation->getName() % e.what()).str());
+            request->sendError(
+               (boost::format("Error when requesting AvalaibleRequest on interpreter %1% : %2%") % m_interpreterInformation->getName() % e.what()).
+               str());
          }
 
          return false;
       }
    }
 } // namespace automation::interpreter
-
-

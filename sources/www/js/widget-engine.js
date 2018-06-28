@@ -396,7 +396,7 @@ function updateWebSocketFilter() {
                         });
                 }
             });
-        WebSocketEngine.updateAcquisitionFilter(duplicateRemoval(collection));
+        WebSocketEngine.updateAcquisitionFilter(removeDuplicates(collection));
     }
 }
 
@@ -419,7 +419,7 @@ function updateWidgetsPolling(pageId) {
               getLastValuesKeywords = getLastValuesKeywords.concat (widget.getlastValue);
        });
        
-       updateWidgetPollingByKeywordsId(duplicateRemoval(getLastValuesKeywords))
+       updateWidgetPollingByKeywordsId(removeDuplicates(getLastValuesKeywords))
        .done(function (data) {
           $.each(data, function (index, acquisition) {
              //we signal the new acquisition to the widget if the widget support the method
@@ -454,7 +454,7 @@ function updateWidgetPolling(widget) {
     
     if (!isNullOrUndefined(widget.listenedKeywords)) {
        if (widget.listenedKeywords.length!=0){ // only if this list is not empty
-          AcquisitionManager.getLastValues(widget.listenedKeywords)
+          AcquisitionManager.getLastAcquisition(widget.listenedKeywords)
             .done(function (data) {
                 if (data) {
                     $.each(data,function (index, acquisition) {
@@ -486,7 +486,7 @@ function updateWidgetPollingByKeywordsId(keywordIds) {
     
     if (!isNullOrUndefined(keywordIds)) {
        if (keywordIds!=0){
-          AcquisitionManager.getLastValues(keywordIds)
+          AcquisitionManager.getLastAcquisition(keywordIds)
           .done(d.resolve)
           .fail(function (error) {
              notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for widget = " + keywordIds }), error);

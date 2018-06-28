@@ -76,13 +76,33 @@ KeywordManager.getAll = function () {
    RestEngine.getJson("/rest/device/keyword")
    .done(function (data) {
       var devices = [];
-      //foreach result we append a <tr>
       $.each(data.keywords, function (index, value) {
          devices.push(KeywordManager.factory(value));
       });
       d.resolve(devices);
    })
    .fail(d.reject);
+
+   return d.promise();
+};
+
+
+
+/**
+ * Get the last value of a keywordId
+ * @param {Integer|String} keywordId The keyword id to request last value
+ * @return {Promise(lastData)}
+ */
+KeywordManager.getLastValue = function (keywordId) {
+   assert(!isNullOrUndefinedOrEmpty(keywordId), "keywordId must be defined");
+
+   var d = new $.Deferred();
+
+   RestEngine.getJson("/rest/acquisition/keyword/" + keywordId + "/lastdata")
+         .done(function (data) {
+               d.resolve(data.lastValue);
+         })
+         .fail(d.reject);
 
    return d.promise();
 };

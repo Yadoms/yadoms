@@ -53,7 +53,7 @@
             }
             fillTable(device);
             
-            AcquisitionManager.getLastValues(device.keywords)
+            AcquisitionManager.getLastAcquisition(device.keywords)
             .done(function (data) {
                $.each(data, function (index, acquisition) {
                   $.each(device.keywords, function (idx, keyword) {
@@ -786,7 +786,7 @@
             //we get the device
             var device = getDeviceFromId($deviceDetailsTable.attr("device-id"));
             if (device && device.keywords) {
-               AcquisitionManager.getLastValues(device.keywords)
+               AcquisitionManager.getLastAcquisition(device.keywords)
                .done(function (data) {
                   $.each(data, function (index, acquisition) {
                      $.each(device.keywords, function (idx, keyword) {
