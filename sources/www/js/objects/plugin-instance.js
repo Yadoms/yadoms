@@ -256,7 +256,7 @@ PluginInstance.prototype.applyBindingPrivate = function(item, allowedTypes) {
    });
 
    if (arrayOfDeffered.length > 0) {
-      $.whenAll(arrayOfDeffered).done(function() {
+      $.when.apply($, arrayOfDeffered).done(function() {
          d.resolve(item);
       });
    } else {

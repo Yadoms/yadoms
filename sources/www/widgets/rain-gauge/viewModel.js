@@ -21,8 +21,9 @@ function rainGaugeDisplayViewModel() {
      * @param widget widget class object
      */
     this.initialize = function () {
-       
        var self = this;
+       var d = new $.Deferred();
+       var arrayOfDeffered = [];
        
         //we configure the toolbar
         this.widgetApi.toolbar({
@@ -31,9 +32,17 @@ function rainGaugeDisplayViewModel() {
             batteryItem: true
         });
       
-      return this.widgetApi.askServerLocalTime(function (serverLocalTime) {
-         self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
-      });
+      arrayOfDeffered.push(widgetApi.askServerLocalTime(function (serverLocalTime) {
+                              self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
+                          }));
+      
+      $.when.apply($,deferredArray)
+      .done(function(){
+         d.resolve();
+      })
+      .fail(d.reject);
+      
+      return d.promise();
     };
   
     this.getValues = function (keywordId) {

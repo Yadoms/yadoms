@@ -184,16 +184,20 @@
        var arrayOfDeffered = [];
        var d = new $.Deferred();
        
-       arrayOfDeffered.push(asyncLoadJSLibs(["libs/markdown-it/markdown-it.min.js",
-                                             "libs/markdown-it/markdown-it-for-inline.min.js",
-                                             "js/objects/update/update-information.js",
-                                             "js/objects/update/update-information-manager.js",
-                                             "js/objects/update/yadoms-update-information-manager.js"
-       ]));
-       arrayOfDeffered.push(scanForUpdates());
+       arrayOfDeffered.push(asyncLoadJSGzLibs([
+           "libs/markdown-it/markdown-it.min.js.gz",
+           "libs/markdown-it/markdown-it-for-inline.min.js.gz"]));       
        
-       $.when.apply($, defferedArray).done(function () {
-          d.resolve();
+       arrayOfDeffered.push(asyncLoadJSLibs([
+          "js/objects/update/update-information.js",
+          "js/objects/update/update-information-manager.js",
+          "js/objects/update/yadoms-update-information-manager.js"
+       ]));
+       
+       $.when.apply($, arrayOfDeffered).done(function () {
+          scanForUpdates().done(function(){
+             d.resolve();
+          });
        })
        .fail(function () {
           d.reject();
@@ -521,7 +525,7 @@
                 "/" + moduleType + "/" + newestVersion, moduleType));
         });
 
-        $.whenAll(deferredArray)
+        $.when.apply($, deferredArray)
             .done(function () {
                 addItemsInTable($table, objectType, list.new, function (moduleType, data) {
                     return moduleType;

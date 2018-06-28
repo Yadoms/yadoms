@@ -261,7 +261,6 @@ function asyncLoadJSGzLib(libraryName) {
          
          //we save the promise for other load requests
          loadedJSLibs[libraryName] = d.promise();
-         console.log(libraryName);
          d.resolve();
       })
       .fail(function(error) {
@@ -382,8 +381,9 @@ function asyncLoadGzCss(cssFile) {
       var d = new $.Deferred();
       RestEngine.getBinaryFiles(cssFile)
       .done(function(data) {
-         var script = document.createElement("link");
-         script.rel = "stylesheet";
+         var script = document.createElement("style");
+         //script.type = "text/css";
+         //script.rel = "stylesheet"; //
          script.innerHTML = data;
          // ASYNC: load in parallel and execute as soon as possible
          script.async = false;
@@ -392,7 +392,7 @@ function asyncLoadGzCss(cssFile) {
 
          //we insert into head (from HeadJS)
          var head = document.head || document.getElementsByTagName("head")[0];
-         head.insertBefore(script, head.lastChild);
+         head.appendChild(script, head.lastChild);
 
          //we save the promise for other load requests
          loadedCss[cssFile] = d.promise();
@@ -424,6 +424,9 @@ function asyncLoadManyGzCss(cssNames) {
 
    $.when.apply($,arrayOfDeffered).done(function () {
       d.resolve();
+   })
+   .fail(function(){
+      d.reject();
    });
    return d.promise();
 }

@@ -52,7 +52,6 @@ WidgetPackageManager.getAll = function () {
    var d = new $.Deferred();
    RestEngine.getJson("rest/widget/package")
       .done(function(data) {
-         console.log(data);
          //we add it to the package list
          var newWidgetPackages = [];
 

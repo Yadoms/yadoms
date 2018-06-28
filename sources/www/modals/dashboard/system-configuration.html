@@ -67,35 +67,34 @@
                   });
             arrayOfDeffered.push(d2);
 
-
             var d = new $.Deferred();
-            $.whenAll(arrayOfDeffered)
-                  .done(function () {
-                        createParameters($modalBody, i18NContext, supportedTimezones);
+            $.when.apply($, arrayOfDeffered)
+               .done(function () {
+                  createParameters($modalBody, i18NContext, supportedTimezones);
 
-                        $modalBody.i18n();
+                  $modalBody.i18n();
 
-                        $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
-                              preventSubmit: true,
-                              submitError: function ($form, event, errors) {
-                                    console.warn("Unable to validate form: " + errors);
-                              },
-                              submitSuccess: function ($form, event) {
-                                    event.preventDefault();
-                                    saveParameters();
-                              },
-                              filter: function () {
-                                    //we check only control that have class enable-validation and are visible
-                                    return $(this).is(".enable-validation") &&
-                                          $(this).is(":visible");
-                              }
-                        })
+                  $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
+                        preventSubmit: true,
+                        submitError: function ($form, event, errors) {
+                              console.warn("Unable to validate form: " + errors);
+                        },
+                        submitSuccess: function ($form, event) {
+                              event.preventDefault();
+                              saveParameters();
+                        },
+                        filter: function () {
+                              //we check only control that have class enable-validation and are visible
+                              return $(this).is(".enable-validation") &&
+                                    $(this).is(":visible");
+                        }
+                  })
 
-                        $("button#resetConfiguration").unbind('click').bind('click',
-                              resetConfiguration);
+                  $("button#resetConfiguration").unbind('click').bind('click',
+                        resetConfiguration);
 
-                        d.resolve();
-                  });
+                  d.resolve();
+               });
 
             return d.promise();
       }
@@ -287,7 +286,7 @@
             arrayOfDeffered.push(readBasicAuthentification());
             arrayOfDeffered.push(readAdvancedParameters());
 
-            $.whenAll(arrayOfDeffered)
+            $.when.apply($, arrayOfDeffered)
                   .always(function () {
                         configurationManager.save()
                               .done(function () {
@@ -365,7 +364,7 @@
             arrayOfDeffered.push(d4);
 
             var d = new $.Deferred();
-            $.whenAll(arrayOfDeffered)
+            $.when.apply($, arrayOfDeffered)
                   .done(function () {
                         configurationManager.setCurrentLocation(latitude, longitude, altitude, timezone);
                         d.resolve();
@@ -389,7 +388,7 @@
             arrayOfDeffered.push(readRefreshPage());
 
             var d = new $.Deferred();
-            $.whenAll(arrayOfDeffered)
+            $.when.apply($, arrayOfDeffered)
                   .done(d.resolve)
                   .fail(d.reject);
             return d;

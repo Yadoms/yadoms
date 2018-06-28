@@ -25,8 +25,6 @@ function initializeWidgetEngine() {
        notifyError($.t("objects.pageManager.errorDuringGettingPages"), error);
     });
     
-    arrayOfDeffered.push(asyncLoadJSGzLib("libs/moment.js/js/moment-with-langs.min.js.gz"));
-    
     $.when.apply($, defferedArray).done(function () {
        moment.lang(configurationManager.currentLanguage());
         if (loadPagesNotification != null) {
@@ -36,8 +34,7 @@ function initializeWidgetEngine() {
             loadPagesNotification = null;
         }
         //we add all pages to the DOM
-        $.each(PageManager.pages,
-            function (index, currentPage) {
+        $.each(PageManager.pages,function (index, currentPage) {
                 PageManager.addToDom(currentPage);
             });
 
