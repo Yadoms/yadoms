@@ -32,11 +32,11 @@ function rainGaugeDisplayViewModel() {
             batteryItem: true
         });
       
-      arrayOfDeffered.push(widgetApi.askServerLocalTime(function (serverLocalTime) {
+      arrayOfDeffered.push(self.widgetApi.askServerLocalTime(function (serverLocalTime) {
                               self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
                           }));
       
-      $.when.apply($,deferredArray)
+      $.when.apply($,arrayOfDeffered)
       .done(function(){
          d.resolve();
       })
@@ -142,7 +142,7 @@ function rainGaugeDisplayViewModel() {
         //we fill the deviceId of the battery indicator
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
         self.shouldBeVisible(self.widget.configuration.dateDisplay);
-        arrayOfDeffered.push(getValues(self.widget.configuration.device.keywordId));
+        arrayOfDeffered.push(self.getValues(self.widget.configuration.device.keywordId));
       
       $.when.apply($, arrayOfDeffered) // The first failing array fail the when.apply
       .done(d.resolve)
@@ -174,7 +174,7 @@ function rainGaugeDisplayViewModel() {
        self.widgetApi.askServerLocalTime(function (serverLocalTime) {
           self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
        }).done(function(data) {
-          getValues(self.widget.configuration.device.keywordId);
+          self.getValues(self.widget.configuration.device.keywordId);
        })
        .fail(function(error) {
        });

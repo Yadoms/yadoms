@@ -142,126 +142,35 @@
                });
         });
 
-        /**
-         * Callback of the click on the show qr code button
-         * Make lazy loading of the qrcode modal
-         */
-        $("#btn-show-qrcode").click(function () {
-            Yadoms.modals.qrCode.loadAsync()
-                .done(function () {
-                    $('#qrcode-modal').modal({
-                        backdrop: 'static'
-                    });
-                });
-        });
-
-        /**
-         * Callback of the click on the add page button
-         * Make lazy loading of the add page modal
-         */
-        $("#btn-add-page").click(function () {
-            createOrUpdatePage();
-        });        
-
-        /**
-         * Callback of the click on the add widget button
-         * Make lazy loading of the add widget modal
-         */
-        $("#btn-add-widget").click(function () {
-           var arrayofDeffered = [];
-           
-           // load all language packages if it's not already done
-           $.each(_.keys(WidgetPackageManager.packageList), function(index, Package) {
-              arrayofDeffered.push(WidgetPackageManager.loadLanguage(Package));
-           });
-           
-           arrayofDeffered.push(Yadoms.modals.pickupController.loadAsync());
-           arrayOfDeffered.push(asyncLoadJSGzLibs(
-             ["libs/markdown-it/markdown-it.min.js.gz",
-              "libs/markdown-it/markdown-it-for-inline.min.js.gz"]));
-           
-           $.when.apply($,arrayofDeffered).done(function () {
-                 //search all plugin information
-                 Yadoms.askPackages("widgets",
-                     WidgetPackageManager,
-                     "preview.png", // Name of thumbnail
-                     "modals.add-widget.title",
-                     createobject
-                 );
+        function createWidget(newWidget, currentPage) {
+            WidgetManager.createWidget(newWidget)
+             .done(function (w) {
+                 //we indicate taht the widget has never been placed on
+                 w.position = 1000;
+                 WidgetManager.loadWidget(w, currentPage, true)
+                     .done(function () {
+                         //we update the filter for the websocket
+                         updateWidgetPolling(w)
+                             .always(function () {
+                                 updateWebSocketFilter();
+                                 WidgetManager.updateWidgetLayout(w);
+                             });
+                     })
+                     .fail(function (errorMessage) {
+                         notifyError($.t(
+                             "modals.add-widget.unableToCreateWidgetOfType", {
+                                 "widgetType": newWidget.type
+                             }), errorMessage);
+                     });
              })
-             .fail(function (error) {
+             .fail(function (errorMessage) {
                  notifyError($.t(
-                     "objects.lazyLoaderManager.unableToLoadModal", {
-                         modalPath: self.modalPath
-                     }), error);
+                     "modals.add-widget.unableToCreateWidgetOfType", {
+                         "widgetType": newWidget.type
+                     }), errorMessage);
              });
-        });          
-    };
-    
-     //base configuration
-     $.ajaxSetup({
-         contentType: "application/json; charset=utf-8",
-         scriptCharset: "utf-8",
-         cache: true
-     });
-
-     var Yadoms = {
-         modals: {},
-         updateIntervalInOfflineMode: 10000,
-         updateIntervalWithWebSocketDisabled: 1000,
-         updateInterval: 5000,
-         periodicDashboardTask: {},
-         numberOfColumns: 12,
-         gridWidth: 100,
-         gridHeight: 100,
-         gridMargin: 5,
-         baseUrl: ''
-     };
-     
-     var configurationManager = new ConfigurationManager();
-     var arrayOfDeffered = [];
-     arrayOfDeffered.push(asyncLoadJSGzLibs([
-        "libs/noty/js/packaged/jquery.noty.packaged.min.js.gz",
-        "libs/i18next/js/i18next.min.js.gz",
-        "libs/bowser-1.3.0/js/bowser.min.js.gz"]));
-    /**
-     * On page loaded
-     */
-    $(document).ready(function () {
-        addMainPage(); 
-        //load custom configuration from 'config.js', allow any js overriding
-        asyncLoadJSLib("config.js")
-            .always(function () {
-                loadModals();
-                $.when.apply($,arrayOfDeffered).done(function () {
-                    if (bowser.name === "Internet Explorer") {
-                       console.log("incompatible browser !");
-                       window.location.href = "browser.html";
-                    }
-                    asyncLoadJSGzLibs(["libs/i18next/js/jquery-i18next.min.js.gz",
-                                       "libs/i18next/js/i18nextXHRBackend.min.js.gz"]).done(function(){
-                      console.log("init");
-                      $.when(i18nManager.init(),configurationManager.load()).done(function() {
-                          //we get install/firstStart key to have information if firstStart has already been done
-                          if (!configurationManager.isServerFirstStart()) {
-                              //we start app normally
-                              main();
-                          } else {
-                              //we make the first start configuration
-                              notifyInformation($.t(
-                                  "mainPage.actions.firstRunConfiguration"));
-
-                              configurationManager.setServerFirstStartDone().save();
-                              processFirstStart();
-                           }
-                        })
-                        .fail(function (error) {
-                           notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
-                        });                        
-                    });
-                });
-            });
-
+        }        
+        
         function createobject(packageName, widgetType) {
             if (packageName) {
                 //we get default size of the widget
@@ -315,36 +224,127 @@
                     createWidget(newWidget, currentPage);
                 }
             }
-        }
-
-        function createWidget(newWidget, currentPage) {
-            WidgetManager.createWidget(newWidget)
-                .done(function (w) {
-                    //we indicate taht the widget has never been placed on
-                    w.position = 1000;
-                    WidgetManager.loadWidget(w, currentPage, true)
-                        .done(function () {
-                            //we update the filter for the websocket
-                            updateWidgetPolling(w)
-                                .always(function () {
-                                    updateWebSocketFilter();
-                                    WidgetManager.updateWidgetLayout(w);
-                                });
-                        })
-                        .fail(function (errorMessage) {
-                            notifyError($.t(
-                                "modals.add-widget.unableToCreateWidgetOfType", {
-                                    "widgetType": newWidget.type
-                                }), errorMessage);
-                        });
-                })
-                .fail(function (errorMessage) {
-                    notifyError($.t(
-                        "modals.add-widget.unableToCreateWidgetOfType", {
-                            "widgetType": newWidget.type
-                        }), errorMessage);
+        }        
+        
+        /**
+         * Callback of the click on the show qr code button
+         * Make lazy loading of the qrcode modal
+         */
+        $("#btn-show-qrcode").click(function () {
+            Yadoms.modals.qrCode.loadAsync()
+                .done(function () {
+                    $('#qrcode-modal').modal({
+                        backdrop: 'static'
+                    });
                 });
-        }
+        });
+
+        /**
+         * Callback of the click on the add page button
+         * Make lazy loading of the add page modal
+         */
+        $("#btn-add-page").click(function () {
+            createOrUpdatePage();
+        });        
+
+        /**
+         * Callback of the click on the add widget button
+         * Make lazy loading of the add widget modal
+         */
+        $("#btn-add-widget").click(function () {
+           var arrayofDeffered = [];
+           
+           // load all language packages if it's not already done
+           $.each(_.keys(WidgetPackageManager.packageList), function(index, Package) {
+              arrayofDeffered.push(WidgetPackageManager.loadLanguage(Package));
+           });
+           
+           arrayofDeffered.push(Yadoms.modals.pickupController.loadAsync());
+           arrayOfDeffered.push(asyncLoadJSGzLibs(
+             ["libs/markdown-it/markdown-it.min.js.gz",
+              "libs/markdown-it/markdown-it-for-inline.min.js.gz"]));
+           
+           $.when.apply($,arrayofDeffered).done(function () {
+                 //search all plugin information
+                 Yadoms.askPackages("widgets",
+                     WidgetPackageManager,
+                     "preview.png", // Name of thumbnail
+                     "modals.add-widget.title",
+                     createobject
+                 );
+             })
+             .fail(function (error) {
+                 notifyError($.t(
+                     "objects.lazyLoaderManager.unableToLoadModal", {
+                         modalPath: self.modalPath
+                     }), error);
+             });
+        });        
+    };
+    
+     //base configuration
+     $.ajaxSetup({
+         contentType: "application/json; charset=utf-8",
+         scriptCharset: "utf-8",
+         cache: true
+     });
+
+     var Yadoms = {
+         modals: {},
+         updateIntervalInOfflineMode: 10000,
+         updateIntervalWithWebSocketDisabled: 1000,
+         updateInterval: 5000,
+         periodicDashboardTask: {},
+         numberOfColumns: 12,
+         gridWidth: 100,
+         gridHeight: 100,
+         gridMargin: 5,
+         baseUrl: ''
+     };
+     
+     var configurationManager = new ConfigurationManager();
+     var arrayOfDeffered = [];
+     arrayOfDeffered.push(asyncLoadJSGzLibs([
+        "libs/noty/js/packaged/jquery.noty.packaged.min.js.gz",
+        "libs/i18next/js/i18next.min.js.gz",
+        "libs/bowser-1.3.0/js/bowser.min.js.gz"]));
+    /**
+     * On page loaded
+     */
+    $(document).ready(function () {
+        addMainPage(); 
+        //load custom configuration from 'config.js', allow any js overriding
+        asyncLoadJSLib("config.js")
+         .always(function () {
+             loadModals();
+             $.when.apply($,arrayOfDeffered).done(function () {
+                 if (bowser.name === "Internet Explorer") {
+                    console.log("incompatible browser !");
+                    window.location.href = "browser.html";
+                 }
+                 asyncLoadJSGzLibs(["libs/i18next/js/jquery-i18next.min.js.gz",
+                                    "libs/i18next/js/i18nextXHRBackend.min.js.gz"]).done(function(){
+                   console.log("init");
+                   $.when(i18nManager.init(),configurationManager.load()).done(function() {
+                       //we get install/firstStart key to have information if firstStart has already been done
+                       if (!configurationManager.isServerFirstStart()) {
+                           //we start app normally
+                           main();
+                       } else {
+                           //we make the first start configuration
+                           notifyInformation($.t(
+                               "mainPage.actions.firstRunConfiguration"));
+
+                           configurationManager.setServerFirstStartDone().save();
+                           processFirstStart();
+                        }
+                     })
+                     .fail(function (error) {
+                        notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
+                     });                        
+                 });
+             });
+         });
 
         /**
          * Exit customization pressed esc key
@@ -389,38 +389,38 @@
      function processFirstStart() {
          //we check for page. If there is no page, we create a new one automatically
          PageManager.getAll()
-             .done(function () {
-                 if (PageManager.pages.length === 0) {
-                     console.info("Creating a default page");
-                     PageManager.createPage($.t("initialization.homePage"), 0)
-                         .done(function () {
-                             PageManager.ensureOnePageIsSelected();
-                         });
-                 }
-                 //we can start app
-                 main();
-             })
-             .fail(function (error) {
-                 notifyError($.t("objects.pageManager.errorDuringGettingPages"), error);
-             });
+          .done(function () {
+              if (PageManager.pages.length === 0) {
+                  console.info("Creating a default page");
+                  PageManager.createPage($.t("initialization.homePage"), 0)
+                      .done(function () {
+                          PageManager.ensureOnePageIsSelected();
+                      });
+              }
+              //we can start app
+              main();
+          })
+          .fail(function (error) {
+              notifyError($.t("objects.pageManager.errorDuringGettingPages"), error);
+          });
      }
 
      function waitForServerReady() {
          YadomsInformationManager.getList()
-             .done(function (data) {
-                 if (parseBool(data.serverReady) === true) {
-                     whenServerReady();
-                 } else {
-                     window.setTimeout(function () {
-                         waitForServerReady();
-                     }, 500);
-                 }
-             })
-             .fail(function (error) {
-                 window.setTimeout(function () {
-                     waitForServerReady();
-                 }, 500);
-             });
+          .done(function (data) {
+              if (parseBool(data.serverReady) === true) {
+                  whenServerReady();
+              } else {
+                  window.setTimeout(function () {
+                      waitForServerReady();
+                  }, 500);
+              }
+          })
+          .fail(function (error) {
+              window.setTimeout(function () {
+                  waitForServerReady();
+              }, 500);
+          });
      }
 
      function whenServerReady() {
@@ -477,10 +477,7 @@
            "js/objects/widget-api.js"
           ]));
 
-          arrayOfDeffered.push(asyncLoadManyGzCss(
-          ["libs/jquery-ui/css/jquery-ui.min.css.gz",
-           "libs/bootstrap-toggle/css/bootstrap2-toggle.min.css.gz"]));
-          
+          arrayOfDeffered.push(asyncLoadCss("libs/jquery-ui/css/jquery-ui.min.css"));
           arrayOfDeffered.push(asyncLoadJSGzLibs(
           ["libs/jquery-ui/js/jquery-ui.min.js.gz",
            "libs/bootstrap/js/bootstrap.min.js.gz",
@@ -493,8 +490,7 @@
              
              $.when.apply($,arrayOfDeffered).done(function() {
                 var arrayOfDef = [];
-                arrayOfDef.push(asyncLoadManyGzCss(["libs/jquery-ui/css/jquery-ui.min.css.gz",
-                                                    "libs/bootstrap-toggle/css/bootstrap2-toggle.min.css.gz"]));
+                arrayOfDef.push(asyncLoadManyGzCss(["libs/bootstrap-toggle/css/bootstrap2-toggle.min.css.gz"]));
                 arrayOfDef.push(asyncLoadJSLib("js/knock-out-extenders.js"));
                    
                 $.when.apply($,arrayOfDef).done(function() {

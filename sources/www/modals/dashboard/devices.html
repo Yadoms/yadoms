@@ -206,10 +206,14 @@
       });
       
       var d = new $.Deferred();
+      var arrayOfDeffered = [];
       
-      asyncLoadJSLib("js/json-prettyprint.js").done(function(){
-         d = refreshDeviceList();
-      });
+      arrayOfDeffered.push(asyncLoadJSLib("js/json-prettyprint.js"));
+      arrayOfDeffered.push(refreshDeviceList());
+      
+      $.when.apply($, arrayOfDeffered)
+      .done(d.resolve)
+      .fail(d.reject)
       
       // refresh the device list
       return d.promise();

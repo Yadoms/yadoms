@@ -207,29 +207,29 @@ var developerMode = false;
      });
      
      $.when(def1, def2)
-         .done (function(){
-             Object.keys(packageList).forEach(function(key) {
-               if( (!developerMode && !key.startsWith("dev-")) || developerMode) {
-                  var value = packageList[key];
-                  tabPlugins.push ( {plugin: value, friendlyName: $.t("plugins." + value.type + ":name" ) });
-               }
-             });
-             
-             // sort each Plugins Name in the language selected
-             tabPlugins = sortListItemsWithFriendlyName ( tabPlugins );
-             
-             //foreach element of the array
-             $.each(tabPlugins, function(index, value) {
-               var result = "";
-               if ( !isNullOrUndefined ( value.plugin.package.credits ))
-                  result = ConfigurationHelper.makdownIt( value.plugin.package.credits ); 
-               
-               AddPluginPackage ( value.plugin.type, value.friendlyName, value.plugin.package.version, value.plugin.package.author, result, value.plugin.package.url );
-             }); 
-         })
-         .fail(function (error) {
-             notifyError($.t("modals.pickup.errorDuringGettingPackages"), error);
-         });
+      .done (function(){
+          Object.keys(packageList).forEach(function(key) {
+            if( (!developerMode && !key.startsWith("dev-")) || developerMode) {
+               var value = packageList[key];
+               tabPlugins.push ( {plugin: value, friendlyName: $.t("plugins." + value.type + ":name" ) });
+            }
+          });
+          
+          // sort each Plugins Name in the language selected
+          tabPlugins = sortListItemsWithFriendlyName ( tabPlugins );
+          
+          //foreach element of the array
+          $.each(tabPlugins, function(index, value) {
+            var result = "";
+            if ( !isNullOrUndefined ( value.plugin.package.credits ))
+               result = ConfigurationHelper.makdownIt( value.plugin.package.credits ); 
+            
+            AddPluginPackage ( value.plugin.type, value.friendlyName, value.plugin.package.version, value.plugin.package.author, result, value.plugin.package.url );
+          }); 
+      })
+      .fail(function (error) {
+          notifyError($.t("modals.pickup.errorDuringGettingPackages"), error);
+      });
 
       $.when.apply($, arrayofDeffered)
       .done(function() {

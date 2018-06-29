@@ -62,7 +62,8 @@
 
       $.when.apply($,arrayOfDeffered).done(function () {
          $("td#dashboard-summary-database-version").text(configurationManager.databaseVersion());
-         MaintenanceManager.getDatabaseDetails().done(function(databaseDetails){
+         MaintenanceManager.getDatabaseDetails().done(function(databaseDetails){         
+            $(".table-summary-advanced-parameter").remove();
             $.each(databaseDetails, function (index, value) {
                   if (index !== "backupSupport") {
                         var txt = value;
