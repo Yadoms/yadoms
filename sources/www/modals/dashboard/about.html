@@ -68,7 +68,6 @@ var developerMode = false;
    
      //we add it to the DOM
      var $widgetPackageList = $("table#widget-package-list");
-
      var frameworkWidgetPackage = "<tr widget-id=\"" + name + "\">" +
            "<td class=\"widget-displayName vert-align\"></td>" +
            "<td class=\"widget-version vert-align\"></td>" +
@@ -84,14 +83,12 @@ var developerMode = false;
      $widgetPackageRow.find("td.widget-version").html( version );
      $widgetPackageRow.find("td.widget-authors").html( authors );
      $widgetPackageRow.find("td.widget-credits").html( credits );
-   
    };
    
     AddPluginPackage = function( type, name, version, authors, credits, url ) {
    
      //we add it to the DOM
      var $pluginPackageList = $("table#plugin-package-list");
-
      var frameworkPluginPackage = "<tr plugin-id=\"" + type + "\">" +
            "<td class=\"plugin-displayName vert-align\"></td>" +
         "<td class=\"plugin-version vert-align\"></td>" +
@@ -104,7 +101,7 @@ var developerMode = false;
      
      //we fill the data
      $pluginPackageRow.find("td.plugin-displayName").html( "<a href=\"" + url + "\" target=\"_blank\">" + name + "</a>" );
-   $pluginPackageRow.find("td.plugin-version").html( version );
+     $pluginPackageRow.find("td.plugin-version").html( version );
      $pluginPackageRow.find("td.plugin-authors").html( authors );
      $pluginPackageRow.find("td.plugin-credits").html( credits );
    

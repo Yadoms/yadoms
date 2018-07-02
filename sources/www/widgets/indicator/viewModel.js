@@ -16,27 +16,29 @@ widgetViewModelCtor = function indicatorViewModel() {
      * Initialization method
      */
     this.initialize = function () {
-        var arrayOfDeffered = [];
-        var d = new $.Deferred();
+       var self = this;
+       var arrayOfDeffered = [];
+       var d = new $.Deferred();
         
-        this.widgetApi.toolbar({
-            activated: true,
-            displayTitle: true,
-            batteryItem: true
-        });
+       this.widgetApi.toolbar({
+          activated: true,
+          displayTitle: true,
+          batteryItem: true
+       });
         
-        arrayOfDeffered.push(asyncLoadJSLib("libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker-iconset-all.min.js"));
-        arrayOfDeffered.push(asyncLoadJSLib("libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker.min.js"));
-        arrayOfDeffered.push(asyncLoadCss("libs/bootstrap-iconpicker-1.9.0/css/bootstrap-iconpicker.min.css"));
+       arrayOfDeffered.push(self.widgetApi.loadGzLibrary(
+       ["libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker-iconset-all.min.js.gz",
+        "libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker.min.js.gz"]));
+       arrayOfDeffered.push(self.widgetApi.loadGzCss("libs/bootstrap-iconpicker-1.9.0/css/bootstrap-iconpicker.min.css.gz"));
 
-        $.when.apply($, defferedArray).done(function () {
-           d.resolve();
-        })
-        .fail(function () {
-           d.reject();
-        });
+       $.when.apply($, arrayOfDeffered).done(function () {
+          d.resolve();
+       })
+       .fail(function () {
+          d.reject();
+       });
         
-        return d.promise();        
+       return d.promise();        
     };
 
     this.indicatorClick = function () {

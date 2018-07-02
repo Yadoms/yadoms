@@ -243,7 +243,9 @@ var loadedJSLibs = [];
 function asyncLoadJSGzLib(libraryName) {
    assert(libraryName != undefined, "libraryName must be defined");
    var d = new $.Deferred();
-   if (!loadedJSLibs[libraryName]) {
+   if (!loadedJSLibs[libraryName]){
+      //we save the promise for other load requests
+      loadedJSLibs[libraryName] = d.promise();
       //we create a new deffered
       RestEngine.getBinaryFiles(libraryName)
       .done(function(data) {
@@ -257,10 +259,7 @@ function asyncLoadJSGzLib(libraryName) {
 
          //we insert into head (from HeadJS)
          var head = document.head || document.getElementsByTagName("head")[0];
-         head.insertBefore(script, head.lastChild);
-         
-         //we save the promise for other load requests
-         loadedJSLibs[libraryName] = d.promise();
+         head.appendChild(script, head.lastChild);
          d.resolve();
       })
       .fail(function(error) {
@@ -284,15 +283,16 @@ function asyncLoadJSGzLibs(libraryNames) {
    var arrayOfDeffered = [];
 
    $.each(libraryNames, function (index, lib) {
-      arrayOfDeffered.push(asyncLoadJSGzLib(lib));
+      arrayOfDeffered.push(asyncLoadJSGzLib(lib)
+      .fail(function(error){
+         console.log(error);
+      }));
    });
 
-   $.when.apply($,arrayOfDeffered).done(function () {
-      d.resolve();
-   })
-   .fail(function(error){
-      d.reject(error);
-   });
+   $.when.apply($,arrayOfDeffered)
+   .done(d.resolve)
+   .fail(d.reject);
+   
    return d.promise();
 }
 
@@ -304,7 +304,6 @@ function asyncLoadJSLib(librayName) {
    assert(librayName != undefined, "librayName must be defined");
 
    if (!loadedJSLibs[librayName]) {
-
       //we create a new deffered
       var d = new $.Deferred();
       var script = document.createElement("script");
@@ -337,11 +336,9 @@ function asyncLoadJSLib(librayName) {
       var head = document.head || document.getElementsByTagName("head")[0];
       head.insertBefore(script, head.lastChild);
 
-      //the js has been ran, we save the information to prevent from other reloads
-      var promise = d.promise();
       //we save the promise for other load requests
-      loadedJSLibs[librayName] = promise;
-      return promise;
+      loadedJSLibs[librayName] = d.promise();
+      return d.promise();
    } else {
       return loadedJSLibs[librayName];
    }
@@ -361,9 +358,9 @@ function asyncLoadJSLibs(librayNames) {
       arrayOfDeffered.push(asyncLoadJSLib(lib));
    });
 
-   $.when.apply($,arrayOfDeffered).done(function () {
-      d.resolve();
-   });
+   $.when.apply($,arrayOfDeffered)
+   .done(d.resolve)
+   .fail(d.reject);
 
    return d.promise();
 }
@@ -422,12 +419,10 @@ function asyncLoadManyGzCss(cssNames) {
       arrayOfDeffered.push(asyncLoadGzCss(lib));
    });
 
-   $.when.apply($,arrayOfDeffered).done(function () {
-      d.resolve();
-   })
-   .fail(function(){
-      d.reject();
-   });
+   $.when.apply($,arrayOfDeffered)
+   .done(d.resolve)
+   .fail(d.reject);
+   
    return d.promise();
 }
 

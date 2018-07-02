@@ -161,15 +161,19 @@ function chartViewModel() {
         // create the chart
         self.$chart = self.widgetApi.find("div.container");
         
-        arrayOfDeffered.push(self.widgetApi.loadGzLibrary([
-            "libs/highstock/js/highstock.js.gz",
-            "libs/highstock/js/highcharts-more.js.gz",
-            "libs/highstock/js/modules/exporting.js.gz",
-            "libs/highstock/js/modules/offline-exporting.js.gz",
-            "libs/highstock/js/modules/canvas-tools.js.gz",
-            "libs/highstock/js/modules/boost.js.gz",
-            "libs/export-csv/js/export-csv.min.js.gz",
-            "libs/highcharts-export-clientside/js/highcharts-export-clientside.min.js.gz"
+        //
+        // For chart and gauge, compressed gz file will appears soon. At this time, there is some dependancies to handle.
+        //
+        
+        arrayOfDeffered.push(self.widgetApi.loadLibrary([
+            "libs/highstock/js/highstock.js",
+            "libs/highstock/js/highcharts-more.js",
+            "libs/highstock/js/modules/exporting.js",
+            "libs/highstock/js/modules/offline-exporting.js",
+            "libs/highstock/js/modules/canvas-tools.js",
+            "libs/highstock/js/modules/boost.js",
+            "libs/export-csv/js/export-csv.min.js",
+            "libs/highcharts-export-clientside/js/highcharts-export-clientside.min.js"
         ]));        
         
         arrayOfDeffered.push(self.widgetApi.loadLibrary("widgets/chart/helpers.js"));
@@ -177,7 +181,7 @@ function chartViewModel() {
            self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
         }));
         
-        $.when.apply($,deferredArray).done(function () {
+        $.when.apply($,arrayOfDeffered).done(function () {
             self.chartOption = {
                 chart: {
                     type: 'line',

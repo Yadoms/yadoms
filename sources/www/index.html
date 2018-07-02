@@ -262,7 +262,11 @@
            arrayofDeffered.push(Yadoms.modals.pickupController.loadAsync());
            arrayOfDeffered.push(asyncLoadJSGzLibs(
              ["libs/markdown-it/markdown-it.min.js.gz",
-              "libs/markdown-it/markdown-it-for-inline.min.js.gz"]));
+              "libs/markdown-it/markdown-it-for-inline.min.js.gz",
+              "libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker-iconset-all.min.js.gz",
+              "libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker.min.js.gz"]));
+           
+           arrayOfDeffered.push(asyncLoadGzCss("libs/bootstrap-iconpicker-1.9.0/css/bootstrap-iconpicker.min.css.gz"));
            
            $.when.apply($,arrayofDeffered).done(function () {
                  //search all plugin information
