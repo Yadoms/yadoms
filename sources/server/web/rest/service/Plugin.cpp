@@ -567,13 +567,13 @@ namespace web
                         {
                            auto res = cb.getCallbackResult();
 
-                           if (res.Success)
+                           if (res.success)
                               return CResult::GenerateSuccess(m_dataProvider->getDeviceRequester()->getDeviceInPlugin(pluginId,
                                                                                                                       device->Name()));
 
                            // The plugin failed to process manually creation request, we have to remove the just created device
                            m_dataProvider->getDeviceRequester()->removeDevice(device->Id());
-                           return CResult::GenerateError(res.ErrorMessage);
+                           return CResult::GenerateError(res.errorMessage);
                         }
 
                      case shared::event::kTimeout:
@@ -639,10 +639,10 @@ namespace web
                         {
                            auto res = cb.getCallbackResult();
 
-                           if (res.Success)
-                              return CResult::GenerateSuccess(res.Result);
+                           if (res.success)
+                              return CResult::GenerateSuccess(res.result);
 
-                           return CResult::GenerateError(res.ErrorMessage);
+                           return CResult::GenerateError(res.errorMessage);
                         }
 
                      case shared::event::kTimeout:
