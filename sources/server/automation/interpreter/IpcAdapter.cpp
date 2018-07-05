@@ -63,7 +63,8 @@ namespace automation
             auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue.get_max_msg_size()));
             size_t messageSize;
             unsigned int messagePriority;
-            const auto messageAssembler = boost::make_shared<shared::communication::SmallHeaderMessageAssembler>(m_receiveMessageQueue.get_max_msg_size());
+            const auto messageAssembler = boost::make_shared<shared::communication::SmallHeaderMessageAssembler>(
+               m_receiveMessageQueue.get_max_msg_size());
 
             while (true)
             {
@@ -72,11 +73,12 @@ namespace automation
                   // boost::interprocess::message_queue::receive is not responding to boost thread interruption, so we need to do some
                   // polling and call boost::this_thread::interruption_point to exit properly
                   // Note that boost::interprocess::message_queue::timed_receive requires universal time to work (can not use shared::currentTime::Provider)
-                  auto messageWasReceived = m_receiveMessageQueue.timed_receive(message.get(),
-                                                                                m_receiveMessageQueue.get_max_msg_size(),
-                                                                                messageSize,
-                                                                                messagePriority,
-                                                                                boost::posix_time::microsec_clock::universal_time() + boost::posix_time::seconds(1));
+                  const auto messageWasReceived = m_receiveMessageQueue.timed_receive(message.get(),
+                                                                                      m_receiveMessageQueue.get_max_msg_size(),
+                                                                                      messageSize,
+                                                                                      messagePriority,
+                                                                                      boost::posix_time::microsec_clock::universal_time() + boost::
+                                                                                      posix_time::seconds(1));
                   boost::this_thread::interruption_point();
 
                   if (messageWasReceived)
@@ -162,13 +164,13 @@ namespace automation
          {
             boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
             m_onReceiveHook = [&](const interpreter_IPC::toYadoms::msg& receivedMsg)-> bool
-               {
-                  if (!checkExpectedMessageFunction(receivedMsg))
-                     return false;
+            {
+               if (!checkExpectedMessageFunction(receivedMsg))
+                  return false;
 
-                  receivedEvtHandler.postEvent<const interpreter_IPC::toYadoms::msg>(shared::event::kUserFirstId, receivedMsg);
-                  return true;
-               };
+               receivedEvtHandler.postEvent<const interpreter_IPC::toYadoms::msg>(shared::event::kUserFirstId, receivedMsg);
+               return true;
+            };
          }
 
          send(pbMsg);
@@ -193,7 +195,8 @@ namespace automation
          if (!toYadomsProtoBuffer.ParseFromArray(message.get(), messageSize))
             throw shared::exception::CInvalidParameter("message : fail to parse received data into protobuf format");
 
-         YADOMS_LOG(trace) << "[RECEIVE] message " << toYadomsProtoBuffer.OneOf_case() << " from interpreter " << m_interpreterName << (m_onReceiveHook ? " (onReceiveHook ENABLED)" : "");
+         YADOMS_LOG(trace) << "[RECEIVE] message " << toYadomsProtoBuffer.OneOf_case() << " from interpreter " << m_interpreterName << (
+               m_onReceiveHook ? " (onReceiveHook ENABLED)" : "");
 
          {
             boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
@@ -210,7 +213,8 @@ namespace automation
          case interpreter_IPC::toYadoms::msg::kNotifiyScriptStopped: processNotifiyScriptStopped(toYadomsProtoBuffer.notifiyscriptstopped());
             break;
          default:
-            throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
+            throw shared::exception::
+               CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
          }
       }
 
@@ -275,6 +279,7 @@ namespace automation
          auto message = req.mutable_loadscriptcontentrequest();
          message->set_scriptpath(request->getScriptPath());
          std::string content;
+         std::string error;
 
          try
          {
@@ -286,11 +291,18 @@ namespace automation
                  [&](const interpreter_IPC::toYadoms::msg& ans) -> void
                  {
                     content = ans.loadscriptcontentanswer().content();
+                    error = ans.loadscriptcontentanswer().error();
                  });
          }
          catch (std::exception& e)
          {
             request->sendError((boost::format("Interpreter doesn't answer to load script content request : %1%") % e.what()).str());
+            return;
+         }
+
+         if (!error.empty())
+         {
+            request->sendError(error);
             return;
          }
 
@@ -356,5 +368,3 @@ namespace automation
       }
    }
 } // namespace automation::interpreter
-
-

@@ -3,11 +3,14 @@
 #### Yadoms Core
 * Fix #319 - No widget displayed with SAFARI
 * Fix #442 and #492 - Fix database cleanup at startup to make it available for plugins
+* Fix #496 - Raise error to Yadoms when unable to load rule content
+* Fix #501 - Set default log level to error to preserve life of system installed on SDCard (concern only fresh installations)
 * NewFeature #402 - Add measure type choice for some capacities (counter, energy, rain) when creating a virtual device
 * NewFeature #466 - Adapt unit if it's necessary
 * NewFeature #485 - Adapt unit for bit/s display
 * Fix incremental historization from automation rules or web client
 * Automatic set version number into package.json (from changelog.md) for modules (plugins and script interpreters)
+* Log Yadoms version at startup (information level)
 
 #### Web Client
 * Fix #389 - Bad display after computer wake up

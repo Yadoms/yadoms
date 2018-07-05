@@ -27,7 +27,7 @@ enum EWUPluginState
    kInitializationError,
    kQueryNotFound,
    kKeyNotFound,
-   kupdateConfiguration,
+   kUpdateConfiguration,
    kNoConnection,
    kNoLocation,
    kRunning
@@ -71,7 +71,7 @@ private:
    /// \param[in] event    event to send for retry
    /// \return if the sending is working properly
    //--------------------------------------------------------------
-   shared::CDataContainer SendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& url, const int event, int &nbRetry);
+   shared::CDataContainer sendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& url, const int event, int &nbRetry);
 
    //--------------------------------------------------------------
    /// \brief Manage the state of the plugin
@@ -102,7 +102,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The features
    //--------------------------------------------------------------
-   boost::shared_ptr<features::IFeature> weatherConditionsRequester;
-   boost::shared_ptr<features::IFeature> astronomyRequester;
-   boost::shared_ptr<features::IFeature> forecast10Days;
+   boost::shared_ptr<features::IFeature> m_weatherConditionsRequester;
+   boost::shared_ptr<features::IFeature> m_astronomyRequester;
+   boost::shared_ptr<features::IFeature> m_forecast10Days;
 };

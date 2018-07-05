@@ -96,9 +96,9 @@ namespace web
                      case communication::callback::CSynchronousCallback<shared::CDataContainer>::kResult:
                         {
                            const auto res = cb.getCallbackResult();
-                           if (res.Success)
-                              return CResult::GenerateSuccess(res.Result);
-                           return CResult::GenerateError(res.ErrorMessage);
+                           if (res.success)
+                              return CResult::GenerateSuccess(res.result);
+                           return CResult::GenerateError(res.errorMessage);
                         }
                      case shared::event::kTimeout:
                         return CResult::GenerateError("The plugin did not respond");
