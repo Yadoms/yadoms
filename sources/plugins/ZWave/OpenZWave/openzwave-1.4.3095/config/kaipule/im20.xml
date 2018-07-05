@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Kaipule IM20 Door/Window Sensor
+https://products.z-wavealliance.org/products/2027
+-->
+<Product xmlns='http://code.google.com/p/open-zwave/'>
+	<!-- Configuration -->
+	<CommandClass id="112">
+		<Value type="byte" genre="config" instance="1" index="1" label="Basic Set Level" size="1" min="1" max="255" value="255">
+			<Help>Basic Set parameter setting, the receivers make relevant adjustment according to parameter value</Help>
+		</Value>		
+		<Value type="byte" genre="config" instance="1" index="2" label="Turn Off Light Time" size="1" min="1" max="120" units="seconds" value="20">
+			<Help>
+				If there is any device under Association Group2, the door sensor will send Basic Set = value command to Group2, and send Basic Set = 0x00 command to turn-off light after t seconds,	Set value = t, means to send Basic Set command after t seconds.
+			</Help>
+		</Value>		
+		<Value type="byte" genre="config" instance="1" index="3" label="Auto report status time" value="6" min="0" max="24" units="hours" size="1">
+			<Help>
+				Under normal working status (without trigger), the door sensor will automatically send report to the Gateway about its current tamper and open/close status.
+				Set value = t, means t hours, (t=0, means no status report).
+				0-24 hours (Default 6 hours)</Help>
+		</Value>
+	</CommandClass>
+	<!-- Association Groups -->
+	<CommandClass id="133">
+		<Associations num_groups="2">
+			<Group index="1" max_associations="1" label="Lifeline"/>
+			<Group index="2" max_associations="2" label="Control BASIC SET reports" />
+		</Associations>
+	</CommandClass>
+</Product>
