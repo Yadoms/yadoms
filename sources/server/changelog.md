@@ -10,6 +10,7 @@
 * NewFeature #485 - Adapt unit for bit/s display
 * Fix incremental historization from automation rules or web client
 * Automatic set version number into package.json (from changelog.md) for modules (plugins and script interpreters)
+* Log Yadoms version at startup (information level)
 
 #### Web Client
 * Fix #389 - Bad display after computer wake up

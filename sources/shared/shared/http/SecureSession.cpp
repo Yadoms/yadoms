@@ -6,7 +6,7 @@
 
 namespace shared
 {
-	SecureSession::SecureSession(std::string url) : 
+	CSecureSession::CSecureSession(std::string url) : 
 		m_url(url)
 	{
 		Poco::URI uri(url);
@@ -15,22 +15,22 @@ namespace shared
 		m_session = boost::make_shared<Poco::Net::HTTPSClientSession>(uri.getHost(), uri.getPort(), context);
 	}
 
-	void SecureSession::setTimeout(const boost::posix_time::time_duration& timeout)
+	void CSecureSession::setTimeout(const boost::posix_time::time_duration& timeout)
 	{
 		m_session->setTimeout(Poco::Timespan(timeout.seconds(), 0));
 	}
 
-	std::ostream& SecureSession::sendRequest(Poco::Net::HTTPRequest& request)
+	std::ostream& CSecureSession::sendRequest(Poco::Net::HTTPRequest& request)
 	{
 		return m_session->sendRequest(request);
 	}
 
-	std::istream& SecureSession::receiveResponse(Poco::Net::HTTPResponse& response)
+	std::istream& CSecureSession::receiveResponse(Poco::Net::HTTPResponse& response)
 	{
 		return m_session->receiveResponse(response);
 	}
 
-	const std::string& SecureSession::getUrl() const
+	const std::string& CSecureSession::getUrl() const
 	{
 		return m_url;
 	}

@@ -1,6 +1,5 @@
 #pragma once
 #include <Poco/Net/HTTPClientSession.h>
-#include <Poco/Net/HTTPRequest.h>
 #include <Poco/Net/HTTPResponse.h>
 
 namespace shared
@@ -8,6 +7,7 @@ namespace shared
    class IHTTPSession
    {
    public:
+      virtual ~IHTTPSession() = default;
 
       //--------------------------------------------------------------
       /// \brief	    set the time out time for the request reponse

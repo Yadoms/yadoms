@@ -27,8 +27,8 @@ shared::CDataContainer urlManager::getRegisteredEquipments(const std::string &ap
       parameters.set("status", "ACTIVATED");
 
    auto deviceUrl = m_url.str() + "/vendors/lora/devices";
-   const auto session = boost::make_shared<shared::SecureSession>(deviceUrl);
-   shared::CHttpMethods::SendGetRequest(session,
+   const auto session = boost::make_shared<shared::CSecureSession>(deviceUrl);
+   shared::CHttpMethods::sendGetRequest(session,
                                         headerParameters,
                                         parameters,
                                         [&](shared::CDataContainer& data)
@@ -54,8 +54,8 @@ shared::CDataContainer urlManager::getDeviceInformation(const std::string &apike
    headerParameters.set("Accept", "application/json");
 
    auto deviceUrl = "https://liveobjects.orange-business.com/api/v0/vendors/lora/devices/" + devEUI;
-   const auto session = boost::make_shared<shared::SecureSession>(deviceUrl);
-   shared::CHttpMethods::SendGetRequest(session,
+   const auto session = boost::make_shared<shared::CSecureSession>(deviceUrl);
+   shared::CHttpMethods::sendGetRequest(session,
                                         headerParameters,
                                         noParameters,
                                         [&](shared::CDataContainer& data)
@@ -83,8 +83,8 @@ shared::CDataContainer urlManager::listDeviceCommands(const std::string &apikey,
    parameters.set("limit", "5");
    parameters.set("sort", "-creationTs"); // Get the newest command at the first page
    auto deviceUrl = "https://liveobjects.orange-business.com/api/v0/data/streams/urn:lora:" + devEUI + "!uplink";
-   const auto session = boost::make_shared<shared::SecureSession>(deviceUrl);
-   shared::CHttpMethods::SendGetRequest(session,
+   const auto session = boost::make_shared<shared::CSecureSession>(deviceUrl);
+   shared::CHttpMethods::sendGetRequest(session,
                                         headerParameters,
                                         parameters,
                                         [&](shared::CDataContainer& data)

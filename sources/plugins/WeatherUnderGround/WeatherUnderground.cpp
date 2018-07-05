@@ -30,7 +30,7 @@ CWeatherUnderground::~CWeatherUnderground()
 
 void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   YADOMS_LOG(information) << "CWeatherUnderground is starting..." ;
+   YADOMS_LOG(information) << "CWeatherUnderground is starting...";
 
    auto weatherConditionsSendingRetry = 0;
    auto astronomySendingRetry = 0;
@@ -38,7 +38,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    api->getEventHandler().createTimer(kEvtInitialization, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
 
-   YADOMS_LOG(information) << "CWeatherUnderground plugin is running..." ;
+   YADOMS_LOG(information) << "CWeatherUnderground plugin is running...";
 
    // the main loop
    while (true)
@@ -48,120 +48,125 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
       case yApi::IYPluginApi::kEventStopRequested:
          {
-            YADOMS_LOG(information) << "Stop requested" ;
-            setPluginState(api, EWUPluginState::kStop);
+            YADOMS_LOG(information) << "Stop requested";
+            setPluginState(api, kStop);
             return;
          }
       case kEvtInitialization:
-      {
-         try
          {
-            // Load configuration values (provided by database)
-            m_configuration.initializeWith(api->getConfiguration());
+            try
+            {
+               // Load configuration values (provided by database)
+               m_configuration.initializeWith(api->getConfiguration());
 
-            // Create all existing devices
-            m_factory = boost::make_shared<CWUFactory>(api, m_configuration);
+               // Create all existing devices
+               m_factory = boost::make_shared<CWUFactory>(api, m_configuration);
 
-            weatherConditionsRequester = m_factory->getWeatherConditionsDevice();
-            astronomyRequester = m_factory->getAstronomyDevice();
-            forecast10Days = m_factory->getForecastDevice();
+               weatherConditionsRequester = m_factory->getWeatherConditionsDevice();
+               astronomyRequester = m_factory->getAstronomyDevice();
+               forecast10Days = m_factory->getForecastDevice();
 
-            setPluginState(api, EWUPluginState::kRunning);
-         }
-         catch (CRequestErrorException&)
-         {
-            setPluginState(api, EWUPluginState::kNoConnection);
-            api->getEventHandler().createTimer(kEvtInitialization, shared::event::CEventTimer::kOneShot, boost::posix_time::minutes(5));
-         }
-         catch (CNoLocationException&)
-         { 
-            YADOMS_LOG(error) << "No location configured" ;
-            setPluginState(api, EWUPluginState::kNoLocation);
-         }
-         catch (CWebSiteErrorException& e)
-         {
-            YADOMS_LOG(information) << e.what() ;
-            YADOMS_LOG(information) << "result :" << strcmp(e.what(), "keynotfound") ;
+               setPluginState(api, kRunning);
+            }
+            catch (CRequestErrorException&)
+            {
+               setPluginState(api, kNoConnection);
+               api->getEventHandler().createTimer(kEvtInitialization, shared::event::CEventTimer::kOneShot, boost::posix_time::minutes(5));
+            }
+            catch (CNoLocationException&)
+            {
+               YADOMS_LOG(error) << "No location configured";
+               setPluginState(api, kNoLocation);
+            }
+            catch (CWebSiteErrorException& e)
+            {
+               YADOMS_LOG(information) << e.what();
+               YADOMS_LOG(information) << "result :" << strcmp(e.what(), "keynotfound");
 
-            if (boost::icontains(e.what(), "keynotfound"  )) setPluginState(api, EWUPluginState::kKeyNotFound);
-            if (boost::icontains(e.what(), "querynotfound")) setPluginState(api, EWUPluginState::kQueryNotFound);
+               if (boost::icontains(e.what(), "keynotfound")) setPluginState(api, kKeyNotFound);
+               if (boost::icontains(e.what(), "querynotfound")) setPluginState(api, kQueryNotFound);
+            }
+            catch (std::exception& e)
+            {
+               YADOMS_LOG(information) << "exception : " << e.what();
+               // Informs Yadoms about the plugin actual state
+               setPluginState(api, kInitializationError);
+            }
+            break;
          }
-         catch (std::exception& e)
-         {
-            YADOMS_LOG(information) << "exception : " << e.what() ;
-            // Informs Yadoms about the plugin actual state
-            setPluginState(api, EWUPluginState::kInitializationError);
-         }
-         break;
-      }
       case kEvtTimerRefreshWeatherConditions:
          {
             try
             {
-               shared::CDataContainer returnData = SendUrlRequest(api, weatherConditionsRequester->getUrl(), kEvtTimerRefreshWeatherConditions, weatherConditionsSendingRetry);
+               const auto returnData = sendUrlRequest(api, weatherConditionsRequester->getUrl(), kEvtTimerRefreshWeatherConditions,
+                                                      weatherConditionsSendingRetry);
                weatherConditionsRequester->parse(api, returnData, m_configuration);
-               setPluginState(api, EWUPluginState::kRunning);
+               setPluginState(api, kRunning);
             }
             catch (CRequestErrorException&)
-            {}
-			catch (std::exception& e)
-			{
-				YADOMS_LOG(error) << "error during weather refresh :" << e.what() ;
-			}
+            {
+            }
+            catch (std::exception& e)
+            {
+               YADOMS_LOG(error) << "error during weather refresh :" << e.what();
+            }
          }
          break;
       case kEvtTimerRefreshAstronomy:
          {
             try
             {
-               shared::CDataContainer returnData = SendUrlRequest(api, astronomyRequester->getUrl(), kEvtTimerRefreshAstronomy, astronomySendingRetry);
+               const auto returnData = sendUrlRequest(api, astronomyRequester->getUrl(), kEvtTimerRefreshAstronomy, astronomySendingRetry);
                astronomyRequester->parse(api, returnData, m_configuration);
-               setPluginState(api, EWUPluginState::kRunning);
+               setPluginState(api, kRunning);
             }
             catch (CRequestErrorException&)
-            {}
-			catch (std::exception& e)
-			{
-				YADOMS_LOG(error) << "error during astronomy refresh :" << e.what() ;
-			}
+            {
+            }
+            catch (std::exception& e)
+            {
+               YADOMS_LOG(error) << "error during astronomy refresh :" << e.what();
+            }
          }
          break;
       case kEvtTimerRefreshForecast10Days:
          {
             try
             {
-               shared::CDataContainer returnData = SendUrlRequest(api, forecast10Days->getUrl(), kEvtTimerRefreshForecast10Days, forecast10daysSendingRetry);
+               const auto returnData = sendUrlRequest(api, forecast10Days->getUrl(), kEvtTimerRefreshForecast10Days, forecast10daysSendingRetry);
                forecast10Days->parse(api, returnData, m_configuration);
-               setPluginState(api, EWUPluginState::kRunning);
+               setPluginState(api, kRunning);
             }
             catch (CRequestErrorException&)
-            {}
-			catch (std::exception& e)
-			{
-				YADOMS_LOG(error) << "error during forecast refresh :" << e.what() ;
-			}
+            {
+            }
+            catch (std::exception& e)
+            {
+               YADOMS_LOG(error) << "error during forecast refresh :" << e.what();
+            }
          }
          break;
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
-            setPluginState(api, EWUPluginState::kupdateConfiguration);
-            try {
+            setPluginState(api, kUpdateConfiguration);
+            try
+            {
                onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
-               setPluginState(api, EWUPluginState::kRunning);
+               setPluginState(api, kRunning);
             }
             catch (std::exception&)
             {
-               setPluginState(api, EWUPluginState::kInitializationError);
+               setPluginState(api, kInitializationError);
             }
             break;
          }
       case yApi::IYPluginApi::kSetDeviceConfiguration:
-      {
-         // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
-         auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
-         YADOMS_LOG(information) << "Set device configuration received, but not used" ;
-         break;
-      }
+         {
+            // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
+            auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
+            YADOMS_LOG(information) << "Set device configuration received, but not used";
+            break;
+         }
       default:
          YADOMS_LOG(warning) << "Unknown message id " << api->getEventHandler().getEventId();
          break;
@@ -173,7 +178,7 @@ void CWeatherUnderground::onUpdateConfiguration(boost::shared_ptr<yApi::IYPlugin
                                                 const shared::CDataContainer& newConfigurationData)
 {
    // Configuration was updated
-   YADOMS_LOG(information) << "Update configuration..." ;
+   YADOMS_LOG(information) << "Update configuration...";
    BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Update configuration
@@ -190,7 +195,7 @@ void CWeatherUnderground::onUpdateConfiguration(boost::shared_ptr<yApi::IYPlugin
    }
    else
    {
-      YADOMS_LOG(error) << "Factory not yet initialize, please check Ethernet connection" ;
+      YADOMS_LOG(error) << "Factory not yet initialize, please check Ethernet connection";
       api->getEventHandler().createTimer(kEvtInitialization, shared::event::CEventTimer::kOneShot, boost::posix_time::minutes(5));
    }
 }
@@ -201,32 +206,32 @@ void CWeatherUnderground::setPluginState(boost::shared_ptr<yApi::IYPluginApi> ap
    {
       switch (newState)
       {
-      case EWUPluginState::kInitializationError:
+      case kInitializationError:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
          break;
-      case EWUPluginState::kQueryNotFound:
+      case kQueryNotFound:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "querynotfound");
          break;
-      case EWUPluginState::kKeyNotFound:
+      case kKeyNotFound:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "keynotfound");
          break;
-      case EWUPluginState::kupdateConfiguration:
+      case kUpdateConfiguration:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "updateconfiguration");
          break;
-      case EWUPluginState::kNoConnection:
+      case kNoConnection:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "NoConnection");
          break;
-      case EWUPluginState::kNoLocation:
+      case kNoLocation:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "noLocation");
          break;
-      case EWUPluginState::kRunning:
+      case kRunning:
          api->setPluginState(yApi::historization::EPluginState::kRunning);
          break;
-      case EWUPluginState::kStop:
+      case kStop:
          api->setPluginState(yApi::historization::EPluginState::kStopped);
          break;
       default:
-         YADOMS_LOG(error) << "this plugin status does not exist : " << newState ;
+         YADOMS_LOG(error) << "this plugin status does not exist : " << newState;
          break;
       }
 
@@ -234,15 +239,17 @@ void CWeatherUnderground::setPluginState(boost::shared_ptr<yApi::IYPluginApi> ap
    }
 }
 
-shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& url, const int event, int &nbRetry)
+shared::CDataContainer CWeatherUnderground::sendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& url, const int event,
+                                                           int& nbRetry)
 {
    try
    {
       shared::CDataContainer returnData;
-      shared::CDataContainer noParameters, noheaderParameter;
-	  boost::shared_ptr<shared::StandardSession> session = boost::make_shared<shared::StandardSession>(url);
+      const shared::CDataContainer noParameters;
+      const shared::CDataContainer noheaderParameter;
+      const auto session = boost::make_shared<shared::CStandardSession>(url);
 
-      shared::CHttpMethods::SendGetRequest(session,
+      shared::CHttpMethods::sendGetRequest(session,
                                            noheaderParameter,
                                            noParameters,
                                            [&](shared::CDataContainer& data)
@@ -263,18 +270,18 @@ shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yAp
    }
    catch (CWebSiteErrorException& e)
    {
-      if (boost::icontains(e.what(), "keynotfound")) setPluginState(api, EWUPluginState::kKeyNotFound);
-      if (boost::icontains(e.what(), "querynotfound")) setPluginState(api, EWUPluginState::kQueryNotFound);
+      if (boost::icontains(e.what(), "keynotfound")) setPluginState(api, kKeyNotFound);
+      if (boost::icontains(e.what(), "querynotfound")) setPluginState(api, kQueryNotFound);
 
       throw CRequestErrorException();
    }
    catch (shared::exception::CException& e)
    {
-      YADOMS_LOG(information) << e.what() << ". Retry in 5 minutes." ;
+      YADOMS_LOG(information) << e.what() << ". Retry in 5 minutes.";
       api->getEventHandler().createTimer(event, shared::event::CEventTimer::kOneShot, boost::posix_time::minutes(5));
 
       if (nbRetry == 3)
-         setPluginState(api, EWUPluginState::kNoConnection);
+         setPluginState(api, kNoConnection);
 
       ++nbRetry;
 

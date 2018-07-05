@@ -7,15 +7,16 @@
 #include <shared/Log.h>
 #include "SecureSession.h"
 #include "StandardSession.h"
+#include <Poco/URI.h>
 
 namespace shared
 {
-   CDataContainer CHttpMethods::SendGetRequest(const std::string& url)
+   CDataContainer CHttpMethods::sendGetRequest(const std::string& url)
    {
-      return SendGetRequest(url, CDataContainer());
+      return sendGetRequest(url, CDataContainer());
    }
 
-   bool CHttpMethods::SendGetRequest(const boost::shared_ptr<IHTTPSession> session,
+   bool CHttpMethods::sendGetRequest(const boost::shared_ptr<IHTTPSession> session,
                                      const CDataContainer& headerParameters,
                                      const CDataContainer& parameters,
                                      boost::function1<void, CDataContainer&> onReceive,
@@ -52,48 +53,42 @@ namespace shared
          {
             CDataContainer data;
 
-            if (JsonResponseReader(session, response, data))
+            if (jsonResponseReader(session, response, data))
             {
                onReceive(data);
                return true;
             }
 
-            auto message = (boost::format("content not yet managed : %1%") % response.getContentType()).str();
+            const auto message = (boost::format("content not yet managed : %1%") % response.getContentType()).str();
             YADOMS_LOG(error) << message;
             throw exception::CException(message);
-
-            return false;
          }
 
-         auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
+         const auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
          YADOMS_LOG(error) << message;
          throw exception::CException(message);
-
-         return false;
       }
-	  catch (const Poco::Net::SSLException& e)
-	  {
-		  std::cerr << e.what() << ": " << e.message() << std::endl;
-        throw CHttpException(e.message());
-        return false;
-	  }
-     catch (Poco::Exception& e)
-     {
-        auto message = (boost::format("Fail to send get http request \"%1%\" : %2%") % session->getUrl() % e.message()).str();
-        YADOMS_LOG(error) << message;
-        throw CHttpException(message);
-        return false;
+      catch (const Poco::Net::SSLException& e)
+      {
+         std::cerr << e.what() << ": " << e.message() << std::endl;
+         throw CHttpException(e.message());
+      }
+      catch (Poco::Exception& e)
+      {
+         const auto message = (boost::format("Fail to send get http request \"%1%\" : %2%") % session->getUrl() % e.message()).str();
+         YADOMS_LOG(error) << message;
+         throw CHttpException(message);
       }
    }
 
-   CDataContainer CHttpMethods::SendGetRequest(const std::string& url,
+   CDataContainer CHttpMethods::sendGetRequest(const std::string& url,
                                                const CDataContainer& parameters,
                                                const boost::posix_time::time_duration& timeout)
    {
       CDataContainer responseData;
-	  boost::shared_ptr<StandardSession> session=boost::make_shared<StandardSession>(url);
+      const auto session = boost::make_shared<CStandardSession>(url);
 
-      SendGetRequest(session,
+      sendGetRequest(session,
                      CDataContainer(), // no header parameters
                      parameters,
                      [&](CDataContainer& data)
@@ -105,7 +100,7 @@ namespace shared
       return responseData;
    }
 
-   bool CHttpMethods::JsonResponseReader(const boost::shared_ptr<IHTTPSession> session,
+   bool CHttpMethods::jsonResponseReader(const boost::shared_ptr<IHTTPSession> session,
                                          Poco::Net::HTTPResponse& httpresponse,
                                          CDataContainer& response)
    {
@@ -113,8 +108,8 @@ namespace shared
       if (boost::icontains(httpresponse.getContentType(), "application/json"))
       {
          // Content-Length is not always fullfilled so we don't use hasContentLength and getContentLength
-         std::istreambuf_iterator<char> eos;
-         std::string content(std::istreambuf_iterator<char>(rs), eos);
+         const std::istreambuf_iterator<char> eos;
+         const std::string content(std::istreambuf_iterator<char>(rs), eos);
          response.deserialize(content);
          return true;
       }
