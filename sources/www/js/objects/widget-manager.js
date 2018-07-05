@@ -25,7 +25,7 @@ WidgetManager.factory = function (json) {
     assert(!isNullOrUndefined(json.sizeY), "json.sizeY must be defined");
     assert(!isNullOrUndefined(json.position), "json.position must be defined");
     assert(!isNullOrUndefined(json.configuration), "json.configuration must be defined");
-
+    
     return new Widget(json.id, json.idPage, json.type, json.title, json.sizeX, json.sizeY, json.position, json.configuration);
 };
 
@@ -82,11 +82,18 @@ WidgetManager.getWidgetOfPageFromServer = function (page) {
         RestEngine.getJson("/rest/page/" + page.id + "/widget")
            .done(function (data) {
                var list = [];
+               var arrayofDeffered = [];
                $.each(data.widget, function (index, value) {
                    list.push(WidgetManager.factory(value));
+                   arrayofDeffered.push(WidgetPackageManager.loadLanguage(value.type));
                });
-
-               d.resolve(list);
+               
+               $.when.apply($, arrayofDeffered).done(function () {
+                  d.resolve(list);
+               })
+               .fail(function() {
+                  d.reject();
+               });
            })
            .fail(function (errorMessage) {
                console.error("Fail to getWidgetOfPageFromServer from server : " + errorMessage);

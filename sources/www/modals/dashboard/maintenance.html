@@ -183,19 +183,23 @@
     Yadoms.initializeMaintenanceDashboard = function () {
         var d = new $.Deferred();
 
-        enableBackupSection();
+        asyncLoadJSLib("js/objects/maintenance-manager.js").done(function(){
+           enableBackupSection();
 
-        //if running tasks, then just refresh
-        TaskManager.getTasksRunning("backup")
-        .done(function(tasks) {
-            $.each(tasks, function(index, task) {
-               registerNotificationForTask(task.uuid);
-               onTaskUpdate(task);
-            });
+           //if running tasks, then just refresh
+           TaskManager.getTasksRunning("backup")
+           .done(function(tasks) {
+               $.each(tasks, function(index, task) {
+                  registerNotificationForTask(task.uuid);
+                  onTaskUpdate(task);
+               });
+           })
+           .always(function() {
+               d.resolve();
+           });
         })
-        .always(function() {
-            d.resolve();
-        });
+        .fail(d.reject);
+        
         return d.promise();
     };
 

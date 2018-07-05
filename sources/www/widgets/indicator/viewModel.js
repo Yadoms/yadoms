@@ -8,7 +8,7 @@ widgetViewModelCtor = function indicatorViewModel() {
     this.command = ko.observable(1);
     this.icon = ko.observable("");
     this.iconColor = ko.observable("");
-	this.readonly = ko.observable(true);
+	 this.readonly = ko.observable(true);
 
     this.capacity = null;
 
@@ -16,11 +16,29 @@ widgetViewModelCtor = function indicatorViewModel() {
      * Initialization method
      */
     this.initialize = function () {
-        this.widgetApi.toolbar({
-            activated: true,
-            displayTitle: true,
-            batteryItem: true
-        });
+       var self = this;
+       var arrayOfDeffered = [];
+       var d = new $.Deferred();
+        
+       this.widgetApi.toolbar({
+          activated: true,
+          displayTitle: true,
+          batteryItem: true
+       });
+        
+       arrayOfDeffered.push(self.widgetApi.loadGzLibrary(
+       ["libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker-iconset-all.min.js.gz",
+        "libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker.min.js.gz"]));
+       arrayOfDeffered.push(self.widgetApi.loadGzCss("libs/bootstrap-iconpicker-1.9.0/css/bootstrap-iconpicker.min.css.gz"));
+
+       $.when.apply($, arrayOfDeffered).done(function () {
+          d.resolve();
+       })
+       .fail(function () {
+          d.reject();
+       });
+        
+       return d.promise();        
     };
 
     this.indicatorClick = function () {

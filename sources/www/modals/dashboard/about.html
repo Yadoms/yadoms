@@ -1,6 +1,5 @@
 <div id="dashboard-about">
-   <h1 class="page-header" data-i18n="modals.dashboard.sub-windows.about.title"></h1>
-   
+   <h1 class="page-header" data-i18n="modals.dashboard.sub-windows.about.title"></h1>   
    <h2 class="sub-header" data-i18n="modals.dashboard.sub-windows.about.links"></h2>
    
    <div>
@@ -52,216 +51,213 @@
 
 <script>
 
-   Yadoms.initializeAboutDashboard = function () {
+Yadoms.initializeAboutDashboard = function () {
+var d = new $.Deferred();
+var arrayofDeffered = [];
+var developerMode = false;
    
-   var d = new $.Deferred();
-      
-      function getWidgetDomRow(widgetPackage) {
-        return $("table#widget-package-list").find("tr[widget-id=\"" + widgetPackage + "\"]");
-      }
+   function getWidgetDomRow(widgetPackage) {
+     return $("table#widget-package-list").find("tr[widget-id=\"" + widgetPackage + "\"]");
+   }
 
-      function getPluginDomRow(pluginPackage) {
-        return $("table#plugin-package-list").find("tr[plugin-id=\"" + pluginPackage + "\"]");
-      }     
-      
-       AddWidgetPackage = function( name, version, authors, credits, url ) {
-      
-        //we add it to the DOM
-        var $widgetPackageList = $("table#widget-package-list");
+   function getPluginDomRow(pluginPackage) {
+     return $("table#plugin-package-list").find("tr[plugin-id=\"" + pluginPackage + "\"]");
+   }     
+   
+    AddWidgetPackage = function( name, version, authors, credits, url ) {
+   
+     //we add it to the DOM
+     var $widgetPackageList = $("table#widget-package-list");
+     var frameworkWidgetPackage = "<tr widget-id=\"" + name + "\">" +
+           "<td class=\"widget-displayName vert-align\"></td>" +
+           "<td class=\"widget-version vert-align\"></td>" +
+           "<td class=\"widget-authors vert-align\"></td>" +
+           "<td class=\"widget-credits vert-align\" align=\"left\"></td>" +
+           "</tr>";     
+   
+     $widgetPackageList.append( frameworkWidgetPackage );
+     var $widgetPackageRow = getWidgetDomRow( name );       
+     
+     //we fill the data
+     $widgetPackageRow.find("td.widget-displayName").html( "<a href=\"" + url + "\" target=\"_blank\">" + name + "</a>" );
+     $widgetPackageRow.find("td.widget-version").html( version );
+     $widgetPackageRow.find("td.widget-authors").html( authors );
+     $widgetPackageRow.find("td.widget-credits").html( credits );
+   };
+   
+    AddPluginPackage = function( type, name, version, authors, credits, url ) {
+   
+     //we add it to the DOM
+     var $pluginPackageList = $("table#plugin-package-list");
+     var frameworkPluginPackage = "<tr plugin-id=\"" + type + "\">" +
+           "<td class=\"plugin-displayName vert-align\"></td>" +
+        "<td class=\"plugin-version vert-align\"></td>" +
+           "<td class=\"plugin-authors vert-align\"></td>" +
+           "<td class=\"plugin-credits vert-align\" align=\"left\"></td>" +
+           "</tr>";     
+   
+     $pluginPackageList.append( frameworkPluginPackage );
+     var $pluginPackageRow = getPluginDomRow( type );       
+     
+     //we fill the data
+     $pluginPackageRow.find("td.plugin-displayName").html( "<a href=\"" + url + "\" target=\"_blank\">" + name + "</a>" );
+     $pluginPackageRow.find("td.plugin-version").html( version );
+     $pluginPackageRow.find("td.plugin-authors").html( authors );
+     $pluginPackageRow.find("td.plugin-credits").html( credits );
+   
+   };
+   
+    AddYadomsLibrary = function( name1, url1, name2, url2 ) {
+       //we add it to the DOM
+       var $YadomsLicenseList = $("table#yadoms-license-list");
+       var licenseframe = "<tr>";
+     
+       if ( url1 !== undefined && name1 !== undefined ){
+          licenseframe = licenseframe + "<td class=\"vert-align\"><a href=\"" + url1 + "\" target=\"_blank\">" + name1 + "</a></td>";
+       }
+     
+       if ( url2 !== undefined && name2 !== undefined ){
+          licenseframe = licenseframe + "<td class=\"vert-align\"><a href=\"" + url2 + "\" target=\"_blank\">" + name2 + "</a></td>";
+       }        
 
-        var frameworkWidgetPackage = "<tr widget-id=\"" + name + "\">" +
-              "<td class=\"widget-displayName vert-align\"></td>" +
-              "<td class=\"widget-version vert-align\"></td>" +
-              "<td class=\"widget-authors vert-align\"></td>" +
-              "<td class=\"widget-credits vert-align\" align=\"left\"></td>" +
-              "</tr>";     
+       licenseframe = licenseframe + "</tr>";
+       $YadomsLicenseList.append( licenseframe );    
+    };
+   
+    var def1 = YadomsInformationManager.getList();
+    arrayofDeffered.push(def1);
+    def1.done(function (data) {
+       developerMode = data.developerMode;
+    });
       
-        $widgetPackageList.append( frameworkWidgetPackage );
-
-          var $widgetPackageRow = getWidgetDomRow( name );       
-        
-        //we fill the data
-        $widgetPackageRow.find("td.widget-displayName").html( "<a href=\"" + url + "\" target=\"_blank\">" + name + "</a>" );
-        $widgetPackageRow.find("td.widget-version").html( version );
-        $widgetPackageRow.find("td.widget-authors").html( authors );
-        $widgetPackageRow.find("td.widget-credits").html( credits );
+    var tabLicense = [];
       
-      };
+    // delete all existing yadoms license
+    $("table#yadoms-license-list").find("tr:gt(0)").remove();        
       
-       AddPluginPackage = function( type, name, version, authors, credits, url ) {
+    // Add all licenses !
+    tabLicense.push ( {friendlyName: "Boost"                 , url: "https://www.boost.org/"  });
+    tabLicense.push ( {friendlyName: "Bootstrap"             , url: "http://getbootstrap.com" });
+    tabLicense.push ( {friendlyName: "Bootstrap ColorPicker" , url: "https://itsjavi.com/bootstrap-colorpicker/" });
+    tabLicense.push ( {friendlyName: "Bootstrap IconPicker"  , url: "https://victor-valencia.github.com/bootstrap-iconpicker" });
+    tabLicense.push ( {friendlyName: "Blockly"               , url: "https://github.com/google/blockly" });
+    tabLicense.push ( {friendlyName: "Font awesome"          , url: "http://fontawesome.io" });
+    tabLicense.push ( {friendlyName: "i18next"               , url: "http://i18next.com" });
+    tabLicense.push ( {friendlyName: "jqBootstrapValidation" , url: "https://github.com/korengal/jqBootstrapValidation/network" });
+    tabLicense.push ( {friendlyName: "jQuery"                , url: "http://jquery.com/" });
+    tabLicense.push ( {friendlyName: "jQuery MD5"            , url: "https://github.com/blueimp/jQuery-MD5" });
+    tabLicense.push ( {friendlyName: "jQuery ui"             , url: "http://jqueryui.com" });
+    tabLicense.push ( {friendlyName: "jQuery touch punch"    , url: "http://touchpunch.furf.com/" });
+    tabLicense.push ( {friendlyName: "knockout"              , url: "http://knockoutjs.com/" });
+    tabLicense.push ( {friendlyName: "lodash"                , url: "https://lodash.com/" });
+    tabLicense.push ( {friendlyName: "moment"                , url: "http://momentjs.com" });
+    tabLicense.push ( {friendlyName: "noty"                  , url: "http://needim.github.com/noty/" });
+    tabLicense.push ( {friendlyName: "packery"               , url: "http://packery.metafizzy.co" });
+    tabLicense.push ( {friendlyName: "poco"                  , url: "https://www.pocoproject.org/" });
+    tabLicense.push ( {friendlyName: "QR Code for javascript", url: "http://www.d-project.com/" });
+    tabLicense.push ( {friendlyName: "protobuf"              , url: "https://github.com/google/protobuf" });
+    tabLicense.push ( {friendlyName: "Python"                , url: "https://www.python.org/" });
+    tabLicense.push ( {friendlyName: "Qunit"                 , url: "http://qunitjs.com/" });
+    tabLicense.push ( {friendlyName: "Swig"                  , url: "http://www.swig.org/" });
+    tabLicense.push ( {friendlyName: "Weather Icons"         , url: "http://weathericons.io" });
+    tabLicense.push ( {friendlyName: "Zlib"                  , url: "https://github.com/imaya/zlib.js" });
       
-        //we add it to the DOM
-        var $pluginPackageList = $("table#plugin-package-list");
-
-        var frameworkPluginPackage = "<tr plugin-id=\"" + type + "\">" +
-              "<td class=\"plugin-displayName vert-align\"></td>" +
-			  "<td class=\"plugin-version vert-align\"></td>" +
-              "<td class=\"plugin-authors vert-align\"></td>" +
-              "<td class=\"plugin-credits vert-align\" align=\"left\"></td>" +
-              "</tr>";     
+    // sort each License Name in the language selected
+    tabLicense = sortListItemsWithFriendlyName ( tabLicense );        
       
-        $pluginPackageList.append( frameworkPluginPackage );
-
-          var $pluginPackageRow = getPluginDomRow( type );       
-        
-        //we fill the data
-        $pluginPackageRow.find("td.plugin-displayName").html( "<a href=\"" + url + "\" target=\"_blank\">" + name + "</a>" );
-		$pluginPackageRow.find("td.plugin-version").html( version );
-        $pluginPackageRow.find("td.plugin-authors").html( authors );
-        $pluginPackageRow.find("td.plugin-credits").html( credits );
-      
-      };
-      
-       AddYadomsLibrary = function( name1, url1, name2, url2 ) {
-
-        //we add it to the DOM
-        var $YadomsLicenseList = $("table#yadoms-license-list");
-
-        var licenseframe = "<tr>";
-        
-        if ( url1 !== undefined && name1 !== undefined )
-        {
-           licenseframe = licenseframe + "<td class=\"vert-align\"><a href=\"" + url1 + "\" target=\"_blank\">" + name1 + "</a></td>";
+    var nbLicensehigh = Math.round(tabLicense.length / 2);
+    var counter = 0;
+       
+     while ( counter < nbLicensehigh ){
+        var url2  = "";
+        var name2 = "";
+         
+        if ( tabLicense[counter + nbLicensehigh] !== undefined ){
+           name2 = tabLicense[counter + nbLicensehigh].friendlyName;
+           url2  = tabLicense[counter + nbLicensehigh].url;
         }
-        
-        if ( url2 !== undefined && name2 !== undefined )
-        {
-           licenseframe = licenseframe + "<td class=\"vert-align\"><a href=\"" + url2 + "\" target=\"_blank\">" + name2 + "</a></td>";
-        }        
-
-        licenseframe = licenseframe + "</tr>";
       
-        $YadomsLicenseList.append( licenseframe );    
-      };
+        AddYadomsLibrary ( 
+           tabLicense[counter].friendlyName, 
+           tabLicense[counter].url, 
+           name2, 
+           url2);
+         
+        counter = counter + 1;
+     }   
       
-      YadomsInformationManager.getList()
-           .done(function (data) {
-         
-          var tabLicense = [];
-         
-            // delete all existing yadoms license
-          $("table#yadoms-license-list").find("tr:gt(0)").remove();        
-         
-         // Add all licenses !
-         tabLicense.push ( {friendlyName: "Boost"                 , url: "https://www.boost.org/"  });
-         tabLicense.push ( {friendlyName: "Bootstrap"             , url: "http://getbootstrap.com" });
-         tabLicense.push ( {friendlyName: "Bootstrap IconPicker"  , url: "https://victor-valencia.github.com/bootstrap-iconpicker" });
-         tabLicense.push ( {friendlyName: "Blockly"               , url: "https://github.com/google/blockly" });
-         tabLicense.push ( {friendlyName: "Font awesome"          , url: "http://fontawesome.io" });
-         tabLicense.push ( {friendlyName: "i18next"               , url: "http://i18next.com" });
-         tabLicense.push ( {friendlyName: "jqBootstrapValidation" , url: "https://github.com/korengal/jqBootstrapValidation/network" });
-         tabLicense.push ( {friendlyName: "jQuery"                , url: "http://jquery.com/" });
-         tabLicense.push ( {friendlyName: "jQuery MD5"            , url: "https://github.com/blueimp/jQuery-MD5" });
-         tabLicense.push ( {friendlyName: "jQuery ui"             , url: "http://jqueryui.com" });
-         tabLicense.push ( {friendlyName: "jQuery touch punch"    , url: "http://touchpunch.furf.com/" });
-         tabLicense.push ( {friendlyName: "jsPDF"                 , url: "https://parall.ax/products/jspdf" });
-         tabLicense.push ( {friendlyName: "knockout"              , url: "http://knockoutjs.com/" });
-		 tabLicense.push ( {friendlyName: "lodash"                , url: "https://lodash.com/" });
-         tabLicense.push ( {friendlyName: "lazyload"              , url: "https://github.com/rgrove/lazyload/" });
-         tabLicense.push ( {friendlyName: "moment"                , url: "http://momentjs.com" });
-         tabLicense.push ( {friendlyName: "noty"                  , url: "http://needim.github.com/noty/" });
-         tabLicense.push ( {friendlyName: "packery"               , url: "http://packery.metafizzy.co" });
-         tabLicense.push ( {friendlyName: "poco"                  , url: "https://www.pocoproject.org/" });
-         tabLicense.push ( {friendlyName: "QR Code for javascript", url: "http://www.d-project.com/" });
-         tabLicense.push ( {friendlyName: "protobuf"              , url: "https://github.com/google/protobuf" });
-         tabLicense.push ( {friendlyName: "Python"                , url: "https://www.python.org/" });
-         tabLicense.push ( {friendlyName: "Qunit"                 , url: "http://qunitjs.com/" });
-         tabLicense.push ( {friendlyName: "Swig"                  , url: "http://www.swig.org/" });
-         tabLicense.push ( {friendlyName: "Weather Icons"         , url: "http://weathericons.io" });
-         
-         // sort each License Name in the language selected
-         tabLicense = sortListItemsWithFriendlyName ( tabLicense );        
-         
-         var nbLicensehigh = Math.round(tabLicense.length / 2);
-         var counter = 0;
-          
-          while ( counter < nbLicensehigh )
-         {
-            var url2  = "";
-            var name2 = "";
-            
-            if ( tabLicense[counter + nbLicensehigh] !== undefined )
-            {
-               name2 = tabLicense[counter + nbLicensehigh].friendlyName;
-               url2  = tabLicense[counter + nbLicensehigh].url;
+     // delete all existing information
+     $("table#plugin-package-list").find("tr:gt(0)").remove();
+      
+     // Enter all Plugins into an array
+     var tabPlugins = [];
+     var packageList = [];
+     
+     var def2 = PluginManager.getAll();
+     def2.done (function (List){
+        packageList = List;
+     });
+     
+     // scan all widgets packages
+     $.each(_.keys(WidgetPackageManager.packageList), function(index, Package) {
+        arrayofDeffered.push(WidgetPackageManager.loadLanguage(Package)); // load the language package if any
+     });
+     
+     $.when(def1, def2)
+      .done (function(){
+          Object.keys(packageList).forEach(function(key) {
+            if( (!developerMode && !key.startsWith("dev-")) || developerMode) {
+               var value = packageList[key];
+               tabPlugins.push ( {plugin: value, friendlyName: $.t("plugins." + value.type + ":name" ) });
             }
-         
-            AddYadomsLibrary ( 
-                               tabLicense[counter].friendlyName, 
-                               tabLicense[counter].url, 
-                               name2, 
-                               url2
-                        );
+          });
+          
+          // sort each Plugins Name in the language selected
+          tabPlugins = sortListItemsWithFriendlyName ( tabPlugins );
+          
+          //foreach element of the array
+          $.each(tabPlugins, function(index, value) {
+            var result = "";
+            if ( !isNullOrUndefined ( value.plugin.package.credits ))
+               result = ConfigurationHelper.makdownIt( value.plugin.package.credits ); 
             
-            counter = counter + 1;
-         }   
-         
-         // delete all existing information
-         $("table#plugin-package-list").find("tr:gt(0)").remove();
-         
-          // Enter all Plugins into an array
-          var tabPlugins = [];
-        
-          PluginManager.getAll()
-               .done (function (packageList){
-                   Object.keys(packageList).forEach(function(key) {
-                     if( (!data.developerMode && !key.startsWith("dev-")) || data.developerMode) {
-                        var value = packageList[key];
-                        
-                        tabPlugins.push ( {plugin: value, friendlyName: $.t("plugins." + value.type + ":name" ) });
-                     }
-                   });
-                   
-                   // sort each Plugins Name in the language selected
-                   tabPlugins = sortListItemsWithFriendlyName ( tabPlugins );
-                   
-                   //foreach element of the array
-                   $.each(tabPlugins, function(index, value) {
-                     var result = "";
-                     if ( !isNullOrUndefined ( value.plugin.package.credits ))
-                        result = ConfigurationHelper.makdownIt( value.plugin.package.credits ); 
-                     
-                     AddPluginPackage ( value.plugin.type, value.friendlyName, value.plugin.package.version, value.plugin.package.author, result, value.plugin.package.url );
-                   }); 
-               })
-               .fail(function (error) {
-                   notifyError($.t("modals.pickup.errorDuringGettingPackages"), error);
-               });
-               
+            AddPluginPackage ( value.plugin.type, value.friendlyName, value.plugin.package.version, value.plugin.package.author, result, value.plugin.package.url );
+          }); 
+      })
+      .fail(function (error) {
+          notifyError($.t("modals.pickup.errorDuringGettingPackages"), error);
+      });
+
+      $.when.apply($, arrayofDeffered)
+      .done(function() {
          // delete all existing information
          $("table#widget-package-list").find("tr:gt(0)").remove();               
-               
          var WidgetList = [];
-        
-         // scan all widgets packages
-         for (var index in WidgetPackageManager.packageList) {
-            if (WidgetPackageManager.packageList.hasOwnProperty(index)) {
-               var value = WidgetPackageManager.packageList[index].package;
-               
-               if ((!value.type.startsWith("system-")) && ((data.developerMode) || (!value.type.startsWith("dev-")))) {
-                       var i18NContext = value.type + ":";
-                  WidgetList.push ( {displayName: $.t("widgets." + i18NContext + "name"), widget: value} );
-               }
-            }
-         }
          
+         $.each(_.keys(WidgetPackageManager.packageList), function(index, Package) {
+            var value = WidgetPackageManager.packageList[Package].package;
+            
+            if ((!value.type.startsWith("system-")) && ((developerMode) || (!value.type.startsWith("dev-")))) {
+                    var i18NContext = value.type + ":";
+               WidgetList.push ( {displayName: $.t("widgets." + i18NContext + "name"), widget: value} );
+            }
+         });         
+      
          //sort all widgets
          WidgetList = sortListItemsWithdisplayName ( WidgetList );
-         
+      
          //display all widgets
          $.each(WidgetList, function(index, value) {
-            
             var result = "";
             if ( !isNullOrUndefined ( value.widget.credits ))
                result = ConfigurationHelper.makdownIt( value.widget.credits ); 
             
-                AddWidgetPackage ( value.displayName, value.widget.version, value.widget.author, result, value.widget.url );
+            AddWidgetPackage ( value.displayName, value.widget.version, value.widget.author, result, value.widget.url );
          });
          
-      d.resolve();
+         d.resolve();
       });
-      
-      return d.promise();
-   }
+   return d.promise();
+}
 
 </script>

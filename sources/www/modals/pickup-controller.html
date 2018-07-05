@@ -111,9 +111,7 @@ Yadoms.askPackages = function (elements, instanceManager, thumbnail, title, call
 		        developerMode = data.developerMode;
 		 });
 		
-		 $.when(deferred)
-		   .done(function () {
-		
+		 $.when(deferred).done(function () {
 			for (var index in instanceManager.packageList) {
 				if (instanceManager.packageList.hasOwnProperty(index)) {
 					var value = instanceManager.packageList[index].package;

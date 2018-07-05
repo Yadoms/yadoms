@@ -95,7 +95,7 @@ PluginInstanceManager.getAll = function () {
 
            });
 
-           $.whenAll(arrayOfDeffered).done(function () {
+           $.when.apply($,arrayOfDeffered).done(function () {
                d.resolve(result);
            });
        })

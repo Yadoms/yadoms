@@ -51,6 +51,12 @@ function notificationSenderViewModel() {
        this.widgetApi.toolbar({
            activated: false
        });
+       
+     return asyncLoadJSLibs([
+        "js/objects/recipient-manager.js",
+        "js/objects/recipient-field.js",
+        "js/objects/recipient.js"
+     ]);
    };
    
    /**
