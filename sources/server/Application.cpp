@@ -13,6 +13,7 @@
 #include "PathProvider.h"
 #include <shared/ServiceLocator.h>
 #include <shared/process/ApplicationStopHandler.h>
+#include "Version.h"
 
 //define the main entry point
 POCO_SERVER_MAIN(CYadomsServer)
@@ -106,7 +107,7 @@ int CYadomsServer::main(const ArgVec& /*args*/)
       YADOMS_LOG_CONFIGURE("Main");
 
       YADOMS_LOG(information) << "********************************************************************";
-      YADOMS_LOG(information) << "Yadoms is starting";
+      YADOMS_LOG(information) << "Yadoms " << YadomsVersion << " is starting";
       YADOMS_LOG(information) << "********************************************************************";
       if (m_startupOptions->getDeveloperMode())
       {

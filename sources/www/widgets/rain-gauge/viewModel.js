@@ -21,8 +21,9 @@ function rainGaugeDisplayViewModel() {
      * @param widget widget class object
      */
     this.initialize = function () {
-       
        var self = this;
+       var d = new $.Deferred();
+       var arrayOfDeffered = [];
        
         //we configure the toolbar
         this.widgetApi.toolbar({
@@ -31,9 +32,17 @@ function rainGaugeDisplayViewModel() {
             batteryItem: true
         });
       
-      return this.widgetApi.askServerLocalTime(function (serverLocalTime) {
-         self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
-      });
+      arrayOfDeffered.push(self.widgetApi.askServerLocalTime(function (serverLocalTime) {
+                              self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
+                          }));
+      
+      $.when.apply($,arrayOfDeffered)
+      .done(function(){
+         d.resolve();
+      })
+      .fail(d.reject);
+      
+      return d.promise();
     };
   
     this.getValues = function (keywordId) {
@@ -133,7 +142,7 @@ function rainGaugeDisplayViewModel() {
         //we fill the deviceId of the battery indicator
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
         self.shouldBeVisible(self.widget.configuration.dateDisplay);
-        arrayOfDeffered.push(getValues(self.widget.configuration.device.keywordId));
+        arrayOfDeffered.push(self.getValues(self.widget.configuration.device.keywordId));
       
       $.when.apply($, arrayOfDeffered) // The first failing array fail the when.apply
       .done(d.resolve)
@@ -165,7 +174,7 @@ function rainGaugeDisplayViewModel() {
        self.widgetApi.askServerLocalTime(function (serverLocalTime) {
           self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
        }).done(function(data) {
-          getValues(self.widget.configuration.device.keywordId);
+          self.getValues(self.widget.configuration.device.keywordId);
        })
        .fail(function(error) {
        });

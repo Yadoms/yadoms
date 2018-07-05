@@ -189,7 +189,7 @@ function forecastViewModel() {
 
    this.configurationChanged = function () {
       var self = this;
-
+      
       if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
          return;
 

@@ -167,9 +167,7 @@ Widget.prototype.applyBindingPrivate = function(item, allowedTypes) {
    assert(!isNullOrUndefined(item), "item must be defined");
    assert(!isNullOrUndefined(allowedTypes), "allowedTypes must be defined");
    var self = this;
-
    var d = new $.Deferred();
-
    var arrayOfDeffered = [];
 
    $.each(item, function(key, confItem) {
@@ -207,7 +205,7 @@ Widget.prototype.applyBindingPrivate = function(item, allowedTypes) {
    });
 
    if (arrayOfDeffered.length > 0) {
-      $.whenAll(arrayOfDeffered).done(function() {
+      $.when.apply($, arrayOfDeffered).done(function() {
          d.resolve(item);
       });
    } else {

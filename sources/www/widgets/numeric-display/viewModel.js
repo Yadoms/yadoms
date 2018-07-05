@@ -53,7 +53,7 @@ function numericDisplayViewModel() {
     
     this.configurationChanged = function () {
        var self = this;
-
+       
        try{
           self.shouldBeVisible(parseBool(self.widget.configuration.dateDisplay));
        }

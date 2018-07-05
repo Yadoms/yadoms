@@ -135,23 +135,38 @@ WidgetApi.prototype.getLastValue = function (keywordIds) {
 
 /**
  * Lazy load required libraries
- * @param {} librayNames to load (can be a single value or an array of values)
+ * @param {} libraryNames to load (can be a single value or an array of values)
  * @returns {} a promise that's return done when libraries are loaded
  */
-WidgetApi.prototype.loadLibrary = function (librayNames) {
-   assert(!isNullOrUndefined(librayNames), "librayNames must be defined");
+WidgetApi.prototype.loadLibrary = function (libraryNames) {
+   assert(!isNullOrUndefined(libraryNames), "librayNames must be defined");
 
-   if (Array.isArray(librayNames)) {
-      return asyncLoadJSLibs(librayNames);
+   if (Array.isArray(libraryNames)) {
+      return asyncLoadJSLibs(libraryNames);
    } else {
-      return asyncLoadJSLib(librayNames);
+      return asyncLoadJSLib(libraryNames);
+   }
+};
+
+/**
+ * Lazy load required libraries in gz format
+ * @param {} libraryNames to load (can be a single value or an array of values)
+ * @returns {} a promise that's return done when libraries are loaded
+ */
+WidgetApi.prototype.loadGzLibrary = function (libraryNames) {
+   assert(!isNullOrUndefined(libraryNames), "librayNames must be defined");
+
+   if (Array.isArray(libraryNames)) {
+      return asyncLoadJSGzLibs(libraryNames);
+   } else {
+      return asyncLoadJSGzLib(libraryNames);
    }
 };
 
 /**
  * Lazy load required CSS stylesheet
- * @param {} librayNames to load (can be a single value or an array of values)
- * @returns {} a promise that's return done when libraries are loaded
+ * @param {} cssFiles to load (can be a single value or an array of values)
+ * @returns {} a promise that's return done when css files are loaded
  */
 WidgetApi.prototype.loadCss = function (cssFiles) {
    assert(!isNullOrUndefined(cssFiles), "cssFiles must be defined");
@@ -160,6 +175,21 @@ WidgetApi.prototype.loadCss = function (cssFiles) {
       return asyncLoadManyCss(cssFiles);
    } else {
       return asyncLoadCss(cssFiles);
+   }
+};
+
+/**
+ * Lazy load required CSS stylesheet in gz format
+ * @param {} cssFiles to load (can be a single value or an array of values)
+ * @returns {} a promise that's return done when css files are loaded
+ */
+WidgetApi.prototype.loadGzCss = function (cssFiles) {
+   assert(!isNullOrUndefined(cssFiles), "cssFiles must be defined");
+
+   if (Array.isArray(cssFiles)) {
+      return asyncLoadManyGzCss(cssFiles);
+   } else {
+      return asyncLoadGzCss(cssFiles);
    }
 };
 

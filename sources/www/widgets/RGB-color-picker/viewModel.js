@@ -14,16 +14,28 @@ function RGBcolorPickerViewModel() {
      * @param widget widget class object
      */     
     this.initialize = function () {
-        var self = this;
+       var self = this;
+       var arrayOfDeffered = [];
+       var d = new $.Deferred();
+        
+       arrayOfDeffered.push(self.widgetApi.loadGzCss("libs/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css.gz"));
+       arrayOfDeffered.push(self.widgetApi.loadGzLibrary("libs/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js.gz"));
        
-        self.createWidgetPickerStyle(self.widget.id);
+       $.when.apply($,arrayOfDeffered).done(function () {
+          self.createWidgetPickerStyle(self.widget.id);
        
-        //we configure the toolbar
-        this.widgetApi.toolbar({
-            activated: true,
-            displayTitle: true,
-            batteryItem: false
-        });
+          //we configure the toolbar
+          self.widgetApi.toolbar({
+             activated: true,
+             displayTitle: true,
+             batteryItem: false
+          });
+          
+          d.resolve();
+       })
+       .fail(d.reject);
+       
+       return d.promise();
     };
     
     this.createWidgetPickerStyle = function(widgetId) {

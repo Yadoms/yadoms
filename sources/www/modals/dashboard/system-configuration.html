@@ -36,306 +36,298 @@
       var dateFormatParameter;
       var refreshPageParameter;
 
-
       Yadoms.initializeSystemConfigurationDashboard = function () {
-            var i18NContext = "modals.dashboard.sub-windows.system-configuration.configuration-items.";
-            var $modalBody = $("div#dashboard-system-configuration .form-group");
-            $modalBody.empty();
+         var i18NContext = "modals.dashboard.sub-windows.system-configuration.configuration-items.";
+         var $modalBody = $("div#dashboard-system-configuration .form-group");
+         $modalBody.empty();
 
-            var arrayOfDeffered = [];
+         var arrayOfDeffered = [];
 
-            var supportedTimezones = [];
-            var d1 = new $.Deferred();
-            loadSupportedTimezones()
-                  .done(function (receivedSupportedTimezones) {
-                        supportedTimezones = receivedSupportedTimezones;
-                  })
-                  .always(d1.resolve);
-            arrayOfDeffered.push(d1);
+         var supportedTimezones = [];
+         var d1 = new $.Deferred();
+         loadSupportedTimezones()
+               .done(function (receivedSupportedTimezones) {
+                     supportedTimezones = receivedSupportedTimezones;
+               })
+               .always(d1.resolve);
+         arrayOfDeffered.push(d1);
 
-            // Reload configuration to be sure to modify the latest version of the configuration
-            var d2 = new $.Deferred();
-            configurationManager.load()
-                  .done(d2.resolve())
-                  .fail(function (error) {
-                        //an error has occurred during loading
-                        notifyError($.t(
-                                    "modals.dashboard.sub-windows.system-configuration.errorDuringLoadingConfiguration"
-                              ),
-                              error);
-                        d2.reject();
-                  });
-            arrayOfDeffered.push(d2);
+         // Reload configuration to be sure to modify the latest version of the configuration
+         var d2 = new $.Deferred();
+         configurationManager.load()
+               .done(d2.resolve())
+               .fail(function (error) {
+                     //an error has occurred during loading
+                     notifyError($.t(
+                                 "modals.dashboard.sub-windows.system-configuration.errorDuringLoadingConfiguration"
+                           ),
+                           error);
+                     d2.reject();
+               });
+         arrayOfDeffered.push(d2);
 
+         var d = new $.Deferred();
+         $.when.apply($, arrayOfDeffered)
+            .done(function () {
+               createParameters($modalBody, i18NContext, supportedTimezones);
+               $modalBody.i18n();
 
-            var d = new $.Deferred();
-            $.whenAll(arrayOfDeffered)
-                  .done(function () {
-                        createParameters($modalBody, i18NContext, supportedTimezones);
+               $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
+                  preventSubmit: true,
+                  submitError: function ($form, event, errors) {
+                        console.warn("Unable to validate form: " + errors);
+                  },
+                  submitSuccess: function ($form, event) {
+                        event.preventDefault();
+                        saveParameters();
+                  },
+                  filter: function () {
+                        //we check only control that have class enable-validation and are visible
+                        return $(this).is(".enable-validation") &&
+                              $(this).is(":visible");
+                  }
+               })
 
-                        $modalBody.i18n();
+               $("button#resetConfiguration").unbind('click').bind('click',
+                     resetConfiguration);
 
-                        $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
-                              preventSubmit: true,
-                              submitError: function ($form, event, errors) {
-                                    console.warn("Unable to validate form: " + errors);
-                              },
-                              submitSuccess: function ($form, event) {
-                                    event.preventDefault();
-                                    saveParameters();
-                              },
-                              filter: function () {
-                                    //we check only control that have class enable-validation and are visible
-                                    return $(this).is(".enable-validation") &&
-                                          $(this).is(":visible");
-                              }
-                        })
+               d.resolve();
+            });
 
-                        $("button#resetConfiguration").unbind('click').bind('click',
-                              resetConfiguration);
-
-                        d.resolve();
-                  });
-
-            return d.promise();
+         return d.promise();
       }
 
       function loadSupportedTimezones() {
-            var d = new $.Deferred();
+         var d = new $.Deferred();
 
-            RestEngine.getJson("/rest/system/binding/supportedTimezones")
-                  .done(function (data) {
-                        d.resolve(data);
-                  })
-                  .fail(function (error) {
-                        notifyError($.t(
-                              "modals.dashboard.sub-windows.system-configuration.errorDuringLoadingConfiguration"
-                        ), error);
-                        d.reject();
-                  });
+         RestEngine.getJson("/rest/system/binding/supportedTimezones")
+               .done(function (data) {
+                     d.resolve(data);
+               })
+               .fail(function (error) {
+                     notifyError($.t(
+                           "modals.dashboard.sub-windows.system-configuration.errorDuringLoadingConfiguration"
+                     ), error);
+                     d.reject();
+               });
 
-            return d;
+         return d;
       }
 
       function createParameters($body, i18NContext, supportedTimezones) {
+         languageParameter = new EnumParameterHandler(i18NContext,
+               undefined,
+               "language", {
+                     "values": window.getSupportedLanguages(),
+                     "sort": true
+               },
+               configurationManager.currentLanguage());
 
-            languageParameter = new EnumParameterHandler(i18NContext,
-                  undefined,
-                  "language", {
-                        "values": window.getSupportedLanguages(),
-                        "sort": true
-                  },
-                  configurationManager.currentLanguage());
+         createLocationSectionParameters(i18NContext, supportedTimezones);
+         createBasicAuthenticationSectionParameters(i18NContext);
+         createAdvancedSectionParameters(i18NContext);
 
-            createLocationSectionParameters(i18NContext, supportedTimezones);
-            createBasicAuthenticationSectionParameters(i18NContext);
-            createAdvancedSectionParameters(i18NContext);
+         // Add parameters to the gui
+         $body.append(languageParameter.getDOMObject());
+         $body.append(locationSectionParameters.getDOMObject());
+         $body.append(basicAuthenticationSectionParameters.getDOMObject());
+         $body.append(advancedSectionParameters.getDOMObject());
 
-            // Add parameters to the gui
-            $body.append(languageParameter.getDOMObject());
-            $body.append(locationSectionParameters.getDOMObject());
-            $body.append(basicAuthenticationSectionParameters.getDOMObject());
-            $body.append(advancedSectionParameters.getDOMObject());
-
-            // Finish controls instantiation
-            if ($.isFunction(languageParameter.applyScript))
-                  languageParameter.applyScript();
-            if ($.isFunction(locationSectionParameters.applyScript))
-                  locationSectionParameters.applyScript();
-            if ($.isFunction(basicAuthenticationSectionParameters.applyScript))
-                  basicAuthenticationSectionParameters.applyScript();
-            if ($.isFunction(advancedSectionParameters.applyScript))
-                  advancedSectionParameters.applyScript();
+         // Finish controls instantiation
+         if ($.isFunction(languageParameter.applyScript))
+               languageParameter.applyScript();
+         if ($.isFunction(locationSectionParameters.applyScript))
+               locationSectionParameters.applyScript();
+         if ($.isFunction(basicAuthenticationSectionParameters.applyScript))
+               basicAuthenticationSectionParameters.applyScript();
+         if ($.isFunction(advancedSectionParameters.applyScript))
+               advancedSectionParameters.applyScript();
       }
 
 
       function createLocationSectionParameters(i18NContext, supportedTimezones) {
+         var currentLocation = configurationManager.location();
 
-            var currentLocation = configurationManager.location();
+         latitudeParameter = new StringParameterHandler(i18NContext,
+               undefined,
+               "latitude", {
+                     "regex": "^-?[0-9]+(\.[0-9]+)?$",
+                     "required": "true"
+               },
+               currentLocation.latitude);
 
-            latitudeParameter = new StringParameterHandler(i18NContext,
-                  undefined,
-                  "latitude", {
-                        "regex": "^-?[0-9]+(\.[0-9]+)?$",
-                        "required": "true"
-                  },
-                  currentLocation.latitude);
+         longitudeParameter = new StringParameterHandler(i18NContext,
+               undefined,
+               "longitude", {
+                     "regex": "^-?[0-9]+(\.[0-9]+)?$",
+                     "required": "true"
+               },
+               currentLocation.longitude);
 
-            longitudeParameter = new StringParameterHandler(i18NContext,
-                  undefined,
-                  "longitude", {
-                        "regex": "^-?[0-9]+(\.[0-9]+)?$",
-                        "required": "true"
-                  },
-                  currentLocation.longitude);
+         timezoneParameter = new EnumParameterHandler(i18NContext,
+               undefined,
+               "timezone", {
+                     "values": supportedTimezones,
+                     "sort": true
+               },
+               currentLocation.timezone);
 
-            timezoneParameter = new EnumParameterHandler(i18NContext,
-                  undefined,
-                  "timezone", {
-                        "values": supportedTimezones,
-                        "sort": true
-                  },
-                  currentLocation.timezone);
+         locationSectionParameters = new SectionParameterHandler(
+               i18NContext,
+               undefined,
+               "location", {});
 
-            locationSectionParameters = new SectionParameterHandler(
-                  i18NContext,
-                  undefined,
-                  "location", {});
-
-            locationSectionParameters.configurationHandlers.push(latitudeParameter);
-            locationSectionParameters.configurationHandlers.push(longitudeParameter);
-            locationSectionParameters.configurationHandlers.push(timezoneParameter);
+         locationSectionParameters.configurationHandlers.push(latitudeParameter);
+         locationSectionParameters.configurationHandlers.push(longitudeParameter);
+         locationSectionParameters.configurationHandlers.push(timezoneParameter);
       }
 
       function createBasicAuthenticationSectionParameters(i18NContext) {
+         var basicAuth = configurationManager.basicAuthentication();
 
-            var basicAuth = configurationManager.basicAuthentication();
+         //we affect a fake password if there is already one to help password modification detection
+         var passwordToDisplay = "";
+         if (basicAuth.password !== "") {
+               passwordToDisplay = fakePassword;
+         }
 
-            //we affect a fake password if there is already one to help password modification detection
-            var passwordToDisplay = "";
-            if (basicAuth.password !== "") {
-                  passwordToDisplay = fakePassword;
-            }
+         userAuthenticationParameter = new StringParameterHandler(
+               i18NContext,
+               undefined,
+               "basicAuthenticationUser", {
+                     "required": "true"
+               },
+               basicAuth.user,
+               "username");
 
-            userAuthenticationParameter = new StringParameterHandler(
-                  i18NContext,
-                  undefined,
-                  "basicAuthenticationUser", {
-                        "required": "true"
-                  },
-                  basicAuth.user,
-                  "username");
+         passwordAuthenticationParameter = new StringParameterHandler(
+               i18NContext,
+               undefined,
+               "basicAuthenticationPassword", {
+                     "required": "true",
+                     "encrypted": "true",
+                     "decryptable": "false"
+               },
+               passwordToDisplay,
+               "new-password");
 
-            passwordAuthenticationParameter = new StringParameterHandler(
-                  i18NContext,
-                  undefined,
-                  "basicAuthenticationPassword", {
-                        "required": "true",
-                        "encrypted": "true",
-                        "decryptable": "false"
-                  },
-                  passwordToDisplay,
-                  "new-password");
+         password2AuthenticationParameter = new StringParameterHandler(
+               i18NContext,
+               undefined,
+               "basicAuthenticationPassword2", {
+                     "required": "true",
+                     "encrypted": "true",
+                     "decryptable": "false",
+                     "mustMatchTo": passwordAuthenticationParameter.uuid
+               },
+               passwordToDisplay,
+               "new-password");
 
-            password2AuthenticationParameter = new StringParameterHandler(
-                  i18NContext,
-                  undefined,
-                  "basicAuthenticationPassword2", {
-                        "required": "true",
-                        "encrypted": "true",
-                        "decryptable": "false",
-                        "mustMatchTo": passwordAuthenticationParameter.uuid
-                  },
-                  passwordToDisplay,
-                  "new-password");
+         basicAuthenticationSectionParameters = new SectionParameterHandler(
+               i18NContext,
+               undefined,
+               "basicAuthentication", {
+                     "enableWithCheckBox": true,
+                     "enableWithCheckBoxDefaultValue": basicAuth.active
+               }, {
+                     "checkbox": basicAuth.active
+               }
+         );
 
-            basicAuthenticationSectionParameters = new SectionParameterHandler(
-                  i18NContext,
-                  undefined,
-                  "basicAuthentication", {
-                        "enableWithCheckBox": true,
-                        "enableWithCheckBoxDefaultValue": basicAuth.active
-                  }, {
-                        "checkbox": basicAuth.active
-                  }
-            );
-
-            basicAuthenticationSectionParameters.configurationHandlers.push(userAuthenticationParameter);
-            basicAuthenticationSectionParameters.configurationHandlers.push(passwordAuthenticationParameter);
-            basicAuthenticationSectionParameters.configurationHandlers.push(password2AuthenticationParameter);
+         basicAuthenticationSectionParameters.configurationHandlers.push(userAuthenticationParameter);
+         basicAuthenticationSectionParameters.configurationHandlers.push(passwordAuthenticationParameter);
+         basicAuthenticationSectionParameters.configurationHandlers.push(password2AuthenticationParameter);
       }
 
       function createAdvancedSectionParameters(i18NContext) {
+         dateFormatParameter = new StringParameterHandler(
+               i18NContext,
+               undefined,
+               "dateFormatString", {
+                     "required": "true"
+               },
+               configurationManager.dateFormat()
+         );
 
-            dateFormatParameter = new StringParameterHandler(
-                  i18NContext,
-                  undefined,
-                  "dateFormatString", {
-                        "required": "true"
-                  },
-                  configurationManager.dateFormat()
-            );
+         refreshPageParameter = new BoolParameterHandler(
+               i18NContext,
+               undefined,
+               "refreshPage", {},
+               configurationManager.refreshPage()
+         );
 
-            refreshPageParameter = new BoolParameterHandler(
-                  i18NContext,
-                  undefined,
-                  "refreshPage", {},
-                  configurationManager.refreshPage()
-            );
+         advancedSectionParameters = new SectionParameterHandler(
+               i18NContext,
+               undefined,
+               "advancedParameters", {
+                     "enableWithCheckBox": true
+               }, {
+                     "checkbox": configurationManager.advancedParametersActive()
+               });
 
-            advancedSectionParameters = new SectionParameterHandler(
-                  i18NContext,
-                  undefined,
-                  "advancedParameters", {
-                        "enableWithCheckBox": true
-                  }, {
-                        "checkbox": configurationManager.advancedParametersActive()
-                  });
-
-            advancedSectionParameters.configurationHandlers.push(dateFormatParameter);
-            advancedSectionParameters.configurationHandlers.push(refreshPageParameter);
+         advancedSectionParameters.configurationHandlers.push(dateFormatParameter);
+         advancedSectionParameters.configurationHandlers.push(refreshPageParameter);
       }
 
 
       function saveParameters() {
-            pageHasToBeReloaded = false;
+         pageHasToBeReloaded = false;
+         var arrayOfDeffered = [];
 
-            var arrayOfDeffered = [];
+         arrayOfDeffered.push(readLanguage());
+         arrayOfDeffered.push(readLocation());
+         arrayOfDeffered.push(readBasicAuthentification());
+         arrayOfDeffered.push(readAdvancedParameters());
 
-            arrayOfDeffered.push(readLanguage());
-            arrayOfDeffered.push(readLocation());
-            arrayOfDeffered.push(readBasicAuthentification());
-            arrayOfDeffered.push(readAdvancedParameters());
+         $.when.apply($, arrayOfDeffered)
+               .always(function () {
+                     configurationManager.save()
+                           .done(function () {
+                                 notifySuccess($.t(
+                                       "modals.dashboard.sub-windows.system-configuration.configurationSaved"
+                                 ));
 
-            $.whenAll(arrayOfDeffered)
-                  .always(function () {
-                        configurationManager.save()
-                              .done(function () {
-                                    notifySuccess($.t(
-                                          "modals.dashboard.sub-windows.system-configuration.configurationSaved"
-                                    ));
-
-                                    if (pageHasToBeReloaded) {
-                                          $("html").i18n();
-                                          window.location.reload();
-                                    }
-                              })
-                              .fail(function (error) {
-                                    //an error has occurred during saving
-                                    notifyError($.t(
-                                          "modals.dashboard.sub-windows.system-configuration.errorDuringSavingConfiguration"
-                                    ), error);
-                              });
-                  });
+                                 if (pageHasToBeReloaded) {
+                                       $("html").i18n();
+                                       window.location.reload();
+                                 }
+                           })
+                           .fail(function (error) {
+                                 //an error has occurred during saving
+                                 notifyError($.t(
+                                       "modals.dashboard.sub-windows.system-configuration.errorDuringSavingConfiguration"
+                                 ), error);
+                           });
+               });
       }
 
 
       function readLanguage() {
-            var d = new $.Deferred();
+         var d = new $.Deferred();
 
-            languageParameter.getCurrentConfiguration()
-                  .done(function (newValue) {
-                        configurationManager.setCurrentLanguage(newValue);
+         languageParameter.getCurrentConfiguration()
+               .done(function (newValue) {
+                     configurationManager.setCurrentLanguage(newValue);
 
-                        if (i18next.language !== newValue) {
-                              //we change language of i18n
-                              i18next.changeLanguage(newValue,
-                                    function () {
-                                          pageHasToBeReloaded = true;
-                                    });
-                        }
-                        d.resolve();
-                  })
-                  .fail(function () {
-                        console.error("failed to get language parameter");
-                        d.reject();
-                  });
-            return d;
+                     if (i18next.language !== newValue) {
+                           //we change language of i18n
+                           i18next.changeLanguage(newValue,
+                                 function () {
+                                       pageHasToBeReloaded = true;
+                                 });
+                     }
+                     d.resolve();
+               })
+               .fail(function () {
+                     console.error("failed to get language parameter");
+                     d.reject();
+               });
+         return d;
       }
 
       function readLocation() {
             var latitude, longitude, altitude, timezone;
-
+            
             var arrayOfDeffered = [];
             var d1 = new $.Deferred();
             latitudeParameter.getCurrentConfiguration()
@@ -365,7 +357,7 @@
             arrayOfDeffered.push(d4);
 
             var d = new $.Deferred();
-            $.whenAll(arrayOfDeffered)
+            $.when.apply($, arrayOfDeffered)
                   .done(function () {
                         configurationManager.setCurrentLocation(latitude, longitude, altitude, timezone);
                         d.resolve();
@@ -389,7 +381,7 @@
             arrayOfDeffered.push(readRefreshPage());
 
             var d = new $.Deferred();
-            $.whenAll(arrayOfDeffered)
+            $.when.apply($, arrayOfDeffered)
                   .done(d.resolve)
                   .fail(d.reject);
             return d;

@@ -11,13 +11,15 @@
 
 CLiveStations::CLiveStations(boost::shared_ptr<yApi::IYPluginApi> api):
    m_location(api->getYadomsInformation()->location()),
-   m_lastSearchLocation(boost::make_shared<location::CLocation>(0,0,0))
-{}
+   m_lastSearchLocation(boost::make_shared<location::CLocation>(0, 0, 0))
+{
+}
 
 CLiveStations::CLiveStations(boost::shared_ptr<const shared::ILocation> location):
    m_location(location),
    m_lastSearchLocation(boost::make_shared<location::CLocation>(0, 0, 0))
-{}
+{
+}
 
 void CLiveStations::processLookUp(boost::shared_ptr<yApi::IYPluginApi> api,
                                   const std::string& apikey)
@@ -27,10 +29,12 @@ void CLiveStations::processLookUp(boost::shared_ptr<yApi::IYPluginApi> api,
       //send a new lookup only if different of the last one
       if (m_location->latitude() != m_lastSearchLocation->latitude() || m_location->longitude() != m_lastSearchLocation->longitude())
       {
-         shared::CDataContainer noParameters, noheaderParameter;
-		 std::string url = "http://api.wunderground.com/api/" + apikey + "/geolookup/q/" + std::to_string(m_location->latitude()) + "," + std::to_string(m_location->longitude()) + ".json";
-		 boost::shared_ptr<shared::StandardSession> session = boost::make_shared<shared::StandardSession>(url);
-		 shared::CHttpMethods::SendGetRequest(session,
+         const shared::CDataContainer noParameters;
+         const shared::CDataContainer noheaderParameter;
+         auto url = "http://api.wunderground.com/api/" + apikey + "/geolookup/q/" + std::to_string(m_location->latitude()) + ","
+            + std::to_string(m_location->longitude()) + ".json";
+         const auto session = boost::make_shared<shared::CStandardSession>(url);
+         shared::CHttpMethods::sendGetRequest(session,
                                               noheaderParameter,
                                               noParameters,
                                               [&](shared::CDataContainer& data)
@@ -51,23 +55,23 @@ void CLiveStations::processLookUp(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (std::exception& e)
    {
-      YADOMS_LOG(error) << "exception " << e.what() ;
-      YADOMS_LOG(information) << "No Stations return by the website" ;
-      
+      YADOMS_LOG(error) << "exception " << e.what();
+      YADOMS_LOG(information) << "No Stations return by the website";
+
       throw CRequestErrorException();
    }
 }
 
 boost::shared_ptr<const shared::ILocation> CLiveStations::getStationLocation(int selection)
 {
-   std::vector<shared::CDataContainer>::const_iterator iterStations;
    boost::shared_ptr<const shared::ILocation> location;
 
    m_stations = m_response.get<std::vector<shared::CDataContainer>>("location.nearby_weather_stations.airport.station");
 
-   for (iterStations = m_stations.begin(); iterStations != m_stations.end(); ++iterStations)
+   for (std::vector<shared::CDataContainer>::const_iterator iterStations = m_stations.begin(); iterStations != m_stations.end(); ++iterStations)
    {
-      try {
+      try
+      {
          if ((*iterStations).get<int>("selectionId") == selection)
          {
             location = boost::make_shared<location::CLocation>((*iterStations).get<double>("lon"),
@@ -76,41 +80,43 @@ boost::shared_ptr<const shared::ILocation> CLiveStations::getStationLocation(int
          }
       }
       catch (std::exception)
-      {}
+      {
+      }
    }
 
    return location;
 }
 
-boost::shared_ptr<const shared::ILocation> CLiveStations::getCityLocation()
+boost::shared_ptr<const shared::ILocation> CLiveStations::getCityLocation() const
 {
    return m_location;
 }
 
 std::string CLiveStations::getStationName(int selection)
 {
-   std::vector<shared::CDataContainer>::const_iterator iterStations;
    std::string city;
 
-   for (iterStations = m_stations.begin(); iterStations != m_stations.end(); ++iterStations)
+   for (std::vector<shared::CDataContainer>::const_iterator iterStations = m_stations.begin(); iterStations != m_stations.end(); ++iterStations)
    {
-      try {
+      try
+      {
          if ((*iterStations).get<int>("selectionId") == selection)
             city = (*iterStations).get<std::string>("city");
       }
       catch (std::exception)
-      {}
+      {
+      }
    }
 
    return city;
 }
 
-std::string CLiveStations::getCity()
+std::string CLiveStations::getCity() const
 {
    return m_response.get<std::string>("location.city");
 }
 
 CLiveStations::~CLiveStations()
 {
-   YADOMS_LOG(information) << "destruction CLiveStation" ;
+   YADOMS_LOG(information) << "destruction CLiveStation";
 }

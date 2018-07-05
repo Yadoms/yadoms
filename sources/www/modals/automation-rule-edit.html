@@ -127,7 +127,7 @@
 
       })
       .fail(function(error) {
-         notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleEditError", { rule: "" }), error);
+         notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleEditError", { rule: rule.name }), error);
       });         
    };
    

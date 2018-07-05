@@ -22,493 +22,508 @@
     <meta name="theme-color" content="#ffffff">
 
     <title>Yadoms</title>
-
-    <!-- Bootstrap core CSS -->
     <link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
     <link href="css/bootstrap-non-responsive.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="css/yadoms.css" rel="stylesheet">
-    <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="css/widget.css" rel="stylesheet">
-
-    <link href="libs/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="libs/bootstrap-toggle/css/bootstrap2-toggle.min.css" />
-    <link rel="stylesheet" href="libs/bootstrap-iconpicker-1.9.0/css/bootstrap-iconpicker.min.css" />
-    <link rel="stylesheet" href="libs/jquery-ui/css/jquery-ui.min.css" />
 </head>
 
 <body>
-    <!-- Fixed navbar -->
-    <div class="navbar navbar-default navbar-static-top" role="navigation">
-        <div class="container">
-            <div class="row" id="mainNavBar">
-                <div class="col-md-12">
-                    <div class="navbar-header">
-                        <img src="img/icon_256.png" class="img-responsive pull-left application-logo" />
-                        <a class="navbar-brand" href="#">Yadoms</a>
-                    </div>
-                    <div class="navbar-right">
-                        <button href="#" class="btn btn-success pull-left customization-item hidden" id="btn-add-widget">
-                            <i class="fa fa-puzzle-piece"></i>
-                            <span data-i18n="mainPage.customization.addNewWidget"></span>
-                        </button>
-                        <ul class="nav navbar-nav">
-                            <li>
-                                <a href="#" class="" id="btn-show-dashboard" data-i18n="[title]mainPage.menu.dashboard">
-                                    <i class="fa fa-cog"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="" id="customizeButton" data-i18n="[title]mainPage.menu.customization">
-                                    <i class="fa fa-wrench"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="nav navbar-nav" id="pageMenu">
-                        <ul class="nav nav-pills nav-justified page-tabs">
-                            <!-- Nav pills of pages will be inserted here -->
-                            <li class="customization-item hidden" id="btn-add-page">
-                                <a>
-                                    <span>&nbsp;</span>
-                                    <div class="customizationToolbar pageCustomizationToolbar">
-                                        <div class="customizationButton pageCustomizationButton" data-i18n="[title]mainPage.customization.addNewPage">
-                                            <i class="fa fa-plus"></i>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--/.nav-collapse -->
-    </div>
-
-
-
-    <div id="tabContainer" class="container">
-        <div class="tab-content">
-            <!-- widget grids tabs will be inserted here -->
-        </div>
-        <footer class="footer">
-            <button class="btn btn-primary" id="btn-show-qrcode">
-                <i class="fa fa-qrcode"></i>
-            </button>
-            <label id="copyrightLabel" class="label label-default">&copy; Yadoms 2016</label>
-        </footer>
-    </div>
-
-
-    <div id="serverNotReady" class="server-not-ready text-center">
-        <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw waiting-animation"></i>
-        <p>
-            <span data-i18n="initialization.loading">Yadoms is loading...</span>
-        </p>
-    </div>
-
-    <div id="templates" class="hidden"></div>
-
-    <script src="libs/bowser-1.3.0/js/bowser.min.js"></script>
-    <script type="text/javascript">
-        if (bowser.name === "Internet Explorer") {
-            console.log("incompatible browser !");
-            window.location.href = "browser.html";
-        }
-    </script>
-
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="libs/jquery/js/jquery-2.2.4.min.js"></script>
     <!-- must be included before bootstrap -->
-    <script src="libs/jquery-ui/js/jquery-ui.min.js"></script>
-    <script src="libs/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
-    <script src="libs/bootstrap/js/bootstrap.min.js"></script>
-    <script src="libs/knockout/js/knockout-3.4.0.js"></script>
-    <script src="libs/i18next/js/i18next.min.js"></script>
-    <script src="libs/i18next/js/jquery-i18next.min.js"></script>
-    <script src="libs/i18next/js/i18nextXHRBackend.min.js"></script>
-    <script src="libs/lazyload/js/lazyload.min.js"></script>
-    <script src="libs/moment.js/js/moment-with-langs.min.js"></script>
-    <script src="libs/moment.js/js/moment-timezone.min.js"></script>
-    <script src="libs/moment.js/js/moment-timezone-data.min.js"></script>
-    <script src="libs/jqBootstrapValidation/js/jqBootstrapValidation.min.js"></script>
-    <script src="libs/noty/js/packaged/jquery.noty.packaged.min.js"></script>
-    <script src="libs/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
-    <script src="libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker-iconset-all.min.js"></script>
-    <script src="libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker.min.js"></script>
-    <script src="libs/bootstrap-toggle/js/bootstrap2-toggle.min.js"></script>
-    <script src="libs/jquery-MD5/js/jquery.md5.min.js"></script>
-    <script src="libs/packery/packery.pkgd.min.js"></script>
-    <script src="libs/markdown-it/markdown-it.min.js"></script>
-    <script src="libs/markdown-it/markdown-it-for-inline.min.js"></script>
-    <script src="libs/lodash/lodash.min.js"></script>
-
+    <!-- the minimal needed for the boot-->
+    <script src="libs/zlib/gunzip.min.js"></script>
+    
     <script src="js/i18n-manager.js"></script>
-    <script src="js/jquery-extensions.js"></script>
-    <script src="js/json-prettyprint.js"></script>
-    <script src="js/knock-out-extenders.js"></script>
     <script src="js/iso-language-codes.js"></script>
-    <script src="js/utility.js"></script>
-    <script src="js/objects/version.js"></script>
-    <script src="js/objects/yadoms-information-manager.js"></script>
-    <script src="js/objects/yadoms-time-manager.js"></script>
-    <script src="js/objects/maintenance-manager.js"></script>
-    <script src="js/objects/page.js"></script>
-    <script src="js/objects/widget.js"></script>
-    <script src="js/objects/widget-package.js"></script>
-    <script src="js/objects/page-manager.js"></script>
-    <script src="js/objects/lazy-loader-manager.js"></script>
-    <script src="js/objects/plugin-instance.js"></script>
-    <script src="js/objects/plugin-instance-manager.js"></script>
-    <script src="js/objects/device.js"></script>
-    <script src="js/objects/device-manager.js"></script>
-    <script src="js/objects/encryption-manager.js"></script>
-    <script src="js/objects/widget-manager.js"></script>
-    <script src="js/objects/widget-package-manager.js"></script>
-    <script src="js/objects/configuration-manager.js"></script>
-    <script src="js/objects/keyword.js"></script>
-    <script src="js/objects/keyword-manager.js"></script>
-    <script src="js/objects/acquisition.js"></script>
-    <script src="js/objects/time.js"></script>
-    <script src="js/objects/acquisition-manager.js"></script>
-    <script src="js/objects/recipient.js"></script>
-    <script src="js/objects/recipient-field.js"></script>
-    <script src="js/objects/recipient-manager.js"></script>
-    <script src="js/objects/plugin.js"></script>
-    <script src="js/objects/plugin-manager.js"></script>
-    <script src="js/objects/task.js"></script>
-    <script src="js/objects/task-manager.js"></script>
-    <script src="js/objects/unit-adapter.js"></script>
-    <script src="js/objects/update/update-information-manager.js"></script>
-    <script src="js/objects/update/update-information.js"></script>
-    <script src="js/objects/update/yadoms-update-information-manager.js"></script>
-    <script src="js/objects/configuration/configuration-helper.js"></script>
-    <script src="js/objects/event-logger-manager.js"></script>
-    <script src="js/objects/session-data-manager.js"></script>
     <script src="js/rest-engine.js"></script>
-    <script src="js/websocket-engine.js"></script>
-    <script src="js/widget-engine.js"></script>
-    <script src="js/widget-customization.js"></script>
-    <script src="js/objects/date-time.js"></script>
-    <script src="js/objects/widget-api.js"></script>
-
+    <script src="js/utility.js"></script>
+    <script src="js/objects/configuration-manager.js"></script>
+    <script src="js/objects/lazy-loader-manager.js"></script>
     <script type="text/javascript">
-        
-        //base configuration
-        $.ajaxSetup({
-            contentType: "application/json; charset=utf-8",
-            scriptCharset: "utf-8",
-            cache: true
+
+    addMainPage = function(){    
+       page = "<!-- Fixed navbar -->" +
+       "<div class=\"navbar navbar-default navbar-static-top\" role=\"navigation\" style=\"height:100vh\">" + //
+           "<div class=\"container\">" +
+               "<div class=\"row\" id=\"mainNavBar\">" +
+                   "<div class=\"col-md-12\">" +
+                       "<div class=\"navbar-header\">" +
+                           "<img src=\"img/icon_256.png\" class=\"img-responsive pull-left application-logo\" />" +
+                           "<a class=\"navbar-brand\" href=\"#\">Yadoms</a>" +
+                       "</div>" +
+                       "<div class=\"navbar-right\">" +
+                           "<button href=\"#\" class=\"btn btn-success pull-left customization-item hidden\" id=\"btn-add-widget\">" +
+                               "<i class=\"fa fa-puzzle-piece\"></i>" +
+                               "<span data-i18n=\"mainPage.customization.addNewWidget\"></span>" +
+                           "</button>" +
+                           "<ul class=\"nav navbar-nav\">" +
+                               "<li>" +
+                                   "<a href=\"#\" class=\"\" id=\"btn-show-dashboard\" data-i18n=\"[title]mainPage.menu.dashboard\">" +
+                                       "<i class=\"fa fa-cog\"></i>" +
+                                   "</a>" +
+                               "</li>" +
+                               "<li>" +
+                                   "<a href=\"#\" class=\"\" id=\"customizeButton\" data-i18n=\"[title]mainPage.menu.customization\">" +
+                                       "<i class=\"fa fa-wrench\"></i>" +
+                                   "</a>" +
+                               "</li>" +
+                           "</ul>" +
+                       "</div>" +
+                   "</div>" +
+               "</div>" +
+               "<div class=\"row\">" +
+                   "<div class=\"col-md-12\">" +
+                       "<div class=\"nav navbar-nav\" id=\"pageMenu\">" +
+                           "<ul class=\"nav nav-pills nav-justified page-tabs\">" +
+                               "<!-- Nav pills of pages will be inserted here -->" +
+                               "<li class=\"customization-item hidden\" id=\"btn-add-page\">" +
+                                   "<a>" +
+                                       "<span>&nbsp;</span>" +
+                                       "<div class=\"customizationToolbar pageCustomizationToolbar\">" +
+                                           "<div class=\"customizationButton pageCustomizationButton\" data-i18n=\"[title]mainPage.customization.addNewPage\">" +
+                                               "<i class=\"fa fa-plus\"></i>" +
+                                           "</div>" +
+                                       "</div>" +
+                                   "</a>" +
+                               "</li>" +
+                           "</ul>" +
+                       "</div>" +
+                   "</div>" +
+               "</div>" +
+           "</div>" +
+           "<div id=\"serverNotReady\" class=\"server-not-ready text-center\">" +
+              "<i class=\"fa fa-circle-o-notch fa-spin fa-3x fa-fw waiting-animation\"></i>" +
+                "<p>" +
+                  "<span data-i18n=\"initialization.loading\">Yadoms is loading...</span>" +
+                "</p>" +
+           "</div>" +
+          "<div id=\"tabContainer\" class=\"container\">" +
+              "<div class=\"tab-content\">" +
+                  "<!-- widget grids tabs will be inserted here -->" +
+              "</div>" +
+              "<footer class=\"footer\">" +
+                  "<button class=\"btn btn-primary\" id=\"btn-show-qrcode\">" +
+                      "<i class=\"fa fa-qrcode\"></i>" +
+                  "</button>" +
+                  "<label id=\"copyrightLabel\" class=\"label label-default\">&copy; Yadoms 2016</label>" +
+              "</footer>" +
+          "</div>" +           
+           "<!--/.nav-collapse -->" +
+       "</div>" +
+       //
+       "<div id=\"templates\" class=\"hidden\"></div>";    
+       
+       $('body').append(page);
+       
+       $("#btn-show-dashboard").click(function () {
+           Yadoms.modals.mainDashboard.loadAsync()
+           .done(function () {
+               $('#main-dashboard-modal').modal({
+                  backdrop: 'static'
+               });
+               $('#main-dashboard-modal').off('hidden.bs.modal').on(
+                  'hidden.bs.modal',
+                  function () {
+                     //clear the bootstrap validation when modal is hidden (handle submit and cancel behaviors)
+                     $('#main-dashboard-modal').find(
+                        "input,select,textarea").jqBootstrapValidation(
+                        "destroy");
+
+                        //we force the dashboard to display the summary refreshed page
+                        $("#btn-dashboard-summary").click();
+                     });
+               });
         });
 
-        $("#copyrightLabel").html("&copy; Yadoms " + new Date().getFullYear());
+        function createWidget(newWidget, currentPage) {
+            WidgetManager.createWidget(newWidget)
+             .done(function (w) {
+                 //we indicate taht the widget has never been placed on
+                 w.position = 1000;
+                 WidgetManager.loadWidget(w, currentPage, true)
+                     .done(function () {
+                         //we update the filter for the websocket
+                         updateWidgetPolling(w)
+                             .always(function () {
+                                 updateWebSocketFilter();
+                                 WidgetManager.updateWidgetLayout(w);
+                             });
+                     })
+                     .fail(function (errorMessage) {
+                         notifyError($.t(
+                             "modals.add-widget.unableToCreateWidgetOfType", {
+                                 "widgetType": newWidget.type
+                             }), errorMessage);
+                     });
+             })
+             .fail(function (errorMessage) {
+                 notifyError($.t(
+                     "modals.add-widget.unableToCreateWidgetOfType", {
+                         "widgetType": newWidget.type
+                     }), errorMessage);
+             });
+        }        
+        
+        function createobject(packageName, widgetType) {
+            if (packageName) {
+                //we get default size of the widget
+                var minX = 1;
+                var minY = 1;
 
-        var Yadoms = {
-            modals: {},
-            updateIntervalInOfflineMode: 10000,
-            updateIntervalWithWebSocketDisabled: 1000,
-            updateInterval: 5000,
-            periodicDashboardTask: {},
-            numberOfColumns: 12,
-            gridWidth: 100,
-            gridHeight: 100,
-            gridMargin: 5,
-            baseUrl: ''
-        };
+                var pkg = widgetType.package;
 
-        var configurationManager = new ConfigurationManager();
-        configurationManager.load()
-            .done(function () {
-                /**
-                 * On page loaded
-                 */
-                $(document).ready(function () {
-                    //load custom configuration from 'config.js', allow any js overriding
-                    asyncLoadJSLib("config.js")
-                        .always(function () {
+                try {
+                    minX = pkg.dimensions.min.x;
+                    minY = pkg.dimensions.min.y;
+                } catch (err) {}
 
-                            loadModals();
+                var maxX = Infinity;
+                var maxY = Infinity;
+                try {
+                    maxX = pkg.dimensions.max.x;
+                    maxY = pkg.dimensions.max.y;
+                } catch (err) {}
 
-                            //we start i18n engine
-                            i18nManager.init()
-                                .done(function () {
-                                    //we get install/firstStart key to have information if firstStart has already been done
-                                    if (!configurationManager.isServerFirstStart()) {
-                                        //we start app normally
-                                        main();
-                                    } else {
-                                        //we make the first start configuration
-                                        notifyInformation($.t(
-                                            "mainPage.actions.firstRunConfiguration"));
+                var defaultX = 1;
+                var defaultY = 1;
+                try {
+                    defaultX = pkg.dimensions.default.x;
+                    defaultY = pkg.dimensions.default.y;
+                } catch (err) {}
 
-                                        configurationManager.setServerFirstStartDone().save();
+                var sizeX = Math.min(maxX, Math.max(defaultX, minX));
+                var sizeY = Math.min(maxY, Math.max(defaultY, minY));
 
-                                        processFirstStart();
-                                    }
-                                });
+                var currentPage = PageManager.getCurrentPage();
+                assert(!isNullOrUndefined(currentPage), "A page must be selected");
 
-                        });
+                //we create a fake widget to display configuration form
+                var newWidget = new Widget(-1, currentPage.id, packageName, "",
+                    sizeX * Yadoms.gridWidth,
+                    sizeY * Yadoms.gridHeight, 0, 0, "");
 
-                    /**
-                     * Callback of the click on the show qr code button
-                     * Make lazy loading of the qrcode modal
-                     */
-                    $("#btn-show-qrcode").click(function () {
-                        Yadoms.modals.qrCode.loadAsync()
-                            .done(function () {
-                                $('#qrcode-modal').modal({
-                                    backdrop: 'static'
-                                });
-                            });
-                    });
-
-                    $("#btn-show-dashboard").click(function () {
-                        Yadoms.modals.mainDashboard.loadAsync()
-                            .done(function () {
-                                $('#main-dashboard-modal').modal({
-                                    backdrop: 'static'
-                                });
-                                $('#main-dashboard-modal').off('hidden.bs.modal').on(
-                                    'hidden.bs.modal',
-                                    function () {
-                                        //clear the bootstrap validation when modal is hidden (handle submit and cancel behaviors)
-                                        $('#main-dashboard-modal').find(
-                                            "input,select,textarea").jqBootstrapValidation(
-                                            "destroy");
-
-                                        //we force the dashboard to display the summary refreshed page
-                                        $("#btn-dashboard-summary").click();
-                                    });
-                            });
-                    });
-
-                    /**
-                     * Callback of the click on the add page button
-                     * Make lazy loading of the add page modal
-                     */
-                    $("#btn-add-page").click(function () {
-                        createOrUpdatePage();
-                    });
-
-                    /**
-                     * Callback of the click on the add widget button
-                     * Make lazy loading of the add widget modal
-                     */
-                    $("#btn-add-widget").click(function () {
-                        Yadoms.modals.pickupController.loadAsync()
-                            .done(function () {
-                                //search all plugin information
-                                Yadoms.askPackages("widgets",
-                                    WidgetPackageManager,
-                                    "preview.png", // Name of thumbnail
-                                    "modals.add-widget.title",
-                                    createobject
-                                );
-                            })
-                            .fail(function (error) {
-                                notifyError($.t(
-                                    "objects.lazyLoaderManager.unableToLoadModal", {
-                                        modalPath: self.modalPath
-                                    }), error);
-                            });
-                    });
-
-                    function createobject(packageName, widgetType) {
-
-                        if (packageName) {
-
-                            //we get default size of the widget
-                            var minX = 1;
-                            var minY = 1;
-
-                            var pkg = widgetType.package;
-
-                            try {
-                                minX = pkg.dimensions.min.x;
-                                minY = pkg.dimensions.min.y;
-                            } catch (err) {}
-
-                            var maxX = Infinity;
-                            var maxY = Infinity;
-                            try {
-                                maxX = pkg.dimensions.max.x;
-                                maxY = pkg.dimensions.max.y;
-                            } catch (err) {}
-
-                            var defaultX = 1;
-                            var defaultY = 1;
-                            try {
-                                defaultX = pkg.dimensions.default.x;
-                                defaultY = pkg.dimensions.default.y;
-                            } catch (err) {}
-
-                            var sizeX = Math.min(maxX, Math.max(defaultX, minX));
-                            var sizeY = Math.min(maxY, Math.max(defaultY, minY));
-
-                            var currentPage = PageManager.getCurrentPage();
-                            assert(!isNullOrUndefined(currentPage), "A page must be selected");
-
-                            //we create a fake widget to display configuration form
-                            var newWidget = new Widget(-1, currentPage.id, packageName, "",
-                                sizeX * Yadoms.gridWidth,
-                                sizeY * Yadoms.gridHeight, 0, 0, "");
-
-                            newWidget.package = pkg;
-                            //we load configuration window only if the widget has a configuration
-                            if (!isNullOrUndefined(newWidget.package.configurationSchema)) {
-                                Yadoms.modals.widgetConfiguration.loadAsync()
-                                    .done(function () {
-                                        Yadoms.configureWidget(newWidget, function () {
-                                            //if the configuration has been validated we can create the widget
-                                            createWidget(newWidget, currentPage);
-                                        });
-                                    });
-                            } else {
-                                //we directly create the widget
+                newWidget.package = pkg;
+                //we load configuration window only if the widget has a configuration
+                if (!isNullOrUndefined(newWidget.package.configurationSchema)) {
+                    Yadoms.modals.widgetConfiguration.loadAsync()
+                        .done(function () {
+                            Yadoms.configureWidget(newWidget, function () {
+                                //if the configuration has been validated we can create the widget
                                 createWidget(newWidget, currentPage);
-                            }
-                        }
-                    }
-
-                    function createWidget(newWidget, currentPage) {
-                        WidgetManager.createWidget(newWidget)
-                            .done(function (w) {
-                                //we indicate taht the widget has never been placed on
-                                w.position = 1000;
-                                WidgetManager.loadWidget(w, currentPage, true)
-                                    .done(function () {
-                                        //we update the filter for the websocket
-                                        updateWidgetPolling(w)
-                                            .always(function () {
-                                                updateWebSocketFilter();
-                                                WidgetManager.updateWidgetLayout(w);
-                                            });
-                                    })
-                                    .fail(function (errorMessage) {
-                                        notifyError($.t(
-                                            "modals.add-widget.unableToCreateWidgetOfType", {
-                                                "widgetType": newWidget.type
-                                            }), errorMessage);
-                                    });
-                            })
-                            .fail(function (errorMessage) {
-                                notifyError($.t(
-                                    "modals.add-widget.unableToCreateWidgetOfType", {
-                                        "widgetType": newWidget.type
-                                    }), errorMessage);
                             });
-                    }
-
-                    /**
-                     * Exit customization pressed esc key
-                     */
-                    $(document).keyup(function (e) {
-                        //escape key
-                        if (e.keyCode === 27) {
-                            if (customization) {
-                                exitCustomization();
-                            }
-                        }
-                        return false;
+                        });
+                } else {
+                    //we directly create the widget
+                    createWidget(newWidget, currentPage);
+                }
+            }
+        }        
+        
+        /**
+         * Callback of the click on the show qr code button
+         * Make lazy loading of the qrcode modal
+         */
+        $("#btn-show-qrcode").click(function () {
+            Yadoms.modals.qrCode.loadAsync()
+                .done(function () {
+                    $('#qrcode-modal').modal({
+                        backdrop: 'static'
                     });
                 });
-            })
-            .fail(function (error) {
-                notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
-            });
+        });
 
-        function loadModals() {
-            Yadoms.modals.pickupController = new LazyLoaderManager("modals/pickup-controller.html");
-            Yadoms.modals.widgetConfiguration = new LazyLoaderManager("modals/widget-configure.html");
-            Yadoms.modals.widgetDelete = new LazyLoaderManager("modals/widget-delete.html");
-            Yadoms.modals.pageDelete = new LazyLoaderManager("modals/page-delete.html");
-            Yadoms.modals.pageConfigure = new LazyLoaderManager("modals/page-configure.html");
-            Yadoms.modals.qrCode = new LazyLoaderManager("modals/qrcode.html");
-            Yadoms.modals.mainDashboard = new LazyLoaderManager("modals/dashboard.html");
-            Yadoms.modals.confirmation = new LazyLoaderManager("modals/confirmation.html");
-            Yadoms.modals.pluginConfigure = new LazyLoaderManager("modals/plugin-configure.html");
-            Yadoms.modals.pluginExtraQueriesConfigure = new LazyLoaderManager(
-                "modals/plugin-extra-queries-configure.html");
-            Yadoms.modals.pluginShowLog = new LazyLoaderManager("modals/plugin-show-log.html");
-            Yadoms.modals.deviceConfigure = new LazyLoaderManager("modals/device-configure.html");
-            Yadoms.modals.keywordConfigure = new LazyLoaderManager("modals/keyword-configure.html");
-            Yadoms.modals.keywordSetValue = new LazyLoaderManager("modals/keyword-set-value.html");
-            Yadoms.modals.deviceAddManually = new LazyLoaderManager("modals/device-add-manually.html");
-            Yadoms.modals.deviceConfigureManually = new LazyLoaderManager("modals/device-configure-manually.html");
-            Yadoms.modals.virtualDeviceConfigure = new LazyLoaderManager("modals/virtual-device-configure.html");
-            Yadoms.modals.deviceDelete = new LazyLoaderManager("modals/device-delete.html");
-            Yadoms.modals.automationRuleNew = new LazyLoaderManager("modals/automation-rule-new.html");
-            Yadoms.modals.automationRuleEdit = new LazyLoaderManager("modals/automation-rule-edit.html");
-            Yadoms.modals.automationRuleShowLog = new LazyLoaderManager("modals/automation-rule-show-log.html");
-            Yadoms.modals.recipientConfigure = new LazyLoaderManager("modals/recipient_configure.html");
-            Yadoms.modals.showChangelog = new LazyLoaderManager("modals/show-changelog.html");
-        }
+        /**
+         * Callback of the click on the add page button
+         * Make lazy loading of the add page modal
+         */
+        $("#btn-add-page").click(function () {
+            createOrUpdatePage();
+        });        
 
-        function processFirstStart() {
-            //we check for page. If there is no page, we create a new one automatically
-            PageManager.getAll()
-                .done(function () {
-                    if (PageManager.pages.length === 0) {
-                        console.info("Creating a default page");
-                        PageManager.createPage($.t("initialization.homePage"), 0)
-                            .done(function () {
-                                PageManager.ensureOnePageIsSelected();
-                            });
-                    }
-                    //we can start app
-                    main();
-                })
-                .fail(function (error) {
-                    notifyError($.t("objects.pageManager.errorDuringGettingPages"), error);
-                });
-        }
+        /**
+         * Callback of the click on the add widget button
+         * Make lazy loading of the add widget modal
+         */
+        $("#btn-add-widget").click(function () {
+           var arrayofDeffered = [];
+           
+           // load all language packages if it's not already done
+           $.each(_.keys(WidgetPackageManager.packageList), function(index, Package) {
+              arrayofDeffered.push(WidgetPackageManager.loadLanguage(Package));
+           });
+           
+           arrayofDeffered.push(Yadoms.modals.pickupController.loadAsync());
+           arrayOfDeffered.push(asyncLoadJSGzLibs(
+             ["libs/markdown-it/markdown-it.min.js.gz",
+              "libs/markdown-it/markdown-it-for-inline.min.js.gz",
+              "libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker-iconset-all.min.js.gz",
+              "libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker.min.js.gz"]));
+           
+           arrayOfDeffered.push(asyncLoadGzCss("libs/bootstrap-iconpicker-1.9.0/css/bootstrap-iconpicker.min.css.gz"));
+           
+           $.when.apply($,arrayofDeffered).done(function () {
+                 //search all plugin information
+                 Yadoms.askPackages("widgets",
+                     WidgetPackageManager,
+                     "preview.png", // Name of thumbnail
+                     "modals.add-widget.title",
+                     createobject
+                 );
+             })
+             .fail(function (error) {
+                 notifyError($.t(
+                     "objects.lazyLoaderManager.unableToLoadModal", {
+                         modalPath: self.modalPath
+                     }), error);
+             });
+        });        
+    };
+    
+     //base configuration
+     $.ajaxSetup({
+         contentType: "application/json; charset=utf-8",
+         scriptCharset: "utf-8",
+         cache: true
+     });
 
-        function waitForServerReady() {
-            YadomsInformationManager.getList()
-                .done(function (data) {
-                    if (parseBool(data.serverReady) === true) {
-                        whenServerReady();
-                    } else {
-                        window.setTimeout(function () {
-                            waitForServerReady();
-                        }, 500);
-                    }
-                })
-                .fail(function (error) {
-                    window.setTimeout(function () {
-                        waitForServerReady();
-                    }, 500);
-                });
-        }
+     var Yadoms = {
+         modals: {},
+         updateIntervalInOfflineMode: 10000,
+         updateIntervalWithWebSocketDisabled: 1000,
+         updateInterval: 5000,
+         periodicDashboardTask: {},
+         numberOfColumns: 12,
+         gridWidth: 100,
+         gridHeight: 100,
+         gridMargin: 5,
+         baseUrl: ''
+     };
+     
+     var configurationManager = new ConfigurationManager();
+     var arrayOfDeffered = [];
+     arrayOfDeffered.push(asyncLoadJSGzLibs([
+        "libs/noty/js/packaged/jquery.noty.packaged.min.js.gz",
+        "libs/i18next/js/i18next.min.js.gz",
+        "libs/bowser-1.3.0/js/bowser.min.js.gz"]));
+    /**
+     * On page loaded
+     */
+    $(document).ready(function () {
+        addMainPage(); 
+        //load custom configuration from 'config.js', allow any js overriding
+        asyncLoadJSLib("config.js")
+         .always(function () {
+             loadModals();
+             $.when.apply($,arrayOfDeffered).done(function () {
+                 if (bowser.name === "Internet Explorer") {
+                    console.log("incompatible browser !");
+                    window.location.href = "browser.html";
+                 }
+                 asyncLoadJSGzLibs(["libs/i18next/js/jquery-i18next.min.js.gz",
+                                    "libs/i18next/js/i18nextXHRBackend.min.js.gz"]).done(function(){
+                   console.log("init");
+                   $.when(i18nManager.init(),configurationManager.load()).done(function() {
+                       //we get install/firstStart key to have information if firstStart has already been done
+                       if (!configurationManager.isServerFirstStart()) {
+                           //we start app normally
+                           main();
+                       } else {
+                           //we make the first start configuration
+                           notifyInformation($.t(
+                               "mainPage.actions.firstRunConfiguration"));
 
-        function whenServerReady() {
-            $("#serverNotReady").hide();
+                           configurationManager.setServerFirstStartDone().save();
+                           processFirstStart();
+                        }
+                     })
+                     .fail(function (error) {
+                        notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
+                     });                        
+                 });
+             });
+         });
+
+        /**
+         * Exit customization pressed esc key
+         */
+        $(document).keyup(function (e) {
+            //escape key
+            if (e.keyCode === 27) {
+                if (customization) {
+                    exitCustomization();
+                }
+            }
+            return false;
+        });
+    });
+
+     function loadModals() {
+         Yadoms.modals.pickupController = new LazyLoaderManager("modals/pickup-controller.html");
+         Yadoms.modals.widgetConfiguration = new LazyLoaderManager("modals/widget-configure.html");
+         Yadoms.modals.widgetDelete = new LazyLoaderManager("modals/widget-delete.html");
+         Yadoms.modals.pageDelete = new LazyLoaderManager("modals/page-delete.html");
+         Yadoms.modals.pageConfigure = new LazyLoaderManager("modals/page-configure.html");
+         Yadoms.modals.qrCode = new LazyLoaderManager("modals/qrcode.html");
+         Yadoms.modals.mainDashboard = new LazyLoaderManager("modals/dashboard.html");
+         Yadoms.modals.confirmation = new LazyLoaderManager("modals/confirmation.html");
+         Yadoms.modals.pluginConfigure = new LazyLoaderManager("modals/plugin-configure.html");
+         Yadoms.modals.pluginExtraQueriesConfigure = new LazyLoaderManager("modals/plugin-extra-queries-configure.html");
+         Yadoms.modals.pluginShowLog = new LazyLoaderManager("modals/plugin-show-log.html");
+         Yadoms.modals.deviceConfigure = new LazyLoaderManager("modals/device-configure.html");
+         Yadoms.modals.keywordConfigure = new LazyLoaderManager("modals/keyword-configure.html");
+         Yadoms.modals.keywordSetValue = new LazyLoaderManager("modals/keyword-set-value.html");
+         Yadoms.modals.deviceAddManually = new LazyLoaderManager("modals/device-add-manually.html");
+         Yadoms.modals.deviceConfigureManually = new LazyLoaderManager("modals/device-configure-manually.html");
+         Yadoms.modals.virtualDeviceConfigure = new LazyLoaderManager("modals/virtual-device-configure.html");
+         Yadoms.modals.deviceDelete = new LazyLoaderManager("modals/device-delete.html");
+         Yadoms.modals.automationRuleNew = new LazyLoaderManager("modals/automation-rule-new.html");
+         Yadoms.modals.automationRuleEdit = new LazyLoaderManager("modals/automation-rule-edit.html");
+         Yadoms.modals.automationRuleShowLog = new LazyLoaderManager("modals/automation-rule-show-log.html");
+         Yadoms.modals.recipientConfigure = new LazyLoaderManager("modals/recipient_configure.html");
+         Yadoms.modals.showChangelog = new LazyLoaderManager("modals/show-changelog.html");
+     }
+
+     function processFirstStart() {
+        var arrayOfDeffered = [];
+         //we check for page. If there is no page, we create a new one automatically
+         arrayOfDeffered.push(asyncLoadJSLibs(
+         ["js/objects/page.js",
+          "js/objects/page-manager.js"]));
+         
+          $.when.apply($,arrayOfDeffered).done(function () {
+             PageManager.getAll().done(function(){
+                 if (PageManager.pages.length === 0) {
+                     console.info("Creating a default page");
+                     PageManager.createPage($.t("initialization.homePage"), 0)
+                         .done(function () {
+                             PageManager.ensureOnePageIsSelected();
+                         });
+                 }
+                 //we can start app
+                 main();
+              })
+             .fail(function (error) {
+                 notifyError($.t("objects.pageManager.errorDuringGettingPages"), error);
+             });              
+          })
+          .fail(function (error) {
+              notifyError($.t("objects.pageManager.errorDuringGettingPages"), error);
+          });
+     }
+
+     function waitForServerReady() {
+         YadomsInformationManager.getList()
+          .done(function (data) {
+              if (parseBool(data.serverReady) === true) {
+                  whenServerReady();
+              } else {
+                  window.setTimeout(function () {
+                      waitForServerReady();
+                  }, 500);
+              }
+          })
+          .fail(function (error) {
+              window.setTimeout(function () {
+                  waitForServerReady();
+              }, 500);
+          });
+     }
+
+     function whenServerReady() {
+         $("#serverNotReady").hide();
+         
+         asyncLoadJSGzLib("libs/moment.js/js/moment-with-langs.min.js.gz")
+         .done(function(){
+            $("#copyrightLabel").html("&copy; Yadoms " + new Date().getFullYear());
             WebSocketEngine.initializeWebSocketEngine(function () {
                 //web socket opened
                 initializeWidgetEngine();
             });
-        }
+         });
+     }
 
-        function main() {
-            //we set the right language
-            i18next.changeLanguage(configurationManager.currentLanguage(), function () {
-                $("html").i18n();
-                moment.lang(configurationManager.currentLanguage());
+     function main() {
+      //we set the right language
+      i18next.changeLanguage(configurationManager.currentLanguage(), function () {
+          var arrayOfDeffered = [];
+          $("html").i18n();
+          
+          arrayOfDeffered.push(asyncLoadJSLibs(
+          ["js/jquery-extensions.js",
+           "js/objects/version.js",
+           "js/objects/yadoms-information-manager.js",
+           "js/objects/yadoms-time-manager.js",
+           "js/objects/page.js",
+           "js/objects/widget.js",
+           "js/objects/widget-package.js",
+           "js/objects/page-manager.js",
+           "js/objects/plugin-instance.js",
+           "js/objects/plugin-instance-manager.js",
+           "js/objects/device.js",
+           "js/objects/device-manager.js",
+           "js/objects/widget-manager.js",
+           "js/objects/widget-package-manager.js",
+           "js/objects/keyword.js",
+           "js/objects/keyword-manager.js",
+           "js/objects/acquisition.js",
+           "js/objects/time.js",
+           "js/objects/acquisition-manager.js",
+           "js/objects/plugin.js",
+           "js/objects/plugin-manager.js",
+           "js/objects/task.js",
+           "js/objects/task-manager.js",
+           "js/objects/unit-adapter.js",
+           "js/objects/configuration/configuration-helper.js",
+           "js/objects/event-logger-manager.js",
+           "js/objects/session-data-manager.js",
+           "js/websocket-engine.js",
+           "js/widget-engine.js",
+           "js/widget-customization.js",
+           "js/objects/date-time.js",
+           "js/objects/widget-api.js"
+          ]));
 
-                //Load Plugin instances to load initially all languages files. Needed for some widgets
-                PluginInstanceManager.getAll().done(function (allInstances) {
-                    waitForServerReady();
+          arrayOfDeffered.push(asyncLoadCss("libs/jquery-ui/css/jquery-ui.min.css"));
+          arrayOfDeffered.push(asyncLoadJSGzLibs(
+          ["libs/jquery-ui/js/jquery-ui.min.js.gz",
+           "libs/bootstrap/js/bootstrap.min.js.gz",
+           "libs/knockout/js/knockout-3.4.0.js.gz",
+           "libs/jqBootstrapValidation/js/jqBootstrapValidation.min.js.gz",
+           "libs/bootstrap-toggle/js/bootstrap2-toggle.min.js.gz",
+           "libs/jquery-MD5/js/jquery.md5.min.js.gz",
+           "libs/packery/packery.pkgd.min.js.gz",
+           "libs/lodash/lodash.min.js.gz"]));
+             
+             $.when.apply($,arrayOfDeffered).done(function() {
+                var arrayOfDef = [];
+                arrayOfDef.push(asyncLoadManyGzCss(["libs/bootstrap-toggle/css/bootstrap2-toggle.min.css.gz"]));
+                arrayOfDef.push(asyncLoadJSLib("js/knock-out-extenders.js"));
+                   
+                $.when.apply($,arrayOfDef).done(function() {
+                   //load after libraries with dependancies
+                   asyncLoadJSGzLibs(["libs/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js.gz"]);
+
+                   //Load Plugin instances to load initially all languages files. Needed for some widgets
+                   PluginInstanceManager.getAll().done(function (allInstances) {
+                       waitForServerReady();
+                   })
+                   .fail(function(error){
+                      console.log(error);
+                   });
                 });
-            });
+             })
+             .fail(function(error){
+                console.log(error);
+             });
+          });
         }
     </script>
 </body>
-
 </html>

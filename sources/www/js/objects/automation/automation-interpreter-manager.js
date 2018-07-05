@@ -71,7 +71,7 @@ AutomationInterpreterManager.getAllDetailed = function () {
           });
       });
 
-      $.whenAll(deferredArray)
+      $.when.apply($, deferredArray)
       .done(function() {
          d.resolve(interpreters);
       });
