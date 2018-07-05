@@ -28,8 +28,6 @@ function clockViewModel() {
    */
    this.initialize = function () {
       var self = this;
-      var d = new $.Deferred();
-      var arrayOfDeffered = [];
       self.widgetApi.toolbar({
          activated: false
       });

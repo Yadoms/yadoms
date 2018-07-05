@@ -288,9 +288,6 @@ function chartViewModel() {
             self.$chart.highcharts('StockChart', self.chartOption);
             self.chart = self.$chart.highcharts();
             self.chart.keyword = [];
-            
-            $('input.highcharts-range-selector:eq(0)').on('change', function(){ console.log("Essai capture !"); });
-            $('g.highcharts-label .highcharts-range-input').on('change', function(){ console.log("Essai capture !"); });
             d.resolve();
         })
         .fail(function (error) {
