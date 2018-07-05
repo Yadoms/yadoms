@@ -47,13 +47,13 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
          //start controller (and analyse network)
          IZWaveController::E_StartResult initResult = m_controller->start([&] {
-            int evt;
-            do
-            {
-               evt = api->getEventHandler().waitForEvents(boost::posix_time::min_date_time);
-               if (evt == yApi::IYPluginApi::kEventStopRequested)
-                  stopRequested = true;
-            } while (evt != shared::event::kNoEvent && !stopRequested);
+            //int evt;
+            //do
+            //{
+            //   evt = api->getEventHandler().waitForEvents(boost::posix_time::min_date_time);
+            //   if (evt == yApi::IYPluginApi::kEventStopRequested)
+            //      stopRequested = true;
+            //} while (evt != shared::event::kNoEvent && !stopRequested);
          });
          switch (initResult)
          {

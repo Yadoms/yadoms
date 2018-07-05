@@ -19,6 +19,10 @@ COpenZWaveController::COpenZWaveController()
    m_handler(nullptr),
    m_configuration(0)
 {
+   //ensure OpenZWave is configured correctly (need sources modifications)
+   #ifdef OPENZWAVE_DISABLE_EXCEPTIONS
+   #error "OpenZwave Exception must be enabled (undefined OPENZWAVE_DISABLE_EXCEPTIONS in cpp/src/Defs.h line ~140)"
+   #endif
 }
 
 
@@ -267,17 +271,41 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
 
    switch (_notification->GetType())
    {
+
+
+   case OpenZWave::Notification::Type_ValueRemoved:
+      break;
+
    case OpenZWave::Notification::Type_ValueAdded:
    {
       auto node = getNode(_notification);
 
       if (node)
+      {
          node->registerKeyword(vID, m_configuration->getIncludeSystemKeywords());
+
+         auto kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
+         if (kw)
+         {
+            auto historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
+            auto d(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), historizedData));
+            std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
+            YADOMS_LOG(warning) << "OpenZWave notification [Type_ValueAdded] : node.instance=" << static_cast<int>(vID.GetNodeId()) << "." << static_cast<int>(vID.GetInstance()) << " => " << vLabel << "=" << historizedData->formatValue();
+
+            if (m_handler != nullptr)
+            {
+               if (vID.GetGenre() == OpenZWave::ValueID::ValueGenre_Config)
+                  m_handler->postEvent(CZWave::kUpdateConfiguration, d);
+               else
+                  m_handler->postEvent(CZWave::kUpdateKeyword, d);
+            }
+         }
+      }
+
+      //don't break, make value change notif
       break;
    }
 
-   case OpenZWave::Notification::Type_ValueRemoved:
-      break;
 
    case OpenZWave::Notification::Type_ValueChanged:
    {

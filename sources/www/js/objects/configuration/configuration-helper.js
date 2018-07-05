@@ -96,6 +96,7 @@ ConfigurationHelper.createParameterHandler = function (i18nCtxt, i18nKey, paramN
    
    switch (content.type.toLowerCase()) {
       case "int" :
+      case "numeric" :
          return new IntParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
          break;
 

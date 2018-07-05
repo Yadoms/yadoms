@@ -9,6 +9,7 @@
 #include "OpenZWaveNodeKeywordGeneric.h"
 #include "OpenZWaveNodeKeywordDimmable.h"
 #include "OpenZWaveNodeKeywordColor.h"
+#include "OpenZWaveNodeKeywordEvent.h"
 
 #include "historizers/BatteryLevel.h"
 #include "historizers/Counter.h"
@@ -425,8 +426,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
 
    case OpenZWave::ValueID::ValueType_Button: // A write-only value that is the equivalent of pressing a button to send a command to a device
    {
-      CBoolTypeInfo ti(vID);
-      return COpenZWaveNodeKeywordGeneric<bool>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kBool, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
+      return boost::make_shared<COpenZWaveNodeKeywordEvent>(vID, vLabel, accessMode);
    }
 
    case OpenZWave::ValueID::ValueType_Raw: // A collection of bytes
