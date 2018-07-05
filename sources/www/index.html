@@ -391,18 +391,27 @@
      }
 
      function processFirstStart() {
+        var arrayOfDeffered = [];
          //we check for page. If there is no page, we create a new one automatically
-         PageManager.getAll()
-          .done(function () {
-              if (PageManager.pages.length === 0) {
-                  console.info("Creating a default page");
-                  PageManager.createPage($.t("initialization.homePage"), 0)
-                      .done(function () {
-                          PageManager.ensureOnePageIsSelected();
-                      });
-              }
-              //we can start app
-              main();
+         arrayOfDeffered.push(asyncLoadJSLibs(
+         ["js/objects/page.js",
+          "js/objects/page-manager.js"]));
+         
+          $.when.apply($,arrayOfDeffered).done(function () {
+             PageManager.getAll().done(function(){
+                 if (PageManager.pages.length === 0) {
+                     console.info("Creating a default page");
+                     PageManager.createPage($.t("initialization.homePage"), 0)
+                         .done(function () {
+                             PageManager.ensureOnePageIsSelected();
+                         });
+                 }
+                 //we can start app
+                 main();
+              })
+             .fail(function (error) {
+                 notifyError($.t("objects.pageManager.errorDuringGettingPages"), error);
+             });              
           })
           .fail(function (error) {
               notifyError($.t("objects.pageManager.errorDuringGettingPages"), error);

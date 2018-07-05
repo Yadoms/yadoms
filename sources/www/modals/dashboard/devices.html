@@ -295,19 +295,19 @@
    
    function addDeviceButtonsEvents(deviceRow, device) {
       //we bind event on the different actions
-      deviceRow.find("button.btn-configure").one('click', function (e) { 
-            e.stopPropagation();       
-            updateDeviceConfiguration(device);
+      deviceRow.find("button.btn-configure").off().one('click', function (e) { 
+         e.stopPropagation();       
+         updateDeviceConfiguration(device);
       });
 
-      deviceRow.find("button.btn-delete").one('click', function (e) {
-            e.stopPropagation();
-            deleteDevice(device);
+      deviceRow.find("button.btn-delete").off().one('click', function (e) {
+         e.stopPropagation();
+         deleteDevice(device);
       });
 
-      deviceRow.find("button.btn-restore").one('click', function (e) { 
-            e.stopPropagation();
-            restoreDevice(device);           
+      deviceRow.find("button.btn-restore").off().one('click', function (e) { 
+         e.stopPropagation();
+         restoreDevice(device);           
       });      
    };
    
@@ -427,6 +427,9 @@
                device.model = model;
                device.configuration = configuration;
                recordNewDeviceConfiguration(device);
+               
+               var $deviceRow = getDeviceDomRow(device);
+               addDeviceButtonsEvents($deviceRow, device);
             });
          });
       } else {
@@ -446,10 +449,15 @@
                            deviceList[i] = device; // update the device
                         }
                      });
+                     
+                     var $deviceRow = getDeviceDomRow(device);
+                     addDeviceButtonsEvents($deviceRow, device);
                   });
                })
                .fail(function (error) {
                   notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
+                  var $deviceRow = getDeviceDomRow(device);
+                  addDeviceButtonsEvents($deviceRow, device);
                });
             });
       }
@@ -522,11 +530,17 @@
             $keywordRow.find("button.btn-configure").one('click', function () { configureKeyword(keyword); });
          }
 
-         if ($keywordRow.find("button.btn-setvalue")) {
+         YadomsDevicesActivateButtonSetKeywordValue(device, keyword);
+         /*if ($keywordRow.find("button.btn-setvalue")) {
             $keywordRow.find("button.btn-setvalue").one('click', function () { setKeywordValue(keyword, device); });
-         }
+         }*/
       });
    };
+   
+   function YadomsDevicesActivateButtonSetKeywordValue(device, keyword){
+      var $keywordRow = getKeywordDomRow(keyword);
+      $keywordRow.find("button.btn-setvalue").one('click', function () { setKeywordValue(keyword, device); });
+   }
 
    function clickDevice(device) {
       //device represent the device concerned
@@ -678,7 +692,7 @@
       } else {
          Yadoms.modals.keywordSetValue.loadAsync()
          .done(function () {
-            Yadoms.showSetKeywordValueModal(keyword, keyword.measure.toLowerCase() === "increment" ? 0 : value, device.attachedPlugin)
+            Yadoms.showSetKeywordValueModal(keyword, keyword.measure.toLowerCase() === "increment" ? 0 : value, device)
             .done(function (keyword, newValue) {
                KeywordManager.sendCommand(keyword.id, newValue.toString());
             })
