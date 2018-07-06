@@ -253,7 +253,7 @@ SectionParameterHandler.prototype.getCurrentConfiguration = function () {
       });      
    });
 
-   $.whenAll(deferredArray)
+   $.when.apply($, deferredArray)
    .done(function() {
       //we get the checkbox value if used
       if (self.enableWithCheckBox) {

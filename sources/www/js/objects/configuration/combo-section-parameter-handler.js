@@ -258,7 +258,7 @@ ComboSectionParameterHandler.prototype.getCurrentConfiguration = function () {
     });
   });
 
-  $.whenAll(deferredArray)
+  $.when.apply($, deferredArray)
     .done(function () {
       d.resolve(self.configurationValues);
     });

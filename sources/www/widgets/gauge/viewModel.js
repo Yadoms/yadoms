@@ -24,6 +24,10 @@ widgetViewModelCtor = function gaugeViewModel() {
         self.$chart = self.widgetApi.find("div.innerDiv");
         self.$value = self.widgetApi.find("div.value");
 
+        //
+        // For chart and gauge, compressed gz file will appears soon. At this time, there is some dependancies to handle.
+        //        
+        
         var d = new $.Deferred();
         self.widgetApi.loadLibrary([
             "libs/highstock/js/highstock.js",

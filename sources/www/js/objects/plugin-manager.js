@@ -34,7 +34,6 @@ PluginManager.getAll = function () {
       $.each(data.plugins, function (index, pluginType) {
          
          arrayOfDeffered.push(i18nManager.loadNamespace("plugins", pluginType));
-
          var deffered = PluginManager.downloadPackage(pluginType);
          arrayOfDeffered.push(deffered);
          deffered
@@ -46,7 +45,7 @@ PluginManager.getAll = function () {
          });
       });
 
-      $.whenAll(arrayOfDeffered)
+      $.when.apply($, arrayOfDeffered)
 	     .done(function () {
             d.resolve(PluginManager.packageList);
          })

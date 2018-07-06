@@ -89,8 +89,7 @@ ConfigurationControlManager.prototype.getCurrentConfiguration = function () {
       });      
    });
 
-   $.whenAll(deferredArray)
-   .done(function() {
+   $.when.apply($, deferredArray).done(function() {
       d.resolve(self.configurationValues);
    });   
    

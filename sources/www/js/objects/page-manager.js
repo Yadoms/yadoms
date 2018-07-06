@@ -148,7 +148,6 @@ PageManager.addToDom = function (page) {
         "pageName": page.name
     };
 
-
     $("<li class=\"tabPagePills\" page-id=\"" + page.id + "\">" +
         "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" +
         "<span>" + page.name + "</span>" +

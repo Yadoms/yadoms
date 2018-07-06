@@ -29,8 +29,7 @@ LazyLoaderManager.prototype.load = function (callback){
       //we simply call the callback function
       callback();
    }
-   else
-   {
+   else{
       RestEngine.getHtml(self.modalPath)
          .done(function(data) {
             var $data = $(data);

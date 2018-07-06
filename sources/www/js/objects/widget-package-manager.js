@@ -15,7 +15,6 @@ function WidgetPackageManager(){}
 WidgetPackageManager.packageList = [];
 
 WidgetPackageManager.factory = function(json) {
-   
    var d = new $.Deferred();
 
    assert(!isNullOrUndefined(json), "json must be defined");
@@ -24,24 +23,33 @@ WidgetPackageManager.factory = function(json) {
    var wp = new WidgetPackage();
    wp.package = json;
    wp.type = json.type;
-   //we manage i18n
-   i18nManager.loadNamespace("widgets", json.type)
-   .done(function() {
-   wp.viewAnViewModelHaveBeenDownloaded = false;
-      d.resolve(wp);      
-   })
-   .fail(d.reject);
+   d.resolve(wp);
 
    return d.promise();
+};
 
+WidgetPackageManager.loadLanguage = function(type) {
+   var d = new $.Deferred();
+   
+   //we manage i18n
+   if (!isNullOrUndefined(WidgetPackageManager.packageList[type]) && !WidgetPackageManager.packageList[type].languageHaveBeenDownloaded){
+       i18nManager.loadNamespace("widgets", type).done(function(){
+          console.log("Namespace ok");
+          WidgetPackageManager.packageList[type].languageHaveBeenDownloaded = true;
+          d.resolve();
+       })
+       .fail(function(){
+          d.reject();
+       });
+   }else
+      d.resolve();
+   return d.promise();
 };
 
 WidgetPackageManager.packageList = [];
 
 WidgetPackageManager.getAll = function () {
-
    var d = new $.Deferred();
-
    RestEngine.getJson("rest/widget/package")
       .done(function(data) {
          //we add it to the package list
@@ -56,11 +64,10 @@ WidgetPackageManager.getAll = function () {
             })
             .fail(function(f) {
                notifyError($.t("objects.widgetPackageManager.incorrectPackage"), value);
-         });
+            });
          });
          
-         
-        $.whenAll(deferredArray)
+        $.when.apply($,deferredArray)
          .done(function() {
          //
          $.each(newWidgetPackages, function(index, newPackage) {

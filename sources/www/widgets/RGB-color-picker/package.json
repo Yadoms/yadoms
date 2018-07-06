@@ -1,9 +1,14 @@
 {
 	"type": "RGB-color-picker",
-	"version": "1.0.1",
+	"version": "1.0.2-beta.1",
 	"author": "Jean-Michel BERHAULT",
 	"url": "https://github.com/Yadoms/yadoms/wiki/RGB-color-picker",
 	"credits": "",
+    "dependencies": {
+       "yadoms" : {
+          "minimumVersion" : "2.2.0-beta.1"
+       }
+    },   
   "dimensions": {
     "min": {
       "x": 2,

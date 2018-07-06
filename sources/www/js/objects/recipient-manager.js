@@ -113,7 +113,7 @@ RecipientManager.getAll = function () {
       });
 
       //when all deffered have been finished (and even if one of them is rejected)
-      $.whenAll(arrayOfDeffered).done(function () {
+      $.when.apply($, arrayOfDeffered).done(function () {
          d.resolve(recipientList);
       });
    })
@@ -145,7 +145,7 @@ RecipientManager.getByField = function (field) {
       });
 
       //when all deffered have been finished (and even if one of them is rejected)
-      $.whenAll(arrayOfDeffered).done(function () {
+      $.when.apply($, arrayOfDeffered).done(function () {
          d.resolve(recipientFieldList);
       });
    })

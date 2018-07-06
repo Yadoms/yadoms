@@ -128,7 +128,7 @@
                      });
                   });
 
-                  $.whenAll(deferredArray)
+                  $.when.apply($, deferredArray)
                   .done(function() {
                      //create the updated recipient (provided to callback)
                      var completedRecipient = new Recipient(recipient.id, fn, ln, fields);
