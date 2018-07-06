@@ -89,6 +89,20 @@ IAutomationRuleEditor.prototype.updateRule = function() {
    assert(false, "updateRule() of IAutomationRuleEditor must be implemented in derived class");
 };
 
+/**
+ * Get the help button label (no help if empty)
+ */
+IAutomationRuleEditor.prototype.getHelpButtonLabel = function() {
+   assert(false, "getHelpButtonLabel() of IAutomationRuleEditor must be implemented in derived class");
+};
+
+/**
+ * Show the help
+ */
+IAutomationRuleEditor.prototype.showHelp = function() {
+   assert(false, "showHelp() of IAutomationRuleEditor must be implemented in derived class");
+};
+
 
 /**
  * Permit to change the interpreter
