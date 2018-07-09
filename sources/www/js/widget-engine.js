@@ -383,22 +383,6 @@ function dispatchkeywordDeletedToWidgets(eventData){
  * @param {Array} additionnalKeywords the additionnalkeywords to add
  */
 
-        var collection = [];
-        //we build the collection of keywordId to ask
-        $.each(page.widgets,
-            function (widgetIndex, widget) {
-                //we ask which devices are needed for this widget instance
-                if (!isNullOrUndefined(widget.listenedKeywords)) {
-                    $.each(widget.listenedKeywords,
-                        function (keywordIndex, keywordId) {
-                            if (!isNullOrUndefined(keywordId)) {
-                                collection.push(keywordId);
-                            }
-                        });
-                }
-            });
-        WebSocketEngine.updateAcquisitionFilter(removeDuplicates(collection));
-    }
 function updateWebSocketFilter(additionnalKeywords) {
     if (!WebSocketEngine.isActive())
          return;
@@ -408,7 +392,7 @@ function updateWebSocketFilter(additionnalKeywords) {
      
      if (!isNullOrUndefinedOrEmpty(additionnalKeywords))
         subscriptionCollection = subscriptionCollection.concat(additionnalKeywords);
-     WebSocketEngine.updateAcquisitionFilter(duplicateRemoval(subscriptionCollection));
+     WebSocketEngine.updateAcquisitionFilter(removeDuplicates(subscriptionCollection));
 }
 
 function updateWidgetsPolling() {
@@ -419,6 +403,7 @@ function updateWidgetsPolling() {
 function updateWidgetsPolling(pageId) {
     var d = new $.Deferred();
     var getLastValuesKeywords = [];
+    var getAdditionInfo = [];
 
     //we browse each widget instance
     if (pageId == null) {
@@ -428,9 +413,11 @@ function updateWidgetsPolling(pageId) {
            //we ask which devices are needed for this widget instance
            if (!isNullOrUndefinedOrEmpty(widget.getlastValue))
               getLastValuesKeywords = getLastValuesKeywords.concat (widget.getlastValue);
+           if (!isNullOrUndefinedOrEmpty(widget.additionalInfo))
+              getAdditionInfo = getAdditionInfo.concat(widget.additionalInfo);
        });
        
-       updateWidgetPollingByKeywordsId(removeDuplicates(getLastValuesKeywords))
+       updateWidgetPollingByKeywordsId(removeDuplicates(getLastValuesKeywords), getAdditionInfo)
        .done(function (data) {
           $.each(data, function (index, acquisition) {
              //we signal the new acquisition to the widget if the widget support the method
@@ -465,7 +452,7 @@ function updateWidgetPolling(widget) {
     
     if (!isNullOrUndefined(widget.listenedKeywords)) {
        if (widget.listenedKeywords.length!=0){ // only if this list is not empty
-          AcquisitionManager.getLastAcquisition(widget.listenedKeywords)
+          AcquisitionManager.getLastAcquisition(widget.listenedKeywords, widget.additionalInfo)
             .done(function (data) {
                 if (data) {
                     $.each(data,function (index, acquisition) {
@@ -485,7 +472,7 @@ function updateWidgetPolling(widget) {
              d.reject(error);
           });
        } else 
-         d.resolve();          
+         d.resolve();
     } else {
        d.resolve();
     }

@@ -134,12 +134,28 @@ WidgetApi.prototype.getLastValue = function (keywordIds) {
 };
 
 /**
+ * @param {} keywordIds to register (can be a single value or an array of values)
+ */
+WidgetApi.prototype.registerAdditionalInformation = function (additionalInfos) {
+   assert(!isNullOrUndefinedOrEmpty(additionalInfos), "additionalInfos must be defined");
+   
+   var self = this;
+   if (Array.isArray(additionalInfos)) {
+      $.each(additionalInfos, function (index, value) {
+         self.widget.additionalInfo.push(value);
+      });
+   } else {
+      self.widget.additionalInfo.push(additionalInfos);
+   }
+};
+
+/**
  * Lazy load required libraries
  * @param {} libraryNames to load (can be a single value or an array of values)
  * @returns {} a promise that's return done when libraries are loaded
  */
 WidgetApi.prototype.loadLibrary = function (libraryNames) {
-   assert(!isNullOrUndefined(libraryNames), "librayNames must be defined");
+   assert(!isNullOrUndefined(libraryNames), "libraryNames must be defined");
 
    if (Array.isArray(libraryNames)) {
       return asyncLoadJSLibs(libraryNames);
@@ -154,7 +170,7 @@ WidgetApi.prototype.loadLibrary = function (libraryNames) {
  * @returns {} a promise that's return done when libraries are loaded
  */
 WidgetApi.prototype.loadGzLibrary = function (libraryNames) {
-   assert(!isNullOrUndefined(libraryNames), "librayNames must be defined");
+   assert(!isNullOrUndefined(libraryNames), "libraryNames must be defined");
 
    if (Array.isArray(libraryNames)) {
       return asyncLoadJSGzLibs(libraryNames);

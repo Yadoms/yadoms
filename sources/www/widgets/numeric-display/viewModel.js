@@ -67,7 +67,7 @@ function numericDisplayViewModel() {
        else
           self.precision = 1;             
         
-       var d = new $.Deferred();
+       //var d = new $.Deferred();
 	   
         //we register keyword new acquisition
         self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
@@ -78,7 +78,10 @@ function numericDisplayViewModel() {
         //we fill the deviceId of the battery indicator
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);        
         
+        self.widgetApi.registerAdditionalInformation("unit");
+        
         //we get the unit of the keyword
+/*        
         self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
           self.rawUnit = keyword.units;
           self.capacity = keyword.capacityName;
@@ -95,7 +98,7 @@ function numericDisplayViewModel() {
           notifyError($.t("widgets/chart:errorInitialization"), error);
           d.reject();
        });       
-       return d.promise();
+       return d.promise();*/
     }
 
     /**
@@ -106,6 +109,9 @@ function numericDisplayViewModel() {
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
 
+        console.log(keywordId);
+        console.log(data);
+        
         if (keywordId === self.widget.configuration.device.keywordId) {
             //it is the right device
             if (data.value !==""){

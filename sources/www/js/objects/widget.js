@@ -61,6 +61,9 @@ function Widget(id, idPage, type, title, sizeX, sizeY, position, configuration) 
     
     //list of all waiting acquisitions during the startup of the widget 
     this.waitingAcquisition = [];
+    
+    //list of addition information needed at first acquisition for this widget
+    this.additionalInfo = [];
 }
 
 /**
