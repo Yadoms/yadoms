@@ -1,6 +1,6 @@
 #pragma once
 #include "../OpenZWaveSingleHistorizableData.h"
-#include "../typeinfo/ByteArrayTypeInfo.h"
+#include "../typeinfo/StringTypeInfo.h"
 #include <shared/plugin/yPluginApi/StandardCapacity.h>
 
 namespace historizers
@@ -14,7 +14,7 @@ namespace historizers
       ///\param[in] accessMode      The access mode
       ///\param[in] ti              The measure type information
       //-----------------------------------------------------
-      CUserCode(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CByteArrayTypeInfo &ti);
+      CUserCode(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CStringTypeInfo &ti);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

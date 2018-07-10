@@ -8,7 +8,6 @@
 #include "OpenZWaveNodeKeywordBase.h"
 #include "OpenZWaveNodeKeywordGeneric.h"
 #include "OpenZWaveNodeKeywordDimmable.h"
-#include "OpenZWaveNodeKeywordUserCode.h"
 #include "OpenZWaveNodeKeywordColor.h"
 #include "OpenZWaveNodeKeywordEvent.h"
 
@@ -28,11 +27,11 @@
 #include "historizers/Switch.h"
 #include "historizers/Temperature.h"
 #include "historizers/Uv.h"
+#include "historizers/UserCode.h"
 #include "historizers/Voltage.h"
 #include "historizers/Weight.h"
 
 #include "typeinfo/BoolTypeInfo.h"
-#include "typeinfo/ByteArrayTypeInfo.h"
 #include "typeinfo/EnumTypeInfo.h"
 #include "typeinfo/DecimalTypeInfo.h"
 #include "typeinfo/IntegerTypeInfo.h"
@@ -365,8 +364,9 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
    case ECommandClass::kUserCodeValue:
       if (boost::istarts_with(vLabel, "Code "))
       {
-         CByteArrayTypeInfo ti(vID);
-         return boost::make_shared<COpenZWaveNodeKeywordUserCode>(vID, vLabel, accessMode, ti);
+         CStringTypeInfo ti(vID);
+         auto historizer(boost::make_shared<historizers::CUserCode>(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode, ti));
+         return COpenZWaveNodeKeywordGeneric<std::string>::create(historizer, vID);
       }
       break;
    }

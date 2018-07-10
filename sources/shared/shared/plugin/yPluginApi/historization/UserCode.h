@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
-#include "typeInfo/ByteArrayTypeInfo.h"
+#include "typeInfo/StringTypeInfo.h"
 
 namespace shared
 {
@@ -26,7 +26,7 @@ namespace shared
                explicit CUserCode(const std::string& keywordName,
                             const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
                             const EMeasureType& measureType = EMeasureType::kAbsolute,
-                            typeInfo::CByteArrayTypeInfo& additionalInfo = typeInfo::CByteArrayTypeInfo::Empty);
+                            typeInfo::CStringTypeInfo& additionalInfo = typeInfo::CStringTypeInfo::Empty);
 
                //-----------------------------------------------------
                ///\brief                     Destructor

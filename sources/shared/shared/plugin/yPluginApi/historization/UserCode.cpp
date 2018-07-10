@@ -13,7 +13,7 @@ namespace shared
             CUserCode::CUserCode(const std::string& keywordName,
                      const EKeywordAccessMode& accessMode,
                      const EMeasureType& measureType,
-                     typeInfo::CByteArrayTypeInfo& additionalInfo)
+                     typeInfo::CStringTypeInfo& additionalInfo)
                : CSingleHistorizableData<std::string>(keywordName,
                                                  CStandardCapacities::UserCode(),
                                                  accessMode,

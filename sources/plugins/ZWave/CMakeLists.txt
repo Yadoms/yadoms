@@ -43,8 +43,6 @@ set(ZWAVE_PLUGIN_SOURCES
    OpenZWaveNodeKeywordGenericByType.h
 	OpenZWaveNodeKeywordFactory.h
 	OpenZWaveNodeKeywordFactory.cpp 
-   OpenZWaveNodeKeywordUserCode.h
-	OpenZWaveNodeKeywordUserCode.cpp 
 	KeywordContainer.h
    OpenZWaveSingleHistorizableData.h
    historizers/Temperature.h
@@ -87,8 +85,6 @@ set(ZWAVE_PLUGIN_SOURCES
    historizers/Switch.cpp
    typeinfo/BoolTypeInfo.h
    typeinfo/BoolTypeInfo.cpp
-   typeinfo/ByteArrayTypeInfo.h
-   typeinfo/ByteArrayTypeInfo.cpp
    typeinfo/DecimalTypeInfo.h
    typeinfo/DecimalTypeInfo.cpp
    typeinfo/EnumTypeInfo.h
