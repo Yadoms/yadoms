@@ -246,6 +246,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Text.h
    shared/plugin/yPluginApi/historization/UpDownStop.cpp
    shared/plugin/yPluginApi/historization/UpDownStop.h
+   shared/plugin/yPluginApi/historization/UserCode.cpp
+   shared/plugin/yPluginApi/historization/UserCode.h
    shared/plugin/yPluginApi/historization/Uv.cpp
    shared/plugin/yPluginApi/historization/Uv.h
    shared/plugin/yPluginApi/historization/Voltage.cpp
@@ -260,6 +262,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/typeInfo/ITypeInfo.h
    shared/plugin/yPluginApi/historization/typeInfo/EmptyTypeInfo.h
    shared/plugin/yPluginApi/historization/typeInfo/EmptyTypeInfo.cpp
+   shared/plugin/yPluginApi/historization/typeInfo/ByteArrayTypeInfo.h
+   shared/plugin/yPluginApi/historization/typeInfo/ByteArrayTypeInfo.cpp
    shared/plugin/yPluginApi/historization/typeInfo/BoolTypeInfo.h
    shared/plugin/yPluginApi/historization/typeInfo/BoolTypeInfo.cpp
    shared/plugin/yPluginApi/historization/typeInfo/IntTypeInfo.h

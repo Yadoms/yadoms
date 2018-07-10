@@ -4,6 +4,7 @@
 #include <command_classes/CommandClasses.h>
 #include <command_classes/CommandClass.h>
 #include "OpenZWaveNode.h"
+#include "OpenZWaveControllerCache.h"
 
 class COpenZWaveController : public IZWaveController
 {
@@ -65,6 +66,21 @@ private:
    //-----------------------------------------------------------------------------   
    void setupValue(boost::shared_ptr<COpenZWaveNode> node, OpenZWave::ValueID & vid);
 
+
+   void manageDeviceValue(const std::string & deviceName, shared::CDataContainer &container);
+   void manageDeviceState(const std::string & deviceName, shared::plugin::yPluginApi::historization::EDeviceState &container);
+   void manageKeywordValue(const std::string & deviceName, boost::shared_ptr<CKeywordContainer> &container);
+
+   //-----------------------------------------------------------------------------
+   /// \brief	Pop data from cache and declare device and keyword on yadoms side (for a single device only)
+   //-----------------------------------------------------------------------------   
+   void cachePop(const std::string & deviceName);
+
+   //-----------------------------------------------------------------------------
+   /// \brief	Pop data from cache and declare device and keyword on yadoms side (for a all remaining devices)
+   //-----------------------------------------------------------------------------   
+   void cachePopAll();
+
    //-----------------------------------------------------------------------------
    /// \brief	Ask configuration parameters to each found node
    //-----------------------------------------------------------------------------   
@@ -112,5 +128,10 @@ private:
    /// \brief	   The plugin configuration
    //--------------------------------------------------------------
    CZWaveConfiguration* m_configuration;
+
+   //--------------------------------------------------------------
+   /// \brief	   The cache
+   //--------------------------------------------------------------
+   COpenZWaveControllerCache m_cache;
 };
 

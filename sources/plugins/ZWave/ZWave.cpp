@@ -43,21 +43,36 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          //create the controller
          m_controller = CZWaveControllerFactory::Create();
-         m_controller->configure(&m_configuration, &api->getEventHandler());
+         shared::event::CEventHandler init;
+         m_controller->configure(&m_configuration, &init);
 
          //start controller (and analyse network)
          IZWaveController::E_StartResult initResult = m_controller->start([&] {
-            //int evt;
-            //do
-            //{
-            //   evt = api->getEventHandler().waitForEvents(boost::posix_time::min_date_time);
-            //   if (evt == yApi::IYPluginApi::kEventStopRequested)
-            //      stopRequested = true;
-            //} while (evt != shared::event::kNoEvent && !stopRequested);
+            int evt;
+            do
+            {
+               evt = api->getEventHandler().waitForEvents(boost::posix_time::min_date_time);
+               if (evt == yApi::IYPluginApi::kEventStopRequested)
+                  stopRequested = true;
+               else
+               {
+                  if (evt != shared::event::kNoEvent)
+                     api->getEventHandler().transferLastEvent(init);
+               }
+            } while (evt != shared::event::kNoEvent && !stopRequested);
          });
+         m_controller->configure(&m_configuration, &api->getEventHandler());
          switch (initResult)
          {
          case IZWaveController::E_StartResult::kSuccess:
+            int evt;
+            do
+            {
+               evt = init.waitForEvents(boost::posix_time::min_date_time);
+               if(evt != shared::event::kNoEvent)
+                  init.transferLastEvent(api->getEventHandler());
+            } while (evt != shared::event::kNoEvent);
+
             mainLoop(api); //should never ends, only on stopRequested
             stopRequested = true;
             api->setPluginState(yApi::historization::EPluginState::kStopped);
@@ -428,7 +443,6 @@ void CZWave::onUpdateKeyword(boost::shared_ptr<yApi::IYPluginApi> api)
    try
    {
       auto keywordData = api->getEventHandler().getEventData<boost::shared_ptr<CKeywordContainer> >();
-
       auto deviceId = keywordData->getDeviceId();
       auto keywordId = keywordData->getKeyword();
 

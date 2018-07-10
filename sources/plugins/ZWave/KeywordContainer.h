@@ -16,9 +16,11 @@ public:
    /// \param [in]   keyword    The keyword
    //--------------------------------------------------------------
    CKeywordContainer(const std::string& deviceId,
-                     boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword)
+                     boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
+                     bool isConfigurationKeyword)
       : m_deviceId(deviceId),
-        m_keyword(keyword)
+        m_keyword(keyword),
+        m_isConfigurationKeyword(isConfigurationKeyword)
    {
    }
 
@@ -47,6 +49,15 @@ public:
       return m_deviceId;
    }
 
+   //--------------------------------------------------------------
+   /// \brief	      Tells if keyword is configuration item
+   /// \return       True if keyword is configuration item
+   //--------------------------------------------------------------   
+   bool isConfigurationKeyword() const
+   {
+      return m_isConfigurationKeyword;
+   }
+
 
 private:
    //--------------------------------------------------------------
@@ -58,5 +69,10 @@ private:
    /// \brief	      The keyword
    //--------------------------------------------------------------      
    boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> m_keyword;
+
+   //--------------------------------------------------------------
+   /// \brief	      The device details
+   //--------------------------------------------------------------      
+   bool m_isConfigurationKeyword;
 };
 

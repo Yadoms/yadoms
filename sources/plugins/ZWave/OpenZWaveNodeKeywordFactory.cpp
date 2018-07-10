@@ -8,6 +8,7 @@
 #include "OpenZWaveNodeKeywordBase.h"
 #include "OpenZWaveNodeKeywordGeneric.h"
 #include "OpenZWaveNodeKeywordDimmable.h"
+#include "OpenZWaveNodeKeywordUserCode.h"
 #include "OpenZWaveNodeKeywordColor.h"
 #include "OpenZWaveNodeKeywordEvent.h"
 
@@ -31,6 +32,7 @@
 #include "historizers/Weight.h"
 
 #include "typeinfo/BoolTypeInfo.h"
+#include "typeinfo/ByteArrayTypeInfo.h"
 #include "typeinfo/EnumTypeInfo.h"
 #include "typeinfo/DecimalTypeInfo.h"
 #include "typeinfo/IntegerTypeInfo.h"
@@ -359,8 +361,17 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
          return boost::make_shared<COpenZWaveNodeKeywordDimmable>(vID, vLabel, accessMode, ti);
       }
       break;
+
+   case ECommandClass::kUserCodeValue:
+      if (boost::istarts_with(vLabel, "Code "))
+      {
+         CByteArrayTypeInfo ti(vID);
+         return boost::make_shared<COpenZWaveNodeKeywordUserCode>(vID, vLabel, accessMode, ti);
+      }
+      break;
    }
 
+   YADOMS_LOG(warning) << "Fail to get standard keyword : Label=" << vLabel << " access=" << accessMode << " commandClass=0x" << std::hex << commandClass.toInteger() << std::dec << " " << commandClass.toString();
    return boost::shared_ptr<IOpenZWaveNodeKeyword>();
 }
 

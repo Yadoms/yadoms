@@ -18,6 +18,8 @@ set(ZWAVE_PLUGIN_SOURCES
 	ZWaveInternalState.cpp 	
 	OpenZWaveController.h
 	OpenZWaveController.cpp 
+	OpenZWaveControllerCache.h
+	OpenZWaveControllerCache.cpp 
 	OpenZWaveEnumHandler.h
 	OpenZWaveEnumHandler.cpp 
 	OpenZWaveCommandClass.h
@@ -41,6 +43,8 @@ set(ZWAVE_PLUGIN_SOURCES
    OpenZWaveNodeKeywordGenericByType.h
 	OpenZWaveNodeKeywordFactory.h
 	OpenZWaveNodeKeywordFactory.cpp 
+   OpenZWaveNodeKeywordUserCode.h
+	OpenZWaveNodeKeywordUserCode.cpp 
 	KeywordContainer.h
    OpenZWaveSingleHistorizableData.h
    historizers/Temperature.h
@@ -75,12 +79,16 @@ set(ZWAVE_PLUGIN_SOURCES
    historizers/Weight.cpp
 	historizers/Distance.h
    historizers/Distance.cpp
-	historizers/Uv.h
+	historizers/UserCode.h
+   historizers/UserCode.cpp	
+   historizers/Uv.h
    historizers/Uv.cpp
 	historizers/Switch.h
    historizers/Switch.cpp
    typeinfo/BoolTypeInfo.h
    typeinfo/BoolTypeInfo.cpp
+   typeinfo/ByteArrayTypeInfo.h
+   typeinfo/ByteArrayTypeInfo.cpp
    typeinfo/DecimalTypeInfo.h
    typeinfo/DecimalTypeInfo.cpp
    typeinfo/EnumTypeInfo.h
