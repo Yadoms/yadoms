@@ -747,10 +747,31 @@ shared::CDataContainer COpenZWaveController::getNodeInfo(const uint32 homeId, co
    details.set("IsSecurity", issecurity);
    details.set("IsZWave+", iszwplus);
 
+   details.set("classes", getDeviceCommandClasses(homeId, nodeId));
+
    d.set("details", details);
    return d;
 }
 
+std::vector<shared::CDataContainer> COpenZWaveController::getDeviceCommandClasses(const uint32 homeId, const uint8 nodeId)
+{
+   std::vector<shared::CDataContainer> allClasses;
+   //const std::multimap<int, std::string> 
+   auto allclasses = ECommandClass().getAllValues();
+   for (auto i = allclasses.begin(); i != allclasses.end(); ++i)
+   {
+      std::string name;
+      unsigned char version;
+      if (OpenZWave::Manager::Get()->GetNodeClassInformation(homeId, nodeId, *i, &name, &version))
+      {
+         shared::CDataContainer c;
+         c.set("name", name);
+         c.set("version", (int)version);
+         allClasses.push_back(c);
+      }
+   }
+   return allClasses;
+}
 void COpenZWaveController::setupValue(boost::shared_ptr<COpenZWaveNode> node, OpenZWave::ValueID & vID)
 {
    if (OpenZWave::Manager::Get()->IsNodeListeningDevice(node->getHomeId(), node->getNodeId()) ||

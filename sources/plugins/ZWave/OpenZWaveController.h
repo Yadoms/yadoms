@@ -82,6 +82,11 @@ private:
    void cachePopAll();
 
    //-----------------------------------------------------------------------------
+   /// \brief	Return the command classes of the device
+   //-----------------------------------------------------------------------------   
+   std::vector<shared::CDataContainer> getDeviceCommandClasses(const uint32 homeId, const uint8 nodeId);
+
+   //-----------------------------------------------------------------------------
    /// \brief	Ask configuration parameters to each found node
    //-----------------------------------------------------------------------------   
    void RequestConfigurationParameters();

@@ -17,7 +17,7 @@ namespace shared
                : CSingleHistorizableData<std::string>(keywordName,
                                                  CStandardCapacities::UserCode(),
                                                  accessMode,
-                                                 NULL,
+                                                 std::string(),
                                                  measureType,
                                                  additionalInfo)
             {
