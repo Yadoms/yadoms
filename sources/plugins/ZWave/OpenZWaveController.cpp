@@ -394,8 +394,19 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    {
       //A new node has been added to OpenZWave's list.  This may be due to a device being added to the Z-Wave network, or because the application is initializing itself.
       YADOMS_LOG(debug) << "A new node has been added to OpenZWave's list.  This may be due to a device being added to the Z-Wave network, or because the application is initializing itself " << _notification->GetHomeId() << "." << (int)_notification->GetNodeId();
-      if (getNode(_notification->GetHomeId(), _notification->GetNodeId()).get() == nullptr)
+      if (getNode(_notification->GetHomeId(), _notification->GetNodeId()).get() == nullptr) 
+      {
+         std::string name;
+         unsigned char version;
+         if (OpenZWave::Manager::Get()->GetNodeClassInformation(_notification->GetHomeId(), _notification->GetNodeId(), ECommandClass::kUserCodeValue, &name, &version))
+         {
+            //it support
+            YADOMS_LOG(information) << "Node with UserCode command class";
+         }
          m_nodes.push_back(boost::make_shared<COpenZWaveNode>(_notification->GetHomeId(), _notification->GetNodeId()));
+
+      }
+         
 
       break;
    }

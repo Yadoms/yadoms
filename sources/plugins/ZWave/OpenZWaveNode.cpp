@@ -2,6 +2,7 @@
 #include "OpenZWaveNode.h"
 #include "OpenZWaveNodeKeywordFactory.h"
 #include "OpenZWaveHelpers.h"
+#include "OpenZWaveNodePluginFactory.h"
 
 COpenZWaveNode::COpenZWaveNode()
    : m_homeId(0), m_nodeId(0), m_configuration(0,0)
@@ -12,6 +13,8 @@ COpenZWaveNode::COpenZWaveNode()
 COpenZWaveNode::COpenZWaveNode(const uint32 homeId, const uint8 nodeId)
    : m_homeId(homeId), m_nodeId(nodeId), m_configuration(homeId, nodeId)
 {
+
+   COpenZWaveNodePluginFactory::createPlugins(homeId, nodeId, m_plugins);
 }
 
 COpenZWaveNode::~COpenZWaveNode()
@@ -25,7 +28,22 @@ void COpenZWaveNode::registerKeyword(OpenZWave::ValueID& value, bool includeSyst
    if (value.GetGenre() != OpenZWave::ValueID::ValueGenre_Config)
    {
       if (m_keywords.find(keyword) == m_keywords.end())
-         m_keywords[keyword] = COpenZWaveNodeKeywordFactory::createKeyword(value, m_homeId, m_nodeId, includeSystemKeywords);
+      {
+         bool keywordHandledByPlugin = false;
+         for (auto i = m_plugins.begin(); i != m_plugins.end(); ++i)
+         {
+            if ((*i)->isKeywordManagedByPlugin(value, m_homeId, m_nodeId))
+            {
+               keywordHandledByPlugin = true;
+               m_keywords[keyword] = (*i)->createKeyword(value, m_homeId, m_nodeId, includeSystemKeywords);
+               break;
+            }
+         }
+
+         //in case not managed by plugin, use default factory
+         if(!keywordHandledByPlugin)
+            m_keywords[keyword] = COpenZWaveNodeKeywordFactory::createKeyword(value, m_homeId, m_nodeId, includeSystemKeywords);
+      }
    }
    else
    {
@@ -59,6 +77,15 @@ boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> COpe
 {
    boost::shared_ptr<IOpenZWaveNodeKeyword> kw = getKeyword(value, includeSystemKeywords);
    kw->updateValue(value);
+
+   for (auto i = m_plugins.begin(); i != m_plugins.end(); ++i)
+   {
+      if ((*i)->isKeywordManagedByPlugin(value, m_homeId, m_nodeId))
+      {
+         (*i)->onKeywordValueUpdated(value);
+      }
+   }
+
    return kw->getLastKeywordValue();
 }
 

@@ -3,6 +3,7 @@
 #include "IOpenZWaveNodeKeyword.h"
 #include <value_classes/Value.h>
 #include "OpenZWaveNodeConfiguration.h"
+#include "IOpenZWaveNodePlugin.h"
 
 //--------------------------------------------------------------
 /// \brief     Class used to encapsulate a ZWave network node (from OpenZWave)
@@ -135,5 +136,10 @@ private:
    /// \brief	      The configuration items list list
    //--------------------------------------------------------------    
    COpenZWaveNodeConfiguration m_configuration;
+
+   //--------------------------------------------------------------
+   /// \brief	      The active plugin list
+   //--------------------------------------------------------------    
+   std::vector< boost::shared_ptr<IOpenZWaveNodePlugin> > m_plugins;
 };
 

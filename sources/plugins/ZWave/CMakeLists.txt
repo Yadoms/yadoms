@@ -25,6 +25,7 @@ set(ZWAVE_PLUGIN_SOURCES
 	OpenZWaveCommandClass.h
 	OpenZWaveCommandClass.cpp 	
 	IOpenZWaveNodeKeyword.h
+   IOpenZWaveNodePlugin.h
 	OpenZWaveNode.h
 	OpenZWaveNode.cpp 
 	OpenZWaveNodeConfiguration.h
@@ -43,6 +44,10 @@ set(ZWAVE_PLUGIN_SOURCES
    OpenZWaveNodeKeywordGenericByType.h
 	OpenZWaveNodeKeywordFactory.h
 	OpenZWaveNodeKeywordFactory.cpp 
+   OpenZWaveNodeUserCodePlugin.h
+   OpenZWaveNodeUserCodePlugin.cpp
+   OpenZWaveNodePluginFactory.h
+   OpenZWaveNodePluginFactory.cpp
 	KeywordContainer.h
    OpenZWaveSingleHistorizableData.h
    historizers/Temperature.h
