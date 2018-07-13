@@ -32,6 +32,12 @@ namespace shared
             ///\return              The query data
             //-----------------------------------------------------
             virtual const CDataContainer& data() const = 0;
+
+            //-----------------------------------------------------
+            ///\brief               Get the device name (may be empty for plugin extra queries)
+            ///\return              The device name (unique by plugin)
+            //-----------------------------------------------------
+            virtual const std::string& device() const = 0;
          };
       }
    }

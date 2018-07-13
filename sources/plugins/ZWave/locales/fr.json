@@ -55,5 +55,12 @@
 		"hardReset" : {
 			"name" : "Réinitialise le contrôleur et efface le réseau"
 		}
-	}	
+	},
+   "deviceExtraQueries" : {
+      "UserCode" : {
+         "enroll" : {
+            "name"  : "Enregister un tag"
+         }
+      }
+   }
 }

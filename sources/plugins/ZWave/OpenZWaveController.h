@@ -35,6 +35,7 @@ public:
    void setNodeConfiguration(const std::string & device, const shared::CDataContainer &configuration) override;
    void updateNodeConfiguration(const std::string & device, const std::string& keyword, const std::string& value, shared::CDataContainer & configuration) override;
    NodeListType & getNodeList() override;
+   bool onDeviceExtraQuery(const std::string & targetDevice, const std::string & extraQuery, const shared::CDataContainer &data) override;
    // [END] IZWaveController implementation
 
 

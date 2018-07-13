@@ -760,6 +760,10 @@ shared::CDataContainer COpenZWaveController::getNodeInfo(const uint32 homeId, co
 
    details.set("classes", getDeviceCommandClasses(homeId, nodeId));
 
+   shared::CDataContainer eq = getNode(homeId, nodeId)->getPluginExtraQueries();
+   if (!eq.empty())
+      details.set("extraQueries", eq);
+
    d.set("details", details);
    return d;
 }
@@ -1032,4 +1036,23 @@ void COpenZWaveController::cachePopAll()
    {
       cachePop(i->first);
    }
+}
+
+bool COpenZWaveController::onDeviceExtraQuery(const std::string & targetDevice, const std::string & extraQuery, const shared::CDataContainer &data)
+{
+   boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+   uint32 homeId;
+   uint8 nodeId;
+   uint8 instance;
+   ECommandClass keywordClass;
+
+   COpenZWaveHelpers::RetreiveOpenZWaveIds(targetDevice, "", homeId, nodeId, instance);
+
+   auto node = getNode(homeId, nodeId);
+   if (node)
+   {
+      return node->onExtraQuery(extraQuery, data);
+   }
+   return false;
 }

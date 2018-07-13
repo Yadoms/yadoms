@@ -3,12 +3,15 @@
    <span data-i18n="modals.dashboard.sub-windows.devices.deviceListDescription"></span><br>
    <button id="btn-add-new-device" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-tasks"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.new"></span></button>
    <table id="device-list" class="table table-bordered table-striped dashboard-list">
-      <tr>
-         <td data-i18n="modals.dashboard.sub-windows.devices.table.name" class="col-md-2"></td>
-         <td data-i18n="modals.dashboard.sub-windows.devices.table.attachedTo" class="col-md-2"></td>
-         <td data-i18n="modals.dashboard.sub-windows.devices.table.model" class="long-text col-md-2"></td>
-         <td data-i18n="modals.dashboard.sub-windows.devices.table.actions" class="col-md-2"></td>
-      </tr>
+         <thead>
+            <th data-i18n="modals.dashboard.sub-windows.devices.table.name" class="col-md-2"></th>
+            <th data-i18n="modals.dashboard.sub-windows.devices.table.attachedTo" class="col-md-2"></th>
+            <th data-i18n="modals.dashboard.sub-windows.devices.table.model" class="long-text col-md-2"></th>
+            <th data-i18n="modals.dashboard.sub-windows.devices.table.actions" class="col-md-2"></th>
+         </thead>
+         <tbody>
+
+         </tbody>
       <!-- devices will be listed here-->
    </table>
    
@@ -26,11 +29,18 @@
                        "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
                        "</div>";
 
+   var actionsBtnsWithExtraQueries =   "<div class=\"btn-group\">\n" +
+                       "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-cog\"></span></button>\n" +
+                       "<button type=\"button\" class=\"btn btn-success btn-extraQuery\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\"><span class=\"fa fa-navicon\"></span></button>\n" +
+                       "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
+                       "</div>";
+
    var actionsBtnsBlacklist = "<div class=\"btn-group\">\n" +
                               "<button type=\"button\" class=\"btn btn-success btn-restore\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.restore\"><span class=\"fa fa-reply\"></span></button>\n" +
                               "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
                               "</div>";   
-   
+
+
    dispatchkeywordNewToDevicesView = function (keyword) {
       var i = deviceList.map(function (e) { return e.id; }).indexOf(keyword.keyword.deviceId);
       var device;
@@ -134,11 +144,15 @@
       }    
    };
    
+   function getDeviceDomRow(device) {
+      return $("table#device-list").find("tr[device-id='" + device.id + "'].device");
+   }
+
    function transformDeviceInDom(device) {
       // remove device details if any 
       getDeviceDetailsDomRow().remove();
       
-      var $deviceRow = $("table#device-list").find("tr[device-id='" + device.id + "'].device");
+      var $deviceRow = getDeviceDomRow(device);
       $deviceRow.find("td.device-friendlyName").find("span").remove();
       
       var fn = device.friendlyName;
@@ -152,13 +166,19 @@
       
       //we remove old buttons
       $deviceRow.find("td.device-actions").find(".btn-group").remove();
-      
+    
       //we add new actions to the device
       if(parseBool(device.blacklist) == true) {
          $deviceRow.find("td.device-actions").append(actionsBtnsBlacklist);
       } else {
-         if((device.name != "pluginState" && device.model != "Plugin state")) 
-           $deviceRow.find("td.device-actions").append(actionsBtns);
+         if((device.name != "pluginState" && device.model != "Plugin state")) {
+            if(device.details && device.details.extraQueries) {
+                  $deviceRow.find("td.device-actions").append(actionsBtnsWithExtraQueries);
+            } else {
+                  $deviceRow.find("td.device-actions").append(actionsBtns);
+            }
+                  
+         }
       }
       
       //we bind event on the different actions
@@ -176,6 +196,12 @@
             e.stopPropagation();
             restoreDevice(device);           
       });      
+
+//       $deviceRow.find("button.btn-extraQuery").unbind('click').bind('click', function (e) {
+//             loadExtraQueries($deviceRow, device);
+// //            e.stopPropagation();
+//             //return false;
+//       });      
    };
    
    Yadoms.initializeDeviceDashboard = function () {
@@ -192,30 +218,135 @@
       var d = new $.Deferred();
       
       clearInterval(Yadoms.periodicDashboardTask);
+
       //we check if there is at least one plugin instantiated that handle manual creation
       PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation()
-         .done(function (list) {
+      .done(function (list) {
             refreshDeviceList()
-               .done(function() {
-                  d.resolve();
-               })
-               .fail(function() {
-                  d.reject();
-               })
-               .always(function() {
+            .done(d.resolve)
+            .fail(d.reject)
+            .always(function() {
                   //we use the periodic task of the dashboard
                   Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
-               });
-         })
-         .fail(function (error) {
+            });
+      })
+      .fail(function (error) {
             notifyError($.t("modals.pluginInstance.errorGettingManuallyDeviceCreation"), error);
             d.reject();
-         });
+      });
 
       return d.promise();
    };
 
-   function refreshDeviceList() {
+
+      function loadExtraQueries($deviceRow, device) {
+            //manage extra commands in an async way (allow to display plugin line before all extra commands loaded; because some of them can use binding....)
+            var $extraQueriesButton = $deviceRow.find("button.btn-extraQuery");
+            if ($extraQueriesButton) {
+
+                  //delete previous loaded extrea commands menu
+                  $deviceRow.find("ul.dropdown-extraqueries").remove();
+
+                  var extraQueriesFromDeviceDetails = device.details.extraQueries;
+                  if (extraQueriesFromDeviceDetails && Object.keys(extraQueriesFromDeviceDetails).length > 0) {
+
+                        device.attachedPlugin.getBoundDeviceExtraQuery()
+                        .done(function (extraQueries) {
+                              //create DOM
+                              var extraQueryButton = "<ul class=\"dropdown-menu dropdown-extraqueries\">";
+                              $.each(extraQueriesFromDeviceDetails, function (index, values) {
+                                    $.each(values, function (indexP, valuesP) {
+                                          extraQueryButton +=
+                                                "<li><a href=\"#\" class=\"btn-extraQuery-" + index + "-" + valuesP.name +
+                                                "\"><span class=\"extra-query-icon " + extraQueries[index][valuesP.name].iconClass +
+                                                "\"></span>&nbsp;<span data-i18n=\"plugins." + device.attachedPlugin.type +
+                                                ":deviceExtraQueries." + index + "." + valuesP.name + ".name\"></span>" + (
+                                                      extraQueries[index][valuesP.name].commandData ? "..." : "") + "</a></li>";
+                                    });
+                              });
+                              extraQueryButton += "</ul>";
+
+                              //insert the new menu
+                              $extraQueriesButton.after(extraQueryButton);
+                              
+                              //update menu translation
+                              $deviceRow.i18n();
+
+                              //bind each extra command to js
+                              $.each(extraQueriesFromDeviceDetails, function (index, values) {
+                                    $.each(values, function (indexP, valuesP) {
+                                          $deviceRow.find("a.btn-extraQuery-" + index + "-" + valuesP.name).unbind('click').bind('click', function (e) {
+                                                onExtraQuery(device, index + "." + valuesP.name, valuesP.name);
+                                          });
+                                    });                              
+                              });
+
+                              //show the dropdown
+                              $extraQueriesButton.find("ul").dropdown();
+                        })
+
+                  }
+            }
+      }
+
+      function onExtraQuery(device, commandName, commandConfig) {
+            if (commandConfig && commandConfig.commandData) {
+                  Yadoms.modals.pluginExtraQueriesConfigure.loadAsync()
+                        .done(function () {
+                              Yadoms.ConfigureExtraQueries(commandName, commandConfig.commandData, device.attachedPlugin)
+                                    .done(function (data) {
+                                          postExtraQuery(device, commandName, data);
+                                    });
+                        });
+            } else {
+                  postExtraQuery(device, commandName);
+            }
+
+      }
+
+      function postExtraQuery(device, commandName, data) {
+            PluginInstanceManager.postDeviceExtraQuery(device.attachedPlugin, device, commandName, data)
+                  .done(function (taskIdContainer) {
+                        var taskId = taskIdContainer.taskId;
+                        if (taskId) {
+                              var $line = getDeviceDomRow(device);
+                              //we listen for webSocket event
+                              $(document).on("taskupdatenotification." + taskId, function (e, taskUpdateInformation) {
+                                    //translate resolution order
+                                    // 1. try plugin one
+                                    // 2. try core
+                                    // 3. try directly
+                                    var translatedMessage = $.t("plugins." + device.attachedPlugin.type + ":" +
+                                          taskUpdateInformation.message, {
+                                                defaultValue: $.t("core." +
+                                                      taskUpdateInformation.message, {
+                                                            defaultValue: $.t(
+                                                                  taskUpdateInformation
+                                                                  .message),
+                                                            extraquery: $.t(
+                                                                  taskUpdateInformation
+                                                                  .name)
+                                                      }),
+                                                extraquery: $.t(taskUpdateInformation.name)
+                                          });
+
+                                    //we manage the end of the task
+                                    if (taskUpdateInformation.taskState.toLowerCase() === "fail") {
+                                          console.error("Unable to realize extra query : " + taskUpdateInformation.exception);
+                                          if (taskUpdateInformation.exception) {
+                                                translatedMessage = $.t("plugins." + device.attachedPlugin.type + ":" + taskUpdateInformation.exception);
+                                          }
+                                          notifyError(translatedMessage);
+                                    } else if (taskUpdateInformation.taskState.toLowerCase() === "success") {
+                                          notifySuccess(translatedMessage);
+                                    }
+                              });
+                        }
+                  });
+      }
+   
+
+function refreshDeviceList() {
       var d = new $.Deferred();
       var showblacklistedDevices = $("input.cb-showblacklist").prop("checked");
 
@@ -301,10 +432,15 @@
       if(parseBool(device.blacklist) === true) {
          $deviceRow.find("td.device-actions").append(actionsBtnsBlacklist);
       } else {
-         if((device.name != "pluginState" && device.model != "Plugin state")) 
-           $deviceRow.find("td.device-actions").append(actionsBtns);
+            if((device.name != "pluginState" && device.model != "Plugin state")) {
+                  if(device.details && device.details.extraQueries) {
+                        $deviceRow.find("td.device-actions").append(actionsBtnsWithExtraQueries);
+                  } else {
+                        $deviceRow.find("td.device-actions").append(actionsBtns);
+                  }
+            }
       }
-     
+
       //we bind event on the different actions
       $deviceRow.find("button.btn-configure").unbind('click').bind('click', function (e) { 
             e.stopPropagation();       
@@ -321,7 +457,34 @@
             restoreDevice(device);           
       });
       
-      $deviceRow.unbind('click').unbind('click').bind('click', function () { clickDevice(device); });
+//       $deviceRow.find("button.btn-extraQuery").unbind('click').bind('click', function (e) {
+//             loadExtraQueries($deviceRow, device);
+// //            e.stopPropagation();
+//             //return false;
+//       });     
+
+      $deviceRow.unbind('click').bind('click', function () { 
+            /*
+                  Bind click strategy: because a click anywhere on device row, should expand/collapse row, inside button handler should do a stopPopagation.
+                  But for extraquery button + dropdown menu, if stopPopagation is called, then this have bad side effects.
+                  For other buttons (delete, restore, configure,...) this is not a problem because using modals not dropdown menus
+
+                  So to manage it corretly, just handle click on row and :
+                        if the click is on extraquery button -> show extraQuery menu
+                        if the click is on any extraquery menu item -> do action and close menu (normal behavior = do nothing)
+                        else (last case) expand/collapse menu
+            */
+
+            if ($(event.target).closest('button.btn-extraQuery').length) {
+                  // Hide the menus.
+                  loadExtraQueries($deviceRow, device);
+            } else {
+                  if (!$(event.target).closest('ul.dropdown-extraqueries').length) {
+                        clickDevice(device); 
+                  }                  
+            }       
+            
+      });
       $deviceRow.i18n();
 
       //we async ask for attached plugins
@@ -458,15 +621,15 @@
       //we create device details table
       deviceRow.after("<tr device-id=\"" + device.id + "\" class=\"device-details " + selectedClass + "\"><td colspan=\"4\">" +
                "<table id=\"keyword-list\" device-id=\"" + device.id + "\" class=\"table table-bordered table-striped\">" +
-               "<tr>" +
-                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.name\" class=\"col-md-2\"></td>" +
-                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.value\" class=\"col-md-2\"></td>" +
-                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.units\" class=\"col-md-2\"></td>" +
-                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.update\" class=\"col-md-2\"></td>" +
-                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.actions\" class=\"col-md-2\"></td>" +
-               "</tr>" +
+               "<thead>" +
+                  "<th data-i18n=\"modals.dashboard.sub-windows.devices.details.table.name\" class=\"col-md-2\"></th>" +
+                  "<th data-i18n=\"modals.dashboard.sub-windows.devices.details.table.value\" class=\"col-md-2\"></th>" +
+                  "<th data-i18n=\"modals.dashboard.sub-windows.devices.details.table.units\" class=\"col-md-2\"></th>" +
+                  "<th data-i18n=\"modals.dashboard.sub-windows.devices.details.table.update\" class=\"col-md-2\"></th>" +
+                  "<th data-i18n=\"modals.dashboard.sub-windows.devices.details.table.actions\" class=\"col-md-2\"></th>" +
+               "</thead><tbody>" +
                "<!-- keywords will be listed here-->" +
-               "</table>" +
+               "</tbody></table>" +
                "</td></tr>");   
    };
    

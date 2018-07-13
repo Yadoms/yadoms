@@ -264,35 +264,44 @@ void CZWave::onExtraQuery(boost::shared_ptr<yApi::IYPluginApi> api)
 
    if (extraQuery)
    {
-      YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData()->query();
+      std::string targetDevice = extraQuery->getData()->device();
+      if (targetDevice.empty())
+      {
+         YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData()->query();
 
-      if (extraQuery->getData()->query() == "inclusionMode")
-      {
-         m_controller->startInclusionMode();
+         if (extraQuery->getData()->query() == "inclusionMode")
+         {
+            m_controller->startInclusionMode();
+         }
+         else if (extraQuery->getData()->query() == "exclusionMode")
+         {
+            m_controller->startExclusionMode();
+         }
+         else if (extraQuery->getData()->query() == "hardReset")
+         {
+            m_controller->hardResetController();
+         }
+         else if (extraQuery->getData()->query() == "softReset")
+         {
+            m_controller->softResetController();
+         }
+         else if (extraQuery->getData()->query() == "testNetwork")
+         {
+            m_controller->testNetwork(extraQuery->getData()->data().get<int>("frameCount"));
+         }
+         else if (extraQuery->getData()->query() == "healNetowrk")
+         {
+            m_controller->healNetwork();
+         }
+         else if (extraQuery->getData()->query() == "cancelCommand")
+         {
+            m_controller->cancelCurrentCommand();
+         }
       }
-      else if (extraQuery->getData()->query() == "exclusionMode")
+      else
       {
-         m_controller->startExclusionMode();
-      }
-      else if (extraQuery->getData()->query() == "hardReset")
-      {
-         m_controller->hardResetController();
-      }
-      else if (extraQuery->getData()->query() == "softReset")
-      {
-         m_controller->softResetController();
-      }
-      else if (extraQuery->getData()->query() == "testNetwork")
-      {
-         m_controller->testNetwork(extraQuery->getData()->data().get<int>("frameCount"));
-      }
-      else if (extraQuery->getData()->query() == "healNetowrk")
-      {
-         m_controller->healNetwork();
-      }
-      else if (extraQuery->getData()->query() == "cancelCommand")
-      {
-         m_controller->cancelCurrentCommand();
+         YADOMS_LOG(information) << "device " << targetDevice << "  : extra command received : " << extraQuery->getData()->query();
+         m_controller->onDeviceExtraQuery(targetDevice, extraQuery->getData()->query(), extraQuery->getData()->data());
       }
    }
    extraQuery->sendSuccess(shared::CDataContainer());

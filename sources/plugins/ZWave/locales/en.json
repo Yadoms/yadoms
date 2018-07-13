@@ -55,6 +55,12 @@
 		"hardReset" : {
 			"name" : "Reset controller and erase network"
 		}
-	}	
-	
+	},	
+   "deviceExtraQueries" : {
+      "UserCode" : {
+         "enroll" : {
+            "name"  : "Enroll new tag"
+         }
+      }
+   }
 }

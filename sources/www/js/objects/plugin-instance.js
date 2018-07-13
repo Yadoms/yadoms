@@ -193,6 +193,39 @@ PluginInstance.prototype.containsExtraQuery = function () {
    return (this.package && this.package.extraQueries && Object.keys(this.package.extraQueries).length > 0);
 };
 
+/**
+ *  Get the bound extra queries configuration schema
+ * @returns {*}
+ */
+PluginInstance.prototype.getBoundDeviceExtraQuery = function () {
+   var d = new $.Deferred();
+
+   if (!isNullOrUndefined(this.package)) {
+      if (this.package.deviceExtraQueries && Object.keys(this.package.deviceExtraQueries).length > 0) {
+         var tmp = this.package.deviceExtraQueries;
+         this.applyBindingPrivate(tmp, ["plugin", "system"])
+            .done(d.resolve)
+            .fail(d.reject);
+      } else {
+         //if extra commands are not defined, to not try to do any binding...
+         //just resolve with undefined extraQueries
+         d.resolve(this.package.deviceExtraQueries);
+      }
+   } else {
+      d.reject("undefined package");
+   }
+   return d.promise();
+};
+
+
+/**
+ * Tells if this instance contains extra commands
+ * @returns {Boolean}
+ */
+PluginInstance.prototype.containsDeviceExtraQuery = function () {
+   return (this.package && this.package.deviceExtraQueries && Object.keys(this.package.deviceExtraQueries).length > 0);
+};
+
 
 /**
  * Apply binding

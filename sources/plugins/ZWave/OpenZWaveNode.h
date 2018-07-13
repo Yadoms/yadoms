@@ -111,6 +111,20 @@ public:
    //--------------------------------------------------------------
    void updateNodeConfiguration(const std::string& keyword, const std::string& value, shared::CDataContainer & configuration);
 
+   //--------------------------------------------------------------
+   /// \brief	Get the node extra query from plugins
+   /// \return The dataContainer of extra queries definitions
+   //--------------------------------------------------------------
+   shared::CDataContainer getPluginExtraQueries();
+
+   //--------------------------------------------------------------
+   /// \brief	Extra query call
+   /// \param [in] 	   query          The query name
+   /// \param [in] 	   data           The query data (may be empty)
+   /// \return true if successfull
+   //--------------------------------------------------------------
+   bool onExtraQuery(const std::string & query, const shared::CDataContainer &data);
+
 private:
    //--------------------------------------------------------------
    /// \brief	      homeId
