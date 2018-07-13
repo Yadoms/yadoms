@@ -14,7 +14,7 @@ COpenZWaveNode::COpenZWaveNode(const uint32 homeId, const uint8 nodeId)
    : m_homeId(homeId), m_nodeId(nodeId), m_configuration(homeId, nodeId)
 {
 
-   COpenZWaveNodePluginFactory::createPlugins(homeId, nodeId, m_plugins);
+   COpenZWaveNodePluginFactory::createPlugins(homeId, nodeId, m_plugins, this);
 }
 
 COpenZWaveNode::~COpenZWaveNode()
@@ -27,7 +27,7 @@ void COpenZWaveNode::registerKeyword(OpenZWave::ValueID& value, bool includeSyst
 
    if (value.GetGenre() != OpenZWave::ValueID::ValueGenre_Config)
    {
-      if (m_keywords.find(keyword) == m_keywords.end() || m_keywords[keyword].get() == NULL)
+      if (m_keywords.find(keyword) == m_keywords.end())
       {
          bool keywordHandledByPlugin = false;
          for (auto i = m_plugins.begin(); i != m_plugins.end(); ++i)
@@ -35,7 +35,9 @@ void COpenZWaveNode::registerKeyword(OpenZWave::ValueID& value, bool includeSyst
             if ((*i)->isKeywordManagedByPlugin(value, m_homeId, m_nodeId))
             {
                keywordHandledByPlugin = true;
-               m_keywords[keyword] = (*i)->createKeyword(value, m_homeId, m_nodeId, includeSystemKeywords);
+               auto newKeyword = (*i)->createKeyword(value, m_homeId, m_nodeId, includeSystemKeywords);
+               if (newKeyword)
+                  m_keywords[keyword] = newKeyword;
                break;
             }
          }

@@ -3,6 +3,7 @@
 #include "IOpenZWaveNodePlugin.h"
 #include <value_classes/Value.h>
 
+class COpenZWaveNode;
 //--------------------------------------------------------------
 /// \brief     Class used to encapsulate a ZWave network node (from OpenZWave)
 ///            Provide access to capacities and keywords
@@ -14,7 +15,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	      Constructor
    //--------------------------------------------------------------
-   COpenZWaveNodeUserCodePlugin();
+   COpenZWaveNodeUserCodePlugin(COpenZWaveNode * pMasterNode);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -35,5 +36,6 @@ private:
 
    int findFirstFreeSlot();
    std::map<int, OpenZWave::ValueID> m_codeSlots;
+   COpenZWaveNode * m_pMasterNode;
 };
 

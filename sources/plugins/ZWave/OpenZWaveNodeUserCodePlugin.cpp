@@ -5,9 +5,10 @@
 #include <command_classes/UserCode.h>
 #include "OpenZWaveNodeKeywordFactory.h"
 #include <boost/regex.hpp>
+#include "OpenZWaveNode.h"
 
-COpenZWaveNodeUserCodePlugin::COpenZWaveNodeUserCodePlugin()
-   :m_bEnrollmentMode(false)
+COpenZWaveNodeUserCodePlugin::COpenZWaveNodeUserCodePlugin(COpenZWaveNode * pMasterNode)
+   :m_bEnrollmentMode(false), m_pMasterNode(pMasterNode)
 {
 }
 
@@ -90,8 +91,9 @@ void COpenZWaveNodeUserCodePlugin::onKeywordValueUpdated(OpenZWave::ValueID& vID
             int slot = findFirstFreeSlot();
             if (slot >= 0)
             {
-               OpenZWave::ValueID vNode = m_codeSlots.at(slot);
-               OpenZWave::Manager::Get()->SetValue(vNode, d, size);
+               OpenZWave::ValueID slotNode = m_codeSlots.at(slot);
+               OpenZWave::Manager::Get()->SetValue(slotNode, d, size);
+               m_pMasterNode->registerKeyword(slotNode, false);
             }
             delete d;
          }
