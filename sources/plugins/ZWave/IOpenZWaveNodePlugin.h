@@ -22,9 +22,9 @@ public:
 
    virtual boost::shared_ptr<IOpenZWaveNodeKeyword> createKeyword(OpenZWave::ValueID& vID, uint32 homeId, uint8 nodeId, bool includeSystemKeywords) = 0;
    
-   virtual void onKeywordValueUpdated(OpenZWave::ValueID& value) = 0;
+   virtual std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > onKeywordValueUpdated(OpenZWave::ValueID& value) = 0;
 
-   virtual void getExtraQueries(std::vector<shared::CDataContainer> & extraQueriesNames) = 0;
+   virtual void getExtraQueries(std::vector<std::string> & extraQueriesNames) = 0;
 
    virtual std::string getName() = 0;
    

@@ -282,28 +282,19 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
 
       if (node)
       {
-         node->registerKeyword(vID, m_configuration->getIncludeSystemKeywords());
          auto kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
          if (kw)
          {
-            auto historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
-            auto keywordContainer(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), historizedData, vID.GetGenre() == OpenZWave::ValueID::ValueGenre_Config));
+            auto allKeywordsInvolved = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
             std::string deviceName = COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId());
-            manageKeywordValue(deviceName, keywordContainer);
+            for (auto keywordHistorizer = allKeywordsInvolved.begin(); keywordHistorizer != allKeywordsInvolved.end(); ++keywordHistorizer)
+            {
+               auto keywordContainer(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), *keywordHistorizer, vID.GetGenre() == OpenZWave::ValueID::ValueGenre_Config));
+               manageKeywordValue(deviceName, keywordContainer);
 
-            std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
-            YADOMS_LOG(warning) << "OpenZWave notification [Type_ValueAdded] : node.instance=" << static_cast<int>(vID.GetNodeId()) << "." << static_cast<int>(vID.GetInstance()) << " => " << vLabel << "=" << historizedData->formatValue();
-
-            //std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
-            //YADOMS_LOG(warning) << "OpenZWave notification [Type_ValueAdded] : node.instance=" << static_cast<int>(vID.GetNodeId()) << "." << static_cast<int>(vID.GetInstance()) << " => " << vLabel << "=" << historizedData->formatValue();
-            //
-            //if (m_handler != nullptr)
-            //{
-            //   if (vID.GetGenre() == OpenZWave::ValueID::ValueGenre_Config)
-            //      m_handler->postEvent(CZWave::kUpdateConfiguration, d);
-            //   else
-            //      m_handler->postEvent(CZWave::kUpdateKeyword, d);
-            //}
+               std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
+               YADOMS_LOG(information) << "OpenZWave notification [Type_ValueAdded] : node.instance=" << static_cast<int>(vID.GetNodeId()) << "." << static_cast<int>(vID.GetInstance()) << " => " << vLabel << "=" << (*keywordHistorizer)->formatValue();
+            }
          }
       }
 
@@ -321,22 +312,16 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          auto kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
          if (kw)
          {
-            auto historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
-
-            auto keywordContainer(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), historizedData, vID.GetGenre() == OpenZWave::ValueID::ValueGenre_Config));
+            auto allKeywordsInvolved = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
             std::string deviceName = COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId());
-            manageKeywordValue(deviceName, keywordContainer);
+            for (auto keywordHistorizer = allKeywordsInvolved.begin(); keywordHistorizer != allKeywordsInvolved.end(); ++keywordHistorizer)
+            {
+               auto keywordContainer(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), *keywordHistorizer, vID.GetGenre() == OpenZWave::ValueID::ValueGenre_Config));
+               manageKeywordValue(deviceName, keywordContainer);
 
-            std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
-            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : node.instance=" << static_cast<int>(vID.GetNodeId()) << "." << static_cast<int>(vID.GetInstance()) << " => " << vLabel << "=" << historizedData->formatValue();
-
-            //if (m_handler != nullptr)
-            //{
-            //   if (vID.GetGenre() == OpenZWave::ValueID::ValueGenre_Config)
-            //      m_handler->postEvent(CZWave::kUpdateConfiguration, d);
-            //   else
-            //      m_handler->postEvent(CZWave::kUpdateKeyword, d);
-            //}
+               std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
+               YADOMS_LOG(information) << "OpenZWave notification [Type_ValueChanged] : node.instance=" << static_cast<int>(vID.GetNodeId()) << "." << static_cast<int>(vID.GetInstance()) << " => " << vLabel << "=" << (*keywordHistorizer)->formatValue();
+            }
          }
       }
       break;
@@ -351,24 +336,16 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          auto kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
          if (kw)
          {
-            auto historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
-
-            auto keywordContainer(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), historizedData, vID.GetGenre() == OpenZWave::ValueID::ValueGenre_Config));
+            auto allKeywordsInvolved = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
             std::string deviceName = COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId());
-            manageKeywordValue(deviceName, keywordContainer);
+            for (auto keywordHistorizer = allKeywordsInvolved.begin(); keywordHistorizer != allKeywordsInvolved.end(); ++keywordHistorizer)
+            {
+               auto keywordContainer(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), *keywordHistorizer, vID.GetGenre() == OpenZWave::ValueID::ValueGenre_Config));
+               manageKeywordValue(deviceName, keywordContainer);
 
-            std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
-            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : node.instance=" << static_cast<int>(vID.GetNodeId()) << "." << static_cast<int>(vID.GetInstance()) << " => " << vLabel << "=" << historizedData->formatValue() ;
-
-
-
-            //if (m_handler != nullptr)
-            //{
-            //   if (vID.GetGenre() == OpenZWave::ValueID::ValueGenre_Config)
-            //      m_handler->postEvent(CZWave::kUpdateConfiguration, d);
-            //   else
-            //      m_handler->postEvent(CZWave::kUpdateKeyword, d);
-            //}
+               std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
+               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : node.instance=" << static_cast<int>(vID.GetNodeId()) << "." << static_cast<int>(vID.GetInstance()) << " => " << vLabel << "=" << (*keywordHistorizer)->formatValue();
+            }
          }
       }
       break;
@@ -760,9 +737,10 @@ shared::CDataContainer COpenZWaveController::getNodeInfo(const uint32 homeId, co
 
    details.set("classes", getDeviceCommandClasses(homeId, nodeId));
 
-   shared::CDataContainer eq = getNode(homeId, nodeId)->getPluginExtraQueries();
-   if (!eq.empty())
-      details.set("extraQueries", eq);
+   std::vector<std::string> extraQueries;
+   getNode(homeId, nodeId)->getPluginExtraQueries(extraQueries);
+   if (!extraQueries.empty())
+      details.set("extraQueries", extraQueries);
 
    d.set("details", details);
    return d;
@@ -777,7 +755,7 @@ std::vector<shared::CDataContainer> COpenZWaveController::getDeviceCommandClasse
    {
       std::string name;
       unsigned char version;
-      if (OpenZWave::Manager::Get()->GetNodeClassInformation(homeId, nodeId, *i, &name, &version))
+      if (OpenZWave::Manager::Get()->GetNodeClassInformation(homeId, nodeId, (uint8)*i, &name, &version))
       {
          shared::CDataContainer c;
          c.set("name", name);

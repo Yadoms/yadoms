@@ -57,10 +57,11 @@
 		}
 	},	
    "deviceExtraQueries" : {
-      "UserCode" : {
-         "enroll" : {
-            "name"  : "Enroll new tag"
-         }
+      "UserCode_enroll" : {
+         "name"  : "Enroll new tag"
+      },
+      "base_refresh" : {
+         "name" : "Ask a device update"
       }
    }
 }

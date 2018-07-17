@@ -46,9 +46,12 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeUserCodePlugin::createKey
          if (size >= 2 && d[0] == 0 && d[1] == 0)
          {
             delete d; //free memory
+
+            YADOMS_LOG(debug) << "Ignoring keyword " << vLabel << " : associated code is unused";
             //unused tag, do not create keyword
             return boost::shared_ptr<IOpenZWaveNodeKeyword>();
          }
+         delete d; //free memory
       }
    }
 
@@ -77,8 +80,9 @@ int COpenZWaveNodeUserCodePlugin::findFirstFreeSlot()
    }
    return -1;
 }
-void COpenZWaveNodeUserCodePlugin::onKeywordValueUpdated(OpenZWave::ValueID& vID)
+std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > COpenZWaveNodeUserCodePlugin::onKeywordValueUpdated(OpenZWave::ValueID& vID)
 {
+   std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > result;
    if (m_bEnrollmentMode)
    {
       auto vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
@@ -94,18 +98,18 @@ void COpenZWaveNodeUserCodePlugin::onKeywordValueUpdated(OpenZWave::ValueID& vID
                OpenZWave::ValueID slotNode = m_codeSlots.at(slot);
                OpenZWave::Manager::Get()->SetValue(slotNode, d, size);
                m_pMasterNode->registerKeyword(slotNode, false);
+               result.push_back(m_pMasterNode->getKeyword(slotNode, false)->getLastKeywordValue());
             }
             delete d;
          }
       }
    }
+   return result;
 }
 
-void COpenZWaveNodeUserCodePlugin::getExtraQueries(std::vector<shared::CDataContainer> & extraQueriesNames)
+void COpenZWaveNodeUserCodePlugin::getExtraQueries(std::vector<std::string> & extraQueriesNames)
 {
-   shared::CDataContainer a;
-   a.set("name", "enroll");
-   extraQueriesNames.push_back(a);
+   extraQueriesNames.push_back("enroll");
 }
 
 std::string COpenZWaveNodeUserCodePlugin::getName()

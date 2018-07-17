@@ -8,19 +8,19 @@ class COpenZWaveNode;
 /// \brief     Class used to encapsulate a ZWave network node (from OpenZWave)
 ///            Provide access to capacities and keywords
 //--------------------------------------------------------------
-class COpenZWaveNodeUserCodePlugin : public IOpenZWaveNodePlugin
+class COpenZWaveNodeRefreshPlugin : public IOpenZWaveNodePlugin
 {
 public:
 
    //--------------------------------------------------------------
    /// \brief	      Constructor
    //--------------------------------------------------------------
-   COpenZWaveNodeUserCodePlugin(COpenZWaveNode * pMasterNode);
+   COpenZWaveNodeRefreshPlugin(const uint32 homeId, const uint8 nodeId);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------   
-   virtual ~COpenZWaveNodeUserCodePlugin();
+   virtual ~COpenZWaveNodeRefreshPlugin();
 
    // IOpenZWaveNodePlugin implementation
    bool isKeywordManagedByPlugin(OpenZWave::ValueID& value, const uint32 homeId, const uint8 nodeId) override;
@@ -30,12 +30,9 @@ public:
    std::string getName() override;
    bool onExtraQuery(const std::string & query, const shared::CDataContainer &data) override;
    // [END] IOpenZWaveNodePlugin implementation
-
+   
 private:
-   bool m_bEnrollmentMode;
-
-   int findFirstFreeSlot();
-   std::map<int, OpenZWave::ValueID> m_codeSlots;
-   COpenZWaveNode * m_pMasterNode;
+   const uint32 m_homeId;
+   const uint8 m_nodeId;
 };
 

@@ -75,20 +75,26 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNode::getKeyword(OpenZWave::V
 }
 
 
-boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> COpenZWaveNode::updateKeywordValue(OpenZWave::ValueID& value, bool includeSystemKeywords)
+std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > COpenZWaveNode::updateKeywordValue(OpenZWave::ValueID& value, bool includeSystemKeywords)
 {
+   std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > result;
+
    boost::shared_ptr<IOpenZWaveNodeKeyword> kw = getKeyword(value, includeSystemKeywords);
    kw->updateValue(value);
+   result.push_back(kw->getLastKeywordValue());
 
+   //let plugins do their jobs
    for (auto i = m_plugins.begin(); i != m_plugins.end(); ++i)
    {
       if ((*i)->isKeywordManagedByPlugin(value, m_homeId, m_nodeId))
       {
-         (*i)->onKeywordValueUpdated(value);
+         auto a = (*i)->onKeywordValueUpdated(value);
+         for(auto k = a.begin(); k!=a.end();++k)
+            result.push_back(*k);
       }
    }
 
-   return kw->getLastKeywordValue();
+   return result;
 }
 
 bool COpenZWaveNode::sendCommand(const std::string& keyword, const std::string& commandData)
@@ -143,26 +149,28 @@ void COpenZWaveNode::updateNodeConfiguration(const std::string& keyword, const s
    m_configuration.updateNodeConfiguration(keyword, value, configuration);
 }
 
-shared::CDataContainer COpenZWaveNode::getPluginExtraQueries()
+void COpenZWaveNode::getPluginExtraQueries(std::vector<std::string> & extraQueries)
 {
-   shared::CDataContainer result;
    for (auto i = m_plugins.begin(); i != m_plugins.end(); ++i)
    {
-      std::vector<shared::CDataContainer> extraQueries;
-      (*i)->getExtraQueries(extraQueries);
-      if (!extraQueries.empty())
+      std::vector<std::string> l;
+      (*i)->getExtraQueries(l);
+      if (!l.empty())
       {
-         result.set((*i)->getName(), extraQueries);
+         for (auto j = l.begin(); j != l.end(); ++j)
+         {
+            std::string s = (boost::format("%1%_%2%") % (*i)->getName() % *j).str();
+            extraQueries.push_back(s);
+         }
       }
    }
-   return result;
 }
 
 bool COpenZWaveNode::onExtraQuery(const std::string & query, const shared::CDataContainer &data)
 {
    //qeury must be: pluginName.extraQuery
    std::vector<std::string> result;
-   boost::split(result, query, boost::is_any_of("."), boost::token_compress_on);
+   boost::split(result, query, boost::is_any_of("_"), boost::token_compress_on);
    if (result.size() == 2)
    {
       for (auto i = m_plugins.begin(); i != m_plugins.end(); ++i)

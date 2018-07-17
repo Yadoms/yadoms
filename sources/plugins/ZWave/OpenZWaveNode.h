@@ -41,8 +41,9 @@ public:
    /// \brief	      Update a keyword value
    /// \param [in]   value                   The ValueID associated to the keyword
    /// \param [in]   includeSystemKeywords   true if system keywords are supported
+   /// \return       All keyword historizers involved by current update (in case of a keyword update, change another keyword by software choice : enrolment example : the Usercode.Enrollment code is assigned to a UserCode entry)
    //--------------------------------------------------------------   
-   boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> updateKeywordValue(OpenZWave::ValueID& value, bool includeSystemKeywords);
+   std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > updateKeywordValue(OpenZWave::ValueID& value, bool includeSystemKeywords);
 
    //--------------------------------------------------------------
    /// \brief	      Get the keyword matching the ValueID, or create it if needed
@@ -113,9 +114,9 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	Get the node extra query from plugins
-   /// \return The dataContainer of extra queries definitions
+   /// \param [in-out] extraQueries The dataContainer of extra queries definitions
    //--------------------------------------------------------------
-   shared::CDataContainer getPluginExtraQueries();
+   void getPluginExtraQueries(std::vector<std::string> & extraQueries);
 
    //--------------------------------------------------------------
    /// \brief	Extra query call

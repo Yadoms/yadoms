@@ -44,6 +44,8 @@ set(ZWAVE_PLUGIN_SOURCES
    OpenZWaveNodeKeywordGenericByType.h
 	OpenZWaveNodeKeywordFactory.h
 	OpenZWaveNodeKeywordFactory.cpp 
+   OpenZWaveNodeRefreshPlugin.h
+   OpenZWaveNodeRefreshPlugin.cpp
    OpenZWaveNodeUserCodePlugin.h
    OpenZWaveNodeUserCodePlugin.cpp
    OpenZWaveNodePluginFactory.h

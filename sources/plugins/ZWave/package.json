@@ -1,6 +1,6 @@
 {
 	"type": "ZWave",
-	"version": "1.0.2",
+	"version": "1.1.0",
 	"author": "Jean-Michel DECORET",
    "url": "https://github.com/Yadoms/yadoms/wiki/Zwave",
 	"credits": "[openzwave](http://www.openzwave.com/)",
@@ -48,10 +48,11 @@
 		}
 	},
    "deviceExtraQueries" : {
-      "UserCode" : {
-         "enroll" : {
-            "iconClass" : "fa fa-plus-circle"
-         }
+      "UserCode_enroll" : {
+         "iconClass" : "fa fa-plus-circle"
+      },
+      "base_refresh" : {
+         "iconClass" : "fa fa-refresh"
       }
    },
    "deviceConfiguration" : {

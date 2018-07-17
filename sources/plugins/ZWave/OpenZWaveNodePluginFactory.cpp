@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "OpenZWaveNodePluginFactory.h"
 #include "OpenZWaveNodeUserCodePlugin.h"
+#include "OpenZWaveNodeRefreshPlugin.h"
 #include <Manager.h>
 #include "OpenZWaveNode.h"
 
@@ -11,6 +12,7 @@ void COpenZWaveNodePluginFactory::createPlugins(const uint32 homeId, const uint8
    {
       out.push_back(boost::make_shared<COpenZWaveNodeUserCodePlugin>(pMasterNode));
    }
+   out.push_back(boost::make_shared<COpenZWaveNodeRefreshPlugin>(homeId, nodeId));
 }
 
 bool COpenZWaveNodePluginFactory::nodeMatchCommandClass(const uint32 homeId, const uint8 nodeId, ECommandClass toTest, int & version)
