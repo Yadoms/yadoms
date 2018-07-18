@@ -247,7 +247,7 @@
                   //delete previous loaded extrea commands menu
                   $deviceRow.find("ul.dropdown-extraqueries").remove();
 
-                  var extraQueriesFromDeviceDetails = device.details.extraQueries;
+                  var extraQueriesFromDeviceDetails = device.details.extraQueries.split(",");
                   if (extraQueriesFromDeviceDetails && Object.keys(extraQueriesFromDeviceDetails).length > 0) {
 
                         device.attachedPlugin.getBoundDeviceExtraQuery()

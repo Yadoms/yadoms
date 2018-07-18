@@ -340,9 +340,10 @@ void CZWave::onEventUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api
 
 void CZWave::onDeclareDevice(boost::shared_ptr<yApi::IYPluginApi> api)
 {
+   shared::CDataContainer deviceData;
    try
    {
-      auto deviceData = api->getEventHandler().getEventData<shared::CDataContainer>();
+      deviceData = api->getEventHandler().getEventData<shared::CDataContainer>();
       if (!api->deviceExists(deviceData.get<std::string>("name")))
          api->declareDevice(deviceData.get<std::string>("name"), deviceData.get<std::string>("friendlyName"), deviceData.getWithDefault<std::string>("details.product", deviceData.get<std::string>("friendlyName")), std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(), deviceData.get<shared::CDataContainer>("details"));
       else
@@ -367,6 +368,19 @@ void CZWave::onDeclareDevice(boost::shared_ptr<yApi::IYPluginApi> api)
    }
    catch (std::exception& ex)
    {
+      try 
+      { 
+         deviceData.printToLog(YADOMS_LOG(error)); 
+      }
+      catch (std::exception &e)
+      { 
+         YADOMS_LOG(error) << "Unable to display deviceData content" << e.what(); 
+      }
+      catch (...) 
+      { 
+         YADOMS_LOG(error) << "Unable to display deviceData content"; 
+      }
+
       YADOMS_LOG(error) << "Fail to declare device. exception : " << ex.what();
    }
    catch (...)

@@ -282,19 +282,28 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
 
       if (node)
       {
+         std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
+         std::string deviceName = COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId());
+
+         YADOMS_LOG(information) << "OpenZWave notification [Type_ValueAdded] : " << vLabel << "(" << deviceName << ")";
+
+         node->registerKeyword(vID, m_configuration->getIncludeSystemKeywords());
          auto kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
          if (kw)
          {
+            YADOMS_LOG(information) << "OpenZWave notification [Type_ValueAdded] : " << vLabel << "(" << deviceName << ")" << " keyword ok";
+
             auto allKeywordsInvolved = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
-            std::string deviceName = COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId());
             for (auto keywordHistorizer = allKeywordsInvolved.begin(); keywordHistorizer != allKeywordsInvolved.end(); ++keywordHistorizer)
             {
                auto keywordContainer(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), *keywordHistorizer, vID.GetGenre() == OpenZWave::ValueID::ValueGenre_Config));
                manageKeywordValue(deviceName, keywordContainer);
-
-               std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
                YADOMS_LOG(information) << "OpenZWave notification [Type_ValueAdded] : node.instance=" << static_cast<int>(vID.GetNodeId()) << "." << static_cast<int>(vID.GetInstance()) << " => " << vLabel << "=" << (*keywordHistorizer)->formatValue();
             }
+         }
+         else
+         {
+            YADOMS_LOG(warning) << "OpenZWave notification [Type_ValueAdded] : " << vLabel << "(" << deviceName << ")" << " : fail to get keyword";
          }
       }
 
@@ -309,19 +318,27 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       setupValue(node, vID);
       if (node)
       {
+         std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
+         std::string deviceName = COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId());
+
+         YADOMS_LOG(information) << "OpenZWave notification [Type_ValueChanged] : " << vLabel << "(" << deviceName << ")";
+
          auto kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
          if (kw)
          {
+            YADOMS_LOG(information) << "OpenZWave notification [Type_ValueChanged] : " << vLabel << "(" << deviceName << ")" << " keyword ok";
+
             auto allKeywordsInvolved = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
-            std::string deviceName = COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId());
             for (auto keywordHistorizer = allKeywordsInvolved.begin(); keywordHistorizer != allKeywordsInvolved.end(); ++keywordHistorizer)
             {
                auto keywordContainer(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), *keywordHistorizer, vID.GetGenre() == OpenZWave::ValueID::ValueGenre_Config));
                manageKeywordValue(deviceName, keywordContainer);
-
-               std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
                YADOMS_LOG(information) << "OpenZWave notification [Type_ValueChanged] : node.instance=" << static_cast<int>(vID.GetNodeId()) << "." << static_cast<int>(vID.GetInstance()) << " => " << vLabel << "=" << (*keywordHistorizer)->formatValue();
             }
+         }
+         else
+         {
+            YADOMS_LOG(warning) << "OpenZWave notification [Type_ValueChanged] : " << vLabel << "(" << deviceName << ")" << " : fail to get keyword";
          }
       }
       break;
@@ -739,8 +756,15 @@ shared::CDataContainer COpenZWaveController::getNodeInfo(const uint32 homeId, co
 
    std::vector<std::string> extraQueries;
    getNode(homeId, nodeId)->getPluginExtraQueries(extraQueries);
+   std::string eqSingleLine;
+   for (auto i = extraQueries.begin(); i != extraQueries.end(); ++i)
+   {
+      eqSingleLine += *i;
+      eqSingleLine += ",";
+   }
+   eqSingleLine = eqSingleLine.substr(0, eqSingleLine.size() - 1);
    if (!extraQueries.empty())
-      details.set("extraQueries", extraQueries);
+      details.set("extraQueries", eqSingleLine);
 
    d.set("details", details);
    return d;

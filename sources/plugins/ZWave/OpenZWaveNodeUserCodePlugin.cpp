@@ -47,7 +47,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeUserCodePlugin::createKey
          {
             delete d; //free memory
 
-            YADOMS_LOG(debug) << "Ignoring keyword " << vLabel << " : associated code is unused";
+            YADOMS_LOG(information) << "Ignoring keyword " << vLabel << " : associated code is unused";
             //unused tag, do not create keyword
             return boost::shared_ptr<IOpenZWaveNodeKeyword>();
          }
@@ -98,7 +98,16 @@ std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHisto
                OpenZWave::ValueID slotNode = m_codeSlots.at(slot);
                OpenZWave::Manager::Get()->SetValue(slotNode, d, size);
                m_pMasterNode->registerKeyword(slotNode, false);
-               result.push_back(m_pMasterNode->getKeyword(slotNode, false)->getLastKeywordValue());
+               auto kw = m_pMasterNode->getKeyword(slotNode, false);
+               if (kw)
+               {
+                  auto historizer = kw->getLastKeywordValue();
+                  result.push_back(historizer);
+               }
+               else
+               {
+                  YADOMS_LOG(warning) << "Fail to get keyword for slot " << slot;
+               }
             }
             delete d;
          }
