@@ -76,29 +76,8 @@ function numericDisplayViewModel() {
         self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);  	   
         
         //we fill the deviceId of the battery indicator
-        self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);        
-        
-        self.widgetApi.registerAdditionalInformation("unit");
-        
-        //we get the unit of the keyword
-/*        
-        self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
-          self.rawUnit = keyword.units;
-          self.capacity = keyword.capacityName;
-           
-          // If no unit, we hide the unit display
-          if (keyword.units === "data.units.noUnit")
-             self.widgetApi.find(".unit").addClass("hidden");
-          else
-             self.widgetApi.find(".unit").removeClass("hidden");
-          
-          d.resolve();
-       })
-       .fail(function (error) {
-          notifyError($.t("widgets/chart:errorInitialization"), error);
-          d.reject();
-       });       
-       return d.promise();*/
+        self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
+        self.widgetApi.registerAdditionalInformation(["unit", "capacity"]);
     }
 
     /**
@@ -109,10 +88,23 @@ function numericDisplayViewModel() {
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
 
-        console.log(keywordId);
         console.log(data);
         
         if (keywordId === self.widget.configuration.device.keywordId) {
+           
+           // Receive at startup data.unit and data.capacity
+           if (!isNullOrUndefinedOrEmpty(data.unit))
+              self.rawUnit = data.unit;
+           
+           if (!isNullOrUndefinedOrEmpty(data.capacity))
+              self.capacity = data.capacity;
+           
+           // If no unit, we hide the unit display
+           if (self.rawUnit === "data.units.noUnit")
+              self.widgetApi.find(".unit").addClass("hidden");
+           else
+              self.widgetApi.find(".unit").removeClass("hidden");
+          
             //it is the right device
             if (data.value !==""){
                if (self.capacity ==="duration"){

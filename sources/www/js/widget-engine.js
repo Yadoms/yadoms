@@ -402,7 +402,7 @@ function updateWidgetsPolling() {
 
 function updateWidgetsPolling(pageId) {
     var d = new $.Deferred();
-    var getLastValuesKeywords = [];
+    var getLastValues = [];
     var getAdditionInfo = [];
 
     //we browse each widget instance
@@ -411,13 +411,15 @@ function updateWidgetsPolling(pageId) {
     } else {
        $.each(pageId.widgets, function (widgetIndex, widget) {
            //we ask which devices are needed for this widget instance
-           if (!isNullOrUndefinedOrEmpty(widget.getlastValue))
-              getLastValuesKeywords = getLastValuesKeywords.concat (widget.getlastValue);
-           if (!isNullOrUndefinedOrEmpty(widget.additionalInfo))
+           if (!isNullOrUndefinedOrEmpty(widget.getlastValue)){
+              getLastValues = getLastValues.concat(widget.getlastValue);
+           }
+           if (!isNullOrUndefinedOrEmpty(widget.additionalInfo)){
               getAdditionInfo = getAdditionInfo.concat(widget.additionalInfo);
+           }
        });
        
-       updateWidgetPollingByKeywordsId(removeDuplicates(getLastValuesKeywords), getAdditionInfo)
+       updateWidgetPollingByKeywordsId(getLastValues, getAdditionInfo)
        .done(function (data) {
           $.each(data, function (index, acquisition) {
              //we signal the new acquisition to the widget if the widget support the method
@@ -479,15 +481,16 @@ function updateWidgetPolling(widget) {
     return d.promise();
 }
 
-function updateWidgetPollingByKeywordsId(keywordIds) {
+function updateWidgetPollingByKeywordsId(keywords, additionnalInfo) {
     var d = new $.Deferred();
     
-    if (!isNullOrUndefined(keywordIds)) {
-       if (keywordIds!=0){
-          AcquisitionManager.getLastAcquisition(keywordIds)
+    if (!isNullOrUndefined(keywords)) {
+       if (keywords!=0){
+          console.log (additionnalInfo);
+          AcquisitionManager.getLastAcquisition(keywords, additionnalInfo)
           .done(d.resolve)
           .fail(function (error) {
-             notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for widget = " + keywordIds }), error);
+             notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for widget = " + infos }), error);
              d.reject(error);
           });
        } else 

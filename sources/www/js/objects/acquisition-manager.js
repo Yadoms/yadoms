@@ -31,9 +31,10 @@ AcquisitionManager.factory = function (json) {
  */
 AcquisitionManager.getLastAcquisition = function (keywords, additionalInfos) {
    var d = new $.Deferred();
+   var getAdditionInfo = ["lastValue", "lastValueDate"];
 
    if (keywords && keywords.length > 0) {
-      removeDuplicates(keywords);
+      keywords = removeDuplicates(keywords);
       
       //extract only keyword id
       var allKeywordId = [];
@@ -45,18 +46,25 @@ AcquisitionManager.getLastAcquisition = function (keywords, additionalInfos) {
                allKeywordId.push(keyword);
          }
       });
-
+      
+      getAdditionInfo = getAdditionInfo.concat(additionalInfos);
+      getAdditionInfo = removeDuplicates(getAdditionInfo);
+      
       RestEngine.putJson("/rest/acquisition/keyword/info", {
                data: JSON.stringify({
                      keywords: allKeywordId,
-                     info: ["lastValue", "lastValueDate"]
+                     info: getAdditionInfo
                })
          })
          .done(function (data) {
                var result = [];
                $.each(data, function (index, keydata) {
                   console.log(keydata);
-                  result.push({date: keydata.lastValueDate, keywordId: index, value: keydata.lastValue});
+                  result.push({date: keydata.lastValueDate, 
+                               keywordId: index, 
+                               value: keydata.lastValue,
+                               unit: keydata.unit,
+                               capacity: keydata.capacity});
                });
                d.resolve(result);
          })

@@ -209,6 +209,7 @@ namespace web
                if (parameters.size() > 1)
                {
                   shared::CDataContainer content(requestContent);
+                  content.printToLog(YADOMS_LOG(information));
                   if (content.containsChild("keywords"))
                   {
                      auto keywords = content.get<std::vector<int>>("keywords");
