@@ -33,44 +33,6 @@ AcquisitionManager.getLastAcquisition = function (keywords, additionalInfos) {
    var d = new $.Deferred();
    var getAdditionInfo = ["lastValue", "lastValueDate"];
 
-   if (keywords && keywords.length > 0) {
-      keywords = removeDuplicates(keywords);
-      
-      //extract only keyword id
-      var allKeywordId = [];
-      $.each(keywords, function (index, keyword) {
-         if (keyword) {
-            if (keyword.id)
-               allKeywordId.push(keyword.id);
-            else
-               allKeywordId.push(keyword);
-         }
-      });
-      
-      getAdditionInfo = getAdditionInfo.concat(additionalInfos);
-      getAdditionInfo = removeDuplicates(getAdditionInfo);
-      
-      RestEngine.putJson("/rest/acquisition/keyword/info", {
-               data: JSON.stringify({
-                     keywords: allKeywordId,
-                     info: getAdditionInfo
-               })
-         })
-         .done(function (data) {
-               var result = [];
-               $.each(data, function (index, keydata) {
-                  console.log(keydata);
-                  result.push({date: keydata.lastValueDate, 
-                               keywordId: index, 
-                               value: keydata.lastValue,
-                               unit: keydata.unit,
-                               capacity: keydata.capacity});
-               });
-               d.resolve(result);
-         })
-         .fail(d.reject);
-   } else {
-         d.resolve();
-   }
-   return d.promise();
+   getAdditionInfo = getAdditionInfo.concat(additionalInfos);
+   return KeywordManager.getInformation(keywords, getAdditionInfo);
 }

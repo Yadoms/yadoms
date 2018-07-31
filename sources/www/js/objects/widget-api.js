@@ -61,6 +61,18 @@ WidgetApi.prototype.getKeywordInformation = function (keywordId) {
 };
 
 /**
+ * Obtain information about keywords
+ * @param {} keywordIds to query
+ * @param {} information to query
+ * @returns {} a promise that's return done when information grabbed from server
+ */
+WidgetApi.prototype.getKeywordsInformation = function (keywords, additionalInfos) {
+   assert(!isNullOrUndefinedOrEmpty(keywords), "keywordId must be defined");
+   assert(!isNullOrUndefinedOrEmpty(additionalInfos), "additionalInfos must be defined");
+   return KeywordManager.getInformation(keywords, additionalInfos);
+};
+
+/**
  * @deprecated Register keywords to receive notifications when a new acquisition triggers
  * Obtain information about a device
  * @param {} deviceId to query
