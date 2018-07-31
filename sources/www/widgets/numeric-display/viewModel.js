@@ -38,6 +38,8 @@ function numericDisplayViewModel() {
          return;
       }
       
+      debugger;
+      
       var d = moment.duration(value);
       if (d.asSeconds() < 1) {  // Display in millisecond
          self.data(d.milliseconds().toString() + " ms");
@@ -89,7 +91,6 @@ function numericDisplayViewModel() {
         var self = this;
 
         console.log(data);
-        
         if (keywordId === self.widget.configuration.device.keywordId) {
            
            // Receive at startup data.unit and data.capacity
@@ -121,7 +122,7 @@ function numericDisplayViewModel() {
             
             if (self.shouldBeVisible()){
                if (data.date!=="")
-                  self.lastReceiveDate(moment(data.date).calendar().toString());
+                  self.lastReceiveDate(DateTimeFormatter.isoDateToDate (data.date).calendar().toString());
                else
                   self.lastReceiveDate($.t("widgets/numeric-display:NoAcquisition"));
             }
