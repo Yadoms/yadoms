@@ -6,11 +6,8 @@ widgetViewModelCtor =
  */
 function chartViewModel() {
     this.seriesUuid = [];
-
-    //Keyword Id List !
     this.interval = 0;
-    this.deviceInfo = [];       
-    this.keywordInfo = [];
+    this.deviceInfo = [];
     
     // The unit of the plot
     this.unit = [];
@@ -397,7 +394,6 @@ function chartViewModel() {
             var deffered2 = self.widgetApi.getKeywordInformation(device.content.source.keywordId);
             arrayOfDeffered.push(deffered2);
             deffered2.done(function (keyword) {
-                self.keywordInfo[index] = keyword;
                 self.chart.keyword[index] = keyword;
                 self.chart.keyword[index].typeInfo.translatedValues = [];
                 
@@ -458,7 +454,7 @@ function chartViewModel() {
             //
             deffered2
             .done(function(){
-               if (isEnumVariable(self.keywordInfo[index])) {
+               if (isEnumVariable(self.chart.keyword[index])) {
                   $.when(deffered, deffered2)
                   .done(function() {
                      self.widgetApi.getPluginInstanceInformation(self.deviceInfo[index].pluginId)
@@ -486,9 +482,9 @@ function chartViewModel() {
         .done(function () {
               // Translate enum values only for enum keyword
               $.each(self.widget.configuration.devices, function (index, device) {
-                  if (isEnumVariable(self.keywordInfo[index])){
-                      $.each(self.keywordInfo[index].typeInfo.values, function (index2, value) {
-                         self.keywordInfo[index].typeInfo.translatedValues[index2] = $.t("plugins." + self.pluginInstanceType[index] + ":enumerations." + self.keywordInfo[index].typeInfo.name + ".values." + value, { defaultValue:value} );
+                  if (isEnumVariable(self.chart.keyword[index])){
+                      $.each(self.chart.keywordInfo[index].typeInfo.values, function (index2, value) {
+                         self.chart.keyword[index].typeInfo.translatedValues[index2] = $.t("plugins." + self.pluginInstanceType[index] + ":enumerations." + self.chart.keyword[index].typeInfo.name + ".values." + value, { defaultValue:value} );
                       });           
                   }
               });
@@ -580,7 +576,7 @@ function chartViewModel() {
               //for each plot in the configuration we request for data
               $.each(self.widget.configuration.devices, function (index, device) {
                   //If the device is a bool, you have to modify
-                  if (isBoolVariable(self.keywordInfo[index]) || isEnumVariable(self.keywordInfo[index])) {
+                  if (isBoolVariable(self.chart.keyword[index]) || isEnumVariable(self.chart.keyword[index])) {
                       dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
                       prefixUri = "";                      
                       deviceIsSummary[index] = false; // We change the summary for the boolean device.
@@ -620,7 +616,7 @@ function chartViewModel() {
 
                                var v;
                                if (!isNullOrUndefined(value.key)) {
-                                  if (isEnumVariable(self.keywordInfo[index])) {
+                                  if (isEnumVariable(self.chart.keyword[index])) {
                                      v= self.chart.keyword[index].typeInfo.values.indexOf(value.key);
                                   }else {
                                      v = parseFloat(value.key);
@@ -631,7 +627,7 @@ function chartViewModel() {
                                }
                                
                                // The differential display is disabled if the type of the data is enum or boolean
-                               if (self.differentialDisplay[index] && !isBoolVariable(self.keywordInfo[index]) && !isEnumVariable(self.keywordInfo[index])){
+                               if (self.differentialDisplay[index] && !isBoolVariable(self.chart.keyword[index]) && !isEnumVariable(self.chart.keyword[index])){
                                   if (!isNullOrUndefined(self.chartLastValue[index]))
                                      plot.push([d, v-self.chartLastValue[index]]);
 
@@ -679,7 +675,7 @@ function chartViewModel() {
                                }
 
                                // The differential display is disabled if the type of the data is enum or boolean
-                               if (self.differentialDisplay[index] && !isBoolVariable(self.keywordInfo[index]) && !isEnumVariable(self.keywordInfo[index])){  
+                               if (self.differentialDisplay[index] && !isBoolVariable(self.chart.keyword[index]) && !isEnumVariable(self.chart.keyword[index])){  
                           if (self.periodValueType[index] =="avg") {
                             if (!isNullOrUndefined(self.chartLastValue[index]))
                               plot.push([d, vplot-self.chartLastValue[index]]);
@@ -714,7 +710,7 @@ function chartViewModel() {
                        }
                        
                        // Adapt units if needed
-                       adaptValuesAndUnit(plot, range, self.keywordInfo[index].units, function(newValues, newRange, newUnit){
+                       adaptValuesAndUnit(plot, range, self.chart.keyword[index].units, function(newValues, newRange, newUnit){
                           plot = newValues;
                           range = newRange;
                           self.unit[index] = newUnit;
@@ -733,9 +729,9 @@ function chartViewModel() {
                           if (self.ConfigurationLegendLabels ==="Device")
                              legendText = self.deviceInfo[index].friendlyName;
                           else if (self.ConfigurationLegendLabels ==="Keyword")
-                             legendText = self.keywordInfo[index].friendlyName;                                       
+                             legendText = self.chart.keyword[index].friendlyName;                                       
                           else
-                             legendText = self.deviceInfo[index].friendlyName + "/" + self.keywordInfo[index].friendlyName;
+                             legendText = self.deviceInfo[index].friendlyName + "/" + self.chart.keyword[index].friendlyName;
                        }catch(error){
                           self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
                        }
@@ -757,7 +753,7 @@ function chartViewModel() {
                                  enabled: false
                               },
                               name: legendText,
-                              connectNulls: isBoolVariable(self.keywordInfo[index]), // TODO : false si self.prefix === "minute"
+                              connectNulls: isBoolVariable(self.chart.keyword[index]), // TODO : false si self.prefix === "minute"
                               marker: {
                                  enabled: null,
                                  radius: 2,
@@ -773,7 +769,7 @@ function chartViewModel() {
                            if (device.content.PlotType === "arearange") { // arearange
                                serieOption.type = 'line';
                            }else {                                             // default option
-                               serieOption.step = isBoolVariable(self.keywordInfo[index]);  // For boolean values, create steps.
+                               serieOption.step = isBoolVariable(self.chart.keyword[index]);  // For boolean values, create steps.
                                serieOption.type = device.content.PlotType;
                            }
                            
@@ -805,7 +801,7 @@ function chartViewModel() {
                                    // Add Units and precision for ranges
                                    if (serieRange){
                                       try{
-                                         serieRange.units = $.t(self.keywordInfo[index].units);
+                                         serieRange.units = $.t(self.chart.keyword[index].units);
                                       }
                                       catch(error){
                                          serieRange.units="";
@@ -1041,7 +1037,7 @@ function chartViewModel() {
        var self = this;
        
        if (self.chart){
-          $.each(self.keywordInfo, function (index, keyword) {
+          $.each(self.chart.keyword, function (index, keyword) {
              if (keywordId.id == keyword.id){ // we found the keyword associated, index to the corresponding series
                 var serie = self.chart.get(self.seriesUuid[index]);
                 var serieRange = self.chart.get('range_' + self.seriesUuid[index]);             
