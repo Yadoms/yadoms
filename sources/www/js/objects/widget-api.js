@@ -67,7 +67,7 @@ WidgetApi.prototype.getKeywordInformation = function (keywordId) {
  * @returns {} a promise that's return done when information grabbed from server
  */
 WidgetApi.prototype.getKeywordsInformation = function (keywords, additionalInfos) {
-   assert(!isNullOrUndefinedOrEmpty(keywords), "keywordId must be defined");
+   assert(!isNullOrUndefinedOrEmpty(keywords), "keywords must be defined");
    assert(!isNullOrUndefinedOrEmpty(additionalInfos), "additionalInfos must be defined");
    return KeywordManager.getInformation(keywords, additionalInfos);
 };

@@ -102,17 +102,21 @@ KeywordManager.getInformation = function (keywords, additionalInfos) {
                var result = [];
                $.each(data, function (index, keydata) {
                   console.log(keydata);
-                  result.push({date: keydata.lastValueDate,
-                               keywordId: index, 
-                               accessMode: keydata.accessMode,
+                  result.push({accessMode: keydata.accessMode,
                                capacity: keydata.capacity,
+                               date: keydata.lastValueDate,
+                               keywordId: index,
                                measure: keydata.measure,
-                               value: keydata.lastValue,
-                               unit: keydata.unit,});
+                               pluginId: keydata.pluginId,
+                               unit: keydata.unit,
+                               value: keydata.lastValue});
                });
                d.resolve(result);
          })
-         .fail(d.reject);
+         .fail(function(error){
+            console.log(error);
+            d.reject();
+         });
    } else {
          d.resolve();
    }
@@ -134,8 +138,6 @@ KeywordManager.getAll = function () {
 
    return d.promise();
 };
-
-
 
 /**
  * Get the last value of a keywordId

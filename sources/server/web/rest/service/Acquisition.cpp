@@ -121,6 +121,9 @@ namespace web
                   else
                      keywordResult.set(info, std::string());
                }
+			   else if (info == "friendlyName")
+				   keywordResult.set(info,
+									 m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->FriendlyName());
                else if (info == "deviceId")
                   keywordResult.set(info,
                                     m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->DeviceId);

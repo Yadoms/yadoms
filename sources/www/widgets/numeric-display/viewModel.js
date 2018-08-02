@@ -38,8 +38,6 @@ function numericDisplayViewModel() {
          return;
       }
       
-      debugger;
-      
       var d = moment.duration(value);
       if (d.asSeconds() < 1) {  // Display in millisecond
          self.data(d.milliseconds().toString() + " ms");
@@ -67,9 +65,7 @@ function numericDisplayViewModel() {
        if (!isNullOrUndefined(self.widget.configuration.precision))
           self.precision = parseInt(self.widget.configuration.precision, 10);
        else
-          self.precision = 1;             
-        
-       //var d = new $.Deferred();
+          self.precision = 1;
 	   
         //we register keyword new acquisition
         self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
@@ -92,7 +88,6 @@ function numericDisplayViewModel() {
 
         console.log(data);
         if (keywordId === self.widget.configuration.device.keywordId) {
-           
            // Receive at startup data.unit and data.capacity
            if (!isNullOrUndefinedOrEmpty(data.unit))
               self.rawUnit = data.unit;
