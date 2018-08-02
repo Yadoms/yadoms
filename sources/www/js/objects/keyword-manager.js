@@ -105,6 +105,7 @@ KeywordManager.getInformation = function (keywords, additionalInfos) {
                   result.push({accessMode: keydata.accessMode,
                                capacity: keydata.capacity,
                                date: keydata.lastValueDate,
+                               friendlyName: keydata.friendlyName,
                                keywordId: index,
                                measure: keydata.measure,
                                pluginId: keydata.pluginId,

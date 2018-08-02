@@ -76,23 +76,15 @@ function chartViewModel() {
          case "HALF_YEAR/day":
          case "HALF_YEAR/week":
          case "HALF_YEAR/month":
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"day\"><span data-i18n=\"widgets.chart:navigator.daily\"/></div>"});
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"week\"><span data-i18n=\"widgets.chart:navigator.weekly\"/></div>"});
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"month\"><span data-i18n=\"widgets.chart:navigator.monthly\"/></div>"});         
-             break;
          case "YEAR/day":
          case "YEAR/week":
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"day\"><span data-i18n=\"widgets.chart:navigator.daily\"/></div>"});
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"week\"><span data-i18n=\"widgets.chart:navigator.weekly\"/></div>"});
-             menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"month\"><span data-i18n=\"widgets.chart:navigator.monthly\"/></div>"});         
-          break;
          case "FIVE_YEAR/day":
          case "FIVE_YEAR/week":
          case "FIVE_YEAR/month":
              menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"day\"><span data-i18n=\"widgets.chart:navigator.daily\"/></div>"});
              menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"week\"><span data-i18n=\"widgets.chart:navigator.weekly\"/></div>"});
              menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"month\"><span data-i18n=\"widgets.chart:navigator.monthly\"/></div>"});         
-             break;          
+             break;
           default:
           break;
        }
@@ -341,11 +333,12 @@ function chartViewModel() {
     
     this.configurationChanged = function () {
         var self = this;
+        var arrayOfDeffered = [];
+        var keywords = [];
+        var d = new $.Deferred();        
         // Reset of some values
         self.periodValueType = [];
         self.seriesUuid = [];
-        var arrayOfDeffered = [];
-        var d = new $.Deferred();
 
         if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
             return;
@@ -366,7 +359,7 @@ function chartViewModel() {
         }catch(error){ // If the configuration doesn't exist (migration, ...) -> default value
           console.log ("default value for legend labels : device name + keyword name");
         }
-
+        
         //we create an uuid for each serie
         $.each(self.widget.configuration.devices, function (index, device) {
             //we update uuid if they don't exist
@@ -390,38 +383,21 @@ function chartViewModel() {
                self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
             });
 
-            //we ask the current value
-            var deffered2 = self.widgetApi.getKeywordInformation(device.content.source.keywordId);
-            arrayOfDeffered.push(deffered2);
-            deffered2.done(function (keyword) {
+            keywords.push(device.content.source.keywordId);
+        });
+        
+        var defferedPluginInstance = new $.Deferred();
+        arrayOfDeffered.push(defferedPluginInstance);
+        
+        var deffered2 = self.widgetApi.getKeywordsInformation(keywords, ["accessMode", "capacity", "friendlyName", "unit", "measure"]);
+         arrayOfDeffered.push(deffered2);
+         deffered2.done(function (keywordsInformation) {
+            $.each(keywordsInformation, function (index, keyword) {
                 self.chart.keyword[index] = keyword;
-                self.chart.keyword[index].typeInfo.translatedValues = [];
-                
-                try{
-                   if (parseBool(device.content.advancedConfiguration.checkbox)){
-                      // read the differential display variable
-                      if (device.content.advancedConfiguration.content.differentialDisplay ==="relative")
-                         self.differentialDisplay[index] = true;
-                      else
-                         self.differentialDisplay[index] = false;
-                     
-                      // read the period value we need
-                      self.periodValueType[index] = device.content.advancedConfiguration.content.periodtype;
+                //self.chart.keyword[index].typeInfo.translatedValues = [];
 
-                   }else{ // automatic managment : the managment of the information is done from the measure type of the keyword                   
-                     if (keyword.measure === "Cumulative"){
-                        self.differentialDisplay[index] = true;
-                        self.periodValueType[index] = "max";
-                     }
-                     else{ // Default values and Absolute value
-                        self.differentialDisplay[index] = false;
-                        self.periodValueType[index] = "avg";
-                     }
-                  }
-               }
-               catch(error){
-                  console.log('error detecting during defferential configuration display => automatic management.');
-                  if (keyword.measure === "Cumulative"){
+                function measureManagement(measure){
+                  if (measure === "Cumulative"){
                      self.differentialDisplay[index] = true;
                      self.periodValueType[index] = "max";
                   }
@@ -429,6 +405,20 @@ function chartViewModel() {
                      self.differentialDisplay[index] = false;
                      self.periodValueType[index] = "avg";
                   }
+                }
+                
+                try{
+                   if (parseBool(self.widget.configuration.devices[index].content.advancedConfiguration.checkbox)){
+                      self.differentialDisplay[index] = (self.widget.configuration.devices[index].content.advancedConfiguration.content.differentialDisplay ==="relative") ? true : false;
+                      self.periodValueType[index] = self.widget.configuration.devices[index].content.advancedConfiguration.content.periodtype;
+
+                   }else{ // automatic managment : the managment of the information is done from the measure type of the keyword
+                      measureManagement(keyword.measure);
+                  }
+               }
+               catch(error){
+                  console.log('error detecting during defferential configuration display => automatic management.');
+                  measureManagement(keyword.measure);
                }
                
                if (self.differentialDisplay[index] && device.content.PlotType === "arearange"){
@@ -436,69 +426,36 @@ function chartViewModel() {
                   self.incompatibility = true;
                   return;
                }
-               else
-                  self.incompatibility = false;
                
                 //we register the keyword for new acquisition if the device exist
-                self.widgetApi.registerKeywordForNewAcquisitions(device.content.source.keywordId);                  
-            })
-            .fail(function (error) {
-               self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
-            });
-            
-            var defferedPluginInstance = new $.Deferred();
-            arrayOfDeffered.push(defferedPluginInstance);
-            
-            //
-            // Use to get the plugin Instance Type only for Enum
-            //
-            deffered2
-            .done(function(){
-               if (isEnumVariable(self.chart.keyword[index])) {
-                  $.when(deffered, deffered2)
-                  .done(function() {
-                     self.widgetApi.getPluginInstanceInformation(self.deviceInfo[index].pluginId)
-                     .done(function (pluginInstance) {
-                        self.pluginInstanceType[index] = pluginInstance.type;
-                        defferedPluginInstance.resolve();
-                     })
-                     .fail(function (error) {
-                        defferedPluginInstance.reject();
-                     });
+                self.widgetApi.registerKeywordForNewAcquisitions(keyword.keywordId);
+                
+                //TODO : The deffered doesnt work with more than 1 Enum
+               if (isEnumVariable(keyword)) {
+                  self.widgetApi.getPluginInstanceInformation(keyword.pluginId)
+                  .done(function (pluginInstance) {
+                     self.pluginInstanceType[index] = pluginInstance.type;
+                     // Translate enum values only for enum keyword
+                     $.each(self.chart.keywordInfo[index].typeInfo.values, function (index2, value) {
+                        self.chart.keyword[index].typeInfo.translatedValues[index2] = $.t("plugins." + self.pluginInstanceType[index] + ":enumerations." + self.chart.keyword[index].typeInfo.name + ".values." + value, { defaultValue:value} );
+                     });                        
+                     defferedPluginInstance.resolve();
                   })
-                  .fail(function (error) {
-                     defferedPluginInstance.reject();
-                  });
-               } else {
-                  defferedPluginInstance.resolve();
+                  .fail(defferedPluginInstance.reject);
                }
-            })
-            .fail(function (error) {
-               defferedPluginInstance.reject();
             });
-        });
+         })
+         .fail(function (error) {
+            self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
+         });        
         
         $.when.apply($, arrayOfDeffered) // The first failing array fail the when.apply
         .done(function () {
-              // Translate enum values only for enum keyword
-              $.each(self.widget.configuration.devices, function (index, device) {
-                  if (isEnumVariable(self.chart.keyword[index])){
-                      $.each(self.chart.keywordInfo[index].typeInfo.values, function (index2, value) {
-                         self.chart.keyword[index].typeInfo.translatedValues[index2] = $.t("plugins." + self.pluginInstanceType[index] + ":enumerations." + self.chart.keyword[index].typeInfo.name + ".values." + value, { defaultValue:value} );
-                      });           
-                  }
-              });
-              
-            self.refreshData(self.interval).always(function () {
-              d.resolve();
-            })
-            .fail(function (error) {
-               d.reject();
-            });
+            self.refreshData(self.interval)
+            .always(d.resolve)
+            .fail(d.reject)
         })
-        .fail(function() {
-           d.reject();
-        });
+        .fail(d.reject);
         
         return d.promise();
     };
@@ -545,8 +502,6 @@ function chartViewModel() {
     this.refreshData = function (interval) {
        var self = this;
        var d = new $.Deferred();
-
-       console.log ("refreshData");
        
        if (self.chart) {
             //we save interval in the chart
@@ -710,7 +665,7 @@ function chartViewModel() {
                        }
                        
                        // Adapt units if needed
-                       adaptValuesAndUnit(plot, range, self.chart.keyword[index].units, function(newValues, newRange, newUnit){
+                       adaptValuesAndUnit(plot, range, self.chart.keyword[index].unit, function(newValues, newRange, newUnit){
                           plot = newValues;
                           range = newRange;
                           self.unit[index] = newUnit;
@@ -801,7 +756,7 @@ function chartViewModel() {
                                    // Add Units and precision for ranges
                                    if (serieRange){
                                       try{
-                                         serieRange.units = $.t(self.chart.keyword[index].units);
+                                         serieRange.units = $.t(self.chart.keyword[index].unit);
                                       }
                                       catch(error){
                                          serieRange.units="";
@@ -1080,27 +1035,21 @@ function chartViewModel() {
                      if (!isNullOrUndefined(serie) && data.date!=="" & data.value!=="") {
                          // Add new point only for HOUR interval
                          // others points are treated into the onTime function
-                         switch (self.interval) {
-                             case "HOUR":
-                                 if (!isNullOrUndefined(serie)) {
-                                     var time  = moment(self.serverTime)._d.getTime().valueOf();
-                                     var isolastdate = DateTimeFormatter.isoDateToDate(data.date)._d.getTime().valueOf();
-                                     if (time - isolastdate < 3600000){ // Only if the last value is in last hour
-                                        self.chart.hideLoading(); // If a text was displayed before
-                                        if (self.differentialDisplay[index]){
-                                           if (serie.points.length > 0 && !isNullOrUndefined(self.chartLastValue[index]))
-                                              serie.addPoint([data.date.valueOf(), parseFloat(data.value) - self.chartLastValue[index]], true, false, true);
-                                           self.chartLastValue[index] = parseFloat(data.value);                                                 
-                                        }else if (isEnumVariable(index)){
-                                           var value = self.chart.keyword[index].typeInfo.values.indexOf(data.value);
-                                           serie.addPoint([data.date.valueOf(), value], true, false, true);
-                                        }else
-                                           serie.addPoint([data.date.valueOf(), parseFloat(data.value)], true, false, true);
-                                     }
-                                 }
-                                 break;
-                             default:
-                                 break;
+                         if  (self.interval === "HOUR" && !isNullOrUndefined(serie)) {
+                            var time  = moment(self.serverTime)._d.getTime().valueOf();
+                            var isolastdate = DateTimeFormatter.isoDateToDate(data.date)._d.getTime().valueOf();
+                            if (time - isolastdate < 3600000){ // Only if the last value is in last hour
+                               self.chart.hideLoading(); // If a text was displayed before
+                               if (self.differentialDisplay[index]){
+                                  if (serie.points.length > 0 && !isNullOrUndefined(self.chartLastValue[index]))
+                                     serie.addPoint([data.date.valueOf(), parseFloat(data.value) - self.chartLastValue[index]], true, false, true);
+                                  self.chartLastValue[index] = parseFloat(data.value);                                                 
+                               }else if (isEnumVariable(index)){
+                                  var value = self.chart.keyword[index].typeInfo.values.indexOf(data.value);
+                                  serie.addPoint([data.date.valueOf(), value], true, false, true);
+                               }else
+                                  serie.addPoint([data.date.valueOf(), parseFloat(data.value)], true, false, true);
+                            }
                          }
                      }
                      else
