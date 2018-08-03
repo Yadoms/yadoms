@@ -20,6 +20,7 @@
 * Fix #491 - Add error notification when fail to get updates
 * Fix #498 - [Devices page] could get more than 1 keyword table with Internet network connexion
 * Fix #499 - [Dashboard pages] Click fastly on the button "Create a device" generate more than 1 sub page
+* Fix #502 - [Dashboard - automation rules] Move help button to edit rule modal footer
 * In configuration sections, don't display sub-section of a combo section if no content
 * Optimize Devices Page in dashboard (less requests to the server)
 
