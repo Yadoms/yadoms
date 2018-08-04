@@ -147,7 +147,6 @@ function chartViewModel() {
         var arrayOfDeffered = [];
         var d = new $.Deferred();
         
-        // create the chart
         self.$chart = self.widgetApi.find("div.container");
         
         //

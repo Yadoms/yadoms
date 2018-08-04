@@ -85,8 +85,6 @@ function numericDisplayViewModel() {
     */
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
-
-        console.log(data);
         if (keywordId === self.widget.configuration.device.keywordId) {
            // Receive at startup data.unit and data.capacity
            if (!isNullOrUndefinedOrEmpty(data.unit))
