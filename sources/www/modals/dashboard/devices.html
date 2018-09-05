@@ -3,12 +3,15 @@
    <span data-i18n="modals.dashboard.sub-windows.devices.deviceListDescription"></span><br>
    <button id="btn-add-new-device" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-tasks"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.new"></span></button>
    <table id="device-list" class="table table-bordered table-striped dashboard-list">
-      <tr>
-         <td data-i18n="modals.dashboard.sub-windows.devices.table.name" class="col-md-2"></td>
-         <td data-i18n="modals.dashboard.sub-windows.devices.table.attachedTo" class="col-md-2"></td>
-         <td data-i18n="modals.dashboard.sub-windows.devices.table.model" class="long-text col-md-2"></td>
-         <td data-i18n="modals.dashboard.sub-windows.devices.table.actions" class="col-md-2"></td>
-      </tr>
+         <thead>
+            <th data-i18n="modals.dashboard.sub-windows.devices.table.name" class="col-md-2"></th>
+            <th data-i18n="modals.dashboard.sub-windows.devices.table.attachedTo" class="col-md-2"></th>
+            <th data-i18n="modals.dashboard.sub-windows.devices.table.model" class="long-text col-md-2"></th>
+            <th data-i18n="modals.dashboard.sub-windows.devices.table.actions" class="col-md-2"></th>
+         </thead>
+         <tbody>
+
+         </tbody>
       <!-- devices will be listed here-->
    </table>
    
@@ -26,27 +29,18 @@
                        "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
                        "</div>";
 
+   var actionsBtnsWithExtraQueries =   "<div class=\"btn-group\">\n" +
+                       "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-cog\"></span></button>\n" +
+                       "<button type=\"button\" class=\"btn btn-success btn-extraQuery\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\"><span class=\"fa fa-navicon\"></span></button>\n" +
+                       "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
+                       "</div>";
+
    var actionsBtnsBlacklist = "<div class=\"btn-group\">\n" +
                               "<button type=\"button\" class=\"btn btn-success btn-restore\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.restore\"><span class=\"fa fa-reply\"></span></button>\n" +
                               "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
                               "</div>";   
-   
-   dispatchkeywordsToDevicesView = function (acquisition) {
-      var $keywordRow = getKeywordIdDomRow(acquisition.keywordId);
-      if ($keywordRow.length !=0) {
-         var device;
-         var $deviceDetailsTable = $("table#keyword-list");
-         if ($deviceDetailsTable.length === 1) {
-            device = getDeviceFromId($deviceDetailsTable.attr("device-id"));
-         }
-         if (!isNullOrUndefined(device)){
-            var index = device.keywords.map(function (e) { return e.id; }).indexOf(acquisition.keywordId);
-            if (index != -1)
-               updateKeywordDomLine($keywordRow, acquisition, device.keywords[index], device.attachedPlugin);
-         }
-      }      
-   };
-   
+
+
    dispatchkeywordNewToDevicesView = function (keyword) {
       var i = deviceList.map(function (e) { return e.id; }).indexOf(keyword.keyword.deviceId);
       var device;
@@ -55,7 +49,7 @@
          device = deviceList[i];
       
          // sort keywords
-         deviceList[i].keywords = sortListItemsWithFriendlyName (deviceList[i].keywords);
+         deviceList[i].keywords = sortListItemsWithFriendlyName ( deviceList[i].keywords );
          var $deviceRow = getDeviceDomRow(device);
 
          if ($deviceRow.length !=0) {
@@ -68,9 +62,9 @@
                createKeywordsTable(device, $deviceRow);
             }
             fillTable(device);
+            
             AcquisitionManager.getLastValues(device.keywords)
             .done(function (data) {
-               var keywordIds = [];
                $.each(data, function (index, acquisition) {
                   $.each(device.keywords, function (idx, keyword) {
                      if (keyword.id === acquisition.keywordId) {
@@ -78,16 +72,12 @@
                         if (!$keywordRow) {
                            $keywordRow = createKeywordDomLine($deviceDetailsTable, keyword);
                         }
-                        keywordIds.push(keyword.id);
                         updateKeywordDomLine($keywordRow, acquisition, keyword, device.attachedPlugin);
                      } else {
                         return; //break $.each
                      }
                   });
                });
-               
-               //subscribe new keywords for display
-               updateWebSocketFilter(keywordIds);
             })
             .fail(function (error) {
                notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for device = " + device.id }), error);
@@ -98,8 +88,10 @@
    
    dispatchkeywordDeletedToDevicesView = function (keyword) {
       getKeywordIdDomRow(keyword.keyword.id).remove();
+      
       // Remove the keyword from the keyword list of the specific device
       var i = deviceList.map(function (e) { return e.id; }).indexOf(keyword.keyword.deviceId);
+      var device;
       if (i !== -1){
          if (!isNullOrUndefined(deviceList[i].keywords)){
             var keywordCell = deviceList[i].keywords.map(function (e) { return e.id; }).indexOf(keyword.keyword.id);
@@ -107,14 +99,6 @@
             if (keywordCell !== -1){
                deviceList[i].keywords.splice(keywordCell, 1);
             }
-            
-            var keywords = [];
-            $.each(deviceList[i].keywords, function (idx, keyword) {
-               keywords.push(keyword.id);
-            });
-            
-            // update the new query to the server
-            updateWebSocketFilter(keywords);
          }
       }
    };
@@ -133,12 +117,9 @@
             }
          }
       });
-      DeviceManager.getAttachedPlugin(device.device, true)
-      .done(function () {
-         addDeviceToDom(device.device, indexToInsert);
-         deviceList.push(device.device);
-         deviceList = sortListItemsWithFriendlyName ( deviceList );
-      });
+      addDeviceToDom(device.device, indexToInsert);
+      deviceList.push(device.device);
+      deviceList = sortListItemsWithFriendlyName ( deviceList );
    };   
    
    dispatchDevicesBlacklistedToDevicesView = function (device) {
@@ -157,18 +138,21 @@
       
       // Remove the device from the device list to display
       var i = deviceList.map(function (e) { return e.id; }).indexOf(device.device.id);
+      var device;
       if (i !== -1){
          deviceList.splice(i, 1);
-         // update the new query to the server
-         updateWebSocketFilter();
       }    
    };
    
+   function getDeviceDomRow(device) {
+      return $("table#device-list").find("tr[device-id='" + device.id + "'].device");
+   }
+
    function transformDeviceInDom(device) {
       // remove device details if any 
       getDeviceDetailsDomRow().remove();
       
-      var $deviceRow = $("table#device-list").find("tr[device-id='" + device.id + "'].device");
+      var $deviceRow = getDeviceDomRow(device);
       $deviceRow.find("td.device-friendlyName").find("span").remove();
       
       var fn = device.friendlyName;
@@ -182,48 +166,182 @@
       
       //we remove old buttons
       $deviceRow.find("td.device-actions").find(".btn-group").remove();
-      
+    
       //we add new actions to the device
       if(parseBool(device.blacklist) == true) {
          $deviceRow.find("td.device-actions").append(actionsBtnsBlacklist);
       } else {
-         if((device.name != "pluginState" && device.model != "Plugin state")) 
-           $deviceRow.find("td.device-actions").append(actionsBtns);
+         if((device.name != "pluginState" && device.model != "Plugin state")) {
+            if(device.details && device.details.extraQueries) {
+                  $deviceRow.find("td.device-actions").append(actionsBtnsWithExtraQueries);
+            } else {
+                  $deviceRow.find("td.device-actions").append(actionsBtns);
+            }
+                  
+         }
       }
-      addDeviceButtonsEvents($deviceRow, device);  
+      
+      //we bind event on the different actions
+      $deviceRow.find("button.btn-configure").unbind('click').bind('click', function (e) { 
+            e.stopPropagation();       
+            updateDeviceConfiguration(device);
+      });
+
+      $deviceRow.find("button.btn-delete").unbind('click').bind('click', function (e) {
+            e.stopPropagation();
+            deleteDevice(device);
+      });
+
+      $deviceRow.find("button.btn-restore").unbind('click').bind('click', function (e) { 
+            e.stopPropagation();
+            restoreDevice(device);           
+      });      
+
+//       $deviceRow.find("button.btn-extraQuery").unbind('click').bind('click', function (e) {
+//             loadExtraQueries($deviceRow, device);
+// //            e.stopPropagation();
+//             //return false;
+//       });      
    };
    
    Yadoms.initializeDeviceDashboard = function () {
-      $("input.cb-showblacklist").off('change').on('change', function (){ 
-         refreshDeviceList();
+      $("input.cb-showblacklist").unbind('change').bind('change', function () 
+      { 
+         // during the page resfresh, we disable the peridic task => Avoid button in double , ...
+         clearInterval(Yadoms.periodicDashboardTask);
+         refreshDeviceList().always(function() {
+            Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+         });
       });
-      
-      Yadoms.DeviceDashboardRegisterButtonAddNewDevice();
-      
-      $("table#device-list").on("remove", function () {
-         //subscribe only the page, no extra device at the remove of this page
-         updateWebSocketFilter();         
-      });
+      $("#btn-add-new-device").unbind("click").bind("click", function () {addNewDevice();});
       
       var d = new $.Deferred();
-      var arrayOfDeffered = [];
       
-      arrayOfDeffered.push(asyncLoadJSLib("js/json-prettyprint.js"));
-      arrayOfDeffered.push(refreshDeviceList());
-      
-      $.when.apply($, arrayOfDeffered)
-      .done(d.resolve)
-      .fail(d.reject)
-      
-      // refresh the device list
+      clearInterval(Yadoms.periodicDashboardTask);
+
+      //we check if there is at least one plugin instantiated that handle manual creation
+      PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation()
+      .done(function (list) {
+            refreshDeviceList()
+            .done(d.resolve)
+            .fail(d.reject)
+            .always(function() {
+                  //we use the periodic task of the dashboard
+                  Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+            });
+      })
+      .fail(function (error) {
+            notifyError($.t("modals.pluginInstance.errorGettingManuallyDeviceCreation"), error);
+            d.reject();
+      });
+
       return d.promise();
    };
-   
-   Yadoms.DeviceDashboardRegisterButtonAddNewDevice = function () {
-      $("#btn-add-new-device").one("click", function () {addNewDevice();});
-   };
 
-   function refreshDeviceList() {
+
+      function loadExtraQueries($deviceRow, device) {
+            //manage extra commands in an async way (allow to display plugin line before all extra commands loaded; because some of them can use binding....)
+            var $extraQueriesButton = $deviceRow.find("button.btn-extraQuery");
+            if ($extraQueriesButton) {
+
+                  //delete previous loaded extrea commands menu
+                  $deviceRow.find("ul.dropdown-extraqueries").remove();
+
+                  var extraQueriesFromDeviceDetails = device.details.extraQueries.split(",");
+                  if (extraQueriesFromDeviceDetails && Object.keys(extraQueriesFromDeviceDetails).length > 0) {
+
+                        device.attachedPlugin.getBoundDeviceExtraQuery()
+                        .done(function (extraQueries) {
+                              //create DOM
+                              var extraQueryButton = "<ul class=\"dropdown-menu dropdown-extraqueries\">";
+                              $.each(extraQueriesFromDeviceDetails, function (index, values) {
+                              
+                                    if(extraQueries && extraQueries[values]) {
+                                          extraQueryButton +=
+                                                "<li><a href=\"#\" class=\"btn-extraQuery-" + values.replace("#","_") +
+                                                "\"><span class=\"extra-query-icon " + extraQueries[values].iconClass +
+                                                "\"></span>&nbsp;<span data-i18n=\"plugins." + device.attachedPlugin.type +
+                                                ":deviceExtraQueries." + values + ".name\"></span>" + (
+                                                      values.commandData ? "..." : "") + "</a></li>";
+                                    }
+                              });
+                              extraQueryButton += "</ul>";
+
+                              //insert the new menu
+                              $extraQueriesButton.after(extraQueryButton);
+                              
+                              //update menu translation
+                              $deviceRow.i18n();
+
+                              //bind each extra command to js
+                              $.each(extraQueriesFromDeviceDetails, function (index, values) {
+                                    $deviceRow.find("a.btn-extraQuery-" + values.replace("#","_")).unbind('click').bind('click', function (e) {
+                                          onExtraQuery(device, values, extraQueries[values]);
+                                    });
+                              });
+
+                              //show the dropdown
+                              $extraQueriesButton.find("ul").dropdown();
+                        })
+
+                  }
+            }
+      }
+
+      function onExtraQuery(device, commandName, commandConfig) {
+            if (commandConfig && commandConfig.commandData) {
+                  Yadoms.modals.pluginExtraQueriesConfigure.loadAsync()
+                        .done(function () {
+                              Yadoms.ConfigureExtraQueries(commandName, commandConfig.commandData, device.attachedPlugin)
+                                    .done(function (data) {
+                                          postExtraQuery(device, commandName, data);
+                                    });
+                        });
+            } else {
+                  postExtraQuery(device, commandName);
+            }
+
+      }
+
+      function postExtraQuery(device, commandName, data) {
+            PluginInstanceManager.postDeviceExtraQuery(device.attachedPlugin, device, commandName, data)
+                  .done(function (taskIdContainer) {
+                        var taskId = taskIdContainer.taskId;
+                        if (taskId) {
+                              var $line = getDeviceDomRow(device);
+                              //we listen for webSocket event
+                              $(document).on("taskupdatenotification." + taskId, function (e, taskUpdateInformation) {
+                                    //translate resolution order
+                                    // 1. try plugin one
+                                    // 2. try core
+                                    // 3. try directly
+                                    var translatedMessage = $.t("plugins." + device.attachedPlugin.type + ":" +
+                                          taskUpdateInformation.message, {
+                                                defaultValue: $.t("core." +
+                                                      taskUpdateInformation.message, {
+                                                            defaultValue: $.t(taskUpdateInformation.message),
+                                                            extraquery: $.t(taskUpdateInformation.name)
+                                                      }),
+                                                extraquery: $.t(taskUpdateInformation.name)
+                                          });
+
+                                    //we manage the end of the task
+                                    if (taskUpdateInformation.taskState.toLowerCase() === "fail") {
+                                          console.error("Unable to realize extra query : " + taskUpdateInformation.exception);
+                                          if (taskUpdateInformation.exception) {
+                                                translatedMessage = $.t("plugins." + device.attachedPlugin.type + ":" + taskUpdateInformation.exception);
+                                          }
+                                          notifyError(translatedMessage);
+                                    } else if (taskUpdateInformation.taskState.toLowerCase() === "success") {
+                                          notifySuccess(translatedMessage);
+                                    }
+                              });
+                        }
+                  });
+      }
+   
+
+function refreshDeviceList() {
       var d = new $.Deferred();
       var showblacklistedDevices = $("input.cb-showblacklist").prop("checked");
 
@@ -232,41 +350,27 @@
 
       //we clear pluginInstance array
       var tempList = [];
-      var arrayOfDeffered = [];
-      var isDeveloperMode = false;
-      
-      var deffered2 = YadomsInformationManager.getList();
-      arrayOfDeffered.push(deffered2);
-      deffered2.done(function (data) {
-         isDeveloperMode = data.developerMode;
-      });      
-      
-      var deffered1 = DeviceManager.getAll();
-      arrayOfDeffered.push(deffered1);
-      deffered1.done(function (allDevices) {
-         tempList = sortListItemsWithFriendlyName (allDevices);
-         var deffered3 = DeviceManager.getAttachedPlugins(tempList);
-         arrayOfDeffered.push(deffered3);
-         
-         // The "when.apply" is here to wait the deffered3
-         $.when.apply($, arrayOfDeffered).done(function () {
-            //foreach result we append a <tr>
-            $.each(tempList, function (index, value) {
-               if( (!isDeveloperMode && (value.name !== "pluginState" || value.model !== "Plugin state")) || isDeveloperMode) {
-                  if(showblacklistedDevices || (!showblacklistedDevices && parseBool(value.blacklist) === false)) {
-                     addDeviceToDom(value, null);
-                     deviceList.push(value);
+
+      DeviceManager.getAll()
+      .done(function (allDevices) {
+         YadomsInformationManager.getList()
+            .done(function (data) {
+               tempList = sortListItemsWithFriendlyName ( allDevices );
+               //foreach result we append a <tr>
+               $.each(tempList, function (index, value) {
+                  if( (!data.developerMode && (value.name !== "pluginState" || value.model !== "Plugin state")) || data.developerMode) {
+                     if(showblacklistedDevices || (!showblacklistedDevices && parseBool(value.blacklist) === false)) {
+                        addDeviceToDom(value, null);
+                        deviceList.push(value);
+                     }
                   }
-               }
-            });
-            d.resolve();
-         })
-         .fail(function (error) {
-            notifyError($.t("widgets.chart:errorDuringGettingDeviceData"), error);
-            d.reject();
-         });         
-      });
-      
+               });
+               d.resolve();
+            })
+            .fail(d.reject);
+      })
+      .fail(d.reject);
+
       return d.promise();
    }
 
@@ -292,24 +396,6 @@
          return deviceList[i];
       return undefined;
    }
-   
-   function addDeviceButtonsEvents(deviceRow, device) {
-      //we bind event on the different actions
-      deviceRow.find("button.btn-configure").off().one('click', function (e) { 
-         e.stopPropagation();       
-         updateDeviceConfiguration(device);
-      });
-
-      deviceRow.find("button.btn-delete").off().one('click', function (e) {
-         e.stopPropagation();
-         deleteDevice(device);
-      });
-
-      deviceRow.find("button.btn-restore").off().one('click', function (e) { 
-         e.stopPropagation();
-         restoreDevice(device);           
-      });      
-   };
    
    function addDeviceToDom(device, positionDevice) {
       //in case the device is blacklisted, then strike it
@@ -341,45 +427,104 @@
       if(parseBool(device.blacklist) === true) {
          $deviceRow.find("td.device-actions").append(actionsBtnsBlacklist);
       } else {
-         if((device.name != "pluginState" && device.model != "Plugin state")) 
-           $deviceRow.find("td.device-actions").append(actionsBtns);
+            if((device.name != "pluginState" && device.model != "Plugin state")) {
+                  if(device.details && device.details.extraQueries) {
+                        $deviceRow.find("td.device-actions").append(actionsBtnsWithExtraQueries);
+                  } else {
+                        $deviceRow.find("td.device-actions").append(actionsBtns);
+                  }
+            }
       }
-     
-      addDeviceButtonsEvents($deviceRow, device);
-      $deviceRow.one('click', function () { clickDevice(device); });
+
+      //we bind event on the different actions
+      $deviceRow.find("button.btn-configure").unbind('click').bind('click', function (e) { 
+            e.stopPropagation();       
+            updateDeviceConfiguration(device);
+      });
+
+      $deviceRow.find("button.btn-delete").unbind('click').bind('click', function (e) {
+            e.stopPropagation();
+            deleteDevice(device);
+      });
+
+      $deviceRow.find("button.btn-restore").unbind('click').bind('click', function (e) { 
+            e.stopPropagation();
+            restoreDevice(device);           
+      });
+      
+//       $deviceRow.find("button.btn-extraQuery").unbind('click').bind('click', function (e) {
+//             loadExtraQueries($deviceRow, device);
+// //            e.stopPropagation();
+//             //return false;
+//       });     
+
+      $deviceRow.unbind('click').bind('click', function () { 
+            /*
+                  Bind click strategy: because a click anywhere on device row, should expand/collapse row, inside button handler should do a stopPopagation.
+                  But for extraquery button + dropdown menu, if stopPopagation is called, then this have bad side effects.
+                  For other buttons (delete, restore, configure,...) this is not a problem because using modals not dropdown menus
+
+                  So to manage it corretly, just handle click on row and :
+                        if the click is on extraquery button -> show extraQuery menu
+                        if the click is on any extraquery menu item -> do action and close menu (normal behavior = do nothing)
+                        else (last case) expand/collapse menu
+            */
+
+            if ($(event.target).closest('button.btn-extraQuery').length) {
+                  // Hide the menus.
+                  loadExtraQueries($deviceRow, device);
+            } else {
+                  if (!$(event.target).closest('ul.dropdown-extraqueries').length) {
+                        clickDevice(device); 
+                  }                  
+            }       
+            
+      });
       $deviceRow.i18n();
 
-      var iconName;
-      if (!device.attachedPlugin.isSystemCategory()) {
-         iconName = "plugins/" + device.attachedPlugin.type + "/icon.png";
-         
-         //disable it before async update
-         $deviceRow.find("button.btn-configure").prop('disabled', true);
-         PluginInstanceManager.getState(device.attachedPlugin)
-         .done(function(instanceState) {
-            if (instanceState.state !== "Stopped" && instanceState.state !== "Error" && instanceState.state) {
-               $deviceRow.find("button.btn-configure").prop('disabled', false);
-            }
-         });
-      }
-      else {
-         //we use application logo
-         iconName = "img/icon_256.png";
-         
-         // The system plugin contains hard-coded devices (ie device containing shutdown and reboot keywords) and virtual devices
-         // Only virtual devices are configurable/removable
-         if (device.type !== "virtualDeviceType") {
-            $deviceRow.find("button.btn-configure").addClass("hide");
-            $deviceRow.find("button.btn-configure").off('click');
-            $deviceRow.find("button.btn-delete").addClass("hide");
-            $deviceRow.find("button.btn-delete").off('click');
+      //we async ask for attached plugins
+      DeviceManager.getAttachedPlugin(device, true)
+      .done(function () {
+         var iconName;
+         if (!device.attachedPlugin.isSystemCategory()) {
+            iconName = "plugins/" + device.attachedPlugin.type + "/icon.png";
+            
+            //disable it before async update
+            $deviceRow.find("button.btn-configure").prop('disabled', true);
+            PluginInstanceManager.getState(device.attachedPlugin)
+            .done(function(instanceState) {
+               if (instanceState.state !== "Stopped" && instanceState.state !== "Error" && instanceState.state) {
+                  $deviceRow.find("button.btn-configure").prop('disabled', false);
+               }
+            });
          }
-      }
+         else {
+            //we use application logo
+            iconName = "img/icon_256.png";
+            
+            // The system plugin contains hard-coded devices (ie device containing shutdown and reboot keywords) and virtual devices
+            // Only virtual devices are configurable/removable
+            if (device.type !== "virtualDeviceType") {
+               $deviceRow.find("button.btn-configure").addClass("hide");
+               $deviceRow.find("button.btn-configure").unbind('click');
+               $deviceRow.find("button.btn-delete").addClass("hide");
+               $deviceRow.find("button.btn-delete").unbind('click');
+            } else {
+               // Disable virtual devices editing
+               $deviceRow.find("button.btn-configure").prop('disabled', true);
+               $deviceRow.find("button.btn-configure").unbind('click');
+            }
+         }
 
-      var attachedTo = "<img src=\"" + iconName + "\" class=\"img-thumbnail dashboard-table-icon\">&nbsp;&nbsp;" +
-              "<span>" + device.attachedPlugin.displayName + "</span>";
+         var attachedTo = "<img src=\"" + iconName + "\" class=\"img-thumbnail dashboard-table-icon\">&nbsp;&nbsp;" +
+                 "<span>" + device.attachedPlugin.displayName + "</span>";
 
-      $deviceRow.find("td.device-attachedTo").html(attachedTo);
+         $deviceRow.find("td.device-attachedTo").html(attachedTo);
+      })
+      .fail(function (error) {
+         $deviceRow.find("button.btn-configure").addClass("hide");
+         $deviceRow.find("td.device-attachedTo").html(error);
+      });
    }
    
    function recordNewDeviceConfiguration(device) {
@@ -398,14 +543,11 @@
                   var model = "<span>" + device.model + "</span>"
                   $row.find("td.device-model").html(model);               
                }else {
-                  DeviceManager.getAttachedPlugin(device, true)
-                  .done(function () {
-                     $row.remove ();
-                     addDeviceToDom ( device, deviceList.indexOf (updateDevice) );
-                     deviceList[i] = updateDevice;
-                     //sort after rename
-                     deviceList = sortListItemsWithFriendlyName ( deviceList );                  
-                  });
+                  $row.remove ();
+                  addDeviceToDom ( device, deviceList.indexOf (updateDevice) );
+                  deviceList[i] = updateDevice;
+                  //sort after rename
+                  deviceList = sortListItemsWithFriendlyName ( deviceList );                  
                }
             }
             d.resolve();
@@ -418,19 +560,23 @@
    }
 
    function updateDeviceConfiguration(device) {
+      // Stop periodic task before the deletion and refresh
+      // This disabled the periodic refresh during the deletion and wrong display
+      clearInterval(Yadoms.periodicDashboardTask);
       if (PluginInstanceManager.isSystemCategory(device.attachedPlugin)) {
          // Virtual device
          Yadoms.modals.virtualDeviceConfigure.loadAsync()
          .done(function () {
-             Yadoms.showVirtualDeviceConfigurationModal(device, false, function (friendlyName, model, configuration) {
+             Yadoms.showVirtualDeviceConfigurationModal(device, function (friendlyName, model, configuration) {
                device.friendlyName = friendlyName;
                device.model = model;
                device.configuration = configuration;
                recordNewDeviceConfiguration(device);
-               
-               var $deviceRow = getDeviceDomRow(device);
-               addDeviceButtonsEvents($deviceRow, device);
             });
+         })
+         .always(function() {
+            // Restart the periodic refresh
+            Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);  
          });
       } else {
          // Manually plugin-related device creation
@@ -448,17 +594,18 @@
                         if (i !== -1){
                            deviceList[i] = device; // update the device
                         }
+                        Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                      });
-                     
-                     var $deviceRow = getDeviceDomRow(device);
-                     addDeviceButtonsEvents($deviceRow, device);
                   });
                })
                .fail(function (error) {
+                  Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                   notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
-                  var $deviceRow = getDeviceDomRow(device);
-                  addDeviceButtonsEvents($deviceRow, device);
                });
+            })
+            .fail(function() {
+               // Restart the periodic refresh
+               Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
             });
       }
    }
@@ -469,15 +616,15 @@
       //we create device details table
       deviceRow.after("<tr device-id=\"" + device.id + "\" class=\"device-details " + selectedClass + "\"><td colspan=\"4\">" +
                "<table id=\"keyword-list\" device-id=\"" + device.id + "\" class=\"table table-bordered table-striped\">" +
-               "<tr>" +
-                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.name\" class=\"col-md-2\"></td>" +
-                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.value\" class=\"col-md-2\"></td>" +
-                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.units\" class=\"col-md-2\"></td>" +
-                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.update\" class=\"col-md-2\"></td>" +
-                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.actions\" class=\"col-md-2\"></td>" +
-               "</tr>" +
+               "<thead>" +
+                  "<th data-i18n=\"modals.dashboard.sub-windows.devices.details.table.name\" class=\"col-md-2\"></th>" +
+                  "<th data-i18n=\"modals.dashboard.sub-windows.devices.details.table.value\" class=\"col-md-2\"></th>" +
+                  "<th data-i18n=\"modals.dashboard.sub-windows.devices.details.table.units\" class=\"col-md-2\"></th>" +
+                  "<th data-i18n=\"modals.dashboard.sub-windows.devices.details.table.update\" class=\"col-md-2\"></th>" +
+                  "<th data-i18n=\"modals.dashboard.sub-windows.devices.details.table.actions\" class=\"col-md-2\"></th>" +
+               "</thead><tbody>" +
                "<!-- keywords will be listed here-->" +
-               "</table>" +
+               "</tbody></table>" +
                "</td></tr>");   
    };
    
@@ -527,20 +674,14 @@
          }
          else {
             //we bind event on the different actions
-            $keywordRow.find("button.btn-configure").one('click', function () { configureKeyword(keyword); });
+            $keywordRow.find("button.btn-configure").unbind('click').bind('click', function () { configureKeyword(keyword); });
          }
 
-         YadomsDevicesActivateButtonSetKeywordValue(device, keyword);
-         /*if ($keywordRow.find("button.btn-setvalue")) {
-            $keywordRow.find("button.btn-setvalue").one('click', function () { setKeywordValue(keyword, device); });
-         }*/
+         if ($keywordRow.find("button.btn-setvalue")) {
+            $keywordRow.find("button.btn-setvalue").unbind('click').bind('click', function () { setKeywordValue(keyword, device); });
+         }
       });
    };
-   
-   function YadomsDevicesActivateButtonSetKeywordValue(device, keyword){
-      var $keywordRow = getKeywordDomRow(keyword);
-      $keywordRow.find("button.btn-setvalue").one('click', function () { setKeywordValue(keyword, device); });
-   }
 
    function clickDevice(device) {
       //device represent the device concerned
@@ -556,6 +697,8 @@
       
       //we look if this device is already selected
       if (!$deviceRow.hasClass(selectedClass)) {
+         //we stop the timer task
+         clearInterval(Yadoms.periodicDashboardTask);
          PluginInstanceManager.downloadPackage(device.attachedPlugin)
          .done(function() {
             DeviceManager.getKeywords(device)
@@ -569,61 +712,38 @@
                   //we create device details table
                   createKeywordsTable(device, $deviceRow);
                   fillTable(device);
-                  
-                  // update immediately informations
-                  AcquisitionManager.getLastValues(device.keywords)
-                  .done(function (data) {
-                     var keywordIds = [];
-                     $.each(data, function (index, acquisition) {
-                        $.each(device.keywords, function (idx, keyword) {
-                           if (keyword.id === acquisition.keywordId) {
-                              var $keywordRow = getKeywordDomRow(keyword);
-                              if (!$keywordRow) {
-                                 $keywordRow = createKeywordDomLine($deviceDetailsTable, keyword);
-                              }
-                              keywordIds.push(keyword.id);
-                              updateKeywordDomLine($keywordRow, acquisition, keyword, device.attachedPlugin);
-                           } else {
-                              return; //break $.each
-                           }
-                        });
-                     });
-                     
-                     //subscribe new keywords for display
-                     updateWebSocketFilter(keywordIds);
-                  })
-                  .fail(function (error) {
-                     notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for device = " + device.id }), error);
-                  });
                } else {
                   $deviceRow.after('<p class="nokeyword-for-device" data-i18n="modals.dashboard.sub-windows.devices.details.nokeywords">Aucun keyword associé</p>');
                   $(".nokeyword-for-device").i18n();
                }
-               
-               //Activate a new time the possibility to collapse the keyword list
-               $deviceRow.one('click', function () { clickDevice(device); });
+               //we re-enable the auto update task
+               Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+               //and start it immediately
+               periodicDashboardDevicesTask();
             });
          });
       }
       else {
          $deviceRow.removeClass(selectedClass);
          $deviceRow.find("span.deploy").removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
-         
-         // Remove extra keywords to query from the server
-         updateWebSocketFilter();
-         
-         //Activate the possibility to expand the device
-         $deviceRow.one('click', function () { clickDevice(device); });
       }
    }
 
    function deleteDevice(device) {
+      // Stop periodic task before the deletion and refresh
+      // This disabled the periodic refresh during the deletion and wrong display
+      clearInterval(Yadoms.periodicDashboardTask); 
+      
       if(parseBool(device.blacklist)===true){
          Yadoms.modals.confirmation.loadAsync()
          .done(function () {
             Yadoms.showConfirmModal(Yadoms.btnKind.confirmCancel, $.t("modals.confirm-delete-device.title"), $.t("modals.confirm-delete-device.text", { deviceName: device.friendlyName }), function () {
                DeviceManager.deleteDevice(device, true)
+               .done(function () {
+                  Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+               })
                .fail(function (error) {
+                  Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                   notifyError($.t("modals.dashboard.sub-windows.devices.errorDeletingDevice", { device: device.friendlyName }), error);
                });
             });
@@ -633,7 +753,11 @@
          .done(function () {
             Yadoms.showDeleteDeviceModal(device, function (deleteDevice) {
                DeviceManager.deleteDevice(device, deleteDevice)
+               .done(function () {
+                  Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+               })
                .fail(function (error) {
+                  Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                   notifyError($.t("modals.dashboard.sub-windows.devices.errorDeletingDevice", { device: device.friendlyName }), error);
                });
             });
@@ -642,13 +766,24 @@
    }
 
    function restoreDevice(device) {
+      // Stop periodic task before the deletion and refresh
+      // This disabled the periodic refresh during the deletion and wrong display
+      clearInterval(Yadoms.periodicDashboardTask);
       //device represent the device concerned
       DeviceManager.restoreDevice(device)
       .done(function () {
-         // The refresh device list refresh devices & keywords
-         refreshDeviceList();
+         //force a device and associated keyword refresh
+         DeviceManager.getKeywords(device, true)
+         .always(function () {   
+            refreshDeviceList()
+            .always(function () {
+               // Restart the periodic refresh
+               Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+            });
+         });
       })
       .fail(function (error) {
+         Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
          notifyError($.t("modals.dashboard.sub-windows.devices.errorDeletingDevice", { device: device.friendlyName }), error);
       });
    }
@@ -687,12 +822,13 @@
          value = $tdvalue.find("span").html();
       }
       
-      if (keyword.capacityName.toLowerCase() === "event"){
+      if (keyword.capacityName.toLowerCase() === "event")
+      {
          KeywordManager.sendCommand(keyword.id, '1');
       } else {
          Yadoms.modals.keywordSetValue.loadAsync()
          .done(function () {
-            Yadoms.showSetKeywordValueModal(keyword, keyword.measure.toLowerCase() === "increment" ? 0 : value, device)
+            Yadoms.showSetKeywordValueModal(keyword, keyword.measure.toLowerCase() === "increment" ? 0 : value, device.attachedPlugin)
             .done(function (keyword, newValue) {
                KeywordManager.sendCommand(keyword.id, newValue.toString());
             })
@@ -704,6 +840,7 @@
    }
 
    function addNewDevice() {
+      clearInterval(Yadoms.periodicDashboardTask);
       Yadoms.modals.deviceAddManually.loadAsync()
       .done(function () {
          Yadoms.askPluginTypesForManuallyDeviceCreation(function (pi) {
@@ -711,9 +848,13 @@
                // Virtual device creation
                Yadoms.modals.virtualDeviceConfigure.loadAsync()
                .done(function () {
-                   Yadoms.showVirtualDeviceConfigurationModal(null, true, function (newDeviceName, newDeviceModel, newDeviceConfiguration) {
+                   Yadoms.showVirtualDeviceConfigurationModal(null, function (newDeviceName, newDeviceModel, newDeviceConfiguration) {
                      PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, "virtualDeviceType", newDeviceConfiguration)
+                     .done(function () {
+                         Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+                     })
                      .fail(function (error) {
+                        Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
                         notifyError($.t("objects.pluginInstance.errorCreatingManuallyDevice", { deviceName: newDeviceName }), error);
                      });
                   });
@@ -721,17 +862,21 @@
             } else {
                // Manually plugin-related device creation
                //we get package.json
-               var arrayOfDeffered = [];
-               arrayOfDeffered.push(PluginInstanceManager.downloadPackage(pi));
-               arrayOfDeffered.push(Yadoms.modals.deviceConfigureManually.loadAsync());
-               
-               $.when.apply($, arrayOfDeffered).done(function () {
-                  //we launch configureInstance GUI
-                   Yadoms.showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration) {
-                       //we ask for manually device creation
-                     PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
-                     .fail(function (error) {
-                        notifyError($.t("objects.pluginInstance.errorCreatingManuallyDevice", { deviceName: newDeviceName }), error);
+               PluginInstanceManager.downloadPackage(pi).done(function () {
+                  //we ask for configuration modal async
+                  Yadoms.modals.deviceConfigureManually.loadAsync()
+                  .done(function () {
+                     //we launch configureInstance GUI
+                      Yadoms.showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration) {
+                          //we ask for manually device creation
+                        PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
+                        .done(function () {
+                            Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+                        })
+                        .fail(function (error) {
+                           Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+                           notifyError($.t("objects.pluginInstance.errorCreatingManuallyDevice", { deviceName: newDeviceName }), error);
+                        });
                      });
                   });
                });
@@ -750,11 +895,14 @@
 
       $keywordRow.find("td.keyword-friendlyName").html(friendlyName);
       $keywordRow.find("td.keyword-units").html(units);
+
       return $keywordRow;
    }
 
    function updateKeywordDomLine($keywordRow, acquisition, keyword, pluginInstance) {
+      //$keywordRow exists
       var keywordValue = "<span></span>";
+      
       if (acquisition.value){
          try {
             //manage boolean keyword
@@ -790,4 +938,35 @@
       $keywordRow.find("td.keyword-value").html(keywordValue);
       $keywordRow.find("td.keyword-update").html(lastStateValue);
    }
+
+   function periodicDashboardDevicesTask() {
+      //periodically we check the status of each plugin
+      if (serverIsOnline) {
+         var $deviceDetailsTable = $("table#keyword-list");
+         //if the table isn't displayed for the moment we don't ask keyword values
+         if ($deviceDetailsTable.length === 1) {
+            //we get the device
+            var device = getDeviceFromId($deviceDetailsTable.attr("device-id"));
+            if (device && device.keywords) {
+               AcquisitionManager.getLastValues(device.keywords)
+               .done(function (data) {
+                  $.each(data, function (index, acquisition) {
+                     $.each(device.keywords, function (idx, keyword) {
+                        if (keyword.id === acquisition.keywordId) {
+                           var $keywordRow = getKeywordDomRow(keyword);
+                           updateKeywordDomLine($keywordRow, acquisition, keyword, device.attachedPlugin);
+                        } else {
+                           return; //break $.each
+                        }
+                     });
+                  });
+               })
+               .fail(function (error) {
+                  notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for device = " + device.id }), error);
+               });
+            }
+         }
+      }
+   }
+
 </script>

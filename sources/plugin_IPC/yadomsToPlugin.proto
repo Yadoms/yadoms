@@ -29,6 +29,7 @@ message ExtraQuery {
 	string query = 1;
 	string data = 2;
 	string taskId = 3;
+	string device = 4;
 }
 
 message DeviceExitsAnswer {

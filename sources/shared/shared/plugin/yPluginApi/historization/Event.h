@@ -51,7 +51,7 @@ namespace shared
                //-----------------------------------------------------
                ///\brief                     The access mode
                //-----------------------------------------------------
-               const EKeywordAccessMode& m_accessMode;
+               const EKeywordAccessMode m_accessMode;
             };
          }
       }
