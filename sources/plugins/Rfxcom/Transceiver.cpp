@@ -49,7 +49,6 @@
 #include "ManuallyDeviceCreationException.hpp"
 #include "MessageFilteredException.hpp"
 #include <shared/Log.h>
-#include "rfxcomMessages/CartelectronicEncoder.h"
 
 //
 // =======================================================================

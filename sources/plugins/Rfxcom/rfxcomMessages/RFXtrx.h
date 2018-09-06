@@ -362,8 +362,15 @@ SDK version 4.9
 #define recType43392 0x52
 #define trxType43392 0x53
 #define trxType868 0x55
-#define trxTypeIOT433 0x56
-#define trxTypeIOT868 0x57
+
+#define FWtyperec 0x0
+#define FWtype1 0x1
+#define FWtype2 0x2
+#define FWtypeExt 0x3
+#define FWtypeExt2 0x4
+#define FWtypePro1 0x5
+#define FWtypePro2 0x6
+#define FWtypeProXL1 0x10
 
 //433 config bits
 #define msg3_AE 0x01			//AE Blyss
