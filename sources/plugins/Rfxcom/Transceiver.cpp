@@ -17,6 +17,7 @@
 #include "rfxcomMessages/Energy.h"
 #include "rfxcomMessages/FS20.h"
 #include "rfxcomMessages/HomeConfort.h"
+#include "rfxcomMessages/Funkbus.h"
 #include "rfxcomMessages/Humidity.h"
 #include "rfxcomMessages/Lighting1.h"
 #include "rfxcomMessages/Lighting2.h"
@@ -163,6 +164,8 @@ shared::communication::CByteBuffer CTransceiver::buildSetModeCmd(unsigned char f
    request.ICMND.msg6 = 0;
    if (configuration.isKeeLoqenabled()) request.ICMND.msg6 |= msg6_KeeLoq;
    if (configuration.isHomeConfortenabled()) request.ICMND.msg6 |= msg6_HC;
+   if (configuration.isMCZenabled()) request.ICMND.msg6 |= msg6_MCZ;
+   if (configuration.isFunkbusenabled()) request.ICMND.msg6 |= msg6_Funkbus;
 
    return toBuffer(request, GET_RBUF_STRUCT_SIZE(ICMND));
 }
@@ -218,6 +221,8 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiver::
          return rfxcomMessages::CRfy(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeHomeConfort:
          return rfxcomMessages::CHomeConfort(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+      case pTypeFunkbus:
+         return rfxcomMessages::CFunkbus(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeSecurity1:
          return rfxcomMessages::CSecurity1(api, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeSecurity2:
@@ -334,8 +339,9 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
          break;
       case pTypeRFXSensor: message = boost::make_shared<rfxcomMessages::CRFXSensor>(api, *buf, bufSize);
          break;
-      case pTypeSecurity1: message = boost::make_shared<rfxcomMessages::CSecurity1
-         >(api, *buf, bufSize, m_unsecuredProtocolFilters.at(pTypeSecurity1));
+      case pTypeFunkbus: message = boost::make_shared<rfxcomMessages::CFunkbus>(api, *buf, bufSize);
+         break;
+      case pTypeSecurity1: message = boost::make_shared<rfxcomMessages::CSecurity1>(api, *buf, bufSize, m_unsecuredProtocolFilters.at(pTypeSecurity1));
          break;
       case pTypeSecurity2: message = boost::make_shared<rfxcomMessages::CSecurity2>(api, *buf, bufSize);
          break;

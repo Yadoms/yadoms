@@ -131,6 +131,14 @@
         "HomeConfort": {
           "type": "bool",
           "defaultValue": "false"
+        },
+        "MCZ": {
+          "type": "bool",
+          "defaultValue": "false"
+        },
+        "Funkbus": {
+          "type": "bool",
+          "defaultValue": "false"
         }
       }
     }
@@ -664,6 +672,30 @@
               "type": "int",
               "minimumValue": "1",
               "maximumValue": "5"
+            }
+          }
+        },
+        "id0_65535-gcA_C-uc1_8": {
+          "types": {
+            "funkbus": {
+              "canBeCreatedManually": "true"
+            }
+          },
+          "content": {
+            "id": {
+              "type": "int",
+              "minimumValue": "0",
+              "maximumValue": "65535"
+            },
+            "groupCode": {
+              "type": "string",
+              "regex": "[A-C]",
+              "defaultValue": "A"
+            },
+            "unitCode": {
+              "type": "int",
+              "minimumValue": "1",
+              "maximumValue": "8"
             }
           }
         },

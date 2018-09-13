@@ -28,9 +28,9 @@ portions of this file.
 
 /*
 SDK version 9.17
-	RFXtrxIOT added
 	868 config bits added (changed)
 	Interface Control Freq commands removed (use freqsel instead)
+	FunkBus (Gira, Jung, Berker, Insta) added
 
 SDK version 9.16
 	RAIN8 and RAIN9 added
@@ -379,35 +379,35 @@ SDK version 4.9
 #define msg3_LIGHTING4 0x08		//PT2262 and compatible
 #define msg3_RSL 0x10			//RSL,Revolt
 #define msg3_SX 0x20			//ByronSX,Selectplus
-#define msg3_IMAGINTRONIX 0x40
-#define msg3_undec 0x80
+#define msg3_IMAGINTRONIX 0x40	//Imagintronix,Opus
+#define msg3_undec 0x80			//display undecoded messages
 
-#define msg4_MERTIK 0x01
+#define msg4_MERTIK 0x01		//Mertik maxitrol
 #define msg4_AD 0x02			//AD LightwaveRF
 #define msg4_HID 0x04			//Hideki
 #define msg4_LCROS 0x08			//LaCrosse
 #define msg4_LEGRAND 0x10		//Legrand CAD
-#define msg4_RFU 0x20
-#define msg4_BLINDST0 0x40
-#define msg4_BLINDST1 0x80
+#define msg4_RFU 0x20			//RFU
+#define msg4_BLINDST0 0x40		//Rollertrol,Hasta new
+#define msg4_BLINDST1 0x80		//BlindsT1-4
 
-#define msg5_X10 0x01
-#define msg5_ARC 0x02
-#define msg5_AC 0x04
+#define msg5_X10 0x01			//X10
+#define msg5_ARC 0x02			//ARC
+#define msg5_AC 0x04			//AC
 #define msg5_HEU 0x08			//HomeEasy EU
 #define msg5_MEI 0x10			//Meiantech,Atlantic
-#define msg5_OREGON 0x20
-#define msg5_ATI 0x40
-#define msg5_VISONIC 0x80
+#define msg5_OREGON 0x20		//Oregon Scientific
+#define msg5_ATI 0x40			//ATI remotes
+#define msg5_VISONIC 0x80		//Visonic PowerCode
 
-#define msg6_KeeLoq 0x01
+#define msg6_KeeLoq 0x01		//Keeloq
 #define msg6_HC	0x02			//HomeConfort
-#define msg6_RFU2 0x04
-#define msg6_RFU3 0x08
-#define msg6_RFU4 0x10
-#define msg6_RFU5 0x20
-#define msg6_RFU6 0x40
-#define msg6_RFU7 0x80
+#define msg6_RFU2 0x04			//RFU
+#define msg6_RFU3 0x08			//RFU
+#define msg6_RFU4 0x10			//RFU
+#define msg6_RFU5 0x20			//RFU
+#define msg6_MCZ 0x40			//MCZ
+#define msg6_Funkbus 0x80		//Funkbus
 
 //868 config bits
 #define msg3_868_RFU0 0x01		//RFU
@@ -415,7 +415,7 @@ SDK version 4.9
 #define msg3_868_RFU2 0x04		//RFU
 #define msg3_868_DAVISEU 0x08	//Davis EU
 #define msg3_868_RFU4 0x10		//RFU
-#define msg3_868_LACROSSE 0x20	//laCrosse
+#define msg3_868_LACROSSE 0x20	//LaCrosse
 #define msg3_868_ALECTO 0x40	//Alecto ACH2010
 #define msg3_868_UNDEC 0x80		//Enable undecoded
 
@@ -583,7 +583,11 @@ SDK version 4.9
 #define light5_sSpeedMin 0x8
 #define light5_sSpeedPlus 0x9
 #define light5_sModeMin 0xA
+
+//Livolo All off, used for all types
 #define light5_sLivoloAllOff 0x00
+
+//Livolo 1-3 appliance modules
 #define light5_sLivoloGang1Toggle 0x01
 #define light5_sLivoloGang2Toggle 0x02
 #define light5_sLivoloDimR1plus 0x02
@@ -749,6 +753,18 @@ SDK version 4.9
 #define HomeConfort_sOn 0x1
 #define HomeConfort_sGroupOff 0x2
 #define HomeConfort_sGroupOn 0x3
+
+//types for Funkbus
+#define pTypeFunkbus 0x1E
+#define sTypeFunkbusRemoteGira 0x00
+#define sTypeFunkbusRemoteInsta 0x01
+#define Funkbus_sChannelMin 0x00
+#define Funkbus_sChannelPlus 0x01
+#define Funkbus_sAllOff 0x02
+#define Funkbus_sAllOn 0x03
+#define Funkbus_sScene 0x04
+#define Funkbus_sMasterMin 0x05
+#define Funkbus_sMasterPlus 0x06
 
 //types for Security1
 #define pTypeSecurity1 0x20
@@ -1428,6 +1444,33 @@ typedef union tRBUF {
 		BYTE    rssi : 4;
 #endif
 	} HOMECONFORT;
+
+	struct {
+		BYTE	packetlength;
+		BYTE	packettype;
+		BYTE	subtype;
+		BYTE	seqnbr;
+		BYTE	id1;
+		BYTE	id2;
+		BYTE	groupcode;
+		BYTE	unitcode;
+		BYTE	cmnd;
+		BYTE	cmndtime;
+#ifdef IS_BIG_ENDIAN
+		BYTE	filler1 : 4;
+		BYTE	devtype : 4;
+#else
+		BYTE	devtype : 4;
+		BYTE	filler1 : 4;
+#endif
+#ifdef IS_BIG_ENDIAN
+		BYTE	rssi : 4;
+		BYTE	battery_level : 4;
+#else
+		BYTE	battery_level : 4;
+		BYTE	rssi : 4;
+#endif
+	} FUNKBUS;
 
 	struct {
 		BYTE	packetlength;

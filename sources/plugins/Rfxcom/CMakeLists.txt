@@ -104,6 +104,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/RFXSensor.cpp
    rfxcomMessages/Rfy.h
    rfxcomMessages/Rfy.cpp
+   rfxcomMessages/Funkbus.h
+   rfxcomMessages/Funkbus.cpp
    rfxcomMessages/Security1.h
    rfxcomMessages/Security1.cpp
    rfxcomMessages/Security1KD101_SA30.h
