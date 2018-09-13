@@ -218,6 +218,25 @@
             }
           }
         },
+        "hcA_D-uc1_3": {
+          "types": {
+            "oase": {
+              "canBeCreatedManually": "true"
+            }
+          },
+          "content": {
+            "houseCode": {
+              "type": "string",
+              "regex": "[A-D]",
+              "defaultValue": "A"
+            },
+            "unitCode": {
+              "type": "int",
+              "minimumValue": "1",
+              "maximumValue": "3"
+            }
+          }
+        },
         "id1_67108863-unitCode1_16": {
           "types": {
             "smartwares": {

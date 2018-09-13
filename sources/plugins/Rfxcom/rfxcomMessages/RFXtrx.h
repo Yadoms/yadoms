@@ -411,8 +411,8 @@ SDK version 4.9
 
 //868 config bits
 #define msg3_868_RFU0 0x01		//RFU
-#define msg3_868_RFU1 0x02		//RFU
-#define msg3_868_RFU2 0x04		//RFU
+#define msg3_868_DAVISAU 0x02	//Davis AU
+#define msg3_868_DAVISUS 0x04	//Davis US
 #define msg3_868_DAVISEU 0x08	//Davis EU
 #define msg3_868_RFU4 0x10		//RFU
 #define msg3_868_LACROSSE 0x20	//LaCrosse
@@ -420,11 +420,11 @@ SDK version 4.9
 #define msg3_868_UNDEC 0x80		//Enable undecoded
 
 #define msg4_868_EDISIO 0x01	//Edisio
-#define msg4_868_AD 0x02		//AD LightwaveRF
-#define msg4_868_FS20 0x04		//FS20
+#define msg4_868_RFU1 0x02		//RFU
+#define msg4_868_RFU2 0x04		//RFU
 #define msg4_868_RFU3 0x08		//RFU
-#define msg4_868_RFU4 0x10		//Legrand CAD
-#define msg4_868_RFU5 0x20		//RFU
+#define msg4_868_FS20 0x10		//FS20
+#define msg4_868_PROGUARD 0x20	//Proguard
 #define msg4_868_RFU6 0x40		//RFU
 #define msg4_868_RFU7 0x80		//RFU
 
@@ -432,19 +432,19 @@ SDK version 4.9
 #define msg5_868_RFU1 0x02		//RFU
 #define msg5_868_RFU2 0x04		//RFU
 #define msg5_868_RFU3 0x08		//RFU
-#define msg5_868_PROGUARD 0x10	//Proguard
-#define msg5_868_KEELOQ 0x20	//Keeloq
+#define msg5_868_RFU4 0x10		//RFU
+#define msg5_868_RFU5 0x20		//RFU
 #define msg5_868_MEI 0x40		//Meiantech,Atlantic
 #define msg5_868_VISONIC 0x80	//Visonic
 
-#define msg6_868_RFU0 0x01		//RFU
+#define msg6_868_KEELOQ 0x01	//Keeloq
 #define msg6_868_RFU1 0x02		//RFU
 #define msg6_868_RFU2 0x04		//RFU
 #define msg6_868_RFU3 0x08		//RFU
 #define msg6_868_RFU4 0x10		//RFU
-#define msg6_868_HONCHIME 0x20	//Honeywell Chime
-#define msg6_868_ITHOECO 0x40	//Itho CVE ECO RFT
-#define msg6_868_ITHO 0x80		//Itho CVE RFT
+#define msg6_868_RFU5 0x20		//RFU
+#define msg6_868_RFU6 0x40		//RFU
+#define msg6_868_RFU7 0x80		//RFU
 
 #define pTypeRecXmitMessage 0x02
 #define sTypeReceiverLockError 0x00
@@ -475,6 +475,7 @@ SDK version 4.9
 #define sTypeUrfy 0x14
 #define sTypeUselectplus 0x15
 #define sTypeUhomeconfort 0x16
+#define sTypeUfunkbus 0x19
 
 //types for Lighting
 #define pTypeLighting1 0x10
@@ -490,11 +491,13 @@ SDK version 4.9
 #define sTypeEnergenie5 0x9
 #define sTypeGDR2 0x0A
 #define sTypeHQ 0x0B
+#define sTypeOase 0x0C
 
 #define light1_sOff 0x0
 #define light1_sOn 0x1
 #define light1_sDim 0x2
 #define light1_sBright 0x3
+#define light1_sProgram 0x4
 #define light1_sAllOff 0x5
 #define light1_sAllOn 0x6
 #define light1_sChime 0x7

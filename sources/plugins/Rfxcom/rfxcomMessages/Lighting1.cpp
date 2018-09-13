@@ -55,6 +55,7 @@ namespace rfxcomMessages
       case sTypeEnergenie5:
       case sTypeGDR2:
       case sTypeHQ:
+      case sTypeOase:
          break;
       default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
@@ -189,6 +190,8 @@ namespace rfxcomMessages
       case sTypeGDR2: ssModel << "COCO GDR2-2000R";
          break;
       case sTypeHQ: ssModel << "HQ COCO-20";
+         break;
+      case sTypeOase: ssModel << "Oase Inscenio FM Master";
          break;
       default: ssModel << boost::lexical_cast<std::string>(m_subType);
          break;
