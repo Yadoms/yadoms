@@ -546,7 +546,7 @@ SDK version 4.9
 #define sTypeAoke 0x07
 #define sTypeTRC02_2 0x08
 #define sTypeEurodomest 0x09
-#define sTypeLivoloAppliance 0x0A
+#define sTypeLivolo1to10 0x0A
 #define sTypeRGB432W 0x0B
 #define sTypeMDREMOTE107 0x0C
 #define sTypeLegrandCAD 0x0D

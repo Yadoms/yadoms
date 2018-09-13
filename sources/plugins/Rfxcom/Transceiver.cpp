@@ -463,8 +463,8 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
          msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeTRC02_2, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "eurodomest")
          msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeEurodomest, data.getDeviceName(), data.getConfiguration());
-      else if (deviceType == "livoloAppliance")
-         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeLivoloAppliance, data.getDeviceName(), data.getConfiguration());
+      else if (deviceType == "livolo1to10")
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeLivolo1to10, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "rgb432w")
          msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeRGB432W, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "mdremote107")

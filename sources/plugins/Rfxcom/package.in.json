@@ -653,7 +653,7 @@
         },
         "id1_32767-unitCode1_10": {
           "types": {
-            "livoloAppliance": {
+            "livolo1to10": {
               "canBeCreatedManually": "true"
             }
           },

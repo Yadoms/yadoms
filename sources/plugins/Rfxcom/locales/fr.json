@@ -404,7 +404,7 @@
           }
         },
         "id1_32767-unitCode1_10": {
-          "types": { "livoloAppliance": { "title": "livoloAppliance" } },
+          "types": { "livolo1to10": { "title": "livolo1to10" } },
           "content": {
             "id": {
               "name": "ID",
