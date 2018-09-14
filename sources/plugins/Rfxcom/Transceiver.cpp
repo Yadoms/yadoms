@@ -479,6 +479,8 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
          // Lighting6
       else if (deviceType == "blyss")
          msg = boost::make_shared<rfxcomMessages::CLighting6>(api, sTypeBlyss, data.getDeviceName(), data.getConfiguration());
+      else if (deviceType == "cuveo")
+         msg = boost::make_shared<rfxcomMessages::CLighting6>(api, sTypeCuveo, data.getDeviceName(), data.getConfiguration());
 
          // Chime
       else if (deviceType == "byronSx")
@@ -533,6 +535,10 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
          msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT12, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "screenline")
          msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT13, data.getDeviceName(), data.getConfiguration());
+      else if (deviceType == "hualite")
+         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT14, data.getDeviceName(), data.getConfiguration());
+      else if (deviceType == "zemismart")
+         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT16, data.getDeviceName(), data.getConfiguration());
 
          // Rfy
       else if (deviceType == "rfy")

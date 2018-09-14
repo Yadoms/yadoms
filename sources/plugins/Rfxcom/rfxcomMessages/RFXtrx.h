@@ -593,15 +593,34 @@ SDK version 4.9
 //Livolo 1-3 appliance modules
 #define light5_sLivoloGang1Toggle 0x01
 #define light5_sLivoloGang2Toggle 0x02
-#define light5_sLivoloDimR1plus 0x02
 #define light5_sLivoloGang3Toggle 0x03
-#define light5_sLivoloDimR1min 0x03
-#define light5_sLivoloScene1R1 0x04
-#define light5_sLivoloScene2R1 0x05
-#define light5_sLivoloDimR2plus 0x06
-#define light5_sLivoloDimR2min 0x07
-#define light5_sLivoloScene1R2 0x08
-#define light5_sLivoloScene2R2 0x09
+
+//Livolo dimmer
+//#define light5_sLivoloToggle1 0x01
+#define light5_sLivoloBright1 0x02
+#define light5_sLivoloDim1 0x03
+
+//Livolo 1-10 appliance modules, 7 and 9 is a dimmer
+#define light5_sLivoloToggle1 0x01
+#define light5_sLivoloToggle2 0x02
+#define light5_sLivoloToggle3 0x03
+#define light5_sLivoloToggle4 0x04
+#define light5_sLivoloToggle5 0x05
+#define light5_sLivoloToggle6 0x06
+#define light5_sLivoloToggle7 0x07
+#define light5_sLivoloBright7 0x08
+#define light5_sLivoloDim7 0x09
+#define light5_sLivoloToggle8 0x0A
+#define light5_sLivoloToggle9 0x0B
+#define light5_sLivoloBright9 0x0C
+#define light5_sLivoloDim9 0x0D
+#define light5_sLivoloToggle10 0x0E
+#define light5_sLivoloScene1 0x0F
+#define light5_sLivoloScene2 0x10
+#define light5_sLivoloScene3 0x11
+#define light5_sLivoloScene4 0x12
+#define light5_sLivoloOkSet 0x13
+
 #define light5_sRGBoff 0x00
 #define light5_sRGBon 0x01
 #define light5_sRGBbright 0x02
@@ -621,6 +640,7 @@ SDK version 4.9
 
 #define pTypeLighting6 0x15
 #define sTypeBlyss 0x0
+#define sTypeCuveo 0x1
 #define light6_sOn 0x0
 #define light6_sOff 0x1
 #define light6_sGroupOn 0x2
@@ -699,6 +719,9 @@ SDK version 4.9
 #define sTypeBlindsT11 0xB	//ASP
 #define sTypeBlindsT12 0xC	//Confexx
 #define sTypeBlindsT13 0xD	//Screenline
+#define sTypeBlindsT14 0xE	//Hualite
+#define sTypeBlindsT15 0xF	//RFU
+#define sTypeBlindsT16 0x10	//Zemismart
 
 #define blinds_sOpen 0x0
 #define blinds_sClose 0x1

@@ -402,6 +402,9 @@
             },
             "rsl": {
               "canBeCreatedManually": "true"
+            },
+            "hualite": {
+              "canBeCreatedManually": "true"
             }
           },
           "content": {
@@ -694,6 +697,30 @@
             }
           }
         },
+        "id0_65535-gc0_3-uc1_8": {
+          "types": {
+            "cuveo": {
+              "canBeCreatedManually": "true"
+            }
+          },
+          "content": {
+            "id": {
+              "type": "int",
+              "minimumValue": "0",
+              "maximumValue": "65535"
+            },
+            "groupCode": {
+              "type": "int",
+              "minimumValue": "0",
+              "maximumValue": "3"
+            },
+            "unitCode": {
+              "type": "int",
+              "minimumValue": "1",
+              "maximumValue": "8"
+            }
+          }
+        },
         "id0_65535-gcA_C-uc1_8": {
           "types": {
             "funkbus": {
@@ -735,6 +762,26 @@
               "type": "int",
               "minimumValue": "0",
               "maximumValue": "32767"
+            }
+          }
+        },
+
+        "id1_65535-uc1_6": {
+          "types": {
+            "zemismart": {
+              "canBeCreatedManually": "true"
+            }
+          },
+          "content": {
+            "id": {
+              "type": "int",
+              "minimumValue": "1",
+              "maximumValue": "65535"
+            },
+            "unitCode": {
+              "type": "int",
+              "minimumValue": "1",
+              "maximumValue": "6"
             }
           }
         },

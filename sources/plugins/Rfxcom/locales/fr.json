@@ -244,7 +244,8 @@
         "id1_16777215-unitCode1_16": {
           "types": {
             "lightwaveRf": { "title": "lightwaveRf" },
-            "rsl": { "title": "rsl" }
+            "rsl": { "title": "rsl" },
+            "hualite": { "title": "hualite" }
           },
           "content": {
             "id": {
@@ -434,6 +435,23 @@
             }
           }
         },
+        "id0_65535-gc0_3-uc1_8": {
+          "types": { "cuveo": { "title": "cuveo" } },
+          "content": {
+            "id": {
+              "name": "ID",
+              "description": "L'identifiant de l'équipement (0-65535)"
+            },
+            "groupCode": {
+              "name": "Groupe",
+              "description": "L'identifiant du groupe de l'équipement (0-3)"
+            },
+            "unitCode": {
+              "name": "Unité",
+              "description": "L'identifiant de la fonction de l'équipement (1-2 pour le groupe 0, 1-9 pour les groupes 1 à 3)"
+            }
+          }
+        },
         "id0_65535-gcA_C-uc1_8": {
           "types": { "funkbus": { "title": "funkbus" } },
           "content": {
@@ -466,6 +484,22 @@
             "id": {
               "name": "ID",
               "description": "L'identifiant de l'équipement (0-32767)"
+            }
+          }
+        },
+
+        "id1_65535-uc1_6": {
+          "types": {
+            "zemismart": { "title": "zemismart" }
+          },
+          "content": {
+            "id": {
+              "name": "ID",
+              "description": "L'identifiant de l'équipement (1-65535)"
+            },
+            "unitCode": {
+              "name": "Unité",
+              "description": "L'identifiant de la fonction de l'équipement (1-6)"
             }
           }
         },
