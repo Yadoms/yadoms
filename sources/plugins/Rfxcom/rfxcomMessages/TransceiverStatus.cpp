@@ -145,7 +145,7 @@ namespace rfxcomMessages
          m_LWRFenabled = rbuf.IRESPONSE.LWRFenabled;
          m_HIDEKIenabled = rbuf.IRESPONSE.HIDEKIenabled;
          m_LACROSSEenabled = rbuf.IRESPONSE.LACROSSEenabled;
-         m_LegrandCADenabled = rbuf.IRESPONSE.FS20enabled;
+         m_LegrandCADenabled = rbuf.IRESPONSE.LEGRANDenabled;
          m_BLINDST0enabled = rbuf.IRESPONSE.BLINDST0enabled;
          m_BLINDST1enabled = rbuf.IRESPONSE.BLINDST1enabled;
          m_X10enabled = rbuf.IRESPONSE.X10enabled;
