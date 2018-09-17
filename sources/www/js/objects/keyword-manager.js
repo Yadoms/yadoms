@@ -101,6 +101,7 @@ KeywordManager.getInformation = function (keywords, additionalInfos) {
          .done(function (data) {
                var result = [];
                $.each(data, function (index, keydata) {
+                  console.log("index : ", index);
                   console.log(keydata);
                   result.push({accessMode: keydata.accessMode,
                                capacity: keydata.capacity,
@@ -109,6 +110,7 @@ KeywordManager.getInformation = function (keywords, additionalInfos) {
                                keywordId: index,
                                measure: keydata.measure,
                                pluginId: keydata.pluginId,
+                               typeInfo: keydata.typeInfo,
                                unit: keydata.unit,
                                value: keydata.lastValue});
                });
