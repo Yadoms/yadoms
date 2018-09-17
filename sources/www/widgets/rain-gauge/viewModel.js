@@ -74,16 +74,14 @@ function rainGaugeDisplayViewModel() {
        var self = this;       
        
        // When all values are outside the range, only 1 value is sent.
-       if (self.acquisitionData.length == 1)
-       {
+       if (self.acquisitionData.length == 1){
           // We check if this value is up to date. We delete it if not
           if (self.serverTime - DateTimeFormatter.isoDateToDate(self.acquisitionData[0].date) > 86400000)
              self.acquisitionData.shift();
        }       
        
        //clean old values at the begin of the tab
-       if (self.acquisitionData.length != 0)
-       {
+       if (self.acquisitionData.length != 0){
           var index = self.acquisitionData.length-1;
        
           // retrieve all values
@@ -98,23 +96,20 @@ function rainGaugeDisplayViewModel() {
              if (index >= 0) index--;
           }
           
-          if (index != -1)
-          {
+          if (index != -1){
              var last1h = self.acquisitionData[index];
              self.rate_1h( (parseFloat(lastValue.key) - parseFloat(last1h.key) ).toFixed(1).toString());
           }
           else
              self.rate_1h("-");
        }
-       else
-       {
+       else{
           self.rate_1h("-");
           self.rate_24h("-");
        }
        
        // treat the time  
-       if (self.shouldBeVisible())
-       {
+       if (self.shouldBeVisible()){
          if (self.acquisitionData.length!=0)
             self.lastReceiveDate(DateTimeFormatter.isoDateToDate(lastValue.date).calendar().toString());
          else
@@ -124,29 +119,15 @@ function rainGaugeDisplayViewModel() {
   
     this.configurationChanged = function () {
         var self = this;
-        var arrayOfDeffered = [];
-        var d = new $.Deferred();
-        
-        //we get the unit of the keyword
-        var deffered1 = self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId);
-        arrayOfDeffered.push(deffered1);
-        
-        deffered1
-        .done(function (keyword) {
-            self.unit($.t(keyword.units));
-        });
 
         //we register keyword new acquisition
         self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);
         
         //we fill the deviceId of the battery indicator
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
+        self.widgetApi.registerAdditionalInformation(["unit"]); // We would like the unit !
         self.shouldBeVisible(self.widget.configuration.dateDisplay);
-        arrayOfDeffered.push(self.getValues(self.widget.configuration.device.keywordId));
-      
-      $.when.apply($, arrayOfDeffered) // The first failing array fail the when.apply
-      .done(d.resolve)
-      .fail(d.reject);
+        var d = self.getValues(self.widget.configuration.device.keywordId);
       
       return d.promise();
     }
@@ -155,7 +136,6 @@ function rainGaugeDisplayViewModel() {
          var self = this;
          
          self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
-         
          while(self.acquisitionData.length>0){
           if (self.serverTime - DateTimeFormatter.isoDateToDate(self.acquisitionData[0].date) > 86400000){
              self.acquisitionData.shift();
@@ -188,8 +168,13 @@ function rainGaugeDisplayViewModel() {
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
         
+        //it is the right device
         if (keywordId === self.widget.configuration.device.keywordId) {
-            //it is the right device
+           
+           // Receive at startup data.unit and data.capacity
+           if (!isNullOrUndefinedOrEmpty(data.unit))
+              self.unit($.t(data.unit));
+           
             if (data.value !==""){
                if (self.acquisitionData.length!=0){
                   if (data.date != DateTimeFormatter.isoDateToDate(self.acquisitionData[self.acquisitionData.length-1].date)) {
