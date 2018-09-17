@@ -40,29 +40,14 @@ function stateDisplayViewModel() {
        //we fill the deviceId of the battery indicator
        self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
        
+       self.widgetApi.registerAdditionalInformation(["pluginInstance"]); // We would like the unit !
+       
       //we get the unit of the keyword
       var defferedKeywordInformation = self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId);
       arrayOfDeffered.push(defferedKeywordInformation);
       defferedKeywordInformation
       .done(function (keyword) {
          self.keyword = keyword;
-      });
-      
-      //we get the unit of the keyword
-      arrayOfDeffered.push(defferedPluginInstance);
-      self.widgetApi.getDeviceInformation(self.widget.configuration.device.deviceId)
-      .done(function (device) {
-         self.widgetApi.getPluginInstanceInformation(device.pluginId)
-         .done(function (pluginInstance) {
-            self.pluginInstanceType = pluginInstance.type;
-            defferedPluginInstance.resolve();
-         })
-         .fail(function (error) {
-            defferedPluginInstance.reject();
-         });         
-      })
-      .fail(function (error) {
-         notifyError(error);
       });
       
       $.when.apply(arrayOfDeffered)
@@ -90,6 +75,10 @@ function stateDisplayViewModel() {
         //
         
         if (keywordId === self.widget.configuration.device.keywordId && !isNullOrUndefined(self.keyword) && !isNullOrUndefinedOrEmpty(self.pluginInstanceType)) {
+           
+           if (!isNullOrUndefinedOrEmpty(data.pluginInstance))
+              self.pluginInstanceType = data.pluginInstance.type;
+           
             //it is the right device
             if (data.value !==""){
                var translatedEnumValue = $.t("plugins." + self.pluginInstanceType + ":enumerations." + self.keyword.typeInfo.name + ".values." + data.value, 
