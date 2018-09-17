@@ -132,10 +132,10 @@ widgetViewModelCtor =
               if (keywordId === this.widget.configuration.device.keywordId) {
                  
                  if (!isNullOrUndefinedOrEmpty(data.capacityName))
-                    self.capacity   = keyword.capacityName;
+                    self.capacity   = data.capacityName;
                  
                  if (!isNullOrUndefinedOrEmpty(data.accessMode)){
-                     if (keyword.accessMode === "GetSet")
+                     if (data.accessMode === "GetSet")
                          self.readonly(false);
                      else
                          self.readonly(true);

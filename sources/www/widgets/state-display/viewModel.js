@@ -27,9 +27,7 @@ function stateDisplayViewModel() {
 
     this.configurationChanged = function () {
        var self = this;
-       var defferedPluginInstance = new $.Deferred();
        var defferedConfigurationChangedFinished = new $.Deferred();
-       var arrayOfDeffered = [];
         
         //we register keyword new acquisition
         self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
@@ -44,21 +42,12 @@ function stateDisplayViewModel() {
        
       //we get the unit of the keyword
       var defferedKeywordInformation = self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId);
-      arrayOfDeffered.push(defferedKeywordInformation);
       defferedKeywordInformation
       .done(function (keyword) {
          self.keyword = keyword;
       });
       
-      $.when.apply(arrayOfDeffered)
-      .done(function () {
-         defferedConfigurationChangedFinished.resolve();
-      })
-      .fail(function (error) {
-         defferedConfigurationChangedFinished.reject();
-      });
-      
-      return defferedConfigurationChangedFinished.promise();
+      return defferedKeywordInformation.promise();
     }
 
     /**

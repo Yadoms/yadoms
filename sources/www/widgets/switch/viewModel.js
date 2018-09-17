@@ -133,7 +133,9 @@ widgetViewModelCtor =
 			  self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
 		   
 			  //we register keyword for get last value at web client startup 
-			  self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);         
+			  self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);
+           
+           self.widgetApi.registerAdditionalInformation(["accessMode", "capacity"]); // We would like the unit !
            }
            
            if (self.state.length==0)
@@ -184,7 +186,7 @@ widgetViewModelCtor =
            catch(error){
               self.askConfirmation = false;
            }           
-           
+ /*          
            // we ask for the first device information
            if  (!isNullOrUndefined(this.widget.configuration.device.deviceId)) {
                // Get the capacity of the keyword
@@ -218,7 +220,7 @@ widgetViewModelCtor =
                    }
                });
             }
-
+*/
         // load library if needed, if it's a push button with icon
         if (self.kind() === 'pushButton'){
            arrayOfDeffered.push(asyncLoadJSLibs(["libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker-iconset-all.min.js",
@@ -246,50 +248,72 @@ widgetViewModelCtor =
        this.onNewAcquisition = function (keywordId, data) {
            var self = this;
            
-           if (!isNullOrUndefined(this.widget.configuration)){
-              //Check if first device
-              if (!isNullOrUndefined(this.widget.configuration.device)) {
-                   if (keywordId == this.widget.configuration.device.keywordId) {
-                       //it is the right device
-                       if (self.capacity[0] === "event")
-                           //self.state()[0] = 0;
-                           self.state.replace(self.state()[0], 0);
-                       else {
-                           //self.state()[0] = parseInt(data.value); // get the state. Same for dimmable
-                           //self.state()[0](parseInt(data.value)); // get the state. Same for dimmable
-                           self.state.replace(self.state()[0], parseInt(data.value));
-                       }
-                   }
-              }                 
+           if (isNullOrUndefined(this.widget.configuration)){
+              return;
               
-              //check if additional devices
-              if (!isNullOrUndefined(this.widget.configuration.additionalDevices.content.devices)) {
-                $.each(this.widget.configuration.additionalDevices.content.devices, function (index, device) {
-                   if (keywordId == device.content.source.keywordId) {
-                       //it is the right device
-                       if (self.capacity[index] === "event")
-                           self.state()[index+1] = 0;
-                       else
-                          self.state()[index+1] = parseInt(data.value); // get the state. Same for dimmable
-                   }
-                });
-              }
-              
-               //knockout doesn't work witj bootstrap. So change values have to be done manually
-               if (self.kind() === 'toggle'){
-                 self.update(true);
-                 if (self.readonly())
-                    this.widget.$content.find("input[type=checkbox]").prop('disabled', false);
+           //Check if first device
+           if (isNullOrUndefined(this.widget.configuration.device)) {
+                if (keywordId == this.widget.configuration.device.keywordId) {
 
-                 if (self.command()==1)
-                    this.widget.$content.find("input[type=checkbox]").prop('checked', true).change();
-                 else
-                     this.widget.$content.find("input[type=checkbox]").prop('checked', false).change();
-                 
-                 self.update(false);
-                 this.widget.$content.find("input[type=checkbox]").prop('disabled', self.readonly());
-               }
+                    if (!isNullOrUndefinedOrEmpty(data.capacityName))
+                       self.capacity[index+1] = data.capacityName;
+                
+                    if (!isNullOrUndefinedOrEmpty(data.accessMode)){
+                        if (data.accessMode === "GetSet")
+                            self.readonly(false);
+                        else
+                            self.readonly(true);
+                    }
+                
+                    //it is the right device
+                    if (self.capacity[0] === "event")
+                        //self.state()[0] = 0;
+                        self.state.replace(self.state()[0], 0);
+                    else {
+                        //self.state()[0] = parseInt(data.value); // get the state. Same for dimmable
+                        //self.state()[0](parseInt(data.value)); // get the state. Same for dimmable
+                        self.state.replace(self.state()[0], parseInt(data.value));
+                    }
+                }
+           }                 
+           
+           //check if additional devices
+           if (!isNullOrUndefined(this.widget.configuration.additionalDevices.content.devices)) {
+             $.each(this.widget.configuration.additionalDevices.content.devices, function (index, device) {
+                if (keywordId == device.content.source.keywordId) {
+                    if (!isNullOrUndefinedOrEmpty(data.capacityName))
+                       self.capacity[index+1] = data.capacityName;
+                
+                    if (!isNullOrUndefinedOrEmpty(data.accessMode)){
+                        if (data.accessMode === "GetSet")
+                            self.readonly(false);
+                        else
+                            self.readonly(true);
+                    }                   
+                   
+                    //it is the right device
+                    if (self.capacity[index] === "event")
+                        self.state()[index+1] = 0;
+                    else
+                       self.state()[index+1] = parseInt(data.value); // get the state. Same for dimmable
+                }
+             });
            }
+           
+            //knockout doesn't work witj bootstrap. So change values have to be done manually
+            if (self.kind() === 'toggle'){
+              self.update(true);
+              if (self.readonly())
+                 this.widget.$content.find("input[type=checkbox]").prop('disabled', false);
+
+              if (self.command()==1)
+                 this.widget.$content.find("input[type=checkbox]").prop('checked', true).change();
+              else
+                  this.widget.$content.find("input[type=checkbox]").prop('checked', false).change();
+              
+              self.update(false);
+              this.widget.$content.find("input[type=checkbox]").prop('disabled', self.readonly());
+            }
        };
        
        this.toggleCommand = function () {
