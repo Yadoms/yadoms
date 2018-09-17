@@ -4,9 +4,11 @@
 namespace pluginSystem
 {
    CExtraQueryData::CExtraQueryData(const std::string& query,
-                                    const shared::CDataContainer& data)
+                                    const shared::CDataContainer& data,
+                                    const std::string& device)
       : m_query(query),
-        m_data(data)
+        m_data(data),
+        m_device(device)
    {
    }
 
@@ -22,6 +24,11 @@ namespace pluginSystem
    const shared::CDataContainer& CExtraQueryData::data() const
    {
       return m_data;
+   }
+
+   const std::string& CExtraQueryData::device() const
+   {
+      return m_device;
    }
 } // namespace pluginSystem	
 

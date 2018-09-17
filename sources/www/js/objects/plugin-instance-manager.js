@@ -289,6 +289,19 @@ PluginInstanceManager.postExtraQuery= function (pluginInstance, commandName, com
 	return RestEngine.postJson("/rest/plugin/" + pluginInstance.id + "/extraQuery/" + commandName, { data: JSON.stringify(commandData) });
 };
 
+/**
+ * Send an extra command to a device of a plugin instance
+ * @param pluginInstance The plugin instance
+ * @param device The device
+ * @param extraQuery   The extraQuery
+ * @return {Promise} A promise for the result
+ */
+PluginInstanceManager.postDeviceExtraQuery= function (pluginInstance, device, commandName, commandData) {
+	assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
+	assert(!isNullOrUndefined(device), "pluginInstance must be defined");
+	return RestEngine.postJson("/rest/plugin/" + pluginInstance.id + "/deviceExtraQuery/" + device.id + "/" + commandName, { data: JSON.stringify(commandData) });
+};
+
 
 PluginInstanceManager.getVirtualDevicesSupportedCapacities= function () {
 	return RestEngine.getJson("/rest/system/virtualDevicesSupportedCapacities");

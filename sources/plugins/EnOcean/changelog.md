@@ -1,3 +1,6 @@
+### 1.1.2
+* Fix #495
+
 ### 1.1.1
 * Fix some French translations
 

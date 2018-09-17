@@ -1,3 +1,15 @@
+### 1.1.0
+* Enhance device and keyword management during initialization
+* Add cache system for devices and keywords
+* Add device extra queries : for every device a refresh query is added
+* Add device extra queries : for UserCode command class device, enroll tag query is added
+* Update OpenZWave to 1.4.3095
+* Check : if data folder and configuration files are missing (zwcfg_0xXXXXXXX.xml and zwscene.xml) the plugin starts normally without defaut and recretae all files
+* Check : if bad serial port provided in configuration : if serial port not exists, the plugin wont start and display error in dashboard
+* Check : if bad serial port provided in configuration : if serial port exists but bad one, the plugin could be "stalled" on opening but can be stopped properly. It would probably fail and display error after serial port timeout (if any)
+* Fix #484 : command class UserCode is not handled
+
+
 ### 1.0.2
 * Update OpenZWave to 1.4.3028
 

@@ -56,6 +56,8 @@ endif()
 # Compilers/IDE configurations
 include(cmake/compilers.cmake)
 
+# include debug helpers
+include(cmake/debugger.cmake)
 
 ##################################################################################################
 ## CPack installation preconfiguration
@@ -957,6 +959,11 @@ if(COTIRE_USE)
 else()
 	add_precompiled_header(yadoms stdafx.h)
 endif()
+
+##################################################################################################
+## Add natvis (allow better debugging within VisualStudio)
+##################################################################################################
+ADD_VS_NATVIS(yadoms)
 
 ##################################################################################################
 ## yadoms-shared

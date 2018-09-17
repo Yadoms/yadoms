@@ -667,6 +667,7 @@ namespace pluginSystem
       auto message = req.mutable_extraquery();
       message->set_query(extraQuery->getData()->query());
       message->set_data(extraQuery->getData()->data().serialize());
+      message->set_device(extraQuery->getData()->device());
       message->set_taskid(taskId);
 
       m_pendingExtraQueries[taskId] = extraQuery;
