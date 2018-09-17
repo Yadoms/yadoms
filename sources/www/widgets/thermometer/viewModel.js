@@ -51,7 +51,6 @@ function thermometerViewModel(){
    this.refresh = function()
    {
 	   var self = this;
-
       var element = self.widgetApi.find(".thermometer-canvas");
 
 		//get a reference to the canvas

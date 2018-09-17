@@ -186,41 +186,7 @@ widgetViewModelCtor =
            catch(error){
               self.askConfirmation = false;
            }           
- /*          
-           // we ask for the first device information
-           if  (!isNullOrUndefined(this.widget.configuration.device.deviceId)) {
-               // Get the capacity of the keyword
-               var deffered = KeywordManager.get(this.widget.configuration.device.keywordId)
-               .done(function (keyword) {
-                  self.capacity[0]   = keyword.capacityName;
-                  self.accessMode[0] = keyword.accessMode;
-
-                  if ( keyword.accessMode === "Get" )
-                     readOnlyMode = true;
-               });
-               arrayOfDeffered.push(deffered);
-           }
-           
-           //we ask for additional devices information
-           if ((!isNullOrUndefined(this.widget.configuration.additionalDevices.content.devices))) {
-               $.each(this.widget.configuration.additionalDevices.content.devices, function (index, device) {
-                   if (!isNullOrUndefined(device.content.source.deviceId)) {
-                 
-                      // Get the capacity of the keyword
-                      var deffered = KeywordManager.get(device.content.source.keywordId)
-                      .done(function (keyword) {
-                        self.capacity[index+1]   = keyword.capacityName;
-                        self.accessMode[index+1] = keyword.accessMode;
-                        
-                        if ( keyword.accessMode === "Get" )
-                           readOnlyMode = true;
-
-                      });
-                      arrayOfDeffered.push(deffered);
-                   }
-               });
-            }
-*/
+ 
         // load library if needed, if it's a push button with icon
         if (self.kind() === 'pushButton'){
            arrayOfDeffered.push(asyncLoadJSLibs(["libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker-iconset-all.min.js",
@@ -254,7 +220,6 @@ widgetViewModelCtor =
            //Check if first device
            if (isNullOrUndefined(this.widget.configuration.device)) {
                 if (keywordId == this.widget.configuration.device.keywordId) {
-
                     if (!isNullOrUndefinedOrEmpty(data.capacityName))
                        self.capacity[index+1] = data.capacityName;
                 
