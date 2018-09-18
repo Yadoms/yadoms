@@ -17,11 +17,9 @@ widgetViewModelCtor =
         */        
        this.commandClick = function (newState) {
            var self = this;
-
            if  (!isNullOrUndefined(self.widget.configuration)) {
                // Checks for the first device
-               if (!isNullOrUndefined(self.widget.configuration.device))
-               {
+               if (!isNullOrUndefined(self.widget.configuration.device)){
                   if (!isNullOrUndefined(self.capacity[0])) {
                      // We send the command only for Set and GetSet variables
                      if ( self.accessMode[0] === "GetSet" || self.accessMode[0] === "Set" )
@@ -32,7 +30,6 @@ widgetViewModelCtor =
                if (!isNullOrUndefined(self.widget.configuration.additionalDevices.content.devices)){
                   // Check for the others devices
                   $.each(self.widget.configuration.additionalDevices.content.devices, function (index, device) {
-                 
                       if (!isNullOrUndefined(self.capacity[index+1])) {
                           // We send the command only for Set and GetSet variables
                           if ( self.accessMode[index+1] === "GetSet" || self.accessMode[index+1] === "Set" )
@@ -91,7 +88,7 @@ widgetViewModelCtor =
           deffered
           .done(function (keywordsInformation) {
              $.each(keywordsInformation, function (index, keyword) {
-                self.capacity[index] = keyword.capacityName;
+                self.capacity[index] = keyword.capacity;
                 self.accessMode[index] = keyword.accessMode;
              });
           });

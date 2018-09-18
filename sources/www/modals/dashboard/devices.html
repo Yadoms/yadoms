@@ -571,7 +571,7 @@
                   fillTable(device);
                   
                   // update immediately informations
-                  AcquisitionManager.getLastValues(device.keywords)
+                  AcquisitionManager.getLastAcquisition(device.keywords)
                   .done(function (data) {
                      var keywordIds = [];
                      $.each(data, function (index, acquisition) {

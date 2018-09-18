@@ -48,7 +48,7 @@ function stateDisplayViewModel() {
         if (keywordId !== self.widget.configuration.device.keywordId)
            return;
         
-        if (!isNullOrUndefinedOrEmpty(data.typeInfo.name))
+        if (!isNullOrUndefinedOrEmpty(data.typeInfo))
            self.typeInfoName = data.typeInfo.name;
        
         if (!isNullOrUndefinedOrEmpty(data.pluginId)){
@@ -68,7 +68,7 @@ function stateDisplayViewModel() {
         }
      
       //it is the right device
-      if (data.value !=="" && !isNullOrUndefinedOrEmpty(self.pluginInstanceType)){
+      if (data.value !=="" && !isNullOrUndefinedOrEmpty(self.pluginInstanceType)){         
          var translatedEnumValue = $.t("plugins." + self.pluginInstanceType + ":enumerations." + self.typeInfoName + ".values." + data.value, 
          { defaultValue:data.value} );
          self.data(translatedEnumValue);
