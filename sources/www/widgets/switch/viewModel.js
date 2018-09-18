@@ -78,18 +78,19 @@ widgetViewModelCtor =
        this.commandClick = function (newState) {
            var self = this;
 
-           if  (!isNullOrUndefined(self.widget.configuration)) {
-               // Checks for the first device
-               if (!isNullOrUndefined(self.widget.configuration.device)){
-                  self.formatAndSend(0, self.widget.configuration.device.keywordId, newState);
-               }                   
-               
-               if (!isNullOrUndefined(self.widget.configuration.additionalDevices.content.devices)){
-                  // Check for the others devices
-                  $.each(self.widget.configuration.additionalDevices.content.devices, function (index, device) {
-                      self.formatAndSend(index+1, device.content.source.keywordId, newState);
-                  });
-               }
+           if  (isNullOrUndefined(self.widget.configuration))
+              return;
+           
+           // Checks for the first device
+           if (!isNullOrUndefined(self.widget.configuration.device)){
+              self.formatAndSend(0, self.widget.configuration.device.keywordId, newState);
+           }                   
+            
+           if (!isNullOrUndefined(self.widget.configuration.additionalDevices.content.devices)){
+              // Check for the others devices
+              $.each(self.widget.configuration.additionalDevices.content.devices, function (index, device) {
+                  self.formatAndSend(index+1, device.content.source.keywordId, newState);
+              });
            }
        };
 
@@ -120,7 +121,6 @@ widgetViewModelCtor =
         */          
        this.configurationChanged = function () {
            var self = this;
-           var readOnlyMode=false;
            var arrayOfDeffered = [];
            var d = new $.Deferred();
            
@@ -196,7 +196,6 @@ widgetViewModelCtor =
          // This variable is used only for the display
          $.when.apply($, arrayOfDeffered)
          .done(function () {
-            self.readonly ( readOnlyMode );
             d.resolve();
          })
          .fail(function () {
@@ -213,47 +212,45 @@ widgetViewModelCtor =
        */
        this.onNewAcquisition = function (keywordId, data) {
            var self = this;
+           var readonly = false;
            
-           if (isNullOrUndefined(this.widget.configuration)){
+           if (isNullOrUndefined(this.widget.configuration) || isNullOrUndefined(this.widget.configuration.device))
               return;
               
            //Check if first device
-           if (isNullOrUndefined(this.widget.configuration.device)) {
-                if (keywordId == this.widget.configuration.device.keywordId) {
-                    if (!isNullOrUndefinedOrEmpty(data.capacityName))
-                       self.capacity[index+1] = data.capacityName;
-                
-                    if (!isNullOrUndefinedOrEmpty(data.accessMode)){
-                        if (data.accessMode === "GetSet")
-                            self.readonly(false);
-                        else
-                            self.readonly(true);
-                    }
-                
-                    //it is the right device
-                    if (self.capacity[0] === "event")
-                        //self.state()[0] = 0;
-                        self.state.replace(self.state()[0], 0);
-                    else {
-                        //self.state()[0] = parseInt(data.value); // get the state. Same for dimmable
-                        //self.state()[0](parseInt(data.value)); // get the state. Same for dimmable
-                        self.state.replace(self.state()[0], parseInt(data.value));
-                    }
-                }
-           }                 
+          if (keywordId == this.widget.configuration.device.keywordId) {
+              if (!isNullOrUndefinedOrEmpty(data.capacity))
+                 self.capacity[0] = data.capacity;
+          
+              if (!isNullOrUndefinedOrEmpty(data.accessMode)){
+                 self.accessMode[0] = data.accessMode;
+                  if (data.accessMode === "GetSet")
+                      readonly |= false;
+                  else
+                      readonly |= true;
+              }
+          
+              //it is the right device
+              if (self.capacity[0] === "event")
+                  self.state.replace(self.state()[0], 0);
+              else {
+                  self.state.replace(self.state()[0], parseInt(data.value));
+              }
+          }
            
            //check if additional devices
            if (!isNullOrUndefined(this.widget.configuration.additionalDevices.content.devices)) {
              $.each(this.widget.configuration.additionalDevices.content.devices, function (index, device) {
                 if (keywordId == device.content.source.keywordId) {
-                    if (!isNullOrUndefinedOrEmpty(data.capacityName))
-                       self.capacity[index+1] = data.capacityName;
+                    if (!isNullOrUndefinedOrEmpty(data.capacity))
+                       self.capacity[index+1] = data.capacity;
                 
                     if (!isNullOrUndefinedOrEmpty(data.accessMode)){
+                       self.accessMode[index+1] = data.accessMode;
                         if (data.accessMode === "GetSet")
-                            self.readonly(false);
+                            readonly |= false;
                         else
-                            self.readonly(true);
+                            readonly |= true;
                     }                   
                    
                     //it is the right device
@@ -264,6 +261,8 @@ widgetViewModelCtor =
                 }
              });
            }
+           
+           self.readonly (readonly);
            
             //knockout doesn't work witj bootstrap. So change values have to be done manually
             if (self.kind() === 'toggle'){
