@@ -9,7 +9,6 @@
 #include "OpenZWaveNodeKeywordGeneric.h"
 #include "OpenZWaveNodeKeywordDimmable.h"
 #include "OpenZWaveNodeKeywordColor.h"
-#include "OpenZWaveNodeKeywordEvent.h"
 
 #include "historizers/BatteryLevel.h"
 #include "historizers/Counter.h"
@@ -27,7 +26,6 @@
 #include "historizers/Switch.h"
 #include "historizers/Temperature.h"
 #include "historizers/Uv.h"
-#include "historizers/UserCode.h"
 #include "historizers/Voltage.h"
 #include "historizers/Weight.h"
 
@@ -360,18 +358,8 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
          return boost::make_shared<COpenZWaveNodeKeywordDimmable>(vID, vLabel, accessMode, ti);
       }
       break;
-
-   case ECommandClass::kUserCodeValue:
-      if (boost::istarts_with(vLabel, "Code "))
-      {
-         CStringTypeInfo ti(vID);
-         auto historizer(boost::make_shared<historizers::CUserCode>(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode, ti));
-         return COpenZWaveNodeKeywordGeneric<std::string>::create(historizer, vID);
-      }
-      break;
    }
 
-   YADOMS_LOG(warning) << "Fail to get standard keyword : Label=" << vLabel << " access=" << accessMode << " commandClass=0x" << std::hex << commandClass.toInteger() << std::dec << " " << commandClass.toString();
    return boost::shared_ptr<IOpenZWaveNodeKeyword>();
 }
 
@@ -437,7 +425,8 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
 
    case OpenZWave::ValueID::ValueType_Button: // A write-only value that is the equivalent of pressing a button to send a command to a device
    {
-      return boost::make_shared<COpenZWaveNodeKeywordEvent>(vID, vLabel, accessMode);
+      CBoolTypeInfo ti(vID);
+      return COpenZWaveNodeKeywordGeneric<bool>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kBool, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
    }
 
    case OpenZWave::ValueID::ValueType_Raw: // A collection of bytes

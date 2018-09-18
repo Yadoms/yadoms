@@ -36,7 +36,6 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> getAllAvailablePluginsWithPackage(const std::vector<std::string>& parameters,
                                                                                                           const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> sendExtraQuery(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> sendDeviceExtraQuery(const std::vector<std::string>& parameters, const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> createPlugin(const std::vector<std::string>& parameters,
                                                                                      const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> updatePlugin(const std::vector<std::string>& parameters,

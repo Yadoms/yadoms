@@ -79,11 +79,7 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
       ${PROTOBUF_LIBRARIES}
       ${ARGN}
       )
-
-   ##################################################################################################
-   ## Add natvis (allow better debugging within VisualStudio)
-   ##################################################################################################
-   ADD_VS_NATVIS(${_targetName})
+	
 
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
    

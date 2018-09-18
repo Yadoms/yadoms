@@ -21,6 +21,7 @@ namespace pluginSystem
       kError
    };
 
+
    boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> CExtraQuery::getData() const
    {
       return m_data;

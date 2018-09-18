@@ -55,7 +55,6 @@ namespace web
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CPlugin::updatePlugin, CPlugin::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("extraQuery")("*"), CPlugin::sendExtraQuery, CPlugin::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("deviceExtraQuery")("*")("*"), CPlugin::sendDeviceExtraQuery, CPlugin::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CPlugin::deleteAllPlugins, CPlugin::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPlugin::deletePlugin, CPlugin::transactionalMethod);
          }
@@ -269,45 +268,7 @@ namespace web
                   auto query = parameters[3];
                   shared::CDataContainer queryData(requestContent);
 
-                  auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query, queryData, "");
-                  std::string taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
-                  if (!taskId.empty())
-                  {
-                     shared::CDataContainer result;
-                     result.set("taskId", taskId);
-                     return CResult::GenerateSuccess(result);
-                  }
-                  else
-                  {
-                     return CResult::GenerateError("Fail to get extra query task");
-                  }
-               }
-               return CResult::GenerateError("invalid parameter. Not enough parameters in url");
-            }
-            catch (std::exception& ex)
-            {
-               return CResult::GenerateError(ex);
-            }
-            catch (...)
-            {
-               return CResult::GenerateError("unknown exception in sending extra query to plugin");
-            }
-         }
-
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::sendDeviceExtraQuery(const std::vector<std::string>& parameters, const std::string& requestContent) const
-         {
-            try
-            {
-               if (parameters.size() >= 4)
-               {
-                  auto instanceId = boost::lexical_cast<int>(parameters[1]);
-                  auto deviceId = boost::lexical_cast<int>(parameters[3]);
-                  auto device = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
-
-                  auto query = parameters[4];
-                  shared::CDataContainer queryData(requestContent);
-
-                  auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query, queryData, device->Name());
+                  auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query, queryData);
                   std::string taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
                   if (!taskId.empty())
                   {

@@ -219,17 +219,6 @@ namespace shared
          }
 
          //--------------------------------------------------------------
-         /// \brief	    Transfer last event to another EventHadler
-         /// \param [in] rhs The event handler to trasnfer the event
-         /// \note       Must be called after waitForEvents
-         //--------------------------------------------------------------
-         void transferLastEvent(CEventHandler &rhs)
-         {
-            if (m_lastEvent)
-               rhs.postEvent(m_lastEvent);
-         }
-
-         //--------------------------------------------------------------
          /// \brief	    Create timer associated with this event handler
          /// \param[in] timerEventId   Id of the timer event
          /// \param[in] periodicity    Periodic or one-shot timer

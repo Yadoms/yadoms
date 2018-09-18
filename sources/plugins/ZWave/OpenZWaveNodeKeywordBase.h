@@ -39,18 +39,6 @@ protected:
    inline bool realSendCommand(const T& data);
 
    //--------------------------------------------------------------
-   /// \brief	      Send a button command (press).
-   /// \return       true if command is sent (just sent, not applied), false other cases
-   //--------------------------------------------------------------
-   bool pressButton();
-
-   //--------------------------------------------------------------
-   /// \brief	      Send a button command (press).
-   /// \return       true if command is sent (just sent, not applied), false other cases
-   //--------------------------------------------------------------
-   bool releaseButton();
-
-   //--------------------------------------------------------------
    /// \brief	      Extract a typed value from the OpenZWave::ValueID container 
    /// \return       The data contained in OpenZWave::ValueID, in the goot type
    /// \note	      T the type of data

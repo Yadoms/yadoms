@@ -17,7 +17,7 @@ DeviceManager.factory = function (json) {
     assert(!isNullOrUndefined(json.model), "json.model must be defined");
     assert(!isNullOrUndefined(json.type), "json.model must be defined");
 
-    return new Device(json.id, json.pluginId, json.name, json.friendlyName, json.model, json.type, json.configuration, json.blacklist, json.details);
+    return new Device(json.id, json.pluginId, json.name, json.friendlyName, json.model, json.type, json.configuration, json.blacklist);
 };
 
 /**
@@ -72,12 +72,8 @@ DeviceManager.getAttachedPlugin = function (device, force) {
     if(!device.attachedPlugin || force === true) {
         PluginInstanceManager.get(device.pluginId)
         .done(function (pluginInstance) {
-            PluginInstanceManager.downloadPackage(pluginInstance)
-            .done(function() {
-                device.attachedPlugin = pluginInstance;
-                d.resolve();
-            })
-            .fail(d.reject);
+            device.attachedPlugin = pluginInstance;
+            d.resolve();
         }).fail(d.reject);
     } else {
        d.resolve();

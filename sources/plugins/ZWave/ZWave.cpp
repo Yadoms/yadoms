@@ -43,8 +43,7 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          //create the controller
          m_controller = CZWaveControllerFactory::Create();
-         shared::event::CEventHandler init;
-         m_controller->configure(&m_configuration, &init);
+         m_controller->configure(&m_configuration, &api->getEventHandler());
 
          //start controller (and analyse network)
          IZWaveController::E_StartResult initResult = m_controller->start([&] {
@@ -54,25 +53,11 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                evt = api->getEventHandler().waitForEvents(boost::posix_time::min_date_time);
                if (evt == yApi::IYPluginApi::kEventStopRequested)
                   stopRequested = true;
-               else
-               {
-                  if (evt != shared::event::kNoEvent)
-                     api->getEventHandler().transferLastEvent(init);
-               }
             } while (evt != shared::event::kNoEvent && !stopRequested);
          });
-         m_controller->configure(&m_configuration, &api->getEventHandler());
          switch (initResult)
          {
          case IZWaveController::E_StartResult::kSuccess:
-            int evt;
-            do
-            {
-               evt = init.waitForEvents(boost::posix_time::min_date_time);
-               if(evt != shared::event::kNoEvent)
-                  init.transferLastEvent(api->getEventHandler());
-            } while (evt != shared::event::kNoEvent);
-
             mainLoop(api); //should never ends, only on stopRequested
             stopRequested = true;
             api->setPluginState(yApi::historization::EPluginState::kStopped);
@@ -264,44 +249,35 @@ void CZWave::onExtraQuery(boost::shared_ptr<yApi::IYPluginApi> api)
 
    if (extraQuery)
    {
-      std::string targetDevice = extraQuery->getData()->device();
-      if (targetDevice.empty())
-      {
-         YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData()->query();
+      YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData()->query();
 
-         if (extraQuery->getData()->query() == "inclusionMode")
-         {
-            m_controller->startInclusionMode();
-         }
-         else if (extraQuery->getData()->query() == "exclusionMode")
-         {
-            m_controller->startExclusionMode();
-         }
-         else if (extraQuery->getData()->query() == "hardReset")
-         {
-            m_controller->hardResetController();
-         }
-         else if (extraQuery->getData()->query() == "softReset")
-         {
-            m_controller->softResetController();
-         }
-         else if (extraQuery->getData()->query() == "testNetwork")
-         {
-            m_controller->testNetwork(extraQuery->getData()->data().get<int>("frameCount"));
-         }
-         else if (extraQuery->getData()->query() == "healNetowrk")
-         {
-            m_controller->healNetwork();
-         }
-         else if (extraQuery->getData()->query() == "cancelCommand")
-         {
-            m_controller->cancelCurrentCommand();
-         }
-      }
-      else
+      if (extraQuery->getData()->query() == "inclusionMode")
       {
-         YADOMS_LOG(information) << "device " << targetDevice << "  : extra command received : " << extraQuery->getData()->query();
-         m_controller->onDeviceExtraQuery(targetDevice, extraQuery->getData()->query(), extraQuery->getData()->data());
+         m_controller->startInclusionMode();
+      }
+      else if (extraQuery->getData()->query() == "exclusionMode")
+      {
+         m_controller->startExclusionMode();
+      }
+      else if (extraQuery->getData()->query() == "hardReset")
+      {
+         m_controller->hardResetController();
+      }
+      else if (extraQuery->getData()->query() == "softReset")
+      {
+         m_controller->softResetController();
+      }
+      else if (extraQuery->getData()->query() == "testNetwork")
+      {
+         m_controller->testNetwork(extraQuery->getData()->data().get<int>("frameCount"));
+      }
+      else if (extraQuery->getData()->query() == "healNetowrk")
+      {
+         m_controller->healNetwork();
+      }
+      else if (extraQuery->getData()->query() == "cancelCommand")
+      {
+         m_controller->cancelCurrentCommand();
       }
    }
    extraQuery->sendSuccess(shared::CDataContainer());
@@ -340,10 +316,9 @@ void CZWave::onEventUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api
 
 void CZWave::onDeclareDevice(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   shared::CDataContainer deviceData;
    try
    {
-      deviceData = api->getEventHandler().getEventData<shared::CDataContainer>();
+      auto deviceData = api->getEventHandler().getEventData<shared::CDataContainer>();
       if (!api->deviceExists(deviceData.get<std::string>("name")))
          api->declareDevice(deviceData.get<std::string>("name"), deviceData.get<std::string>("friendlyName"), deviceData.getWithDefault<std::string>("details.product", deviceData.get<std::string>("friendlyName")), std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(), deviceData.get<shared::CDataContainer>("details"));
       else
@@ -368,19 +343,6 @@ void CZWave::onDeclareDevice(boost::shared_ptr<yApi::IYPluginApi> api)
    }
    catch (std::exception& ex)
    {
-      try 
-      { 
-         deviceData.printToLog(YADOMS_LOG(error)); 
-      }
-      catch (std::exception &e)
-      { 
-         YADOMS_LOG(error) << "Unable to display deviceData content" << e.what(); 
-      }
-      catch (...) 
-      { 
-         YADOMS_LOG(error) << "Unable to display deviceData content"; 
-      }
-
       YADOMS_LOG(error) << "Fail to declare device. exception : " << ex.what();
    }
    catch (...)
@@ -466,6 +428,7 @@ void CZWave::onUpdateKeyword(boost::shared_ptr<yApi::IYPluginApi> api)
    try
    {
       auto keywordData = api->getEventHandler().getEventData<boost::shared_ptr<CKeywordContainer> >();
+
       auto deviceId = keywordData->getDeviceId();
       auto keywordId = keywordData->getKeyword();
 

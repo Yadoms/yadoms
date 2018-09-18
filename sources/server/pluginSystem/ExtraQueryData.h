@@ -14,8 +14,7 @@ namespace pluginSystem
       ///\param[in] query              The query
       //-----------------------------------------------------
       explicit CExtraQueryData(const std::string& query,
-                               const shared::CDataContainer& data,
-                               const std::string& deviceId);
+                               const shared::CDataContainer& data);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -25,7 +24,6 @@ namespace pluginSystem
       // IExtraQueryData implementation
       const std::string& query() const override;
       const shared::CDataContainer& data() const override;
-      const std::string& device() const override;
       // [END] IExtraQueryData implementation
 
    private:
@@ -38,11 +36,6 @@ namespace pluginSystem
       ///\brief               Data
       //-----------------------------------------------------
       shared::CDataContainer m_data;
-
-      //-----------------------------------------------------
-      ///\brief               Query for devices ?
-      //-----------------------------------------------------
-      std::string m_device;
    };
 } // namespace pluginSystem	
 

@@ -9,7 +9,7 @@ namespace plugin_cpp_api
                             boost::function1<void, const shared::CDataContainer&> sucessCallback,
                             boost::function1<void, const std::string&> errorCallback,
                            boost::function2<void, const float, const std::string&> progressionCallback)
-      : m_data(boost::make_shared<CExtraQueryData>(msg.query(), shared::CDataContainer(msg.data()), msg.device())),
+      : m_data(boost::make_shared<CExtraQueryData>(msg.query(), shared::CDataContainer(msg.data()))),
         m_sucessCallback(sucessCallback),
         m_errorCallback(errorCallback),
         m_progressionCallback(progressionCallback)

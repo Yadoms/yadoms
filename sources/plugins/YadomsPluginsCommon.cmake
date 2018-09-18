@@ -126,7 +126,7 @@ MACRO(PLUGIN_INCLDIR _targetName)
 ENDMACRO()
 
 MACRO(PLUGIN_LINK _targetName)
-   target_link_libraries(${_targetName}
+      target_link_libraries(${_targetName}
       yadoms-shared
       plugin_cpp_api
       ${LIBS}
@@ -135,11 +135,6 @@ MACRO(PLUGIN_LINK _targetName)
       ${ARGN}
       )
 	
-   ##################################################################################################
-   ## Add natvis (allow better debugging within VisualStudio)
-   ##################################################################################################
-   ADD_VS_NATVIS(${_targetName})
-   
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
    
    #configure plugin as installable component if not in devlopment state (target name begin by 'dev-')

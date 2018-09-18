@@ -18,7 +18,7 @@ namespace outgoing {
       ((Assoc)(6))
    )
 
-   class CRtsKeyword : public shared::plugin::yPluginApi::historization::CCurtain
+   class CRtsKeyword : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<ERts>
    {
    public:
       //-----------------------------------------------------
@@ -31,11 +31,6 @@ namespace outgoing {
       ///\brief                     Destructor
       //-----------------------------------------------------
       virtual ~CRtsKeyword();
-
-	  //-----------------------------------------------------
-	  ///\brief                     Set only keyword is supported
-	  //-----------------------------------------------------
-	  void set(ERts value);
    };
 
 

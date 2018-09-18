@@ -1,12 +1,12 @@
 #pragma once
-#include <shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.h>
+#include <shared/plugin/yPluginApi/historization/typeInfo/ITypeInfo.h>
 #include <shared/DataContainer.h>
 #include <value_classes/ValueID.h>
 
 //-----------------------------------------------------
 ///\brief Interface for keyword type information
 //-----------------------------------------------------
-class CStringTypeInfo : public shared::plugin::yPluginApi::historization::typeInfo::CStringTypeInfo
+class CStringTypeInfo : public shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo
 {
 public:
    //-----------------------------------------------------

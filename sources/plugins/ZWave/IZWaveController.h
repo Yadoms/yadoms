@@ -118,13 +118,4 @@ public:
    //--------------------------------------------------------------
    virtual NodeListType & getNodeList() = 0;
 
-   //--------------------------------------------------------------
-   /// \brief	Call an extra query on a device
-   /// \param [in] 	   device         The targeted device
-   /// \param [in] 	   keyword        The extra query
-   /// \param [in] 	   value          The extra query data
-   /// \return true if successfull
-   //--------------------------------------------------------------
-   virtual bool onDeviceExtraQuery(const std::string & targetDevice, const std::string & extraQuery, const shared::CDataContainer &data) = 0;
-
 };
