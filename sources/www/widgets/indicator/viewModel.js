@@ -68,14 +68,10 @@ widgetViewModelCtor = function indicatorViewModel() {
     this.configurationChanged = function () {
         var self = this;
 
-        //we register keyword new acquisition
-        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);
-		
-		//we register keyword for get last value at web client startup
-		self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);
-
-        //we fill the deviceId of the battery indicator
+        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);		
+		  self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
+        self.widgetApi.registerAdditionalInformation(["capacity", "accessMode"]);
 
         try {
             self.readOnly = parseBool(self.widget.configuration.readOnly);
@@ -101,7 +97,7 @@ widgetViewModelCtor = function indicatorViewModel() {
             self.activatedColor = defaultActivatedColor;
             self.deactivatedColor = defaultDeactivatedColor;
         }
-
+/*
         var deffered;
         
         try {
@@ -123,7 +119,7 @@ widgetViewModelCtor = function indicatorViewModel() {
         catch (err) { }
         
         deffered = deffered || new $.Deferred().resolve();
-        return deffered.promise();
+        return deffered.promise();*/
     };
 
     /**
@@ -135,6 +131,16 @@ widgetViewModelCtor = function indicatorViewModel() {
         var self = this;
         try {
             if (keywordId === self.widget.configuration.device.keywordId) {
+               if (!isNullOrUndefinedOrEmpty(data.capacityName))
+                  self.capacity[index+1] = data.capacityName;
+          
+               if (!isNullOrUndefinedOrEmpty(data.accessMode)){
+                   if (data.accessMode === "GetSet")
+                       self.readonly(false);
+                   else
+                      self.readonly(true);
+               }               
+               
                 //it is the right device
                 if (parseInt(data.value) !== 0) {
                     self.command(1);
