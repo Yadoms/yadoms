@@ -9,7 +9,7 @@
 
 /*
                                                                    
-Copyright 2011-2017, RFXCOM
+Copyright 2011-2018, RFXCOM
 
 ALL RIGHTS RESERVED. This code is owned by RFXCOM, and is protected under
 Netherlands Copyright Laws and Treaties and shall be subject to the 
@@ -27,6 +27,36 @@ portions of this file.
 */
 
 /*
+SDK version 9.22
+	Falmec added
+	Fan LucciAir DCII added
+	Zemismart blinds added
+	Async port added
+	Firmware types added
+	Livolo 1-10 device changed 
+
+SDK version 9.21
+	Fan LucciAir DC added
+	Casafan added
+	FT1211R fan controller added
+	Hualite blind added
+	Lighting1 Oase added
+
+SDK version 9.20
+	Lighting6 Cuveo added
+
+SDK version 9.19a
+	FS20 commands added
+
+SDK version 9.19
+	IRESPONSE868 added
+	IRESPONSE updated
+	433 & 868 config bits updated
+
+SDK version 9.18
+	RAW transmit/receive added
+	BlindsT6 intermediate position added
+
 SDK version 9.17
 	868 config bits added (changed)
 	Interface Control Freq commands removed (use freqsel instead)
@@ -667,6 +697,12 @@ SDK version 4.9
 #define sTypeLucciAir 0x2
 #define sTypeSeavTXS4 0x3
 #define sTypeWestinghouse 0x4
+#define sTypeLucciAirDC 0x5
+#define sTypeCasafan 0x6
+#define sTypeFT1211R 0x7
+#define sTypeFalmec 0x8
+#define sTypeLucciAirDCII 0x9
+
 #define fan_sTimer 0x1
 #define fan_sMin 0x2
 #define fan_sLearn 0x3
@@ -694,6 +730,49 @@ SDK version 4.9
 #define fan_WestinghouseLow 0x3
 #define fan_WestinghouseOff 0x4
 #define fan_WestinghouseLight 0x5
+#define fan_LucciDCPower 0x1
+#define fan_LucciDCPlus 0x2
+#define fan_LucciDCMin 0x3
+#define fan_LucciDCLight 0x4
+#define fan_LucciDCReverse 0x5
+#define fan_LucciDCNaturalflow 0x6
+#define fan_LucciDCPair 0x7
+#define fan_CasafanHi 0x1
+#define fan_CasafanMed 0x2
+#define fan_CasafanLow 0x3
+#define fan_CasafanOff 0x4
+#define fan_CasafanLight 0x5
+#define fan_FT1211Rpower 0x1
+#define fan_FT1211Rlight 0x2
+#define fan_FT1211R1 0x3
+#define fan_FT1211R2 0x4
+#define fan_FT1211R3 0x5
+#define fan_FT1211R4 0x6
+#define fan_FT1211R5 0x7
+#define fan_FT1211Rfr 0x8
+#define fan_FT1211R1H 0x9
+#define fan_FT1211R4H 0xA
+#define fan_FT1211R8H 0xB
+#define fan_FalmecPower 0x1
+#define fan_FalmecSpeed1 0x2
+#define fan_FalmecSpeed2 0x3
+#define fan_FalmecSpeed3 0x4
+#define fan_FalmecSpeed4 0x5
+#define fan_FalmecTimer1 0x6
+#define fan_FalmecTimer2 0x7
+#define fan_FalmecTimer3 0x8
+#define fan_FalmecTimer4 0x9
+#define fan_FalmecLightOn 0xA
+#define fan_FalmecLightOff 0xB
+#define fan_LucciDCIIOff 0x1
+#define fan_LucciDCII1 0x2
+#define fan_LucciDCII2 0x3
+#define fan_LucciDCII3 0x4
+#define fan_LucciDCII4 0x5
+#define fan_LucciDCII5 0x6
+#define fan_LucciDCII6 0x7
+#define fan_LucciDCIILight 0x8
+#define fan_LucciDCIIReverse 0x9
 
 //types for Curtain
 #define pTypeCurtain 0x18
@@ -1049,6 +1128,45 @@ SDK version 4.9
 #define sTypeTIC 0x1
 #define sTypeCEencoder 0x2
 #define sTypeLinky 0x3
+
+//types for Async port configuration
+#define pTypeASYNCPORT 0x61
+#define sTypeASYNCconfig 0x01
+#define asyncdisable 0x0
+#define asyncreceiveP1 0x1
+#define asyncbaud110 0x0
+#define asyncbaud300 0x1
+#define asyncbaud600 0x2
+#define asyncbaud1200 0x3
+#define asyncbaud2400 0x4
+#define asyncbaud4800 0x5
+#define asyncbaud9600 0x6
+#define asyncbaud14400 0x7
+#define asyncbaud19200 0x8
+#define asyncbaud38400 0x9
+#define asyncbaud57600 0xA
+#define asyncbaud115200 0xB
+#define asyncParityNo 0x0
+#define asyncParityOdd 0x1
+#define asyncParityEven 0x2
+#define asyncDatabits7 0x7
+#define asyncDatabits8 0x8
+#define asyncStopbits1 0x1
+#define asyncStopbits2 0x2
+#define asyncPolarityNormal 0x0
+#define asyncPolarityInvers 0x1
+
+//types for Async data
+#define pTypeASYNCDATA 0x62
+#define sTypeASYNCoverrun 0xF0
+#define sTypeASYNCpacket1 0x01
+#define sTypeASYNCpacket2 0x02
+#define sTypeASYNCpacket3 0x03
+#define sTypeASYNCpacket4 0x04
+#define sTypeASYNCpacket5 0x05
+#define sTypeASYNCpacket6 0x06
+#define sTypeASYNCDpacket7 0x07
+#define sTypeASYNClast 0xF0	//mask upper nibble indicates last packet
 
 //RFXSensor
 #define pTypeRFXSensor 0x70
@@ -2340,6 +2458,29 @@ typedef union tRBUF {
 		BYTE	rssi : 4;
 #endif
 	} LINKY;
+
+	struct {
+		BYTE packetlength;
+		BYTE packettype;
+		BYTE subtype;
+		BYTE seqnbr;
+		BYTE cmnd;
+		BYTE baudrate;
+		BYTE parity;
+		BYTE databits;
+		BYTE stopbits;
+		BYTE polarity;
+		BYTE filler1;
+		BYTE filler2;
+	} ASYNCPORT;
+
+	struct {
+		BYTE packetlength;
+		BYTE packettype;
+		BYTE subtype;
+		BYTE seqnbr;
+		BYTE datachar[252];
+	} ASYNCDATA;
 
 	struct {
 		BYTE	packetlength;

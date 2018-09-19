@@ -56,8 +56,8 @@
 // RFXCOM implementation
 // =======================================================================
 // This RFXCom support was developped for :
-// - Sepcifications "RFXtrx SDK.pdf" : Version 9.17 Oct ??, 2017
-// - RFXtrx.h : version 9.17
+// - Sepcifications "RFXtrx SDK.pdf" : Version 9.22 Aug 18, 2018
+// - RFXtrx.h : version 9.22
 // =======================================================================
 //
 
