@@ -97,29 +97,6 @@ widgetViewModelCtor = function indicatorViewModel() {
             self.activatedColor = defaultActivatedColor;
             self.deactivatedColor = defaultDeactivatedColor;
         }
-/*
-        var deffered;
-        
-        try {
-            // Get the capacity of the keyword to display it correctly
-            if (this.widget.configuration.device && this.widget.configuration.device.keywordId) {
-                deffered = KeywordManager.get(this.widget.configuration.device.keywordId);
-                
-                deffered
-                .done(function (keyword) {
-                    self.capacity = keyword.capacityName;
-					
-				        if ( keyword.accessMode ==="GetSet" )
-					        self.readonly ( false );
-				        else
-					        self.readonly ( true );
-                });
-            }
-        }
-        catch (err) { }
-        
-        deffered = deffered || new $.Deferred().resolve();
-        return deffered.promise();*/
     };
 
     /**

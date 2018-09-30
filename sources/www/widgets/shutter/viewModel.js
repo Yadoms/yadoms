@@ -98,16 +98,15 @@ widgetViewModelCtor =
           this.configurationChanged = function () {
               var self = this;
 
-              if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
+              if (isNullOrUndefined(this.widget) || (isNullOrUndefinedOrEmpty(this.widget.configuration)) || isNullOrUndefined(this.widget.configuration.device))
                   return;
 
-              if (!isNullOrUndefined(this.widget.configuration.device)) {
-                  //we register keyword new acquisition
-                  self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
-			   
-                  //we register keyword for get last value at web client startup 
-				      self.widgetApi.getLastValue(self.widget.configuration.device.keywordId); 
-                  self.widgetApi.registerAdditionalInformation(["accessMode", "capacity"]); // We would like the unit !
+              //we register keyword new acquisition
+              self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+         
+              //we register keyword for get last value at web client startup 
+              self.widgetApi.getLastValue(self.widget.configuration.device.keywordId); 
+              self.widgetApi.registerAdditionalInformation(["accessMode", "capacity"]); // We would like the unit !
 
               if (!isNullOrUndefined(this.widget.configuration.kind)) {
                   this.kind(this.widget.configuration.kind.activeSection);
@@ -130,7 +129,6 @@ widgetViewModelCtor =
                  return;
               
               if (keywordId === this.widget.configuration.device.keywordId) {
-                 
                  if (!isNullOrUndefinedOrEmpty(data.capacityName))
                     self.capacity   = data.capacityName;
                  

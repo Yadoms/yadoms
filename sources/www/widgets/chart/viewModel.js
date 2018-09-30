@@ -918,11 +918,13 @@ function chartViewModel() {
             
             //the week is not well calculated
             if (prefix === "week") 
-               request_prefix = "day";
+               request_prefix = "day/";
+            else if (prefix === "minute")
+               request_prefix = "";
             else
-               request_prefix = prefix;
+               request_prefix = prefix + "/";
          
-            RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + "/" + request_prefix + "/" + dateFrom + "/" + dateTo)
+            RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + "/" + request_prefix + dateFrom + "/" + dateTo)
             .done(function (data) {
                 try {
                    //debugger;
