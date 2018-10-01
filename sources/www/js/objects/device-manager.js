@@ -17,7 +17,7 @@ DeviceManager.factory = function (json) {
     assert(!isNullOrUndefined(json.model), "json.model must be defined");
     assert(!isNullOrUndefined(json.type), "json.model must be defined");
 
-    return new Device(json.id, json.pluginId, json.name, json.friendlyName, json.model, json.type, json.configuration, json.blacklist);
+    return new Device(json.id, json.pluginId, json.name, json.friendlyName, json.model, json.type, json.configuration, json.blacklist, json.details);
 };
 
 /**
@@ -79,6 +79,31 @@ DeviceManager.getAttachedPlugin = function (device, force) {
        d.resolve();
     }
 
+    return d.promise();
+};
+
+/**
+ * Get plugins attached to an array of devices
+ * @param {Object} devices All devices
+ * @ return {Promise}
+ */
+DeviceManager.getAttachedPlugins = function (devices) {
+    assert(!isNullOrUndefined(devices), "devices must be defined");
+    assert(devices instanceof Array, "devices must be an array");
+
+    var d = new $.Deferred();
+    PluginInstanceManager.getAll()
+       .done(function (pluginInstances) {
+          $.each(devices, function (index, device) {
+             $.each(pluginInstances, function (index2, instance) {
+                 if (device.pluginId === instance.id){
+                    devices[index].attachedPlugin = PluginInstanceManager.factory(instance);
+                 }
+             });
+          });
+          d.resolve();
+       })
+       .fail(d.reject);
     return d.promise();
 };
 

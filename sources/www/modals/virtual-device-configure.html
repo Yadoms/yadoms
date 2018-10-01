@@ -27,7 +27,7 @@
 
         buildVirtualDeviceConfigurationSchema()
             .done(function (configurationSchema) {
-                if (!isNullOrUndefined(currentDevice)) {
+                if (!isNullOrUndefined(currentDevice) && displayConfiguration) {
                     // Editing existing device
                     applyCurrentConfiguration(configurationSchema, currentDevice);
                 }
@@ -61,18 +61,18 @@
                     modelParameter.applyScript();
 
                 if (displayConfiguration){
-                //we append classic configuration
-                var configMgr = new ConfigurationControlManager(
-                    configurationSchema,
-                    isNullOrUndefined(currentDevice) ? null : currentDevice.configuration,
-                    "modals.virtual-device-configure.schema.",
-                    $modalBody);
-                
-                   //i18n
-                   $modalBody.i18n();
+                   //we append classic configuration
+                   var configMgr = new ConfigurationControlManager(
+                       configurationSchema,
+                       isNullOrUndefined(currentDevice) ? null : currentDevice.configuration,
+                       "modals.virtual-device-configure.schema.",
+                       $modalBody);
+                   
+                      //i18n
+                      $modalBody.i18n();
 
-                   //finalize treatments (ie sort items after trnaslation)
-                   configMgr.afterI18n();
+                      //finalize treatments (ie sort items after trnaslation)
+                      configMgr.afterI18n();
                 }else {
                    //i18n
                    $modalBody.i18n();                
@@ -96,8 +96,7 @@
                                             .done(function (config) {
                                                 $("div#virtual-device-configure-modal")
                                                     .modal("hide");
-                                                callback(deviceName, deviceModel,
-                                                    config);
+                                                callback(deviceName, deviceModel, config);
                                             });
                                     });
                             });

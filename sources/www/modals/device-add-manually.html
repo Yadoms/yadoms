@@ -29,6 +29,11 @@
    Yadoms.askPluginTypesForManuallyDeviceCreation = function(callback) {
       assert($.isFunction(callback), "callback must be defined");
       
+      //Activate the button to create a new device
+      $('div#new-manually-device-modal').one('hidden.bs.modal', function() {
+         Yadoms.DeviceDashboardRegisterButtonAddNewDevice();
+      });
+      
       buildAddManuallyDeviceSchema()
       .done(function (schema, availablePlugins) {
 
@@ -46,7 +51,7 @@
          
          //finalize treatments (ie sort items after trnaslation)
          configMgr.afterI18n();
-
+         
          //validation form
          //erase previous jqBootstrapValidation
          $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({

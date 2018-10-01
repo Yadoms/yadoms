@@ -22,18 +22,18 @@
 </div>
 
 <script>
-  Yadoms.showSetKeywordValueModal = function (keyword, value, pluginInstance) {
+  Yadoms.showSetKeywordValueModal = function (keyword, value, device) {
     var d = new $.Deferred();
 
     assert(!isNullOrUndefined(keyword), "keyword must be defined");
 
     var $modalBody = $("div#set-value-keyword-modal .modal-body");
     $modalBody.empty();
-
-    PluginInstanceManager.downloadPackage(pluginInstance)
+    
+    PluginInstanceManager.downloadPackage(device.attachedPlugin)
       .done(function () {
         var configObject = ConfigurationHelper.createKeywordValueParameterHandler("modals.set-value-keyword.",
-          undefined, "keyword-configuration", keyword, value, pluginInstance);
+          undefined, "keyword-configuration", keyword, value, device.attachedPlugin);
 
         if (configObject) {
           //we append the text section
@@ -57,6 +57,7 @@
               configObject.getCurrentConfiguration()
                 .done(function (value) {
                   $("div#set-value-keyword-modal").modal("hide");
+                  YadomsDevicesActivateButtonSetKeywordValue(device, keyword);
                   d.resolve(keyword, value);
                 })
                 .fail(d.reject);
@@ -69,9 +70,10 @@
 
           //if modal cancelled, then reject promise
           $('div#set-value-keyword-modal').off("hidden.bs.modal").on("hidden.bs.modal", function () {
+            YadomsDevicesActivateButtonSetKeywordValue(device, keyword);
             d.reject();
           });
-
+          
           //we display the modal
           $('div#set-value-keyword-modal').modal({ backdrop: 'static' });
 

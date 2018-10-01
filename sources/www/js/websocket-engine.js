@@ -49,7 +49,6 @@ WebSocketEngine.isConnected = function() {
  * @param keywordCollectionToFilter The collection of keyword id to filter
  */
 WebSocketEngine.updateAcquisitionFilter = function(keywordCollectionToFilter) {
-   
    WebSocketEngine.webSocket_.send(JSON.stringify({"type" : "acquisitionFilter", "data" : keywordCollectionToFilter}));
 };
 
@@ -67,7 +66,6 @@ WebSocketEngine.sendIsServerAlive = function () {
  * @param {function} callback The callback for result
  */
 WebSocketEngine.initializeWebSocketEngine = function(callback) {
-
      /*
       * Definitions of functions called in the document by websocket returns
       */
@@ -76,6 +74,9 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
      $(document).on("acquisitionupdate", function(e, websocketData) {
          var acq = AcquisitionManager.factory(websocketData.data);
          dispatchNewAcquisitionsToWidgets(acq);
+         
+        if (typeof dispatchkeywordsToDevicesView !== "undefined")
+           dispatchkeywordsToDevicesView(acq);         
      });
      
      //we listen time event

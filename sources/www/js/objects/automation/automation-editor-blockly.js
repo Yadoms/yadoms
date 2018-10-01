@@ -17,7 +17,6 @@ AutomationEditorBlockly.getSupportedInterpreters = function() {
 function AutomationEditorBlockly(interpreters) {
    var self = this;
    self.uuid = createUUID();
-   self.helpUuid = createUUID();
    
    //we compare interpreters and getSupportedInterpreters() static method to keep only active supported interpreters
    self.activeSupportedInterpreters = [];
@@ -112,18 +111,13 @@ AutomationEditorBlockly.prototype.getUuid = function() {
  * Obtain DOM structure to insert in editor's page
  */
 AutomationEditorBlockly.prototype.getDOMStructure = function() {
-   return ("<div id=\"" + this.uuid + "\"></div><button type=\"button\" class=\"btn btn-info btn-sm code-help-button\" id=\"" + this.helpUuid + "\" data-i18n=\"modals.edit-automation-rule.show-help-blockly\">doc</button>");
+   return ("<div id=\"" + this.uuid + "\"></div>");
 };
 
 /**
  * Permit to execute javascript action after inserting DOM structure in the page
  */
 AutomationEditorBlockly.prototype.applyScript = function() {
-   var self = this;
-	//Bind help
-   $("#" + self.helpUuid).unbind('click').bind('click', function () {
-       self.showDoc();
-   });
 };
 
 /**
@@ -193,6 +187,18 @@ AutomationEditorBlockly.prototype.updateRule = function() {
 
 };
 
+
+AutomationEditorBlockly.prototype.getHelpButtonLabel = function() {
+    return $.t("modals.edit-automation-rule.show-help-blockly");
+};
+
+AutomationEditorBlockly.prototype.showHelp = function () {
+   var url = "help.html?product=blockly";
+   url += "&lang=" + configurationManager.currentLanguage();
+   window.open(url);
+};
+
+
 /**
  * Permit to the object to run a custom validator engine
  */
@@ -239,12 +245,4 @@ AutomationEditorBlockly.prototype.getName = function() {
    return "blockly";
 };
 
-/**
- * Show the API documentation
- */
-AutomationEditorBlockly.prototype.showDoc = function () {
-    var url = "help.html?product=blockly";
-    url += "&lang=" + configurationManager.currentLanguage();
-    window.open(url);
-};
 

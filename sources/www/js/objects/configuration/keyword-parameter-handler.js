@@ -300,7 +300,7 @@ KeywordParameterHandler.prototype.applyScript = function () {
                      promise.reject();
                   });
             });
-            $.whenAll(arrayOfDeffered).done(function () {
+            $.when.apply($, arrayOfDeffered).done(function () {
                addDeviceList(self, tabDevice);
             });            
          }
@@ -334,7 +334,7 @@ KeywordParameterHandler.prototype.applyScript = function () {
                      notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacity", {expectedKeywordAccess : self.expectedKeywordAccess, expectedCapacity : capacity}), error);
                   });
             });
-            $.whenAll(arrayOfDeffered).done(function () {
+            $.when.apply($, arrayOfDeffered).done(function () {
                addDeviceList(self, tabDevice);
             });
          }

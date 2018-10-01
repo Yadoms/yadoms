@@ -9,6 +9,12 @@ function WidgetPackage() {
     * @type {boolean}
     */
    this.viewAnViewModelHaveBeenDownloaded = false;
+   
+   /**
+    * This item is used to indicate if language have been already downloaded
+    * @type {boolean}
+    */
+   this.languageHaveBeenDownloaded = false;   
 
    /**
     * Use this object to construct an instance of the viewModel

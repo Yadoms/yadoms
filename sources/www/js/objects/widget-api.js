@@ -26,9 +26,7 @@ WidgetApi.prototype.find = function (pattern) {
 WidgetApi.prototype.setState = function (newState) {
    if (this.widget.getState() != newState) {
       this.widget.setState(newState);
-      
-      if (newState == widgetStateEnum.InvalidConfiguration)
-      {
+      if (newState == widgetStateEnum.InvalidConfiguration){
          this.widget.$gridWidget.find(".panel-widget-desactivated").removeClass("hidden");
          var message = $.t("objects.widgetManager.widgetDisabled", {widgetName: this.widget.title});
          this.widget.$gridWidget.find(".fa-exclamation-triangle").attr("title", message);
@@ -63,6 +61,18 @@ WidgetApi.prototype.getKeywordInformation = function (keywordId) {
 };
 
 /**
+ * Obtain information about keywords
+ * @param {} keywordIds to query
+ * @param {} information to query
+ * @returns {} a promise that's return done when information grabbed from server
+ */
+WidgetApi.prototype.getKeywordsInformation = function (keywords, additionalInfos) {
+   assert(!isNullOrUndefinedOrEmpty(keywords), "keywords must be defined");
+   assert(!isNullOrUndefinedOrEmpty(additionalInfos), "additionalInfos must be defined");
+   return KeywordManager.getInformation(keywords, additionalInfos);
+};
+
+/**
  * @deprecated Register keywords to receive notifications when a new acquisition triggers
  * Obtain information about a device
  * @param {} deviceId to query
@@ -91,7 +101,6 @@ WidgetApi.prototype.registerKeywordAcquisitions = function (keywordIds) {
    
    var self = this;
    console.warn("this function is deprecated and will be removed soon. please use function registerKeywordForNewAcquisitions() and getLastValue()");
-
    self.widget.viewModel.widgetApi.registerKeywordForNewAcquisitions (keywordIds);
    self.widget.viewModel.widgetApi.getLastValue(keywordIds);
 };
@@ -137,24 +146,55 @@ WidgetApi.prototype.getLastValue = function (keywordIds) {
 };
 
 /**
+ * @param {} keywordIds to register (can be a single value or an array of values)
+ */
+WidgetApi.prototype.registerAdditionalInformation = function (additionalInfos) {
+   assert(!isNullOrUndefinedOrEmpty(additionalInfos), "additionalInfos must be defined");
+   
+   var self = this;
+   if (Array.isArray(additionalInfos)) {
+      $.each(additionalInfos, function (index, value) {
+         self.widget.additionalInfo.push(value);
+      });
+   } else {
+      self.widget.additionalInfo.push(additionalInfos);
+   }
+};
+
+/**
  * Lazy load required libraries
- * @param {} librayNames to load (can be a single value or an array of values)
+ * @param {} libraryNames to load (can be a single value or an array of values)
  * @returns {} a promise that's return done when libraries are loaded
  */
-WidgetApi.prototype.loadLibrary = function (librayNames) {
-   assert(!isNullOrUndefined(librayNames), "librayNames must be defined");
+WidgetApi.prototype.loadLibrary = function (libraryNames) {
+   assert(!isNullOrUndefined(libraryNames), "libraryNames must be defined");
 
-   if (Array.isArray(librayNames)) {
-      return asyncLoadJSLibs(librayNames);
+   if (Array.isArray(libraryNames)) {
+      return asyncLoadJSLibs(libraryNames);
    } else {
-      return asyncLoadJSLib(librayNames);
+      return asyncLoadJSLib(libraryNames);
+   }
+};
+
+/**
+ * Lazy load required libraries in gz format
+ * @param {} libraryNames to load (can be a single value or an array of values)
+ * @returns {} a promise that's return done when libraries are loaded
+ */
+WidgetApi.prototype.loadGzLibrary = function (libraryNames) {
+   assert(!isNullOrUndefined(libraryNames), "libraryNames must be defined");
+
+   if (Array.isArray(libraryNames)) {
+      return asyncLoadJSGzLibs(libraryNames);
+   } else {
+      return asyncLoadJSGzLib(libraryNames);
    }
 };
 
 /**
  * Lazy load required CSS stylesheet
- * @param {} librayNames to load (can be a single value or an array of values)
- * @returns {} a promise that's return done when libraries are loaded
+ * @param {} cssFiles to load (can be a single value or an array of values)
+ * @returns {} a promise that's return done when css files are loaded
  */
 WidgetApi.prototype.loadCss = function (cssFiles) {
    assert(!isNullOrUndefined(cssFiles), "cssFiles must be defined");
@@ -163,6 +203,21 @@ WidgetApi.prototype.loadCss = function (cssFiles) {
       return asyncLoadManyCss(cssFiles);
    } else {
       return asyncLoadCss(cssFiles);
+   }
+};
+
+/**
+ * Lazy load required CSS stylesheet in gz format
+ * @param {} cssFiles to load (can be a single value or an array of values)
+ * @returns {} a promise that's return done when css files are loaded
+ */
+WidgetApi.prototype.loadGzCss = function (cssFiles) {
+   assert(!isNullOrUndefined(cssFiles), "cssFiles must be defined");
+
+   if (Array.isArray(cssFiles)) {
+      return asyncLoadManyGzCss(cssFiles);
+   } else {
+      return asyncLoadGzCss(cssFiles);
    }
 };
 
@@ -343,8 +398,6 @@ WidgetApi.prototype.notify = function(message, gravity, timeout) {
  
 WidgetApi.prototype.manageRollingTitle = function () {
 	var self = this;
-   
-   //console.log ("widget !", self.widget);
    
 	if (self.widget.displayTitle && self.widget.toolbarActivated){
 		if (self.widget.$toolbar[0].scrollWidth <= 3) // Round size of the padding-right of the panel-widget-title-toolbar

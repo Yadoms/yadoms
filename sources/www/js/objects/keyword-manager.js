@@ -70,19 +70,93 @@ KeywordManager.get = function (keywordId) {
    return d.promise();
 };
 
+KeywordManager.getInformation = function (keywords, additionalInfos) {
+   var d = new $.Deferred();
+
+   if (keywords && (keywords.length > 0)) {
+      var allKeywordId = [];
+      
+      if (!Array.isArray(keywords))
+         allKeywordId.push(keywords);
+      else{
+         keywords = removeDuplicates(keywords);
+         
+         //extract only keyword id
+         $.each(keywords, function (index, keyword) {
+            if (keyword) {
+               if (keyword.id)
+                  allKeywordId.push(keyword.id);
+               else
+                  allKeywordId.push(keyword);
+            }
+         });
+      }
+      
+      RestEngine.putJson("/rest/acquisition/keyword/info", {
+               data: JSON.stringify({
+                     keywords: allKeywordId,
+                     info: removeDuplicates(additionalInfos)
+               })
+         })
+         .done(function (data) {
+               var result = [];
+               $.each(data, function (index, keydata) {
+                  console.log("index : ", index);
+                  console.log(keydata);
+                  result.push({accessMode: keydata.accessMode,
+                               capacity: keydata.capacity,
+                               date: keydata.lastValueDate,
+                               friendlyName: keydata.friendlyName,
+                               keywordId: index,
+                               measure: keydata.measure,
+                               pluginId: keydata.pluginId,
+                               typeInfo: keydata.typeInfo,
+                               unit: keydata.unit,
+                               value: keydata.lastValue});
+               });
+               d.resolve(result);
+         })
+         .fail(function(error){
+            console.log(error);
+            d.reject();
+         });
+   } else {
+         d.resolve();
+   }
+   return d.promise();
+}
+
 KeywordManager.getAll = function () {
    var d = new $.Deferred();
 
    RestEngine.getJson("/rest/device/keyword")
    .done(function (data) {
       var devices = [];
-      //foreach result we append a <tr>
       $.each(data.keywords, function (index, value) {
          devices.push(KeywordManager.factory(value));
       });
       d.resolve(devices);
    })
    .fail(d.reject);
+
+   return d.promise();
+};
+
+/**
+ * Get the last value of a keywordId
+ * @param {Integer|String} keywordId The keyword id to request last value
+ * @return {Promise(lastData)}
+ */
+KeywordManager.getLastValue = function (keywordId) {
+   assert(!isNullOrUndefinedOrEmpty(keywordId), "keywordId must be defined");
+
+   var d = new $.Deferred();
+
+   RestEngine.getJson("/rest/acquisition/keyword/" + keywordId + "/lastdata")
+         .done(function (data) {
+               d.resolve(data.lastValue);
+         })
+         .fail(d.reject);
 
    return d.promise();
 };

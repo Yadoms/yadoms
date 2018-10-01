@@ -47,7 +47,7 @@ public:
    /// \brief	    getCityLocation
    /// \return                   the location (longitude, latitude) of the city
    //--------------------------------------------------------------
-   boost::shared_ptr<const shared::ILocation> getCityLocation();
+   boost::shared_ptr<const shared::ILocation> getCityLocation() const;
 
    //--------------------------------------------------------------
    /// \brief	    getStationName
@@ -60,7 +60,7 @@ public:
    /// \brief	    getCity
    /// \return                   the city corresponding to the coordonates
    //--------------------------------------------------------------
-   std::string getCity();
+   std::string getCity() const;
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

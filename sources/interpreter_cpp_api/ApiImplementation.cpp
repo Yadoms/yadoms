@@ -26,7 +26,7 @@ namespace interpreter_cpp_api
    {
       m_sendMessageQueue = sendMessageQueue;
       m_messageCutter = boost::make_shared<shared::communication::SmallHeaderMessageCutter>(m_sendMessageQueue->get_max_msg_size(),
-         m_sendMessageQueue->get_max_msg());
+                                                                                            m_sendMessageQueue->get_max_msg());
    }
 
    bool CApiImplementation::stopRequested() const
@@ -51,26 +51,29 @@ namespace interpreter_cpp_api
          boost::lock_guard<boost::recursive_mutex> lock(m_sendMutex);
 
          if (!m_sendMessageQueue || !m_messageCutter)
-            throw std::runtime_error((boost::format("CApiImplementation::send \"%1%\", interpreter API not ready to send message") % msg.descriptor()->full_name()).str());
+            throw std::runtime_error(
+               (boost::format("CApiImplementation::send \"%1%\", interpreter API not ready to send message") % msg.descriptor()->full_name()).str());
 
          if (!msg.IsInitialized())
-            throw std::runtime_error((boost::format("CApiImplementation::send \"%1%\", request is not fully initialized") % msg.descriptor()->full_name()).str());
+            throw std::runtime_error(
+               (boost::format("CApiImplementation::send \"%1%\", request is not fully initialized") % msg.descriptor()->full_name()).str());
 
          const auto pbMessageSize = msg.ByteSize();
          const auto serializedMessage = boost::make_shared<unsigned char[]>(pbMessageSize);
          if (!msg.SerializeWithCachedSizesToArray(serializedMessage.get()))
-            throw std::runtime_error((boost::format("CApiImplementation::send \"%1%\", fail to serialize request (too big ?)") % msg.descriptor()->full_name()).str());
+            throw std::runtime_error(
+               (boost::format("CApiImplementation::send \"%1%\", fail to serialize request (too big ?)") % msg.descriptor()->full_name()).str());
 
          const auto cuttedMessage = m_messageCutter->cut(serializedMessage,
-            pbMessageSize);
+                                                         pbMessageSize);
 
          if (!cuttedMessage->empty())
          {
             for (const auto& part : *cuttedMessage)
             {
                m_sendMessageQueue->send(part->formattedMessage(),
-                  part->formattedSize(),
-                  0);
+                                        part->formattedSize(),
+                                        0);
             }
          }
       }
@@ -86,27 +89,27 @@ namespace interpreter_cpp_api
    {
       shared::event::CEventHandler receivedEvtHandler;
       enum
-         {
-            kExpectedEventReceived = shared::event::kUserFirstId,
-            kErrorReceived
-         };
+      {
+         kExpectedEventReceived = shared::event::kUserFirstId,
+         kErrorReceived
+      };
 
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
          m_onReceiveHook = [&](const interpreter_IPC::toInterpreter::msg& receivedMsg)-> bool
+         {
+            if (!receivedMsg.error().empty())
             {
-               if (!receivedMsg.error().empty())
-               {
-                  receivedEvtHandler.postEvent<const interpreter_IPC::toInterpreter::msg>(kErrorReceived, receivedMsg);
-                  return true;
-               }
-
-               if (!checkExpectedMessageFunction(receivedMsg))
-                  return false;
-
-               receivedEvtHandler.postEvent<const interpreter_IPC::toInterpreter::msg>(kExpectedEventReceived, receivedMsg);
+               receivedEvtHandler.postEvent<const interpreter_IPC::toInterpreter::msg>(kErrorReceived, receivedMsg);
                return true;
-            };
+            }
+
+            if (!checkExpectedMessageFunction(receivedMsg))
+               return false;
+
+            receivedEvtHandler.postEvent<const interpreter_IPC::toInterpreter::msg>(kExpectedEventReceived, receivedMsg);
+            return true;
+         };
       }
 
       send(msg);
@@ -123,7 +126,9 @@ namespace interpreter_cpp_api
          {
             boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
             m_onReceiveHook.clear();
-            throw std::runtime_error((boost::format("Error \"%1%\" received from Yadoms when sending message %2%") % receivedEvtHandler.getEventData<const interpreter_IPC::toInterpreter::msg>().error() % msg.OneOf_case()).str());
+            throw std::runtime_error(
+               (boost::format("Error \"%1%\" received from Yadoms when sending message %2%") % receivedEvtHandler.getEventData<const interpreter_IPC::
+                  toInterpreter::msg>().error() % msg.OneOf_case()).str());
          }
 
       case shared::event::kTimeout:
@@ -137,7 +142,8 @@ namespace interpreter_cpp_api
          {
             boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
             m_onReceiveHook.clear();
-            throw std::runtime_error((boost::format("Invalid event received %1% when sending message %2%") % receivedEvtHandler.getEventId() % msg.OneOf_case()).str());
+            throw std::runtime_error(
+               (boost::format("Invalid event received %1% when sending message %2%") % receivedEvtHandler.getEventId() % msg.OneOf_case()).str());
          }
       }
    }
@@ -150,14 +156,16 @@ namespace interpreter_cpp_api
 
       interpreter_IPC::toInterpreter::msg toInterpreterProtoBuffer;
       if (!toInterpreterProtoBuffer.ParseFromArray(message.get(), messageSize))
-         throw shared::exception::CInvalidParameter((boost::format("message : fail to parse received data into protobuf format (received buffer size is %1%)") % messageSize).str());
+         throw shared::exception::CInvalidParameter(
+            (boost::format("message : fail to parse received data into protobuf format (received buffer size is %1%)") % messageSize).str());
 
       if (!m_initialized)
       {
          if (toInterpreterProtoBuffer.has_init())
             processInit(toInterpreterProtoBuffer.init());
          else
-            throw shared::exception::CInvalidParameter((boost::format("Unexpected message %1% when initialization") % toInterpreterProtoBuffer.OneOf_case()).str());
+            throw shared::exception::CInvalidParameter(
+               (boost::format("Unexpected message %1% when initialization") % toInterpreterProtoBuffer.OneOf_case()).str());
          return;
       }
 
@@ -176,9 +184,11 @@ namespace interpreter_cpp_api
          break;
       case interpreter_IPC::toInterpreter::msg::kAvalaibleRequest: processAvalaibleRequest(toInterpreterProtoBuffer.avalaiblerequest());
          break;
-      case interpreter_IPC::toInterpreter::msg::kLoadScriptContentRequest: processLoadScriptContentRequest(toInterpreterProtoBuffer.loadscriptcontentrequest());
+      case interpreter_IPC::toInterpreter::msg::kLoadScriptContentRequest: processLoadScriptContentRequest(
+            toInterpreterProtoBuffer.loadscriptcontentrequest());
          break;
-      case interpreter_IPC::toInterpreter::msg::kSaveScriptContentRequest: processSaveScriptContent(toInterpreterProtoBuffer.savescriptcontentrequest());
+      case interpreter_IPC::toInterpreter::msg::kSaveScriptContentRequest: processSaveScriptContent(
+            toInterpreterProtoBuffer.savescriptcontentrequest());
          break;
       case interpreter_IPC::toInterpreter::msg::kStartScript: processStartScript(toInterpreterProtoBuffer.startscript());
          break;
@@ -187,7 +197,8 @@ namespace interpreter_cpp_api
       case interpreter_IPC::toInterpreter::msg::kPurgeScriptLog: processPurgeScriptLog(toInterpreterProtoBuffer.purgescriptlog());
          break;
       default:
-         throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toInterpreterProtoBuffer.OneOf_case()).str());
+         throw shared::exception::CInvalidParameter(
+            (boost::format("message : unknown message type %1%") % toInterpreterProtoBuffer.OneOf_case()).str());
       }
    }
 
@@ -201,7 +212,8 @@ namespace interpreter_cpp_api
 
    void CApiImplementation::processInit(const interpreter_IPC::toInterpreter::Init& msg)
    {
-      m_pluginInformation = boost::make_shared<CInformation>(boost::make_shared<const interpreter_IPC::toInterpreter::Information>(msg.interpreterinformation()));
+      m_pluginInformation = boost::make_shared<CInformation>(
+         boost::make_shared<const interpreter_IPC::toInterpreter::Information>(msg.interpreterinformation()));
       m_logFile = boost::make_shared<const boost::filesystem::path>(msg.logfile());
       m_logLevel = boost::make_shared<const std::string>(msg.loglevel());
       setInitialized();
@@ -222,65 +234,69 @@ namespace interpreter_cpp_api
 
    void CApiImplementation::processAvalaibleRequest(const interpreter_IPC::toInterpreter::AvalaibleRequest& msg)
    {
-      boost::shared_ptr<shared::script::yInterpreterApi::IAvalaibleRequest> request = boost::make_shared<CAvalaibleRequest>(msg,
-                                                                                                                            [&](bool available)
-                                                                                                                            {
-                                                                                                                               interpreter_IPC::toYadoms::msg ans;
-                                                                                                                               auto answer = ans.mutable_avalaibleanswer();
-                                                                                                                               answer->set_avalaible(available);
-                                                                                                                               send(ans);
-                                                                                                                            },
-                                                                                                                            [&](const std::string& r)
-                                                                                                                            {
-                                                                                                                               interpreter_IPC::toYadoms::msg ans;
-                                                                                                                               ans.set_error(r);
-                                                                                                                               send(ans);
-                                                                                                                            });
+      const boost::shared_ptr<shared::script::yInterpreterApi::IAvalaibleRequest> request =
+         boost::make_shared<CAvalaibleRequest>(msg,
+                                               [&](bool available)
+                                               {
+                                                  interpreter_IPC::toYadoms::msg ans;
+                                                  auto answer = ans.mutable_avalaibleanswer();
+                                                  answer->set_avalaible(available);
+                                                  send(ans);
+                                               },
+                                               [&](const std::string& r)
+                                               {
+                                                  interpreter_IPC::toYadoms::msg ans;
+                                                  ans.set_error(r);
+                                                  send(ans);
+                                               });
 
       m_interpreterEventHandler.postEvent(kEventAvalaibleRequest, request);
    }
 
    void CApiImplementation::processLoadScriptContentRequest(const interpreter_IPC::toInterpreter::LoadScriptContentRequest& msg)
    {
-      boost::shared_ptr<shared::script::yInterpreterApi::ILoadScriptContentRequest> request = boost::make_shared<CLoadScriptContentRequest>(msg,
-                                                                                                                                            [&](const std::string content)
-                                                                                                                                            {
-                                                                                                                                               interpreter_IPC::toYadoms::msg ans;
-                                                                                                                                               auto answer = ans.mutable_loadscriptcontentanswer();
-                                                                                                                                               answer->set_content(content);
-                                                                                                                                               send(ans);
-                                                                                                                                            },
-                                                                                                                                            [&](const std::string& r)
-                                                                                                                                            {
-                                                                                                                                               interpreter_IPC::toYadoms::msg ans;
-                                                                                                                                               ans.set_error(r);
-                                                                                                                                               send(ans);
-                                                                                                                                            });
+      const boost::shared_ptr<shared::script::yInterpreterApi::ILoadScriptContentRequest> request =
+         boost::make_shared<CLoadScriptContentRequest>(msg,
+                                                       [&](const std::string content)
+                                                       {
+                                                          interpreter_IPC::toYadoms::msg ans;
+                                                          auto answer = ans.mutable_loadscriptcontentanswer();
+                                                          answer->set_content(content);
+                                                          send(ans);
+                                                       },
+                                                       [&](const std::string& r)
+                                                       {
+                                                          interpreter_IPC::toYadoms::msg ans;
+                                                          auto answer = ans.mutable_loadscriptcontentanswer();
+                                                          answer->set_error(r);
+                                                          send(ans);
+                                                       });
 
       m_interpreterEventHandler.postEvent(kEventLoadScriptContentRequest, request);
    }
 
    void CApiImplementation::processSaveScriptContent(const interpreter_IPC::toInterpreter::SaveScriptContentRequest& msg)
    {
-      boost::shared_ptr<shared::script::yInterpreterApi::ISaveScriptContentRequest> command = boost::make_shared<CSaveScriptContentRequest>(msg,
-                                                                                                                                            [&]()
-                                                                                                                                            {
-                                                                                                                                               interpreter_IPC::toYadoms::msg ans;
-                                                                                                                                               ans.mutable_savescriptcontentanswer();
-                                                                                                                                               send(ans);
-                                                                                                                                            },
-                                                                                                                                            [&](const std::string& r)
-                                                                                                                                            {
-                                                                                                                                               interpreter_IPC::toYadoms::msg ans;
-                                                                                                                                               ans.set_error(r);
-                                                                                                                                               send(ans);
-                                                                                                                                            });
+      const boost::shared_ptr<shared::script::yInterpreterApi::ISaveScriptContentRequest> command =
+         boost::make_shared<CSaveScriptContentRequest>(msg,
+                                                       [&]()
+                                                       {
+                                                          interpreter_IPC::toYadoms::msg ans;
+                                                          ans.mutable_savescriptcontentanswer();
+                                                          send(ans);
+                                                       },
+                                                       [&](const std::string& r)
+                                                       {
+                                                          interpreter_IPC::toYadoms::msg ans;
+                                                          ans.set_error(r);
+                                                          send(ans);
+                                                       });
       m_interpreterEventHandler.postEvent(kEventSaveScriptContent, command);
    }
 
    void CApiImplementation::processStartScript(const interpreter_IPC::toInterpreter::StartScript& msg)
    {
-      boost::shared_ptr<shared::script::yInterpreterApi::IStartScript> request = boost::make_shared<CStartScript>(msg);
+      const boost::shared_ptr<shared::script::yInterpreterApi::IStartScript> request = boost::make_shared<CStartScript>(msg);
 
       m_interpreterEventHandler.postEvent(kEventStartScript,
                                           request);
@@ -288,7 +304,7 @@ namespace interpreter_cpp_api
 
    void CApiImplementation::processStopScript(const interpreter_IPC::toInterpreter::StopScript& msg)
    {
-      boost::shared_ptr<shared::script::yInterpreterApi::IStopScript> request = boost::make_shared<CStopScript>(msg);
+      const boost::shared_ptr<shared::script::yInterpreterApi::IStopScript> request = boost::make_shared<CStopScript>(msg);
 
       m_interpreterEventHandler.postEvent(kEventStopScript,
                                           request);
@@ -296,7 +312,7 @@ namespace interpreter_cpp_api
 
    void CApiImplementation::processPurgeScriptLog(const interpreter_IPC::toInterpreter::PurgeScriptLog& msg)
    {
-      boost::shared_ptr<shared::script::yInterpreterApi::IPurgeScriptLog> request = boost::make_shared<CPurgeScriptLog>(msg);
+      const boost::shared_ptr<shared::script::yInterpreterApi::IPurgeScriptLog> request = boost::make_shared<CPurgeScriptLog>(msg);
 
       m_interpreterEventHandler.postEvent(kEventPurgeScriptLog,
                                           request);
@@ -341,5 +357,3 @@ namespace interpreter_cpp_api
       return m_interpreterEventHandler;
    }
 } // namespace interpreter_cpp_api	
-
-

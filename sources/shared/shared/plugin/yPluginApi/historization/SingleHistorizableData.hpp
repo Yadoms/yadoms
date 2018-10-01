@@ -333,6 +333,23 @@ namespace shared
                      return CDataContainer();
                   }
                };
+               
+               //-----------------------------------------------------
+               ///\brief     Helpers specialization for unsigned char*
+               //-----------------------------------------------------      
+               template <typename TData>
+               struct helper<TData, typename boost::enable_if<boost::is_base_of<unsigned char *, TData> >::type>
+               {
+                  static TData getInternal(const std::string& value)
+                  {
+                     return ;
+                  }
+
+                  static CDataContainer createDefaultTypeInfo()
+                  {
+                     return CDataContainer();
+                  }
+               };
             };
          }
       }

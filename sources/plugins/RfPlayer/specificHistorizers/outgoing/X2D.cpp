@@ -16,7 +16,7 @@ namespace outgoing {
    )
 
 
-   DECLARE_CAPACITY(X2DCapacity, "blyss_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+   DECLARE_CAPACITY(X2DCapacity, "x2d_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
    CX2DKeyword::CX2DKeyword(const std::string& keywordName)
       : shared::plugin::yPluginApi::historization::CSingleHistorizableData<EX2D>(keywordName,

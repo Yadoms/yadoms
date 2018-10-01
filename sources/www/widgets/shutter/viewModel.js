@@ -97,33 +97,16 @@ widgetViewModelCtor =
 
           this.configurationChanged = function () {
               var self = this;
-              var deffered;
 
-              if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
+              if (isNullOrUndefined(this.widget) || (isNullOrUndefinedOrEmpty(this.widget.configuration)) || isNullOrUndefined(this.widget.configuration.device))
                   return;
 
-              if (!isNullOrUndefined(this.widget.configuration.device)) {
-                  //we register keyword new acquisition
-                  self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
-			   
-                  //we register keyword for get last value at web client startup 
-				  self.widgetApi.getLastValue(self.widget.configuration.device.keywordId); 
-
-                  // Get the capacity of the keyword
-                  deffered = KeywordManager.get(this.widget.configuration.device.keywordId);
-                  
-                 deffered
-                 .done(function (keyword) {
-                     if (keyword.accessMode === "GetSet")
-                         self.readonly(false);
-                     else
-                         self.readonly(true);
-					 
-					 self.capacity   = keyword.capacityName;
-                 });
-              }else {
-                 deffered = new $.Deferred().resolve();
-              }
+              //we register keyword new acquisition
+              self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+         
+              //we register keyword for get last value at web client startup 
+              self.widgetApi.getLastValue(self.widget.configuration.device.keywordId); 
+              self.widgetApi.registerAdditionalInformation(["accessMode", "capacity"]); // We would like the unit !
 
               if (!isNullOrUndefined(this.widget.configuration.kind)) {
                   this.kind(this.widget.configuration.kind.activeSection);
@@ -132,7 +115,6 @@ widgetViewModelCtor =
               if (!isNullOrUndefined(this.widget.configuration.invert)) {
                   this.invert(parseBool(this.widget.configuration.invert));
               }
-              return deffered.promise();
           };
 
           /**
@@ -143,24 +125,35 @@ widgetViewModelCtor =
           this.onNewAcquisition = function (keywordId, data) {
               var self = this;
 
-              if ((this.widget.configuration != undefined) && (this.widget.configuration.device != undefined)) {
-                  if (keywordId === this.widget.configuration.device.keywordId) {
-                    switch (self.capacity) {
-                      case "curtain":
-                          if (data.value.toLowerCase()==="open")
-                           self.command(1);
-                         else
-                           self.command(0);
-                         break;
-                       default:
-                          // Adapt for dimmable or switch capacities
-                          if (parseInt(data.value) !== 0)
-                             self.command(1);
-                          else
-                             self.command(0);
-                        break;
-                    }
-                  }
-              }
+              if ((this.widget.configuration == undefined) || (this.widget.configuration.device == undefined))
+                 return;
+              
+              if (keywordId === this.widget.configuration.device.keywordId) {
+                 if (!isNullOrUndefinedOrEmpty(data.capacityName))
+                    self.capacity   = data.capacityName;
+                 
+                 if (!isNullOrUndefinedOrEmpty(data.accessMode)){
+                     if (data.accessMode === "GetSet")
+                         self.readonly(false);
+                     else
+                         self.readonly(true);
+                 }
+                 
+                 switch (self.capacity) {
+                   case "curtain":
+                       if (data.value.toLowerCase()==="open")
+                        self.command(1);
+                      else
+                        self.command(0);
+                      break;
+                    default:
+                       // Adapt for dimmable or switch capacities
+                       if (parseInt(data.value) !== 0)
+                          self.command(1);
+                       else
+                          self.command(0);
+                     break;
+                 }
+               }
           };
       };

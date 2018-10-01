@@ -95,7 +95,7 @@ PluginInstanceManager.getAll = function () {
 
            });
 
-           $.whenAll(arrayOfDeffered).done(function () {
+           $.when.apply($,arrayOfDeffered).done(function () {
                d.resolve(result);
            });
        })
@@ -289,6 +289,19 @@ PluginInstanceManager.postExtraQuery= function (pluginInstance, commandName, com
 	return RestEngine.postJson("/rest/plugin/" + pluginInstance.id + "/extraQuery/" + commandName, { data: JSON.stringify(commandData) });
 };
 
+/**
+ * Send an extra command to a device of a plugin instance
+ * @param pluginInstance The plugin instance
+ * @param device The device
+ * @param extraQuery   The extraQuery
+ * @return {Promise} A promise for the result
+ */
+PluginInstanceManager.postDeviceExtraQuery= function (pluginInstance, device, commandName, commandData) {
+	assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
+	assert(!isNullOrUndefined(device), "pluginInstance must be defined");
+	return RestEngine.postJson("/rest/plugin/" + pluginInstance.id + "/deviceExtraQuery/" + device.id + "/" + commandName, { data: JSON.stringify(commandData) });
+};
+
 
 PluginInstanceManager.getVirtualDevicesSupportedCapacities= function () {
 	return RestEngine.getJson("/rest/system/virtualDevicesSupportedCapacities");
@@ -325,31 +338,42 @@ PluginInstanceManager.downloadPackage = function (pluginInstance) {
  * @return {Promise} A promise for the result
  */
 PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation = function () {
-    var d = new $.Deferred();
+   var d = new $.Deferred();
+   var defferedArray = [];
+   var info;
+   var pluginInfo;
 
+   var def1 = YadomsInformationManager.getList();
+   defferedArray.push(def1);
+   def1.done(function (yadomsInfo) { 
+      info = yadomsInfo;
+   });
+   
     //we can't download package from system plugins
-    RestEngine.getJson("rest/plugin/instance/handleManuallyDeviceCreation")
-        .done(function (data) {
-			YadomsInformationManager.getList()
-            .done(function (yadomsInfo) {      
-            var pluginInstanceList = [];
+    var def2 = RestEngine.getJson("rest/plugin/instance/handleManuallyDeviceCreation");
+    defferedArray.push(def2);
+    def2.done(function (data) {
+       pluginInfo = data;
+    })
+        
+    $.when.apply($, defferedArray).done(function () {
+      var pluginInstanceList = [];
 
-            if (!isNullOrUndefinedOrEmpty(data.plugin)) {
-                $.each(data.plugin, function (index, value) {
-                    var pi = PluginInstanceManager.factory(value);
-                    //we don't show system plugins to user
-                    if (!pi.isSystemCategory()) {
-						if( (!yadomsInfo.developerMode && !pi.type.startsWith("dev-")) || yadomsInfo.developerMode) {
-							pluginInstanceList.push(pi);
-						}
-					}
-                });
+      if (!isNullOrUndefinedOrEmpty(pluginInfo.plugin)) {
+          $.each(pluginInfo.plugin, function (index, value) {
+              var pi = PluginInstanceManager.factory(value);
+              //we don't show system plugins to user
+              if (!pi.isSystemCategory()) {
+            if( (!info.developerMode && !pi.type.startsWith("dev-")) || info.developerMode) {
+               pluginInstanceList.push(pi);
             }
-            d.resolve(pluginInstanceList);
-			})
-			.fail(d.reject);
-        })
-        .fail(d.reject);
+         }
+          });
+      }
+      d.resolve(pluginInstanceList);       
+    })
+    .fail(d.reject);
+        
     return d.promise();
 };
 

@@ -82,8 +82,6 @@ namespace web
       {
          //WebSockets are persistents connections, so recreate request handler for each request
          auto realRequestHandler = new CWebSocketRequestHandler();
-         if (m_authenticator)
-            return new CAuthenticationRequestHandler(m_authenticator, boost::shared_ptr<Poco::Net::HTTPRequestHandler>(realRequestHandler), true);
          return realRequestHandler;
       }
 

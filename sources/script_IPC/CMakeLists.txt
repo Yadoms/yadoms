@@ -19,6 +19,11 @@ target_link_libraries(script_IPC ${PROTOBUF_LIBRARIES})
 
 set_property(TARGET script_IPC PROPERTY INCLUDE_DIRECTORIES ${script_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
 
+##################################################################################################
+## Add natvis (allow better debugging within VisualStudio)
+##################################################################################################
+ADD_VS_NATVIS(script_IPC)
+
 IF(MSVC OR XCODE)
    SET_PROPERTY(TARGET script_IPC PROPERTY FOLDER "script_IPC")
 ENDIF()

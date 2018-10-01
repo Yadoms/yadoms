@@ -2,10 +2,8 @@
 #include <shared/Export.h>
 #include <shared/DataContainer.h>
 #include <Poco/Net/HTTPClientSession.h>
-#include <Poco/Net/HTTPResponse.h>
 
 #include "IHttpSession.h"
-#include <Poco/URI.h>
 
 namespace shared
 {
@@ -20,13 +18,14 @@ namespace shared
    class YADOMS_SHARED_EXPORT CHttpMethods
    {
    public:
+      virtual ~CHttpMethods() = default;
 
       //--------------------------------------------------------------
       /// \brief	    SendGetRequest
       /// \param[in]  url                 the url to send the request
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      static CDataContainer SendGetRequest(const std::string & url);
+      static CDataContainer sendGetRequest(const std::string& url);
 
       //--------------------------------------------------------------
       /// \brief	    SendGetRequest
@@ -35,8 +34,8 @@ namespace shared
       /// \param[in]  timeout             timeout for the request
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      static CDataContainer SendGetRequest(const std::string & url, 
-                                           const CDataContainer & parameters,
+      static CDataContainer sendGetRequest(const std::string& url,
+                                           const CDataContainer& parameters,
                                            const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
@@ -48,35 +47,19 @@ namespace shared
       /// \param[in]  timeout             timeout for the request
       /// \return     false if the time has expired. In this case the onReceived is not executed
       //--------------------------------------------------------------
-      static bool SendGetRequest(const boost::shared_ptr<IHTTPSession> session,
+      static bool sendGetRequest(const boost::shared_ptr<IHTTPSession> session,
                                  const CDataContainer& headerParameters,
                                  const CDataContainer& parameters,
                                  boost::function1<void, CDataContainer&> onReceive,
                                  const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
-      /// \brief	    SendPostRequest
-      /// \param[in]  url                 the url to send the request
-      /// \param[in]  headerParameters    parameters included into the frame
-      /// \param[in]  parameters          parameters at the end of the url
-      /// \param[in]  onReceive           function called on received data
-      /// \param[in]  timeout             timeout for the request
-      /// \return     false if the time has expired. In this case the onReceived is not executed
-      //--------------------------------------------------------------
-      /*
-      static bool SendPostRequest(const std::string & url,
-                                  const CDataContainer& headerParameters,
-                                  const CDataContainer& parameters,
-                                  boost::function1<void, CDataContainer&> onReceive,
-                                  const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
-*/
-      //--------------------------------------------------------------
       /// \brief	    JsonResponseReader
       /// \param[in]  httpresponse        the HTTP response answer
       /// \param[in]  response            the response
       /// \return     true if the response is Json, otherwise false
       //--------------------------------------------------------------
-      static bool JsonResponseReader(const boost::shared_ptr<IHTTPSession> session,
+      static bool jsonResponseReader(const boost::shared_ptr<IHTTPSession> session,
                                      Poco::Net::HTTPResponse& httpresponse,
                                      CDataContainer& response);
    };

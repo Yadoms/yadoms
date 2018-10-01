@@ -44,10 +44,10 @@ namespace database
                YADOMS_LOG(information) << "Yadoms will create a blank one";
             }
 
-            auto rc = sqlite3_open(m_dbFile.c_str(), &m_pDatabaseHandler);
+            const auto rc = sqlite3_open(m_dbFile.c_str(), &m_pDatabaseHandler);
             if (rc)
             {
-               std::string error = sqlite3_errmsg(m_pDatabaseHandler);
+               const std::string error = sqlite3_errmsg(m_pDatabaseHandler);
                throw CDatabaseException(error);
             }
 
@@ -99,7 +99,7 @@ namespace database
                sVal.insert(6, "-");
                sVal.insert(4, "-");
 
-               auto buf = static_cast<char *>(malloc(sizeof(char) * (sVal.size())));
+               const auto buf = static_cast<char *>(malloc(sizeof(char) * (sVal.size())));
                memcpy(buf, sVal.c_str(), sVal.size());
                sqlite3_result_text(context, buf, sVal.size(), free);
                break;
@@ -214,7 +214,7 @@ namespace database
          do
          {
             //execute query
-            auto rc = sqlite3_exec(m_pDatabaseHandler,
+            const auto rc = sqlite3_exec(m_pDatabaseHandler,
                                    querytoExecute.c_str(),
                                    nullptr,
                                    nullptr,
@@ -226,7 +226,7 @@ namespace database
             if (rc != SQLITE_OK)
             {
                //make a copy of the err message
-               std::string errMessage(zErrMsg);
+               const std::string errMessage(zErrMsg);
 
                //log the message
                YADOMS_LOG(error) << "Query failed : " << std::endl << "Query: " << querytoExecute.str() << std::endl << "Error : " << zErrMsg;
@@ -346,7 +346,7 @@ namespace database
                              From(CSqliteMasterTable::getTableName()).
                              Where(CSqliteMasterTable::getTypeColumnName(), CQUERY_OP_EQUAL, SQLITEMASTER_TABLE).
                              And(CSqliteMasterTable::getNameColumnName(), CQUERY_OP_EQUAL, tableName.GetName());
-         int count = queryCount(sCheckForTableExists);
+         const auto count = queryCount(sCheckForTableExists);
          return (count == 1);
       }
 
@@ -423,11 +423,11 @@ namespace database
          }
       }
 
-      int CSQLiteRequester::doBackup(const std::string & backupFolder, ProgressFunc reporter)
+      int CSQLiteRequester::doBackup(const std::string & backupFolder, ProgressFunc reporter) const
       {
          sqlite3* pFile; /* Database connection opened on zFilename */
 
-         std::string backupfile = backupFolder + "/" + "yadoms.db3";
+         auto backupfile = backupFolder + "/" + "yadoms.db3";
 
          //remove backup file if already exists
          if (boost::filesystem::exists(backupfile))
@@ -436,11 +436,11 @@ namespace database
          }
 
          // Open the database file identified by zFilename.
-         int rc = sqlite3_open(backupfile.c_str(), &pFile);
+         auto rc = sqlite3_open(backupfile.c_str(), &pFile);
          if (rc == SQLITE_OK)
          {
             // Open the sqlite3_backup object used to accomplish the transfer
-            sqlite3_backup* pBackup = sqlite3_backup_init(pFile, "main", m_pDatabaseHandler, "main");
+            const auto pBackup = sqlite3_backup_init(pFile, "main", m_pDatabaseHandler, "main");
             if (pBackup)
             {
                //do the backup
@@ -487,13 +487,14 @@ namespace database
       void CSQLiteRequester::vacuum()
       {
          //we ensure that no transaction is active
-         //is a transaction is active, hust wait for the transaction to end (timetout 20sec)
-         int waitLoopCount = 0;
-         int maxLoopWait = 600; //2 min
+         //if a transaction is active, just wait for the transaction to end (with timetout)
+         auto waitLoopCount = 0;
+         const auto waitPeriodMs = 200;
+         const auto maxLoopWait = 2 * 60 * 1000 / waitPeriodMs; // 2 minutes
 
          while (m_bOneTransactionActive && waitLoopCount < maxLoopWait)
          {
-            boost::this_thread::sleep(boost::posix_time::milliseconds(200));
+            boost::this_thread::sleep(boost::posix_time::milliseconds(waitPeriodMs));
             waitLoopCount++;
          }
 

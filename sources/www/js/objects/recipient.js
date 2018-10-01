@@ -102,7 +102,7 @@ Recipient.prototype.mergeFields = function() {
                 instanciatedTypes.push(value.type);
         });
 
-        instanciatedTypes = duplicateRemoval(instanciatedTypes);
+        instanciatedTypes = removeDuplicates(instanciatedTypes);
 
         $.each(instanciatedTypes, function(key, value) {
             //for each recipient fields in the plugin

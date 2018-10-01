@@ -4,15 +4,16 @@
 
 namespace shared
 {
-	class SecureSession : public IHTTPSession
+	class CSecureSession : public IHTTPSession
 	{
 	public:
+      virtual ~CSecureSession() = default;
 
       //--------------------------------------------------------------
       /// \brief	    Constructor
       /// \param[in]  url             the url where to send the request
       //--------------------------------------------------------------
-		explicit SecureSession(std::string url);
+		explicit CSecureSession(std::string url);
 
       // IHTTPSession implementation
 		void setTimeout(const boost::posix_time::time_duration& timeout) override;
