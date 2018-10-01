@@ -197,7 +197,7 @@ if (typeof String.prototype.endsWith != 'function') {
  * @param {object} arr  The array to treat
  * @returns {object} The resulting array without duplicates
  */
-function duplicateRemoval(arr) {
+function removeDuplicates(arr) {
    var newArray = [];
    for (var i = 0, j = arr.length; i < j; i++) {
       if (newArray.indexOf(arr[i]) == -1)

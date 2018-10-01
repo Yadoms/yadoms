@@ -37,17 +37,14 @@ widgetViewModelCtor =
               var readOnlyMode=false;
               var arrayOfDeffered = [];
 
-              if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
+              if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)) || isNullOrUndefined(this.widget.configuration.device)) )
                   return;
 
-              // registration of the keyword
-              if  (!isNullOrUndefined(this.widget.configuration.device)) {
-                 //we register keyword new acquisition
-                 self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
-		   
-                 //we register keyword for get last value at web client startup 
-                 self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);              
-              }
+              //we register keyword new acquisition
+              self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+      
+              //we register keyword for get last value at web client startup 
+              self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);
           };
 
          this.refresh = function()
