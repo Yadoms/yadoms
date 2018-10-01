@@ -420,7 +420,7 @@ function chartViewModel() {
                   measureManagement(keyword.measure);
                }
                
-               if (self.differentialDisplay[index] && device.content.PlotType === "arearange"){
+               if (self.differentialDisplay[index] && self.widget.configuration.devices[index].content.PlotType === "arearange"){
                   notifyError($.t("widgets.chart:incompatibilityDifferential"), "error");
                   self.incompatibility = true;
                   return;
