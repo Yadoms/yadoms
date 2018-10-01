@@ -230,138 +230,60 @@
       // refresh the device list
       return d.promise();
    };
-   
 
-
-
-
-      function loadExtraQueries($deviceRow, device) {
-
-            //manage extra commands in an async way (allow to display plugin line before all extra commands loaded; because some of them can use binding....)
-
-            var $extraQueriesButton = $deviceRow.find("button.btn-extraQuery");
-
-            if ($extraQueriesButton) {
-
-
-
-                  //delete previous loaded extrea commands menu
-
-                  $deviceRow.find("ul.dropdown-extraqueries").remove();
-
-
-
-                  var extraQueriesFromDeviceDetails = device.details.extraQueries.split(",");
-
-                  if (extraQueriesFromDeviceDetails && Object.keys(extraQueriesFromDeviceDetails).length > 0) {
-
-
-
-                        device.attachedPlugin.getBoundDeviceExtraQuery()
-
-                        .done(function (extraQueries) {
-
-                              //create DOM
-
-                              var extraQueryButton = "<ul class=\"dropdown-menu dropdown-extraqueries\">";
-
-                              $.each(extraQueriesFromDeviceDetails, function (index, values) {
-
-                              
-
-                                    if(extraQueries && extraQueries[values]) {
-
-                                          extraQueryButton +=
-
-                                                "<li><a href=\"#\" class=\"btn-extraQuery-" + values.replace("#","_") +
-
-                                                "\"><span class=\"extra-query-icon " + extraQueries[values].iconClass +
-
-                                                "\"></span>&nbsp;<span data-i18n=\"plugins." + device.attachedPlugin.type +
-
-                                                ":deviceExtraQueries." + values + ".name\"></span>" + (
-
-                                                      values.commandData ? "..." : "") + "</a></li>";
-
-                                    }
-
-                              });
-
-                              extraQueryButton += "</ul>";
-
-
-
-                              //insert the new menu
-
-                              $extraQueriesButton.after(extraQueryButton);
-
-                              
-
-                              //update menu translation
-
-                              $deviceRow.i18n();
-
-
-
-                              //bind each extra command to js
-
-                              $.each(extraQueriesFromDeviceDetails, function (index, values) {
-
-                                    $deviceRow.find("a.btn-extraQuery-" + values.replace("#","_")).unbind('click').bind('click', function (e) {
-
-                                          onExtraQuery(device, values, extraQueries[values]);
-
-                                    });
-
-                              });
-
-
-
-                              //show the dropdown
-
-                              $extraQueriesButton.find("ul").dropdown();
-
-                        })
-
-
-
+   function loadExtraQueries($deviceRow, device) {
+      //manage extra commands in an async way (allow to display plugin line before all extra commands loaded; because some of them can use binding....)
+      var $extraQueriesButton = $deviceRow.find("button.btn-extraQuery");
+      if ($extraQueriesButton) {
+         //delete previous loaded extrea commands menu
+         $deviceRow.find("ul.dropdown-extraqueries").remove();
+         var extraQueriesFromDeviceDetails = device.details.extraQueries.split(",");
+         if (extraQueriesFromDeviceDetails && Object.keys(extraQueriesFromDeviceDetails).length > 0) {
+            device.attachedPlugin.getBoundDeviceExtraQuery()
+            .done(function (extraQueries) {
+               //create DOM
+               var extraQueryButton = "<ul class=\"dropdown-menu dropdown-extraqueries\">";
+               $.each(extraQueriesFromDeviceDetails, function (index, values) {
+                  if(extraQueries && extraQueries[values]) {
+                     extraQueryButton +=
+                        "<li><a href=\"#\" class=\"btn-extraQuery-" + values.replace("#","_") +
+                        "\"><span class=\"extra-query-icon " + extraQueries[values].iconClass +
+                        "\"></span>&nbsp;<span data-i18n=\"plugins." + device.attachedPlugin.type +
+                        ":deviceExtraQueries." + values + ".name\"></span>" + (
+                              values.commandData ? "..." : "") + "</a></li>";
                   }
-
-            }
-
+               });
+               extraQueryButton += "</ul>";
+               //insert the new menu
+               $extraQueriesButton.after(extraQueryButton);
+               //update menu translation
+               $deviceRow.i18n();
+               //bind each extra command to js
+               $.each(extraQueriesFromDeviceDetails, function (index, values) {
+                     $deviceRow.find("a.btn-extraQuery-" + values.replace("#","_")).unbind('click').bind('click', function (e) {
+                           onExtraQuery(device, values, extraQueries[values]);
+                     });
+               });
+               //show the dropdown
+               $extraQueriesButton.find("ul").dropdown();
+            })
+         }
       }
-
-
-
-      function onExtraQuery(device, commandName, commandConfig) {
-
-            if (commandConfig && commandConfig.commandData) {
-
-                  Yadoms.modals.pluginExtraQueriesConfigure.loadAsync()
-
-                        .done(function () {
-
-                              Yadoms.ConfigureExtraQueries(commandName, commandConfig.commandData, device.attachedPlugin)
-
-                                    .done(function (data) {
-
-                                          postExtraQuery(device, commandName, data);
-
-                                    });
-
-                        });
-
-            } else {
-
-                  postExtraQuery(device, commandName);
-
-            }
-
-
-
+   }
+      
+   function onExtraQuery(device, commandName, commandConfig) {
+      if (commandConfig && commandConfig.commandData) {
+         Yadoms.modals.pluginExtraQueriesConfigure.loadAsync()
+               .done(function () {
+                  Yadoms.ConfigureExtraQueries(commandName, commandConfig.commandData, device.attachedPlugin)
+                     .done(function (data) {
+                           postExtraQuery(device, commandName, data);
+                     });
+               });
+      } else {
+            postExtraQuery(device, commandName);
       }
-
-
+   }
 
    function postExtraQuery(device, commandName, data) {
       PluginInstanceManager.postDeviceExtraQuery(device.attachedPlugin, device, commandName, data)
@@ -529,30 +451,28 @@
             }
          }
       }
-      
-      $deviceRow.unbind('click').bind('click', function () { 
-            /*
-                  Bind click strategy: because a click anywhere on device row, should expand/collapse row, inside button handler should do a stopPopagation.
-                  But for extraquery button + dropdown menu, if stopPopagation is called, then this have bad side effects.
-                  For other buttons (delete, restore, configure,...) this is not a problem because using modals not dropdown menus
-                  So to manage it corretly, just handle click on row and :
-                        if the click is on extraquery button -> show extraQuery menu
-                        if the click is on any extraquery menu item -> do action and close menu (normal behavior = do nothing)
-                        else (last case) expand/collapse menu
-            */
-
-            if ($(event.target).closest('button.btn-extraQuery').length) {
-                  // Hide the menus.
-                  loadExtraQueries($deviceRow, device);
-            } else {
-                  if (!$(event.target).closest('ul.dropdown-extraqueries').length) {
-                        clickDevice(device); 
-                  }
-            }
-      });      
      
       addDeviceButtonsEvents($deviceRow, device);
-      $deviceRow.one('click', function () { clickDevice(device); });
+      $deviceRow.off().one('click', function () { 
+         /*
+               Bind click strategy: because a click anywhere on device row, should expand/collapse row, inside button handler should do a stopPopagation.
+               But for extraquery button + dropdown menu, if stopPopagation is called, then this have bad side effects.
+               For other buttons (delete, restore, configure,...) this is not a problem because using modals not dropdown menus
+               So to manage it corretly, just handle click on row and :
+                     if the click is on extraquery button -> show extraQuery menu
+                     if the click is on any extraquery menu item -> do action and close menu (normal behavior = do nothing)
+                     else (last case) expand/collapse menu
+         */
+
+         if ($(event.target).closest('button.btn-extraQuery').length) {
+             // Hide the menus.
+             loadExtraQueries($deviceRow, device);
+         } else {
+             if (!$(event.target).closest('ul.dropdown-extraqueries').length) {
+                clickDevice(device); 
+             }
+         }
+      });
       $deviceRow.i18n();
 
       var iconName;
