@@ -1,9 +1,14 @@
 {
   "type": "gauge",
-  "version": "1.0.1",
+  "version": "1.0.2-beta.1",
   "author": "Jean-Michel BERHAULT, Sébastien GALLOU",
   "url": "https://github.com/Yadoms/yadoms/wiki/gauge",
   "credits": "[Highstocks](http://www.highcharts.com/)",
+  "dependencies": {
+     "yadoms" : {
+        "minimumVersion" : "2.2.0-beta.1"
+     }
+  },
   "dimensions": {
     "min": {
       "x": 2,

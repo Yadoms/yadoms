@@ -17,7 +17,7 @@ DeviceManager.factory = function (json) {
     assert(!isNullOrUndefined(json.model), "json.model must be defined");
     assert(!isNullOrUndefined(json.type), "json.model must be defined");
 
-    return new Device(json.id, json.pluginId, json.name, json.friendlyName, json.model, json.type, json.configuration, json.blacklist);
+    return new Device(json.id, json.pluginId, json.name, json.friendlyName, json.model, json.type, json.configuration, json.blacklist, json.details);
 };
 
 /**
