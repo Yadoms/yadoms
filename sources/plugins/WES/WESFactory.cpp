@@ -2,6 +2,7 @@
 #include "WESFactory.h"
 #include "equipments/WESEquipment.h"
 #include "equipments/tooLowRevisionException.hpp"
+#include "http/timeOutException.hpp"
 #include <shared/Log.h>
 
 CWESFactory::CWESFactory()
@@ -12,7 +13,8 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
                                                              const boost::shared_ptr<IWESConfiguration> configuration) const
 {
    std::vector<boost::shared_ptr<equipments::IEquipment>> deviceList;
-   boost::shared_ptr<equipments::IEquipment> equipment;
+   std::vector<std::string> deviceToRetry;
+   CWESFactory factory;
 
    // Create all devices and equipments
    for (const auto& device : api->getAllDevices())
@@ -26,12 +28,16 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
 
          if (type == "WES")
          {
-            // we create the equipment by sending a frame through the network to each device
-            equipment = boost::make_shared<equipments::CWESEquipment>(api,
-                                                                      device,
-                                                                      api->getDeviceConfiguration(device),
-                                                                      configuration);
-            deviceList.push_back(equipment);
+            try{
+               deviceList.push_back(factory.createEquipment(api, device, configuration));
+            }
+            catch (CTimeOutException&)
+            {
+               deviceToRetry.push_back(device);
+            }
+            catch (std::exception&)
+            {
+            }
          }
 
          // Do Noting, all is done into CWESEquipments
@@ -48,7 +54,18 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
       YADOMS_LOG(information) << "Model : " << type;
    }
 
-   return boost::make_shared<CIOManager>(deviceList);
+   return boost::make_shared<CIOManager>(deviceList, deviceToRetry);
+}
+
+boost::shared_ptr<equipments::IEquipment> CWESFactory::createEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                                       const std::string& device,
+                                                                       const boost::shared_ptr<IWESConfiguration> configuration)
+{
+   // we create the equipment by sending a frame through the network to each device
+      return boost::make_shared<equipments::CWESEquipment>(api,
+                                                           device,
+                                                           api->getDeviceConfiguration(device),
+                                                           configuration);
 }
 
 std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,

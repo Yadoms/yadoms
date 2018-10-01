@@ -49,16 +49,19 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       // Create timer for refresh IOs
       m_refreshTimer = api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(30));
 
-      if (m_ioManager->getMasterEquipment() == 0)
+      if (m_ioManager->getMasterEquipment() == 0 && m_ioManager->getWaitingEquipment())
       {
          setPluginState(api, kReady);
          m_refreshTimer->stop();
       }
       else
       {
-         m_ioManager->readAllDevices(api, m_configuration, true); // first reading
          m_refreshTimer->start();
-         setPluginState(api, kRunning);
+
+         if (m_ioManager->getWaitingEquipment() != 0)
+            setPluginState(api, kAtLeastOneConnectionFaulty);
+         else
+            setPluginState(api, kRunning);
       }
    }
    catch (std::exception&)
@@ -111,10 +114,13 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                forceRefresh = api->getEventHandler().getEventData<bool>();
             }
             catch (shared::exception::CBadConversion&)
-            {
-            }
+            {}
+
+            if (m_ioManager->getWaitingEquipment() != 0)
+               m_ioManager->tryMissingEquipment(api, m_configuration);
 
             m_ioManager->readAllDevices(api, m_configuration, forceRefresh);
+
             analyzePluginState(api);
             break;
          }

@@ -1,12 +1,15 @@
 #include "stdafx.h"
 #include "IOManager.h"
 #include "urlManager.h"
+#include "WESFactory.h"
 #include <boost/regex.hpp>
 #include <shared/Log.h>
 #include <algorithm>
 
-CIOManager::CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment>>& deviceList):
-   m_deviceManager(deviceList)
+CIOManager::CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment>>& deviceList,
+                       std::vector<std::string>& deviceToRetry):
+   m_deviceManager(deviceList),
+   m_deviceToRetry(deviceToRetry)
 {
 }
 
@@ -34,6 +37,11 @@ int CIOManager::getMasterEquipment() const
    return m_deviceManager.size();
 }
 
+int CIOManager::getWaitingEquipment() const
+{
+   return m_deviceToRetry.size();
+}
+
 void CIOManager::readAllDevices(boost::shared_ptr<yApi::IYPluginApi> api,
                                 const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
                                 bool forceHistorization)
@@ -41,6 +49,22 @@ void CIOManager::readAllDevices(boost::shared_ptr<yApi::IYPluginApi> api,
    for (unsigned char counter = 0; counter < m_deviceManager.size(); ++counter)
    {
       m_deviceManager[counter]->updateFromDevice(api, pluginConfiguration, forceHistorization);
+   }
+}
+
+void CIOManager::tryMissingEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
+                                     const boost::shared_ptr<IWESConfiguration> pluginConfiguration)
+{
+   CWESFactory factory;
+
+   for (const auto& deviceId : m_deviceToRetry)
+   {
+      try
+      {
+         m_deviceManager.push_back(factory.createEquipment(api, deviceId, pluginConfiguration));
+      }
+      catch(std::exception&)
+      { }
    }
 }
 

@@ -18,7 +18,8 @@ public:
    /// \brief	   Constructor
    /// \param[in]  deviceList   list of all devices managed by this plugin
    //--------------------------------------------------------------
-   explicit CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment> >& deviceList);
+   explicit CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment> >& deviceList,
+                       std::vector<std::string>& deviceToRetry);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -42,6 +43,14 @@ public:
    void readAllDevices(boost::shared_ptr<yApi::IYPluginApi> api, 
                        const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
                        bool forceHistorization = false);
+
+   //--------------------------------------------------------------
+   /// \brief	                     try to connect missing equipments
+   /// \param [in] api                   Plugin execution context (Yadoms API)
+   /// \param [in] pluginConfiguration   plugin configuration
+   //--------------------------------------------------------------
+   void tryMissingEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
+                            const boost::shared_ptr<IWESConfiguration> pluginConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
@@ -75,6 +84,12 @@ public:
    int getMasterEquipment() const;
 
    //--------------------------------------------------------------
+   /// \brief	    getMasterEquipment
+   /// \return the number of servers
+   //--------------------------------------------------------------
+   int getWaitingEquipment() const;
+
+   //--------------------------------------------------------------
    /// \brief	    check if a device with the same name already exist into the CioManager
    /// \return true if already exist
    //--------------------------------------------------------------
@@ -98,4 +113,9 @@ private:
    /// \brief The device Manager
    //--------------------------------------------------------------
    std::vector<boost::shared_ptr<equipments::IEquipment>> m_deviceManager;
+
+   //--------------------------------------------------------------
+   /// \brief The device Manager
+   //--------------------------------------------------------------
+   std::vector<std::string> m_deviceToRetry;
 };
