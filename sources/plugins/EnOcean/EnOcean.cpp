@@ -489,10 +489,27 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
 
             if (m_api->deviceExists(deviceId))
             {
-               m_api->updateDeviceModel(deviceId,
-                                        generateModel(m_api->getDeviceModel(deviceId),
-                                                      manufacturerName,
-                                                      profile));
+               if (m_devices.find(deviceId) == m_devices.end())
+               {
+                  // Device was declared without profile (data telegrams was probably received before teachin telegram)
+                  // In this case, remove device before recreating
+                  m_api->removeDevice(deviceId);
+
+                  const auto& device = declareDevice(deviceId,
+                                                     profile,
+                                                     manufacturerName);
+
+                  device->readInitialState(m_senderId,
+                                           m_messageHandler);
+               }
+               else
+               {
+                  // Device already well declared, just update model
+                  m_api->updateDeviceModel(deviceId,
+                                           generateModel(m_api->getDeviceModel(deviceId),
+                                                         manufacturerName,
+                                                         profile));
+               }
             }
             else
             {

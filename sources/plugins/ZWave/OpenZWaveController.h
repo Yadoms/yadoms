@@ -4,6 +4,7 @@
 #include <command_classes/CommandClasses.h>
 #include <command_classes/CommandClass.h>
 #include "OpenZWaveNode.h"
+#include "OpenZWaveControllerCache.h"
 
 class COpenZWaveController : public IZWaveController
 {
@@ -34,6 +35,7 @@ public:
    void setNodeConfiguration(const std::string & device, const shared::CDataContainer &configuration) override;
    void updateNodeConfiguration(const std::string & device, const std::string& keyword, const std::string& value, shared::CDataContainer & configuration) override;
    NodeListType & getNodeList() override;
+   bool onDeviceExtraQuery(const std::string & targetDevice, const std::string & extraQuery, const shared::CDataContainer &data) override;
    // [END] IZWaveController implementation
 
 
@@ -64,6 +66,26 @@ private:
    /// \brief	Configure the value refresh mode depending on the device listening state
    //-----------------------------------------------------------------------------   
    void setupValue(boost::shared_ptr<COpenZWaveNode> node, OpenZWave::ValueID & vid);
+
+
+   void manageDeviceValue(const std::string & deviceName, shared::CDataContainer &container);
+   void manageDeviceState(const std::string & deviceName, shared::plugin::yPluginApi::historization::EDeviceState &container);
+   void manageKeywordValue(const std::string & deviceName, boost::shared_ptr<CKeywordContainer> &container);
+
+   //-----------------------------------------------------------------------------
+   /// \brief	Pop data from cache and declare device and keyword on yadoms side (for a single device only)
+   //-----------------------------------------------------------------------------   
+   void cachePop(const std::string & deviceName);
+
+   //-----------------------------------------------------------------------------
+   /// \brief	Pop data from cache and declare device and keyword on yadoms side (for a all remaining devices)
+   //-----------------------------------------------------------------------------   
+   void cachePopAll();
+
+   //-----------------------------------------------------------------------------
+   /// \brief	Return the command classes of the device
+   //-----------------------------------------------------------------------------   
+   std::vector<shared::CDataContainer> getDeviceCommandClasses(const uint32 homeId, const uint8 nodeId);
 
    //-----------------------------------------------------------------------------
    /// \brief	Ask configuration parameters to each found node
@@ -112,5 +134,10 @@ private:
    /// \brief	   The plugin configuration
    //--------------------------------------------------------------
    CZWaveConfiguration* m_configuration;
+
+   //--------------------------------------------------------------
+   /// \brief	   The cache
+   //--------------------------------------------------------------
+   COpenZWaveControllerCache m_cache;
 };
 

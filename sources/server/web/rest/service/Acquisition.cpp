@@ -3,6 +3,7 @@
 #include "web/rest/Result.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/RestDispatcher.h"
+#include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
 #include "web/rest/StringContainer.h"
 

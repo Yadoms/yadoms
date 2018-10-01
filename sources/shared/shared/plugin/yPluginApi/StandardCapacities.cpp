@@ -48,6 +48,7 @@ namespace shared
          DECLARE_CAPACITY(CStandardCapacities::Temperature, "temperature", CStandardUnits::DegreesCelcius(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Text, "text", CStandardUnits::NoUnit(), EKeywordDataType::kString);
          DECLARE_CAPACITY(CStandardCapacities::UpDownStop, "upDownStop", CStandardUnits::NoUnit(), EKeywordDataType::kEnum);
+         DECLARE_CAPACITY(CStandardCapacities::UserCode, "userCode", CStandardUnits::NoUnit(), EKeywordDataType::kString);
          DECLARE_CAPACITY(CStandardCapacities::Uv, "uv", CStandardUnits::Uv(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Voltage, "voltage", CStandardUnits::Volt(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Volume, "volume", CStandardUnits::CubicMetre(), EKeywordDataType::kNumeric);

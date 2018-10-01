@@ -8,17 +8,20 @@ namespace plugin_cpp_api
    {
    public:
       explicit CExtraQueryData(const std::string& query,
-                               const shared::CDataContainer& data);
+                               const shared::CDataContainer& data,
+                               const std::string &device);
       virtual ~CExtraQueryData();
 
       // IExtraQueryData Implementation
       const std::string& query() const override;
       const shared::CDataContainer& data() const override;
+      const std::string& device() const override;
       // [END] IExtraQueryData Implementation
 
    private:
       const std::string m_query;
       const shared::CDataContainer m_data;
+      const std::string m_device;
    };
 } // namespace plugin_cpp_api	
 

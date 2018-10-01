@@ -71,6 +71,11 @@ target_link_libraries(plugin_cpp_api
    ${plugin_IPC_LIBRARY}
    )
 
+##################################################################################################
+## Add natvis (allow better debugging within VisualStudio)
+##################################################################################################
+ADD_VS_NATVIS(plugin_cpp_api)
+   
 if(COTIRE_USE)
    set_target_properties(plugin_cpp_api PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
    

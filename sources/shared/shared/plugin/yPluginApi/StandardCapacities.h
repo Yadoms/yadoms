@@ -59,6 +59,7 @@ namespace shared
             static const CStandardCapacity& Text();             // text              | -                     | A text
             static const CStandardCapacity& UpDownStop();       // upDownStop        | -                     | Used for device accepting orders Up, Down Stop
             static const CStandardCapacity& Uv();               // uv                | uv                    | UV index
+            static const CStandardCapacity& UserCode();         // userCode          | -                     | Any user code (tag id,..)
             static const CStandardCapacity& Voltage();          // voltage           | Volt                  | Voltage
             static const CStandardCapacity& Volume();           // volume            | m3                    | Volume
             static const CStandardCapacity& WeatherCondition(); // weatherCondition  | -                     | Weather Condition (Cloudy, Snow, PartlySunny, Sunny, Rain, Sleet, Storm, Fog)

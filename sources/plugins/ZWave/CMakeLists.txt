@@ -18,11 +18,14 @@ set(ZWAVE_PLUGIN_SOURCES
 	ZWaveInternalState.cpp 	
 	OpenZWaveController.h
 	OpenZWaveController.cpp 
+	OpenZWaveControllerCache.h
+	OpenZWaveControllerCache.cpp 
 	OpenZWaveEnumHandler.h
 	OpenZWaveEnumHandler.cpp 
 	OpenZWaveCommandClass.h
 	OpenZWaveCommandClass.cpp 	
 	IOpenZWaveNodeKeyword.h
+   IOpenZWaveNodePlugin.h
 	OpenZWaveNode.h
 	OpenZWaveNode.cpp 
 	OpenZWaveNodeConfiguration.h
@@ -34,11 +37,19 @@ set(ZWAVE_PLUGIN_SOURCES
 	OpenZWaveNodeKeywordDimmable.h
 	OpenZWaveNodeKeywordDimmable.cpp 
 	OpenZWaveNodeKeywordColor.h
-	OpenZWaveNodeKeywordColor.cpp 
+	OpenZWaveNodeKeywordColor.cpp 	
+   OpenZWaveNodeKeywordEvent.h
+	OpenZWaveNodeKeywordEvent.cpp 
    OpenZWaveNodeKeywordGeneric.h
    OpenZWaveNodeKeywordGenericByType.h
 	OpenZWaveNodeKeywordFactory.h
 	OpenZWaveNodeKeywordFactory.cpp 
+   OpenZWaveNodeRefreshPlugin.h
+   OpenZWaveNodeRefreshPlugin.cpp
+   OpenZWaveNodeUserCodePlugin.h
+   OpenZWaveNodeUserCodePlugin.cpp
+   OpenZWaveNodePluginFactory.h
+   OpenZWaveNodePluginFactory.cpp
 	KeywordContainer.h
    OpenZWaveSingleHistorizableData.h
    historizers/Temperature.h
@@ -73,7 +84,9 @@ set(ZWAVE_PLUGIN_SOURCES
    historizers/Weight.cpp
 	historizers/Distance.h
    historizers/Distance.cpp
-	historizers/Uv.h
+	historizers/UserCode.h
+   historizers/UserCode.cpp	
+   historizers/Uv.h
    historizers/Uv.cpp
 	historizers/Switch.h
    historizers/Switch.cpp
