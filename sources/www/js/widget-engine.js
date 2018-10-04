@@ -486,7 +486,6 @@ function updateWidgetPollingByKeywordsId(keywords, additionnalInfo) {
     
     if (!isNullOrUndefined(keywords)) {
        if (keywords!=0){
-          console.log (additionnalInfo);
           AcquisitionManager.getLastAcquisition(keywords, additionnalInfo)
           .done(d.resolve)
           .fail(function (error) {

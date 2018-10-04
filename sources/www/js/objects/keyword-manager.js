@@ -99,22 +99,20 @@ KeywordManager.getInformation = function (keywords, additionalInfos) {
                })
          })
          .done(function (data) {
-               var result = [];
-               $.each(data, function (index, keydata) {
-                  console.log("index : ", index);
-                  console.log(keydata);
-                  result.push({accessMode: keydata.accessMode,
-                               capacity: keydata.capacity,
-                               date: keydata.lastValueDate,
-                               friendlyName: keydata.friendlyName,
-                               keywordId: index,
-                               measure: keydata.measure,
-                               pluginId: keydata.pluginId,
-                               typeInfo: keydata.typeInfo,
-                               unit: keydata.unit,
-                               value: keydata.lastValue});
-               });
-               d.resolve(result);
+            var result = [];
+            $.each(data, function (index, keydata) {
+               result.push({accessMode: keydata.accessMode,
+                            capacity: keydata.capacity,
+                            date: keydata.lastValueDate,
+                            friendlyName: keydata.friendlyName,
+                            keywordId: index,
+                            measure: keydata.measure,
+                            pluginId: keydata.pluginId,
+                            typeInfo: keydata.typeInfo,
+                            unit: keydata.unit,
+                            value: keydata.lastValue});
+            });
+            d.resolve(result);
          })
          .fail(function(error){
             console.log(error);
