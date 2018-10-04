@@ -1,35 +1,33 @@
 #pragma once
-
 #include "IRfxcomMessage.h"
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include "IFanSubtype.h"
+#include <shared/DataContainer.h>
 
 namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
    //--------------------------------------------------------------
-   /// \brief	The Fan protocol support
+   /// \brief	The Funkbus protocol support
    //--------------------------------------------------------------
-   class CFan : public IRfxcomMessage
+   class CFunkbus : public IRfxcomMessage
    {
    public:
-      CFan(boost::shared_ptr<yApi::IYPluginApi> api,
-           const std::string& keyword,
-           const std::string& command,
-           const shared::CDataContainer& deviceDetails);
+      CFunkbus(boost::shared_ptr<yApi::IYPluginApi> api,
+               const std::string& command,
+               const shared::CDataContainer& deviceDetails);
 
-      CFan(boost::shared_ptr<yApi::IYPluginApi> api,
-           unsigned int subType,
-           const std::string& name,
-           const shared::CDataContainer& manuallyDeviceCreationConfiguration);
+      CFunkbus(boost::shared_ptr<yApi::IYPluginApi> api,
+               unsigned int subType,
+               const std::string& name,
+               const shared::CDataContainer& manuallyDeviceCreationConfiguration);
 
-      CFan(boost::shared_ptr<yApi::IYPluginApi> api,
-           const RBUF& rbuf,
-           size_t rbufSize);
+      CFunkbus(boost::shared_ptr<yApi::IYPluginApi> api,
+               const RBUF& rbuf,
+               size_t rbufSize);
 
-      virtual ~CFan();
+      virtual ~CFunkbus();
 
       // IRfxcomMessage implementation
       boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const override;
@@ -41,22 +39,26 @@ namespace rfxcomMessages
       // [END] IRfxcomMessage implementation
 
    protected:
-      void createSubType(unsigned char subType);
       void buildDeviceName();
+      void buildDeviceModel();
       void buildDeviceDetails();
+
+      static unsigned char toProtocolState(const yApi::historization::CSwitch& switchState);
+      static bool fromProtocolState(unsigned char protocolState);
 
    private:
       unsigned char m_subType;
-      unsigned int m_id;
-      std::string m_deviceName;
-      shared::CDataContainer m_deviceDetails;
-      boost::shared_ptr<IFanSubtype> m_subTypeManager;
+      unsigned char m_groupCode;
+      unsigned char m_unitCode;
+      unsigned short m_id;
 
-      //--------------------------------------------------------------
-      /// \brief	The keywords list to historize in one step for better performances
-      //--------------------------------------------------------------
+      std::string m_deviceName;
+      std::string m_deviceModel;
+
+      shared::CDataContainer m_deviceDetails;
+
+      boost::shared_ptr<yApi::historization::CSwitch> m_state;
+      boost::shared_ptr<yApi::historization::CSignalPower> m_signalPower;
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    };
 } // namespace rfxcomMessages
-
-

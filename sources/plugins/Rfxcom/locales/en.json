@@ -111,11 +111,27 @@
             "houseCode": {
               "name": "House Code",
               "description": "The house code (A-D)",
-              "regexErrorMessage": "The house code must be between A and P (included)"
+              "regexErrorMessage": "The house code must be between A and D (included)"
             },
             "unitCode": {
               "name": "Unit Code",
               "description": "The device ID (1-4)"
+            }
+          }
+        },
+        "hcA_D-uc1_3": {
+          "types": {
+            "oase": { "title": "oase" }
+          },
+          "content": {
+            "houseCode": {
+              "name": "House Code",
+              "description": "The house code (A-D)",
+              "regexErrorMessage": "The house code must be between A and D (included)"
+            },
+            "unitCode": {
+              "name": "Unit Code",
+              "description": "The device ID (1-3)"
             }
           }
         },
@@ -228,7 +244,8 @@
         "id1_16777215-unitCode1_16": {
           "types": {
             "lightwaveRf": { "title": "lightwaveRf" },
-            "rsl": { "title": "rsl" }
+            "rsl": { "title": "rsl" },
+            "hualite": { "title": "hualite" }
           },
           "content": {
             "id": {
@@ -387,7 +404,7 @@
           }
         },
         "id1_32767-unitCode1_10": {
-          "types": { "livoloAppliance": { "title": "livoloAppliance" } },
+          "types": { "livolo1to10": { "title": "livolo1to10" } },
           "content": {
             "id": {
               "name": "ID",
@@ -417,6 +434,41 @@
             }
           }
         },
+        "id0_65535-gc0_3-uc1_8": {
+          "types": { "cuveo": { "title": "cuveo" } },
+          "content": {
+            "id": {
+              "name": "ID",
+              "description": "The device ID (0-65535)"
+            },
+            "groupCode": {
+              "name": "Groupe",
+              "description": "The group code (0-3)"
+            },
+            "unitCode": {
+              "name": "Unit Code",
+              "description": "The unit code (1-2 for group code 0, 1-8 for group code 1-3)"
+            }
+          }
+        },
+        "id0_65535-gcA_C-uc1_8": {
+          "types": { "funkbus": { "title": "funkbus" } },
+          "content": {
+            "id": {
+              "name": "ID",
+              "description": "The device ID (0-65535)"
+            },
+            "groupCode": {
+              "name": "Groupe",
+              "description": "The group code (A-C)",
+              "regexErrorMessage": "The group code must be between A and C (included)"
+            },
+            "unitCode": {
+              "name": "Unit Code",
+              "description": "The unit code (1-8)"
+            }
+          }
+        },
         "seavTxs4": {
           "types": { "seavTxs4": { "title": "seavTxs4" } },
           "content": {
@@ -431,6 +483,22 @@
             "id": {
               "name": "ID",
               "description": "The device ID (0-32767)"
+            }
+          }
+        },
+
+        "id1_65535-uc1_6": {
+          "types": {
+            "zemismart": { "title": "zemismart" }
+          },
+          "content": {
+            "id": {
+              "name": "ID",
+              "description": "The device ID (1-65535)"
+            },
+            "unitCode": {
+              "name": "Unit Code",
+              "description": "The unit code (1-6)"
             }
           }
         },

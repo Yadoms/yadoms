@@ -41,6 +41,22 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/IRfxcomMessage.h
    rfxcomMessages/Fan.h
    rfxcomMessages/Fan.cpp
+   rfxcomMessages/FanFalmec.h
+   rfxcomMessages/FanFalmec.cpp
+   rfxcomMessages/FanFt1211R.h
+   rfxcomMessages/FanFt1211R.cpp
+   rfxcomMessages/FanItho.h
+   rfxcomMessages/FanItho.cpp
+   rfxcomMessages/FanLucciAirDc.h
+   rfxcomMessages/FanLucciAirDc.cpp
+   rfxcomMessages/FanLucciAirDc2.h
+   rfxcomMessages/FanLucciAirDc2.cpp
+   rfxcomMessages/FanLucciAirWestinghouseCasafan.h
+   rfxcomMessages/FanLucciAirWestinghouseCasafan.cpp
+   rfxcomMessages/FanSeavTXS4.h
+   rfxcomMessages/FanSeavTXS4.cpp
+   rfxcomMessages/FanSiemensSF01.h
+   rfxcomMessages/FanSiemensSF01.cpp
    rfxcomMessages/FS20.h
    rfxcomMessages/FS20.cpp
    rfxcomMessages/Energy.h
@@ -51,6 +67,7 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Humidity.cpp
    rfxcomMessages/ICartelectronicSubtype.h
    rfxcomMessages/IChimeSubtype.h
+   rfxcomMessages/IFanSubtype.h
    rfxcomMessages/ILighting2Subtype.h
    rfxcomMessages/ILighting5Subtype.h
    rfxcomMessages/IRemoteSubtype.h
@@ -104,6 +121,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/RFXSensor.cpp
    rfxcomMessages/Rfy.h
    rfxcomMessages/Rfy.cpp
+   rfxcomMessages/Funkbus.h
+   rfxcomMessages/Funkbus.cpp
    rfxcomMessages/Security1.h
    rfxcomMessages/Security1.cpp
    rfxcomMessages/Security1KD101_SA30.h
