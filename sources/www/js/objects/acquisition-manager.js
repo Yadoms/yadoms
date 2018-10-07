@@ -31,7 +31,7 @@ AcquisitionManager.factory = function (json) {
  */
 AcquisitionManager.getLastAcquisition = function (keywords, additionalInfos) {
    var d = new $.Deferred();
-   var getAdditionInfo = ["lastValue", "lastValueDate"];
+   var getAdditionInfo = ["lastValue", "lastValueDate","exist"];
 
    getAdditionInfo = getAdditionInfo.concat(additionalInfos);
    return KeywordManager.getInformation(keywords, getAdditionInfo);

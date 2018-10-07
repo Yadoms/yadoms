@@ -99,11 +99,13 @@ KeywordManager.getInformation = function (keywords, additionalInfos) {
                })
          })
          .done(function (data) {
+            console.log(data);
             var result = [];
             $.each(data, function (index, keydata) {
                result.push({accessMode: keydata.accessMode,
                             capacity: keydata.capacity,
                             date: keydata.lastValueDate,
+                            exist: keydata.exist,
                             friendlyName: keydata.friendlyName,
                             keywordId: index,
                             measure: keydata.measure,

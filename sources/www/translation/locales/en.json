@@ -1085,6 +1085,7 @@
       "partOfWidgetIsMissing": "Unable to get part of {{widgetName}} widget. Widgets of this type have been deactivated.",
       "widgetHasGeneratedAnExceptionDuringCallingMethod": "The widget {{widgetName}} has generated an exception calling {{methodName}}()",
       "errorDuringGettingDeviceInformation": "Error during getting device information",
+      "errorDuringGettingKeywordsInformation": "Error during getting keywords information",
       "loadingWidgetsError": "Error during the loading of a widget",
       "widgetDisabled": "The widget {{widgetName}} have been disabled because of the configuration is not correct (deleted/missing equipment configured)",
       "unknownError": "Unknow error"

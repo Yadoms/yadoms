@@ -422,10 +422,11 @@ function updateWidgetsPolling(pageId) {
        updateWidgetPollingByKeywordsId(getLastValues, getAdditionInfo)
        .done(function (data) {
           $.each(data, function (index, acquisition) {
+             console.log(acquisition);
              //we signal the new acquisition to the widget if the widget support the method
              $.each(pageId.widgets, function (widgetIndex, widget) {
                 if ($.inArray(acquisition.keywordId, widget.getlastValue)!=-1){
-                   if (isNullOrUndefined(acquisition.error)){
+                   if (isNullOrUndefined(acquisition.exist)){
                       if (widget.viewModel.onNewAcquisition !== undefined)
                          widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
                    }else{ // we desactivate the widget
@@ -469,8 +470,8 @@ function updateWidgetPolling(widget) {
             })
             .fail(function (error) {
                 notifyError($.t("objects.generic.errorGetting",{
-                        objectName: "last acquisition for widget = " + widget.id
-                    }),error);
+                   objectName: "last acquisition for widget = " + widget.id
+                   }),error);
              d.reject(error);
           });
        } else 
@@ -489,7 +490,7 @@ function updateWidgetPollingByKeywordsId(keywords, additionnalInfo) {
           AcquisitionManager.getLastAcquisition(keywords, additionnalInfo)
           .done(d.resolve)
           .fail(function (error) {
-             notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for widget = " + infos }), error);
+             notifyError($.t("objects.widgetManager.errorDuringGettingKeywordsInformation"), error);
              d.reject(error);
           });
        } else 

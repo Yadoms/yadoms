@@ -114,12 +114,12 @@ namespace web
                   try
                   {
                      m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
+					 keywordResult.set(info, true);
                   }
                   catch (shared::exception::CEmptyResult&)
                   {
                      keywordResult.set(info, false);
                   }
-                  keywordResult.set(info, true);
                }
                else if (info == "lastValue")
                {
