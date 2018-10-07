@@ -1051,20 +1051,20 @@ function chartViewModel() {
                      if (!isNullOrUndefined(serie) && data.date!=="" & data.value!=="") {
                          // Add new point only for HOUR interval
                          // others points are treated into the onTime function
-                         if  (self.interval === "HOUR") {
+                         if  (self.prefix === "minute") {
                             var time  = moment(self.serverTime)._d.getTime().valueOf();
                             var isolastdate = DateTimeFormatter.isoDateToDate(data.date)._d.getTime().valueOf();
                             if (time - isolastdate < 3600000){ // Only if the last value is in last hour
                                self.chart.hideLoading(); // If a text was displayed before
                                if (self.differentialDisplay[index]){
                                   if (serie.points.length > 0 && !isNullOrUndefined(self.chartLastValue[index]))
-                                     serie.addPoint([data.date.valueOf(), parseFloat(data.value) - self.chartLastValue[index]], true, false, true);
+                                     serie.addPoint([isolastdate, parseFloat(data.value) - self.chartLastValue[index]], true, false, true);
                                   self.chartLastValue[index] = parseFloat(data.value);                                                 
                                }else if (isEnumVariable(index)){
                                   var value = self.chart.keyword[index].typeInfo.values.indexOf(data.value);
-                                  serie.addPoint([data.date.valueOf(), value], true, false, true);
+                                  serie.addPoint([isolastdate, value], true, false, true);
                                }else
-                                  serie.addPoint([data.date.valueOf(), parseFloat(data.value)], true, false, true);
+                                  serie.addPoint([isolastdate, parseFloat(data.value)], true, false, true);
                             }
                          }
                      }
