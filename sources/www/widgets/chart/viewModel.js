@@ -274,6 +274,11 @@ function chartViewModel() {
             };
 
             self.$chart.highcharts('StockChart', self.chartOption);
+            Highcharts.setOptions({
+              global: {
+                useUTC: false
+              }
+            });
             self.chart = self.$chart.highcharts();
             self.chart.keyword = [];
             d.resolve();
