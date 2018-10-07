@@ -4,6 +4,7 @@
 * Fix #389 - Bad display after computer wake up
 * Fix #500 - error log every minutes for only few tabs
 * Fix #503 - Export file - hour format in GMT hour
+* Fix #505 - Mismatch export function when more than one chart in a page
 
 ### 1.1.0
 * fix #462 : doesn't display the first value for some summary values

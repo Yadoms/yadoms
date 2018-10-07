@@ -120,14 +120,16 @@ function chartViewModel() {
       //we manage toolbar buttons
       var $btns = self.widgetApi.find(".range-btn");
       $btns.unbind("click").bind("click", self.navigatorBtnClick());
-
-      self.widgetApi.find(".print-command").unbind("click").bind("click", function () {
-          self.chart.print();
-          window.location.reload(); //force page reload because after having displayed printing page, the widget disposition is erroneous
-      });
-
-      self.widgetApi.find(".export-command").unbind("click").bind("click", function (e) {
+      self.widgetApi.widget.$toolbar.find(".print-command").unbind("click").bind("click", self.printBtnClick());
+      self.widgetApi.widget.$toolbar.find(".export-command").unbind("click").bind("click", self.exportBtnClick());     
+    };
+    
+     this.exportBtnClick = function () {
+        var self = this;
+        return function (e) {
           try{
+             console.log(this);
+             console.log(self);
              self.chart.exportChartLocal({
                  type: $(e.currentTarget).attr("mime-type"),
                  filename: 'export'
@@ -135,9 +137,17 @@ function chartViewModel() {
           }
           catch(error){
              notifyError($.t("widgets.chart:formatNotSupported", {format: $(e.currentTarget).attr("mime-type")}));
-          }
-      });       
-    };
+          }              
+        };
+     };
+     
+     this.printBtnClick = function () {
+        var self = this;
+        return function (e) {
+          self.chart.print();
+          window.location.reload(); //force page reload because after having displayed printing page, the widget disposition is erroneous
+        };
+     };     
     
     /**
      * Initialization method
@@ -146,7 +156,6 @@ function chartViewModel() {
         var self = this;
         var arrayOfDeffered = [];
         var d = new $.Deferred();
-        
         self.$chart = self.widgetApi.find("div.container");
         
         //
