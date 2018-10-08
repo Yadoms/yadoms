@@ -31,6 +31,9 @@ namespace rfxcomMessages
          ((Type2)(0x02))
          ((Ext)(0x03))
          ((Ext2)(0x04))
+         ((Pro1)(0x05))
+         ((Pro2)(0x06))
+         ((ProXL1)(0x10))
       );
 
 

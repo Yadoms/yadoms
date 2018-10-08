@@ -40,7 +40,7 @@ namespace rfxcomMessages
       m_houseCode = m_subType == sTypeKambrook ? (manuallyDeviceCreationConfiguration.get<char>("houseCode", 0) - 'A') : 0;
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
       m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
-      auto deviceType = manuallyDeviceCreationConfiguration.get<std::string>("type") == "onOff" ? ILighting2Subtype::kOnOff : ILighting2Subtype::kDimmable;
+      const auto deviceType = manuallyDeviceCreationConfiguration.get<std::string>("type") == "onOff" ? ILighting2Subtype::kOnOff : ILighting2Subtype::kDimmable;
       m_deviceDetails = buildDeviceDetails(m_subType,
                                            m_houseCode,
                                            m_id,
@@ -144,7 +144,7 @@ namespace rfxcomMessages
 
    void CLighting2::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
-      auto model = m_subTypeManager->getModel();
+      const auto model = m_subTypeManager->getModel();
       api->declareDevice(m_deviceName, model, model);
       YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
       m_deviceDetails.printToLog(YADOMS_LOG(information));

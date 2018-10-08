@@ -392,7 +392,7 @@ function updateWebSocketFilter(additionnalKeywords) {
      
      if (!isNullOrUndefinedOrEmpty(additionnalKeywords))
         subscriptionCollection = subscriptionCollection.concat(additionnalKeywords);
-     WebSocketEngine.updateAcquisitionFilter(duplicateRemoval(subscriptionCollection));
+     WebSocketEngine.updateAcquisitionFilter(removeDuplicates(subscriptionCollection));
 }
 
 function updateWidgetsPolling() {
@@ -402,7 +402,8 @@ function updateWidgetsPolling() {
 
 function updateWidgetsPolling(pageId) {
     var d = new $.Deferred();
-    var getLastValuesKeywords = [];
+    var getLastValues = [];
+    var getAdditionInfo = [];
 
     //we browse each widget instance
     if (pageId == null) {
@@ -410,17 +411,22 @@ function updateWidgetsPolling(pageId) {
     } else {
        $.each(pageId.widgets, function (widgetIndex, widget) {
            //we ask which devices are needed for this widget instance
-           if (!isNullOrUndefinedOrEmpty(widget.getlastValue))
-              getLastValuesKeywords = getLastValuesKeywords.concat (widget.getlastValue);
+           if (!isNullOrUndefinedOrEmpty(widget.getlastValue)){
+              getLastValues = getLastValues.concat(widget.getlastValue);
+           }
+           if (!isNullOrUndefinedOrEmpty(widget.additionalInfo)){
+              getAdditionInfo = getAdditionInfo.concat(widget.additionalInfo);
+           }
        });
        
-       updateWidgetPollingByKeywordsId(duplicateRemoval(getLastValuesKeywords))
+       updateWidgetPollingByKeywordsId(getLastValues, getAdditionInfo)
        .done(function (data) {
           $.each(data, function (index, acquisition) {
+             console.log(acquisition);
              //we signal the new acquisition to the widget if the widget support the method
              $.each(pageId.widgets, function (widgetIndex, widget) {
                 if ($.inArray(acquisition.keywordId, widget.getlastValue)!=-1){
-                   if (isNullOrUndefined(acquisition.error)){
+                   if (isNullOrUndefined(acquisition.exist)){
                       if (widget.viewModel.onNewAcquisition !== undefined)
                          widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
                    }else{ // we desactivate the widget
@@ -449,7 +455,7 @@ function updateWidgetPolling(widget) {
     
     if (!isNullOrUndefined(widget.listenedKeywords)) {
        if (widget.listenedKeywords.length!=0){ // only if this list is not empty
-          AcquisitionManager.getLastValues(widget.listenedKeywords)
+          AcquisitionManager.getLastAcquisition(widget.listenedKeywords, widget.additionalInfo)
             .done(function (data) {
                 if (data) {
                     $.each(data,function (index, acquisition) {
@@ -464,27 +470,27 @@ function updateWidgetPolling(widget) {
             })
             .fail(function (error) {
                 notifyError($.t("objects.generic.errorGetting",{
-                        objectName: "last acquisition for widget = " + widget.id
-                    }),error);
+                   objectName: "last acquisition for widget = " + widget.id
+                   }),error);
              d.reject(error);
           });
        } else 
-         d.resolve();          
+         d.resolve();
     } else {
        d.resolve();
     }
     return d.promise();
 }
 
-function updateWidgetPollingByKeywordsId(keywordIds) {
+function updateWidgetPollingByKeywordsId(keywords, additionnalInfo) {
     var d = new $.Deferred();
     
-    if (!isNullOrUndefined(keywordIds)) {
-       if (keywordIds!=0){
-          AcquisitionManager.getLastValues(keywordIds)
+    if (!isNullOrUndefined(keywords)) {
+       if (keywords!=0){
+          AcquisitionManager.getLastAcquisition(keywords, additionnalInfo)
           .done(d.resolve)
           .fail(function (error) {
-             notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for widget = " + keywordIds }), error);
+             notifyError($.t("objects.widgetManager.errorDuringGettingKeywordsInformation"), error);
              d.reject(error);
           });
        } else 

@@ -5,10 +5,10 @@
 	"url": "https://github.com/Yadoms/yadoms/wiki/thermostat",
 	"credits": "",
    "dependencies": {
-     "yadoms" : {
-       "minimumVersion" : "2.0.2"
-     }
-  },
+      "yadoms" : {
+         "minimumVersion" : "2.2.0-beta.1"
+      }
+   },  
   "dimensions": {
     "min": {
       "x": 1,

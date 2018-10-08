@@ -80,4 +80,6 @@ public:
    virtual bool isVISONICenabled() const = 0;
    virtual bool isKeeLoqenabled() const = 0;
    virtual bool isHomeConfortenabled() const = 0;
+   virtual bool isMCZenabled() const = 0;
+   virtual bool isFunkbusenabled() const = 0;
 };

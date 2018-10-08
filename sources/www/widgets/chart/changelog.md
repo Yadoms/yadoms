@@ -2,6 +2,8 @@
 * NewFeature #466 - Adapt units if needed
 * NewFeature #485 - Adapt unit for bit/s display
 * Fix #389 - Bad display after computer wake up
+* Fix #500 - error log every minutes for only few tabs
+* Fix #503 - Export file - hour format in GMT hour
 
 ### 1.1.0
 * fix #462 : doesn't display the first value for some summary values

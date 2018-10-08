@@ -143,7 +143,7 @@ namespace rfxcomMessages
          break;
       case sTypeEurodomest: m_subTypeManager = boost::make_shared<CLighting5OnOff>("Eurodomest");
          break;
-      case sTypeLivoloAppliance: m_subTypeManager = boost::make_shared<CLighting5OnOff>("Livolo Appliance");
+      case sTypeLivolo1to10: m_subTypeManager = boost::make_shared<CLighting5OnOff>("Livolo Appliance");
          break;
       case sTypeRGB432W: m_subTypeManager = boost::make_shared<CLighting5OnOff>("RGB432W");
          break;
