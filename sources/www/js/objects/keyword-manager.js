@@ -99,7 +99,6 @@ KeywordManager.getInformation = function (keywords, additionalInfos) {
                })
          })
          .done(function (data) {
-            console.log(data);
             var result = [];
             $.each(data, function (index, keydata) {
                result.push({accessMode: keydata.accessMode,
