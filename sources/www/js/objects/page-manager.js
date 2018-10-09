@@ -161,7 +161,82 @@ PageManager.addToDom = function (page) {
         "<div class=\"hidden tabPagePillsDropper\" data-i18n=\"mainPage.customization.dropHereToMovePage\" data-i18n-options=\'" + JSON.stringify(dataI18NOptions) + "\'></div>" +
         "</li>").insertBefore($("li#btn-add-page"));
 
+		
     page.$tab = $(".page-tabs").find("li[page-id=\"" + page.id + "\"]");
+	
+	page.$tab.droppable({
+		accept : '.widget', // je n'accepte que le bloc ayant "drag" pour id
+		drop : function(event, ui){
+			$(this).removeClass("droppable-over");
+			
+			//we remove the page overlay
+			$(".tabPagePills .tabPagePillsDropper").addClass("hidden");
+
+			var $widget = ui.draggable;
+			if (!$widget)
+				return;
+			
+			var targetPageId = page.id;
+
+			//a widget has been dropped onto antoher page pill
+			//we move the widget to the other pill
+			var widgetId = $widget.attr("widget-id");
+			var originPageId = $widget.attr("page-id");
+			var originPage = PageManager.getPage(originPageId);
+			var widgetToMove = originPage.getWidget(widgetId);
+			
+			//check for real move
+			if(widgetToMove.idPage == targetPageId)
+				return;
+			
+			console.log('Moving widget ' + widgetId + ' from page ' + originPageId + ' to page ' + targetPageId);
+
+						
+			widgetToMove.setInitialPosition(1000); //we indicate that the widget has never been placed and must be placed to the end
+			widgetToMove.idPage = targetPageId;
+
+			//we remove it from current page
+			originPage.$grid.packery("remove", $widget);
+
+			originPage.widgets.splice($.inArray(widgetToMove, page.widgets), 1);
+
+			//we update the widget on the server
+			WidgetManager.updateToServer(widgetToMove)
+				.done(function () {
+					//the widget has been moved successfully
+					//we add it to the new page
+					if (page.loaded) {
+						//if the page has been already loaded we add it to the page
+						WidgetManager.loadWidget(widgetToMove, page)
+							.done(function () {
+								//we update the filter for the websocket
+								updateWebSocketFilter();
+							})
+							.fail(function (errorMessage) {
+								console.error(errorMessage);
+								notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {
+									"widgetType": widgetToMove.type
+								}));
+							});
+					}
+
+				});
+			
+			
+
+		},
+		
+		over: function(event, ui) {
+			$(this).addClass("droppable-over");
+			
+		},
+
+		out: function(event, ui) {
+			
+			$(this).removeClass("droppable-over");
+		}
+	});	
+
 
     //i18n of page tab
     page.$tab.i18n();
@@ -180,64 +255,12 @@ PageManager.addToDom = function (page) {
 
     page.$grid.packery(PageManager.packeryOptions);
 
-    page.$grid.on('dragstop', function (event) {
-        console.log(event.target);
+	page.$grid.on('dragstop', function (event, ui) {
         //we remove the page overlay
         $(".tabPagePills .tabPagePillsDropper").addClass("hidden");
 
-        var targetPill = event.toElement || event.originalEvent.target;
-
-        //we look if the widget has been dropped onto another page pill
-        if ((!targetPill) || (!event.target))
-            return;
-        var $page = $(targetPill).parent();
-        if (!$page)
-            return;
-        var $widget = $(event.target);
-        if (!$widget)
-            return;
-        var targetPageId = $page.attr("page-id");
-        if (!targetPageId)
-            return;
-        var targetPage = PageManager.getPage(targetPageId);
-        //the widget that move is on the current page
-        if (page.id === targetPageId)
-            return;
-
-        //a widget has been dropped onto antoher page pill
-        //we move the widget to the other pill
-        var widgetId = $widget.attr("widget-id");
-        var widgetToMove = page.getWidget(widgetId);
-        widgetToMove.setInitialPosition(1000); //we indicate that the widget has never been placed and must be placed to the end
-        widgetToMove.idPage = targetPageId;
-
-        //we remove it from current page
-        page.$grid.packery("remove", $widget);
-
-        page.widgets.splice($.inArray(widgetToMove, page.widgets), 1);
-
-        //we update the widget on the server
-        WidgetManager.updateToServer(widgetToMove)
-            .done(function () {
-                //the widget has been moved successfully
-                //we add it to the new page
-                if (targetPage.loaded) {
-                    //if the page has been already loaded we add it to the page
-                    WidgetManager.loadWidget(widgetToMove, targetPage)
-                        .done(function () {
-                            //we update the filter for the websocket
-                            updateWebSocketFilter();
-                        })
-                        .fail(function (errorMessage) {
-                            console.error(errorMessage);
-                            notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {
-                                "widgetType": widgetToMove.type
-                            }));
-                        });
-                }
-
-            });
     });
+
 
     page.$grid.on('dragstart', function () {
         if (customization) {
