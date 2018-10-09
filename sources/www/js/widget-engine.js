@@ -422,11 +422,10 @@ function updateWidgetsPolling(pageId) {
        updateWidgetPollingByKeywordsId(getLastValues, getAdditionInfo)
        .done(function (data) {
           $.each(data, function (index, acquisition) {
-             console.log(acquisition);
              //we signal the new acquisition to the widget if the widget support the method
              $.each(pageId.widgets, function (widgetIndex, widget) {
                 if ($.inArray(acquisition.keywordId, widget.getlastValue)!=-1){
-                   if (isNullOrUndefined(acquisition.exist)){
+                   if (parseBool(acquisition.exist)){
                       if (widget.viewModel.onNewAcquisition !== undefined)
                          widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
                    }else{ // we desactivate the widget
