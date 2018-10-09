@@ -198,7 +198,7 @@ PageManager.addToDom = function (page) {
 			//we remove it from current page
 			originPage.$grid.packery("remove", $widget);
 
-			originPage.widgets.splice($.inArray(widgetToMove, page.widgets), 1);
+			originPage.widgets.splice($.inArray(widgetToMove, originPage.widgets), 1);
 
 			//we update the widget on the server
 			WidgetManager.updateToServer(widgetToMove)
