@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Thermostat3.h"
-#include "Thermostat3MertikG6RH4T1.h"
+#include "Thermostat3MertikG6RHxT1.h"
 #include "Thermostat3MertikG6RH4TB.h"
 #include "Thermostat3MertikG6RH4TD.h"
 #include "Thermostat3MertikG6RH4S.h"
@@ -86,7 +86,9 @@ namespace rfxcomMessages
    {
       switch (m_subType)
       {
-      case sTypeMertikG6RH4T1: m_subTypeManager = boost::make_shared<CThermostat3MertikG6RH4T1>();
+      case sTypeMertikG6RH4T1:
+      case sTypeMertikG6RH3T1:
+         m_subTypeManager = boost::make_shared<CThermostat3MertikG6RHxT1>(m_subType);
          break;
       case sTypeMertikG6RH4TB: m_subTypeManager = boost::make_shared<CThermostat3MertikG6RH4TB>();
          break;

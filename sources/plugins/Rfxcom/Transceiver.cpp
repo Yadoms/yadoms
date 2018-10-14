@@ -587,6 +587,8 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
          msg = boost::make_shared<rfxcomMessages::CThermostat3>(api, sTypeMertikG6RH4TD, data.getDeviceName(), data.getConfiguration());
       else if (deviceType == "g6rH4s")
          msg = boost::make_shared<rfxcomMessages::CThermostat3>(api, sTypeMertikG6RH4S, data.getDeviceName(), data.getConfiguration());
+      else if (deviceType == "g6rH3t1")
+         msg = boost::make_shared<rfxcomMessages::CThermostat3>(api, sTypeMertikG6RH3T1, data.getDeviceName(), data.getConfiguration());
 
          // Thermostat4
       else if (deviceType == "mcz1PelletStove")

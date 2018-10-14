@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Thermostat3MertikG6RH4T1.h"
+#include "Thermostat3MertikG6RHxT1.h"
 #include "RFXtrxHelpers.h"
 #include <shared/exception/InvalidParameter.hpp>
 
@@ -7,8 +7,9 @@ namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
-   CThermostat3MertikG6RH4T1::CThermostat3MertikG6RH4T1()
-      : m_statusByte(0),
+   CThermostat3MertikG6RHxT1::CThermostat3MertikG6RHxT1(unsigned char subType)
+      : m_subType(subType),
+      m_statusByte(0),
       m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
       m_upDown(boost::make_shared<yApi::historization::CUpDownStop>("upDown", yApi::EKeywordAccessMode::kGetSet)),
       m_runUpDown(boost::make_shared<yApi::historization::CUpDownStop>("runUpDown", yApi::EKeywordAccessMode::kGetSet)),
@@ -16,21 +17,29 @@ namespace rfxcomMessages
    {
    }
 
-   CThermostat3MertikG6RH4T1::~CThermostat3MertikG6RH4T1()
+   CThermostat3MertikG6RHxT1::~CThermostat3MertikG6RHxT1()
    {
    }
 
-   std::string CThermostat3MertikG6RH4T1::getModel() const
+   std::string CThermostat3MertikG6RHxT1::getModel() const
    {
-      return "Mertik G6R-H4T1";
+      switch(m_subType)
+      {
+      case sTypeMertikG6RH3T1:
+         return "Mertik G6R-H3T1";
+      case sTypeMertikG6RH4T1:
+         return "Mertik G6R-H4T1";
+      default:
+         return "Unknown";
+      }
    }
 
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CThermostat3MertikG6RH4T1::keywords() const
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CThermostat3MertikG6RHxT1::keywords() const
    {
       return m_keywords;
    }
 
-   void CThermostat3MertikG6RH4T1::set(const std::string& keyword, const std::string& yadomsCommand)
+   void CThermostat3MertikG6RHxT1::set(const std::string& keyword, const std::string& yadomsCommand)
    {
       if (boost::iequals(keyword, m_onOff->getKeyword()))
       {
@@ -67,14 +76,14 @@ namespace rfxcomMessages
       }
    }
 
-   void CThermostat3MertikG6RH4T1::reset()
+   void CThermostat3MertikG6RHxT1::reset()
    {
       m_onOff->set(false);
       m_upDown->set(yApi::historization::EUpDownStopCommand::kStop);
       m_runUpDown->set(yApi::historization::EUpDownStopCommand::kStop);
    }
 
-   void CThermostat3MertikG6RH4T1::setFromProtocolState(unsigned char cmd)
+   void CThermostat3MertikG6RHxT1::setFromProtocolState(unsigned char cmd)
    {
       m_statusByte = cmd;
       switch (m_statusByte)
@@ -101,7 +110,7 @@ namespace rfxcomMessages
       }
    }
 
-   void CThermostat3MertikG6RH4T1::toProtocolState(unsigned char& cmd) const
+   void CThermostat3MertikG6RHxT1::toProtocolState(unsigned char& cmd) const
    {
       cmd = m_statusByte;
    }

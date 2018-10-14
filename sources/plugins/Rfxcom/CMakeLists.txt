@@ -155,8 +155,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Thermostat3.cpp
    rfxcomMessages/Thermostat3MertikG6RH4S.h
    rfxcomMessages/Thermostat3MertikG6RH4S.cpp
-   rfxcomMessages/Thermostat3MertikG6RH4T1.h
-   rfxcomMessages/Thermostat3MertikG6RH4T1.cpp
+   rfxcomMessages/Thermostat3MertikG6RHxT1.h
+   rfxcomMessages/Thermostat3MertikG6RHxT1.cpp
    rfxcomMessages/Thermostat3MertikG6RH4TB.h
    rfxcomMessages/Thermostat3MertikG6RH4TB.cpp
    rfxcomMessages/Thermostat3MertikG6RH4TD.h
