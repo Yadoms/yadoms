@@ -3,12 +3,15 @@
    <span data-i18n="modals.dashboard.sub-windows.devices.deviceListDescription"></span><br>
    <button id="btn-add-new-device" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-tasks"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.new"></span></button>
    <table id="device-list" class="table table-bordered table-striped dashboard-list">
-      <tr>
-         <td data-i18n="modals.dashboard.sub-windows.devices.table.name" class="col-md-2"></td>
-         <td data-i18n="modals.dashboard.sub-windows.devices.table.attachedTo" class="col-md-2"></td>
-         <td data-i18n="modals.dashboard.sub-windows.devices.table.model" class="long-text col-md-2"></td>
-         <td data-i18n="modals.dashboard.sub-windows.devices.table.actions" class="col-md-2"></td>
-      </tr>
+         <thead>
+            <th data-i18n="modals.dashboard.sub-windows.devices.table.name" class="col-md-2"></th>
+            <th data-i18n="modals.dashboard.sub-windows.devices.table.attachedTo" class="col-md-2"></th>
+            <th data-i18n="modals.dashboard.sub-windows.devices.table.model" class="long-text col-md-2"></th>
+            <th data-i18n="modals.dashboard.sub-windows.devices.table.actions" class="col-md-2"></th>
+         </thead>
+         <tbody>
+
+         </tbody>
       <!-- devices will be listed here-->
    </table>
    
@@ -21,15 +24,14 @@
 
 <script>
    var deviceList = [];
-   
+   var actionsBtns =   "<div class=\"btn-group\">\n" +
+                       "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-cog\"></span></button>\n" +
+                       "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
+                       "</div>";
+
    var actionsBtnsWithExtraQueries =   "<div class=\"btn-group\">\n" +
                        "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-cog\"></span></button>\n" +
                        "<button type=\"button\" class=\"btn btn-success btn-extraQuery\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\"><span class=\"fa fa-navicon\"></span></button>\n" +
-                       "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
-                       "</div>";   
-   
-   var actionsBtns =   "<div class=\"btn-group\">\n" +
-                       "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-cog\"></span></button>\n" +
                        "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
                        "</div>";
 
@@ -171,11 +173,15 @@
       }    
    };
    
+   function getDeviceDomRow(device) {
+      return $("table#device-list").find("tr[device-id='" + device.id + "'].device");
+   }
+
    function transformDeviceInDom(device) {
       // remove device details if any 
       getDeviceDetailsDomRow().remove();
       
-      var $deviceRow = $("table#device-list").find("tr[device-id='" + device.id + "'].device");
+      var $deviceRow = getDeviceDomRow(device);
       $deviceRow.find("td.device-friendlyName").find("span").remove();
       
       var fn = device.friendlyName;
@@ -204,6 +210,52 @@
       }
       addDeviceButtonsEvents($deviceRow, device);  
    };
+   
+
+   function addDeviceButtonsEvents(deviceRow, device) {
+      //we bind event on the different actions
+      deviceRow.find("button.btn-configure").unbind('click').bind('click', function (e) { 
+         e.stopPropagation();       
+         updateDeviceConfiguration(device);
+      });
+
+      deviceRow.find("button.btn-delete").unbind('click').bind('click', function (e) {
+         e.stopPropagation();
+         deleteDevice(device);
+      });
+
+      deviceRow.find("button.btn-restore").unbind('click').bind('click', function (e) { 
+         e.stopPropagation();
+         restoreDevice(device);           
+      });  
+	  
+	  //do not bind click on button extra queries (because bad side effects, see below comments
+   };
+
+   function onClickDeviceRow(event, deviceRow, device) {
+	 /*
+		   Bind click strategy: because a click anywhere on device row, should expand/collapse row, inside button handler should do a stopPopagation.
+		   But for extraquery button + dropdown menu, if stopPopagation is called, then this have bad side effects.
+		   For other buttons (delete, restore, configure,...) this is not a problem because using modals not dropdown menus
+		   So to manage it corretly, just handle click on row and :
+				 if the click is on extraquery button -> show extraQuery menu
+				 if the click is on any extraquery menu item -> do action and close menu (normal behavior = do nothing)
+				 else (last case) expand/collapse menu
+	 */
+	 if ($(event.target).closest('button.btn-extraQuery').length) {
+		 // Hide the menus.
+		 loadExtraQueries(deviceRow, device);
+	 } else {
+		 if (!$(event.target).closest('ul.dropdown-extraqueries').length) {
+			clickDevice(device); 
+		 }
+		 else {
+			
+		 }
+	 }   
+	 deviceRow.off().one('click', function (event) { onClickDeviceRow(event, deviceRow, device);} );
+   }
+
    
    Yadoms.initializeDeviceDashboard = function () {
       $("input.cb-showblacklist").off('change').on('change', function (){ 
@@ -395,23 +447,7 @@
       return undefined;
    }
    
-   function addDeviceButtonsEvents(deviceRow, device) {
-      //we bind event on the different actions
-      deviceRow.find("button.btn-configure").off().one('click', function (e) { 
-         e.stopPropagation();       
-         updateDeviceConfiguration(device);
-      });
 
-      deviceRow.find("button.btn-delete").off().one('click', function (e) {
-         e.stopPropagation();
-         deleteDevice(device);
-      });
-
-      deviceRow.find("button.btn-restore").off().one('click', function (e) { 
-         e.stopPropagation();
-         restoreDevice(device);           
-      });      
-   };
    
    function addDeviceToDom(device, positionDevice) {
       //in case the device is blacklisted, then strike it
@@ -453,59 +489,52 @@
       }
      
       addDeviceButtonsEvents($deviceRow, device);
-      $deviceRow.off().one('click', function () { 
-         /*
-               Bind click strategy: because a click anywhere on device row, should expand/collapse row, inside button handler should do a stopPopagation.
-               But for extraquery button + dropdown menu, if stopPopagation is called, then this have bad side effects.
-               For other buttons (delete, restore, configure,...) this is not a problem because using modals not dropdown menus
-               So to manage it corretly, just handle click on row and :
-                     if the click is on extraquery button -> show extraQuery menu
-                     if the click is on any extraquery menu item -> do action and close menu (normal behavior = do nothing)
-                     else (last case) expand/collapse menu
-         */
-
-         if ($(event.target).closest('button.btn-extraQuery').length) {
-             // Hide the menus.
-             loadExtraQueries($deviceRow, device);
-         } else {
-             if (!$(event.target).closest('ul.dropdown-extraqueries').length) {
-                clickDevice(device); 
-             }
-         }
-      });
+      $deviceRow.off().one('click', function (event) { onClickDeviceRow(event, $deviceRow, device);} );
       $deviceRow.i18n();
 
-      var iconName;
-      if (!device.attachedPlugin.isSystemCategory()) {
-         iconName = "plugins/" + device.attachedPlugin.type + "/icon.png";
-         
-         //disable it before async update
-         $deviceRow.find("button.btn-configure").prop('disabled', true);
-         PluginInstanceManager.getState(device.attachedPlugin)
-         .done(function(instanceState) {
-            if (instanceState.state !== "Stopped" && instanceState.state !== "Error" && instanceState.state) {
-               $deviceRow.find("button.btn-configure").prop('disabled', false);
-            }
-         });
-      }
-      else {
-         //we use application logo
-         iconName = "img/icon_256.png";
-         
-         // The system plugin contains hard-coded devices (ie device containing shutdown and reboot keywords) and virtual devices
-         // Only virtual devices are configurable/removable
-         if (device.type !== "virtualDeviceType") {
-            $deviceRow.find("button.btn-configure").addClass("hide");
-            $deviceRow.find("button.btn-configure").off('click');
-            $deviceRow.find("button.btn-delete").addClass("hide");
-            $deviceRow.find("button.btn-delete").off('click');
+      //we async ask for attached plugins
+      DeviceManager.getAttachedPlugin(device, true)
+      .done(function () {
+         var iconName;
+         if (!device.attachedPlugin.isSystemCategory()) {
+            iconName = "plugins/" + device.attachedPlugin.type + "/icon.png";
+            
+            //disable it before async update
+            $deviceRow.find("button.btn-configure").prop('disabled', true);
+            PluginInstanceManager.getState(device.attachedPlugin)
+            .done(function(instanceState) {
+               if (instanceState.state !== "Stopped" && instanceState.state !== "Error" && instanceState.state) {
+                  $deviceRow.find("button.btn-configure").prop('disabled', false);
+               }
+            });
          }
-      }
+         else {
+            //we use application logo
+            iconName = "img/icon_256.png";
+            
+            // The system plugin contains hard-coded devices (ie device containing shutdown and reboot keywords) and virtual devices
+            // Only virtual devices are configurable/removable
+            if (device.type !== "virtualDeviceType") {
+               $deviceRow.find("button.btn-configure").addClass("hide");
+               $deviceRow.find("button.btn-configure").unbind('click');
+               $deviceRow.find("button.btn-delete").addClass("hide");
+               $deviceRow.find("button.btn-delete").unbind('click');
+            } else {
+               // Disable virtual devices editing
+               $deviceRow.find("button.btn-configure").prop('disabled', true);
+               $deviceRow.find("button.btn-configure").unbind('click');
+            }
+         }
 
-      var attachedTo = "<img src=\"" + iconName + "\" class=\"img-thumbnail dashboard-table-icon\">&nbsp;&nbsp;" +
-              "<span>" + device.attachedPlugin.displayName + "</span>";
+         var attachedTo = "<img src=\"" + iconName + "\" class=\"img-thumbnail dashboard-table-icon\">&nbsp;&nbsp;" +
+                 "<span>" + device.attachedPlugin.displayName + "</span>";
 
-      $deviceRow.find("td.device-attachedTo").html(attachedTo);
+         $deviceRow.find("td.device-attachedTo").html(attachedTo);
+      })
+      .fail(function (error) {
+         $deviceRow.find("button.btn-configure").addClass("hide");
+         $deviceRow.find("td.device-attachedTo").html(error);
+      });
    }
    
    function recordNewDeviceConfiguration(device) {
@@ -595,15 +624,15 @@
       //we create device details table
       deviceRow.after("<tr device-id=\"" + device.id + "\" class=\"device-details " + selectedClass + "\"><td colspan=\"4\">" +
                "<table id=\"keyword-list\" device-id=\"" + device.id + "\" class=\"table table-bordered table-striped\">" +
-               "<tr>" +
-                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.name\" class=\"col-md-2\"></td>" +
-                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.value\" class=\"col-md-2\"></td>" +
-                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.units\" class=\"col-md-2\"></td>" +
-                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.update\" class=\"col-md-2\"></td>" +
-                  "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.actions\" class=\"col-md-2\"></td>" +
-               "</tr>" +
+               "<thead>" +
+                  "<th data-i18n=\"modals.dashboard.sub-windows.devices.details.table.name\" class=\"col-md-2\"></th>" +
+                  "<th data-i18n=\"modals.dashboard.sub-windows.devices.details.table.value\" class=\"col-md-2\"></th>" +
+                  "<th data-i18n=\"modals.dashboard.sub-windows.devices.details.table.units\" class=\"col-md-2\"></th>" +
+                  "<th data-i18n=\"modals.dashboard.sub-windows.devices.details.table.update\" class=\"col-md-2\"></th>" +
+                  "<th data-i18n=\"modals.dashboard.sub-windows.devices.details.table.actions\" class=\"col-md-2\"></th>" +
+               "</thead><tbody>" +
                "<!-- keywords will be listed here-->" +
-               "</table>" +
+               "</tbody></table>" +
                "</td></tr>");   
    };
    
@@ -727,7 +756,7 @@
                }
                
                //Activate a new time the possibility to collapse the keyword list
-               $deviceRow.one('click', function () { clickDevice(device); });
+			   $deviceRow.off().one('click', function (event) { onClickDeviceRow(event, $deviceRow, device);} );
             });
          });
       }
@@ -739,7 +768,8 @@
          updateWebSocketFilter();
          
          //Activate the possibility to expand the device
-         $deviceRow.one('click', function () { clickDevice(device); });
+         $deviceRow.off().one('click', function (event) { onClickDeviceRow(event, $deviceRow, device);} );
+		 
       }
    }
 

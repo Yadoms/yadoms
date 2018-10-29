@@ -46,7 +46,15 @@
 			"iconClass": "fa fa-fire"
 		}
 	},
-	"deviceConfiguration": {
+    "deviceExtraQueries" : {
+        "UserCode_enroll" : {
+            "iconClass" : "fa fa-plus-circle"
+        },
+        "base_refresh" : {
+            "iconClass" : "fa fa-refresh"
+        }
+    },
+    "deviceConfiguration": {
 		"dynamicConfigurationSchema": "true"
 	}
 }
