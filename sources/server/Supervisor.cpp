@@ -126,7 +126,7 @@ void CSupervisor::run()
       const auto securedWebServerPort = startupOptions->getSSLWebServerPortNumber();
       const auto webServerPath = m_pathProvider->webServerPath().string();
       const auto scriptInterpretersPath = m_pathProvider->scriptInterpretersPath().string();
-      bool allowExternalAccess = startupOptions->getWebServerAllowExternalAccess();
+      const auto allowExternalAccess = startupOptions->getWebServerAllowExternalAccess();
 
       auto webServer(boost::make_shared<web::poco::CWebServer>(webServerIp, webServerUseSSL, webServerPort, securedWebServerPort, webServerPath,
                                                                "/rest/", "/ws", allowExternalAccess));
@@ -138,7 +138,8 @@ void CSupervisor::run()
       webServer->getConfigurator()->configureAuthentication(
          boost::make_shared<authentication::CBasicAuthentication>(dal->getConfigurationManager(), startupOptions->getNoPasswordFlag()));
       webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CPlugin>(pDataProvider, pluginManager, dal->getDeviceManager(), *pluginGateway));
+         boost::make_shared<web::rest::service::CPlugin>(pDataProvider, pluginManager, dal->getDeviceManager(), *pluginGateway,
+                                                         startupOptions->getDeveloperMode()));
       webServer->getConfigurator()->restHandlerRegisterService(
          boost::make_shared<web::rest::service::CDevice>(pDataProvider, pluginManager, dal->getDeviceManager(), dal->getKeywordManager(),
                                                          *pluginGateway));
