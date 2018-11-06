@@ -4,6 +4,7 @@
 #include "IRunningInformation.h"
 #include <shared/plugin/yPluginApi/StandardCapacity.h>
 #include "dateTime/TimeZoneDatabase.h"
+#include "shared/plugin/yPluginApi/historization/MeasureType.h"
 
 namespace web
 {
@@ -25,19 +26,23 @@ namespace web
 
 
             boost::shared_ptr<shared::serialization::IDataSerializable> getBinding(const std::vector<std::string>& parameters,
-                                                                        const std::string& requestContent) const;
+                                                                                   const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getSystemInformation(const std::vector<std::string>& parameters,
-                                                                        const std::string& requestContent) const;
+                                                                                             const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getCurrentTime(const std::vector<std::string>& parameters,
-                                                                        const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> getVirtualDevicesSupportedCapacities(const std::vector<std::string>& parameters,
-                                                                        const std::string& requestContent) const;
+                                                                                       const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getVirtualDevicesSupportedCapacities(
+               const std::vector<std::string>& parameters,
+               const std::string& requestContent) const;
 
          private:
             boost::shared_ptr<shared::serialization::IDataSerializable> getSerialPorts() const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getNetworkInterfaces(const bool includeLoopback) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> platformIs(const std::string& refPlatform) const;
-            static void addVirtualDevicesSupportedCapacity(const shared::plugin::yPluginApi::CStandardCapacity& capacity);
+            static void addVirtualDevicesSupportedCapacity(const shared::plugin::yPluginApi::CStandardCapacity& capacity,
+                                                           const std::vector<shared::plugin::yPluginApi::historization::EMeasureType>&
+                                                              acceptedMeasureTypes = std::vector<shared::plugin::yPluginApi::historization::
+                                                                 EMeasureType>());
             static const shared::CDataContainer& getVirtualDevicesSupportedCapacities();
             boost::shared_ptr<shared::serialization::IDataSerializable> getSupportedTimezones() const;
 
@@ -52,5 +57,3 @@ namespace web
       } //namespace service
    } //namespace rest
 } //namespace web 
-
-

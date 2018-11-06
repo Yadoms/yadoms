@@ -1,3 +1,7 @@
+### 1.1.0-beta.1
+* New Feature #466 - Adapt unit if it's necessary
+* newFeature #449 - Adapt the widget to new architecture
+
 ### 1.0.4
 * Fix #353 - Bad duration display
 

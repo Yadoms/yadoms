@@ -32,17 +32,17 @@ namespace communication
             //----------------------------------------------
             ///\brief The callback result
             //----------------------------------------------
-            shared::CField<bool> Success;
+            shared::CField<bool> success;
 
             //----------------------------------------------
-            ///\brief The error message (in case Success is false)
+            ///\brief The error message (in case success is false)
             //----------------------------------------------
-            shared::CField<std::string> ErrorMessage;
+            shared::CField<std::string> errorMessage;
 
             //----------------------------------------------
             ///\brief The result
             //----------------------------------------------
-            shared::CField<TCallbackResult> Result;
+            shared::CField<TCallbackResult> result;
          };
 
          //----------------------------------------------
@@ -62,17 +62,17 @@ namespace communication
          // ISynchronousCallback implementation
          void sendSuccess(const TCallbackResult& result) override
          {
-            m_result.Success = true;
-            m_result.ErrorMessage = "";
-            m_result.Result = result;
-            shared::event::CEventHandler::postEvent<CSynchronousResult>(kResult, m_result);
+            m_result.success = true;
+            m_result.errorMessage = "";
+            m_result.result = result;
+            CEventHandler::postEvent<CSynchronousResult>(kResult, m_result);
          }
 
          void sendError(const std::string& errorMessage) override
          {
-            m_result.Success = false;
-            m_result.ErrorMessage = errorMessage;
-            shared::event::CEventHandler::postEvent<CSynchronousResult>(kResult, m_result);
+            m_result.success = false;
+            m_result.errorMessage = errorMessage;
+            CEventHandler::postEvent<CSynchronousResult>(kResult, m_result);
          }
 
          // [END] - ISynchronousCallback implementation

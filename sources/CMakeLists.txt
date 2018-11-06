@@ -19,6 +19,8 @@ cmake_minimum_required (VERSION 3.2.0)
 ## Extract Yadoms version from Version.h
 ##################################################################################################
 include(cmake/version.cmake)
+GET_PACKAGE_VERSION("${CMAKE_SOURCE_DIR}/server/changelog.md" YADOMS_VERSION)
+EXTRACT_VERSION(${YADOMS_VERSION} YADOMS_VERSION_MAJOR YADOMS_VERSION_MINOR YADOMS_VERSION_PATCH)
 message (STATUS "### Building Yadoms ${YADOMS_VERSION} ###\n")
 add_definitions(-DYADOMS_VERSION="${YADOMS_VERSION}")
 
@@ -54,6 +56,8 @@ endif()
 # Compilers/IDE configurations
 include(cmake/compilers.cmake)
 
+# include debug helpers
+include(cmake/debugger.cmake)
 
 ##################################################################################################
 ## CPack installation preconfiguration
@@ -955,6 +959,11 @@ if(COTIRE_USE)
 else()
 	add_precompiled_header(yadoms stdafx.h)
 endif()
+
+##################################################################################################
+## Add natvis (allow better debugging within VisualStudio)
+##################################################################################################
+ADD_VS_NATVIS(yadoms)
 
 ##################################################################################################
 ## yadoms-shared

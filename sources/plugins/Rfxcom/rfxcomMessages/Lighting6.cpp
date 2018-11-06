@@ -42,8 +42,14 @@ namespace rfxcomMessages
       m_signalPower->set(0);
 
       m_subType = static_cast<unsigned char>(subType);
-      if (m_subType != sTypeBlyss)
+      switch (m_subType)
+      {
+      case sTypeBlyss:
+      case sTypeCuveo:
+         break;
+      default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
+      }
 
       m_id = manuallyDeviceCreationConfiguration.get<short>("id");
       m_groupCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<char>("groupCode"));
@@ -162,6 +168,7 @@ namespace rfxcomMessages
       switch (m_subType)
       {
       case sTypeBlyss: ssModel << "Blyss";
+      case sTypeCuveo: ssModel << "Cuveo";
          break;
       default: ssModel << boost::lexical_cast<std::string>(m_subType);
          break;

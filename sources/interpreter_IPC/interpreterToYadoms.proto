@@ -7,6 +7,7 @@ message AvalaibleAnswer {
 
 message LoadScriptContentAnswer {
 	string content = 1;
+	string error = 2;
 }
 
 message SaveScriptContentAnswer {

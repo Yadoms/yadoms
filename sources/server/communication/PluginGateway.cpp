@@ -32,7 +32,7 @@ namespace communication
       auto device = m_dataProvider->getDeviceRequester()->getDevice(keyword->DeviceId);
 
       // Create the command
-      auto command(boost::make_shared<pluginSystem::CDeviceCommand>(device->Name, keyword->Name, body));
+      const auto command(boost::make_shared<pluginSystem::CDeviceCommand>(device->Name, keyword, body));
 
       // Dispatch command to the right plugin
       m_pluginManager->postCommand(device->PluginId, command);
@@ -41,24 +41,11 @@ namespace communication
       m_acquisitionHistorizer->saveData(keywordId, command->getHistorizableObject());
    }
 
-   void CPluginGateway::sendDeviceCommandAsync(int deviceId,
-                                               const std::string& body)
-   {
-      auto device = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
 
-      // Create the command
-      auto command(boost::make_shared<pluginSystem::CDeviceCommand>(device->Name, std::string(), body));
-
-      // Dispatch command to the right plugin
-      m_pluginManager->postCommand(device->PluginId, command);
-   }
-
-   
-
-   const std::string CPluginGateway::sendExtraQueryAsync(int pluginId, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> data)
+   std::string CPluginGateway::sendExtraQueryAsync(int pluginId, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> data)
    {
       // Create the query
-      boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery(boost::make_shared<pluginSystem::CExtraQuery>(data));
+      const boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery(boost::make_shared<pluginSystem::CExtraQuery>(data));
 
       // Dispatch query to the right plugin
       return m_pluginManager->postExtraQuery(pluginId, extraQuery);

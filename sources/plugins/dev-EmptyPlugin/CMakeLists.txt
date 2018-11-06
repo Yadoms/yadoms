@@ -46,12 +46,3 @@ PLUGIN_SOURCES(dev-emptyPlugin ${EMPTY_PLUGIN_SOURCES})
 PLUGIN_INCLDIR(dev-emptyPlugin ${EMPTY_PLUGIN_ADDITIONAL_INC_DIR})
 PLUGIN_LINK(dev-emptyPlugin ${EMPTY_PLUGIN_ADDITIONAL_LIB})
 
-#########################################
-## Post-build commands
-## Copy files to build directory
-## "package.json" and "icon.png" are needed, but you can add extra-files
-#########################################
-PLUGIN_POST_BUILD_COPY_FILE(dev-emptyPlugin package.json)
-PLUGIN_POST_BUILD_COPY_FILE(dev-emptyPlugin changelog.md)
-PLUGIN_POST_BUILD_COPY_FILE(dev-emptyPlugin icon.png)
-PLUGIN_POST_BUILD_COPY_DIRECTORY(dev-emptyPlugin locales)

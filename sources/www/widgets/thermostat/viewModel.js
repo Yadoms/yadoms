@@ -13,8 +13,6 @@ function thermostatViewModel() {
     this.step = ko.observable(0.1).extend({ numeric: 1 });
     this.isTemperatureVisible = ko.observable(true);
     this.disableStateTemperature = ko.observable(false);
-    //
-
     this.thermostatStateType = "";
     
     /**
@@ -48,24 +46,13 @@ function thermostatViewModel() {
     
     this.configurationChanged = function () {
         var self = this;
-        var defferedKeywordInformation = [];
-        var d = new $.Deferred();
         
-        if (parseBool(self.widget.configuration.thermostatStateSection.checkbox))
-        {
-           var deffered2 = self.widgetApi.getKeywordInformation(self.widget.configuration.thermostatStateSection.content.state.keywordId);
-           deffered2
-           .done(function (keyword) {
-               self.thermostatStateType = keyword.type;
-           });
-           
-           defferedKeywordInformation.push( deffered2 );
-        }
-        else  // the widget hide the fire icon, if we don't use this
-           this.widgetApi.find(".icon-div").css("visibility", "hidden");
+        if (!parseBool(self.widget.configuration.thermostatStateSection.checkbox))
+           self.widgetApi.find(".icon-div").css("visibility", "hidden");
+        
+        self.widgetApi.registerAdditionalInformation(["dataType", "units"]); // We would like the unit !
         
         var keywordRegistered = [];
-        
         keywordRegistered.push(self.widget.configuration.controlSection.content.temperatureSet.keywordId);
         
         if (parseBool(self.widget.configuration.thermostatStateSection.checkbox))
@@ -80,16 +67,6 @@ function thermostatViewModel() {
 		//we register keyword for get last value at web client startup
 		self.widgetApi.getLastValue(keywordRegistered);
         
-        //we get the unit of the keyword
-        var deffered1 = self.widgetApi.getKeywordInformation(self.widget.configuration.controlSection.content.temperatureSet.keywordId);
-        
-        deffered1
-        .done(function (keyword) {
-            self.unit($.t(keyword.units));
-        });
-        
-        defferedKeywordInformation.push( deffered1 );
-        
         //we fill the deviceId of the battery indicator
         self.widgetApi.configureBatteryIcon(self.widget.configuration.controlSection.content.temperatureSet.deviceId);
         
@@ -103,33 +80,20 @@ function thermostatViewModel() {
            self.disableStateTemperature(true);
         else
            self.disableStateTemperature(false);
-        
-        $.when.apply($, defferedKeywordInformation)
-        .done(function () {
-           d.resolve();
-        })
-        .fail(function() {
-           d.reject();
-        });
-        
-        return d.promise();
     }
 
     this.resized = function () {
         var self = this;
         
-        if (self.widget.getHeight() == 200)
-        {
+        if (self.widget.getHeight() == 200){
            self.widgetApi.find(".btn").addClass("btn-md");
            self.widgetApi.find(".btn").removeClass("btn-lg btn-th");
         }
-        else if (self.widget.getHeight() == 300)
-        {
+        else if (self.widget.getHeight() == 300){
            self.widgetApi.find(".btn").addClass("btn-lg");
            self.widgetApi.find(".btn").removeClass("btn-th btn-md");
         }
-        else if (self.widget.getHeight() == 100)
-        {
+        else if (self.widget.getHeight() == 100){
            self.widgetApi.find(".btn").addClass("btn-th");
            self.widgetApi.find(".btn").removeClass("btn-lg btn-md");
         }
@@ -145,6 +109,9 @@ function thermostatViewModel() {
         var self = this;
         
         if (keywordId === self.widget.configuration.LivetemperatureSection.content.temperatureDevice.keywordId) {
+           if (!isNullOrUndefinedOrEmpty(data.unit))
+              self.unit($.t(data.unit));
+           
             //it is the right device
             if (data.value !==""){
                var temp = parseFloat(data.value).toFixed(1);
@@ -163,6 +130,9 @@ function thermostatViewModel() {
                self.temperatureSet("-");
         } 
         else if (keywordId === self.widget.configuration.thermostatStateSection.content.state.keywordId) {
+           if (!isNullOrUndefinedOrEmpty(data.type))
+              self.thermostatStateType = data.type;           
+           
             //it is the right device
             if (data.value !==""){
                if (self.thermostatStateType === "Bool") {

@@ -181,7 +181,28 @@
     var includePreReleases = false;
 
     Yadoms.initializeInstallUpdateDashboard = function () {
-        return scanForUpdates();
+       var arrayOfDeffered = [];
+       var d = new $.Deferred();
+       
+       arrayOfDeffered.push(asyncLoadJSGzLibs([
+           "libs/markdown-it/markdown-it.min.js.gz",
+           "libs/markdown-it/markdown-it-for-inline.min.js.gz"]));       
+       
+       arrayOfDeffered.push(asyncLoadJSLibs([
+          "js/objects/update/update-information.js",
+          "js/objects/update/update-information-manager.js",
+          "js/objects/update/yadoms-update-information-manager.js"
+       ]));
+       
+       $.when.apply($, arrayOfDeffered).done(function () {
+          scanForUpdates().done(function(){
+             d.resolve();
+          });
+       })
+       .fail(function () {
+          d.reject();
+       });
+       return d.promise();          
     };
 
     YadomsInformationManager.getList()
@@ -213,7 +234,7 @@
                     var taskFinished = false;
                     //we manage the end of the task
                     if (taskUpdateInformation.taskState.toLowerCase() === "fail") {
-                        console.error("Fail to get updates");
+                        notifyError($.t("modals.dashboard.sub-windows.install-update.failTtoGetUpdates"));
                         taskFinished = true;
                     } else if (taskUpdateInformation.taskState.toLowerCase() === "success") {
                         taskFinished = true;
@@ -229,7 +250,7 @@
             })
 
             .fail(function (error) {
-                console.error("Fail to get updates");
+                notifyError($.t("modals.dashboard.sub-windows.install-update.failTtoGetUpdates"));
                 $asyncActionIndicator.addClass("hidden");
                 d.reject();
             });
@@ -504,7 +525,7 @@
                 "/" + moduleType + "/" + newestVersion, moduleType));
         });
 
-        $.whenAll(deferredArray)
+        $.when.apply($, deferredArray)
             .done(function () {
                 addItemsInTable($table, objectType, list.new, function (moduleType, data) {
                     return moduleType;

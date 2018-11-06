@@ -1,0 +1,37 @@
+{
+  "type": "Sigfox",
+  "version": "@PLUGIN_VERSION@",
+  "author": "Jean-Michel BERHAULT",
+  "url": "https://github.com/Yadoms/yadoms/wiki/Sigfox",
+  "credits": "",
+  "supportedPlatforms": "all",
+  "configurationSchema": {
+    "port": {
+      "type": "int",
+      "defaultValue": "8090"
+    },
+    "advancedConfiguration": {
+      "type": "section",
+      "content": {
+        "rssiMin": {
+          "type": "decimal",
+          "defaultValue": "-150"
+        },
+        "rssiMax": {
+          "type": "decimal",
+          "defaultValue": "-100"
+        },
+        "tensionMin": {
+          "type": "decimal",
+          "defaultValue": "2.4"
+        },
+        "tensionMax": {
+          "type": "decimal",
+          "defaultValue": "3.6"
+        }
+      }
+    }
+  },
+  "supportManuallyDeviceCreation": "false",
+  "supportDeviceRemovedNotification": "false"
+}

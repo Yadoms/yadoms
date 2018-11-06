@@ -25,6 +25,11 @@
    Yadoms.showNewAutomationRule = function(editors, callback) {
       assert($.isFunction(callback), "callback must be defined");
 
+      //Activate the button to create a new rule
+      $('div#automation-rule-new-modal').one('hidden.bs.modal', function() {
+         Yadoms.AutomationCenterDashboardRegisterButtonAddNewRule();
+      });
+      
       var $modalBody = $("div#automation-rule-new-modal .modal-body");
       //we create buttons to select language
       var $area = $modalBody.find("div.editor-btns");

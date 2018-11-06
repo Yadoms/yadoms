@@ -1,0 +1,10 @@
+{
+  "name": "Python 2.7",
+  "type": "yPython27",
+  "description": "Python 2.7.x rules interpreter",
+  "version": "@SCRIPT_INTERPRETER_VERSION@",
+  "author": "yadoms-team",
+  "url": "https://github.com/Yadoms/yadoms/",
+  "credits": "",
+  "supportedPlatforms": "all"
+}

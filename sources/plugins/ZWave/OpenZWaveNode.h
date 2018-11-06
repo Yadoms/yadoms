@@ -3,6 +3,7 @@
 #include "IOpenZWaveNodeKeyword.h"
 #include <value_classes/Value.h>
 #include "OpenZWaveNodeConfiguration.h"
+#include "IOpenZWaveNodePlugin.h"
 
 //--------------------------------------------------------------
 /// \brief     Class used to encapsulate a ZWave network node (from OpenZWave)
@@ -40,8 +41,9 @@ public:
    /// \brief	      Update a keyword value
    /// \param [in]   value                   The ValueID associated to the keyword
    /// \param [in]   includeSystemKeywords   true if system keywords are supported
+   /// \return       All keyword historizers involved by current update (in case of a keyword update, change another keyword by software choice : enrolment example : the Usercode.Enrollment code is assigned to a UserCode entry)
    //--------------------------------------------------------------   
-   boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> updateKeywordValue(OpenZWave::ValueID& value, bool includeSystemKeywords);
+   std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > updateKeywordValue(OpenZWave::ValueID& value, bool includeSystemKeywords);
 
    //--------------------------------------------------------------
    /// \brief	      Get the keyword matching the ValueID, or create it if needed
@@ -110,6 +112,20 @@ public:
    //--------------------------------------------------------------
    void updateNodeConfiguration(const std::string& keyword, const std::string& value, shared::CDataContainer & configuration);
 
+   //--------------------------------------------------------------
+   /// \brief	Get the node extra query from plugins
+   /// \param [in-out] extraQueries The dataContainer of extra queries definitions
+   //--------------------------------------------------------------
+   void getPluginExtraQueries(std::vector<std::string> & extraQueries);
+
+   //--------------------------------------------------------------
+   /// \brief	Extra query call
+   /// \param [in] 	   query          The query name
+   /// \param [in] 	   data           The query data (may be empty)
+   /// \return true if successfull
+   //--------------------------------------------------------------
+   bool onExtraQuery(const std::string & query, const shared::CDataContainer &data);
+
 private:
    //--------------------------------------------------------------
    /// \brief	      homeId
@@ -135,5 +151,10 @@ private:
    /// \brief	      The configuration items list list
    //--------------------------------------------------------------    
    COpenZWaveNodeConfiguration m_configuration;
+
+   //--------------------------------------------------------------
+   /// \brief	      The active plugin list
+   //--------------------------------------------------------------    
+   std::vector< boost::shared_ptr<IOpenZWaveNodePlugin> > m_plugins;
 };
 

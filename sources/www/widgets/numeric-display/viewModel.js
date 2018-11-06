@@ -10,6 +10,7 @@ function numericDisplayViewModel() {
    
     //observable data
     this.data = ko.observable("-");
+    this.rawUnit = "";
     this.unit = ko.observable("");
     this.shouldBeVisible = ko.observable(false);
     this.lastReceiveDate = ko.observable("");
@@ -52,7 +53,7 @@ function numericDisplayViewModel() {
     
     this.configurationChanged = function () {
        var self = this;
-
+       
        try{
           self.shouldBeVisible(parseBool(self.widget.configuration.dateDisplay));
        }
@@ -64,9 +65,7 @@ function numericDisplayViewModel() {
        if (!isNullOrUndefined(self.widget.configuration.precision))
           self.precision = parseInt(self.widget.configuration.precision, 10);
        else
-          self.precision = 1;             
-        
-       var d = new $.Deferred();
+          self.precision = 1;
 	   
         //we register keyword new acquisition
         self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
@@ -75,27 +74,8 @@ function numericDisplayViewModel() {
         self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);  	   
         
         //we fill the deviceId of the battery indicator
-        self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);        
-        
-        //we get the unit of the keyword
-        self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
-          self.unit($.t(keyword.units));
-          self.capacity = keyword.capacityName;
-           
-          // If no unit, we hide the unit display
-          if (keyword.units === "data.units.noUnit")
-             self.widgetApi.find(".unit").addClass("hidden");
-          else
-             self.widgetApi.find(".unit").removeClass("hidden");
-          
-          d.resolve();
-       })
-       .fail(function (error) {
-          notifyError($.t("widgets/chart:errorInitialization"), error);
-          d.reject();
-       });
-       
-       return d.promise();
+        self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
+        self.widgetApi.registerAdditionalInformation(["unit", "capacity"]);
     }
 
     /**
@@ -105,24 +85,37 @@ function numericDisplayViewModel() {
     */
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
-
         if (keywordId === self.widget.configuration.device.keywordId) {
+           // Receive at startup data.unit and data.capacity
+           if (!isNullOrUndefinedOrEmpty(data.unit))
+              self.rawUnit = data.unit;
+           
+           if (!isNullOrUndefinedOrEmpty(data.capacity))
+              self.capacity = data.capacity;
+           
+           // If no unit, we hide the unit display
+           if (self.rawUnit === "data.units.noUnit")
+              self.widgetApi.find(".unit").addClass("hidden");
+           else
+              self.widgetApi.find(".unit").removeClass("hidden");
+          
             //it is the right device
             if (data.value !==""){
                if (self.capacity ==="duration"){
                   self.displayDuration(data.value);
                }else {
-                  var temp = parseFloat(data.value).toFixed(self.precision);
-                  self.data(temp.toString());
+                  var temp = parseFloat(data.value);
+                  adaptValueAndUnit(temp, self.rawUnit, function(newValue, newUnit) {
+                     self.unit($.t(newUnit));
+                     self.data(newValue.toFixed(self.precision).toString());
+                  });
                }
             }else 
                self.data("-");
             
-            self.widgetApi.fitText();
-            
             if (self.shouldBeVisible()){
                if (data.date!=="")
-                  self.lastReceiveDate(moment(data.date).calendar().toString());
+                  self.lastReceiveDate(DateTimeFormatter.isoDateToDate (data.date).calendar().toString());
                else
                   self.lastReceiveDate($.t("widgets/numeric-display:NoAcquisition"));
             }

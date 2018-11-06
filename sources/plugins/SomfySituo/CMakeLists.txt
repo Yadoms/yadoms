@@ -52,12 +52,3 @@ PLUGIN_SOURCES(SomfySituo ${SomfySituo_PLUGIN_SOURCES})
 PLUGIN_INCLDIR(SomfySituo ${SomfySituo_PLUGIN_ADDITIONAL_INC_DIR})
 PLUGIN_LINK(SomfySituo ${SomfySituo_PLUGIN_ADDITIONAL_LIB})
 
-#########################################
-## Post-build commands
-## Copy files to build directory
-## "package.json" and "icon.png" are needed, but you can add extra-files
-#########################################
-PLUGIN_POST_BUILD_COPY_FILE(SomfySituo package.json)
-PLUGIN_POST_BUILD_COPY_FILE(SomfySituo changelog.md)
-PLUGIN_POST_BUILD_COPY_FILE(SomfySituo icon.png)
-PLUGIN_POST_BUILD_COPY_DIRECTORY(SomfySituo locales)

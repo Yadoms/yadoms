@@ -39,7 +39,7 @@ class CreateWidget(unittest.TestCase):
       print '  Change widget title'
       editWidgetModal.setWidgetTitle(widgetTitle)
       print '  Select device'
-      selects = editWidgetModal.getConfigurationPanel().getItemsByName('widgets/switch:configurationSchema.device.name')
+      selects = editWidgetModal.getConfigurationPanel().getItemsByName('widgets.switch:configurationSchema.device.name')
       Select(selects[0]).select_by_visible_text(device)
       Select(selects[1]).select_by_visible_text(keyword)
       print '  Confirm'
@@ -66,7 +66,7 @@ class CreateWidget(unittest.TestCase):
       print '  Change widget title'
       editWidgetModal.setWidgetTitle(widgetTitle)
       print '  Select device'
-      selects = editWidgetModal.getConfigurationPanel().getItemsByName('widgets/gauge:configurationSchema.device.name')
+      selects = editWidgetModal.getConfigurationPanel().getItemsByName('widgets.gauge:configurationSchema.device.name')
       Select(selects[0]).select_by_visible_text(device)
       Select(selects[1]).select_by_visible_text(keyword)
       print '  Confirm'

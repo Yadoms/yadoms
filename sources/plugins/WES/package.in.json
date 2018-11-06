@@ -1,0 +1,57 @@
+{
+	"type": "WES",
+	"version": "@PLUGIN_VERSION@",
+	"author": "Jean-Michel BERHAULT",
+	"url": "https://github.com/Yadoms/yadoms/wiki/WES",
+	"credits": "",
+	"supportedPlatforms": "all",
+	"configurationSchema": {
+		"retrieveNamesFromdevice": {
+			"type": "bool",
+			"defaultValue": "true"
+		}
+	},
+	"supportManuallyDeviceCreation": "true",
+	"supportDeviceRemovedNotification": "true",
+	"deviceConfiguration": {
+		"staticConfigurationSchema": {
+			"schemas": {
+				"WES": {
+					"types": {
+						"WES": {
+							"canBeCreatedManually": "true"
+						}
+					},
+					"content": {
+						"IPAddress": {
+							"type": "string",
+							"regex": "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$",
+							"required": "true"
+						},
+						"Port": {
+							"type": "int",
+							"required": "true",
+							"defaultValue": "80"
+						},
+						"authentication": {
+							"type": "section",
+							"content": {
+								"User": {
+									"type": "string",
+									"defaultValue": "admin",
+									"required": "true"
+								},
+								"Password": {
+									"type": "string",
+									"encrypted": "true",
+									"required": "true"
+								}
+							}
+						}                  
+					}
+				}
+			}
+		}
+	}
+
+}

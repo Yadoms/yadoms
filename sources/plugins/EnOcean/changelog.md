@@ -1,3 +1,9 @@
+### 1.1.2
+* Fix #495
+
+### 1.1.1
+* Fix some French translations
+
 ### 1.1.0
 _Requires Yadoms 2.1.0-beta.2 or greater_
 * Fix pairing of non-configurable devices

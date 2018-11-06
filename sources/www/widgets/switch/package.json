@@ -1,9 +1,14 @@
 {
   "type": "switch",
-  "version": "1.0.6",
+  "version": "1.1.0-beta.2",
   "author": "Jean-Michel BERHAULT, Nicolas HILAIRE",
   "url": "https://github.com/Yadoms/yadoms/wiki/switch",
   "credits": "[bootstrap toogle](http://www.bootstraptoggle.com/)",
+  "dependencies": {
+     "yadoms" : {
+        "minimumVersion" : "2.2.0-beta.1"
+     }
+  },    
   "dimensions": {
     "min": {
       "x": 1,
@@ -29,6 +34,10 @@
       "type": "bool",
       "defaultValue": "false"
     },
+    "askConfirmation": {
+      "type": "bool",
+      "defaultValue": "false"
+    },    
     "additionalDevices": {
       "type": "section",
       "defaultValue": "false",

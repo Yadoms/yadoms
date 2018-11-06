@@ -4,8 +4,9 @@
 
 namespace pluginSystem
 {
-   CCommandHistorizer::CCommandHistorizer(const std::string& keywordName, const std::string& value)
-      : m_keywordName(keywordName),
+   CCommandHistorizer::CCommandHistorizer(boost::shared_ptr<const database::entities::CKeyword> keyword,
+                                          const std::string& value)
+      : m_keyword(keyword),
         m_value(value)
    {
    }
@@ -16,7 +17,7 @@ namespace pluginSystem
 
    const std::string& CCommandHistorizer::getKeyword() const
    {
-      return m_keywordName;
+      return m_keyword->Name();
    }
 
    const shared::plugin::yPluginApi::CStandardCapacity& CCommandHistorizer::getCapacity() const
@@ -28,7 +29,7 @@ namespace pluginSystem
 
    const shared::plugin::yPluginApi::EKeywordAccessMode& CCommandHistorizer::getAccessMode() const
    {
-      return shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet;
+      return m_keyword->AccessMode();
    }
 
    std::string CCommandHistorizer::formatValue() const
@@ -38,8 +39,7 @@ namespace pluginSystem
 
    const shared::plugin::yPluginApi::historization::EMeasureType& CCommandHistorizer::getMeasureType() const
    {
-      static const auto MeasureType(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute);
-      return MeasureType;
+      return m_keyword->Measure();
    }
 
    shared::CDataContainer CCommandHistorizer::getTypeInfo() const
@@ -47,5 +47,3 @@ namespace pluginSystem
       return shared::CDataContainer();
    }
 } // namespace pluginSystem	
-
-

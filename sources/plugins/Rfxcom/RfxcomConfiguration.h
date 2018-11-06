@@ -49,6 +49,8 @@ public:
    bool isVISONICenabled() const override;
    bool isKeeLoqenabled() const override;
    bool isHomeConfortenabled() const override;
+   bool isMCZenabled() const override;
+   bool isFunkbusenabled() const override;
    // [END] IRfxcomConfiguration implementation
 
 private:

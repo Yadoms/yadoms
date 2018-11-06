@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/Yadoms/yadoms.svg?branch=master)](https://travis-ci.org/Yadoms/yadoms) [![Build Status](https://ci.appveyor.com/api/projects/status/github/yadoms/yadoms-build-windows?branch=master&svg=true)](https://ci.appveyor.com/project/yadoms/yadoms) [![Coverity](https://scan.coverity.com/projects/16217/badge.svg)](https://scan.coverity.com/projects/yadoms-yadoms)
-
+[![Build Status](https://travis-ci.org/Yadoms/yadoms.svg?branch=master)](https://travis-ci.org/Yadoms/yadoms) [![Build Status](https://ci.appveyor.com/api/projects/status/github/yadoms/yadoms-build-windows?branch=master&svg=true)](https://ci.appveyor.com/project/yadoms/yadoms)
 
 # yadoms
 Yadoms is an open source project. 

@@ -48,6 +48,6 @@ public:
    /// \brief	    port socket number
    /// \return     The socket port
    //--------------------------------------------------------------
-   virtual int getSocketPort() const = 0;
+   virtual unsigned short getSocketPort() const = 0;
 };
 

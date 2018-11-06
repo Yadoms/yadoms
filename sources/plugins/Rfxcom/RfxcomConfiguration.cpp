@@ -67,3 +67,5 @@ bool CRfxcomConfiguration::isATIenabled() const { return m_configuration.get<boo
 bool CRfxcomConfiguration::isVISONICenabled() const { return m_configuration.get<bool>("Protocols.content.Visonic"); }
 bool CRfxcomConfiguration::isKeeLoqenabled() const { return m_configuration.get<bool>("Protocols.content.KeeLoq"); }
 bool CRfxcomConfiguration::isHomeConfortenabled() const { return m_configuration.get<bool>("Protocols.content.HomeConfort"); }
+bool CRfxcomConfiguration::isMCZenabled() const { return m_configuration.get<bool>("Protocols.content.MCZ"); }
+bool CRfxcomConfiguration::isFunkbusenabled() const { return m_configuration.get<bool>("Protocols.content.Funkbus"); }

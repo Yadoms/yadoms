@@ -10,6 +10,7 @@
 #include "PurgeScriptLog.h"
 #include <shared/ServiceLocator.h>
 #include "startupOptions/IStartupOptions.h"
+#include "automation/RuleException.hpp"
 
 namespace automation
 {
@@ -52,8 +53,8 @@ namespace automation
       std::string CInstance::loadScriptContent(const std::string& scriptPath) const
       {
          communication::callback::CSynchronousCallback<std::string> callback;
-         auto request(boost::make_shared<CLoadScriptContentRequest>(scriptPath,
-                                                                    callback));
+         const auto request(boost::make_shared<CLoadScriptContentRequest>(scriptPath,
+                                                                          callback));
 
          try
          {
@@ -65,20 +66,21 @@ namespace automation
             case communication::callback::CSynchronousCallback<bool>::kResult:
                {
                   auto res = callback.getCallbackResult();
-                  if (res.Success)
-                     return res.Result();
-                  YADOMS_LOG(error) << "Unable to load script content from interpreter " << m_interpreterInformation->getName() << " : " << res.ErrorMessage();
+                  if (res.success)
+                     return res.result();
+                  throw std::runtime_error(res.errorMessage());
                }
             default:
-               YADOMS_LOG(error) << "Unable to load script content from interpreter " << m_interpreterInformation->getName() << " : timeout";
+               throw std::runtime_error("timeout");
             }
          }
          catch (std::exception& e)
          {
-            request->sendError((boost::format("Error when loading script content from interpreter %1% : %2%") % m_interpreterInformation->getName() % e.what()).str());
+            const auto errorMessage = (boost::format("Error when loading script content from interpreter %1% : %2%") % m_interpreterInformation->
+               getName() % e.what()).str();
+            YADOMS_LOG(error) << errorMessage;
+            throw CRuleException(errorMessage);
          }
-
-         return std::string();
       }
 
       void CInstance::saveScriptContent(const std::string& scriptPath,
@@ -99,9 +101,10 @@ namespace automation
             case communication::callback::CSynchronousCallback<bool>::kResult:
                {
                   auto res = callback.getCallbackResult();
-                  if (res.Success)
+                  if (res.success)
                      return;
-                  YADOMS_LOG(error) << "Unable to save script content from interpreter " << m_interpreterInformation->getName() << " : " << res.ErrorMessage();
+                  YADOMS_LOG(error) << "Unable to save script content from interpreter " << m_interpreterInformation->getName() << " : " << res.
+                     errorMessage();
                }
             default:
                YADOMS_LOG(error) << "Unable to save script content from interpreter " << m_interpreterInformation->getName() << " : timeout";
@@ -109,7 +112,8 @@ namespace automation
          }
          catch (std::exception& e)
          {
-            request->sendError((boost::format("Error when saving script content from interpreter %1% : %2%") % m_interpreterInformation->getName() % e.what()).str());
+            request->sendError(
+               (boost::format("Error when saving script content from interpreter %1% : %2%") % m_interpreterInformation->getName() % e.what()).str());
          }
       }
 
@@ -118,10 +122,10 @@ namespace automation
                                   const std::string& yScriptApiId,
                                   const boost::filesystem::path& scriptLogPath) const
       {
-         auto request = boost::make_shared<CStartScript>(scriptInstanceId,
-                                                         scriptPath,
-                                                         yScriptApiId,
-                                                         scriptLogPath);
+         const auto request = boost::make_shared<CStartScript>(scriptInstanceId,
+                                                               scriptPath,
+                                                               yScriptApiId,
+                                                               scriptLogPath);
 
          try
          {
@@ -136,7 +140,7 @@ namespace automation
 
       void CInstance::stopScript(int scriptInstanceId) const
       {
-         auto request(boost::make_shared<CStopScript>(scriptInstanceId));
+         const auto request(boost::make_shared<CStopScript>(scriptInstanceId));
 
          try
          {
@@ -152,8 +156,8 @@ namespace automation
       void CInstance::purgeScriptLog(int scriptInstanceId,
                                      const boost::filesystem::path& scriptLogPath) const
       {
-         auto request(boost::make_shared<CPurgeScriptLog>(scriptInstanceId,
-                                                          scriptLogPath));
+         const auto request(boost::make_shared<CPurgeScriptLog>(scriptInstanceId,
+                                                                scriptLogPath));
 
          try
          {
@@ -181,9 +185,10 @@ namespace automation
             case communication::callback::CSynchronousCallback<bool>::kResult:
                {
                   auto res = callback.getCallbackResult();
-                  if (res.Success)
-                     return res.Result();
-                  YADOMS_LOG(error) << "Unable to get avalaibility of interpreter " << m_interpreterInformation->getName() << " : " << res.ErrorMessage();
+                  if (res.success)
+                     return res.result();
+                  YADOMS_LOG(error) << "Unable to get avalaibility of interpreter " << m_interpreterInformation->getName() << " : " << res.
+                     errorMessage();
                }
             default:
                YADOMS_LOG(error) << "Unable to get avalaibility of interpreter " << m_interpreterInformation->getName() << " : timeout";
@@ -191,12 +196,12 @@ namespace automation
          }
          catch (std::exception& e)
          {
-            request->sendError((boost::format("Error when requesting AvalaibleRequest on interpreter %1% : %2%") % m_interpreterInformation->getName() % e.what()).str());
+            request->sendError(
+               (boost::format("Error when requesting AvalaibleRequest on interpreter %1% : %2%") % m_interpreterInformation->getName() % e.what()).
+               str());
          }
 
          return false;
       }
    }
 } // namespace automation::interpreter
-
-
