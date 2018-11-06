@@ -114,7 +114,7 @@ namespace web
                   try
                   {
                      m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
-					 keywordResult.set(info, true);
+                     keywordResult.set(info, true);
                   }
                   catch (shared::exception::CEmptyResult&)
                   {
