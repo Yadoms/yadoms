@@ -42,7 +42,12 @@ BOOST_AUTO_TEST_CASE(Nominal1)
    const auto nextTimePoint(shared::currentTime::Provider().now() + period);
 
    BOOST_CHECK_EQUAL(timer.getId(), evtId);
-   BOOST_CHECK_EQUAL(timer.getNextStopPoint(), nextTimePoint);
+
+   //as timer var and nextTimePoint are not created exactly at the same time (few cpu instuctions; and may be interruptible by others processes)
+   //checking timer.getNextStopPoint() equals to nextTimePoint may fails.
+   //so allow a time diff
+   const auto diff = (timer.getNextStopPoint() - nextTimePoint).total_milliseconds();
+   BOOST_CHECK_LE(abs(diff), 50); //assume max 50 ms
    BOOST_CHECK_EQUAL(timer.canBeRemoved(), false);
 
    timer.reset();
@@ -110,8 +115,8 @@ BOOST_AUTO_TEST_CASE(NominalEventHandler1TimerPeriodic)
 
    for (int noOccurence = 1; noOccurence <= 5; ++noOccurence)
    {
-      BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents((period * noOccurence) - boost::posix_time::milliseconds(1)), shared::event::kTimeout); // Event not yet received
-      BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents((period * noOccurence) + boost::posix_time::milliseconds(1)), evtId); // Event not yet received
+	  BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(period - boost::posix_time::milliseconds(10)), shared::event::kTimeout); // Event not yet received
+      BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(period + boost::posix_time::milliseconds(10)), evtId); // Event not yet received
    }
 }
 

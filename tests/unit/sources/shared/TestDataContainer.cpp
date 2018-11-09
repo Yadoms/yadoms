@@ -85,6 +85,27 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       BOOST_CHECK_EQUAL(*(shs.get()) == *(shs2.get()), true) ;
    }
 
+   BOOST_AUTO_TEST_CASE(JsonOldformatStyle)
+   {
+	  const std::string oldJsonFormatStyle("{"
+		  "\"BoolParameter\": \"true\","
+		  "\"BoolParameter2\": \"false\","
+		  "\"DecimalParameter\": \"18.4\","
+		  "\"EnumParameter\": \"12\","
+		  "\"EnumAsStringParameter\": \"EnumValue1\","
+		  "\"IntParameter\": \"42\""
+		  "}");
+
+	  shared::CDataContainer cfg(oldJsonFormatStyle);
+
+	  BOOST_CHECK_EQUAL(cfg.get<bool>("BoolParameter"), true);
+	  BOOST_CHECK_EQUAL(cfg.get<bool>("BoolParameter2"), false);
+	  BOOST_CHECK_EQUAL(cfg.get<double>("DecimalParameter"), 18.4);
+	  BOOST_CHECK_EQUAL(cfg.get<int>("IntParameter"), 42);
+	  BOOST_CHECK_EQUAL(cfg.get<EEnumType>("EnumParameter"), kEnumValue2);
+	  BOOST_CHECK_EQUAL(cfg.getEnumValue<EEnumType>("EnumAsStringParameter", EEnumTypeNames), kEnumValue1);
+   }
+
    BOOST_AUTO_TEST_CASE(CollectionContainer)
    {
       shared::CDataContainer test;

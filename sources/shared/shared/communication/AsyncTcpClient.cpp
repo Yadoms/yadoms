@@ -96,7 +96,7 @@ void CAsyncTcpClient::flush()
 
 void CAsyncTcpClient::reconnectTimerHandler(const boost::system::error_code& error)
 {
-   if (error != 0)
+   if (error.value() != 0)
       throw exception::CException("Error code should be 0 here");
 
    tryConnect();
