@@ -634,7 +634,7 @@ namespace shared
          if (v->IsBool())
             return v->GetBool() ? 1 : 0;
          if (v->IsDouble())
-            return v->GetDouble();
+            return (unsigned char)v->GetDouble();
          if (v->IsFalse())
             return 0;
          if (v->IsFloat())
