@@ -218,7 +218,7 @@ source_group(testCommon testCommon/*.*)
 add_executable(yadomsTests ${YADOMS_TESTS_SRC})
 add_precompiled_header(yadomsTests stdafx.h)
 
-ADD_VS_NATVIS_INTERNAL(yadomsTests ${YADOMS_PATH}/../ideTools/vs_natvis)
+ADD_VS_NATVIS(yadomsTests)
 
 ##################################################################################################
 ## Include directories
