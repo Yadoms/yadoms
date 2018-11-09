@@ -3,7 +3,7 @@
 #include "startupOptions/IStartupOptions.h"
 
 //-----------------------------------------------------------------------------
-/// \class   Class which handle information about server system
+/// \brief   Application Paths
 //-----------------------------------------------------------------------------
 class CPathProvider : public IPathProvider
 {
@@ -23,6 +23,7 @@ public:
    // IPathProvider implementation
    const boost::filesystem::path& logsPath() const override;
    const boost::filesystem::path& webServerPath() const override;
+   const boost::filesystem::path& widgetsPath() const override;
    const boost::filesystem::path& pluginsLogPath() const override;
    const boost::filesystem::path& pluginsDataPath() const override;
    const boost::filesystem::path& pluginsPath() const override;
@@ -38,6 +39,7 @@ private:
    const boost::filesystem::path m_logsPath;
    const boost::filesystem::path m_dataPath;
    const boost::filesystem::path m_webServerPath;
+   const boost::filesystem::path m_widgetsPath;
    const boost::filesystem::path m_pluginsLogPath;
    const boost::filesystem::path m_pluginsDataPath;
    const boost::filesystem::path m_scriptsLogPath;

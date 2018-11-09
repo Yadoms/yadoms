@@ -3,29 +3,39 @@
   "description": "A widget that provide a wind rose",
   "noAvailableData": "No available data for the selected range",
   "configurationSchema": {
-      "windDirection": {
-         "name": "Direction of the wind",
-         "description": "Choose the data of a device to display"
-      },
-      "speedDisplay" : {
-         "name": "Display of the speed",
-         "description": "",
-         "content": {
-            "windSpeed": {
-               "name": "Speed of the wind",
-               "description": "Choose the data of a device to display"
-            }
-         }
-      },
-      "options" : {
-         "name": "Options",
-         "description": "",
-         "content": {        
-            "directionCorrection": {
-               "name": "Direction correction",
-               "description": "correction of the angle if your equipment is misplaced"
-            }
-         }
+    "windDirection": {
+      "name": "Direction of the wind",
+      "description": "Choose the data of a device to display"
+    },
+    "speedDisplay": {
+      "name": "Display of the speed",
+      "description": "",
+      "content": {
+        "windSpeed": {
+          "name": "Speed of the wind",
+          "description": "Choose the data of a device to display"
+        }
       }
+    },
+    "options": {
+      "name": "Options",
+      "description": "",
+      "content": {
+        "speedUnit": {
+          "name": "Speed unit",
+          "description": "Choose the unit to apply for speeds",
+          "values": {
+            "ms": "m/s",
+            "kmh": "km/h",
+            "knots": "knots",
+            "beaufort": "beaufort"
+          }
+        },
+        "directionCorrection": {
+          "name": "Direction correction",
+          "description": "correction of the angle if your equipment is misplaced"
+        }
+      }
+    }
   }
 }

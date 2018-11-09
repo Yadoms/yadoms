@@ -11,6 +11,9 @@ namespace rfxcomMessages
       ((Type2))
       ((Ext))
       ((Ext2))
+      ((Pro1))
+      ((Pro2))
+      ((ProXL1))
    );
 
    CTransceiverStatus::CTransceiverStatus(const RBUF& rbuf,
@@ -21,7 +24,9 @@ namespace rfxcomMessages
       if (rbufSize < (GET_RBUF_STRUCT_SIZE(RXRESPONSE) - 1))
       {
          // Message is too small
-         throw shared::exception::CException((boost::format("Wrong message length, received : %1%, expected : %2% (total_message_size - 1)") % rbufSize % (GET_RBUF_STRUCT_SIZE(RXRESPONSE) - 1)).str());
+         throw shared::exception::CException(
+            (boost::format("Wrong message length, received : %1%, expected : %2% (total_message_size - 1)") % rbufSize % (GET_RBUF_STRUCT_SIZE(
+               RXRESPONSE) - 1)).str());
       }
 
       if (rbuf.RXRESPONSE.subtype == sTypeRecStarted)
@@ -77,7 +82,35 @@ namespace rfxcomMessages
          if (rbuf.IRESPONSE.packetlength > 13)
          {
             // New IRESPONSE message format
-            m_firmwareType = rbuf.IRESPONSE.msg10;
+            switch (rbuf.IRESPONSE.msg10)
+            {
+            case FWtyperec:
+               m_firmwareType = EFirmwareType::kType1ReceiveOnly;
+               break;
+            case FWtype1:
+               m_firmwareType = EFirmwareType::kType1;
+               break;
+            case FWtype2:
+               m_firmwareType = EFirmwareType::kType2;
+               break;
+            case FWtypeExt:
+               m_firmwareType = EFirmwareType::kExt;
+               break;
+            case FWtypeExt2:
+               m_firmwareType = EFirmwareType::kExt2;
+               break;
+            case FWtypePro1:
+               m_firmwareType = EFirmwareType::kPro1;
+               break;
+            case FWtypePro2:
+               m_firmwareType = EFirmwareType::kPro2;
+               break;
+            case FWtypeProXL1:
+               m_firmwareType = EFirmwareType::kProXL1;
+               break;
+            default:
+               throw shared::exception::CException((boost::format("Unknown firmware type value : %1%") % rbuf.IRESPONSE.msg10).str());
+            }
             m_firmwareVersion = rbuf.IRESPONSE.msg2 + 1000;
             m_hardwareVersionMajor = rbuf.IRESPONSE.msg7;
             m_hardwareVersionMinor = rbuf.IRESPONSE.msg8;
@@ -94,7 +127,7 @@ namespace rfxcomMessages
                m_firmwareType = EFirmwareType::kType2;
             else
                m_firmwareType = EFirmwareType::kExt;
-            
+
             m_hardwareVersionMajor = 0;
             m_hardwareVersionMinor = 0;
          }
@@ -112,7 +145,7 @@ namespace rfxcomMessages
          m_LWRFenabled = rbuf.IRESPONSE.LWRFenabled;
          m_HIDEKIenabled = rbuf.IRESPONSE.HIDEKIenabled;
          m_LACROSSEenabled = rbuf.IRESPONSE.LACROSSEenabled;
-         m_LegrandCADenabled = rbuf.IRESPONSE.FS20enabled;
+         m_LegrandCADenabled = rbuf.IRESPONSE.LEGRANDenabled;
          m_BLINDST0enabled = rbuf.IRESPONSE.BLINDST0enabled;
          m_BLINDST1enabled = rbuf.IRESPONSE.BLINDST1enabled;
          m_X10enabled = rbuf.IRESPONSE.X10enabled;
@@ -132,7 +165,8 @@ namespace rfxcomMessages
    {
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiverStatus::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiverStatus::encode(
+      boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("Status is a read-only message, can not be encoded");
    }
@@ -140,6 +174,14 @@ namespace rfxcomMessages
    void CTransceiverStatus::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       // Nothing to historize
+   }
+
+   void CTransceiverStatus::filter() const
+   {
+   }
+
+   void CTransceiverStatus::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
    }
 
    const std::string& CTransceiverStatus::getDeviceName() const
@@ -208,11 +250,9 @@ namespace rfxcomMessages
          (recType43392, "RFXrec433 operating at 433.92MHz (receiver only)")
          (trxType43392, "RFXtrx433 operating at 433.92MHz")
          (0x54, "RFXtrx433 operating at 433.42MHz (internal use)") // No constant is defined in rfxtrx.h v9.17
-         (trxType868, "RFXtrx868X operating at 868MHz")
-         (trxTypeIOT433, "RFXtrxIOT operating at 433.92MHz")
-         (trxTypeIOT868, "RFXtrxIOT operating at 868MHz");
+         (trxType868, "RFXtrx868X operating at 868MHz");
 
-      auto itRfxcomTypes = RfxcomTypes.find(m_rfxcomType);
+      const auto itRfxcomTypes = RfxcomTypes.find(m_rfxcomType);
       if (itRfxcomTypes == RfxcomTypes.end())
          return boost::lexical_cast<std::string>(m_rfxcomType);
 

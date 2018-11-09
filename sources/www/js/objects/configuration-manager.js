@@ -10,12 +10,14 @@ function ConfigurationManager() {
 
         var deferredArray = [];
         deferredArray.push(loadServerConfiguration());
-        deferredArray.push(loadWebClientConfiguration());
         deferredArray.push(loadDatabaseVersion());
-
+        var defferedWebClient = loadWebClientConfiguration();
+        
         var d = new $.Deferred();
-        $.whenAll(deferredArray)
-            .done(d.resolve)
+        $.when.apply($,deferredArray)
+            .done(function(){
+               defferedWebClient.always(d.resolve);
+            })
             .fail(d.reject);
 
         return d;
@@ -27,7 +29,7 @@ function ConfigurationManager() {
         deferredArray.push(saveWebClientConfiguration());
 
         var d = new $.Deferred();
-        $.whenAll(deferredArray)
+        $.when.apply($,deferredArray)
             .done(d.resolve)
             .fail(d.reject);
 
@@ -40,7 +42,7 @@ function ConfigurationManager() {
         deferredArray.push(resetWebClientConfiguration());
 
         var d = new $.Deferred();
-        $.whenAll(deferredArray)
+        $.when.apply($,deferredArray)
             .done(d.resolve)
             .fail(d.reject);
 

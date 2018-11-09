@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/script/yInterpreterApi/IInformation.h>
 #include <shared/DataContainer.h>
-#include "shared/versioning/Version.h"
+#include <shared/versioning/Version.h>
 
 namespace automation
 {

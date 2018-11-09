@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "WidgetInformation.h"
-#include "shared/DataContainer.h"
+#include <shared/DataContainer.h>
 
 namespace update
 {

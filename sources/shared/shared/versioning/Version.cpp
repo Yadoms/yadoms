@@ -18,6 +18,16 @@ namespace shared
          parse(stringVersion);
       }
 
+      CVersion& CVersion::operator=(const CVersion& rhs)
+      {
+         m_major = rhs.m_major;
+         m_minor = rhs.m_minor;
+         m_patch = rhs.m_patch;
+         m_prerelease = rhs.m_prerelease;
+         m_buildMetadata = rhs.m_buildMetadata;
+         return *this;
+      }
+
       CVersion::CVersion(int major, int minor, int patch)
          : m_major(major), m_minor(minor), m_patch(patch), m_prerelease(""), m_buildMetadata("")
       {
@@ -44,27 +54,27 @@ namespace shared
 
       bool CVersion::operator<(CVersion const& rhs) const
       {
-         return (compare(rhs) < 0);
+         return compare(rhs) < 0;
       }
 
       bool CVersion::operator<=(CVersion const& rhs) const
       {
-         return (compare(rhs) <= 0);
+         return compare(rhs) <= 0;
       }
 
       bool CVersion::operator>=(CVersion const& rhs) const
       {
-         return (compare(rhs) >= 0);
+         return compare(rhs) >= 0;
       }
 
       bool CVersion::operator>(CVersion const& rhs) const
       {
-         return (compare(rhs) > 0);
+         return compare(rhs) > 0;
       }
 
       bool CVersion::operator==(CVersion const& rhs) const
       {
-         return (compare(rhs) == 0);
+         return compare(rhs) == 0;
       }
 
       int CVersion::major() const
@@ -125,8 +135,8 @@ namespace shared
 
       std::string CVersion::toString() const
       {
-         auto prerelease = m_prerelease.empty() ? "" : ("-" + m_prerelease);
-         auto buildMetadata = m_buildMetadata.empty() ? "" : ("+" + m_buildMetadata);
+         const auto prerelease = m_prerelease.empty() ? "" : ("-" + m_prerelease);
+         const auto buildMetadata = m_buildMetadata.empty() ? "" : ("+" + m_buildMetadata);
          return (boost::format("%1%.%2%.%3%%4%%5%") % m_major % m_minor % m_patch % prerelease % buildMetadata).str();
       }
 
@@ -134,9 +144,10 @@ namespace shared
       void CVersion::parse(const std::string& version)
       {
          //Regex for SEMVER is taken from http://rgxdb.com/r/40OZ1HN5 (adjusted by removing leading and trailing "/" )
-         Poco::RegularExpression re("(?<=^[Vv]|^)(?:(?<major>(?:0|[1-9](?:(?:0|[1-9])+)*))[.](?<minor>(?:0|[1-9](?:(?:0|[1-9])+)*))[.](?<patch>(?:0|[1-9](?:(?:0|[1-9])+)*))(?:-(?<prerelease>(?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:0|[1-9](?:(?:0|[1-9])+)*))(?:[.](?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:0|[1-9](?:(?:0|[1-9])+)*)))*))?(?:[+](?<build>(?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:(?:0|[1-9])+))(?:[.](?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:(?:0|[1-9])+)))*))?)$");
+         Poco::RegularExpression re(
+            "(?<=^[Vv]|^)(?:(?<major>(?:0|[1-9](?:(?:0|[1-9])+)*))[.](?<minor>(?:0|[1-9](?:(?:0|[1-9])+)*))[.](?<patch>(?:0|[1-9](?:(?:0|[1-9])+)*))(?:-(?<prerelease>(?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:0|[1-9](?:(?:0|[1-9])+)*))(?:[.](?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:0|[1-9](?:(?:0|[1-9])+)*)))*))?(?:[+](?<build>(?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:(?:0|[1-9])+))(?:[.](?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:(?:0|[1-9])+)))*))?)$");
          std::vector<std::string> strings;
-         auto resultCount = re.split(version, strings);
+         const auto resultCount = re.split(version, strings);
 
          if (resultCount > 3)
          {

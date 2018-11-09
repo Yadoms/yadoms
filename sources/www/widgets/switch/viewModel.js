@@ -13,6 +13,7 @@ widgetViewModelCtor =
        this.readonly = ko.observable(true);
        this.invert = ko.observable(false);
        this.update = ko.observable(false);
+       this.askConfirmation = false;
        
        this.capacity = [];
        this.accessMode = [];
@@ -40,8 +41,16 @@ widgetViewModelCtor =
               }
               
               // We send the command only for Set and GetSet variables
-              if ( self.accessMode[index] === "GetSet" || self.accessMode[index] === "Set" )
-                 KeywordManager.sendCommand(keywordId, cmd.toString());
+              if ( self.accessMode[index] === "GetSet" || self.accessMode[index] === "Set" ){
+                 if (self.askConfirmation){
+                    Yadoms.showConfirmModal(Yadoms.btnKind.confirmCancel, $.t("modals.confirmation.title"), $.t("widgets.switch:confirmationExplanation"), function(){
+                          KeywordManager.sendCommand(keywordId, cmd.toString());
+                       }
+                    );
+                 }
+                 else
+                    KeywordManager.sendCommand(keywordId, cmd.toString());
+              }
            }
         };
         
@@ -69,18 +78,19 @@ widgetViewModelCtor =
        this.commandClick = function (newState) {
            var self = this;
 
-           if  (!isNullOrUndefined(self.widget.configuration)) {
-               // Checks for the first device
-               if (!isNullOrUndefined(self.widget.configuration.device)){
-                  self.formatAndSend(0, self.widget.configuration.device.keywordId, newState);
-               }                   
-               
-               if (!isNullOrUndefined(self.widget.configuration.additionalDevices.content.devices)){
-                  // Check for the others devices
-                  $.each(self.widget.configuration.additionalDevices.content.devices, function (index, device) {
-                      self.formatAndSend(index+1, device.content.source.keywordId, newState);
-                  });
-               }
+           if  (isNullOrUndefined(self.widget.configuration))
+              return;
+           
+           // Checks for the first device
+           if (!isNullOrUndefined(self.widget.configuration.device)){
+              self.formatAndSend(0, self.widget.configuration.device.keywordId, newState);
+           }                   
+            
+           if (!isNullOrUndefined(self.widget.configuration.additionalDevices.content.devices)){
+              // Check for the others devices
+              $.each(self.widget.configuration.additionalDevices.content.devices, function (index, device) {
+                  self.formatAndSend(index+1, device.content.source.keywordId, newState);
+              });
            }
        };
 
@@ -100,6 +110,9 @@ widgetViewModelCtor =
         
           // Initialization of the toogle button if exist
           this.widget.$content.find("input[type=checkbox]").bootstrapToggle();
+          
+          // load the modal if it's not already loaded
+          return Yadoms.modals.confirmation.loadAsync();
        };
 
        /**
@@ -108,7 +121,6 @@ widgetViewModelCtor =
         */          
        this.configurationChanged = function () {
            var self = this;
-           var readOnlyMode=false;
            var arrayOfDeffered = [];
            var d = new $.Deferred();
            
@@ -117,7 +129,13 @@ widgetViewModelCtor =
 
            // registration of the first keyword
            if  (!isNullOrUndefined(this.widget.configuration.device)) {
-             self.widgetApi.registerKeywordAcquisitions(this.widget.configuration.device.keywordId);                 
+			  //we register keyword new acquisition
+			  self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+		   
+			  //we register keyword for get last value at web client startup 
+			  self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);
+           
+           self.widgetApi.registerAdditionalInformation(["accessMode", "capacity"]); // We would like the unit !
            }
            
            if (self.state.length==0)
@@ -126,8 +144,11 @@ widgetViewModelCtor =
            // registration of additional keywords
            if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.additionalDevices.content.devices))) {
                $.each(this.widget.configuration.additionalDevices.content.devices, function (index, device) {
-                  self.widgetApi.registerKeywordAcquisitions(device.content.source.keywordId);
-                   
+                  //we register keyword new acquisition
+                  self.widgetApi.registerKeywordForNewAcquisitions(device.content.source.keywordId);	   
+			   
+                  //we register keyword for get last value at web client startup 
+                  self.widgetApi.getLastValue(device.content.source.keywordId);
                   if (self.state.length!=index+1)
                      self.state.push(1);
                });
@@ -159,44 +180,22 @@ widgetViewModelCtor =
               self.invert(false);
            }
            
-           // we ask for the first device information
-           if  (!isNullOrUndefined(this.widget.configuration.device.deviceId)) {
-               // Get the capacity of the keyword
-               var deffered = KeywordManager.get(this.widget.configuration.device.keywordId)
-               .done(function (keyword) {
-                  self.capacity[0]   = keyword.capacityName;
-                  self.accessMode[0] = keyword.accessMode;
-
-                  if ( keyword.accessMode === "Get" )
-                     readOnlyMode = true;
-               });
-               arrayOfDeffered.push(deffered);
+           try{
+              self.askConfirmation = parseBool(self.widget.configuration.askConfirmation);
            }
-           
-           //we ask for additional devices information
-           if ((!isNullOrUndefined(this.widget.configuration.additionalDevices.content.devices))) {
-               $.each(this.widget.configuration.additionalDevices.content.devices, function (index, device) {
-                   if (!isNullOrUndefined(device.content.source.deviceId)) {
-                 
-                      // Get the capacity of the keyword
-                      var deffered = KeywordManager.get(device.content.source.keywordId)
-                      .done(function (keyword) {
-                        self.capacity[index+1]   = keyword.capacityName;
-                        self.accessMode[index+1] = keyword.accessMode;
-                        
-                        if ( keyword.accessMode === "Get" )
-                           readOnlyMode = true;
-
-                      });
-                      arrayOfDeffered.push(deffered);
-                   }
-               });
-            }
-            
+           catch(error){
+              self.askConfirmation = false;
+           }           
+ 
+        // load library if needed, if it's a push button with icon
+        if (self.kind() === 'pushButton'){
+           arrayOfDeffered.push(asyncLoadJSLibs(["libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker-iconset-all.min.js",
+                                                 "libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker.min.js"]));
+           arrayOfDeffered.push(asyncLoadCss("libs/bootstrap-iconpicker-1.9.0/css/bootstrap-iconpicker.min.css"));            
+        }
          // This variable is used only for the display
          $.when.apply($, arrayOfDeffered)
          .done(function () {
-            self.readonly ( readOnlyMode );
             d.resolve();
          })
          .fail(function () {
@@ -213,52 +212,72 @@ widgetViewModelCtor =
        */
        this.onNewAcquisition = function (keywordId, data) {
            var self = this;
+           var readonly = false;
            
-           if (!isNullOrUndefined(this.widget.configuration)){
-              //Check if first device
-              if (!isNullOrUndefined(this.widget.configuration.device)) {
-                   if (keywordId == this.widget.configuration.device.keywordId) {
-                       //it is the right device
-                       if (self.capacity[0] === "event")
-                           //self.state()[0] = 0;
-                           self.state.replace(self.state()[0], 0);
-                       else {
-                           //self.state()[0] = parseInt(data.value); // get the state. Same for dimmable
-                           //self.state()[0](parseInt(data.value)); // get the state. Same for dimmable
-                           self.state.replace(self.state()[0], parseInt(data.value));
-                       }
-                   }
-              }                 
+           if (isNullOrUndefined(this.widget.configuration) || isNullOrUndefined(this.widget.configuration.device))
+              return;
               
-              //check if additional devices
-              if (!isNullOrUndefined(this.widget.configuration.additionalDevices.content.devices)) {
-                $.each(this.widget.configuration.additionalDevices.content.devices, function (index, device) {
-                   if (keywordId == device.content.source.keywordId) {
-                       //it is the right device
-                       if (self.capacity[index] === "event")
-                           self.state()[index+1] = 0;
-                       else
-                          self.state()[index+1] = parseInt(data.value); // get the state. Same for dimmable
-                   }
-                });
+           //Check if first device
+          if (keywordId == this.widget.configuration.device.keywordId) {
+              if (!isNullOrUndefinedOrEmpty(data.capacity))
+                 self.capacity[0] = data.capacity;
+          
+              if (!isNullOrUndefinedOrEmpty(data.accessMode)){
+                 self.accessMode[0] = data.accessMode;
+                  if (data.accessMode === "GetSet")
+                      readonly |= false;
+                  else
+                      readonly |= true;
               }
-              
-               //knockout doesn't work witj bootstrap. So change values have to be done manually
-               if (self.kind() === 'toggle')
-               {
-                 self.update(true);
-                 if (self.readonly())
-                    this.widget.$content.find("input[type=checkbox]").prop('disabled', false);
-
-                 if (self.command()==1)
-                    this.widget.$content.find("input[type=checkbox]").prop('checked', true).change();
-                 else
-                     this.widget.$content.find("input[type=checkbox]").prop('checked', false).change();
-                 
-                 self.update(false);
-                 this.widget.$content.find("input[type=checkbox]").prop('disabled', self.readonly());
-               }
+          
+              //it is the right device
+              if (self.capacity[0] === "event")
+                  self.state.replace(self.state()[0], 0);
+              else {
+                  self.state.replace(self.state()[0], parseInt(data.value));
+              }
+          }
+           
+           //check if additional devices
+           if (!isNullOrUndefined(this.widget.configuration.additionalDevices.content.devices)) {
+             $.each(this.widget.configuration.additionalDevices.content.devices, function (index, device) {
+                if (keywordId == device.content.source.keywordId) {
+                    if (!isNullOrUndefinedOrEmpty(data.capacity))
+                       self.capacity[index+1] = data.capacity;
+                
+                    if (!isNullOrUndefinedOrEmpty(data.accessMode)){
+                       self.accessMode[index+1] = data.accessMode;
+                        if (data.accessMode === "GetSet")
+                            readonly |= false;
+                        else
+                            readonly |= true;
+                    }                   
+                   
+                    //it is the right device
+                    if (self.capacity[index] === "event")
+                        self.state()[index+1] = 0;
+                    else
+                       self.state()[index+1] = parseInt(data.value); // get the state. Same for dimmable
+                }
+             });
            }
+           
+           self.readonly (readonly);
+           
+            //knockout doesn't work witj bootstrap. So change values have to be done manually
+            if (self.kind() === 'toggle'){
+              self.update(true);
+              if (self.readonly())
+                 this.widget.$content.find("input[type=checkbox]").prop('disabled', false);
+
+              if (self.command()==1)
+                 this.widget.$content.find("input[type=checkbox]").prop('checked', true).change();
+              else
+                  this.widget.$content.find("input[type=checkbox]").prop('checked', false).change();
+              
+              self.update(false);
+              this.widget.$content.find("input[type=checkbox]").prop('disabled', self.readonly());
+            }
        };
        
        this.toggleCommand = function () {

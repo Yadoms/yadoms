@@ -24,7 +24,8 @@ IMPLEMENT_PLUGIN(CEnOcean)
 // Event IDs
 enum
 {
-   kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId, // Always start from yApi::IYPluginApi::kPluginFirstEventId
+   kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId,
+   // Always start from yApi::IYPluginApi::kPluginFirstEventId
    kEvtPortDataReceived,
    kProtocolErrorRetryTimer,
    kAnswerTimeout,
@@ -78,14 +79,15 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                m_api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
                auto newConfigurationData = m_api->getEventHandler().getEventData<shared::CDataContainer>();
                YADOMS_LOG(information) << "Update configuration...";
-               BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+               BOOST_ASSERT(!newConfigurationData.empty());
+               // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
                // Close connection
                CConfiguration newConfiguration;
                newConfiguration.initializeWith(newConfigurationData);
 
                // If port has changed, destroy and recreate connection (if any)
-               auto needToReconnect = !connectionsAreEqual(m_configuration, newConfiguration) && !!m_port;
+               const auto needToReconnect = !connectionsAreEqual(m_configuration, newConfiguration) && !!m_port;
 
                if (needToReconnect)
                   destroyConnection();
@@ -104,7 +106,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          case yApi::IYPluginApi::kEventDeviceCommand:
             {
                // Command received from Yadoms
-               auto command(m_api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
+               const auto command(m_api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
                YADOMS_LOG(information) << "Command received : " << yApi::IDeviceCommand::toString(command);
 
                processDeviceCommand(command);
@@ -114,7 +116,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
          case yApi::IYPluginApi::kEventDeviceRemoved:
             {
-               auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved>>();
+               const auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved>>();
                YADOMS_LOG(information) << device->device() << " was removed";
                processDeviceRemmoved(device);
                break;
@@ -123,14 +125,14 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          case yApi::IYPluginApi::kSetDeviceConfiguration:
             {
                // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
-               auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
+               const auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
                processDeviceConfiguration(deviceConfiguration->name(), deviceConfiguration->configuration());
                break;
             }
 
          case kEvtPortConnection:
             {
-               auto notif = m_api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>>();
+               const auto notif = m_api->getEventHandler().getEventData<boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>>();
 
                if (notif && notif->isConnected())
                   processConnectionEvent();
@@ -186,9 +188,9 @@ void CEnOcean::loadAllDevices()
          if (deviceId == "pluginState" || deviceConfiguration.empty())
             continue; // Not configured device
 
-         CProfileHelper profileHelper(deviceConfiguration.get<std::string>("profile.activeSection"));
-         auto device = createDevice(deviceId,
-                                    profileHelper);
+         const CProfileHelper profileHelper(deviceConfiguration.get<std::string>("profile.activeSection"));
+         const auto device = createDevice(deviceId,
+                                          profileHelper);
 
          m_devices[deviceId] = device;
       }
@@ -209,7 +211,7 @@ void CEnOcean::createConnection()
    // Create the port instance
    m_port = CFactory::constructPort(m_configuration);
 
-   auto bufferLogger = CFactory::constructBufferLogger();
+   const auto bufferLogger = CFactory::constructBufferLogger();
 
    m_messageHandler = CFactory::constructMessageHandler(m_port,
                                                         m_api->getEventHandler(),
@@ -331,7 +333,8 @@ void CEnOcean::processUnConnectionEvent(boost::shared_ptr<shared::communication:
 {
    YADOMS_LOG(information) << "EnOcean connection was lost";
    if (notification)
-      m_api->setPluginState(yApi::historization::EPluginState::kError, notification->getErrorMessageI18n(), notification->getErrorMessageI18nParameters());
+      m_api->setPluginState(yApi::historization::EPluginState::kError, notification->getErrorMessageI18n(),
+                            notification->getErrorMessageI18nParameters());
    else
       m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionFailed");
 
@@ -364,8 +367,8 @@ void CEnOcean::processDeviceConfiguration(const std::string& deviceId,
                m_api->removeKeyword(deviceId, keyword);
 
          // Don't recreate device in Yadoms, unless it will change of ID
-         auto device = createDevice(deviceId,
-                                    selectedProfile);
+         const auto device = createDevice(deviceId,
+                                          selectedProfile);
          m_api->declareKeywords(deviceId,
                                 device->allHistorizers());
          m_devices[deviceId] = device;
@@ -374,9 +377,11 @@ void CEnOcean::processDeviceConfiguration(const std::string& deviceId,
       // Send configuration to device
       try
       {
-         m_devices[deviceId]->sendConfiguration(configuration.get<shared::CDataContainer>("profile.content." + m_devices[deviceId]->profile() + ".content"),
-                                                m_senderId,
-                                                m_messageHandler);
+         if (configuration.exists("profile.content." + m_devices[deviceId]->profile() + ".content"))
+            m_devices[deviceId]->sendConfiguration(
+               configuration.get<shared::CDataContainer>("profile.content." + m_devices[deviceId]->profile() + ".content"),
+               m_senderId,
+               m_messageHandler);
       }
       catch (std::exception& e)
       {
@@ -422,7 +427,7 @@ void CEnOcean::processDataReceived(boost::shared_ptr<const message::CEsp3Receive
    }
 }
 
-void CEnOcean::AddSignalPower(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords,
+void CEnOcean::addSignalPower(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords,
                               const std::string& deviceId,
                               int signalPower) const
 {
@@ -465,7 +470,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
 
    // Create associated RORG object
    auto erp1UserData = bitset_from_bytes(erp1Message.userData());
-   auto erp1Status = bitset_from_byte(erp1Message.status());
+   const auto erp1Status = bitset_from_byte(erp1Message.status());
    auto rorg = CRorgs::createRorg(erp1Message.rorg());
    auto deviceId = erp1Message.senderId();
 
@@ -478,26 +483,43 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
          // Special case for the 1BS RORG : only one func and type exist, so profile can be known
          if (rorg->id() == CRorgs::k1BS_Telegram)
          {
-            auto profile = CProfileHelper(CRorgs::k1BS_Telegram,
-                                          C1BSTelegram::kContacts_and_Switches,
-                                          C1BS_0x00::k0x01);
+            const auto profile = CProfileHelper(CRorgs::k1BS_Telegram,
+                                                C1BSTelegram::kContacts_and_Switches,
+                                                C1BS_0x00::k0x01);
 
-            static const std::string manufacturerName("Unknown manufacturer");
+            static const std::string ManufacturerName("Unknown manufacturer");
             CDeviceConfigurationHelper deviceConfiguration(profile,
-                                                           manufacturerName);
+                                                           ManufacturerName);
 
             if (m_api->deviceExists(deviceId))
             {
-               m_api->updateDeviceModel(deviceId,
-                                        generateModel(m_api->getDeviceModel(deviceId),
-                                                      manufacturerName,
-                                                      profile));
+               if (m_devices.find(deviceId) == m_devices.end())
+               {
+                  // Device was declared without profile (data telegrams was probably received before teachin telegram)
+                  // In this case, remove device before recreating
+                  m_api->removeDevice(deviceId);
+
+                  const auto& device = declareDevice(deviceId,
+                                                     profile,
+                                                     ManufacturerName);
+
+                  device->readInitialState(m_senderId,
+                                           m_messageHandler);
+               }
+               else
+               {
+                  // Device already well declared, just update model
+                  m_api->updateDeviceModel(deviceId,
+                                           generateModel(m_api->getDeviceModel(deviceId),
+                                                         ManufacturerName,
+                                                         profile));
+               }
             }
             else
             {
                const auto& device = declareDevice(deviceId,
                                                   profile,
-                                                  manufacturerName);
+                                                  ManufacturerName);
 
                device->readInitialState(m_senderId,
                                         m_messageHandler);
@@ -531,7 +553,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
          auto profile = CProfileHelper(rorg->id(),
                                        teachInData.funcId(),
                                        teachInData.typeId());
-         auto manufacturerName = CManufacturers::name(teachInData.manufacturerId());
+         const auto manufacturerName = CManufacturers::name(teachInData.manufacturerId());
 
          CDeviceConfigurationHelper deviceConfiguration(profile,
                                                         manufacturerName);
@@ -581,7 +603,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
          return;
       }
 
-      auto device = m_devices[deviceId];
+      const auto device = m_devices[deviceId];
 
       auto keywordsToHistorize = device->states(static_cast<unsigned char>(erp1Message.rorg()),
                                                 erp1UserData,
@@ -594,13 +616,13 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
          return;
       }
 
-      AddSignalPower(keywordsToHistorize,
+      addSignalPower(keywordsToHistorize,
                      deviceId,
                      dbmToSignalPower(erp1Message.dBm()));
 
       YADOMS_LOG(information) << "Received message for id#" << deviceId << " : ";
-      for (const auto& kw: keywordsToHistorize)
-      YADOMS_LOG(information) << "  - " << kw->getKeyword() << " = " << kw->formatValue();
+      for (const auto& kw : keywordsToHistorize)
+         YADOMS_LOG(information) << "  - " << kw->getKeyword() << " = " << kw->formatValue();
 
       m_api->historizeData(deviceId, keywordsToHistorize);
    }
@@ -659,7 +681,7 @@ void CEnOcean::processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket
       CO_TRANSMIT_FAILED = 0x07
    };
 
-   auto eventCode = esp3Packet->data()[0];
+   const auto eventCode = esp3Packet->data()[0];
    YADOMS_LOG(information) << "Event " << eventCode << " received";
 }
 
@@ -681,13 +703,14 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
 
    if (uteMessage->command() != message::CUTE_ReceivedMessage::kTeachInQuery)
    {
-      YADOMS_LOG(information) << "UTE message : command type " << static_cast<unsigned int>(uteMessage->command()) << " not supported, message ignored";
+      YADOMS_LOG(information) << "UTE message : command type " << static_cast<unsigned int>(uteMessage->command()) <<
+         " not supported, message ignored";
       return;
    }
 
-   auto deviceId = uteMessage->senderId();
-   auto profile = CProfileHelper(uteMessage->rorg(), uteMessage->func(), uteMessage->type());
-   auto manufacturerName = CManufacturers::name(uteMessage->manufacturerId());
+   const auto deviceId = uteMessage->senderId();
+   const auto profile = CProfileHelper(uteMessage->rorg(), uteMessage->func(), uteMessage->type());
+   const auto manufacturerName = CManufacturers::name(uteMessage->manufacturerId());
 
    if (m_devices.find(deviceId) == m_devices.end())
    {
@@ -731,38 +754,38 @@ bool CEnOcean::sendUTEAnswer(message::CUTE_AnswerSendMessage::EResponse response
    if (!uteMessage->teachInResponseExpected())
       return true;
 
-   auto sendMessage = isReversed
-                         ? boost::make_shared<message::CUTE_GigaConceptReversedAnswerSendMessage>(m_senderId,
-                                                                                                  deviceId,
-                                                                                                  static_cast<unsigned char>(0),
-                                                                                                  uteMessage->bidirectionalCommunication(),
-                                                                                                  response,
-                                                                                                  uteMessage->channelNumber(),
-                                                                                                  uteMessage->manufacturerId(),
-                                                                                                  uteMessage->type(),
-                                                                                                  uteMessage->func(),
-                                                                                                  uteMessage->rorg())
-                         : boost::make_shared<message::CUTE_AnswerSendMessage>(m_senderId,
-                                                                               deviceId,
-                                                                               static_cast<unsigned char>(0),
-                                                                               uteMessage->bidirectionalCommunication(),
-                                                                               response,
-                                                                               uteMessage->channelNumber(),
-                                                                               uteMessage->manufacturerId(),
-                                                                               uteMessage->type(),
-                                                                               uteMessage->func(),
-                                                                               uteMessage->rorg());
+   const auto sendMessage = isReversed
+                               ? boost::make_shared<message::CUTE_GigaConceptReversedAnswerSendMessage>(m_senderId,
+                                                                                                        deviceId,
+                                                                                                        static_cast<unsigned char>(0),
+                                                                                                        uteMessage->bidirectionalCommunication(),
+                                                                                                        response,
+                                                                                                        uteMessage->channelNumber(),
+                                                                                                        uteMessage->manufacturerId(),
+                                                                                                        uteMessage->type(),
+                                                                                                        uteMessage->func(),
+                                                                                                        uteMessage->rorg())
+                               : boost::make_shared<message::CUTE_AnswerSendMessage>(m_senderId,
+                                                                                     deviceId,
+                                                                                     static_cast<unsigned char>(0),
+                                                                                     uteMessage->bidirectionalCommunication(),
+                                                                                     response,
+                                                                                     uteMessage->channelNumber(),
+                                                                                     uteMessage->manufacturerId(),
+                                                                                     uteMessage->type(),
+                                                                                     uteMessage->func(),
+                                                                                     uteMessage->rorg());
 
    message::CResponseReceivedMessage::EReturnCode returnCode;
    if (!m_messageHandler->send(*sendMessage,
                                [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                            {
-                               return esp3Packet->header().packetType() == message::RESPONSE;
-                            },
+                               {
+                                  return esp3Packet->header().packetType() == message::RESPONSE;
+                               },
                                [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                            {
-                               returnCode = message::CResponseReceivedMessage(esp3Packet).returnCode();
-                            }))
+                               {
+                                  returnCode = message::CResponseReceivedMessage(esp3Packet).returnCode();
+                               }))
       throw CProtocolException("Unable to send UTE response, timeout waiting acknowledge");
 
    if (returnCode != message::CResponseReceivedMessage::RET_OK)
@@ -782,9 +805,9 @@ boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
    auto device = createDevice(deviceId,
                               profile);
 
-   auto modelLabel = generateModel(model,
-                                   manufacturer,
-                                   profile);
+   const auto modelLabel = generateModel(model,
+                                         manufacturer,
+                                         profile);
 
    auto keywordsToDeclare = device->allHistorizers();
    if (keywordsToDeclare.empty())
@@ -824,22 +847,23 @@ void CEnOcean::requestDongleVersion()
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!m_messageHandler->send(sendMessage,
                                [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                            {
-                               if (esp3Packet->header().packetType() == message::RESPONSE)
-                                  return true;
-                               YADOMS_LOG(warning) << "Unexpected message received : wrong packet type : " << esp3Packet->header().packetType();
-                               return false;
-                            },
+                               {
+                                  if (esp3Packet->header().packetType() == message::RESPONSE)
+                                     return true;
+                                  YADOMS_LOG(warning) << "Unexpected message received : wrong packet type : " << esp3Packet->header().packetType();
+                                  return false;
+                               },
                                [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                            {
-                               answer = esp3Packet;
-                            }))
+                               {
+                                  answer = esp3Packet;
+                               }))
       throw CProtocolException("Unable to get Dongle Version, timeout waiting answer");
 
    if (answer->header().dataLength() != message::RESPONSE_DONGLE_VERSION_SIZE)
-      throw CProtocolException((boost::format("Invalid data length %1%, expected 33. Request was CO_RD_VERSION.") % answer->header().dataLength()).str());
+      throw CProtocolException(
+         (boost::format("Invalid data length %1%, expected 33. Request was CO_RD_VERSION.") % answer->header().dataLength()).str());
 
-   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
+   const auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
    processDongleVersionResponse(response->returnCode(),
                                 message::CDongleVersionResponseReceivedMessage(response));
 }

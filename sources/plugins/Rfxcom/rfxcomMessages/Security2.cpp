@@ -22,7 +22,7 @@ namespace rfxcomMessages
       createSubType(deviceDetails.get<unsigned char>("subType"));
       m_subTypeManager->set(keyword, command);
       m_subTypeManager->setId(deviceDetails.get<unsigned int>("id"));
-      
+
       // Build device description
       buildDeviceName();
       auto model = m_subTypeManager->getModel();
@@ -69,19 +69,10 @@ namespace rfxcomMessages
       m_subTypeManager->setFromProtocolState(rbuf);
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.SECURITY2.battery_level));
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.SECURITY2.rssi));
-      
+
       // Build device description
       buildDeviceName();
-      auto model = m_subTypeManager->getModel();
       buildDeviceDetails();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));         
-      }
    }
 
    CSecurity2::~CSecurity2()
@@ -131,6 +122,17 @@ namespace rfxcomMessages
       api->historizeData(m_deviceName, m_keywords);
    }
 
+   void CSecurity2::filter() const
+   {
+   }
+
+   void CSecurity2::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+      api->declareDevice(m_deviceName, m_subTypeManager->getModel(), m_subTypeManager->getModel(), m_keywords, m_deviceDetails);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_subTypeManager->getModel() << ")";
+      m_deviceDetails.printToLog(YADOMS_LOG(information));
+   }
+
    const std::string& CSecurity2::getDeviceName() const
    {
       return m_deviceName;
@@ -148,5 +150,3 @@ namespace rfxcomMessages
       m_deviceName = ssdeviceName.str();
    }
 } // namespace rfxcomMessages
-
-

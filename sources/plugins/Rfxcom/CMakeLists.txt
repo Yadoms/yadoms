@@ -41,6 +41,22 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/IRfxcomMessage.h
    rfxcomMessages/Fan.h
    rfxcomMessages/Fan.cpp
+   rfxcomMessages/FanFalmec.h
+   rfxcomMessages/FanFalmec.cpp
+   rfxcomMessages/FanFt1211R.h
+   rfxcomMessages/FanFt1211R.cpp
+   rfxcomMessages/FanItho.h
+   rfxcomMessages/FanItho.cpp
+   rfxcomMessages/FanLucciAirDc.h
+   rfxcomMessages/FanLucciAirDc.cpp
+   rfxcomMessages/FanLucciAirDc2.h
+   rfxcomMessages/FanLucciAirDc2.cpp
+   rfxcomMessages/FanLucciAirWestinghouseCasafan.h
+   rfxcomMessages/FanLucciAirWestinghouseCasafan.cpp
+   rfxcomMessages/FanSeavTXS4.h
+   rfxcomMessages/FanSeavTXS4.cpp
+   rfxcomMessages/FanSiemensSF01.h
+   rfxcomMessages/FanSiemensSF01.cpp
    rfxcomMessages/FS20.h
    rfxcomMessages/FS20.cpp
    rfxcomMessages/Energy.h
@@ -51,6 +67,7 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Humidity.cpp
    rfxcomMessages/ICartelectronicSubtype.h
    rfxcomMessages/IChimeSubtype.h
+   rfxcomMessages/IFanSubtype.h
    rfxcomMessages/ILighting2Subtype.h
    rfxcomMessages/ILighting5Subtype.h
    rfxcomMessages/IRemoteSubtype.h
@@ -104,6 +121,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/RFXSensor.cpp
    rfxcomMessages/Rfy.h
    rfxcomMessages/Rfy.cpp
+   rfxcomMessages/Funkbus.h
+   rfxcomMessages/Funkbus.cpp
    rfxcomMessages/Security1.h
    rfxcomMessages/Security1.cpp
    rfxcomMessages/Security1KD101_SA30.h
@@ -136,8 +155,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Thermostat3.cpp
    rfxcomMessages/Thermostat3MertikG6RH4S.h
    rfxcomMessages/Thermostat3MertikG6RH4S.cpp
-   rfxcomMessages/Thermostat3MertikG6RH4T1.h
-   rfxcomMessages/Thermostat3MertikG6RH4T1.cpp
+   rfxcomMessages/Thermostat3MertikG6RHxT1.h
+   rfxcomMessages/Thermostat3MertikG6RHxT1.cpp
    rfxcomMessages/Thermostat3MertikG6RH4TB.h
    rfxcomMessages/Thermostat3MertikG6RH4TB.cpp
    rfxcomMessages/Thermostat3MertikG6RH4TD.h
@@ -200,6 +219,7 @@ set(PIC_CONFIGURATIONS_SOURCES
 set(RFXCOM_SOURCES
    stdafx.h
    stdafx.cpp
+   IPairingHelper.h
    IncrementSequenceNumber.h
    IRfxcomConfiguration.h
    IRfxcomFirmwareUpdater.h
@@ -209,6 +229,8 @@ set(RFXCOM_SOURCES
    ManuallyDeviceCreationException.hpp
    MessageFilteredException.hpp
    NullSequenceNumber.h
+   PairingHelper.h
+   PairingHelper.cpp
    PicBoot.h
    PicBoot.cpp
    PicBootPacketControlCharacters.h
@@ -263,12 +285,3 @@ PLUGIN_SOURCES(rfxcom ${RFXCOM_SOURCES})
 PLUGIN_INCLDIR(rfxcom ${RFXCOM_ADDITIONAL_INC_DIR})
 PLUGIN_LINK(rfxcom ${RFXCOM_ADDITIONAL_LIB})
 
-#########################################
-## Post-build commands
-## Copy files to build directory
-## "package.json" and "icon.png" are needed, but you can add extra-files
-#########################################
-PLUGIN_POST_BUILD_COPY_FILE(rfxcom package.json)
-PLUGIN_POST_BUILD_COPY_FILE(rfxcom changelog.md)
-PLUGIN_POST_BUILD_COPY_FILE(rfxcom icon.png)
-PLUGIN_POST_BUILD_COPY_DIRECTORY(rfxcom locales)

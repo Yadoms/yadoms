@@ -34,25 +34,14 @@ namespace rfxcomMessages
       // IRfxcomMessage implementation
       boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const override;
       void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
+      void filter() const override;
+      void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const override;
       const std::string& getDeviceName() const override;
       const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords() override;
       // [END] IRfxcomMessage implementation
 
    protected:
-      //--------------------------------------------------------------
-      /// \brief	Global initialization method
-      /// \param[in] api                  Yadoms APi context
-      //--------------------------------------------------------------
-      void Init(boost::shared_ptr<yApi::IYPluginApi> api);
-
-      //--------------------------------------------------------------
-      /// \brief	                        Build the device name
-      //--------------------------------------------------------------
       void buildDeviceName();
-
-      //--------------------------------------------------------------
-      /// \brief	                        Build the sensor model
-      //--------------------------------------------------------------
       void buildDeviceModel();
 
    private:

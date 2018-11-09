@@ -2,21 +2,34 @@
   * Simple Helpers
   */
  
- function isOdd(num) {return num % 2;}
+function isOdd(num) {return num % 2;}
  
- function isBoolVariable(keywordInfo) {
-    if ((keywordInfo) && (keywordInfo.type === "Bool"))
-       return true;
-    else
-       return false;
- };
+function isBoolVariable(keywordInfo) {
+   if ((keywordInfo) && (keywordInfo.type === "Bool"))
+      return true;
+   else
+      return false;
+};
  
- function isEnumVariable (keywordInfo) {
-    if ((keywordInfo) && (keywordInfo.type === "Enum"))
-       return true;
-    else
-       return false;
- };
+function isEnumVariable (keywordInfo) {
+   if ((keywordInfo) && (keywordInfo.type === "Enum"))
+      return true;
+   else
+      return false;
+};
+
+function roundNumber(num, scale) {
+  if(!("" + num).includes("e")) {
+    return +(Math.round(num + "e+" + scale)  + "e-" + scale);
+  } else {
+    var arr = ("" + num).split("e");
+    var sig = ""
+    if(+arr[1] + scale > 0) {
+      sig = "+";
+    }
+    return +(Math.round(+arr[0] + "e" + sig + (+arr[1] + scale)) + "e-" + scale);
+  }
+}
 
  /**
   * transform old configuration to new interval/prefix configuration
@@ -28,7 +41,6 @@
       case "HOUR":
           returnValue = "HOUR/minute";
           break;
-      default:
       case "DAY":
           returnValue = "DAY/hour";
           break;
@@ -46,7 +58,10 @@
           break;
       case "FIVE_YEAR": //This one doesn't exist
           returnValue = "FIVE_YEAR/day";
-          break;          
+          break;
+      default:
+         returnValue = intervalConfiguration;
+         break;          
   }
   return returnValue;
  };
@@ -99,6 +114,7 @@
           dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(5, 'years').startOf(prefix));
           break;          
   }
+  
   return dateValue;
  };
 
@@ -107,7 +123,6 @@
   */   
   
 function getWeeks(vectorToParse){
-    
     var weekplot = [];
     if (vectorToParse.length == 0)
        return weekplot;
@@ -170,6 +185,7 @@ function createAxis (index,         // index of the plot
                      seriesUuid,    // Uuid array
                      configuration, // configuration of the widget
                      precision,     // display precision for this value
+                     units,         // unit of this axis
                      device) {      // device associated to the keyword
 
   var colorAxis = "#606060"; // default color
@@ -204,7 +220,7 @@ function createAxis (index,         // index of the plot
 
           var unit="";
           try {
-             unit = $.t(chart.keyword[index].units);
+             unit = $.t(units);
           }
           catch(error){
              console.log ("unit is empty for keyword ", device.content.source.keywordId);
@@ -217,7 +233,6 @@ function createAxis (index,         // index of the plot
               title: getAxisTitle(),
               labels: {
                   align: align,
-                  format: '{value:.' + precision.toString() + 'f} ' + unit,
                   style: {
                       color: colorAxis
                   },
@@ -226,7 +241,7 @@ function createAxis (index,         // index of the plot
                         return this.chart.keyword[index].typeInfo.translatedValues[this.value];
                      }
                      else
-                        return this.axis.defaultLabelFormatter.call(this);
+                       return roundNumber(this.value, precision) + " " + unit;
                   }
               },
               opposite: isOdd(index)
@@ -262,4 +277,112 @@ function createAxis (index,         // index of the plot
   }
   
   return yAxisName; // Return the name of the axis
+};
+
+/**
+ * Adapt the unit and an array of values to an appropriate unit
+ * @param values The Id to find
+ * @param baseUnit Unit received from yadoms server
+ */
+adaptValuesAndUnit = function (values, range, baseUnit, callback) {
+   assert(!isNullOrUndefined(values), "value must be defined");
+   assert(!isNullOrUndefined(baseUnit), "baseUnit must be defined");
+   var unit = baseUnit;
+   var newValues = values;
+   var newRange = range;
+   var coeff = 1;
+   
+   evaluateArray = function(arrayToEvaluate) {
+      var moy = 0;
+      var nbre = 0;
+      
+      $.each(arrayToEvaluate, function (index,value) {
+         if (value[1] != null) {
+            moy = moy + parseFloat(value[1]);
+            nbre = nbre + 1;
+         }
+      });
+      
+      if (nbre != 0)
+         moy = moy / nbre;
+      
+      return moy;
+   };
+   
+   adaptArray = function(arrayToAdapt, coeff) {
+      var newArray = [];
+      $.each(arrayToAdapt, function (index,value) {
+         newArray.push([value[0],parseFloat(value[1])*coeff]);
+      });
+      return newArray;
+   };
+   
+   adaptRange = function(rangeToAdapt, coeff) {
+      var newRange = [];
+      $.each(rangeToAdapt, function (index,value) {
+         newArray.push([value[0],parseFloat(value[1])*coeff,parseFloat(value[2])*coeff]);
+      });
+      return newRange;
+   };
+   
+   switch (baseUnit){
+      case "data.units.cubicMetre":
+         if (evaluateArray(values) <1) {
+            coeff = 1000;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.liter";
+         }
+         break;
+      case "data.units.wattPerHour":
+         if (evaluateArray(values) >2000) {
+            coeff = 0.001;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.KwattPerHour";
+         }      
+         break;
+      case "data.units.watt":
+         if (evaluateArray(values)>2000) {
+            coeff = 0.001;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.Kwatt";
+         }      
+         break;
+      case "data.units.ampere":
+         if (evaluateArray(values)>2000) {
+            coeff = 0.001;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.Kampere";
+         } else if (evaluateArray(values)<1) {
+            coeff = 1000;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.mampere";
+         }
+         break;
+      case "bit/s":
+         if (evaluateArray(values)>2000000000) {
+            coeff = 0.000000001;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "Gb/s";
+         }else if (evaluateArray(values)>2000000) {
+            coeff = 0.000001;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "Mb/s";
+         }else if (evaluateArray(values)>2000) {
+            coeff = 0.001;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "Kb/s";
+         }
+         break;         
+      default:
+         break;
+   }
+   callback(newValues, newRange, unit, coeff);
 };

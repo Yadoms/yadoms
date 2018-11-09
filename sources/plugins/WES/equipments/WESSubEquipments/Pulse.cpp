@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Pulse.h"
-#include "shared/plugin/yPluginApi/historization/MeasureType.h"
+#include <shared/plugin/yPluginApi/historization/MeasureType.h>
 #include <shared/Log.h>
 
 namespace equipments
@@ -111,12 +111,12 @@ namespace equipments
             YADOMS_LOG(trace) << "this input (" << m_keywordName << ") is desactivated";
             break;
          case Wh:
-            m_pulseEnergy->set(boost::lexical_cast<Poco::Int64>(total));
+            m_pulseEnergy->set(total);
             keywordsToHistorize.push_back(m_pulseEnergy);
             YADOMS_LOG(trace) << m_pulseEnergy->getKeyword() << " set to " << total << "Wh";
             break;
          case KWh:
-            m_pulseEnergy->set(boost::lexical_cast<Poco::Int64>(total*1000));
+            m_pulseEnergy->set(total*1000);
             keywordsToHistorize.push_back(m_pulseEnergy);
             YADOMS_LOG(trace) << m_pulseEnergy->getKeyword() << " set to " << total << "Kwh";
             break;

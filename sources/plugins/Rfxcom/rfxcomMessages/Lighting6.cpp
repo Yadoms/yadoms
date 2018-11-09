@@ -22,7 +22,7 @@ namespace rfxcomMessages
       m_id = deviceDetails.get<unsigned short>("id");
       m_groupCode = deviceDetails.get<unsigned char>("groupCode");
       m_unitCode = deviceDetails.get<unsigned char>("unitCode");
-      
+
       // Build device description
       buildDeviceModel();
       buildDeviceName();
@@ -42,8 +42,14 @@ namespace rfxcomMessages
       m_signalPower->set(0);
 
       m_subType = static_cast<unsigned char>(subType);
-      if (m_subType != sTypeBlyss)
+      switch (m_subType)
+      {
+      case sTypeBlyss:
+      case sTypeCuveo:
+         break;
+      default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
+      }
 
       m_id = manuallyDeviceCreationConfiguration.get<short>("id");
       m_groupCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<char>("groupCode"));
@@ -74,19 +80,11 @@ namespace rfxcomMessages
       m_unitCode = rbuf.LIGHTING6.unitcode;
       m_state->set(fromProtocolState(rbuf.LIGHTING6.cmnd));
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING6.rssi));
-      
+
       // Build device description
       buildDeviceModel();
       buildDeviceName();
       buildDeviceDetails();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));         
-      }
    }
 
    CLighting6::~CLighting6()
@@ -132,6 +130,17 @@ namespace rfxcomMessages
       api->historizeData(m_deviceName, m_keywords);
    }
 
+   void CLighting6::filter() const
+   {
+   }
+
+   void CLighting6::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+      api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+      m_deviceDetails.printToLog(YADOMS_LOG(information));
+   }
+
    const std::string& CLighting6::getDeviceName() const
    {
       return m_deviceName;
@@ -159,6 +168,7 @@ namespace rfxcomMessages
       switch (m_subType)
       {
       case sTypeBlyss: ssModel << "Blyss";
+      case sTypeCuveo: ssModel << "Cuveo";
          break;
       default: ssModel << boost::lexical_cast<std::string>(m_subType);
          break;
@@ -189,5 +199,3 @@ namespace rfxcomMessages
       }
    }
 } // namespace rfxcomMessages
-
-

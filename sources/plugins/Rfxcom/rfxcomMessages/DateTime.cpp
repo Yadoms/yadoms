@@ -33,34 +33,12 @@ namespace rfxcomMessages
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.DT.battery_level));
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.DT.rssi));
 
-      Init(api);
+      buildDeviceModel();
+      buildDeviceName();
    }
 
    CDateTime::~CDateTime()
    {
-   }
-
-   void CDateTime::Init(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      // Build device description
-      buildDeviceModel();
-      buildDeviceName();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypeDT);
-         details.set("subType", m_subType);
-         details.set("id", m_id);
-         api->declareDevice(m_deviceName,
-                            m_deviceModel,
-                            m_deviceModel,
-                            m_keywords,
-                            details);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         details.printToLog(YADOMS_LOG(information));
-      }
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CDateTime::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
@@ -71,6 +49,25 @@ namespace rfxcomMessages
    void CDateTime::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       api->historizeData(m_deviceName, m_keywords);
+   }
+
+   void CDateTime::filter() const
+   {
+   }
+
+   void CDateTime::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+      shared::CDataContainer details;
+      details.set("type", pTypeDT);
+      details.set("subType", m_subType);
+      details.set("id", m_id);
+      api->declareDevice(m_deviceName,
+                         m_deviceModel,
+                         m_deviceModel,
+                         m_keywords,
+                         details);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+      details.printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CDateTime::getDeviceName() const

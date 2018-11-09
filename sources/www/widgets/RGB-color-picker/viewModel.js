@@ -14,16 +14,28 @@ function RGBcolorPickerViewModel() {
      * @param widget widget class object
      */     
     this.initialize = function () {
-        var self = this;
+       var self = this;
+       var arrayOfDeffered = [];
+       var d = new $.Deferred();
+        
+       arrayOfDeffered.push(self.widgetApi.loadGzCss("libs/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css.gz"));
+       arrayOfDeffered.push(self.widgetApi.loadGzLibrary("libs/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js.gz"));
        
-        self.createWidgetPickerStyle(self.widget.id);
+       $.when.apply($,arrayOfDeffered).done(function () {
+          self.createWidgetPickerStyle(self.widget.id);
        
-        //we configure the toolbar
-        this.widgetApi.toolbar({
-            activated: true,
-            displayTitle: true,
-            batteryItem: false
-        });
+          //we configure the toolbar
+          self.widgetApi.toolbar({
+             activated: true,
+             displayTitle: true,
+             batteryItem: false
+          });
+          
+          d.resolve();
+       })
+       .fail(d.reject);
+       
+       return d.promise();
     };
     
     this.createWidgetPickerStyle = function(widgetId) {
@@ -88,9 +100,12 @@ function RGBcolorPickerViewModel() {
 
        if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
           return;
-       
-       //we register keyword new acquisition
-       self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
+	   
+        //we register keyword new acquisition
+        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+	   
+		//we register keyword for get last value at web client startup
+		self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);   
        
        // destroy the precedent colorPicker if any
        // it's the only solution, to create/delete preselected colors

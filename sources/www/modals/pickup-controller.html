@@ -81,40 +81,37 @@ Yadoms.askPackages = function (elements, instanceManager, thumbnail, title, call
      */
     function requestInformationDone(elements, instanceManager, thumbnail, title, callback) {
 	    //if the detail is visible, we must hide it
-        var $detailsDiv = $("div#add-pickup-details");
-        $detailsDiv.hide();	
+       var $detailsDiv = $("div#add-pickup-details");
+       $detailsDiv.hide();	
 
-		// Add the correct title
-	    $("h4#myModalLabel").attr("data-i18n", title);
-		$("h4#myModalLabel").i18n();
+		 // Add the correct title
+	    $("div#new-pickup-modal h4#myModalLabel").attr("data-i18n", title);
+		 $("div#new-pickup-modal h4#myModalLabel").i18n();
 	
-        $("button#btn-close-details").addClass("hidden");
-        $("ul#ul-add-element").empty();
+       $("button#btn-close-details").addClass("hidden");
+       $("ul#ul-add-element").empty();
 
-        //we translate the container
-        $("ul#ul-add-element").i18n();
+       //we translate the container
+       $("ul#ul-add-element").i18n();
 		
-        //we display the modal
-        $('div#new-pickup-modal').modal({ backdrop: 'static' });
+       //we display the modal
+       $('div#new-pickup-modal').modal({ backdrop: 'static' });
         
-		//focus the modal
-		$('div#new-pickup-modal').appendTo("body").modal('show');
+		 //focus the modal
+		 $('div#new-pickup-modal').appendTo("body").modal('show');
 		
-        var deferredArray = [];
+       var deferredArray = [];
 		
-		var packageList = [];
-		var developerMode = null;
+		 var packageList = [];
+		 var developerMode = null;
 		
-		// Reading of the developerMode information
-		var deferred = YadomsInformationManager.getList();
-		deferred.done( function (data) {
+		 // Reading of the developerMode information
+		 var deferred = YadomsInformationManager.getList();
+		 deferred.done( function (data) {
 		        developerMode = data.developerMode;
-			}
-		);
+		 });
 		
-		$.when(deferred)
-		   .done(function () {
-		
+		 $.when(deferred).done(function () {
 			for (var index in instanceManager.packageList) {
 				if (instanceManager.packageList.hasOwnProperty(index)) {
 					var value = instanceManager.packageList[index].package;

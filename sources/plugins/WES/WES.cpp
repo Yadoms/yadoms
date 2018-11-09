@@ -7,6 +7,7 @@
 #include <shared/plugin/yPluginApi/IDeviceRemoved.h>
 
 #include "equipments/manuallyDeviceCreationException.hpp"
+#include "equipments/tooLowRevisionException.hpp"
 #include <shared/Log.h>
 #include <boost/property_tree/xml_parser.hpp>
 
@@ -147,6 +148,11 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   request->sendError("device Name already exist");
                }
             }
+            catch (CtooLowRevisionException& e)
+            {
+               request->sendError(e.what());
+               setPluginState(api, kserverRevisionTooLow);
+            }
             catch (CManuallyDeviceCreationException& e)
             {
                request->sendError(e.what());
@@ -154,7 +160,7 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
             catch (std::exception& e)
             {
-               YADOMS_LOG(information) << "Unknow error : " << e.what();
+               YADOMS_LOG(error) << "Unknow error : " << e.what();
                request->sendError(e.what());
                setPluginState(api, kmanuallyCreationDeviceFailed);
             }
@@ -302,8 +308,12 @@ void CWES::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, EWESPluginSt
          break;
       case kAtLeastOneConnectionFaulty:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "kAtLeastOneConnectionFaulty");
+         break;
       case kmanuallyCreationDeviceFailed:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "manuallyCreationError");
+         break;
+      case kserverRevisionTooLow:
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "serverRevisionTooLow");
          break;
       case kRunning:
          api->setPluginState(yApi::historization::EPluginState::kRunning);

@@ -54,7 +54,7 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	                     Called when dongle becomes unconnected
-   /// \param[in] deviceRemoved     The connection notification
+   /// \param[in] notification      The connection notification
    //--------------------------------------------------------------
    void processUnConnectionEvent(boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification = boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>());
 
@@ -84,7 +84,7 @@ protected:
    /// \param [in] deviceId         Device ID
    /// \param [in] signalPower      The current signal strength value (%)
    //--------------------------------------------------------------
-   void AddSignalPower(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords,
+   void addSignalPower(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords,
                        const std::string& deviceId,
                        int signalPower) const;
 

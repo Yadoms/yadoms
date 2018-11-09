@@ -12,7 +12,10 @@
 #include "web/ws/AcquisitionSummaryUpdateFrame.h"
 #include "web/ws/LogEventFrame.h"
 #include "web/ws/NewDeviceFrame.h"
+#include "web/ws/DeviceDeletedFrame.h"
+#include "web/ws/DeviceBlackListedFrame.h"
 #include "web/ws/KeywordDeletedFrame.h"
+#include "web/ws/KeywordNewFrame.h"
 #include "web/ws/TaskUpdateNotificationFrame.h"
 #include "web/ws/TimeNotificationFrame.h"
 #include "web/ws/IsAliveFrame.h"
@@ -68,6 +71,21 @@ namespace web
             observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CDevice>(notification::change::EChangeType::kCreate,
                                                                                                              *eventHandler,
                                                                                                              kNewDevice));
+
+            // Subscribe to device deletion notifications
+            observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CDevice>(notification::change::EChangeType::kDelete,
+                                                                                                             *eventHandler,
+                                                                                                             kDeleteDevice));
+
+            // Subscribe to device blacklist notifications
+            observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CDevice>(notification::change::EChangeType::kBlacklist,
+                                                                                                             *eventHandler,
+                                                                                                             kBlackListDevice));
+
+            // Subscribe to keyword creation notifications
+            observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CKeyword>(notification::change::EChangeType::kCreate,
+                                                                                                              *eventHandler,
+                                                                                                              kNewKeyword));
 
             // Subscribe to keyword deletion notifications
             observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CKeyword>(notification::change::EChangeType::kDelete,
@@ -222,9 +240,26 @@ namespace web
                      clientSeemConnected = send(webSocket, ws::CNewDeviceFrame(newDevice));
                      break;
                   }
+               case kDeleteDevice:
+               {
+                  auto newDevice = eventHandler->getEventData<boost::shared_ptr<database::entities::CDevice>>();
+                  clientSeemConnected = send(webSocket, ws::CDeviceDeletedFrame(newDevice));
+                  break;
+               }
+               case kBlackListDevice:
+               {
+                  auto newDevice = eventHandler->getEventData<boost::shared_ptr<database::entities::CDevice>>();
+                  clientSeemConnected = send(webSocket, ws::CDeviceBlackListedFrame(newDevice));
+                  break;
+               }
+               case kNewKeyword:
+               {
+                  auto keyword = eventHandler->getEventData<boost::shared_ptr<database::entities::CKeyword>>();
+                  clientSeemConnected = send(webSocket, ws::CKeywordNewFrame(keyword));
+                  break;
+               }
                case kDeleteKeyword:
                   {
-                     YADOMS_LOG(information) << "DeleteKeyword information";
                      auto keyword = eventHandler->getEventData<boost::shared_ptr<database::entities::CKeyword>>();
                      clientSeemConnected = send(webSocket, ws::CKeywordDeletedFrame(keyword));
                      break;

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "urlManager.h"
-#include <shared/Log.h>
-#include "shared/http/SecureSession.h"
+#include <shared/http/SecureSession.h>
 
 urlManager::urlManager():
    m_url("https://liveobjects.orange-business.com/api/v0"), //liveobjects
@@ -27,9 +26,9 @@ shared::CDataContainer urlManager::getRegisteredEquipments(const std::string &ap
    if (activated)
       parameters.set("status", "ACTIVATED");
 
-   std::string deviceUrl = m_url.str() + "/vendors/lora/devices";
-   boost::shared_ptr<shared::SecureSession> session = boost::make_shared<shared::SecureSession>(deviceUrl);
-   shared::CHttpMethods::SendGetRequest(session,
+   auto deviceUrl = m_url.str() + "/vendors/lora/devices";
+   const auto session = boost::make_shared<shared::CSecureSession>(deviceUrl);
+   shared::CHttpMethods::sendGetRequest(session,
                                         headerParameters,
                                         parameters,
                                         [&](shared::CDataContainer& data)
@@ -47,16 +46,16 @@ shared::CDataContainer urlManager::getDeviceInformation(const std::string &apike
 {
    shared::CDataContainer response;
    shared::CDataContainer headerParameters;
-   shared::CDataContainer noParameters;
+   const shared::CDataContainer noParameters;
 
    // define some header parameters
    headerParameters.set("Host", m_baseUrl.str());
    headerParameters.set("X-API-Key", apikey);
    headerParameters.set("Accept", "application/json");
 
-   std::string deviceUrl = "https://liveobjects.orange-business.com/api/v0/vendors/lora/devices/" + devEUI;
-   boost::shared_ptr<shared::SecureSession> session = boost::make_shared<shared::SecureSession>(deviceUrl);
-   shared::CHttpMethods::SendGetRequest(session,
+   auto deviceUrl = "https://liveobjects.orange-business.com/api/v0/vendors/lora/devices/" + devEUI;
+   const auto session = boost::make_shared<shared::CSecureSession>(deviceUrl);
+   shared::CHttpMethods::sendGetRequest(session,
                                         headerParameters,
                                         noParameters,
                                         [&](shared::CDataContainer& data)
@@ -83,9 +82,9 @@ shared::CDataContainer urlManager::listDeviceCommands(const std::string &apikey,
 
    parameters.set("limit", "5");
    parameters.set("sort", "-creationTs"); // Get the newest command at the first page
-   std::string deviceUrl = "https://liveobjects.orange-business.com/api/v0/data/streams/urn:lora:" + devEUI + "!uplink";
-   boost::shared_ptr<shared::SecureSession> session = boost::make_shared<shared::SecureSession>(deviceUrl);
-   shared::CHttpMethods::SendGetRequest(session,
+   auto deviceUrl = "https://liveobjects.orange-business.com/api/v0/data/streams/urn:lora:" + devEUI + "!uplink";
+   const auto session = boost::make_shared<shared::CSecureSession>(deviceUrl);
+   shared::CHttpMethods::sendGetRequest(session,
                                         headerParameters,
                                         parameters,
                                         [&](shared::CDataContainer& data)

@@ -1,6 +1,18 @@
 # Macros for setting up a script interpreter
 #
 
+MACRO(MAKE_PACKAGE_JSON _targetName)
+   # Workaround to force CMake to rebuild makefile when changelog.md is updated
+   configure_file(changelog.md
+                  ${CMAKE_CURRENT_BINARY_DIR}/changelog.md.dummy)
+   
+   configure_file(package.in.json
+                  ${CMAKE_CURRENT_BINARY_DIR}/package.json
+                  @ONLY
+                  NEWLINE_STYLE UNIX)
+
+ENDMACRO()
+
 function(SCRIPT_INTERPRETER_IS_IN_DEV_STATE _targetName)
    string(FIND ${_targetName} "dev-" DEV_SUBSTRING_POSITION)
    if (${DEV_SUBSTRING_POSITION} EQUAL 0)
@@ -17,18 +29,26 @@ MACRO(SCRIPT_INTERPRETER_SOURCES _targetName)
        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${YADOMS_OUTPUT_DIR}/${OUTPUTCONFIG}/scriptInterpreters/${_targetName})
    endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)
    
+   # Retrieve plugin version
+   GET_PACKAGE_VERSION("changelog.md" SCRIPT_INTERPRETER_VERSION)
+   EXTRACT_VERSION(${SCRIPT_INTERPRETER_VERSION} SCRIPT_INTERPRETER_VERSION_MAJOR SCRIPT_INTERPRETER_VERSION_MINOR SCRIPT_INTERPRETER_VERSION_PATCH)
+   
    FILE(GLOB TRANSLATION_FILES locales/*)
    source_group(locales locales/*)
 
    set(SCRIPT_INTERPRETER_SOURCE_FILES
       ${ARGN}
-      package.json
+      package.in.json
       changelog.md
+      icon.png
       ${TRANSLATION_FILES}
       )
       
    add_executable(${_targetName} ${SCRIPT_INTERPRETER_SOURCE_FILES})
    project(${_targetName})
+   
+   # Build package.json (add version to package.in.json from changelog.md)
+   MAKE_PACKAGE_JSON(${_targetName})
 	
 	IF(MSVC OR XCODE)
 		SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "scriptInterpreters/${_targetName}")
@@ -59,7 +79,10 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
       ${PROTOBUF_LIBRARIES}
       ${ARGN}
       )
-	
+
+   ##################################################################################################
+   ## Add natvis (allow better debugging within VisualStudio)
+   ##################################################################################################
    ADD_VS_NATVIS(${_targetName})
 
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
@@ -98,13 +121,19 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
 		
 		if(COTIRE_USE_UNITY)
 			target_link_libraries(${_targetName}_unity yadoms-shared_unity interpreter_cpp_api_unity ${LIBS} ${CMAKE_DL_LIBS} ${PROTOBUF_LIBRARIES} ${ARGN})
-         ADD_VS_NATVIS(${_targetName}_unity)
+
 		   if(CMAKE_CROSSCOMPILING)
 		      #Fix RPATH for cross compilation
 		      set_target_properties(${_targetName}_unity PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
 		   endif(CMAKE_CROSSCOMPILING)
 		endif()	
 	endif()	
+   
+   # Post-build copy of required files
+   PLUGIN_POST_BUILD_COPY_FILE(${_targetName} ${CMAKE_CURRENT_BINARY_DIR}/package.json)
+   PLUGIN_POST_BUILD_COPY_FILE(${_targetName} changelog.md)
+   PLUGIN_POST_BUILD_COPY_FILE(${_targetName} icon.png)
+   PLUGIN_POST_BUILD_COPY_DIRECTORY(${_targetName} locales) 
 	
 ENDMACRO()
 

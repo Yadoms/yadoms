@@ -1,10 +1,15 @@
 {
   "type": "enOcean",
-  "version": "1.0.2-beta.2",
+  "version": "@PLUGIN_VERSION@",
   "author": "Sébastien Gallou",
   "url": "https://github.com/Yadoms/yadoms/",
   "credits": "",
   "supportedPlatforms": "all",
+  "dependencies": {
+    "yadoms": {
+      "minimumVersion": "2.1.0-beta.2"
+    }
+  },
   "configurationSchema": {
     "SerialPort": {
       "type": "enum",
@@ -588,6 +593,38 @@
     },
     "D2-01-12": {
       "sameAs": "D2-01-0F"
+    },
+    "D2-05-00": {
+      "type": "section",
+      "content": {
+        "measuredDurationOfVerticalRunMs": {
+          "name": "Mesured duration of a vertical run (ms)",
+          "type": "int",
+          "minimumValue": "5000",
+          "maximumValue": "300000",
+          "precision": "10",
+          "defaultValue": "15000"
+        },
+        "measuredDurationOfRotationMs": {
+          "name": "Mesured duration of a rotation (ms)",
+          "type": "int",
+          "minimumValue": "10",
+          "maximumValue": "2540",
+          "precision": "10",
+          "defaultValue": "1500"
+        },
+        "alarmAction": {
+          "name": "Alarm action",
+          "type": "enum",
+          "values": {
+            "noAction": "No action",
+            "immediateStop": "Immediate stop",
+            "goUp": "Go Up",
+            "goDown": "Go Down"
+          },
+          "defaultValue": "noAction"
+        }
+      }
     }
   }
 }

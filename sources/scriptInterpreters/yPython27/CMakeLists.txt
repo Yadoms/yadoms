@@ -79,13 +79,9 @@ if(PYTHONLIBS_FOUND)
    ## Post-build commands
    ## Copy files to build directory
    #########################################
-   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(yPython27 package.json)
-   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(yPython27 changelog.md)
-   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(yPython27 icon.png)
    SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(yPython27 scriptCaller.py)
    SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(yPython27 scriptUtilities.py)
    SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(yPython27 template.py)
-   SCRIPT_INTERPRETER_POST_BUILD_COPY_DIRECTORY(yPython27 locales)
 	  
    #########################################
    ## Generate the associated yScriptApiwrapper

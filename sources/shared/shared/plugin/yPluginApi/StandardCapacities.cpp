@@ -20,10 +20,12 @@ namespace shared
          DECLARE_CAPACITY(CStandardCapacities::Current, "current", CStandardUnits::Ampere(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Curtain, "curtain", CStandardUnits::NoUnit(), EKeywordDataType::kEnum);
          DECLARE_CAPACITY(CStandardCapacities::DateTime, "datetime", CStandardUnits::NoUnit(), EKeywordDataType::kDateTime);
+         DECLARE_CAPACITY(CStandardCapacities::Debit, "debit", CStandardUnits::CubicMeterPerSecond(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Dimmable, "dimmable", CStandardUnits::Percent(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Direction, "direction", CStandardUnits::Degrees(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Distance, "distance", CStandardUnits::Meter(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Duration, "duration", CStandardUnits::NoUnit(), EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::ElectricLoad, "electricLoad", CStandardUnits::AmperePerHOur(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Energy, "energy", CStandardUnits::WattPerHour(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Event, "event", CStandardUnits::NoUnit(), EKeywordDataType::kNoData);
          DECLARE_CAPACITY(CStandardCapacities::Frequency, "frequency", CStandardUnits::Hertz(), EKeywordDataType::kNumeric);
@@ -46,6 +48,7 @@ namespace shared
          DECLARE_CAPACITY(CStandardCapacities::Temperature, "temperature", CStandardUnits::DegreesCelcius(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Text, "text", CStandardUnits::NoUnit(), EKeywordDataType::kString);
          DECLARE_CAPACITY(CStandardCapacities::UpDownStop, "upDownStop", CStandardUnits::NoUnit(), EKeywordDataType::kEnum);
+         DECLARE_CAPACITY(CStandardCapacities::UserCode, "userCode", CStandardUnits::NoUnit(), EKeywordDataType::kString);
          DECLARE_CAPACITY(CStandardCapacities::Uv, "uv", CStandardUnits::Uv(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Voltage, "voltage", CStandardUnits::Volt(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Volume, "volume", CStandardUnits::CubicMetre(), EKeywordDataType::kNumeric);

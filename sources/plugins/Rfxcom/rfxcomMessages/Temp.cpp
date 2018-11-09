@@ -12,9 +12,9 @@ namespace rfxcomMessages
                 const RBUF& rbuf,
                 size_t rbufSize)
       : m_temperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
-      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_temperature , m_batteryLevel , m_signalPower })
+        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_temperature , m_batteryLevel , m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -31,33 +31,15 @@ namespace rfxcomMessages
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.TEMP.battery_level));
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.TEMP.rssi));
 
-      Init(api);
+      buildDeviceModel();
+      buildDeviceName();
    }
 
    CTemp::~CTemp()
    {
    }
 
-   void CTemp::Init(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      // Build device description
-      buildDeviceModel();
-      buildDeviceName();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypeTEMP);
-         details.set("subType", m_subType);
-         details.set("id", m_id);
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         details.printToLog(YADOMS_LOG(information));
-      }
-   }
-
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CTemp::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTemp::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("Temp is a read-only message, can not be encoded");
    }
@@ -65,6 +47,21 @@ namespace rfxcomMessages
    void CTemp::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       api->historizeData(m_deviceName, m_keywords);
+   }
+
+   void CTemp::filter() const
+   {
+   }
+
+   void CTemp::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+      shared::CDataContainer details;
+      details.set("type", pTypeTEMP);
+      details.set("subType", m_subType);
+      details.set("id", m_id);
+      api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+      details.printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CTemp::getDeviceName() const
@@ -119,5 +116,3 @@ namespace rfxcomMessages
       m_deviceModel = ssModel.str();
    }
 } // namespace rfxcomMessages
-
-

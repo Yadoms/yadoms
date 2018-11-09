@@ -1,35 +1,45 @@
 {
-   "name": "Rose des vents",
-   "description": "Un widget qui permet d'afficher une rose des vents",
-   "noAvailableData": "Aucune donnée pour l'échelle sélectionnée",
-	"configurationSchema": {     
-      "windDirection": {
-         "name": "Direction du vent",
-         "description": "Choisir les données de l'équipement à afficher"
-      },
-      "windSpeed": {
-         "name": "Vitesse du vent",
-         "description": "Choisir les données de l'équipement à afficher"
-      },
-      "speedDisplay" : {
-         "name": "Affichage de la vitesse",
-         "description": "",
-         "content": {        
+      "name": "Rose des vents",
+      "description": "Un widget qui permet d'afficher une rose des vents",
+      "noAvailableData": "Aucune donnée pour l'échelle sélectionnée",
+      "configurationSchema": {
+            "windDirection": {
+                  "name": "Direction du vent",
+                  "description": "Choisir les données de l'équipement à afficher"
+            },
             "windSpeed": {
-               "name": "Vitesse du vent",
-               "description": "Choisir les données de l'équipement à afficher"
+                  "name": "Vitesse du vent",
+                  "description": "Choisir les données de l'équipement à afficher"
+            },
+            "speedDisplay": {
+                  "name": "Affichage de la vitesse",
+                  "description": "",
+                  "content": {
+                        "windSpeed": {
+                              "name": "Vitesse du vent",
+                              "description": "Choisir les données de l'équipement à afficher"
+                        }
+                  }
+            },
+            "options": {
+                  "name": "Options",
+                  "description": "",
+                  "content": {
+                        "speedUnit": {
+                              "name": "Unité de vitesse",
+                              "description": "Choisir l'unité pour les vitesses",
+                              "values": {
+                                    "ms": "m/s",
+                                    "kmh": "km/h",
+                                    "knots": "noeuds",
+                                    "beaufort": "beaufort"
+                              }
+                        },
+                        "directionCorrection": {
+                              "name": "Correction de la direction",
+                              "description": "Entrer l'angle correcteur si votre équipement est mal orienté"
+                        }
+                  }
             }
-         }
-      },
-      "options" : {
-         "name": "Options",
-         "description": "",
-         "content": {        
-            "directionCorrection": {
-               "name": "Correction de la direction",
-               "description": "Entrer l'angle correcteur si votre équipement est mal orienté"
-            }
-         }
-      }      
-	}
+      }
 }

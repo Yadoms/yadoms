@@ -3,31 +3,40 @@
 	"description": "A widget that provide buttons to make actions",
 	"errorDuringGettingDeviceInformation": "Error during getting device information",
 	"errorDuringSendingCommand": "Error sending command",
+   "confirmationExplanation": "Confirm the operation ?",
 	"configurationSchema": {
 		"device": {
 			"name": "Device",
-         "description": "Select below the device to drive"
+			"description": "Select below the device to drive"
 		},
+		"invert": {
+			"name": "Invert",
+			"description": "Invert state of this device"
+		},
+      "askConfirmation": {
+         "name": "Ask confirmation before applying the new value",
+         "description": ""
+      },       
 		"additionalDevices": {
 			"name": "additional devices",
-			"description": "Switch widget is able to drive several devices simultaneously. Select below the devices list to drive",      
-         "content": {
-            "devices": {
-               "name": "Devices",
-               "description": "if a device is read-only, the button will not be clickable",
-               "item": {
-                  "name": "",
-                  "description": "",
-                  "content": {
-                     "source": {
-                        "name": "Switch device",
-                        "description": "device to drive"
-                     }
-                  }
-               }				
-            }
-         }
-      },
+			"description": "Switch widget is able to drive several devices simultaneously. Select below the devices list to drive",
+			"content": {
+				"devices": {
+					"name": "Devices",
+					"description": "if a device is read-only, the button will not be clickable",
+					"item": {
+						"name": "",
+						"description": "",
+						"content": {
+							"source": {
+								"name": "Switch device",
+								"description": "device to drive"
+							}
+						}
+					}
+				}
+			}
+		},
 		"kind": {
 			"name": "Kind of switch",
 			"description": "Select the kind of switch to be used. Permit to change interactions in function of the kind of switch.",

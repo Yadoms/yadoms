@@ -1,0 +1,9 @@
+{
+  "name": "Web connection quality",
+  "description": "The aim of this plugin is to follow your Web connection quality, measuring ping times, upload and download rates. It's based on the speedtest-cli tool.",
+  "configurationSchema": {
+    "periodicityMinutes": {
+      "name": "Measure periodicity (in minutes)"
+    }
+  }
+}

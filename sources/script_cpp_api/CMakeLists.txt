@@ -32,7 +32,11 @@ target_link_libraries(script_cpp_api
    ${CMAKE_DL_LIBS}
    ${script_IPC_LIBRARY}
    )
+##################################################################################################
+## Add natvis (allow better debugging within VisualStudio)
+##################################################################################################
 ADD_VS_NATVIS(script_cpp_api)
+   
 if(COTIRE_USE)
    set_target_properties(script_cpp_api PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
    

@@ -36,6 +36,7 @@ namespace shared
                                        const typeInfo::ITypeInfo& typeInfo = typeInfo::CEmptyTypeInfo::Empty)
                   : m_keywordName(keywordName),
                     m_capacity(capacity),
+                    m_value(),
                     m_accessMode(accessMode),
                     m_measureType(measureType),
                     m_typeInfo(typeInfo.serialize())
@@ -80,12 +81,11 @@ namespace shared
                {
                }
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
                virtual ~CSingleHistorizableData()
                {
                }
+
+               CSingleHistorizableData& operator = (const CSingleHistorizableData<T>& rhs) = delete;
 
                // IHistorizable implementation
                const std::string& getKeyword() const override
@@ -284,12 +284,12 @@ namespace shared
                      try
                      {
                         //force a cast to int (without int cast, lexicalcast take the ascii value of int: "1" => 49, instead of 1)
-                        int v = boost::lexical_cast<int>(value);
-                        return (unsigned char)(std::max(0, std::min(255, v)));
+                        const auto v = boost::lexical_cast<int>(value);
+                        return static_cast<unsigned char>(std::max(0, std::min(255, v)));
                      }
                      catch (boost::bad_lexical_cast&)
                      {
-                        return (unsigned char)(std::max(0, std::min(255, static_cast<int>(boost::lexical_cast<float>(value)))));
+                        return static_cast<unsigned char>(std::max(0, std::min(255, static_cast<int>(boost::lexical_cast<float>(value)))));
                      }
                   }
 
@@ -326,6 +326,23 @@ namespace shared
                   static TData getInternal(const std::string& value)
                   {
                      return TData(boost::posix_time::from_iso_string(value));
+                  }
+
+                  static CDataContainer createDefaultTypeInfo()
+                  {
+                     return CDataContainer();
+                  }
+               };
+               
+               //-----------------------------------------------------
+               ///\brief     Helpers specialization for unsigned char*
+               //-----------------------------------------------------      
+               template <typename TData>
+               struct helper<TData, typename boost::enable_if<boost::is_base_of<unsigned char *, TData> >::type>
+               {
+                  static TData getInternal(const std::string& value)
+                  {
+                     return ;
                   }
 
                   static CDataContainer createDefaultTypeInfo()

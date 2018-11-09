@@ -22,7 +22,7 @@ public:
    class CProtocols
    {
    public:
-      CProtocols(unsigned short protocols = kNone)
+      explicit CProtocols(unsigned short protocols = kNone)
          :m_protocols(protocols)
       {
 

@@ -177,10 +177,36 @@ RestEngine.restCall_ = function(type, url, data){
          }
       })
       .fail(function(jqXhr, textStatus, errorThrown) {
-         //console.error("Options : " + ajaxOptions);
          //we build an error using HTTP error code
          d.reject(jqXhr.status + errorThrown);
       });
    
+   return d.promise();
+}
+
+RestEngine.getBinaryFiles = function(url){
+   var d = $.Deferred();
+   var xhr = new XMLHttpRequest();
+   xhr.open('GET', url, true);
+   xhr.responseType = 'arraybuffer';
+ 
+   xhr.onload = function(e) {
+      // response is unsigned 8 bit integer
+      try{
+         var responseArray = new Uint8Array(this.response); 
+         var inflator = new Zlib.Gunzip(responseArray);
+         var inflated = inflator.decompress();             
+         d.resolve(new TextDecoder("utf-8").decode(inflated));
+      }
+      catch(error){
+         d.reject(error);
+      }
+   };
+   
+   xhr.onerror = function (event) {
+      console.error(event);
+      d.reject(event);
+   }
+   xhr.send();
    return d.promise();
 }

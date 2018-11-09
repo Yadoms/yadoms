@@ -4,11 +4,13 @@
 #include "../urlManager.h"
 #include <shared/Log.h>
 #include "../http/timeOutException.hpp"
+#include "tooLowRevisionException.hpp"
+#include "manuallyDeviceCreationException.hpp"
 
 namespace equipments
 {
-   const CWESEquipment::WESIOMapping CWESEquipment::WESv1 = {2, 2, 2, 2, 2, 4};
-   const CWESEquipment::WESIOMapping CWESEquipment::WESv2 = {2, 2, 2, 4, 4, 4};
+   const CWESEquipment::WESIOMapping CWESEquipment::WESv1 = {2, 3, 2, 2, 2, 0};
+   const CWESEquipment::WESIOMapping CWESEquipment::WESv2 = {2, 3, 2, 4, 4, 4};
 
    CWESEquipment::CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
                                 const std::string& device,
@@ -35,37 +37,37 @@ namespace equipments
          throw shared::exception::CException("WES Revision not properly set : " + boost::lexical_cast<std::string>(m_version));
 
       auto TICContainerName = details.get<shared::CDataContainer>("TIC");
-      for (int counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
+      for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
       {
-         auto temp = boost::make_shared<subdevices::CTIC>(api,
+         const auto temp = boost::make_shared<subdevices::CTIC>(api,
                                                           TICContainerName.get<std::string>("TIC" + boost::lexical_cast<std::string>(counter)),
                                                           TICContainerName.get<std::string>("CounterId" + boost::lexical_cast<std::string>(counter)),
                                                           TICContainerName.get<subdevices::ContractAvailable>("contract" + boost::lexical_cast<std::string>(counter)));
          m_TICList.push_back(temp);
       }
 
-      auto RelayContainerName = details.get<shared::CDataContainer>("Relays");
-      for (int counter = 0; counter < m_WESIOMapping.relayQty; ++counter)
+      auto relayContainerName = details.get<shared::CDataContainer>("Relays");
+      for (auto counter = 0; counter < m_WESIOMapping.relayQty; ++counter)
       {
-         auto temp = boost::make_shared<yApi::historization::CSwitch>(RelayContainerName.get<std::string>("R" + boost::lexical_cast<std::string>(counter)),
+         const auto temp = boost::make_shared<yApi::historization::CSwitch>(relayContainerName.get<std::string>("R" + boost::lexical_cast<std::string>(counter)),
                                                                       yApi::EKeywordAccessMode::kGetSet);
          m_relaysList.push_back(temp);
          keywordsToDeclare.push_back(temp);
       }
 
       auto inputContainerName = details.get<shared::CDataContainer>("Inputs");
-      for (int counter = 0; counter < m_WESIOMapping.inputQty; ++counter)
+      for (auto counter = 0; counter < m_WESIOMapping.inputQty; ++counter)
       {
-         auto temp = boost::make_shared<yApi::historization::CSwitch>(inputContainerName.get<std::string>("I" + boost::lexical_cast<std::string>(counter)),
+         const auto temp = boost::make_shared<yApi::historization::CSwitch>(inputContainerName.get<std::string>("I" + boost::lexical_cast<std::string>(counter)),
                                                                       yApi::EKeywordAccessMode::kGet);
          m_inputList.push_back(temp);
          keywordsToDeclare.push_back(temp);
       }
 
       auto pulseContainerName = details.get<shared::CDataContainer>("Pulses");
-      for (int counter = 0; counter < m_WESIOMapping.pulseQty; ++counter)
+      for (auto counter = 0; counter < m_WESIOMapping.pulseQty; ++counter)
       {
-         auto temp = boost::make_shared<subdevices::CPulse>(api,
+         const auto temp = boost::make_shared<subdevices::CPulse>(api,
                                                             keywordsToDeclare,
                                                             m_deviceName,
                                                             pulseContainerName.get<std::string>("P" + boost::lexical_cast<std::string>(counter)),
@@ -74,22 +76,25 @@ namespace equipments
       }
 
       auto clampContainerName = details.get<shared::CDataContainer>("Clamps");
-      for (int counter = 0; counter < m_WESIOMapping.clampQty; ++counter)
+      for (auto counter = 0; counter < m_WESIOMapping.clampQty; ++counter)
       {
-         auto temp = boost::make_shared<subdevices::CClamp>(api,
+         const auto temp = boost::make_shared<subdevices::CClamp>(api,
                                                             keywordsToDeclare,
                                                             m_deviceName,
                                                             clampContainerName.get<std::string>("C" + boost::lexical_cast<std::string>(counter)));
          m_ClampList.push_back(temp);
       }
-
-      auto analogContainerName = details.get<shared::CDataContainer>("Analogs");
-      for (int counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
+      
+      if (m_WESIOMapping.anaQty > 0)
       {
-         auto temp = boost::make_shared<specificHistorizers::CAnalog>(analogContainerName.get<std::string>("A" + boost::lexical_cast<std::string>(counter)),
-                                                                      yApi::EKeywordAccessMode::kGet);
-         m_AnalogList.push_back(temp);
-         keywordsToDeclare.push_back(temp);
+         auto analogContainerName = details.get<shared::CDataContainer>("Analogs");
+      for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
+         {
+         const auto temp = boost::make_shared<specificHistorizers::CAnalog>(analogContainerName.get<std::string>("A" + boost::lexical_cast<std::string>(counter)),
+                                                                         yApi::EKeywordAccessMode::kGet);
+            m_AnalogList.push_back(temp);
+            keywordsToDeclare.push_back(temp);
+         }
       }
 
       YADOMS_LOG(information) << "Load configuration for " << m_deviceName;
@@ -105,11 +110,11 @@ namespace equipments
         m_version(0)
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> keywordsToDeclare;
-      std::string relayName[2], TICName[2], ClampName[4], AnalogName[4], inputName[2];
-      subdevices::ContractAvailable contract[2];
+      std::string relayName[2], TICName[3], ClampName[4], AnalogName[4], inputName[2];
+      subdevices::ContractAvailable contract[3];
       subdevices::EUnit PulseType[4];
       std::string PulseName[4];
-      std::string counterId[2];
+      std::string counterId[3];
 
       try
       {
@@ -129,6 +134,8 @@ namespace equipments
                                                   CGXfileName,
                                                   urlManager::httpRequestCreationTimeout);
 
+         results.printToLog(YADOMS_LOG(trace));
+
          // get the revision, for E/S numbers
          m_version = results.get<int>("version");
 
@@ -139,10 +146,24 @@ namespace equipments
          else
             throw shared::exception::CException("WES Revision not properly set : " + boost::lexical_cast<std::string>(m_version));
 
+         // get the firmware revision to desactivate the plugin if the revision is too low
+         std::string m_serverVersion = results.get<std::string>("version_serveur");
+
+         //separation of letters and digits
+         boost::regex reg("V([0-9]\\d*(\\.\\d+))([A-Z])");
+         boost::smatch match;
+
+         //Check the version
+         if (boost::regex_search(m_serverVersion, match, reg))
+         {
+            // match[1] => 0.83 The revision
+            // match[3] => E The revision letter
+            if (boost::lexical_cast<float>(match[1]) < 0.8)
+               throw CtooLowRevisionException("WES revision is < 0.80");
+         }
+
          if (pluginConfiguration->isRetrieveNamesFromdevice())
          {
-            credentials.printToLog(YADOMS_LOG(information));
-
             // request to obtain names
             CGXfileName = "WESNAMES" + boost::lexical_cast<std::string>(m_version) + ".CGX";
             results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
@@ -150,13 +171,15 @@ namespace equipments
                                                 CGXfileName,
                                                 urlManager::httpRequestCreationTimeout);
 
+            results.printToLog(YADOMS_LOG(information));
+
             contract[0] = results.get<subdevices::ContractAvailable>("CPT1_abo_name");
             contract[1] = results.get<subdevices::ContractAvailable>("CPT2_abo_name");
+            contract[1] = results.get<subdevices::ContractAvailable>("CPT3_abo_name");
 
             counterId[0] = results.get<std::string>("CPT1_adco");
             counterId[1] = results.get<std::string>("CPT2_adco");
-
-            results.printToLog(YADOMS_LOG(information));
+            counterId[2] = results.get<std::string>("CPT3_adco");
 
             relayName[0] = results.get<std::string>("RL1");
             relayName[1] = results.get<std::string>("RL2");
@@ -166,11 +189,15 @@ namespace equipments
 
             TICName[0] = results.get<std::string>("CPT1_name");
             TICName[1] = results.get<std::string>("CPT2_name");
+            TICName[2] = results.get<std::string>("CPT3_name");
 
             ClampName[0] = results.get<std::string>("nPCE1");
             ClampName[1] = results.get<std::string>("nPCE2");
-            ClampName[2] = results.get<std::string>("nPCE3");
-            ClampName[3] = results.get<std::string>("nPCE4");
+
+            if (m_version == 2) {
+               ClampName[2] = results.get<std::string>("nPCE3");
+               ClampName[3] = results.get<std::string>("nPCE4");
+            }
 
             AnalogName[0] = results.get<std::string>("ANA1");
             AnalogName[1] = results.get<std::string>("ANA2");
@@ -179,13 +206,15 @@ namespace equipments
 
             PulseName[0] = results.get<std::string>("npls1");
             PulseName[1] = results.get<std::string>("npls2");
-            PulseName[2] = results.get<std::string>("npls3");
-            PulseName[3] = results.get<std::string>("npls4");
-
             PulseType[0] = results.get<subdevices::EUnit>("PLSU1");
             PulseType[1] = results.get<subdevices::EUnit>("PLSU2");
-            PulseType[2] = results.get<subdevices::EUnit>("PLSU3");
-            PulseType[3] = results.get<subdevices::EUnit>("PLSU4");
+
+            if (m_version == 2) {
+               PulseName[2] = results.get<std::string>("npls3");
+               PulseName[3] = results.get<std::string>("npls4");
+               PulseType[2] = results.get<subdevices::EUnit>("PLSU3");
+               PulseType[3] = results.get<subdevices::EUnit>("PLSU4");
+            }
          }
          else // Defaults names
          {
@@ -193,6 +222,7 @@ namespace equipments
             contract[1] = subdevices::NotAvailable;
             counterId[0] = "000000000000";
             counterId[1] = "000000000000";
+            counterId[2] = "000000000000";
 
             relayName[0] = "R01";
             relayName[1] = "R02";
@@ -202,11 +232,15 @@ namespace equipments
 
             TICName[0] = "TIC01";
             TICName[1] = "TIC02";
+            TICName[2] = "TIC03";
 
             ClampName[0] = "PCE1";
             ClampName[1] = "PCE2";
-            ClampName[2] = "PCE3";
-            ClampName[3] = "PCE4";
+
+            if (m_version == 2) {
+               ClampName[2] = "PCE3";
+               ClampName[3] = "PCE4";
+            }
 
             AnalogName[0] = "ANA1";
             AnalogName[1] = "ANA2";
@@ -215,37 +249,39 @@ namespace equipments
 
             PulseName[0] = "pls1";
             PulseName[1] = "pls2";
-            PulseName[2] = "pls3";
-            PulseName[3] = "pls4";
-
             PulseType[0] = subdevices::EUnit::undefined;
             PulseType[1] = subdevices::EUnit::undefined;
-            PulseType[2] = subdevices::EUnit::undefined;
-            PulseType[3] = subdevices::EUnit::undefined;
+
+            if (m_version == 2) {
+               PulseName[2] = "pls3";
+               PulseName[3] = "pls4";
+               PulseType[2] = subdevices::EUnit::undefined;
+               PulseType[3] = subdevices::EUnit::undefined;
+            }
          }
 
          // Relay Configuration
-         for (int counter = 0; counter < m_WESIOMapping.relayQty; ++counter)
+         for (auto counter = 0; counter < m_WESIOMapping.relayQty; ++counter)
          {
-            auto temp = boost::make_shared<yApi::historization::CSwitch>(relayName[counter],
+            const auto temp = boost::make_shared<yApi::historization::CSwitch>(relayName[counter],
                                                                          yApi::EKeywordAccessMode::kGetSet);
             m_relaysList.push_back(temp);
             keywordsToDeclare.push_back(temp);
          }
 
          // Input Configuration
-         for (int counter = 0; counter < m_WESIOMapping.inputQty; ++counter)
+         for (auto counter = 0; counter < m_WESIOMapping.inputQty; ++counter)
          {
-            auto temp = boost::make_shared<yApi::historization::CSwitch>(inputName[counter],
+            const auto temp = boost::make_shared<yApi::historization::CSwitch>(inputName[counter],
                                                                          yApi::EKeywordAccessMode::kGet);
             m_inputList.push_back(temp);
             keywordsToDeclare.push_back(temp);
          }
 
          // TIC Counters Configuration
-         for (int counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
+         for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
          {
-            auto temp = boost::make_shared<subdevices::CTIC>(api,
+            const auto temp = boost::make_shared<subdevices::CTIC>(api,
                                                              m_deviceName + " - " + TICName[counter],
                                                              counterId[counter],
                                                              contract[counter]);
@@ -253,9 +289,9 @@ namespace equipments
          }
 
          // Pulse Counters Configuration
-         for (int counter = 0; counter < m_WESIOMapping.pulseQty; ++counter)
+         for (auto counter = 0; counter < m_WESIOMapping.pulseQty; ++counter)
          {
-            auto temp = boost::make_shared<subdevices::CPulse>(api,
+            const auto temp = boost::make_shared<subdevices::CPulse>(api,
                                                                keywordsToDeclare,
                                                                m_deviceName,
                                                                PulseName[counter],
@@ -264,9 +300,9 @@ namespace equipments
          }
 
          // Current clamp Configuration
-         for (int counter = 0; counter < m_WESIOMapping.clampQty; ++counter)
+         for (auto counter = 0; counter < m_WESIOMapping.clampQty; ++counter)
          {
-            auto temp = boost::make_shared<subdevices::CClamp>(api,
+            const auto temp = boost::make_shared<subdevices::CClamp>(api,
                                                                keywordsToDeclare,
                                                                m_deviceName,
                                                                ClampName[counter]);
@@ -274,9 +310,9 @@ namespace equipments
          }
 
          // Analog Values Configuration
-         for (int counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
+         for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
          {
-            auto temp = boost::make_shared<specificHistorizers::CAnalog>(AnalogName[counter],
+            const auto temp = boost::make_shared<specificHistorizers::CAnalog>(AnalogName[counter],
                                                                          yApi::EKeywordAccessMode::kGet);
             m_AnalogList.push_back(temp);
             keywordsToDeclare.push_back(temp);
@@ -288,7 +324,7 @@ namespace equipments
          details.set("type", m_deviceType);
 
          shared::CDataContainer TICContainerName;
-         for (int counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
+         for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
          {
             TICContainerName.set("TIC" + boost::lexical_cast<std::string>(counter), m_TICList[counter]->name());
             TICContainerName.set("contract" + boost::lexical_cast<std::string>(counter), contract[counter]);
@@ -297,21 +333,21 @@ namespace equipments
          details.set("TIC", TICContainerName);
 
          shared::CDataContainer RelayContainerName;
-         for (int counter = 0; counter < m_WESIOMapping.relayQty; ++counter)
+         for (auto counter = 0; counter < m_WESIOMapping.relayQty; ++counter)
          {
             RelayContainerName.set("R" + boost::lexical_cast<std::string>(counter), m_relaysList[counter]->getKeyword());
          }
          details.set("Relays", RelayContainerName);
 
          shared::CDataContainer inputContainerName;
-         for (int counter = 0; counter < m_WESIOMapping.inputQty; ++counter)
+         for (auto counter = 0; counter < m_WESIOMapping.inputQty; ++counter)
          {
             inputContainerName.set("I" + boost::lexical_cast<std::string>(counter), m_inputList[counter]->getKeyword());
          }
          details.set("Inputs", inputContainerName);
 
          shared::CDataContainer pulseContainerName;
-         for (int counter = 0; counter < m_WESIOMapping.pulseQty; ++counter)
+         for (auto counter = 0; counter < m_WESIOMapping.pulseQty; ++counter)
          {
             pulseContainerName.set("P" + boost::lexical_cast<std::string>(counter), m_PulseList[counter]->name());
             pulseContainerName.set("T" + boost::lexical_cast<std::string>(counter), PulseType[counter]);
@@ -319,14 +355,14 @@ namespace equipments
          details.set("Pulses", pulseContainerName);
 
          shared::CDataContainer clampContainerName;
-         for (int counter = 0; counter < m_WESIOMapping.clampQty; ++counter)
+         for (auto counter = 0; counter < m_WESIOMapping.clampQty; ++counter)
          {
             clampContainerName.set("C" + boost::lexical_cast<std::string>(counter), m_ClampList[counter]->name());
          }
          details.set("Clamps", clampContainerName);
 
          shared::CDataContainer analogContainerName;
-         for (int counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
+         for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
          {
             analogContainerName.set("A" + boost::lexical_cast<std::string>(counter), m_AnalogList[counter]->getKeyword());
          }
@@ -348,10 +384,20 @@ namespace equipments
          else
             api->declareDevice(m_deviceName, "WES", "WES", keywordsToDeclare, details);
       }
-      catch (std::exception& e)
+      catch (CTimeOutException& e)
       {
          YADOMS_LOG(error) << e.what();
          throw e;
+      }
+      catch (CtooLowRevisionException& e)
+      {
+         YADOMS_LOG(error) << e.what();
+         throw e;
+      }
+      catch (std::exception& e)
+      {
+         YADOMS_LOG(error) << e.what();
+         throw CManuallyDeviceCreationException(e.what());
       }
    }
 
@@ -376,13 +422,13 @@ namespace equipments
          if (m_version == 0 || m_version > 2)
             throw shared::exception::CException("m_version is not set properly : " + boost::lexical_cast<std::string>(m_version));
 
-         std::string CGXfileName = "WESVALUES" + boost::lexical_cast<std::string>(m_version) + ".CGX";
+         const auto CGXfileName = "WESVALUES" + boost::lexical_cast<std::string>(m_version) + ".CGX";
 
          shared::CDataContainer credentials;
          credentials.set("user", m_configuration.getUser());
          credentials.set("password", m_configuration.getPassword());
 
-         shared::CDataContainer results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
+         auto results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
                                                                     credentials,
                                                                     CGXfileName,
                                                                     urlManager::httpRequestWESTimeout);
@@ -411,7 +457,7 @@ namespace equipments
          }
 
          //Reading clamp values
-         for (int counter = 0; counter < m_WESIOMapping.clampQty; ++counter)
+         for (auto counter = 0; counter < m_WESIOMapping.clampQty; ++counter)
          {
             try
             {
@@ -426,7 +472,7 @@ namespace equipments
          }
 
          //Reading pulse values
-         for (int counter = 0; counter < m_WESIOMapping.pulseQty; ++counter)
+         for (auto counter = 0; counter < m_WESIOMapping.pulseQty; ++counter)
          {
             try
             {
@@ -442,11 +488,11 @@ namespace equipments
          }
 
          //Reading analog values
-         for (int counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
+         for (auto counter = 0; counter < m_WESIOMapping.anaQty; ++counter)
          {
             try
             {
-               m_AnalogList[counter]->set(results.get<unsigned int>("ad" + boost::lexical_cast<std::string>(counter + 1)));
+               m_AnalogList[counter]->set((unsigned int)results.get<float>("ad" + boost::lexical_cast<std::string>(counter + 1)));
                keywordsToHistorize.push_back(m_AnalogList[counter]);
             }
             catch (std::exception& e)
@@ -459,7 +505,7 @@ namespace equipments
          api->historizeData(m_deviceName, keywordsToHistorize);
 
          // TIC Counters Values -> independant from the others keywords
-         for (int counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
+         for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
          {
             m_TICList[counter]->updateFromDevice(api,
                                                  m_deviceStatus->get(),
@@ -481,7 +527,7 @@ namespace equipments
          setDeviceState(keywordsToHistorize, specificHistorizers::EWESdeviceStatus::kTimeOut);
          api->historizeData(m_deviceName, keywordsToHistorize);
 
-         for (int counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
+         for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
             m_TICList[counter]->setDeviceState(api, specificHistorizers::EWESdeviceStatus::kTimeOut);
       }
       catch (std::exception& e)
@@ -492,7 +538,7 @@ namespace equipments
 
          if (m_TICList.size() == m_WESIOMapping.ticQty)
          {
-            for (int counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
+            for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
                m_TICList[counter]->setDeviceState(api, specificHistorizers::EWESdeviceStatus::kError);
          }
       }
@@ -530,14 +576,13 @@ namespace equipments
       {
          shared::CDataContainer credentials;
          shared::CDataContainer parameters;
-         bool newValue = false;
          std::string stringState;
-         int counter = 0;
+         auto counter = 0;
 
          credentials.set("user", m_configuration.getUser());
          credentials.set("password", m_configuration.getPassword());
 
-         newValue = boost::lexical_cast<bool>(command->getBody());
+         const auto newValue = boost::lexical_cast<bool>(command->getBody());
          if (newValue)
             stringState = "ON";
          else
@@ -552,7 +597,7 @@ namespace equipments
          if (iteratorRelay == m_relaysList.end())
             throw shared::exception::CException("Failed to identify the relay");
 
-         shared::CDataContainer results = urlManager::setRelayState(m_configuration.getIPAddressWithSocket(),
+         auto results = urlManager::setRelayState(m_configuration.getIPAddressWithSocket(),
                                                                     credentials,
                                                                     parameters);
 
@@ -598,7 +643,7 @@ namespace equipments
    }
 
    void CWESEquipment::setDeviceState(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywordsToHistorize,
-                                      specificHistorizers::EWESdeviceStatus newState)
+                                      specificHistorizers::EWESdeviceStatus newState) const
    {
       if (m_deviceStatus->get() != newState)
       {
@@ -616,7 +661,7 @@ namespace equipments
    void CWESEquipment::remove(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       // Delete 2 others devices
-      for (int counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
+      for (auto counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
          m_TICList[counter]->remove(api);
    }
 
@@ -624,5 +669,3 @@ namespace equipments
    {
    }
 }// namespace equipments
-
-

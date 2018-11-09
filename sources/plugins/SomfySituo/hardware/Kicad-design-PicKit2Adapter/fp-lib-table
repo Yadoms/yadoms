@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name "AVX 00-9188 006")(type KiCad)(uri "$(KIPRJMOD)/AVX 00-9188 006.pretty")(options "")(descr ""))
+)

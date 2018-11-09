@@ -237,7 +237,8 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             cppHistorizerClass = cppClass.CppClass(cppHistorizerClassName, createDefaultCtor=False)
             cppHistorizerClass.inheritFrom("yApi::historization::CSingleHistorizableData<" + historizerEnumName + ">", cppClass.PUBLIC)
             cppHistorizerClass.addConstructor(cppClass.CppClassConstructor("const std::string& keywordName", \
-               "CSingleHistorizableData<" + historizerEnumName + ">(keywordName, yApi::CStandardCapacity(\"" + historizerEnumName + "\", yApi::CStandardUnits::NoUnit(), yApi::EKeywordDataType::kNoData), yApi::EKeywordAccessMode::kGet)"))
+               "CSingleHistorizableData<" + historizerEnumName + ">(keywordName, " + historizerEnumName + "Capacity(), yApi::EKeywordAccessMode::kGet)"))
+            cppHistorizerClass.addDependency(cppClass.CppNoDataCapacity(historizerEnumName))
             cppHistorizerClass.addDependency(cppClass.CppExtendedEnumType(historizerEnumName, enumValues))
             return cppHistorizerClass
 
@@ -434,7 +435,7 @@ with codecs.open(os.path.join(outputPath, 'eep.h'), 'w', 'utf_8') as cppHeaderFi
    cppHeaderFile.write('// Generated file, don\'t modify\n')
    cppHeaderFile.write('#pragma once\n')
    cppHeaderFile.write('#include <shared/plugin/yPluginApi/IYPluginApi.h>\n')
-   cppHeaderFile.write('#include "profiles/IRorg.h"\n')
+   cppHeaderFile.write('#include <profiles/IRorg.h>\n')
    for dependency in rorgsClass.dependencies():
       cppHeaderFile.write('#include "' + dependency.name() + '.h"\n')
    cppHeaderFile.write('\n')
@@ -451,7 +452,7 @@ with codecs.open(os.path.join(outputPath, 'eep.h'), 'w', 'utf_8') as cppHeaderFi
          cppHeaderSubFile.write('// Generated file, don\'t modify\n')
          cppHeaderSubFile.write('#pragma once\n')
          cppHeaderSubFile.write('#include <shared/plugin/yPluginApi/IYPluginApi.h>\n')
-         cppHeaderSubFile.write('#include "profiles/IRorg.h"\n')
+         cppHeaderSubFile.write('#include <profiles/IRorg.h>\n')
          cppHeaderSubFile.write('\n')
          cppHeaderSubFile.write('namespace yApi = shared::plugin::yPluginApi;\n')
          cppHeaderSubFile.write('\n')
@@ -485,7 +486,7 @@ with codecs.open(os.path.join(outputPath, 'eep.cpp'), 'w', 'utf_8') as cppSource
          cppSourceSubFile.write('#include "' + os.path.basename(os.path.join(outputPath, dependency.name() + '.h')) + '"\n')
          cppSourceSubFile.write('#include <shared/plugin/yPluginApi/StandardUnits.h>\n')
          cppSourceSubFile.write('\n')
-         cppSourceSubFile.write('#include "profiles/bitsetHelpers.hpp"\n')
+         cppSourceSubFile.write('#include <profiles/bitsetHelpers.hpp>\n')
          cppSourceSubFile.write('#include "ProfileHelper.h"\n')
          cppSourceSubFile.write('\n')
          for hardCodedFile in hardCodedProfiles.getProfileHardCodedFiles():

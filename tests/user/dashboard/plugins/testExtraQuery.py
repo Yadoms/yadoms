@@ -47,7 +47,7 @@ class ExtraQuery(unittest.TestCase):
 
       def __fieldValueElement(self, fieldName):
          field = self.__panel().findField(fieldName)
-         return field.find_element_by_xpath(".//div[contains(@class, 'configuration-control')]/*[contains(@class, 'form-control')]")
+         return field.find_element_by_xpath(".//div[contains(@class, 'control-label')]/*[contains(@class, 'form-control')]")
          
       def __getConfirmButton(self):
          return self.__modalWebElement.find_element_by_xpath(".//button[@id='btn-confirm-plugin-extra-queries-configure']")

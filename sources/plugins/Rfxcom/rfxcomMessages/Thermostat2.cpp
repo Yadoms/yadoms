@@ -79,14 +79,6 @@ namespace rfxcomMessages
       buildDeviceModel();
       buildDeviceName();
       buildDeviceDetails();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));         
-      }
    }
 
    CThermostat2::~CThermostat2()
@@ -123,6 +115,17 @@ namespace rfxcomMessages
    void CThermostat2::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       api->historizeData(m_deviceName, m_keywords);
+   }
+
+   void CThermostat2::filter() const
+   {
+   }
+
+   void CThermostat2::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+      api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+      m_deviceDetails.printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CThermostat2::getDeviceName() const
@@ -175,5 +178,3 @@ namespace rfxcomMessages
       }
    }
 } // namespace rfxcomMessages
-
-

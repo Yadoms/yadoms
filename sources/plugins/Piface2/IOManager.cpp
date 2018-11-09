@@ -2,7 +2,7 @@
 #include "IOManager.h"
 #include "InitializationException.hpp"
 #include "SPIException.hpp"
-#include "pifacedigital.h"
+#include <pifacedigital.h>
 #include <mcp23s17.h>
 #include "eventDefinitions.h"
 #include <shared/Log.h>
@@ -29,7 +29,7 @@ CIOManager::CIOManager(const std::string& device)
 }
 
 void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api, 
-                            std::map<std::string, boost::shared_ptr<CIO> > IOlist)
+                            const std::map<std::string, boost::shared_ptr<CIO> >& IOlist)
 {
    m_InterruptEventHandler = &api->getEventHandler();
    m_mapKeywordsName = IOlist;

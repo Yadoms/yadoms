@@ -206,7 +206,7 @@ RadioSectionParameterHandler.prototype.getCurrentConfiguration = function () {
       });      
    });
 
-   $.whenAll(deferredArray)
+   $.when.apply($, deferredArray)
    .done(function() {
       //we get the parentRadioButtonSectionName value if used (only for nested radio section into another one)
       if (self.parentRadioButtonSectionName) {

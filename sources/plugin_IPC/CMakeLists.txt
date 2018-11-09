@@ -25,7 +25,11 @@ ADD_VS_NATVIS(plugin_IPC)
 
 set_property(TARGET plugin_IPC PROPERTY INCLUDE_DIRECTORIES ${plugin_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
 
-
+##################################################################################################
+## Add natvis (allow better debugging within VisualStudio)
+##################################################################################################
+ADD_VS_NATVIS(plugin_IPC)
+   
 if(COTIRE_USE)
    if(COTIRE_USE_UNITY)
       set_target_properties(plugin_IPC PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)

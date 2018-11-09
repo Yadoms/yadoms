@@ -180,6 +180,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Curtain.h
    shared/plugin/yPluginApi/historization/DateTime.cpp
    shared/plugin/yPluginApi/historization/DateTime.h
+   shared/plugin/yPluginApi/historization/Debit.cpp
+   shared/plugin/yPluginApi/historization/Debit.h
    shared/plugin/yPluginApi/historization/DeviceState.cpp
    shared/plugin/yPluginApi/historization/DeviceState.h
    shared/plugin/yPluginApi/historization/DeviceStateMessage.cpp
@@ -192,6 +194,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Distance.h
    shared/plugin/yPluginApi/historization/Duration.cpp
    shared/plugin/yPluginApi/historization/Duration.h
+   shared/plugin/yPluginApi/historization/ElectricLoad.cpp
+   shared/plugin/yPluginApi/historization/ElectricLoad.h
    shared/plugin/yPluginApi/historization/Energy.cpp
    shared/plugin/yPluginApi/historization/Energy.h
    shared/plugin/yPluginApi/historization/Event.cpp
@@ -242,6 +246,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Text.h
    shared/plugin/yPluginApi/historization/UpDownStop.cpp
    shared/plugin/yPluginApi/historization/UpDownStop.h
+   shared/plugin/yPluginApi/historization/UserCode.cpp
+   shared/plugin/yPluginApi/historization/UserCode.h
    shared/plugin/yPluginApi/historization/Uv.cpp
    shared/plugin/yPluginApi/historization/Uv.h
    shared/plugin/yPluginApi/historization/Voltage.cpp
@@ -256,6 +262,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/typeInfo/ITypeInfo.h
    shared/plugin/yPluginApi/historization/typeInfo/EmptyTypeInfo.h
    shared/plugin/yPluginApi/historization/typeInfo/EmptyTypeInfo.cpp
+   shared/plugin/yPluginApi/historization/typeInfo/ByteArrayTypeInfo.h
+   shared/plugin/yPluginApi/historization/typeInfo/ByteArrayTypeInfo.cpp
    shared/plugin/yPluginApi/historization/typeInfo/BoolTypeInfo.h
    shared/plugin/yPluginApi/historization/typeInfo/BoolTypeInfo.cpp
    shared/plugin/yPluginApi/historization/typeInfo/IntTypeInfo.h
@@ -482,6 +490,10 @@ add_library(yadoms-shared STATIC ${SHARED_LIB_SRC})
 target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 set_property( TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}  ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
 
+
+##################################################################################################
+## Add natvis (allow better debugging within VisualStudio)
+##################################################################################################
 ADD_VS_NATVIS(yadoms-shared)
 
 if(COTIRE_USE)

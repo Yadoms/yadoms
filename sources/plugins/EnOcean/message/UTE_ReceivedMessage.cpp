@@ -15,12 +15,12 @@ namespace message
 
    bool CUTE_ReceivedMessage::bidirectionalCommunication() const
    {
-      return (m_erp1.userData()[0] & 0x80) ? true : false;
+      return m_erp1.userData()[0] & 0x80 ? true : false;
    }
 
    bool CUTE_ReceivedMessage::teachInResponseExpected() const
    {
-      return (m_erp1.userData()[0] & 0x40) ? false : true;
+      return m_erp1.userData()[0] & 0x40 ? false : true;
    }
 
    CUTE_ReceivedMessage::ETeachInRequest CUTE_ReceivedMessage::teachInRequest() const

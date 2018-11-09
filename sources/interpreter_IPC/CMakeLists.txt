@@ -25,6 +25,11 @@ ADD_VS_NATVIS(interpreter_IPC)
 
 set_property(TARGET interpreter_IPC PROPERTY INCLUDE_DIRECTORIES ${interpreter_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
 
+##################################################################################################
+## Add natvis (allow better debugging within VisualStudio)
+##################################################################################################
+ADD_VS_NATVIS(interpreter_IPC)
+
 IF(MSVC OR XCODE)
    SET_PROPERTY(TARGET interpreter_IPC PROPERTY FOLDER "interpreter_IPC")
 ENDIF()

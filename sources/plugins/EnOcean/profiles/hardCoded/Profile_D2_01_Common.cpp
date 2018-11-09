@@ -13,8 +13,8 @@ DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_01_Common::EDefaultState, EDefaul
 );
 
 DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_01_Common::EConnectedSwitchsType, EConnectedSwitchsType,
-   ((switch))
-   ((pushButton))
+   ((externalSwitch))
+   ((externalPushButton))
    ((autodetection))
 );
 
@@ -161,10 +161,10 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    // Return only the concerned historizers
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
-   auto ioChannel = bitset_extract(data, 11, 5);
-   int dimValue = bitset_extract(data, 17, 7);
-   auto state = dimValue == 0 ? false : true;
-   auto overCurrentState = bitset_extract(data, 8, 1) != 0;
+   const auto ioChannel = bitset_extract(data, 11, 5);
+   const int dimValue = bitset_extract(data, 17, 7);
+   const auto state = dimValue == 0 ? false : true;
+   const auto overCurrentState = bitset_extract(data, 8, 1) != 0;
 
    // Sometimes ioChannel is not well set by device (ex NODON ASP-2-1-00 set ioChannel to 1 instead of 0),
    // so ignore ioChannel value (juste verify that is not input channel)
@@ -194,8 +194,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       historizers.push_back(overCurrent);
    }
 
-   auto powerFailureSupported = bitset_extract(data, 0, 1) ? true : false;
-   auto powerFailureState = bitset_extract(data, 1, 1) ? true : false;
+   const auto powerFailureSupported = bitset_extract(data, 0, 1) ? true : false;
+   const auto powerFailureState = bitset_extract(data, 1, 1) ? true : false;
    if (powerFailureSupported && !!powerFailure)
    {
       powerFailure->set(powerFailureState);
@@ -223,10 +223,10 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    // Return only the concerned historizers
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
-   auto ioChannel = bitset_extract(data, 11, 5);
-   int dimValue = bitset_extract(data, 17, 7);
-   auto state = dimValue == 0 ? false : true;
-   auto overCurrentState = bitset_extract(data, 8, 1) != 0;
+   const auto ioChannel = bitset_extract(data, 11, 5);
+   const int dimValue = bitset_extract(data, 17, 7);
+   const auto state = dimValue == 0 ? false : true;
+   const auto overCurrentState = bitset_extract(data, 8, 1) != 0;
    switch (ioChannel)
    {
    case 0:
@@ -267,8 +267,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       historizers.push_back(overCurrent);
    }
 
-   auto powerFailureSupported = bitset_extract(data, 0, 1) ? true : false;
-   auto powerFailureState = bitset_extract(data, 1, 1) ? true : false;
+   const auto powerFailureSupported = bitset_extract(data, 0, 1) ? true : false;
+   const auto powerFailureState = bitset_extract(data, 1, 1) ? true : false;
    if (powerFailureSupported && !!powerFailure)
    {
       powerFailure->set(powerFailureState);
@@ -345,9 +345,9 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    // Return only the concerned historizer
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
-   auto ioChannel = bitset_extract(data, 11, 5);
-   auto unit = static_cast<E_D2_01_MeasurementUnit>(bitset_extract(data, 8, 3));
-   auto rawValue = bitset_extract(data, 16, 32);
+   const auto ioChannel = bitset_extract(data, 11, 5);
+   const auto unit = static_cast<E_D2_01_MeasurementUnit>(bitset_extract(data, 8, 3));
+   const auto rawValue = bitset_extract(data, 16, 32);
 
    switch (ioChannel)
    {
@@ -453,7 +453,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    // Return only the concerned historizer
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
-   auto pilotWireMode = static_cast<EPilotWireMode>(bitset_extract(data, 13, 3));
+   const auto pilotWireMode = static_cast<EPilotWireMode>(bitset_extract(data, 13, 3));
    switch (pilotWireMode)
    {
    case kOff:
@@ -541,7 +541,7 @@ void CProfile_D2_01_Common::sendMessage(boost::shared_ptr<IMessageHandler> messa
                           }))
       throw std::runtime_error((boost::format("Fail to send message to %1% : no answer to \"%2%\"") % targetId % commandName).str());
 
-   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
+   const auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
 
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
       YADOMS_LOG(error) << "Fail to send message to " << targetId << " : \"" << commandName << "\" returns " << response->returnCode();

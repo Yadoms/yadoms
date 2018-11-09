@@ -1,0 +1,41 @@
+{
+	"type": "megatecUps",
+	"version": "@PLUGIN_VERSION@",
+	"author": "Sébastien GALLOU",
+	"url": "https://github.com/Yadoms/yadoms/wiki/MegatecUps",
+	"credits": "",
+	"supportedPlatforms": "all",
+	"configurationSchema": {
+		"SerialPort": {
+			"type": "enum",
+			"values": {
+				"__Binding__": {
+					"type": "system",
+					"query": "serialPorts"
+				}
+			}
+		},
+		"UpsBeep": {
+			"type": "bool",
+			"defaultValue": "true"
+		},
+		"UpsShutdownTimers": {
+			"type": "section",
+			"content": {
+				"ShutdownDelay": {
+					"type": "decimal",
+					"defaultValue": ".3",
+					"minimumValue": ".2",
+					"maximumValue": "9",
+					"precision": "1"
+				},
+				"RestoreDelay": {
+					"type": "int",
+					"defaultValue": "1",
+					"minimumValue": "1",
+					"maximumValue": "9999"
+				}
+			}
+		}
+	}
+}

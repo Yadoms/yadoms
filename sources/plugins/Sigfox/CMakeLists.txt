@@ -53,17 +53,6 @@ set(SIGFOX_PLUGIN_LINK
 ## Always leave these lines to configure plugin correctly
 ## even if FAKE_PLUGIN_INCLDIR or FAKE_PLUGIN_LINK are empty
 #########################################
-
 PLUGIN_SOURCES(Sigfox ${SIGFOX_PLUGIN_SOURCES})
 PLUGIN_INCLDIR(Sigfox ${SIGFOX_PLUGIN_INCLDIR})
 PLUGIN_LINK   (Sigfox ${SIGFOX_PLUGIN_ADDITIONAL_LIB})
-
-#########################################
-## Post-build commands
-## Copy files to build directory
-## "package.json" and "icon.png" are needed, but you can add extra-files
-#########################################
-PLUGIN_POST_BUILD_COPY_FILE(Sigfox package.json)
-PLUGIN_POST_BUILD_COPY_FILE(Sigfox changelog.md)
-PLUGIN_POST_BUILD_COPY_FILE(Sigfox icon.png)
-PLUGIN_POST_BUILD_COPY_DIRECTORY(Sigfox locales)

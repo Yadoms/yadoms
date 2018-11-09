@@ -27,6 +27,7 @@ set(WES_PLUGIN_SOURCES
    equipments/masterDeviceConfiguration.cpp
    equipments/masterDeviceConfiguration.h	
    equipments/noInformationException.hpp
+   equipments/tooLowRevisionException.hpp
    equipments/specificHistorizers/Analog.cpp
    equipments/specificHistorizers/Analog.h
    equipments/specificHistorizers/Color.cpp
@@ -82,17 +83,6 @@ set(WES_PLUGIN_LINK
 ## Always leave these lines to configure plugin correctly
 ## even if WES_PLUGIN_INCLDIR or WES_PLUGIN_LINK are empty
 #########################################
-
 PLUGIN_SOURCES(WES ${WES_PLUGIN_SOURCES})
 PLUGIN_INCLDIR(WES ${WES_PLUGIN_INCLDIR})
 PLUGIN_LINK   (WES ${WES_PLUGIN_ADDITIONAL_LIB})
-
-#########################################
-## Post-build commands
-## Copy files to build directory
-## "package.json" and "icon.png" are needed, but you can add extra-files
-#########################################
-PLUGIN_POST_BUILD_COPY_FILE(WES package.json)
-PLUGIN_POST_BUILD_COPY_FILE(WES changelog.md)
-PLUGIN_POST_BUILD_COPY_FILE(WES icon.png)
-PLUGIN_POST_BUILD_COPY_DIRECTORY(WES locales)

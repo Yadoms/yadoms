@@ -5,10 +5,12 @@ function ConfigurationHelper(){}
 
 ConfigurationHelper.loadConfigurationLibs = function() {
     var d = new $.Deferred();
-    asyncLoadJSLibs([
+    var arrayOfDeffered = [];
+    arrayOfDeffered.push(asyncLoadJSLibs([
         "js/objects/configuration/configuration-control-manager.js",
         "js/objects/configuration/int-parameter-handler.js",
         "js/objects/configuration/decimal-parameter-handler.js",
+        "js/objects/configuration/duration-parameter-handler.js",
         "js/objects/configuration/enum-parameter-handler.js",
         "js/objects/configuration/string-parameter-handler.js",
         "js/objects/configuration/file-parameter-handler.js",
@@ -20,16 +22,32 @@ ConfigurationHelper.loadConfigurationLibs = function() {
         "js/objects/configuration/combo-section-parameter-handler.js",
         "js/objects/configuration/color-parameter-handler.js",
         "js/objects/configuration/icon-parameter-handler.js",
-        "js/objects/configuration/list-parameter-handler.js"
-    ]).done(function () {
-        d.resolve();
-    });
+        "js/objects/configuration/list-parameter-handler.js",
+        "js/objects/encryption-manager.js"
+    ]));
+    
+    arrayOfDeffered.push(asyncLoadJSGzLibs([
+        "libs/markdown-it/markdown-it.min.js.gz",
+        "libs/markdown-it/markdown-it-for-inline.min.js.gz",
+        "libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker-iconset-all.min.js.gz",
+        "libs/bootstrap-iconpicker-1.9.0/js/bootstrap-iconpicker.min.js.gz",
+        "libs/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js.gz"]));
+    
+    arrayOfDeffered.push(asyncLoadManyGzCss([
+        "libs/bootstrap-iconpicker-1.9.0/css/bootstrap-iconpicker.min.css.gz",
+        "libs/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css.gz"]));
 
+    $.when.apply($, arrayOfDeffered)
+    .done(function () {
+       d.resolve();
+    })
+    .fail(function () {
+       d.reject();
+    });
     return d.promise();
 }
 
 ConfigurationHelper.createControlGroup = function (parameterHandler, controlToInsert, placeInsideLabel, classOfControlGroup) {
-
    assert(parameterHandler !== undefined, "parameterHandler must be defined");
    assert(controlToInsert !== undefined, "controlToInsert must be defined");
       
@@ -60,7 +78,7 @@ ConfigurationHelper.createControlGroup = function (parameterHandler, controlToIn
       "</label>" +
       "</div>";
    if (!placeInsideLabel) {
-      s += "<div class=\"controls col-sm-6 configuration-control\">" +
+        s += "<div class=\"controls col-sm-6 control-label\" style=\"text-align: left;\">" +
          controlToInsert +
          "</div>";
    }
@@ -95,6 +113,7 @@ ConfigurationHelper.createParameterHandler = function (i18nCtxt, i18nKey, paramN
    
    switch (content.type.toLowerCase()) {
       case "int" :
+      case "numeric" :
          return new IntParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
          break;
 
@@ -184,7 +203,11 @@ ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, 
    
    switch (keyword.type.toLowerCase()) {
       case "numeric":
-         return new DecimalParameterHandler(i18NContext, i18nKey, paramName, obj, currentValue);
+         if (keyword.capacityName === "duration"){
+            return new DurationParameterHandler(i18NContext, i18nKey, paramName, obj, currentValue);
+         }
+         else
+            return new DecimalParameterHandler(i18NContext, i18nKey, paramName, obj, currentValue);
 
       case "enum":
          var enumValues = {};

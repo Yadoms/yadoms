@@ -3,30 +3,39 @@
 	"description": "Un widget émulant un interrupteur",
 	"errorDuringGettingDeviceInformation": "Erreur lors de la récupération des informations de l'équipement",
 	"errorDuringSendingCommand": "Erreur lors de l'envoi de la commande",
+   "confirmationExplanation": "Confirmez-vous l'opération ?",
 	"configurationSchema": {
 		"device": {
 			"name": "Equipement",
-         "description": "Sélectionner ci-dessous l'équipement à piloter"
+			"description": "Sélectionner ci-dessous l'équipement à piloter"
 		},
+		"invert": {
+			"name": "Inversion",
+			"description": "Inverse l'état de cet équipement"
+		},
+      "askConfirmation": {
+         "name": "Demande de confirmation avant d'appliquer la valeur",
+         "description": ""
+      },        
 		"additionalDevices": {
-         "name": "Equipements complémentaires",
-         "description": "Le widget interrupteur peut piloter simultanément plusieurs équipements. Sélectionner ici la liste des équipements complémentaires à piloter",      
-         "content": {
-            "devices": {
-               "name": "Equipements",
-               "description": "Si un équipement est en lecture seule, le bouton ne pourra pas être utilisé",
-               "item": {
-                  "name": "",
-                  "description": "",
-                  "content": {
-                     "source": {
-                        "name": "Equipement",
-                        "description": "Equipement à piloter"
-                     }
-                  }
-               }
-            }
-         }
+			"name": "Equipements complémentaires",
+			"description": "Le widget interrupteur peut piloter simultanément plusieurs équipements. Sélectionner ici la liste des équipements complémentaires à piloter",
+			"content": {
+				"devices": {
+					"name": "Equipements",
+					"description": "Si un équipement est en lecture seule, le bouton ne pourra pas être utilisé",
+					"item": {
+						"name": "",
+						"description": "",
+						"content": {
+							"source": {
+								"name": "Equipement",
+								"description": "Equipement à piloter"
+							}
+						}
+					}
+				}
+			}
 		},
 		"kind": {
 			"name": "Type d'interrupteur",

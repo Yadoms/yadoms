@@ -28,7 +28,6 @@ function forecastViewModel() {
    //Height of the widget.
    this.height = 0;
 
-
    /**
     * Initialization method
     * @param widget widget class object
@@ -189,12 +188,15 @@ function forecastViewModel() {
 
    this.configurationChanged = function () {
       var self = this;
-
+      
       if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
          return;
 
       //we register keyword new acquisition
-      self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
+      self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+   
+      //we register keyword for get last value at web client startup 
+      self.widgetApi.getLastValue(self.widget.configuration.device.keywordId); 
 
       try {
          //Read the date format
@@ -208,33 +210,20 @@ function forecastViewModel() {
    this.resized = function () {
       var self = this;
 
-      if (self.widget.getWidth() <= 100) {
-          self.DayNumber(1);
-      }
+      if (self.widget.getWidth() <= 100)
+         self.DayNumber(1);
       else if (self.widget.getWidth() <= 200) // if length = 2 cases -> 2 days
-      {
-          self.DayNumber(3);
-      }
+         self.DayNumber(3);
       else if (self.widget.getWidth() <= 300) // if length = 3 cases -> 3 days
-      {
-          self.DayNumber(4);
-      }
+         self.DayNumber(4);
       else if (self.widget.getWidth() <= 400) // if length = 4 cases -> 5 days
-      {
-          self.DayNumber(6);
-      }
+         self.DayNumber(6);
       else if (self.widget.getWidth() <= 500) // if length = 5 cases -> 6 days
-      {
-          self.DayNumber(6);
-      }
+         self.DayNumber(6);
       else if (self.widget.getWidth() <= 600) // if length = 6 cases -> 8 days
-      {
-          self.DayNumber(8);
-      }
+         self.DayNumber(8);
       else if (self.DayNumber() !== 10)  // Otherwise 10 days
-      {
-          self.DayNumber(10);
-      }
+         self.DayNumber(10);
 
       self.period.removeAll();
       self.period(self.TempPeriod.slice(0, self.DayNumber()));

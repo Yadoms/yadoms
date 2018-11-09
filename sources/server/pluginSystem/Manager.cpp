@@ -584,11 +584,6 @@ namespace pluginSystem
       startInstance(m_pluginDBTable->getSystemInstance()->Id());
    }
 
-   void CManager::stopInternalPlugin()
-   {
-      stopInstance(m_pluginDBTable->getSystemInstance()->Id());
-   }
-
    bool CManager::isInstanceRunning(int id) const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);

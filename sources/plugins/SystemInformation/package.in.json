@@ -1,0 +1,9 @@
+{
+   "type": "SystemInformation",
+   "version": "@PLUGIN_VERSION@",
+   "author": "Jean-Michel BERHAULT",
+   "url": "https://github.com/Yadoms/yadoms/wiki/SystemInformation",
+   "credits": "",
+   "supportedPlatforms": "all",
+   "configurationSchema": {}
+}

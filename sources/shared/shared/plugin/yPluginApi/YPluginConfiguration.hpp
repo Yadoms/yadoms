@@ -30,8 +30,8 @@ namespace shared
             /// \param [in] configurationData The raw configuration data (from Yadoms database)
             /// \param [in] packagePath The package path (default to "package.json" from module path)
             //--------------------------------------------------------------
-            void initializeWith(const shared::CDataContainer& configurationData,
-                                const boost::filesystem::path& packagePath = shared::CFileSystemExtension::getModulePath() / boost::filesystem::path("package.json"))
+            void initializeWith(const CDataContainer& configurationData,
+                                const boost::filesystem::path& packagePath = CFileSystemExtension::getModulePath() / boost::filesystem::path("package.json"))
             {
                // Reload package file
                m_packageData.deserializeFromFile(packagePath.string());
@@ -63,7 +63,7 @@ namespace shared
                {
                   return m_configurationData.get<T>(parameterName);
                }
-               catch (shared::exception::CInvalidParameter&)
+               catch (exception::CInvalidParameter&)
                {
                   // Not found in configuration            
                }
@@ -86,7 +86,7 @@ namespace shared
                {
                   return m_configurationData.getEnumValue<EnumType>(parameterName, valuesNames);
                }
-               catch (shared::exception::CInvalidParameter&)
+               catch (exception::CInvalidParameter&)
                {
                   // Not found in configuration            
                }
@@ -98,12 +98,12 @@ namespace shared
             //--------------------------------------------------------------
             /// \brief	    Configuration raw data
             //--------------------------------------------------------------
-            shared::CDataContainer m_configurationData;
+            CDataContainer m_configurationData;
 
             //--------------------------------------------------------------
             /// \brief	    Package raw data
             //--------------------------------------------------------------
-            shared::CDataContainer m_packageData;
+            CDataContainer m_packageData;
          };
       }
    }

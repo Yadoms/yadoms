@@ -31,7 +31,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	Read Python file
    //--------------------------------------------------------------
-   static std::string PythonFileRead(const std::string& filename);
+   static std::string pythonFileRead(const std::string& filename);
 
 private:
    //--------------------------------------------------------------

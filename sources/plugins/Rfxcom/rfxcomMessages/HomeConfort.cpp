@@ -11,8 +11,8 @@ namespace rfxcomMessages
                               const std::string& command,
                               const shared::CDataContainer& deviceDetails)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_state , m_signalPower })
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_state , m_signalPower})
    {
       m_state->setCommand(command);
       m_signalPower->set(0);
@@ -30,12 +30,12 @@ namespace rfxcomMessages
 
    CHomeConfort::CHomeConfort(boost::shared_ptr<yApi::IYPluginApi> api,
                               unsigned int subType,
-      const std::string& name,
+                              const std::string& name,
                               const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_deviceName(name),
-      m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_state , m_signalPower })
+        m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_state , m_signalPower})
    {
       m_state->set(false);
       m_signalPower->set(0);
@@ -57,8 +57,8 @@ namespace rfxcomMessages
                               const RBUF& rbuf,
                               size_t rbufSize)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_state , m_signalPower })
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_state , m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -73,19 +73,11 @@ namespace rfxcomMessages
       m_unitCode = rbuf.HOMECONFORT.unitcode;
       m_state->set(fromProtocolState(rbuf.HOMECONFORT.cmnd));
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.HOMECONFORT.rssi));
-      
+
       // Build device description
       buildDeviceModel();
       buildDeviceName();
       buildDeviceDetails();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));         
-      }
    }
 
    CHomeConfort::~CHomeConfort()
@@ -104,7 +96,7 @@ namespace rfxcomMessages
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CHomeConfort::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CHomeConfort::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF rbuf;
       MEMCLEAR(rbuf.HOMECONFORT);
@@ -128,6 +120,17 @@ namespace rfxcomMessages
    void CHomeConfort::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       api->historizeData(m_deviceName, m_keywords);
+   }
+
+   void CHomeConfort::filter() const
+   {
+   }
+
+   void CHomeConfort::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+      api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+      m_deviceDetails.printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CHomeConfort::getDeviceName() const
@@ -184,5 +187,3 @@ namespace rfxcomMessages
       }
    }
 } // namespace rfxcomMessages
-
-

@@ -45,30 +45,12 @@ namespace rfxcomMessages
 
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.POWER.rssi));
 
-      Init(api);
+      buildDeviceModel();
+      buildDeviceName();
    }
 
    CPower::~CPower()
    {
-   }
-
-   void CPower::Init(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      // Build device description
-      buildDeviceModel();
-      buildDeviceName();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypePOWER);
-         details.set("subType", m_subType);
-         details.set("id", m_id);
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         details.printToLog(YADOMS_LOG(information));
-      }
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CPower::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
@@ -79,6 +61,21 @@ namespace rfxcomMessages
    void CPower::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       api->historizeData(m_deviceName, m_keywords);
+   }
+
+   void CPower::filter() const
+   {
+   }
+
+   void CPower::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+      shared::CDataContainer details;
+      details.set("type", pTypePOWER);
+      details.set("subType", m_subType);
+      details.set("id", m_id);
+      api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+      details.printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CPower::getDeviceName() const

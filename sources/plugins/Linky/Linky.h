@@ -3,8 +3,11 @@
 #include "LinkyConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
 #include "IDecoder.h"
+#include "IGPIOManager.h"
 #include "LinkyReceiveBufferHandler.h"
 #include <shared/communication/AsyncPortConnectionNotification.h>
+#include "LinkyFactory.h"
+#include "ProtocolManager.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -81,7 +84,33 @@ protected:
    /// \param [in] context          Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
    void errorProcess(boost::shared_ptr<yApi::IYPluginApi> context);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Change protocol (disconnect and retry connect later)
+   /// \param [in] context          Plugin execution context (Yadoms API)
+   //--------------------------------------------------------------
+   void changeProtocol(boost::shared_ptr<yApi::IYPluginApi> api);
 private:
+
+   //-----------------------------------------------------
+   ///\brief The plugin state
+   //-----------------------------------------------------
+   enum ELinkyPluginState
+   {
+      kUndefined = 0,
+      kStop,
+      kConnecting,
+      kConnectionLost,
+      kErDFCounterdesactivated,
+      kupdateConfiguration,
+      kRunning,
+      kError
+   };
+
+   void setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, ELinkyPluginState newState);
+   void setPluginErrorState(boost::shared_ptr<yApi::IYPluginApi> api,
+                            const std::string& ErrorMessageI18n,
+                            const std::map<std::string, std::string>& ErrorMessageI18nParameters);
 
    //--------------------------------------------------------------
    /// \brief  The communication port
@@ -101,12 +130,12 @@ private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
-   CLinkyConfiguration m_configuration;
+   boost::shared_ptr<CLinkyConfiguration> m_configuration;
 
    //--------------------------------------------------------------
    /// \brief	The Linky protocol implementation object
    //--------------------------------------------------------------
-   boost::shared_ptr<IDecoder> m_decoder;
+   boost::shared_ptr<IDecoder> m_decoder[2];
 
    //--------------------------------------------------------------
    /// \brief  The receiver buffer
@@ -118,22 +147,18 @@ private:
    //--------------------------------------------------------------
    bool m_isDeveloperMode;
 
-   //-----------------------------------------------------
-   ///\brief The plugin state
-   //-----------------------------------------------------
-   enum ELinkyPluginState
-   {
-      kUndefined = 0,
-      kStop,
-      kConnecting,
-      kConnectionLost,
-      kErDFCounterdesactivated,
-      kupdateConfiguration,
-      kRunning
-   };
-
    //--------------------------------------------------------------
    /// \brief	The plugin state
    //--------------------------------------------------------------
    ELinkyPluginState m_runningState;
+
+   //--------------------------------------------------------------
+   /// \brief	The manager of the protocol for each line
+   //--------------------------------------------------------------
+   boost::shared_ptr<CProtocolManager> m_protocolManager[2];
+
+   //--------------------------------------------------------------
+   /// \brief	    List of port to read
+   //--------------------------------------------------------------
+   boost::shared_ptr<IGPIOManager> m_GPIOManager;
 };

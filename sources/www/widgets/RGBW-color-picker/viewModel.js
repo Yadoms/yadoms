@@ -16,19 +16,31 @@ function RGBWcolorPickerViewModel() {
      */     
     this.initialize = function () {
         var self = this;
-       
-        //we configure the toolbar
-        this.widgetApi.toolbar({
-            activated: true,
-            displayTitle: true,
-            batteryItem: false
-        });
-       
-        self.createWidgetPickerStyle(self.widget.id);
-        this.slider = this.widgetApi.find("#whiteSlide")[0];
+        var arrayOfDeffered = [];
+        var d = new $.Deferred();
         
-        // callback when the slide accept a new value
-        this.widgetApi.find("#whiteSlide").on('change', self.changeSlideClick());
+        arrayOfDeffered.push(self.widgetApi.loadGzCss("libs/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css.gz"));
+        arrayOfDeffered.push(self.widgetApi.loadGzLibrary("libs/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js.gz"));
+       
+        $.when.apply($,arrayOfDeffered).done(function () {
+           //we configure the toolbar
+           self.widgetApi.toolbar({
+               activated: true,
+               displayTitle: true,
+               batteryItem: false
+           });
+          
+           self.createWidgetPickerStyle(self.widget.id);
+           self.slider = self.widgetApi.find("#whiteSlide")[0];
+           
+           // callback when the slide accept a new value
+           self.widgetApi.find("#whiteSlide").on('change', self.changeSlideClick());
+           
+           d.resolve();
+        })
+        .fail(d.reject);
+        
+        return d.promise();
     };
     
     this.createWidgetPickerStyle = function(widgetId) {
@@ -48,7 +60,7 @@ function RGBWcolorPickerViewModel() {
     
     this.createPicker = function (preselectedColor) {
         var self = this;
-        self.colorpicker = this.widgetApi.find(".picker-canvas").colorpicker({
+        self.colorpicker = self.widgetApi.find(".picker-canvas").colorpicker({
             customClass: 'colorpicker-size-'+self.widget.id,
             hexNumberSignPrefix: false,
             sliders: {
@@ -123,8 +135,11 @@ function RGBWcolorPickerViewModel() {
        if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
           return;
        
-       //we register keyword new acquisition
-       self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);       
+        //we register keyword new acquisition
+        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+	   
+		//we register keyword for get last value at web client startup
+		self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);  
        
        // destroy the precedent colorPicker if any
        // it's the only solution, to create/delete preselected colors

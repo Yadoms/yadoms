@@ -79,7 +79,9 @@ protected:
    /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] notification     The connection notification data
    //--------------------------------------------------------------
-   void processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification = boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification>());
+   void processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api,
+                                       boost::shared_ptr<shared::communication::CAsyncPortConnectionNotification> notification = boost::shared_ptr<
+                                          shared::communication::CAsyncPortConnectionNotification>());
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the data are received by the RFXCom
@@ -88,6 +90,14 @@ protected:
    //--------------------------------------------------------------
    void processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
                                   const shared::communication::CByteBuffer& data);
+   
+   //--------------------------------------------------------------
+   /// \brief	                     Create inexisting keywords for this device (in case of device created with less keywords than needed for historization)
+   /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \param [in] message          Message for which complete declared keywords list
+   //--------------------------------------------------------------
+   static void createPossiblyMissingKeywords(boost::shared_ptr<yApi::IYPluginApi> api,
+                                      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> message);
 
    //--------------------------------------------------------------
    /// \brief	                     Process the firmware update
@@ -96,6 +106,14 @@ protected:
    //--------------------------------------------------------------
    void processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                               boost::shared_ptr<yApi::IExtraQuery> extraQuery);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Process pairing devices
+   /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \param [in] extraQuery       Extra query
+   //--------------------------------------------------------------
+   void startManualPairing(boost::shared_ptr<yApi::IYPluginApi> api,
+                           boost::shared_ptr<yApi::IExtraQuery> extraQuery);
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection to the RFXCom
@@ -212,4 +230,10 @@ private:
    /// \brief  The last sent message
    //--------------------------------------------------------------
    shared::communication::CByteBuffer m_lastRequest;
+
+   //--------------------------------------------------------------
+   /// \brief  The pairing helper
+   //--------------------------------------------------------------
+   boost::shared_ptr<CPairingHelper> m_pairingHelper;
+   boost::shared_ptr<shared::event::CEventTimer> m_progressPairingTimer;
 };

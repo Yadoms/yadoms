@@ -1,0 +1,74 @@
+{
+   "type": "smsDialer",
+   "version": "@PLUGIN_VERSION@",
+   "author": "Sébastien GALLOU",
+   "url": "https://github.com/Yadoms/yadoms/wiki/SmsDialer",
+   "credits": "[gammu](http://wammu.eu/gammu/)",
+   "supportedPlatforms": {
+      "mac": "none",
+      "others": "supported"
+   },
+   "configurationSchema": {
+      "Serial Port": {
+         "type": "enum",
+         "values": {
+            "__Binding__": {
+               "type": "system",
+               "query": "serialPorts"
+            }
+         }
+      },
+      "Protocol": {
+         "type": "enum",
+         "values": {
+            "at19200": "",
+            "at115200": "",
+            "mbus": "",
+            "fbus": "",
+            "fbususb": "",
+            "fbuspl2303": "",
+            "dlr3": "",
+            "fbusdlr3": "",
+            "dku5": "",
+            "fbusdku5": "",
+            "dku5fbus": "",
+            "ark3116fbus": "",
+            "dku2": "",
+            "dku2phonet": "",
+            "dku2at": "",
+            "fbusblue": "",
+            "phonetblue": "",
+            "blueobex": "",
+            "bluephonet": "",
+            "blueat": "",
+            "bluerfobex": "",
+            "bluefbus": "",
+            "bluerffbus": "",
+            "bluerfphonet": "",
+            "bluerfat": "",
+            "bluerfgnapbus": "",
+            "blues60": "",
+            "bluerfs60": "",
+            "infrared": "",
+            "fbusirda": "",
+            "irda": "",
+            "irdaphonet": "",
+            "irdaat": "",
+            "irdaobex": "",
+            "irdagnapbus": ""
+         }
+      },
+      "PINCode": {
+         "type": "section",
+         "enableWithCheckBox": "true",
+         "enableWithCheckBoxDefaultValue": "false",
+         "content": {
+            "PIN": {
+               "type": "string",
+               "regex": "[0-9]{4}",
+               "encrypted": "true"
+            }
+         }
+      }
+   }
+}

@@ -51,7 +51,6 @@ function thermometerViewModel(){
    this.refresh = function()
    {
 	   var self = this;
-
       var element = self.widgetApi.find(".thermometer-canvas");
 
 		//get a reference to the canvas
@@ -151,9 +150,12 @@ function thermometerViewModel(){
    
    this.configurationChanged = function() {
        var self = this;
-
-       //we register keyword new acquisition
-       self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
+	   
+        //we register keyword new acquisition
+        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+	   
+		//we register keyword for get last value at web client startup
+		self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);	   
 	   
       //we fill the deviceId of the battery indicator
       self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);

@@ -1,6 +1,14 @@
 #include "stdafx.h"
 #include "Fan.h"
 #include <shared/Log.h>
+#include "FanFt1211R.h"
+#include "FanFalmec.h"
+#include "FanItho.h"
+#include "FanLucciAirDc.h"
+#include "FanLucciAirDc2.h"
+#include "FanLucciAirWestinghouseCasafan.h"
+#include "FanSeavTXS4.h"
+#include "FanSiemensSF01.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -11,37 +19,12 @@ namespace rfxcomMessages
               const std::string& keyword,
               const std::string& command,
               const shared::CDataContainer& deviceDetails)
-      : m_cmd(keyword),
-        m_light(boost::make_shared<yApi::historization::CSwitch>("light")),
-        m_fan(boost::make_shared<yApi::historization::CSwitch>("fan")),
-        m_t1(boost::make_shared<yApi::historization::CEvent>("t1")),
-        m_t2(boost::make_shared<yApi::historization::CEvent>("t2")),
-        m_t3(boost::make_shared<yApi::historization::CEvent>("t3")),
-        m_t4(boost::make_shared<yApi::historization::CEvent>("t4"))
    {
-      if (boost::iequals(keyword, m_light->getKeyword()))
-      {
-         m_keywords.push_back(m_light);
-         m_light->setCommand(command);
-      }
-      else if (boost::iequals(keyword, m_fan->getKeyword()))
-      {
-         m_keywords.push_back(m_fan);
-         m_fan->setCommand(command);
-      }
-      else
-      {
-         m_keywords.push_back(m_t1);
-         m_keywords.push_back(m_t2);
-         m_keywords.push_back(m_t3);
-         m_keywords.push_back(m_t4);
-      }
-
-      m_subType = deviceDetails.get<unsigned char>("subType");
+      createSubType(deviceDetails.get<unsigned char>("subType"));
+      m_subTypeManager->set(keyword, command);
       m_id = deviceDetails.get<unsigned int>("id");
 
       // Build device description
-      buildDeviceModel();
       buildDeviceName();
       m_deviceDetails = deviceDetails;
    }
@@ -52,41 +35,14 @@ namespace rfxcomMessages
               const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_deviceName(name)
    {
-      m_light->set(false);
-      m_fan->set(false);
-
-      m_subType = static_cast<unsigned char>(subType);
-      switch (m_subType)
-      {
-      case sTypeSiemensSF01:
-      case sTypeLucciAir:
-      case sTypeWestinghouse:
-         m_light = boost::make_shared<yApi::historization::CSwitch>("light");
-         m_fan = boost::make_shared<yApi::historization::CSwitch>("fan");
-         m_keywords.push_back(m_light);
-         m_keywords.push_back(m_fan);
-         m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
-         break;
-      case sTypeSeavTXS4:
-         m_t1 = boost::make_shared<yApi::historization::CEvent>("t1");
-         m_t2 = boost::make_shared<yApi::historization::CEvent>("t2");
-         m_t3 = boost::make_shared<yApi::historization::CEvent>("t3");
-         m_t4 = boost::make_shared<yApi::historization::CEvent>("t4");
-         m_keywords.push_back(m_t1);
-         m_keywords.push_back(m_t2);
-         m_keywords.push_back(m_t3);
-         m_keywords.push_back(m_t4);
-         m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id") |
-         ((manuallyDeviceCreationConfiguration.get<bool>("sw2-1") ? 0x80 : 0x00) |
-            (manuallyDeviceCreationConfiguration.get<bool>("sw2-2") ? 0x40 : 0x00) << 16);
-         break;
-      default:
-         throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
-      }
+      createSubType(static_cast<unsigned char>(subType));
+      m_id = m_subTypeManager->idFromConfiguration(manuallyDeviceCreationConfiguration);
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
       api->declareKeywords(m_deviceName, m_keywords);
+
+      m_subTypeManager->reset();
    }
 
    CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -113,6 +69,37 @@ namespace rfxcomMessages
       }
    }
 
+   void CFan::createSubType(unsigned char subType)
+   {
+      m_subType = subType;
+      switch (m_subType)
+      {
+      case CFanSiemensSf01::kRfxValue: m_subTypeManager = boost::make_shared<CFanSiemensSf01>();
+         break;
+      case CFanItho::kRfxValue: m_subTypeManager = boost::make_shared<CFanItho>();
+         break;
+      case CFanLucciAirWestinghouseCasafan::kRfxValueLucciAir: m_subTypeManager = boost::make_shared<CFanLucciAirWestinghouseCasafan>(m_subType);
+         break;
+      case CFanLucciAirWestinghouseCasafan::kRfxValueWestinghouse: m_subTypeManager = boost::make_shared<CFanLucciAirWestinghouseCasafan>(m_subType);
+         break;
+      case CFanLucciAirWestinghouseCasafan::kRfxValueCasafan: m_subTypeManager = boost::make_shared<CFanLucciAirWestinghouseCasafan>(m_subType);
+         break;
+      case CFanSeavTxs4::kRfxValue: m_subTypeManager = boost::make_shared<CFanSeavTxs4>();
+         break;
+      case CFanLucciAirDc::kRfxValue: m_subTypeManager = boost::make_shared<CFanLucciAirDc>();
+         break;
+      case CFanFt1211R::kRfxValue: m_subTypeManager = boost::make_shared<CFanFt1211R>();
+         break;
+      case CFanFalmec::kRfxValue: m_subTypeManager = boost::make_shared<CFanFalmec>();
+         break;
+      case CFanLucciAirDc2::kRfxValue: m_subTypeManager = boost::make_shared<CFanLucciAirDc2>();
+         break;
+      default:
+         throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
+      }
+      m_keywords.insert(m_keywords.end(), m_subTypeManager->keywords().begin(), m_subTypeManager->keywords().end());
+   }
+
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CFan::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF buffer;
@@ -125,7 +112,7 @@ namespace rfxcomMessages
       buffer.FAN.id1 = static_cast<unsigned char>(0xFF & (m_id >> 16));
       buffer.FAN.id2 = static_cast<unsigned char>(0xFF & (m_id >> 8));
       buffer.FAN.id3 = static_cast<unsigned char>(0xFF & m_id);
-      buffer.FAN.cmnd = toProtocolState();
+      buffer.FAN.cmnd = m_subTypeManager->toProtocolCmnd();
       buffer.FAN.filler = 0;
 
       return toBufferQueue(buffer, GET_RBUF_STRUCT_SIZE(FAN));
@@ -134,6 +121,14 @@ namespace rfxcomMessages
    void CFan::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       // Nothing to historize (transmitter-only device)
+   }
+
+   void CFan::filter() const
+   {
+   }
+
+   void CFan::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
    }
 
    const std::string& CFan::getDeviceName() const
@@ -149,59 +144,7 @@ namespace rfxcomMessages
    void CFan::buildDeviceName()
    {
       std::ostringstream ssdeviceName;
-      ssdeviceName << m_deviceModel << "." << static_cast<unsigned int>(m_id);
+      ssdeviceName << m_subTypeManager->getModel() << "." << static_cast<unsigned int>(m_id);
       m_deviceName = ssdeviceName.str();
-   }
-
-   void CFan::buildDeviceModel()
-   {
-      std::ostringstream ssModel;
-
-      switch (m_subType)
-      {
-      case sTypeSiemensSF01: ssModel << "Siemens SF01";
-         break;
-      case sTypeLucciAir: ssModel << "Lucci Air fan";
-         break;
-      case sTypeSeavTXS4: ssModel << "SEAV TXS4";
-         break;
-      case sTypeWestinghouse: ssModel << "Westinghouse 7226640";
-         break;
-      default: ssModel << boost::lexical_cast<std::string>(m_subType);
-         break;
-      }
-
-      m_deviceModel = ssModel.str();
-   }
-
-   unsigned char CFan::toProtocolState() const
-   {
-      switch (m_subType)
-      {
-      case sTypeSiemensSF01:
-         if (m_cmd == m_light->getKeyword())
-            return m_light.get() ? fan_sLight : 0x00;
-         return m_fan.get() ? fan_sPlus : fan_sMin;
-
-      case sTypeLucciAir:
-      case sTypeWestinghouse:
-         if (m_cmd == m_light->getKeyword())
-            return m_light.get() ? fan_LucciLight : 0x00;
-         return m_fan.get() ? fan_LucciMed : fan_LucciOff;
-
-      case sTypeSeavTXS4:
-         if (m_cmd == m_t1->getKeyword())
-            return fan_T1;
-         if (m_cmd == m_t2->getKeyword())
-            return fan_T2;
-         if (m_cmd == m_t3->getKeyword())
-            return fan_T3;
-         if (m_cmd == m_t4->getKeyword())
-            return fan_T4;
-         return 0;
-
-      default:
-         throw shared::exception::COutOfRange("CFan : command to unsupported device");
-      }
    }
 } // namespace rfxcomMessages

@@ -312,7 +312,7 @@ BOOST_AUTO_TEST_CASE(MissingCR)
 
 BOOST_AUTO_TEST_CASE(Multiframe)
 {
-	const auto frame1 = serialTeleInfoMessage::normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTA");
+	const auto frame1 = serialTeleInfoMessage::normalizeFrame(" B<cr><etx><stx><lf>ADCO 031428097115 @<cr><lf>OPTA");
 	const auto frame2 = serialTeleInfoMessage::normalizeFrame("RIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE ");
 	const auto frame3 = serialTeleInfoMessage::normalizeFrame("006238747 0<cr><lf>PTEC TH.. $<cr><lf>I");
 	const auto frame4 = serialTeleInfoMessage::normalizeFrame("INST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 0");

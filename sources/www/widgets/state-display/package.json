@@ -1,14 +1,14 @@
 {
 	"type": "state-display",
-	"version": "1.0.0",
+	"version": "1.0.2-beta.1",
 	"author": "Jean-Michel BERHAULT",
 	"url": "https://github.com/Yadoms/yadoms/wiki/state-display",
 	"credits": "",
-   "dependencies": {
+  "dependencies": {
      "yadoms" : {
-       "minimumVersion" : "2.0.2"
+        "minimumVersion" : "2.2.0-beta.1"
      }
-    },   
+  },
   "dimensions": {
     "min": {
       "x": 2,

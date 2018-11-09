@@ -95,15 +95,18 @@ private:
    boost::shared_ptr<yApi::historization::CCurrent> m_instantCurrentPhase[3];
    boost::shared_ptr<yApi::historization::CApparentPower> m_apparentPower;
 
-
    boost::shared_ptr<CRunningPeriod> m_TimePeriod;
    boost::shared_ptr<CForecastTomorrow> m_ForecastPeriod;
+   boost::shared_ptr<yApi::historization::CSwitch> m_warningEJP;
 
    boost::shared_ptr<yApi::IYPluginApi> m_api;
    std::string m_deviceName;
    bool m_teleinfoEnableInCounter;
    bool m_deviceCreated;
+   bool m_ADCOalreadyReceived;
    EContracts m_optarif;
+   bool m_newWarningEJPValue;
+   bool m_firstRun;
 
    static const std::string m_tag_ADCO;
    static const std::string m_tag_OPTARIF;

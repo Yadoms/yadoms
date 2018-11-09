@@ -74,17 +74,6 @@ set(IPX800_PLUGIN_LINK
 ## Always leave these lines to configure plugin correctly
 ## even if FAKE_PLUGIN_INCLDIR or FAKE_PLUGIN_LINK are empty
 #########################################
-
 PLUGIN_SOURCES(IPX800 ${IPX800_PLUGIN_SOURCES})
 PLUGIN_INCLDIR(IPX800 ${IPX800_PLUGIN_INCLDIR})
 PLUGIN_LINK   (IPX800 ${IPX800_PLUGIN_ADDITIONAL_LIB})
-
-#########################################
-## Post-build commands
-## Copy files to build directory
-## "package.json" and "icon.png" are needed, but you can add extra-files
-#########################################
-PLUGIN_POST_BUILD_COPY_FILE(IPX800 package.json)
-PLUGIN_POST_BUILD_COPY_FILE(IPX800 changelog.md)
-PLUGIN_POST_BUILD_COPY_FILE(IPX800 icon.png)
-PLUGIN_POST_BUILD_COPY_DIRECTORY(IPX800 locales)

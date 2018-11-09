@@ -1,5 +1,8 @@
 // suppress all warnings in swigpyrun.h
-*:scriptInterpreters/Python/yScriptApiWrapper/swigpyrun.h
+*:scriptInterpreters/yPython27/yScriptApiWrapper/swigpyrun.h
 
-// suppress all missingIncludeSystem errors in all files
-missingIncludeSystem
+// suppress all clarifyCalculation warning in all files (because the rule claims too many parentheses)
+clarifyCalculation
+
+// suppress all unusedFunction warning in all files (because the mainly messages concern functions we want to keep)
+unusedFunction

@@ -16,6 +16,7 @@ namespace web
          public:
             explicit CPlugin(boost::shared_ptr<database::IDataProvider> dataProvider,
                              boost::shared_ptr<pluginSystem::CManager> pluginManager,
+                             boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                              communication::ISendMessageAsync& messageSender);
             virtual ~CPlugin();
 
@@ -35,6 +36,7 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> getAllAvailablePluginsWithPackage(const std::vector<std::string>& parameters,
                                                                                                           const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> sendExtraQuery(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> sendDeviceExtraQuery(const std::vector<std::string>& parameters, const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> createPlugin(const std::vector<std::string>& parameters,
                                                                                      const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> updatePlugin(const std::vector<std::string>& parameters,
@@ -70,6 +72,12 @@ namespace web
          private:
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
             boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
+
+            //-----------------------------------------
+            ///\brief   Device manager
+            //-----------------------------------------
+            boost::shared_ptr<dataAccessLayer::IDeviceManager> m_deviceManager;
+
             std::string m_restKeyword;
 
             //-----------------------------------------

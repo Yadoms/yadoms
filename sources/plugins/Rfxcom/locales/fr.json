@@ -6,6 +6,14 @@
       "name": "Port série",
       "description": "Le port série virtuel connecté au RFXCom"
     },
+    "PairingMode": {
+      "name": "Mode d'appairage",
+      "description": "Le mode d'apparairage peut être automatique (chaque nouvel équipement détecté est enregistré automatiquement), ou manuel via une commande sur le plugin (bouton vert). Ce mode manuel est utile lors de l'utilisation d'un protocole ne permettant pas de vérifier qu'un message est valide, ce qui peut entraîner l'enregistrement de faux équipements.",
+      "values": {
+        "auto": "Mode automatique, chaque équipement détecté est enregistré",
+        "manual": "Mode manuel, le plugin doit être mis en mode appairage via le bouton vert"
+      }
+    },
     "Protocols": {
       "name": "Protocoles en écoute",
       "description": "Protocoles à écouter, voir le manuel d'utilisation du RFXCom. Attention, certains protocoles ne sont pas compatibles entre eux, et ne doivent pas être activés simultanément.",
@@ -108,6 +116,22 @@
             "unitCode": {
               "name": "Unité",
               "description": "L'identifiant de l'équipement (1-4)"
+            }
+          }
+        },
+        "hcA_D-uc1_3": {
+          "types": {
+            "oase": { "title": "oase" }
+          },
+          "content": {
+            "houseCode": {
+              "name": "Bâtiment",
+              "description": "L'identifiant du bâtiment (A-D)",
+              "regexErrorMessage": "L'identifiant doit être entre A et D (inclus)"
+            },
+            "unitCode": {
+              "name": "Unité",
+              "description": "L'identifiant de l'équipement (1-3)"
             }
           }
         },
@@ -220,7 +244,8 @@
         "id1_16777215-unitCode1_16": {
           "types": {
             "lightwaveRf": { "title": "lightwaveRf" },
-            "rsl": { "title": "rsl" }
+            "rsl": { "title": "rsl" },
+            "hualite": { "title": "hualite" }
           },
           "content": {
             "id": {
@@ -380,7 +405,7 @@
           }
         },
         "id1_32767-unitCode1_10": {
-          "types": { "livoloAppliance": { "title": "livoloAppliance" } },
+          "types": { "livolo1to10": { "title": "livolo1to10" } },
           "content": {
             "id": {
               "name": "ID",
@@ -410,6 +435,41 @@
             }
           }
         },
+        "id0_65535-gc0_3-uc1_8": {
+          "types": { "cuveo": { "title": "cuveo" } },
+          "content": {
+            "id": {
+              "name": "ID",
+              "description": "L'identifiant de l'équipement (0-65535)"
+            },
+            "groupCode": {
+              "name": "Groupe",
+              "description": "L'identifiant du groupe de l'équipement (0-3)"
+            },
+            "unitCode": {
+              "name": "Unité",
+              "description": "L'identifiant de la fonction de l'équipement (1-2 pour le groupe 0, 1-9 pour les groupes 1 à 3)"
+            }
+          }
+        },
+        "id0_65535-gcA_C-uc1_8": {
+          "types": { "funkbus": { "title": "funkbus" } },
+          "content": {
+            "id": {
+              "name": "ID",
+              "description": "L'identifiant de l'équipement (0-65535)"
+            },
+            "groupCode": {
+              "name": "Groupe",
+              "description": "L'identifiant du groupe de l'équipement (A-C)",
+              "regexErrorMessage": "L'identifiant doit être entre A et C (inclus)"
+            },
+            "unitCode": {
+              "name": "Unité",
+              "description": "L'identifiant de la fonction de l'équipement (1-8)"
+            }
+          }
+        },
         "seavTxs4": {
           "types": { "seavTxs4": { "title": "seavTxs4" } },
           "content": {
@@ -424,6 +484,22 @@
             "id": {
               "name": "ID",
               "description": "L'identifiant de l'équipement (0-32767)"
+            }
+          }
+        },
+
+        "id1_65535-uc1_6": {
+          "types": {
+            "zemismart": { "title": "zemismart" }
+          },
+          "content": {
+            "id": {
+              "name": "ID",
+              "description": "L'identifiant de l'équipement (1-65535)"
+            },
+            "unitCode": {
+              "name": "Unité",
+              "description": "L'identifiant de la fonction de l'équipement (1-6)"
             }
           }
         },
@@ -582,7 +658,8 @@
         "uc0_255": {
           "types": {
             "rts10": { "title": "rts10" },
-            "g6rH4t1": { "title": "g6rH4t1" }
+            "g6rH4t1": { "title": "g6rH4t1" },
+            "g6rH3t1": { "title": "g6rH3t1" }
           },
           "content": {
             "unitCode": {
@@ -647,6 +724,35 @@
               "regexErrorMessage": "L'identifiant doit être entre A et P (inclus)"
             }
           }
+        },
+        "Encoder Module": {
+          "types": { "Encoder Module": { "title": "Encoder Module" } },
+          "content": {
+            "counter1Configuration": {
+              "name": "Configuration compteur 1",
+              "description": "Préciser ici le type de capteur connecté à l'entrée 1 du module",
+              "values": {
+                "energyWh": "Energie (Wh)",
+                "waterLiter": "Eau (une impulsion par Litre)",
+                "waterQuarterLiter": "Eau (une impulsion par ¼ litre)",
+                "gasDeciM3": "Gaz (une impulsion par 1/10 m3)",
+                "gasCentiM3": "Gaz (une impulsion par 1/100 m3)",
+                "raw": "Autre (Compteur sans unité seulement)"
+              }
+            },
+            "counter2Configuration": {
+              "name": "Configuration compteur 2",
+              "description": "Préciser ici le type de capteur connecté à l'entrée 2 du module",
+              "values": {
+                "energyWh": "Energie (Wh)",
+                "waterLiter": "Eau (une impulsion par Litre)",
+                "waterQuarterLiter": "Eau (une impulsion par ¼ litre)",
+                "gasDeciM3": "Gaz (une impulsion par 1/10 m3)",
+                "gasCentiM3": "Gaz (une impulsion par 1/100 m3)",
+                "raw": "Autre (Compteur sans unité seulement)"
+              }
+            }
+          }
         }
       }
     }
@@ -660,6 +766,9 @@
           "description": "Le nouveau firmware à utiliser"
         }
       }
+    },
+    "pairing": {
+      "name": "Appairage"
     }
   },
   "customLabels": {
@@ -680,6 +789,13 @@
       "ErrorInternal": "Impossible de mettre à jour le firmware, erreur interne",
       "ErrorOnlyAvailableForSerial": "La mise à jour du firmware n'est possible qu'en connexion directe avec un câble série",
       "ErrorInvalidInputFile": "Impossible de mettre à jour le firmware, le fichier d'entrée est invalide"
+    },
+    "pairing": {
+      "invalidCommandAutoMode": "Commande invalide, l'apparaige est configuré en automatique",
+      "alreadyRunning": "L'appairage est déjà en cours",
+      "pairing": "Appairage en cours...",
+      "devicePaired": "Nouvel équipement appairé !",
+      "noDevicePaired": "Aucun équipement trouvé"
     }
   }
 }

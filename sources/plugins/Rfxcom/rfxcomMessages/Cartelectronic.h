@@ -14,41 +14,31 @@ namespace rfxcomMessages
    class CCartelectronic : public IRfxcomMessage
    {
    public:
-
-      //--------------------------------------------------------------
-      /// \brief	                        Constructor
-      /// \param[in] api                  Yadoms APi context
-      /// \param[in] rbuf                 The received buffer
-      /// \param[in] rbufSize             Message size, received from Rfxcom
-      /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
-      /// \throw                          shared::exception::CInvalidParameter
-      //--------------------------------------------------------------
       CCartelectronic(boost::shared_ptr<yApi::IYPluginApi> api,
                       const RBUF& rbuf,
                       size_t rbufSize);
+      CCartelectronic(boost::shared_ptr<yApi::IYPluginApi> api,
+                      unsigned char subType,
+                      const boost::shared_ptr<const yApi::ISetDeviceConfiguration>& newDeviceConfiguration);
 
-      //--------------------------------------------------------------
-      /// \brief	Destructor
-      //--------------------------------------------------------------
       virtual ~CCartelectronic();
 
       // IRfxcomMessage implementation
-      boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const override;
+      boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const override;
       void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
+      void filter() const override;
+      void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const override;
       const std::string& getDeviceName() const override;
       const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords() override;
       // [END] IRfxcomMessage implementation
 
    protected:
-      //--------------------------------------------------------------
-      /// \brief	Set and create the subtype
-      /// \param[in] subType              Device subType
-      /// \param[in] rbuf                 The received buffer
-      /// \param[in] rbufSize             Message size, received from Rfxcom
-      //--------------------------------------------------------------
-      void createSubType(unsigned char subType,
+      void createSubType(boost::shared_ptr<yApi::IYPluginApi> api,
+                         unsigned char subType,
                          const RBUF& rbuf,
                          size_t rbufSize);
+      void createSubType(unsigned char subType,
+                         const boost::shared_ptr<const yApi::ISetDeviceConfiguration>& newDeviceConfiguration);
 
       //--------------------------------------------------------------
       /// \brief	Declare the device
@@ -85,8 +75,6 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    };
 } // namespace rfxcomMessages
-
-

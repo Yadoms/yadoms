@@ -15,20 +15,24 @@
 .widget-gauge .valueAndUnit {
     position: absolute;
     bottom: 10%;
-    /*height: 30%;*/
     left: 25%;
     right: 25%;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .widget-gauge .value {
     color: black;
     height: 50%;
+    flex: 0 0 60%;
 }
 
 .widget-gauge .unit {
     color: gray;
     height: 50%;
+    flex: 0 0 40%;
 }
 
 .widget-gauge .highcharts-container {

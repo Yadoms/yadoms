@@ -36,7 +36,10 @@ namespace web
             kNewDevice,
             kNewLogEvent,
             kTaskProgression,
-            kDeleteKeyword
+            kDeleteKeyword,
+            kDeleteDevice,
+            kNewKeyword,
+            kBlackListDevice
          };
 
          static void receiverThreaded(boost::shared_ptr<shared::event::CEventHandler> eventHandler,

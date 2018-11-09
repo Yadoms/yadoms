@@ -20,7 +20,7 @@ BOOST_AUTO_TEST_SUITE(TestDongleVersionResponseReceivedMessage)
       };
 
       shared::event::CEventHandler evtHandler;
-      auto msgHandler = boost::make_shared<CMessageHandlerMock>(evtHandler, shared::event::kUserFirstId);
+      const auto msgHandler = boost::make_shared<CMessageHandlerMock>(evtHandler, shared::event::kUserFirstId);
       CReceiveBufferHandler bufferHandler(msgHandler);
       bufferHandler.push(shared::communication::CByteBuffer(&message[0], message.size()));
 

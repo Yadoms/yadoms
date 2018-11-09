@@ -20,7 +20,7 @@ namespace rfxcomMessages
       createSubType(deviceDetails.get<unsigned char>("subType"));
       m_subTypeManager->set(command);
       m_id = deviceDetails.get<unsigned int>("id");
-      
+
       // Build device description
       buildDeviceName();
       auto model = m_subTypeManager->getModel();
@@ -68,16 +68,7 @@ namespace rfxcomMessages
 
       // Build device description
       buildDeviceName();
-      auto model = m_subTypeManager->getModel();
       buildDeviceDetails();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         api->declareDevice(m_deviceName, model, model, m_keywords, m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));         
-      }
    }
 
    CThermostat1::~CThermostat1()
@@ -132,6 +123,17 @@ namespace rfxcomMessages
       api->historizeData(m_deviceName, m_keywords);
    }
 
+   void CThermostat1::filter() const
+   {
+   }
+
+   void CThermostat1::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+      api->declareDevice(m_deviceName, m_subTypeManager->getModel(), m_subTypeManager->getModel(), m_keywords, m_deviceDetails);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_subTypeManager->getModel() << ")";
+      m_deviceDetails.printToLog(YADOMS_LOG(information));
+   }
+
    const std::string& CThermostat1::getDeviceName() const
    {
       return m_deviceName;
@@ -149,5 +151,3 @@ namespace rfxcomMessages
       m_deviceName = ssdeviceName.str();
    }
 } // namespace rfxcomMessages
-
-

@@ -3,17 +3,20 @@
  * @constructor
  */
 widgetViewModelCtor = function weatherViewModel() {
-
-    var self = this;
+    // This variable is needed because of the ko variable
+    var environment = this;
     //observable data
     this.data = ko.observable("");
     this.city = ko.observable("");
     this.temperature = ko.observable("");
-
     this.condition = ko.observable("sunny");
 
     this.conditionClass = ko.computed(function () {
-        return "wi wi-wu-" + self.condition().toLowerCase();
+       var localCondition = environment.condition().toLowerCase();
+       if (localCondition === "storm" || localCondition === "chancestorm"){
+          localCondition = "tstorms";
+       }
+       return "wi wi-wu-" + localCondition.toString();
     });
 
     /**
@@ -27,16 +30,13 @@ widgetViewModelCtor = function weatherViewModel() {
         // create the chart
         self.$chart = self.widgetApi.find("div.container");
         self.widgetApi.loadCss("libs/weather-icons/css/weather-icons.min.css").done(function() {
-
             //we configure the toolbar
             self.widgetApi.toolbar({
                 activated: false
             });
-
             d.resolve();
         })
         .fail(d.reject);
-        
         return d.promise();
     };
 
@@ -71,6 +71,9 @@ widgetViewModelCtor = function weatherViewModel() {
             return;
 
         //we register keyword new acquisition
-        self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
+        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+	   
+		//we register keyword for get last value at web client startup
+		self.widgetApi.getLastValue(self.widget.configuration.device.keywordId); 
     }
 };

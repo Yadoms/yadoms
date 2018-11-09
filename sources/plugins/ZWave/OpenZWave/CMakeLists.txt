@@ -15,7 +15,7 @@
 
 #When changing openzwave, remeber to enable exceptions, by undefining OPENZWAVE_DISABLE_EXCEPTIONS (cpp/src/Defs.h, line 149 in v1.4.1)
 #Include "vers.cpp" to git manually
-set(OPENZWAVE_DIR_NAME openzwave-1.4.2804 )
+set(OPENZWAVE_DIR_NAME openzwave-1.4.3247)
 
 
 #########################################

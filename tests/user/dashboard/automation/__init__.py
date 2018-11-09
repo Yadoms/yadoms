@@ -135,7 +135,7 @@ class EditRuleModal():
       self.__configurationPanel = ConfigurationPanel(self.__editRuleModalWebElement)
 
    def getRuleName(self):
-      return self.__configurationPanel.getItemByName('modals.edit-automation-rule.name-rule.name')
+      return self.__configurationPanel.getTextItemByName('modals.edit-automation-rule.name-rule.name')
 
    def setRuleName(self, newName):
       field = self.getRuleName()
@@ -144,7 +144,7 @@ class EditRuleModal():
       field.send_keys(newName)
 
    def getRuleDescription(self):
-      return self.__configurationPanel.getItemByName('modals.edit-automation-rule.description-rule.name')
+      return self.__configurationPanel.getTextItemByName('modals.edit-automation-rule.description-rule.name')
 
    def setRuleDescription(self, newDescription):
       field = self.getRuleDescription()

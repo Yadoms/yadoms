@@ -138,7 +138,7 @@ void CSupervisor::run()
       webServer->getConfigurator()->configureAuthentication(
          boost::make_shared<authentication::CBasicAuthentication>(dal->getConfigurationManager(), startupOptions->getNoPasswordFlag()));
       webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CPlugin>(pDataProvider, pluginManager, *pluginGateway));
+         boost::make_shared<web::rest::service::CPlugin>(pDataProvider, pluginManager, dal->getDeviceManager(), *pluginGateway));
       webServer->getConfigurator()->restHandlerRegisterService(
          boost::make_shared<web::rest::service::CDevice>(pDataProvider, pluginManager, dal->getDeviceManager(), dal->getKeywordManager(),
                                                          *pluginGateway));

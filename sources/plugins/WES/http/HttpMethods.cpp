@@ -5,7 +5,7 @@
 #include <Poco/URI.h>
 #include <shared/exception/Exception.hpp>
 #include <shared/Log.h>
-#include "Poco/StreamCopier.h"
+#include <Poco/StreamCopier.h>
 #include "timeOutException.hpp"
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
@@ -174,8 +174,6 @@ namespace http
                                         Poco::Net::HTTPResponse& httpresponse,
                                         shared::CDataContainer& treeResponse)
    {
-      std::string content;
-
       if (boost::icontains(httpresponse.getContentType(), "text/xml"))
       {
          //use boostptree

@@ -19,6 +19,8 @@ cmake_minimum_required (VERSION 3.2.0)
 ## Extract Yadoms version from Version.h
 ##################################################################################################
 include(cmake/version.cmake)
+GET_PACKAGE_VERSION("${CMAKE_SOURCE_DIR}/server/changelog.md" YADOMS_VERSION)
+EXTRACT_VERSION(${YADOMS_VERSION} YADOMS_VERSION_MAJOR YADOMS_VERSION_MINOR YADOMS_VERSION_PATCH)
 message (STATUS "### Building Yadoms ${YADOMS_VERSION} ###\n")
 add_definitions(-DYADOMS_VERSION="${YADOMS_VERSION}")
 
@@ -55,6 +57,8 @@ endif()
 # Compilers/IDE configurations
 include(cmake/compilers.cmake)
 
+# include debug helpers
+include(cmake/debugger.cmake)
 
 ##################################################################################################
 ## CPack installation preconfiguration
@@ -613,8 +617,14 @@ set(YADOMS_SRC
    server/web/ws/AcquisitionUpdateFrame.cpp
    server/web/ws/AcquisitionSummaryUpdateFrame.h
    server/web/ws/AcquisitionSummaryUpdateFrame.cpp
+   server/web/ws/DeviceBlackListedFrame.h
+   server/web/ws/DeviceBlackListedFrame.cpp
+   server/web/ws/DeviceDeletedFrame.h
+   server/web/ws/DeviceDeletedFrame.cpp
    server/web/ws/KeywordDeletedFrame.h
    server/web/ws/KeywordDeletedFrame.cpp
+   server/web/ws/KeywordNewFrame.h
+   server/web/ws/KeywordNewFrame.cpp
    server/web/ws/FrameBase.h
    server/web/ws/FrameBase.cpp
    server/web/ws/FrameFactory.h
@@ -950,6 +960,11 @@ if(COTIRE_USE)
 else()
 	add_precompiled_header(yadoms stdafx.h)
 endif()
+
+##################################################################################################
+## Add natvis (allow better debugging within VisualStudio)
+##################################################################################################
+ADD_VS_NATVIS(yadoms)
 
 ##################################################################################################
 ## yadoms-shared
@@ -1301,12 +1316,7 @@ ELSE(WIN32 AND NOT UNIX)
 
     SET(CPACK_STRIP_FILES "Yadoms")
     SET(CPACK_SOURCE_STRIP_FILES "")
-    SET(CPACK_GENERATOR "RPM;TGZ;DEB")
-    SET(CPACK_DEBIAN_PACKAGE_SECTION "Automation")
-    SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
-    SET(CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://www.yadoms.com")  
-    SET(CPACK_RPM_PACKAGE_GROUP "Applications/Productivity")
-    SET(CPACK_RPM_PACKAGE_LICENSE "GPL/LGPL. See https://github.com/Yadoms/yadoms/blob/master/LICENSE.md for details")
+    SET(CPACK_GENERATOR "TGZ")
 
   ENDIF()
 

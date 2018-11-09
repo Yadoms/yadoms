@@ -29,6 +29,12 @@
         var $modalBody = $("div#configure-device-modal .modal-body");
         $modalBody.empty();
 
+        //Activate the button to configure a new time this device
+        $("div#configure-device-modal").one('hidden.bs.modal', function() {
+           var $deviceRow = getDeviceDomRow(device);
+           addDeviceButtonsEvents($deviceRow ,device);
+        });
+        
         //we append the common parameters section
         var friendlyNameParameter = new StringParameterHandler("modals.configure-device.", undefined, "friendlyName-configuration", { regex: '.+' }, device.friendlyName);
         $modalBody.append(friendlyNameParameter.getDOMObject());
@@ -79,9 +85,7 @@
                          callback();
                      });
                   });
-               }); 
-                     
-                
+               });
             },
             filter: function () {
                 //we check only control that have class enable-validation and are visible

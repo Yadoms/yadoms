@@ -23,6 +23,7 @@ public:
    std::string getEthernetAddress() const override;
    std::string getEthernetPort() const override;
    std::string getSerialPort() const override;
+   CPairingHelper::EPairingMode getPairingMode() const override;
    bool isAEenabled() const override;
    bool isRUBICSONenabled() const override;
    bool isFINEOFFSETenabled() const override;
@@ -48,6 +49,8 @@ public:
    bool isVISONICenabled() const override;
    bool isKeeLoqenabled() const override;
    bool isHomeConfortenabled() const override;
+   bool isMCZenabled() const override;
+   bool isFunkbusenabled() const override;
    // [END] IRfxcomConfiguration implementation
 
 private:

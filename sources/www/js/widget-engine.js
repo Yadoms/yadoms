@@ -9,67 +9,70 @@ var OfflineServerNotification = null;
 var LastEventLogId = null;
 
 function initializeWidgetEngine() {
-
     //we ask all widgets packages
-    WidgetPackageManager.getAll()
-        .done(function () {
-            PageManager.getAll()
-                .done(function () {
-                    if (loadPagesNotification != null) {
-                        loadPagesNotification.close();
-                        if (loadPagesNotification.showing)
-                            loadPagesNotification.$bar.dequeue();
-                        loadPagesNotification = null;
-                    }
-                    //we add all pages to the DOM
-                    $.each(PageManager.pages,
-                        function (index, currentPage) {
-                            PageManager.addToDom(currentPage);
-                        });
+    var defferedArray = [];
+    
+    var def1 = WidgetPackageManager.getAll();
+    defferedArray.push(def1);
+    
+    def1.fail(function (error) {
+       notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), error);
+    });
+    
+    var def2 = PageManager.getAll();
+    defferedArray.push(def2);
+    def2.fail(function (error) {
+       notifyError($.t("objects.pageManager.errorDuringGettingPages"), error);
+    });
+    
+    $.when.apply($, defferedArray).done(function () {
+       moment.lang(configurationManager.currentLanguage());
+        if (loadPagesNotification != null) {
+            loadPagesNotification.close();
+            if (loadPagesNotification.showing)
+                loadPagesNotification.$bar.dequeue();
+            loadPagesNotification = null;
+        }
+        //we add all pages to the DOM
+        $.each(PageManager.pages,function (index, currentPage) {
+                PageManager.addToDom(currentPage);
+            });
 
-                    //we deactivate the customization without launch save process
-                    exitCustomization(false);
+        //we deactivate the customization without launch save process
+        exitCustomization(false);
 
-                    if (configurationManager.refreshPage()) {
-                        if (PageManager.pages.length > 0 && SessionDataManager.getVariable("CurrentPage") != null)
-                            PageManager.selectPageId(parseInt(SessionDataManager.getVariable("CurrentPage")));
-                        else
-                            PageManager.ensureOnePageIsSelected();
-                    }
-                    else
+        if (configurationManager.refreshPage()) {
+            if (PageManager.pages.length > 0 && SessionDataManager.getVariable("CurrentPage") != null)
+                PageManager.selectPageId(parseInt(SessionDataManager.getVariable("CurrentPage")));
+            else
+                PageManager.ensureOnePageIsSelected();
+        }
+        else{
+            PageManager.selectFirstPage();
+        }
+
+        //we ask for the last event to ask only those occurs after this one
+        EventLoggerManager.getLast()
+            .done(function (data) {
+                //we save the id of the last event
+                LastEventLogId = data.id;
+
+                //we can start the periodic update
+                serverIsOnline = true;
+                if (!WebSocketEngine.isActive())
+                    widgetUpdateInterval = setInterval(periodicUpdateTask,
+                        Yadoms.updateIntervalWithWebSocketDisabled);
+                else
+                    widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateInterval);
+            })
+            .fail(function (error) {
+                notifyError($.t("objects.generic.errorGetting",
                     {
-                        PageManager.selectFirstPage();
-                    }
-
-                    //we ask for the last event to ask only those occurs after this one
-                    EventLoggerManager.getLast()
-                        .done(function (data) {
-                            //we save the id of the last event
-                            LastEventLogId = data.id;
-
-                            //we can start the periodic update
-                            serverIsOnline = true;
-                            if (!WebSocketEngine.isActive())
-                                widgetUpdateInterval = setInterval(periodicUpdateTask,
-                                    Yadoms.updateIntervalWithWebSocketDisabled);
-                            else
-                                widgetUpdateInterval = setInterval(periodicUpdateTask, Yadoms.updateInterval);
-                        })
-                        .fail(function (error) {
-                            notifyError($.t("objects.generic.errorGetting",
-                                {
-                                    objectName: $.t("core.event")
-                                },
-                                error));
-                        });
-                })
-                .fail(function (error) {
-                    notifyError($.t("objects.pageManager.errorDuringGettingPages"), error);
-                });
-        })
-        .fail(function (error) {
-            notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), error);
-        });
+                        objectName: $.t("core.event")
+                    },
+                    error));
+            });
+    });
 }
 
 function requestWidgets(page) {
@@ -121,14 +124,14 @@ function requestWidgets(page) {
 function tabClick(pageId) {
     //we check for widget loading if page is different than the current
     var currentPage = PageManager.getCurrentPage();
-
+    
     if ((currentPage != null) && (currentPage.id === pageId))
         return;
 
     SessionDataManager.addVariable("CurrentPage", pageId.toString());
 
     var page = PageManager.getPage(pageId);
-
+    
     assert(page != null, "page Id doesn't exit");
     if (page) {
         //and if it's not loaded for the moment
@@ -143,13 +146,13 @@ function tabClick(pageId) {
                     });
                 });
         } else {
-
             //we poll all widget data
             updateWidgetsPolling(page).always(function() {
                 page.$grid.packery('destroy');
                 page.$grid.packery(PageManager.packeryOptions);
                 updateWebSocketFilter();
                 PageManager.updateWidgetLayout(page);
+                PageManager.onWakeUp(page);
             });
         }
     }
@@ -181,29 +184,19 @@ function periodicUpdateTask() {
 
                 //we reinitialize the websocket
                 WebSocketEngine.initializeWebSocketEngine(function () {
-                    //web socket opened
-                    //we listen acquisitionupdate event
-                    $(document).on("acquisitionupdate",
-                        function (e, websocketData) {
-                            var acq = AcquisitionManager.factory(websocketData.data);
-                            dispatchNewAcquisitionsToWidgets(acq);
-                        });
-                    //we listen time event
-                    $(document).on("timenotification",
-                        function (e, websocketData) {
-                            dispatchTimeToWidgets(websocketData.time);
-                        });
                     //Maybe there is a lot of time between the turn off of the server and the turn on, so we must ask all widget
                     //data to be sure that all information displayed are fresh
                     updateWidgetsPolling().always(function () {
                         //we update the filter of the websockets to receive only wanted data
                         updateWebSocketFilter();
+                        console.log ("reconnexion !");
+                        var page = PageManager.getCurrentPage();
+                        PageManager.onWakeUp(page);
                     });
                 });
             }
 
             if (!isNullOrUndefinedOrEmpty(data.EventLogger)) {
-
                 $.each(data.EventLogger,
                     function (index, value) {
                         console.debug("incoming event: " + JSON.stringify(value));
@@ -258,9 +251,6 @@ function periodicUpdateTask() {
                         LastEventLogId = value.id;
                     });
             }
-            //we ask for widget's devices if web sockets are unsupported
-            if (!WebSocketEngine.isActive())
-                updateWidgetsPolling();
             if (!WebSocketEngine.isConnected())
                 serverIsOnline = false;
         })
@@ -307,40 +297,39 @@ function dispatchNewAcquisitionsToWidgets(acq) {
         function (widgetIndex, widget) {
             //we ask which devices are needed for this widget instance
             if (!isNullOrUndefined(widget.listenedKeywords)) {
-                $.each(widget.listenedKeywords,
-                    function (keywordIndex, keywordId) {
-                        if (!isNullOrUndefined(keywordId)) {
-                            //foreach device we ask for last values
-                            if (keywordId == acq.keywordId) {
-                                try {
-                                    //we signal the new acquisition to the widget if the widget supports the method
-                                    if (typeof widget.viewModel.onNewAcquisition === 'function') {
-                                       if (widget.getState() == widgetStateEnum.Running){
-                                          widget.viewModel.onNewAcquisition(keywordId, acq);
-                                          widget.viewModel.widgetApi.fitText();
-                                       }else{
-                                          console.log ("push acquisition !");
-                                          console.log ("widget.getState() : ", widget.getState());
-                                          console.log ("widget :", widget);
-                                          widget.waitingAcquisition.push(acq);
-                                       }                                        
-                                    }
-                                } catch (e) {
-                                    console.error(widget.type +
-                                        " has encouter an error in onNewAcquisition() method:" +
-                                        e.message);
-                                }
+                $.each(widget.listenedKeywords, function (keywordIndex, keywordId) {
+                     if (!isNullOrUndefined(keywordId)) {
+                         //foreach device we ask for last values
+                         if (keywordId == acq.keywordId) {
+                             try {
+                                 //we signal the new acquisition to the widget if the widget supports the method
+                                 if (typeof widget.viewModel.onNewAcquisition === 'function') {
+                                    if (widget.getState() == widgetStateEnum.Running){
+                                       widget.viewModel.onNewAcquisition(keywordId, acq);
+                                       widget.viewModel.widgetApi.fitText();
+                                    }else{
+                                       console.log ("push acquisition !");
+                                       console.log ("widget.getState() : ", widget.getState());
+                                       console.log ("widget :", widget);
+                                       widget.waitingAcquisition.push(acq);
+                                    }                                        
+                                 }
+                             } catch (e) {
+                                 console.error(widget.type +
+                                     " has encouter an error in onNewAcquisition() method:" +
+                                     e.message);
+                             }
 
-                                //we manage battery api toolbar
-                                var $battery = widget.$toolbar.find(".widget-toolbar-battery");
-                                if ($battery) {
-                                    if ($battery.attr("keywordId") == acq.keywordId) {
-                                        widget.viewModel.widgetApi.updateBatteryLevel(acq.value);
-                                    }
-                                }
-                            }
-                        }
-                    });
+                             //we manage battery api toolbar
+                             var $battery = widget.$toolbar.find(".widget-toolbar-battery");
+                             if ($battery) {
+                                 if ($battery.attr("keywordId") == acq.keywordId) {
+                                     widget.viewModel.widgetApi.updateBatteryLevel(acq.value);
+                                 }
+                             }
+                         }
+                     }
+                 });
             }
         });
 }
@@ -354,8 +343,6 @@ function dispatchTimeToWidgets(timeData) {
 
     $.each(page.widgets,
         function (widgetIndex, widget) {
-            serverLocalTime = new Time(timeData);
-            console.debug("onTime : " + serverLocalTime.toJSON().time);
             try {
                 //we signal the time event to the widget if the widget supports the method
                 if (typeof widget.viewModel.onTime === 'function')
@@ -373,7 +360,6 @@ function dispatchkeywordDeletedToWidgets(eventData){
    if (page == null)
       return;
 
-   console.debug("onKeywordDeletion : ", eventData);
    $.each(page.widgets, function (widgetIndex, widget) {
       try {
           if ($.inArray(eventData.keyword.id, widget.listenedKeywords)!=-1){
@@ -392,30 +378,21 @@ function dispatchkeywordDeletedToWidgets(eventData){
    });   
 }
 
-function updateWebSocketFilter() {
-    if (WebSocketEngine.isActive()) {
-       var page = PageManager.getCurrentPage();
-       if (page == null)
-            return;
+/**
+ * update the websocket filter of the server with additionnal keywords (for devices page, ...)
+ * @param {Array} additionnalKeywords the additionnalkeywords to add
+ */
 
-        var collection = [];
-
-        //we build the collection of keywordId to ask
-        $.each(page.widgets,
-            function (widgetIndex, widget) {
-                //we ask which devices are needed for this widget instance
-                if (!isNullOrUndefined(widget.listenedKeywords)) {
-                    $.each(widget.listenedKeywords,
-                        function (keywordIndex, keywordId) {
-                            if (!isNullOrUndefined(keywordId)) {
-                                collection.push(keywordId);
-                            }
-                        });
-                }
-            });
-
-        WebSocketEngine.updateAcquisitionFilter(duplicateRemoval(collection));
-    }
+function updateWebSocketFilter(additionnalKeywords) {
+    if (!WebSocketEngine.isActive())
+         return;
+      
+     //we build the collection of keywordId to ask
+     var subscriptionCollection = PageManager.getKeywords(PageManager.getCurrentPage());
+     
+     if (!isNullOrUndefinedOrEmpty(additionnalKeywords))
+        subscriptionCollection = subscriptionCollection.concat(additionnalKeywords);
+     WebSocketEngine.updateAcquisitionFilter(removeDuplicates(subscriptionCollection));
 }
 
 function updateWidgetsPolling() {
@@ -425,7 +402,8 @@ function updateWidgetsPolling() {
 
 function updateWidgetsPolling(pageId) {
     var d = new $.Deferred();
-    var getLastValuesKeywords = [];
+    var getLastValues = [];
+    var getAdditionInfo = [];
 
     //we browse each widget instance
     if (pageId == null) {
@@ -433,17 +411,21 @@ function updateWidgetsPolling(pageId) {
     } else {
        $.each(pageId.widgets, function (widgetIndex, widget) {
            //we ask which devices are needed for this widget instance
-           if (!isNullOrUndefinedOrEmpty(widget.getlastValue))
-              getLastValuesKeywords = getLastValuesKeywords.concat (widget.getlastValue);
+           if (!isNullOrUndefinedOrEmpty(widget.getlastValue)){
+              getLastValues = getLastValues.concat(widget.getlastValue);
+           }
+           if (!isNullOrUndefinedOrEmpty(widget.additionalInfo)){
+              getAdditionInfo = getAdditionInfo.concat(widget.additionalInfo);
+           }
        });
        
-       updateWidgetPollingByKeywordsId(duplicateRemoval(getLastValuesKeywords))
+       updateWidgetPollingByKeywordsId(getLastValues, getAdditionInfo)
        .done(function (data) {
           $.each(data, function (index, acquisition) {
              //we signal the new acquisition to the widget if the widget support the method
              $.each(pageId.widgets, function (widgetIndex, widget) {
                 if ($.inArray(acquisition.keywordId, widget.getlastValue)!=-1){
-                   if (isNullOrUndefined(acquisition.error)){
+                   if (parseBool(acquisition.exist)){
                       if (widget.viewModel.onNewAcquisition !== undefined)
                          widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
                    }else{ // we desactivate the widget
@@ -457,7 +439,6 @@ function updateWidgetsPolling(pageId) {
                          widget.viewModel.widgetApi.updateBatteryLevel(acquisition.value);
                       }
                    }
-                   widget.viewModel.widgetApi.manageRollingTitle();
                 }
              });
           });
@@ -472,52 +453,47 @@ function updateWidgetPolling(widget) {
     var d = new $.Deferred();
     
     if (!isNullOrUndefined(widget.listenedKeywords)) {
-       if (widget.listenedKeywords.length!=0) // only if this list is not empty
-       {
-          AcquisitionManager.getLastValues(widget.listenedKeywords)
+       if (widget.listenedKeywords.length!=0){ // only if this list is not empty
+          AcquisitionManager.getLastAcquisition(widget.listenedKeywords, widget.additionalInfo)
             .done(function (data) {
                 if (data) {
-                    $.each(data,
-                        function (index, acquisition) {
-                            //we signal the new acquisition to the widget if the widget support the method
-                            if (widget.viewModel.onNewAcquisition !== undefined) {
-                                widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
-                            }
-                            
-                            widget.viewModel.widgetApi.manageBatteryConfiguration();
-                            widget.viewModel.widgetApi.manageRollingTitle();
-                        });
+                    $.each(data,function (index, acquisition) {
+                         //we signal the new acquisition to the widget if the widget support the method
+                         if (widget.viewModel.onNewAcquisition !== undefined) {
+                             widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
+                         }
+                         widget.viewModel.widgetApi.manageBatteryConfiguration();
+                    });
                 }
                 d.resolve();
             })
             .fail(function (error) {
-                notifyError($.t("objects.generic.errorGetting",
-                    {
-                        objectName: "last acquisition for widget = " + widget.id
-                    }),
-                    error);
+                notifyError($.t("objects.generic.errorGetting",{
+                   objectName: "last acquisition for widget = " + widget.id
+                   }),error);
              d.reject(error);
           });
-       }  
+       } else 
+         d.resolve();
     } else {
        d.resolve();
     }
     return d.promise();
 }
 
-function updateWidgetPollingByKeywordsId(keywordIds) {
+function updateWidgetPollingByKeywordsId(keywords, additionnalInfo) {
     var d = new $.Deferred();
     
-    if (!isNullOrUndefined(keywordIds)) {
-       if (keywordIds!=0) // only if this list is not empty
-       {
-          AcquisitionManager.getLastValues(keywordIds)
+    if (!isNullOrUndefined(keywords)) {
+       if (keywords!=0){
+          AcquisitionManager.getLastAcquisition(keywords, additionnalInfo)
           .done(d.resolve)
           .fail(function (error) {
-             notifyError($.t("objects.generic.errorGetting", { objectName: "last acquisition for widget = " + keywordIds }), error);
+             notifyError($.t("objects.widgetManager.errorDuringGettingKeywordsInformation"), error);
              d.reject(error);
           });
-       }  
+       } else 
+          d.resolve();
     } else {
         d.resolve();
     }

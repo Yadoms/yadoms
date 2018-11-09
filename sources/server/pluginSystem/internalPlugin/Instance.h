@@ -66,7 +66,7 @@ namespace pluginSystem
                                   const yApi::IManuallyDeviceCreationData& data) const;
          void createStandardCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                            const std::string& deviceName,
-                                           const std::string& standardCapacity) const;
+                                           const shared::CDataContainer& standardCapacity) const;
          void createCustomEnumCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                              const std::string& deviceName,
                                              const std::string& commaSeparatedValues) const;

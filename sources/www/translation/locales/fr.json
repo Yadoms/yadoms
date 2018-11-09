@@ -59,14 +59,14 @@
       "interrupted": "Tâche interrompue",
       "crash": "Tâche plantée",
       "unknownError": "Erreur inconnue",
-            "end": "Tâche arrétée",
-            "backup" : {
-               "prepare" : "Préparation de la sauvegarde...",
-               "copyfiles" : "Copie des fichiers...",
-               "compress" : "Compression des fichiers...",
-               "clean" : "Nettoyage...",
-               "success" : "Sauvegarde réussie"
-            }
+      "end": "Tâche arrétée",
+      "backup": {
+        "prepare": "Préparation de la sauvegarde...",
+        "copyfiles": "Copie des fichiers...",
+        "compress": "Compression des fichiers...",
+        "clean": "Nettoyage...",
+        "success": "Sauvegarde réussie"
+      }
     },
     "database": {
       "backup": {
@@ -281,7 +281,8 @@
       "keyword-configuration": {
         "name": "Nouvelle donnée",
         "description": "Saisir la nouvelle valeur à définir"
-      }
+      },
+      "duration-regex-error": "Le format pour une durée doit être : xx:yy:zz"
     },
     "configure-manually-device": {
       "title": "Ajouter un équipement",
@@ -312,44 +313,123 @@
               "name": "Type de donnée standard",
               "description": "Utilisation d'un type de donnée standard",
               "content": {
-                "capacity": {
-                  "name": "Type de donnée",
-                  "values": {
-                    "apparentpower": "Puissance apparente (VA)",
-                    "armingAlarm": "Etat alarme",
-                    "batteryLevel": "Niveau de batterie (%)",
-                    "cameraMove": "Mouvement de caméra",
-                    "colorrgb": "Couleur RGB",
-                    "colorrgbw": "Couleur RGBW",
-                    "count": "Compteur",
-                    "current": "Courant (A)",
-                    "curtain": "Ouvertures, volets, portails",
-                    "dimmable": "Variateur (%)",
-                    "direction": "Direction (°)",
-                    "distance": "Distance (m)",
-                    "duration": "Durée",
-                    "energy": "Energie (Wh)",
-                    "event": "Evénement",
-                    "frequency": "Fréquence (Hz)",
-                    "humidity": "Humidité (%)",
-                    "illumination": "Luminosité (Lux)",
-                    "load": "Charge (%)",
-                    "power": "Puissance (W)",
-                    "powerFactor": "Facteur de puissance",
-                    "pressure": "Pression (hPa)",
-                    "rain": "Pluie (mm)",
-                    "rainrate": "Pluviométrie (mm/s)",
-                    "rssi": "Puissance de signal (Db/mW)",
-                    "speed": "Vitesse (mm/s)",
-                    "switch": "On/Off",
-                    "temperature": "Temperature (°C)",
-                    "text": "Texte",
-                    "upDownStop": "Haut/Bas/Stop",
-                    "uv": "UV",
-                    "voltage": "Tension (V)",
-                    "volume": "Volume (m3)",
-                    "weathercondition": "Conditions météo",
-                    "weight": "Masse (kg)"
+                "selectCapacity": {
+                  "name": "Selectionner le type de donnée",
+                  "content": {
+                    "apparentpower": {
+                      "name": "Puissance apparente (VA)"
+                    },
+                    "armingAlarm": {
+                      "name": "Etat alarme"
+                    },
+                    "batteryLevel": {
+                      "name": "Niveau de batterie (%)"
+                    },
+                    "cameraMove": {
+                      "name": "Mouvement de caméra"
+                    },
+                    "colorrgb": {
+                      "name": "Couleur RGB"
+                    },
+                    "colorrgbw": {
+                      "name": "Couleur RGBW"
+                    },
+                    "count": {
+                      "name": "Compteur"
+                    },
+                    "current": {
+                      "name": "Courant (A)"
+                    },
+                    "curtain": {
+                      "name": "Ouvertures, volets, portails"
+                    },
+                    "dimmable": {
+                      "name": "Variateur (%)"
+                    },
+                    "direction": {
+                      "name": "Direction (°)"
+                    },
+                    "distance": {
+                      "name": "Distance (m)"
+                    },
+                    "duration": {
+                      "name": "Durée"
+                    },
+                    "energy": {
+                      "name": "Energie (Wh)"
+                    },
+                    "event": {
+                      "name": "Evénement"
+                    },
+                    "frequency": {
+                      "name": "Fréquence (Hz)"
+                    },
+                    "humidity": {
+                      "name": "Humidité (%)"
+                    },
+                    "illumination": {
+                      "name": "Luminosité (Lux)"
+                    },
+                    "load": {
+                      "name": "Charge (%)"
+                    },
+                    "power": {
+                      "name": "Puissance (W)"
+                    },
+                    "powerFactor": {
+                      "name": "Facteur de puissance"
+                    },
+                    "pressure": {
+                      "name": "Pression (hPa)"
+                    },
+                    "rain": {
+                      "name": "Pluie (mm)"
+                    },
+                    "rainrate": {
+                      "name": "Pluviométrie (mm/s)"
+                    },
+                    "rssi": {
+                      "name": "Puissance de signal (Db/mW)"
+                    },
+                    "speed": {
+                      "name": "Vitesse (m/s)"
+                    },
+                    "switch": {
+                      "name": "On/Off"
+                    },
+                    "temperature": {
+                      "name": "Temperature (°C)"
+                    },
+                    "text": {
+                      "name": "Texte"
+                    },
+                    "upDownStop": {
+                      "name": "Haut/Bas/Stop"
+                    },
+                    "uv": {
+                      "name": "UV"
+                    },
+                    "voltage": {
+                      "name": "Tension (V)"
+                    },
+                    "volume": {
+                      "name": "Volume (m3)"
+                    },
+                    "weathercondition": {
+                      "name": "Conditions météo"
+                    },
+                    "weight": {
+                      "name": "Masse (kg)}"
+                    }
+                  }
+                },
+                "selectMeasureType": {
+                  "name": "Selectionner le type de mesure",
+                  "description": "Sélectionner __Absolue__  pour les données absolues telles que la temperature, l'humidité, etc.\nSélectionner __Incrémentale__ pour indiquer à Yadoms d'ajouter la donnée à la valeur actuelle (exemple : compteurs d'impulsions, pluie, etc.).\nSélectionner __Cumulative__ pour indiquer que la valeur courante correspond à une accumulation (exemple : compteurs d'énergie).",
+                  "content": {
+                    "Absolute": "Absolue",
+                    "Increment": "Incrémentale",
+                    "Cumulative": "Cumulative"
                   }
                 }
               }
@@ -604,17 +684,17 @@
           "ruleSuccessfullyCreated": "Règle créée",
           "ruleSuccessfullyUpdated": "Règle mise à jour",
           "ruleDeleted": "Règle supprimée",
-          "ruleCreationError": "Impossible de créer la règle {{rule}}.",
-          "ruleUpdateError": "Impossible de mettre à jour la règle {{rule}}.",
-          "ruleEditError": "Impossible d'éditer la règle {{rule}}.",
-          "ruleDeletionError": "Impossible de supprimer la règle {{rule}}.",
-          "ruleStopError": "Impossible d'arrêter la règle {{rule}}.",
-          "ruleStartError": "Impossible de démarrer la règle {{rule}}.",
-          "pluginListingError": "Impossible de lister les plugins.",
-          "ruleListingError": "Impossible de lister les règles.",
-          "ruleInterpreterListingError": "Impossible de lister les interpréteurs de règles.",
-          "ruleGetLogError": "Impossible d'obtenir le journal de la règle {{rule}}.",
-          "ruleDeleteLogError": "Impossible de supprimer le journal de la règle {{rule}}.",
+          "ruleCreationError": "Impossible de créer la règle {{rule}}",
+          "ruleUpdateError": "Impossible de mettre à jour la règle {{rule}}",
+          "ruleEditError": "Impossible d'éditer la règle {{rule}}",
+          "ruleDeletionError": "Impossible de supprimer la règle {{rule}}",
+          "ruleStopError": "Impossible d'arrêter la règle {{rule}}",
+          "ruleStartError": "Impossible de démarrer la règle {{rule}}",
+          "pluginListingError": "Impossible de lister les plugins",
+          "ruleListingError": "Impossible de lister les règles",
+          "ruleInterpreterListingError": "Impossible de lister les interpréteurs de règles",
+          "ruleGetLogError": "Impossible d'obtenir le journal de la règle {{rule}}",
+          "ruleDeleteLogError": "Impossible de supprimer le journal de la règle {{rule}}",
           "editors": {
             "code": {
               "name": "Code"
@@ -629,6 +709,7 @@
           "description": "Installation et mise à jour des composants de Yadoms",
           "developerModeWarning": "Attention en mode développeur, cette page ne fonctionne pas",
           "includePreRelease": "Inclure les versions préliminaires",
+          "failTtoGetUpdates": "Echec de récupération des mises à jour",
           "yadoms": {
             "title": "Yadoms",
             "currentVersion": "Version courante",
@@ -668,9 +749,9 @@
         "maintenance": {
           "title": "Maintenance",
           "backup": "Démarrer une nouvelle sauvegarde",
-          "deleteAll" : "Effacer toutes les sauvegardes",
-          "deleteAllConfirmTitle" : "Confirmer la suppression",
-          "deleteAllConfirm" : "Êtes vous sûr de vouloir effacer touts les sauvegardes ?",
+          "deleteAll": "Effacer toutes les sauvegardes",
+          "deleteAllConfirmTitle": "Confirmer la suppression",
+          "deleteAllConfirm": "Êtes vous sûr de vouloir effacer touts les sauvegardes ?",
           "backuplist": {
             "date": "Date",
             "size": "Taille",
@@ -1004,9 +1085,10 @@
       "partOfWidgetIsMissing": "Impossible d'obtenir une partie du widget {{widgetName}}. Les widgets de ce type ont été désactivés.",
       "widgetHasGeneratedAnExceptionDuringCallingMethod": "Le widget {{widgetName}} a généré une exception à l'appel de {{methodName}}()",
       "errorDuringGettingDeviceInformation": "Erreur lors de la récupération des informations de l'équipement",
+      "errorDuringGettingKeywordsInformation": "Erreur lors de la récupération des informations des données",
       "loadingWidgetsError": "Erreur lors du chargement d'un widget",
       "widgetDisabled": "Le widget {{widgetName}} a été désactivé car la configuration est incorrecte (équipement manquant ou supprimé)",
-      "unknownError" : "Erreur inconnue"
+      "unknownError": "Erreur inconnue"
     },
     "widgetPackageManager": {
       "incorrectPackage": "Le paquet du widget est incorrect",
@@ -1144,15 +1226,20 @@
     "units": {
       "noUnit": "",
       "ampere": "A",
+      "kampere": "KA",
+      "mampere": "mA",      
+      "ampereHour": "Ah",
+      "cubicMetre": "m³",
+      "cubicMeterPerSecond": "m³/s",
       "decibel": "dB",
       "decibelPerMilliWatt": "dBm",
-      "cubicMetre": "m3",
       "degrees": "°",
       "degreesCelcius": "°C",
       "degreesFarenheit": "°F",
       "hectoPascal": "hPa",
       "hertz": "Hz",
       "kg": "Kg",
+      "liter": "litre",
       "lux": "lux",
       "meter": "m",
       "metersPerSecond": "m/s",
@@ -1164,7 +1251,9 @@
       "volt": "V",
       "voltAmpere": "VA",
       "watt": "W",
-      "wattPerHour": "Wh"
+      "Kwatt": "KW",
+      "wattPerHour": "Wh",
+      "KwattPerHour": "KWh"
     }
   },
   "enumerations": {

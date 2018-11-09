@@ -181,7 +181,28 @@
     var includePreReleases = false;
 
     Yadoms.initializeInstallUpdateDashboard = function () {
-        return scanForUpdates();
+       var arrayOfDeffered = [];
+       var d = new $.Deferred();
+       
+       arrayOfDeffered.push(asyncLoadJSGzLibs([
+           "libs/markdown-it/markdown-it.min.js.gz",
+           "libs/markdown-it/markdown-it-for-inline.min.js.gz"]));       
+       
+       arrayOfDeffered.push(asyncLoadJSLibs([
+          "js/objects/update/update-information.js",
+          "js/objects/update/update-information-manager.js",
+          "js/objects/update/yadoms-update-information-manager.js"
+       ]));
+       
+       $.when.apply($, arrayOfDeffered).done(function () {
+          scanForUpdates().done(function(){
+             d.resolve();
+          });
+       })
+       .fail(function () {
+          d.reject();
+       });
+       return d.promise();          
     };
 
     YadomsInformationManager.getList()
@@ -213,7 +234,7 @@
                     var taskFinished = false;
                     //we manage the end of the task
                     if (taskUpdateInformation.taskState.toLowerCase() === "fail") {
-                        console.error("Fail to get updates");
+                        notifyError($.t("modals.dashboard.sub-windows.install-update.failTtoGetUpdates"));
                         taskFinished = true;
                     } else if (taskUpdateInformation.taskState.toLowerCase() === "success") {
                         taskFinished = true;
@@ -229,7 +250,7 @@
             })
 
             .fail(function (error) {
-                console.error("Fail to get updates");
+                notifyError($.t("modals.dashboard.sub-windows.install-update.failTtoGetUpdates"));
                 $asyncActionIndicator.addClass("hidden");
                 d.reject();
             });
@@ -464,8 +485,8 @@
 
         //we try to get information from server loop until the server answer
         EventLoggerManager.getLast({
-            timeout: 2000
-        })
+                timeout: 2000
+            })
             .done(function () {
                 //we received an answer, the server is back
                 //we reload full page (clearing cache)
@@ -494,15 +515,25 @@
             return objectType + "s." + moduleType;
         });
 
-        addItemsInTable($table, objectType, list.new, function (moduleType, data) {
-            // For new items, we need to import translations
+
+        // For new items, we need to import translations
+        var deferredArray = [];
+        $.each(list.new, function (moduleType, data) {
             var newestVersion = Object.keys(data.versions.newest)[0];
-            i18n.options.resGetPath = getBaseUrl(data.versions.newest[newestVersion].downloadUrl) +
-                '/__ns__/locales/__lng__.json';
-            i18n.loadNamespace(moduleType + "/" + newestVersion);
-            i18n.options.resGetPath = "locales/__lng__.json";
-            return moduleType + "." + newestVersion;
+            deferredArray.push(i18nManager.loadNamespaceFromExternal(getBaseUrl(data.versions.newest[
+                    newestVersion].downloadUrl) +
+                "/" + moduleType + "/" + newestVersion, moduleType));
         });
+
+        $.when.apply($, deferredArray)
+            .done(function () {
+                addItemsInTable($table, objectType, list.new, function (moduleType, data) {
+                    return moduleType;
+                });
+            })
+            .fail(function () {
+                console.error("Fail to load translations for some new plugins");
+            });
     }
 
     function getBaseUrl(fullUrl) {

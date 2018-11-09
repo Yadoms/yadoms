@@ -21,7 +21,7 @@ namespace rfxcomMessages
       m_subType = deviceDetails.get<unsigned char>("subType");
       m_houseCode = deviceDetails.get<unsigned char>("houseCode");
       m_unitCode = deviceDetails.get<unsigned char>("unitCode");
-      
+
       // Build device description
       buildDeviceModel();
       buildDeviceName();
@@ -55,6 +55,7 @@ namespace rfxcomMessages
       case sTypeEnergenie5:
       case sTypeGDR2:
       case sTypeHQ:
+      case sTypeOase:
          break;
       default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
@@ -87,19 +88,11 @@ namespace rfxcomMessages
       m_unitCode = rbuf.LIGHTING1.unitcode;
       m_state->set(fromProtocolState(rbuf.LIGHTING1.cmnd));
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING1.rssi));
-      
+
       // Build device description
       buildDeviceModel();
       buildDeviceName();
       buildDeviceDetails();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));         
-      }
    }
 
    CLighting1::~CLighting1()
@@ -138,6 +131,17 @@ namespace rfxcomMessages
    void CLighting1::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       api->historizeData(m_deviceName, m_keywords);
+   }
+
+   void CLighting1::filter() const
+   {
+   }
+
+   void CLighting1::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+      api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+      m_deviceDetails.printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CLighting1::getDeviceName() const
@@ -187,6 +191,8 @@ namespace rfxcomMessages
          break;
       case sTypeHQ: ssModel << "HQ COCO-20";
          break;
+      case sTypeOase: ssModel << "Oase Inscenio FM Master";
+         break;
       default: ssModel << boost::lexical_cast<std::string>(m_subType);
          break;
       }
@@ -216,5 +222,3 @@ namespace rfxcomMessages
       }
    }
 } // namespace rfxcomMessages
-
-

@@ -20,13 +20,13 @@ public:
    /// \brief	  Constructor
    /// \param[in] api              pointer to the API
    //--------------------------------------------------------------
-   CLiveStations(boost::shared_ptr<yApi::IYPluginApi> api);
+   explicit CLiveStations(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	  Constructor
    /// \param[in] location       enter directly a location
    //--------------------------------------------------------------
-   CLiveStations(boost::shared_ptr<const shared::ILocation> location);
+   explicit CLiveStations(boost::shared_ptr<const shared::ILocation> location);
 
    //--------------------------------------------------------------
    /// \brief get All forecast stations around the location, get the city name
@@ -47,7 +47,7 @@ public:
    /// \brief	    getCityLocation
    /// \return                   the location (longitude, latitude) of the city
    //--------------------------------------------------------------
-   boost::shared_ptr<const shared::ILocation> getCityLocation();
+   boost::shared_ptr<const shared::ILocation> getCityLocation() const;
 
    //--------------------------------------------------------------
    /// \brief	    getStationName
@@ -60,7 +60,7 @@ public:
    /// \brief	    getCity
    /// \return                   the city corresponding to the coordonates
    //--------------------------------------------------------------
-   std::string getCity();
+   std::string getCity() const;
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

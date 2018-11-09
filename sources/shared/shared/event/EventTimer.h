@@ -46,14 +46,20 @@ namespace shared
          //--------------------------------------------------------------
          void stop();
 
+         //--------------------------------------------------------------
+         /// \brief	    Get running flag
+         //--------------------------------------------------------------
+         bool isRunning() const;
+
       protected:
-         friend class CEventHandler;
          // ITimeEvent Implementation
          boost::posix_time::ptime getNextStopPoint() const override;
          void reset() override;
          bool canBeRemoved() const override;
          int getId() const override;
          // [END] ITimeEvent Implementation
+
+         void doStart(const boost::posix_time::time_duration& period = boost::date_time::not_a_date_time);
 
       private:
          //--------------------------------------------------------------
@@ -75,6 +81,11 @@ namespace shared
          /// \brief	    The next stop point
          //--------------------------------------------------------------
          boost::posix_time::ptime m_nextStopPoint;
+
+         //--------------------------------------------------------------
+         /// \brief	    Running flag
+         //--------------------------------------------------------------
+         bool m_isRunning;
       };
    }
 } // namespace shared::event

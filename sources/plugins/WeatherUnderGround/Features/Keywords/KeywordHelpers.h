@@ -1,5 +1,5 @@
 #pragma once
-#include "shared/DataContainer.h"
+#include <shared/DataContainer.h>
 
 //--------------------------------------------------------------
 /// \brief convert a std::string from a CDataContainer to a double

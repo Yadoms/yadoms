@@ -124,6 +124,14 @@ Do nothing if keyword is not found or not writable.
 The keyword ID to change state
 ##### newState (in)
 The keyword new state. Must be a string (ex, for boolean, must be \"1\" or \"0\")
+For enum based keywords, use original values, not translated value as displayed in GUI :
+* curtain keywords : Open, Stop, Close
+* armingAlarm keywords : Disarmed, ArmedAtHome, ArmedAway
+* cameraMove keywords : Left, Right, Up, Down, Position1, ProgramPosition1, Position2, ProgramPosition2, Position3, ProgramPosition3, Position4, ProgramPosition4, CenterPosition, ProgramCenterPosition, Sweep, ProgramSweep
+* deviceState keywords : Unknown, Active, Busy, Asleep, Dead, Custom
+* pluginState keywords : Unknown, Error, Stopped, Running, Custom, WaitDebugger
+* upDownStop keywords : Stop, Up, Down
+* weatherCondition keywords : Cloudy, Snow, ChanceSnow, PartlySunny, Sunny, ChanceRain, Rain, Sleet, ChanceStorm, Storm, Fog, Night_Clear, Night_Cloudy, Night_Rain, Night_Snow
 #### Throw
 Error if keyword not found
 

@@ -38,20 +38,20 @@
   },
   "specificProfilesConfigurations": {
     "D2-01-04": {
-        "localControl": {
-          "name": "Contrôle local",
-          "values": {
-            "enable": "activé",
-            "disable": "désactivé"
-          }
-        },
-        "taughtIn": {
-          "name": "Piloté par",
-          "values": {
-            "allDevices": "tous les devices appairés",
-            "yadomsOnly": "Yadoms seulement"
-          }
-        },
+      "localControl": {
+        "name": "Contrôle local",
+        "values": {
+          "enable": "activé",
+          "disable": "désactivé"
+        }
+      },
+      "taughtIn": {
+        "name": "Piloté par",
+        "values": {
+          "allDevices": "tous les devices appairés",
+          "yadomsOnly": "Yadoms seulement"
+        }
+      },
       "content": {
         "dimTimer1": {
           "name": "Temporisation 1 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
@@ -65,36 +65,36 @@
       }
     },
     "D2-01-05": {
-        "localControl": {
-          "name": "Contrôle local",
-          "values": {
-            "enable": "activé",
-            "disable": "désactivé"
-          }
-        },
-        "taughtIn": {
-          "name": "Piloté par",
-          "values": {
-            "allDevices": "tous les devices appairés",
-            "yadomsOnly": "Yadoms seulement"
-          }
-        },
-        "userInterfaceMode": {
-          "name": "Mode d'activation Led",
-          "values": {
-            "dayMode": "Jour (led allumée)",
-            "nightMode": "Nuit (led éteinte)"
-          }
-        },
-        "defaultState": {
-          "name": "Etat par défaut",
-          "values": {
-            "off": "Sortie inactive",
-            "on": "Sortie active",
-            "previousState": "Etat précédent",
-            "notUsed": "Non renseigné"
-          }
-        },
+      "localControl": {
+        "name": "Contrôle local",
+        "values": {
+          "enable": "activé",
+          "disable": "désactivé"
+        }
+      },
+      "taughtIn": {
+        "name": "Piloté par",
+        "values": {
+          "allDevices": "tous les devices appairés",
+          "yadomsOnly": "Yadoms seulement"
+        }
+      },
+      "userInterfaceMode": {
+        "name": "Mode d'activation Led",
+        "values": {
+          "dayMode": "Jour (led allumée)",
+          "nightMode": "Nuit (led éteinte)"
+        }
+      },
+      "defaultState": {
+        "name": "Etat par défaut",
+        "values": {
+          "off": "Sortie inactive",
+          "on": "Sortie active",
+          "previousState": "Etat précédent",
+          "notUsed": "Non renseigné"
+        }
+      },
       "content": {
         "dimTimer1": {
           "name": "Temporisation 1 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
@@ -140,30 +140,30 @@
           }
         },
         "minEnergyMeasureRefreshTime": {
-          "name": "Période minimum de raffraichissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de raffraichissement"
+          "name": "Période minimum de rafraîchissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de rafraîchissement"
         },
         "maxEnergyMeasureRefreshTime": {
-          "name": "Période maximum de raffraichissement de la mesure d'énergie (secondes), doit être inférieure à la période minimum de raffraichissement"
+          "name": "Période maximum de rafraîchissement de la mesure d'énergie (secondes), doit être supérieure à la période minimum de rafraîchissement"
         }
       }
     },
     "D2-01-09": {
-        "taughtIn": {
-          "name": "Piloté par",
-          "values": {
-            "allDevices": "tous les devices appairés",
-            "yadomsOnly": "Yadoms seulement"
-          }
-        },
-        "defaultState": {
-          "name": "Etat par défaut",
-          "values": {
-            "off": "Sortie inactive",
-            "on": "Sortie active",
-            "previousState": "Etat précédent",
-            "notUsed": "Non renseigné"
-          }
-        },
+      "taughtIn": {
+        "name": "Piloté par",
+        "values": {
+          "allDevices": "tous les devices appairés",
+          "yadomsOnly": "Yadoms seulement"
+        }
+      },
+      "defaultState": {
+        "name": "Etat par défaut",
+        "values": {
+          "off": "Sortie inactive",
+          "on": "Sortie active",
+          "previousState": "Etat précédent",
+          "notUsed": "Non renseigné"
+        }
+      },
       "content": {
         "dimTimer1": {
           "name": "Temporisation 1 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
@@ -216,10 +216,10 @@
           }
         },
         "minEnergyMeasureRefreshTime": {
-          "name": "Période minimum de raffraichissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de raffraichissement"
+          "name": "Période minimum de rafraîchissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de rafraîchissement"
         },
         "maxEnergyMeasureRefreshTime": {
-          "name": "Période maximum de raffraichissement de la mesure d'énergie (secondes), doit être inférieure à la période minimum de raffraichissement"
+          "name": "Période maximum de rafraîchissement de la mesure d'énergie (secondes), doit être supérieure à la période minimum de rafraîchissement"
         }
       }
     },
@@ -296,10 +296,10 @@
           }
         },
         "minEnergyMeasureRefreshTime": {
-          "name": "Période minimum de raffraichissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de raffraichissement"
+          "name": "Période minimum de rafraîchissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de rafraîchissement"
         },
         "maxEnergyMeasureRefreshTime": {
-          "name": "Période maximum de raffraichissement de la mesure d'énergie (secondes), doit être inférieure à la période minimum de raffraichissement"
+          "name": "Période maximum de rafraîchissement de la mesure d'énergie (secondes), doit être supérieure à la période minimum de rafraîchissement"
         }
       }
     },
@@ -374,6 +374,25 @@
     },
     "D2-01-12": {
       "sameAs": "D2-01-0F"
+    },
+    "D2-05-00": {
+      "content": {
+        "measuredDurationOfVerticalRunMs": {
+          "name": "Durée d'une course (ms)"
+        },
+        "measuredDurationOfRotationMs": {
+          "name": "Durée d'une rotation (ms)"
+        },
+        "alarmAction": {
+          "name": "Action en cas d'alarme",
+          "values": {
+            "noAction": "Pas d'action",
+            "immediateStop": "Arrêt immédiat",
+            "goUp": "Ouverture",
+            "goDown": "Fermeture"
+          }
+        }
+      }
     }
   }
 }

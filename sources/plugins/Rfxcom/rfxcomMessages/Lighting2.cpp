@@ -40,7 +40,7 @@ namespace rfxcomMessages
       m_houseCode = m_subType == sTypeKambrook ? (manuallyDeviceCreationConfiguration.get<char>("houseCode", 0) - 'A') : 0;
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
       m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
-      auto deviceType = manuallyDeviceCreationConfiguration.get<std::string>("type") == "onOff" ? ILighting2Subtype::kOnOff : ILighting2Subtype::kDimmable;
+      const auto deviceType = manuallyDeviceCreationConfiguration.get<std::string>("type") == "onOff" ? ILighting2Subtype::kOnOff : ILighting2Subtype::kDimmable;
       m_deviceDetails = buildDeviceDetails(m_subType,
                                            m_houseCode,
                                            m_id,
@@ -90,16 +90,11 @@ namespace rfxcomMessages
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING2.rssi));
 
       // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
+      if (api->deviceExists(m_deviceName))
       {
-         auto model = m_subTypeManager->getModel();
-         api->declareDevice(m_deviceName, model, model);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));
+         api->updateDeviceDetails(m_deviceName, m_deviceDetails);
+         api->declareKeywords(m_deviceName, m_keywords);
       }
-
-      api->updateDeviceDetails(m_deviceName, m_deviceDetails);
-      api->declareKeywords(m_deviceName, m_keywords);
    }
 
    CLighting2::~CLighting2()
@@ -141,6 +136,21 @@ namespace rfxcomMessages
    void CLighting2::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       api->historizeData(m_deviceName, m_keywords);
+   }
+
+   void CLighting2::filter() const
+   {
+   }
+
+   void CLighting2::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+      const auto model = m_subTypeManager->getModel();
+      api->declareDevice(m_deviceName, model, model);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << model << ")";
+      m_deviceDetails.printToLog(YADOMS_LOG(information));
+
+      api->updateDeviceDetails(m_deviceName, m_deviceDetails);
+      api->declareKeywords(m_deviceName, m_keywords);
    }
 
    const std::string& CLighting2::getDeviceName() const
@@ -186,5 +196,3 @@ namespace rfxcomMessages
       return deviceDetails;
    }
 } // namespace rfxcomMessages
-
-

@@ -35,30 +35,12 @@ namespace rfxcomMessages
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.TEMP_RAIN.battery_level));
       m_signalPower->set(NormalizesignalPowerLevel(rbuf.TEMP_RAIN.rssi));
 
-      Init(api);
+      buildDeviceModel();
+      buildDeviceName();
    }
 
    CTempRain::~CTempRain()
    {
-   }
-
-   void CTempRain::Init(boost::shared_ptr<yApi::IYPluginApi> api)
-   {
-      // Build device description
-      buildDeviceModel();
-      buildDeviceName();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         shared::CDataContainer details;
-         details.set("type", pTypeTEMP_RAIN);
-         details.set("subType", m_subType);
-         details.set("id", m_id);
-         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         details.printToLog(YADOMS_LOG(information));
-      }
    }
 
    boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTempRain::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
@@ -69,6 +51,21 @@ namespace rfxcomMessages
    void CTempRain::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       api->historizeData(m_deviceName, m_keywords);
+   }
+
+   void CTempRain::filter() const
+   {
+   }
+
+   void CTempRain::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+      shared::CDataContainer details;
+      details.set("type", pTypeTEMP_RAIN);
+      details.set("subType", m_subType);
+      details.set("id", m_id);
+      api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+      details.printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CTempRain::getDeviceName() const
@@ -103,5 +100,3 @@ namespace rfxcomMessages
       m_deviceModel = ssModel.str();
    }
 } // namespace rfxcomMessages
-
-

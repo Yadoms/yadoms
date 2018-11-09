@@ -32,9 +32,9 @@ namespace rfxcomMessages
       virtual ~CCartelectronicTIC();
 
       // ICartelectronicSubtype implementation
-      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords() const override;
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords(const shared::CDataContainer& deviceConfiguration) override;
       std::string idFromProtocol(const RBUF& rbuf) const override;
-      char BatteryLevelFromProtocol(const RBUF& rbuf) override;
+      char batteryLevelFromProtocol(const RBUF& rbuf) override;
       char signalPowerFromProtocol(const RBUF& rbuf) override;
       std::string getModel() const override;
       // [END] ICartelectronicSubtype implementation
@@ -82,6 +82,11 @@ namespace rfxcomMessages
       /// \brief	TeleInfo Status
       //--------------------------------------------------------------
       boost::shared_ptr<teleInfo::specificHistorizers::CTeleInfoStatus> m_teleInfoStatus;
+
+      //--------------------------------------------------------------
+      /// \brief	The warning EJP
+      //--------------------------------------------------------------
+      boost::shared_ptr<yApi::historization::CSwitch> m_warningEJP;
 
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances

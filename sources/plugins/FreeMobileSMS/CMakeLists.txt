@@ -48,12 +48,3 @@ PLUGIN_SOURCES(freeMobileSms ${FREEMOBILESMS_SOURCES})
 PLUGIN_INCLDIR(freeMobileSms ${FREEMOBILESMS_INCLDIR})
 PLUGIN_LINK(freeMobileSms ${FREEMOBILESMS_LINK})
 
-#########################################
-## Post-build commands
-## Copy files to build directory
-## "package.json" and "icon.png" are needed, but you can add extra-files
-#########################################
-PLUGIN_POST_BUILD_COPY_FILE(freeMobileSms package.json)
-PLUGIN_POST_BUILD_COPY_FILE(freeMobileSms changelog.md)
-PLUGIN_POST_BUILD_COPY_FILE(freeMobileSms icon.png)
-PLUGIN_POST_BUILD_COPY_DIRECTORY(freeMobileSms locales)

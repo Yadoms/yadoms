@@ -1,13 +1,21 @@
-### 1.0.2-beta.2
-* Fix crash when D2-xx-xx device not responding
+### 1.1.2
+* Fix #495
 
-### 1.0.2-beta.1
+### 1.1.1
+* Fix some French translations
+
+### 1.1.0
+_Requires Yadoms 2.1.0-beta.2 or greater_
+* Fix pairing of non-configurable devices
+* Fix A5-12-01 counter divisor usage
+* Fix cumulative historization for A5-12-xx profiles
+* Add A5-12-xx profiles
+* Fix D2-05-00 configuration
+* D2-05-00 profile (blinds) : add stop managment
+* Add D2-05-00 profile support
+* Fix 'bad allocation' exception doing some messages ignored
+* Fix crash when D2-xx-xx device not responding
 * Fix #433
 
 ### 1.0.1
-* Official version (identical to 1.0.1-beta)
-
-### 1.0.1-beta
-* Add power failure detection on D2-01-0B profile
-* Fix D2-01-OA profile configuration
-* Fix D2-01-OF profile configuration
+* First version

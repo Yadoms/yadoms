@@ -55,14 +55,16 @@ public:
    /// \throw shared::exception::CInvalidParameter if no corresponding RFXCom message was found (invalid command)
    //--------------------------------------------------------------
    virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                                                                  boost::shared_ptr<const yApi::IDeviceCommand> command) const = 0;
+                                                                                                  boost::shared_ptr<const yApi::IDeviceCommand>
+                                                                                                  command) const = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Build a RFY-specific message to device
    /// \param [in] lastRequest      Last RFY request who failed because of unknown remote
    /// \return                      RFXCom command to send (can be constitued of several messages)
    //--------------------------------------------------------------
-   virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> buildRfyProgramMessage(const shared::communication::CByteBuffer& lastRequest) const = 0;
+   virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> buildRfyProgramMessage(
+      const shared::communication::CByteBuffer& lastRequest) const = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Decode RFXCom message
@@ -82,4 +84,12 @@ public:
    //--------------------------------------------------------------
    virtual std::string createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
                                             const yApi::IManuallyDeviceCreationData& data) const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Process the change device configuration request
+   /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \param [in] deviceConfiguration The new device configuration
+   //--------------------------------------------------------------
+   virtual void changeDeviceConfiguration(const boost::shared_ptr<yApi::IYPluginApi>& api,
+                                          const boost::shared_ptr<const yApi::ISetDeviceConfiguration>& deviceConfiguration) const = 0;
 };

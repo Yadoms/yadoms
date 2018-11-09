@@ -61,6 +61,8 @@ namespace rfxcomMessages
       case sTypeBlindsT11:
       case sTypeBlindsT12:
       case sTypeBlindsT13:
+      case sTypeBlindsT14:
+      case sTypeBlindsT16:
          break;
       default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
@@ -97,6 +99,7 @@ namespace rfxcomMessages
       case sTypeBlindsT1:
       case sTypeBlindsT12:
       case sTypeBlindsT13:
+      case sTypeBlindsT16:
          m_id = rbuf.BLINDS1.id2 << 8 | rbuf.BLINDS1.id3;
          break;
 
@@ -107,6 +110,7 @@ namespace rfxcomMessages
       case sTypeBlindsT8:
       case sTypeBlindsT10:
       case sTypeBlindsT11:
+      case sTypeBlindsT14:
          m_id = rbuf.BLINDS1.id1 << 16 | rbuf.BLINDS1.id2 << 8 | rbuf.BLINDS1.id3;
          break;
 
@@ -128,6 +132,7 @@ namespace rfxcomMessages
       case sTypeBlindsT3:
       case sTypeBlindsT8:
       case sTypeBlindsT12:
+      case sTypeBlindsT14:
          m_unitCode = rbuf.BLINDS1.unitcode + 1;
          break;
       case sTypeBlindsT0:
@@ -141,6 +146,7 @@ namespace rfxcomMessages
       case sTypeBlindsT10:
       case sTypeBlindsT11:
       case sTypeBlindsT13:
+      case sTypeBlindsT16:
          m_unitCode = rbuf.BLINDS1.unitcode;
          break;
       default:
@@ -155,18 +161,6 @@ namespace rfxcomMessages
       buildDeviceModel();
       buildDeviceName();
       buildDeviceDetails();
-
-      // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         api->declareDevice(m_deviceName,
-                            m_deviceModel,
-                            m_deviceModel,
-                            m_keywords,
-                            m_deviceDetails);
-         YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
-         m_deviceDetails.printToLog(YADOMS_LOG(information));
-      }
    }
 
    CBlinds1::~CBlinds1()
@@ -200,6 +194,7 @@ namespace rfxcomMessages
       case sTypeBlindsT1:
       case sTypeBlindsT12:
       case sTypeBlindsT13:
+      case sTypeBlindsT16:
          buffer.BLINDS1.id1 = 0;
          buffer.BLINDS1.id2 = static_cast<unsigned char>(0xFF & (m_id >> 8));
          buffer.BLINDS1.id3 = static_cast<unsigned char>(0xFF & m_id);
@@ -213,6 +208,7 @@ namespace rfxcomMessages
       case sTypeBlindsT8:
       case sTypeBlindsT10:
       case sTypeBlindsT11:
+      case sTypeBlindsT14:
          buffer.BLINDS1.id1 = static_cast<unsigned char>(0xFF & (m_id >> 16));
          buffer.BLINDS1.id2 = static_cast<unsigned char>(0xFF & (m_id >> 8));
          buffer.BLINDS1.id3 = static_cast<unsigned char>(0xFF & m_id);
@@ -243,6 +239,7 @@ namespace rfxcomMessages
       case sTypeBlindsT3:
       case sTypeBlindsT8:
       case sTypeBlindsT12:
+      case sTypeBlindsT14:
          buffer.BLINDS1.unitcode = m_unitCode - 1;
          break;
       case sTypeBlindsT0:
@@ -256,6 +253,7 @@ namespace rfxcomMessages
       case sTypeBlindsT10:
       case sTypeBlindsT11:
       case sTypeBlindsT13:
+      case sTypeBlindsT16:
          buffer.BLINDS1.unitcode = m_unitCode;
          break;
       default:
@@ -272,6 +270,21 @@ namespace rfxcomMessages
    void CBlinds1::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
    {
       api->historizeData(m_deviceName, m_keywords);
+   }
+
+   void CBlinds1::filter() const
+   {
+   }
+
+   void CBlinds1::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+      api->declareDevice(m_deviceName,
+                         m_deviceModel,
+                         m_deviceModel,
+                         m_keywords,
+                         m_deviceDetails);
+      YADOMS_LOG(information) << "New device : " << m_deviceName << " (" << m_deviceModel << ")";
+      m_deviceDetails.printToLog(YADOMS_LOG(information));
    }
 
    const std::string& CBlinds1::getDeviceName() const
@@ -324,6 +337,10 @@ namespace rfxcomMessages
       case sTypeBlindsT12: ssModel << "Confexx CNF24-2435";
          break;
       case sTypeBlindsT13: ssModel << "Screenline";
+         break;
+      case sTypeBlindsT14: ssModel << "Hualite";
+         break;
+      case sTypeBlindsT16: ssModel << "Zemismart";
          break;
       default: ssModel << boost::lexical_cast<std::string>(m_subType);
          break;

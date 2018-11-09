@@ -3,20 +3,15 @@
  * @constructor
  */
 widgetViewModelCtor = function dimmerViewModel() {
-
-
     //observable data
     this.data = ko.observable(0).extend({ numeric: 1 });
     this.unit = ko.observable("");
 
-
     //widget identifier
     this.step = ko.observable(0.1).extend({ numeric: 1 });
 
-
     this.commandClickPlus = function () {
        this.commandClick(this.step());
-
     }
     this.commandClickMinus = function () {
        this.commandClick(-this.step());
@@ -45,25 +40,11 @@ widgetViewModelCtor = function dimmerViewModel() {
 
     this.configurationChanged = function () {
         var self = this;
-
-        //we get the unit of the keyword
-        var deffered = self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId);
-        
-        deffered
-        .done(function (keyword) {
-            self.unit($.t(keyword.units));
-        });
-
-        //we register keyword new acquisition
-        self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
-
-        //we fill the deviceId of the battery indicator
+        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);
+		  self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);  		
+        self.widgetApi.registerAdditionalInformation(["unit"]); // return unit with the getLast Value
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
-
-        //Read the step
         self.step(self.widget.configuration.StepValue);
-        
-        return deffered.promise();
     };
 
     /**
@@ -75,8 +56,10 @@ widgetViewModelCtor = function dimmerViewModel() {
         var self = this;
 
         if (keywordId === self.widget.configuration.device.keywordId) {
-            //it is the right device
-            self.data(parseFloat(data.value));
+           if (!isNullOrUndefinedOrEmpty(data.unit))
+              self.unit($.t(self.rawUnit = data.unit));
+
+           self.data(parseFloat(data.value));
         }
     };
 };

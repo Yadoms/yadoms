@@ -4,7 +4,7 @@
 #include <boost/regex.hpp> 
 #include <shared/Log.h>
 
-CIOManager::CIOManager(const std::string& device, Poco::Net::SocketAddress socket, bool passwordActivated, std::string password):
+CIOManager::CIOManager(const std::string& device, const Poco::Net::SocketAddress& socket, bool passwordActivated, const std::string& password):
      m_deviceName (device),
      m_socketAddress(socket),
      m_isPasswordActivated(passwordActivated),
@@ -16,7 +16,7 @@ void CIOManager::Initialize(std::vector<boost::shared_ptr<equipments::IEquipment
    m_devicesList = extensionList;
 }
 
-void CIOManager::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved)
+void CIOManager::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceRemoved)
 {
    for (unsigned char counter = 0; counter < m_devicesList.size(); ++counter)
    {
@@ -52,24 +52,22 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                            boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
    shared::CDataContainer parameters;
-   std::string keywordName = command->getKeyword();
-   std::string commandSelected;
 
    YADOMS_LOG(information) << "Command received :" << yApi::IDeviceCommand::toString(command) ;
 
    const auto& deviceDetails = api->getDeviceDetails(command->getDevice());
-   auto deviceType = deviceDetails.get<std::string>("type");
+   const auto deviceType = deviceDetails.get<std::string>("type");
 
-   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorExtension;
-
-   for (iteratorExtension = m_devicesList.begin(); iteratorExtension != m_devicesList.end(); ++iteratorExtension)
+   for (std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorExtension = m_devicesList.begin();
+      iteratorExtension != m_devicesList.end();
+      ++iteratorExtension)
    {
       if (deviceType == (*iteratorExtension)->getDeviceType())
       {
          if (m_isPasswordActivated)
             parameters.set("key", m_password);
 
-		 shared::CDataContainer results = urlManager::sendCommand(m_socketAddress, (*iteratorExtension)->buildMessageToDevice(api, parameters, command));
+         auto results = urlManager::sendCommand(m_socketAddress, (*iteratorExtension)->buildMessageToDevice(api, parameters, command));
 
          // If the answer is a success, we historize the data
          if (results.containsValue("Success"))
@@ -90,7 +88,6 @@ void CIOManager::readIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                   bool forceHistorization)
 {
    shared::CDataContainer parameters;
-   shared::CDataContainer results;
 
    // add the password if activated
    if (m_isPasswordActivated)
@@ -98,11 +95,11 @@ void CIOManager::readIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
 
    parameters.set("Get", type);
 
-   results = urlManager::sendCommand( m_socketAddress, parameters);
+   auto results = urlManager::sendCommand( m_socketAddress, parameters);
 
-   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorExtension;
-
-   for (iteratorExtension = m_devicesList.begin(); iteratorExtension != m_devicesList.end(); ++iteratorExtension)
+   for (std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorExtension = m_devicesList.begin();
+      iteratorExtension != m_devicesList.end();
+      ++iteratorExtension)
       (*iteratorExtension)->updateFromDevice(type, api, results, forceHistorization);
 }
 
