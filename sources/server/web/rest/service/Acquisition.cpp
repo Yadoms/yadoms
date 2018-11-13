@@ -122,9 +122,9 @@ namespace web
                   else
                      keywordResult.set(info, std::string());
                }
-			   else if (info == "friendlyName")
-				   keywordResult.set(info,
-									 m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->FriendlyName());
+               else if (info == "friendlyName")
+                  keywordResult.set(info,
+                                    m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->FriendlyName());
                else if (info == "deviceId")
                   keywordResult.set(info,
                                     m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->DeviceId);
@@ -154,8 +154,8 @@ namespace web
                   keywordResult.set(info,
                                     m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->Details());
                else
-                  YADOMS_LOG(warning) << "readKeywordInfo, can not get requested keyword " << keywordId << " info \"" << info <<
-                     "\", ignored : unknown info label";
+               YADOMS_LOG(warning) << "readKeywordInfo, can not get requested keyword " << keywordId << " info \"" << info <<
+                  "\", ignored : unknown info label";
             }
             catch (std::exception& exception)
             {
@@ -313,7 +313,7 @@ namespace web
                                                                                               std::vector<std::string>());
 
                   shared::CDataContainer result;
-                  
+
                   shared::CDataContainer keywordResult;
                   for (const auto& info : infoRequested)
                      readKeywordInfo(keywordId, info, keywordResult);
