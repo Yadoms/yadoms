@@ -223,8 +223,9 @@ namespace web
             if (!acceptedMeasureTypes.empty())
             {
                std::vector<std::string> strAcceptedMeasureTypes;
-               for (const auto& acceptedMeasureType : acceptedMeasureTypes)
-                  strAcceptedMeasureTypes.push_back(acceptedMeasureType.toString());
+			   std::transform(acceptedMeasureTypes.begin(), acceptedMeasureTypes.end(), std::back_inserter(strAcceptedMeasureTypes),
+				   [](const auto &acceptedMeasureType) -> std::string { return acceptedMeasureType.toString(); });
+
                capacityContainer->set("acceptedMeasureTypes", strAcceptedMeasureTypes);
             }
 

@@ -34,10 +34,11 @@ namespace task
 
       void CBackup::OnProgressionUpdatedInternal(int remaining, int total, float currentPart, float totalPart, const std::string& message) const
       {
-         const auto progression = currentPart + (total != 0 ? static_cast<float>(total - remaining) * static_cast<float>(totalPart - currentPart) / static_cast<float>(total) : 0);
-
-         if (m_reportRealProgress)
-            m_reportRealProgress(true, progression, message, std::string(), shared::CDataContainer::EmptyContainer);
+		  if (m_reportRealProgress)
+		  {
+			  const auto progression = currentPart + (total != 0 ? static_cast<float>(total - remaining) * static_cast<float>(totalPart - currentPart) / static_cast<float>(total) : 0);
+			  m_reportRealProgress(true, progression, message, std::string(), shared::CDataContainer::EmptyContainer);
+		  }
       }
 
       void CBackup::doWork(TaskProgressFunc pFunctor)

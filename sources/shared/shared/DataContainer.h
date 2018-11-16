@@ -211,17 +211,30 @@ namespace shared
       /// \param [in] initialData    Initial data for this container (will be deserialized)
       //--------------------------------------------------------------
       CDataContainer(const CDataContainer & initialData);
+	  
+	  //--------------------------------------------------------------
+	  /// \brief		Constructor
+	  /// \param [in] d    Initial data for this container (rapidjson::Value&)
+	  //--------------------------------------------------------------
+      explicit CDataContainer(rapidjson::Value & d);
 
+	  //--------------------------------------------------------------
+	  /// \brief		Constructor
+	  /// \param [in] d    Initial data for this container (rapidjson::Value*)
+	  //--------------------------------------------------------------
+	  explicit CDataContainer(rapidjson::Value * d);
+      
+	  //--------------------------------------------------------------
+	  /// \brief		Constructor
+	  /// \param [in] d    Initial data for this container (rapidjson::Document&)
+	  //--------------------------------------------------------------
+	  explicit CDataContainer(rapidjson::Document & d);
 
-      CDataContainer(rapidjson::Value & d);
-      CDataContainer(rapidjson::Value * d);
-      CDataContainer(rapidjson::Document & d);
       //--------------------------------------------------------------
       /// \brief			Destructor
       /// \return    	void
       //--------------------------------------------------------------
       virtual ~CDataContainer(void);
-
 
       //--------------------------------------------------------------
       //
@@ -269,16 +282,6 @@ namespace shared
       //--------------------------------------------------------------
       template<class T>
       inline void set(const char* parameterName, const T & value, const char pathChar = '.');
-
-
-      //--------------------------------------------------------------
-      /// \brief	    Get current parameter key name
-      /// \return     The parameter key name
-      /// \throw      shared::exception::COutOfRange if parameter can not be converted
-      /// \throw      shared::exception::CInvalidParameter if parameter is not found
-      //--------------------------------------------------------------
-      std::string getKey() const;
-
 
       //--------------------------------------------------------------
       //
@@ -1287,10 +1290,8 @@ namespace shared
       {
          if (found->IsArray())
          {
-            for (auto& v : found->GetArray())
-            {
-               result.push_back(convert<T>(&v));
-            }
+			 std::transform(found->GetArray().begin(), found->GetArray().end(), std::back_inserter(result),
+				 [this](auto &v) -> T { return this->convert<T>(&v); });
          }
          else
             throw exception::COutOfRange(parameterName + " is not an array");
@@ -1315,10 +1316,8 @@ namespace shared
       {
          if (found->IsArray())
          {
-            for (auto& v : found->GetArray())
-            {
-               result.push_back(shared::CDataContainer(v));
-            }
+			 std::transform(found->GetArray().begin(), found->GetArray().end(), std::back_inserter(result),
+				 [](auto &v) -> shared::CDataContainer { return shared::CDataContainer(v); });
          }
          else
             throw exception::COutOfRange(parameterName + " is not an array");
@@ -1343,10 +1342,8 @@ namespace shared
       {
          if (found->IsArray())
          {
-            for (auto& v : found->GetArray())
-            {
-               result.push_back((T)v.GetInt());
-            }
+			 std::transform(found->GetArray().begin(), found->GetArray().end(), std::back_inserter(result),
+				 [](auto &v) -> T { return (T)v.GetInt(); });
          }
          else
             throw exception::COutOfRange(parameterName + " is not an array");

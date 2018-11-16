@@ -222,18 +222,18 @@ void CSupervisor::run()
       if (dal && dal->getEventLogger())
          dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", e.displayText());
    }
+   catch (shared::exception::CException &ex)
+   {
+	   YADOMS_LOG(error) << "Supervisor : unhandled shared::exception::CException " << ex.what();
+	   if (dal && dal->getEventLogger())
+		   dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", ex.what());
+   }
    catch (std::exception& e)
    {
       YADOMS_LOG(error) << "Supervisor : unhandled exception " << e.what();
       if (dal && dal->getEventLogger())
          dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", e.what());
    }
-   catch (shared::exception::CException &ex)
-   {
-      YADOMS_LOG(error) << "Supervisor : unhandled shared::exception::CException " << ex.what();
-      if (dal && dal->getEventLogger())
-         dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", ex.what());
-   }   
    catch (...)
    {
       YADOMS_LOG(error) << "Supervisor : unhandled exception.";

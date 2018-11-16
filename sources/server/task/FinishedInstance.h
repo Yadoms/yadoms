@@ -22,14 +22,14 @@ namespace task {
 
    public:
       // IInstance implementation
-      virtual std::string getGuid() const;
-      virtual boost::optional<float> getProgression() const;
-      virtual std::string getMessage() const;
-      virtual std::string getExceptionMessage() const;
-      virtual ETaskStatus getStatus() const;
-      virtual shared::CDataContainer getTaskData() const;
-      virtual std::string getName() const;
-      virtual boost::posix_time::ptime getCreationDate() const;
+      std::string getGuid() const override;
+      boost::optional<float> getProgression() const override;
+      std::string getMessage() const override;
+      std::string getExceptionMessage() const override;
+      ETaskStatus getStatus() const override;
+      shared::CDataContainer getTaskData() const override;
+      std::string getName() const override;
+      boost::posix_time::ptime getCreationDate() const override;
       // [END] - IInstance implementation
 
    private:

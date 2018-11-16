@@ -144,7 +144,7 @@ namespace pluginSystem
       if (quality > 99)
          return 99; // Never returns 100 if there is at least one crash
 
-      return quality;
+      return static_cast<int>(quality);
    }
 } // namespace pluginSystem
 
