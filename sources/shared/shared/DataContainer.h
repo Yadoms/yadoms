@@ -800,7 +800,7 @@ namespace shared
          //--------------------------------------------------------------
          static boost::optional< T > getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
-            if(tree->containsValue(parameterName, pathCar))
+            if(tree->containsValue(parameterName, pathChar))
                return boost::optional<T>(helper<T>::getInternal(tree, parameterName, pathChar));
             return boost::optional<T>();
          }
