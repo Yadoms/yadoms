@@ -246,12 +246,20 @@
 		 // Hide the menus.
 		 loadExtraQueries(deviceRow, device);
 	 } else {
-		 if (!$(event.target).closest('ul.dropdown-extraqueries').length) {
-			clickDevice(device); 
-		 }
-		 else {
-			
-		 }
+             var targetButton = $(event.target).closest('button');
+             if (targetButton && !targetButton[0].disabled) {
+                   //button is enabled
+                  if (!$(event.target).closest('ul.dropdown-extraqueries').length) {
+                        //not a extraquery dropdown click
+			      clickDevice(device); 
+                  }
+                  else {
+                        //an extra query dropdown click
+                  }
+             }
+             else {
+             // buutton is disabled, do nothing           
+             }
 	 }   
 	 deviceRow.off().one('click', function (event) { onClickDeviceRow(event, deviceRow, device);} );
    }
