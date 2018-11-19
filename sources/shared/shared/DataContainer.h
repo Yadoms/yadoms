@@ -554,18 +554,18 @@ namespace shared
 
       rapidjson::Document * getPointer() const { return (rapidjson::Document *) &m_tree; }
 
-      std::string ConvertToString(rapidjson::Value* v) const;
-      bool ConvertToBool(rapidjson::Value* v) const;
-      int ConvertToInt(rapidjson::Value* v) const;
-      int64_t ConvertToInt64(rapidjson::Value* v) const;
-      char ConvertToByte(rapidjson::Value* v) const;
-      short ConvertToShort(rapidjson::Value* v) const;
-      unsigned int ConvertToUInt(rapidjson::Value* v) const;
-      uint64_t ConvertToUInt64(rapidjson::Value* v) const;
-      unsigned char ConvertToUByte(rapidjson::Value* v) const;
-      unsigned short ConvertToUShort(rapidjson::Value* v) const;
-      float ConvertToFloat(rapidjson::Value* v) const;
-      double ConvertToDouble(rapidjson::Value* v) const;
+      static std::string ConvertToString(rapidjson::Value* v);
+      static bool ConvertToBool(rapidjson::Value* v);
+      static int ConvertToInt(rapidjson::Value* v);
+      static int64_t ConvertToInt64(rapidjson::Value* v);
+      static char ConvertToByte(rapidjson::Value* v);
+      static short ConvertToShort(rapidjson::Value* v);
+      static unsigned int ConvertToUInt(rapidjson::Value* v);
+      static uint64_t ConvertToUInt64(rapidjson::Value* v);
+      static unsigned char ConvertToUByte(rapidjson::Value* v);
+      static unsigned short ConvertToUShort(rapidjson::Value* v);
+      static float ConvertToFloat(rapidjson::Value* v);
+      static double ConvertToDouble(rapidjson::Value* v);
       //--------------------------------------------------------------
       //
       //

@@ -648,6 +648,73 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
    }
 
 
+
+   BOOST_AUTO_TEST_CASE(MergeOldAndNewJsonStyle)
+   {
+	   shared::CDataContainer to(
+		   "{"
+		   "   \"developerMode\": false,"
+		   "   \"location\":"
+		   "   {"
+		   "      \"latitude\": 48.853,"
+		   "      \"longitude\": \"2.35\","
+		   "      \"timezone\": \"Europe/Paris\""
+		   "   },"
+		   "   \"language\": \"en\""
+		   "}");
+
+	   const shared::CDataContainer from(
+		   "{"
+		   "   \"developerMode\": \"true\","
+		   "   \"location\":"
+		   "   {"
+		   "      \"latitude\": \"52.5\""
+		   "   },"
+		   "   \"language\": \"fr\","
+		   "   \"newBloc\":"
+		   "   {"
+		   "      \"valueLevel1\": 1,"
+		   "      \"level2\":"
+		   "      {"
+		   "         \"valueLevel2\": 2,"
+		   "         \"level3\": "
+		   "         {"
+		   "            \"valueLevel3\": \"abc\""
+		   "         }"
+		   "      }"
+		   "   }"
+		   "}");
+
+	   const shared::CDataContainer expected(
+		   "{"
+		   "   \"developerMode\": true,"
+		   "   \"location\":"
+		   "   {"
+		   "      \"latitude\": 52.5,"
+		   "      \"longitude\": \"2.35\","
+		   "      \"timezone\": \"Europe/Paris\""
+		   "   },"
+		   "   \"language\": \"fr\","
+		   "   \"newBloc\":"
+		   "   {"
+		   "      \"valueLevel1\": 1,"
+		   "      \"level2\":"
+		   "      {"
+		   "         \"valueLevel2\": 2,"
+		   "         \"level3\": "
+		   "         {"
+		   "            \"valueLevel3\": \"abc\""
+		   "         }"
+		   "      }"
+		   "   }"
+		   "}");
+
+
+	   to.mergeFrom(from);
+	   BOOST_CHECK_EQUAL(to.serialize(), expected.serialize());
+   }
+
+
 #define BOOST_CHECK_MAPS(input, output) \
    { \
       BOOST_CHECK_EQUAL(input.size(), output.size());\

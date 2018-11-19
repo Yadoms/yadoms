@@ -320,10 +320,6 @@ namespace shared
          auto dstIt = dstObject.FindMember(srcIt->name);
          if (dstIt != dstObject.MemberEnd())
          {
-            //check type match, but also check some specific cases (kTrueType and kFalseType are booleans; and many number combination can alsom match)
-            assert(srcIt->value.GetType() == dstIt->value.GetType() || 
-               (srcIt->value.IsBool() && dstIt->value.IsBool()) ||
-               (srcIt->value.IsNumber() && dstIt->value.IsNumber()));
             if (srcIt->value.IsArray())
             {
                for (auto arrayIt = srcIt->value.Begin(); arrayIt != srcIt->value.End(); ++arrayIt)
@@ -337,7 +333,46 @@ namespace shared
             }
             else
             {
-               dstIt->value = srcIt->value;
+				//check type match, but also check some specific cases (kTrueType and kFalseType are booleans; and many number combination can alsom match)
+				if (srcIt->value.GetType() == dstIt->value.GetType() ||
+					(srcIt->value.IsBool() && dstIt->value.IsBool()) ||
+					(srcIt->value.IsNumber() && dstIt->value.IsNumber()))
+				{
+					dstIt->value = srcIt->value;
+				}
+				else
+				{
+					//types don't match, try to make concordance
+					switch (dstIt->value.GetType())
+					{
+					case rapidjson::kFalseType:
+					case rapidjson::kTrueType:
+						dstIt->value.SetBool(ConvertToBool(&srcIt->value));
+						break;
+					case rapidjson::kStringType:
+						dstIt->value.SetString(ConvertToString(&srcIt->value), allocator);
+						break;
+					case rapidjson::kNumberType:
+						if(dstIt->value.IsInt())
+							dstIt->value.SetInt(ConvertToInt(&srcIt->value));
+						else if (dstIt->value.IsInt64())
+							dstIt->value.SetInt64(ConvertToInt64(&srcIt->value));
+						else if (dstIt->value.IsUint())
+							dstIt->value.SetUint(ConvertToUInt(&srcIt->value));
+						else if (dstIt->value.IsUint64())
+							dstIt->value.SetUint64(ConvertToUInt64(&srcIt->value));
+						else if (dstIt->value.IsDouble())
+							dstIt->value.SetDouble(ConvertToDouble(&srcIt->value));
+						else if (dstIt->value.IsFloat())
+							dstIt->value.SetFloat(ConvertToFloat(&srcIt->value));
+						else
+							throw exception::CInvalidParameter("Value is not a valid type");
+						break;
+					default:
+						throw exception::CInvalidParameter("Value is not a valid type");
+						break;
+					}
+				}
             }
          }
          else
@@ -369,7 +404,7 @@ namespace shared
       throw exception::CInvalidParameter(parameterName + " : is not found");
    }
 
-   std::string CDataContainer::ConvertToString(rapidjson::Value* v) const
+   std::string CDataContainer::ConvertToString(rapidjson::Value* v)
    {
       if (v)
       {
@@ -401,7 +436,7 @@ namespace shared
       throw exception::CInvalidParameter("Parameter is null");
    }
 
-   bool CDataContainer::ConvertToBool(rapidjson::Value* v) const
+   bool CDataContainer::ConvertToBool(rapidjson::Value* v)
    {
       if (v)
       {
@@ -434,7 +469,7 @@ namespace shared
    }
 
 
-   int CDataContainer::ConvertToInt(rapidjson::Value* v) const 
+   int CDataContainer::ConvertToInt(rapidjson::Value* v) 
    {
       if (v)
       {
@@ -466,7 +501,7 @@ namespace shared
       throw exception::CInvalidParameter("Parameter is null");
    }
 
-   int64_t CDataContainer::ConvertToInt64(rapidjson::Value* v) const
+   int64_t CDataContainer::ConvertToInt64(rapidjson::Value* v)
    {
       if (v)
       {
@@ -498,7 +533,7 @@ namespace shared
       throw exception::CInvalidParameter("Parameter is null");
    }
 
-   char CDataContainer::ConvertToByte(rapidjson::Value* v) const
+   char CDataContainer::ConvertToByte(rapidjson::Value* v)
    {
       if (v)
       {
@@ -530,7 +565,7 @@ namespace shared
       throw exception::CInvalidParameter("Parameter is null");
    }
 
-   short CDataContainer::ConvertToShort(rapidjson::Value* v) const
+   short CDataContainer::ConvertToShort(rapidjson::Value* v)
    {
       if (v)
       {
@@ -561,7 +596,7 @@ namespace shared
       }
       throw exception::CInvalidParameter("Parameter is null");
    }
-   unsigned int CDataContainer::ConvertToUInt(rapidjson::Value* v) const
+   unsigned int CDataContainer::ConvertToUInt(rapidjson::Value* v)
    {
       if (v)
       {
@@ -592,7 +627,7 @@ namespace shared
       }
       throw exception::CInvalidParameter("Parameter is null");
    }
-   uint64_t CDataContainer::ConvertToUInt64(rapidjson::Value* v) const
+   uint64_t CDataContainer::ConvertToUInt64(rapidjson::Value* v)
    {
       if (v)
       {
@@ -623,7 +658,7 @@ namespace shared
       }
       throw exception::CInvalidParameter("Parameter is null");
    }
-   unsigned char CDataContainer::ConvertToUByte(rapidjson::Value* v) const
+   unsigned char CDataContainer::ConvertToUByte(rapidjson::Value* v)
    {
       if (v)
       {
@@ -654,7 +689,7 @@ namespace shared
       }
       throw exception::CInvalidParameter("Parameter is null");
    }
-   unsigned short CDataContainer::ConvertToUShort(rapidjson::Value* v) const
+   unsigned short CDataContainer::ConvertToUShort(rapidjson::Value* v)
    {
       if (v)
       {
@@ -686,7 +721,7 @@ namespace shared
       throw exception::CInvalidParameter("Parameter is null");
    }
 
-   float CDataContainer::ConvertToFloat(rapidjson::Value* v) const
+   float CDataContainer::ConvertToFloat(rapidjson::Value* v)
    {
       if (v)
       {
@@ -717,7 +752,7 @@ namespace shared
       }
       throw exception::CInvalidParameter("Parameter is null");
    }
-   double CDataContainer::ConvertToDouble(rapidjson::Value* v) const
+   double CDataContainer::ConvertToDouble(rapidjson::Value* v)
    {
       if (v)
       {
