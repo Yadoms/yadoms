@@ -320,7 +320,7 @@ adaptValuesAndUnit = function (values, range, baseUnit, callback) {
    adaptRange = function(rangeToAdapt, coeff) {
       var newRange = [];
       $.each(rangeToAdapt, function (index,value) {
-         newArray.push([value[0],parseFloat(value[1])*coeff,parseFloat(value[2])*coeff]);
+         newRange.push([value[0],parseFloat(value[1])*coeff,parseFloat(value[2])*coeff]);
       });
       return newRange;
    };
