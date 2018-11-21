@@ -430,8 +430,20 @@ namespace shared
       //--------------------------------------------------------------
       bool containsValue(const std::string& parameterName = std::string(), const char pathChar = '.') const;
 
+	  //--------------------------------------------------------------
+	  /// \brief	  Set a value as null
+	  /// \param [in] parameterName    Name of the parameter
+	  /// \param [in] pathChar         The path spearator to use (default is '.')
+	  //--------------------------------------------------------------
       void setNull(const std::string& parameterName = std::string(), const char pathChar = '.');
-      bool isNull(const std::string& parameterName = std::string(), const char pathChar = '.');
+
+	  //--------------------------------------------------------------
+	  /// \brief	  Check if a value is null
+	  /// \param [in] parameterName    Name of the parameter
+	  /// \param [in] pathChar         The path spearator to use (default is '.')
+	  /// \return  true is the value is null
+	  //--------------------------------------------------------------
+	  bool isNull(const std::string& parameterName = std::string(), const char pathChar = '.');
 
       //--------------------------------------------------------------
       /// \brief		Equality operator
@@ -548,24 +560,123 @@ namespace shared
       //--------------------------------------------------------------
       explicit CDataContainer(const rapidjson::Document & initialTree);
 
-      rapidjson::Value* findValue(const std::string& parameterName, const char pathChar) const;
+	  //--------------------------------------------------------------
+	  /// \brief		Find a value from the name
+	  /// \param [in] parameterName    The parameter name
+	  /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
+	  //--------------------------------------------------------------
+	  rapidjson::Value* findValue(const std::string& parameterName, const char pathChar) const;
 
-      static void mergeObjects(rapidjson::Value &dstObject, rapidjson::Value &srcObject, rapidjson::Document::AllocatorType &allocator);
+	  //--------------------------------------------------------------
+	  /// \brief	Merge two objects
+	  /// \param [in] dstObject    Destination value
+	  /// \param [in] srcObject    Source value
+	  /// \param [in] allocator    The allocator
+	  //--------------------------------------------------------------
+	  static void mergeObjects(rapidjson::Value &dstObject, rapidjson::Value &srcObject, rapidjson::Document::AllocatorType &allocator);
 
-      rapidjson::Document * getPointer() const { return (rapidjson::Document *) &m_tree; }
+	  //--------------------------------------------------------------
+	  /// \brief	Get pointer on the top root object
+	  /// \return   A pointer on the rapidjson::Document
+	  //--------------------------------------------------------------
+	  rapidjson::Document * getPointer() const;
 
-      static std::string ConvertToString(rapidjson::Value* v);
-      static bool ConvertToBool(rapidjson::Value* v);
-      static int ConvertToInt(rapidjson::Value* v);
-      static int64_t ConvertToInt64(rapidjson::Value* v);
-      static char ConvertToByte(rapidjson::Value* v);
-      static short ConvertToShort(rapidjson::Value* v);
-      static unsigned int ConvertToUInt(rapidjson::Value* v);
-      static uint64_t ConvertToUInt64(rapidjson::Value* v);
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a std::string
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as std::string
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static std::string ConvertToString(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a bool
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as bool (check for "true"/"false", "0"/"1", or ay numeric != 0)
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static bool ConvertToBool(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a Int
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as int 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static int ConvertToInt(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a Int64
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as int64 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static int64_t ConvertToInt64(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a char
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as char 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static char ConvertToByte(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a short
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as short 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static short ConvertToShort(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a unsigned int
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as unsigned int 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static unsigned int ConvertToUInt(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a unsigned int64
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as unsigned int64 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static uint64_t ConvertToUInt64(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a unsigned char
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as unsigned char 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
       static unsigned char ConvertToUByte(rapidjson::Value* v);
-      static unsigned short ConvertToUShort(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a unsigned short
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as unsigned short 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static unsigned short ConvertToUShort(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a float
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as float 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
       static float ConvertToFloat(rapidjson::Value* v);
-      static double ConvertToDouble(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a double
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as double 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static double ConvertToDouble(rapidjson::Value* v);
+
       //--------------------------------------------------------------
       //
       //
@@ -620,7 +731,6 @@ namespace shared
       template<class T>
       inline std::vector<T> getValuesInternalIDataContainable(const std::string& parameterName, const char pathChar) const;
 
-
       //--------------------------------------------------------------
       /// \brief	    Get parameter values (boost::shared_ptr<T>)
       /// \param [in] parameterName    Name of the parameter
@@ -642,7 +752,6 @@ namespace shared
       //--------------------------------------------------------------
       template<class T>
       inline std::vector< boost::shared_ptr<T> > getValuesSPIDataContainableInternal(const std::string& parameterName, const char pathChar) const;
-
 
       //--------------------------------------------------------------
       /// \brief	    Set parameter value
@@ -725,7 +834,12 @@ namespace shared
       inline void setValuesSPIDataContainableInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<IDataContainable> > & values, const char pathChar);
 
 
-
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a typed value (T)
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as T 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
       template <class T>
       inline T convert(rapidjson::Value* found) const;
 
@@ -1147,24 +1261,6 @@ namespace shared
    }
 
    template<>
-   inline unsigned char CDataContainer::get(const std::string& parameterName, const char pathChar) const
-   {
-      return static_cast<unsigned char>(get<unsigned int>(parameterName, pathChar));
-   }
-
-   template<>
-   inline char CDataContainer::get(const std::string& parameterName, const char pathChar) const
-   {
-      return get<std::string>(parameterName, pathChar)[0];
-   }
-
-   template<>
-   inline unsigned short CDataContainer::get(const std::string& parameterName, const char pathChar) const
-   {
-      return static_cast<unsigned short>(get<unsigned short>(parameterName, pathChar));
-   }
-
-   template<>
    inline unsigned long CDataContainer::get(const std::string& parameterName, const char pathChar) const
    {
       return get<unsigned int>(parameterName, pathChar);
@@ -1175,13 +1271,6 @@ namespace shared
    {
       return get<int>(parameterName, pathChar);
    }
-
-   template<>
-   inline short CDataContainer::get(const std::string& parameterName, const char pathChar) const
-   {
-      return static_cast<short>(get<short>(parameterName, pathChar));
-   }
-
 
    template<class T>
    inline T CDataContainer::getWithDefault(const std::string& parameterName, const T & defaultValue, const char pathChar) const

@@ -647,7 +647,334 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       BOOST_CHECK_EQUAL(to.serialize(), expected.serialize());
    }
 
+   BOOST_AUTO_TEST_CASE(CheckDataLimits)
+   {
+	   shared::CDataContainer c(
+		   "{"
+		   "   \"char_min\": -128,"
+		   "   \"char_max\": 127,"
+		   "   \"uchar_max\": 255,"
+		   "   \"short_min\": -32768,"
+		   "   \"short_max\": 32767,"
+		   "   \"ushort_max\": 65535,"
+		   "   \"int_min\": -2147483648,"
+		   "   \"int_max\": 2147483647,"
+		   "   \"uint_max\": 4294967295,"
+		   "   \"int64_min\": -9223372036854775808,"
+		   "   \"int64_max\": 9223372036854775807,"
+		   "   \"uint64_max\": 18446744073709551615"
+		   "}");
 
+	   shared::CDataContainer c2(
+		   "{"
+   	       "   \"double\": 42.0,"
+		   "   \"float\": 42.0,"
+		   "   \"float_gt_ushort_max\": 65535.1,"
+		   "   \"float_gt_short_max\": 32767.1,"
+		   "   \"float_eq_short_max\": 32767.0"
+		   "}");
+
+	   //check some out of range
+
+	   BOOST_CHECK_EQUAL(c.get<char>("char_min"), INT8_MIN);
+	   BOOST_CHECK_EQUAL(c.get<char>("char_max"), INT8_MAX);
+	   BOOST_CHECK_THROW(c.get<char>("uchar_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<char>("short_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<char>("short_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<char>("ushort_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<char>("int_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<char>("int_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<char>("uint_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<char>("int64_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<char>("int64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<char>("uint64_max"), shared::exception::COutOfRange);
+
+	   BOOST_CHECK_THROW(c.get<unsigned char>("char_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_EQUAL(c.get<unsigned char>("char_max"), INT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<unsigned char>("uchar_max"), UINT8_MAX);
+	   BOOST_CHECK_THROW(c.get<unsigned char>("short_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned char>("short_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned char>("ushort_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned char>("int_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned char>("int_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned char>("uint_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned char>("int64_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned char>("int64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned char>("uint64_max"), shared::exception::COutOfRange);
+
+	   BOOST_CHECK_EQUAL(c.get<short>("char_min"), INT8_MIN);
+	   BOOST_CHECK_EQUAL(c.get<short>("char_max"), INT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<short>("uchar_max"), UINT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<short>("short_min"), INT16_MIN);
+	   BOOST_CHECK_EQUAL(c.get<short>("short_max"), INT16_MAX);
+	   BOOST_CHECK_THROW(c.get<short>("ushort_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<short>("int_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<short>("int_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<short>("uint_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<short>("int64_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<short>("int64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<short>("uint64_max"), shared::exception::COutOfRange);
+
+	   BOOST_CHECK_THROW(c.get<unsigned short>("char_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_EQUAL(c.get<unsigned short>("char_max"), INT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<unsigned short>("uchar_max"), UINT8_MAX);
+	   BOOST_CHECK_THROW(c.get<unsigned short>("short_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_EQUAL(c.get<unsigned short>("short_max"), INT16_MAX);
+	   BOOST_CHECK_EQUAL(c.get<unsigned short>("ushort_max"), UINT16_MAX);
+	   BOOST_CHECK_THROW(c.get<unsigned short>("int_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned short>("int_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned short>("uint_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned short>("int64_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned short>("int64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned short>("uint64_max"), shared::exception::COutOfRange);
+
+	   BOOST_CHECK_EQUAL(c.get<int>("char_min"), INT8_MIN);
+	   BOOST_CHECK_EQUAL(c.get<int>("char_max"), INT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int>("uchar_max"), UINT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int>("short_min"), INT16_MIN);
+	   BOOST_CHECK_EQUAL(c.get<int>("short_max"), INT16_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int>("ushort_max"), UINT16_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int>("int_min"), INT32_MIN);
+	   BOOST_CHECK_EQUAL(c.get<int>("int_max"), INT32_MAX);
+	   BOOST_CHECK_THROW(c.get<int>("uint_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<int>("int64_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<int>("int64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<int>("uint64_max"), shared::exception::COutOfRange);
+
+	   BOOST_CHECK_THROW(c.get<unsigned int>("char_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_EQUAL(c.get<unsigned int>("char_max"), static_cast<unsigned int>(INT8_MAX));
+	   BOOST_CHECK_EQUAL(c.get<unsigned int>("uchar_max"), UINT8_MAX);
+	   BOOST_CHECK_THROW(c.get<unsigned int>("short_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_EQUAL(c.get<unsigned int>("short_max"), static_cast<unsigned int>(INT16_MAX));
+	   BOOST_CHECK_EQUAL(c.get<unsigned int>("ushort_max"), UINT16_MAX);
+	   BOOST_CHECK_THROW(c.get<unsigned int>("int_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_EQUAL(c.get<unsigned int>("int_max"), static_cast<unsigned int>(INT32_MAX));
+	   BOOST_CHECK_EQUAL(c.get<unsigned int>("uint_max"), UINT32_MAX);
+	   BOOST_CHECK_THROW(c.get<unsigned int>("int64_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned int>("int64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned int>("uint64_max"), shared::exception::COutOfRange);
+
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("char_min"), INT8_MIN);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("char_max"), INT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("uchar_max"), UINT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("short_min"), INT16_MIN);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("short_max"), INT16_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("ushort_max"), UINT16_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("int_min"), INT32_MIN);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("int_max"), INT32_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("uint_max"), UINT32_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("int64_min"), INT64_MIN);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("int64_max"), INT64_MAX);
+	   BOOST_CHECK_THROW(c.get<int64_t>("uint64_max"), shared::exception::COutOfRange);
+
+	   BOOST_CHECK_THROW(c.get<uint64_t>("char_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("char_max"), INT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("uchar_max"), UINT8_MAX);
+	   BOOST_CHECK_THROW(c.get<uint64_t>("short_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("short_max"), INT16_MAX);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("ushort_max"), UINT16_MAX);
+	   BOOST_CHECK_THROW(c.get<uint64_t>("int_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("int_max"), INT32_MAX);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("uint_max"), UINT32_MAX);
+	   BOOST_CHECK_THROW(c.get<uint64_t>("int64_min"), shared::exception::COutOfRange);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("int64_max"), static_cast<uint64_t>(INT64_MAX));
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("uint64_max"), UINT64_MAX);
+   }
+
+   BOOST_AUTO_TEST_CASE(CheckDataLimitsFloatingPrecision)
+   {
+	   shared::CDataContainer c(
+		   "{"
+		   "   \"double\": 42.0,"
+		   "   \"float\": 42.0,"
+		   "   \"double2\": 42.1,"
+		   "   \"float2\": 42.1,"
+		   "   \"gt_uchar_max\": 255.1,"
+		   "   \"gt_char_max\": 127.1,"
+		   "   \"eq_char_max\": 127.0,"
+		   "   \"gt_ushort_max\": 65535.1,"
+		   "   \"gt_short_max\": 32767.1,"
+		   "   \"eq_short_max\": 32767.0,"
+		   "   \"gt_uint_max\": 4294967295.1,"
+		   "   \"gt_int_max\": 2147483647.1,"
+		   "   \"eq_int_max\": 2147483647.0,"
+		   "   \"gt_uint64_max\": 18446744073709551615.1,"
+		   "   \"gt_int64_max\": 9223372036854775807.1,"
+		   "   \"eq_int64_max\": 9223372036854775807.0"
+		   "}");
+
+	   //check some out of range
+	   BOOST_CHECK_EQUAL(c.get<char>("double"), 42);
+	   BOOST_CHECK_EQUAL(c.get<char>("float"), 42);
+	   BOOST_CHECK_EQUAL(c.get<char>("double2"), 42);
+	   BOOST_CHECK_EQUAL(c.get<char>("float2"), 42);
+	   BOOST_CHECK_THROW(c.get<char>("gt_uchar_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<char>("gt_char_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_EQUAL(c.get<char>("eq_char_max"), INT8_MAX);
+	   BOOST_CHECK_THROW(c.get<char>("gt_ushort_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<char>("gt_short_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<char>("eq_short_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<char>("gt_uint_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<char>("gt_int_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<char>("eq_int_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<char>("gt_uint64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<char>("gt_int64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<char>("eq_int64_max"), shared::exception::COutOfRange);
+	   
+	   BOOST_CHECK_EQUAL(c.get<unsigned char>("double"), 42);
+	   BOOST_CHECK_EQUAL(c.get<unsigned char>("float"), 42);
+	   BOOST_CHECK_EQUAL(c.get<unsigned char>("double2"), 42);
+	   BOOST_CHECK_EQUAL(c.get<unsigned char>("float2"), 42);
+	   BOOST_CHECK_THROW(c.get<unsigned char>("gt_uchar_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_EQUAL(c.get<unsigned char>("gt_char_max"), INT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<unsigned char>("eq_char_max"), INT8_MAX);
+	   BOOST_CHECK_THROW(c.get<unsigned char>("gt_ushort_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned char>("gt_short_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned char>("eq_short_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned char>("gt_uint_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned char>("gt_int_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned char>("eq_int_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned char>("gt_uint64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned char>("gt_int64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned char>("eq_int64_max"), shared::exception::COutOfRange);
+
+	   BOOST_CHECK_EQUAL(c.get<short>("double"), 42);
+	   BOOST_CHECK_EQUAL(c.get<short>("float"), 42);
+	   BOOST_CHECK_EQUAL(c.get<short>("double2"), 42);
+	   BOOST_CHECK_EQUAL(c.get<short>("float2"), 42);
+	   BOOST_CHECK_EQUAL(c.get<short>("gt_uchar_max"), UINT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<short>("gt_char_max"), INT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<short>("eq_char_max"), INT8_MAX);
+	   BOOST_CHECK_THROW(c.get<short>("gt_ushort_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<short>("gt_short_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_EQUAL(c.get<short>("eq_short_max"), INT16_MAX);
+	   BOOST_CHECK_THROW(c.get<short>("gt_uint_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<short>("gt_int_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<short>("eq_int_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<short>("gt_uint64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<short>("gt_int64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<short>("eq_int64_max"), shared::exception::COutOfRange);
+
+	   BOOST_CHECK_EQUAL(c.get<unsigned short>("double"), 42);
+	   BOOST_CHECK_EQUAL(c.get<unsigned short>("float"), 42);
+	   BOOST_CHECK_EQUAL(c.get<unsigned short>("double2"), 42);
+	   BOOST_CHECK_EQUAL(c.get<unsigned short>("float2"), 42);
+	   BOOST_CHECK_EQUAL(c.get<unsigned short>("gt_uchar_max"), UINT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<unsigned short>("gt_char_max"), INT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<unsigned short>("eq_char_max"), INT8_MAX);
+	   BOOST_CHECK_THROW(c.get<unsigned short>("gt_ushort_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_EQUAL(c.get<unsigned short>("gt_short_max"), INT16_MAX);
+	   BOOST_CHECK_EQUAL(c.get<unsigned short>("eq_short_max"), INT16_MAX);
+	   BOOST_CHECK_THROW(c.get<unsigned short>("gt_uint_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned short>("gt_int_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned short>("eq_int_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned short>("gt_uint64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned short>("gt_int64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned short>("eq_int64_max"), shared::exception::COutOfRange);
+
+	   BOOST_CHECK_EQUAL(c.get<int>("double"), 42);
+	   BOOST_CHECK_EQUAL(c.get<int>("float"), 42);
+	   BOOST_CHECK_EQUAL(c.get<int>("double2"), 42);
+	   BOOST_CHECK_EQUAL(c.get<int>("float2"), 42);
+	   BOOST_CHECK_EQUAL(c.get<int>("gt_uchar_max"), UINT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int>("gt_char_max"), INT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int>("eq_char_max"), INT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int>("gt_ushort_max"), UINT16_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int>("gt_short_max"), INT16_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int>("eq_short_max"), INT16_MAX);
+	   BOOST_CHECK_THROW(c.get<int>("gt_uint_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<int>("gt_int_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_EQUAL(c.get<int>("eq_int_max"), INT32_MAX);
+	   BOOST_CHECK_THROW(c.get<int>("gt_uint64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<int>("gt_int64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<int>("eq_int64_max"), shared::exception::COutOfRange);
+
+	   BOOST_CHECK_EQUAL(c.get<unsigned int>("double"), static_cast<unsigned int>(42));
+	   BOOST_CHECK_EQUAL(c.get<unsigned int>("float"), static_cast<unsigned int>(42));
+	   BOOST_CHECK_EQUAL(c.get<unsigned int>("double2"), static_cast<unsigned int>(42));
+	   BOOST_CHECK_EQUAL(c.get<unsigned int>("float2"), static_cast<unsigned int>(42));
+	   BOOST_CHECK_EQUAL(c.get<unsigned int>("gt_uchar_max"), UINT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<unsigned int>("gt_char_max"), static_cast<unsigned int>(INT8_MAX));
+	   BOOST_CHECK_EQUAL(c.get<unsigned int>("eq_char_max"), static_cast<unsigned int>(INT8_MAX));
+	   BOOST_CHECK_EQUAL(c.get<unsigned int>("gt_ushort_max"), UINT16_MAX);
+	   BOOST_CHECK_EQUAL(c.get<unsigned int>("gt_short_max"), static_cast<unsigned int>(INT16_MAX));
+	   BOOST_CHECK_EQUAL(c.get<unsigned int>("eq_short_max"), static_cast<unsigned int>(INT16_MAX));
+	   BOOST_CHECK_THROW(c.get<unsigned int>("gt_uint_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_EQUAL(c.get<unsigned int>("gt_int_max"), static_cast<unsigned int>(INT32_MAX));
+	   BOOST_CHECK_EQUAL(c.get<unsigned int>("eq_int_max"), static_cast<unsigned int>(INT32_MAX));
+	   BOOST_CHECK_THROW(c.get<unsigned int>("gt_uint64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned int>("gt_int64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<unsigned int>("eq_int64_max"), shared::exception::COutOfRange);
+
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("double"), 42);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("float"), 42);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("double2"), 42);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("float2"), 42);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("gt_uchar_max"), UINT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("gt_char_max"), INT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("eq_char_max"), INT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("gt_ushort_max"), UINT16_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("gt_short_max"), INT16_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("eq_short_max"), INT16_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("gt_uint_max"), UINT32_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("gt_int_max"), INT32_MAX);
+	   BOOST_CHECK_EQUAL(c.get<int64_t>("eq_int_max"), INT32_MAX);
+	   BOOST_CHECK_THROW(c.get<int64_t>("gt_uint64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<int64_t>("gt_int64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_THROW(c.get<int64_t>("eq_int64_max"), shared::exception::COutOfRange); //int64 max with .0 is overflowed
+
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("double"), 42);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("float"), 42);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("double2"), 42);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("float2"), 42);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_uchar_max"), UINT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_char_max"), INT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("eq_char_max"), INT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_ushort_max"), UINT16_MAX);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_short_max"), INT16_MAX);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("eq_short_max"), INT16_MAX);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_uint_max"), UINT32_MAX);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_int_max"), INT32_MAX);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("eq_int_max"), INT32_MAX);
+	   BOOST_CHECK_THROW(c.get<uint64_t>("gt_uint64_max"), shared::exception::COutOfRange);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_int64_max"), 9223372036854775807.1);
+	   BOOST_CHECK_EQUAL(c.get<uint64_t>("eq_int64_max"), 9223372036854775807.1); //int64 max with .0 is overflowed
+
+	   BOOST_CHECK_EQUAL(c.get<double>("double"), 42);
+	   BOOST_CHECK_EQUAL(c.get<double>("float"), 42);
+	   BOOST_CHECK_EQUAL(c.get<double>("double2"), 42.1);
+	   BOOST_CHECK_EQUAL(c.get<double>("float2"), 42.1);
+	   BOOST_CHECK_EQUAL(c.get<double>("gt_uchar_max"), 255.1);
+	   BOOST_CHECK_EQUAL(c.get<double>("gt_char_max"), 127.1);
+	   BOOST_CHECK_EQUAL(c.get<double>("eq_char_max"), INT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<double>("gt_ushort_max"), 65535.1);
+	   BOOST_CHECK_EQUAL(c.get<double>("gt_short_max"), 32767.1);
+	   BOOST_CHECK_EQUAL(c.get<double>("eq_short_max"), INT16_MAX);
+	   BOOST_CHECK_EQUAL(c.get<double>("gt_uint_max"), 4294967295.1);
+	   BOOST_CHECK_EQUAL(c.get<double>("gt_int_max"), 2147483647.1);
+	   BOOST_CHECK_EQUAL(c.get<double>("eq_int_max"), INT32_MAX);
+	   BOOST_CHECK_EQUAL(c.get<double>("gt_uint64_max"), 18446744073709551615.1);
+	   BOOST_CHECK_EQUAL(c.get<double>("gt_int64_max"), 9223372036854775807.1);
+	   BOOST_CHECK_EQUAL(c.get<double>("eq_int64_max"), INT64_MAX); 
+
+	   BOOST_CHECK_EQUAL(c.get<float>("double"), 42);
+	   BOOST_CHECK_EQUAL(c.get<float>("float"), 42);
+	   BOOST_CHECK_EQUAL(c.get<float>("double2"), 42.1f);
+	   BOOST_CHECK_EQUAL(c.get<float>("float2"), 42.1f);
+	   BOOST_CHECK_EQUAL(c.get<float>("gt_uchar_max"), 255.1f);
+	   BOOST_CHECK_EQUAL(c.get<float>("gt_char_max"), 127.1f);
+	   BOOST_CHECK_EQUAL(c.get<float>("eq_char_max"), INT8_MAX);
+	   BOOST_CHECK_EQUAL(c.get<float>("gt_ushort_max"), 65535.1f);
+	   BOOST_CHECK_EQUAL(c.get<float>("gt_short_max"), 32767.1f);
+	   BOOST_CHECK_EQUAL(c.get<float>("eq_short_max"), INT16_MAX);
+	   BOOST_CHECK_EQUAL(c.get<float>("gt_uint_max"), 4294967295.1f);
+	   BOOST_CHECK_EQUAL(c.get<float>("gt_int_max"), 2147483647.1f);
+	   BOOST_CHECK_EQUAL(c.get<float>("eq_int_max"), INT32_MAX);
+	   BOOST_CHECK_EQUAL(c.get<float>("gt_uint64_max"), 18446744073709551615.1f);
+	   BOOST_CHECK_EQUAL(c.get<float>("gt_int64_max"), 9223372036854775807.1f);
+	   BOOST_CHECK_EQUAL(c.get<float>("eq_int64_max"), INT64_MAX);
+
+   }
 
    BOOST_AUTO_TEST_CASE(MergeOldAndNewJsonStyle)
    {
