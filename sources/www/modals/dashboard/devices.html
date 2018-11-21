@@ -2,6 +2,7 @@
    <h1 class="page-header"><span class="fa fa-tasks"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.title"></span></h1>
    <span data-i18n="modals.dashboard.sub-windows.devices.deviceListDescription"></span><br>
    <button id="btn-add-new-device" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-tasks"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.new"></span></button>
+   <button id="btn-merge-devices" type="button" class="btn btn-primary dashboard-btn-new"><span class="fa fa-compress"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.merge"></span></button>
    <table id="device-list" class="table table-bordered table-striped dashboard-list">
          <thead>
             <th data-i18n="modals.dashboard.sub-windows.devices.table.name" class="col-md-2"></th>
@@ -263,6 +264,7 @@
       });
       
       Yadoms.DeviceDashboardRegisterButtonAddNewDevice();
+      Yadoms.DeviceDashboardRegisterButtonMergeDevices();
       
       $("table#device-list").on("remove", function () {
          //subscribe only the page, no extra device at the remove of this page
@@ -374,7 +376,11 @@
    }   
    
    Yadoms.DeviceDashboardRegisterButtonAddNewDevice = function () {
-      $("#btn-add-new-device").one("click", function () {addNewDevice();});
+      $("#btn-add-new-device").on("click", function () {addNewDevice();});
+   };
+   
+   Yadoms.DeviceDashboardRegisterButtonMergeDevices = function () {
+      $("#btn-merge-devices").on("click", function () {mergeDevices();});
    };
 
    function refreshDeviceList() {
@@ -893,6 +899,13 @@
                });
             }
          });         
+      });
+   }
+
+   function mergeDevices() {
+      Yadoms.modals.deviceMerge.loadAsync()
+      .done(function () {
+         Yadoms.showMergeDevicesModal();
       });
    }
 

@@ -230,6 +230,21 @@
         }
       }
     },
+    "merge-devices": {
+      "title": "Merge devices",
+      "help1": "This operation is used to replace a device by an other by merging historic of the both devices. This operation is useful for example when a device changed its identifier after a changing its battery.",
+      "help2": "The new device must be compatible with the old device.",
+      "help3": "No modification of your widgets or devices will be necessary after the opration.",
+      "source-device": {
+        "name": "Source device",
+        "description": "Select the new device"
+      },
+      "summaryStart1": "The new device {{sourceDeviceName}} will be merged with the old device {{targetDeviceName}} :",
+      "summaryStart2": "- Data of {{sourceDeviceName}} will be copied with data of {{targetDeviceName}} :",
+      "summaryKeywordLine": "\t- Data of {{sourceKeywordName}} from {{sourceDeviceName}} will be copied with data of {{targetKeywordName}} from {{targetDeviceName}}",
+      "summaryEnd": "- Device {{sourceDeviceName}} will be removed",
+      "summaryWarning": "This operation can not be undone"
+    },
     "delete-device": {
       "title": "Blacklist device",
       "text": "This operation will blacklist {{deviceName}}  device, and remove its data hostoric.",
@@ -632,6 +647,7 @@
           "title": "Devices",
           "deviceListDescription": "Here is the list of all devices. You can manage your devices from here.",
           "new": "Create a new device",
+          "merge": "Merge devices",
           "table": {
             "name": "Name",
             "attachedTo": "Attached to plugin",

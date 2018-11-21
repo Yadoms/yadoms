@@ -230,6 +230,23 @@
         }
       }
     },
+    "merge-devices": {
+      "title": "Fusionner des équipements",
+      "help1": "Cette opération permet de remplacer un équipement par un autre en fusionnant l'historique des données des 2 équipements. Cette opération est utile par exemple dans le cas où un équipement a changé d'identifiant suite à un remplacement de pile.",
+      "help2": "Le nouvel équipement doit être compatible avec l'ancien.",
+      "help3": "Aucune modification de vos widgets ou règles ne sera nécessaire suite à cette opération.",
+      "source-device": {
+        "sourceDeviceListCombo": {
+          "name": "Nouvel équipement",
+          "description": "Sélectionner le nouvel équipement"
+        }
+      },
+      "summaryStart1": "Le nouvel équipement {{sourceDeviceName}} sera fusionné avec l'ancien équipement {{targetDeviceName}} :",
+      "summaryStart2": "- Les données de {{sourceDeviceName}} seront copiées avec les données de {{targetDeviceName}} :",
+      "summaryKeywordLine": "\t- Les données de {{sourceKeywordName}} de {{sourceDeviceName}} seront copiées avec les données de {{targetKeywordName}} de {{targetDeviceName}}",
+      "summaryEnd": "- L'équipement {{sourceDeviceName}} sera supprimé",
+      "summaryWarning": "Cette opération n'est pas réversible"
+    },
     "delete-device": {
       "title": "Mettre l'équipement en liste noire",
       "text": "Cette opération va mettre l'équipement {{deviceName}} en liste noire, et supprimer son historique de données.",
@@ -632,6 +649,7 @@
           "title": "Equipements",
           "deviceListDescription": "Gestion des équipements",
           "new": "Créer un équipement",
+          "merge": "Fusionner des équipements",
           "table": {
             "name": "Nom",
             "attachedTo": "Attaché au plugin",
@@ -1227,7 +1245,7 @@
       "noUnit": "",
       "ampere": "A",
       "kampere": "KA",
-      "mampere": "mA",      
+      "mampere": "mA",
       "ampereHour": "Ah",
       "cubicMetre": "m³",
       "cubicMeterPerSecond": "m³/s",
