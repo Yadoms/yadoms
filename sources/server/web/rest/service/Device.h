@@ -20,7 +20,6 @@ namespace web
                     communication::ISendMessageAsync& messageSender);
             virtual ~CDevice();
 
-         public:
             // IRestService implementation
             void configureDispatcher(CRestDispatcher& dispatcher) override;
             // [END] IRestService implementation
@@ -34,7 +33,12 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> getOneDevice(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
             //-----------------------------------------
-            ///\brief   get configurationd schema of specified device
+            ///\brief   get device compatible for merge operation
+            //-----------------------------------------
+            boost::shared_ptr<shared::serialization::IDataSerializable> getCompatibleForMergeDevice(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+
+            //-----------------------------------------
+            ///\brief   get configuration schema of specified device
             //-----------------------------------------
             boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceConfigurationSchema(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
@@ -114,7 +118,6 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> updateKeywordBlacklist(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
 
-         private:
             //-----------------------------------------
             ///\brief   Transactional method used to encapsulate operation in transactions
             //-----------------------------------------
@@ -126,6 +129,7 @@ namespace web
             ///\brief   Data provider
             //-----------------------------------------
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
+            boost::shared_ptr<database::IDeviceRequester> m_deviceRequester;
 
             //-----------------------------------------
             ///\brief   Plugin manager (required for some operations)

@@ -4,6 +4,7 @@
 #include "web/rest/Result.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "communication/callback/SynchronousCallback.h"
+#include "database/common/requesters/Keyword.h"
 
 namespace web
 {
@@ -20,6 +21,7 @@ namespace web
                           boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordManager,
                           communication::ISendMessageAsync& messageSender)
             : m_dataProvider(dataProvider),
+              m_deviceRequester(dataProvider->getDeviceRequester()),
               m_pluginManager(pluginManager),
               m_deviceManager(deviceManager),
               m_keywordManager(keywordManager),
@@ -41,6 +43,7 @@ namespace web
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CDevice::getAllDevices);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CDevice::getOneDevice);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("compatibleForMergeDevice"), CDevice::getCompatibleForMergeDevice);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("configurationSchema"), CDevice::getDeviceConfigurationSchema);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword"), CDevice::getAllKeywords);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*"), CDevice::getKeyword);
@@ -70,8 +73,87 @@ namespace web
             if (parameters.size() > 1)
                objectId = parameters[1];
 
-            const auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(boost::lexical_cast<int>(objectId), true);
+            const auto deviceFound = m_deviceRequester->getDevice(boost::lexical_cast<int>(objectId), true);
             return CResult::GenerateSuccess(deviceFound);
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getCompatibleForMergeDevice(
+            const std::vector<std::string>& parameters, const std::string& requestContent) const
+         {
+            try
+            {
+               if (parameters.size() <= 1)
+                  return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
+
+               const auto refDeviceId = boost::lexical_cast<int>(parameters[1]);
+
+               // A device is compatible for merge with an other when :
+               // - plugins are compatible (see m_deviceRequester->getCompatibleForMergeDevice)
+               // - They contain at least one compatible keyword. Keywords are compatible when :
+               //   - capacityName, accessMode, name, type, units, typeInfo, measure and details are the same
+
+               // Get all devices with same caracteristics of refDevice
+               auto compatibleDevices = m_deviceRequester->getCompatibleForMergeDevice(refDeviceId);
+
+               // Second filter, check keywords from already filtered devices
+               const auto refKeywords = m_keywordManager->getKeywords(refDeviceId);
+               shared::CDataContainer commonKeywordsForCompatibleDevices;
+               // Remove device from compatibles devices list if no commun keyword exist between reference and first-filtered device
+               compatibleDevices.erase(
+                  std::remove_if(compatibleDevices.begin(),
+                                 compatibleDevices.end(),
+                                 [this, &refKeywords, &commonKeywordsForCompatibleDevices](auto candidateDevice)
+                                 {
+                                    // Iterate through reference keywords to find a commun keyword in candidateDevice
+                                    std::vector<boost::shared_ptr<database::entities::CKeyword>> commonKeywords;
+                                    if (refKeywords.end() != std::find_if(
+                                       refKeywords.begin(),
+                                       refKeywords.end(),
+                                       [this, &candidateDevice, &commonKeywords](auto refKeyword)
+                                       {
+                                          // Iterate through candidate keywords
+                                          const auto candidateKeywords = m_keywordManager->getKeywords(candidateDevice->Id);
+                                          return candidateKeywords.end() != std::find_if(
+                                             candidateKeywords.begin(),
+                                             candidateKeywords.end(),
+                                             [&refKeyword, &commonKeywords](
+                                             boost::shared_ptr<database::entities::CKeyword> candidateKeyword)
+                                             {
+                                                if (refKeyword->CapacityName == candidateKeyword->CapacityName &&
+                                                   refKeyword->AccessMode == candidateKeyword->AccessMode &&
+                                                   refKeyword->Name == candidateKeyword->Name &&
+                                                   refKeyword->Type == candidateKeyword->Type &&
+                                                   refKeyword->Units == candidateKeyword->Units &&
+                                                   refKeyword->TypeInfo == candidateKeyword->TypeInfo &&
+                                                   refKeyword->Measure == candidateKeyword->Measure &&
+                                                   refKeyword->Details == candidateKeyword->Details)
+                                                {
+                                                   commonKeywords.push_back(refKeyword);
+                                                   return true; // A common device was found
+                                                }
+                                                return false;
+                                             });
+                                       }))
+                                    {
+                                       commonKeywordsForCompatibleDevices.set(std::to_string(candidateDevice->Id), commonKeywords);
+                                       return true;
+                                    }
+                                    return false;
+                                 }));
+
+               shared::CDataContainer collection;
+               collection.set("compatibleDevices", compatibleDevices);
+               collection.set("commonKeywords", commonKeywordsForCompatibleDevices);
+               return CResult::GenerateSuccess(collection);
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in executing getDeviceConfigurationSchema query");
+            }
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceConfigurationSchema(
@@ -126,7 +208,7 @@ namespace web
          boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getAllDevices(
             const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
-            const auto dvList = m_dataProvider->getDeviceRequester()->getDevices(true);
+            const auto dvList = m_deviceRequester->getDevices(true);
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), dvList);
             return CResult::GenerateSuccess(collection);
@@ -188,7 +270,7 @@ namespace web
                   const auto capacityName = parameters[3];
 
                   //run query
-                  const auto result = m_dataProvider->getDeviceRequester()->getDeviceWithCapacity(capacityName, cam);
+                  const auto result = m_deviceRequester->getDeviceWithCapacity(capacityName, cam);
                   shared::CDataContainer collection;
                   collection.set(getRestKeyword(), result);
                   return CResult::GenerateSuccess(collection);
@@ -216,7 +298,7 @@ namespace web
                   const shared::plugin::yPluginApi::EKeywordDataType typ(parameters[3]);
 
                   //run query
-                  const auto result = m_dataProvider->getDeviceRequester()->getDeviceWithCapacityType(cam, typ);
+                  const auto result = m_deviceRequester->getDeviceWithCapacityType(cam, typ);
                   shared::CDataContainer collection;
                   collection.set(getRestKeyword(), result);
                   return CResult::GenerateSuccess(collection);
@@ -243,7 +325,7 @@ namespace web
                   const shared::plugin::yPluginApi::EKeywordAccessMode cam(parameters[2]);
 
                   //run query
-                  const auto result = m_dataProvider->getDeviceRequester()->getDeviceWithKeywordAccessMode(cam);
+                  const auto result = m_deviceRequester->getDeviceWithKeywordAccessMode(cam);
                   shared::CDataContainer collection;
                   collection.set(getRestKeyword(), result);
                   return CResult::GenerateSuccess(collection);
@@ -298,7 +380,7 @@ namespace web
                if (parameters.size() > 1)
                {
                   const auto deviceId = boost::lexical_cast<int>(parameters[1]);
-                  const auto deviceInDatabase = m_dataProvider->getDeviceRequester()->getDevice(deviceId, true);
+                  const auto deviceInDatabase = m_deviceRequester->getDevice(deviceId, true);
 
                   if (deviceInDatabase)
                   {
@@ -406,10 +488,10 @@ namespace web
                   if (deviceToUpdate.FriendlyName.isDefined())
                   {
                      //update data in base
-                     m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(deviceId, deviceToUpdate.FriendlyName());
+                     m_deviceRequester->updateDeviceFriendlyName(deviceId, deviceToUpdate.FriendlyName());
 
                      //return the device info
-                     const auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId, true);
+                     const auto deviceFound = m_deviceRequester->getDevice(deviceId, true);
                      return CResult::GenerateSuccess(deviceFound);
                   }
                   return CResult::GenerateError("invalid request content. could not retreive device friendlyName");
@@ -444,24 +526,24 @@ namespace web
                   //update friendlyname
                   if (deviceToUpdate.FriendlyName.isDefined())
                   {
-                     m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(deviceId, deviceToUpdate.FriendlyName());
+                     m_deviceRequester->updateDeviceFriendlyName(deviceId, deviceToUpdate.FriendlyName());
                   }
 
                   if (deviceToUpdate.Model.isDefined())
                   {
-                     m_dataProvider->getDeviceRequester()->updateDeviceModel(deviceId, deviceToUpdate.Model());
+                     m_deviceRequester->updateDeviceModel(deviceId, deviceToUpdate.Model());
                   }
 
                   if (deviceToUpdate.Configuration.isDefined())
                   {
                      //update data in base
-                     m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(deviceId, deviceToUpdate.Configuration());
+                     m_deviceRequester->updateDeviceConfiguration(deviceId, deviceToUpdate.Configuration());
                      m_messageSender.sendSetDeviceConfiguration(deviceId,
                                                                 deviceToUpdate.Configuration());
                   }
 
                   //return the device info
-                  const auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId, true);
+                  const auto deviceFound = m_deviceRequester->getDevice(deviceId, true);
                   return CResult::GenerateSuccess(deviceFound);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
@@ -488,7 +570,7 @@ namespace web
                   m_deviceManager->updateDeviceBlacklistState(deviceId, false);
 
                   //return the device info
-                  const auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId, true);
+                  const auto deviceFound = m_deviceRequester->getDevice(deviceId, true);
                   return CResult::GenerateSuccess(deviceFound);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
