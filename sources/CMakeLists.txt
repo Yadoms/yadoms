@@ -14,6 +14,10 @@ project (Yadoms)
 # Check the minimum CMake version
 cmake_minimum_required (VERSION 3.2.0)
 
+set(CMAKE_MODULE_PATH_INIT ${CMAKE_MODULE_PATH})
+include(G:/y/yadoms-conan/build/conan_paths.cmake)
+set(CMAKE_MODULE_PATH_CONAN "G:/y/yadoms-conan/build" ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH_CONAN})
 
 ##################################################################################################
 ## Extract Yadoms version from Version.h
@@ -110,7 +114,7 @@ set(BOOST_LIBS
 
 # search boost libs
 find_package(Boost 1.60.0 REQUIRED COMPONENTS ${BOOST_LIBS})
-set(BOOST_INCL_DIR ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
+set(BOOST_INCL_DIR ${boost_INCLUDE_DIRS} ${BOOST_ROOT})
 
 
 ## Thread Library
@@ -182,7 +186,9 @@ set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
 set(POCO_USE_STATIC_RUNTIME 1)
 add_definitions(-DPOCO_STATIC)
 add_definitions(-DPOCO_EXTERNAL_OPENSSL)
-include(cmake/FindPoco.cmake)
+# include(cmake/FindPoco.cmake)
+
+FIND_PACKAGE(Poco)
 
 IF(NOT ${Poco_FOUND})
 	message(FATAL_ERROR "Unable to find the required POCO libraries")
@@ -193,6 +199,8 @@ ENDIF()
 # Protobuf
 #
 ###############################################
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH_INIT})
+
 set (PROTOBUF_SRC_ROOT_FOLDER ${PROTOBUF_ROOT})
 set (Protobuf_USE_STATIC_LIBS ON)
 
@@ -221,6 +229,11 @@ if(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
 endif(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
 
 find_package(Protobuf 3.0.0 REQUIRED)
+
+#find_package(Protobuf)
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH_CONAN})
+
 
 if(NOT ${PROTOBUF_FOUND})
 	message(FATAL_ERROR "Unable to find the required Protobuf tool")
@@ -1033,7 +1046,7 @@ set(YADOMS_ALL_INCL_DIR
 	${PROTOBUF_INCLUDE_DIRS}
 	${YADOMS_INCL_DIR} 
 	${BOOST_INCL_DIR} 
-	${OPENSSL_INCLUDE_DIR}
+	${OpenSSL_INCLUDE_DIRS}
 	${Poco_INCLUDE_DIRS}
 )
 
