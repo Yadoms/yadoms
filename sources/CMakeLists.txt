@@ -14,10 +14,8 @@ project (Yadoms)
 # Check the minimum CMake version
 cmake_minimum_required (VERSION 3.2.0)
 
-set(CMAKE_MODULE_PATH_INIT ${CMAKE_MODULE_PATH})
-include(G:/y/yadoms-conan/build/conan_paths.cmake)
-set(CMAKE_MODULE_PATH_CONAN "G:/y/yadoms-conan/build" ${CMAKE_MODULE_PATH})
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH_CONAN})
+include("G:/y/yadoms-conan/build/conanbuildinfo_multi.cmake")
+conan_basic_setup(TARGETS)
 
 ##################################################################################################
 ## Extract Yadoms version from Version.h
@@ -96,26 +94,7 @@ endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)
 # Boost
 #
 ###############################################
-set(Boost_USE_STATIC_LIBS ON)
-set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME ON)
 add_definitions(-DBOOST_SPIRIT_THREADSAFE)
-
-# define all needed boost libraries
-set(BOOST_LIBS 
-   atomic
-	system 
-	filesystem 
-	thread 
-	date_time 
-	chrono 
-	regex
-)
-
-# search boost libs
-find_package(Boost 1.60.0 REQUIRED COMPONENTS ${BOOST_LIBS})
-set(BOOST_INCL_DIR ${boost_INCLUDE_DIRS} ${BOOST_ROOT})
-
 
 ## Thread Library
 FIND_PACKAGE(Threads)
@@ -126,14 +105,14 @@ if(UNIX AND NOT APPLE)
 endif()
 
 ## Poco dependencies
-if(WIN32)
-   set(LIBS ${LIBS} Iphlpapi.lib)
-endif()
+#if(WIN32)
+#   set(LIBS ${LIBS} Iphlpapi.lib)
+#endif()
 
 ## OpenSSL dependencies
-if(WIN32)
-   set(LIBS ${LIBS} legacy_stdio_definitions.lib Crypt32.lib)
-endif()
+#if(WIN32)
+#   set(LIBS ${LIBS} legacy_stdio_definitions.lib Crypt32.lib)
+#endif()
 
 ## IOKIT (needed for Mac)
 if(APPLE)
@@ -151,54 +130,29 @@ endif()
 
 
 ###############################################
-# OpenSSL
-#
-###############################################
-SET(OPENSSL_USE_STATIC_LIBS TRUE)
-SET(OPENSSL_MSVC_STATIC_RT TRUE)
-SET(OPENSSL_ROOT_DIR ${OPENSSL_ROOT})
-FIND_PACKAGE(OpenSSL)
-
-if(NOT ${OPENSSL_FOUND})
-	message("Cannot find opensll, all plugins which requires SSL features will not be loaded")
-   set(OPENSSL_INCLUDE_DIR "")
-endif()
-
-
-###############################################
 # POCO
 #
 # POCO_LIBS : define all required poco libraries
 ###############################################
+#add_definitions(-DPOCO_STATIC)
+#add_definitions(-DPOCO_EXTERNAL_OPENSSL)
 
-SET (POCO_LIBS
-	PocoUtil
-   PocoNetSSL
-   PocoCrypto
-   PocoZip
-   PocoXML
-	PocoNet
-   PocoJSON
-	PocoFoundation
-)
-
-set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
-set(POCO_USE_STATIC_RUNTIME 1)
-add_definitions(-DPOCO_STATIC)
-add_definitions(-DPOCO_EXTERNAL_OPENSSL)
-# include(cmake/FindPoco.cmake)
-
-FIND_PACKAGE(Poco)
-
-IF(NOT ${Poco_FOUND})
-	message(FATAL_ERROR "Unable to find the required POCO libraries")
-ENDIF()
+###############################################
+# define libraries to link with
+#
+###############################################
+set(LIBS ${LIBS} ${CMAKE_THREAD_LIBS_INIT} CONAN_PKG::boost CONAN_PKG::Poco CONAN_PKG::OpenSSL CONAN_PKG::protobuf)
 
 
 ###############################################
 # Protobuf
 #
 ###############################################
+
+set(CMAKE_MODULE_PATH_INIT ${CMAKE_MODULE_PATH})
+include(G:/y/yadoms-conan/build/conan_paths.cmake)
+set(CMAKE_MODULE_PATH_CONAN "G:/y/yadoms-conan/build" ${CMAKE_MODULE_PATH})
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH_INIT})
 
 set (PROTOBUF_SRC_ROOT_FOLDER ${PROTOBUF_ROOT})
@@ -240,11 +194,7 @@ if(NOT ${PROTOBUF_FOUND})
 endif()
 
 
-###############################################
-# define libraries to link with
-#
-###############################################
-set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Poco_FOUND_LIBS} ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} ${Protobuf_LIBRARIES})
+
 
 ##################################################################################################
 ## Internal libraries (SQlite, Webem) completely build from sources

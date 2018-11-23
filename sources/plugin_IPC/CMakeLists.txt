@@ -19,7 +19,7 @@ set(plugin_IPC_SOURCES ${plugin_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
 set(plugin_IPC_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "Path to generated protobuf files.")
 
 add_library(plugin_IPC STATIC ${plugin_IPC_SOURCES})
-target_link_libraries(plugin_IPC ${PROTOBUF_LIBRARIES})
+target_link_libraries(plugin_IPC CONAN_PKG::protobuf)
 
 set_property(TARGET plugin_IPC PROPERTY INCLUDE_DIRECTORIES ${plugin_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
 
@@ -41,7 +41,7 @@ if(COTIRE_USE)
    cotire(plugin_IPC)
    
    if(COTIRE_USE_UNITY)
-      target_link_libraries(plugin_IPC_unity ${PROTOBUF_LIBRARIES})
+      target_link_libraries(plugin_IPC_unity CONAN_PKG::protobuf)
    endif()	
 endif()
 

@@ -131,7 +131,6 @@ MACRO(PLUGIN_LINK _targetName)
       plugin_cpp_api
       ${LIBS}
       ${CMAKE_DL_LIBS}
-      ${PROTOBUF_LIBRARIES}
       ${ARGN}
       )
 	
