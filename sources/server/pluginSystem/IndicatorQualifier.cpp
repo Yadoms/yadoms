@@ -143,8 +143,10 @@ namespace pluginSystem
 
       if (quality > 99)
          return 99; // Never returns 100 if there is at least one crash
+      if (quality < 0)
+         return 0; // ensure int46 will not be badly casted into int
 
-      return quality;
+      return static_cast<int>(quality);
    }
 } // namespace pluginSystem
 
