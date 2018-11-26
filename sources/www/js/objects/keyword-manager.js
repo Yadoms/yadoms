@@ -103,6 +103,7 @@ KeywordManager.getInformation = function (keywords, additionalInfos) {
             $.each(data, function (index, keydata) {
                result.push({accessMode: keydata.accessMode,
                             capacity: keydata.capacity,
+                            dataType: keydata.dataType,
                             date: keydata.lastValueDate,
                             exist: keydata.exist,
                             friendlyName: keydata.friendlyName,

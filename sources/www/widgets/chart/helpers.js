@@ -5,14 +5,14 @@
 function isOdd(num) {return num % 2;}
  
 function isBoolVariable(keywordInfo) {
-   if ((keywordInfo) && (keywordInfo.capacity === "switch"))
+   if ((keywordInfo) && (keywordInfo.dataType === "Bool"))
       return true;
    else
       return false;
 };
  
 function isEnumVariable (keywordInfo) {
-   if ((keywordInfo) && (keywordInfo.type === "Enum"))
+   if ((keywordInfo) && (keywordInfo.dataType === "Enum"))
       return true;
    else
       return false;
