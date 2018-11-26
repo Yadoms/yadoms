@@ -1,8 +1,12 @@
 #This file automatically search and add all script interpreters found from all subdirectories
 
+# remove warning
+cmake_policy(SET CMP0074 NEW)
+
 set(SWIG_VERSION_REQUIRED 3.0.5)
 include(findSwig.cmake)
   
+
 if(SWIG_FOUND)
 
    #This macro list all subdirectories
