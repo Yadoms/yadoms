@@ -17,6 +17,8 @@ cmake_minimum_required (VERSION 3.2.0)
 # The main Yadoms path
 set(YADOMS_PATH ../../../sources)
 
+include("${CMAKE_SOURCE_DIR}/../../../projects/conanbuildinfo_multi.cmake")
+conan_basic_setup(TARGETS)
 
 ##################################################################################################
 ## Include other cmake scripts
@@ -69,27 +71,7 @@ endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 ##################################################################################################
 
 # Boost (dynamic linking)
-set(Boost_USE_STATIC_LIBS ON)
-set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME ON)
 add_definitions(-DBOOST_SPIRIT_THREADSAFE)
-
-
-# define all needed boost libraries
-set(BOOST_LIBS 
-   atomic
-   system 
-   filesystem 
-   thread 
-   date_time 
-   chrono 
-   regex
-   unit_test_framework 
-)
-
-# search boost libs
-find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
-set(BOOST_INCL_DIR ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
 
 ## thread library (pthread)
 FIND_PACKAGE(Threads)
@@ -97,11 +79,6 @@ FIND_PACKAGE(Threads)
 ## RT Library
 if(UNIX AND NOT APPLE)
     set(RT_LIBRARY rt)
-endif()
-
-## Poco dependencies
-if(WIN32)
-   set(LIBS ${LIBS} Iphlpapi.lib)
 endif()
 
 ## IOKIT (needed for Mac)
@@ -119,32 +96,9 @@ if(APPLE)
 	set(LIBS ${LIBS} ${IOKIT_LIBRARY} ${CARBON_LIBRARY})
 endif()
 
-###############################################
-# POCO
-#
-# POCO_LIBS : define all required poco libraries
-###############################################
-
-SET ( POCO_LIBS
-	PocoFoundation
-	PocoNet
-	PocoUtil
-	PocoXML
-   PocoJSON
-   PocoZip
-)
-
-set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
-set(POCO_USE_STATIC_LIBS 1)
-set(POCO_USE_STATIC_RUNTIME 1)
-include(${YADOMS_PATH}/cmake/FindPoco.cmake)
-
-IF(NOT ${Poco_FOUND})
-	message(SEND_ERROR "Unable to find the requested POCO libraries")
-ENDIF()
 
 # define libraries to link with
-set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Poco_FOUND_LIBS})
+set(LIBS ${LIBS} ${CMAKE_THREAD_LIBS_INIT} CONAN_PKG::boost CONAN_PKG::Poco CONAN_PKG::OpenSSL CONAN_PKG::protobuf)
 
 ##################################################################################################
 ## Sources

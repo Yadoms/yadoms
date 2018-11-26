@@ -35,9 +35,15 @@ if errorlevel 1 (
 cd /D %~dp0/projects
 
 ::get/build dependencies
-conan install --build missing -s compiler.runtime=MTd -s arch=x86 -s build_type=Debug ..
-conan install --build missing -s compiler.runtime=MT -s arch=x86 -s build_type=Release ..
+conan install --build missing -s compiler.runtime=MTd -s arch=x86 -s build_type=Debug ../sources
+if errorlevel 1 (
+	exit 1
+)
 
+conan install --build missing -s compiler.runtime=MT -s arch=x86 -s build_type=Release ../sources
+if errorlevel 1 (
+	exit 1
+)
 
 if "%xp_compatibility%" == "" (
    @echo Using default generator WITHOUT WindowsXP support

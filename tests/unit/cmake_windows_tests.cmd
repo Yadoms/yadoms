@@ -12,6 +12,31 @@ call:getCMakeExecutable cmake_executable
 
 ::Move to destination folder
 cd /D %~dp0/projects
+
+
+::check if bincrafters repo is added
+conan remote list | findstr other-conan-repo >nul 2>>&1
+if errorlevel 1 (
+	::add it
+    conan remote add other-conan-repo https://api.bintray.com/conan/bincrafters/public-conan
+)
+
+
+::Move to destination folder
+cd /D %~dp0/projects
+
+::get/build dependencies
+conan install --build missing -s compiler.runtime=MTd -s arch=x86 -s build_type=Debug ../sources
+if errorlevel 1 (
+	exit 1
+)
+conan install --build missing -s compiler.runtime=MT -s arch=x86 -s build_type=Release ../sources
+if errorlevel 1 (
+	exit 1
+)
+
+
+
 "%cmake_executable%" %~dp0/sources
 
 
