@@ -14,7 +14,7 @@ project (Yadoms)
 # Check the minimum CMake version
 cmake_minimum_required (VERSION 3.2.0)
 
-include("G:/y/yadoms-conan/build/conanbuildinfo_multi.cmake")
+include("${CMAKE_SOURCE_DIR}/../projects/conanbuildinfo_multi.cmake")
 conan_basic_setup(TARGETS)
 
 ##################################################################################################
@@ -150,8 +150,10 @@ set(LIBS ${LIBS} ${CMAKE_THREAD_LIBS_INIT} CONAN_PKG::boost CONAN_PKG::Poco CONA
 ###############################################
 
 set(CMAKE_MODULE_PATH_INIT ${CMAKE_MODULE_PATH})
-include(G:/y/yadoms-conan/build/conan_paths.cmake)
-set(CMAKE_MODULE_PATH_CONAN "G:/y/yadoms-conan/build" ${CMAKE_MODULE_PATH})
+include("${CMAKE_SOURCE_DIR}/../projects/conan_paths.cmake")
+set(CMAKE_MODULE_PATH_CONAN "${CMAKE_SOURCE_DIR}/../projects" ${CMAKE_MODULE_PATH})
+
+
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH_INIT})
 

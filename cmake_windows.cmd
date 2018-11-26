@@ -23,8 +23,21 @@ set xp_compatibility=%1%
 call:getCMakeExecutable cmake_executable
 "%cmake_executable%" --version
 
+::check if bincrafters repo is added
+conan remote list | findstr other-conan-repo >nul 2>>&1
+if errorlevel 1 (
+	::add it
+    conan remote add other-conan-repo https://api.bintray.com/conan/bincrafters/public-conan
+)
+
+
 ::Move to destination folder
 cd /D %~dp0/projects
+
+::get/build dependencies
+conan install --build missing -s compiler.runtime=MTd -s arch=x86 -s build_type=Debug ..
+conan install --build missing -s compiler.runtime=MT -s arch=x86 -s build_type=Release ..
+
 
 if "%xp_compatibility%" == "" (
    @echo Using default generator WITHOUT WindowsXP support
