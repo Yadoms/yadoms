@@ -5,7 +5,7 @@
 function isOdd(num) {return num % 2;}
  
 function isBoolVariable(keywordInfo) {
-   if ((keywordInfo) && (keywordInfo.type === "Bool"))
+   if ((keywordInfo) && (keywordInfo.capacity === "switch"))
       return true;
    else
       return false;
