@@ -406,7 +406,7 @@ function chartViewModel() {
         var defferedPluginInstance = new $.Deferred();
         arrayOfDeffered.push(defferedPluginInstance);
         
-        var deffered2 = self.widgetApi.getKeywordsInformation(keywords, ["accessMode", "capacity", "friendlyName", "unit", "measure"]);
+        var deffered2 = self.widgetApi.getKeywordsInformation(keywords, ["accessMode", "capacity", "friendlyName", "unit", "measure", "dataType"]);
          arrayOfDeffered.push(deffered2);
          deffered2.done(function (keywordsInformation) {
             $.each(keywordsInformation, function (index, keyword) {
