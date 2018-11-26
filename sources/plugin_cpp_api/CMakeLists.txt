@@ -70,6 +70,10 @@ target_link_libraries(plugin_cpp_api
    ${CMAKE_DL_LIBS}
    ${plugin_IPC_LIBRARY}
    )
+   
+#due to conan architecture, debug pdb are not always available
+set_target_properties(plugin_cpp_api PROPERTIES LINK_FLAGS "/ignore:4099")
+   
 
 ##################################################################################################
 ## Add natvis (allow better debugging within VisualStudio)
@@ -88,7 +92,9 @@ if(COTIRE_USE)
    cotire(plugin_cpp_api)
    
    if(COTIRE_USE_UNITY)
-      target_link_libraries(plugin_cpp_api_unity yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS} ${plugin_IPC_LIBRARY}_unity)
+		target_link_libraries(plugin_cpp_api_unity yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS} ${plugin_IPC_LIBRARY}_unity)
+		#due to conan architecture, debug pdb are not always available
+		set_target_properties(plugin_cpp_api_unity PROPERTIES LINK_FLAGS "/ignore:4099")
    endif()	
 else()
 	add_precompiled_header(plugin_cpp_api stdafx.h)

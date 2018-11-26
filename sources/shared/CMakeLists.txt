@@ -449,6 +449,8 @@ add_library(yadoms-shared STATIC ${SHARED_LIB_SRC})
 target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 set_property( TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}  ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS} ${OpenSSL_INCLUDE_DIRS})
 
+#due to conan architecture, debug pdb are not always available
+set_target_properties(yadoms-shared PROPERTIES LINK_FLAGS "/ignore:4099")
 
 ##################################################################################################
 ## Add natvis (allow better debugging within VisualStudio)
@@ -468,7 +470,9 @@ if(COTIRE_USE)
 	
    if(COTIRE_USE_UNITY)
       target_link_libraries(yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS})
-set_property( TARGET yadoms-shared_unity PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
+	  set_property( TARGET yadoms-shared_unity PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
+  	  #due to conan architecture, debug pdb are not always available
+	  set_target_properties(yadoms-shared_unity PROPERTIES LINK_FLAGS "/ignore:4099")
    endif()	
 else()
    add_precompiled_header(yadoms-shared stdafx.h)

@@ -23,6 +23,9 @@ target_link_libraries(plugin_IPC CONAN_PKG::protobuf)
 
 set_property(TARGET plugin_IPC PROPERTY INCLUDE_DIRECTORIES ${plugin_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
 
+#due to conan architecture, debug pdb are not always available
+set_target_properties(plugin_IPC PROPERTIES LINK_FLAGS "/ignore:4099")
+
 ##################################################################################################
 ## Add natvis (allow better debugging within VisualStudio)
 ##################################################################################################
@@ -41,7 +44,10 @@ if(COTIRE_USE)
    cotire(plugin_IPC)
    
    if(COTIRE_USE_UNITY)
-      target_link_libraries(plugin_IPC_unity CONAN_PKG::protobuf)
+		target_link_libraries(plugin_IPC_unity CONAN_PKG::protobuf)
+	  
+		#due to conan architecture, debug pdb are not always available
+		set_target_properties(plugin_IPC_unity PROPERTIES LINK_FLAGS "/ignore:4099")
    endif()	
 endif()
 

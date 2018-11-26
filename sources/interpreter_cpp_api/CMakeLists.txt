@@ -61,6 +61,8 @@ target_link_libraries(interpreter_cpp_api
    ${CMAKE_DL_LIBS}
    ${interpreter_IPC_LIBRARY}
    )
+#due to conan architecture, debug pdb are not always available
+set_target_properties(interpreter_cpp_api PROPERTIES LINK_FLAGS "/ignore:4099")
 
 ##################################################################################################
 ## Add natvis (allow better debugging within VisualStudio)
@@ -84,6 +86,12 @@ if(COTIRE_USE)
 	if(COTIRE_USE_UNITY)
 		target_link_libraries(interpreter_cpp_api_unity yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS} ${interpreter_IPC_LIBRARY}_unity)
 		set_property( TARGET interpreter_cpp_api_unity PROPERTY INCLUDE_DIRECTORIES ${interpreter_cpp_api_ALL_INCLUDE_DIRS})
+		#due to conan architecture, debug pdb are not always available
+		set_target_properties(interpreter_cpp_api_unity PROPERTIES LINK_FLAGS "/ignore:4099")
+		
+		#due to conan architecture, debug pdb are not always available
+		set_target_properties(interpreter_cpp_api_unity PROPERTIES LINK_FLAGS "/ignore:4099")
+		
 	endif()	
 else()
 	add_precompiled_header(interpreter_cpp_api stdafx.h)

@@ -32,6 +32,7 @@ find_package ( Threads )
 if ( CMAKE_USE_PTHREADS_INIT )
   set( SQLITE_THREADSAFE 2 )
   target_link_libraries( sqlite "${CMAKE_THREAD_LIBS_INIT}" )
+
 elseif ( CMAKE_USE_WIN32_THREADS_INIT )
   set( SQLITE_THREADSAFE 2 )
 else()

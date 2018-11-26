@@ -134,6 +134,9 @@ MACRO(PLUGIN_LINK _targetName)
       ${ARGN}
       )
 	
+	#due to conan architecture, debug pdb are not always available
+	set_target_properties(${_targetName} PROPERTIES LINK_FLAGS "/ignore:4099")
+	
    ##################################################################################################
    ## Add natvis (allow better debugging within VisualStudio)
    ##################################################################################################

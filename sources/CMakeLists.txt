@@ -1007,6 +1007,9 @@ set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 ##################################################################################################
 target_link_libraries(yadoms yadoms-shared plugin_IPC interpreter_IPC script_IPC ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
 
+#due to conan architecture, debug pdb are not always available
+set_target_properties(yadoms PROPERTIES LINK_FLAGS "/ignore:4099")
+
 ##################################################################################################
 ## RPATH
 ##################################################################################################
