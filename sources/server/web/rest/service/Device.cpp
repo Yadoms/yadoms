@@ -94,53 +94,57 @@ namespace web
 
                // Get all devices with same caracteristics of refDevice
                auto compatibleDevices = m_deviceRequester->getCompatibleForMergeDevice(refDeviceId);
-
-               // Second filter, check keywords from already filtered devices
-               const auto refKeywords = m_keywordManager->getKeywords(refDeviceId);
                shared::CDataContainer commonKeywordsForCompatibleDevices;
-               // Remove device from compatibles devices list if no commun keyword exist between reference and first-filtered device
-               compatibleDevices.erase(
-                  std::remove_if(compatibleDevices.begin(),
-                                 compatibleDevices.end(),
-                                 [this, &refKeywords, &commonKeywordsForCompatibleDevices](auto candidateDevice)
-                                 {
-                                    // Iterate through reference keywords to find a commun keyword in candidateDevice
-                                    std::vector<boost::shared_ptr<database::entities::CKeyword>> commonKeywords;
-                                    if (refKeywords.end() != std::find_if(
-                                       refKeywords.begin(),
-                                       refKeywords.end(),
-                                       [this, &candidateDevice, &commonKeywords](auto refKeyword)
-                                       {
-                                          // Iterate through candidate keywords
-                                          const auto candidateKeywords = m_keywordManager->getKeywords(candidateDevice->Id);
-                                          return candidateKeywords.end() != std::find_if(
-                                             candidateKeywords.begin(),
-                                             candidateKeywords.end(),
-                                             [&refKeyword, &commonKeywords](
-                                             boost::shared_ptr<database::entities::CKeyword> candidateKeyword)
-                                             {
-                                                if (refKeyword->CapacityName == candidateKeyword->CapacityName &&
-                                                   refKeyword->AccessMode == candidateKeyword->AccessMode &&
-                                                   refKeyword->Name == candidateKeyword->Name &&
-                                                   refKeyword->Type == candidateKeyword->Type &&
-                                                   refKeyword->Units == candidateKeyword->Units &&
-                                                   refKeyword->TypeInfo == candidateKeyword->TypeInfo &&
-                                                   refKeyword->Measure == candidateKeyword->Measure &&
-                                                   refKeyword->Details == candidateKeyword->Details)
-                                                {
-                                                   commonKeywords.push_back(refKeyword);
-                                                   return true; // A common device was found
-                                                }
-                                                return false;
-                                             });
-                                       }))
+               if (!compatibleDevices.empty())
+               {
+                  // Second filter, check keywords from already filtered devices
+                  const auto refKeywords = m_keywordManager->getKeywords(refDeviceId);
+                  // Remove device from compatibles devices list if no commun keyword exist between reference and first-filtered device
+                  //compatibleDevices.erase(
+                     std::remove_if(compatibleDevices.begin(),
+                                    compatibleDevices.end(),
+                                    [this, &refKeywords, &commonKeywordsForCompatibleDevices](auto candidateDevice)
                                     {
-                                       commonKeywordsForCompatibleDevices.set(std::to_string(candidateDevice->Id), commonKeywords);
+                                       // Iterate through reference keywords to find a commun keyword in candidateDevice
+                                       std::vector<boost::shared_ptr<database::entities::CKeyword>> commonKeywords;
+                                       if (refKeywords.end() != std::find_if(
+                                          refKeywords.begin(),
+                                          refKeywords.end(),
+                                          [this, &candidateDevice, &commonKeywords](auto refKeyword)
+                                          {
+                                             // Iterate through candidate keywords
+                                             const auto candidateKeywords = m_keywordManager->getKeywords(candidateDevice->Id);
+                                             return candidateKeywords.end() != std::find_if(
+                                                candidateKeywords.begin(),
+                                                candidateKeywords.end(),
+                                                [&refKeyword, &commonKeywords](
+                                                boost::shared_ptr<database::entities::CKeyword> candidateKeyword)
+                                                {
+                                                   if (refKeyword->CapacityName == candidateKeyword->CapacityName &&
+                                                      refKeyword->AccessMode == candidateKeyword->AccessMode &&
+                                                      refKeyword->Name == candidateKeyword->Name &&
+                                                      refKeyword->Type == candidateKeyword->Type &&
+                                                      refKeyword->Units == candidateKeyword->Units &&
+                                                      refKeyword->TypeInfo == candidateKeyword->TypeInfo &&
+                                                      refKeyword->Measure == candidateKeyword->Measure &&
+                                                      refKeyword->Details == candidateKeyword->Details)
+                                                   {
+                                                      // A common device was found
+                                                      commonKeywords.push_back(refKeyword);
+                                                      return true;
+                                                   }
+                                                   return false;
+                                                });
+                                          }))
+                                       {
+                                          commonKeywordsForCompatibleDevices.set(std::to_string(candidateDevice->Id), commonKeywords);
+                                          // Don't remove device from compatibles device list
+                                          return false;
+                                       }
+                                       // Remove device from compatibles device list
                                        return true;
-                                    }
-                                    return false;
-                                 }));
-
+                                    })/*)*/;
+               }
                shared::CDataContainer collection;
                collection.set("compatibleDevices", compatibleDevices);
                collection.set("commonKeywords", commonKeywordsForCompatibleDevices);

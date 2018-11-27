@@ -48,7 +48,6 @@ DeviceManager.getAll = function () {
     RestEngine.getJson("rest/device")
     .done(function (data) {
         var devices = [];
-        //foreach result we append a <tr>
         $.each(data.device, function (index, value) {
             devices.push(DeviceManager.factory(value));
         });
@@ -58,6 +57,24 @@ DeviceManager.getAll = function () {
 
     return d.promise();
 };
+
+/**
+ * Get compatible devices for merge from existing device
+ * @ return {Promise}
+ */
+DeviceManager.getCompatibleForMerge = function (deviceId) {
+    var d = new $.Deferred();
+
+    RestEngine.getJson("rest/device/" + deviceId + "/compatibleForMergeDevice")
+    .done(function (data) {
+        d.resolve(data);
+    })
+    .fail(function(err) {
+        console.error(err);
+     });
+
+    return d.promise();
+}
 
 /**
  * Get the device attached to a plugin

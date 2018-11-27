@@ -12,6 +12,8 @@
                <div data-i18n="modals.merge-devices.help2"></div>
                <div data-i18n="modals.merge-devices.help3"></div>
             </div>
+            <div class="modal-source-device-select"></div>
+            <div class="modal-target-device-select"></div>
             <div class="modal-body form-group"> </div>
             <div class="device-merge-summary modal-explanation"> </div>
             <div class="modal-footer">
@@ -27,8 +29,8 @@
    Yadoms.showMergeDevicesModal = function () {
       DeviceManager.getAll()
          .done((allDevices) => {
-            var $modalBody = $("div#merge-devices-modal .modal-body");
-            $modalBody.empty();
+            $sourceDeviceSelect = $("div#merge-devices-modal .modal-source-device-select");
+            $sourceDeviceSelect.empty();
             $deviceMergeSummary = $("div#merge-devices-modal .device-merge-summary");
             $deviceMergeSummary.empty();
 
@@ -51,7 +53,7 @@
                sourceDeviceListSchema,
                null,
                "modals.merge-devices.",
-               $modalBody);
+               $sourceDeviceSelect);
 
             // When opening the modal, a source device can be already selected, process it
             configMgr.getCurrentConfiguration()
@@ -60,7 +62,7 @@
                      onSourceDeviceSelected(config.sourceDeviceListSection);
                })
             // When user select another source device
-            $modalBody.find("select").change(function () {
+            $sourceDeviceSelect.find("select").change(function () {
                configMgr.getCurrentConfiguration()
                   .done(function (config) {
                      if (config.sourceDeviceListSection)
@@ -69,12 +71,12 @@
             })
 
             // i18n
-            $modalBody.i18n();
+            $sourceDeviceSelect.i18n();
             configMgr.afterI18n();
 
             //validation form
             //erase previous jqBootstrapValidation
-            $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
+            $sourceDeviceSelect.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
                preventSubmit: true,
                submitError: function ($form, event, errors) {
                   console.warn("Unable to validate form: " + errors);
@@ -122,8 +124,54 @@
    }
 
    onSourceDeviceSelected = function (selectedDeviceIndex) {
-      this.sourceDeviceId = parseInt(selectedDeviceIndex);
-      updateSummary(); //TODO virer
+      DeviceManager.get(parseInt(selectedDeviceIndex))
+         .done((device) => {
+            this.sourceDevice = device;
+
+            DeviceManager.getCompatibleForMerge(device.id)
+               .done((compatibleDevices) => {
+                  debugger;
+
+                  $targetDeviceSelect = $("div#merge-devices-modal .modal-target-device-select");
+                  $targetDeviceSelect.empty();
+
+                  if (compatibleDevices.compatibleDevices.length === 0) {
+                     $targetDeviceSelect.append("<div class='no-compatible-device'>" + $.t(
+                        'modals.merge-devices.target-device.no-compatible-device') + "</div>");
+                     return;
+                  }
+
+                  // Populate the target devices list
+                  targetDeviceListSchema = {
+                     targetDeviceListSection: {
+                        type: 'enum',
+                        name: $.t('modals.merge-devices.target-device.targetDeviceListCombo.name'),
+                        description: $.t(
+                           'modals.merge-devices.target-device.targetDeviceListCombo.description'),
+                        values: {}
+                     }
+                  };
+                  $.each(compatibleDevices.compatibleDevices, function (key, device) {
+                     if (device.blacklist === "true")
+                        return true;
+                     targetDeviceListSchema.targetDeviceListSection.values[device.id] = device.friendlyName;
+                  });
+
+                  debugger;
+
+                  var configMgr = new ConfigurationControlManager(
+                     targetDeviceListSchema,
+                     null,
+                     "modals.merge-devices.",
+                     $targetDeviceSelect);
+               })
+               .fail(() => {
+                  debugger; //TODO
+               });
+         })
+         .fail(() => {
+            debugger; //TODO
+         });;
    }
 
    onTargetDeviceSelected = function (selectDeviceIndex) {

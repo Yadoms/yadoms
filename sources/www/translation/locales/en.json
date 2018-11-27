@@ -236,8 +236,17 @@
       "help2": "The new device must be compatible with the old device.",
       "help3": "No modification of your widgets or devices will be necessary after the opration.",
       "source-device": {
-        "name": "Source device",
-        "description": "Select the new device"
+        "sourceDeviceListCombo": {
+          "name": "New device",
+          "description": "Select the new device"
+        }
+      },
+      "target-device": {
+        "targetDeviceListCombo": {
+          "name": "Old device",
+          "description": "Select the old device"
+        },
+        "no-compatible-device": "No compatible device found"
       },
       "summaryStart1": "The new device {{sourceDeviceName}} will be merged with the old device {{targetDeviceName}} :",
       "summaryStart2": "- Data of {{sourceDeviceName}} will be copied with data of {{targetDeviceName}} :",

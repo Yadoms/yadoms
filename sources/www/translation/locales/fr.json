@@ -241,6 +241,13 @@
           "description": "Sélectionner le nouvel équipement"
         }
       },
+      "target-device": {
+        "targetDeviceListCombo": {
+          "name": "Ancien équipement",
+          "description": "Sélectionner l'ancien équipement"
+        },
+        "no-compatible-device": "Aucun équipement compatible trouvé"
+      },
       "summaryStart1": "Le nouvel équipement {{sourceDeviceName}} sera fusionné avec l'ancien équipement {{targetDeviceName}} :",
       "summaryStart2": "- Les données de {{sourceDeviceName}} seront copiées avec les données de {{targetDeviceName}} :",
       "summaryKeywordLine": "\t- Les données de {{sourceKeywordName}} de {{sourceDeviceName}} seront copiées avec les données de {{targetKeywordName}} de {{targetDeviceName}}",

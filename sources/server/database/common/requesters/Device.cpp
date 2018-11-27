@@ -195,6 +195,7 @@ namespace database
             qSelect->Select().
                      From(CDeviceTable::getTableName()).
                      Where(CDeviceTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, 0).
+                     And(CDeviceTable::getIdColumnName(), CQUERY_OP_NOT_EQUAL, referenceDevice->Id()).
                      And(CDeviceTable::getTypeColumnName(), CQUERY_OP_EQUAL, referenceDevice->Type()).
                      And(CDeviceTable::getPluginIdColumnName(), CQUERY_OP_EQUAL, referenceDevice->PluginId());
 
