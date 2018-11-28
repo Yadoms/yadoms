@@ -14,7 +14,7 @@ project (Yadoms)
 # Check the minimum CMake version
 cmake_minimum_required (VERSION 3.2.0)
 
-include("${CMAKE_SOURCE_DIR}/../projects/conanbuildinfo_multi.cmake")
+include("../projects/conanbuildinfo_multi.cmake")
 conan_basic_setup(TARGETS)
 
 ##################################################################################################
