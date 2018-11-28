@@ -5,14 +5,14 @@
 function isOdd(num) {return num % 2;}
  
 function isBoolVariable(keywordInfo) {
-   if ((keywordInfo) && (keywordInfo.type === "Bool"))
+   if ((keywordInfo) && (keywordInfo.dataType === "Bool"))
       return true;
    else
       return false;
 };
  
 function isEnumVariable (keywordInfo) {
-   if ((keywordInfo) && (keywordInfo.type === "Enum"))
+   if ((keywordInfo) && (keywordInfo.dataType === "Enum"))
       return true;
    else
       return false;
@@ -320,7 +320,7 @@ adaptValuesAndUnit = function (values, range, baseUnit, callback) {
    adaptRange = function(rangeToAdapt, coeff) {
       var newRange = [];
       $.each(rangeToAdapt, function (index,value) {
-         newArray.push([value[0],parseFloat(value[1])*coeff,parseFloat(value[2])*coeff]);
+         newRange.push([value[0],parseFloat(value[1])*coeff,parseFloat(value[2])*coeff]);
       });
       return newRange;
    };
