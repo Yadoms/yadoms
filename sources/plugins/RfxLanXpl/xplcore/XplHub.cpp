@@ -12,6 +12,8 @@
 
 namespace xplcore
 {
+   int CXplHub::ApplicationLifeCycleTimeout = 60;
+   
    CXplHub::CXplHub(const std::string& localIPOfTheInterfaceToUse)
       : CThreadBase("XplHub"),
         m_socket(Poco::Net::SocketAddress(Poco::Net::IPAddress(), CXplHelper::XplProtocolPort)),
