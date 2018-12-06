@@ -82,7 +82,7 @@ namespace web {
                   boost::shared_ptr<database::entities::CWidget> widgetFound = m_dataProvider->getWidgetRequester()->getWidget(objectId);
                   return CResult::GenerateSuccess(widgetFound);
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive widget id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve widget id in url");
             }
             catch (std::exception &ex)
             {
@@ -144,7 +144,7 @@ namespace web {
                   }
                   return CResult::GenerateError("The wiget from URL is different than request content one");
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive widget id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve widget id in url");
             }
             catch (std::exception &ex)
             {
@@ -167,7 +167,7 @@ namespace web {
                   m_dataProvider->getWidgetRequester()->removeWidget(widgetId);
                   return CResult::GenerateSuccess();
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive widget id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve widget id in url");
             }
             catch (std::exception &ex)
             {

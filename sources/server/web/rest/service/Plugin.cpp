@@ -106,7 +106,7 @@ namespace web
                   return CResult::GenerateSuccess(pluginFound);
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
@@ -344,7 +344,7 @@ namespace web
                   return CResult::GenerateSuccess();
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
@@ -379,10 +379,10 @@ namespace web
                   if (pluginInstanceFound)
                      return CResult::GenerateSuccess(m_pluginManager->getInstanceFullState(instanceId));
 
-                  return CResult::GenerateError("invalid parameter. Can not retreive instance id");
+                  return CResult::GenerateError("invalid parameter. Can not retrieve instance id");
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
@@ -407,7 +407,7 @@ namespace web
                   result.set("isRunning", instanceRunning);
                   return CResult::GenerateSuccess(result);
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
@@ -437,7 +437,7 @@ namespace web
                   return CResult::GenerateSuccess(t);
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retreive pluigin instance id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve pluigin instance id in url");
             }
             catch (std::exception& ex)
             {
@@ -470,10 +470,10 @@ namespace web
                      return CResult::GenerateError("Fail to start the plugin instance");
                   }
 
-                  return CResult::GenerateError("invalid parameter. Can not retreive instance id");
+                  return CResult::GenerateError("invalid parameter. Can not retrieve instance id");
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
@@ -496,13 +496,13 @@ namespace web
 
                   auto pluginInstanceFound = m_pluginManager->getInstance(instanceId);
                   if (!pluginInstanceFound)
-                     return CResult::GenerateError("invalid parameter. Can not retreive instance id");
+                     return CResult::GenerateError("invalid parameter. Can not retrieve instance id");
 
                   m_pluginManager->stopInstance(instanceId);
                   return CResult::GenerateSuccess();
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
@@ -528,7 +528,7 @@ namespace web
                   return CResult::GenerateSuccess(result);
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
@@ -638,7 +638,7 @@ namespace web
                   }
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retreive keyword id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve keyword id in url");
             }
             catch (std::exception& ex)
             {
@@ -697,7 +697,7 @@ namespace web
                   }
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retreive plugin id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve plugin id in url");
             }
             catch (std::exception& ex)
             {

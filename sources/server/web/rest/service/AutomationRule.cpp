@@ -112,7 +112,7 @@ namespace web
             }
             catch (CRuleException& e)
             {
-               return CResult::GenerateError(std::string("Fail to retreive rule : ") + e.what());
+               return CResult::GenerateError(std::string("Fail to retrieve rule : ") + e.what());
             }
             catch (std::exception& ex)
             {
@@ -138,7 +138,7 @@ namespace web
             }
             catch (CRuleException& e)
             {
-               return CResult::GenerateError(std::string("Fail to retreive rule code : ") + e.what());
+               return CResult::GenerateError(std::string("Fail to retrieve rule code : ") + e.what());
             }
             catch (std::exception& ex)
             {
@@ -164,7 +164,7 @@ namespace web
             }
             catch (CRuleException& e)
             {
-               return CResult::GenerateError(std::string("Fail to retreive rule code : ") + e.what());
+               return CResult::GenerateError(std::string("Fail to retrieve rule code : ") + e.what());
             }
             catch (std::exception& ex)
             {
@@ -190,7 +190,7 @@ namespace web
             }
             catch (CRuleException& e)
             {
-               return CResult::GenerateError(std::string("Fail to retreive rule code : ") + e.what());
+               return CResult::GenerateError(std::string("Fail to retrieve rule code : ") + e.what());
             }
             catch (std::exception& ex)
             {
@@ -215,7 +215,7 @@ namespace web
             }
             catch (CRuleException& e)
             {
-               return CResult::GenerateError(std::string("Fail to retreive rule code : ") + e.what());
+               return CResult::GenerateError(std::string("Fail to retrieve rule code : ") + e.what());
             }
             catch (std::exception& ex)
             {

@@ -30,10 +30,6 @@ namespace web
          }
 
 
-         CDevice::~CDevice()
-         {
-         }
-
          const std::string& CDevice::getRestKeyword()
          {
             return m_restKeyword;
@@ -69,7 +65,7 @@ namespace web
          boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getOneDevice(
             const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
-            std::string objectId = "";
+            std::string objectId;
             if (parameters.size() > 1)
                objectId = parameters[1];
 
@@ -83,7 +79,7 @@ namespace web
             try
             {
                if (parameters.size() <= 1)
-                  return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
+                  return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
 
                const auto refDeviceId = boost::lexical_cast<int>(parameters[1]);
 
@@ -92,62 +88,66 @@ namespace web
                // - They contain at least one compatible keyword. Keywords are compatible when :
                //   - capacityName, accessMode, name, type, units, typeInfo, measure and details are the same
 
-               // Get all devices with same caracteristics of refDevice
+               // Get all devices with same characteristics of refDevice
                auto compatibleDevices = m_deviceRequester->getCompatibleForMergeDevice(refDeviceId);
                shared::CDataContainer commonKeywordsForCompatibleDevices;
                if (!compatibleDevices.empty())
                {
                   // Second filter, check keywords from already filtered devices
                   const auto refKeywords = m_keywordManager->getKeywords(refDeviceId);
-                  // Remove device from compatibles devices list if no commun keyword exist between reference and first-filtered device
-                  //compatibleDevices.erase(
+                  // Remove device from compatibles devices list if no common keyword exist between reference and first-filtered device
+                  compatibleDevices.erase(
                      std::remove_if(compatibleDevices.begin(),
                                     compatibleDevices.end(),
-                                    [this, &refKeywords, &commonKeywordsForCompatibleDevices](auto candidateDevice)
+                                    [this, &refKeywords, &commonKeywordsForCompatibleDevices](const auto candidateDevice)
                                     {
-                                       // Iterate through reference keywords to find a commun keyword in candidateDevice
-                                       std::vector<boost::shared_ptr<database::entities::CKeyword>> commonKeywords;
-                                       if (refKeywords.end() != std::find_if(
-                                          refKeywords.begin(),
-                                          refKeywords.end(),
-                                          [this, &candidateDevice, &commonKeywords](auto refKeyword)
-                                          {
-                                             // Iterate through candidate keywords
-                                             const auto candidateKeywords = m_keywordManager->getKeywords(candidateDevice->Id);
-                                             return candidateKeywords.end() != std::find_if(
-                                                candidateKeywords.begin(),
-                                                candidateKeywords.end(),
-                                                [&refKeyword, &commonKeywords](
-                                                boost::shared_ptr<database::entities::CKeyword> candidateKeyword)
-                                                {
-                                                   if (refKeyword->CapacityName == candidateKeyword->CapacityName &&
-                                                      refKeyword->AccessMode == candidateKeyword->AccessMode &&
-                                                      refKeyword->Name == candidateKeyword->Name &&
-                                                      refKeyword->Type == candidateKeyword->Type &&
-                                                      refKeyword->Units == candidateKeyword->Units &&
-                                                      refKeyword->TypeInfo == candidateKeyword->TypeInfo &&
-                                                      refKeyword->Measure == candidateKeyword->Measure &&
-                                                      refKeyword->Details == candidateKeyword->Details)
-                                                   {
-                                                      // A common device was found
-                                                      commonKeywords.push_back(refKeyword);
-                                                      return true;
-                                                   }
-                                                   return false;
-                                                });
-                                          }))
+                                       auto candidateKeywords = m_keywordManager->getKeywords(candidateDevice->Id);
+                                       std::vector<shared::CDataContainer> commonKeywords;
+                                       // Iterate through reference keywords to find a common keyword in candidateDevice
+                                       for (const auto& refKeyword : refKeywords)
                                        {
-                                          commonKeywordsForCompatibleDevices.set(std::to_string(candidateDevice->Id), commonKeywords);
-                                          // Don't remove device from compatibles device list
-                                          return false;
+                                          // Iterate through candidate keywords and remove consumed candidate to not used it more than one time
+                                          candidateKeywords.erase(
+                                             std::remove_if(candidateKeywords.begin(),
+                                                            candidateKeywords.end(),
+                                                            [&commonKeywords, &candidateDevice, &refKeyword](
+                                                            const auto& candidateKeyword)
+                                                            {
+                                                               if (refKeyword->CapacityName == candidateKeyword->CapacityName &&
+                                                                  refKeyword->AccessMode == candidateKeyword->AccessMode &&
+                                                                  refKeyword->Name == candidateKeyword->Name &&
+                                                                  refKeyword->Type == candidateKeyword->Type &&
+                                                                  refKeyword->Units == candidateKeyword->Units &&
+                                                                  refKeyword->TypeInfo == candidateKeyword->TypeInfo &&
+                                                                  refKeyword->Measure == candidateKeyword->Measure &&
+                                                                  refKeyword->Details == candidateKeyword->Details)
+                                                               {
+                                                                  // A common device was found
+                                                                  shared::CDataContainer commonKeyword;
+                                                                  commonKeyword.set("from", refKeyword);
+                                                                  commonKeyword.set("to", candidateKeyword);
+                                                                  commonKeywords.push_back(commonKeyword);
+                                                                  return true;
+                                                               }
+                                                               return false;
+                                                            }),
+                                             candidateKeywords.end());
                                        }
-                                       // Remove device from compatibles device list
-                                       return true;
-                                    })/*)*/;
+
+                                       if (commonKeywords.empty())
+                                       {
+                                          // Remove device from compatible devices list if no common keyword
+                                          return true;
+                                       }
+
+                                       commonKeywordsForCompatibleDevices.set(std::to_string(candidateDevice->Id), commonKeywords);
+                                       return false;
+                                    }),
+                     compatibleDevices.end());
                }
                shared::CDataContainer collection;
                collection.set("compatibleDevices", compatibleDevices);
-               collection.set("commonKeywords", commonKeywordsForCompatibleDevices);
+               collection.set("commonKeywordsByDevice", commonKeywordsForCompatibleDevices);
                return CResult::GenerateSuccess(collection);
             }
             catch (std::exception& ex)
@@ -189,7 +189,7 @@ namespace web
                      case shared::event::kTimeout:
                         return CResult::GenerateError("The plugin did not respond");
                      default:
-                        return CResult::GenerateError("Unkown plugin result");
+                        return CResult::GenerateError("Unknown plugin result");
                      }
                   }
                   catch (shared::exception::CException& ex)
@@ -197,7 +197,7 @@ namespace web
                      return CResult::GenerateError(ex);
                   }
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
             }
             catch (std::exception& ex)
             {
@@ -230,7 +230,7 @@ namespace web
                   const auto keyword = m_keywordManager->getKeyword(keywordId);
                   return CResult::GenerateSuccess(keyword);
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive keyword id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve keyword id in url");
             }
             catch (std::exception& ex)
             {
@@ -238,7 +238,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving keyword");
+               return CResult::GenerateError("unknown exception in retrieving keyword");
             }
          }
 
@@ -258,7 +258,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving keyword");
+               return CResult::GenerateError("unknown exception in retrieving keyword");
             }
          }
 
@@ -279,7 +279,7 @@ namespace web
                   collection.set(getRestKeyword(), result);
                   return CResult::GenerateSuccess(collection);
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive capacity in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
             }
             catch (std::exception& ex)
             {
@@ -287,7 +287,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving device with get capacity");
+               return CResult::GenerateError("unknown exception in retrieving device with get capacity");
             }
          }
 
@@ -307,7 +307,7 @@ namespace web
                   collection.set(getRestKeyword(), result);
                   return CResult::GenerateSuccess(collection);
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive capacity in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
             }
             catch (std::exception& ex)
             {
@@ -315,7 +315,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving device with get capacity");
+               return CResult::GenerateError("unknown exception in retrieving device with get capacity");
             }
          }
 
@@ -334,7 +334,7 @@ namespace web
                   collection.set(getRestKeyword(), result);
                   return CResult::GenerateSuccess(collection);
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive accessmode in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve access-mode in url");
             }
             catch (std::exception& ex)
             {
@@ -342,7 +342,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving device with get capacity");
+               return CResult::GenerateError("unknown exception in retrieving device with get capacity");
             }
          }
 
@@ -364,7 +364,7 @@ namespace web
                   collection.set("keyword", result);
                   return CResult::GenerateSuccess(collection);
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive capacity in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
             }
             catch (std::exception& ex)
             {
@@ -372,7 +372,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving device with get capacity");
+               return CResult::GenerateError("unknown exception in retrieving device with get capacity");
             }
          }
 
@@ -388,14 +388,14 @@ namespace web
 
                   if (deviceInDatabase)
                   {
-                     const auto allKeywordsforDevice = m_keywordManager->getKeywords(deviceId);
+                     const auto allKeywordDevice = m_keywordManager->getKeywords(deviceId);
                      shared::CDataContainer collection;
-                     collection.set("keyword", allKeywordsforDevice);
+                     collection.set("keyword", allKeywordDevice);
                      return CResult::GenerateSuccess(collection);
                   }
                   return CResult::GenerateError("Fail to retrieve device in database");
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive capacity in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve capacity in url");
             }
             catch (std::exception& ex)
             {
@@ -403,7 +403,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving device with get capacity");
+               return CResult::GenerateError("unknown exception in retrieving device with get capacity");
             }
          }
 
@@ -424,7 +424,7 @@ namespace web
                   }
                   catch (shared::exception::CEmptyResult&)
                   {
-                     return CResult::GenerateError("invalid parameter. Can not retreive keyword in database");
+                     return CResult::GenerateError("invalid parameter. Can not retrieve keyword in database");
                   }
                }
                return CResult::GenerateError("invalid parameter. Not enough parameters in url");
@@ -464,7 +464,7 @@ namespace web
 
                   return CResult::GenerateSuccess();
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
             }
             catch (std::exception& ex)
             {
@@ -498,9 +498,9 @@ namespace web
                      const auto deviceFound = m_deviceRequester->getDevice(deviceId, true);
                      return CResult::GenerateSuccess(deviceFound);
                   }
-                  return CResult::GenerateError("invalid request content. could not retreive device friendlyName");
+                  return CResult::GenerateError("invalid request content. could not retrieve device friendlyName");
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
             }
             catch (std::exception& ex)
             {
@@ -527,7 +527,7 @@ namespace web
                   database::entities::CDevice deviceToUpdate;
                   deviceToUpdate.fillFromSerializedString(requestContent);
 
-                  //update friendlyname
+                  //update friendly name
                   if (deviceToUpdate.FriendlyName.isDefined())
                   {
                      m_deviceRequester->updateDeviceFriendlyName(deviceId, deviceToUpdate.FriendlyName());
@@ -550,7 +550,7 @@ namespace web
                   const auto deviceFound = m_deviceRequester->getDevice(deviceId, true);
                   return CResult::GenerateSuccess(deviceFound);
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
             }
             catch (std::exception& ex)
             {
@@ -577,7 +577,7 @@ namespace web
                   const auto deviceFound = m_deviceRequester->getDevice(deviceId, true);
                   return CResult::GenerateSuccess(deviceFound);
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
             }
             catch (std::exception& ex)
             {
@@ -607,9 +607,9 @@ namespace web
                      m_keywordManager->updateKeywordFriendlyName(keywordId, keywordToUpdate.FriendlyName());
                      return CResult::GenerateSuccess(m_keywordManager->getKeyword(keywordId));
                   }
-                  return CResult::GenerateError("invalid request content. could not retreive keyword friendlyName");
+                  return CResult::GenerateError("invalid request content. could not retrieve keyword friendlyName");
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
             }
             catch (std::exception& ex)
             {
@@ -638,9 +638,9 @@ namespace web
                      m_keywordManager->updateKeywordBlacklistState(keywordId, keywordToUpdate.Blacklist());
                      return CResult::GenerateSuccess(m_keywordManager->getKeyword(keywordId));
                   }
-                  return CResult::GenerateError("invalid request content. could not retreive keyword blacklist");
+                  return CResult::GenerateError("invalid request content. could not retrieve keyword blacklist");
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve device id in url");
             }
             catch (std::exception& ex)
             {

@@ -160,7 +160,7 @@ namespace web
                   return CResult::GenerateError("file do not exists");
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retreive file to delete");
+               return CResult::GenerateError("invalid parameter. Can not retrieve file to delete");
             }
             catch (std::exception& ex)
             {

@@ -201,7 +201,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Declare new device to Yadoms, with its keyword (all-in-one function)
             ///\param    [in]    device            The device name
-            ///\param    [in]    type              The device configuration type (ex : "osCN185"). This is the identifiers used to retreive configuration schema package.json (deviceConfiguation.staticConfigurationSchema.schemas.anySchemaName.types.osCN185). Never displayed or modified.
+            ///\param    [in]    type              The device configuration type (ex : "osCN185"). This is the identifiers used to retrieve configuration schema package.json (deviceConfiguation.staticConfigurationSchema.schemas.anySchemaName.types.osCN185). Never displayed or modified.
             ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185"). Displayed and editable by user
             ///\param    [in]    keyword           Keyword to declare for this device
             ///\param    [in]    details           Device details
@@ -216,7 +216,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Declare new device to Yadoms, with its keywords (all-in-one function)
             ///\param    [in]    device            The device name
-            ///\param    [in]    type              The device configuration type (ex : "osCN185"). This is the identifiers used to retreive configuration schema package.json (deviceConfiguation.staticConfigurationSchema.schemas.anySchemaName.types.osCN185). Never displayed or modified.
+            ///\param    [in]    type              The device configuration type (ex : "osCN185"). This is the identifiers used to retrieve configuration schema package.json (deviceConfiguation.staticConfigurationSchema.schemas.anySchemaName.types.osCN185). Never displayed or modified.
             ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185"). Displayed and editable by user
             ///\param    [in]    keywords          List of keywords to declare for this device
             ///\param    [in]    details           Device details

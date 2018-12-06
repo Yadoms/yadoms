@@ -74,7 +74,7 @@ namespace web
                return CResult::GenerateError("unsupported binding query : " + query);
             }
 
-            return CResult::GenerateError("Cannot retreive url parameters");
+            return CResult::GenerateError("Cannot retrieve url parameters");
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CSystem::getSerialPorts() const

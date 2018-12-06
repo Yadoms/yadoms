@@ -18,7 +18,7 @@ namespace web
                     boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                     boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordManager,
                     communication::ISendMessageAsync& messageSender);
-            virtual ~CDevice();
+            virtual ~CDevice() = default;
 
             // IRestService implementation
             void configureDispatcher(CRestDispatcher& dispatcher) override;
