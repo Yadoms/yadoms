@@ -248,10 +248,10 @@
         },
         "no-compatible-device": "Aucun équipement compatible trouvé"
       },
-      "summaryStart1": "Le nouvel équipement {{sourceDeviceName}} sera fusionné avec l'ancien équipement {{targetDeviceName}} :",
-      "summaryStart2": "- Les données de {{sourceDeviceName}} seront copiées avec les données de {{targetDeviceName}} :",
-      "summaryKeywordLine": "\t- Les données de {{sourceKeywordName}} de {{sourceDeviceName}} seront copiées avec les données de {{targetKeywordName}} de {{targetDeviceName}}",
-      "summaryEnd": "- L'équipement {{sourceDeviceName}} sera supprimé",
+      "summaryStart1": "Le nouvel équipement <b>{{sourceDeviceName}}</b> sera fusionné avec l'ancien équipement <b>{{targetDeviceName}}</b> :",
+      "summaryStart2": "- Les données de <b>{{sourceDeviceName}}</b> seront fusionnées avec les données de <b>{{targetDeviceName}}</b> :",
+      "summaryKeywordLine": "\t- Les données de <b>{{sourceKeywordName}}</b> de <b>{{sourceDeviceName}}</b> seront fusionnées avec les données de <b>{{targetKeywordName}}</b> de <b>{{targetDeviceName}}</b>",
+      "summaryEnd": "- L'équipement <b>{{sourceDeviceName}}</b> sera supprimé",
       "summaryWarning": "Cette opération n'est pas réversible"
     },
     "delete-device": {

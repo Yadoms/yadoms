@@ -27,6 +27,11 @@
 
 <script>
    Yadoms.showMergeDevicesModal = function () {
+
+      sourceDeviceId = null;
+      targetDeviceId = null;
+      compatibleDevices = null;
+
       DeviceManager.getAll()
          .done((allDevices) => {
             $sourceDeviceSelect = $("div#merge-devices-modal .modal-source-device-select");
@@ -73,48 +78,6 @@
             // i18n
             $sourceDeviceSelect.i18n();
             configMgr.afterI18n();
-
-            //validation form
-            //erase previous jqBootstrapValidation
-            $sourceDeviceSelect.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
-               preventSubmit: true,
-               submitError: function ($form, event, errors) {
-                  console.warn("Unable to validate form: " + errors);
-                  event.preventDefault();
-               },
-               submitSuccess: function ($form, event) {
-                  event.preventDefault();
-
-                  // configMgr.getCurrentConfiguration()
-                  //    .done(function (config) {
-                  //       $("div#merge-devices-modal").modal("hide");
-
-                  //       if (config.addManuallyDeviceSection.activeSection === "attachedToPlugin") {
-                  //          var pluginId = config.addManuallyDeviceSection.content.attachedToPlugin.content.plugins;
-
-                  //          var pluginInstance = $.grep(availablePlugins, function (e) {
-                  //             return e.id === pluginId;
-                  //          });
-                  //          callback(pluginInstance[0]);
-                  //       } else {
-                  //          var systemPluginInstance = PluginInstanceManager.factory({
-                  //             id: VIRTUAL_DEVICE_PLUGIN_ID,
-                  //             type: "system",
-                  //             configuration: "",
-                  //             autoStart: "true",
-                  //             category: "system",
-                  //             displayName: "Virtual device"
-                  //          });
-                  //          callback(systemPluginInstance);
-                  //       }
-                  //    });
-               },
-               filter: function () {
-                  //we check only control that have class enable-validation and are visible
-                  return $(this).is(".enable-validation") && $(this).is(":visible");
-               }
-            });
-
          });
 
       // Display the modal
@@ -128,16 +91,18 @@
          .done((device) => {
             this.sourceDevice = device;
 
-            DeviceManager.getCompatibleForMerge(device.id)
+            DeviceManager.getCompatibleForMerge(sourceDevice.id)
                .done((compatibleDevices) => {
-                  debugger;
+                  this.compatibleDevices = compatibleDevices;
 
                   $targetDeviceSelect = $("div#merge-devices-modal .modal-target-device-select");
                   $targetDeviceSelect.empty();
 
-                  if (compatibleDevices.compatibleDevices.length === 0) {
+                  if (this.compatibleDevices.compatibleDevices.length === 0) {
                      $targetDeviceSelect.append("<div class='no-compatible-device'>" + $.t(
                         'modals.merge-devices.target-device.no-compatible-device') + "</div>");
+                     this.targetDeviceId = null;
+                     updateSummary();
                      return;
                   }
 
@@ -151,19 +116,36 @@
                         values: {}
                      }
                   };
-                  $.each(compatibleDevices.compatibleDevices, function (key, device) {
+                  $.each(this.compatibleDevices.compatibleDevices, function (key, device) {
                      if (device.blacklist === "true")
                         return true;
                      targetDeviceListSchema.targetDeviceListSection.values[device.id] = device.friendlyName;
                   });
-
-                  debugger;
 
                   var configMgr = new ConfigurationControlManager(
                      targetDeviceListSchema,
                      null,
                      "modals.merge-devices.",
                      $targetDeviceSelect);
+
+                  // When displaying the combo, a target device can be already selected, process it
+                  configMgr.getCurrentConfiguration()
+                     .done(function (config) {
+                        if (config.targetDeviceListSection)
+                           onTargetDeviceSelected(config.targetDeviceListSection);
+                     })
+                  // When user select another target device
+                  $targetDeviceSelect.find("select").change(function () {
+                     configMgr.getCurrentConfiguration()
+                        .done(function (config) {
+                           if (config.targetDeviceListSection)
+                              onTargetDeviceSelected(config.targetDeviceListSection);
+                        })
+                  })
+
+                  // i18n
+                  $targetDeviceSelect.i18n();
+                  configMgr.afterI18n();
                })
                .fail(() => {
                   debugger; //TODO
@@ -172,38 +154,62 @@
          .fail(() => {
             debugger; //TODO
          });;
+
    }
 
-   onTargetDeviceSelected = function (selectDeviceIndex) {
+   onTargetDeviceSelected = function (selectedDeviceIndex) {
+      this.targetDeviceId = selectedDeviceIndex;
+      updateSummary();
+   }
 
-      this.targetDeviceId = parseInt(selectedDeviceIndex);
-      updateSummary;
+   getTargetDevice = function () {
+      targetDevice = null;
+      $.each(this.compatibleDevices.compatibleDevices, function (key, compatibleDevice) {
+         if (compatibleDevice.id === targetDeviceId) {
+            targetDevice = compatibleDevice;
+            return true;
+         }
+      });
+      return targetDevice;
    }
 
    updateSummary = function () {
-      debugger;
       $deviceMergeSummary = $("div#merge-devices-modal .device-merge-summary");
-
       $deviceMergeSummary.empty();
+
+      if (isNullOrUndefined(this.targetDeviceId))
+         return;
+      targetDevice = getTargetDevice();
+      if (isNullOrUndefined(targetDevice))
+         return;
 
       $deviceMergeSummary.append("<div>" +
          $.t('modals.merge-devices.summaryStart1', {
-            "sourceDeviceName": "TODO : sourceDeviceName",
-            "targetDeviceName": "TODO : targetDeviceName"
+            "sourceDeviceName": this.sourceDevice.friendlyName,
+            "targetDeviceName": targetDevice.friendlyName
          }) +
          "</div>");
       $deviceMergeSummary.append("<div>" +
          $.t('modals.merge-devices.summaryStart2', {
-            "sourceDeviceName": "TODO : sourceDeviceName",
-            "targetDeviceName": "TODO : targetDeviceName"
+            "sourceDeviceName": this.sourceDevice.friendlyName,
+            "targetDeviceName": targetDevice.friendlyName
          }) +
          "</div>");
 
-      $deviceMergeSummary.append("<ul class='summaryKeywordLines'> </ul>"); // TODO ajouter les lignes
+      $.each(this.compatibleDevices.commonKeywordsByDevice[this.targetDeviceId], function (key, keywordPair) {
+         $deviceMergeSummary.append("<ul>" +
+            $.t('modals.merge-devices.summaryKeywordLine', {
+               "sourceKeywordName": keywordPair.from.friendlyName,
+               "sourceDeviceName": sourceDevice.friendlyName,
+               "targetKeywordName": keywordPair.to.friendlyName,
+               "targetDeviceName": targetDevice.friendlyName
+            }) +
+            "</ul>");
+      });
 
       $deviceMergeSummary.append("<div>" +
          $.t('modals.merge-devices.summaryEnd', {
-            "sourceDeviceName": "TODO : sourceDeviceName"
+            "sourceDeviceName": this.sourceDevice.friendlyName,
          }) + "</div>");
       $deviceMergeSummary.append(
          "</br>");

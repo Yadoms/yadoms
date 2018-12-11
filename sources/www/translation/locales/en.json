@@ -248,10 +248,10 @@
         },
         "no-compatible-device": "No compatible device found"
       },
-      "summaryStart1": "The new device {{sourceDeviceName}} will be merged with the old device {{targetDeviceName}} :",
-      "summaryStart2": "- Data of {{sourceDeviceName}} will be copied with data of {{targetDeviceName}} :",
-      "summaryKeywordLine": "\t- Data of {{sourceKeywordName}} from {{sourceDeviceName}} will be copied with data of {{targetKeywordName}} from {{targetDeviceName}}",
-      "summaryEnd": "- Device {{sourceDeviceName}} will be removed",
+      "summaryStart1": "The new device <b>{{sourceDeviceName}}</b> will be merged with the old device <b>{{targetDeviceName}}</b> :",
+      "summaryStart2": "- Data of <b>{{sourceDeviceName}}</b> will be copied with data of <b>{{targetDeviceName}}</b> :",
+      "summaryKeywordLine": "\t- Data of <b>{{sourceKeywordName}}</b> from <b>{{sourceDeviceName}}</b> will be copied with data of <b>{{targetKeywordName}}</b> from <b>{{targetDeviceName}}</b>",
+      "summaryEnd": "- Device <b>{{sourceDeviceName}}</b> will be removed",
       "summaryWarning": "This operation can not be undone"
     },
     "delete-device": {
