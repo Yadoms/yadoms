@@ -1,5 +1,10 @@
+### 1.2.0-beta.3
+* Fix #516 - Units inverted between 2 curves
+* Fix #517 - A lot of errors and some curves missing
+
 ### 1.2.0-beta.2
 * Fix #508 - Error when displaying some charts
+* Fix #515 - Boolean not well displayed
 
 ### 1.2.0-beta.1
 * NewFeature #466 - Adapt units if needed
