@@ -1,3 +1,6 @@
+### 1.2.0-beta.2
+* Fix #508 - Error when displaying some charts
+
 ### 1.2.0-beta.1
 * NewFeature #466 - Adapt units if needed
 * NewFeature #485 - Adapt unit for bit/s display
