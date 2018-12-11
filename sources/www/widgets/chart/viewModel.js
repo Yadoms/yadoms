@@ -545,15 +545,15 @@ function chartViewModel() {
            var dateFrom = calculateBeginDate(interval, self.serverTime, self.prefix);
            changexAxisBound(self.chart, dateFrom);
            var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
-           var prefixUri = "/" + self.prefix;
            var timeBetweenTwoConsecutiveValues = moment.duration(1, self.prefix).asMilliseconds();              
            
            //for each plot in the configuration we request for data
            $.each(self.widget.configuration.devices, function (index, device) {
+               var prefixUri = "/" + self.prefix;
                // Index to find all information about each keyword
                var keywordId = device.content.source.keywordId;
                
-               //If the device is a bool, you have to modify
+               //If the device is a bool or a enum, you have to modify
                if (isBoolVariable(self.chart.keyword[keywordId]) || isEnumVariable(self.chart.keyword[keywordId])) {
                    dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
                    prefixUri = "";                      
@@ -631,7 +631,7 @@ function chartViewModel() {
                             lastDate = d;
                             d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
                             var vplot;
-                    
+
                             if (!isNullOrUndefined(value[self.periodValueType[keywordId]])) {
                                 // read the computed desired value (avg/min/max)
                                 vplot = parseFloat(value[self.periodValueType[keywordId]]);
@@ -640,6 +640,7 @@ function chartViewModel() {
                             } else {
                                self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
                                notifyError($.t("widgets.chart:errorInitialization"));
+                               throw $.t("widgets.chart:errorInitialization");
                             }
 
                             //we manage the missing data
@@ -943,7 +944,6 @@ function chartViewModel() {
          
             d = RestEngine.getJson("rest/acquisition/keyword/" + keywordId + "/" + request_prefix + dateFrom + "/" + dateTo);
             d.done(function (data) {
-               console.log(data);
                // If there is no data => return immediatly
                if (data.data.length == 0)
                   return;
