@@ -99,7 +99,7 @@ namespace web
                   compatibleDevices.erase(
                      std::remove_if(compatibleDevices.begin(),
                                     compatibleDevices.end(),
-                                    [this, &refKeywords, &commonKeywordsForCompatibleDevices](const auto candidateDevice)
+                                    [this, &refKeywords, &commonKeywordsForCompatibleDevices](const boost::shared_ptr<database::entities::CDevice>& candidateDevice)
                                     {
                                        auto candidateKeywords = m_keywordManager->getKeywords(candidateDevice->Id);
                                        std::vector<shared::CDataContainer> commonKeywords;
@@ -111,7 +111,7 @@ namespace web
                                              std::remove_if(candidateKeywords.begin(),
                                                             candidateKeywords.end(),
                                                             [&commonKeywords, &candidateDevice, &refKeyword](
-                                                            const auto& candidateKeyword)
+                                                            const boost::shared_ptr<database::entities::CKeyword>& candidateKeyword)
                                                             {
                                                                if (refKeyword->CapacityName == candidateKeyword->CapacityName &&
                                                                   refKeyword->AccessMode == candidateKeyword->AccessMode &&
