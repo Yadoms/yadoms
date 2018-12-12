@@ -1,3 +1,7 @@
+### 1.1.1
+* Needs Yadoms 2.2.0-beta.3 minimum
+* Fix #512 - Fix confirmation modals displayed multiple times and at background
+
 ### 1.1.0-beta.2
 * Load icon picker in the widget if the IHM need it
 * newFeature #449 - Adapt the widget to new architecture
