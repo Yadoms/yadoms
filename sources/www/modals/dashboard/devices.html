@@ -247,18 +247,18 @@
 		 loadExtraQueries(deviceRow, device);
 	 } else {
              var targetButton = $(event.target).closest('button');
-             if (targetButton && !targetButton[0].disabled) {
+             if (targetButton && !targetButton.disabled) {
                    //button is enabled
                   if (!$(event.target).closest('ul.dropdown-extraqueries').length) {
-                        //not a extraquery dropdown click
-			      clickDevice(device); 
+                     //not a extraquery dropdown click
+			            clickDevice(device); 
                   }
                   else {
-                        //an extra query dropdown click
+                     //an extra query dropdown click
                   }
              }
              else {
-             // buutton is disabled, do nothing           
+               // buutton is disabled, do nothing           
              }
 	 }   
 	 deviceRow.off().one('click', function (event) { onClickDeviceRow(event, deviceRow, device);} );
