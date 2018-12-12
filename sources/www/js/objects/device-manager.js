@@ -72,8 +72,12 @@ DeviceManager.getAttachedPlugin = function (device, force) {
     if(!device.attachedPlugin || force === true) {
         PluginInstanceManager.get(device.pluginId)
         .done(function (pluginInstance) {
-            device.attachedPlugin = pluginInstance;
-            d.resolve();
+            PluginInstanceManager.downloadPackage(pluginInstance)
+            .done(function() {
+                device.attachedPlugin = pluginInstance;
+                d.resolve();
+            })
+            .fail(d.reject);
         }).fail(d.reject);
     } else {
        d.resolve();

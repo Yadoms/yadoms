@@ -1,3 +1,6 @@
+### 1.1.4
+* Update to RFXCom SDK v9.23 (2018-10-10) : add support for Mertik G6R-H3T1
+
 ### 1.1.3
 * Update to RFXCom SDK v9.22 (2018-08-18) : add support for Falmec, LucciAir DCII, Zemismart, Fan LucciAir DC, Casafan, FT1211R fan controller, Hualite blind, Oase, Cuveo...
 * Fix Fan Siemens keywords

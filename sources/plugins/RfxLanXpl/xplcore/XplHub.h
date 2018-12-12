@@ -72,7 +72,7 @@ namespace xplcore
       //--------------------------------------------------------------
       /// \brief			The application life cycle timeout (60 seconds)
       //--------------------------------------------------------------      
-      static const int ApplicationLifeCycleTimeout = 60; //seconds
+      static int ApplicationLifeCycleTimeout; //seconds
    };
 } // namespace xplcore
 

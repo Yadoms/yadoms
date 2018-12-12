@@ -109,7 +109,19 @@ namespace web
          {
             try
             {
-               if (info == "lastValue")
+               if (info == "exist")
+               {
+                  try
+                  {
+                     m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
+                     keywordResult.set(info, true);
+                  }
+                  catch (shared::exception::CEmptyResult&)
+                  {
+                     keywordResult.set(info, false);
+                  }
+               }
+               else if (info == "lastValue")
                {
                   const auto lastAcq = m_dataProvider->getKeywordRequester()->getKeywordLastAcquisition(keywordId, false);
                   keywordResult.set(info, lastAcq ? lastAcq->Value : std::string());
@@ -123,39 +135,61 @@ namespace web
                      keywordResult.set(info, std::string());
                }
                else if (info == "friendlyName")
+               {
                   keywordResult.set(info,
                                     m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->FriendlyName());
+               }
                else if (info == "deviceId")
+               {
                   keywordResult.set(info,
                                     m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->DeviceId);
+               }
                else if (info == "pluginId")
+               {
                   keywordResult.set(info,
                                     m_dataProvider->getDeviceRequester()->getDevice(
                                        m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->DeviceId)->PluginId);
+               }
                else if (info == "capacity")
+               {
                   keywordResult.set(info,
                                     m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->CapacityName);
+               }
                else if (info == "accessMode")
+               {
                   keywordResult.set(info,
                                     m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->AccessMode().toString());
+               }
                else if (info == "dataType")
+               {
                   keywordResult.set(info,
                                     m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->Type().toString());
+               }
                else if (info == "unit")
+               {
                   keywordResult.set(info,
                                     m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->Units());
+               }
                else if (info == "typeInfo")
+               {
                   keywordResult.set(info,
                                     m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->TypeInfo());
+               }
                else if (info == "measure")
+               {
                   keywordResult.set(info,
                                     m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->Measure().toString());
+               }
                else if (info == "details")
+               {
                   keywordResult.set(info,
                                     m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->Details());
+               }
                else
+               {
                YADOMS_LOG(warning) << "readKeywordInfo, can not get requested keyword " << keywordId << " info \"" << info <<
                   "\", ignored : unknown info label";
+               }
             }
             catch (std::exception& exception)
             {

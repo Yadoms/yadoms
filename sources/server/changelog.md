@@ -1,3 +1,6 @@
+### 2.2.0-beta.2
+* Fix #510 - Title not display
+
 ### 2.2.0-beta.1
 
 #### Yadoms Core

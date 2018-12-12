@@ -191,7 +191,7 @@ class PageMenuBar():
       return PageMenuBarTab(self.__bar.find_element_by_xpath(".//li[contains(@page-id, '" + str(index + 1) + "')]"))
 
    def getCurrentPage(self):
-      return PageMenuBarTab(self.__bar.find_element_by_xpath(".//li[@class='tabPagePills active']"))
+      return PageMenuBarTab(self.__bar.find_element_by_xpath(".//li[@class='tabPagePills ui-droppable active']"))
 
 
 class PageMenuBarTab():

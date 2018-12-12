@@ -248,3 +248,7 @@
     color: #333;
     white-space: nowrap;
 }
+
+.droppable-over {
+	background-color: orange;
+}

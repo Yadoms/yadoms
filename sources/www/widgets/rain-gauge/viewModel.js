@@ -170,7 +170,6 @@ function rainGaugeDisplayViewModel() {
         
         //it is the right device
         if (keywordId === self.widget.configuration.device.keywordId) {
-           
            // Receive at startup data.unit and data.capacity
            if (!isNullOrUndefinedOrEmpty(data.unit))
               self.unit($.t(data.unit));
@@ -178,11 +177,11 @@ function rainGaugeDisplayViewModel() {
             if (data.value !==""){
                if (self.acquisitionData.length!=0){
                   if (data.date != DateTimeFormatter.isoDateToDate(self.acquisitionData[self.acquisitionData.length-1].date)) {
-                     self.acquisitionData.push({date: DateTimeFormatter.dateToIsoDate(data.date), key: data.value});
+                     self.acquisitionData.push({date: data.date, key: data.value});
                   }
                }
                else{
-                  self.acquisitionData.push({date: DateTimeFormatter.dateToIsoDate(data.date), key: data.value});
+                  self.acquisitionData.push({date: data.date, key: data.value});
                }
             }
             self.analyzeBuffer(keywordId);

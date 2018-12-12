@@ -16,7 +16,7 @@ namespace database
 
       //--------------------------------------------------------------
       /// \brief                    Add new keyword
-      /// \param [in] newKeywords   New keyword informations
+      /// \param [in] newKeyword    New keyword informations
       /// \throw                    shared::exception::CEmptyResult if deviceId is unknown
       //--------------------------------------------------------------
       virtual void addKeyword(const entities::CKeyword& newKeyword) = 0;
@@ -97,7 +97,7 @@ namespace database
 
       //--------------------------------------------------------------
       /// \brief                          Update the keyword blacklist state
-      /// \param [in] deviceId            The keyword id
+      /// \param [in] keywordId           The keyword id
       /// \param [in] blacklist           The keyword blacklist state
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
