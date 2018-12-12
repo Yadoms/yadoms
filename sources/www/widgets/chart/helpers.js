@@ -231,7 +231,7 @@ function createAxis (index,         // index of the plot
                       color: colorAxis
                   },
                   formatter: function () {
-                     if (this.chart.keyword[index].type === "Enum") {  // Return the translated enum value
+                     if (this.chart.keyword[index].dataType === "Enum") {  // Return the translated enum value
                         return this.chart.keyword[index].typeInfo.translatedValues[this.value];
                      }
                      else

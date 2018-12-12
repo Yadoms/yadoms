@@ -259,9 +259,9 @@ function chartViewModel() {
                         $.each(this.points, function () {
                             if (!this.series.hideInLegend) {
                                 if (isNullOrUndefined(this.point.low)) { //Standard serie
-                                   if (this.series.chart.keyword[this.series.keywordTabId].type === "Enum") {
+                                   if (this.series.chart.keyword[this.series.keywordTabId].dataType === "Enum") {
                                       s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
-                                        this.series.chart.keyword[this.series.index].typeInfo.translatedValues[parseInt(this.y)];
+                                        this.series.chart.keyword[this.series.keywordTabId].typeInfo.translatedValues[parseInt(this.y)];
                                    }else {
                                     s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
                                         this.series.name + " : " + roundNumber(this.y, this.series.precision) + " " + this.series.units;
@@ -409,7 +409,7 @@ function chartViewModel() {
         var defferedPluginInstance = new $.Deferred();
         arrayOfDeffered.push(defferedPluginInstance);
         
-        var deffered2 = self.widgetApi.getKeywordsInformation(keywords, ["accessMode", "capacity", "friendlyName", "unit", "measure", "dataType"]);
+        var deffered2 = self.widgetApi.getKeywordsInformation(keywords, ["accessMode", "capacity", "friendlyName", "unit", "measure", "dataType", "pluginId", "typeInfo"]);
          arrayOfDeffered.push(deffered2);
          deffered2.done(function (keywordsInformation) {
             $.each(keywordsInformation, function (index, keyword) {
@@ -454,10 +454,11 @@ function chartViewModel() {
                   self.widgetApi.getPluginInstanceInformation(keyword.pluginId)
                   .done(function (pluginInstance) {
                      self.pluginInstanceType[keyword.keywordId] = pluginInstance.type;
+                     self.chart.keyword[keyword.keywordId].typeInfo.translatedValues = [];
                      // Translate enum values only for enum keyword
-                     $.each(self.chart.keywordInfo[keyword.keywordId].typeInfo.values, function (index2, value) {
+                     $.each(self.chart.keyword[keyword.keywordId].typeInfo.values, function (index2, value) {
                         self.chart.keyword[keyword.keywordId].typeInfo.translatedValues[index2] = $.t("plugins." + self.pluginInstanceType[keyword.keywordId] + ":enumerations." + self.chart.keyword[keyword.keywordId].typeInfo.name + ".values." + value, { defaultValue:value} );
-                     });                        
+                     });
                      defferedPluginInstance.resolve();
                   })
                   .fail(defferedPluginInstance.reject);
@@ -751,7 +752,7 @@ function chartViewModel() {
                         
                         //Add plot
                         serie = self.chart.addSeries(serieOption, false, false); // Do not redraw immediately
-                            
+
                         if (device.content.PlotType === "arearange") {
                             //Add Ranges
                             if (deviceIsSummary[keywordId]) {
