@@ -2,7 +2,7 @@
 
 #### Web Client
 * Fix device details access on devices page
-
+* Fix #512 - Fix confirmation modals displayed multiple times and at background (need update of switch widget to version 1.1.1)
 
 ### 2.2.0-beta.2
 
