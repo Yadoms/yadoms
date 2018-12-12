@@ -193,7 +193,7 @@ function createAxis (index,         // index of the plot
   
   // treat oneAxis configuration option => axis name and color
   if (parseBool(configuration.oneAxis.checkbox)) {
-     yAxisName = 'axis' + seriesUuid[index];
+     yAxisName = 'axis0';
   }
   else {
      yAxisName = 'axis' + seriesUuid[index];
@@ -231,7 +231,7 @@ function createAxis (index,         // index of the plot
                       color: colorAxis
                   },
                   formatter: function () {
-                     if (this.chart.keyword[index].type === "Enum") {  // Return the translated enum value
+                     if (this.chart.keyword[index].dataType === "Enum") {  // Return the translated enum value
                         return this.chart.keyword[index].typeInfo.translatedValues[this.value];
                      }
                      else
