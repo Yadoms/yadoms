@@ -148,13 +148,10 @@
                   configMgr.afterI18n();
                })
                .fail(() => {
-                  debugger; //TODO
+                  notifyError($.t('modals.merge-devices.target-device.no-compatible-device'));
+                  return;
                });
-         })
-         .fail(() => {
-            debugger; //TODO
-         });;
-
+         });
    }
 
    onTargetDeviceSelected = function (selectedDeviceIndex) {
