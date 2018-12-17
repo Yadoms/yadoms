@@ -24,7 +24,7 @@ namespace web
               m_deviceManager(deviceManager),
               m_restKeyword("plugin"),
               m_messageSender(messageSender),
-         m_developerMode(developerMode)
+              m_developerMode(developerMode)
          {
          }
 
@@ -44,6 +44,7 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword), CPlugin::getAllAvailablePluginsParameterized);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("withPackage"), CPlugin::getAllAvailablePluginsWithPackage);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance"), CPlugin::getAllPluginsInstance);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instanceWithState"), CPlugin::getAllPluginsInstanceWithState);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance")("handleManuallyDeviceCreation"), CPlugin::
                getAllPluginsInstanceForManualDeviceCreation);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CPlugin::getOnePlugin);
@@ -127,10 +128,37 @@ namespace web
          boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstance(const std::vector<std::string>& parameters,
                                                                                                     const std::string& requestContent) const
          {
-            const auto hwList = m_pluginManager->getInstanceList();
             shared::CDataContainer t;
-            t.set(getRestKeyword(), hwList);
+            t.set(getRestKeyword(), m_pluginManager->getInstanceList());
             return CResult::GenerateSuccess(t);
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstanceWithState(const std::vector<std::string>& parameters,
+                                                                                                             const std::string& requestContent) const
+         {
+            try
+            {
+               std::vector<shared::CDataContainer> list;
+               for (const auto& instance : m_pluginManager->getInstanceList())
+               {
+                  shared::CDataContainer item;
+                  item.set("instance", instance);
+                  item.set("state", m_pluginManager->getInstanceFullState(instance->Id()));
+                  list.push_back(item);
+               }
+
+               shared::CDataContainer result;
+               result.set(getRestKeyword(), list);
+               return CResult::GenerateSuccess(result);
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in reading plugin instance status");
+            }
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstanceForManualDeviceCreation(

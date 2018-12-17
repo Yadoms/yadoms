@@ -30,6 +30,8 @@ namespace web
                                                                                      const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getAllPluginsInstance(const std::vector<std::string>& parameters,
                                                                                               const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAllPluginsInstanceWithState(const std::vector<std::string>& parameters,
+                                                                                                       const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getAllPluginsInstanceForManualDeviceCreation(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;

@@ -64,11 +64,8 @@ namespace database
 
             m_databaseRequester->queryEntities(&adapter, *qSelect);
             if (adapter.getResults().empty())
-            {
-               // Plugin not found
-               std::string sEx = (boost::format("Plugin Id %1% not found in database") % pluginId).str();
-               throw shared::exception::CEmptyResult(sEx);
-            }
+               throw shared::exception::CEmptyResult((boost::format("Plugin Id %1% not found in database") % pluginId).str());
+
             return adapter.getResults().at(0);
          }
 
