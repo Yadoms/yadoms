@@ -98,7 +98,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving all serial ports");
+               return CResult::GenerateError("unknown exception in retrieving all serial ports");
             }
          }
 
@@ -123,7 +123,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving all serial ports");
+               return CResult::GenerateError("unknown exception in retrieving all serial ports");
             }
          }
 
@@ -150,7 +150,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving system information");
+               return CResult::GenerateError("unknown exception in retrieving system information");
             }
          }
 
@@ -169,7 +169,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving system information");
+               return CResult::GenerateError("unknown exception in retrieving system information");
             }
          }
 
@@ -189,7 +189,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving system information");
+               return CResult::GenerateError("unknown exception in retrieving system information");
             }
          }
 
@@ -207,7 +207,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving system information");
+               return CResult::GenerateError("unknown exception in retrieving system information");
             }
          }
 
@@ -310,7 +310,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving all serial ports");
+               return CResult::GenerateError("unknown exception in retrieving all serial ports");
             }
          }
       } //namespace service

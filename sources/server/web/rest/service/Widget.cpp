@@ -90,7 +90,7 @@ namespace web {
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving one widget");
+               return CResult::GenerateError("unknown exception in retrieving one widget");
             }
          }
 

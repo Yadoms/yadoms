@@ -99,7 +99,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving one acquisition");
+               return CResult::GenerateError("unknown exception in retrieving one acquisition");
             }
          }
 
@@ -235,7 +235,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving one acquisition");
+               return CResult::GenerateError("unknown exception in retrieving one acquisition");
             }
          }
 
@@ -280,7 +280,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving one acquisition");
+               return CResult::GenerateError("unknown exception in retrieving one acquisition");
             }
          }
 
@@ -365,7 +365,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving one acquisition");
+               return CResult::GenerateError("unknown exception in retrieving one acquisition");
             }
          }
 

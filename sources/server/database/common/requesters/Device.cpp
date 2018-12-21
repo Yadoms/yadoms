@@ -265,6 +265,23 @@ namespace database
             }
          }
 
+         void CDevice::rename(int deviceId, const std::string& newName)
+         {
+            if (!deviceExists(deviceId))
+               throw shared::exception::CEmptyResult("The device does not exists");
+
+            if (newName.empty())
+               throw shared::exception::CEmptyResult("Invalid name provided");
+
+            auto qUpdate = m_databaseRequester->newQuery();
+            qUpdate->Update(CDeviceTable::getTableName()).
+                     Set(CDeviceTable::getNameColumnName(), newName).
+                     Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
+
+            if (m_databaseRequester->queryStatement(*qUpdate) <= 0)
+               throw shared::exception::CEmptyResult("Fail to update device name");
+         }
+
          void CDevice::updateDeviceConfiguration(int deviceId, const shared::CDataContainer& configuration)
          {
             if (!deviceExists(deviceId))

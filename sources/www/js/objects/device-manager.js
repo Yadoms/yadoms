@@ -327,3 +327,31 @@ DeviceManager.updateToServer = function (device) {
 
     return d.promise();
 };
+
+/**
+ * Merge 2 devices
+ * @param {Object} sourceDeviceId The source device id
+ * @param {Object} targetDeviceId The target device id
+ * @param {Object} keywordCorrespondences The correspondance between keywords
+ * @ return {Promise}
+ */
+DeviceManager.mergeDevices = function (sourceDeviceId, targetDeviceId, keywordCorrespondences) {
+   assert(!isNullOrUndefined(sourceDeviceId), "sourceDeviceId must be defined");
+   assert(!isNullOrUndefined(targetDeviceId), "targetDeviceId must be defined");
+   assert(!isNullOrUndefined(keywordCorrespondences), "keywordCorrespondences must be defined");
+
+   var d = new $.Deferred();
+
+   mergeInfo = {
+      "sourceDeviceId" : sourceDeviceId,
+      "targetDeviceId" : targetDeviceId,
+      "keywordCorrespondences" : keywordCorrespondences
+   }
+
+   RestEngine.putJson("/rest/device/merge", { data: JSON.stringify(mergeInfo) })
+   .done(function () {
+       d.resolve();
+   }).fail(d.reject);
+
+   return d.promise();
+};

@@ -50,6 +50,8 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("configuration"), CDevice::updateDeviceConfiguration,
                CDevice::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("merge"), CDevice::mergeDevices,
+               CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("restore"), CDevice::restoreDevice, CDevice::
                transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*"), CDevice::updateKeywordFriendlyName,
@@ -559,6 +561,54 @@ namespace web
             catch (...)
             {
                return CResult::GenerateError("unknown exception in updating device configuration");
+            }
+         }
+
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::mergeDevices(
+            const std::vector<std::string>& parameters, const std::string& requestContent) const
+         {
+            try
+            {
+               shared::CDataContainer content(requestContent);
+               const auto sourceDeviceId = content.get<int>("sourceDeviceId");
+               const auto targetDeviceId = content.get<int>("targetDeviceId");
+               const auto keywordCorrespondences = content.get<std::vector<shared::CDataContainer>>("keywordCorrespondences");
+
+               // Merge acquisitions
+               YADOMS_LOG(information) << "Starting merging 2 devices...";
+               for (const auto& keywordCorrespondence : keywordCorrespondences)
+               {
+                  // Move acquisitions
+                  const auto fromKw = keywordCorrespondence.get<int>("from");
+                  const auto toKw = keywordCorrespondence.get<int>("to");
+                  m_dataProvider->getAcquisitionRequester()->moveAllData(fromKw, toKw);
+                  // Update last acquisition in keyword table
+                  const auto lastData = m_dataProvider->getAcquisitionRequester()->getKeywordData(toKw,
+                     boost::posix_time::not_a_date_time,
+                     boost::posix_time::not_a_date_time,
+                     1);
+                  m_dataProvider->getKeywordRequester()->updateLastValue(fromKw,
+                     lastData.size() != 0 ? lastData[0].get<0>() : boost::posix_time::not_a_date_time,
+                     lastData.size() != 0 ? lastData[0].get<1>() : std::string());
+               }
+               // Change name of target device, to make plugin using this device from now
+               m_deviceRequester->rename(targetDeviceId, m_deviceRequester->getDevice(sourceDeviceId)->Name());
+
+               // Remove source device
+               m_deviceRequester->removeDevice(sourceDeviceId);
+
+               YADOMS_LOG(information) << "Device merge done...";
+
+               return CResult::GenerateSuccess();
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in merging devices");
             }
          }
 

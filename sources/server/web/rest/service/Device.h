@@ -103,6 +103,11 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> updateDeviceConfiguration(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
             //-----------------------------------------
+            ///\brief   merge 2 devices
+            //-----------------------------------------
+            boost::shared_ptr<shared::serialization::IDataSerializable> mergeDevices(const std::vector<std::string>& parameters, const std::string& requestContent) const;            
+
+            //-----------------------------------------
             ///\brief   update a keyword friendly name
             //-----------------------------------------
             boost::shared_ptr<shared::serialization::IDataSerializable> updateKeywordFriendlyName(const std::vector<std::string>& parameters, const std::string& requestContent) const;

@@ -120,7 +120,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving the rule");
+               return CResult::GenerateError("unknown exception in retrieving the rule");
             }
          }
 
@@ -146,7 +146,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving the rule");
+               return CResult::GenerateError("unknown exception in retrieving the rule");
             }
          }
 
@@ -172,7 +172,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving the rule");
+               return CResult::GenerateError("unknown exception in retrieving the rule");
             }
          }
 
@@ -198,7 +198,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving the rule");
+               return CResult::GenerateError("unknown exception in retrieving the rule");
             }
          }
 
@@ -223,7 +223,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving the rule");
+               return CResult::GenerateError("unknown exception in retrieving the rule");
             }
          }
 

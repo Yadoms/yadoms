@@ -98,7 +98,7 @@ namespace database
 
       //--------------------------------------------------------------
       /// \Brief		get the Acquisition requester
-      /// \return 	the Acquisiton requester
+      /// \return 	the Acquisition requester
       /// \throws 		
       //--------------------------------------------------------------  
       virtual boost::shared_ptr<IAcquisitionRequester> getAcquisitionRequester() = 0;

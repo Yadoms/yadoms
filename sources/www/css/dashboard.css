@@ -462,6 +462,14 @@
     width: 50%;
 }
 
+div#please-wait-modal {
+  text-align: center;
+}
+
+div#please-wait-modal i {
+  margin: 10px;
+}
+
 .bs-callout {
     padding: 20px;
     margin: 20px 0;

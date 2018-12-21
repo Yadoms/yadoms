@@ -114,7 +114,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving one plugin instance");
+               return CResult::GenerateError("unknown exception in retrieving one plugin instance");
             }
          }
 
@@ -646,7 +646,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving keyword");
+               return CResult::GenerateError("unknown exception in retrieving keyword");
             }
          }
 

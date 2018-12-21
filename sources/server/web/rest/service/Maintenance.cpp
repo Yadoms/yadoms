@@ -55,7 +55,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving database information");
+               return CResult::GenerateError("unknown exception in retrieving database information");
             }
          }
 
@@ -136,7 +136,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving last backup data");
+               return CResult::GenerateError("unknown exception in retrieving last backup data");
             }
          }
 

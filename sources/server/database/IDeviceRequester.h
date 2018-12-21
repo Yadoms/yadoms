@@ -146,6 +146,16 @@ namespace database
                                             const std::string& newFriendlyName) = 0;
 
       //--------------------------------------------------------------
+      /// \brief                          Rename a device (use carefully, this name is use by plugin to historize data)
+      /// \param [in] deviceId            The device id
+      /// \param [in] newName             The new name
+      /// \throw  shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual void rename(int deviceId,
+                          const std::string& newName) = 0;
+
+
+      //--------------------------------------------------------------
       /// \brief                          Update the device configuration
       /// \param [in] deviceId            The device id
       /// \param [in] configuration       The device configuration
