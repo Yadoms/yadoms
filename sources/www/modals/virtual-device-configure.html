@@ -37,10 +37,12 @@
 
                 // Activate the button to configure a new time this device
                 // In case of cancel the showConfiguration modal, it's the only way to reactivate the device button
-                $("div#virtual-device-configure-modal").one('hide.bs.modal', function() {
-                   var $deviceRow = getDeviceDomRow(currentDevice);
-                   addDeviceButtonsEvents($deviceRow ,currentDevice);
-                });                
+                if (!isNullOrUndefined(currentDevice)){ // When created, the currentDevice is null
+                   $("div#virtual-device-configure-modal").one('hide.bs.modal', function() {
+                      var $deviceRow = getDeviceDomRow(currentDevice);
+                      addDeviceButtonsEvents($deviceRow ,currentDevice);
+                   });
+                }
                 
                 //we append the common parameters section
                 var friendlyNameParameter = new StringParameterHandler(

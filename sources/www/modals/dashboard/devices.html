@@ -76,6 +76,7 @@
                // create the table
                createKeywordsTable(device, $deviceRow);
             }
+        
             fillTable(device);
             AcquisitionManager.getLastAcquisition(device.keywords)
             .done(function (data) {
@@ -163,6 +164,7 @@
    dispatchDevicesDeletedToDevicesView = function (device) {
       // remove device and device-details if any ...
       $("table#device-list").find("tr[device-id='" + device.device.id + "']").remove();
+      $("p.nokeyword-for-device").remove();
       
       // Remove the device from the device list to display
       var i = deviceList.map(function (e) { return e.id; }).indexOf(device.device.id);
@@ -455,8 +457,6 @@
       return undefined;
    }
    
-
-   
    function addDeviceToDom(device, positionDevice) {
       //in case the device is blacklisted, then strike it
       var fn = device.friendlyName;
@@ -525,9 +525,9 @@
             // Only virtual devices are configurable/removable
             if (device.type !== "virtualDeviceType") {
                $deviceRow.find("button.btn-configure").addClass("hide");
-               $deviceRow.find("button.btn-configure").unbind('click');
+               $deviceRow.find("button.btn-configure").off('click');
                $deviceRow.find("button.btn-delete").addClass("hide");
-               $deviceRow.find("button.btn-delete").unbind('click');
+               $deviceRow.find("button.btn-delete").off('click');
             }
          }
 
@@ -590,10 +590,11 @@
          Yadoms.modals.virtualDeviceConfigure.loadAsync()
          .done(function () {
              Yadoms.showVirtualDeviceConfigurationModal(device, false, function (friendlyName, model) {
-               // Update only the friendly name when we update a virtual device
+               // Update only the friendly name and the model when we update a virtual device
                 var newDevice = Object.assign({}, device);
                 newDevice.friendlyName = friendlyName;
-               recordAndDisplayNewDeviceConfiguration(newDevice);
+                newDevice.model = model;
+                recordAndDisplayNewDeviceConfiguration(newDevice);
             });
          });
       } else {
