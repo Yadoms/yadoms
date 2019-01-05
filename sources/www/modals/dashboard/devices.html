@@ -163,7 +163,8 @@
    
    dispatchDevicesDeletedToDevicesView = function (device) {
       // remove device and device-details if any ...
-      $("table#device-list").find("tr[device-id='" + device.device.id + "']").remove();
+      getDeviceDomRow(device.device).remove();
+      getDeviceDetailsDomRow().remove();
       $("p.nokeyword-for-device").remove();
       
       // Remove the device from the device list to display
@@ -177,7 +178,7 @@
    
    function getDeviceDomRow(device) {
       return $("table#device-list").find("tr[device-id='" + device.id + "'].device");
-   }
+   };
 
    function transformDeviceInDom(device) {
       // remove device details if any 
@@ -434,10 +435,6 @@
       return d.promise();
    }
 
-   function getDeviceDomRow(device) {
-      return $("table#device-list").find("tr[device-id='" + device.id + "'].device");
-   }
-
    function getDeviceDetailsDomRow() {
       return $("table#device-list").find("tr.device-details");
    }
@@ -561,6 +558,10 @@
                }else {
                   DeviceManager.getAttachedPlugin(device, true)
                   .done(function () {
+                     // remove keywords table displayed
+                     $("p.nokeyword-for-device").remove();
+                     getDeviceDetailsDomRow().remove();
+                  
                      // we remove the element
                      $row.remove ();
                      
@@ -686,9 +687,6 @@
          }
 
          YadomsDevicesActivateButtonSetKeywordValue(device, keyword);
-         /*if ($keywordRow.find("button.btn-setvalue")) {
-            $keywordRow.find("button.btn-setvalue").one('click', function () { setKeywordValue(keyword, device); });
-         }*/
       });
    };
    
@@ -703,10 +701,7 @@
       var selectedClass = "info";
 
       //we remove the line that contains keywords information
-      var $details = getDeviceDetailsDomRow();
-      if (!isNullOrUndefinedOrEmpty($details))
-         $details.remove();
-
+      getDeviceDetailsDomRow().remove();
       $(".nokeyword-for-device").remove();
       
       //we look if this device is already selected
