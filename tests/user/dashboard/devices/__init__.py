@@ -162,7 +162,9 @@ def waitSetValueKeywordModal(browser):
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "set-value-keyword-modal")))
    return SetValueKeywordModal(browser.find_element_by_id("set-value-keyword-modal"))
 
-   
+def waitConfigureKeywordModal(browser):
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "configure-keyword-modal")))
+   return ConfigureKeywordModal(browser.find_element_by_id("configure-keyword-modal"))
    
 class NewDeviceModal():
    """ Operations on new device modal (attached plugin selection) """
@@ -301,3 +303,33 @@ class SetValueKeywordModal():
       self.getOkButton().click()
       modals.waitForClosed(self.__setValueKeywordModalWebElement)
 
+class ConfigureKeywordModal():
+   """ Operations on configure keyword modal """
+   
+   def __init__(self, configureKeywordModalWebElement):
+      self.__configureKeywordModalWebElement = configureKeywordModalWebElement
+      pass   
+   
+   def getTextField(self, field):
+      return ConfigurationPanel(self.__configureKeywordModalWebElement).getTextItemByName(field).get_attribute('value')
+
+   def updateTextField(self, field, value):
+      field = ConfigurationPanel(self.__configureKeywordModalWebElement).getTextItemByName(field)
+      tools.waitReadyForInput(field)
+      field.send_keys(Keys.CONTROL + "a")
+      field.send_keys(Keys.DELETE)
+      field.send_keys(value)
+
+   def getCancelButton(self):
+      return self.__configureKeywordModalWebElement.find_element_by_class_name("btn-default")
+         
+   def getOkButton(self):
+      return self.__configureKeywordModalWebElement.find_element_by_id("btn-confirm-configure-keyword")
+
+   def cancel(self):
+      self.getCancelButton().click()
+      modals.waitForClosed(self.__configureKeywordModalWebElement)
+         
+   def ok(self):
+      self.getOkButton().click()
+      modals.waitForClosed(self.__configureKeywordModalWebElement)

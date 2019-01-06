@@ -14,7 +14,7 @@ import i18n
 import time
 
 class RenameDevice(unittest.TestCase):
-   """Configure device test"""
+   """Rename device test"""
    
    def setUp(self):
       yadomsServer.ensureStopped()
@@ -35,12 +35,11 @@ class RenameDevice(unittest.TestCase):
       newDeviceName = u'myNewName'
       attachedPluginInstance = u'My fakePlugin instance'
      
-      print '  Check that device is configurable'
+      print '  Open the configure device modal'
       devicesTable = dashboard.devices.waitDevicesTable(self.browser)
       deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
       configureDeviceModal = dashboard.devices.waitConfigureDeviceModal(self.browser)
-      self.browser.implicitly_wait(100)
 
       print '  Change device name then cancel'
       configureDeviceModal.updateTextField('friendlyName', newDeviceName)

@@ -682,13 +682,17 @@
             $keywordRow.find("button.btn-configure").addClass("hide");
          }
          else {
-            //we bind event on the different actions
-            $keywordRow.find("button.btn-configure").one('click', function () { configureKeyword(keyword); });
+            YadomsDevicesActivateButtonConfigureKeyword(keyword);
          }
 
          YadomsDevicesActivateButtonSetKeywordValue(device, keyword);
       });
    };
+   
+   function YadomsDevicesActivateButtonConfigureKeyword(keyword){
+      var $keywordRow = getKeywordDomRow(keyword);
+      $keywordRow.find("button.btn-configure").one('click', function () { configureKeyword(keyword); });
+   }
    
    function YadomsDevicesActivateButtonSetKeywordValue(device, keyword){
       var $keywordRow = getKeywordDomRow(keyword);
@@ -814,7 +818,8 @@
             .done(function () {
                //We update the information that can have changed after the configuration
                var $row = getKeywordDomRow(keyword);
-               $row.find("td.keyword-friendlyName").html(keyword.friendlyName);
+               var friendlyName = "<span>" + keyword.friendlyName + "</span>";
+               $row.find("td.keyword-friendlyName").html(friendlyName);
             })
             .fail(function (error) {
                notifyError($.t("modals.dashboard.sub-windows.devices.errorUpdatingKeyword", { keyword: keyword.friendlyName }), error);
