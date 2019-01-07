@@ -188,14 +188,14 @@ class NewDeviceModal():
       return WebDriverWait(self.__newDeviceModalWebElement, 10).until(Condition.visibility_of_element_located((By.XPATH, ".//span[@data-i18n='modals.add-manually-device.addManuallyDeviceSection.content.virtualDevice.name']")))
    
    def getCancelButton(self):
-      return self.__newDeviceModalWebElement.find_element_by_class_name("btn-default")   
+      return self.__newDeviceModalWebElement.find_element_by_class_name("btn-default")
    
    def getConfirmButton(self):
       return self.__newDeviceModalWebElement.find_element_by_id("btn-confirm-add-manually-device")
 
    def cancel(self):
       self.getCancelButton().click()
-      modals.waitForClosed(self.__newDeviceModalWebElement)      
+      modals.waitForClosed(self.__newDeviceModalWebElement)
  
    def ok(self):
       self.getConfirmButton().click()
@@ -207,17 +207,27 @@ class NewVirtualDeviceConfigureModal():
    
    def __init__(self, newVirtualDeviceModalWebElement):
        self.__newVirtualDeviceModalWebElement = newVirtualDeviceModalWebElement
-      
+
+   def getTextField(self, field):
+      return ConfigurationPanel(self.__newVirtualDeviceModalWebElement).getTextItemByName(field).get_attribute('value')
+
    def updateTextField(self, field, value):
       field = ConfigurationPanel(self.__newVirtualDeviceModalWebElement).getTextItemByName(field)
       tools.waitReadyForInput(field)
       field.send_keys(Keys.CONTROL + "a")
       field.send_keys(Keys.DELETE)
       field.send_keys(value)
-         
+
+   def getCancelButton(self):
+      return self.__newVirtualDeviceModalWebElement.find_element_by_class_name("btn-default")
+
    def getOkButton(self):
       return self.__newVirtualDeviceModalWebElement.find_element_by_id("btn-confirm-configure-device")
-         
+
+   def cancel(self):
+      self.getCancelButton().click()
+      modals.waitForClosed(self.__newVirtualDeviceModalWebElement)
+
    def ok(self):
       self.getOkButton().click()
       modals.waitForClosed(self.__newVirtualDeviceModalWebElement)       
