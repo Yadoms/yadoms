@@ -55,6 +55,31 @@ class CreateDevice(unittest.TestCase):
       self.assertEqual(dashboard.devices.getAttachedPlugin(devicesTable, deviceId), attachedPluginInstance)
       
       
+   def test_createVirtualDevice(self):
+      print '=== Manually virtual device creation test ==='
+      deviceName = u'My virtual device'
+     
+      print '  Select virtual device'
+      tools.waitUntil(lambda: dashboard.devices.getCreateDeviceButton(self.browser).is_enabled())
+      dashboard.devices.getCreateDeviceButton(self.browser).click()
+      newDeviceModal = dashboard.devices.waitNewDeviceModal(self.browser)
+      newDeviceModal.selectVirtualDevice().click()
+      newDeviceModal.ok()
+      
+      print '  Configure the virtual device'
+      editVirtualDeviceModal = dashboard.devices.waitConfigureVirtualDeviceModal(self.browser)
+      editVirtualDeviceModal.updateTextField('friendlyName', deviceName)
+      # Device with the first capacity in the list
+      # In the futur, it should be great to create all types of virtual devices
+      print '  Click OK'
+      editVirtualDeviceModal.ok()
+      
+      print '  Check created device'
+      devicesTable = dashboard.devices.waitDevicesTable(self.browser)
+      deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
+      deviceDatas = dashboard.devices.getDeviceDatas(devicesTable, deviceId)
+      self.assertTrue(tools.waitUntil(lambda: dashboard.devices.getDeviceName(devicesTable, deviceId) == deviceName))
+      
    def tearDown(self):
       self.browser.close()
       yadomsServer.stop(self.serverProcess)
