@@ -1,4 +1,6 @@
 ### 2.2.0-beta.3
+* Fix #527 - Equipment renamed is not displayed immediately
+* Fix #526 - Equipment type change not fully fonctional
 
 #### Web Client
 * Fix device details access on devices page

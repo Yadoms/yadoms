@@ -29,8 +29,9 @@
         var $modalBody = $("div#configure-device-modal .modal-body");
         $modalBody.empty();
 
-        //Activate the button to configure a new time this device
-        $("div#configure-device-modal").one('hidden.bs.modal', function() {
+        // Activate the button to configure a new time this device
+        // In case of cancel the showConfiguration modal, it's the only way to reactivate the device button
+        $("div#configure-device-modal").one('hide.bs.modal', function() {
            var $deviceRow = getDeviceDomRow(device);
            addDeviceButtonsEvents($deviceRow ,device);
         });
@@ -75,14 +76,15 @@
                   .done(function(deviceModel) {
                      configMgr.getCurrentConfiguration()
                      .done(function(configuration) {
-                         device.friendlyName = deviceName;
-                         device.model = deviceModel;
-                         device.configuration = configuration;
-
-                         console.debug("End of Device Configuration : " + JSON.stringify(device));
-
+                         // Creation of the new device, with old elements and updated elements
+                         var newDevice = Object.assign({}, device);
+                         newDevice.friendlyName = deviceName;
+                         newDevice.model = deviceModel;
+                         newDevice.configuration = configuration;
+                         
+                         console.debug("End of Device Configuration : " + JSON.stringify(newDevice));
                          $("div#configure-device-modal").modal("hide");
-                         callback();
+                         callback(newDevice);
                      });
                   });
                });

@@ -162,10 +162,16 @@ def waitSetValueKeywordModal(browser):
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "set-value-keyword-modal")))
    return SetValueKeywordModal(browser.find_element_by_id("set-value-keyword-modal"))
 
-   
+def waitConfigureKeywordModal(browser):
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "configure-keyword-modal")))
+   return ConfigureKeywordModal(browser.find_element_by_id("configure-keyword-modal"))
+
+def waitConfigureVirtualDeviceModal(browser):
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "virtual-device-configure-modal")))
+   return NewVirtualDeviceConfigureModal(browser.find_element_by_id("virtual-device-configure-modal"))
    
 class NewDeviceModal():
-   """ Operations on new device modal (attached plugin selection) """
+   """ Operations on new device modal """
    
    def __init__(self, newDeviceModalWebElement):
        self.__newDeviceModalWebElement = newDeviceModalWebElement
@@ -177,24 +183,62 @@ class NewDeviceModal():
             return option
       print "selectAttachedPlugin : Nothing to select, ", pluginName, " not found"
       assert False
-         
+   
+   def selectVirtualDevice(self):
+      return WebDriverWait(self.__newDeviceModalWebElement, 10).until(Condition.visibility_of_element_located((By.XPATH, ".//span[@data-i18n='modals.add-manually-device.addManuallyDeviceSection.content.virtualDevice.name']")))
+   
+   def getCancelButton(self):
+      return self.__newDeviceModalWebElement.find_element_by_class_name("btn-default")
+   
    def getConfirmButton(self):
       return self.__newDeviceModalWebElement.find_element_by_id("btn-confirm-add-manually-device")
-         
+
+   def cancel(self):
+      self.getCancelButton().click()
+      modals.waitForClosed(self.__newDeviceModalWebElement)
+ 
    def ok(self):
       self.getConfirmButton().click()
       modals.waitForClosed(self.__newDeviceModalWebElement)
-            
-            
-            
+
+
+class NewVirtualDeviceConfigureModal():
+   """ Operations on new virtual device modal """
+   
+   def __init__(self, newVirtualDeviceModalWebElement):
+       self.__newVirtualDeviceModalWebElement = newVirtualDeviceModalWebElement
+
+   def getTextField(self, field):
+      return ConfigurationPanel(self.__newVirtualDeviceModalWebElement).getTextItemByName(field).get_attribute('value')
+
+   def updateTextField(self, field, value):
+      field = ConfigurationPanel(self.__newVirtualDeviceModalWebElement).getTextItemByName(field)
+      tools.waitReadyForInput(field)
+      field.send_keys(Keys.CONTROL + "a")
+      field.send_keys(Keys.DELETE)
+      field.send_keys(value)
+
+   def getCancelButton(self):
+      return self.__newVirtualDeviceModalWebElement.find_element_by_class_name("btn-default")
+
+   def getOkButton(self):
+      return self.__newVirtualDeviceModalWebElement.find_element_by_id("btn-confirm-configure-device")
+
+   def cancel(self):
+      self.getCancelButton().click()
+      modals.waitForClosed(self.__newVirtualDeviceModalWebElement)
+
+   def ok(self):
+      self.getOkButton().click()
+      modals.waitForClosed(self.__newVirtualDeviceModalWebElement)       
+
+
 
 class RemoveDeviceConfirmationModal(modals.OkCancelModal):
    """ Operations on delete device confirmation modal """
    pass
    
-
-
-
+   
 class ConfigureDeviceModal():
    """ Operations on device configuration modal """
    
@@ -301,3 +345,33 @@ class SetValueKeywordModal():
       self.getOkButton().click()
       modals.waitForClosed(self.__setValueKeywordModalWebElement)
 
+class ConfigureKeywordModal():
+   """ Operations on configure keyword modal """
+   
+   def __init__(self, configureKeywordModalWebElement):
+      self.__configureKeywordModalWebElement = configureKeywordModalWebElement
+      pass   
+   
+   def getTextField(self, field):
+      return ConfigurationPanel(self.__configureKeywordModalWebElement).getTextItemByName(field).get_attribute('value')
+
+   def updateTextField(self, field, value):
+      field = ConfigurationPanel(self.__configureKeywordModalWebElement).getTextItemByName(field)
+      tools.waitReadyForInput(field)
+      field.send_keys(Keys.CONTROL + "a")
+      field.send_keys(Keys.DELETE)
+      field.send_keys(value)
+
+   def getCancelButton(self):
+      return self.__configureKeywordModalWebElement.find_element_by_class_name("btn-default")
+         
+   def getOkButton(self):
+      return self.__configureKeywordModalWebElement.find_element_by_id("btn-confirm-configure-keyword")
+
+   def cancel(self):
+      self.getCancelButton().click()
+      modals.waitForClosed(self.__configureKeywordModalWebElement)
+         
+   def ok(self):
+      self.getOkButton().click()
+      modals.waitForClosed(self.__configureKeywordModalWebElement)
