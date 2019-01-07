@@ -34,6 +34,12 @@ class CreateDevice(unittest.TestCase):
       deviceName = u'My device'
       attachedPluginInstance = u'My fakePlugin instance'
      
+      print '  open the create device & cancel'
+      tools.waitUntil(lambda: dashboard.devices.getCreateDeviceButton(self.browser).is_enabled())
+      dashboard.devices.getCreateDeviceButton(self.browser).click()
+      newDeviceModal = dashboard.devices.waitNewDeviceModal(self.browser)
+      newDeviceModal.cancel()
+     
       print '  Create the device'
       tools.waitUntil(lambda: dashboard.devices.getCreateDeviceButton(self.browser).is_enabled())
       dashboard.devices.getCreateDeviceButton(self.browser).click()
