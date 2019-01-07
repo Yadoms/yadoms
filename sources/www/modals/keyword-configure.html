@@ -66,6 +66,11 @@
          }
       });
 
+      //if modal cancelled, then reject promise
+      $('div#configure-keyword-modal').off("hidde.bs.modal").on("hidden.bs.modal", function () {
+         YadomsDevicesActivateButtonConfigureKeyword(keyword);
+      });      
+      
       //fix additional sub modals input (like icon picker search box)
       $('div#configure-keyword-modal').on('shown.bs.modal', function (e) { $(document).off('focusin.modal'); });
 

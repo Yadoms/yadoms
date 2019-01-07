@@ -69,7 +69,7 @@
           });
 
           //if modal cancelled, then reject promise
-          $('div#set-value-keyword-modal').off("hidden.bs.modal").on("hidden.bs.modal", function () {
+          $('div#set-value-keyword-modal').off("hidde.bs.modal").on("hidde.bs.modal", function () {
             YadomsDevicesActivateButtonSetKeywordValue(device, keyword);
             d.reject();
           });

@@ -24,42 +24,44 @@
       assert(title !== undefined, "title must be defined. Set to null to use default confirmation title");
       assert(text !== undefined, "text must be defined.");
       assert($.isFunction(confirmCallBack), "confirmCallBack must be defined.");
+      
+      $modal = $("div#confirmation-modal");
 
       //we set title if defined
       if (title != null) {
-         $("div#confirmation-modal").find("div.modal-title").text(title);
+         $modal.find("div.modal-title").text(title);
       }
 
       //we set text
-      $("div#confirmation-modal").find("div.modal-body").text(text);
+      $modal.find("div.modal-body").text(text);
 
       //we set btn text
       switch (kindOfBtn) {
          case Yadoms.btnKind.yesNo:
-            $("div#confirmation-modal").find("button.btn-cancel").text($.t("common.no"));
-            $("div#confirmation-modal").find("button.btn-confirm").text($.t("common.yes"));
+            $modal.find("button.btn-cancel").text($.t("common.no"));
+            $modal.find("button.btn-confirm").text($.t("common.yes"));
             break;
          case Yadoms.btnKind.confirmCancel:
-            $("div#confirmation-modal").find("button.btn-cancel").text($.t("common.cancel"));
-            $("div#confirmation-modal").find("button.btn-confirm").text($.t("common.confirm"));
+            $modal.find("button.btn-cancel").text($.t("common.cancel"));
+            $modal.find("button.btn-confirm").text($.t("common.confirm"));
             break;
          default:
          case Yadoms.btnKind.okCancel:
-            $("div#confirmation-modal").find("button.btn-cancel").text($.t("common.cancel"));
-            $("div#confirmation-modal").find("button.btn-confirm").text($.t("common.ok"));
+            $modal.find("button.btn-cancel").text($.t("common.cancel"));
+            $modal.find("button.btn-confirm").text($.t("common.ok"));
             break;
       }
 
       //we bind the two callbacks
       if ($.isFunction(cancelCallback))
-         $("div#confirmation-modal").find("button.btn-cancel").unbind('click').bind('click', cancelCallback);
+         $modal.find("button.btn-cancel").unbind('click').bind('click', cancelCallback);
 
-      $("div#confirmation-modal").find("button.btn-confirm").unbind('click').bind('click', function () {
+      $modal.find("button.btn-confirm").unbind('click').bind('click', function () {
          confirmCallBack();
-         $("div#confirmation-modal").modal("hide");
+         $modal.modal("hide");
       });
 
       //we display the modal
-      $('div#confirmation-modal').modal({ backdrop: 'static' });
+      $modal.modal();
    };
 </script>

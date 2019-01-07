@@ -60,6 +60,11 @@ class ConfigureDevice(unittest.TestCase):
       self.assertEqual(configureDeviceModal.getTextField('CounterDivider2'), '2')
       configureDeviceModal.updateTextField('CounterDivider2', '5')
       configureDeviceModal.cancel()
+
+      print '  Check, it s possible to open twice the configuration windows for a normal device'
+      dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
+      configureDeviceModal = dashboard.devices.waitConfigureDeviceModal(self.browser)
+      configureDeviceModal.cancel()
       
       print '  Start change device configuration then confirm'
       dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()

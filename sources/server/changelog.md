@@ -1,5 +1,19 @@
+### 2.2.0-beta.4
+* Fix script interpreter package generation (post build copy)
+
+### 2.2.0-beta.3
+* Fix #527 - Equipment renamed is not displayed immediately
+* Fix #526 - Equipment type change not fully fonctional
+
+#### Web Client
+* Fix device details access on devices page
+* Fix #512 - Fix confirmation modals displayed multiple times and at background (need update of switch widget to version 1.1.1)
+
 ### 2.2.0-beta.2
+
+#### Web Client
 * Fix #510 - Title not display
+
 
 ### 2.2.0-beta.1
 
