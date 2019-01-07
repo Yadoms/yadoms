@@ -1,3 +1,6 @@
+### 2.2.0-beta.4
+* Fix script interpreter package generation (post build copy)
+
 ### 2.2.0-beta.3
 * Fix #527 - Equipment renamed is not displayed immediately
 * Fix #526 - Equipment type change not fully fonctional
