@@ -1,5 +1,6 @@
 ### 2.2.0-beta.4
 * Fix script interpreter package generation (post build copy)
+* Fix #529 : Fix saving system configuration
 
 ### 2.2.0-beta.3
 * Fix #527 - Equipment renamed is not displayed immediately

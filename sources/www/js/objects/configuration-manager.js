@@ -20,7 +20,7 @@ function ConfigurationManager() {
             })
             .fail(d.reject);
 
-        return d;
+        return d.promise();
     }
 
     this.save = function () {
@@ -33,7 +33,7 @@ function ConfigurationManager() {
             .done(d.resolve)
             .fail(d.reject);
 
-        return d;
+        return d.promise();
     }
 
     this.reset = function () {
@@ -46,7 +46,7 @@ function ConfigurationManager() {
             .done(d.resolve)
             .fail(d.reject);
 
-        return d;
+        return d.promise();
     }
 
     this.isServerFirstStart = function () {
@@ -115,45 +115,59 @@ function ConfigurationManager() {
 
     this.location = function () {
         return {
-            latitude: serverConfiguration[items.server.locationSection].latitude,
-            longitude: serverConfiguration[items.server.locationSection].longitude,
-            altitude: serverConfiguration[items.server.locationSection].altitude,
-            timezone: serverConfiguration[items.server.locationSection].timezone
+            latitude: serverConfiguration[items.server.locationSection][items.server.location.latitude],
+            longitude: serverConfiguration[items.server.locationSection][items.server.location.longitude],
+            altitude: serverConfiguration[items.server.locationSection][items.server.location.altitude],
+            timezone: serverConfiguration[items.server.locationSection][items.server.location.timezone]
         };
     };
 
     this.setCurrentLocation = function (latitude, longitude, altitude, timezone) {
-        if (serverConfiguration[items.server.location.latitude] != latitude ||
-            serverConfiguration[items.server.location.longitude] != longitude ||
-            serverConfiguration[items.server.location.altitude] != altitude ||
-            serverConfiguration[items.server.location.timezone] != timezone) {
+        if (isNullOrUndefined(latitude)) {
+            latitude = serverConfiguration[items.server.locationSection][items.server.location.latitude];
+        }
+        if (isNullOrUndefined(longitude)) {
+            longitude = serverConfiguration[items.server.locationSection][items.server.location.longitude];
+        }
+        if (isNullOrUndefined(altitude)) {
+            altitude = serverConfiguration[items.server.locationSection][items.server.location.altitude];
+        }
+        if (isNullOrUndefined(timezone)) {
+            timezone = serverConfiguration[items.server.locationSection][items.server.location.timezone];
+        }
 
-            serverConfiguration[items.server.location.latitude] = latitude;
-            serverConfiguration[items.server.location.longitude] = longitude;
-            serverConfiguration[items.server.location.altitude] = altitude;
-            serverConfiguration[items.server.location.timezone] = timezone;
+
+        if (serverConfiguration[items.server.locationSection][items.server.location.latitude] != latitude ||
+            serverConfiguration[items.server.locationSection][items.server.location.longitude] != longitude ||
+            serverConfiguration[items.server.locationSection][items.server.location.altitude] != altitude ||
+            serverConfiguration[items.server.locationSection][items.server.location.timezone] != timezone) {
+
+            serverConfiguration[items.server.locationSection][items.server.location.latitude] = latitude;
+            serverConfiguration[items.server.locationSection][items.server.location.longitude] = longitude;
+            serverConfiguration[items.server.locationSection][items.server.location.altitude] = altitude;
+            serverConfiguration[items.server.locationSection][items.server.location.timezone] = timezone;
             serverConfigurationChanged = true;
         }
     };
 
     this.basicAuthentication = function () {
         return {
-            active: serverConfiguration[items.server.basicAuthenticationSection].active === "true",
-            user: serverConfiguration[items.server.basicAuthenticationSection].user,
-            password: serverConfiguration[items.server.basicAuthenticationSection].password
+            active: serverConfiguration[items.server.basicAuthenticationSection][items.server.basicAuthentication.active] === "true",
+            user: serverConfiguration[items.server.basicAuthenticationSection][items.server.basicAuthentication.user],
+            password: serverConfiguration[items.server.basicAuthenticationSection][items.server.basicAuthentication.password]
         };
     };
 
     this.setBasicAuthentication = function (active, user, password) {
-        var currentlyActive = serverConfiguration[items.server.basicAuthenticationSection].active === "true";
+        var currentlyActive = serverConfiguration[items.server.basicAuthenticationSection][items.server.basicAuthentication.active] === "true";
 
         if (currentlyActive != active ||
-            serverConfiguration[items.server.basicAuthenticationSection].user != user ||
-            serverConfiguration[items.server.basicAuthenticationSection].password != password) {
+            serverConfiguration[items.server.basicAuthenticationSection][items.server.basicAuthentication.user] != user ||
+            serverConfiguration[items.server.basicAuthenticationSection][items.server.basicAuthentication.password] != password) {
 
-            serverConfiguration[items.server.basicAuthenticationSection].active = active ? "true" : "false";
-            serverConfiguration[items.server.basicAuthenticationSection].user = user;
-            serverConfiguration[items.server.basicAuthenticationSection].password = password;
+            serverConfiguration[items.server.basicAuthenticationSection][items.server.basicAuthentication.active] = active ? "true" : "false";
+            serverConfiguration[items.server.basicAuthenticationSection][items.server.basicAuthentication.user] = user;
+            serverConfiguration[items.server.basicAuthenticationSection][items.server.basicAuthentication.password] = password;
             serverConfigurationChanged = true;
         }
     };
@@ -188,7 +202,7 @@ function ConfigurationManager() {
                 .fail(d.reject);
         }
 
-        return d;
+        return d.promise();
     }
 
     resetServerConfiguration = function () {
@@ -204,7 +218,7 @@ function ConfigurationManager() {
                 console.error("failed to reset server configuration");
                 d.reject();
             })
-        return d;
+        return d.promise();
     }
 
 
@@ -258,7 +272,7 @@ function ConfigurationManager() {
                 .fail(d.reject);
         }
 
-        return d;
+        return d.promise();
     }
 
     resetWebClientConfiguration = function () {
@@ -272,7 +286,7 @@ function ConfigurationManager() {
         })
         .always(d.resolve);
 
-        return d;       
+        return d.promise(); 
     }
 
     var getdefaultLanguageFromSupported = function () {
