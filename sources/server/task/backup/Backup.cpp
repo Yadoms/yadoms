@@ -99,7 +99,7 @@ namespace task
          }
          else
          {
-            YADOMS_LOG(debug) << "Folder " << backupTempFolder << " do not exist";
+            YADOMS_LOG(debug) << "Folder " << backupTempFolder << " does not exist";
          }
 
          YADOMS_LOG(debug) << "Create " << backupTempFolder;
