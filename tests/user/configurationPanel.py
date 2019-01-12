@@ -67,4 +67,7 @@ class ConfigurationPanel(object):
    def getItemsByName(self, dataI18nString):
       """ Find list of configuration items by its "data-i18n" title """
       return self.findField(dataI18nString).find_element_by_class_name('controls').find_element_by_tag_name('div').find_elements_by_class_name('form-control')
-               
+   
+   def getSelectItemsByName(self, dataI18nString):
+      """ Find list of select items by its "data-i18n" title """
+      return self.findField(dataI18nString).find_elements_by_class_name('form-control')
