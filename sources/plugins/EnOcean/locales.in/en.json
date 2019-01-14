@@ -5,6 +5,14 @@
     "SerialPort": {
       "name": "Serial port",
       "description": "The (virtual) serial port connected to the EnOcean USB stick"
+    },
+    "PairingMode": {
+      "name": "Pairing mode",
+      "description": "Pairing mode can be automatic (each newly detected device is automaticaly registered), or manual with a command on the plugin (green button)",
+      "values": {
+        "auto": "Automatic mode, each newly detected device will registered",
+        "manual": "Manual mode, plugin must be set to pairing mode with the green button"
+      }
     }
   },
   "deviceConfiguration": {
@@ -29,11 +37,26 @@
       }
     }
   },
+  "extraQueries": {
+    "pairing": {
+      "name": "Start/stop pairing"
+    }
+  },
   "customLabels": {
     "pluginState": {
       "connecting": "Connecting...",
       "connectionFailed": "Connection failed, will retry in a while...",
       "updateConfiguration": "Configuration updating..."
+    },
+    "extraquery": {
+      "ErrorInternal": "Unable to execute command, internal error"
+    },
+    "pairing": {
+      "invalidCommandAutoMode": "Invalid command, pairing is configured as automatic",
+      "alreadyRunning": "Pairing already running",
+      "pairing": "Pairing...",
+      "devicePaired": "New device paired !",
+      "noDevicePaired": "No device found"
     }
   },
   "specificProfilesConfigurations": {

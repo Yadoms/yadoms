@@ -7,6 +7,7 @@
 #include "message/DongleVersionResponseReceivedMessage.h"
 #include "profiles/IType.h"
 #include "ProfileHelper.h"
+#include "PairingHelper.h"
 #include "IMessageHandler.h"
 #include <shared/communication/AsyncPortConnectionNotification.h>
 #include "message/UTE_AnswerSendMessage.h"
@@ -178,6 +179,14 @@ protected:
                              const std::string& manufacturer,
                              const CProfileHelper& profile) const;
 
+   //--------------------------------------------------------------
+   /// \brief	                     Process pairing devices
+   /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \param [in] extraQuery       Extra query
+   //--------------------------------------------------------------
+   void startManualPairing(boost::shared_ptr<yApi::IYPluginApi> api,
+                           boost::shared_ptr<yApi::IExtraQuery> extraQuery);
+
 private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
@@ -213,4 +222,10 @@ private:
    /// \brief  The signal power keyword, used for each received message
    //--------------------------------------------------------------
    boost::shared_ptr<shared::plugin::yPluginApi::historization::CSignalPower> m_signalPowerKeyword;
+
+   //--------------------------------------------------------------
+   /// \brief  The pairing helper
+   //--------------------------------------------------------------
+   boost::shared_ptr<CPairingHelper> m_pairingHelper;
+   boost::shared_ptr<shared::event::CEventTimer> m_progressPairingTimer;
 };

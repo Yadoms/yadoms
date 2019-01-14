@@ -25,9 +25,9 @@ IMPLEMENT_PLUGIN(CEnOcean)
 enum
 {
    kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId,
-   // Always start from yApi::IYPluginApi::kPluginFirstEventId
    kEvtPortDataReceived,
    kProtocolErrorRetryTimer,
+   kProgressPairingTimer,
    kAnswerTimeout,
 };
 
@@ -51,6 +51,9 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    // Load configuration values (provided by database)
    m_configuration.initializeWith(m_api->getConfiguration());
+
+   m_pairingHelper = CFactory::constructPairingHelper(api,
+                                                      m_configuration.getPairingMode());
 
    // Load known devices
    loadAllDevices();
@@ -94,6 +97,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
                // Update configuration
                m_configuration.initializeWith(newConfigurationData);
+               m_pairingHelper->setMode(m_configuration.getPairingMode());
 
                if (needToReconnect)
                   createConnection();
@@ -156,6 +160,42 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          case kProtocolErrorRetryTimer:
             {
                createConnection();
+               break;
+            }
+         case yApi::IYPluginApi::kEventExtraQuery:
+            {
+               // Command was received from Yadoms
+               auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
+               if (extraQuery)
+               {
+                  if (extraQuery->getData()->query() == "pairing")
+                     startManualPairing(api, extraQuery);
+                  else
+                  {
+                     YADOMS_LOG(error) << "Unsupported query : " << extraQuery->getData()->query();
+                     extraQuery->sendError("customLabels.extraquery.ErrorInternal");
+                  }
+               }
+               else
+               {
+                  YADOMS_LOG(error) << "Invalid query";
+                  extraQuery->sendError("customLabels.extraquery.ErrorInternal");
+               }
+               break;
+            }
+         case kProgressPairingTimer:
+            {
+               if (m_pairingHelper->onProgressPairing())
+               {
+                  // Finished
+                  m_progressPairingTimer.reset();
+               }
+               else
+               {
+                  // Next loop
+                  if (m_progressPairingTimer)
+                     m_progressPairingTimer->start();
+               }
                break;
             }
          default:
@@ -503,6 +543,9 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
                                                      profile,
                                                      ManufacturerName);
 
+                  if (!device)
+                     return;
+
                   device->readInitialState(m_senderId,
                                            m_messageHandler);
                }
@@ -520,6 +563,9 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
                const auto& device = declareDevice(deviceId,
                                                   profile,
                                                   ManufacturerName);
+
+               if (!device)
+                  return;
 
                device->readInitialState(m_senderId,
                                         m_messageHandler);
@@ -574,9 +620,12 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
          }
 
          // Device not exist, declare it
-         declareDevice(deviceId,
-                       profile,
-                       manufacturerName);
+         const auto& device = declareDevice(deviceId,
+                                            profile,
+                                            manufacturerName);
+
+         if (!device)
+            return;
 
          m_api->updateDeviceConfiguration(deviceId,
                                           deviceConfiguration.configuration());
@@ -622,7 +671,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
 
       YADOMS_LOG(information) << "Received message for id " << deviceId << " : ";
       for (const auto& kw : keywordsToHistorize)
-         YADOMS_LOG(information) << "  - " << kw->getKeyword() << " = " << kw->formatValue();
+      YADOMS_LOG(information) << "  - " << kw->getKeyword() << " = " << kw->formatValue();
 
       m_api->historizeData(deviceId, keywordsToHistorize);
    }
@@ -630,6 +679,9 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
 
 void CEnOcean::declareDeviceWithoutProfile(const std::string& deviceId) const
 {
+   if (!m_pairingHelper->needPairing(deviceId))
+      return;
+
    YADOMS_LOG(information) << "New device declared : ";
    YADOMS_LOG(information) << "  - Id           : " << deviceId;
    YADOMS_LOG(information) << "  - Profile      : Unknown. No historization until user enter profile.";
@@ -716,10 +768,13 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
    {
       try
       {
-         declareDevice(deviceId,
-                       profile,
-                       manufacturerName,
-                       generateModel(std::string(), manufacturerName, profile));
+         const auto& device = declareDevice(deviceId,
+                                            profile,
+                                            manufacturerName,
+                                            generateModel(std::string(), manufacturerName, profile));
+
+         if (!device)
+            return;
 
          m_api->updateDeviceConfiguration(deviceId,
                                           CDeviceConfigurationHelper(profile, manufacturerName).configuration());
@@ -779,13 +834,13 @@ bool CEnOcean::sendUTEAnswer(message::CUTE_AnswerSendMessage::EResponse response
    message::CResponseReceivedMessage::EReturnCode returnCode;
    if (!m_messageHandler->send(*sendMessage,
                                [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                               {
-                                  return esp3Packet->header().packetType() == message::RESPONSE;
-                               },
+                            {
+                               return esp3Packet->header().packetType() == message::RESPONSE;
+                            },
                                [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                               {
-                                  returnCode = message::CResponseReceivedMessage(esp3Packet).returnCode();
-                               }))
+                            {
+                               returnCode = message::CResponseReceivedMessage(esp3Packet).returnCode();
+                            }))
       throw CProtocolException("Unable to send UTE response, timeout waiting acknowledge");
 
    if (returnCode != message::CResponseReceivedMessage::RET_OK)
@@ -822,6 +877,9 @@ boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
    if (m_devices.find(deviceId) != m_devices.end())
       throw std::logic_error("Device " + deviceId + " already exist");
 
+   if (!m_pairingHelper->needPairing(deviceId))
+      return boost::shared_ptr<IType>();
+
    m_api->declareDevice(deviceId,
                         modelLabel,
                         modelLabel,
@@ -847,16 +905,16 @@ void CEnOcean::requestDongleVersion()
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!m_messageHandler->send(sendMessage,
                                [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                               {
-                                  if (esp3Packet->header().packetType() == message::RESPONSE)
-                                     return true;
-                                  YADOMS_LOG(warning) << "Unexpected message received : wrong packet type : " << esp3Packet->header().packetType();
-                                  return false;
-                               },
+                            {
+                               if (esp3Packet->header().packetType() == message::RESPONSE)
+                                  return true;
+                               YADOMS_LOG(warning) << "Unexpected message received : wrong packet type : " << esp3Packet->header().packetType();
+                               return false;
+                            },
                                [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                               {
-                                  answer = esp3Packet;
-                               }))
+                            {
+                               answer = esp3Packet;
+                            }))
       throw CProtocolException("Unable to get Dongle Version, timeout waiting answer");
 
    if (answer->header().dataLength() != message::RESPONSE_DONGLE_VERSION_SIZE)
@@ -866,4 +924,13 @@ void CEnOcean::requestDongleVersion()
    const auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
    processDongleVersionResponse(response->returnCode(),
                                 message::CDongleVersionResponseReceivedMessage(response));
+}
+
+void CEnOcean::startManualPairing(boost::shared_ptr<yApi::IYPluginApi> api,
+                                  boost::shared_ptr<yApi::IExtraQuery> extraQuery)
+{
+   if (m_pairingHelper->startPairing(extraQuery))
+      m_progressPairingTimer = api->getEventHandler().createTimer(kProgressPairingTimer,
+                                                                  shared::event::CEventTimer::kOneShot,
+                                                                  boost::posix_time::seconds(m_pairingHelper->getPairingPeriodTimeSeconds()));
 }

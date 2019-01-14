@@ -18,22 +18,25 @@ set(ENOCEAN_SOURCES
 
    4BSTeachinVariant2.h
    4BSTeachinVariant2.cpp
-   IConfiguration.h
+   Configuration.h
+   Configuration.cpp
    DeviceConfigurationHelper.h
    DeviceConfigurationHelper.cpp
    EnOcean.h
    EnOcean.cpp
-   ReceiveBufferHandler.h
-   ReceiveBufferHandler.cpp
-   Configuration.h
-   Configuration.cpp
    Factory.h
    Factory.cpp
+   IConfiguration.h
+   IPairingHelper.h
    IMessageHandler.h
    MessageHandler.h
    MessageHandler.cpp
+   PairingHelper.h
+   PairingHelper.cpp
    ProfileHelper.h
    ProfileHelper.cpp
+   ReceiveBufferHandler.h
+   ReceiveBufferHandler.cpp
    
    message/CommonCommandSendMessage.h
    message/CommonCommandSendMessage.cpp
