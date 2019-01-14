@@ -612,7 +612,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
                                                 m_messageHandler);
       if (keywordsToHistorize.empty())
       {
-         YADOMS_LOG(information) << "Received message for id#" << deviceId << ", but nothing to historize";
+         YADOMS_LOG(information) << "Received message for id " << deviceId << ", but nothing to historize";
          return;
       }
 
@@ -620,7 +620,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
                      deviceId,
                      dbmToSignalPower(erp1Message.dBm()));
 
-      YADOMS_LOG(information) << "Received message for id#" << deviceId << " : ";
+      YADOMS_LOG(information) << "Received message for id " << deviceId << " : ";
       for (const auto& kw : keywordsToHistorize)
          YADOMS_LOG(information) << "  - " << kw->getKeyword() << " = " << kw->formatValue();
 
@@ -813,7 +813,7 @@ boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
    if (keywordsToDeclare.empty())
    {
       std::stringstream s;
-      s << "Can not declare device id#" << deviceId
+      s << "Can not declare device id " << deviceId
          << " (" << profile.profile()
          << ") : no keyword to declare";
       throw std::logic_error(s.str());
