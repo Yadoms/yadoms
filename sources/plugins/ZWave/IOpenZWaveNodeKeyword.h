@@ -42,11 +42,16 @@ public:
    //--------------------------------------------------------------
    virtual shared::CDataContainer serialize() = 0;
 
-
    //--------------------------------------------------------------
    /// \brief	   Get the type information
    /// \return    the type information about keyword
    //--------------------------------------------------------------
    virtual boost::shared_ptr<shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo> & getTypeInformation() = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	  Provide the keyword index (order index of keyword)
+   /// \return    the keyword index
+   //--------------------------------------------------------------
+   virtual int getIndex() = 0;
 };
 
