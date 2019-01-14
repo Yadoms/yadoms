@@ -75,3 +75,8 @@ bool COpenZWaveNodeKeywordBase::releaseButton()
    }
    return false;
 }
+
+int COpenZWaveNodeKeywordBase::getIndex()
+{
+	return m_valueId.GetIndex();
+}
