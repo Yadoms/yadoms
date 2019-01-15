@@ -109,9 +109,6 @@ bool CPairingHelper::needPairing(const std::string& deviceName)
    if (!m_pairingEnable)
       return false;
 
-   if (m_api->deviceExists(deviceName))
-      return false;
-
    if (m_mode == kManual)
       stopPairing(deviceName);
 

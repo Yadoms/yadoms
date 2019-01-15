@@ -61,9 +61,9 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	                     Called when device was removed
-   /// \param[in] deviceRemoved     Information about device removed
+   /// \param[in] deviceId          ID of the removed device
    //--------------------------------------------------------------
-   void processDeviceRemmoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> deviceRemoved);
+   void processDeviceRemoved(const std::string& deviceId);
 
    //--------------------------------------------------------------
    /// \brief	                     Reconfigure a device (configuration must be set in Yadoms first)
@@ -104,6 +104,15 @@ protected:
    static void processResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
    void processDongleVersionResponse(message::CResponseReceivedMessage::EReturnCode returnCode,
                                      const message::CDongleVersionResponseReceivedMessage& dongleVersionResponse);
+   void processEepTeachInMessage(boost::dynamic_bitset<> erp1UserData,
+                                 boost::shared_ptr<IRorg> rorg,
+                                 std::string deviceId);
+   void processNoEepTeachInMessage(boost::shared_ptr<IRorg> rorg,
+                                   std::string deviceId);
+   void processDataTelegram(message::CRadioErp1ReceivedMessage erp1Message,
+                            boost::dynamic_bitset<> erp1UserData,
+                            const boost::dynamic_bitset<> erp1Status,
+                            std::string deviceId);
    static void processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
    void processUTE(message::CRadioErp1ReceivedMessage& erp1Message);
    bool sendUTEAnswer(message::CUTE_AnswerSendMessage::EResponse response,
@@ -123,6 +132,12 @@ protected:
                                           const CProfileHelper& profile,
                                           const std::string& manufacturer,
                                           const std::string& model = std::string());
+
+   //--------------------------------------------------------------
+   /// \brief	                           Remove a device
+   /// \param [in] deviceId               Device ID
+   //--------------------------------------------------------------
+   void removeDevice(const std::string& deviceId);
 
    //--------------------------------------------------------------
    /// \brief	                     Declare a device when ignoring profile
