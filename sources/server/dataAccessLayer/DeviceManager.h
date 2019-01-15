@@ -15,6 +15,7 @@ namespace dataAccessLayer
       /// \param [in] deviceRequester     The device requester
       /// \param [in] keywordRequester    The keyword requester
       /// \param [in] acquisitionRequester The acquisition requester
+      /// \param [in] keywordManager      The keyword manager
       //--------------------------------------------------------------
       CDeviceManager(boost::shared_ptr<database::IDeviceRequester> deviceRequester,
                      boost::shared_ptr<database::IKeywordRequester> keywordRequester,
@@ -27,7 +28,7 @@ namespace dataAccessLayer
       virtual ~CDeviceManager();
 
       // IDeviceManager Implementation
-      bool deviceExists(const int deviceId) const override;
+      bool deviceExists(int deviceId) const override;
       bool deviceExists(const int pluginId, const std::string& deviceName) const override;
       boost::shared_ptr<database::entities::CDevice> getDevice(int deviceId) const override;
       boost::shared_ptr<database::entities::CDevice> getDeviceInPlugin(const int pluginId, const std::string& name, bool includeBlacklistDevice) const override;

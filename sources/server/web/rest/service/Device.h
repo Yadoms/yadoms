@@ -34,7 +34,7 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> getOneDevice(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
             //-----------------------------------------
-            ///\brief   get configurationd schema of specified device
+            ///\brief   get configuration schema of specified device
             //-----------------------------------------
             boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceConfigurationSchema(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
