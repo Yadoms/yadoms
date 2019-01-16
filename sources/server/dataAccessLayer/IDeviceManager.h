@@ -12,19 +12,19 @@ namespace dataAccessLayer
       /// \param [in] deviceId            The device Id
       /// \return                         true if exist, else false
       //--------------------------------------------------------------
-      virtual bool deviceExists(const int deviceId) const = 0;
+      virtual bool deviceExists(int deviceId) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Check if device exists
       /// \param [in] pluginId            The plugin Id
-      /// \param [in] name                The device name (plugin internal name)
+      /// \param [in] deviceName          The device name (plugin internal name)
       /// \return                         true if exist, else false
       //--------------------------------------------------------------
-      virtual bool deviceExists(const int pluginId,
+      virtual bool deviceExists(int pluginId,
                                 const std::string& deviceName) const = 0;
 
       //--------------------------------------------------------------
-      /// \brief                          Get device informations
+      /// \brief                          Get device information
       /// \param [in] deviceId            Device Id
       /// \throw                          shared::exception::CEmptyResult if deviceId is unknown
       //--------------------------------------------------------------
@@ -34,10 +34,13 @@ namespace dataAccessLayer
       /// \brief                          Get a device identified by (pluginId and name).
       /// \param [in] pluginId            The pluginId
       /// \param [in] name                The device name (plugin internal name)
+      /// \param [in] includeBlacklistDevice True to list blacklisted devices too
       /// \return                         The device found
       /// \throw                          shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<database::entities::CDevice> getDeviceInPlugin(const int pluginId, const std::string& name, bool includeBlacklistDevice) const = 0;
+      virtual boost::shared_ptr<database::entities::CDevice> getDeviceInPlugin(int pluginId,
+                                                                               const std::string& name,
+                                                                               bool includeBlacklistDevice) const = 0;
 
 
       //--------------------------------------------------------------
@@ -48,7 +51,8 @@ namespace dataAccessLayer
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<database::entities::CDevice>> getDeviceWithCapacity(const std::string& capacityName,
-                                                                                                const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const = 0;
+                                                                                                const shared::plugin::yPluginApi::EKeywordAccessMode&
+                                                                                                capacityAccessMode) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Get the device list which support a capacity type
@@ -57,17 +61,18 @@ namespace dataAccessLayer
       /// \return                         the device list which support a capacity
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CDevice>> getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode,
-                                                                                                    const shared::plugin::yPluginApi::EKeywordDataType& capacityType) const = 0;
+      virtual std::vector<boost::shared_ptr<database::entities::CDevice>> getDeviceWithCapacityType(
+         const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode,
+         const shared::plugin::yPluginApi::EKeywordDataType& capacityType) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Create a device identified by (pluginId and name).
       /// \param [in] pluginId            The pluginId
       /// \param [in] name                The device name (plugin internal name)
       /// \param [in] friendlyName        The user friendly device name
-      /// \param [in] model               The device type (ex : "osCN185")
+      /// \param [in] type                The device type (ex : "osCN185")
       /// \param [in] model               The device model or description (ex : "Oregon Scientific CN185")
-      /// \param [in] model               A free string managed by plugin
+      /// \param [in] details             A free string managed by plugin
       /// \return                         The device created (null if creation failed)
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
@@ -140,16 +145,21 @@ namespace dataAccessLayer
       /// \param [in] blacklist           The device blacklist state (propagated to all attached keywords)
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual void updateDeviceBlacklistState(int deviceId, const bool blacklist) = 0;
+      virtual void updateDeviceBlacklistState(int deviceId,
+                                              bool blacklist) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Update the device state (create keyword if needed)
       /// \param [in] deviceId            The device id
+      /// \param [in] customMessageId     The ID of the message
       /// \param [in] state               The device state
       /// \param [in] data                The device state message data
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual void updateDeviceState(int deviceId, const shared::plugin::yPluginApi::historization::EDeviceState& state, const std::string& customMessageId, const shared::CDataContainer &data) const = 0;
+      virtual void updateDeviceState(int deviceId,
+                                     const shared::plugin::yPluginApi::historization::EDeviceState& state,
+                                     const std::string& customMessageId,
+                                     const shared::CDataContainer& data) const = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove device 
@@ -175,15 +185,13 @@ namespace dataAccessLayer
 
       //--------------------------------------------------------------
       /// \brief                 Cleanup a device (erase all related acquisitions)
-      /// \param [in] deviceId   The devide ID to cleanup
+      /// \param [in] deviceId   The device ID to cleanup
       //--------------------------------------------------------------
       virtual void cleanupDevice(int deviceId) = 0;
 
       //--------------------------------------------------------------
       /// \brief       Destructor
       //--------------------------------------------------------------
-      virtual ~IDeviceManager()
-      {
-      }
+      virtual ~IDeviceManager() = default;
    };
 } //namespace dataAccessLayer 

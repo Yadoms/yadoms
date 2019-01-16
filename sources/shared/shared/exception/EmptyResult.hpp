@@ -2,29 +2,30 @@
 
 #include "Exception.hpp"
 
-namespace shared { namespace exception
+namespace shared
 {
-
-   //--------------------------------------------------------------
-   /// \class Exception for non implemented part of code
-   //--------------------------------------------------------------
-   class CEmptyResult : public CException
+   namespace exception
    {
-   public:
       //--------------------------------------------------------------
-      /// \brief	                        Constructor
+      /// \class CEmptyResult Exception for non implemented part of code
       //--------------------------------------------------------------
-      explicit CEmptyResult(const std::string & message)
-         :CException(message)
+      class CEmptyResult : public CException
       {
-      }
+      public:
+         //--------------------------------------------------------------
+         /// \brief	                        Constructor
+         //--------------------------------------------------------------
+         explicit CEmptyResult(const std::string& message)
+            : CException(message)
+         {
+         }
 
-      //--------------------------------------------------------------
-      /// \brief      Destructor
-      //--------------------------------------------------------------
-      virtual ~CEmptyResult() throw()
-      {
-      }
-   };
-
-} } // namespace shared::exception
+         //--------------------------------------------------------------
+         /// \brief      Destructor
+         //--------------------------------------------------------------
+         virtual ~CEmptyResult() throw()
+         {
+         }
+      };
+   }
+} // namespace shared::exception

@@ -18,12 +18,12 @@ namespace dataAccessLayer
 
    CDeviceManager::~CDeviceManager() = default;
 
-   bool CDeviceManager::deviceExists(const int deviceId) const
+   bool CDeviceManager::deviceExists(int deviceId) const
    {
       return m_deviceRequester->deviceExists(deviceId);
    }
 
-   bool CDeviceManager::deviceExists(const int pluginId, const std::string& deviceName) const
+   bool CDeviceManager::deviceExists(int pluginId, const std::string& deviceName) const
    {
       return m_deviceRequester->deviceExists(pluginId, deviceName);
    }
@@ -33,7 +33,7 @@ namespace dataAccessLayer
       return m_deviceRequester->getDevice(deviceId);
    }
 
-   boost::shared_ptr<database::entities::CDevice> CDeviceManager::getDeviceInPlugin(const int pluginId, const std::string& name, bool includeBlacklistDevice) const
+   boost::shared_ptr<database::entities::CDevice> CDeviceManager::getDeviceInPlugin(int pluginId, const std::string& name, bool includeBlacklistDevice) const
    {
       return m_deviceRequester->getDeviceInPlugin(pluginId, name, includeBlacklistDevice);
    }
@@ -98,7 +98,7 @@ namespace dataAccessLayer
       m_deviceRequester->updateDeviceType(deviceId, type);
    }
 
-   void CDeviceManager::updateDeviceBlacklistState(int deviceId, const bool blacklist)
+   void CDeviceManager::updateDeviceBlacklistState(int deviceId, bool blacklist)
    {
       //cleanup data
       if (blacklist)
