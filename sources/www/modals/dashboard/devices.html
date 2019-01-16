@@ -905,7 +905,10 @@
    function mergeDevices() {
       Yadoms.modals.deviceMerge.loadAsync()
       .done(function () {
-         Yadoms.showMergeDevicesModal();
+         Yadoms.showMergeDevicesModal()
+         .done(function(){
+            refreshDeviceList();
+         });
       });
    }
 

@@ -81,10 +81,15 @@
             configMgr.afterI18n();
          });
 
+      var d = new $.Deferred();
       // Display the modal
       $('div#merge-devices-modal').modal({
          backdrop: 'static'
+      }).on('hidden.bs.modal', function () {
+         d.resolve();
       });
+
+      return d.promise();
    }
 
    onTargetDeviceSelected = function (selectedDeviceIndex) {
