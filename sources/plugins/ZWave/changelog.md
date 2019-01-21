@@ -1,3 +1,7 @@
+### 1.1.1
+* Fixe device configuration item order (match docs)
+* Update OpenZWave to 1.4.3319
+
 ### 1.1.0
 * Enhance device and keyword management during initialization
 * Add cache system for devices and keywords
