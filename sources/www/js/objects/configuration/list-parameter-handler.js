@@ -196,10 +196,10 @@ ListParameterHandler.prototype.duplicateLine = function () {
     var $container = $(handler.currentTarget).parents("div.list-item-line");
     assert($container.length >= 1, "Unable to locate list item container");
     //we take the nearest
-
+    
     //we look for the position of the current element
     var i = self.getPosFromSiblings($container);
-
+    
     //i contains the position into the items array
     assert(i >= 0, "Unable to locate item position");
 
@@ -209,12 +209,11 @@ ListParameterHandler.prototype.duplicateLine = function () {
         var item = ConfigurationHelper.createParameterHandler(newI18nContext, undefined, null, self.content.item, confToDuplicate);
 
         //we insert item in the right place
-        self.items.splice.apply(self.items, [i + 1, 0].concat(Array.prototype.slice.call(arguments, 1)));
+        self.items.splice(i+1, 0, item);
 
         var itemLine = self.createItemLine(item);
 
         //and in the right place for the DOM
-
         $(itemLine).insertAfter($container);
         $("div#" + self.uuid).i18n();
         //we add it to the form validation
@@ -298,7 +297,7 @@ ListParameterHandler.prototype.getCurrentConfiguration = function () {
   var self = this;
   self.configurationValues = [];
   var deferredArray = [];
-
+  
   $.each(self.items, function (key, value) {
     var deferred = value.getCurrentConfiguration();
     deferredArray.push(deferred);

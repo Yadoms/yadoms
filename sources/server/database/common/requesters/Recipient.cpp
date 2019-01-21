@@ -41,7 +41,7 @@ namespace database
                if (m_databaseRequester->queryStatement(*qInsert) <= 0)
                   throw shared::exception::CEmptyResult("Fail to insert recipient");
 
-               //retreive inserted recipient
+               //retrieve inserted recipient
                auto qSelect = m_databaseRequester->newQuery();
                qSelect->Select(CRecipientTable::getIdColumnName()).
                   From(CRecipientTable::getTableName()).
@@ -344,7 +344,7 @@ namespace database
             if (m_databaseRequester->queryStatement(*qInsert) <= 0)
                throw shared::exception::CEmptyResult("Fail to insert recipient field");
 
-            //retreive inserted field
+            //retrieve inserted field
             auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
                From(CRecipientFieldTable::getTableName()).

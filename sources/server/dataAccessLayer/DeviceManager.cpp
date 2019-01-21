@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "DeviceManager.h"
 #include "notification/Helpers.hpp"
-#include <shared/Log.h>
 #include <shared/plugin/yPluginApi/historization/DeviceStateMessage.h>
 
 namespace dataAccessLayer
@@ -17,16 +16,14 @@ namespace dataAccessLayer
    {
    }
 
-   CDeviceManager::~CDeviceManager()
-   {
-   }
+   CDeviceManager::~CDeviceManager() = default;
 
-   bool CDeviceManager::deviceExists(const int deviceId) const
+   bool CDeviceManager::deviceExists(int deviceId) const
    {
       return m_deviceRequester->deviceExists(deviceId);
    }
 
-   bool CDeviceManager::deviceExists(const int pluginId, const std::string& deviceName) const
+   bool CDeviceManager::deviceExists(int pluginId, const std::string& deviceName) const
    {
       return m_deviceRequester->deviceExists(pluginId, deviceName);
    }
@@ -36,7 +33,7 @@ namespace dataAccessLayer
       return m_deviceRequester->getDevice(deviceId);
    }
 
-   boost::shared_ptr<database::entities::CDevice> CDeviceManager::getDeviceInPlugin(const int pluginId, const std::string& name, bool includeBlacklistDevice) const
+   boost::shared_ptr<database::entities::CDevice> CDeviceManager::getDeviceInPlugin(int pluginId, const std::string& name, bool includeBlacklistDevice) const
    {
       return m_deviceRequester->getDeviceInPlugin(pluginId, name, includeBlacklistDevice);
    }
@@ -80,7 +77,7 @@ namespace dataAccessLayer
    {
       m_deviceRequester->updateDeviceConfiguration(deviceId, configuration);
 
-      auto result = m_deviceRequester->getDevice(deviceId);
+      const auto result = m_deviceRequester->getDevice(deviceId);
 
       //post notification
       notification::CHelpers::postChangeNotification(result, notification::change::EChangeType::kUpdate);
@@ -101,7 +98,7 @@ namespace dataAccessLayer
       m_deviceRequester->updateDeviceType(deviceId, type);
    }
 
-   void CDeviceManager::updateDeviceBlacklistState(int deviceId, const bool blacklist)
+   void CDeviceManager::updateDeviceBlacklistState(int deviceId, bool blacklist)
    {
       //cleanup data
       if (blacklist)
@@ -118,7 +115,7 @@ namespace dataAccessLayer
       //post notification
       if (blacklist)
       {
-         boost::shared_ptr<database::entities::CDevice> device = m_deviceRequester->getDevice(deviceId, true);
+         const auto device = m_deviceRequester->getDevice(deviceId, true);
          notification::CHelpers::postChangeNotification(device, notification::change::EChangeType::kBlacklist);
       }
    }
@@ -160,7 +157,7 @@ namespace dataAccessLayer
 
    void CDeviceManager::removeDevice(int deviceId)
    {
-      auto device = m_deviceRequester->getDevice(deviceId);
+      const auto device = m_deviceRequester->getDevice(deviceId, true);
 
       cleanupDevice(deviceId);
       auto keywords = m_keywordRequester->getKeywords(deviceId);

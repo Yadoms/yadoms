@@ -1,10 +1,12 @@
 ### 2.2.0-beta.4
+* New feature #513 : Add device fusion 
 * Fix script interpreter package generation (post build copy)
 * Fix #529 : Fix saving system configuration
-
-### 2.2.0-beta.3
 * Fix #527 - Equipment renamed is not displayed immediately
 * Fix #526 - Equipment type change not fully fonctional
+* Fix #511 - Configuration blocks - duplicate buttons doesn't work properly
+
+### 2.2.0-beta.3
 
 #### Web Client
 * Fix device details access on devices page

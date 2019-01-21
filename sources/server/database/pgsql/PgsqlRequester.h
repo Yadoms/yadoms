@@ -132,7 +132,7 @@ namespace database
 
          //--------------------------------------------------------------
          /// \Brief		         Obtain the last error message
-         /// \param [in] pConnection   The connection pointer to retreive the last error message
+         /// \param [in] pConnection   The connection pointer to retrieve the last error message
          /// \return                   The last error message above the specified connection
          //--------------------------------------------------------------
          std::string getLastErrorMessage(PGconn* pConnection) const;

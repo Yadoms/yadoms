@@ -26,7 +26,8 @@ namespace database
          }
 
          // IAcquisitionRequester implementation
-         boost::shared_ptr<entities::CAcquisition> CAcquisition::saveData(const int keywordId, const std::string& data,
+         boost::shared_ptr<entities::CAcquisition> CAcquisition::saveData(int keywordId,
+                                                                          const std::string& data,
                                                                           boost::posix_time::ptime& dataTime)
          {
             auto keywordEntity = m_keywordRequester->getKeyword(keywordId);
@@ -75,7 +76,8 @@ namespace database
             throw shared::exception::CEmptyResult("The keyword do not exists, cannot add data");
          }
 
-         boost::shared_ptr<entities::CAcquisition> CAcquisition::incrementData(const int keywordId, const std::string& increment,
+         boost::shared_ptr<entities::CAcquisition> CAcquisition::incrementData(int keywordId,
+                                                                               const std::string& increment,
                                                                                boost::posix_time::ptime& dataTime)
          {
             auto keywordEntity = m_keywordRequester->getKeyword(keywordId);
@@ -108,9 +110,9 @@ namespace database
             {
                //update
                q->Clear().Update(CAcquisitionTable::getTableName())
-                  .Set(CAcquisitionTable::getValueColumnName(), q->math(q->coalesce(*qLastKeywordValue, 0), CQUERY_OP_PLUS, increment)).
-                  Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
-                  And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_EQUAL, dataTime);
+                .Set(CAcquisitionTable::getValueColumnName(), q->math(q->coalesce(*qLastKeywordValue, 0), CQUERY_OP_PLUS, increment)).
+                Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
+                And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_EQUAL, dataTime);
 
                if (m_databaseRequester->queryStatement(*q) <= 0)
                   throw shared::exception::CEmptyResult("Fail to insert new incremental data");
@@ -126,7 +128,52 @@ namespace database
             return newData;
          }
 
-         void CAcquisition::removeKeywordData(const int keywordId)
+         void CAcquisition::moveAllData(int fromKw,
+                                        int toKw)
+         {
+            // Acquisitions (overwrite target acquisitions at same date)
+            // - To overwrite acquisitions at same date, first remove duplicates
+            // Query is like :
+            //   delete from Acquisition where keywordId=toKw and date in (select date from Acquisition where keywordId=fromKw)
+            auto subQuery = m_databaseRequester->newQuery();
+            subQuery->Select(CAcquisitionTable::getDateColumnName()).
+                      From(CAcquisitionTable::getTableName()).
+                      Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, fromKw);
+            auto query = m_databaseRequester->newQuery();
+            query->DeleteFrom(CAcquisitionTable::getTableName()).
+               Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, toKw)
+               .And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_IN, *subQuery);
+            m_databaseRequester->queryStatement(*query);
+            
+            // - Next change source keywordId by target one
+            query = m_databaseRequester->newQuery();
+            query->Update(CAcquisitionTable::getTableName()).
+                     Set(CAcquisitionTable::getKeywordIdColumnName(), toKw).
+                     Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, fromKw);
+            m_databaseRequester->queryStatement(*query);
+
+
+            // Do the same with summaries
+            // - To overwrite acquisitions at same date, first remove duplicates
+            subQuery = m_databaseRequester->newQuery();
+            subQuery->Select(CAcquisitionSummaryTable::getDateColumnName()).
+               From(CAcquisitionSummaryTable::getTableName()).
+               Where(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, fromKw);
+            query = m_databaseRequester->newQuery();
+            query->DeleteFrom(CAcquisitionSummaryTable::getTableName()).
+               Where(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, toKw)
+               .And(CAcquisitionSummaryTable::getDateColumnName(), CQUERY_OP_IN, *subQuery);
+            m_databaseRequester->queryStatement(*query);
+
+            // - Next change source keywordId by target one
+            query = m_databaseRequester->newQuery();
+            query->Update(CAcquisitionSummaryTable::getTableName()).
+               Set(CAcquisitionSummaryTable::getKeywordIdColumnName(), toKw).
+               Where(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, fromKw);
+            m_databaseRequester->queryStatement(*query);
+         }
+
+         void CAcquisition::removeKeywordData(int keywordId)
          {
             if (m_keywordRequester->getKeyword(keywordId))
             {
@@ -147,7 +194,8 @@ namespace database
             }
          }
 
-         boost::shared_ptr<entities::CAcquisition> CAcquisition::getAcquisitionByKeywordAndDate(const int keywordId, boost::posix_time::ptime time)
+         boost::shared_ptr<entities::CAcquisition> CAcquisition::getAcquisitionByKeywordAndDate(int keywordId,
+                                                                                                boost::posix_time::ptime time)
          {
             auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select().
@@ -168,7 +216,7 @@ namespace database
          }
 
          std::vector<boost::tuple<boost::posix_time::ptime, std::string>> CAcquisition::getKeywordData(
-            int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+            int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo, unsigned int limit)
          {
             auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select(CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getValueColumnName()).
@@ -179,10 +227,11 @@ namespace database
             {
                qSelect->And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, timeFrom);
                if (!timeTo.is_not_a_date_time())
-               {
                   qSelect->And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, timeTo);
-               }
             }
+
+            if (limit > 0)
+               qSelect->Limit(limit);
 
             qSelect->OrderBy(CAcquisitionTable::getDateColumnName());
 
@@ -286,7 +335,8 @@ namespace database
             return adapter.getRawResults();
          }
 
-         void CAcquisition::getKeywordsHavingDate(const boost::posix_time::ptime& timeFrom, const boost::posix_time::ptime& timeTo,
+         void CAcquisition::getKeywordsHavingDate(const boost::posix_time::ptime& timeFrom,
+                                                  const boost::posix_time::ptime& timeTo,
                                                   std::vector<int>& results)
          {
             /*
@@ -308,7 +358,7 @@ namespace database
          }
 
 
-         boost::shared_ptr<entities::CAcquisitionSummary> CAcquisition::saveSummaryData(const int keywordId,
+         boost::shared_ptr<entities::CAcquisitionSummary> CAcquisition::saveSummaryData(int keywordId,
                                                                                         entities::EAcquisitionSummaryType curType,
                                                                                         boost::posix_time::ptime& dataTime)
          {
@@ -569,18 +619,20 @@ namespace database
             throw shared::exception::CEmptyResult("The keyword do not exists, cannot add summary data");
          }
 
-         bool CAcquisition::summaryDataExists(const int keywordId, entities::EAcquisitionSummaryType curType, boost::posix_time::ptime& dataTime)
+         bool CAcquisition::summaryDataExists(int keywordId,
+                                              entities::EAcquisitionSummaryType curType,
+                                              boost::posix_time::ptime& date)
          {
             //determine the real date of summary data 
             boost::posix_time::ptime fromDate;
-            const auto pt_tm = boost::posix_time::to_tm(dataTime);
+            const auto pt_tm = boost::posix_time::to_tm(date);
             if (curType == entities::EAcquisitionSummaryType::kHour)
             {
-               fromDate = boost::posix_time::ptime(dataTime.date(), boost::posix_time::hours(pt_tm.tm_hour));
+               fromDate = boost::posix_time::ptime(date.date(), boost::posix_time::hours(pt_tm.tm_hour));
             }
             else if (curType == entities::EAcquisitionSummaryType::kDay)
             {
-               fromDate = boost::posix_time::ptime(dataTime.date());
+               fromDate = boost::posix_time::ptime(date.date());
             }
 
             auto checkq = m_databaseRequester->newQuery();

@@ -38,8 +38,10 @@ namespace database
             std::vector<boost::shared_ptr<entities::CDevice>> getDevicesIdFromFriendlyName(const std::string& friendlyName) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithCapacity(const std::string& capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode, const shared::plugin::yPluginApi::EKeywordDataType& capacityType) const override;
-            std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithKeywordAccessMode(const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const;
+            std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithKeywordAccessMode(const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const override;
+            std::vector<boost::shared_ptr<entities::CDevice>> getCompatibleForMergeDevice(int refDevice) const override;
             void updateDeviceFriendlyName(int deviceId, const std::string& newFriendlyName) override;
+            void rename(int deviceId, const std::string& newName) override;
             void updateDeviceConfiguration(int deviceId, const shared::CDataContainer& configuration) override;
             void updateDeviceDetails(int deviceId, const shared::CDataContainer& details) override;
             void updateDeviceModel(int deviceId, const std::string& model) override;

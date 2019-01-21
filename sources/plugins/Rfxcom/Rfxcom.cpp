@@ -14,7 +14,6 @@ IMPLEMENT_PLUGIN(CRfxcom)
 enum
 {
    kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId,
-   // Always start from yApi::IYPluginApi::kPluginFirstEventId
    kEvtPortDataReceived,
    kProtocolErrorRetryTimer,
    kProgressPairingTimer,
@@ -128,13 +127,13 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   else
                   {
                      YADOMS_LOG(error) << "Unsupported query : " << extraQuery->getData()->query();
-                     extraQuery->sendError("customLabels.firmwareUpdate.ErrorInternal");
+                     extraQuery->sendError("customLabels.extraquery.ErrorInternal");
                   }
                }
                else
                {
                   YADOMS_LOG(error) << "Invalid query";
-                  extraQuery->sendError("customLabels.firmwareUpdate.ErrorInternal");
+                  extraQuery->sendError("customLabels.extraquery.ErrorInternal");
                }
                break;
             }

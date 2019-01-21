@@ -99,7 +99,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving one acquisition");
+               return CResult::GenerateError("unknown exception in retrieving one acquisition");
             }
          }
 
@@ -225,7 +225,7 @@ namespace web
                      }
                      return CResult::GenerateSuccess(result);
                   }
-                  return CResult::GenerateError("invalid parameter. Can not retreive keywords in request content");
+                  return CResult::GenerateError("invalid parameter. Can not retrieve keywords in request content");
                }
                return CResult::GenerateError("invalid parameter.");
             }
@@ -235,7 +235,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving one acquisition");
+               return CResult::GenerateError("unknown exception in retrieving one acquisition");
             }
          }
 
@@ -270,7 +270,7 @@ namespace web
                      }
                      return CResult::GenerateSuccess(result);
                   }
-                  return CResult::GenerateError("invalid parameter. Can not retreive keywords in request content");
+                  return CResult::GenerateError("invalid parameter. Can not retrieve keywords in request content");
                }
                return CResult::GenerateError("invalid parameter.");
             }
@@ -280,7 +280,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving one acquisition");
+               return CResult::GenerateError("unknown exception in retrieving one acquisition");
             }
          }
 
@@ -321,7 +321,7 @@ namespace web
                   result.set<std::vector<shared::CDataContainer>>("data", objectList);
                   return CResult::GenerateSuccess(result);
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
             }
             catch (std::exception& ex)
             {
@@ -365,7 +365,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving one acquisition");
+               return CResult::GenerateError("unknown exception in retrieving one acquisition");
             }
          }
 
@@ -396,7 +396,7 @@ namespace web
                   boost::shared_ptr<CStringContainer> result = boost::make_shared<CStringContainer>(allData);
                   return result;
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
             }
             catch (std::exception& ex)
             {
@@ -436,7 +436,7 @@ namespace web
                   boost::shared_ptr<CStringContainer> result = boost::make_shared<CStringContainer>(allData);
                   return result;
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
             }
             catch (std::exception& ex)
             {
@@ -475,7 +475,7 @@ namespace web
                   boost::shared_ptr<CStringContainer> result = boost::make_shared<CStringContainer>(allData);
                   return result;
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
             }
             catch (std::exception& ex)
             {
@@ -514,7 +514,7 @@ namespace web
                   boost::shared_ptr<CStringContainer> result = boost::make_shared<CStringContainer>(allData);
                   return result;
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
             }
             catch (std::exception& ex)
             {

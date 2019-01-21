@@ -1,3 +1,6 @@
+### 1.2.0
+* Fix #530 : Add manual pairing mode (switch between auto/manual mode in configuration)
+
 ### 1.1.2
 * Fix #495
 
