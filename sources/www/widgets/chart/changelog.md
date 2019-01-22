@@ -1,3 +1,6 @@
+### 1.2.0-rc.2
+* Fix rare error due to highchart internal behaviour
+
 ### 1.2.0-rc.1
 * Fix #519 - Enum value are not displayed properly
 * Fix the option same axis for all curves
