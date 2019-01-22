@@ -27,6 +27,9 @@ function chartViewModel() {
     //defined by the configuration of the widget chart for adding new summary points for continuous display
     this.summaryTimeBetweenNewPoint = 0;
     
+    // This variable is used to know the last x position, and used to add new values in continuous display
+    this.chartLastXPosition = [];
+    
     //This variable is used in differential display
     this.chartLastValue = [];
     
@@ -721,6 +724,9 @@ function chartViewModel() {
                        legendConfiguration = true;
                     }
                     
+                    if (plot.length != 0)
+                       self.chartLastXPosition[keywordId] = plot[plot.length-1][0];
+                    
                     try {
                        // Standard options
                        var serieOption = {
@@ -852,14 +858,10 @@ function chartViewModel() {
          var keywordId = device.content.source.keywordId;
          var serie = self.chart.get(self.seriesUuid[keywordId]);
          var time = moment(self.serverTime)._d.getTime().valueOf();
-         var lastDate = 0;
           
           if (!isNullOrUndefined(serie)){
-             if ((serie.points.length > 0) && ((time - lastDate) > (self.summaryTimeBetweenNewPoint))){
-                lastDate = serie.points[serie.points.length - 1].x;
-                
-                //debugger;
-                
+             var lastDate = self.chartLastXPosition[keywordId];
+             if (((time - lastDate) > (self.summaryTimeBetweenNewPoint))){
                 switch (self.interval) {
                   case "DAY":
                      d = self.DisplaySummary(serie, keywordId, 1, "days", self.prefix, lastDate);
@@ -978,7 +980,7 @@ function chartViewModel() {
                              serieRange.addPoint([registerDate, 
                                                   parseFloat(vectorToAnalyze[vectorToAnalyze.length-1].min)*self.coeff, 
                                                   parseFloat(vectorToAnalyze[vectorToAnalyze.length-1].max)*self.coeff], 
-                                                 true, false, true);
+                                                  true, false, true);
                           }
                        }
                     }
