@@ -1,7 +1,7 @@
 (export (version D)
   (design
-    (source D:\Projets\Domotique\yadoms_master\sources\plugins\SomfySituo\hardware\Kicad-design\SomfySituo5IoAdapter.sch)
-    (date "25/04/2018 13:43:08")
+    (source D:/Projets/Domotique/yadoms_master/sources/plugins/SomfySituo/hardware/Kicad-design/SomfySituo5IoAdapter.sch)
+    (date "22/01/2019 14:55:50")
     (tool "Eeschema 4.0.7")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -24,7 +24,7 @@
         (field (name Package) "DIP-14 Microchip")
         (field (name Availability) Good)
         (field (name MP) PIC16F688-E/P))
-      (libsource (lib PIC16F688) (part PIC16F688))
+      (libsource (lib SomfySituo5IoAdapter-cache) (part PIC16F688))
       (sheetpath (names /) (tstamps /))
       (tstamp 59F85470))
     (comp (ref J1)
@@ -120,7 +120,7 @@
     (comp (ref U1)
       (value FT230X)
       (footprint Housings_SSOP:SSOP-16_3.9x4.9mm_Pitch0.635mm)
-      (libsource (lib serial) (part FT230X))
+      (libsource (lib SomfySituo5IoAdapter-cache) (part FT230X))
       (sheetpath (names /) (tstamps /))
       (tstamp 5A031EF0))
     (comp (ref R1)
@@ -247,7 +247,7 @@
         (pin (num 4) (name Pin_4) (type passive))
         (pin (num 5) (name Pin_5) (type passive))
         (pin (num 6) (name Pin_6) (type passive))))
-    (libpart (lib serial) (part FT230X)
+    (libpart (lib SomfySituo5IoAdapter-cache) (part FT230X)
       (fields
         (field (name Reference) U)
         (field (name Value) FT230X)
@@ -281,7 +281,7 @@
       (pins
         (pin (num 1) (name ~) (type passive))
         (pin (num 2) (name ~) (type passive))))
-    (libpart (lib PIC16F688) (part PIC16F688)
+    (libpart (lib SomfySituo5IoAdapter-cache) (part PIC16F688)
       (fields
         (field (name Reference) U)
         (field (name Value) PIC16F688)
@@ -332,14 +332,12 @@
         (pin (num 5) (name GND) (type power_in))
         (pin (num 6) (name Shield) (type passive)))))
   (libraries
-    (library (logical PIC16F688)
-      (uri D:\Projets\Domotique\yadoms_master\sources\plugins\SomfySituo\hardware\Kicad-design\PIC16F688.lib))
-    (library (logical serial)
-      (uri D:\Projets\Domotique\yadoms_master\sources\plugins\SomfySituo\hardware\Kicad-design\serial.lib))
     (library (logical device)
       (uri "C:\\Program Files\\KiCad\\share\\kicad-library\\library\\device.lib"))
     (library (logical conn)
-      (uri "C:\\Program Files\\KiCad\\share\\kicad\\library\\conn.lib")))
+      (uri "C:\\Program Files\\KiCad\\share\\kicad\\library\\conn.lib"))
+    (library (logical SomfySituo5IoAdapter-cache)
+      (uri D:\Projets\Domotique\yadoms_master\sources\plugins\SomfySituo\hardware\Kicad-design\SomfySituo5IoAdapter-cache.lib)))
   (nets
     (net (code 1) (name Somfy_led1)
       (node (ref R5) (pin 1))
@@ -350,7 +348,7 @@
     (net (code 3) (name Somfy_led3)
       (node (ref J6) (pin 1))
       (node (ref U2) (pin 11)))
-    (net (code 4) (name Somfy_led4)
+    (net (code 4) (name Somfy_led_battery)
       (node (ref U2) (pin 3))
       (node (ref J7) (pin 1)))
     (net (code 5) (name Somfy_sw_prog)

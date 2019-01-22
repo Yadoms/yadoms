@@ -32,9 +32,6 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:PIC16F688
-LIBS:ESD_Protection
-LIBS:serial
 LIBS:SomfySituo5IoAdapter-cache
 EELAYER 25 0
 EELAYER END
@@ -127,7 +124,7 @@ Somfy_led2
 Text GLabel 10250 4550 2    60   Input ~ 0
 Somfy_led3
 Text GLabel 7250 4450 0    60   Input ~ 0
-Somfy_led4
+Somfy_led_battery
 $Comp
 L GND #PWR04
 U 1 1 59FB3D60
@@ -347,7 +344,7 @@ Somfy_led2
 Text GLabel 8500 1850 0    60   Output ~ 0
 Somfy_led3
 Text GLabel 8500 1950 0    60   Output ~ 0
-Somfy_led4
+Somfy_led_battery
 Text GLabel 8500 2050 0    60   Input ~ 0
 Somfy_sw_top
 Text GLabel 8500 2150 0    60   Input ~ 0
@@ -639,8 +636,6 @@ F 3 "" H 9000 2550 50  0001 C CNN
 	1    9000 2550
 	1    0    0    -1  
 $EndComp
-Text Notes 7200 1550 0    60   ~ 0
-Somfy_led_battery
 Text Label 1350 4150 0    60   ~ 0
 VCC_IN
 Wire Wire Line
@@ -852,4 +847,6 @@ F 3 "" H 4300 1900 60  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 Connection ~ 4300 1600
+Text Notes 7325 1575 0    60   ~ 0
+Somfy_led_4
 $EndSCHEMATC
