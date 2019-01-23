@@ -1,6 +1,7 @@
 [requires]
 Poco/1.9.0@pocoproject/stable
-boost/1.68.0@conan/stable
+boost/1.69.0@conan/stable
+protoc_installer/3.6.1@bincrafters/stable
 protobuf/3.6.1@bincrafters/stable
 
 [options]
@@ -53,7 +54,6 @@ boost:without_python=True
 boost:without_random=True
 boost:without_regex=False
 boost:without_serialization=True
-boost:without_signals=True
 boost:without_stacktrace=True
 boost:without_system=True
 boost:without_test=False
@@ -63,7 +63,10 @@ boost:without_type_erasure=True
 boost:without_wave=True
 boost:skip_lib_rename=True
 
+protobuf:shared=False
+protobuf:with_zlib=False
+protobuf:fPIC=True
+protobuf:lite=False
+
 [generators]
 cmake_multi
-cmake_paths
-cmake_find_package
