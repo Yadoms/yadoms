@@ -42,7 +42,9 @@
         "ATI": { "name": "ATI/Cartelectronic" },
         "Visonic": { "name": "Visonic" },
         "KeeLoq": { "name": "KeeLoq" },
-        "HomeConfort": { "name": "HomeConfort" }
+        "HomeConfort": { "name": "HomeConfort" },
+        "MCZ": { "name": "MCZ" },
+        "Funkbus": { "name": "FunkBus" }
       }
     }
   },
