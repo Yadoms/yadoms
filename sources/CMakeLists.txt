@@ -149,47 +149,70 @@ set(LIBS ${LIBS} ${CMAKE_THREAD_LIBS_INIT} CONAN_PKG::boost CONAN_PKG::Poco CONA
 #
 ###############################################
 
-set(CMAKE_MODULE_PATH_INIT ${CMAKE_MODULE_PATH})
-include("${CMAKE_SOURCE_DIR}/../projects/conan_paths.cmake")
-set(CMAKE_MODULE_PATH_CONAN "${CMAKE_SOURCE_DIR}/../projects" ${CMAKE_MODULE_PATH})
-
-
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH_INIT})
-
-set (PROTOBUF_SRC_ROOT_FOLDER ${PROTOBUF_ROOT})
+#define all configs to allow find_package to find the protoc executable and generate cmake macros
+#all linkages are done directly with conan output
 set (Protobuf_USE_STATIC_LIBS ON)
+
+#set(protobuf_MODULE_COMPATIBLE TRUE)
+set(protobuf_DIR "${CONAN_PROTOBUF_ROOT_RELEASE}/cmake/")
+
+set(PROTOBUF_ROOT "${CONAN_PROTOBUF_ROOT_RELEASE}")
 
 #Helper (FindProtoBuf.cmake allows defining all variables before finding it)
 #In case Protobuf has been installed in a custom directory (${PROTOBUF_ROOT}) 
 #then predefine all files and paths (make it works with old cmake <3.9)
-if(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
-   if(NOT PROTOBUF_INCLUDE_DIR)
-      set(PROTOBUF_INCLUDE_DIR "${PROTOBUF_ROOT}/include")
-   endif(NOT PROTOBUF_INCLUDE_DIR)
-   if(NOT PROTOBUF_LIBRARY)
-      set(PROTOBUF_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf.a")
-   endif(NOT PROTOBUF_LIBRARY)
-   if(NOT PROTOBUF_LIBRARY_DEBUG)
-      set(PROTOBUF_LIBRARY_DEBUG "${PROTOBUF_ROOT}/lib/libprotobuf.a")
-   endif(NOT PROTOBUF_LIBRARY_DEBUG)
-   if(NOT PROTOBUF_LITE_LIBRARY)
-      set(PROTOBUF_LITE_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf-lite.a")
-   endif(NOT PROTOBUF_LITE_LIBRARY)
-   if(NOT PROTOBUF_LITE_LIBRARY_DEBUG)
-      set(PROTOBUF_LITE_LIBRARY_DEBUG "${PROTOBUF_ROOT}/lib/libprotobuf-lite.a")
-   endif(NOT PROTOBUF_LITE_LIBRARY_DEBUG)
-   if(NOT PROTOBUF_PROTOC_EXECUTABLE)
-      set(PROTOBUF_PROTOC_EXECUTABLE "${PROTOBUF_ROOT}/bin/protoc")
-   endif(NOT PROTOBUF_PROTOC_EXECUTABLE)
-endif(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
+if(NOT PROTOBUF_INCLUDE_DIR)
+  set(PROTOBUF_INCLUDE_DIR "${CONAN_PROTOBUF_ROOT_RELEASE}/include")
+endif(NOT PROTOBUF_INCLUDE_DIR)
+if(NOT PROTOBUF_LIBRARY)
+  set(PROTOBUF_LIBRARY "${CONAN_PROTOBUF_ROOT_RELEASE}/lib/libprotobuf.a")
+endif(NOT PROTOBUF_LIBRARY)
+if(NOT PROTOBUF_LIBRARY_DEBUG)
+  set(PROTOBUF_LIBRARY_DEBUG "${CONAN_PROTOBUF_ROOT_RELEASE}/lib/libprotobuf.a")
+endif(NOT PROTOBUF_LIBRARY_DEBUG)
+if(NOT PROTOBUF_LITE_LIBRARY)
+  set(PROTOBUF_LITE_LIBRARY "${CONAN_PROTOBUF_ROOT_RELEASE}/lib/libprotobuf-lite.a")
+endif(NOT PROTOBUF_LITE_LIBRARY)
+if(NOT PROTOBUF_LITE_LIBRARY_DEBUG)
+  set(PROTOBUF_LITE_LIBRARY_DEBUG "${CONAN_PROTOBUF_ROOT_RELEASE}/lib/libprotobuf-lite.a")
+endif(NOT PROTOBUF_LITE_LIBRARY_DEBUG)
+if(NOT PROTOBUF_PROTOC_EXECUTABLE)
+  #set(PROTOBUF_PROTOC_EXECUTABLE "${CONAN_PROTOC_INSTALLER_ROOT_RELEASE}/bin/protoc")
+  find_program(PROTOBUF_PROTOC_EXECUTABLE
+    NAMES protoc
+    DOC "The Google Protocol Buffers Compiler"
+    PATHS
+    ${CONAN_PROTOC_INSTALLER_ROOT_RELEASE}
+    ${CONAN_PROTOC_INSTALLER_ROOT_RELEASE}/bin
+)
+endif(NOT PROTOBUF_PROTOC_EXECUTABLE)
+
+if(PROTOBUF_PROTOC_EXECUTABLE)
+  if(NOT TARGET protobuf::protoc)
+	  add_executable(protobuf::protoc IMPORTED)
+	  if(EXISTS "${PROTOBUF_PROTOC_EXECUTABLE}")
+		set_target_properties(protobuf::protoc PROPERTIES
+		  IMPORTED_LOCATION "${PROTOBUF_PROTOC_EXECUTABLE}")
+	  endif()
+  endif()
+endif()
 
 find_package(Protobuf 3.0.0 REQUIRED)
 
-#find_package(Protobuf)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH_CONAN})
 
+message(STATUS "Using Protocol Buffers ${Protobuf_VERSION}")
+
+
+#SET(PROTOBUF_ROOT "${CONAN_PROTOBUF_ROOT_RELEASE}")
+#set(PROTOBUF_PROTOC_EXECUTABLE "${CONAN_BUILD_DIRS_PROTOC_INSTALLER_RELEASE}/bin/protoc")
+#set(PROTOBUF_INCLUDE_DIR "${PROTOBUF_ROOT}/include")
+#set(PROTOBUF_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf.a")
+#set(PROTOBUF_LIBRARY_DEBUG "${PROTOBUF_ROOT}/lib/libprotobuf.a")
+#set(PROTOBUF_LITE_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf-lite.a")
+#set(PROTOBUF_LITE_LIBRARY_DEBUG "${PROTOBUF_ROOT}/lib/libprotobuf-lite.a")
+#find_package(Protobuf 3.0.0 REQUIRED)
+#
 
 if(NOT ${PROTOBUF_FOUND})
 	message(FATAL_ERROR "Unable to find the required Protobuf tool")
