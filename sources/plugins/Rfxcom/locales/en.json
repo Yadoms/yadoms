@@ -784,9 +784,11 @@
       "erase": "Erasing RFXCom memory...",
       "write": "Writing RFXCom memory...",
       "reboot": "Finished, reboot RFXCom",
-      "ErrorInternal": "Unable to update firmware because of internal error",
       "ErrorOnlyAvailableForSerial": "Firmware updating is only available with serial connection",
       "ErrorInvalidInputFile": "Unable to update firmware, input file is invalid"
+    },
+    "extraquery": {
+      "ErrorInternal": "Unable to execute command, internal error"
     },
     "pairing": {
       "invalidCommandAutoMode": "Invalid command, pairing is configured as automatic",

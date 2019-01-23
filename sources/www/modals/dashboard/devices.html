@@ -2,6 +2,7 @@
    <h1 class="page-header"><span class="fa fa-tasks"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.title"></span></h1>
    <span data-i18n="modals.dashboard.sub-windows.devices.deviceListDescription"></span><br>
    <button id="btn-add-new-device" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-tasks"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.new"></span></button>
+   <button id="btn-merge-devices" type="button" class="btn btn-primary dashboard-btn-new"><span class="fa fa-compress"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.merge"></span></button>
    <table id="device-list" class="table table-bordered table-striped dashboard-list">
          <thead>
             <th data-i18n="modals.dashboard.sub-windows.devices.table.name" class="col-md-2"></th>
@@ -76,6 +77,7 @@
                // create the table
                createKeywordsTable(device, $deviceRow);
             }
+        
             fillTable(device);
             AcquisitionManager.getLastAcquisition(device.keywords)
             .done(function (data) {
@@ -162,7 +164,9 @@
    
    dispatchDevicesDeletedToDevicesView = function (device) {
       // remove device and device-details if any ...
-      $("table#device-list").find("tr[device-id='" + device.device.id + "']").remove();
+      getDeviceDomRow(device.device).remove();
+      getDeviceDetailsDomRow().remove();
+      $("p.nokeyword-for-device").remove();
       
       // Remove the device from the device list to display
       var i = deviceList.map(function (e) { return e.id; }).indexOf(device.device.id);
@@ -175,7 +179,7 @@
    
    function getDeviceDomRow(device) {
       return $("table#device-list").find("tr[device-id='" + device.id + "'].device");
-   }
+   };
 
    function transformDeviceInDom(device) {
       // remove device details if any 
@@ -214,17 +218,17 @@
 
    function addDeviceButtonsEvents(deviceRow, device) {
       //we bind event on the different actions
-      deviceRow.find("button.btn-configure").unbind('click').bind('click', function (e) { 
-         e.stopPropagation();       
+      deviceRow.find("button.btn-configure").off('click').one('click', function (e) { 
+         e.stopPropagation();
          updateDeviceConfiguration(device);
       });
 
-      deviceRow.find("button.btn-delete").unbind('click').bind('click', function (e) {
+      deviceRow.find("button.btn-delete").off('click').one('click', function (e) {
          e.stopPropagation();
          deleteDevice(device);
       });
 
-      deviceRow.find("button.btn-restore").unbind('click').bind('click', function (e) { 
+      deviceRow.find("button.btn-restore").off('click').one('click', function (e) { 
          e.stopPropagation();
          restoreDevice(device);           
       });  
@@ -247,18 +251,18 @@
 		 loadExtraQueries(deviceRow, device);
 	 } else {
              var targetButton = $(event.target).closest('button');
-             if (targetButton && !targetButton[0].disabled) {
+             if (targetButton && !targetButton.disabled) {
                    //button is enabled
                   if (!$(event.target).closest('ul.dropdown-extraqueries').length) {
-                        //not a extraquery dropdown click
-			      clickDevice(device); 
+                     //not a extraquery dropdown click
+			            clickDevice(device); 
                   }
                   else {
-                        //an extra query dropdown click
+                     //an extra query dropdown click
                   }
              }
              else {
-             // buutton is disabled, do nothing           
+               // buutton is disabled, do nothing           
              }
 	 }   
 	 deviceRow.off().one('click', function (event) { onClickDeviceRow(event, deviceRow, device);} );
@@ -271,6 +275,7 @@
       });
       
       Yadoms.DeviceDashboardRegisterButtonAddNewDevice();
+      Yadoms.DeviceDashboardRegisterButtonMergeDevices();
       
       $("table#device-list").on("remove", function () {
          //subscribe only the page, no extra device at the remove of this page
@@ -320,7 +325,7 @@
                $deviceRow.i18n();
                //bind each extra command to js
                $.each(extraQueriesFromDeviceDetails, function (index, values) {
-                     $deviceRow.find("a.btn-extraQuery-" + values.replace("#","_")).unbind('click').bind('click', function (e) {
+                     $deviceRow.find("a.btn-extraQuery-" + values.replace("#","_")).off('click').one('click', function (e) {
                            onExtraQuery(device, values, extraQueries[values]);
                      });
                });
@@ -382,7 +387,11 @@
    }   
    
    Yadoms.DeviceDashboardRegisterButtonAddNewDevice = function () {
-      $("#btn-add-new-device").one("click", function () {addNewDevice();});
+      $("#btn-add-new-device").on("click", function () {addNewDevice();});
+   };
+   
+   Yadoms.DeviceDashboardRegisterButtonMergeDevices = function () {
+      $("#btn-merge-devices").on("click", function () {mergeDevices();});
    };
 
    function refreshDeviceList() {
@@ -432,10 +441,6 @@
       return d.promise();
    }
 
-   function getDeviceDomRow(device) {
-      return $("table#device-list").find("tr[device-id='" + device.id + "'].device");
-   }
-
    function getDeviceDetailsDomRow() {
       return $("table#device-list").find("tr.device-details");
    }
@@ -455,8 +460,6 @@
       return undefined;
    }
    
-
-   
    function addDeviceToDom(device, positionDevice) {
       //in case the device is blacklisted, then strike it
       var fn = device.friendlyName;
@@ -469,12 +472,13 @@
       //we add it to the DOM
       var $deviceList = $("table#device-list");
 	   var frameworkDevice = "<tr device-id=\"" + device.id + "\" class=\"device\"><td class=\"device-friendlyName vert-align text-left\"></td><td class=\"device-attachedTo vert-align\"></td><td class=\"device-model vert-align\"></td><td class=\"device-actions vert-align\"></td></tr>";
-
-	   if ( positionDevice == null || deviceList.length == 0 )
+      
+      // we add to the end, if the position is null (no insertion, the device list is empty, or the new position, is the end of the list)
+	   if ( positionDevice == null || deviceList.length == 0 || positionDevice == (deviceList.length-1))
          $deviceList.append( frameworkDevice );
 	   else{
 	     var $row = null;
-        $row = getDeviceDomRow(deviceList[positionDevice]);
+        $row = getDeviceDomRow(deviceList[positionDevice+1]);
         $(frameworkDevice).insertBefore($row);
 	   }
 
@@ -495,7 +499,7 @@
             }
          }
       }
-     
+      
       addDeviceButtonsEvents($deviceRow, device);
       $deviceRow.off().one('click', function (event) { onClickDeviceRow(event, $deviceRow, device);} );
       $deviceRow.i18n();
@@ -524,13 +528,9 @@
             // Only virtual devices are configurable/removable
             if (device.type !== "virtualDeviceType") {
                $deviceRow.find("button.btn-configure").addClass("hide");
-               $deviceRow.find("button.btn-configure").unbind('click');
+               $deviceRow.find("button.btn-configure").off('click');
                $deviceRow.find("button.btn-delete").addClass("hide");
-               $deviceRow.find("button.btn-delete").unbind('click');
-            } else {
-               // Disable virtual devices editing
-               $deviceRow.find("button.btn-configure").prop('disabled', true);
-               $deviceRow.find("button.btn-configure").unbind('click');
+               $deviceRow.find("button.btn-delete").off('click');
             }
          }
 
@@ -545,13 +545,13 @@
       });
    }
    
-   function recordNewDeviceConfiguration(device) {
+   function recordAndDisplayNewDeviceConfiguration(device) {
       var d = new $.Deferred();
       
       DeviceManager.updateToServer(device)
       .done(function (updateDevice) {
             //We update the information that can have changed after the configuration
-            var i = deviceList.map(function (e) { return e.id; }).indexOf(updateDevice.Id);
+            var i = deviceList.map(function (e) { return e.id; }).indexOf(updateDevice.id);
             
             if (i !== -1){ // The device exist !
                var $row = getDeviceDomRow(updateDevice);
@@ -559,19 +559,30 @@
                   var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + device.friendlyName + "</span>";
                   $row.find("td.device-friendlyName").html(friendlyName);
                   var model = "<span>" + device.model + "</span>"
-                  $row.find("td.device-model").html(model);               
+                  $row.find("td.device-model").html(model);
+                  d.resolve();
                }else {
                   DeviceManager.getAttachedPlugin(device, true)
                   .done(function () {
+                     // remove keywords table displayed
+                     $("p.nokeyword-for-device").remove();
+                     getDeviceDetailsDomRow().remove();
+                  
+                     // we remove the element
                      $row.remove ();
-                     addDeviceToDom ( device, deviceList.indexOf (updateDevice) );
+                     
+                     // we replace the new element into the list and sort
                      deviceList[i] = updateDevice;
-                     //sort after rename
-                     deviceList = sortListItemsWithFriendlyName ( deviceList );                  
+                     deviceList = sortListItemsWithFriendlyName ( deviceList );
+                     var newPosition = deviceList.map(function (e) { return e.id; }).indexOf(updateDevice.id);
+                     addDeviceToDom ( device, newPosition);
+                     d.resolve();
                   });
                }
             }
-            d.resolve();
+            else{
+               d.resolve();
+            }
       })                        
       .fail(function (error) {
           notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
@@ -585,14 +596,12 @@
          // Virtual device
          Yadoms.modals.virtualDeviceConfigure.loadAsync()
          .done(function () {
-             Yadoms.showVirtualDeviceConfigurationModal(device, false, function (friendlyName, model, configuration) {
-               device.friendlyName = friendlyName;
-               device.model = model;
-               device.configuration = configuration;
-               recordNewDeviceConfiguration(device);
-               
-               var $deviceRow = getDeviceDomRow(device);
-               addDeviceButtonsEvents($deviceRow, device);
+             Yadoms.showVirtualDeviceConfigurationModal(device, false, function (friendlyName, model) {
+               // Update only the friendly name and the model when we update a virtual device
+                var newDevice = Object.assign({}, device);
+                newDevice.friendlyName = friendlyName;
+                newDevice.model = model;
+                recordAndDisplayNewDeviceConfiguration(newDevice);
             });
          });
       } else {
@@ -603,18 +612,8 @@
             .done(function () {
                DeviceManager.getConfigurationSchema(device)
                .done(function(schemaConfig) {
-                  Yadoms.showConfigurationDeviceModal(device, schemaConfig, function () {
-                     recordNewDeviceConfiguration(device)
-                     .done(function() {
-                        // get the keyword list for equipments : some equipments change dynamically the keyword list.
-                        var i = deviceList.map(function (e) { return e.id; }).indexOf(device.id);
-                        if (i !== -1){
-                           deviceList[i] = device; // update the device
-                        }
-                     });
-                     
-                     var $deviceRow = getDeviceDomRow(device);
-                     addDeviceButtonsEvents($deviceRow, device);
+                  Yadoms.showConfigurationDeviceModal(device, schemaConfig, function (modifiedDevice) {
+                     recordAndDisplayNewDeviceConfiguration(modifiedDevice);
                   });
                })
                .fail(function (error) {
@@ -689,16 +688,17 @@
             $keywordRow.find("button.btn-configure").addClass("hide");
          }
          else {
-            //we bind event on the different actions
-            $keywordRow.find("button.btn-configure").one('click', function () { configureKeyword(keyword); });
+            YadomsDevicesActivateButtonConfigureKeyword(keyword);
          }
 
          YadomsDevicesActivateButtonSetKeywordValue(device, keyword);
-         /*if ($keywordRow.find("button.btn-setvalue")) {
-            $keywordRow.find("button.btn-setvalue").one('click', function () { setKeywordValue(keyword, device); });
-         }*/
       });
    };
+   
+   function YadomsDevicesActivateButtonConfigureKeyword(keyword){
+      var $keywordRow = getKeywordDomRow(keyword);
+      $keywordRow.find("button.btn-configure").one('click', function () { configureKeyword(keyword); });
+   }
    
    function YadomsDevicesActivateButtonSetKeywordValue(device, keyword){
       var $keywordRow = getKeywordDomRow(keyword);
@@ -711,10 +711,7 @@
       var selectedClass = "info";
 
       //we remove the line that contains keywords information
-      var $details = getDeviceDetailsDomRow();
-      if (!isNullOrUndefinedOrEmpty($details))
-         $details.remove();
-
+      getDeviceDetailsDomRow().remove();
       $(".nokeyword-for-device").remove();
       
       //we look if this device is already selected
@@ -827,7 +824,8 @@
             .done(function () {
                //We update the information that can have changed after the configuration
                var $row = getKeywordDomRow(keyword);
-               $row.find("td.keyword-friendlyName").html(keyword.friendlyName);
+               var friendlyName = "<span>" + keyword.friendlyName + "</span>";
+               $row.find("td.keyword-friendlyName").html(friendlyName);
             })
             .fail(function (error) {
                notifyError($.t("modals.dashboard.sub-windows.devices.errorUpdatingKeyword", { keyword: keyword.friendlyName }), error);
@@ -901,6 +899,16 @@
                });
             }
          });         
+      });
+   }
+
+   function mergeDevices() {
+      Yadoms.modals.deviceMerge.loadAsync()
+      .done(function () {
+         Yadoms.showMergeDevicesModal()
+         .done(function(){
+            refreshDeviceList();
+         });
       });
    }
 

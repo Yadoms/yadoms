@@ -230,6 +230,33 @@
         }
       }
     },
+    "merge-devices": {
+      "title": "Merge devices",
+      "help1": "This operation is used to replace a device by an other by merging historic of the both devices. This operation is useful for example when a device changed its identifier after a changing its battery.",
+      "help2": "The new device must be compatible with the old device.",
+      "help3": "No modification of your widgets or devices will be necessary after the opration.",
+      "target-device": {
+         "targetDeviceListCombo": {
+          "name": "New device",
+          "description": "Select the new device"
+        }
+      },
+      "source-device": {
+         "sourceDeviceListCombo": {
+          "name": "Old device",
+          "description": "Select the old device"
+        },
+        "no-compatible-device": "No compatible device found"
+      },
+      "summaryStart1": "The new device <b>{{targetDeviceName}}</b> will be merged with the old device <b>{{sourceDeviceName}}</b> :",
+      "summaryStart2": "- Data of <b>{{sourceDeviceName}}</b> will be copied into <b>{{targetDeviceName}}</b> :",
+      "summaryKeywordLine": "\t- Data of <b>{{sourceKeywordName}}</b> from <b>{{sourceDeviceName}}</b> will be copied into <b>{{targetKeywordName}}</b> from <b>{{targetDeviceName}}</b>",
+      "summaryEnd": "- Device <b>{{sourceDeviceName}}</b> will be removed",
+      "summaryWarning": "This operation can not be undone",
+      "mergeError": "Error merging devices",
+      "mergeSuccess": "Devices merged successfully",
+      "please-wait-message": "Processing merge, operation can take several minutes..."
+    },
     "delete-device": {
       "title": "Blacklist device",
       "text": "This operation will blacklist {{deviceName}}  device, and remove its data hostoric.",
@@ -275,6 +302,10 @@
         "description": "Friendly name of your keyword",
         "regexErrorMessage": "The name of the keyword must contain at least one character"
       }
+    },
+    "please-wait": {
+      "title": "Please wait...",
+      "default-reason": "Please wait for the end of the current operation"
     },
     "set-value-keyword": {
       "title": "Set data",
@@ -419,7 +450,7 @@
                       "name": "Weather conditions"
                     },
                     "weight": {
-                      "name": "Weight (kg)}"
+                      "name": "Weight (kg)"
                     }
                   }
                 },
@@ -632,6 +663,7 @@
           "title": "Devices",
           "deviceListDescription": "Here is the list of all devices. You can manage your devices from here.",
           "new": "Create a new device",
+          "merge": "Merge devices",
           "table": {
             "name": "Name",
             "attachedTo": "Attached to plugin",

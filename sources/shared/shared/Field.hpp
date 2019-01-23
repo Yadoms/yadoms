@@ -3,9 +3,9 @@
 namespace shared
 {
    //----------------------------------
-   ///\brief Class wihch handle a field.
+   ///\brief Class which handle a field.
    ///       A field is composed of a typed value (depending on the field, see template)
-   ///       and a boolean (isDefined) which allow to know if the field is filled
+   ///       and a boolean (isDefined) which allows to know if the field is filled
    //----------------------------------
    template <class T>
    class CField
@@ -90,7 +90,7 @@ namespace shared
       //-----------------------------
       bool operator==(const T& rhs) const
       {
-         return m_value == rhs;
+         return m_defined && m_value == rhs;
       }
 
       //-----------------------------

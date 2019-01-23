@@ -230,6 +230,33 @@
         }
       }
     },
+    "merge-devices": {
+      "title": "Fusionner des équipements",
+      "help1": "Cette opération permet de remplacer un équipement par un autre en fusionnant l'historique des données des 2 équipements. Cette opération est utile par exemple dans le cas où un équipement a changé d'identifiant suite à un remplacement de pile.",
+      "help2": "Le nouvel équipement doit être compatible avec l'ancien.",
+      "help3": "Aucune modification de vos widgets ou règles ne sera nécessaire suite à cette opération.",
+      "target-device": {
+         "targetDeviceListCombo": {
+          "name": "Nouvel équipement",
+          "description": "Sélectionner le nouvel équipement"
+        }
+      },
+      "source-device": {
+         "sourceDeviceListCombo": {
+          "name": "Ancien équipement",
+          "description": "Sélectionner l'ancien équipement"
+        },
+        "no-compatible-device": "Aucun équipement compatible trouvé"
+      },
+      "summaryStart1": "Le nouvel équipement <b>{{targetDeviceName}}</b> sera fusionné avec l'ancien équipement <b>{{sourceDeviceName}}</b> :",
+      "summaryStart2": "- Les données de <b>{{sourceDeviceName}}</b> seront copiées dans <b>{{targetDeviceName}}</b> :",
+      "summaryKeywordLine": "\t- Les données de <b>{{sourceKeywordName}}</b> de <b>{{sourceDeviceName}}</b> seront copiées dans <b>{{targetKeywordName}}</b> de <b>{{targetDeviceName}}</b>",
+      "summaryEnd": "- L'équipement <b>{{sourceDeviceName}}</b> sera supprimé",
+      "summaryWarning": "Cette opération n'est pas réversible",
+      "mergeError": "Une erreur s'est produite lors de la fusion des équipements",
+      "mergeSuccess": "Fusion d'équipement réalisée avec succès",
+      "please-wait-message": "Fusion en cours, l'opération peut prendre quelques minutes..."
+    },
     "delete-device": {
       "title": "Mettre l'équipement en liste noire",
       "text": "Cette opération va mettre l'équipement {{deviceName}} en liste noire, et supprimer son historique de données.",
@@ -275,6 +302,10 @@
         "description": "Nom de la donnée",
         "regexErrorMessage": "Le nom de la donnée doit contenir au minimum 1 caractère"
       }
+    },
+    "please-wait": {
+      "title": "Veuillez patienter...",
+      "default-reason": "Veuillez attendre la fin de l'opération en cours"
     },
     "set-value-keyword": {
       "title": "Modification d'une donnée",
@@ -419,7 +450,7 @@
                       "name": "Conditions météo"
                     },
                     "weight": {
-                      "name": "Masse (kg)}"
+                      "name": "Masse (kg)"
                     }
                   }
                 },
@@ -632,6 +663,7 @@
           "title": "Equipements",
           "deviceListDescription": "Gestion des équipements",
           "new": "Créer un équipement",
+          "merge": "Fusionner des équipements",
           "table": {
             "name": "Nom",
             "attachedTo": "Attaché au plugin",
@@ -1227,7 +1259,7 @@
       "noUnit": "",
       "ampere": "A",
       "kampere": "KA",
-      "mampere": "mA",      
+      "mampere": "mA",
       "ampereHour": "Ah",
       "cubicMetre": "m³",
       "cubicMeterPerSecond": "m³/s",
