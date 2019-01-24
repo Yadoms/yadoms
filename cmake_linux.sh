@@ -36,7 +36,7 @@ case "$choice" in
 
     m)
 	# cmake for makefile
-	$cmake_executable ../sources
+	$cmake_executable ../sources  -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
 	;;
 
     r)
