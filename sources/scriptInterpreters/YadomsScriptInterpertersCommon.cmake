@@ -79,8 +79,10 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
       ${ARGN}
       )
 
-	#due to conan architecture, debug pdb are not always available
-	set_target_properties(${_targetName} PROPERTIES LINK_FLAGS "/ignore:4099")
+	if(MSVC)
+		#due to conan architecture, debug pdb are not always available
+		set_target_properties(${_targetName} PROPERTIES LINK_FLAGS "/ignore:4099")
+	endif(MSVC)
 	  
    ##################################################################################################
    ## Add natvis (allow better debugging within VisualStudio)
@@ -124,8 +126,10 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
 		if(COTIRE_USE_UNITY)
 			target_link_libraries(${_targetName}_unity yadoms-shared_unity interpreter_cpp_api_unity ${LIBS} ${CMAKE_DL_LIBS} ${ARGN})
 
-			#due to conan architecture, debug pdb are not always available
-			set_target_properties(${_targetName}_unity PROPERTIES LINK_FLAGS "/ignore:4099")
+			if(MSVC)
+				#due to conan architecture, debug pdb are not always available
+				set_target_properties(${_targetName}_unity PROPERTIES LINK_FLAGS "/ignore:4099")
+			endif(MSVC)
 			
 		   if(CMAKE_CROSSCOMPILING)
 		      #Fix RPATH for cross compilation

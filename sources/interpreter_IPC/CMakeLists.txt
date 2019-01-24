@@ -22,8 +22,11 @@ add_library(interpreter_IPC STATIC ${interpreter_IPC_SOURCES})
 target_link_libraries(interpreter_IPC CONAN_PKG::protobuf)
 
 set_property(TARGET interpreter_IPC PROPERTY INCLUDE_DIRECTORIES ${interpreter_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
-#due to conan architecture, debug pdb are not always available
-set_target_properties(interpreter_IPC PROPERTIES LINK_FLAGS "/ignore:4099")
+
+if(MSVC)
+	#due to conan architecture, debug pdb are not always available
+	set_target_properties(interpreter_IPC PROPERTIES LINK_FLAGS "/ignore:4099")
+endif(MSVC)
 
 ##################################################################################################
 ## Add natvis (allow better debugging within VisualStudio)

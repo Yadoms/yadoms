@@ -192,5 +192,7 @@ include_directories(${YADOMS_INCL_DIR})
 ##################################################################################################
 target_link_libraries(yadomsTests ${LIBS} ${CMAKE_DL_LIBS})
 
-#due to conan architecture, debug pdb are not always available
-set_target_properties(yadomsTests PROPERTIES LINK_FLAGS "/ignore:4099")
+if(MSVC)
+	#due to conan architecture, debug pdb are not always available
+	set_target_properties(yadomsTests PROPERTIES LINK_FLAGS "/ignore:4099")
+endif(MSVC)

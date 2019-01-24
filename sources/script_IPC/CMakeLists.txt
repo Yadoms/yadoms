@@ -18,8 +18,11 @@ add_library(script_IPC STATIC ${script_IPC_SOURCES})
 target_link_libraries(script_IPC CONAN_PKG::protobuf)
 
 set_property(TARGET script_IPC PROPERTY INCLUDE_DIRECTORIES ${script_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
-#due to conan architecture, debug pdb are not always available
-set_target_properties(script_IPC PROPERTIES LINK_FLAGS "/ignore:4099")
+
+if(MSVC)
+	#due to conan architecture, debug pdb are not always available
+	set_target_properties(script_IPC PROPERTIES LINK_FLAGS "/ignore:4099")
+endif(MSVC)
 
 ##################################################################################################
 ## Add natvis (allow better debugging within VisualStudio)
@@ -50,8 +53,10 @@ if(COTIRE_USE)
    if(COTIRE_USE_UNITY)
       target_link_libraries(script_IPC_unity CONAN_PKG::protobuf)
 	  
+	if(MSVC)
 	  #due to conan architecture, debug pdb are not always available
 	  set_target_properties(script_IPC_unity PROPERTIES LINK_FLAGS "/ignore:4099")
+	endif(MSVC)
 	  
    endif()	
 endif()
