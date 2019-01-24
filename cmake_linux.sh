@@ -31,6 +31,15 @@ cmake_executable=$(getCMakeExecutable)
 echo "Use cmake executable $cmake_executable"
 $cmake_executable --version
 
+echo "Run conan..."
+if ! conan remote list | grep -q 'other-conan-repo'; then
+    conan remote add other-conan-repo https://api.bintray.com/conan/bincrafters/public-conan
+fi
+ 
+conan install --build missing -s build_type=Debug -o Poco:fPIC=True -o boost:fPIC=True ../sources
+conan install --build missing -s build_type=Release -o Poco:fPIC=True -o boost:fPIC=True ../sources
+
+
 #run cmake depending on user choice (or script parameter)
 case "$choice" in
 
