@@ -96,6 +96,9 @@ endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)
 ###############################################
 add_definitions(-DBOOST_SPIRIT_THREADSAFE)
 
+#allow deprecated headers (usefull for boost 1.69). should be fixed in 1.70
+add_definitions(-DBOOST_ALLOW_DEPRECATED_HEADERS)
+
 ## Thread Library
 FIND_PACKAGE(Threads)
 
