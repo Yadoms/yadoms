@@ -144,7 +144,7 @@ endif()
 # define libraries to link with
 #
 ###############################################
-set(LIBS ${LIBS} ${CMAKE_THREAD_LIBS_INIT} CONAN_PKG::boost CONAN_PKG::Poco CONAN_PKG::OpenSSL CONAN_PKG::protobuf)
+set(LIBS ${LIBS} ${CMAKE_THREAD_LIBS_INIT} ${CONAN_TARGETS})
 
 
 ###############################################
