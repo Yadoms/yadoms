@@ -1,3 +1,6 @@
+### 1.1.5
+* Fix #524 : Add label to new protocols (MCZ and FunkBus)
+
 ### 1.1.4
 * Update to RFXCom SDK v9.23 (2018-10-10) : add support for Mertik G6R-H3T1
 
