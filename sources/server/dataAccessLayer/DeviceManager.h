@@ -29,9 +29,9 @@ namespace dataAccessLayer
 
       // IDeviceManager Implementation
       bool deviceExists(int deviceId) const override;
-      bool deviceExists(const int pluginId, const std::string& deviceName) const override;
+      bool deviceExists(int pluginId, const std::string& deviceName) const override;
       boost::shared_ptr<database::entities::CDevice> getDevice(int deviceId) const override;
-      boost::shared_ptr<database::entities::CDevice> getDeviceInPlugin(const int pluginId, const std::string& name, bool includeBlacklistDevice) const override;
+      boost::shared_ptr<database::entities::CDevice> getDeviceInPlugin(int pluginId, const std::string& name, bool includeBlacklistDevice) const override;
       std::vector<boost::shared_ptr<database::entities::CDevice>> getDeviceWithCapacity(const std::string& capacityName,
                                                                                         const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const override;
       std::vector<boost::shared_ptr<database::entities::CDevice>> getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode,
@@ -49,7 +49,7 @@ namespace dataAccessLayer
       void updateDeviceDetails(int deviceId, const shared::CDataContainer& details) override;
       void updateDeviceModel(int deviceId, const std::string& model) override;
       void updateDeviceType(int deviceId, const std::string& type) override;
-      void updateDeviceBlacklistState(int deviceId, const bool blacklist) override;
+      void updateDeviceBlacklistState(int deviceId, bool blacklist) override;
       void updateDeviceState(int deviceId, const shared::plugin::yPluginApi::historization::EDeviceState& state, const std::string& customMessageId, const shared::CDataContainer &data) const override;
       void removeDevice(int deviceId) override;
       void removeDevice(int pluginId, const std::string& deviceName) override;

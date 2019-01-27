@@ -38,6 +38,7 @@ IF(NOT DISABLE_TEST_PLUGIN_ENOCEAN)
       ReceiveBufferHandlerMock.hpp
       
       TestBitsetHelpers.cpp
+      TestCrc8.cpp
       TestReceiveBufferHandler.cpp
       TestDongleVersionResponseReceivedMessage.cpp
       TestMessageHandler.cpp
