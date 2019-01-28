@@ -64,11 +64,11 @@ namespace automation
          //--------------------------------------------------------------
          /// \brief	Process messages
          /// \param[in] request Received requests
-         /// \param[in] messageQueue Message Queue used for answer
          //--------------------------------------------------------------
          void processGetKeywordId(const script_IPC::toYadoms::GetKeywordId& request);
          void processGetRecipientId(const script_IPC::toYadoms::GetRecipientId& request);
          void processReadKeyword(const script_IPC::toYadoms::ReadKeyword& request);
+         void processReadKeywordDetails(const script_IPC::toYadoms::ReadKeywordDetails& request);
          void processWaitForNextAcquisition(const script_IPC::toYadoms::WaitForNextAcquisition& request);
          void processWaitForNextAcquisitions(const script_IPC::toYadoms::WaitForNextAcquisitions& request);
          void processWaitForEvent(const script_IPC::toYadoms::WaitForEvent& request);

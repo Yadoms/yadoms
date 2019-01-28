@@ -57,6 +57,17 @@ The last known keyword state
 #### Throw
 Error if keyword not found or if the keyword don't have any data
 
+### readKeywordDetails
+#### Description
+Read keyword details (last state, properties...)
+#### Parameters
+##### keywordId (in)
+The keyword ID from which retrieve state
+#### Return
+JSON string containig all details about the keyword. Some value can be missing (if no relevant).
+#### Throw
+Error if keyword not found
+
 ### Alternative to readKeyword: scriptUtilities.readKeywordValue
 #### Description
 Read the last keyword state, and return a default value in case of error (no data, keyword not found,...)

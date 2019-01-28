@@ -170,6 +170,25 @@ std::string CYScriptApiImplementation::readKeyword(int keywordId) const
    return answer.readkeyword().value();
 }
 
+std::string CYScriptApiImplementation::readKeywordDetails(int keywordId) const
+{
+   script_IPC::toYadoms::msg req;
+   auto request = req.mutable_readkeyworddetails();
+   request->set_keywordid(keywordId);
+   sendRequest(req);
+
+   script_IPC::toScript::msg answer;
+   receiveAnswer(answer);
+
+   if (!answer.error().empty())
+      throw std::out_of_range(std::string("yScriptApiWrapper::readKeywordDetails returned error : ") + answer.error());
+
+   if (!answer.has_readkeyworddetails())
+      throw std::out_of_range("yScriptApiWrapper::readKeywordDetails, wrong message received");
+
+   return answer.readkeyworddetails().value();
+}
+
 std::string CYScriptApiImplementation::waitForNextAcquisition(int keywordId,
                                                               const std::string& timeout) const
 {
