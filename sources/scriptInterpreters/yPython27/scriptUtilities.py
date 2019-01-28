@@ -88,6 +88,6 @@ def toDatetime(object):
 def readKeywordValue(yApi, keywordId, defaultValue):
    try:
       return yApi.readKeyword(keywordId)
-   except Exception, e:
+   except e as Exception:
       print "Exception in reading keyword value, using default value for the keyword type : " + str(e)
       return defaultValue

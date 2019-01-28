@@ -1,3 +1,6 @@
+### 2.2.0-beta.5
+* New feature #532 : Add readkeyworddetails function to script API
+
 ### 2.2.0-beta.4
 * New feature #513 : Add device fusion 
 * Fix script interpreter package generation (post build copy)
