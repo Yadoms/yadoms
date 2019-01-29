@@ -1,5 +1,7 @@
 #pragma once
 #include <shared/script/yScriptApi/IYScriptApi.h>
+// ReSharper disable once CppUnusedIncludeDirective
+#include <shared/script/yScriptApi/WaitForEventResult.h>
 
 
 //-----------------------------------------------------

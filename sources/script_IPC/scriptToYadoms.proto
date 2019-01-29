@@ -71,6 +71,11 @@ message GetKeywordDeviceName
    int32 keywordId = 1;
 }
 
+message ReadKeywordDetails
+{
+	int32 keywordId = 1;
+}
+
 message msg
 {
    oneof OneOf
@@ -87,5 +92,6 @@ message msg
       GetKeywordsByCapacity getKeywordsByCapacity = 10;
       GetKeywordName getKeywordName = 11;
       GetKeywordDeviceName getKeywordDeviceName = 12;
+	   ReadKeywordDetails readKeywordDetails = 13;
    }
 }

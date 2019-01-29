@@ -7,6 +7,7 @@
 import sys
 import datetime
 import time
+import json
 
 # Define some constants for waitForEvents results
 WAITFOREVENT_TIMEOUT = 0
@@ -88,6 +89,31 @@ def toDatetime(object):
 def readKeywordValue(yApi, keywordId, defaultValue):
    try:
       return yApi.readKeyword(keywordId)
-   except Exception, e:
+   except e as Exception:
       print "Exception in reading keyword value, using default value for the keyword type : " + str(e)
       return defaultValue
+
+      
+class KeywordDetails:
+   def __init__(self, jsonDetails):
+      details = json.loads(jsonDetails)
+      self.id = details[u'Id']
+      self.deviceId = details[u'DeviceId']
+      self.capacityName = details[u'CapacityName']
+      self.accessMode = details[u'AccessMode']
+      self.friendlyName = details[u'FriendlyName']
+      self.type = details[u'Type']
+      self.units = details[u'Units']
+      self.typeInfo = details[u'TypeInfo']
+      self.measure = details[u'Measure']
+      self.details = details[u'Details']
+      self.lastAcquisitionValue = details[u'LastAcquisitionValue']
+      self.lastAcquisitionDate = details[u'LastAcquisitionDate']
+
+
+# Read keyword details and populate a Python object
+# param [in] yApi The script Api object
+# param [in] keywordId The keywordid
+# return a Python object
+def readKeywordDetails(yApi, keywordId):
+   return KeywordDetails(yApi.readKeywordDetails(keywordId))

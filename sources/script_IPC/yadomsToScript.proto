@@ -63,6 +63,11 @@ message GetKeywordDeviceName
    string deviceName = 1;
 }
 
+message ReadKeywordDetails
+{
+	string value = 1;
+}
+
    
 message msg
 {
@@ -81,6 +86,7 @@ message msg
       GetKeywordsByCapacity getKeywordsByCapacity = 11;
       GetKeywordName getKeywordName = 12;
       GetKeywordDeviceName getKeywordDeviceName = 13;
+	   ReadKeywordDetails readKeywordDetails = 14;
    }
 }
 

@@ -1,3 +1,6 @@
+### 1.0.3
+* New feature #532 : Add readkeyworddetails function to script API
+
 ### 1.0.2
 * Raise error to Yadoms when unable to load rule content
 
