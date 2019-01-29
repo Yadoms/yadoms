@@ -57,17 +57,6 @@ The last known keyword state
 #### Throw
 Error if keyword not found or if the keyword don't have any data
 
-### readKeywordDetails
-#### Description
-Read keyword details (last state, properties...)
-#### Parameters
-##### keywordId (in)
-The keyword ID from which retrieve state
-#### Return
-JSON string containig all details about the keyword. Some value can be missing (if no relevant).
-#### Throw
-Error if keyword not found
-
 ### Alternative to readKeyword: scriptUtilities.readKeywordValue
 #### Description
 Read the last keyword state, and return a default value in case of error (no data, keyword not found,...)
@@ -83,6 +72,62 @@ The last known keyword state or default value in case of error
 #### Throw
 This method should not throw
 
+### readKeywordDetails
+#### Description
+Read keyword details (last state, properties...)
+#### Parameters
+##### keywordId (in)
+The keyword ID from which retrieve details
+#### Return
+JSON string containig all keyword details. Some value can be missing (if no relevant).
+#### Throw
+Error if keyword not found
+#### Example
+```python
+import json
+jsonKeywordDetails = json.loads(yApi.readKeywordDetails(keywordId))
+print "Id : ", jsonKeywordDetails[u'Id']
+print "DeviceId : ", jsonKeywordDetails[u'DeviceId']
+print "CapacityName : ", jsonKeywordDetails[u'CapacityName']
+print "AccessMode : ", jsonKeywordDetails[u'AccessMode']
+print "FriendlyName : ", jsonKeywordDetails[u'FriendlyName']
+print "Type : ", jsonKeywordDetails[u'Type']
+print "Units : ", jsonKeywordDetails[u'Units']
+print "TypeInfo : ", jsonKeywordDetails[u'TypeInfo']
+print "Measure : ", jsonKeywordDetails[u'Measure']
+print "Details : ", jsonKeywordDetails[u'Details']
+print "LastAcquisitionValue : ", jsonKeywordDetails[u'LastAcquisitionValue']
+print "LastAcquisitionDate : ", jsonKeywordDetails[u'LastAcquisitionDate']
+```
+
+
+### Alternative to readKeywordDetails: scriptUtilities.readKeywordDetails
+#### Description
+Read keyword details (last state, properties...) and returns an easy-to-use object
+#### Parameters
+##### yApi (in)
+The plugin api object 
+##### keywordId (in)
+The keyword ID from which retrieve details
+#### Return
+Object containing all keyword details
+#### Throw
+Error if keyword not found
+#### Example
+```python
+keywordDetails = scriptUtilities.readKeywordDetails(yApi, keywordId)
+print "Id : ", keywordDetails.id
+print "CapacityName : ", keywordDetails.capacityName
+print "AccessMode : ", keywordDetails.accessMode
+print "FriendlyName : ", keywordDetails.friendlyName
+print "Type : ", keywordDetails.type
+print "Units : ", keywordDetails.units
+print "TypeInfo : ", keywordDetails.typeInfo
+print "Measure : ", keywordDetails.measure
+print "Details : ", keywordDetails.details
+print "LastAcquisitionValue : ", keywordDetails.lastAcquisitionValue
+print "LastAcquisitionDate : ", keywordDetails.lastAcquisitionDate
+```
 
 ### waitForNextAcquisition
 #### Description
