@@ -85,10 +85,51 @@ namespace task
          }
       }
 
+      bool CBackup::checkEnoughSpace(const boost::filesystem::path& where) const
+      {
+         uintmax_t neededSpace = 0;
+
+         YADOMS_LOG(info) << "Check backup space needed";
+
+         // Database
+         if (m_dataBackupInterface->backupSupported())
+         {
+            const auto needed = m_dataBackupInterface->backupNeededSpace();
+            YADOMS_LOG(info) << "  - Database : " << needed;
+            neededSpace += needed;
+         }
+
+         // Scripts
+         {
+            const auto needed = boost::filesystem::space(m_pathProvider->scriptsPath()).available;
+            YADOMS_LOG(info) << "  - Scripts : " << needed;
+            neededSpace += needed;
+         }
+
+         // Plugins data
+         {
+            const auto needed = boost::filesystem::space(m_pathProvider->pluginsDataPath()).available;
+            YADOMS_LOG(info) << "  - Plugins data : " << needed;
+            neededSpace += needed;
+         }
+         
+         YADOMS_LOG(info) << "  Total : " << neededSpace;
+
+         // Apply 5% marging
+         return boost::filesystem::space(where).available > (neededSpace * 105 / 100);
+      }
+
       boost::filesystem::path CBackup::prepareBackup() const
       {
-         //create "backup temp" folder
          boost::filesystem::path backupTempFolder = boost::filesystem::temp_directory_path() / "yadomsBackup";
+
+         if (!checkEnoughSpace(backupTempFolder))
+            YADOMS_LOG(warning) << "No enough space to backup into " << backupTempFolder;
+
+         backupTempFolder = m_pathProvider->backupPath() / "yadomsBackup"; //TODO vérifier que le sous-répertoire yadomsBackup n'apparait pas dans la liste des backups
+         YADOMS_LOG(warning) << "Retry in " << backupTempFolder << "...";
+         if (!checkEnoughSpace(backupTempFolder))
+            throw shared::exception::CException("No enough space in " + backupTempFolder + " to process backup");
 
          //if folder exist, cleanup, else create if
          if (boost::filesystem::exists(backupTempFolder))
