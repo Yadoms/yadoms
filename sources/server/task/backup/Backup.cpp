@@ -89,31 +89,31 @@ namespace task
       {
          uintmax_t neededSpace = 0;
 
-         YADOMS_LOG(info) << "Check backup space needed";
+         YADOMS_LOG(information) << "Check backup space needed";
 
          // Database
          if (m_dataBackupInterface->backupSupported())
          {
             const auto needed = m_dataBackupInterface->backupNeededSpace();
-            YADOMS_LOG(info) << "  - Database : " << needed;
+            YADOMS_LOG(information) << "  - Database : " << needed;
             neededSpace += needed;
          }
 
          // Scripts
          {
             const auto needed = boost::filesystem::space(m_pathProvider->scriptsPath()).available;
-            YADOMS_LOG(info) << "  - Scripts : " << needed;
+            YADOMS_LOG(information) << "  - Scripts : " << needed;
             neededSpace += needed;
          }
 
          // Plugins data
          {
             const auto needed = boost::filesystem::space(m_pathProvider->pluginsDataPath()).available;
-            YADOMS_LOG(info) << "  - Plugins data : " << needed;
+            YADOMS_LOG(information) << "  - Plugins data : " << needed;
             neededSpace += needed;
          }
          
-         YADOMS_LOG(info) << "  Total : " << neededSpace;
+         YADOMS_LOG(information) << "  Total : " << neededSpace;
 
          // Apply 5% marging
          return boost::filesystem::space(where).available > (neededSpace * 105 / 100);

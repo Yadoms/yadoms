@@ -607,15 +607,20 @@ namespace database
          return boost::make_shared<CPgsqlTableCreationScriptProvider>();
       }
 
-      bool CPgsqlRequester::backupSupported()
+      bool CPgsqlRequester::backupSupported() const
       {
          return false;
       }
+      
+      uintmax_t CPgsqlRequester::backupNeededSpace() const
+      {
+         throw database::CDatabaseException("Unsupported backup for PostgreSQL");
+      }
 
-   void CPgsqlRequester::backupData(const std::string & backupFolder, IDataBackup::ProgressFunc reporter)
-   {
-      throw database::CDatabaseException("Unsupported backup for PostgreSQL");
-   }
+      void CPgsqlRequester::backupData(const std::string & backupFolder, IDataBackup::ProgressFunc reporter) const
+      {
+         throw database::CDatabaseException("Unsupported backup for PostgreSQL");
+      }
 
       bool CPgsqlRequester::supportInsertOrUpdateStatement()
       {
