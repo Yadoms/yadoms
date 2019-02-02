@@ -399,7 +399,7 @@ namespace database
 
       uintmax_t CSQLiteRequester::backupNeededSpace() const
       {
-         return std::filesystem::file_size(m_dbFile);
+         return boost::filesystem::file_size(m_dbFile);
       }
 
       void CSQLiteRequester::backupData(const std::string & backupFolder, ProgressFunc reporter) const
