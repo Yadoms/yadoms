@@ -4,6 +4,7 @@
 #include "task/ITask.h"
 #include "Backup.h"
 #include "tools/FileSystem.h"
+#include <shared/tools/Filesystem.h>
 #include <Poco/Zip/Compress.h>
 #include <shared/currentTime/Provider.h>
 #include <Poco/Zip/ZipException.h>
@@ -101,14 +102,14 @@ namespace task
 
          // Scripts
          {
-            const auto needed = boost::filesystem::space(m_pathProvider->scriptsPath()).available;
+            const auto needed = shared::tools::CFilesystem::directorySize(m_pathProvider->scriptsPath());
             YADOMS_LOG(information) << "  - Scripts : " << needed;
             neededSpace += needed;
          }
 
          // Plugins data
          {
-            const auto needed = boost::filesystem::space(m_pathProvider->pluginsDataPath()).available;
+            const auto needed = shared::tools::CFilesystem::directorySize(m_pathProvider->pluginsDataPath());
             YADOMS_LOG(information) << "  - Plugins data : " << needed;
             neededSpace += needed;
          }
@@ -123,13 +124,15 @@ namespace task
       {
          boost::filesystem::path backupTempFolder = boost::filesystem::temp_directory_path() / "yadomsBackup";
 
-         if (!checkEnoughSpace(backupTempFolder))
+         if (!checkEnoughSpace(backupTempFolder.parent_path()))
+         {
             YADOMS_LOG(warning) << "No enough space to backup into " << backupTempFolder;
 
-         backupTempFolder = m_pathProvider->backupPath() / "yadomsBackup"; //TODO vérifier que le sous-répertoire yadomsBackup n'apparait pas dans la liste des backups
-         YADOMS_LOG(warning) << "Retry in " << backupTempFolder << "...";
-         if (!checkEnoughSpace(backupTempFolder))
-            throw shared::exception::CException("No enough space in " + backupTempFolder.string() + " to process backup");
+            backupTempFolder = m_pathProvider->backupPath() / "yadomsBackup"; //TODO vérifier que le sous-répertoire yadomsBackup n'apparait pas dans la liste des backups
+            YADOMS_LOG(warning) << "Retry in " << backupTempFolder << "...";
+            if (!checkEnoughSpace(backupTempFolder.parent_path()))
+               throw shared::exception::CException("No enough space in " + backupTempFolder.string() + " to process backup");
+         }
 
          //if folder exist, cleanup, else create if
          if (boost::filesystem::exists(backupTempFolder))
