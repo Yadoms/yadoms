@@ -1,5 +1,6 @@
 ### 2.2.0-beta.5
 * New feature #532 : Add readkeyworddetails function to script API
+* Fix #522 : Try to backup elsewhere if not enough place in system temp folder
 
 ### 2.2.0-beta.4
 * New feature #513 : Add device fusion 

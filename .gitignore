@@ -38,3 +38,4 @@ sources/www/.vs
 /sources/www/Web.config
 
 /analysis/.vscode
+/.vscode

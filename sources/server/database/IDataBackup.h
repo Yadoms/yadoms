@@ -20,14 +20,20 @@ namespace database {
       ///\brief Indicate if backup is supported by database engine
       ///\return boolean
       //---------------------------------
-      virtual bool backupSupported() = 0;
+      virtual bool backupSupported() const = 0;
+
+      //---------------------------------
+      ///\brief Return the needed space for backup (database size on disk)
+      ///\return bytes number
+      //---------------------------------
+      virtual uintmax_t backupNeededSpace() const = 0;
 
       //---------------------------------
       ///\brief Backup the data provider to a file
       ///\param [in] backupFolder : the backup folder
       ///\param [in] reporter : a function pointer for reporting progression
       //---------------------------------
-      virtual void backupData(const std::string & backupFolder, ProgressFunc reporter) = 0;
+      virtual void backupData(const std::string & backupFolder, ProgressFunc reporter) const = 0;
 
       //--------------------------------------------------------------
       /// \brief       Destructor

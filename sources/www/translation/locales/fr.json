@@ -57,7 +57,7 @@
       "name": "tâche",
       "started": "Tâche démarrée",
       "interrupted": "Tâche interrompue",
-      "crash": "Tâche plantée",
+      "crash": "Tâche en erreur",
       "unknownError": "Erreur inconnue",
       "end": "Tâche arrétée",
       "backup": {

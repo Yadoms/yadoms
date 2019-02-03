@@ -31,6 +31,7 @@ namespace task
 
       private:
          void doWork(int currentTry = 0);
+         bool checkEnoughSpace(const boost::filesystem::path& where) const;
          boost::filesystem::path prepareBackup() const;
          bool backupFiles(boost::filesystem::path & tempPath);
          boost::filesystem::path makeZipArchive(boost::filesystem::path & tempPath);
