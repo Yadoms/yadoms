@@ -129,7 +129,7 @@ namespace task
          backupTempFolder = m_pathProvider->backupPath() / "yadomsBackup"; //TODO vérifier que le sous-répertoire yadomsBackup n'apparait pas dans la liste des backups
          YADOMS_LOG(warning) << "Retry in " << backupTempFolder << "...";
          if (!checkEnoughSpace(backupTempFolder))
-            throw shared::exception::CException("No enough space in " + backupTempFolder + " to process backup");
+            throw shared::exception::CException("No enough space in " + backupTempFolder.string() + " to process backup");
 
          //if folder exist, cleanup, else create if
          if (boost::filesystem::exists(backupTempFolder))
