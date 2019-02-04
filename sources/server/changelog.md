@@ -1,3 +1,6 @@
+### 2.2.0-beta.5
+* Fix wrong display for new devices
+
 ### 2.2.0-beta.4
 
 * New feature #513 : Add device fusion 
