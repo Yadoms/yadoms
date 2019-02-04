@@ -139,8 +139,8 @@
          
          if ($span.length != 0){
             var friendlyName = $span[1].innerText;
-            if (device.device.friendlyName > friendlyName){
-               indexToInsert = index + 1;
+            if (device.device.friendlyName.toLowerCase() > friendlyName.toLowerCase()){
+               indexToInsert = index;
             }
          }
       });
@@ -474,7 +474,7 @@
 	   var frameworkDevice = "<tr device-id=\"" + device.id + "\" class=\"device\"><td class=\"device-friendlyName vert-align text-left\"></td><td class=\"device-attachedTo vert-align\"></td><td class=\"device-model vert-align\"></td><td class=\"device-actions vert-align\"></td></tr>";
       
       // we add to the end, if the position is null (no insertion, the device list is empty, or the new position, is the end of the list)
-	   if ( positionDevice == null || deviceList.length == 0 || positionDevice == (deviceList.length-1))
+	   if ( positionDevice == null || deviceList.length == 0 || positionDevice >= (deviceList.length-1))
          $deviceList.append( frameworkDevice );
 	   else{
 	     var $row = null;
