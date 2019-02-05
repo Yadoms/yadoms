@@ -1,19 +1,25 @@
 ### 2.2.0-beta.5
 * New feature #532 : Add readkeyworddetails function to script API
+* Fix #522 : Try to backup elsewhere if not enough place in system temp folder
+* Fix wrong display for new devices
+
 
 ### 2.2.0-beta.4
+
 * New feature #513 : Add device fusion 
 * Fix script interpreter package generation (post build copy)
 * Fix #529 : Fix saving system configuration
 * Fix #527 - Equipment renamed is not displayed immediately
-* Fix #526 - Equipment type change not fully fonctional
+* Fix #526 - Equipment type change not fully functional
 * Fix #511 - Configuration blocks - duplicate buttons doesn't work properly
+
 
 ### 2.2.0-beta.3
 
 #### Web Client
 * Fix device details access on devices page
 * Fix #512 - Fix confirmation modals displayed multiple times and at background (need update of switch widget to version 1.1.1)
+
 
 ### 2.2.0-beta.2
 
