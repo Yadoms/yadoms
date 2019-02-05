@@ -1,206 +1,363 @@
 <div id="dashboard-maintenance">
-    <h1 class="page-header">
-        <span class="fa fa-briefcase"></span>&nbsp;
-        <span data-i18n="modals.dashboard.sub-windows.maintenance.title"></span>
-    </h1>
+   <h1 class="page-header">
+      <span class="fa fa-briefcase"></span>&nbsp;
+      <span data-i18n="modals.dashboard.sub-windows.maintenance.title"></span>
+   </h1>
 
-   <button type="button" class="btn btn-default btn-info backupButton" data-i18n="modals.dashboard.sub-windows.maintenance.backup" aria-expanded="false" />
-   <button type="button" class="btn btn-danger btn-info deleteAllButton" data-i18n="modals.dashboard.sub-windows.maintenance.deleteAll" aria-expanded="false" />
+   <button type="button" class="btn btn-default btn-info backupButton" data-i18n="modals.dashboard.sub-windows.maintenance.backup"
+      aria-expanded="false" />
+   <button type="button" class="btn btn-danger btn-info deleteAllButton" data-i18n="modals.dashboard.sub-windows.maintenance.deleteAll"
+      aria-expanded="false" />
 
-    <div class="action-progression" style="width: 340px; margin-top: 10px;">
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
-                <span class="hidden">60% Complete</span>
-            </div>
-        </div>
-        <span class="message"></span>
-    </div>
+   <div class="action-progression" style="width: 340px; margin-top: 10px;">
+      <div class="progress">
+         <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
+            <span class="hidden">60% Complete</span>
+         </div>
+      </div>
+      <span class="message"></span>
+   </div>
 
-    <!-- Historique des sauvegardes -->
-    <table id="backup-list" class="table table-bordered table-striped dashboard-list">
-        <tr>
-            <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.state"></td>
-            <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.date"></td>
-            <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.size"></td>
-            <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.location" class="hidden-xs hidden-sm"></td>
-            <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.actions"></td>
-        </tr>
-    </table>
+   <!-- Backup historic -->
+   <table id="backup-list" class="table table-bordered table-striped dashboard-list">
+      <tr>
+         <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.state"></td>
+         <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.date"></td>
+         <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.size"></td>
+         <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.location" class="hidden-xs hidden-sm"></td>
+         <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.actions"></td>
+      </tr>
+   </table>
+
+   <br>
+
+   <!-- Logs download -->
+   <button type="button" class="btn btn-default btn-info logsDownloadButton" data-i18n="modals.dashboard.sub-windows.maintenance.logsDownload"
+      aria-expanded="false" />
+   <div class="logs-action-progression" style="width: 340px; margin-top: 10px;">
+      <div class="progress">
+         <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
+            <span class="hidden">60% Complete</span>
+         </div>
+      </div>
+      <span class="message"></span>
+   </div>
+
 </div>
 
 <script>
-    function showLastBackupInformation() {
-        $(".lastBackup").hide();
+   function showLastBackupInformation() {
+      MaintenanceManager.lastBackupInformation()
+         .done(function (infos) {
 
-        MaintenanceManager.lastBackupInformation()
-        .done(function (infos) {
-            
             //we remove all rows except header
             $("table#backup-list").find("tr:gt(0)").remove();
-            
-            if(infos.backups) {
-            
+
+            if (infos.backups) {
+
                //order backup by date desc
                infos.backups = _.orderBy(infos.backups, ['modificationDate'], ['desc']);
-               
-               $.each(infos.backups, function(index, info) {
+
+               $.each(infos.backups, function (index, info) {
                   if (info && info.url && info.path && info.size && info.modificationDate) {
-                  
+
                      var id = info.url.replace(/\./g, '_'); //replace all "." to "_"
-                     
+
                      var actionsBtns = '<div class="btn-group">' +
-                                          '<a class="btn btn-info lastBackupLink" href="backups/' + info.url + '" data-i18n="[title]modals.dashboard.sub-windows.maintenance.backuplist.download">' +
-                                          '    <span class="glyphicon glyphicon-save "></span>' +
-                                          '</a>' +
-                                          '<button type="button" class="btn btn-danger btn-delete" id="' + id + '" data-i18n="[title]modals.dashboard.sub-windows.maintenance.backuplist.delete"><span class="fa fa-trash"></span></button>' +
-                                       '</div>';
-                                       
-                     var line = '<tr>' + 
-                                   '<td><span class="glyphicon ' + (!parseBool(info.inprogress)?'glyphicon-ok text-success':'glyphicon-remove text-warning') + '"></span></td>' +
-                                   '<td>' + DateTimeFormatter.isoDateToString(info.modificationDate) + '</td>' +
-                                   '<td>' + humanFileSize(info.size) + '</td>' +
-                                   '<td class="hidden-xs hidden-sm">' + info.path + '</td>' +
-                                   '<td>' + actionsBtns + '</td>' +
-                                '</tr>';
-                                
-                      $("table#backup-list").append(line);
-                      
-                      $("#" + id).unbind('click').bind('click', function () { 
-                         Yadoms.modals.confirmation.loadAsync()
-                         .done(function () {
-                             Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
-                                $.t("modals.dashboard.sub-windows.maintenance.backuplist.deleteConfirmTitle"),
-                                $.t("modals.dashboard.sub-windows.maintenance.backuplist.deleteConfirm"),
-                                function () {
+                        '<a class="btn btn-info lastBackupLink" href="backups/' + info.url +
+                        '" data-i18n="[title]modals.dashboard.sub-windows.maintenance.backuplist.download">' +
+                        '    <span class="glyphicon glyphicon-save "></span>' +
+                        '</a>' +
+                        '<button type="button" class="btn btn-danger btn-delete" id="' + id +
+                        '" data-i18n="[title]modals.dashboard.sub-windows.maintenance.backuplist.delete"><span class="fa fa-trash"></span></button>' +
+                        '</div>';
+
+                     var line = '<tr>' +
+                        '<td><span class="glyphicon ' + (!parseBool(info.inprogress) ?
+                           'glyphicon-ok text-success' : 'glyphicon-remove text-warning') + '"></span></td>' +
+                        '<td>' + DateTimeFormatter.isoDateToString(info.modificationDate) + '</td>' +
+                        '<td>' + humanFileSize(info.size) + '</td>' +
+                        '<td class="hidden-xs hidden-sm">' + info.path + '</td>' +
+                        '<td>' + actionsBtns + '</td>' +
+                        '</tr>';
+
+                     $("table#backup-list").append(line);
+
+                     $("#" + id).unbind('click').bind('click', function () {
+                        Yadoms.modals.confirmation.loadAsync()
+                           .done(function () {
+                              Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
+                                 $.t(
+                                    "modals.dashboard.sub-windows.maintenance.backuplist.deleteConfirmTitle"
+                                 ),
+                                 $.t(
+                                    "modals.dashboard.sub-windows.maintenance.backuplist.deleteConfirm"
+                                 ),
+                                 function () {
                                     MaintenanceManager.deleteBackup(info.url)
-                                    .done(function(f) {
-                                       console.log("Backup of " + DateTimeFormatter.isoDateToString(info.modificationDate) + " deleted with success");
-                                    })
-                                    .fail(function(err) {
-                                       console.error("Fail to delete the backup");
-                                       console.error(err);
-                                    })
-                                    .always(function () {
-                                       //refresh list
-                                       showLastBackupInformation();
-                                    });
-                                });
-                         });                      
-                      });
+                                       .done(function (f) {
+                                          console.log("Backup of " + DateTimeFormatter.isoDateToString(
+                                                info.modificationDate) +
+                                             " deleted with success");
+                                       })
+                                       .fail(function (err) {
+                                          console.error("Fail to delete the backup");
+                                          console.error(err);
+                                       })
+                                       .always(function () {
+                                          //refresh list
+                                          showLastBackupInformation();
+                                       });
+                                 });
+                           });
+                     });
                   }
                });
             } else {
                //no backups found
             }
-        });
-    }
-    
-    function onTaskUpdate(taskInformation) {
+         });
+   }
+
+   function onBackupTaskUpdate(taskInformation) {
       var $line = $(".action-progression");
       $line.find("div.progress-bar").css("width", taskInformation.progression + "%");
 
-      if(taskInformation.message) {
-        $line.find("span.message").text($.t("core." + taskInformation.message));
+      if (taskInformation.message) {
+         $line.find("span.message").text($.t("core." + taskInformation.message));
       } else {
-        $line.find("span.message").text("");
+         $line.find("span.message").text("");
       }
 
       var taskFinished = false;
       //we manage the end of the task
       var state = taskInformation.taskState || taskInformation.status; //from taskManager=>status, from webSocket notif)>taskState
-      
+
       if (state) {
          if (state.toLowerCase() === "fail") {
-             console.error("Unable to install : " + taskInformation.exception);
-             if(taskInformation.message) {
+            console.error("Unable to install : " + taskInformation.exception);
+            if (taskInformation.message) {
                notifyError($.t("core." + taskInformation.message));
-             }
-             taskFinished = true;
+            }
+            taskFinished = true;
          }
 
          if (state.toLowerCase() === "success") {
-             if(taskInformation.message) {
+            if (taskInformation.message) {
                notifySuccess($.t("core." + taskInformation.message));
-             }
-             taskFinished = true;
-             showLastBackupInformation();
+            }
+            taskFinished = true;
+            showLastBackupInformation();
          }
 
          if (taskFinished) {
-             //we remove the progress information and restore buttons
-             $line.find("div.progress-bar").css("width", "0");
-             $line.hide();
+            //we remove the progress information and restore buttons
+            $line.find("div.progress-bar").css("width", "0");
+            $line.hide();
          }
       }
-    }
-    
-    function registerNotificationForTask(taskId) {
-       $(".action-progression").show();
-       $(document).on("taskupdatenotification." + taskId, function (e, taskInformation) {
-           onTaskUpdate(taskInformation);
-       });    
-    }
-    
+   }
 
-    function enableBackupSection() {
-        $(".backupSection").show();
-        $(".action-progression").hide();
+   function registerNotificationForBackupTask(taskId) {
+      $(".action-progression").show();
+      $(document).on("taskupdatenotification." + taskId, function (e, taskInformation) {
+         onBackupTaskUpdate(taskInformation);
+      });
+   }
 
-        $(".backupButton").unbind('click').bind('click', function () {
-            MaintenanceManager.startBackup()
+
+   function enableBackupSection() {
+      $(".action-progression").hide();
+
+      $(".backupButton").unbind('click').bind('click', function () {
+         MaintenanceManager.startBackup()
             .done(function (data) {
-                //data.taskId
-                registerNotificationForTask(data.taskId);
+               //data.taskId
+               registerNotificationForBackupTask(data.taskId);
             });
-        });
+      });
 
-       $(".deleteAllButton").unbind('click').bind('click', function () {
-          Yadoms.modals.confirmation.loadAsync()
-          .done(function () {
-              Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
-                 $.t("modals.dashboard.sub-windows.maintenance.deleteAllConfirmTitle"),
-                 $.t("modals.dashboard.sub-windows.maintenance.deleteAllConfirm"),
-                 function () {
+      $(".deleteAllButton").unbind('click').bind('click', function () {
+         Yadoms.modals.confirmation.loadAsync()
+            .done(function () {
+               Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
+                  $.t("modals.dashboard.sub-windows.maintenance.deleteAllConfirmTitle"),
+                  $.t("modals.dashboard.sub-windows.maintenance.deleteAllConfirm"),
+                  function () {
                      MaintenanceManager.deleteAllBackups()
-                     .done(function() {
-                        console.log("All backups are deleted with success");
-                     })
-                     .fail(function(err) {
-                        console.error("Fail to delete backups", err);
-                     })
-                     .always(function () {
-                        //refresh list
-                        showLastBackupInformation();
-                     });
-                 });
-          });
-       });
+                        .done(function () {
+                           console.log("All backups are deleted with success");
+                        })
+                        .fail(function (err) {
+                           console.error("Fail to delete backups", err);
+                        })
+                        .always(function () {
+                           //refresh list
+                           showLastBackupInformation();
+                        });
+                  });
+            });
+      });
 
-       showLastBackupInformation();
-    }
+      showLastBackupInformation();
+   }
 
 
-    Yadoms.initializeMaintenanceDashboard = function () {
-        var d = new $.Deferred();
+   function showLastLogsDownloadInformation() {
+      MaintenanceManager.lastLogsDownloadInformation()
+         .done(function (infos) {
 
-        asyncLoadJSLib("js/objects/maintenance-manager.js").done(function(){
-           enableBackupSection();
+            // //we remove all rows except header
+            // $("table#backup-list").find("tr:gt(0)").remove();
 
-           //if running tasks, then just refresh
-           TaskManager.getTasksRunning("backup")
-           .done(function(tasks) {
-               $.each(tasks, function(index, task) {
-                  registerNotificationForTask(task.uuid);
-                  onTaskUpdate(task);
+            // if (infos.backups) {
+
+            //    //order backup by date desc
+            //    infos.backups = _.orderBy(infos.backups, ['modificationDate'], ['desc']);
+
+            //    $.each(infos.backups, function (index, info) {
+            //       if (info && info.url && info.path && info.size && info.modificationDate) {
+
+            //          var id = info.url.replace(/\./g, '_'); //replace all "." to "_"
+
+            //          var actionsBtns = '<div class="btn-group">' +
+            //             '<a class="btn btn-info lastBackupLink" href="backups/' + info.url +
+            //             '" data-i18n="[title]modals.dashboard.sub-windows.maintenance.backuplist.download">' +
+            //             '    <span class="glyphicon glyphicon-save "></span>' +
+            //             '</a>' +
+            //             '<button type="button" class="btn btn-danger btn-delete" id="' + id +
+            //             '" data-i18n="[title]modals.dashboard.sub-windows.maintenance.backuplist.delete"><span class="fa fa-trash"></span></button>' +
+            //             '</div>';
+
+            //          var line = '<tr>' +
+            //             '<td><span class="glyphicon ' + (!parseBool(info.inprogress) ?
+            //                'glyphicon-ok text-success' : 'glyphicon-remove text-warning') + '"></span></td>' +
+            //             '<td>' + DateTimeFormatter.isoDateToString(info.modificationDate) + '</td>' +
+            //             '<td>' + humanFileSize(info.size) + '</td>' +
+            //             '<td class="hidden-xs hidden-sm">' + info.path + '</td>' +
+            //             '<td>' + actionsBtns + '</td>' +
+            //             '</tr>';
+
+            //          $("table#backup-list").append(line);
+
+            //          $("#" + id).unbind('click').bind('click', function () {
+            //             Yadoms.modals.confirmation.loadAsync()
+            //                .done(function () {
+            //                   Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
+            //                      $.t(
+            //                         "modals.dashboard.sub-windows.maintenance.backuplist.deleteConfirmTitle"
+            //                      ),
+            //                      $.t(
+            //                         "modals.dashboard.sub-windows.maintenance.backuplist.deleteConfirm"
+            //                      ),
+            //                      function () {
+            //                         MaintenanceManager.deleteBackup(info.url)
+            //                            .done(function (f) {
+            //                               console.log("Backup of " + DateTimeFormatter.isoDateToString(
+            //                                     info.modificationDate) +
+            //                                  " deleted with success");
+            //                            })
+            //                            .fail(function (err) {
+            //                               console.error("Fail to delete the backup");
+            //                               console.error(err);
+            //                            })
+            //                            .always(function () {
+            //                               //refresh list
+            //                               showLastLogsDownloadInformation();
+            //                            });
+            //                      });
+            //                });
+            //          });
+            //       }
+            //    });
+            // } else {
+            //    //no backups found
+            // }
+         });
+   }
+
+   function onLogsDownloadTaskUpdate(taskInformation) {
+      var $line = $(".logs-action-progression");
+      $line.find("div.progress-bar").css("width", taskInformation.progression + "%");
+
+      if (taskInformation.message) {
+         $line.find("span.message").text($.t("core." + taskInformation.message));
+      } else {
+         $line.find("span.message").text("");
+      }
+
+      var taskFinished = false;
+      //we manage the end of the task
+      var state = taskInformation.taskState || taskInformation.status; //from taskManager=>status, from webSocket notif)>taskState
+
+      if (state) {
+         if (state.toLowerCase() === "fail") {
+            console.error("Unable to download logs : " + taskInformation.exception);
+            if (taskInformation.message) {
+               notifyError($.t("core." + taskInformation.message));
+            }
+            taskFinished = true;
+         }
+
+         if (state.toLowerCase() === "success") {
+            if (taskInformation.message) {
+               notifySuccess($.t("core." + taskInformation.message));
+            }
+            taskFinished = true;
+            showLastLogsDownloadInformation();
+         }
+
+         if (taskFinished) {
+            //we remove the progress information and restore buttons
+            $line.find("div.progress-bar").css("width", "0");
+            $line.hide();
+         }
+      }
+   }
+
+   function registerNotificationForLogsDownloadTask(taskId) {
+      $(".logs-action-progression").show();
+      $(document).on("taskupdatenotification." + taskId, function (e, taskInformation) {
+         onLogsDownloadTaskUpdate(taskInformation);
+      });
+   }
+
+   function enableLogsDownloadSection() {
+      $(".logs-action-progression").hide();
+
+      $(".logsDownloadButton").unbind('click').bind('click', function () {
+         MaintenanceManager.startLogsDownload()
+            .done(function (data) {
+               //data.taskId
+               registerNotificationForLogsDownloadTask(data.taskId);
+            });
+      });
+
+      showLastLogsDownloadInformation();
+   }
+
+
+   Yadoms.initializeMaintenanceDashboard = function () {
+      var d = new $.Deferred();
+
+      asyncLoadJSLib("js/objects/maintenance-manager.js").done(function () {
+            enableBackupSection();
+            enableLogsDownloadSection();
+
+            //if running tasks, then just refresh
+            TaskManager.getTasksRunning("backup")
+               .done(function (tasks) {
+                  $.each(tasks, function (index, task) {
+                     registerNotificationForBackupTask(task.uuid);
+                     onBackupTaskUpdate(task);
+                  });
+               })
+               .always(function () {
+                  d.resolve();
                });
-           })
-           .always(function() {
-               d.resolve();
-           });
-        })
-        .fail(d.reject);
-        
-        return d.promise();
-    };
+         })
+         .fail(d.reject);
 
+      return d.promise();
+   };
 </script>

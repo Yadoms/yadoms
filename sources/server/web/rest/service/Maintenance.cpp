@@ -4,6 +4,7 @@
 #include "web/rest/RestDispatcher.h"
 #include "web/rest/Result.h"
 #include "task/backup/Backup.h"
+#include "task/packLogs/PackLogs.h"
 #include <shared/Log.h>
 #include <boost/date_time/c_local_time_adjustor.hpp>
 
@@ -15,13 +16,12 @@ namespace web
       {
          std::string CMaintenance::m_restKeyword = std::string("maintenance");
 
-         CMaintenance::CMaintenance(boost::shared_ptr<const IPathProvider> pathProvider, boost::shared_ptr<database::IDatabaseRequester> databaseRequester, boost::shared_ptr<task::CScheduler> taskScheduler)
-            : m_pathProvider(pathProvider), m_databaseRequester(databaseRequester), m_taskScheduler(taskScheduler)
-         {
-         }
-
-
-         CMaintenance::~CMaintenance()
+         CMaintenance::CMaintenance(boost::shared_ptr<const IPathProvider> pathProvider,
+                                    boost::shared_ptr<database::IDatabaseRequester> databaseRequester,
+                                    boost::shared_ptr<task::CScheduler> taskScheduler)
+            : m_pathProvider(pathProvider),
+              m_databaseRequester(databaseRequester),
+              m_taskScheduler(taskScheduler)
          {
          }
 
@@ -33,6 +33,9 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("backup"), CMaintenance::startBackup);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("backup")("*"), CMaintenance::deleteBackup);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("backup"), CMaintenance::deleteAllBackups);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("packlogs"), CMaintenance::startPackLogs);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("logs"), CMaintenance::getLogs);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("logs"), CMaintenance::deleteAllLogs);
          }
 
 
@@ -41,7 +44,8 @@ namespace web
             return m_restKeyword;
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::getDatabaseInformation(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::getDatabaseInformation(const std::vector<std::string>& parameters,
+                                                                                                          const std::string& requestContent) const
          {
             try
             {
@@ -59,13 +63,14 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::startBackup(const std::vector<std::string>& parameters, const std::string& requestContent)
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::startBackup(const std::vector<std::string>& parameters,
+                                                                                               const std::string& requestContent)
          {
             try
             {
                if (m_databaseRequester->backupSupported())
                {
-                  boost::shared_ptr<task::ITask> task(boost::make_shared<task::backup::CBackup>(m_pathProvider, m_databaseRequester));
+                  const boost::shared_ptr<task::ITask> task(boost::make_shared<task::backup::CBackup>(m_pathProvider, m_databaseRequester));
 
                   std::string taskUid;
                   if (m_taskScheduler->runTask(task, taskUid))
@@ -90,7 +95,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::getBackups(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::getBackups(const std::vector<std::string>& parameters,
+                                                                                              const std::string& requestContent) const
          {
             try
             {
@@ -106,13 +112,17 @@ namespace web
                      {
                         if (boost::filesystem::is_regular_file(i->path()))
                         {
-                           auto filesize = boost::filesystem::file_size(i->path());
+                           if (!boost::starts_with(i->path().filename().string(), "backup_"))
+                              continue;
 
-                           auto lastWriteTimeT = boost::filesystem::last_write_time(i->path());
-                           auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::utc_to_local(boost::posix_time::from_time_t(lastWriteTimeT));
+                           auto fileSize = boost::filesystem::file_size(i->path());
+
+                           const auto lastWriteTimeT = boost::filesystem::last_write_time(i->path());
+                           auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::utc_to_local(
+                              boost::posix_time::from_time_t(lastWriteTimeT));
 
                            shared::CDataContainer file;
-                           file.set("size", filesize);
+                           file.set("size", fileSize);
                            file.set("modificationDate", lastWriteTimePosix);
                            file.set("path", i->path().string());
                            file.set("url", i->path().filename().string());
@@ -140,15 +150,16 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::deleteBackup(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::deleteBackup(const std::vector<std::string>& parameters,
+                                                                                                const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() > 2)
                {
-                  std::string urlToDelete = parameters[2];
+                  const auto urlToDelete = parameters[2];
 
-                  auto backup = m_pathProvider->backupPath();
+                  const auto backup = m_pathProvider->backupPath();
                   if (boost::filesystem::exists(backup / urlToDelete))
                   {
                      boost::system::error_code ec;
@@ -172,22 +183,144 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::deleteAllBackups(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::deleteAllBackups(const std::vector<std::string>& parameters,
+                                                                                                    const std::string& requestContent) const
          {
             try
             {
-               auto backup = m_pathProvider->backupPath();
+               const auto backupPath = m_pathProvider->backupPath();
 
                boost::system::error_code ec;
-               std::string errors = "";
-               for (boost::filesystem::directory_iterator end_dir_it, it(backup); it != end_dir_it; ++it) 
+               std::string errors;
+               std::vector<shared::CDataContainer> files;
+               // Check all subdirectories in plugin path
+               for (boost::filesystem::directory_iterator i(backupPath); i != boost::filesystem::directory_iterator(); ++i)
                {
-                  if (!boost::filesystem::remove_all(it->path(), ec))
+                  if (boost::filesystem::is_regular_file(i->path()))
                   {
-                     errors += ec.message() + '\n';
+                     if (!boost::starts_with(i->path().filename().string(), "backup_"))
+                        continue;
+
+                     if (!boost::filesystem::remove(i->path(), ec))
+                        errors += ec.message() + '\n';
                   }
                }
-               if(errors.empty())
+
+               if (errors.empty())
+                  return CResult::GenerateSuccess();
+               return CResult::GenerateError(errors);
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in deleting backup data");
+            }
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::startPackLogs(const std::vector<std::string>& parameters,
+                                                                                                 const std::string& requestContent)
+         {
+            try
+            {
+               const boost::shared_ptr<task::ITask> task(boost::make_shared<task::packLogs::CPackLogs>(m_pathProvider));
+
+               std::string taskUid;
+               if (m_taskScheduler->runTask(task, taskUid))
+                  YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " << taskUid;
+               else
+                  YADOMS_LOG(error) << "Task : " << task->getName() << " fail to start";
+
+
+               shared::CDataContainer result;
+               result.set("taskId", taskUid);
+               return CResult::GenerateSuccess(result);
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in packing logs");
+            }
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::getLogs(const std::vector<std::string>& parameters,
+                                                                                           const std::string& requestContent) const
+         {
+            try
+            {
+               auto backupPath = m_pathProvider->backupPath();
+
+               if (!backupPath.empty() && boost::filesystem::exists(backupPath) && boost::filesystem::is_directory(backupPath))
+               {
+                  std::vector<shared::CDataContainer> files;
+
+                  for (boost::filesystem::directory_iterator i(backupPath); i != boost::filesystem::directory_iterator(); ++i)
+                  {
+                     if (i->path().filename().string() != "logs.zip")
+                        continue;
+
+                     if (boost::filesystem::is_regular_file(i->path()))
+                     {
+                        auto fileSize = boost::filesystem::file_size(i->path());
+
+                        const auto lastWriteTimeT = boost::filesystem::last_write_time(i->path());
+                        auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::utc_to_local(
+                           boost::posix_time::from_time_t(lastWriteTimeT));
+
+                        shared::CDataContainer file;
+                        file.set("size", fileSize);
+                        file.set("modificationDate", lastWriteTimePosix);
+                        file.set("path", i->path().string());
+                        file.set("url", i->path().filename().string());
+                        file.set("inprogress", boost::iends_with(i->path().filename().string(), ".inprogress"));
+                        files.push_back(file);
+                     }
+                  }
+
+                  shared::CDataContainer result;
+                  result.set("logs", files);
+                  return CResult::GenerateSuccess(result);
+               }
+               //backup do not exists
+               return CResult::GenerateError();
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in retrieving last logs data");
+            }
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::deleteAllLogs(const std::vector<std::string>& parameters,
+                                                                                                 const std::string& requestContent) const
+         {
+            try
+            {
+               const auto backupPath = m_pathProvider->backupPath();
+
+               boost::system::error_code ec;
+               std::string errors;
+               for (boost::filesystem::directory_iterator i(backupPath); i != boost::filesystem::directory_iterator(); ++i)
+               {
+                  if (boost::filesystem::is_regular_file(i->path()))
+                  {
+                     if (i->path().filename().string() != "logs.zip")
+                        continue;
+
+                     if (!boost::filesystem::remove(i->path(), ec))
+                        errors += ec.message() + '\n';
+                  }
+               }
+
+               if (errors.empty())
                   return CResult::GenerateSuccess();
                return CResult::GenerateError(errors);
             }
@@ -203,5 +336,3 @@ namespace web
       } //namespace service
    } //namespace rest
 } //namespace web 
-
-

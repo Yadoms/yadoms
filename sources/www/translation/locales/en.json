@@ -64,8 +64,15 @@
         "prepare": "Preparing backup...",
         "copyfiles": "Copying files...",
         "compress": "Compressing files...",
-        "clean": "Clening...",
+        "clean": "Cleaning...",
         "success": "Backup succeeded"
+      },
+      "packLogs": {
+        "prepare": "Preparing logs...",
+        "copyfiles": "Copying logs...",
+        "compress": "Compressing logs...",
+        "clean": "Cleaning...",
+        "success": "Logs packing succeeded"
       }
     },
     "database": {
@@ -794,7 +801,8 @@
             "delete": "Delete",
             "deleteConfirmTitle": "Confirm delete",
             "deleteConfirm": "Delete the backup ?"
-          }
+          },
+          "logsDownload": "Download logs"
         },
         "about": {
           "title": "About",

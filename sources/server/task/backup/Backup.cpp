@@ -50,10 +50,10 @@ namespace task
       {
          try
          {
-            boost::filesystem::path backupTempFolder = prepareBackup();
+            auto backupTempFolder = prepareBackup();
             if (backupFiles(backupTempFolder))
             {
-               boost::filesystem::path zipFile = makeZipArchive(backupTempFolder);
+               const auto zipFile = makeZipArchive(backupTempFolder);
                cleanup(backupTempFolder);
                OnProgressionUpdatedInternal(0, 100, 99.0f, 100.0f, i18n::CClientStrings::BackupSuccess);
             }
@@ -88,7 +88,7 @@ namespace task
       boost::filesystem::path CBackup::prepareBackup() const
       {
          //create "backup temp" folder
-         boost::filesystem::path backupTempFolder = boost::filesystem::temp_directory_path() / "yadomsBackup";
+         const auto backupTempFolder = boost::filesystem::temp_directory_path() / "yadomsBackup";
 
          //if folder exist, cleanup, else create if
          if (boost::filesystem::exists(backupTempFolder))
@@ -167,11 +167,11 @@ namespace task
       {
 
          //zip folder content (60 -> 99)
-         std::string dateAsIsoString = boost::posix_time::to_iso_string(shared::currentTime::Provider().now());
+         auto dateAsIsoString = boost::posix_time::to_iso_string(shared::currentTime::Provider().now());
          boost::replace_all(dateAsIsoString, ",", "_");
 
-         boost::filesystem::path zipFilenameFinal = m_pathProvider->backupPath() / (boost::format("backup_%1%.zip") % dateAsIsoString).str();
-         boost::filesystem::path zipFilename = m_pathProvider->backupPath() / (boost::format("backup_%1%.zip.inprogress") % dateAsIsoString).str();
+         auto zipFilenameFinal = m_pathProvider->backupPath() / (boost::format("backup_%1%.zip") % dateAsIsoString).str();
+         auto zipFilename = m_pathProvider->backupPath() / (boost::format("backup_%1%.zip.inprogress") % dateAsIsoString).str();
          try
          {
             //count files
