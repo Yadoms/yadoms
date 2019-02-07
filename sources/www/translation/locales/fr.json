@@ -72,7 +72,8 @@
         "copyfiles": "Copie des journaux...",
         "compress": "Compression des journaux...",
         "clean": "Nettoyage...",
-        "success": "Empaquetage des journaux réussi"
+        "success": "Empaquetage des journaux réussi",
+        "downloadError": "Téléchargement des logs échoué"
       }
     },
     "database": {

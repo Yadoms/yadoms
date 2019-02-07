@@ -72,7 +72,8 @@
         "copyfiles": "Copying logs...",
         "compress": "Compressing logs...",
         "clean": "Cleaning...",
-        "success": "Logs packing succeeded"
+        "success": "Logs packing succeeded",
+        "downloadError": "Fail to download logs"
       }
     },
     "database": {

@@ -202,80 +202,6 @@
       showLastBackupInformation();
    }
 
-
-   function showLastLogsDownloadInformation() {
-      MaintenanceManager.lastLogsDownloadInformation()
-         .done(function (infos) {
-
-            // //we remove all rows except header
-            // $("table#backup-list").find("tr:gt(0)").remove();
-
-            // if (infos.backups) {
-
-            //    //order backup by date desc
-            //    infos.backups = _.orderBy(infos.backups, ['modificationDate'], ['desc']);
-
-            //    $.each(infos.backups, function (index, info) {
-            //       if (info && info.url && info.path && info.size && info.modificationDate) {
-
-            //          var id = info.url.replace(/\./g, '_'); //replace all "." to "_"
-
-            //          var actionsBtns = '<div class="btn-group">' +
-            //             '<a class="btn btn-info lastBackupLink" href="backups/' + info.url +
-            //             '" data-i18n="[title]modals.dashboard.sub-windows.maintenance.backuplist.download">' +
-            //             '    <span class="glyphicon glyphicon-save "></span>' +
-            //             '</a>' +
-            //             '<button type="button" class="btn btn-danger btn-delete" id="' + id +
-            //             '" data-i18n="[title]modals.dashboard.sub-windows.maintenance.backuplist.delete"><span class="fa fa-trash"></span></button>' +
-            //             '</div>';
-
-            //          var line = '<tr>' +
-            //             '<td><span class="glyphicon ' + (!parseBool(info.inprogress) ?
-            //                'glyphicon-ok text-success' : 'glyphicon-remove text-warning') + '"></span></td>' +
-            //             '<td>' + DateTimeFormatter.isoDateToString(info.modificationDate) + '</td>' +
-            //             '<td>' + humanFileSize(info.size) + '</td>' +
-            //             '<td class="hidden-xs hidden-sm">' + info.path + '</td>' +
-            //             '<td>' + actionsBtns + '</td>' +
-            //             '</tr>';
-
-            //          $("table#backup-list").append(line);
-
-            //          $("#" + id).unbind('click').bind('click', function () {
-            //             Yadoms.modals.confirmation.loadAsync()
-            //                .done(function () {
-            //                   Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
-            //                      $.t(
-            //                         "modals.dashboard.sub-windows.maintenance.backuplist.deleteConfirmTitle"
-            //                      ),
-            //                      $.t(
-            //                         "modals.dashboard.sub-windows.maintenance.backuplist.deleteConfirm"
-            //                      ),
-            //                      function () {
-            //                         MaintenanceManager.deleteBackup(info.url)
-            //                            .done(function (f) {
-            //                               console.log("Backup of " + DateTimeFormatter.isoDateToString(
-            //                                     info.modificationDate) +
-            //                                  " deleted with success");
-            //                            })
-            //                            .fail(function (err) {
-            //                               console.error("Fail to delete the backup");
-            //                               console.error(err);
-            //                            })
-            //                            .always(function () {
-            //                               //refresh list
-            //                               showLastLogsDownloadInformation();
-            //                            });
-            //                      });
-            //                });
-            //          });
-            //       }
-            //    });
-            // } else {
-            //    //no backups found
-            // }
-         });
-   }
-
    function onLogsDownloadTaskUpdate(taskInformation) {
       var $line = $(".logs-action-progression");
       $line.find("div.progress-bar").css("width", taskInformation.progression + "%");
@@ -286,7 +212,6 @@
          $line.find("span.message").text("");
       }
 
-      var taskFinished = false;
       //we manage the end of the task
       var state = taskInformation.taskState || taskInformation.status; //from taskManager=>status, from webSocket notif)>taskState
 
@@ -296,21 +221,21 @@
             if (taskInformation.message) {
                notifyError($.t("core." + taskInformation.message));
             }
-            taskFinished = true;
          }
 
          if (state.toLowerCase() === "success") {
             if (taskInformation.message) {
                notifySuccess($.t("core." + taskInformation.message));
             }
-            taskFinished = true;
-            showLastLogsDownloadInformation();
-         }
 
-         if (taskFinished) {
-            //we remove the progress information and restore buttons
-            $line.find("div.progress-bar").css("width", "0");
-            $line.hide();
+            MaintenanceManager.lastLogsDownloadInformation()
+               .done(function (infos) {
+                  top.location.href = "backups/" + infos.logs.url;
+               })
+               .fail(function (error) {
+                  console.error(error);
+                  notifyError($.t("core.task.packLogs.downloadError"));
+               });
          }
       }
    }
@@ -332,8 +257,6 @@
                registerNotificationForLogsDownloadTask(data.taskId);
             });
       });
-
-      showLastLogsDownloadInformation();
    }
 
 

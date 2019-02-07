@@ -46,7 +46,7 @@ namespace task
             {
                auto zipFile = makeZipArchive(logsTempFolder);
                cleanup(logsTempFolder);
-               onProgressionUpdatedInternal(99.0f, i18n::CClientStrings::PackLogsSuccess);
+               onProgressionUpdatedInternal(100.0f, i18n::CClientStrings::PackLogsSuccess);
             }
             else
             {
@@ -67,11 +67,9 @@ namespace task
                YADOMS_LOG(error) << "Fail to packing logs after 3 times. Abort...";
                throw shared::exception::CException(innerMessage);
             }
-            else
-            {
-               YADOMS_LOG(warning) << "Fail to packing logs. Retry...";
-               doWork(currentTry + 1);
-            }
+
+            YADOMS_LOG(warning) << "Fail to packing logs. Retry...";
+            doWork(currentTry + 1);
          }
       }
 

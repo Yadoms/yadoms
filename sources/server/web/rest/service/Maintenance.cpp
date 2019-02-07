@@ -257,8 +257,6 @@ namespace web
 
                if (!backupPath.empty() && boost::filesystem::exists(backupPath) && boost::filesystem::is_directory(backupPath))
                {
-                  std::vector<shared::CDataContainer> files;
-
                   for (boost::filesystem::directory_iterator i(backupPath); i != boost::filesystem::directory_iterator(); ++i)
                   {
                      if (i->path().filename().string() != "logs.zip")
@@ -266,10 +264,10 @@ namespace web
 
                      if (boost::filesystem::is_regular_file(i->path()))
                      {
-                        auto fileSize = boost::filesystem::file_size(i->path());
+                        const auto fileSize = boost::filesystem::file_size(i->path());
 
                         const auto lastWriteTimeT = boost::filesystem::last_write_time(i->path());
-                        auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::utc_to_local(
+                        const auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::utc_to_local(
                            boost::posix_time::from_time_t(lastWriteTimeT));
 
                         shared::CDataContainer file;
@@ -278,15 +276,13 @@ namespace web
                         file.set("path", i->path().string());
                         file.set("url", i->path().filename().string());
                         file.set("inprogress", boost::iends_with(i->path().filename().string(), ".inprogress"));
-                        files.push_back(file);
+                        shared::CDataContainer result;
+                        result.set("logs", file);
+                        return CResult::GenerateSuccess(result);
                      }
                   }
-
-                  shared::CDataContainer result;
-                  result.set("logs", files);
-                  return CResult::GenerateSuccess(result);
                }
-               //backup do not exists
+               // Logs don't exist
                return CResult::GenerateError();
             }
             catch (std::exception& ex)
