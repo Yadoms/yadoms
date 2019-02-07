@@ -22,7 +22,7 @@ namespace task
          //------------------------------------------
          ///\brief   Destructor
          //------------------------------------------
-         virtual ~CBackup();
+         virtual ~CBackup() = default;
 
          // ITask implementation
          const std::string& getName() const override;
@@ -43,8 +43,9 @@ namespace task
          ///\param [in] total       The total count for current operation
          ///\param [in] currentPart The current total progression
          ///\param [in] totalPart   The final progression when current operation ends
+         ///\param [in] message     Optional message to display
          //------------------------------------------
-         void OnProgressionUpdatedInternal(int remaining, int total, float currentPart, float totalPart, const std::string& message = std::string()) const;
+         void onProgressionUpdatedInternal(int remaining, int total, float currentPart, float totalPart, const std::string& message = std::string()) const;
 
          //------------------------------------------
          ///\brief   Report event

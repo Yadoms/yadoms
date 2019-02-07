@@ -15,8 +15,10 @@ namespace web
          class CMaintenance : public IRestService
          {
          public:
-            explicit CMaintenance(boost::shared_ptr<const IPathProvider> pathProvider, boost::shared_ptr<database::IDatabaseRequester> databaseRequester, boost::shared_ptr<task::CScheduler> taskScheduler);
-            virtual ~CMaintenance();
+            explicit CMaintenance(boost::shared_ptr<const IPathProvider> pathProvider,
+                                  boost::shared_ptr<database::IDatabaseRequester> databaseRequester,
+                                  boost::shared_ptr<task::CScheduler> taskScheduler);
+            virtual ~CMaintenance() = default;
 
             // IRestService implementation
             void configureDispatcher(CRestDispatcher& dispatcher) override;
@@ -24,11 +26,22 @@ namespace web
 
             static const std::string& getRestKeyword();
 
-            boost::shared_ptr<shared::serialization::IDataSerializable> getDatabaseInformation(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> startBackup(const std::vector<std::string>& parameters, const std::string& requestContent);
-            boost::shared_ptr<shared::serialization::IDataSerializable> getBackups(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> deleteBackup(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> deleteAllBackups(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> getDatabaseInformation(const std::vector<std::string>& parameters,
+                                                                                               const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> startBackup(const std::vector<std::string>& parameters,
+                                                                                    const std::string& requestContent);
+            boost::shared_ptr<shared::serialization::IDataSerializable> getBackups(const std::vector<std::string>& parameters,
+                                                                                   const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> deleteBackup(const std::vector<std::string>& parameters,
+                                                                                     const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> deleteAllBackups(const std::vector<std::string>& parameters,
+                                                                                         const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> startPackLogs(const std::vector<std::string>& parameters,
+                                                                                      const std::string& requestContent);
+            boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::getLogs(const std::vector<std::string>& parameters,
+                                                                                              const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> deleteAllLogs(const std::vector<std::string>& parameters,
+                                                                                      const std::string& requestContent) const;
 
          private:
             static std::string m_restKeyword;
@@ -39,5 +52,3 @@ namespace web
       } //namespace service
    } //namespace rest
 } //namespace web 
-
-
