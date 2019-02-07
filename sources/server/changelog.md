@@ -1,5 +1,6 @@
 ### 2.2.0-beta.5
 * New feature #532 : Add readkeyworddetails function to script API
+* New feature #537 : Add a download logs function
 * Fix #522 : Try to backup elsewhere if not enough place in system temp folder
 * Fix wrong display for new devices
 
