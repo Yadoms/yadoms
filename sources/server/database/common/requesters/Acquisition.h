@@ -28,7 +28,7 @@ namespace database
             //--------------------------------------------------------------
             /// \Brief		   Destructor
             //--------------------------------------------------------------
-            virtual ~CAcquisition();
+            virtual ~CAcquisition() = default;
 
             // IAcquisitionRequester implementation
             boost::shared_ptr<entities::CAcquisition> saveData(int keywordId,
@@ -51,9 +51,11 @@ namespace database
             boost::shared_ptr<entities::CAcquisition> getAcquisitionByKeywordAndDate(int keywordId,
                                                                                      boost::posix_time::ptime time) override;
             std::vector<boost::tuple<boost::posix_time::ptime, std::string>> getKeywordData(int keywordId,
-                                                                                            boost::posix_time::ptime timeFrom = boost::posix_time::not_a_date_time,
-                                                                                            boost::posix_time::ptime timeTo = boost::posix_time::not_a_date_time,
-                                                                                            unsigned int limit = -1) override;
+                                                                                            boost::posix_time::ptime timeFrom = boost::posix_time::
+                                                                                               not_a_date_time,
+                                                                                            boost::posix_time::ptime timeTo = boost::posix_time::
+                                                                                               not_a_date_time,
+                                                                                            int limit = -1) override;
 
             std::vector<boost::shared_ptr<entities::CAcquisitionSummary>> getKeywordDataByDay(int keywordId,
                                                                                               boost::posix_time::ptime timeFrom,
@@ -88,26 +90,30 @@ namespace database
 
             //--------------------------------------------------------------
             /// \brief                    Get the data  by type (avg, min, max)
+            /// \param [in] type          Summary type
             /// \param [in] keywordId     keywordId Id
-            /// \param [in] timeFrom      The start date (optionnal)
-            /// \param [in] timeTo        The end date (optionnal)
+            /// \param [in] timeFrom      The start date (optional)
+            /// \param [in] timeTo        The end date (optional)
             /// \return                   CAcquisitionSummary data
             /// \throw                    CInvalidParameter if deviceId is unknown
             //--------------------------------------------------------------
             std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary>> getKeywordSummaryDataByType(
-               const entities::EAcquisitionSummaryType& type, int keywordId,
+               const entities::EAcquisitionSummaryType& type,
+               int keywordId,
                boost::posix_time::ptime timeFrom,
                boost::posix_time::ptime timeTo) const;
 
             //--------------------------------------------------------------
             /// \brief                    Get the data  by type (avg, min, max)
+            /// \param [in] type          Summary type
             /// \param [in] keywordId     keywordId Id
-            /// \param [in] timeFrom      The start date (optionnal)
-            /// \param [in] timeTo        The end date (optionnal)
+            /// \param [in] timeFrom      The start date (optional)
+            /// \param [in] timeTo        The end date (optional)
             /// \return                   CAcquisitionSummary data
             /// \throw                    CInvalidParameter if deviceId is unknown
             //--------------------------------------------------------------
-            std::string getHugeVectorKeywordSummaryDataByType(const entities::EAcquisitionSummaryType& type, int keywordId,
+            std::string getHugeVectorKeywordSummaryDataByType(const entities::EAcquisitionSummaryType& type,
+                                                              int keywordId,
                                                               boost::posix_time::ptime timeFrom,
                                                               boost::posix_time::ptime timeTo) const;
 

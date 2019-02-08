@@ -3,6 +3,7 @@
 * New feature #537 : Add a download logs function
 * Fix #522 : Try to backup elsewhere if not enough place in system temp folder
 * Fix wrong display for new devices
+* Fix #540 : Fix getKeywordData request when used without specifying limit
 
 
 ### 2.2.0-beta.4
