@@ -1,5 +1,6 @@
 ### 2.2.0-beta.5
 * Fix wrong display for new devices
+* Fix #540 : Fix getKeywordData request when used without specifying limit
 
 ### 2.2.0-beta.4
 

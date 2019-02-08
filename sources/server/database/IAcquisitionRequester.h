@@ -103,7 +103,7 @@ namespace database
       virtual std::vector<boost::tuple<boost::posix_time::ptime, std::string>> getKeywordData(int keywordId,
                                                                                               boost::posix_time::ptime timeFrom = boost::posix_time::not_a_date_time,
                                                                                               boost::posix_time::ptime timeTo = boost::posix_time::not_a_date_time,
-                                                                                              unsigned int limit = -1) = 0;
+                                                                                              int limit = -1) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Get the data  by hour (avg, min, max per hour)
