@@ -256,6 +256,16 @@ The datetime as ISO string YYYYMMDDTHHMMSS
 A datetime.time object
 
 
+### scriptUtilities.strToTimedelta
+#### Description
+Convert a duration string, into timedelta object
+#### Parameters
+##### timedeltaAsString (in)
+The duration as string HH:MM:SS
+#### Return
+A datetime.timedelta object
+
+
 ### scriptUtilities.strMatchDate
 #### Description
 Helper function which compare an ISO datetime string to a datetime object
