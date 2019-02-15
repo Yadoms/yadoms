@@ -556,10 +556,12 @@
             if (i !== -1){ // The device exist !
                var $row = getDeviceDomRow(updateDevice);
                if (deviceList[i].friendlyName === updateDevice.friendlyName && updateDevice.model === deviceList[i].model) {
-                  var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + device.friendlyName + "</span>";
-                  $row.find("td.device-friendlyName").html(friendlyName);
-                  var model = "<span>" + device.model + "</span>"
-                  $row.find("td.device-model").html(model);
+                  // we replace the new element into the list and sort
+                  deviceList[i].configuration = updateDevice.configuration;
+                  
+                  // Apply buttons clicks strategy
+                  addDeviceButtonsEvents($row, deviceList[i]);
+                  $row.off().one('click', function (event) { onClickDeviceRow(event, $row, deviceList[i]);} );
                   d.resolve();
                }else {
                   DeviceManager.getAttachedPlugin(device, true)
