@@ -42,6 +42,13 @@ def strToDateTime(dateTimeAsString):
    t = time.strptime(dateTimeAsString, "%Y%m%dT%H%M%S.%f")
    return datetime.datetime(t.tm_year, t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min)
    
+# Convert a duration string, into timedelta object
+# param [in] timedeltaAsString The duration as string HH:MM:SS
+# return A timedelta object
+def strToTimedelta(timedeltaAsString):
+   timeStruct = time.strptime(timedeltaAsString, "%H:%M:%S")
+   return datetime.timedelta(hours=timeStruct.tm_hour, minutes=timeStruct.tm_min, seconds=timeStruct.tm_sec)
+   
 # Helper function which compare an ISO datetime string to a datetime object
 # param [in] dateTimeAsString The datetime as ISO string YYYYMMDDTHHMMSS
 # param [in] dateTime The datetime object
