@@ -50,23 +50,28 @@ bool COpenZWaveNodeConfiguration::sendCommand(const std::string& keyword, const 
 
 shared::CDataContainer COpenZWaveNodeConfiguration::generateConfigurationSchema()
 {
+   std::map<int, std::string> orderedKeywordsByIndex;
+   for (auto j = m_configurationItems.begin(); j != m_configurationItems.end(); ++j)
+	   orderedKeywordsByIndex[j->second->getIndex()] = j->first;
+
    shared::CDataContainer result;
-   for (auto i = m_configurationItems.begin(); i != m_configurationItems.end(); ++i)
+   for (auto i = orderedKeywordsByIndex.begin(); i != orderedKeywordsByIndex.end(); ++i)
    {
-      if (i->second != NULL)
+	
+      if (m_configurationItems[i->second] != NULL)
       {
          try
          {
-            auto itemSchema = CConfigurationSchemaFactory::generateForHistorizer(i->second);
-            result.set(CConfigurationSchemaFactory::generateValidKeyName(i->first), itemSchema);
+            auto itemSchema = CConfigurationSchemaFactory::generateForHistorizer(m_configurationItems[i->second]);
+            result.set(CConfigurationSchemaFactory::generateValidKeyName(i->second), itemSchema);
          }
          catch (shared::exception::CNotSupported &)
          {
-            YADOMS_LOG(information) << "Fail to generate configuration schema for : " << i->first << " : historizer not supported" ;
+            YADOMS_LOG(information) << "Fail to generate configuration schema for : " << i->second << " : historizer not supported" ;
          }
          catch (std::exception & ex)
          {
-            YADOMS_LOG(information) << "Exception in generating configuration schema for : " << i->first << " : " << ex.what() ;
+            YADOMS_LOG(information) << "Exception in generating configuration schema for : " << i->second << " : " << ex.what() ;
          }
          
       }

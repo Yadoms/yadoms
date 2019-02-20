@@ -48,6 +48,11 @@ class RemoveDevice(unittest.TestCase):
       devicesTable = dashboard.devices.waitDevicesTable(self.browser)
       dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
       
+      print '  Test the modal open a new time after & cancel'
+      dashboard.devices.getRemoveDeviceButton(devicesTable, deviceId).click()
+      confirmRemoveModal = dashboard.devices.waitRemoveDeviceConfirmationModal(self.browser)
+      confirmRemoveModal.cancel()      
+      
 
    def test_confirmRemoveDevice(self):
       print '=== Remove device ==='

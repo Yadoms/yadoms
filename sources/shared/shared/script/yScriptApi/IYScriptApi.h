@@ -49,6 +49,14 @@ namespace shared
             virtual std::string readKeyword(int keywordId) const = 0;
 
             //-----------------------------------------------------
+            ///\brief Read keyword details (last state, properties...)
+            ///\param[in] keywordId The keyword ID we are interesting in
+            ///\return JSON string containig all details about the keyword. Some value can be missing (if no relevant).
+            ///\throw std::out_of_range if keyword not found
+            //-----------------------------------------------------
+            virtual std::string readKeywordDetails(int keywordId) const = 0;
+
+            //-----------------------------------------------------
             ///\brief Wait for a new acquisition on a keyword
             ///\param[in] keywordId The keyword ID to watch
             ///\param[in] timeout Timeout to wait.
@@ -82,6 +90,7 @@ namespace shared
             ///\return Returned value is a pair of the keyword Id who changed, and its new value. The keyword Id is kTimeout if timeout.
             ///\throw std::out_of_range if one of the keyword is not found
             //-----------------------------------------------------
+            // ReSharper disable once CppRedundantQualifier, needed by Swig for script API generation
             virtual shared::script::yScriptApi::CWaitForEventResult waitForEvent(const std::vector<int>& keywordIdList,
                                                                                  bool receiveDateTimeEvent,
                                                                                  const std::string& timeout = std::string()) const = 0;

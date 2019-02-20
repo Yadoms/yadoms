@@ -45,10 +45,11 @@ namespace database
          bool transactionIsAlreadyCreated() override;
          // [END] ITransactionalProvider implementation
 
-      // IDataBackup implementation
-      bool backupSupported() override;
-      void backupData(const std::string & backupFolder, ProgressFunc reporter) override;
-      // [END] IDataBackup implementation
+         // IDataBackup implementation
+         bool backupSupported() const override;
+         uintmax_t backupNeededSpace() const override;
+         void backupData(const std::string & backupFolder, ProgressFunc reporter) const override;
+         // [END] IDataBackup implementation
 
       private:
          void queryEntities(common::adapters::IResultAdapter* adapter, const common::CQuery& querytoExecute, PGconn* pConnection);
@@ -132,7 +133,7 @@ namespace database
 
          //--------------------------------------------------------------
          /// \Brief		         Obtain the last error message
-         /// \param [in] pConnection   The connection pointer to retreive the last error message
+         /// \param [in] pConnection   The connection pointer to retrieve the last error message
          /// \return                   The last error message above the specified connection
          //--------------------------------------------------------------
          std::string getLastErrorMessage(PGconn* pConnection) const;

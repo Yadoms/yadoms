@@ -71,7 +71,7 @@ namespace shared
    ///               
    ///               //add it to main container
    ///               test.set("config1", subContainer);
-   ///               //retreive container
+   ///               //retrieve container
    ///               shared::CDataContainer subt = test.get<shared::CDataContainer>("config1");
    ///               //direct access to a sub container data
    ///               double d = test.get<double>("config1.double1");

@@ -38,5 +38,25 @@ namespace shared
 
          return finalPath;
       }
+
+	  uintmax_t CFilesystem::directorySize(const boost::filesystem::path& directory,
+										            bool recurse)
+	  {
+		  uintmax_t size = 0;
+
+		  const auto path = directory;
+		  for (auto itDir = boost::filesystem::directory_iterator(path); itDir != boost::filesystem::directory_iterator(); ++itDir)
+		  {
+			  if (boost::filesystem::is_directory(*itDir))
+			  {
+				  if (recurse)
+					  size += directorySize(*itDir, true);
+
+				  continue;
+			  }
+			  size += boost::filesystem::file_size(*itDir);
+		  }
+		  return size;
+	  }
    } // namespace tools 
 } // namespace shared

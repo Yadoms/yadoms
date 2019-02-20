@@ -24,7 +24,7 @@ namespace web
          //--------------------------------------   
          ///\brief  Destructor
          //--------------------------------------   
-         virtual ~CRestRequestHandler();
+         virtual ~CRestRequestHandler() = default;
 
          // Poco::Net::HTTPRequestHandler implementation
          void handleRequest(Poco::Net::HTTPServerRequest& request,
@@ -59,7 +59,7 @@ namespace web
          //--------------------------------------   
          ///\brief  The keyword which identifies a rest URL
          //-------------------------------------- 
-         std::string m_restBaseKeyword;
+         const std::string m_restBaseKeyword;
 
          //--------------------------------------   
          ///\brief  List of all registered rest services

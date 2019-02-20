@@ -5,14 +5,14 @@
 function isOdd(num) {return num % 2;}
  
 function isBoolVariable(keywordInfo) {
-   if ((keywordInfo) && (keywordInfo.type === "Bool"))
+   if ((keywordInfo) && (keywordInfo.dataType === "Bool"))
       return true;
    else
       return false;
 };
  
 function isEnumVariable (keywordInfo) {
-   if ((keywordInfo) && (keywordInfo.type === "Enum"))
+   if ((keywordInfo) && (keywordInfo.dataType === "Enum"))
       return true;
    else
       return false;
@@ -193,7 +193,7 @@ function createAxis (index,         // index of the plot
   
   // treat oneAxis configuration option => axis name and color
   if (parseBool(configuration.oneAxis.checkbox)) {
-     yAxisName = 'axis' + seriesUuid[0];
+     yAxisName = 'axis0';
   }
   else {
      yAxisName = 'axis' + seriesUuid[index];
@@ -218,13 +218,7 @@ function createAxis (index,         // index of the plot
           if (isOdd(index))
               align = 'left';
 
-          var unit="";
-          try {
-             unit = $.t(units);
-          }
-          catch(error){
-             console.log ("unit is empty for keyword ", device.content.source.keywordId);
-          }
+          var unit = $.t(units);
 
           chart.addAxis({
               // new axis
@@ -237,7 +231,7 @@ function createAxis (index,         // index of the plot
                       color: colorAxis
                   },
                   formatter: function () {
-                     if (this.chart.keyword[index].type === "Enum") {  // Return the translated enum value
+                     if (this.chart.keyword[index].dataType === "Enum") {  // Return the translated enum value
                         return this.chart.keyword[index].typeInfo.translatedValues[this.value];
                      }
                      else
@@ -248,10 +242,10 @@ function createAxis (index,         // index of the plot
           }, false, false, false);
 
       } catch (error) {
-          console.log('Fail to create axis (for index = ' + index + ') : ' + error);
+          console.log('Fail to create axis for keyword = ' + index + ' : ' + error);
       }
   } else {
-      console.log('Axis already exists (for index = ' + index + ')');
+      console.log('Axis already exists for keyword = ' + index);
   }
 
   if ((parseBool(configuration.oneAxis.checkbox))) {
@@ -320,7 +314,7 @@ adaptValuesAndUnit = function (values, range, baseUnit, callback) {
    adaptRange = function(rangeToAdapt, coeff) {
       var newRange = [];
       $.each(rangeToAdapt, function (index,value) {
-         newArray.push([value[0],parseFloat(value[1])*coeff,parseFloat(value[2])*coeff]);
+         newRange.push([value[0],parseFloat(value[1])*coeff,parseFloat(value[2])*coeff]);
       });
       return newRange;
    };

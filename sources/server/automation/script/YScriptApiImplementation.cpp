@@ -94,6 +94,28 @@ namespace automation
          return m_keywordAccessLayer->getKeywordLastData(keywordId);
       }
 
+      std::string CYScriptApiImplementation::readKeywordDetails(int keywordId) const
+      {
+         assertExistingKeyword(keywordId);
+
+         // Create a custom container to mastering content (put only value potentially needed by a script)
+         shared::CDataContainer container;
+         const auto keyword = m_keywordAccessLayer->getKeyword(keywordId);
+         container.set("Id", keyword->Id());
+         container.set("DeviceId", keyword->DeviceId());
+         container.set("CapacityName", keyword->CapacityName());
+         container.set("AccessMode", keyword->AccessMode());
+         container.set("FriendlyName", keyword->FriendlyName());
+         container.set("Type", keyword->Type());
+         container.set("Units", keyword->Units());
+         container.set("TypeInfo", keyword->TypeInfo());
+         container.set("Measure", keyword->Measure());
+         container.set("Details", keyword->Details());
+         container.set("LastAcquisitionValue", keyword->LastAcquisitionValue());
+         container.set("LastAcquisitionDate", keyword->LastAcquisitionDate());
+         return container.serialize();
+      }
+
       boost::shared_ptr<notification::acquisition::CNotification> CYScriptApiImplementation::waitForAction(boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification>> action,
                                                                                                            const std::string& timeout)
       {

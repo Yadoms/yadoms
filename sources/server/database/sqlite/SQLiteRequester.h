@@ -47,8 +47,9 @@ namespace database
          // [END] ITransactionalProvider implementation
 
          // IDataBackup implementation
-         bool backupSupported() override;
-         void backupData(const std::string & backupFolder, ProgressFunc reporter) override;
+         bool backupSupported() const override;
+         uintmax_t backupNeededSpace() const override;
+         void backupData(const std::string & backupFolder, ProgressFunc reporter) const override;
          // [END] IDataBackup implementation
 
       protected:

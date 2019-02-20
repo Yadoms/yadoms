@@ -79,7 +79,7 @@ namespace web
                   collection.set(m_restKeyword, eventList);
                   return CResult::GenerateSuccess(collection);
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive Id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve Id in url");
             }
             catch (std::exception& ex)
             {
@@ -105,7 +105,7 @@ namespace web
                   collection.set(m_restKeyword, eventList);
                   return CResult::GenerateSuccess(collection);
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive Id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve Id in url");
             }
             catch (std::exception& ex)
             {

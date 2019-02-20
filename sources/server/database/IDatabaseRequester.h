@@ -45,7 +45,7 @@ namespace database
       //--------------------------------------------------------------
       /// \brief		      execute a single statement (create, update, delete) which returns the number of affected lines
       /// \param [in]	   querytoExecute The query (with vaargs)
-      /// \param [in]	   throwIfFails If true, generate an exception when it fails; else return -1 (= number of afected rows)
+      /// \param [in]	   throwIfFails If true, generate an exception when it fails; else return -1 (= number of affected rows)
       /// \return 	      the number of affected lines
       //--------------------------------------------------------------  
       virtual int queryStatement(const common::CQuery& querytoExecute,
@@ -132,7 +132,9 @@ namespace database
       // [END] ITransactionalProvider implementation
 
       // IDataBackup implementation
-      void backupData(const std::string & backupFolder, ProgressFunc reporter) override = 0;
+      bool backupSupported() const override = 0;
+      uintmax_t backupNeededSpace() const override = 0;
+      void backupData(const std::string & backupFolder, ProgressFunc reporter) const override = 0;
       // [END] IDataBackup implementation
 
       // IDatabaseEngine implementation

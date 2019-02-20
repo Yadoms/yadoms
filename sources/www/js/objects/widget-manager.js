@@ -240,11 +240,6 @@ WidgetManager.updateToServer = function (widget) {
 WidgetManager.updateWidgetConfiguration_ = function (widget) {
     var d = new $.Deferred();
     try {
-        //Update the widget title if displayed
-        if (widget.displayTitle)
-            widget.$gridWidget.find('div.panel-widget-title').text(widget.title);
-        else
-            widget.$gridWidget.find('div.panel-widget-title').text("");
         //we clear the listened device list before call the configuration
         widget.listenedKeywords = [];
         widget.getlastValue = [];
@@ -254,6 +249,13 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
         if (!isNullOrUndefined(widget.viewModel.configurationChanged)) {
             var defferedResult = widget.viewModel.configurationChanged();
         }
+       
+        //Update the widget title if displayed
+        if (widget.displayTitle)
+            widget.$gridWidget.find('div.panel-widget-title').text(widget.title);
+        else
+            widget.$gridWidget.find('div.panel-widget-title').text("");        
+        
         //we manage answer if it is a promise or not
         defferedResult = defferedResult || new $.Deferred().resolve();
         defferedResult
