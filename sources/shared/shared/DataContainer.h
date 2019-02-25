@@ -1615,7 +1615,7 @@ namespace shared
       typename std::vector<std::string>::const_iterator i;
       for (i = values.begin(); i != values.end(); ++i)
       {
-         rapidjson::Value val(i->c_str(), i->size());
+         rapidjson::Value val(i->c_str(), i->size(), allocator);
          v.PushBack(val, allocator);
       }
    }

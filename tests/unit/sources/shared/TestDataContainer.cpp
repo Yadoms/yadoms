@@ -3,6 +3,7 @@
 
 // Includes needed to compile tested classes
 #include "../../../../sources/shared/shared/DataContainer.h"
+#include "../../../../sources/server/web/rest/Result.h"
 
 BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
@@ -166,7 +167,18 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       for (unsigned int i = 0; i < vdsh.size(); ++i)
          BOOST_CHECK_EQUAL(*(vdsh[i].get()) == vdsh2bis[i], true) ;
 
-      //check vector of CDataContainer
+	  //check vector of std::string
+	  std::vector<std::string> vstr;
+	  for (unsigned int i = 0; i < 10; ++i)
+		  vstr.push_back( (boost::format("string %1%")%i).str() );
+	  test.set("vectorstring", vstr);
+
+	  auto vstr2 = test.get<std::vector<std::string>>("vectorstring");
+	  BOOST_CHECK_EQUAL(vstr.size(), vstr2.size());
+	  for (unsigned int i = 0; i < vstr2.size(); ++i)
+		  BOOST_CHECK_EQUAL(vstr[i] == vstr2[i], true);
+	  	  
+	  //check vector of CDataContainer
 
       shared::CDataContainer cond1;
       cond1.set("is.keyword", 8);
@@ -204,6 +216,58 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
       BOOST_CHECK_EQUAL_COLLECTIONS(allconditions.begin(), allconditions.end(), getAllCond.begin(), getAllCond.end()) ;
    }
+
+   boost::shared_ptr<shared::serialization::IDataSerializable> maketest(const int testcount)
+   {
+	   shared::CDataContainer result;
+	   std::vector<std::string> pluginCollection;
+
+	   for (unsigned int i = 0; i < testcount; ++i)
+		   pluginCollection.push_back((boost::format("plugin %1%") % i).str());
+	   
+	   result.set("plugins", pluginCollection);
+
+	   return web::rest::CResult::GenerateSuccess(result);
+   }
+
+   BOOST_AUTO_TEST_CASE(DataCopy)
+   {
+	   shared::CDataContainer dc;
+	   const unsigned int testcount = 10;
+
+	   //ensure braces are used => in that case, inner container will be deleted to brace close
+	   {
+		   //check vector of std::string
+		   shared::CDataContainer test;
+		   std::vector<std::string> vstr;
+		   for (unsigned int i = 0; i < testcount; ++i)
+			   vstr.push_back((boost::format("string %1%") % i).str());
+		   test.set("vectorstring", vstr);
+		   dc = test;
+	   } 
+
+	   auto vstr2 = dc.get<std::vector<std::string>>("vectorstring");
+	   BOOST_CHECK_EQUAL(vstr2.size(), testcount);
+	   for (unsigned int i = 0; i < vstr2.size(); ++i)
+	   {
+		   std::string loc = (boost::format("string %1%") % i).str();
+		   BOOST_CHECK_EQUAL(vstr2[i] == loc, true);
+	   }
+
+	   //the following test illustrate a bad string allocation (normallydatacontainer copy should keep allocation; 
+	   //but if a string is copied into radpjson value without allocator, then the string is kept to a simple reference
+	   //and this test fails if string are destroyed
+	   auto k = maketest(testcount);
+	   shared::CDataContainer dc2(k->serialize());
+	   auto vstr = dc2.get<std::vector<std::string>>("data.plugins");
+	   BOOST_CHECK_EQUAL(vstr.size(), testcount);
+	   for (unsigned int i = 0; i < vstr.size(); ++i)
+	   {
+		   std::string loc = (boost::format("plugin %1%") % i).str();
+		   BOOST_CHECK_EQUAL(vstr[i] == loc, true);
+	   }
+   }
+
 
    BOOST_AUTO_TEST_CASE(Serialization)
    {

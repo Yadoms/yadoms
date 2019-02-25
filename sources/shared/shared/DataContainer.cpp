@@ -28,19 +28,19 @@ namespace shared
 	{
 		m_tree.SetObject();
 		rapidjson::Document::AllocatorType& a = m_tree.GetAllocator();
-		m_tree.CopyFrom(d, a);
+		m_tree.CopyFrom(d, a, true);
 	}
 
 	CDataContainer::CDataContainer(rapidjson::Value * d)
 	{
 		m_tree.SetObject();
-		m_tree.CopyFrom(*d, m_tree.GetAllocator());
+		m_tree.CopyFrom(*d, m_tree.GetAllocator(), true);
 	}
 
 	CDataContainer::CDataContainer(rapidjson::Document & d)
 	{
 		m_tree.SetObject();
-		m_tree.CopyFrom(d, m_tree.GetAllocator());
+		m_tree.CopyFrom(d, m_tree.GetAllocator(), true);
 	}
 
 
@@ -62,14 +62,14 @@ namespace shared
 	CDataContainer::CDataContainer(const CDataContainer & initialData)
 	{
 		m_tree.SetObject();
-		m_tree.CopyFrom(initialData.m_tree, m_tree.GetAllocator());
+		m_tree.CopyFrom(initialData.m_tree, m_tree.GetAllocator(), true);
 	}
 
 
 	CDataContainer::CDataContainer(const rapidjson::Document & initialTree)
 	{
 		m_tree.SetObject();
-		m_tree.CopyFrom(initialTree, m_tree.GetAllocator());
+		m_tree.CopyFrom(initialTree, m_tree.GetAllocator(), true);
 	}
 
 	CDataContainer & CDataContainer::operator =(const CDataContainer & rhs)
@@ -183,7 +183,7 @@ namespace shared
 	void CDataContainer::extractContent(CDataContainer & container) const
 	{
 		boost::lock_guard<boost::mutex> lock(m_treeMutex);
-		container.m_tree.CopyFrom(m_tree, container.m_tree.GetAllocator());
+		container.m_tree.CopyFrom(m_tree, container.m_tree.GetAllocator(), true);
 	}
 
 	void CDataContainer::fillFromContent(const CDataContainer & initialData)
@@ -207,7 +207,7 @@ namespace shared
 	void CDataContainer::initializeWith(const CDataContainer &rhs)
 	{
 		boost::lock_guard<boost::mutex> lock(m_treeMutex);
-		m_tree.CopyFrom(rhs.m_tree, m_tree.GetAllocator());
+		m_tree.CopyFrom(rhs.m_tree, m_tree.GetAllocator(), true);
 	}
 
 
