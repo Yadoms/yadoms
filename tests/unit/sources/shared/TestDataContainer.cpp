@@ -217,7 +217,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       BOOST_CHECK_EQUAL_COLLECTIONS(allconditions.begin(), allconditions.end(), getAllCond.begin(), getAllCond.end()) ;
    }
 
-   boost::shared_ptr<shared::serialization::IDataSerializable> maketest(const int testcount)
+   boost::shared_ptr<shared::serialization::IDataSerializable> maketest(const unsigned int testcount)
    {
 	   shared::CDataContainer result;
 	   std::vector<std::string> pluginCollection;
@@ -228,6 +228,21 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 	   result.set("plugins", pluginCollection);
 
 	   return web::rest::CResult::GenerateSuccess(result);
+   }
+
+
+   BOOST_AUTO_TEST_CASE(RapidJsonValueSlash)
+   {
+	   //this test check that keys and values containing slash are correctly handled
+	   const std::string key = "French/France";
+	   const std::string value = "Euros/Dollars";
+
+	   shared::CDataContainer dc;
+	   dc.set(key, value);
+
+	   BOOST_CHECK_EQUAL(dc.exists("French"), false);
+	   BOOST_CHECK_EQUAL(dc.exists(key), true);
+	   BOOST_CHECK_EQUAL(dc.get<std::string>(key), value);
    }
 
    BOOST_AUTO_TEST_CASE(DataCopy)
@@ -254,8 +269,8 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 		   BOOST_CHECK_EQUAL(vstr2[i] == loc, true);
 	   }
 
-	   //the following test illustrate a bad string allocation (normallydatacontainer copy should keep allocation; 
-	   //but if a string is copied into radpjson value without allocator, then the string is kept to a simple reference
+	   //the following test illustrate a bad string allocation (normally datacontainer copy should keep allocation; 
+	   //but if a string is copied into rapidjson value without allocator, then the string is kept as a simple reference
 	   //and this test fails if string are destroyed
 	   auto k = maketest(testcount);
 	   shared::CDataContainer dc2(k->serialize());

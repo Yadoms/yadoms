@@ -228,11 +228,18 @@ namespace shared
 
 	std::string CDataContainer::generatePath(const std::string & parameterName, const char pathChar) const
 	{
-		std::string res = "/";
+		std::string res = "/"; //pointer is still starting with /
 		int c = parameterName.size();
 		const char * s = parameterName.c_str();
 		for (int i = 0; i < c; ++i)
-			res += (s[i] == pathChar) ? '/' : s[i];
+		{
+			//the slash is used as path separator in rapidjson
+			//to use it in keys, it must be replaced by ~1 
+			if (s[i] == '/')
+				res += "~1";
+			else
+				res += (s[i] == pathChar) ? '/' : s[i];
+		}
 		return res;
 	}
 
