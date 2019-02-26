@@ -210,7 +210,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       }
       catch (CProtocolException& e)
       {
-         YADOMS_LOG(error) << "Error communicationg with EnOcean dongle " << e.what();
+         YADOMS_LOG(error) << "Error communicating with EnOcean dongle " << e.what();
          protocolErrorProcess();
       }
    }
@@ -230,6 +230,8 @@ void CEnOcean::loadAllDevices()
          const CProfileHelper profileHelper(deviceConfiguration.get<std::string>("profile.activeSection"));
          const auto device = createDevice(deviceId,
                                           profileHelper);
+
+         //TODO : Mettre à jour la liste des KW si elle a changé ?
 
          m_devices[deviceId] = device;
       }
@@ -398,7 +400,7 @@ void CEnOcean::processDeviceConfiguration(const std::string& deviceId,
       auto selectedProfile = CProfileHelper(configuration.get<std::string>("profile.activeSection"));
       auto manufacturer = configuration.get<std::string>("manufacturer");
 
-      YADOMS_LOG(information) << "Device \"" << deviceId << "\" is configurated as " << selectedProfile.profile();
+      YADOMS_LOG(information) << "Device \"" << deviceId << "\" is configured as " << selectedProfile.profile();
 
       if (m_devices.find(deviceId) == m_devices.end() || m_devices[deviceId]->profile() != selectedProfile.profile())
       {

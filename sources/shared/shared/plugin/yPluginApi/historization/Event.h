@@ -23,7 +23,6 @@ namespace shared
                ///\brief                     Constructor
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] accessMode      The access mode
-               ///\param[in] measureType     The measure type (normally kAbsolute)
                //-----------------------------------------------------
                explicit CEvent(const std::string& keywordName,
                                const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGetSet);

@@ -9,9 +9,10 @@ CProfile_D2_01_08::CProfile_D2_01_08(const std::string& deviceId,
    : m_deviceId(deviceId),
      m_channel(boost::make_shared<yApi::historization::CSwitch>("Channel", yApi::EKeywordAccessMode::kGetSet)),
      m_loadEnergy(boost::make_shared<yApi::historization::CEnergy>("Load energy")),
+     m_resetLoadEnergy(boost::make_shared<yApi::historization::CEvent>("ResetLoadEnergy")),
      m_loadPower(boost::make_shared<yApi::historization::CPower>("Load power")),
      m_overCurrent(boost::make_shared<yApi::historization::CSwitch>("OverCurrent", yApi::EKeywordAccessMode::kGet)),
-     m_historizers({m_channel, m_loadEnergy, m_loadPower, m_overCurrent}),
+     m_historizers({m_channel, m_loadEnergy, m_resetLoadEnergy, m_loadPower, m_overCurrent}),
      m_outputChannel(CProfile_D2_01_Common::kOutputChannel1)
 {
 }
@@ -70,11 +71,12 @@ void CProfile_D2_01_08::readInitialState(const std::string& senderId,
                                                        CProfile_D2_01_Common::kQueryPower);
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_08::states(unsigned char rorg,
-                                                                                                   const boost::dynamic_bitset<>& data,
-                                                                                                   const boost::dynamic_bitset<>& status,
-                                                                                                   const std::string& senderId,
-                                                                                                   boost::shared_ptr<IMessageHandler> messageHandler) const
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_08::states(
+   unsigned char rorg,
+   const boost::dynamic_bitset<>& data,
+   const boost::dynamic_bitset<>& status,
+   const std::string& senderId,
+   boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    // This device supports several RORG messages
    // We just use the VLD telegram
@@ -106,8 +108,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
          if (std::find(historizers.begin(), historizers.end(), m_loadPower) != historizers.end())
          {
-            // Power is configured to be received automaticaly.
-            // As we can not receive both data (power + energy) automaticaly,
+            // Power is configured to be received automatically.
+            // As we can not receive both data (power + energy) automatically,
             // we ask for Energy just after receiving Power.
             CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
                                                                 senderId,
@@ -128,16 +130,29 @@ void CProfile_D2_01_08::sendCommand(const std::string& keyword,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   if (keyword != m_channel->getKeyword())
-      return;
+   if (keyword == m_channel->getKeyword())
+   {
+      m_channel->setCommand(commandBody);
 
-   m_channel->setCommand(commandBody);
-
-   CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
-                                                                senderId,
-                                                                m_deviceId,
-                                                                m_outputChannel,
-                                                                m_channel->get());
+      CProfile_D2_01_Common::sendActuatorSetOutputCommandSwitching(messageHandler,
+                                                                   senderId,
+                                                                   m_deviceId,
+                                                                   m_outputChannel,
+                                                                   m_channel->get());
+   }
+   else if (keyword == m_resetLoadEnergy->getKeyword())
+   {
+      // Resetting the load energy counter is done by sending an Actuator Set Measurement command
+      CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
+                                                               senderId,
+                                                               m_deviceId,
+                                                               m_outputChannel,
+                                                               false,
+                                                               true,
+                                                               0,
+                                                               0);
+      //TODO vérifier que 0 pour minEnergyMeasureRefreshTime et maxEnergyMeasureRefreshTime ne modifie pas leurs valeurs
+   }
 }
 
 void CProfile_D2_01_08::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
@@ -169,7 +184,8 @@ void CProfile_D2_01_08::sendConfiguration(const shared::CDataContainer& deviceCo
    if (minEnergyMeasureRefreshTime > maxEnergyMeasureRefreshTime)
    {
       std::ostringstream oss;
-      oss << "Min refresh time (" << minEnergyMeasureRefreshTime << ") is over max refresh time (" << maxEnergyMeasureRefreshTime << ") for device " << m_deviceId << " (" << profile() << ")";
+      oss << "Min refresh time (" << minEnergyMeasureRefreshTime << ") is over max refresh time (" << maxEnergyMeasureRefreshTime << ") for device "
+         << m_deviceId << " (" << profile() << ")";
       YADOMS_LOG(error) << oss.str();
       throw std::logic_error(oss.str());
    }
@@ -181,6 +197,7 @@ void CProfile_D2_01_08::sendConfiguration(const shared::CDataContainer& deviceCo
                                                             m_deviceId,
                                                             m_outputChannel,
                                                             true,
+                                                            false,
                                                             minEnergyMeasureRefreshTime,
                                                             maxEnergyMeasureRefreshTime);
 }
