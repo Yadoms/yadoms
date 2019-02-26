@@ -2,11 +2,11 @@
 #include "DataContainer.h"
 #include <shared/exception/JSONParse.hpp>
 #include "exception/EmptyResult.hpp"
-#include "rapidJson/writer.h"
-#include "rapidJson/istreamwrapper.h"
-#include "rapidJson/ostreamwrapper.h"
-#include "rapidJson/prettywriter.h"
-#include "rapidJson/pointer.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/istreamwrapper.h"
+#include "rapidjson/ostreamwrapper.h"
+#include "rapidjson/prettywriter.h"
+#include "rapidjson/pointer.h"
 
 namespace shared
 {
