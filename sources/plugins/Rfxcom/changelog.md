@@ -1,3 +1,6 @@
+### 1.1.6-alpha.1
+* Fix #534 : Add temporary logs
+
 ### 1.1.5
 * Fix #524 : Add label to new protocols (MCZ and FunkBus)
 
