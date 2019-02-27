@@ -231,7 +231,7 @@ void CEnOcean::loadAllDevices()
          const auto device = createDevice(deviceId,
                                           profileHelper);
 
-         //TODO : Mettre à jour la liste des KW si elle a changé ?
+         createNewKeywords(deviceId, device);
 
          m_devices[deviceId] = device;
       }
@@ -244,6 +244,16 @@ void CEnOcean::loadAllDevices()
          // Don't add a wrong configured device to the m_devices list
          YADOMS_LOG(error) << "Error loading device from database : device " << deviceId << " is malformed (" << e.what() << "), will be ignored";
       }
+   }
+}
+
+void CEnOcean::createNewKeywords(const std::string& deviceName,
+                                 const boost::shared_ptr<IType>& loadedDevice) const
+{
+   for (const auto historizer : loadedDevice->allHistorizers())
+   {
+      if (!m_api->keywordExists(deviceName, historizer->getKeyword()))
+         m_api->declareKeyword(deviceName, historizer);
    }
 }
 
