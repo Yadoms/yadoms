@@ -1380,7 +1380,7 @@ namespace shared
          if (found->IsArray())
          {
 			 std::transform(found->GetArray().begin(), found->GetArray().end(), std::back_inserter(result),
-				 [this](rapidjson::Value &v) -> T { return this->convert<T>(&v); });
+				 [this](auto &v) -> T { return this->convert<T>(&v); });
          }
          else
             throw exception::COutOfRange(parameterName + " is not an array");
@@ -1406,7 +1406,7 @@ namespace shared
          if (found->IsArray())
          {
 			 std::transform(found->GetArray().begin(), found->GetArray().end(), std::back_inserter(result),
-				 [](rapidjson::Value &v) -> shared::CDataContainer { return shared::CDataContainer(v); });
+				 [](auto &v) -> shared::CDataContainer { return shared::CDataContainer(v); });
          }
          else
             throw exception::COutOfRange(parameterName + " is not an array");
@@ -1432,7 +1432,7 @@ namespace shared
          if (found->IsArray())
          {
 			 std::transform(found->GetArray().begin(), found->GetArray().end(), std::back_inserter(result),
-				 [](rapidjson::Value &v) -> T { return (T)v.GetInt(); });
+				 [](auto &v) -> T { return (T)v.GetInt(); });
          }
          else
             throw exception::COutOfRange(parameterName + " is not an array");
