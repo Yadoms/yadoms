@@ -346,6 +346,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
          "\"BoolParameter\": \"true\","
          "\"DecimalParameter\": \"18.4\","
          "\"EnumParameter\": \"12\","
+         "\"ArrayParameter\": [1,2,3,4],"
          "\"EnumAsStringParameter\": \"EnumValue1\","
          "\"IntParameter\": \"42\","
          "\"Serial port\": \"tty0\","
@@ -372,8 +373,12 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       //check child existance
       BOOST_CHECK_EQUAL(cfg.containsChild(""), true) ;
       BOOST_CHECK_EQUAL(cfg.containsChild("MySection"), true) ;
+      BOOST_CHECK_EQUAL(cfg.containsChild("ArrayParameter"), false) ;
       BOOST_CHECK_EQUAL(cfg.containsChild("BoolParameter"), false) ;
       BOOST_CHECK_EQUAL(cfg.containsChild("MySection.SubIntParameter"), false) ;
+
+	  BOOST_CHECK_EQUAL(cfg.containsChildArray("ArrayParameter"), true);
+	  BOOST_CHECK_EQUAL(cfg.containsChildArray("MySection"), false);
 
       //check value existance
       BOOST_CHECK_EQUAL(cfg.containsValue(""), false) ;
