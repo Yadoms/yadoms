@@ -38,7 +38,7 @@ namespace web
                                                                                          const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> startPackLogs(const std::vector<std::string>& parameters,
                                                                                       const std::string& requestContent);
-            boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::getLogs(const std::vector<std::string>& parameters,
+            boost::shared_ptr<shared::serialization::IDataSerializable> getLogs(const std::vector<std::string>& parameters,
                                                                                               const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> deleteAllLogs(const std::vector<std::string>& parameters,
                                                                                       const std::string& requestContent) const;
