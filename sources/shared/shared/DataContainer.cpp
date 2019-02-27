@@ -124,6 +124,15 @@ namespace shared
 		return false;
 	}
 
+	bool CDataContainer::containsChildArray(const std::string& parameterName, const char pathChar) const
+	{
+		boost::lock_guard<boost::mutex> lock(m_treeMutex);
+		rapidjson::Value* found = findValue(parameterName, pathChar);
+		if (found)
+			return !found->IsNull() && found->IsArray();
+		return false;
+	}
+
 	bool CDataContainer::containsValue(const std::string& parameterName, const char pathChar) const
 	{
 		boost::lock_guard<boost::mutex> lock(m_treeMutex);

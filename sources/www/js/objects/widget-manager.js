@@ -242,7 +242,7 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
     try {
         //we clear the listened device list before call the configuration
         widget.listenedKeywords = [];
-        widget.getlastValue = [];
+        widget.keywordsToGetlastValue = [];
         // Update widget specific values
         var defferedResult;
         widget.viewModel.widgetApi.setState(widgetStateEnum.ConfigurationChanged);

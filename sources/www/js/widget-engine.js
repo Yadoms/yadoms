@@ -411,8 +411,8 @@ function updateWidgetsPolling(pageId) {
     } else {
        $.each(pageId.widgets, function (widgetIndex, widget) {
            //we ask which devices are needed for this widget instance
-           if (!isNullOrUndefinedOrEmpty(widget.getlastValue)){
-              getLastValues = getLastValues.concat(widget.getlastValue);
+           if (!isNullOrUndefinedOrEmpty(widget.keywordsToGetlastValue)){
+              getLastValues = getLastValues.concat(widget.keywordsToGetlastValue);
            }
            if (!isNullOrUndefinedOrEmpty(widget.additionalInfo)){
               getAdditionInfo = getAdditionInfo.concat(widget.additionalInfo);

@@ -10,7 +10,6 @@
 #include "Field.hpp"
 
 #define RAPIDJSON_HAS_STDSTRING 1
-#define RAPIDJSON_ASSERT(x) {if(!(x)) throw shared::exception::CException("Assert");}
 #include "rapidjson/document.h"
 #include "rapidjson/pointer.h"
 #include "rapidjson/stringbuffer.h"
@@ -411,7 +410,17 @@ namespace shared
       bool exists(const std::string& parameterName, const char pathChar = '.') const;
 
       //--------------------------------------------------------------
-      /// \brief	    Check if a node contains at least a child
+      /// \brief	    Check if a node contains at least a child which is an array
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \return     true if the parameter contains child (CDataContainer), false if it is a termination node with data
+      /// \throw      shared::exception::COutOfRange if parameter can not be converted
+      /// \throw      shared::exception::CInvalidParameter if parameter is not found
+      //--------------------------------------------------------------
+      bool containsChildArray(const std::string& parameterName = std::string(), const char pathChar = '.') const;
+      
+	  //--------------------------------------------------------------
+      /// \brief	    Check if a node contains at least a child object (with a value : {...})
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] pathChar         The path spearator to use (default is '.')
       /// \return     true if the parameter contains child (CDataContainer), false if it is a termination node with data
