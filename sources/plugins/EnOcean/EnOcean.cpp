@@ -210,7 +210,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       }
       catch (CProtocolException& e)
       {
-         YADOMS_LOG(error) << "Error communicationg with EnOcean dongle " << e.what();
+         YADOMS_LOG(error) << "Error communicating with EnOcean dongle " << e.what();
          protocolErrorProcess();
       }
    }
@@ -231,6 +231,8 @@ void CEnOcean::loadAllDevices()
          const auto device = createDevice(deviceId,
                                           profileHelper);
 
+         createNewKeywords(deviceId, device);
+
          m_devices[deviceId] = device;
       }
       catch (shared::exception::CEmptyResult&)
@@ -242,6 +244,16 @@ void CEnOcean::loadAllDevices()
          // Don't add a wrong configured device to the m_devices list
          YADOMS_LOG(error) << "Error loading device from database : device " << deviceId << " is malformed (" << e.what() << "), will be ignored";
       }
+   }
+}
+
+void CEnOcean::createNewKeywords(const std::string& deviceName,
+                                 const boost::shared_ptr<IType>& loadedDevice) const
+{
+   for (const auto historizer : loadedDevice->allHistorizers())
+   {
+      if (!m_api->keywordExists(deviceName, historizer->getKeyword()))
+         m_api->declareKeyword(deviceName, historizer);
    }
 }
 
@@ -398,7 +410,7 @@ void CEnOcean::processDeviceConfiguration(const std::string& deviceId,
       auto selectedProfile = CProfileHelper(configuration.get<std::string>("profile.activeSection"));
       auto manufacturer = configuration.get<std::string>("manufacturer");
 
-      YADOMS_LOG(information) << "Device \"" << deviceId << "\" is configurated as " << selectedProfile.profile();
+      YADOMS_LOG(information) << "Device \"" << deviceId << "\" is configured as " << selectedProfile.profile();
 
       if (m_devices.find(deviceId) == m_devices.end() || m_devices[deviceId]->profile() != selectedProfile.profile())
       {
