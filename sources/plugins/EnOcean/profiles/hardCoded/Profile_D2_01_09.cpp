@@ -140,7 +140,16 @@ void CProfile_D2_01_09::sendCommand(const std::string& keyword,
                                                                true,
                                                                0,
                                                                0);
-      //TODO vérifier que 0 pour minEnergyMeasureRefreshTime et maxEnergyMeasureRefreshTime ne modifie pas leurs valeurs
+
+      // Ask for a new energy measure now to reflect de resetted value      
+
+      // Need to wait a bit between outgoing messages, to be sure to receive answer
+      boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+      CProfile_D2_01_Common::sendActuatorMeasurementQuery(messageHandler,
+                                                          senderId,
+                                                          m_deviceId,
+                                                          CProfile_D2_01_Common::kAllOutputChannels,
+                                                          CProfile_D2_01_Common::kQueryPower);
    }
 }
 
