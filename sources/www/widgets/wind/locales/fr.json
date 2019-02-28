@@ -29,10 +29,10 @@
                               "name": "Unité de vitesse",
                               "description": "Choisir l'unité pour les vitesses",
                               "values": {
-                                    "ms": "m/s",
-                                    "kmh": "km/h",
-                                    "knots": "noeuds",
-                                    "beaufort": "beaufort"
+                                 "ms": "{{value}} m/s",
+                                 "kmh": "{{value}} km/h",
+                                 "knots": "{{value}} kt",
+                                 "beaufort": "Force {{value}}"
                               }
                         },
                         "directionCorrection": {
