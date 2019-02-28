@@ -25,10 +25,10 @@
           "name": "Speed unit",
           "description": "Choose the unit to apply for speeds",
           "values": {
-            "ms": "m/s",
-            "kmh": "km/h",
-            "knots": "knots",
-            "beaufort": "beaufort"
+            "ms": "{{value}} m/s",
+            "kmh": "{{value}} km/h",
+            "knots": "{{value}} kt",
+            "beaufort": "{{value}}"
           }
         },
         "directionCorrection": {
