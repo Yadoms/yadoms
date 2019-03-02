@@ -1,12 +1,12 @@
 {
 	"type": "numeric-display",
-	"version": "1.1.0-beta.1",
+	"version": "1.1.0",
 	"author": "Nicolas HILAIRE",
 	"url": "https://github.com/Yadoms/yadoms/wiki/numeric-display",
 	"credits": "",
     "dependencies": {
        "yadoms" : {
-          "minimumVersion" : "2.2.0-beta.1"
+          "minimumVersion" : "2.2.0"
        }
     },
   "dimensions": {
