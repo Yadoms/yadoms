@@ -1,14 +1,14 @@
 {
-	"type": "numeric-display",
-	"version": "1.1.0",
-	"author": "Nicolas HILAIRE",
-	"url": "https://github.com/Yadoms/yadoms/wiki/numeric-display",
-	"credits": "",
-    "dependencies": {
-       "yadoms" : {
-          "minimumVersion" : "2.2.0"
-       }
-    },
+  "type": "numeric-display",
+  "version": "1.1.0",
+  "author": "Nicolas HILAIRE",
+  "url": "https://github.com/Yadoms/yadoms/wiki/numeric-display",
+  "credits": "",
+  "dependencies": {
+    "yadoms": {
+      "minimumVersion": "2.2.0"
+    }
+  },
   "dimensions": {
     "min": {
       "x": 1,
@@ -23,22 +23,22 @@
       "y": 1
     }
   },
-  "hasTitle" :  true,
-	"configurationSchema": {
-		"device": {
-			"type": "keyword",
-			"expectedKeywordType": "numeric",
-			"expectedKeywordAccess": "get"
-		},
-      "precision": {
-         "type" : "int",
-         "defaultValue" : "1",
-         "maximumValue" : "3",
-         "minimumValue" : "0"
-      },
-      "dateDisplay": {
-         "type": "bool",
-         "defaultValue" : "false"
-      }
-	}
+  "hasTitle": true,
+  "configurationSchema": {
+    "device": {
+      "type": "keyword",
+      "expectedKeywordType": "numeric",
+      "expectedKeywordAccess": "get"
+    },
+    "precision": {
+      "type": "int",
+      "defaultValue": "1",
+      "maximumValue": "3",
+      "minimumValue": "0"
+    },
+    "dateDisplay": {
+      "type": "bool",
+      "defaultValue": "false"
+    }
+  }
 }
