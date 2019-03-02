@@ -1,4 +1,4 @@
-### 1.0.2-beta.1
+### 1.0.2
 * Fix #449 - Optimize the widget with new REST Request
 
 ### 1.0.1
