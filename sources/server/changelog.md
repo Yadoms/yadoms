@@ -1,3 +1,7 @@
+### 2.2.1-alpha
+* Fix #549 : Fix device configuration loading when accessing to configuration of a newly discovered device
+
+
 ### 2.2.0
 
 #### Yadoms Core
