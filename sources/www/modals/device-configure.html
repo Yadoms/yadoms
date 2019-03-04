@@ -33,7 +33,7 @@
         // In case of cancel the showConfiguration modal, it's the only way to reactivate the device button
         $("div#configure-device-modal").one('hide.bs.modal', function() {
            var $deviceRow = getDeviceDomRow(device);
-           addDeviceButtonsEvents($deviceRow ,device);
+           addDeviceButtonsEvents($deviceRow, device);
         });
         
         //we append the common parameters section
