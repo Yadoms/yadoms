@@ -227,11 +227,12 @@ function createAxis (index,         // index of the plot
               title: getAxisTitle(),
               labels: {
                   align: align,
+                  enabled: !isBoolVariable(chart.keyword[index]),
                   style: {
                       color: colorAxis
                   },
                   formatter: function () {
-                     if (this.chart.keyword[index].dataType === "Enum") {  // Return the translated enum value
+                     if (isEnumVariable(this.chart.keyword[index])) {  // Return the translated enum value
                         return this.chart.keyword[index].typeInfo.translatedValues[this.value];
                      }
                      else
