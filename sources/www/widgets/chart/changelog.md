@@ -1,3 +1,7 @@
+### 1.2.2-beta.1
+* Fix unit and values adaptation with one axis
+* Fix coefficient adaptation when multiple curves are displayed with an adaptation for each
+
 ### 1.2.1
 * Fix #545 - No need legend y axis for boolean keyword
 
