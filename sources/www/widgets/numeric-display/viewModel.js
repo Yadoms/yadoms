@@ -13,6 +13,7 @@ function numericDisplayViewModel() {
     this.rawUnit = "";
     this.unit = ko.observable("");
     this.shouldBeVisible = ko.observable(false);
+    this.automaticScale = ko.observable(true);
     this.lastReceiveDate = ko.observable("");
     this.capacity = "";
     //
@@ -61,6 +62,14 @@ function numericDisplayViewModel() {
           self.shouldBeVisible(false);
           console.warn (error);
        }
+       
+       try{
+          self.automaticScale(parseBool(self.widget.configuration.automaticScale));
+       }
+       catch(error){
+          self.automaticScale(true);
+          console.warn (error);
+       }       
         
        if (!isNullOrUndefined(self.widget.configuration.precision))
           self.precision = parseInt(self.widget.configuration.precision, 10);
@@ -105,10 +114,16 @@ function numericDisplayViewModel() {
                   self.displayDuration(data.value);
                }else {
                   var temp = parseFloat(data.value);
-                  adaptValueAndUnit(temp, self.rawUnit, function(newValue, newUnit) {
-                     self.unit($.t(newUnit));
-                     self.data(newValue.toFixed(self.precision).toString());
-                  });
+                  
+                  if (self.automaticScale()){
+                     adaptValueAndUnit(temp, self.rawUnit, function(newValue, newUnit) {
+                        self.unit($.t(newUnit));
+                        self.data(newValue.toFixed(self.precision).toString());
+                     });
+                  }else{
+                     self.unit($.t(self.rawUnit));
+                     self.data(temp.toFixed(self.precision).toString());
+                  }
                }
             }else 
                self.data("-");
