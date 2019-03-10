@@ -64,7 +64,11 @@ function numericDisplayViewModel() {
        }
        
        try{
-          self.automaticScale(parseBool(self.widget.configuration.automaticScale));
+          if (!isNullOrUndefined(self.widget.configuration.automaticScale)){
+             self.automaticScale(parseBool(self.widget.configuration.automaticScale));
+          } else{
+             self.automaticScale(true);
+          }
        }
        catch(error){
           self.automaticScale(true);
@@ -114,7 +118,6 @@ function numericDisplayViewModel() {
                   self.displayDuration(data.value);
                }else {
                   var temp = parseFloat(data.value);
-                  
                   if (self.automaticScale()){
                      adaptValueAndUnit(temp, self.rawUnit, function(newValue, newUnit) {
                         self.unit($.t(newUnit));
