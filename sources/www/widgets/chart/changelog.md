@@ -1,3 +1,6 @@
+### 1.2.1
+* Fix #545 - No need legend y axis for boolean keyword
+
 ### 1.2.0
 * Fix rare error due to highchart internal behaviour
 * Fix #519 - Enum value are not displayed properly
