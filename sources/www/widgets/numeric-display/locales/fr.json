@@ -14,6 +14,10 @@
       "dateDisplay": {
 			"name": "Date de dernière mise à jour",
 			"description": ""
-      }      
+      },
+      "automaticScale": {
+         "name": "Echelle automatique",
+         "description": "Le widget adapte automatiquement la valeur et l'unité"
+      }  
 	}
 }
