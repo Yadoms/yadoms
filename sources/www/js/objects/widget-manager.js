@@ -247,7 +247,7 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
         var defferedResult;
         widget.viewModel.widgetApi.setState(widgetStateEnum.ConfigurationChanged);
         if (!isNullOrUndefined(widget.viewModel.configurationChanged)) {
-            var defferedResult = widget.viewModel.configurationChanged();
+            defferedResult = widget.viewModel.configurationChanged();
         }
        
         //Update the widget title if displayed
@@ -260,8 +260,8 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
         defferedResult = defferedResult || new $.Deferred().resolve();
         defferedResult
         .always(function () {
-               // fit the new text to the container
-               widget.viewModel.widgetApi.fitText();
+           // fit the new text to the container
+           widget.viewModel.widgetApi.fitText();
                
            //we manage the toolbar api specific icons
            widget.viewModel.widgetApi.manageBatteryConfiguration()

@@ -461,6 +461,7 @@ function updateWidgetPolling(widget) {
                          //we signal the new acquisition to the widget if the widget support the method
                          if (widget.viewModel.onNewAcquisition !== undefined) {
                              widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
+                             widget.$gridWidget.find(".textfit").fitText();
                          }
                          widget.viewModel.widgetApi.manageBatteryConfiguration();
                     });
