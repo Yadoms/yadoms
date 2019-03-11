@@ -1,35 +1,43 @@
 ﻿{
-	"name": "Megatec Ups",
-	"description": "Onduleurs communiquant en protocole Megatec",
-	"configurationSchema": {
-		"SerialPort": {
-			"name": "Port série",
-			"description": "Le port série (virtuel) connecté à l'onduleur"
-		},
-		"UpsBeep": {
-			"name": "Bip onduleur",
-			"description": "Cette option permet d'activer/désactiver l'alarme sonore de l'onduleur lors d'une perte secteur"
-		},
-		"UpsShutdownTimers": {
-			"name": "Délais d'arrêt/redémarrage",
-			"description": "Lorsque Yadoms envoi la commande d'arrêt, le plugin indique à l'onduleur ces délais de façon à retarder la coupure de l'alimentation de la sortie de l'onduleur, et sa restauration.",
-			"content": {
-				"ShutdownDelay": {
-					"name": "Délai de coupure (minutes)",
-					"description": "Lorque le plugin commandera la coupure d'alimentation de la sortie de l'onduleur, celui-ci respectera ce délai avant la coupure effective, afin de permettre au système alimenté de s'arrêter correctement"
-				},
-				"RestoreDelay": {
-					"name": "Délai de restauration (minutes)",
-					"description": "Lors du retour de la tension secteur, l'onduleur attendra ce délai avant d'alimenter sa sortie"
-				}
-			}
-		}
-	},
-	"customLabels": {
-		"pluginState": {
-			"connecting": "Connexion en cours...",
-			"connectionFailed": "Erreur de connexion, réessai dans un moment...",
-			"updateConfiguration": "Mise à jour de la configuration..."
-		}
-	}
+  "name": "Megatec Ups",
+  "description": "Onduleurs communiquant en protocole Megatec",
+  "configurationSchema": {
+    "SerialPort": {
+      "name": "Port série",
+      "description": "Le port série (virtuel) connecté à l'onduleur"
+    },
+    "UpsBeep": {
+      "name": "Bip onduleur",
+      "description": "Cette option permet d'activer/désactiver l'alarme sonore de l'onduleur lors d'une perte secteur"
+    },
+    "Autotest": {
+      "name": "Autotest",
+      "description":
+        "Réalisation d'un auto-test de l'onduleur (si fonction supportée par l'onduleur) toutes les nuits à minuit"
+    },
+    "UpsShutdownTimers": {
+      "name": "Délais d'arrêt/redémarrage",
+      "description":
+        "Lorsque Yadoms envoi la commande d'arrêt, le plugin indique à l'onduleur ces délais de façon à retarder la coupure de l'alimentation de la sortie de l'onduleur, et sa restauration.",
+      "content": {
+        "ShutdownDelay": {
+          "name": "Délai de coupure (minutes)",
+          "description":
+            "Lorque le plugin commandera la coupure d'alimentation de la sortie de l'onduleur, celui-ci respectera ce délai avant la coupure effective, afin de permettre au système alimenté de s'arrêter correctement"
+        },
+        "RestoreDelay": {
+          "name": "Délai de restauration (minutes)",
+          "description":
+            "Lors du retour de la tension secteur, l'onduleur attendra ce délai avant d'alimenter sa sortie"
+        }
+      }
+    }
+  },
+  "customLabels": {
+    "pluginState": {
+      "connecting": "Connexion en cours...",
+      "connectionFailed": "Erreur de connexion, réessai dans un moment...",
+      "updateConfiguration": "Mise à jour de la configuration..."
+    }
+  }
 }
