@@ -90,14 +90,14 @@ protected:
    //--------------------------------------------------------------
    void processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
                                   const shared::communication::CByteBuffer& data);
-   
+
    //--------------------------------------------------------------
    /// \brief	                     Create inexisting keywords for this device (in case of device created with less keywords than needed for historization)
    /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] message          Message for which complete declared keywords list
    //--------------------------------------------------------------
    static void createPossiblyMissingKeywords(boost::shared_ptr<yApi::IYPluginApi> api,
-                                      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> message);
+                                             boost::shared_ptr<rfxcomMessages::IRfxcomMessage> message);
 
    //--------------------------------------------------------------
    /// \brief	                     Process the firmware update
@@ -179,6 +179,18 @@ protected:
                                              const rfxcomMessages::CTransceiverStatus& status);
 
    //--------------------------------------------------------------
+   /// \brief	                     Process unknown RFY remote message
+   /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \param [in] state            State to send to Yadoms
+   /// \param [in] customMessageId  State message ID
+   /// \param [in] customMessageDataParams  State message params
+   //--------------------------------------------------------------
+   void setPluginState(boost::shared_ptr<yApi::IYPluginApi> api,
+                       const yApi::historization::EPluginState& state,
+                       const std::string& customMessageId = std::string(),
+                       const std::map<std::string, std::string>& customMessageDataParams = std::map<std::string, std::string>());
+
+   //--------------------------------------------------------------
    /// \brief	                     Process received ack message from RFXCom
    /// \param [in] ack              Received acknowledge
    //--------------------------------------------------------------
@@ -236,4 +248,11 @@ private:
    //--------------------------------------------------------------
    boost::shared_ptr<CPairingHelper> m_pairingHelper;
    boost::shared_ptr<shared::event::CEventTimer> m_progressPairingTimer;
+
+   //--------------------------------------------------------------
+   /// \brief  Last plugin state (to send only state changes to Yadoms
+   //--------------------------------------------------------------
+   yApi::historization::EPluginState m_lastPluginState;
+   std::string m_lastPluginStateCustomMessageId;
+   std::map<std::string, std::string> m_lastPluginStateCustomMessageDataParams;
 };
