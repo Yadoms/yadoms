@@ -1,3 +1,6 @@
+### 1.1.6-beta.1
+* Fix #534 : Fix rare crashs when CPU too loaded
+
 ### 1.1.5
 * Fix #524 : Add label to new protocols (MCZ and FunkBus)
 
