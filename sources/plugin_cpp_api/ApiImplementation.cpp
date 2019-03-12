@@ -77,8 +77,7 @@ namespace plugin_cpp_api
 
    void CApiImplementation::send(const plugin_IPC::toYadoms::msg& msg,
                                  boost::function1<bool, const plugin_IPC::toPlugin::msg&> checkExpectedMessageFunction,
-                                 boost::function1<void, const plugin_IPC::toPlugin::msg&> onReceiveFunction,
-      bool trace) const
+                                 boost::function1<void, const plugin_IPC::toPlugin::msg&> onReceiveFunction) const
    {
       shared::event::CEventHandler receivedEvtHandler;
       enum
@@ -88,9 +87,7 @@ namespace plugin_cpp_api
       };
 
       {
-         if (trace) std::cout << "CApiImplementation::send, Before taking mutex" << std::endl; //TODO : virer
          boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
-         if (trace) std::cout << "CApiImplementation::send, Mutex took" << std::endl; //TODO : virer
          m_onReceiveHook = [&](const plugin_IPC::toPlugin::msg& receivedMsg)-> bool
          {
             if (!receivedMsg.error().empty())
@@ -109,22 +106,18 @@ namespace plugin_cpp_api
          };
       }
 
-      if (trace) std::cout << "CApiImplementation::send, Before sending" << std::endl; //TODO : virer
       send(msg);
-      if (trace) std::cout << "CApiImplementation::send, sent" << std::endl; //TODO : virer
 
       switch (receivedEvtHandler.waitForEvents(boost::posix_time::minutes(1)))
       {
       case kExpectedEventReceived:
          {
-            if (trace) std::cout << "CApiImplementation::send, kExpectedEventReceived" << std::endl; //TODO : virer
             onReceiveFunction(receivedEvtHandler.getEventData<const plugin_IPC::toPlugin::msg>());
             break;
          }
 
       case kErrorReceived:
          {
-            if (trace) std::cout << "CApiImplementation::send, kErrorReceived" << std::endl; //TODO : virer
             boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
             m_onReceiveHook.clear();
             throw std::runtime_error(
@@ -134,7 +127,6 @@ namespace plugin_cpp_api
 
       case shared::event::kTimeout:
          {
-            if (trace) std::cout << "CApiImplementation::send, shared::event::kTimeout" << std::endl; //TODO : virer
             boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
             m_onReceiveHook.clear();
             throw std::runtime_error((boost::format("No answer from Yadoms when sending message %1%") % msg.OneOf_case()).str());
@@ -142,7 +134,6 @@ namespace plugin_cpp_api
 
       default:
          {
-            if (trace) std::cout << "CApiImplementation::send default" << std::endl; //TODO : virer
             boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
             m_onReceiveHook.clear();
             throw std::runtime_error(
@@ -522,7 +513,6 @@ namespace plugin_cpp_api
 
    bool CApiImplementation::deviceExists(const std::string& device) const
    {
-      std::cout << "CApiImplementation::deviceExists(" << device << ") START" << std::endl; //TODO virer
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_deviceexists();
       request->set_device(device);
@@ -531,17 +521,14 @@ namespace plugin_cpp_api
       try
       {
          send(req,
-              [&device/*TODO virer*/](const plugin_IPC::toPlugin::msg& ans) -> bool
+              [](const plugin_IPC::toPlugin::msg& ans) -> bool
               {
-                 std::cout << "CApiImplementation::deviceExists(" << device << "), ans.has_deviceexists=" << ans.has_deviceexists() << std::endl; //TODO virer
                  return ans.has_deviceexists();
               },
               [&](const plugin_IPC::toPlugin::msg& ans) -> void
               {
                  exists = ans.deviceexists().exists();
-                 std::cout << "CApiImplementation::deviceExists(" << device << "), exists=" << exists << std::endl; //TODO virer
-              },
-                 true);
+              });
       }
       catch (std::exception& e)
       {
@@ -549,8 +536,7 @@ namespace plugin_cpp_api
          std::cerr << "Call was : deviceExists(" << device << ")" << std::endl;
          throw;
       }
-      
-      std::cout << "CApiImplementation::deviceExists(" << device << "), exists=" << exists << " END" << std::endl; //TODO virer
+
       return exists;
    }
 

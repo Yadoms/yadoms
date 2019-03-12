@@ -97,8 +97,7 @@ namespace plugin_cpp_api
       void send(const plugin_IPC::toYadoms::msg& msg) const;
       void send(const plugin_IPC::toYadoms::msg& msg,
                 boost::function1<bool, const plugin_IPC::toPlugin::msg&> checkExpectedMessageFunction,
-                boost::function1<void, const plugin_IPC::toPlugin::msg&> onReceiveFunction,
-         bool trace = false) const;
+                boost::function1<void, const plugin_IPC::toPlugin::msg&> onReceiveFunction) const;
 
       void processSystem(const plugin_IPC::toPlugin::System& msg);
       void processInit(const plugin_IPC::toPlugin::Init& msg);

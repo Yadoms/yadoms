@@ -192,6 +192,14 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          YADOMS_LOG(error) << "The message is not sent and will be discarded";
          errorProcess(api);
       }
+      catch (std::exception& ex)
+      {
+         YADOMS_LOG(error) << "Error in main loop : " << ex.what();
+      }
+      catch (...)
+      {
+         YADOMS_LOG(error) << "Error in main loop (unknown exception)";
+      }
    }
 }
 
