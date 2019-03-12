@@ -1,36 +1,41 @@
 {
-	"type": "curtain",
-	"version": "1.0.1-beta.1",
-	"author": "Jean-Michel DECORET",
-	"url": "https://github.com/Yadoms/yadoms/wiki/curtain",
-	"credits": "[bootstrap toogle](http://www.bootstraptoggle.com/)",
-  "dimensions": {
-    "min": {
-      "x": 1,
-      "y": 2
-    },
-    "max": {
-      "x": 1,
-      "y": 2
-    },
-    "default": {
-      "x": 1,
-      "y": 2
-    }
-  },
-  "hasTitle" :  true,
-	"configurationSchema": {
-		"device": {
-			"type": "keyword",
+   "type": "curtain",
+   "version": "1.0.1",
+   "author": "Jean-Michel DECORET",
+   "url": "https://github.com/Yadoms/yadoms/wiki/curtain",
+   "credits": "[bootstrap toogle](http://www.bootstraptoggle.com/)",
+   "dependencies": {
+      "yadoms": {
+         "minimumVersion": "2.2.0"
+      }
+   },
+   "dimensions": {
+      "min": {
+         "x": 1,
+         "y": 2
+      },
+      "max": {
+         "x": 1,
+         "y": 2
+      },
+      "default": {
+         "x": 1,
+         "y": 2
+      }
+   },
+   "hasTitle": true,
+   "configurationSchema": {
+      "device": {
+         "type": "keyword",
          "expectedCapacity": ["curtain", "upDownStop"],
-			"expectedKeywordAccess": "getset"
-		},
-		"additionalDevices": {
-			"type": "section",
-			"defaultValue": "false",
-			"enableWithCheckBox": "true",
-			"enableWithCheckBoxDefaultValue": "false",			
-			"content": {      
+         "expectedKeywordAccess": "getset"
+      },
+      "additionalDevices": {
+         "type": "section",
+         "defaultValue": "false",
+         "enableWithCheckBox": "true",
+         "enableWithCheckBoxDefaultValue": "false",
+         "content": {
             "devices": {
                "type": "list",
                "nbItemsMin": "1",
@@ -39,11 +44,11 @@
                "item": {
                   "type": "section",
                   "name": "",
-                  "description": "",				
+                  "description": "",
                   "content": {
                      "source": {
                         "name": "",
-                        "description": "",					
+                        "description": "",
                         "type": "keyword",
                         "expectedCapacity": ["curtain", "upDownStop"],
                         "expectedKeywordAccess": "getset"
@@ -53,5 +58,5 @@
             }
          }
       }
-	}
+   }
 }

@@ -14,6 +14,10 @@
       "dateDisplay": {
 			"name": "Update date",
 			"description": ""
-      }
+      },
+      "automaticScale": {
+         "name": "Automatic scale",
+         "description": "The widget adjust automatically the value and the unit"
+      }  
 	}
 }
