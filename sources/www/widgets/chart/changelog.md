@@ -1,4 +1,4 @@
-### 1.2.2-beta.1
+### 1.2.2
 * Fix unit and values adaptation with one axis
 * Fix coefficient adaptation when multiple curves are displayed with an adaptation for each
 
