@@ -10,10 +10,6 @@
    "deviceNotFound": "Equipement Id {{Id}} introuvable",
    "keywordNotFound" : "Donnée Id {{Id}} introuvable",
 	"configurationSchema": {
-      "automaticScale": {
-         "name": "Echelle automatique",
-         "description": "Le widget adapte automatiquement la valeur et l'unité"
-      },   
 		"interval": {
 			"name": "Période d'affichage du graphique",
 			"description": "Permet de changer la période d'affichage du graphique.",
