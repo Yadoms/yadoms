@@ -41,6 +41,9 @@ function chartViewModel() {
     
     // Adaptation coefficient, if units have been adapted
     this.coeff = [];
+    
+    // Automatic unit scale
+    this.automaticScale = true;
 
     /**
      * Configure the toolbar
@@ -361,6 +364,10 @@ function chartViewModel() {
 
         if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
             return;
+        
+        if (!isNullOrUndefined(self.widget.configuration.automaticScale)){
+           self.automaticScale = parseBool(self.widget.configuration.automaticScale);
+        }
         
         var intervalConfiguration = compatibilityManagement(self.widget.configuration.interval);
         self.configureToolbar(intervalConfiguration);
@@ -713,63 +720,75 @@ function chartViewModel() {
            
            // Unit traitments
            $.when.apply($, arrayOfDeffered).done(function () {
-              $.each(self.widget.configuration.devices, function (index, device) {
-                 var keywordId = device.content.source.keywordId;
-                 
-                 // Adapt units if needed
-                 adaptValuesAndUnit(plot[keywordId], range[keywordId], self.chart.keyword[keywordId].unit, function(newValues, newRange, newUnit, newcoeff){
-                    newPlots[keywordId] = newValues;
-                    newRanges[keywordId] = newRange;
-                    newUnits[keywordId] = newUnit;
-                    self.coeff[keywordId] = newcoeff;
-                    arrayOfDeffered1[keywordId].resolve();
-                 });
-              });
-           });
-           
-           // Display each curves
-           $.when.apply($, arrayOfDeffered1).done(function () {
-              if (parseBool(self.widget.configuration.oneAxis.checkbox)) { // We the same axis we adapt all identical units the the same correct unit
-                 // Analysis of all adaptations
-                 $.each(self.widget.configuration.devices, function (index, device1) {
-                    var keywordId1 = device1.content.source.keywordId;
+              // automatic unit
+              if (self.automaticScale){
+                 $.each(self.widget.configuration.devices, function (index, device) {
+                    var keywordId = device.content.source.keywordId;
                     
-                    $.each(self.widget.configuration.devices, function (index, device2) {
-                       var keywordId2 = device2.content.source.keywordId;
-                       
-                       if (self.chart.keyword[keywordId1].unit === self.chart.keyword[keywordId2].unit){
-                          // If applicable adaptation are different
-                          if (self.coeff[keywordId1] != self.coeff[keywordId2]){
-                             //We keep the lowest one
-                             if (self.coeff[keywordId1] < self.coeff[keywordId2]){
-                                // Adapt the second one
-                                newPlots[keywordId2] = adaptArray(plot[keywordId2], self.coeff[keywordId1]);
-                                newRanges[keywordId2] = adaptRange(range[keywordId2], self.coeff[keywordId1]);
-                                newUnits[keywordId2] = newUnits[keywordId1];
-                                self.coeff[keywordId2] = self.coeff[keywordId1];
-                             }else{
-                                // Adapt the first one
-                                newPlots[keywordId1] = adaptArray(plot[keywordId1], self.coeff[keywordId2]);
-                                newRanges[keywordId1] = adaptRange(range[keywordId1], self.coeff[keywordId2]);
-                                newUnits[keywordId1] = newUnits[keywordId2];
-                                self.coeff[keywordId1] = self.coeff[keywordId2];                                
-                             }
-                          }
-                       }
+                    // Adapt units if needed
+                    adaptValuesAndUnit(plot[keywordId], range[keywordId], self.chart.keyword[keywordId].unit, function(newValues, newRange, newUnit, newcoeff){
+                       newPlots[keywordId] = newValues;
+                       newRanges[keywordId] = newRange;
+                       newUnits[keywordId] = newUnit;
+                       self.coeff[keywordId] = newcoeff;
+                       arrayOfDeffered1[keywordId].resolve();
                     });
-                    
-                    plot[keywordId1] = newPlots[keywordId1];
-                    range[keywordId1] = newRanges[keywordId1];
-                    self.unit[keywordId1] = newUnits[keywordId1];
                  });
               }else{
                  $.each(self.widget.configuration.devices, function (index, device) {
                     var keywordId = device.content.source.keywordId;
-                    
-                    plot[keywordId] = newPlots[keywordId];
-                    range[keywordId] = newRanges[keywordId];
-                    self.unit[keywordId] = newUnits[keywordId];
+                    self.unit[keywordId] = self.chart.keyword[keywordId].unit;
+                    arrayOfDeffered1[keywordId].resolve();
                  });
+              }
+           });
+           
+           // Display each curves
+           $.when.apply($, arrayOfDeffered1).done(function () {
+              // automatic unit
+              if (self.automaticScale){
+                 if (parseBool(self.widget.configuration.oneAxis.checkbox)) { // We the same axis we adapt all identical units the the same correct unit
+                    // Analysis of all adaptations
+                    $.each(self.widget.configuration.devices, function (index, device1) {
+                       var keywordId1 = device1.content.source.keywordId;
+                       
+                       $.each(self.widget.configuration.devices, function (index, device2) {
+                          var keywordId2 = device2.content.source.keywordId;
+                          
+                          if (self.chart.keyword[keywordId1].unit === self.chart.keyword[keywordId2].unit){
+                             // If applicable adaptation are different
+                             if (self.coeff[keywordId1] != self.coeff[keywordId2]){
+                                //We keep the lowest one
+                                if (self.coeff[keywordId1] < self.coeff[keywordId2]){
+                                   // Adapt the second one
+                                   newPlots[keywordId2] = adaptArray(plot[keywordId2], self.coeff[keywordId1]);
+                                   newRanges[keywordId2] = adaptRange(range[keywordId2], self.coeff[keywordId1]);
+                                   newUnits[keywordId2] = newUnits[keywordId1];
+                                   self.coeff[keywordId2] = self.coeff[keywordId1];
+                                }else{
+                                   // Adapt the first one
+                                   newPlots[keywordId1] = adaptArray(plot[keywordId1], self.coeff[keywordId2]);
+                                   newRanges[keywordId1] = adaptRange(range[keywordId1], self.coeff[keywordId2]);
+                                   newUnits[keywordId1] = newUnits[keywordId2];
+                                   self.coeff[keywordId1] = self.coeff[keywordId2];                                
+                                }
+                             }
+                          }
+                       });
+                       
+                       plot[keywordId1] = newPlots[keywordId1];
+                       range[keywordId1] = newRanges[keywordId1];
+                       self.unit[keywordId1] = newUnits[keywordId1];
+                    });
+                 }else{
+                    $.each(self.widget.configuration.devices, function (index, device) {
+                       var keywordId = device.content.source.keywordId;
+                       
+                       plot[keywordId] = newPlots[keywordId];
+                       range[keywordId] = newRanges[keywordId];
+                       self.unit[keywordId] = newUnits[keywordId];
+                    });
+                 }
               }
               
               // Creates all axis and curves
