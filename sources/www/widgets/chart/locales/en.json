@@ -11,10 +11,6 @@
   "keywordNotFound" : "Data Id {{Id}} not found",
   "configurationSchema": {
     "interval": {
-      "automaticScale": {
-         "name": "Automatic scale",
-         "description": "The widget adjust automatically the value and the unit"
-      },    
       "name": "Default interval of the chart",
       "description": "Used to change the first displayed interval of the chart",
       "values": {
