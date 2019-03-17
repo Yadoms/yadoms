@@ -1,4 +1,4 @@
-### 1.2.1-beta.1
+### 1.2.1
 * Fix display after update
 
 ### 1.2.0
