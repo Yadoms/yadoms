@@ -6,9 +6,15 @@
 * Fix #540 : Fix getKeywordData request when used without specifying limit
 
 
-### 2.2.1-alpha
+### 2.2.1
+
+#### Yadoms Core
+* Fix #551 : Update fails on Windows
+
+#### Web Client
 * Fix #549 : Fix device configuration loading when accessing to configuration of a newly discovered device
 * Fix widget refresh value after newAcquisition
+
 
 ### 2.2.0
 
