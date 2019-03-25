@@ -121,19 +121,21 @@ public:
    static const boost::shared_ptr<yApi::historization::CDimmable> noDimmable;
    static const boost::shared_ptr<yApi::historization::CSwitch> noPowerFailure;
    static const boost::shared_ptr<yApi::historization::CSwitch> noOverCurrent;
-   static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorStatusResponse(unsigned char rorg,
-                                                                                                                 const boost::dynamic_bitset<>& data,
-                                                                                                                 boost::shared_ptr<yApi::historization::CSwitch> channel1,
-                                                                                                                 boost::shared_ptr<yApi::historization::CDimmable> dimmer,
-                                                                                                                 boost::shared_ptr<yApi::historization::CSwitch> powerFailure,
-                                                                                                                 boost::shared_ptr<yApi::historization::CSwitch> overCurrent);
-   static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorStatusResponse2Channels(unsigned char rorg,
-                                                                                                                          const boost::dynamic_bitset<>& data,
-                                                                                                                          boost::shared_ptr<yApi::historization::CSwitch> channel1,
-                                                                                                                          boost::shared_ptr<yApi::historization::CSwitch> channel2,
-                                                                                                                          boost::shared_ptr<yApi::historization::CDimmable> dimmer,
-                                                                                                                          boost::shared_ptr<yApi::historization::CSwitch> powerFailure,
-                                                                                                                          boost::shared_ptr<yApi::historization::CSwitch> overCurrent);
+   static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorStatusResponse(
+      unsigned char rorg,
+      const boost::dynamic_bitset<>& data,
+      boost::shared_ptr<yApi::historization::CSwitch> channel1,
+      boost::shared_ptr<yApi::historization::CDimmable> dimmer,
+      boost::shared_ptr<yApi::historization::CSwitch> powerFailure,
+      boost::shared_ptr<yApi::historization::CSwitch> overCurrent);
+   static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorStatusResponse2Channels(
+      unsigned char rorg,
+      const boost::dynamic_bitset<>& data,
+      boost::shared_ptr<yApi::historization::CSwitch> channel1,
+      boost::shared_ptr<yApi::historization::CSwitch> channel2,
+      boost::shared_ptr<yApi::historization::CDimmable> dimmer,
+      boost::shared_ptr<yApi::historization::CSwitch> powerFailure,
+      boost::shared_ptr<yApi::historization::CSwitch> overCurrent);
 
    // CMD 0x5 - Actuator Set Measurement
    static void sendActuatorSetMeasurementCommand(boost::shared_ptr<IMessageHandler> messageHandler,
@@ -141,6 +143,7 @@ public:
                                                  const std::string& targetId,
                                                  EOutputChannel outputChannel,
                                                  bool powerMeasurement,
+                                                 bool resetMeasurement,
                                                  double minEnergyMeasureRefreshTime,
                                                  double maxEnergyMeasureRefreshTime);
 
@@ -156,10 +159,11 @@ public:
    static const boost::shared_ptr<yApi::historization::CPower> noInputPower;
    static const boost::shared_ptr<yApi::historization::CEnergy> noLoadEnergy;
    static const boost::shared_ptr<yApi::historization::CPower> noLoadPower;
-   static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorMeasurementResponse(unsigned char rorg,
-                                                                                                                      const boost::dynamic_bitset<>& data,
-                                                                                                                      boost::shared_ptr<yApi::historization::CEnergy> loadEnergy,
-                                                                                                                      boost::shared_ptr<yApi::historization::CPower> loadPower);
+   static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorMeasurementResponse(
+      unsigned char rorg,
+      const boost::dynamic_bitset<>& data,
+      boost::shared_ptr<yApi::historization::CEnergy> loadEnergy,
+      boost::shared_ptr<yApi::historization::CPower> loadPower);
 
    // CMD 0x8 - Actuator Set Pilot Wire Mode
    static void sendActuatorSetPilotWireModeCommand(boost::shared_ptr<IMessageHandler> messageHandler,
@@ -173,9 +177,10 @@ public:
                                               const std::string& targetId);
 
    // CMD 0xA - Actuator Pilot Wire Mode Response
-   static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorPilotWireModeResponse(unsigned char rorg,
-                                                                                                                        const boost::dynamic_bitset<>& data,
-                                                                                                                        boost::shared_ptr<specificHistorizers::CPilotWireHistorizer> pilotWire);
+   static std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> extractActuatorPilotWireModeResponse(
+      unsigned char rorg,
+      const boost::dynamic_bitset<>& data,
+      boost::shared_ptr<specificHistorizers::CPilotWireHistorizer> pilotWire);
 
    // CMD 0xB - Actuator Set External Interface Settings
    static void sendActuatorSetExternalInterfaceSettingsCommand(boost::shared_ptr<IMessageHandler> messageHandler,

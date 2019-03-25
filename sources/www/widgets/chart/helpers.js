@@ -227,11 +227,12 @@ function createAxis (index,         // index of the plot
               title: getAxisTitle(),
               labels: {
                   align: align,
+                  enabled: !isBoolVariable(chart.keyword[index]),
                   style: {
                       color: colorAxis
                   },
                   formatter: function () {
-                     if (this.chart.keyword[index].dataType === "Enum") {  // Return the translated enum value
+                     if (isEnumVariable(this.chart.keyword[index])) {  // Return the translated enum value
                         return this.chart.keyword[index].typeInfo.translatedValues[this.value];
                      }
                      else
@@ -274,6 +275,32 @@ function createAxis (index,         // index of the plot
 };
 
 /**
+ * Adapt an array of values with coefficient
+ * @param arrayToAdapt values to adapt
+ * @param coeff the new coefficient
+ */
+adaptArray = function(arrayToAdapt, coeff) {
+   var newArray = [];
+   $.each(arrayToAdapt, function (index,value) {
+      newArray.push([value[0],parseFloat(value[1])*coeff]);
+   });
+   return newArray;
+};
+
+/**
+ * Adapt a range with coefficient
+ * @param rangeToAdapt rangeToAdapt
+ * @param coeff the new coefficient
+ */
+adaptRange = function(rangeToAdapt, coeff) {
+   var newRange = [];
+   $.each(rangeToAdapt, function (index,value) {
+      newRange.push([value[0],parseFloat(value[1])*coeff,parseFloat(value[2])*coeff]);
+   });
+   return newRange;
+};
+
+/**
  * Adapt the unit and an array of values to an appropriate unit
  * @param values The Id to find
  * @param baseUnit Unit received from yadoms server
@@ -301,22 +328,6 @@ adaptValuesAndUnit = function (values, range, baseUnit, callback) {
          moy = moy / nbre;
       
       return moy;
-   };
-   
-   adaptArray = function(arrayToAdapt, coeff) {
-      var newArray = [];
-      $.each(arrayToAdapt, function (index,value) {
-         newArray.push([value[0],parseFloat(value[1])*coeff]);
-      });
-      return newArray;
-   };
-   
-   adaptRange = function(rangeToAdapt, coeff) {
-      var newRange = [];
-      $.each(rangeToAdapt, function (index,value) {
-         newRange.push([value[0],parseFloat(value[1])*coeff,parseFloat(value[2])*coeff]);
-      });
-      return newRange;
    };
    
    switch (baseUnit){

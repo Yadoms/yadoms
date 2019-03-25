@@ -1,3 +1,9 @@
+### 1.1.6-beta.2
+* Fix #546 : Keep plugin state in cache to send only state changes
+
+### 1.1.6-beta.1
+* Fix #534 : Fix rare crashs when CPU too loaded
+
 ### 1.1.5
 * Fix #524 : Add label to new protocols (MCZ and FunkBus)
 
