@@ -1,3 +1,9 @@
+### 1.0.4
+* New feature #541 : Add strToTimedelta function to script utilities
+
+### 1.0.3
+* New feature #532 : Add readkeyworddetails function to script API
+
 ### 1.0.2
 * Raise error to Yadoms when unable to load rule content
 

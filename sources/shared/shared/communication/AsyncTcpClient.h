@@ -28,15 +28,15 @@ namespace shared { namespace communication {
       virtual ~CAsyncTcpClient();
 
       // IAsyncPort Implementation
-      virtual void setReceiveBufferMaxSize(std::size_t size);
-      virtual void start();
-      virtual void stop();
-      virtual bool isConnected() const;
-      virtual void subscribeForConnectionEvents(event::CEventHandler& forEventHandler, int forId);
-      virtual void setReceiveBufferHandler(boost::shared_ptr<IReceiveBufferHandler> handler);
-      virtual void send(const CByteBuffer& buffer);
-      virtual void sendText(const std::string & content);
-      virtual void flush();
+      void setReceiveBufferMaxSize(std::size_t size) override;
+      void start() override;
+      void stop() override;
+      bool isConnected() const override;
+      void subscribeForConnectionEvents(event::CEventHandler& forEventHandler, int forId) override;
+      void setReceiveBufferHandler(boost::shared_ptr<IReceiveBufferHandler> handler) override;
+      void send(const CByteBuffer& buffer) override;
+      void sendText(const std::string & content) override;
+      void flush() override;
       // [END] IAsyncPort Implementation
 
    protected:
@@ -44,7 +44,7 @@ namespace shared { namespace communication {
       //--------------------------------------------------------------
       /// \brief	Close the connection
       //--------------------------------------------------------------
-      virtual void disconnect();
+      void disconnect();
 
       //--------------------------------------------------------------
       /// \brief	Try to connect asynchronously

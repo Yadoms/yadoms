@@ -28,6 +28,7 @@ public:
    int getRecipientId(const std::string& firstName,
                       const std::string& lastName) const override;
    std::string readKeyword(int keywordId) const override;
+   std::string readKeywordDetails(int keywordId) const override;
    std::string waitForNextAcquisition(int keywordId,
                                       const std::string& timeout = std::string()) const override;
    std::pair<int, std::string> waitForNextAcquisitions(const std::vector<int>& keywordIdList,

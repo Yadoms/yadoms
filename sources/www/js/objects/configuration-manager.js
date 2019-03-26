@@ -50,12 +50,12 @@ function ConfigurationManager() {
     }
 
     this.isServerFirstStart = function () {
-        return serverConfiguration[items.server.firstStart] === "true";
+        return parseBool(serverConfiguration[items.server.firstStart]);
     };
 
     this.setServerFirstStartDone = function () {
-        if (serverConfiguration[items.server.firstStart] !== "false") {
-            serverConfiguration[items.server.firstStart] = "false";
+        if (parseBool(serverConfiguration[items.server.firstStart]) !== false) {
+            serverConfiguration[items.server.firstStart] = false;
             serverConfigurationChanged = true;
         }
         return this;
@@ -84,13 +84,13 @@ function ConfigurationManager() {
     };
 
     this.refreshPage = function () {
-        return webClientConfiguration[items.webclient.refreshPage] === "true";
+        return parseBool(webClientConfiguration[items.webclient.refreshPage]);
     };
 
     this.setRefreshPage = function (active) {
-        var currentlyActive = webClientConfiguration[items.webclient.refreshPage] === "true";
+        var currentlyActive = parseBool(webClientConfiguration[items.webclient.refreshPage]);
         if (active !== currentlyActive) {
-            webClientConfiguration[items.webclient.refreshPage] = active ? "true" : "false";
+            webClientConfiguration[items.webclient.refreshPage] = active ? true : false;
             webClientConfigurationChanged = true;
         }
         return this;
@@ -101,13 +101,13 @@ function ConfigurationManager() {
     };
 
     this.advancedParametersActive = function () {
-        return webClientConfiguration[items.webclient.advancedParametersActive] === "true";
+        return parseBool(webClientConfiguration[items.webclient.advancedParametersActive]);
     };
 
     this.setAdvancedParametersActive = function (active) {
-        var currentlyActive = webClientConfiguration[items.webclient.advancedParametersActive] === "true";
+        var currentlyActive = parseBool(webClientConfiguration[items.webclient.advancedParametersActive]);
         if (active !== currentlyActive) {
-            webClientConfiguration[items.webclient.advancedParametersActive] = active ? "true" : "false";
+            webClientConfiguration[items.webclient.advancedParametersActive] = active ? true : false;
             webClientConfigurationChanged = true;
         }
         return this;
@@ -152,22 +152,22 @@ function ConfigurationManager() {
 
     this.basicAuthentication = function () {
         return {
-            active: serverConfiguration[items.server.basicAuthenticationSection][items.server.basicAuthentication.active] === "true",
-            user: serverConfiguration[items.server.basicAuthenticationSection][items.server.basicAuthentication.user],
-            password: serverConfiguration[items.server.basicAuthenticationSection][items.server.basicAuthentication.password]
+            active: parseBool(serverConfiguration[items.server.basicAuthenticationSection].active),
+            user: serverConfiguration[items.server.basicAuthenticationSection].user,
+            password: serverConfiguration[items.server.basicAuthenticationSection].password
         };
     };
 
     this.setBasicAuthentication = function (active, user, password) {
-        var currentlyActive = serverConfiguration[items.server.basicAuthenticationSection][items.server.basicAuthentication.active] === "true";
+        var currentlyActive = parseBool(serverConfiguration[items.server.basicAuthenticationSection].active);
 
         if (currentlyActive != active ||
             serverConfiguration[items.server.basicAuthenticationSection][items.server.basicAuthentication.user] != user ||
             serverConfiguration[items.server.basicAuthenticationSection][items.server.basicAuthentication.password] != password) {
 
-            serverConfiguration[items.server.basicAuthenticationSection][items.server.basicAuthentication.active] = active ? "true" : "false";
-            serverConfiguration[items.server.basicAuthenticationSection][items.server.basicAuthentication.user] = user;
-            serverConfiguration[items.server.basicAuthenticationSection][items.server.basicAuthentication.password] = password;
+            serverConfiguration[items.server.basicAuthenticationSection].active = active ? true : false;
+            serverConfiguration[items.server.basicAuthenticationSection].user = user;
+            serverConfiguration[items.server.basicAuthenticationSection].password = password;
             serverConfigurationChanged = true;
         }
     };
@@ -177,11 +177,11 @@ function ConfigurationManager() {
         var d = new $.Deferred();
 
         RestEngine.getJson("rest/configuration/server")
-            .done(function (data) {
-                serverConfiguration = JSON.parse(data);
-                d.resolve();
-            })
-            .fail(d.reject);
+         .done(function (data) {
+             serverConfiguration = data;
+             d.resolve();
+         })
+         .fail(d.reject);
 
         return d.promise();
     }
@@ -327,9 +327,9 @@ function ConfigurationManager() {
     // Associated default values
     const defaultWebClientConfiguration = {};
     defaultWebClientConfiguration[items.webclient.language] = getdefaultLanguageFromSupported();
-    defaultWebClientConfiguration[items.webclient.advancedParametersActive] = "false";
+    defaultWebClientConfiguration[items.webclient.advancedParametersActive] = false;
     defaultWebClientConfiguration[items.webclient.dateFormat] = "LLL";
-    defaultWebClientConfiguration[items.webclient.refreshPage] = "true";
+    defaultWebClientConfiguration[items.webclient.refreshPage] = true;
 
     // Main configuration instances
     var serverConfiguration;

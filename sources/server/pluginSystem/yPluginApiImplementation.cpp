@@ -205,8 +205,9 @@ namespace pluginSystem
    std::vector<std::string> CYPluginApiImplementation::getAllKeywords(const std::string& device) const
    {
       std::vector<std::string> keywordNames;
-      for (const auto& keyword : m_keywordDataAccessLayer->getKeywords(m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id()))
-         keywordNames.push_back(keyword->Name());
+	  auto keywords = m_keywordDataAccessLayer->getKeywords(m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id());
+	  std::transform(keywords.begin(), keywords.end(), std::back_inserter(keywordNames),
+		  [](auto &k) -> std::string { return k->Name(); });
       return keywordNames;
    }
 

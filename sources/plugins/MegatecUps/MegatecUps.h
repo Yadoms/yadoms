@@ -107,6 +107,12 @@ protected:
                                    const CMegatecUpsConfiguration& conf2);
 
    //--------------------------------------------------------------
+   /// \brief	                     Set the next autotest timer
+   /// \param [in] api              Plugin execution context (Yadoms API)
+   //--------------------------------------------------------------
+   void setNextAutotestTimePoint(boost::shared_ptr<yApi::IYPluginApi> api);
+
+   //--------------------------------------------------------------
    /// \brief	                     Send the 'Get Information' command
    //--------------------------------------------------------------
    void sendGetInformationCmd();
@@ -120,6 +126,11 @@ protected:
    /// \brief	                     Send the 'Get status' command
    //--------------------------------------------------------------
    void sendGetStatusCmd();
+
+   //--------------------------------------------------------------
+   /// \brief	                     Send the autotest command
+   //--------------------------------------------------------------
+   void sendAutotestCmd();
 
    //--------------------------------------------------------------
    /// \brief	                     Send the 'Toggle beep' command
@@ -196,6 +207,11 @@ private:
    boost::shared_ptr<shared::event::CEventTimer> m_upsStatusRequestTimer;
 
    //--------------------------------------------------------------
+   /// \brief	The next auto-test date
+   //--------------------------------------------------------------
+   boost::shared_ptr<shared::event::CEventTimePoint> m_upsAutoTestTimePoint;
+
+   //--------------------------------------------------------------
    /// \brief	The communication error retry counter
    //--------------------------------------------------------------
    unsigned int m_protocolErrorCounter;
@@ -215,6 +231,12 @@ private:
    /// \brief	The device name
    //--------------------------------------------------------------
    static const std::string DeviceName;
+
+   //--------------------------------------------------------------
+   /// \brief	Status request periods
+   //--------------------------------------------------------------   
+   static const boost::posix_time::time_duration DefaultUpsStatusPeriod;
+   static const boost::posix_time::time_duration AutoTestUpsStatusPeriod;
 
    //--------------------------------------------------------------
    /// \brief	AC power status
@@ -277,13 +299,21 @@ private:
    boost::shared_ptr<yApi::historization::CEvent> m_upsShutdown;
 
    //--------------------------------------------------------------
+   /// \brief	The battery dead state
+   //--------------------------------------------------------------
+   boost::shared_ptr<yApi::historization::CSwitch> m_batteryDeadHistorizer;
+
+   //--------------------------------------------------------------
    /// \brief	The keywords list to historize in one step for better performances
    //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywordsToHistorizeStaticList;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywordsToDeclare;
 
    //--------------------------------------------------------------
    /// \brief	Boolean states cache
    //--------------------------------------------------------------
-   boost::optional<bool> m_lastBatteryLowState, m_acPowerState;
+   boost::optional<bool> m_lastBatteryLowState, m_acPowerState, m_lastBatteryDeadState;
+   bool m_lastTestInProgress;
+   boost::posix_time::ptime m_autotestStartDateTime;
 };
 

@@ -411,8 +411,8 @@ function updateWidgetsPolling(pageId) {
     } else {
        $.each(pageId.widgets, function (widgetIndex, widget) {
            //we ask which devices are needed for this widget instance
-           if (!isNullOrUndefinedOrEmpty(widget.getlastValue)){
-              getLastValues = getLastValues.concat(widget.getlastValue);
+           if (!isNullOrUndefinedOrEmpty(widget.keywordsToGetlastValue)){
+              getLastValues = getLastValues.concat(widget.keywordsToGetlastValue);
            }
            if (!isNullOrUndefinedOrEmpty(widget.additionalInfo)){
               getAdditionInfo = getAdditionInfo.concat(widget.additionalInfo);
@@ -461,6 +461,7 @@ function updateWidgetPolling(widget) {
                          //we signal the new acquisition to the widget if the widget support the method
                          if (widget.viewModel.onNewAcquisition !== undefined) {
                              widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
+                             widget.$gridWidget.find(".textfit").fitText();
                          }
                          widget.viewModel.widgetApi.manageBatteryConfiguration();
                     });

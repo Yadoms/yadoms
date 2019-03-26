@@ -248,11 +248,10 @@ namespace web
                {
                   shared::CDataContainer content(requestContent);
                   content.printToLog(YADOMS_LOG(information));
-                  if (content.containsChild("keywords"))
+                  if (content.containsChildArray("keywords"))
                   {
                      auto keywords = content.get<std::vector<int>>("keywords");
-                     const auto infoRequested = content.getWithDefault<std::vector<std::string>>("info",
-                                                                                                 std::vector<std::string>());
+                     const auto infoRequested = content.getWithDefault<std::vector<std::string>>("info", std::vector<std::string>());
 
                      // erase all duplicates, if any
                      sort(keywords.begin(), keywords.end());

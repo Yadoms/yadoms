@@ -1,24 +1,26 @@
-### 2.2.0-beta.4
-* New feature #513 : Add device fusion 
-* Fix script interpreter package generation (post build copy)
-* Fix #529 : Fix saving system configuration
-* Fix #527 - Equipment renamed is not displayed immediately
-* Fix #526 - Equipment type change not fully fonctional
-* Fix #511 - Configuration blocks - duplicate buttons doesn't work properly
+### 2.3.0-alpha
+* New feature #532 : Add readkeyworddetails function to script API
+* New feature #537 : Add a download logs function
+* Fix #522 : Try to backup elsewhere if not enough place in system temp folder
+* Fix wrong display for new devices
+* Fix #540 : Fix getKeywordData request when used without specifying limit
 
-### 2.2.0-beta.3
 
-#### Web Client
-* Fix device details access on devices page
-* Fix #512 - Fix confirmation modals displayed multiple times and at background (need update of switch widget to version 1.1.1)
+### 2.2.1
 
-### 2.2.0-beta.2
+#### Yadoms Core
+* Fix #551 : Update fails on Windows
 
 #### Web Client
-* Fix #510 - Title not display
+* Fix #549 : Fix device configuration loading when accessing to configuration of a newly discovered device
+* Fix widget refresh value after newAcquisition
+
+#### Issues fixed
+* [Click here to see issues fixed in this version](https://github.com/Yadoms/yadoms/milestone/12?closed=1)
 
 
-### 2.2.0-beta.1
+
+### 2.2.0
 
 #### Yadoms Core
 * Fix #319 - No widget displayed with SAFARI
@@ -31,6 +33,11 @@
 * Fix incremental historization from automation rules or web client
 * Automatic set version number into package.json (from changelog.md) for modules (plugins and script interpreters)
 * Log Yadoms version at startup (information level)
+* New feature #513 : Add device fusion 
+* Fix #540 : Fix getKeywordData request when used without specifying limit
+* Fix script interpreter package generation (post build copy)
+* Fix #529 : Fix saving system configuration
+* Fix #526 - Equipment type change not fully functional
 
 #### Web Client
 * Fix #389 - Bad display after computer wake up
@@ -43,6 +50,15 @@
 * Fix #502 - [Dashboard - automation rules] Move help button to edit rule modal footer
 * In configuration sections, don't display sub-section of a combo section if no content
 * Optimize Devices Page in dashboard (less requests to the server)
+* Fix device details access on devices page
+* Fix #512 - Fix confirmation modals displayed multiple times and at background (need update of switch widget to version 1.1.1)
+* Fix #510 - Title not display
+* Fix #527 - Equipment renamed is not displayed immediately
+* Fix wrong display for new devices
+* Fix #511 - Configuration blocks - duplicate buttons doesn't work properly
+
+#### Issues fixed
+* [Click here to see issues fixed in this version](https://github.com/Yadoms/yadoms/milestone/11?closed=1)
 
 
 ### 2.1.0

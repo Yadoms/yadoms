@@ -1,4 +1,10 @@
-### 1.1.0-beta.1
+### 1.2.1
+* Fix display after update
+
+### 1.2.0
+* new feature - add automatic scale checkbox
+
+### 1.1.0
 * New Feature #466 - Adapt unit if it's necessary
 * newFeature #449 - Adapt the widget to new architecture
 

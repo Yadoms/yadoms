@@ -13,7 +13,7 @@ namespace web { namespace rest { namespace service {
 
    public:
       // IRestService implementation
-      virtual void configureDispatcher(CRestDispatcher & dispatcher);
+      void configureDispatcher(CRestDispatcher & dispatcher) override;
       // [END] IRestService implementation
 
       const std::string & getRestKeyword();

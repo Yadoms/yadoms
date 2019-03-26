@@ -37,11 +37,4 @@ public:
    static shared::CDataContainer setRelayState(Poco::Net::SocketAddress socket,
                                                const shared::CDataContainer& credentials,
                                                const shared::CDataContainer& parameters);
-private:
-   //--------------------------------------------------------------
-   /// \brief	    specific function, to read variable names and values
-   /// \param[in]  container        the final container
-   /// \param[in]  node             the tree to parse
-   //--------------------------------------------------------------
-   static void parseNode(shared::CDataContainer &container, boost::property_tree::ptree node);
 };

@@ -8,7 +8,7 @@
 ::/  
 ::/ 
 ::/ SYNTAX
-::/  update YadomsPath timeout (default 60)
+::/  update yadomsPid YadomsPath timeout (default 60)
 ::/ 
 ::/ DETAILED DESCRIPTION
 ::/  The update.cmd wait for the end of execution of yadoms, 
@@ -26,41 +26,37 @@ IF "%1"=="/?" (
     TYPE "%~f0" | findstr.exe /R "^::/"
     GOTO :END
 )
- 
-SET YadomsPath=%~1
+
+SET yadomsPid=%~1
+IF NOT DEFINED yadomsPid (
+    ECHO %~n0 : Cannot bind argument to parameter 'yadomsPid' because it is empty.
+    GOTO :END
+)
+
+
+SET YadomsPath=%~2
 IF NOT DEFINED YadomsPath (
     ECHO %~n0 : Cannot bind argument to parameter 'YadomsPath' because it is empty.
     GOTO :END
 )
 
-SET SecTimeout=%~2
+SET SecTimeout=%~3
 IF NOT DEFINED SecTimeout (
     SET SecTimeout=60
 )
 
-::Check if program is running
-SET programPid=""
-FOR /F "tokens=2 skip=3" %%i IN (
-    'tasklist.exe /FI "IMAGENAME eq %YadomsExecutable%"'
-) DO (
-SET programPid=%%~i
-)
 
-::If not running then continue script
-if %programPid%=="" (
-	echo %YadomsExecutable% is not running
-	goto :PROCESSIFENDED
-)
 
 ::Wait for process to exit
 set secWait=1
+SET programPid=%yadomsPid%
 :while1
 if not %programPid%=="" (
 	echo Wait for %YadomsExecutable% to exit...
 	timeout /t 1 /nobreak > nul
 	SET programPid=""
 	FOR /F "tokens=2 skip=3" %%i IN (
-		'tasklist.exe /FI "IMAGENAME eq %YadomsExecutable%"'
+		'tasklist.exe /FI "PID eq %programPid%"'
 	) DO (
 	SET programPid=%%~i
 	)

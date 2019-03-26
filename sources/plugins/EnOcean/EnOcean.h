@@ -43,6 +43,13 @@ protected:
    void loadAllDevices();
 
    //--------------------------------------------------------------
+   /// \brief	                     Update (only add new) device keywords if list was changed
+   /// \note                        Useful in case of first run of a new plugin version
+   //--------------------------------------------------------------
+   void createNewKeywords(const std::string& deviceName,
+                       const boost::shared_ptr<IType>& loadedDevice) const;
+
+   //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
    /// \param [in] command          The received command
    //--------------------------------------------------------------

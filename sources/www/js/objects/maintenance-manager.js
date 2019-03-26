@@ -42,4 +42,25 @@ MaintenanceManager.deleteAllBackups = function() {
 	return RestEngine.deleteJson("rest/maintenance/backup");
 };
 
+/**
+ * Start a new log packing task
+ */
+MaintenanceManager.startLogsDownload = function() {
+	return RestEngine.postJson("rest/maintenance/packlogs");
+};
+
+/**
+ * Get the last database backup information
+ */
+MaintenanceManager.lastLogsDownloadInformation = function() {
+	return RestEngine.getJson("rest/maintenance/logs");
+};
+
+/**
+ * Delete all backups
+ */
+MaintenanceManager.deleteAllLogs = function() {
+	return RestEngine.deleteJson("rest/maintenance/logs");
+};
+
 

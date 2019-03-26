@@ -1,4 +1,4 @@
-### 1.0.4-beta.1
+### 1.0.4
 * newFeature #449 - Adapt the widget to new architecture
 
 ### 1.0.3

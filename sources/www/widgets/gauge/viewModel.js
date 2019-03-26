@@ -1,12 +1,10 @@
-
 /**
  * Create a Gauge ViewModel
  * @constructor
  */
 widgetViewModelCtor = function gaugeViewModel() {
-    //var self = this;
     //observable data
-    this.value = ko.observable(0).extend({ numeric: 1 });
+    this.value = ko.observable("");
     this.unit = ko.observable("");
 
     /**
@@ -23,123 +21,122 @@ widgetViewModelCtor = function gaugeViewModel() {
         //
         // For chart and gauge, compressed gz file will appears soon. At this time, there is some dependancies to handle.
         //        
-        
+
         self.widgetApi.loadLibrary([
-            "libs/highstock/js/highstock.js",
-            "libs/highstock/js/highcharts-more.js",
-            "libs/highstock/js/modules/exporting.js",
-            "libs/highstock/js/modules/solid-gauge.js"
-        ]).done(function () {
-            //we configure the toolbar
-            self.widgetApi.toolbar({
-                activated: true,
-                displayTitle: true,
-                batteryItem: true
+                "libs/highstock/js/highstock.js",
+                "libs/highstock/js/highcharts-more.js",
+                "libs/highstock/js/modules/exporting.js",
+                "libs/highstock/js/modules/solid-gauge.js"
+            ]).done(function () {
+                //we configure the toolbar
+                self.widgetApi.toolbar({
+                    activated: true,
+                    displayTitle: true,
+                    batteryItem: true
+                });
+
+                var gaugeOptions = {
+                    chart: {
+                        type: "solidgauge"
+                    },
+                    title: null,
+                    pane: {
+                        center: ["50%", "80%"],
+                        size: "100%",
+                        startAngle: -90,
+                        endAngle: 90,
+                        background: {
+                            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || "#EEE",
+                            innerRadius: "60%",
+                            outerRadius: "100%",
+                            shape: 'solid'
+                        }
+                    },
+                    tooltip: {
+                        enabled: false
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    // the value axis
+                    yAxis: {
+                        lineWidth: 0,
+                        tickWidth: 0,
+                        tickPositions: [],
+                        min: 0,
+                        max: 100
+                    },
+                    plotOptions: {
+                        solidgauge: {
+                            borderWidth: 0,
+                            dataLabels: {
+                                enabled: false
+                            }
+                        }
+                    },
+                    exporting: {
+                        enabled: false
+                    },
+                    series: [{
+                        name: 'Data',
+                        data: [1],
+                        dataLabels: {
+                            formatter: function () {
+                                return '<div class="value" data-bind="text: value()" style="text-align:center"><div>' + this.y.toFixed(1) + '</div>' +
+                                    '<div class="unit" data-bind="text: unit()"></div></div>';
+                            }
+                        }
+                    }]
+                };
+                self.$chart.highcharts(gaugeOptions);
+                self.chart = self.$chart.highcharts();
+                d.resolve();
+            })
+            .fail(function (error) {
+                self.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
+                d.reject();
             });
-            
-           var gaugeOptions = {
-               chart: {
-                   type: "solidgauge"
-               },
-               title: null,
-               pane: {
-                   center: ["50%", "80%"],
-                   size: "100%",
-                   startAngle: -90,
-                   endAngle: 90,
-                   background: {
-                       backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || "#EEE", 
-                       innerRadius: "60%",
-                       outerRadius: "100%",
-                       shape: 'solid'
-                   }
-               },
-               tooltip: {
-                   enabled: false
-               },
-               credits: {
-                   enabled: false
-               },
-               // the value axis
-               yAxis: {
-                   lineWidth: 0,
-                   tickWidth: 0,
-                   tickPositions: [],
-                   min: 0,
-                   max: 100
-               },
-               plotOptions: {
-                   solidgauge: {
-                       borderWidth: 0,
-                       dataLabels: {
-                           enabled: false
-                           //useHTML: true
-                       }/*,
-                       linecap: 'round'*/
-                   }
-               },
-               exporting: {
-                   enabled: false
-               },
-               series: [{
-                   name: 'Data',
-                   data: [1],
-                   dataLabels: {
-                     //format: '<div style="text-align:center"><span class="value" style="text-align:center">{y}</span><span class="unit" data-bind="text: unit()></span></div>'
-                      
-                       formatter: function() {
-                          return '<div class="value" style="text-align:center"><div>' + this.y.toFixed(1) + '</div>' +
-                                 '<div class="unit" data-bind="text: unit()"></div></div>';
-                       }
-                   }
-               }]
-           };
-           self.$chart.highcharts(gaugeOptions);
-           self.chart = self.$chart.highcharts();
-           d.resolve();
-        })
-        .fail(function (error) {
-            self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
-            d.reject();
-        });
-        
+
         return d.promise();
     };
 
     /**
-    * New acquisition handler
-    * @param keywordId keywordId on which new acquisition was received
-    * @param data Acquisition data
-    */
+     * New acquisition handler
+     * @param keywordId keywordId on which new acquisition was received
+     * @param data Acquisition data
+     */
     this.onNewAcquisition = function (keywordId, data) {
-        var self = this;        
+        var self = this;
         try {
-           if (keywordId === self.widget.configuration.device.keywordId && self.chart) {
-             var point = self.chart.series[0].points[0];
-             point.update(parseFloat(data.value));
-             self.value(data.value);
+            if (keywordId === self.widget.configuration.device.keywordId && self.chart) {
+                var point = self.chart.series[0].points[0];
+                if (isNullOrUndefinedOrEmpty(data.value)) {
+                    point.update(0);
+                    self.value("-");
+                } else {
+                    point.update(parseFloat(data.value));
+                    self.value(data.value);
+                }
 
-             if (!isNullOrUndefinedOrEmpty(data.unit))
-                self.unit($.t(data.unit));
-           }
-        }
-        catch(error){
-           self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
+                self.unit(isNullOrUndefinedOrEmpty(data.unit) ? "" : $.t(data.unit));
+            }
+        } catch (error) {
+            self.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
         }
     };
 
     this.configurationChanged = function () {
         var self = this;
-        
+
         if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
             return;
 
-        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
-        self.widgetApi.getLastValue(self.widget.configuration.device.keywordId); 
+        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);
+        self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
         self.widgetApi.registerAdditionalInformation(["unit"]);
-        self.stopsArray = [];      
-        
+        self.stopsArray = [];
+
         switch (self.widget.configuration.displayMode.activeSection) {
             case "solidColor":
                 self.stopsArray.push([0, self.widget.configuration.displayMode.content.solidColor.content.color]);
@@ -148,7 +145,7 @@ widgetViewModelCtor = function gaugeViewModel() {
                 var previousColor = self.widget.configuration.displayMode.content.thresholds.content.firstColor;
                 self.widget.configuration.displayMode.content.thresholds.content.addedThresholds.forEach(function (addedThreshold) {
                     var thresholdRatio = (addedThreshold.content.value - self.widget.configuration.customYAxisMinMax.content.minimumValue) /
-                    (self.widget.configuration.customYAxisMinMax.content.maximumValue - self.widget.configuration.customYAxisMinMax.content.minimumValue);
+                        (self.widget.configuration.customYAxisMinMax.content.maximumValue - self.widget.configuration.customYAxisMinMax.content.minimumValue);
 
                     self.stopsArray.push([thresholdRatio - 0.001, previousColor]);
                     self.stopsArray.push([thresholdRatio, addedThreshold.content.color]);
@@ -168,7 +165,7 @@ widgetViewModelCtor = function gaugeViewModel() {
             minValue = parseInt(self.widget.configuration.customYAxisMinMax.content.minimumValue);
             maxValue = parseInt(self.widget.configuration.customYAxisMinMax.content.maximumValue);
         }
-        
+
         // Update only these options
         var gaugeOptions = {
             yAxis: {
