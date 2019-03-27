@@ -1,3 +1,7 @@
+### 2.3.0-beta.2
+* Fix #521 : Change duration type to seconds
+
+
 ### 2.3.0-beta.1
 * New feature #553 : use of full compliant Json
 * New feature #532 : Add readkeyworddetails function to script API
