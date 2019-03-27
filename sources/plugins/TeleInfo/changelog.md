@@ -1,3 +1,6 @@
+### 1.2.0
+* New feature #553 : use of full compliant Json
+
 ### 1.1.0
 * Change timers values (time out 20s => 5s / Retry => 5s).
 * Fix timers misplaced.

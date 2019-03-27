@@ -1,3 +1,6 @@
+### 1.2.0
+* New feature #553 : use of full compliant Json
+
 ### 1.1.0
 * the plugin support now Standard and Historic protocols.
 * Fix wrong time out start/time out is now 20s

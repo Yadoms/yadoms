@@ -1,44 +1,49 @@
 {
-    "type": "teleinfo",
-    "version": "@PLUGIN_VERSION@",
-    "author": "Jean-Michel BERHAULT",
-    "url": "https://github.com/Yadoms/yadoms/wiki/TeleInfo",
-    "credits": "",
-    "SupportedPlatforms": "all",
-    "supportManuallyDeviceCreation": "false",
-    "configurationSchema": {
-        "SerialPort": {
-            "type": "enum",
-            "values": {
-                "__Binding__": {
-                    "type": "system",
-                    "query": "serialPorts"
-                }
-            }
-        },
-        "EquipmentType": {
-            "type": "comboSection",
-            "content": {
-                "first": {
-                    "name": "1xTIC",
-                    "type": "section"
-                },
-                "second": {
-                    "name": "2xTIC",
-                    "type": "section",
-                    "content": {
-                        "portEnabled": {
-                            "type": "enum",
-                            "values": {
-                                "1xInputEnabled": "",
-                                "2xInputsEnabled": "",
-                                "AllInputsEnabled": ""
-                            },
-                            "defaultValue": "AllInputsEnabled"
-                        }
-                    }
-                }
-            }
-        }
+  "type": "teleinfo",
+  "version": "@PLUGIN_VERSION@",
+  "author": "Jean-Michel BERHAULT",
+  "url": "https://github.com/Yadoms/yadoms/wiki/TeleInfo",
+  "credits": "",
+  "SupportedPlatforms": "all",
+  "dependencies": {
+    "yadoms": {
+      "minimumVersion": "2.3.0-beta.1"
     }
+  },
+  "supportManuallyDeviceCreation": "false",
+  "configurationSchema": {
+    "SerialPort": {
+      "type": "enum",
+      "values": {
+        "__Binding__": {
+          "type": "system",
+          "query": "serialPorts"
+        }
+      }
+    },
+    "EquipmentType": {
+      "type": "comboSection",
+      "content": {
+        "first": {
+          "name": "1xTIC",
+          "type": "section"
+        },
+        "second": {
+          "name": "2xTIC",
+          "type": "section",
+          "content": {
+            "portEnabled": {
+              "type": "enum",
+              "values": {
+                "1xInputEnabled": "",
+                "2xInputsEnabled": "",
+                "AllInputsEnabled": ""
+              },
+              "defaultValue": "AllInputsEnabled"
+            }
+          }
+        }
+      }
+    }
+  }
 }
