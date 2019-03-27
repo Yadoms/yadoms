@@ -93,17 +93,6 @@ WidgetApi.prototype.getPluginInstanceInformation = function (pluginId) {
    return PluginInstanceManager.get(pluginId);
 };
 
-/**
- * @param {} keywordIds to register (can be a single value or an array of values)
- */
-WidgetApi.prototype.registerKeywordAcquisitions = function (keywordIds) {
-   assert(!isNullOrUndefinedOrEmpty(keywordIds), "keywordIds must be defined");
-   
-   var self = this;
-   console.warn("this function is deprecated and will be removed soon. please use function registerKeywordForNewAcquisitions() and getLastValue()");
-   self.widget.viewModel.widgetApi.registerKeywordForNewAcquisitions (keywordIds);
-   self.widget.viewModel.widgetApi.getLastValue(keywordIds);
-};
 
 /**
  * Register keywords to receive notifications when a new acquisition triggers (don't do a getLastValue)
@@ -133,15 +122,15 @@ WidgetApi.prototype.getLastValue = function (keywordIds) {
    assert(!isNullOrUndefinedOrEmpty(keywordIds), "keywordIds must be defined");
    
    var self = this;
-   if (!self.widget.getlastValue)
-      self.widget.getlastValue = [];
+   if (!self.widget.keywordsToGetlastValue)
+      self.widget.keywordsToGetlastValue = [];
    
    if (Array.isArray(keywordIds)) {
       $.each(keywordIds, function (index, value) {
-         self.widget.getlastValue.push(value);
+         self.widget.keywordsToGetlastValue.push(value);
       });
    } else {
-      self.widget.getlastValue.push(keywordIds);
+      self.widget.keywordsToGetlastValue.push(keywordIds);
    }
 };
 

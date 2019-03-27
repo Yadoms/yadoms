@@ -21,7 +21,7 @@ namespace pluginSystem
       virtual ~CBindingQueryData();
 
       // IBindingQueryData implementation
-      virtual const std::string& getQuery() const;
+      const std::string& getQuery() const override;
       // [END] IBindingQueryData implementation
 
    private:

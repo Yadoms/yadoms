@@ -1,3 +1,12 @@
+### 2.3.0-beta.1
+* New feature #553 : use of full compliant Json
+* New feature #532 : Add readkeyworddetails function to script API
+* New feature #537 : Add a download logs function
+* Fix #522 : Try to backup elsewhere if not enough place in system temp folder
+* Fix wrong display for new devices
+* Fix #540 : Fix getKeywordData request when used without specifying limit
+
+
 ### 2.2.1
 
 #### Yadoms Core
@@ -6,6 +15,11 @@
 #### Web Client
 * Fix #549 : Fix device configuration loading when accessing to configuration of a newly discovered device
 * Fix widget refresh value after newAcquisition
+
+#### Issues fixed
+* [Click here to see issues fixed in this version](https://github.com/Yadoms/yadoms/milestone/12?closed=1)
+
+
 
 ### 2.2.0
 

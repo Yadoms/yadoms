@@ -57,7 +57,7 @@
       "name": "tâche",
       "started": "Tâche démarrée",
       "interrupted": "Tâche interrompue",
-      "crash": "Tâche plantée",
+      "crash": "Tâche en erreur",
       "unknownError": "Erreur inconnue",
       "end": "Tâche arrétée",
       "backup": {
@@ -66,6 +66,14 @@
         "compress": "Compression des fichiers...",
         "clean": "Nettoyage...",
         "success": "Sauvegarde réussie"
+      },
+      "packLogs": {
+        "prepare": "Préparation des journaux...",
+        "copyfiles": "Copie des journaux...",
+        "compress": "Compression des journaux...",
+        "clean": "Nettoyage...",
+        "success": "Empaquetage des journaux réussi",
+        "downloadError": "Téléchargement des logs échoué"
       }
     },
     "database": {
@@ -794,7 +802,8 @@
             "delete": "Supprimer",
             "deleteConfirmTitle": "Confirmer la suppression",
             "deleteConfirm": "Supprimer la sauvegarde ?"
-          }
+          },
+          "logsDownload": "Télécharger les journaux"
         },
         "about": {
           "title": "A propos",

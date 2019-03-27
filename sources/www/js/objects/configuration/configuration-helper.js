@@ -104,7 +104,7 @@ ConfigurationHelper.createParameterHandler = function (i18nCtxt, i18nKey, paramN
    assert(content.type !== undefined, "type field must be found in " + paramName + " parameter");
    assert(i18nCtxt !== undefined, "i18nCtxt must contain path of i18n " + paramName + " parameter");
    
-   if (content.show !== undefined && content.show.result === "false")
+   if (content.show !== undefined && !parseBool(content.show.result))
       return null;
 
    var i18nContext = i18nCtxt;

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="1">
+    <platform>Unspecified</platform>
+    <analyze-all-vs-configs>true</analyze-all-vs-configs>
     <includedir>
         <dir name="../sources/shared/windows/"/>
         <dir name="../sources/shared/linux/"/>
         <dir name="../sources/shared/mac/"/>
         <dir name="../sources/shared/"/>
         <dir name="../sources/"/>
-        <dir name="../sources/external-libs/SQLite/sqlite-amalgamation-3080704"/>
+        <dir name="../sources/external-libs/SQLite/sqlite-amalgamation-3230000"/>
         <dir name="../sources/server/"/>
         <dir name="../sources/server/tools/"/>
         <dir name="../sources/server/tools/windows"/>
@@ -14,17 +16,22 @@
         <dir name="../sources/server/tools/mac"/>
     </includedir>
     <defines>
-        <define name="-DSQLITE_INT64_TYPE 0"/>
+        <define name="-DSQLITE_INT64_TYPE 0 -DRAPIDJSON_HAS_STDSTRING 1"/>
     </defines>
+    <undefines>
+        <undefine>RAPIDJSON_DOXYGEN_RUNNING</undefine>
+        <undefine>RAPIDJSON_NEON</undefine>
+        <undefine>RAPIDJSON_SSE2</undefine>
+        <undefine>RAPIDJSON_SSE42</undefine>
+        <undefine>M_ARM</undefine>
+        <undefine>M_ARM64</undefine>
+    </undefines>
     <paths>
         <dir name="../sources/server"/>
         <dir name="../sources/shared"/>
         <dir name="../sources/plugins"/>
     </paths>
     <exclude>
-        <path name="../sources/plugins/ZWave/OpenZWave/openzwave-1.2.919/"/>
+        <path name="../sources/plugins/ZWave/OpenZWave/"/>
     </exclude>
-    <suppressions>
-        <suppression>unreadVariable:..\sources\server\database\sqlite\SQLiteDatabaseTables.h</suppression>
-    </suppressions>
 </project>

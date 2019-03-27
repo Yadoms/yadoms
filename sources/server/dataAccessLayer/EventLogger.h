@@ -19,13 +19,13 @@ namespace dataAccessLayer {
       virtual ~CEventLogger();
 
       // IEventLogger Implementation
-      virtual int addEvent(const database::entities::ESystemEventCode& eventType, const std::string& who, const std::string& what);
-      virtual int addEvent(const database::entities::CEventLogger& logEntry);
-      virtual std::vector<boost::shared_ptr<database::entities::CEventLogger> > getEvents();
-      virtual boost::shared_ptr<database::entities::CEventLogger> getEvent(const int eventId);
-      virtual boost::shared_ptr<database::entities::CEventLogger> getLastEvent();
-      virtual std::vector<boost::shared_ptr<database::entities::CEventLogger> > getEventsFrom(const int eventId);
-      virtual std::vector<boost::shared_ptr<database::entities::CEventLogger> > getEventsRange(const int offset, const int count);
+      int addEvent(const database::entities::ESystemEventCode& eventType, const std::string& who, const std::string& what) override;
+      int addEvent(const database::entities::CEventLogger& logEntry) override;
+      std::vector<boost::shared_ptr<database::entities::CEventLogger> > getEvents() override;
+      boost::shared_ptr<database::entities::CEventLogger> getEvent(const int eventId) override;
+      boost::shared_ptr<database::entities::CEventLogger> getLastEvent() override;
+      std::vector<boost::shared_ptr<database::entities::CEventLogger> > getEventsFrom(const int eventId) override;
+      std::vector<boost::shared_ptr<database::entities::CEventLogger> > getEventsRange(const int offset, const int count) override;
       // [END] IEventLogger Implementation
    
    protected:

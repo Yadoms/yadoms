@@ -147,8 +147,8 @@ namespace automation
          loadInterpreters();
 
          // Now find corresponding interpreter
-         for (const auto& itInterpreter : m_loadedInterpreters)
-            interpreters.push_back(itInterpreter.first);
+		 std::transform(m_loadedInterpreters.begin(), m_loadedInterpreters.end(), std::back_inserter(interpreters),
+			 [](const auto & c) -> std::string { return c.first; });
 
          return interpreters;
       }

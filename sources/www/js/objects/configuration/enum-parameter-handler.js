@@ -79,7 +79,7 @@ EnumParameterHandler.arrangeCollection = function (collection, alphabeticallySor
 
    if (alphabeticallySort === true) {
       sortable.sort(function(a, b) {
-          if (a !== undefined && b !== undefined)
+          if (a !== undefined && b !== undefined && a[1] != undefined && b[1] != undefined)
               return a[1].toLowerCase().localeCompare(b[1].toLowerCase());
           return 1;
       });

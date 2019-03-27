@@ -19,7 +19,7 @@ MACRO(ADD_VS_NATVIS _targetName)
       target_sources(${_targetName} INTERFACE ${PROJECT_SOURCE_DIR}/../ideTools/debugTools/boost_uBLAS.natvis)
       target_sources(${_targetName} INTERFACE ${PROJECT_SOURCE_DIR}/../ideTools/debugTools/boost_Unordered.natvis)
       target_sources(${_targetName} INTERFACE ${PROJECT_SOURCE_DIR}/../ideTools/debugTools/boost_Variant.natvis)
-      
+      target_sources(${_targetName} INTERFACE ${PROJECT_SOURCE_DIR}/../ideTools/debugTools/rapidjson.natvis)
       source_group(vsHelpers  ${PROJECT_SOURCE_DIR}/../ideTools/debugTools/*.*)
    endif()
 

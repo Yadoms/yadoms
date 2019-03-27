@@ -42,6 +42,7 @@ else()
 	include(cmake/PrecompiledHeader.cmake)
 endif()
 
+include(cmake/debugger.cmake)
 
 # Windows specific macro
 if(WIN32)
@@ -543,6 +544,8 @@ set(YADOMS_SRC
    server/task/TaskStatus.cpp
    server/task/backup/Backup.h
    server/task/backup/Backup.cpp
+   server/task/packLogs/PackLogs.h
+   server/task/packLogs/PackLogs.cpp
    server/task/plugins/ExtraQuery.h
    server/task/plugins/ExtraQuery.cpp
    
@@ -668,6 +671,7 @@ source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPl
 source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\task  server/task/*.*)
 source_group(server\\task\\backup  server/task/backup/*.*)
+source_group(server\\task\\packLogs  server/task/packLogs/*.*)
 source_group(server\\task\\plugins  server/task/plugins/*.*)
 source_group(server\\update  server/update/*.*)
 source_group(server\\update\\info  server/update/info/*.*)
@@ -744,7 +748,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/adapters/DatabaseAdapters.cpp
 	server/database/common/adapters/GenericAdapter.h
 	server/database/common/adapters/GenericAdapter.cpp
-	server/database/common/adapters/HugeDataVectorAdapter.hpp
+	server/database/common/adapters/HugeDataVectorAdapter.h
+	server/database/common/adapters/HugeDataVectorAdapter.cpp
 	server/database/common/adapters/IResultAdapter.h
 	server/database/common/adapters/MultipleValueAdapter.hpp
 	server/database/common/adapters/SingleValueAdapter.hpp
@@ -1044,6 +1049,9 @@ set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 ##################################################################################################
 target_link_libraries(yadoms yadoms-shared plugin_IPC interpreter_IPC script_IPC ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
 
+
+ADD_VS_NATVIS(yadoms)
+
 ##################################################################################################
 ## RPATH
 ##################################################################################################
@@ -1068,6 +1076,7 @@ if(COTIRE_USE)
 	
 	if(COTIRE_USE_UNITY)
 		set_property( TARGET yadoms_unity PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
+      ADD_VS_NATVIS(yadoms_unity)
 	    if(CMAKE_CROSSCOMPILING)
 	       #Fix RPATH for cross compilation of yadoms_unity
 	       set_target_properties(yadoms_unity PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)

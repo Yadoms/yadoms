@@ -17,6 +17,8 @@ set(script_IPC_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "Path to
 add_library(script_IPC STATIC ${script_IPC_SOURCES})
 target_link_libraries(script_IPC ${PROTOBUF_LIBRARIES})
 
+ADD_VS_NATVIS(script_IPC)
+
 set_property(TARGET script_IPC PROPERTY INCLUDE_DIRECTORIES ${script_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
 
 ##################################################################################################
@@ -47,6 +49,7 @@ if(COTIRE_USE)
    
    if(COTIRE_USE_UNITY)
       target_link_libraries(script_IPC_unity ${PROTOBUF_LIBRARIES})
+      ADD_VS_NATVIS(script_IPC_unity)
    endif()	
 endif()
 

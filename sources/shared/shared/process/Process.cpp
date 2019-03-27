@@ -29,9 +29,9 @@ namespace shared
          try
          {
             Poco::Process::Args args;
-            for (const auto& cmdLineArg : m_commandLine->args())
-               args.push_back(cmdLineArg);
 
+			auto & ar = m_commandLine->args();
+			std::copy(ar.begin(), ar.end(),	std::back_inserter(args));
 
             YADOMS_LOG(debug) << "Start process " << m_commandLine->executable() << " from " << m_commandLine->workingDirectory();
 

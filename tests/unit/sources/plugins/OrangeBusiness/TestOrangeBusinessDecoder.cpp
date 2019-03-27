@@ -30,9 +30,9 @@ BOOST_AUTO_TEST_SUITE(TestOrangeBusiness)
       CDecoder decoder;
 
       shared::CDataContainer messageRecu;
-      messageRecu.set("page", "0");
-      messageRecu.set("size", "20");
-      messageRecu.set("totalCount", "2");
+      messageRecu.set("page", 0);
+      messageRecu.set("size", 20);
+      messageRecu.set("totalCount", 2);
 
       shared::CDataContainer device1, device2;
 

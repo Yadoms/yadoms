@@ -4,7 +4,7 @@
 #include "database/common/DatabaseTables.h"
 #include "database/common/Query.h"
 #include "database/common/adapters/DatabaseAdapters.h"
-#include "database/common/adapters/HugeDataVectorAdapter.hpp"
+#include "database/common/adapters/HugeDataVectorAdapter.h"
 #include "database/common/adapters/SingleValueAdapter.hpp"
 #include "database/common/adapters/MultipleValueAdapter.hpp"
 #include "database/DatabaseException.hpp"

@@ -58,8 +58,8 @@ WidgetManager.getFromGridElement = function ($gridElement) {
     assert($gridElement !== undefined, "$gridElement must be defined");
 
     if ($gridElement) {
-        var pageId = $gridElement.attr("page-id");
-        var widgetId = $gridElement.attr("widget-id");
+        var pageId = parseInt($gridElement.attr("page-id"));
+        var widgetId = parseInt($gridElement.attr("widget-id"));
         return WidgetManager.get(pageId, widgetId);
     }
     return null;
@@ -242,7 +242,7 @@ WidgetManager.updateWidgetConfiguration_ = function (widget) {
     try {
         //we clear the listened device list before call the configuration
         widget.listenedKeywords = [];
-        widget.getlastValue = [];
+        widget.keywordsToGetlastValue = [];
         // Update widget specific values
         var defferedResult;
         widget.viewModel.widgetApi.setState(widgetStateEnum.ConfigurationChanged);
@@ -501,8 +501,8 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
     //we listen click event on configure click
     widget.$gridWidget.find('div.btn-configure-widget').bind('click', function (e) {
         var widgetDomElement = $(e.currentTarget).parents(".widget");
-        var pageId = widgetDomElement.attr("page-id");
-        var widgetId = widgetDomElement.attr("widget-id");
+        var pageId = parseInt(widgetDomElement.attr("page-id"));
+        var widgetId = parseInt(widgetDomElement.attr("widget-id"));
         Yadoms.modals.widgetConfiguration.load(function (pageId, widgetId) {
             return function () {
                 var widgetToConfigure = WidgetManager.get(pageId, widgetId);
@@ -516,8 +516,8 @@ WidgetManager.addToDom_ = function (widget, ensureVisible) {
     //we listen click event on delete click
     widget.$gridWidget.find('div.btn-delete-widget').bind('click', function (e) {
         var widgetDomElement = $(e.currentTarget).parents(".widget");
-        var pageId = widgetDomElement.attr("page-id");
-        var widgetId = widgetDomElement.attr("widget-id");
+        var pageId = parseInt(widgetDomElement.attr("page-id"));
+        var widgetId = parseInt(widgetDomElement.attr("widget-id"));
         Yadoms.modals.widgetDelete.load(function () {
             Yadoms.showDeleteWidgetModal(pageId, widgetId);
         });

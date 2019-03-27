@@ -1,3 +1,6 @@
+### 1.1.0
+* New feature #553 : use of full compliant Json
+
 ### 1.0.1
 * change CGX files for WES v1 and v2 with last firmware
 * check the firmware revision at the startup of the plugin. The firmware revision should be greater than V0.80

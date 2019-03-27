@@ -137,10 +137,10 @@
 /// \brief  Macro which declare all fields and its filled status
 ///         For each ID in input sequence, call DECLARE_ENTITY_FILLED_INITIALISER
 //
-#define DECLARE_ENTITY_DATACONTAINABLE_HEADER()                                     \
-      virtual void extractContent(shared::CDataContainer & containerToFill) const;  \
-      virtual void fillFromContent(const shared::CDataContainer & initialData);     \
-      virtual void fillFromSerializedString(const std::string & serializedData);
+#define DECLARE_ENTITY_DATACONTAINABLE_HEADER()                                      \
+      void extractContent(shared::CDataContainer & containerToFill) const override;  \
+      void fillFromContent(const shared::CDataContainer & initialData) override;     \
+      void fillFromSerializedString(const std::string & serializedData) override;
 
 
 

@@ -9,6 +9,12 @@
 #include "enumeration/IExtendedEnum.h"
 #include "Field.hpp"
 
+#define RAPIDJSON_HAS_STDSTRING 1
+#include "rapidjson/document.h"
+#include "rapidjson/pointer.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/writer.h"
+
 namespace shared
 {
    //--------------------------------------------------------------
@@ -191,8 +197,8 @@ namespace shared
       /// \brief		Constructor. 
       /// \param [in] initialData    Initial data for this container (will be deserialized)
       //--------------------------------------------------------------
-      explicit CDataContainer(const std::string & initialData);     
-      
+      explicit CDataContainer(const std::string & initialData);
+
       //--------------------------------------------------------------
       /// \brief		Constructor. 
       /// \param [in] initialData    Initial map data
@@ -204,13 +210,30 @@ namespace shared
       /// \param [in] initialData    Initial data for this container (will be deserialized)
       //--------------------------------------------------------------
       CDataContainer(const CDataContainer & initialData);
+	  
+	  //--------------------------------------------------------------
+	  /// \brief		Constructor
+	  /// \param [in] d    Initial data for this container (rapidjson::Value&)
+	  //--------------------------------------------------------------
+      explicit CDataContainer(rapidjson::Value & d);
+
+	  //--------------------------------------------------------------
+	  /// \brief		Constructor
+	  /// \param [in] d    Initial data for this container (rapidjson::Value*)
+	  //--------------------------------------------------------------
+	  explicit CDataContainer(rapidjson::Value * d);
+      
+	  //--------------------------------------------------------------
+	  /// \brief		Constructor
+	  /// \param [in] d    Initial data for this container (rapidjson::Document&)
+	  //--------------------------------------------------------------
+	  explicit CDataContainer(rapidjson::Document & d);
 
       //--------------------------------------------------------------
       /// \brief			Destructor
       /// \return    	void
       //--------------------------------------------------------------
-      virtual ~CDataContainer();
-
+      virtual ~CDataContainer(void);
 
       //--------------------------------------------------------------
       //
@@ -231,8 +254,8 @@ namespace shared
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<class T>
-      inline T get(const std::string& parameterName = std::string(), const char pathChar = '.') const; 
-      
+      inline T get(const std::string& parameterName = std::string(), const char pathChar = '.') const;
+
       //--------------------------------------------------------------
       /// \brief	    Get parameter value
       /// \param [in] parameterName    Name of the parameter
@@ -250,7 +273,7 @@ namespace shared
       //--------------------------------------------------------------
       template<class T>
       inline void set(const std::string& parameterName, const T & value, const char pathChar = '.');
-      
+
       //--------------------------------------------------------------
       /// \brief	    Set parameter value
       /// \param [in] parameterName    Name of the parameter
@@ -258,16 +281,6 @@ namespace shared
       //--------------------------------------------------------------
       template<class T>
       inline void set(const char* parameterName, const T & value, const char pathChar = '.');
-      
-
-      //--------------------------------------------------------------
-      /// \brief	    Get current parameter key name
-      /// \return     The parameter key name
-      /// \throw      shared::exception::COutOfRange if parameter can not be converted
-      /// \throw      shared::exception::CInvalidParameter if parameter is not found
-      //--------------------------------------------------------------
-      std::string getKey() const;
-
 
       //--------------------------------------------------------------
       //
@@ -328,21 +341,10 @@ namespace shared
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] whereFct         Criteria : lambda must returns true if item is found
       /// \return     The found parameter
-      /// \throw      shared::exception::CEmptyResult if no parameter matching criteria was found
+      /// \throw      shared::exception::CEmptyResutl if no parameter matching criteria was found
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       CDataContainer find(const std::string& parameterName, boost::function<bool(const CDataContainer&)> whereFct, const char pathChar = '.') const;
-
-
-      //--------------------------------------------------------------
-      /// \brief	    Merge this container from another one
-      /// \param [in] from source container
-      /// \desc       Add non-exisiting (or replace existing) values of "from" container into this container
-      ///             Values of this container not present in "from" container will be kept
-      //--------------------------------------------------------------
-      void mergeFrom(const CDataContainer& from);
-
-
 
       //--------------------------------------------------------------
       //
@@ -408,7 +410,17 @@ namespace shared
       bool exists(const std::string& parameterName, const char pathChar = '.') const;
 
       //--------------------------------------------------------------
-      /// \brief	    Check if a node contains at least a child
+      /// \brief	    Check if a node contains at least a child which is an array
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \return     true if the parameter contains child (CDataContainer), false if it is a termination node with data
+      /// \throw      shared::exception::COutOfRange if parameter can not be converted
+      /// \throw      shared::exception::CInvalidParameter if parameter is not found
+      //--------------------------------------------------------------
+      bool containsChildArray(const std::string& parameterName = std::string(), const char pathChar = '.') const;
+      
+	  //--------------------------------------------------------------
+      /// \brief	    Check if a node contains at least a child object (with a value : {...})
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] pathChar         The path spearator to use (default is '.')
       /// \return     true if the parameter contains child (CDataContainer), false if it is a termination node with data
@@ -426,6 +438,21 @@ namespace shared
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       bool containsValue(const std::string& parameterName = std::string(), const char pathChar = '.') const;
+
+	  //--------------------------------------------------------------
+	  /// \brief	  Set a value as null
+	  /// \param [in] parameterName    Name of the parameter
+	  /// \param [in] pathChar         The path spearator to use (default is '.')
+	  //--------------------------------------------------------------
+      void setNull(const std::string& parameterName = std::string(), const char pathChar = '.');
+
+	  //--------------------------------------------------------------
+	  /// \brief	  Check if a value is null
+	  /// \param [in] parameterName    Name of the parameter
+	  /// \param [in] pathChar         The path spearator to use (default is '.')
+	  /// \return  true is the value is null
+	  //--------------------------------------------------------------
+	  bool isNull(const std::string& parameterName = std::string(), const char pathChar = '.');
 
       //--------------------------------------------------------------
       /// \brief		Equality operator
@@ -462,7 +489,7 @@ namespace shared
       /// \return   The stream
       //--------------------------------------------------------------
       friend YADOMS_SHARED_EXPORT std::ostream& operator<<(std::ostream& os, const CDataContainer& dt);
-      
+
       //--------------------------------------------------------------
       /// \brief		Input operator (read a serialized container)
       /// \param [in] is  The stream to read
@@ -482,6 +509,14 @@ namespace shared
       /// \param [in] os      The out stream where to print out
       //--------------------------------------------------------------
       void printToLog(std::ostream& os) const;
+
+      //--------------------------------------------------------------
+      /// \brief	    Merge this container from another one
+      /// \param [in] from source container
+      /// \desc       Add non-exisiting (or replace existing) values of "from" container into this container
+      ///             Values of this container not present in "from" container will be kept
+      //--------------------------------------------------------------
+      void mergeFrom(const CDataContainer& from);
 
       //--------------------------------------------------------------
       //
@@ -532,15 +567,124 @@ namespace shared
       /// \brief		Constructor
       /// \param [in] initialTree    Initial tree for this container
       //--------------------------------------------------------------
-      explicit CDataContainer(const boost::property_tree::ptree & initialTree);
+      explicit CDataContainer(const rapidjson::Document & initialTree);
 
-      //--------------------------------------------------------------
-      /// \brief		Print the content to log
-      /// \param [in] tree    The tree to print
-      /// \param [in] deep    The current tree deep
-      /// \param [in] os      The out stream where to print out
-      //--------------------------------------------------------------
-      void printToLog(const boost::property_tree::ptree & tree, const int deep, std::ostream& os) const;
+	  //--------------------------------------------------------------
+	  /// \brief		Find a value from the name
+	  /// \param [in] parameterName    The parameter name
+	  /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
+	  //--------------------------------------------------------------
+	  rapidjson::Value* findValue(const std::string& parameterName, const char pathChar) const;
+
+	  //--------------------------------------------------------------
+	  /// \brief	Merge two objects
+	  /// \param [in] dstObject    Destination value
+	  /// \param [in] srcObject    Source value
+	  /// \param [in] allocator    The allocator
+	  //--------------------------------------------------------------
+	  static void mergeObjects(rapidjson::Value &dstObject, rapidjson::Value &srcObject, rapidjson::Document::AllocatorType &allocator);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Get pointer on the top root object
+	  /// \return   A pointer on the rapidjson::Document
+	  //--------------------------------------------------------------
+	  rapidjson::Document * getPointer() const;
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a std::string
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as std::string
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static std::string ConvertToString(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a bool
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as bool (check for "true"/"false", "0"/"1", or ay numeric != 0)
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static bool ConvertToBool(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a Int
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as int 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static int ConvertToInt(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a Int64
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as int64 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static int64_t ConvertToInt64(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a char
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as char 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static char ConvertToByte(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a short
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as short 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static short ConvertToShort(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a unsigned int
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as unsigned int 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static unsigned int ConvertToUInt(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a unsigned int64
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as unsigned int64 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static uint64_t ConvertToUInt64(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a unsigned char
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as unsigned char 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+      static unsigned char ConvertToUByte(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a unsigned short
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as unsigned short 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static unsigned short ConvertToUShort(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a float
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as float 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+      static float ConvertToFloat(rapidjson::Value* v);
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a double
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as double 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+	  static double ConvertToDouble(rapidjson::Value* v);
 
       //--------------------------------------------------------------
       //
@@ -596,7 +740,6 @@ namespace shared
       template<class T>
       inline std::vector<T> getValuesInternalIDataContainable(const std::string& parameterName, const char pathChar) const;
 
-
       //--------------------------------------------------------------
       /// \brief	    Get parameter values (boost::shared_ptr<T>)
       /// \param [in] parameterName    Name of the parameter
@@ -619,7 +762,6 @@ namespace shared
       template<class T>
       inline std::vector< boost::shared_ptr<T> > getValuesSPIDataContainableInternal(const std::string& parameterName, const char pathChar) const;
 
-
       //--------------------------------------------------------------
       /// \brief	    Set parameter value
       /// \param [in] parameterName    Name of the parameter
@@ -637,7 +779,7 @@ namespace shared
       //--------------------------------------------------------------
       template<class T>
       inline void setInternalIDataContainable(const std::string& parameterName, const T & value, const char pathChar);
-      
+
       //--------------------------------------------------------------
       /// \brief	    Set parameter values
       /// \param [in] parameterName    Name of the parameter
@@ -658,25 +800,25 @@ namespace shared
       template<class T>
       inline void setValuesInternalIDataContainable(const std::string& parameterName, const std::vector<T> & values, const char pathChar);
 
-		//--------------------------------------------------------------
-		/// \brief	    Get parameter values (Enum)
-		/// \param [in] parameterName    Name of the parameter
+      //--------------------------------------------------------------
+      /// \brief	    Get parameter values (Enum)
+      /// \param [in] parameterName    Name of the parameter
       /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       /// \return     The parameter values (Enum)
-		/// \throw      shared::exception::COutOfRange if parameter can not be converted
-		/// \throw      shared::exception::CInvalidParameter if parameter is not found
-		//--------------------------------------------------------------
-		template<class T>
+      /// \throw      shared::exception::COutOfRange if parameter can not be converted
+      /// \throw      shared::exception::CInvalidParameter if parameter is not found
+      //--------------------------------------------------------------
+      template<class T>
       inline std::vector<T> getValuesInternalEnum(const std::string& parameterName, const char pathChar) const;
 
 
-		//--------------------------------------------------------------
-		/// \brief	    Set parameter values (Enum)
-		/// \param [in] parameterName    Name of the parameter
-		/// \param [in] values           Valuse of the parameter (Enum)
+      //--------------------------------------------------------------
+      /// \brief	    Set parameter values (Enum)
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] values           Valuse of the parameter (Enum)
       /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       //--------------------------------------------------------------
-		template<class T>
+      template<class T>
       inline void setValuesInternalEnum(const std::string& parameterName, const std::vector<T> & values, const char pathChar);
 
       //--------------------------------------------------------------
@@ -699,6 +841,16 @@ namespace shared
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       inline void setValuesSPIDataContainableInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<IDataContainable> > & values, const char pathChar);
+
+
+	  //--------------------------------------------------------------
+	  /// \brief	Convert a rapidjson::Value into a typed value (T)
+	  /// \param [in] v    A pointer on the value to convert
+	  /// \return The data as T 
+	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  //--------------------------------------------------------------
+      template <class T>
+      inline T convert(rapidjson::Value* found) const;
 
       //--------------------------------------------------------------
       //
@@ -757,6 +909,34 @@ namespace shared
          static void setInternal(CDataContainer * tree, const std::string& parameterName, const boost::shared_ptr< T > & value, const char pathChar)
          {
             helper<T>::setInternal(tree, parameterName, *value.get(), pathChar);
+         }
+      };   
+      
+      //--------------------------------------------------------------
+      /// \brief	    Helper structure for get/set with boost::optional
+      //--------------------------------------------------------------
+      template <typename T>
+      struct helper < boost::optional< T > >
+      {
+         //--------------------------------------------------------------
+         /// \brief	    GET Method for boost::shared_ptr<T>
+         //--------------------------------------------------------------
+         static boost::optional< T > getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
+         {
+            if(tree->containsValue(parameterName, pathChar))
+               return boost::optional<T>(helper<T>::getInternal(tree, parameterName, pathChar));
+            return boost::optional<T>();
+         }
+
+         //--------------------------------------------------------------
+         /// \brief	    SET Method for boost::shared_ptr<T>
+         //--------------------------------------------------------------
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const boost::optional< T > & value, const char pathChar)
+         {
+            if (value)
+               helper<T>::setInternal(tree, parameterName, *value, pathChar);
+            else
+               tree->setNull(parameterName, pathChar);
          }
       };
 
@@ -917,7 +1097,7 @@ namespace shared
       /// \brief	    Helper structure for get/set with vector of Enum
       //--------------------------------------------------------------
       template <typename T>
-		struct vectorhelper < T, typename boost::enable_if< boost::is_enum< T > >::type >
+      struct vectorhelper < T, typename boost::enable_if< boost::is_enum< T > >::type >
       {
          //--------------------------------------------------------------
          /// \brief	    GET Method for std::vector< Enum >
@@ -1008,7 +1188,8 @@ namespace shared
          static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector<  boost::shared_ptr<T> > & value, const char pathChar)
          {
             std::vector<  boost::shared_ptr<IDataContainable> > compatibleVector;
-            for (typename std::vector<  boost::shared_ptr<T> >::const_iterator i = value.begin(); i != value.end(); ++i)
+            typename std::vector<  boost::shared_ptr<T> >::const_iterator i;
+            for (i = value.begin(); i != value.end(); ++i)
                compatibleVector.push_back(boost::dynamic_pointer_cast<IDataContainable>(*i));
             tree->setValuesSPIDataContainableInternal(parameterName, compatibleVector, pathChar);
          }
@@ -1045,16 +1226,13 @@ namespace shared
       /// \param [in]	   pathChar          The character which is interpreted as path separator
       /// \return the path
       //--------------------------------------------------------------
-      static boost::property_tree::ptree::path_type generatePath(const std::string & parameterName, const char pathChar);
-
-      static void mergeChildFrom(const boost::property_tree::ptree& from, boost::property_tree::ptree& to);
-
+      std::string generatePath(const std::string & parameterName, const char pathChar) const;
 
    private:
       //--------------------------------------------------------------
       /// \brief	   The configuration content
       //--------------------------------------------------------------
-      boost::property_tree::ptree m_tree;
+      rapidjson::Document m_tree;
 
       //--------------------------------------------------------------
       /// \brief	   Mutex protecting the configuration content
@@ -1063,7 +1241,7 @@ namespace shared
    };
 
 
-   
+
 
 
    //--------------------------------------------------------------
@@ -1091,6 +1269,17 @@ namespace shared
       return (get<std::string>(parameterName, pathChar).c_str());
    }
 
+   template<>
+   inline unsigned long CDataContainer::get(const std::string& parameterName, const char pathChar) const
+   {
+      return get<unsigned int>(parameterName, pathChar);
+   }
+
+   template<>
+   inline long CDataContainer::get(const std::string& parameterName, const char pathChar) const
+   {
+      return get<int>(parameterName, pathChar);
+   }
 
    template<class T>
    inline T CDataContainer::getWithDefault(const std::string& parameterName, const T & defaultValue, const char pathChar) const
@@ -1104,7 +1293,7 @@ namespace shared
    template<class T>
    inline void CDataContainer::set(const char* parameterName, const T & value, const char pathChar)
    {
-      const std::string strParamName(parameterName);
+      std::string strParamName(parameterName);
       set<T>(strParamName, value, pathChar);
    }
 
@@ -1118,45 +1307,40 @@ namespace shared
    }
 
 
+   template<>
+   inline void CDataContainer::set(const std::string& parameterName, const unsigned long & value, const char pathChar)
+   {
+      helper<unsigned int>::setInternal(this, parameterName, value, pathChar);
+   }
+
+   template<>
+   inline void CDataContainer::set(const std::string& parameterName, const char & value, const char pathChar)
+   {
+      std::string s;
+      s+=value;
+      set<std::string>(parameterName, s, pathChar);
+   }
+
+
 
    template<class T>
    inline T CDataContainer::getInternal(const std::string& parameterName, const char pathChar) const
    {
-      boost::lock_guard<boost::mutex> lock(m_treeMutex);
-
-      try
-      {
-         return m_tree.get<T>(generatePath(parameterName, pathChar));
-      }
-      catch (boost::property_tree::ptree_bad_path& e)
-      {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
-      }
-   } 
+      rapidjson::Value* found = findValue(parameterName, pathChar);
+      if (found)
+         return convert<T>(found);
+      throw exception::CInvalidParameter(parameterName + " : is not found");
+   }
    
-
-
    template<>
    inline CDataContainer CDataContainer::getInternal(const std::string& parameterName, const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      try
-      {
-         return CDataContainer(m_tree.get_child(generatePath(parameterName, pathChar)));
-      }
-      catch (boost::property_tree::ptree_bad_path& e)
-      {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
-      }
+      rapidjson::Value* found = findValue(parameterName, pathChar);
+      if (found)
+         return CDataContainer(found);
+      throw exception::CInvalidParameter(parameterName + " : is not found");
    }
 
 
@@ -1165,38 +1349,27 @@ namespace shared
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      try
+      rapidjson::Value* found = findValue(parameterName, pathChar);
+      if (found)
       {
-         return boost::posix_time::from_iso_string(m_tree.get<std::string>(generatePath(parameterName, pathChar)));
+         if (found->IsString())
+            return boost::posix_time::from_iso_string(found->GetString());
+         else
+            throw exception::COutOfRange(parameterName + " can not be converted to string");
       }
-      catch (boost::property_tree::ptree_bad_path& e)
+      else
       {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
+         throw exception::CInvalidParameter(parameterName + " : is not found");
       }
    }
 
    template<class T>
    inline T CDataContainer::getInternalIDataContainable(const std::string& parameterName, const char pathChar) const
    {
-      try
-      {
-         CDataContainer t2 = getInternal<CDataContainer>(parameterName, pathChar);
-         T obj;
-         obj.fillFromContent(t2);
-         return obj;
-      }
-      catch (boost::property_tree::ptree_bad_path& e)
-      {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
-      }
+      CDataContainer t2 = getInternal<CDataContainer>(parameterName, pathChar);
+      T obj;
+      obj.fillFromContent(t2);
+      return obj;
    }
 
 
@@ -1210,24 +1383,23 @@ namespace shared
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       std::vector<T> result;
-      try
+      rapidjson::Value* found = findValue(parameterName, pathChar);
+      if (found)
       {
-         boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
-
-         const boost::property_tree::ptree::const_iterator end = child.end();
-         for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it) {
-            result.push_back(it->second.get_value<T>());
+         if (found->IsArray())
+         {
+			 std::transform(found->GetArray().begin(), found->GetArray().end(), std::back_inserter(result),
+				 [this](auto &v) -> T { return this->convert<T>(&v); });
          }
-         return result;
+         else
+            throw exception::COutOfRange(parameterName + " is not an array");
       }
-      catch (boost::property_tree::ptree_bad_path& e)
+      else
       {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
+         throw exception::CInvalidParameter(parameterName + " : is not found");
       }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
-      }
+      return result;
+
    }
 
 
@@ -1237,24 +1409,22 @@ namespace shared
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       std::vector< shared::CDataContainer > result;
-      try
+      rapidjson::Value* found = findValue(parameterName, pathChar);
+      if (found)
       {
-         boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
-
-         for (boost::property_tree::ptree::const_iterator it = child.begin(); it != child.end(); ++it)
+         if (found->IsArray())
          {
-            result.push_back(shared::CDataContainer(it->second));
+			 std::transform(found->GetArray().begin(), found->GetArray().end(), std::back_inserter(result),
+				 [](auto &v) -> shared::CDataContainer { return shared::CDataContainer(v); });
          }
-         return result;
+         else
+            throw exception::COutOfRange(parameterName + " is not an array");
       }
-      catch (boost::property_tree::ptree_bad_path& e)
+      else
       {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
+         throw exception::CInvalidParameter(parameterName + " : is not found");
       }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
-      }
+      return result;
    }
 
 
@@ -1265,24 +1435,22 @@ namespace shared
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       std::vector<T> result;
-      try
+      rapidjson::Value* found = findValue(parameterName, pathChar);
+      if (found)
       {
-         auto child = m_tree.get_child(generatePath(parameterName, pathChar));
-
-         const boost::property_tree::ptree::const_iterator end = child.end();
-         for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it) {
-            result.push_back(static_cast<T>(it->second.get_value<int>()));
+         if (found->IsArray())
+         {
+			 std::transform(found->GetArray().begin(), found->GetArray().end(), std::back_inserter(result),
+				 [](auto &v) -> T { return (T)v.GetInt(); });
          }
-         return result;
+         else
+            throw exception::COutOfRange(parameterName + " is not an array");
       }
-      catch (boost::property_tree::ptree_bad_path& e)
+      else
       {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
+         throw exception::CInvalidParameter(parameterName + " : is not found");
       }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
-      }
+      return result;
    }
 
    template<class T>
@@ -1291,26 +1459,25 @@ namespace shared
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       std::vector< boost::shared_ptr<T> > result;
-      try
+      rapidjson::Value* found = findValue(parameterName, pathChar);
+      if (found)
       {
-         boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
-
-         const boost::property_tree::ptree::const_iterator end = child.end();
-         for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it)
+         if (found->IsArray())
          {
-            boost::shared_ptr<T> sp = boost::make_shared<T>(it->second.get_value<T>());
-            result.push_back(sp);
+            for (auto& v : found->GetArray())
+            {
+               boost::shared_ptr<T> sp = boost::make_shared<T>(convert<T>(&v));
+               result.push_back(sp);
+            }
          }
-         return result;
+         else
+            throw exception::COutOfRange(parameterName + " is not an array");
       }
-      catch (boost::property_tree::ptree_bad_path& e)
+      else
       {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
+         throw exception::CInvalidParameter(parameterName + " : is not found");
       }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
-      }
+      return result;
    }
 
    template<class T>
@@ -1319,59 +1486,29 @@ namespace shared
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       std::vector< boost::shared_ptr<T> > result;
-      try
+      rapidjson::Value* found = findValue(parameterName, pathChar);
+      if (found)
       {
-         boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
-
-         const boost::property_tree::ptree::const_iterator end = child.end();
-         for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it)
+         if (found->IsArray())
          {
-            boost::shared_ptr<T> sp(new T);
-            sp->fillFromContent(CDataContainer(it->second));
-            result.push_back(sp);
+            for (auto& v : found->GetArray())
+            {
+               boost::shared_ptr<T> sp(new T);
+               sp->fillFromContent(CDataContainer(v));
+               result.push_back(sp);
+            }
          }
-         return result;
+         else
+            throw exception::COutOfRange(parameterName + " is not an array");
       }
-      catch (boost::property_tree::ptree_bad_path& e)
+      else
       {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
+         throw exception::CInvalidParameter(parameterName + " : is not found");
       }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
-      }
+      return result;
    }
 
 
-
-
-   template<>
-   inline std::vector< boost::shared_ptr<IDataContainable> > CDataContainer::getValuesSPInternal(const std::string& parameterName, const char pathChar) const
-   {
-      boost::lock_guard<boost::mutex> lock(m_treeMutex);
-
-      std::vector<boost::shared_ptr<IDataContainable> > result;
-      try
-      {
-         boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
-
-         const boost::property_tree::ptree::const_iterator end = child.end();
-         for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it)
-         {
-            const boost::shared_ptr<IDataContainable> sp;
-            result.push_back(sp);
-         }
-         return result;
-      }
-      catch (boost::property_tree::ptree_bad_path& e)
-      {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
-      }
-   }
 
 
 
@@ -1381,27 +1518,27 @@ namespace shared
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       std::vector<T> result;
-      try
+      rapidjson::Value* found = findValue(parameterName, pathChar);
+      if (found)
       {
-         boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
-
-         const boost::property_tree::ptree::const_iterator end = child.end();
-         for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it)
+         if (found->IsArray())
          {
-            T a;
-            a.fillFromContent(CDataContainer(it->second));
-            result.push_back(a);
+            for (auto& v : found->GetArray())
+            {
+               T a;
+               CDataContainer dc(v);
+               a.fillFromContent(dc);
+               result.push_back(a);
+            }
          }
-         return result;
+         else
+            throw exception::COutOfRange(parameterName + " is not an array");
       }
-      catch (boost::property_tree::ptree_bad_path& e)
+      else
       {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
+         throw exception::CInvalidParameter(parameterName + " : is not found");
       }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
-      }
+      return result;
    }
 
 
@@ -1416,42 +1553,30 @@ namespace shared
    template<class T>
    inline void CDataContainer::setInternal(const std::string& parameterName, const T & value, const char pathChar)
    {
-      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+      if (!m_tree.IsObject())
+         m_tree.SetObject();
 
-      try
-      {
-         m_tree.put(generatePath(parameterName, pathChar), value);
-      }
-      catch (boost::property_tree::ptree_bad_path& e)
-      {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
-      }
+      rapidjson::Pointer(generatePath(parameterName, pathChar)).Set(m_tree, value);
    }
+
+   template<>
+   inline void CDataContainer::setInternal(const std::string& parameterName, const std::string & value, const char pathChar)
+   {
+      if (!m_tree.IsObject())
+         m_tree.SetObject();
+
+      rapidjson::Value v;
+      v.SetString(value, m_tree.GetAllocator());
+      rapidjson::Pointer(generatePath(parameterName, pathChar)).Set(m_tree, v);
+   }
+
 
    template<class T>
    inline void CDataContainer::setInternalIDataContainable(const std::string& parameterName, const T & value, const char pathChar)
    {
-      boost::lock_guard<boost::mutex> lock(m_treeMutex);
-
-      try
-      {
-         CDataContainer subTree;
-         value.extractContent(subTree);
-         m_tree.add_child(generatePath(parameterName, pathChar), subTree.m_tree);
-
-      }
-      catch (boost::property_tree::ptree_bad_path& e)
-      {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
-      }
+      CDataContainer subTree;
+      value.extractContent(subTree);
+      setInternal(parameterName, subTree, pathChar);
    }
 
 
@@ -1460,19 +1585,7 @@ namespace shared
    inline void CDataContainer::setInternal(const std::string& parameterName, const CDataContainer & value, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
-
-      try
-      {
-         m_tree.add_child(generatePath(parameterName, pathChar), value.m_tree);
-      }
-      catch (boost::property_tree::ptree_bad_path& e)
-      {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
-      }
+      rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Set(m_tree, value.m_tree);
    }
 
 
@@ -1480,19 +1593,7 @@ namespace shared
    inline void CDataContainer::setInternal(const std::string& parameterName, const boost::posix_time::ptime & value, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
-
-      try
-      {
-         m_tree.put(generatePath(parameterName, pathChar), boost::posix_time::to_iso_string(value));
-      }
-      catch (boost::property_tree::ptree_bad_path& e)
-      {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
-      }
+      rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Set(m_tree, boost::posix_time::to_iso_string(value).c_str());
    }
 
 
@@ -1504,26 +1605,27 @@ namespace shared
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      try
+      rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
+      rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
+      typename std::vector<T>::const_iterator i;
+      for (i = values.begin(); i != values.end(); ++i)
       {
-         boost::property_tree::ptree innerData;
-
-         for (typename std::vector<T>::const_iterator i = values.begin(); i != values.end(); ++i)
-         {
-            boost::property_tree::ptree t;
-            t.put("", *i);
-            innerData.push_back(std::make_pair("", t));
-         }
-
-         m_tree.add_child(generatePath(parameterName, pathChar), innerData);
+         v.PushBack(*i, allocator);
       }
-      catch (boost::property_tree::ptree_bad_path& e)
+   }
+
+   template<>
+   inline void CDataContainer::setValuesInternal(const std::string& parameterName, const std::vector<std::string> & values, const char pathChar)
+   {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+      rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
+      rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
+      typename std::vector<std::string>::const_iterator i;
+      for (i = values.begin(); i != values.end(); ++i)
       {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
+         rapidjson::Value val(i->c_str(), i->size(), allocator);
+         v.PushBack(val, allocator);
       }
    }
 
@@ -1532,26 +1634,12 @@ namespace shared
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      try
+      rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
+      rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
+      typename std::vector<T>::const_iterator i;
+      for (i = values.begin(); i != values.end(); ++i)
       {
-         boost::property_tree::ptree innerData;
-
-         for (typename std::vector<T>::const_iterator i = values.begin(); i != values.end(); ++i)
-         {
-            boost::property_tree::ptree t;
-            t.put("", static_cast<int>(*i));
-            innerData.push_back(std::make_pair("", t));
-         }
-
-         m_tree.add_child(generatePath(parameterName, pathChar), innerData);
-      }
-      catch (boost::property_tree::ptree_bad_path& e)
-      {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
+         v.PushBack(static_cast<int>(*i), allocator);
       }
    }
 
@@ -1560,26 +1648,17 @@ namespace shared
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      try
+      rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
+      rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
+      typename std::vector<T>::const_iterator i;
+      for (i = values.begin(); i != values.end(); ++i)
       {
-         boost::property_tree::ptree innerData;
+         CDataContainer t;
+         i->extractContent(t);
 
-         for (typename std::vector<T>::const_iterator i = values.begin(); i != values.end(); ++i)
-         {
-            CDataContainer t;
-            i->extractContent(t);
-            innerData.push_back(std::make_pair("", t.m_tree));
-         }
-
-         m_tree.add_child(generatePath(parameterName, pathChar), innerData);
-      }
-      catch (boost::property_tree::ptree_bad_path& e)
-      {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
+         rapidjson::Value a;
+         a.CopyFrom(t.m_tree, allocator);
+         v.PushBack(a, allocator);
       }
    }
 
@@ -1590,53 +1669,134 @@ namespace shared
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      try
+      rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
+      rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
+      typename std::vector< boost::shared_ptr<T> >::const_iterator i;
+      for (i = values.begin(); i != values.end(); ++i)
       {
-         boost::property_tree::ptree innerData;
-
-         for (typename std::vector< boost::shared_ptr<T> >::const_iterator i = values.begin(); i != values.end(); ++i)
-         {
-            boost::property_tree::ptree t;
-            t.put("", *i->get());
-            innerData.push_back(std::make_pair("", t));
-         }
-
-         m_tree.add_child(generatePath(parameterName, pathChar), innerData);
-      }
-      catch (boost::property_tree::ptree_bad_path& e)
-      {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
+         v.PushBack(*i->get(), allocator);
       }
    }
+
+   template<class T>
+   inline T CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return found->Get<T>();
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+
+   template<>
+   inline bool CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToBool(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+
+   template<>
+   inline std::string CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToString(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+   
+   template<>
+   inline int CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToInt(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+   
+   template<>
+   inline int64_t CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToInt64(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   } 
+   
+   template<>
+   inline char CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToByte(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+
+   template<>
+   inline short CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToShort(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }   
+
+   template<>
+   inline unsigned int CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToUInt(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+   
+   template<>
+   inline uint64_t CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToUInt64(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   } 
+   
+   template<>
+   inline unsigned char CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToUByte(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+
+   template<>
+   inline unsigned short CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToUShort(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+
+   template<>
+   inline float CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToFloat(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+
+   template<>
+   inline double CDataContainer::convert(rapidjson::Value* found) const
+   {
+      if(found)
+         return ConvertToDouble(found);
+      throw exception::CInvalidParameter("Fail to convert NULL value");
+   }
+
 
    inline void CDataContainer::setValuesSPIDataContainableInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<IDataContainable> > & values, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      try
+      rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
+      rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
+      std::vector< boost::shared_ptr<IDataContainable> >::const_iterator i;
+      for (i = values.begin(); i != values.end(); ++i)
       {
-         boost::property_tree::ptree innerData;
-
-         for (std::vector< boost::shared_ptr<IDataContainable> >::const_iterator i = values.begin(); i != values.end(); ++i)
-         {
-            CDataContainer t;
-            (*i)->extractContent(t);
-            innerData.push_back(std::make_pair("", t.m_tree));
-         }
-
-         m_tree.add_child(generatePath(parameterName, pathChar), innerData);
-      }
-      catch (boost::property_tree::ptree_bad_path& e)
-      {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
+         CDataContainer t;
+         (*i)->extractContent(t);
+         rapidjson::Value a;
+         a.CopyFrom(t.m_tree, allocator);
+         v.PushBack(a, allocator);
       }
    }
 
@@ -1646,24 +1806,14 @@ namespace shared
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      try
+      rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
+      rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
+      std::vector<CDataContainer>::const_iterator i;
+      for (i = values.begin(); i != values.end(); ++i)
       {
-         boost::property_tree::ptree innerData;
-
-         for (std::vector<CDataContainer>::const_iterator i = values.begin(); i != values.end(); ++i)
-         {
-            innerData.push_back(std::make_pair("", i->m_tree));
-         }
-
-         m_tree.add_child(generatePath(parameterName, pathChar), innerData);
-      }
-      catch (boost::property_tree::ptree_bad_path& e)
-      {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
+         rapidjson::Value a;
+         a.CopyFrom(i->m_tree, allocator);
+         v.PushBack(a, allocator);
       }
    }
 
@@ -1672,7 +1822,7 @@ namespace shared
    template<typename EnumType>
    EnumType CDataContainer::getEnumValue(const std::string& parameterName, const EnumValuesNames& valuesNames, const char pathChar) const
    {
-      const auto stringValue = get<std::string>(parameterName, pathChar);
+      auto stringValue = get<std::string>(parameterName, pathChar);
       auto it = valuesNames.find(stringValue);
       if (it != valuesNames.end())
          return static_cast<EnumType>(it->second);
