@@ -1,3 +1,6 @@
+### 1.2.0
+* New feature #553 : use of full compliant Json
+
 ### 1.1.6-beta.2
 * Fix #546 : Keep plugin state in cache to send only state changes
 

@@ -1,8 +1,5 @@
-### 2.3.0-beta
+### 2.3.0-beta.1
 * New feature #553 : use of full compliant Json
-
-
-### 2.3.0-alpha
 * New feature #532 : Add readkeyworddetails function to script API
 * New feature #537 : Add a download logs function
 * Fix #522 : Try to backup elsewhere if not enough place in system temp folder
