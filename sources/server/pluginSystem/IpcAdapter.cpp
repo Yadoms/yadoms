@@ -138,7 +138,7 @@ namespace pluginSystem
       const auto cuttedMessage = m_messageCutter->cut(serializedMessage,
                                                       pbMessageSize);
 
-      if (!cuttedMessage || !cuttedMessage->empty())
+      if (cuttedMessage && !cuttedMessage->empty())
       {
          YADOMS_LOG(trace) << "[SEND] message " << pbMsg.OneOf_case() << " to plugin instance #" << m_pluginApi->getPluginId();
          for (const auto& part : *cuttedMessage)
