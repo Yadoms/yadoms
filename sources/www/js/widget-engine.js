@@ -424,7 +424,7 @@ function updateWidgetsPolling(pageId) {
           $.each(data, function (index, acquisition) {
              //we signal the new acquisition to the widget if the widget support the method
              $.each(pageId.widgets, function (widgetIndex, widget) {
-                if ($.inArray(acquisition.keywordId, widget.getlastValue)!=-1){
+                if ($.inArray(acquisition.keywordId, widget.keywordsToGetlastValue)!=-1){
                    if (parseBool(acquisition.exist)){
                       if (widget.viewModel.onNewAcquisition !== undefined)
                          widget.viewModel.onNewAcquisition(acquisition.keywordId, acquisition);
@@ -451,7 +451,7 @@ function updateWidgetsPolling(pageId) {
 
 function updateWidgetPolling(widget) {
     var d = new $.Deferred();
-    
+
     if (!isNullOrUndefined(widget.listenedKeywords)) {
        if (widget.listenedKeywords.length!=0){ // only if this list is not empty
           AcquisitionManager.getLastAcquisition(widget.listenedKeywords, widget.additionalInfo)
