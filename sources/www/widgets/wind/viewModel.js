@@ -128,12 +128,12 @@ widgetViewModelCtor = function windViewModel() {
       var self = this;
 
       if (parseBool(self.widget.configuration.speedDisplay.checkbox)) {
-         if (keywordId === self.widget.configuration.speedDisplay.content.windSpeed.keywordId) {
+         if (keywordId === parseInt(self.widget.configuration.speedDisplay.content.windSpeed.keywordId)) {
             self.windspeed(self.formatSpeed(data.value));
          }
       }
 
-      if (keywordId === self.widget.configuration.windDirection.keywordId) {
+      if (keywordId === parseInt(self.widget.configuration.windDirection.keywordId)) {
          self.direction = self.mod(parseFloat(data.value) + self.correction, 360);
          self.displayNeedle(self.direction);
       }
