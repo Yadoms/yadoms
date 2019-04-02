@@ -321,7 +321,7 @@
         "name": "Nouvelle donnée",
         "description": "Saisir la nouvelle valeur à définir"
       },
-      "duration-regex-error": "Le format pour une durée doit être : xx:yy:zz"
+      "duration-regex-error": "Le format pour une durée doit être hh:mm:ss ou un nombre décimal (en secondes)"
     },
     "configure-manually-device": {
       "title": "Ajouter un équipement",
