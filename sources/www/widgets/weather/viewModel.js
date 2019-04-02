@@ -48,7 +48,7 @@ widgetViewModelCtor = function weatherViewModel() {
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
 
-        if (keywordId === self.widget.configuration.device.keywordId) {
+        if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
             var obj = jQuery.parseJSON(data.value);
 
             //We only keep the city name

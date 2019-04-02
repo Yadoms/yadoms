@@ -113,7 +113,7 @@ widgetViewModelCtor =
 
               if ((this.widget.configuration != undefined) && (this.widget.configuration.device != undefined)) {
 
-                  if (keywordId === this.widget.configuration.device.keywordId) {
+                  if (keywordId === parseInt(this.widget.configuration.device.keywordId)) {
                         switch (self.capacity) {
                            case "dimmable": 
 						      if (parseInt(data.value) !== 0) 

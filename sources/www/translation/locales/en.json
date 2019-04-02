@@ -321,7 +321,7 @@
         "name": "New value",
         "description": "Set a new value data"
       },
-      "duration-regex-error": "the duration format should be xx:yy:zz"
+      "duration-regex-error": "the duration format should be hh:mm:ss or decimal number (in seconds)"
     },
     "configure-manually-device": {
       "title": "Add a new device",

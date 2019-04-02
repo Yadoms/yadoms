@@ -220,7 +220,7 @@ widgetViewModelCtor =
             return;
 
          //Check if first device
-         if (keywordId == this.widget.configuration.device.keywordId) {
+         if (keywordId == parseInt(this.widget.configuration.device.keywordId)) {
             if (!isNullOrUndefinedOrEmpty(data.capacity))
                self.capacity[0] = data.capacity;
 
@@ -243,7 +243,7 @@ widgetViewModelCtor =
          //check if additional devices
          if (!isNullOrUndefined(this.widget.configuration.additionalDevices.content.devices)) {
             $.each(this.widget.configuration.additionalDevices.content.devices, function (index, device) {
-               if (keywordId == device.content.source.keywordId) {
+               if (keywordId == parseInt(device.content.source.keywordId)) {
                   if (!isNullOrUndefinedOrEmpty(data.capacity))
                      self.capacity[index + 1] = data.capacity;
 

@@ -107,7 +107,7 @@ widgetViewModelCtor = function indicatorViewModel() {
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
         try {
-            if (keywordId === self.widget.configuration.device.keywordId) {
+            if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
                if (!isNullOrUndefinedOrEmpty(data.capacityName))
                   self.capacity[index+1] = data.capacityName;
           

@@ -128,7 +128,7 @@ widgetViewModelCtor =
               if ((this.widget.configuration == undefined) || (this.widget.configuration.device == undefined))
                  return;
               
-              if (keywordId === this.widget.configuration.device.keywordId) {
+              if (keywordId === parseInt(this.widget.configuration.device.keywordId)) {
                  if (!isNullOrUndefinedOrEmpty(data.capacityName))
                     self.capacity   = data.capacityName;
                  
