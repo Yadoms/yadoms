@@ -23,7 +23,7 @@ namespace http
    {
       try
       {
-         auto mapParameters = parameters.getAsMap();
+         auto mapParameters = parameters.getAsMap<std::string>();
          Poco::URI uri(url);
 
          if (!parameters.empty())

@@ -217,6 +217,37 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       BOOST_CHECK_EQUAL_COLLECTIONS(allconditions.begin(), allconditions.end(), getAllCond.begin(), getAllCond.end()) ;
    }
 
+   BOOST_AUTO_TEST_CASE(ContainerToVectorOfContainers)
+   {
+      const shared::CDataContainer in("\
+      {\
+         \"changelogUrl\": \"http://www.yadoms.com/downloads/update/widgets/moon/changelog.md\",\
+            \"0\": {\
+            \"name\": \"moon\",\
+            \"description\": null,\
+            \"version\": \"1.0.0\"\
+         },\
+         \"1\": {\
+            \"name\": \"moon\",\
+            \"description\": null,\
+            \"version\": \"1.0.2\"\
+         },\
+         \"2\": {\
+            \"name\": \"moon\",\
+            \"description\": null,\
+            \"version\": \"1.0.0-rc.1\"\
+         },\
+         \"3\": {\
+            \"name\": \"moon\",\
+            \"description\": null,\
+            \"version\": \"1.0.1\"\
+         }\
+      }");
+      std::vector<shared::CDataContainer> out;
+      BOOST_CHECK_NO_THROW(out = in.get<std::vector<shared::CDataContainer>>());
+   }
+
+
    boost::shared_ptr<shared::serialization::IDataSerializable> maketest(const unsigned int testcount)
    {
 	   shared::CDataContainer result;
@@ -1144,7 +1175,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       std::map<std::string, std::string> input = {{"key1", "value1"},{"key2", "value2"},{"key3", "value3"},{"key4", "value4"}};
       shared::CDataContainer dc(input);
 
-      auto output = dc.getAsMap();
+      auto output = dc.getAsMap<std::string>();
 
       //dont use BOOST_CHECK_EQUAL_COLLECTIONS because it do not builds with std::map
       BOOST_CHECK_MAPS(input, output);

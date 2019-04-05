@@ -323,7 +323,8 @@ namespace shared
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      std::map<std::string, std::string> getAsMap(const std::string& parameterName = std::string(), const char pathChar = '.') const;
+      template<typename Type>
+      std::map<std::string, Type> getAsMap(const std::string& parameterName = std::string(), const char pathChar = '.') const;
 
 
       //--------------------------------------------------------------
@@ -444,7 +445,7 @@ namespace shared
 	  /// \param [in] parameterName    Name of the parameter
 	  /// \param [in] pathChar         The path spearator to use (default is '.')
 	  //--------------------------------------------------------------
-      void setNull(const std::string& parameterName = std::string(), const char pathChar = '.');
+      void setNull(const std::string& parameterName = std::string(), const char pathChar = '.') const;
 
 	  //--------------------------------------------------------------
 	  /// \brief	  Check if a value is null
@@ -452,7 +453,7 @@ namespace shared
 	  /// \param [in] pathChar         The path spearator to use (default is '.')
 	  /// \return  true is the value is null
 	  //--------------------------------------------------------------
-	  bool isNull(const std::string& parameterName = std::string(), const char pathChar = '.');
+	  bool isNull(const std::string& parameterName = std::string(), const char pathChar = '.') const;
 
       //--------------------------------------------------------------
       /// \brief		Equality operator
@@ -596,7 +597,7 @@ namespace shared
 	  /// \return The data as std::string
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static std::string ConvertToString(rapidjson::Value* v);
+	  static std::string convertToString(rapidjson::Value* v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a bool
@@ -604,7 +605,7 @@ namespace shared
 	  /// \return The data as bool (check for "true"/"false", "0"/"1", or ay numeric != 0)
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static bool ConvertToBool(rapidjson::Value* v);
+	  static bool convertToBool(rapidjson::Value* v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a Int
@@ -612,7 +613,7 @@ namespace shared
 	  /// \return The data as int 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static int ConvertToInt(rapidjson::Value* v);
+	  static int convertToInt(rapidjson::Value* v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a Int64
@@ -620,7 +621,7 @@ namespace shared
 	  /// \return The data as int64 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static int64_t ConvertToInt64(rapidjson::Value* v);
+	  static int64_t convertToInt64(rapidjson::Value* v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a char
@@ -628,7 +629,7 @@ namespace shared
 	  /// \return The data as char 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static char ConvertToByte(rapidjson::Value* v);
+	  static char convertToByte(rapidjson::Value* v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a short
@@ -636,7 +637,7 @@ namespace shared
 	  /// \return The data as short 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static short ConvertToShort(rapidjson::Value* v);
+	  static short convertToShort(rapidjson::Value* v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a unsigned int
@@ -644,7 +645,7 @@ namespace shared
 	  /// \return The data as unsigned int 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static unsigned int ConvertToUInt(rapidjson::Value* v);
+	  static unsigned int convertToUInt(rapidjson::Value* v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a unsigned int64
@@ -652,7 +653,7 @@ namespace shared
 	  /// \return The data as unsigned int64 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static uint64_t ConvertToUInt64(rapidjson::Value* v);
+	  static uint64_t convertToUInt64(rapidjson::Value* v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a unsigned char
@@ -660,7 +661,7 @@ namespace shared
 	  /// \return The data as unsigned char 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-      static unsigned char ConvertToUByte(rapidjson::Value* v);
+      static unsigned char convertToUByte(rapidjson::Value* v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a unsigned short
@@ -668,7 +669,7 @@ namespace shared
 	  /// \return The data as unsigned short 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static unsigned short ConvertToUShort(rapidjson::Value* v);
+	  static unsigned short convertToUShort(rapidjson::Value* v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a float
@@ -676,7 +677,7 @@ namespace shared
 	  /// \return The data as float 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-      static float ConvertToFloat(rapidjson::Value* v);
+      static float convertToFloat(rapidjson::Value* v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a double
@@ -684,7 +685,7 @@ namespace shared
 	  /// \return The data as double 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static double ConvertToDouble(rapidjson::Value* v);
+	  static double convertToDouble(rapidjson::Value* v);
 
       //--------------------------------------------------------------
       //
@@ -1188,8 +1189,7 @@ namespace shared
          static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector<  boost::shared_ptr<T> > & value, const char pathChar)
          {
             std::vector<  boost::shared_ptr<IDataContainable> > compatibleVector;
-            typename std::vector<  boost::shared_ptr<T> >::const_iterator i;
-            for (i = value.begin(); i != value.end(); ++i)
+            for (typename std::vector<boost::shared_ptr<T>>::const_iterator i = value.begin(); i != value.end(); ++i)
                compatibleVector.push_back(boost::dynamic_pointer_cast<IDataContainable>(*i));
             tree->setValuesSPIDataContainableInternal(parameterName, compatibleVector, pathChar);
          }
@@ -1260,7 +1260,7 @@ namespace shared
    template<>
    inline std::map<std::string, std::string> CDataContainer::get(const std::string& parameterName, const char pathChar) const
    {
-      return getAsMap(parameterName, pathChar);
+      return getAsMap<std::string>(parameterName, pathChar);
    }
 
    template<>
@@ -1293,7 +1293,7 @@ namespace shared
    template<class T>
    inline void CDataContainer::set(const char* parameterName, const T & value, const char pathChar)
    {
-      std::string strParamName(parameterName);
+      const std::string strParamName(parameterName);
       set<T>(strParamName, value, pathChar);
    }
 
@@ -1441,7 +1441,7 @@ namespace shared
          if (found->IsArray())
          {
 			 std::transform(found->GetArray().begin(), found->GetArray().end(), std::back_inserter(result),
-				 [](auto &v) -> T { return (T)v.GetInt(); });
+				 [](auto &v) -> T { return static_cast<T>(v.GetInt()); });
          }
          else
             throw exception::COutOfRange(parameterName + " is not an array");
@@ -1607,8 +1607,7 @@ namespace shared
 
       rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
       rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
-      typename std::vector<T>::const_iterator i;
-      for (i = values.begin(); i != values.end(); ++i)
+      for (typename std::vector<T>::const_iterator i = values.begin(); i != values.end(); ++i)
       {
          v.PushBack(*i, allocator);
       }
@@ -1621,8 +1620,7 @@ namespace shared
 
       rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
       rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
-      typename std::vector<std::string>::const_iterator i;
-      for (i = values.begin(); i != values.end(); ++i)
+      for (auto i = values.begin(); i != values.end(); ++i)
       {
          rapidjson::Value val(i->c_str(), i->size(), allocator);
          v.PushBack(val, allocator);
@@ -1636,8 +1634,7 @@ namespace shared
 
       rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
       rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
-      typename std::vector<T>::const_iterator i;
-      for (i = values.begin(); i != values.end(); ++i)
+      for (typename std::vector<T>::const_iterator i = values.begin(); i != values.end(); ++i)
       {
          v.PushBack(static_cast<int>(*i), allocator);
       }
@@ -1650,8 +1647,7 @@ namespace shared
 
       rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
       rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
-      typename std::vector<T>::const_iterator i;
-      for (i = values.begin(); i != values.end(); ++i)
+      for (typename std::vector<T>::const_iterator i = values.begin(); i != values.end(); ++i)
       {
          CDataContainer t;
          i->extractContent(t);
@@ -1671,8 +1667,7 @@ namespace shared
 
       rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
       rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
-      typename std::vector< boost::shared_ptr<T> >::const_iterator i;
-      for (i = values.begin(); i != values.end(); ++i)
+      for (typename std::vector<boost::shared_ptr<T>>::const_iterator i = values.begin(); i != values.end(); ++i)
       {
          v.PushBack(*i->get(), allocator);
       }
@@ -1690,7 +1685,7 @@ namespace shared
    inline bool CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return ConvertToBool(found);
+         return convertToBool(found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
 
@@ -1698,7 +1693,7 @@ namespace shared
    inline std::string CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return ConvertToString(found);
+         return convertToString(found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
    
@@ -1706,7 +1701,7 @@ namespace shared
    inline int CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return ConvertToInt(found);
+         return convertToInt(found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
    
@@ -1714,7 +1709,7 @@ namespace shared
    inline int64_t CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return ConvertToInt64(found);
+         return convertToInt64(found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    } 
    
@@ -1722,7 +1717,7 @@ namespace shared
    inline char CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return ConvertToByte(found);
+         return convertToByte(found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
 
@@ -1730,7 +1725,7 @@ namespace shared
    inline short CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return ConvertToShort(found);
+         return convertToShort(found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }   
 
@@ -1738,7 +1733,7 @@ namespace shared
    inline unsigned int CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return ConvertToUInt(found);
+         return convertToUInt(found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
    
@@ -1746,7 +1741,7 @@ namespace shared
    inline uint64_t CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return ConvertToUInt64(found);
+         return convertToUInt64(found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    } 
    
@@ -1754,7 +1749,7 @@ namespace shared
    inline unsigned char CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return ConvertToUByte(found);
+         return convertToUByte(found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
 
@@ -1762,7 +1757,7 @@ namespace shared
    inline unsigned short CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return ConvertToUShort(found);
+         return convertToUShort(found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
 
@@ -1770,7 +1765,7 @@ namespace shared
    inline float CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return ConvertToFloat(found);
+         return convertToFloat(found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
 
@@ -1778,7 +1773,7 @@ namespace shared
    inline double CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return ConvertToDouble(found);
+         return convertToDouble(found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
 
@@ -1808,8 +1803,7 @@ namespace shared
 
       rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
       rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
-      std::vector<CDataContainer>::const_iterator i;
-      for (i = values.begin(); i != values.end(); ++i)
+      for (auto i = values.begin(); i != values.end(); ++i)
       {
          rapidjson::Value a;
          a.CopyFrom(i->m_tree, allocator);
@@ -1822,12 +1816,29 @@ namespace shared
    template<typename EnumType>
    EnumType CDataContainer::getEnumValue(const std::string& parameterName, const EnumValuesNames& valuesNames, const char pathChar) const
    {
-      auto stringValue = get<std::string>(parameterName, pathChar);
+      const auto stringValue = get<std::string>(parameterName, pathChar);
       auto it = valuesNames.find(stringValue);
       if (it != valuesNames.end())
          return static_cast<EnumType>(it->second);
 
       throw exception::COutOfRange(std::string("Value ") + stringValue + " was not found for " + parameterName + " parameter");
+   }
+
+   template<typename Type>
+   std::map<std::string, Type> CDataContainer::getAsMap(const std::string& parameterName, const char pathChar) const
+   {
+      std::map<std::string, Type> result;
+
+      rapidjson::Value* found = findValue(parameterName, pathChar);
+      if (found)
+      {
+         for (rapidjson::Value::ConstMemberIterator i = found->MemberBegin(); i != found->MemberEnd(); ++i)
+         {
+            result[i->name.GetString()] = get<Type>(i->name.GetString());//TODO  i->value.Get<Type>();
+         }
+      }
+
+      return result;
    }
 
 } // namespace shared

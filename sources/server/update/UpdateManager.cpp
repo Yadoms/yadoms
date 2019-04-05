@@ -341,8 +341,8 @@ namespace update
          {
             if (m_developerMode)
             {
-               YADOMS_LOG(warning) << "Previous Yadoms versions are available because you are in developper mode : "
-                  << "Install a previous version at yout own risk, "
+               YADOMS_LOG(warning) << "Previous Yadoms versions are available because you are in developer mode : "
+                  << "Install a previous version at your own risk, "
                   << "downgraded version may be unable to load your current database";
             }
             else
