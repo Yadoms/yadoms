@@ -1,3 +1,6 @@
+### 1.3.2-beta.1
+* Fix zooming and panning for PC
+
 ### 1.3.1
 * Fix #554 - Curves reappears after changing the period
 
