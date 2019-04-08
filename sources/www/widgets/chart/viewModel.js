@@ -174,7 +174,7 @@ function chartViewModel() {
                     type: 'line',
                     animation: false,
                     marginTop: 10,
-                    zoomType: "x",
+                    zoomType: "xy",
                     panning: true,
                     panKey: 'shift'
                 },
