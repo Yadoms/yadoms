@@ -1,4 +1,4 @@
-### 1.3.0-beta.1
+### 1.3.0
 * Add the possibility to disable automatic unit scaling
 
 ### 1.2.2
