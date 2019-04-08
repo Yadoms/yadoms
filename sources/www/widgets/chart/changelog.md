@@ -1,3 +1,6 @@
+### 1.3.1
+* Fix #554 - Curves reappears after changing the period
+
 ### 1.3.0
 * Add the possibility to disable automatic unit scaling
 
