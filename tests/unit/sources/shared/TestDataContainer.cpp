@@ -219,7 +219,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
    BOOST_AUTO_TEST_CASE(ContainerToVectorOfContainers)
    {
-      const shared::CDataContainer in("\
+      const shared::CDataContainer inIsNotAnArray("\
       {\
          \"changelogUrl\": \"http://www.yadoms.com/downloads/update/widgets/moon/changelog.md\",\
             \"0\": {\
@@ -243,8 +243,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
             \"version\": \"1.0.1\"\
          }\
       }");
-      std::vector<shared::CDataContainer> out;
-      BOOST_CHECK_NO_THROW(out = in.get<std::vector<shared::CDataContainer>>());
+      BOOST_CHECK_THROW(const auto out = inIsNotAnArray.get<std::vector<shared::CDataContainer>>(), shared::exception::COutOfRange);
    }
 
 
@@ -1157,17 +1156,17 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
    }
 
 
-#define BOOST_CHECK_MAPS(input, output) \
-   { \
-      BOOST_CHECK_EQUAL(input.size(), output.size());\
-      std::map<std::string, std::string>::iterator ii, io;\
-      io = output.begin();\
-      for (ii = input.begin(); ii != input.end(); ++ii)\
-      {\
-         BOOST_CHECK_EQUAL(ii->first, io->first);\
-         BOOST_CHECK_EQUAL(ii->second, io->second);\
-         ++io;\
-      }\
+   template <typename T>
+   void CHECK_MAPS(const std::map<std::string, T>& input, const std::map<std::string, T>& output)
+   {
+      BOOST_CHECK_EQUAL(input.size(), output.size());
+      std::map<std::string, T>::const_iterator io = output.begin();
+      for (const auto& ii : input)
+      {
+         BOOST_CHECK_EQUAL(ii.first, io->first);
+         BOOST_CHECK_EQUAL(ii.second, io->second);
+         ++io;
+      }
    }
 
    BOOST_AUTO_TEST_CASE(Map)
@@ -1177,11 +1176,54 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
       auto output = dc.getAsMap<std::string>();
 
-      //dont use BOOST_CHECK_EQUAL_COLLECTIONS because it do not builds with std::map
-      BOOST_CHECK_MAPS(input, output);
+      //don't use BOOST_CHECK_EQUAL_COLLECTIONS because it do not builds with std::map
+      CHECK_MAPS<std::string>(input, output);
 
       auto output2 = dc.get<std::map<std::string, std::string>>();
-      BOOST_CHECK_MAPS(input, output2);
+      CHECK_MAPS<std::string>(input, output2);
+   }
+
+   BOOST_AUTO_TEST_CASE(MapOfContainers)
+   {
+      const shared::CDataContainer input("\
+      {\
+         \"0\": {\
+            \"name\": \"moon\",\
+            \"description\": null,\
+            \"version\": \"1.0.0\"\
+         },\
+         \"1\": {\
+            \"name\": \"moon\",\
+            \"description\": null,\
+            \"version\": \"1.0.2\"\
+         },\
+         \"2\": {\
+            \"name\": \"moon\",\
+            \"description\": null,\
+            \"version\": \"1.0.0-rc.1\"\
+         }\
+      }");
+
+      const std::map<std::string, shared::CDataContainer> expected =
+      {
+         {"0", shared::CDataContainer("{\
+            \"name\": \"moon\",\
+            \"description\": null,\
+            \"version\": \"1.0.0\"\
+         }")},
+         {"1", shared::CDataContainer("{\
+            \"name\": \"moon\",\
+            \"description\": null,\
+            \"version\": \"1.0.2\"\
+         }")},
+         {"2", shared::CDataContainer("{\
+            \"name\": \"moon\",\
+            \"description\": null,\
+            \"version\": \"1.0.0-rc.1\"\
+         }")}
+      };
+      
+      CHECK_MAPS<shared::CDataContainer>(input.getAsMap<shared::CDataContainer>(), expected);
    }
 
 BOOST_AUTO_TEST_SUITE_END()

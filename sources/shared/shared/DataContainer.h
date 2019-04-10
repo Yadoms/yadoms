@@ -1834,7 +1834,7 @@ namespace shared
       {
          for (rapidjson::Value::ConstMemberIterator i = found->MemberBegin(); i != found->MemberEnd(); ++i)
          {
-            result[i->name.GetString()] = get<Type>(i->name.GetString());//TODO  i->value.Get<Type>();
+            result[i->name.GetString()] = get<Type>(i->name.GetString());
          }
       }
 
