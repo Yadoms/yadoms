@@ -4,6 +4,7 @@
 #include <value_classes/ValueID.h>
 #include <shared/DataContainer.h>
 #include <shared/plugin/yPluginApi/historization/typeInfo/ITypeInfo.h>
+#include "OpenZWaveCommandClass.h"
 
 //--------------------------------------------------------------
 /// \brief	    Interface for keywords
@@ -53,5 +54,10 @@ public:
    /// \return    the keyword index
    //--------------------------------------------------------------
    virtual int getIndex() = 0;
-};
 
+   //--------------------------------------------------------------
+   /// \brief	  Provide the keyword index (order index of keyword)
+   /// \return    the keyword index
+   //--------------------------------------------------------------
+   virtual ECommandClass getCommandClass() = 0;
+};
