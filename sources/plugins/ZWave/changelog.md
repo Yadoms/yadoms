@@ -1,5 +1,5 @@
 ### 1.3.0
-* Fix #539 : add command class to configuration description (command class is le identifier found in devices manuals)
+* Fix #539 : add command class to configuration description (command class is the identifier found in devices manuals)
 
 ### 1.2.0
 * New feature #553 : use of full compliant Json
