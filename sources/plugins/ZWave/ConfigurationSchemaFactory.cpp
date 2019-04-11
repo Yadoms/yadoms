@@ -164,7 +164,7 @@ shared::CDataContainer CConfigurationSchemaFactory::generateForEnum(shared::CDat
 
 std::string CConfigurationSchemaFactory::generateDescription(shared::CDataContainer zwaveTypeInfo, ECommandClass commandclass)
 {
-	std::string descr = (boost::format("%02X %s") % commandclass.toInteger() % commandclass.toString()).str();
+	std::string descr = (boost::format("0x%02X %s") % commandclass.toInteger() % commandclass.toString()).str();
 	if (zwaveTypeInfo.containsValue("description")) {
 		descr += " : " + zwaveTypeInfo.get<std::string>("description");
 	}
