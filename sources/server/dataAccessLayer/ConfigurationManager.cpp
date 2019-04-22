@@ -90,9 +90,9 @@ namespace dataAccessLayer
       // If location changed, mark it as user-modified
       auto currentConfiguration(*getServerConfiguration());
       auto configurationToSave(newConfiguration);
-      if (newConfiguration.get<std::string>("location.latitude") != currentConfiguration.get<std::string>("location.latitude") ||
-         newConfiguration.get<std::string>("location.longitude") != currentConfiguration.get<std::string>("location.longitude") ||
-         newConfiguration.get<std::string>("location.altitude") != currentConfiguration.get<std::string>("location.altitude") ||
+      if (newConfiguration.get<double>("location.latitude") != currentConfiguration.get<double>("location.latitude") ||
+         newConfiguration.get<double>("location.longitude") != currentConfiguration.get<double>("location.longitude") ||
+         newConfiguration.get<double>("location.altitude") != currentConfiguration.get<double>("location.altitude") ||
          newConfiguration.get<std::string>("location.timezone") != currentConfiguration.get<std::string>("location.timezone"))
       {
          configurationToSave.set("location.status", "userDefined");
