@@ -22,9 +22,9 @@ namespace dataAccessLayer
          //   - "autoDetected" : when location was automaticaly detected (ie from IP)
          //   - "userDefined" : when location was defined by user
          m_configuration->set("location.status", "default");
-         m_configuration->set("location.latitude", "48.853");
-         m_configuration->set("location.longitude", "2.35");
-         m_configuration->set("location.altitude", "0.0");
+         m_configuration->set("location.latitude", 48.853);
+         m_configuration->set("location.longitude", 2.35);
+         m_configuration->set("location.altitude", 0.0);
          m_configuration->set("location.timezone", "Europe/Paris");
 
          m_configuration->set("basicAuthentication.active", false);
@@ -137,9 +137,9 @@ namespace dataAccessLayer
          return;
       
       serverConfiguration.set("location.status", "autoDetected");
-      serverConfiguration.set("location.latitude", newLocation.get<std::string>("latitude"));
-      serverConfiguration.set("location.longitude", newLocation.get<std::string>("longitude"));
-      serverConfiguration.set("location.altitude", newLocation.get<std::string>("altitude"));
+      serverConfiguration.set("location.latitude", newLocation.get<double>("latitude"));
+      serverConfiguration.set("location.longitude", newLocation.get<double>("longitude"));
+      serverConfiguration.set("location.altitude", newLocation.get<double>("altitude"));
       serverConfiguration.set("location.timezone", newLocation.get<std::string>("timezone"));
 
       saveConfiguration("server",
