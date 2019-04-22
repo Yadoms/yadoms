@@ -1013,7 +1013,7 @@ namespace shared
 			if (v->IsDouble())
 			{
 			   const double b = v->GetDouble();
-				if (b< FLT_MIN || b>FLT_MAX)
+				if (b< -FLT_MAX || b>FLT_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to float/single") % b).str());
 				return static_cast<float>(b);
 			}
@@ -1021,7 +1021,7 @@ namespace shared
 			if (v->IsInt())
 			{
 			   const int b = v->GetInt();
-				if (b< FLT_MIN || b>FLT_MAX)
+				if (b< -FLT_MAX || b>FLT_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to float/single") % b).str());
 				return static_cast<float>(b);
 			}
@@ -1029,7 +1029,7 @@ namespace shared
 			if (v->IsUint())
 			{
 			   const unsigned int b = v->GetUint();
-				if (b< FLT_MIN || b>FLT_MAX)
+				if (b< -FLT_MAX || b>FLT_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to float/single") % b).str());
 				return static_cast<float>(b);
 			}
@@ -1037,7 +1037,7 @@ namespace shared
 			if (v->IsInt64())
 			{
 			   const int64_t b = v->GetInt64();
-				if (b< FLT_MIN || b>FLT_MAX)
+				if (b< -FLT_MAX || b>FLT_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to float/single") % b).str());
 				return static_cast<float>(b);
 			}
@@ -1045,7 +1045,7 @@ namespace shared
 			if (v->IsUint64())
 			{
 			   const uint64_t b = v->GetUint64();
-				if (b< FLT_MIN || b>FLT_MAX)
+				if (b< -FLT_MAX || b>FLT_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to float/single") % b).str());
 				return static_cast<float>(b);
 			}
@@ -1079,7 +1079,7 @@ namespace shared
 			if (v->IsFloat())
 			{
 			   const float b = v->GetFloat();
-				if (b< DBL_MIN || b>DBL_MAX)
+				if (b< -DBL_MAX || b>DBL_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to double") % b).str());
 				return static_cast<double>(b);
 			}
@@ -1087,7 +1087,7 @@ namespace shared
 			if (v->IsInt())
 			{
 			   const int b = v->GetInt();
-				if (b< DBL_MIN || b>DBL_MAX)
+				if (b< -DBL_MAX || b>DBL_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to double") % b).str());
 				return static_cast<double>(b);
 			}
@@ -1095,7 +1095,7 @@ namespace shared
 			if (v->IsUint())
 			{
 			   const unsigned int b = v->GetUint();
-				if (b< DBL_MIN || b>DBL_MAX)
+				if (b< -DBL_MAX || b>DBL_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to double") % b).str());
 				return static_cast<double>(b);
 			}
@@ -1103,7 +1103,7 @@ namespace shared
 			if (v->IsInt64())
 			{
 			   const int64_t b = v->GetInt64();
-				if (b< DBL_MIN || b>DBL_MAX)
+				if (b< -DBL_MAX || b>DBL_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to double") % b).str());
 				return static_cast<double>(b);
 			}
@@ -1111,7 +1111,7 @@ namespace shared
 			if (v->IsUint64())
 			{
 			   const uint64_t b = v->GetUint64();
-				if (b< DBL_MIN || b>DBL_MAX)
+				if (b< -DBL_MAX || b>DBL_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to double") % b).str());
 				return static_cast<double>(b);
 			}
