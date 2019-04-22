@@ -601,13 +601,11 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
    }
 
 
-   // TOFIX : This test is disabled because the default it revealed is not so serious and
-   // it makes fail to full campaign. We have for the moment no good solution to fix it.
-   // A good solution would probably to change our JSON parser (from Boost) by a real JSON parser.
-   //BOOST_AUTO_TEST_CASE(SimpleConstruction)
-   //{
-   //   BOOST_CHECK_THROW(shared::CDataContainer dc("1"), std::exception) ;
-   //}
+   BOOST_AUTO_TEST_CASE(SimpleConstruction)
+   {
+      shared::CDataContainer dc("1");
+      BOOST_CHECK_EQUAL(dc.serialize(), "1");
+   }
 
 
    BOOST_AUTO_TEST_CASE(Merge)
@@ -758,6 +756,35 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
 
       to.mergeFrom(from);
+      BOOST_CHECK_EQUAL(to.serialize(), expected.serialize());
+   }
+
+BOOST_AUTO_TEST_CASE(MergeAndRemoveSource)
+   {
+      shared::CDataContainer to(
+         "{"
+         "   \"int\": 23,"
+         "   \"string\": \"\""
+         "}");
+
+      shared::CDataContainer from(
+         "{"
+         "   \"int\": 135,"
+         "   \"string\": \"1234\""
+         "}");
+
+      const shared::CDataContainer expected(
+         "{"
+         "   \"int\": 135,"
+         "   \"string\": \"1234\""
+         "}");
+      
+
+      to.mergeFrom(from);
+
+      // Override from memory
+      from = std::string("skdjflsjdfhgkdjhgxjkmflsdjfglsdjfmlklsmjdf");
+
       BOOST_CHECK_EQUAL(to.serialize(), expected.serialize());
    }
 
