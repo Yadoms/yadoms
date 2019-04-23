@@ -4,45 +4,87 @@
       <span data-i18n="modals.dashboard.sub-windows.maintenance.title"></span>
    </h1>
 
-   <button type="button" class="btn btn-default btn-info backupButton" data-i18n="modals.dashboard.sub-windows.maintenance.backup"
-      aria-expanded="false" />
-   <button type="button" class="btn btn-danger btn-info deleteAllButton" data-i18n="modals.dashboard.sub-windows.maintenance.deleteAll"
-      aria-expanded="false" />
+   <div class="panel-group" id="maintenance-accordion" role="tablist" aria-multiselectable="true">
+      <!-- Backup -->
+      <div class="panel panel-default with-overflow-visible">
+         <div class="panel-heading" role="tab" id="maintenance-backup-heading-panel" data-toggle="collapse" data-parent="#maintenance-accordion"
+            aria-expanded="true" aria-controls="maintenance-backup-heading-panel" data-target="#maintenance-backup-panel">
+            <h4 class="panel-title accordion-title" data-i18n="modals.dashboard.sub-windows.maintenance.backup.title" />
+         </div>
+         <div id="maintenance-backup-panel" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="maintenance-backup-heading-panel">
+            <div class="panel-body">
+               <button type="button" class="btn btn-default btn-info backupButton" data-i18n="modals.dashboard.sub-windows.maintenance.backup.startBackup" />
+               <button type="button" class="btn btn-danger btn-info deleteAllButton" data-i18n="modals.dashboard.sub-windows.maintenance.backup.deleteAll" />
 
-   <div class="action-progression" style="width: 340px; margin-top: 10px;">
-      <div class="progress">
-         <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
-            <span class="hidden">60% Complete</span>
+               <div class="action-progression" style="width: 340px; margin-top: 10px;">
+                  <div class="progress">
+                     <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
+                        <span class="hidden">60% Complete</span>
+                     </div>
+                  </div>
+                  <span class="message"></span>
+               </div>
+
+               <table id="backup-list" class="table table-bordered table-striped dashboard-list">
+                  <tr>
+                     <td data-i18n="modals.dashboard.sub-windows.maintenance.backup.backuplist.state"></td>
+                     <td data-i18n="modals.dashboard.sub-windows.maintenance.backup.backuplist.date"></td>
+                     <td data-i18n="modals.dashboard.sub-windows.maintenance.backup.backuplist.size"></td>
+                     <td data-i18n="modals.dashboard.sub-windows.maintenance.backup.backuplist.location" class="hidden-xs hidden-sm"></td>
+                     <td data-i18n="modals.dashboard.sub-windows.maintenance.backup.backuplist.actions"></td>
+                  </tr>
+               </table>
+            </div>
          </div>
       </div>
-      <span class="message"></span>
-   </div>
 
-   <!-- Backup historic -->
-   <table id="backup-list" class="table table-bordered table-striped dashboard-list">
-      <tr>
-         <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.state"></td>
-         <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.date"></td>
-         <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.size"></td>
-         <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.location" class="hidden-xs hidden-sm"></td>
-         <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.actions"></td>
-      </tr>
-   </table>
-
-   <br>
-
-   <!-- Logs download -->
-   <button type="button" class="btn btn-default btn-info logsDownloadButton" data-i18n="modals.dashboard.sub-windows.maintenance.logsDownload"
-      aria-expanded="false" />
-   <div class="logs-action-progression" style="width: 340px; margin-top: 10px;">
-      <div class="progress">
-         <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
-            <span class="hidden">60% Complete</span>
+      <!-- Logs download -->
+      <div class="panel panel-default with-overflow-visible">
+         <div class="panel-heading collapsed" role="tab" id="maintenance-logs-download-heading-panel" data-toggle="collapse"
+            data-parent="#maintenance-accordion" aria-expanded="true" aria-controls="maintenance-logs-download-heading-panel"
+            data-target="#maintenance-logs-download-panel">
+            <h4 class="panel-title accordion-title" data-i18n="modals.dashboard.sub-windows.maintenance.logs-download.title" />
+         </div>
+         <div id="maintenance-logs-download-panel" class="panel-collapse collapse" role="tabpanel" aria-labelledby="maintenance-logs-download-heading-panel">
+            <div class="panel-body">
+               <button type="button" class="btn btn-default btn-info logsDownloadButton" data-i18n="modals.dashboard.sub-windows.maintenance.logs-download.startDownload" />
+               <div class="logs-action-progression" style="width: 340px; margin-top: 10px;">
+                  <div class="progress">
+                     <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
+                        <span class="hidden">60% Complete</span>
+                     </div>
+                  </div>
+                  <span class="message"></span>
+               </div>
+            </div>
          </div>
       </div>
-      <span class="message"></span>
-   </div>
 
+      <!-- Export data -->
+      <div class="panel panel-default with-overflow-visible">
+         <div class="panel-heading collapsed" role="tab" id="maintenance-exportData-heading-panel" data-toggle="collapse"
+            data-parent="#maintenance-accordion" aria-expanded="true" aria-controls="maintenance-exportData-heading-panel"
+            data-target="#maintenance-exportData-panel">
+            <h4 class="panel-title accordion-title" data-i18n="modals.dashboard.sub-windows.maintenance.exportData.title" />
+         </div>
+         <div id="maintenance-exportData-panel" class="panel-collapse collapse" role="tabpanel" aria-labelledby="maintenance-exportData-heading-panel">
+            <div class="panel-body">
+               <div id="maintenance-exportData-device-select"></div>
+
+               <button type="button" class="btn btn-default btn-info exportDataStartButton" data-i18n="modals.dashboard.sub-windows.maintenance.exportData.startButton" />
+               <div class="exportData-action-progression" style="width: 340px; margin-top: 10px;">
+                  <div class="progress">
+                     <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
+                        <span class="hidden">60% Complete</span>
+                     </div>
+                  </div>
+                  <span class="message"></span>
+               </div>
+            </div>
+         </div>
+
+      </div>
+   </div>
 </div>
 
 <script>
@@ -65,16 +107,17 @@
 
                      var actionsBtns = '<div class="btn-group">' +
                         '<a class="btn btn-info lastBackupLink" href="backups/' + info.url +
-                        '" data-i18n="[title]modals.dashboard.sub-windows.maintenance.backuplist.download">' +
+                        '" data-i18n="[title]modals.dashboard.sub-windows.maintenance.backup.backuplist.download">' +
                         '    <span class="glyphicon glyphicon-save "></span>' +
                         '</a>' +
                         '<button type="button" class="btn btn-danger btn-delete" id="' + id +
-                        '" data-i18n="[title]modals.dashboard.sub-windows.maintenance.backuplist.delete"><span class="fa fa-trash"></span></button>' +
+                        '" data-i18n="[title]modals.dashboard.sub-windows.maintenance.backup.backuplist.delete"><span class="fa fa-trash"></span></button>' +
                         '</div>';
 
                      var line = '<tr>' +
                         '<td><span class="glyphicon ' + (!parseBool(info.inprogress) ?
-                           'glyphicon-ok text-success' : 'glyphicon-remove text-warning') + '"></span></td>' +
+                           'glyphicon-ok text-success' : 'glyphicon-remove text-warning') +
+                        '"></span></td>' +
                         '<td>' + DateTimeFormatter.isoDateToString(info.modificationDate) + '</td>' +
                         '<td>' + humanFileSize(info.size) + '</td>' +
                         '<td class="hidden-xs hidden-sm">' + info.path + '</td>' +
@@ -88,10 +131,10 @@
                            .done(function () {
                               Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
                                  $.t(
-                                    "modals.dashboard.sub-windows.maintenance.backuplist.deleteConfirmTitle"
+                                    "modals.dashboard.sub-windows.maintenance.backup.backuplist.deleteConfirmTitle"
                                  ),
                                  $.t(
-                                    "modals.dashboard.sub-windows.maintenance.backuplist.deleteConfirm"
+                                    "modals.dashboard.sub-windows.maintenance.backup.backuplist.deleteConfirm"
                                  ),
                                  function () {
                                     MaintenanceManager.deleteBackup(info.url)
@@ -259,6 +302,43 @@
       });
    }
 
+   function enableExportDataSection() {
+      $(".exportData-action-progression").hide();
+
+      DeviceManager.getAll()
+         .done((allDevices) => {
+            $deviceSelect = $("#maintenance-exportData-device-select");
+            $deviceSelect.empty();
+
+            // Populate the devices list
+            deviceListSchema = {
+               deviceListSection: {
+                  type: 'enum',
+                  name: $.t('modals.dashboard.sub-windows.maintenance.exportData.device.deviceListCombo.name'),
+                  description: $.t(
+                     'modals.dashboard.sub-windows.maintenance.exportData.device.deviceListCombo.description'),
+                  values: {}
+               }
+            };
+            $.each(allDevices, function (key, device) {
+               if (device.blacklist === "true")
+                  return true;
+               deviceListSchema.deviceListSection.values[device.id] = device.friendlyName;
+            });
+
+            var configMgr = new ConfigurationControlManager(
+               deviceListSchema,
+               null,
+               "modals.dashboard.sub-windows.maintenance.exportData.",
+               $deviceSelect);
+
+            $deviceSelect.i18n();
+            configMgr.afterI18n();
+         });
+   }
+
+
+
 
    Yadoms.initializeMaintenanceDashboard = function () {
       var d = new $.Deferred();
@@ -266,6 +346,7 @@
       asyncLoadJSLib("js/objects/maintenance-manager.js").done(function () {
             enableBackupSection();
             enableLogsDownloadSection();
+            enableExportDataSection();
 
             //if running tasks, then just refresh
             TaskManager.getTasksRunning("backup")
