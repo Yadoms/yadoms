@@ -1,7 +1,5 @@
-### 1.3.2-beta.2
+### 1.3.2
 * Fix Zoom for Y position
-
-### 1.3.2-beta.1
 * Fix zooming and panning for PC
 
 ### 1.3.1
