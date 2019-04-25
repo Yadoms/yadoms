@@ -74,6 +74,14 @@
             "clean": "Cleaning...",
             "success": "Logs packing succeeded",
             "downloadError": "Fail to download logs"
+         },
+         "exportData": {
+            "prepare": "Preparing data to export...",
+            "createfile": "Creating file...",
+            "compress": "Compressing...",
+            "clean": "Cleaning...",
+            "success": "Data export succeeded",
+            "downloadError": "Fail to export data"
          }
       },
       "database": {

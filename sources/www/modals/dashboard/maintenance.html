@@ -16,7 +16,7 @@
                <button type="button" class="btn btn-default btn-info backupButton" data-i18n="modals.dashboard.sub-windows.maintenance.backup.startBackup" />
                <button type="button" class="btn btn-danger btn-info deleteAllButton" data-i18n="modals.dashboard.sub-windows.maintenance.backup.deleteAll" />
 
-               <div class="action-progression" style="width: 340px; margin-top: 10px;">
+               <div class="backup-action-progression action-progression" style="width: 340px; margin-top: 10px;">
                   <div class="progress">
                      <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
                         <span class="hidden">60% Complete</span>
@@ -48,7 +48,7 @@
          <div id="maintenance-logs-download-panel" class="panel-collapse collapse" role="tabpanel" aria-labelledby="maintenance-logs-download-heading-panel">
             <div class="panel-body">
                <button type="button" class="btn btn-default btn-info logsDownloadButton" data-i18n="modals.dashboard.sub-windows.maintenance.logs-download.startDownload" />
-               <div class="logs-action-progression" style="width: 340px; margin-top: 10px;">
+               <div class="logs-action-progression action-progression" style="width: 340px; margin-top: 10px;">
                   <div class="progress">
                      <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
                         <span class="hidden">60% Complete</span>
@@ -71,8 +71,9 @@
             <div class="panel-body">
                <div id="maintenance-exportData-device-select"></div>
 
-               <button type="button" class="btn btn-default btn-info exportDataStartButton" data-i18n="modals.dashboard.sub-windows.maintenance.exportData.startButton" />
-               <div class="exportData-action-progression" style="width: 340px; margin-top: 10px;">
+               <button type="button" class="btn btn-default btn-info exportDataStartButton" data-i18n="modals.dashboard.sub-windows.maintenance.exportData.startButton"
+                  disabled="disabled" />
+               <div class="exportData-action-progression action-progression" style="width: 340px; margin-top: 10px;">
                   <div class="progress">
                      <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
                         <span class="hidden">60% Complete</span>
@@ -162,23 +163,22 @@
          });
    }
 
-   function onBackupTaskUpdate(taskInformation) {
-      var $line = $(".action-progression");
-      $line.find("div.progress-bar").css("width", taskInformation.progression + "%");
+   function onTaskUpdate(taskInformation, actionProgressionElement, hideProgressBarAtEnd, onTaskFinishedFct) {
+      actionProgressionElement.find("div.progress-bar").css("width", taskInformation.progression + "%");
 
       if (taskInformation.message) {
-         $line.find("span.message").text($.t("core." + taskInformation.message));
+         actionProgressionElement.find("span.message").text($.t("core." + taskInformation.message));
       } else {
-         $line.find("span.message").text("");
+         actionProgressionElement.find("span.message").text("");
       }
 
       var taskFinished = false;
-      //we manage the end of the task
-      var state = taskInformation.taskState || taskInformation.status; //from taskManager=>status, from webSocket notif)>taskState
+      // End of the task managment
+      var state = taskInformation.taskState || taskInformation.status;
 
       if (state) {
          if (state.toLowerCase() === "fail") {
-            console.error("Unable to install : " + taskInformation.exception);
+            console.error("Unable to process task : " + taskInformation.exception);
             if (taskInformation.message) {
                notifyError($.t("core." + taskInformation.message));
             }
@@ -190,27 +190,35 @@
                notifySuccess($.t("core." + taskInformation.message));
             }
             taskFinished = true;
-            showLastBackupInformation();
+            onTaskFinishedFct();
          }
 
-         if (taskFinished) {
-            //we remove the progress information and restore buttons
-            $line.find("div.progress-bar").css("width", "0");
-            $line.hide();
+         if (taskFinished && hideProgressBarAtEnd) {
+            actionProgressionElement.find("div.progress-bar").css("width", "0");
+            actionProgressionElement.hide();
          }
       }
    }
 
    function registerNotificationForBackupTask(taskId) {
-      $(".action-progression").show();
+      $(".backup-action-progression").show();
       $(document).on("taskupdatenotification." + taskId, function (e, taskInformation) {
-         onBackupTaskUpdate(taskInformation);
+         onTaskUpdate(taskInformation, $(".backup-action-progression"), true, function () {
+            showLastBackupInformation();
+         });
       });
    }
 
 
    function enableBackupSection() {
-      $(".action-progression").hide();
+      $(".backup-action-progression").hide();
+
+      TaskManager.getTasksRunning("backup")
+         .done(function (tasks) {
+            $.each(tasks, function (index, task) {
+               registerNotificationForBackupTask(task.uuid);
+            });
+         })
 
       $(".backupButton").unbind('click').bind('click', function () {
          MaintenanceManager.startBackup()
@@ -245,32 +253,10 @@
       showLastBackupInformation();
    }
 
-   function onLogsDownloadTaskUpdate(taskInformation) {
-      var $line = $(".logs-action-progression");
-      $line.find("div.progress-bar").css("width", taskInformation.progression + "%");
-
-      if (taskInformation.message) {
-         $line.find("span.message").text($.t("core." + taskInformation.message));
-      } else {
-         $line.find("span.message").text("");
-      }
-
-      //we manage the end of the task
-      var state = taskInformation.taskState || taskInformation.status; //from taskManager=>status, from webSocket notif)>taskState
-
-      if (state) {
-         if (state.toLowerCase() === "fail") {
-            console.error("Unable to download logs : " + taskInformation.exception);
-            if (taskInformation.message) {
-               notifyError($.t("core." + taskInformation.message));
-            }
-         }
-
-         if (state.toLowerCase() === "success") {
-            if (taskInformation.message) {
-               notifySuccess($.t("core." + taskInformation.message));
-            }
-
+   function registerNotificationForLogsDownloadTask(taskId) {
+      $(".logs-action-progression").show();
+      $(document).on("taskupdatenotification." + taskId, function (e, taskInformation) {
+         onTaskUpdate(taskInformation, $(".logs-action-progression"), false, function () {
             MaintenanceManager.lastLogsDownloadInformation()
                .done(function (infos) {
                   top.location.href = "backups/" + infos.logs.url;
@@ -279,24 +265,23 @@
                   console.error(error);
                   notifyError($.t("core.task.packLogs.downloadError"));
                });
-         }
-      }
-   }
-
-   function registerNotificationForLogsDownloadTask(taskId) {
-      $(".logs-action-progression").show();
-      $(document).on("taskupdatenotification." + taskId, function (e, taskInformation) {
-         onLogsDownloadTaskUpdate(taskInformation);
+         });
       });
    }
 
    function enableLogsDownloadSection() {
       $(".logs-action-progression").hide();
 
+      TaskManager.getTasksRunning("packLogs")
+         .done(function (tasks) {
+            $.each(tasks, function (index, task) {
+               registerNotificationForLogsDownloadTask(task.uuid);
+            });
+         })
+
       $(".logsDownloadButton").unbind('click').bind('click', function () {
          MaintenanceManager.startLogsDownload()
             .done(function (data) {
-               //data.taskId
                registerNotificationForLogsDownloadTask(data.taskId);
             });
       });
@@ -304,6 +289,14 @@
 
    function enableExportDataSection() {
       $(".exportData-action-progression").hide();
+      $exportDataStartButton = $(".exportDataStartButton");
+
+      TaskManager.getTasksRunning("exportData")
+         .done(function (tasks) {
+            $.each(tasks, function (index, task) {
+               registerNotificationForExportDataTask(task.uuid);
+            });
+         })
 
       DeviceManager.getAll()
          .done((allDevices) => {
@@ -332,9 +325,59 @@
                "modals.dashboard.sub-windows.maintenance.exportData.",
                $deviceSelect);
 
+            // When opening the modal, if a device is already selected, process it
+            configMgr.getCurrentConfiguration()
+               .done(function (config) {
+                  if (isNullOrUndefinedOrEmpty(config.deviceListSection)) {
+                     $exportDataStartButton.attr("disabled", "disabled");
+                     selectedDeviceIndex = undefined;
+                  } else {
+                     $exportDataStartButton.removeAttr("disabled");
+                     selectedDeviceIndex = parseInt(config.deviceListSection);
+                  }
+               });
+            // When user selects another device
+            $deviceSelect.find("select").change(function () {
+               configMgr.getCurrentConfiguration()
+                  .done(function (config) {
+                     if (isNullOrUndefinedOrEmpty(config.deviceListSection)) {
+                        $exportDataStartButton.attr("disabled", "disabled");
+                        selectedDeviceIndex = undefined;
+                     } else {
+                        $exportDataStartButton.removeAttr("disabled");
+                        selectedDeviceIndex = parseInt(config.deviceListSection);
+                     }
+                  })
+            });
+
             $deviceSelect.i18n();
             configMgr.afterI18n();
          });
+
+      $exportDataStartButton.unbind('click').bind('click', function () {
+         if (isNullOrUndefined(selectedDeviceIndex))
+            return;
+         MaintenanceManager.startExportData(selectedDeviceIndex)
+            .done(function (data) {
+               registerNotificationForExportDataTask(data.taskId);
+            });
+      });
+   }
+
+   function registerNotificationForExportDataTask(taskId) {
+      $(".exportData-action-progression").show();
+      $(document).on("taskupdatenotification." + taskId, function (e, taskInformation) {
+         onTaskUpdate(taskInformation, $(".exportData-action-progression"), false, function () {
+            MaintenanceManager.lastExportDataInformation()
+               .done(function (infos) {
+                  top.location.href = "backups/" + infos.logs.url;
+               })
+               .fail(function (error) {
+                  console.error(error);
+                  notifyError($.t("core.task.exportData.downloadError"));
+               });
+         });
+      });
    }
 
 
@@ -347,18 +390,8 @@
             enableBackupSection();
             enableLogsDownloadSection();
             enableExportDataSection();
-
-            //if running tasks, then just refresh
-            TaskManager.getTasksRunning("backup")
-               .done(function (tasks) {
-                  $.each(tasks, function (index, task) {
-                     registerNotificationForBackupTask(task.uuid);
-                     onBackupTaskUpdate(task);
-                  });
-               })
-               .always(function () {
-                  d.resolve();
-               });
+            
+            d.resolve();
          })
          .fail(d.reject);
 

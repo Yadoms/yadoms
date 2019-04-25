@@ -74,6 +74,14 @@
             "clean": "Nettoyage...",
             "success": "Empaquetage des journaux réussi",
             "downloadError": "Téléchargement des logs échoué"
+         },
+         "exportData": {
+            "prepare": "Préparation des données à exporter...",
+            "createfile": "Création du fichier...",
+            "compress": "Compression...",
+            "clean": "Nettoyage...",
+            "success": "Export des données réussi",
+            "downloadError": "Echec d'export des données"
          }
       },
       "database": {
