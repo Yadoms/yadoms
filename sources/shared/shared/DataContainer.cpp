@@ -329,8 +329,10 @@ namespace shared
 				}
 				else
 				{
-					//check type match, but also check some specific cases (kTrueType and kFalseType are booleans; and many number combination can alsom match)
-					if (srcIt->value.GetType() == dstIt->value.GetType() ||
+					//check type match, but also check some specific cases (kTrueType and kFalseType are booleans;
+					//and many number combination can also match)
+					//string cases : string should be copied (not just reference copy)
+					if ( (srcIt->value.GetType() == dstIt->value.GetType() && !srcIt->value.IsString()) ||
 						(srcIt->value.IsBool() && dstIt->value.IsBool()) ||
 						(srcIt->value.IsNumber() && dstIt->value.IsNumber()))
 					{
