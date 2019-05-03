@@ -303,7 +303,6 @@
             $deviceSelect = $("#maintenance-exportData-device-select");
             $deviceSelect.empty();
 
-            // Populate the devices list
             deviceListSchema = {
                deviceListSection: {
                   type: 'enum',
@@ -311,15 +310,27 @@
                   description: $.t(
                      'modals.dashboard.sub-windows.maintenance.exportData.device.deviceListCombo.description'),
                   values: {}
+               },
+               keywordListSection: {
+                  type: 'enum',
+                  name: $.t('modals.dashboard.sub-windows.maintenance.exportData.device.keywordListCombo.name'),
+                  description: $.t(
+                     'modals.dashboard.sub-windows.maintenance.exportData.device.keywordListCombo.description'
+                  ),
+                  values: {}
                }
             };
+            const deviceListSectionIndex = 0;
+            const keywordListSectionIndex = 1;
+
+            // Populate the devices list
             $.each(allDevices, function (key, device) {
                if (device.blacklist === "true")
                   return true;
                deviceListSchema.deviceListSection.values[device.id] = device.friendlyName;
             });
 
-            var configMgr = new ConfigurationControlManager(
+            configMgr = new ConfigurationControlManager(
                deviceListSchema,
                null,
                "modals.dashboard.sub-windows.maintenance.exportData.",
@@ -330,38 +341,76 @@
                .done(function (config) {
                   if (isNullOrUndefinedOrEmpty(config.deviceListSection)) {
                      $exportDataStartButton.attr("disabled", "disabled");
-                     selectedDeviceIndex = undefined;
+                     configMgr.configurationHandlers[keywordListSectionIndex].setValues([]);
                   } else {
-                     $exportDataStartButton.removeAttr("disabled");
-                     selectedDeviceIndex = parseInt(config.deviceListSection);
+                     onDeviceSelected(parseInt(config.deviceListSection), configMgr.configurationHandlers[
+                        keywordListSectionIndex]);
                   }
                });
             // When user selects another device
-            $deviceSelect.find("select").change(function () {
+            $deviceSelect.find("select").change(function (data) {
+               $exportDataStartButton.attr("disabled", "disabled");
+
                configMgr.getCurrentConfiguration()
                   .done(function (config) {
-                     if (isNullOrUndefinedOrEmpty(config.deviceListSection)) {
-                        $exportDataStartButton.attr("disabled", "disabled");
-                        selectedDeviceIndex = undefined;
-                     } else {
-                        $exportDataStartButton.removeAttr("disabled");
-                        selectedDeviceIndex = parseInt(config.deviceListSection);
+                     if (data.currentTarget.id === $deviceSelect.find("select")[deviceListSectionIndex].id) {
+                        // Device select changed
+                        if (isNullOrUndefinedOrEmpty(config.deviceListSection)) {
+                           configMgr.configurationHandlers[keywordListSectionIndex].setValues([]);
+                        } else {
+                           onDeviceSelected(parseInt(config.deviceListSection), configMgr.configurationHandlers[
+                              keywordListSectionIndex]);
+                        }
+                     } else if (data.currentTarget.id === $deviceSelect.find("select")[
+                           keywordListSectionIndex].id) {
+                        // Keyword select changed
+                        onKeywordSelected(isNullOrUndefinedOrEmpty(config.keywordListSection) ? null :
+                           parseInt(config.keywordListSection));
                      }
-                  })
+                  });
             });
 
             $deviceSelect.i18n();
             configMgr.afterI18n();
-         });
 
-      $exportDataStartButton.unbind('click').bind('click', function () {
-         if (isNullOrUndefined(selectedDeviceIndex))
-            return;
-         MaintenanceManager.startExportData(selectedDeviceIndex)
-            .done(function (data) {
-               registerNotificationForExportDataTask(data.taskId);
+            $exportDataStartButton.unbind('click').bind('click', function () {
+               configMgr.getCurrentConfiguration()
+                  .done(function (config) {
+                     if (isNullOrUndefinedOrEmpty(config.keywordListSection)) {
+                        console.log("No keyword selected");
+                     } else {
+                        MaintenanceManager.startExportData(parseInt(config.keywordListSection))
+                           .done(function (data) {
+                              registerNotificationForExportDataTask(data.taskId);
+                           });
+                     }
+                  });
             });
-      });
+         });
+   }
+
+   onDeviceSelected = function (selectedDevice, keywordListSection) {
+      DeviceManager.getKeywordsByDeviceId(selectedDevice)
+         .done((keywords) => {
+            // Populate the keyword list
+            keywordList = [];
+            $.each(keywords, function (key, keyword) {
+               keywordList[keyword.id] = keyword.friendlyName;
+            });
+            keywordListSection.setValues(keywordList);
+
+            onKeywordSelected(isNullOrUndefinedOrEmpty(keywordListSection) ? null : parseInt(
+               keywordListSection));
+         });
+   }
+
+   onKeywordSelected = function (selectedKeyword) {
+      // Enable/disable start button
+      if (isNullOrUndefined(selectedKeyword)) {
+         $exportDataStartButton.attr("disabled", "disabled");
+      } else {
+         $exportDataStartButton.removeAttr("disabled");
+      }
    }
 
    function registerNotificationForExportDataTask(taskId) {
@@ -370,7 +419,7 @@
          onTaskUpdate(taskInformation, $(".exportData-action-progression"), false, function () {
             MaintenanceManager.lastExportDataInformation()
                .done(function (infos) {
-                  top.location.href = "backups/" + infos.logs.url;
+                  top.location.href = "backups/" + infos.exportData.url;
                })
                .fail(function (error) {
                   console.error(error);
@@ -381,8 +430,6 @@
    }
 
 
-
-
    Yadoms.initializeMaintenanceDashboard = function () {
       var d = new $.Deferred();
 
@@ -390,7 +437,7 @@
             enableBackupSection();
             enableLogsDownloadSection();
             enableExportDataSection();
-            
+
             d.resolve();
          })
          .fail(d.reject);

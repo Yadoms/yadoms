@@ -823,6 +823,10 @@
                      "deviceListCombo": {
                         "name": "Selectionner l'équipement",
                         "description": "Selectionner l'équipement à exporter les données au format CSV"
+                     },
+                     "keywordListCombo": {
+                        "name": "Selectionner la donnée",
+                        "description": "Selectionner la donnée de l'équipement"
                      }
                   }
                },

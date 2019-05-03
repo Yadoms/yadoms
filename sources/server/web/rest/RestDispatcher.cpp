@@ -3,149 +3,146 @@
 #include "Result.h"
 #include <shared/Log.h>
 
-namespace web { namespace rest {
-
-   CRestDispatcher::CRestDispatcher()
+namespace web
+{
+   namespace rest
    {
-      
-   }
-
-   CRestDispatcher::~CRestDispatcher()
-   {
-   }
-
-   void CRestDispatcher::registerRestMethodHandler(const std::string & requestType, const std::vector<std::string> & configKeywords, CRestMethodHandler functionPtr, CRestMethodIndirector indirectPtr /*= NULL*/)
-   {
-      m_handledFunctions[requestType].insert( CUrlPattern(configKeywords, functionPtr, indirectPtr) );
-   }
-
-
-   CRestDispatcher::CUrlPattern::CUrlPattern(const std::vector<std::string> & pattern, CRestMethodHandler & handler, CRestMethodIndirector & indirector)
-      :m_pattern(pattern), m_methodHandler(handler), m_methodIndirector(indirector)
-   {
-   }
-
-    CRestDispatcher::CUrlPattern::~CUrlPattern()
-   {
-   }
-
-   const std::vector<std::string> &  CRestDispatcher::CUrlPattern::getPattern() const 
-   { 
-      return m_pattern; 
-   }
-   const CRestDispatcher::CRestMethodHandler &  CRestDispatcher::CUrlPattern::getMethodHandler() const 
-   {
-      return m_methodHandler; 
-   }
-   const CRestDispatcher::CRestMethodIndirector &  CRestDispatcher::CUrlPattern::getMethodIndirector() const 
-   { 
-      return m_methodIndirector; 
-   }
-
-
-
-   bool CRestDispatcher::CUrlPattern::operator<(const CUrlPattern &right) const
-   {
-      unsigned int minSize = std::min(getPattern().size(),right.getPattern().size());
-      for(unsigned int i=0; i<minSize; i++)
+      void CRestDispatcher::registerRestMethodHandler(const std::string& requestType,
+                                                      const std::vector<std::string>& configKeywords,
+                                                      CRestMethodHandler functionPtr,
+                                                      CRestMethodIndirector indirectPtr /*= NULL*/)
       {
-
-         if(getPattern()[i] != "*" && right.getPattern()[i] != "*")
-         {
-            //none of them have a wildcard, see next character
-         } 
-         else if(getPattern()[i] != "*" && right.getPattern()[i] == "*")
-         {
-            return true;
-         }
-         else if(getPattern()[i] == "*" && right.getPattern()[i] != "*")
-         {
-            return false;
-         }
-         else
-         {
-            //do nothing, see next step
-         }
+         m_handledFunctions[requestType].insert(CUrlPattern(configKeywords,
+                                                            functionPtr,
+                                                            indirectPtr));
       }
 
-      return (getPattern().size() < right.getPattern().size());
-   }
 
-   std::string CRestDispatcher::CUrlPattern::toString() const
-   {
-      std::string pattern;
-      for(unsigned int i=0; i<getPattern().size(); ++i)
+      CRestDispatcher::CUrlPattern::CUrlPattern(const std::vector<std::string>& pattern,
+                                                CRestMethodHandler& handler,
+                                                CRestMethodIndirector& indirector)
+         : m_pattern(pattern),
+           m_methodHandler(handler),
+           m_methodIndirector(indirector)
       {
-         pattern+= "/";
-         pattern+= getPattern()[i];
       }
-      return pattern;
-   }
 
-
-
-   void CRestDispatcher::printContentToLog()
-   {
-      std::map<std::string, RestMethodMap>::iterator i;
-      for(i= m_handledFunctions.begin(); i!=m_handledFunctions.end(); ++i)
+      const std::vector<std::string>& CRestDispatcher::CUrlPattern::getPattern() const
       {
-         YADOMS_LOG(debug) << "******************************************************";
-         YADOMS_LOG(debug) << "Requests type : " << i->first;
-
-         RestMethodMap::iterator iPatterns;
-         for(iPatterns = i->second.begin(); iPatterns!= i->second.end(); ++iPatterns)
-         {
-            YADOMS_LOG(debug) << iPatterns->toString();
-         }
+         return m_pattern;
       }
-   }
 
-
-   boost::shared_ptr<shared::serialization::IDataSerializable> CRestDispatcher::dispath(const std::string & requestType, const std::vector<std::string> & url, const std::string & requestContent)
-   {
-      //check that requestType has some functions
-      if(m_handledFunctions.find(requestType) != m_handledFunctions.end())
+      const CRestDispatcher::CRestMethodHandler& CRestDispatcher::CUrlPattern::getMethodHandler() const
       {
-         //browse all patterns and check if it match to given url
-         RestMethodMap::iterator iPatterns;
+         return m_methodHandler;
+      }
 
-         for(iPatterns = m_handledFunctions[requestType].begin(); iPatterns != m_handledFunctions[requestType].end(); ++iPatterns)
+      const CRestDispatcher::CRestMethodIndirector& CRestDispatcher::CUrlPattern::getMethodIndirector() const
+      {
+         return m_methodIndirector;
+      }
+
+
+      bool CRestDispatcher::CUrlPattern::operator<(const CUrlPattern& right) const
+      {
+         const auto minSize = std::min(getPattern().size(), right.getPattern().size());
+         for (unsigned int i = 0; i < minSize; i++)
          {
-            if(match(url, *iPatterns))
+            if (getPattern()[i] != "*" && right.getPattern()[i] != "*")
             {
-               return callRealMethod(iPatterns->getMethodHandler(), iPatterns->getMethodIndirector(), url, requestContent);
+               //none of them have a wildcard, see next character
             }
-         }
-
-         return CResult::GenerateError("This REST url is not handled");
-      }
-      
-      return CResult::GenerateError("The type of request : " + requestType + " is not handled");
-   }
-
-   bool CRestDispatcher::match(const std::vector<std::string> & url, const CUrlPattern & urlPattern)
-   {
-      if(url.size() == urlPattern.getPattern().size())
-      {
-         for(unsigned int i=0; i<urlPattern.getPattern().size(); i++)
-         {
-            if(urlPattern.getPattern()[i] != "*" && !boost::iequals(urlPattern.getPattern()[i], url[i]))
+            else if (getPattern()[i] != "*" && right.getPattern()[i] == "*")
+            {
+               return true;
+            }
+            else if (getPattern()[i] == "*" && right.getPattern()[i] != "*")
             {
                return false;
             }
+            else
+            {
+               //do nothing, see next step
+            }
          }
-         return true;
+
+         return (getPattern().size() < right.getPattern().size());
       }
-      return false;
-   }
 
-   boost::shared_ptr<shared::serialization::IDataSerializable> CRestDispatcher::callRealMethod(CRestMethodHandler realMethod, CRestMethodIndirector encapsulatedMethod,
-      const std::vector<std::string> & url, const std::string & requestContent)
-   {
-      if(encapsulatedMethod != NULL)
-         return encapsulatedMethod(realMethod, url, requestContent);
-      return realMethod(url, requestContent);
-   }
+      std::string CRestDispatcher::CUrlPattern::toString() const
+      {
+         std::string pattern;
+         for (unsigned int i = 0; i < getPattern().size(); ++i)
+         {
+            pattern += "/";
+            pattern += getPattern()[i];
+         }
+         return pattern;
+      }
 
-} //namespace rest
+
+      void CRestDispatcher::printContentToLog()
+      {
+         for (auto iFunction = m_handledFunctions.begin(); iFunction != m_handledFunctions.end(); ++iFunction)
+         {
+            YADOMS_LOG(debug) << "******************************************************";
+            YADOMS_LOG(debug) << "Requests type : " << iFunction->first;
+
+            for (auto iPatterns = iFunction->second.begin(); iPatterns != iFunction->second.end(); ++iPatterns)
+            {
+               YADOMS_LOG(debug) << iPatterns->toString();
+            }
+         }
+      }
+
+
+      boost::shared_ptr<shared::serialization::IDataSerializable> CRestDispatcher::dispatch(const std::string& requestType,
+                                                                                            const std::vector<std::string>& url,
+                                                                                            const std::string& requestContent)
+      {
+         //check that requestType has some functions
+         if (m_handledFunctions.find(requestType) != m_handledFunctions.end())
+         {
+            for (const auto& iPatterns : m_handledFunctions[requestType])
+            {
+               if (match(url, iPatterns))
+               {
+                  return callRealMethod(iPatterns.getMethodHandler(),
+                                        iPatterns.getMethodIndirector(),
+                                        url,
+                                        requestContent);
+               }
+            }
+
+            throw std::invalid_argument("REST request url not handled");
+         }
+
+         throw std::invalid_argument("REST request type not handled");
+      }
+
+      bool CRestDispatcher::match(const std::vector<std::string>& url,
+                                  const CUrlPattern& urlPattern)
+      {
+         if (urlPattern.getPattern().size() != url.size())
+            return false;
+
+         return std::equal(urlPattern.getPattern().begin(),
+                           urlPattern.getPattern().end(),
+                           url.begin(),
+                           [](const auto& patternItem, const auto& urlItem)
+                           {
+                              return patternItem == "*" || boost::iequals(patternItem, urlItem);
+                           });
+      }
+
+      boost::shared_ptr<shared::serialization::IDataSerializable> CRestDispatcher::callRealMethod(CRestMethodHandler realMethod,
+                                                                                                  CRestMethodIndirector encapsulatedMethod,
+                                                                                                  const std::vector<std::string>& url,
+                                                                                                  const std::string& requestContent)
+      {
+         if (encapsulatedMethod != NULL)
+            return encapsulatedMethod(realMethod, url, requestContent);
+         return realMethod(url, requestContent);
+      }
+   } //namespace rest
 } //namespace web 

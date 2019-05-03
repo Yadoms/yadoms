@@ -823,6 +823,10 @@
                      "deviceListCombo": {
                         "name": "Select device",
                         "description": "Select the device to export data in CSV"
+                     },
+                     "keywordListCombo": {
+                        "name": "Select keyword",
+                        "description": "Select the keyword to export data in CSV"
                      }
                   }
                },

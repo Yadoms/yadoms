@@ -40,7 +40,6 @@
             $deviceMergeSummary = $("div#merge-devices-modal .device-merge-summary");
             $deviceMergeSummary.empty();
 
-            // Populate the target devices list
             targetDeviceListSchema = {
                targetDeviceListSection: {
                   type: 'enum',
@@ -49,6 +48,8 @@
                   values: {}
                }
             };
+
+            // Populate the target devices list
             $.each(allDevices, function (key, device) {
                if (device.blacklist === "true")
                   return true;
