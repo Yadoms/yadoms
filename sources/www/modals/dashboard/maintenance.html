@@ -70,9 +70,6 @@
          <div id="maintenance-exportData-panel" class="panel-collapse collapse" role="tabpanel" aria-labelledby="maintenance-exportData-heading-panel">
             <div class="panel-body">
                <div id="maintenance-exportData-device-select"></div>
-
-               <button type="button" class="btn btn-default btn-info exportDataStartButton" data-i18n="modals.dashboard.sub-windows.maintenance.exportData.startButton"
-                  disabled="disabled" />
                <div class="exportData-action-progression action-progression" style="width: 340px; margin-top: 10px;">
                   <div class="progress">
                      <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
@@ -81,9 +78,10 @@
                   </div>
                   <span class="message"></span>
                </div>
+               <button type="button" class="btn btn-default btn-info exportDataStartButton" data-i18n="modals.dashboard.sub-windows.maintenance.exportData.startButton"
+                  disabled="disabled" />
             </div>
          </div>
-
       </div>
    </div>
 </div>
@@ -343,7 +341,7 @@
                      $exportDataStartButton.attr("disabled", "disabled");
                      configMgr.configurationHandlers[keywordListSectionIndex].setValues([]);
                   } else {
-                     onDeviceSelected(parseInt(config.deviceListSection), configMgr.configurationHandlers[
+                     onExportDataDeviceSelected(parseInt(config.deviceListSection), configMgr.configurationHandlers[
                         keywordListSectionIndex]);
                   }
                });
@@ -358,13 +356,14 @@
                         if (isNullOrUndefinedOrEmpty(config.deviceListSection)) {
                            configMgr.configurationHandlers[keywordListSectionIndex].setValues([]);
                         } else {
-                           onDeviceSelected(parseInt(config.deviceListSection), configMgr.configurationHandlers[
+                           onExportDataDeviceSelected(parseInt(config.deviceListSection), configMgr.configurationHandlers[
                               keywordListSectionIndex]);
                         }
                      } else if (data.currentTarget.id === $deviceSelect.find("select")[
                            keywordListSectionIndex].id) {
                         // Keyword select changed
-                        onKeywordSelected(isNullOrUndefinedOrEmpty(config.keywordListSection) ? null :
+                        onExportDataKeywordSelected(isNullOrUndefinedOrEmpty(config.keywordListSection) ?
+                           null :
                            parseInt(config.keywordListSection));
                      }
                   });
@@ -389,7 +388,7 @@
          });
    }
 
-   onDeviceSelected = function (selectedDevice, keywordListSection) {
+   onExportDataDeviceSelected = function (selectedDevice, keywordListSection) {
       DeviceManager.getKeywordsByDeviceId(selectedDevice)
          .done((keywords) => {
             // Populate the keyword list
@@ -399,12 +398,12 @@
             });
             keywordListSection.setValues(keywordList);
 
-            onKeywordSelected(isNullOrUndefinedOrEmpty(keywordListSection) ? null : parseInt(
+            onExportDataKeywordSelected(isNullOrUndefinedOrEmpty(keywordListSection) ? null : parseInt(
                keywordListSection));
          });
    }
 
-   onKeywordSelected = function (selectedKeyword) {
+   onExportDataKeywordSelected = function (selectedKeyword) {
       // Enable/disable start button
       if (isNullOrUndefined(selectedKeyword)) {
          $exportDataStartButton.attr("disabled", "disabled");
@@ -416,7 +415,7 @@
    function registerNotificationForExportDataTask(taskId) {
       $(".exportData-action-progression").show();
       $(document).on("taskupdatenotification." + taskId, function (e, taskInformation) {
-         onTaskUpdate(taskInformation, $(".exportData-action-progression"), false, function () {
+         onTaskUpdate(taskInformation, $(".exportData-action-progression"), true, function () {
             MaintenanceManager.lastExportDataInformation()
                .done(function (infos) {
                   top.location.href = "backups/" + infos.exportData.url;

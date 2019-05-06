@@ -102,9 +102,9 @@ namespace task
                                                     {
                                                        outfile << std::endl << m_keywordId << "," << date << "," << value;
 
-                                                       // Progress from 0 to 50 for this step
+                                                       // Progress from 0 to 70 for this step
                                                        ++nbLinesDone;
-                                                       const auto progress = nbLinesDone * 50 / nbTotalLines;
+                                                       const auto progress = nbLinesDone * 70 / nbTotalLines;
                                                        static auto lastProgressSent = -1;
                                                        if (progress != lastProgressSent)
                                                        {
