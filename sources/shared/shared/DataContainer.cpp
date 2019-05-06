@@ -7,6 +7,8 @@
 #include "rapidjson/ostreamwrapper.h"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/pointer.h"
+#include "rapidjson/error/error.h"
+#include "rapidjson/error/en.h"
 
 namespace shared
 {
@@ -160,9 +162,9 @@ namespace shared
 		boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
 		m_tree.RemoveAllMembers();
-
-		if (m_tree.Parse(data.c_str()).HasParseError())
-			throw exception::CException("Fail to parse Json");
+		rapidjson::ParseResult parseError = m_tree.Parse(data.c_str());
+		if (!parseError)
+			throw exception::CJSONParse(rapidjson::GetParseError_En(parseError.Code()), parseError.Offset());
 	}
 
 	void CDataContainer::serializeToFile(const std::string & filename) const
