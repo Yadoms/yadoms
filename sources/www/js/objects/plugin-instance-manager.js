@@ -72,21 +72,24 @@ PluginInstanceManager.getAll = function () {
     RestEngine.getJson("rest/plugin/instance")
        .done(function (data) {
            var result = [];
-           var arrayOfDeffered = [];
+           var endOfDownloadDefereds = [];
            data.plugin.forEach(function (value) {
                try {
                    var pi = PluginInstanceManager.factory(value);
-                   var deffered = PluginInstanceManager.downloadPackage(pi);
-                   arrayOfDeffered.push(deffered);
-                   deffered.done(function () {
+                   var packageDownloadDefered = PluginInstanceManager.downloadPackage(pi);
+                   var endOfDownloadDefered = new $.Deferred();
+                   endOfDownloadDefereds.push(endOfDownloadDefered);
+                   packageDownloadDefered.done(function () {
                        result.push(pi);
+                       endOfDownloadDefered.resolve();
                    }).fail(function () {
+                       console.warn("fail to get plugin " + value.displayName);
                        pi.package = {
                            name: value.displayName,
                            failToLoad: true
                        };
                        result.push(pi);
-                       console.warn("fail to get plugin " + value.displayName);
+                       endOfDownloadDefered.resolve();
                    });
 
                } catch (ex) {
@@ -95,7 +98,7 @@ PluginInstanceManager.getAll = function () {
 
            });
 
-           $.when.apply($,arrayOfDeffered).done(function () {
+           $.when.apply($,endOfDownloadDefereds).done(function () {
                d.resolve(result);
            });
        })

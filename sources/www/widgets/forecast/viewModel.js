@@ -127,7 +127,7 @@ function forecastViewModel() {
    this.onNewAcquisition = function (keywordId, data) {
       var self = this;
       
-      if (keywordId === self.widget.configuration.device.keywordId) {
+      if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
          if (data.value && data.value !== "") {
             var obj = jQuery.parseJSON(data.value);
             

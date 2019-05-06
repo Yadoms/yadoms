@@ -544,6 +544,8 @@ set(YADOMS_SRC
    server/task/TaskStatus.cpp
    server/task/backup/Backup.h
    server/task/backup/Backup.cpp
+   server/task/exportData/ExportData.h
+   server/task/exportData/ExportData.cpp
    server/task/packLogs/PackLogs.h
    server/task/packLogs/PackLogs.cpp
    server/task/plugins/ExtraQuery.h

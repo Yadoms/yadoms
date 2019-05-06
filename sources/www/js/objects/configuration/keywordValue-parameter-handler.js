@@ -126,14 +126,7 @@ KeywordValueParameterHandler.prototype.getParamName = function() {
  */
 KeywordValueParameterHandler.prototype.setEnabled = function (enabled) {
     var self = this;
-
     this.keywordPH.setEnabled(enabled);
-    /*
-    if (enabled) {
-            $("#" + self.uuidContainer + " select").addClass("enable-validation");
-    } else {
-            $("#" + self.uuidContainer + " select").removeClass("enable-validation");
-    }*/
 }
 
 /**

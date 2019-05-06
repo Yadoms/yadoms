@@ -50,6 +50,10 @@ namespace database
             void removeKeywordData(int keywordId) override;
             boost::shared_ptr<entities::CAcquisition> getAcquisitionByKeywordAndDate(int keywordId,
                                                                                      boost::posix_time::ptime time) override;
+            void exportAcquisitions(const int keywordId,
+                                    std::function<void(const boost::posix_time::ptime& date,
+                                                       const std::string& value,
+                                                       int nbTotalLines)> exportOneLineFunctionn) override;
             std::vector<boost::tuple<boost::posix_time::ptime, std::string>> getKeywordData(int keywordId,
                                                                                             boost::posix_time::ptime timeFrom = boost::posix_time::
                                                                                                not_a_date_time,

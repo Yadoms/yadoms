@@ -169,7 +169,7 @@ function rainGaugeDisplayViewModel() {
         var self = this;
         
         //it is the right device
-        if (keywordId === self.widget.configuration.device.keywordId) {
+        if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
            // Receive at startup data.unit and data.capacity
            if (!isNullOrUndefinedOrEmpty(data.unit))
               self.unit($.t(data.unit));

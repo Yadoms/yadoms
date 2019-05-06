@@ -510,8 +510,8 @@
         var $table = $("table#" + objectType + "-install-update-list");
         $table.find("tr:gt(0)").remove();
 
-        // Add updatable and new items in the same list
-        addItemsInTable($table, objectType, list.updatable, function (moduleType, data) {
+        // Add updateable and new items in the same list
+        addItemsInTable($table, objectType, list.updateable, function (moduleType, data) {
             return objectType + "s." + moduleType;
         });
 

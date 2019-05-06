@@ -68,7 +68,7 @@
                   $("div#new-manually-device-modal").modal("hide");
                   
                   if (config.addManuallyDeviceSection.activeSection === "attachedToPlugin") {
-                     var pluginId = config.addManuallyDeviceSection.content.attachedToPlugin.content.plugins;
+                     var pluginId = parseInt(config.addManuallyDeviceSection.content.attachedToPlugin.content.plugins);
                      
                      var pluginInstance = $.grep(availablePlugins, function(e) { return e.id === pluginId; });
                      callback(pluginInstance[0]);
