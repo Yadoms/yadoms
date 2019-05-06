@@ -177,7 +177,7 @@ DeviceManager.getKeywordsBydeviceIdAndCapacity = function (deviceId, KeywordAcce
 /**
  * Get the keywords attached to a device
  * @param {Object} device The device
- * @param {boolean} forceReload if true force reloading keywords fro mserver
+ * @param {boolean} forceReload if true force reloading keywords from server
  * @ return {Promise}
  */
 DeviceManager.getKeywords = function (device, forceReload) {

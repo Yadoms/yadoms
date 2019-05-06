@@ -172,8 +172,6 @@ namespace web
 
                result.set("plugins", pluginCollection);
 
-			   result.printToLog(YADOMS_LOG(warning));
-
                return CResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
