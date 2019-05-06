@@ -783,7 +783,7 @@ BOOST_AUTO_TEST_CASE(MergeAndRemoveSource)
       to.mergeFrom(from);
 
       // Override from memory
-      from = std::string("skdjflsjdfhgkdjhgxjkmflsdjfglsdjfmlklsmjdf");
+      from = std::string("{ \"anotherdata\" : \"skdjflsjdfhgkdjhgxjkmflsdjfglsdjfmlklsmjdf\"}");
 
       BOOST_CHECK_EQUAL(to.serialize(), expected.serialize());
    }
