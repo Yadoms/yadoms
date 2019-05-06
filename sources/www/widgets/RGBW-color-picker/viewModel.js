@@ -205,7 +205,7 @@ function RGBWcolorPickerViewModel() {
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
         
-        if (keywordId === self.widget.configuration.device.keywordId) {
+        if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
         }
     };
 };

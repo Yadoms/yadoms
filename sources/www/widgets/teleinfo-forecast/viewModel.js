@@ -97,7 +97,7 @@ widgetViewModelCtor =
                  //Check if first device
                  if (!isNullOrUndefined(this.widget.configuration.device)) {
                     
-                      if (keywordId === this.widget.configuration.device.keywordId) {
+                      if (keywordId === parseInt(this.widget.configuration.device.keywordId)) {
                          
                           //data.value
                           if (data.value === "RED")

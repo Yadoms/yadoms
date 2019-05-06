@@ -26,7 +26,6 @@ namespace web { namespace rest { namespace service {
       boost::shared_ptr<shared::serialization::IDataSerializable> addWidget(const std::vector<std::string> & parameters, const std::string & requestContent);
       boost::shared_ptr<shared::serialization::IDataSerializable> deleteOneWidget(const std::vector<std::string> & parameters, const std::string & requestContent);
       boost::shared_ptr<shared::serialization::IDataSerializable> deleteAllWidgets(const std::vector<std::string> & parameters, const std::string & requestContent);
-      boost::shared_ptr<shared::serialization::IDataSerializable> replaceAllWidgets(const std::vector<std::string> & parameters, const std::string & requestContent);
       boost::shared_ptr<shared::serialization::IDataSerializable> updateOneWidget(const std::vector<std::string> & parameters, const std::string & requestContent);
       boost::shared_ptr<shared::serialization::IDataSerializable> findWidgetPackages(const std::vector<std::string> & parameters, const std::string & requestContent);
 

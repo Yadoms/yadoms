@@ -266,22 +266,22 @@ namespace web
             {
                if (parameters.size() >= 4)
                {
-                  auto instanceId = boost::lexical_cast<int>(parameters[1]);
-                  auto query = parameters[3];
-                  shared::CDataContainer queryData(requestContent);
+                  const auto instanceId = boost::lexical_cast<int>(parameters[1]);
+                  const auto query = parameters[3];
 
-                  auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query, queryData, "");
-                  std::string taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
+                  const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query,
+                                                                                      requestContent.empty() ? shared::CDataContainer() : shared::CDataContainer(requestContent),
+                                                                                      "");
+                  const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
+
                   if (!taskId.empty())
                   {
                      shared::CDataContainer result;
                      result.set("taskId", taskId);
                      return CResult::GenerateSuccess(result);
                   }
-                  else
-                  {
-                     return CResult::GenerateError("Fail to get extra query task");
-                  }
+                  
+                  return CResult::GenerateError("Fail to get extra query task");
                }
                return CResult::GenerateError("invalid parameter. Not enough parameters in url");
             }
@@ -301,25 +301,25 @@ namespace web
             {
                if (parameters.size() >= 4)
                {
-                  auto instanceId = boost::lexical_cast<int>(parameters[1]);
-                  auto deviceId = boost::lexical_cast<int>(parameters[3]);
-                  auto device = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+                  const auto instanceId = boost::lexical_cast<int>(parameters[1]);
+                  const auto deviceId = boost::lexical_cast<int>(parameters[3]);
+                  const auto device = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
 
-                  auto query = parameters[4];
-                  shared::CDataContainer queryData(requestContent);
+                  const auto query = parameters[4];
 
-                  auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query, queryData, device->Name());
-                  std::string taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
+                  const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query,
+                                                                                requestContent.empty() ? shared::CDataContainer() : shared::CDataContainer(requestContent),
+                                                                                device->Name());
+                  const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
+
                   if (!taskId.empty())
                   {
                      shared::CDataContainer result;
                      result.set("taskId", taskId);
                      return CResult::GenerateSuccess(result);
                   }
-                  else
-                  {
-                     return CResult::GenerateError("Fail to get extra query task");
-                  }
+                  
+                  return CResult::GenerateError("Fail to get extra query task");
                }
                return CResult::GenerateError("invalid parameter. Not enough parameters in url");
             }
@@ -586,7 +586,7 @@ namespace web
                                                                         content.get<std::string>("name"),
                                                                         content.get<std::string>("type"),
                                                                         content.exists("model") && !content.get<std::string>("model").empty() ?
-                                                                        content.get<std::string>("name") : content.get<std::string>("model"),
+                                                                           content.get<std::string>("name") : content.get<std::string>("model"),
                                                                         shared::CDataContainer());
                      m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(device->Id(),
                                                                                      content.get<shared::CDataContainer>("configuration"));
@@ -712,5 +712,3 @@ namespace web
       } //namespace service
    } //namespace rest
 } //namespace web 
-
-

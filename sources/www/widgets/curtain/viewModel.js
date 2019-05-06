@@ -72,13 +72,13 @@ widgetViewModelCtor =
            
             //we ask for the first device information
            if  (!isNullOrUndefined(this.widget.configuration.device.deviceId))
-              keywords.push (self.widget.configuration.device.keywordId);
+              keywords.push (parseInt(self.widget.configuration.device.keywordId));
              
            //we ask for additional devices information
            if ((!isNullOrUndefined(self.widget.configuration.additionalDevices.content.devices))) {
                $.each(self.widget.configuration.additionalDevices.content.devices, function (index, device) {
                    if (!isNullOrUndefined(device.content.source.deviceId)) {
-                      keywords.push (device.content.source.keywordId);
+                      keywords.push (parseInt(device.content.source.keywordId));
                    }
                });
            }

@@ -81,7 +81,7 @@ function counterDisplayViewModel() {
     */
     this.onNewAcquisition = function (keywordId, data) {
        var self = this;
-       if (keywordId === self.widget.configuration.device.keywordId) {
+       if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
           // Receive at startup data.unit
           if (!isNullOrUndefinedOrEmpty(data.unit)){
              self.rawUnit = data.unit;

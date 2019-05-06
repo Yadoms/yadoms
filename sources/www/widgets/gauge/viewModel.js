@@ -108,7 +108,7 @@ widgetViewModelCtor = function gaugeViewModel() {
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
         try {
-            if (keywordId === self.widget.configuration.device.keywordId && self.chart) {
+            if (keywordId === parseInt(self.widget.configuration.device.keywordId) && self.chart) {
                 var point = self.chart.series[0].points[0];
                 if (isNullOrUndefinedOrEmpty(data.value)) {
                     point.update(0);

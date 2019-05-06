@@ -107,7 +107,7 @@ KeywordManager.getInformation = function (keywords, additionalInfos) {
                             date: keydata.lastValueDate,
                             exist: keydata.exist,
                             friendlyName: keydata.friendlyName,
-                            keywordId: index,
+                            keywordId: parseInt(index),
                             measure: keydata.measure,
                             pluginId: keydata.pluginId,
                             typeInfo: keydata.typeInfo,

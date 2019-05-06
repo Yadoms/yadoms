@@ -30,7 +30,6 @@ namespace web {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CWidget::getOneWidget);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("package"), CWidget::findWidgetPackages);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CWidget::addWidget, CWidget::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword), CWidget::replaceAllWidgets, CWidget::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CWidget::updateOneWidget, CWidget::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CWidget::deleteAllWidgets, CWidget::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CWidget::deleteOneWidget, CWidget::transactionalMethod);
@@ -176,32 +175,6 @@ namespace web {
             catch (...)
             {
                return CResult::GenerateError("unknown exception in deleting one widget");
-            }
-         }
-
-
-         boost::shared_ptr<shared::serialization::IDataSerializable> CWidget::replaceAllWidgets(const std::vector<std::string> & parameters, const std::string & requestContent)
-         {
-            try
-            {
-               m_dataProvider->getWidgetRequester()->removeAllWidgets();
-
-               std::vector<boost::shared_ptr<database::entities::CWidget> > widgetsToAdd = shared::CDataContainer(requestContent).get<std::vector<boost::shared_ptr<database::entities::CWidget> > >(getRestKeyword());
-
-               for (std::vector<boost::shared_ptr<database::entities::CWidget> >::iterator i = widgetsToAdd.begin(); i != widgetsToAdd.end(); ++i)
-               {
-                  m_dataProvider->getWidgetRequester()->addWidget(*i->get());
-               }
-
-               return CResult::GenerateSuccess();
-            }
-            catch (std::exception &ex)
-            {
-               return CResult::GenerateError(ex);
-            }
-            catch (...)
-            {
-               return CResult::GenerateError("unknown exception in updating all widgets");
             }
          }
 
