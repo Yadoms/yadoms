@@ -161,7 +161,7 @@
    }
 
    onSourceDeviceSelected = function (selectedDeviceIndex) {
-      this.sourceDeviceId = selectedDeviceIndex;
+      this.sourceDeviceId = parseInt(selectedDeviceIndex);
       updateSummary();
    }
 
