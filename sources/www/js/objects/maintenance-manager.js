@@ -64,3 +64,19 @@ MaintenanceManager.deleteAllLogs = function() {
 };
 
 
+/**
+ * Start a new export data task
+ */
+MaintenanceManager.startExportData = function(deviceId) {
+	return RestEngine.postJson("rest/maintenance/startExportData/" + deviceId);
+};
+
+/**
+ * Get the last export data information
+ */
+MaintenanceManager.lastExportDataInformation = function() {
+	return RestEngine.getJson("rest/maintenance/exportData");
+};
+
+
+

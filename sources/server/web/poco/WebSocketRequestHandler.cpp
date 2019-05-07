@@ -26,12 +26,14 @@
 #include "notification/Helpers.hpp"
 #include "notification/action/EventAction.hpp"
 
+#include <shared/tools/Random.h>
 
 namespace web
 {
    namespace poco
    {
       CWebSocketRequestHandler::CWebSocketRequestHandler()
+		  :m_wsIdDebug(shared::tools::CRandom::generateUUID())
       {
       }
 
@@ -42,7 +44,7 @@ namespace web
       void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
                                                    Poco::Net::HTTPServerResponse& response)
       {
-         YADOMS_LOG_CONFIGURE("Websocket connection");
+         YADOMS_LOG_CONFIGURE("Websocket connection " + m_wsIdDebug);
          YADOMS_LOG(information) << "New websocket client";
 
          std::vector<boost::shared_ptr<notification::IObserver>> observers;
@@ -180,6 +182,7 @@ namespace web
                      {
                      case ws::CFrameBase::EFrameType::kAcquisitionFilterValue:
                         {
+						   YADOMS_LOG(information) << "Receive acquisition filter : " << parsedFrame->serialize();
                            auto parsedFrameAsqFilter = boost::dynamic_pointer_cast<ws::CAcquisitionFilterFrame>(parsedFrame);
                            newAcquisitionObserver->resetKeywordIdFilter(parsedFrameAsqFilter->getFilter());
                            break;

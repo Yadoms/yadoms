@@ -172,7 +172,7 @@ function RGBcolorPickerViewModel() {
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
         
-        if (keywordId === self.widget.configuration.device.keywordId) {
+        if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
           self.colorpicker.unbind('changeColor');
           self.colorpicker.colorpicker('setValue', data.value);
           self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());

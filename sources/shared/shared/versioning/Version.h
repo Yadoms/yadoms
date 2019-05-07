@@ -13,19 +13,19 @@ namespace shared
       {
       public:
          //---------------------------------------------
-         ///\brief empty contructor (version is set to 0.0.0.0)
+         ///\brief empty constructor (version is set to 0.0.0.0)
          //---------------------------------------------
          CVersion();
 
          //---------------------------------------------
-         ///\brief Contructor from a string version
-         ///\param [in] stringVersion the version as a string. Separtors between version digits must be . or ,
+         ///\brief Constructor from a string version
+         ///\param [in] stringVersion the version as a string. Separators between version digits must be . or ,
          //---------------------------------------------
          explicit CVersion(const std::string& stringVersion);
          CVersion& operator=(const CVersion& rhs);
 
          //---------------------------------------------
-         ///\brief Contructor
+         ///\brief Constructor
          ///\param [in] major       the major version number (when you make incompatible API changes,)
          ///\param [in] minor       the minor version number (when you add functionality in a backwards-compatible manner)
          ///\param [in] patch       the patch version number (when you make backwards-compatible bug fixes)
@@ -33,7 +33,7 @@ namespace shared
          CVersion(int major, int minor, int patch);
 
          //---------------------------------------------
-         ///\brief Contructor
+         ///\brief Constructor
          ///\param [in] major          the major version number (when you make incompatible API changes,)
          ///\param [in] minor          the minor version number (when you add functionality in a backwards-compatible manner)
          ///\param [in] patch          the patch version number (when you make backwards-compatible bug fixes)
@@ -42,7 +42,7 @@ namespace shared
          CVersion(int major, int minor, int patch, const std::string& prerelease);
 
          //---------------------------------------------
-         ///\brief Contructor
+         ///\brief Constructor
          ///\param [in] major          the major version number (when you make incompatible API changes,)
          ///\param [in] minor          the minor version number (when you add functionality in a backwards-compatible manner)
          ///\param [in] patch          the patch version number (when you make backwards-compatible bug fixes)
@@ -52,7 +52,7 @@ namespace shared
          CVersion(int major, int minor, int patch, const std::string& prerelease, const std::string& buildMetaData);
 
          //---------------------------------------------
-         ///\brief Copy contructor
+         ///\brief Copy constructor
          //---------------------------------------------
          CVersion(const CVersion& rhs);
 

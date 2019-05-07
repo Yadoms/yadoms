@@ -34,7 +34,7 @@ function thermometerViewModel(){
    this.onNewAcquisition = function(keywordId, data){
       var self = this;	  
 	  
-      if (keywordId === self.widget.configuration.device.keywordId){
+      if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
 		  if ( data.value !== self.data ){ // refresh only when it's necessary.
 			 //it is the good device
           if (data.value !== "")

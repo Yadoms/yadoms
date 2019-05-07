@@ -17,7 +17,7 @@ public:
    void initializeWith(const shared::CDataContainer& data) override;
    std::string getSerialPort() const override;
    bool upsBeepEnable() const override;
-   bool CMegatecUpsConfiguration::autotestEnable() const override;
+   bool autotestEnable() const override;
    double outputShutdownDelay() const override;
    double outputRestoreDelay() const override;
    // [END] IMegatecUpsConfiguration implementation
