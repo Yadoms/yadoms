@@ -1,3 +1,6 @@
+### 1.2.1
+* Fix many protocols commands
+
 ### 1.2.0
 * New feature #553 : use of full compliant Json
 

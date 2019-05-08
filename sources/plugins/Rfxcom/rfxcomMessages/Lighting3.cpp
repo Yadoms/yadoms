@@ -18,8 +18,8 @@ namespace rfxcomMessages
       m_state->set(command);
       m_signalPower->set(0);
 
-      m_subType = deviceDetails.get<unsigned char>("subType");
-      m_system = deviceDetails.get<unsigned char>("system");
+      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
+      m_system = static_cast<unsigned char>(deviceDetails.get<unsigned int>("system"));
       m_channel = deviceDetails.get<unsigned short>("channel");
 
       // Build device description
@@ -44,7 +44,7 @@ namespace rfxcomMessages
       if (m_subType != sTypeKoppla)
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
 
-      m_system = manuallyDeviceCreationConfiguration.get<unsigned char>("system");
+      m_system = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<unsigned int>("system"));
       m_channel = manuallyDeviceCreationConfiguration.get<unsigned short>("channel");
 
       buildDeviceDetails();
