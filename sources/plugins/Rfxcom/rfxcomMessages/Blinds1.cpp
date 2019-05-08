@@ -20,9 +20,9 @@ namespace rfxcomMessages
       m_batteryLevel->set(100);
       m_signalPower->set(0);
 
-      m_subType = deviceDetails.get<unsigned char>("subType");
+      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
       m_id = deviceDetails.get<unsigned int>("id");
-      m_unitCode = deviceDetails.get<unsigned char>("unitCode");
+      m_unitCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("unitCode"));
 
       // Build device description
       buildDeviceModel();
