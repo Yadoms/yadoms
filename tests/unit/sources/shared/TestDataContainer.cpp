@@ -806,15 +806,6 @@ BOOST_AUTO_TEST_CASE(MergeAndRemoveSource)
 		   "   \"uint64_max\": 18446744073709551615"
 		   "}");
 
-	   shared::CDataContainer c2(
-		   "{"
-   	       "   \"double\": 42.0,"
-		   "   \"float\": 42.0,"
-		   "   \"float_gt_ushort_max\": 65535.1,"
-		   "   \"float_gt_short_max\": 32767.1,"
-		   "   \"float_eq_short_max\": 32767.0"
-		   "}");
-
 	   //check some out of range
 
 	   BOOST_CHECK_EQUAL(c.get<char>("char_min"), INT8_MIN);
