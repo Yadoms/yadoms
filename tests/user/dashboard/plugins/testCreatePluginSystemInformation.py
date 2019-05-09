@@ -2,6 +2,7 @@
 sys.path.append('.')
 import unittest
 from selenium import webdriver
+import browser
 import database
 import config
 import scripts
@@ -17,7 +18,7 @@ class CreatePlugin(unittest.TestCase):
       config.deploy("nominal")
       scripts.deleteAll()
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Chrome()
+      self.browser = browser.getBrowser()
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
             

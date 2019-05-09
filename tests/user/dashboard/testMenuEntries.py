@@ -7,6 +7,7 @@ import scripts
 import yadomsServer
 import dashboard
 from selenium import webdriver
+import browser
 
 class MenuEntries(unittest.TestCase):
    """Check entries of the dashboard main menu"""
@@ -17,7 +18,7 @@ class MenuEntries(unittest.TestCase):
       config.deploy("nominal")
       scripts.deleteAll()
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Chrome()
+      self.browser = browser.getBrowser()
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
 

@@ -10,6 +10,7 @@ import scripts
 import yadomsServer
 import dashboard
 from selenium import webdriver
+import browser
 import tools
 
 class DatabaseMigration(unittest.TestCase):
@@ -20,7 +21,7 @@ class DatabaseMigration(unittest.TestCase):
       yadomsServer.ensureStopped()
       config.deploy("nominal")
       scripts.deleteAll()
-      self.browser = webdriver.Chrome()
+      self.browser = browser.getBrowser()
       self.browser.implicitly_wait(10)
       self.serverProcess = None
 

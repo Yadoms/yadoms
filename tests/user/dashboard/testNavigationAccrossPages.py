@@ -7,6 +7,7 @@ import scripts
 import yadomsServer
 import dashboard
 from selenium import webdriver
+import browser
 import tools
 
 class NavigationAccrossPages(unittest.TestCase):
@@ -18,7 +19,7 @@ class NavigationAccrossPages(unittest.TestCase):
       config.deploy("nominal")
       scripts.deleteAll()
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Chrome()
+      self.browser = browser.getBrowser()
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
 

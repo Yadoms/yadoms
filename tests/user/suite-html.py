@@ -4,8 +4,10 @@ import unittest
 import HTMLTestRunner
 import StringIO
 import tools
- 
- 
+import sys, getopt 
+import browser
+import argparse
+
 class Test_Suite(unittest.TestCase):
 
    def test_main(self):
@@ -22,5 +24,20 @@ class Test_Suite(unittest.TestCase):
          runner.run(suite)
 
 
-if __name__ == "__main__":
+def main(argv):
+   browser.headless = False
+   
+   parser = argparse.ArgumentParser()
+   parser.add_argument('--headless', action='store_true')
+   parser.add_argument('unittest_args', nargs='*')
+   
+   args = parser.parse_args()
+   # TODO: Go do something with args.input and args.filename
+   browser.headless = args.headless
+   # Now set the sys.argv to the unittest_args (leaving sys.argv[0] alone)
+   sys.argv[1:] = args.unittest_args
+   print 'Running headless mode : ' + str(args.headless)
    unittest.main()
+
+if __name__ == "__main__":
+   main(sys.argv[1:])   

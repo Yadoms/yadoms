@@ -2,6 +2,7 @@
 sys.path.append('.')
 import unittest
 from selenium import webdriver
+import browser
 from selenium.webdriver.support.ui import Select
 import database
 import config
@@ -23,7 +24,7 @@ class CreateWidget(unittest.TestCase):
       config.deploy("withDeveloperMode")
       scripts.deleteAll()
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Chrome()
+      self.browser = browser.getBrowser()
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
                         

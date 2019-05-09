@@ -2,6 +2,7 @@ import sys
 sys.path.append('.')
 import unittest
 from selenium import webdriver
+import browser
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
@@ -26,7 +27,7 @@ class ViewLogRule(unittest.TestCase):
       config.deploy("nominal")
       scripts.deploy(["DisplayServerVersion"])
       self.serverProcess = yadomsServer.start(["logLevel=information"])
-      self.browser = webdriver.Chrome()
+      self.browser = browser.getBrowser()
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       

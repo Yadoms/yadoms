@@ -2,6 +2,7 @@
 sys.path.append('.')
 import unittest
 from selenium import webdriver
+import browser
 from selenium.webdriver.support.ui import Select
 import database
 import config
@@ -24,7 +25,7 @@ class CreateRule(unittest.TestCase):
       scripts.deleteAll()
       # We have to activate log to be able to check rules logs
       self.serverProcess = yadomsServer.start(["logLevel=information"])
-      self.browser = webdriver.Chrome()
+      self.browser = browser.getBrowser()
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       
