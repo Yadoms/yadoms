@@ -193,10 +193,10 @@ function forecastViewModel() {
          return;
 
       //we register keyword new acquisition
-      self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+      self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.device.keywordId));
    
       //we register keyword for get last value at web client startup 
-      self.widgetApi.getLastValue(self.widget.configuration.device.keywordId); 
+      self.widgetApi.getLastValue(parseInt(self.widget.configuration.device.keywordId)); 
 
       try {
          //Read the date format

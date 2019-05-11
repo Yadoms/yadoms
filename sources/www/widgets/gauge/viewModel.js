@@ -131,9 +131,9 @@ widgetViewModelCtor = function gaugeViewModel() {
         if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
             return;
 
-        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);
-        self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);
-        self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
+        self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.device.keywordId));
+        self.widgetApi.getLastValue(parseInt(self.widget.configuration.device.keywordId));
+        self.widgetApi.configureBatteryIcon(parseInt(self.widget.configuration.device.deviceId));
         self.widgetApi.registerAdditionalInformation(["unit"]);
         self.stopsArray = [];
 
@@ -144,8 +144,8 @@ widgetViewModelCtor = function gaugeViewModel() {
             case "thresholds":
                 var previousColor = self.widget.configuration.displayMode.content.thresholds.content.firstColor;
                 self.widget.configuration.displayMode.content.thresholds.content.addedThresholds.forEach(function (addedThreshold) {
-                    var thresholdRatio = (addedThreshold.content.value - self.widget.configuration.customYAxisMinMax.content.minimumValue) /
-                        (self.widget.configuration.customYAxisMinMax.content.maximumValue - self.widget.configuration.customYAxisMinMax.content.minimumValue);
+                    var thresholdRatio = (addedThreshold.content.value - parseInt(self.widget.configuration.customYAxisMinMax.content.minimumValue)) /
+                        (parseInt(self.widget.configuration.customYAxisMinMax.content.maximumValue) - parseInt(self.widget.configuration.customYAxisMinMax.content.minimumValue));
 
                     self.stopsArray.push([thresholdRatio - 0.001, previousColor]);
                     self.stopsArray.push([thresholdRatio, addedThreshold.content.color]);
@@ -159,9 +159,9 @@ widgetViewModelCtor = function gaugeViewModel() {
                 break;
         }
 
-        var minValue;
-        var maxValue;
-        if ((self.widget.configuration.customYAxisMinMax) && (self.widget.configuration.customYAxisMinMax.content)) {
+        var minValue = 0;
+        var maxValue = 100;
+        if ((parseBool(self.widget.configuration.customYAxisMinMax.checkbox)) && (self.widget.configuration.customYAxisMinMax.content)) {
             minValue = parseInt(self.widget.configuration.customYAxisMinMax.content.minimumValue);
             maxValue = parseInt(self.widget.configuration.customYAxisMinMax.content.maximumValue);
         }

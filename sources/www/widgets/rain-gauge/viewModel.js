@@ -121,13 +121,13 @@ function rainGaugeDisplayViewModel() {
         var self = this;
 
         //we register keyword new acquisition
-        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);
+        self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.device.keywordId));
         
         //we fill the deviceId of the battery indicator
-        self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
+        self.widgetApi.configureBatteryIcon(parseInt(self.widget.configuration.device.deviceId));
         self.widgetApi.registerAdditionalInformation(["unit"]); // We would like the unit !
-        self.shouldBeVisible(self.widget.configuration.dateDisplay);
-        var d = self.getValues(self.widget.configuration.device.keywordId);
+        self.shouldBeVisible(parseBool(self.widget.configuration.dateDisplay));
+        var d = self.getValues(parseInt(self.widget.configuration.device.keywordId));
       
       return d.promise();
     }
@@ -154,7 +154,7 @@ function rainGaugeDisplayViewModel() {
        self.widgetApi.askServerLocalTime(function (serverLocalTime) {
           self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
        }).done(function(data) {
-          self.getValues(self.widget.configuration.device.keywordId);
+          self.getValues(parseInt(self.widget.configuration.device.keywordId));
        })
        .fail(function(error) {
        });

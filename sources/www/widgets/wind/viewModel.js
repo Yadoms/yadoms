@@ -152,12 +152,12 @@ widgetViewModelCtor = function windViewModel() {
       if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
          return;
 
-      self.widgetApi.registerKeywordForNewAcquisitions([self.widget.configuration.windDirection.keywordId]);
-      self.widgetApi.getLastValue([self.widget.configuration.windDirection.keywordId]);
+      self.widgetApi.registerKeywordForNewAcquisitions([parseInt(self.widget.configuration.windDirection.keywordId)]);
+      self.widgetApi.getLastValue([parseInt(self.widget.configuration.windDirection.keywordId)]);
 
       if (parseBool(self.widget.configuration.speedDisplay.checkbox)) {
-         self.widgetApi.registerKeywordForNewAcquisitions([self.widget.configuration.speedDisplay.content.windSpeed.keywordId]);
-         self.widgetApi.getLastValue([self.widget.configuration.speedDisplay.content.windSpeed.keywordId]);
+         self.widgetApi.registerKeywordForNewAcquisitions([parseInt(self.widget.configuration.speedDisplay.content.windSpeed.keywordId)]);
+         self.widgetApi.getLastValue([parseInt(self.widget.configuration.speedDisplay.content.windSpeed.keywordId)]);
          self.widgetApi.find(".windspeed").css("visibility", "visible");
       } else
          self.widgetApi.find(".windspeed").css("visibility", "hidden");
