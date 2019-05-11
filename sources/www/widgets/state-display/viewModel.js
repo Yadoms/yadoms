@@ -31,9 +31,9 @@ function stateDisplayViewModel() {
        var defferedConfigurationChangedFinished = new $.Deferred();
         
         //we register keyword new acquisition
-        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);
-		  self.widgetApi.getLastValue(self.widget.configuration.device.keywordId); 		
-        self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
+        self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.device.keywordId));
+		  self.widgetApi.getLastValue(parseInt(self.widget.configuration.device.keywordId));
+        self.widgetApi.configureBatteryIcon(parseInt(self.widget.configuration.device.deviceId));
         self.widgetApi.registerAdditionalInformation(["pluginId", "typeInfo"]);
     }
 
