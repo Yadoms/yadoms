@@ -684,4 +684,12 @@ void CMegatecUps::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api,
       // Force a first historization to let Yadoms know the shutdown state
       api->historizeData(DeviceName, m_upsShutdown);
    }
+
+   // m_batteryDeadHistorizer keyword was added later (v 1.1.0), should be created (and initialized) if not already created
+   if (!api->keywordExists(DeviceName, m_batteryDeadHistorizer))
+   {
+      api->declareKeyword(DeviceName, m_batteryDeadHistorizer);
+      m_batteryDeadHistorizer->set(false);
+      api->historizeData(DeviceName, m_batteryDeadHistorizer);
+   }
 }

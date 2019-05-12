@@ -1,3 +1,6 @@
+### 1.1.0
+* New feature #553 : use of full compliant Json
+
 ### 1.0.2
 * Fix #449 - Optimize the widget with new REST Request
 

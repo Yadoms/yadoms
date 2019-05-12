@@ -1,3 +1,6 @@
+### 1.2.0
+* New feature #553 : use of full compliant Json
+
 ### 1.1.1
 * Needs Yadoms 2.2.0-beta.3 minimum
 * Fix #512 - Fix confirmation modals displayed multiple times and at background

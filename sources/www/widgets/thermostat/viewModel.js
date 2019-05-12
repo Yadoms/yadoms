@@ -40,7 +40,7 @@ function thermostatViewModel() {
         if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.controlSection.content.temperatureSet))) {
             this.temperatureSet(parseFloat(this.temperatureSet()) + parseFloat(value));
             console.log ("temperature set", this.temperatureSet());
-            KeywordManager.sendCommand(this.widget.configuration.controlSection.content.temperatureSet.keywordId, this.temperatureSet().toString());
+            KeywordManager.sendCommand(parseInt(this.widget.configuration.controlSection.content.temperatureSet.keywordId), this.temperatureSet().toString());
         }
     };    
     
@@ -53,13 +53,13 @@ function thermostatViewModel() {
         self.widgetApi.registerAdditionalInformation(["dataType", "units"]); // We would like the unit !
         
         var keywordRegistered = [];
-        keywordRegistered.push(self.widget.configuration.controlSection.content.temperatureSet.keywordId);
+        keywordRegistered.push(parseInt(self.widget.configuration.controlSection.content.temperatureSet.keywordId));
         
         if (parseBool(self.widget.configuration.thermostatStateSection.checkbox))
-           keywordRegistered.push(self.widget.configuration.thermostatStateSection.content.state.keywordId);
+           keywordRegistered.push(parseInt(self.widget.configuration.thermostatStateSection.content.state.keywordId));
         
         if (parseBool(self.widget.configuration.LivetemperatureSection.checkbox))
-           keywordRegistered.push(self.widget.configuration.LivetemperatureSection.content.temperatureDevice.keywordId);
+           keywordRegistered.push(parseInt(self.widget.configuration.LivetemperatureSection.content.temperatureDevice.keywordId));
 		
         //we register keyword new acquisition
         self.widgetApi.registerKeywordForNewAcquisitions(keywordRegistered);	   
@@ -68,10 +68,10 @@ function thermostatViewModel() {
 		self.widgetApi.getLastValue(keywordRegistered);
         
         //we fill the deviceId of the battery indicator
-        self.widgetApi.configureBatteryIcon(self.widget.configuration.controlSection.content.temperatureSet.deviceId);
+        self.widgetApi.configureBatteryIcon(parseInt(self.widget.configuration.controlSection.content.temperatureSet.deviceId));
         
         //Read the step
-        self.step(self.widget.configuration.controlSection.content.stepValue);
+        self.step(parseFloat(self.widget.configuration.controlSection.content.stepValue));
         
         // Visibility of the temperature
         self.isTemperatureVisible(parseBool(self.widget.configuration.LivetemperatureSection.checkbox));

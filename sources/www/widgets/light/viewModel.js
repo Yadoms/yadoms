@@ -34,7 +34,7 @@ widgetViewModelCtor =
                      default: cmd = newState; break;
                   }
                                     
-                  KeywordManager.sendCommand(this.widget.configuration.device.keywordId, cmd.toString());
+                  KeywordManager.sendCommand(parseInt(this.widget.configuration.device.keywordId), cmd.toString());
               }
           };
 
@@ -79,13 +79,13 @@ widgetViewModelCtor =
 
               if (!isNullOrUndefined(this.widget.configuration.device)) {
                   //we register keyword new acquisition
-                  self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+                  self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.device.keywordId));	   
 			   
                   //we register keyword for get last value at web client startup 
-				  self.widgetApi.getLastValue(self.widget.configuration.device.keywordId); 				  
+				  self.widgetApi.getLastValue(parseInt(self.widget.configuration.device.keywordId)); 				  
 				  
                  // Get the capacity of the keyword
-                 deffered = KeywordManager.get(this.widget.configuration.device.keywordId);
+                 deffered = KeywordManager.get(parseInt(this.widget.configuration.device.keywordId));
                  
                  deffered
                  .done(function (keyword) {

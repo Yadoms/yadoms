@@ -90,13 +90,13 @@ widgetViewModelCtor =
 
          // Checks for the first device
          if (!isNullOrUndefined(self.widget.configuration.device)) {
-            self.formatAndSend(0, self.widget.configuration.device.keywordId, newState);
+            self.formatAndSend(0, parseInt(self.widget.configuration.device.keywordId), newState);
          }
 
          if (!isNullOrUndefined(self.widget.configuration.additionalDevices.content.devices)) {
             // Check for the others devices
             $.each(self.widget.configuration.additionalDevices.content.devices, function (index, device) {
-               self.formatAndSend(index + 1, device.content.source.keywordId, newState);
+               self.formatAndSend(index + 1, parseInt(device.content.source.keywordId), newState);
             });
          }
       };
@@ -134,10 +134,10 @@ widgetViewModelCtor =
          // registration of the first keyword
          if (!isNullOrUndefined(this.widget.configuration.device)) {
             //we register keyword new acquisition
-            self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);
+            self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.device.keywordId));
 
             //we register keyword for get last value at web client startup 
-            self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);
+            self.widgetApi.getLastValue(parseInt(self.widget.configuration.device.keywordId));
 
             self.widgetApi.registerAdditionalInformation(["accessMode", "capacity"]); // We would like the unit !
          }
@@ -149,7 +149,7 @@ widgetViewModelCtor =
          if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.additionalDevices.content.devices))) {
             $.each(this.widget.configuration.additionalDevices.content.devices, function (index, device) {
                //we register keyword new acquisition
-               self.widgetApi.registerKeywordForNewAcquisitions(device.content.source.keywordId);
+               self.widgetApi.registerKeywordForNewAcquisitions(parseInt(device.content.source.keywordId));
 
                //we register keyword for get last value at web client startup 
                self.widgetApi.getLastValue(device.content.source.keywordId);
