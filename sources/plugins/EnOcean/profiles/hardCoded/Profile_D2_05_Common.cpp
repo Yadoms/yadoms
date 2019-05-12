@@ -15,11 +15,11 @@ DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_05_Common::EAlarmAction, EAlarmAc
 );
 
 
-void CProfile_D2_05_Common::sendkGoToPositionAndAngle(boost::shared_ptr<IMessageHandler> messageHandler,
-                                                      const std::string& senderId,
-                                                      const std::string& targetId,
-                                                      boost::optional<yApi::historization::ECurtainCommand> curtain,
-                                                      specificHistorizers::EBlindLockingMode lockingMode)
+void CProfile_D2_05_Common::sendGoToPositionAndAngle(boost::shared_ptr<IMessageHandler> messageHandler,
+                                                     const std::string& senderId,
+                                                     const std::string& targetId,
+                                                     boost::optional<yApi::historization::ECurtainCommand> curtain,
+                                                     specificHistorizers::EBlindLockingMode lockingMode)
 {
    boost::dynamic_bitset<> userData(4 * 8);
 
@@ -29,10 +29,10 @@ void CProfile_D2_05_Common::sendkGoToPositionAndAngle(boost::shared_ptr<IMessage
       switch (curtain.get())
       {
       case yApi::historization::ECurtainCommand::kOpenValue:
-         value = 100;
+         value = 0;
          break;
       case yApi::historization::ECurtainCommand::kCloseValue:
-         value = 0;
+         value = 100;
          break;
       default:
          break;
