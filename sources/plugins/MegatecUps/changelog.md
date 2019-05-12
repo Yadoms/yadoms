@@ -1,3 +1,6 @@
+### 1.2.1
+* Create "batteryDead" historizer at plugin update
+
 ### 1.2.0
 * New feature #553 : use of full compliant Json
 
