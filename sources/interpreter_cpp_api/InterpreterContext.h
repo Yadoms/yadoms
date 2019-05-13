@@ -25,7 +25,7 @@ namespace interpreter_cpp_api
       //--------------------------------------------------------------
       ///\brief               Destructor
       //--------------------------------------------------------------
-      virtual ~CInterpreterContext();
+      virtual ~CInterpreterContext() = default;
 
       // IInterpreterContext Implementation
       void run() override;

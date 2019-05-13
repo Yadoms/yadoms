@@ -178,7 +178,7 @@ namespace automation
          try
          {
             m_ipcAdapter->postAvalaibleRequest(request);
-            YADOMS_LOG(debug) << "Send AvalaibleRequest to interpreter " << m_interpreterInformation->getName();
+            YADOMS_LOG(debug) << "Send AvailableRequest to interpreter " << m_interpreterInformation->getName();
 
             switch (callback.waitForResult(boost::posix_time::seconds(30)))
             {
@@ -187,17 +187,17 @@ namespace automation
                   auto res = callback.getCallbackResult();
                   if (res.success)
                      return res.result();
-                  YADOMS_LOG(error) << "Unable to get avalaibility of interpreter " << m_interpreterInformation->getName() << " : " << res.
+                  YADOMS_LOG(error) << "Unable to get availability of interpreter " << m_interpreterInformation->getName() << " : " << res.
                      errorMessage();
                }
             default:
-               YADOMS_LOG(error) << "Unable to get avalaibility of interpreter " << m_interpreterInformation->getName() << " : timeout";
+               YADOMS_LOG(error) << "Unable to get availability of interpreter " << m_interpreterInformation->getName() << " : timeout";
             }
          }
          catch (std::exception& e)
          {
             request->sendError(
-               (boost::format("Error when requesting AvalaibleRequest on interpreter %1% : %2%") % m_interpreterInformation->getName() % e.what()).
+               (boost::format("Error when requesting AvailableRequest on interpreter %1% : %2%") % m_interpreterInformation->getName() % e.what()).
                str());
          }
 

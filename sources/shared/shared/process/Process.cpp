@@ -75,7 +75,7 @@ namespace shared
       {
          // Work on local copy of the process handle to avoid to lock mutex while wait for process end
          m_processMutex.lock();
-         auto processHandle = *m_processHandle;
+         const auto processHandle = *m_processHandle;
          m_processMutex.unlock();
 
          if (!!m_processObserver)

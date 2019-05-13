@@ -53,7 +53,7 @@ namespace shared
          void createProcessObserver();
 
          //-----------------------------------------------------
-         ///\brief               Rule montoring thread function
+         ///\brief               Rule monitoring thread function
          //-----------------------------------------------------
          void monitorThreaded();
 

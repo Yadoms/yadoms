@@ -237,6 +237,7 @@ namespace automation
                                  const boost::filesystem::path& logFile,
                                  const std::string& logLevel)
       {
+         YADOMS_LOG(debug) << "interpreter::CIpcAdapter::postInit...";
          interpreter_IPC::toInterpreter::msg msg;
          auto message = msg.mutable_init();
          serializers::CInformation(information).toPb(message->mutable_interpreterinformation());
@@ -250,7 +251,9 @@ namespace automation
       {
          interpreter_IPC::toInterpreter::msg req;
          req.mutable_avalaiblerequest();
-         auto avalaible = false;
+         auto available = false;
+
+         YADOMS_LOG(debug) << "interpreter::CIpcAdapter::postAvalaibleRequest...";
 
          try
          {
@@ -270,7 +273,8 @@ namespace automation
             return;
          }
 
-         request->sendSuccess(avalaible);
+         YADOMS_LOG(debug) << "interpreter::CIpcAdapter::postAvalaibleRequest ==> success";
+         request->sendSuccess(available);
       }
 
       void CIpcAdapter::postLoadScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ILoadScriptContentRequest> request)
