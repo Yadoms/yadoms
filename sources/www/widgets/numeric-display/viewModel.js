@@ -7,8 +7,6 @@ widgetViewModelCtor =
 function numericDisplayViewModel() {
    
     this.precision = 1;
-   
-    //observable data
     this.data = ko.observable("-");
     this.rawUnit = "";
     this.unit = ko.observable("");
