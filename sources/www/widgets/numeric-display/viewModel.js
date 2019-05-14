@@ -39,7 +39,8 @@ function numericDisplayViewModel() {
          return;
       }
       
-      var d = moment.duration(value);
+      self.widgetApi.find(".unit").addClass("hidden");
+      var d = moment.duration(parseFloat(value), "seconds");
       if (d.asSeconds() < 1) {  // Display in millisecond
          self.data(d.milliseconds().toString() + " ms");
       } else if (d.asSeconds() < 30) { // Display in seconds + milliseconds
