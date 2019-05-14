@@ -15,11 +15,12 @@ const shared::CDataContainer conf("{"
 BOOST_AUTO_TEST_CASE(ReadFakePluginDefaultConfiguration)
 {
    // Need to copy the package.json file from fakePlugin, needed by initializeWith method to get default configuration
-#ifdef _WIN32
-   boost::filesystem::copy_file("../../../../sources/plugins/dev-FakePlugin/package.in.json", "package.json", boost::filesystem::copy_option::overwrite_if_exists);
-#else 
-   boost::filesystem::copy_file("../../../sources/plugins/dev-FakePlugin/package.in.json", "package.json", boost::filesystem::copy_option::overwrite_if_exists);
-#endif
+	if (boost::filesystem::exists("../../../../sources/plugins/dev-FakePlugin/package.in.json"))
+		boost::filesystem::copy_file("../../../../sources/plugins/dev-FakePlugin/package.in.json", "package.json", boost::filesystem::copy_option::overwrite_if_exists);
+	else if (boost::filesystem::exists("../../../sources/plugins/dev-FakePlugin/package.in.json"))
+		boost::filesystem::copy_file("../../../sources/plugins/dev-FakePlugin/package.in.json", "package.json", boost::filesystem::copy_option::overwrite_if_exists);
+	else
+		BOOST_ERROR("Fail to copy fakePlugin package.in.json to package.json");
 
    CFakePluginConfiguration cfg;
    cfg.initializeWith(conf);

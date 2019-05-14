@@ -725,10 +725,12 @@ shared::CDataContainer COpenZWaveController::getNodeInfo(const uint32 homeId, co
    shared::CDataContainer d;
    d.set("name", id);
 
-   if (sNodeName.empty())
-      d.set("friendlyName", sNodeProductName);
+   if (!sNodeName.empty())
+	   d.set("friendlyName", sNodeName);
+   else if(!sNodeProductName.empty())
+	   d.set("friendlyName", sNodeProductName);
    else
-      d.set("friendlyName", sNodeName);
+	   d.set("friendlyName", id);
 
    shared::CDataContainer details;
    details.set("Manufacturer", sNodeManufacturer);
@@ -996,20 +998,21 @@ void COpenZWaveController::manageKeywordValue(const std::string & deviceName, bo
 
 void COpenZWaveController::cachePop(const std::string & deviceName)
 {
-   auto deviceInfo = m_cache.getDeviceInfo(deviceName);
+   auto& deviceInfo = m_cache.getDeviceInfo(deviceName);
+   shared::CDataContainer& deviceInfoRef = deviceInfo.getDeviceInfo();
 
    if (m_handler != nullptr)
    {
-      if (!deviceInfo.first.empty())
+      if (!deviceInfoRef.empty())
       {
-         deviceInfo.first.printToLog(YADOMS_LOG(information) << "[CACHE] declare device ");
-         m_handler->postEvent(CZWave::kDeclareDevice, deviceInfo.first);
+		  deviceInfoRef.printToLog(YADOMS_LOG(information) << "[CACHE] declare device ");
+         m_handler->postEvent(CZWave::kDeclareDevice, deviceInfoRef);
 
-         if (deviceInfo.second != shared::plugin::yPluginApi::historization::EDeviceState::kUnknown)
+         if (deviceInfo.getDeviceState() != shared::plugin::yPluginApi::historization::EDeviceState::kUnknown)
          {
             shared::CDataContainer a;
             a.set("name", deviceName);
-            a.set("state", deviceInfo.second);
+            a.set("state", deviceInfo.getDeviceState());
             m_handler->postEvent(CZWave::kUpdateDeviceState, a);
          }
          

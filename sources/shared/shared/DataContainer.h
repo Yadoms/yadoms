@@ -314,7 +314,7 @@ namespace shared
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      const char* get(const std::string & parameterName = std::string(), const char pathChar = '.') const;
+      std::string get(const std::string & parameterName = std::string(), const char pathChar = '.') const;
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter value as map<string, string>
@@ -516,7 +516,7 @@ namespace shared
       /// \desc       Add non-exisiting (or replace existing) values of "from" container into this container
       ///             Values of this container not present in "from" container will be kept
       //--------------------------------------------------------------
-      void mergeFrom(const CDataContainer& from);
+      void mergeFrom(CDataContainer& from);
 
       //--------------------------------------------------------------
       //
@@ -1565,8 +1565,7 @@ namespace shared
       if (!m_tree.IsObject())
          m_tree.SetObject();
 
-      rapidjson::Value v;
-      v.SetString(value, m_tree.GetAllocator());
+      const rapidjson::Value v(value, m_tree.GetAllocator());
       rapidjson::Pointer(generatePath(parameterName, pathChar)).Set(m_tree, v);
    }
 

@@ -245,6 +245,229 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 	   BOOST_CHECK_EQUAL(dc.get<std::string>(key), value);
    }
 
+
+   std::string str1("str1");
+   std::string str2("str2");
+
+   std::string & getString1() { return str1; }
+   const std::string & getString2() { return str2; }
+
+   shared::CDataContainer globalContainer;
+   shared::CDataContainer& getGlobalContainer() { return globalContainer; }
+
+   shared::CDataContainer getDeviceInfo()
+   {
+	   shared::CDataContainer d;
+
+	   {
+		   std::string id = "id";
+		   std::string sNodeName = "sNodeName";
+		   std::string sNodeManufacturer = "sNodeManufacturer";
+		   std::string sNodeManufacturerId = "sNodeManufacturerId";
+		   std::string sNodeProductName = "sNodeProductName";
+		   std::string sNodeProductId = "sNodeProductId";
+		   std::string sNodeProductType = "sNodeProductType";
+		   std::string sNodeLocation = "sNodeLocation";
+		   std::string sNodeType = "sNodeType";
+		   std::string sNodeVersion = "sNodeVersion";
+		   std::string sNodePlusType = "sNodePlusType";
+		   std::string sNodeDeviceTypeString = "sNodeDeviceTypeString";
+		   std::string sNodeRole = "sNodeRole";
+
+		   d.set("name", id);
+		   d.set("friendlyName", sNodeName);
+		   
+		   shared::CDataContainer details;
+		   details.set("Manufacturer", sNodeManufacturer);
+		
+		   details.set("ManufacturerId", sNodeManufacturerId);
+		   details.set("Product", sNodeProductName);
+		   details.set("ProductId", sNodeProductId);
+		   details.set("ProductType", sNodeProductType);
+		   details.set("Location", sNodeLocation);
+		   details.set("Type", sNodeType);
+		   details.set("Version", sNodeVersion);
+		   details.set("ZWave+Type", sNodePlusType);
+		   details.set("DeviceType", sNodeDeviceTypeString);
+		   details.set("Role", sNodeRole);
+
+		   details.set("IsRouting", true);
+		   details.set("IsListening", false);
+		   details.set("IsFLiRS", true);
+		   details.set("IsBeaming", false);
+		   details.set("IsAwake", true);
+		   details.set("IsFailed", false);
+		   details.set("IsSecurity", true);
+		   details.set("IsZWave+", false);
+		   
+		   details.set("str1", getString1());
+		   details.set("str2", getString2());
+		   
+		   d.set("details", details);
+	   }
+
+	   return d;
+   }
+
+   
+   BOOST_AUTO_TEST_CASE(RapidJsonStringMemory)
+   {
+	   shared::CDataContainer a;
+	   shared::CDataContainer b;
+
+	   //basic cases
+	   {
+		   std::string string4("str4");
+		   std::string string5("str5");
+
+		   a.set("string1", getString1());
+		   a.set("string2", getString2());
+		   a.set("string3", "str3");
+		   a.set("string4", string4);
+		   a.set("string5", string5.c_str());
+
+		   BOOST_CHECK_EQUAL(a.get<std::string>("string1"), "str1");
+		   BOOST_CHECK_EQUAL(a.get<std::string>("string2"), "str2");
+		   BOOST_CHECK_EQUAL(a.get<std::string>("string3"), "str3");
+		   BOOST_CHECK_EQUAL(a.get<std::string>("string4"), "str4");
+		   BOOST_CHECK_EQUAL(a.get<std::string>("string5"), "str5");
+	   }
+
+	   //check out of {}
+	   BOOST_CHECK_EQUAL(a.get<std::string>("string1"), "str1");
+	   BOOST_CHECK_EQUAL(a.get<std::string>("string2"), "str2");
+	   BOOST_CHECK_EQUAL(a.get<std::string>("string3"), "str3");
+	   BOOST_CHECK_EQUAL(a.get<std::string>("string4"), "str4");
+	   BOOST_CHECK_EQUAL(a.get<std::string>("string5"), "str5");
+
+	   //check merge operations
+	   {
+		   b.mergeFrom(a);
+		   BOOST_CHECK_EQUAL(b.get<std::string>("string1"), "str1");
+		   BOOST_CHECK_EQUAL(b.get<std::string>("string2"), "str2");
+		   BOOST_CHECK_EQUAL(b.get<std::string>("string3"), "str3");
+		   BOOST_CHECK_EQUAL(b.get<std::string>("string4"), "str4");
+		   BOOST_CHECK_EQUAL(b.get<std::string>("string5"), "str5");
+	   }
+	   BOOST_CHECK_EQUAL(b.get<std::string>("string1"), "str1");
+	   BOOST_CHECK_EQUAL(b.get<std::string>("string2"), "str2");
+	   BOOST_CHECK_EQUAL(b.get<std::string>("string3"), "str3");
+	   BOOST_CHECK_EQUAL(b.get<std::string>("string4"), "str4");
+	   BOOST_CHECK_EQUAL(b.get<std::string>("string5"), "str5");
+
+
+	   {
+		   shared::CDataContainer info = getDeviceInfo();
+
+		   BOOST_CHECK_EQUAL(info.get<std::string>("details.str1"), "str1");
+		   BOOST_CHECK_EQUAL(info.get<std::string>("details.str2"), "str2");
+
+		   shared::CDataContainer plop;
+
+		   plop.mergeFrom(info);
+		   a.mergeFrom(plop);
+
+		   getGlobalContainer().mergeFrom(plop);
+	   }
+
+
+	   //check after global objects modifications
+	   str1 = "anotherStr1";
+	   str2 = "anotherStr2";
+
+	   BOOST_CHECK_EQUAL(a.get<std::string>("string1"), "str1");
+	   BOOST_CHECK_EQUAL(a.get<std::string>("string2"), "str2");
+	   BOOST_CHECK_EQUAL(a.get<std::string>("string3"), "str3");
+	   BOOST_CHECK_EQUAL(a.get<std::string>("string4"), "str4");
+	   BOOST_CHECK_EQUAL(a.get<std::string>("string5"), "str5");
+
+	   BOOST_CHECK_EQUAL(b.get<std::string>("string1"), "str1");
+	   BOOST_CHECK_EQUAL(b.get<std::string>("string2"), "str2");
+	   BOOST_CHECK_EQUAL(b.get<std::string>("string3"), "str3");
+	   BOOST_CHECK_EQUAL(b.get<std::string>("string4"), "str4");
+	   BOOST_CHECK_EQUAL(b.get<std::string>("string5"), "str5");
+
+	   BOOST_CHECK_EQUAL(a.get<std::string>("details.str1"), "str1");
+	   BOOST_CHECK_EQUAL(a.get<std::string>("details.str2"), "str2");
+
+	   BOOST_CHECK_EQUAL(getGlobalContainer().get<std::string>("details.str1"), "str1");
+	   BOOST_CHECK_EQUAL(getGlobalContainer().get<std::string>("details.str2"), "str2");
+   }
+
+   BOOST_AUTO_TEST_CASE(RapidJsonInitAndCopy)
+   {
+	   /*
+	   This test case is an example from Zwave plugin which illustrate a bad object copy.
+	   */
+	   typedef std::pair<shared::CDataContainer, int> DeviceInfoAndState;
+	   typedef std::map<std::string, DeviceInfoAndState > DeviceCache;
+	   DeviceCache m_deviceCache;
+	   
+	   {
+		   shared::CDataContainer info = getDeviceInfo();
+		   std::string l("test3");
+
+		   //directly access with []
+		   DeviceInfoAndState &c = m_deviceCache["mydevice2"];
+		   c.first.mergeFrom(info);
+
+		   m_deviceCache["mydevice2"].first.set("test1", "test2");
+		   m_deviceCache["mydevice2"].first.set("test2", l);
+		   m_deviceCache["mydevice2"].first.printToLog(std::cout << "Initial  =");
+
+		   //insert pair instead of []
+		   shared::CDataContainer a("{}");
+		   m_deviceCache.insert(std::make_pair("mydevice", std::make_pair(a, 42)));
+
+		   DeviceInfoAndState & b = m_deviceCache["mydevice"];
+		   b.first.mergeFrom(info);
+
+		   //very first check, has never failed, but just test
+		   auto deviceInfo = m_deviceCache["mydevice"];
+		   if (!deviceInfo.first.empty())
+		   {
+			  deviceInfo.first.printToLog(std::cout << "[CACHE] declare device ");
+		   }
+	   }
+
+	   {
+		   //because using code blcks { ... }, previous string allocation are deleted
+		   //so accessing data may fail if copy was not done correctly
+		   DeviceInfoAndState&  deviceInfo = m_deviceCache["mydevice"];
+		   if (!deviceInfo.first.empty())
+		   {
+			   deviceInfo.first.printToLog(std::cout << "[CACHE] declare device ");
+		   }		  
+		   
+		   deviceInfo = m_deviceCache["mydevice2"];
+		   if (!deviceInfo.first.empty())
+		   {
+			   deviceInfo.first.printToLog(std::cout << "[CACHE] declare device2 ");
+		   }
+
+		   BOOST_CHECK_EQUAL(m_deviceCache["mydevice2"].first.get("test1"), "test2");
+
+		   m_deviceCache["mydevice2"].first.printToLog(std::cout << std::endl << "Vérif = " );
+
+
+		   auto &d = m_deviceCache["mydevice2"];
+		   auto &e = m_deviceCache["mydevice2"].first;
+		   std::string s1 = e.get("test2");
+		   std::string s = e.get<std::string>("test2");
+		   std::cout << std::endl << "Test2:" << s << std::endl;
+
+		   BOOST_CHECK_EQUAL(e.exists("test2"), true);
+		   BOOST_CHECK_EQUAL(e.get("test2"), "test3");
+
+		   BOOST_CHECK_EQUAL(d.first.exists("test2"), true);
+		   BOOST_CHECK_EQUAL(d.first.get("test2"), "test3");
+
+
+		   BOOST_CHECK_EQUAL(m_deviceCache["mydevice2"].first.exists("test2"), true);
+		   BOOST_CHECK_EQUAL(m_deviceCache["mydevice2"].first.get("test2"), "test3");
+	   }
+   }
+
    BOOST_AUTO_TEST_CASE(DataCopy)
    {
 	   shared::CDataContainer dc;
@@ -627,7 +850,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
          "   }"
          "}");
 
-      const shared::CDataContainer from(
+      shared::CDataContainer from(
          "{"
          "   \"developerMode\": \"true\","
          "   \"location\":"
@@ -1074,7 +1297,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 		   "   \"language\": \"en\""
 		   "}");
 
-	   const shared::CDataContainer from(
+	   shared::CDataContainer from(
 		   "{"
 		   "   \"developerMode\": \"true\","
 		   "   \"location\":"
