@@ -33,9 +33,9 @@ namespace location
             throw shared::exception::CException("ip-api.com service returned unknwon error : " + ipApiResult.serialize());
 
          shared::CDataContainer foundLocation;
-         foundLocation.set("latitude", ipApiResult.get<std::string>("lat"));
-         foundLocation.set("longitude", ipApiResult.get<std::string>("lon"));
-         foundLocation.set("altitude", "0.0"); // Not available by this service
+         foundLocation.set("latitude", ipApiResult.get<double>("lat"));
+         foundLocation.set("longitude", ipApiResult.get<double>("lon"));
+         foundLocation.set("altitude", 0.0); // Not available by this service
          foundLocation.set("timezone", ipApiResult.get<std::string>("timezone"));
 
          onFoundFct(foundLocation);

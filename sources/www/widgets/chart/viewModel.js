@@ -9,41 +9,22 @@ function chartViewModel() {
     this.interval = 0;
     this.deviceInfo = [];
     this.keywordPosition = [];
-    
-    // The unit of the plot
-    this.unit = [];
-    
+    this.unit = [];                      // The unit of the plot
     this.differentialDisplay = [];
     this.incompatibility = false;
     this.serverTime = null;
     this.precision = [];
     this.ConfigurationLegendLabels = "";
     this.timeDeffered = null;
-    
-    // defined by the configuration of the widget chart for cleaning old points
-    this.cleanValue = 0;
+    this.cleanValue = 0;                  // defined by the configuration of the widget chart for cleaning old points
     this.prefix = "";
-    
-    //defined by the configuration of the widget chart for adding new summary points for continuous display
-    this.summaryTimeBetweenNewPoint = 0;
-    
-    // This variable is used to know the last x position, and used to add new values in continuous display
-    this.chartLastXPosition = [];
-    
-    //This variable is used in differential display
-    this.chartLastValue = [];
-    
-    //this variable is for the selection of the computed value used for the chart (min, avg, max)
-    this.periodValueType = [];
-    
-    // This variable is only used for keyword of type enum. It returns the plugin instance type for this keyword
-    this.pluginInstanceType = [];
-    
-    // Adaptation coefficient, if units have been adapted
-    this.coeff = [];
-    
-    // Automatic unit scale
-    this.automaticScale = true;
+    this.summaryTimeBetweenNewPoint = 0;  // defined by the configuration of the widget chart for adding new summary points for continuous display
+    this.chartLastXPosition = [];         // This variable is used to know the last x position, and used to add new values in continuous display
+    this.chartLastValue = [];             // This variable is used in differential display
+    this.periodValueType = [];            // This variable is for the selection of the computed value used for the chart (min, avg, max)
+    this.pluginInstanceType = [];         // This variable is only used for keyword of type enum. It returns the plugin instance type for this keyword
+    this.coeff = [];                      // Adaptation coefficient, if units have been adapted
+    this.automaticScale = true;           // Automatic unit scale
 
     /**
      * Configure the toolbar
@@ -192,7 +173,10 @@ function chartViewModel() {
                 chart: {
                     type: 'line',
                     animation: false,
-                    marginTop: 10
+                    marginTop: 10,
+                    zoomType: "xy",
+                    panning: true,
+                    panKey: 'shift'
                 },
                 boost: {
                    allowForce: true,
@@ -255,6 +239,16 @@ function chartViewModel() {
                 plotOptions: {
                     bar: {
                         pointPadding: 0.2
+                    },
+                    series: {
+                       events: {
+                          hide: function () {
+                             this.chart.keyword[this.keywordTabId].visible = this.visible;
+                          },
+                          show: function () {
+                             this.chart.keyword[this.keywordTabId].visible = this.visible;
+                          }                          
+                       }
                     }
                 },
                 tooltip: {
@@ -424,6 +418,7 @@ function chartViewModel() {
          deffered2.done(function (keywordsInformation) {
             $.each(keywordsInformation, function (index, keyword) {
                 self.chart.keyword[keyword.keywordId] = keyword;
+                self.chart.keyword[keyword.keywordId].visible = true;
 
                 function measureManagement(measure){
                   if (measure === "Cumulative"){
@@ -840,7 +835,8 @@ function chartViewModel() {
                         yAxis: axisName,
                         lineWidth: 2,
                         showInLegend: legendConfiguration,
-                        animation: false
+                        animation: false,
+                        visible: self.chart.keyword[keywordId].visible
                      };
                     
                      if (device.content.PlotType === "arearange") { // arearange
@@ -869,7 +865,8 @@ function chartViewModel() {
                             connectNulls: false,
                             lineWidth: 0,
                             fillOpacity: 0.3,
-                            zIndex: 0
+                            zIndex: 0,
+                            visible: self.chart.keyword[keywordId].visible
                         }, false, false); // Do not redraw immediately
 
                         // Add Units and precision for ranges

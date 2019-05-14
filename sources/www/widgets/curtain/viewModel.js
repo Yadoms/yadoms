@@ -23,7 +23,7 @@ widgetViewModelCtor =
                   if (!isNullOrUndefined(self.capacity[0])) {
                      // We send the command only for Set and GetSet variables
                      if ( self.accessMode[0] === "GetSet" || self.accessMode[0] === "Set" )
-                        KeywordManager.sendCommand(self.widget.configuration.device.keywordId, newState.toString());
+                        KeywordManager.sendCommand(parseInt(self.widget.configuration.device.keywordId), newState.toString());
                    }
                }                   
                
@@ -33,7 +33,7 @@ widgetViewModelCtor =
                       if (!isNullOrUndefined(self.capacity[index+1])) {
                           // We send the command only for Set and GetSet variables
                           if ( self.accessMode[index+1] === "GetSet" || self.accessMode[index+1] === "Set" )
-                             KeywordManager.sendCommand(device.content.source.keywordId, newState.toString());
+                             KeywordManager.sendCommand(parseInt(device.content.source.keywordId), newState.toString());
                       }
                   });
                }

@@ -1,8 +1,8 @@
+### 2.3.0-beta.3
+* N/A (fixes on RFXCom plugin only)
+
 ### 2.3.0-beta.2
-* Fix #521 : Change duration type to seconds
-
-
-### 2.3.0-beta.1
+* New feature #555 : Add data export function (maintenance page of configuration panel)
 * New feature #553 : use of full compliant Json
 * New feature #532 : Add readkeyworddetails function to script API
 * New feature #537 : Add a download logs function

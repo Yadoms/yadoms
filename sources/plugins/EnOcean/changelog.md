@@ -1,3 +1,6 @@
+### 1.5.0
+* Issue #557 : D2-05-00 profile : fix the blinds direction (was inverted)
+
 ### 1.4.0
 * New feature #553 : use of full compliant Json
 

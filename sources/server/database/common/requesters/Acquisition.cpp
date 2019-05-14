@@ -213,6 +213,28 @@ namespace database
                (boost::format("Cannot retrieve acquisition for KeywordId=%1% and date=%2%  in database") % keywordId % time).str());
          }
 
+         void CAcquisition::exportAcquisitions(const int keywordId,
+                                               std::function<void(const boost::posix_time::ptime& date,
+                                                                  const std::string& value,
+                                                                  int nbTotalLines)> exportOneLineFunction)
+         {
+            auto qSelect = m_databaseRequester->newQuery();
+            qSelect->Select().
+                     From(CAcquisitionTable::getTableName()).
+                     Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId);
+
+            adapters::CAcquisitionAdapter adapter;
+            m_databaseRequester->queryEntities(&adapter, *qSelect);
+
+            const int totalLines = adapter.getResults().size();
+            for (const auto& line : adapter.getResults())
+            {
+               exportOneLineFunction(line->Date,
+                                     line->Value,
+                                     totalLines);
+            }
+         }
+
          std::vector<boost::tuple<boost::posix_time::ptime, std::string>> CAcquisition::getKeywordData(int keywordId,
                                                                                                        boost::posix_time::ptime timeFrom,
                                                                                                        boost::posix_time::ptime timeTo,

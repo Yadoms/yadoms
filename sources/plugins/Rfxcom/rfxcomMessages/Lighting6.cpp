@@ -18,10 +18,10 @@ namespace rfxcomMessages
       m_state->setCommand(command);
       m_signalPower->set(0);
 
-      m_subType = deviceDetails.get<unsigned char>("subType");
+      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
       m_id = deviceDetails.get<unsigned short>("id");
-      m_groupCode = deviceDetails.get<unsigned char>("groupCode");
-      m_unitCode = deviceDetails.get<unsigned char>("unitCode");
+      m_groupCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("groupCode"));
+      m_unitCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("unitCode"));
 
       // Build device description
       buildDeviceModel();
@@ -53,7 +53,7 @@ namespace rfxcomMessages
 
       m_id = manuallyDeviceCreationConfiguration.get<short>("id");
       m_groupCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<char>("groupCode"));
-      m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
+      m_unitCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode"));
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);

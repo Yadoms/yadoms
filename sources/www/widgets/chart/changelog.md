@@ -1,4 +1,11 @@
-### 1.3.0-beta.1
+### 1.3.2
+* Fix Zoom for Y position
+* Fix zooming and panning for PC
+
+### 1.3.1
+* Fix #554 - Curves reappears after changing the period
+
+### 1.3.0
 * Add the possibility to disable automatic unit scaling
 
 ### 1.2.2

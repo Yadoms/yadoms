@@ -89,7 +89,7 @@ function RGBcolorPickerViewModel() {
            var self = this;
            return function (e) {
             self.colorpicker.unbind('changeColor')
-            KeywordManager.sendCommand(self.widget.configuration.device.keywordId, e.color.toHex().toString());
+            KeywordManager.sendCommand(parseInt(self.widget.configuration.device.keywordId), e.color.toHex().toString());
             self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
         };
     };
@@ -102,10 +102,10 @@ function RGBcolorPickerViewModel() {
           return;
 	   
         //we register keyword new acquisition
-        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+        self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.device.keywordId));
 	   
 		//we register keyword for get last value at web client startup
-		self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);   
+		self.widgetApi.getLastValue(parseInt(self.widget.configuration.device.keywordId));
        
        // destroy the precedent colorPicker if any
        // it's the only solution, to create/delete preselected colors
