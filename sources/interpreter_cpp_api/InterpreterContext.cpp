@@ -108,16 +108,9 @@ namespace interpreter_cpp_api
          std::cout << "***********************************************" << std::endl;
 
          // Check every 300 ms, while 2 minutes
+         // Don't wait for stop request as it consumes standard event (interpreter init, interpreter available request...)
          const auto endTimePoint = shared::currentTime::Provider().now() + boost::posix_time::minutes(2);
-         while (!Poco::Debugger::isAvailable() && shared::currentTime::Provider().now() < endTimePoint)
-         {
-            log("CInterpreterContext::waitDebugger(): api->getEventHandler().waitForEvents(300 ms)");
-            if (api->getEventHandler().waitForEvents(boost::posix_time::millisec(300)) == yApi::IYInterpreterApi::kEventStopRequested)
-            {
-               std::cout << "Stop requested" << std::endl;
-               return;
-            }
-         }
+         while (!Poco::Debugger::isAvailable() && shared::currentTime::Provider().now() < endTimePoint);
 
          if (Poco::Debugger::isAvailable())
             std::cout << api->getInformation()->getType() << " attached to debugger" << std::endl;

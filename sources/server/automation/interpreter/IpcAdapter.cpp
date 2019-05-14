@@ -193,7 +193,7 @@ namespace automation
          // Unserialize message
          interpreter_IPC::toYadoms::msg toYadomsProtoBuffer;
          if (!toYadomsProtoBuffer.ParseFromArray(message.get(), messageSize))
-            throw shared::exception::CInvalidParameter("message : fail to parse received data into protobuf format");
+            throw shared::exception::CInvalidParameter("message : fail to parse received data into Protobuf format");
 
          YADOMS_LOG(trace) << "[RECEIVE] message " << toYadomsProtoBuffer.OneOf_case() << " from interpreter " << m_interpreterName << (
                m_onReceiveHook ? " (onReceiveHook ENABLED)" : "");
@@ -210,7 +210,7 @@ namespace automation
          // Process message
          switch (toYadomsProtoBuffer.OneOf_case())
          {
-         case interpreter_IPC::toYadoms::msg::kNotifiyScriptStopped: processNotifiyScriptStopped(toYadomsProtoBuffer.notifiyscriptstopped());
+         case interpreter_IPC::toYadoms::msg::kNotifiyScriptStopped: processNotifyScriptStopped(toYadomsProtoBuffer.notifiyscriptstopped());
             break;
          default:
             throw shared::exception::
@@ -218,10 +218,10 @@ namespace automation
          }
       }
 
-      void CIpcAdapter::processNotifiyScriptStopped(const interpreter_IPC::toYadoms::NotifiyScriptStopped& notifiyScriptStopped) const
+      void CIpcAdapter::processNotifyScriptStopped(const interpreter_IPC::toYadoms::NotifiyScriptStopped& notifyScriptStopped) const
       {
-         m_apiImplementation->notifyScriptStopped(notifiyScriptStopped.scriptinstanceid(),
-                                                  notifiyScriptStopped.error());
+         m_apiImplementation->notifyScriptStopped(notifyScriptStopped.scriptinstanceid(),
+                                                  notifyScriptStopped.error());
       }
 
       void CIpcAdapter::postStopRequest()
@@ -247,13 +247,13 @@ namespace automation
          send(msg);
       }
 
-      void CIpcAdapter::postAvalaibleRequest(boost::shared_ptr<shared::script::yInterpreterApi::IAvalaibleRequest> request)
+      void CIpcAdapter::postAvailableRequest(boost::shared_ptr<shared::script::yInterpreterApi::IAvalaibleRequest> request)
       {
          interpreter_IPC::toInterpreter::msg req;
          req.mutable_avalaiblerequest();
          auto available = false;
 
-         YADOMS_LOG(debug) << "interpreter::CIpcAdapter::postAvalaibleRequest...";
+         YADOMS_LOG(debug) << "interpreter::CIpcAdapter::postAvailableRequest...";
 
          try
          {
@@ -264,16 +264,16 @@ namespace automation
                  },
                  [&](const interpreter_IPC::toYadoms::msg& ans) -> void
                  {
-                    avalaible = ans.avalaibleanswer().avalaible();
+                    available = ans.avalaibleanswer().avalaible();
                  });
          }
          catch (std::exception& e)
          {
-            request->sendError((boost::format("Interpreter doesn't answer to avalaible request : %1%") % e.what()).str());
+            request->sendError((boost::format("Interpreter doesn't answer to available request : %1%") % e.what()).str());
             return;
          }
 
-         YADOMS_LOG(debug) << "interpreter::CIpcAdapter::postAvalaibleRequest ==> success";
+         YADOMS_LOG(debug) << "interpreter::CIpcAdapter::postAvailableRequest ==> success";
          request->sendSuccess(available);
       }
 
