@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
    {
       shared::CDataContainer dc;
 
-      auto actualDatetime = boost::posix_time::second_clock::universal_time();
+      const auto actualDatetime = boost::posix_time::second_clock::universal_time();
 
       //ensure en new container is empty
       BOOST_CHECK_EQUAL(dc.empty(), true) ;
@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       dc.set<std::string>("MySection.SubStringParameter", "Just a string parameter in the sub-section");
       dc.set<boost::posix_time::ptime>("DateTimeParameter", actualDatetime);
 
-      //check data are correctly retreived
+      //check data are correctly retrieved
       BOOST_CHECK_EQUAL(dc.get<bool>("BoolParameter"), true) ;
       BOOST_CHECK_EQUAL(dc.get<double>("DecimalParameter"), 18.4) ;
       BOOST_CHECK_EQUAL(dc.get<EEnumType>("EnumParameter"), kEnumValue2) ;
@@ -88,23 +88,23 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
    BOOST_AUTO_TEST_CASE(JsonOldformatStyle)
    {
-	  const std::string oldJsonFormatStyle("{"
-		  "\"BoolParameter\": \"true\","
-		  "\"BoolParameter2\": \"false\","
-		  "\"DecimalParameter\": \"18.4\","
-		  "\"EnumParameter\": \"12\","
-		  "\"EnumAsStringParameter\": \"EnumValue1\","
-		  "\"IntParameter\": \"42\""
-		  "}");
+      const std::string oldJsonFormatStyle("{"
+         "\"BoolParameter\": \"true\","
+         "\"BoolParameter2\": \"false\","
+         "\"DecimalParameter\": \"18.4\","
+         "\"EnumParameter\": \"12\","
+         "\"EnumAsStringParameter\": \"EnumValue1\","
+         "\"IntParameter\": \"42\""
+         "}");
 
-	  shared::CDataContainer cfg(oldJsonFormatStyle);
+      shared::CDataContainer cfg(oldJsonFormatStyle);
 
-	  BOOST_CHECK_EQUAL(cfg.get<bool>("BoolParameter"), true);
-	  BOOST_CHECK_EQUAL(cfg.get<bool>("BoolParameter2"), false);
-	  BOOST_CHECK_EQUAL(cfg.get<double>("DecimalParameter"), 18.4);
-	  BOOST_CHECK_EQUAL(cfg.get<int>("IntParameter"), 42);
-	  BOOST_CHECK_EQUAL(cfg.get<EEnumType>("EnumParameter"), kEnumValue2);
-	  BOOST_CHECK_EQUAL(cfg.getEnumValue<EEnumType>("EnumAsStringParameter", EEnumTypeNames), kEnumValue1);
+      BOOST_CHECK_EQUAL(cfg.get<bool>("BoolParameter"), true);
+      BOOST_CHECK_EQUAL(cfg.get<bool>("BoolParameter2"), false);
+      BOOST_CHECK_EQUAL(cfg.get<double>("DecimalParameter"), 18.4);
+      BOOST_CHECK_EQUAL(cfg.get<int>("IntParameter"), 42);
+      BOOST_CHECK_EQUAL(cfg.get<EEnumType>("EnumParameter"), kEnumValue2);
+      BOOST_CHECK_EQUAL(cfg.getEnumValue<EEnumType>("EnumAsStringParameter", EEnumTypeNames), kEnumValue1);
    }
 
    BOOST_AUTO_TEST_CASE(CollectionContainer)
@@ -167,18 +167,18 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       for (unsigned int i = 0; i < vdsh.size(); ++i)
          BOOST_CHECK_EQUAL(*(vdsh[i].get()) == vdsh2bis[i], true) ;
 
-	  //check vector of std::string
-	  std::vector<std::string> vstr;
-	  for (unsigned int i = 0; i < 10; ++i)
-		  vstr.push_back( (boost::format("string %1%")%i).str() );
-	  test.set("vectorstring", vstr);
+      //check vector of std::string
+      std::vector<std::string> vstr;
+      for (unsigned int i = 0; i < 10; ++i)
+         vstr.push_back((boost::format("string %1%") % i).str());
+      test.set("vectorstring", vstr);
 
-	  auto vstr2 = test.get<std::vector<std::string>>("vectorstring");
-	  BOOST_CHECK_EQUAL(vstr.size(), vstr2.size());
-	  for (unsigned int i = 0; i < vstr2.size(); ++i)
-		  BOOST_CHECK_EQUAL(vstr[i] == vstr2[i], true);
-	  	  
-	  //check vector of CDataContainer
+      auto vstr2 = test.get<std::vector<std::string>>("vectorstring");
+      BOOST_CHECK_EQUAL(vstr.size(), vstr2.size());
+      for (unsigned int i = 0; i < vstr2.size(); ++i)
+         BOOST_CHECK_EQUAL(vstr[i] == vstr2[i], true);
+
+      //check vector of CDataContainer
 
       shared::CDataContainer cond1;
       cond1.set("is.keyword", 8);
@@ -206,9 +206,9 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
       BOOST_CHECK_EQUAL(allconditions.size(), getAllCond.size()) ;
 
-      auto getCond1 = getAllCond[0];
-      auto getCond2 = getAllCond[1];
-      auto getCond3 = getAllCond[2];
+      const auto getCond1 = getAllCond[0];
+      const auto getCond2 = getAllCond[1];
+      const auto getCond3 = getAllCond[2];
 
       BOOST_CHECK_EQUAL(cond1, getCond1) ;
       BOOST_CHECK_EQUAL(cond2, getCond2) ;
@@ -219,7 +219,8 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
    BOOST_AUTO_TEST_CASE(ContainerToVectorOfContainers)
    {
-      const shared::CDataContainer inIsNotAnArray("\
+      const shared::CDataContainer inIsNotAnArray(
+         "\
       {\
          \"changelogUrl\": \"http://www.yadoms.com/downloads/update/widgets/moon/changelog.md\",\
             \"0\": {\
@@ -249,68 +250,68 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
    boost::shared_ptr<shared::serialization::IDataSerializable> maketest(const unsigned int testcount)
    {
-	   shared::CDataContainer result;
-	   std::vector<std::string> pluginCollection;
+      shared::CDataContainer result;
+      std::vector<std::string> pluginCollection;
 
-	   for (unsigned int i = 0; i < testcount; ++i)
-		   pluginCollection.push_back((boost::format("plugin %1%") % i).str());
-	   
-	   result.set("plugins", pluginCollection);
+      for (unsigned int i = 0; i < testcount; ++i)
+         pluginCollection.push_back((boost::format("plugin %1%") % i).str());
 
-	   return web::rest::CResult::GenerateSuccess(result);
+      result.set("plugins", pluginCollection);
+
+      return web::rest::CResult::GenerateSuccess(result);
    }
 
 
    BOOST_AUTO_TEST_CASE(RapidJsonValueSlash)
    {
-	   //this test check that keys and values containing slash are correctly handled
-	   const std::string key = "French/France";
-	   const std::string value = "Euros/Dollars";
+      //this test check that keys and values containing slash are correctly handled
+      const std::string key = "French/France";
+      const std::string value = "Euros/Dollars";
 
-	   shared::CDataContainer dc;
-	   dc.set(key, value);
+      shared::CDataContainer dc;
+      dc.set(key, value);
 
-	   BOOST_CHECK_EQUAL(dc.exists("French"), false);
-	   BOOST_CHECK_EQUAL(dc.exists(key), true);
-	   BOOST_CHECK_EQUAL(dc.get<std::string>(key), value);
+      BOOST_CHECK_EQUAL(dc.exists("French"), false);
+      BOOST_CHECK_EQUAL(dc.exists(key), true);
+      BOOST_CHECK_EQUAL(dc.get<std::string>(key), value);
    }
 
    BOOST_AUTO_TEST_CASE(DataCopy)
    {
-	   shared::CDataContainer dc;
-	   const unsigned int testcount = 10;
+      shared::CDataContainer dc;
+      const unsigned int testcount = 10;
 
-	   //ensure braces are used => in that case, inner container will be deleted to brace close
-	   {
-		   //check vector of std::string
-		   shared::CDataContainer test;
-		   std::vector<std::string> vstr;
-		   for (unsigned int i = 0; i < testcount; ++i)
-			   vstr.push_back((boost::format("string %1%") % i).str());
-		   test.set("vectorstring", vstr);
-		   dc = test;
-	   } 
+      //ensure braces are used => in that case, inner container will be deleted to brace close
+      {
+         //check vector of std::string
+         shared::CDataContainer test;
+         std::vector<std::string> vstr;
+         for (unsigned int i = 0; i < testcount; ++i)
+            vstr.push_back((boost::format("string %1%") % i).str());
+         test.set("vectorstring", vstr);
+         dc = test;
+      }
 
-	   auto vstr2 = dc.get<std::vector<std::string>>("vectorstring");
-	   BOOST_CHECK_EQUAL(vstr2.size(), testcount);
-	   for (unsigned int i = 0; i < vstr2.size(); ++i)
-	   {
-		   std::string loc = (boost::format("string %1%") % i).str();
-		   BOOST_CHECK_EQUAL(vstr2[i] == loc, true);
-	   }
+      auto vstr2 = dc.get<std::vector<std::string>>("vectorstring");
+      BOOST_CHECK_EQUAL(vstr2.size(), testcount);
+      for (unsigned int i = 0; i < vstr2.size(); ++i)
+      {
+         std::string loc = (boost::format("string %1%") % i).str();
+         BOOST_CHECK_EQUAL(vstr2[i] == loc, true);
+      }
 
-	   //the following test illustrate a bad string allocation (normally datacontainer copy should keep allocation; 
-	   //but if a string is copied into rapidjson value without allocator, then the string is kept as a simple reference
-	   //and this test fails if string are destroyed
-	   auto k = maketest(testcount);
-	   shared::CDataContainer dc2(k->serialize());
-	   auto vstr = dc2.get<std::vector<std::string>>("data.plugins");
-	   BOOST_CHECK_EQUAL(vstr.size(), testcount);
-	   for (unsigned int i = 0; i < vstr.size(); ++i)
-	   {
-		   std::string loc = (boost::format("plugin %1%") % i).str();
-		   BOOST_CHECK_EQUAL(vstr[i] == loc, true);
-	   }
+      //the following test illustrate a bad string allocation (normally datacontainer copy should keep allocation; 
+      //but if a string is copied into rapidjson value without allocator, then the string is kept as a simple reference
+      //and this test fails if string are destroyed
+      const auto k = maketest(testcount);
+      shared::CDataContainer dc2(k->serialize());
+      auto vstr = dc2.get<std::vector<std::string>>("data.plugins");
+      BOOST_CHECK_EQUAL(vstr.size(), testcount);
+      for (unsigned int i = 0; i < vstr.size(); ++i)
+      {
+         std::string loc = (boost::format("plugin %1%") % i).str();
+         BOOST_CHECK_EQUAL(vstr[i] == loc, true);
+      }
    }
 
 
@@ -343,8 +344,8 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       BOOST_CHECK_EQUAL(cfg.get<int>("MySection.SubIntParameter"), 123) ;
       BOOST_CHECK_EQUAL(cfg.get<std::string>("MySection.SubStringParameter"), "Just a string parameter in the sub-section") ;
 
-      boost::posix_time::ptime expected(boost::gregorian::date(2014, 7, 2),
-                                        boost::posix_time::hours(11) + boost::posix_time::minutes(35) + boost::posix_time::seconds(0));
+      const boost::posix_time::ptime expected(boost::gregorian::date(2014, 7, 2),
+                                              boost::posix_time::hours(11) + boost::posix_time::minutes(35) + boost::posix_time::seconds(0));
       BOOST_CHECK_EQUAL(cfg.get<boost::posix_time::ptime>("DateTimeParameter"), expected) ;
 
       //check that serialization match original values
@@ -390,7 +391,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
       shared::CDataContainer cfg(defaultConf);
 
-      //check path existance
+      //check path existence
       BOOST_CHECK_EQUAL(cfg.exists(""), true) ;
       BOOST_CHECK_EQUAL(cfg.exists("BoolParameter"), true) ;
       BOOST_CHECK_EQUAL(cfg.exists("MySection"), true) ;
@@ -400,17 +401,17 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       BOOST_CHECK_EQUAL(cfg.exists("MySection2"), false) ;
       BOOST_CHECK_EQUAL(cfg.exists("String Parameter"), false) ;
 
-      //check child existance
+      //check child existence
       BOOST_CHECK_EQUAL(cfg.containsChild(""), true) ;
       BOOST_CHECK_EQUAL(cfg.containsChild("MySection"), true) ;
       BOOST_CHECK_EQUAL(cfg.containsChild("ArrayParameter"), false) ;
       BOOST_CHECK_EQUAL(cfg.containsChild("BoolParameter"), false) ;
       BOOST_CHECK_EQUAL(cfg.containsChild("MySection.SubIntParameter"), false) ;
 
-	  BOOST_CHECK_EQUAL(cfg.containsChildArray("ArrayParameter"), true);
-	  BOOST_CHECK_EQUAL(cfg.containsChildArray("MySection"), false);
+      BOOST_CHECK_EQUAL(cfg.containsChildArray("ArrayParameter"), true);
+      BOOST_CHECK_EQUAL(cfg.containsChildArray("MySection"), false);
 
-      //check value existance
+      //check value existence
       BOOST_CHECK_EQUAL(cfg.containsValue(""), false) ;
       BOOST_CHECK_EQUAL(cfg.containsValue("MySection"), false) ;
       BOOST_CHECK_EQUAL(cfg.containsValue("BoolParameter"), true) ;
@@ -503,14 +504,14 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
    BOOST_AUTO_TEST_CASE(DataContainable)
    {
-      //containeur simple de IDataContainable
+      // Simple container of IDataContainable
       CTestClass obj(1, 42.0, "test of datacontainable");
       shared::CDataContainer cont;
       cont.set("myobject", obj);
       auto result = cont.get<CTestClass>("myobject");
       BOOST_CHECK_EQUAL(obj.equals(result), true) ;
 
-      //containeur de boost::shared_ptr<IDataContainable>
+      // Container of boost::shared_ptr<IDataContainable>
       auto sp(boost::make_shared<CTestClass>(2, 43.0, "string1"));
       shared::CDataContainer cont2;
       cont2.set("myobject", sp);
@@ -519,7 +520,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       BOOST_CHECK_EQUAL(result2->equals(*sp.get()), true) ;
       BOOST_CHECK_EQUAL(result2bis.equals(*sp.get()), true) ;
 
-      //containeur simple de std::vector<IDataContainable>
+      // Simple container of std::vector<IDataContainable>
       std::vector<CTestClass> vc;
       for (auto i = 0; i < 10; ++i)
          vc.push_back(CTestClass(i, 42.0 * i, "test of std::vector<IDataContainable>"));
@@ -528,7 +529,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       auto vc2 = contvec.get<std::vector<CTestClass>>("mycollection");
       BOOST_CHECK_EQUAL_COLLECTIONS(vc.begin(), vc.end(), vc2.begin(), vc2.end()) ;
 
-      //containeur simple de std::vector< boost::shared_ptr<IDataContainable> >
+      // Simple container of std::vector< boost::shared_ptr<IDataContainable> >
       std::vector<boost::shared_ptr<CTestClass>> vcsh;
       for (auto i = 0; i < 10; ++i)
          vcsh.push_back(boost::make_shared<CTestClass>(i, 42.0 * i, "test of std::vector<IDataContainable>"));
@@ -552,7 +553,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       shared::CField<double> fd(12.3);
       shared::CField<std::string> fs("this is a test");
       shared::CField<EEnumType> fe(kEnumValue2);
-      shared::CField<CTestClass> fdc(CTestClass(5, 42.0, "test of datacontainble"));
+      shared::CField<CTestClass> fdc(CTestClass(5, 42.0, "test of datacontainable"));
 
 
       shared::CDataContainer dc;
@@ -563,7 +564,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       dc.set("FieldEnum", fe);
       dc.set("FieldDataContainable", fdc);
 
-      //check data are correctly retreived
+      //check data are correctly retrieved
       BOOST_CHECK_EQUAL(dc.get<int>("FieldInt"), fi()) ;
       BOOST_CHECK_EQUAL(dc.get<double>("FieldDouble"), fd()) ;
       BOOST_CHECK_EQUAL(dc.get<std::string>("FieldString"), fs()) ;
@@ -759,7 +760,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       BOOST_CHECK_EQUAL(to.serialize(), expected.serialize());
    }
 
-BOOST_AUTO_TEST_CASE(MergeAndRemoveSource)
+   BOOST_AUTO_TEST_CASE(MergeAndRemoveSource)
    {
       shared::CDataContainer to(
          "{"
@@ -778,7 +779,7 @@ BOOST_AUTO_TEST_CASE(MergeAndRemoveSource)
          "   \"int\": 135,"
          "   \"string\": \"1234\""
          "}");
-      
+
 
       to.mergeFrom(from);
 
@@ -790,387 +791,386 @@ BOOST_AUTO_TEST_CASE(MergeAndRemoveSource)
 
    BOOST_AUTO_TEST_CASE(CheckDataLimits)
    {
-	   shared::CDataContainer c(
-		   "{"
-		   "   \"char_min\": -128,"
-		   "   \"char_max\": 127,"
-		   "   \"uchar_max\": 255,"
-		   "   \"short_min\": -32768,"
-		   "   \"short_max\": 32767,"
-		   "   \"ushort_max\": 65535,"
-		   "   \"int_min\": -2147483648,"
-		   "   \"int_max\": 2147483647,"
-		   "   \"uint_max\": 4294967295,"
-		   "   \"int64_min\": -9223372036854775808,"
-		   "   \"int64_max\": 9223372036854775807,"
-		   "   \"uint64_max\": 18446744073709551615"
-		   "}");
+      shared::CDataContainer c(
+         "{"
+         "   \"char_min\": -128,"
+         "   \"char_max\": 127,"
+         "   \"uchar_max\": 255,"
+         "   \"short_min\": -32768,"
+         "   \"short_max\": 32767,"
+         "   \"ushort_max\": 65535,"
+         "   \"int_min\": -2147483648,"
+         "   \"int_max\": 2147483647,"
+         "   \"uint_max\": 4294967295,"
+         "   \"int64_min\": -9223372036854775808,"
+         "   \"int64_max\": 9223372036854775807,"
+         "   \"uint64_max\": 18446744073709551615"
+         "}");
 
-	   //check some out of range
+      //check some out of range
 
-	   BOOST_CHECK_EQUAL(c.get<char>("char_min"), INT8_MIN);
-	   BOOST_CHECK_EQUAL(c.get<char>("char_max"), INT8_MAX);
-	   BOOST_CHECK_THROW(c.get<char>("uchar_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<char>("short_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<char>("short_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<char>("ushort_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<char>("int_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<char>("int_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<char>("uint_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<char>("int64_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<char>("int64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<char>("uint64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<char>("char_min"), INT8_MIN);
+      BOOST_CHECK_EQUAL(c.get<char>("char_max"), INT8_MAX);
+      BOOST_CHECK_THROW(c.get<char>("uchar_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<char>("short_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<char>("short_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<char>("ushort_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<char>("int_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<char>("int_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<char>("uint_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<char>("int64_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<char>("int64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<char>("uint64_max"), shared::exception::COutOfRange);
 
-	   BOOST_CHECK_THROW(c.get<unsigned char>("char_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_EQUAL(c.get<unsigned char>("char_max"), INT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<unsigned char>("uchar_max"), UINT8_MAX);
-	   BOOST_CHECK_THROW(c.get<unsigned char>("short_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned char>("short_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned char>("ushort_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned char>("int_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned char>("int_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned char>("uint_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned char>("int64_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned char>("int64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned char>("uint64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned char>("char_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<unsigned char>("char_max"), INT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<unsigned char>("uchar_max"), UINT8_MAX);
+      BOOST_CHECK_THROW(c.get<unsigned char>("short_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned char>("short_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned char>("ushort_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned char>("int_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned char>("int_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned char>("uint_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned char>("int64_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned char>("int64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned char>("uint64_max"), shared::exception::COutOfRange);
 
-	   BOOST_CHECK_EQUAL(c.get<short>("char_min"), INT8_MIN);
-	   BOOST_CHECK_EQUAL(c.get<short>("char_max"), INT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<short>("uchar_max"), UINT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<short>("short_min"), INT16_MIN);
-	   BOOST_CHECK_EQUAL(c.get<short>("short_max"), INT16_MAX);
-	   BOOST_CHECK_THROW(c.get<short>("ushort_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<short>("int_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<short>("int_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<short>("uint_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<short>("int64_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<short>("int64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<short>("uint64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<short>("char_min"), INT8_MIN);
+      BOOST_CHECK_EQUAL(c.get<short>("char_max"), INT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<short>("uchar_max"), UINT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<short>("short_min"), INT16_MIN);
+      BOOST_CHECK_EQUAL(c.get<short>("short_max"), INT16_MAX);
+      BOOST_CHECK_THROW(c.get<short>("ushort_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<short>("int_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<short>("int_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<short>("uint_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<short>("int64_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<short>("int64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<short>("uint64_max"), shared::exception::COutOfRange);
 
-	   BOOST_CHECK_THROW(c.get<unsigned short>("char_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_EQUAL(c.get<unsigned short>("char_max"), INT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<unsigned short>("uchar_max"), UINT8_MAX);
-	   BOOST_CHECK_THROW(c.get<unsigned short>("short_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_EQUAL(c.get<unsigned short>("short_max"), INT16_MAX);
-	   BOOST_CHECK_EQUAL(c.get<unsigned short>("ushort_max"), UINT16_MAX);
-	   BOOST_CHECK_THROW(c.get<unsigned short>("int_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned short>("int_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned short>("uint_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned short>("int64_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned short>("int64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned short>("uint64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned short>("char_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<unsigned short>("char_max"), INT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<unsigned short>("uchar_max"), UINT8_MAX);
+      BOOST_CHECK_THROW(c.get<unsigned short>("short_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<unsigned short>("short_max"), INT16_MAX);
+      BOOST_CHECK_EQUAL(c.get<unsigned short>("ushort_max"), UINT16_MAX);
+      BOOST_CHECK_THROW(c.get<unsigned short>("int_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned short>("int_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned short>("uint_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned short>("int64_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned short>("int64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned short>("uint64_max"), shared::exception::COutOfRange);
 
-	   BOOST_CHECK_EQUAL(c.get<int>("char_min"), INT8_MIN);
-	   BOOST_CHECK_EQUAL(c.get<int>("char_max"), INT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int>("uchar_max"), UINT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int>("short_min"), INT16_MIN);
-	   BOOST_CHECK_EQUAL(c.get<int>("short_max"), INT16_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int>("ushort_max"), UINT16_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int>("int_min"), INT32_MIN);
-	   BOOST_CHECK_EQUAL(c.get<int>("int_max"), INT32_MAX);
-	   BOOST_CHECK_THROW(c.get<int>("uint_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<int>("int64_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<int>("int64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<int>("uint64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<int>("char_min"), INT8_MIN);
+      BOOST_CHECK_EQUAL(c.get<int>("char_max"), INT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<int>("uchar_max"), UINT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<int>("short_min"), INT16_MIN);
+      BOOST_CHECK_EQUAL(c.get<int>("short_max"), INT16_MAX);
+      BOOST_CHECK_EQUAL(c.get<int>("ushort_max"), UINT16_MAX);
+      BOOST_CHECK_EQUAL(c.get<int>("int_min"), INT32_MIN);
+      BOOST_CHECK_EQUAL(c.get<int>("int_max"), INT32_MAX);
+      BOOST_CHECK_THROW(c.get<int>("uint_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<int>("int64_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<int>("int64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<int>("uint64_max"), shared::exception::COutOfRange);
 
-	   BOOST_CHECK_THROW(c.get<unsigned int>("char_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_EQUAL(c.get<unsigned int>("char_max"), static_cast<unsigned int>(INT8_MAX));
-	   BOOST_CHECK_EQUAL(c.get<unsigned int>("uchar_max"), UINT8_MAX);
-	   BOOST_CHECK_THROW(c.get<unsigned int>("short_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_EQUAL(c.get<unsigned int>("short_max"), static_cast<unsigned int>(INT16_MAX));
-	   BOOST_CHECK_EQUAL(c.get<unsigned int>("ushort_max"), UINT16_MAX);
-	   BOOST_CHECK_THROW(c.get<unsigned int>("int_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_EQUAL(c.get<unsigned int>("int_max"), static_cast<unsigned int>(INT32_MAX));
-	   BOOST_CHECK_EQUAL(c.get<unsigned int>("uint_max"), UINT32_MAX);
-	   BOOST_CHECK_THROW(c.get<unsigned int>("int64_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned int>("int64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned int>("uint64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned int>("char_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<unsigned int>("char_max"), static_cast<unsigned int>(INT8_MAX));
+      BOOST_CHECK_EQUAL(c.get<unsigned int>("uchar_max"), UINT8_MAX);
+      BOOST_CHECK_THROW(c.get<unsigned int>("short_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<unsigned int>("short_max"), static_cast<unsigned int>(INT16_MAX));
+      BOOST_CHECK_EQUAL(c.get<unsigned int>("ushort_max"), UINT16_MAX);
+      BOOST_CHECK_THROW(c.get<unsigned int>("int_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<unsigned int>("int_max"), static_cast<unsigned int>(INT32_MAX));
+      BOOST_CHECK_EQUAL(c.get<unsigned int>("uint_max"), UINT32_MAX);
+      BOOST_CHECK_THROW(c.get<unsigned int>("int64_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned int>("int64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned int>("uint64_max"), shared::exception::COutOfRange);
 
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("char_min"), INT8_MIN);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("char_max"), INT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("uchar_max"), UINT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("short_min"), INT16_MIN);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("short_max"), INT16_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("ushort_max"), UINT16_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("int_min"), INT32_MIN);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("int_max"), INT32_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("uint_max"), UINT32_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("int64_min"), INT64_MIN);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("int64_max"), INT64_MAX);
-	   BOOST_CHECK_THROW(c.get<int64_t>("uint64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("char_min"), INT8_MIN);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("char_max"), INT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("uchar_max"), UINT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("short_min"), INT16_MIN);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("short_max"), INT16_MAX);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("ushort_max"), UINT16_MAX);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("int_min"), INT32_MIN);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("int_max"), INT32_MAX);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("uint_max"), UINT32_MAX);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("int64_min"), INT64_MIN);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("int64_max"), INT64_MAX);
+      BOOST_CHECK_THROW(c.get<int64_t>("uint64_max"), shared::exception::COutOfRange);
 
-	   BOOST_CHECK_THROW(c.get<uint64_t>("char_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("char_max"), INT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("uchar_max"), UINT8_MAX);
-	   BOOST_CHECK_THROW(c.get<uint64_t>("short_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("short_max"), INT16_MAX);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("ushort_max"), UINT16_MAX);
-	   BOOST_CHECK_THROW(c.get<uint64_t>("int_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("int_max"), INT32_MAX);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("uint_max"), UINT32_MAX);
-	   BOOST_CHECK_THROW(c.get<uint64_t>("int64_min"), shared::exception::COutOfRange);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("int64_max"), static_cast<uint64_t>(INT64_MAX));
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("uint64_max"), UINT64_MAX);
+      BOOST_CHECK_THROW(c.get<uint64_t>("char_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("char_max"), INT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("uchar_max"), UINT8_MAX);
+      BOOST_CHECK_THROW(c.get<uint64_t>("short_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("short_max"), INT16_MAX);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("ushort_max"), UINT16_MAX);
+      BOOST_CHECK_THROW(c.get<uint64_t>("int_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("int_max"), INT32_MAX);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("uint_max"), UINT32_MAX);
+      BOOST_CHECK_THROW(c.get<uint64_t>("int64_min"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("int64_max"), static_cast<uint64_t>(INT64_MAX));
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("uint64_max"), UINT64_MAX);
    }
 
    BOOST_AUTO_TEST_CASE(CheckDataLimitsFloatingPrecision)
    {
-	   shared::CDataContainer c(
-		   "{"
-		   "   \"double\": 42.0,"
-		   "   \"float\": 42.0,"
-		   "   \"double2\": 42.1,"
-		   "   \"float2\": 42.1,"
-		   "   \"gt_uchar_max\": 255.1,"
-		   "   \"gt_char_max\": 127.1,"
-		   "   \"eq_char_max\": 127.0,"
-		   "   \"gt_ushort_max\": 65535.1,"
-		   "   \"gt_short_max\": 32767.1,"
-		   "   \"eq_short_max\": 32767.0,"
-		   "   \"gt_uint_max\": 4294967295.1,"
-		   "   \"gt_int_max\": 2147483647.1,"
-		   "   \"eq_int_max\": 2147483647.0,"
-		   "   \"gt_uint64_max\": 18446744073709551615.1,"
-		   "   \"gt_int64_max\": 9223372036854775807.1,"
-		   "   \"eq_int64_max\": 9223372036854775807.0"
-		   "}");
+      shared::CDataContainer c(
+         "{"
+         "   \"double\": 42.0,"
+         "   \"float\": 42.0,"
+         "   \"double2\": 42.1,"
+         "   \"float2\": 42.1,"
+         "   \"gt_uchar_max\": 255.1,"
+         "   \"gt_char_max\": 127.1,"
+         "   \"eq_char_max\": 127.0,"
+         "   \"gt_ushort_max\": 65535.1,"
+         "   \"gt_short_max\": 32767.1,"
+         "   \"eq_short_max\": 32767.0,"
+         "   \"gt_uint_max\": 4294967295.1,"
+         "   \"gt_int_max\": 2147483647.1,"
+         "   \"eq_int_max\": 2147483647.0,"
+         "   \"gt_uint64_max\": 18446744073709551615.1,"
+         "   \"gt_int64_max\": 9223372036854775807.1,"
+         "   \"eq_int64_max\": 9223372036854775807.0"
+         "}");
 
-	   //check some out of range
-	   BOOST_CHECK_EQUAL(c.get<char>("double"), 42);
-	   BOOST_CHECK_EQUAL(c.get<char>("float"), 42);
-	   BOOST_CHECK_EQUAL(c.get<char>("double2"), 42);
-	   BOOST_CHECK_EQUAL(c.get<char>("float2"), 42);
-	   BOOST_CHECK_THROW(c.get<char>("gt_uchar_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<char>("gt_char_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_EQUAL(c.get<char>("eq_char_max"), INT8_MAX);
-	   BOOST_CHECK_THROW(c.get<char>("gt_ushort_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<char>("gt_short_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<char>("eq_short_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<char>("gt_uint_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<char>("gt_int_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<char>("eq_int_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<char>("gt_uint64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<char>("gt_int64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<char>("eq_int64_max"), shared::exception::COutOfRange);
-	   
-	   BOOST_CHECK_EQUAL(c.get<unsigned char>("double"), 42);
-	   BOOST_CHECK_EQUAL(c.get<unsigned char>("float"), 42);
-	   BOOST_CHECK_EQUAL(c.get<unsigned char>("double2"), 42);
-	   BOOST_CHECK_EQUAL(c.get<unsigned char>("float2"), 42);
-	   BOOST_CHECK_THROW(c.get<unsigned char>("gt_uchar_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_EQUAL(c.get<unsigned char>("gt_char_max"), INT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<unsigned char>("eq_char_max"), INT8_MAX);
-	   BOOST_CHECK_THROW(c.get<unsigned char>("gt_ushort_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned char>("gt_short_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned char>("eq_short_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned char>("gt_uint_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned char>("gt_int_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned char>("eq_int_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned char>("gt_uint64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned char>("gt_int64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned char>("eq_int64_max"), shared::exception::COutOfRange);
+      //check some out of range
+      BOOST_CHECK_EQUAL(c.get<char>("double"), 42);
+      BOOST_CHECK_EQUAL(c.get<char>("float"), 42);
+      BOOST_CHECK_EQUAL(c.get<char>("double2"), 42);
+      BOOST_CHECK_EQUAL(c.get<char>("float2"), 42);
+      BOOST_CHECK_THROW(c.get<char>("gt_uchar_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<char>("gt_char_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<char>("eq_char_max"), INT8_MAX);
+      BOOST_CHECK_THROW(c.get<char>("gt_ushort_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<char>("gt_short_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<char>("eq_short_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<char>("gt_uint_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<char>("gt_int_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<char>("eq_int_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<char>("gt_uint64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<char>("gt_int64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<char>("eq_int64_max"), shared::exception::COutOfRange);
 
-	   BOOST_CHECK_EQUAL(c.get<short>("double"), 42);
-	   BOOST_CHECK_EQUAL(c.get<short>("float"), 42);
-	   BOOST_CHECK_EQUAL(c.get<short>("double2"), 42);
-	   BOOST_CHECK_EQUAL(c.get<short>("float2"), 42);
-	   BOOST_CHECK_EQUAL(c.get<short>("gt_uchar_max"), UINT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<short>("gt_char_max"), INT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<short>("eq_char_max"), INT8_MAX);
-	   BOOST_CHECK_THROW(c.get<short>("gt_ushort_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<short>("gt_short_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_EQUAL(c.get<short>("eq_short_max"), INT16_MAX);
-	   BOOST_CHECK_THROW(c.get<short>("gt_uint_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<short>("gt_int_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<short>("eq_int_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<short>("gt_uint64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<short>("gt_int64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<short>("eq_int64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<unsigned char>("double"), 42);
+      BOOST_CHECK_EQUAL(c.get<unsigned char>("float"), 42);
+      BOOST_CHECK_EQUAL(c.get<unsigned char>("double2"), 42);
+      BOOST_CHECK_EQUAL(c.get<unsigned char>("float2"), 42);
+      BOOST_CHECK_THROW(c.get<unsigned char>("gt_uchar_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<unsigned char>("gt_char_max"), INT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<unsigned char>("eq_char_max"), INT8_MAX);
+      BOOST_CHECK_THROW(c.get<unsigned char>("gt_ushort_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned char>("gt_short_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned char>("eq_short_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned char>("gt_uint_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned char>("gt_int_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned char>("eq_int_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned char>("gt_uint64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned char>("gt_int64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned char>("eq_int64_max"), shared::exception::COutOfRange);
 
-	   BOOST_CHECK_EQUAL(c.get<unsigned short>("double"), 42);
-	   BOOST_CHECK_EQUAL(c.get<unsigned short>("float"), 42);
-	   BOOST_CHECK_EQUAL(c.get<unsigned short>("double2"), 42);
-	   BOOST_CHECK_EQUAL(c.get<unsigned short>("float2"), 42);
-	   BOOST_CHECK_EQUAL(c.get<unsigned short>("gt_uchar_max"), UINT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<unsigned short>("gt_char_max"), INT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<unsigned short>("eq_char_max"), INT8_MAX);
-	   BOOST_CHECK_THROW(c.get<unsigned short>("gt_ushort_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_EQUAL(c.get<unsigned short>("gt_short_max"), INT16_MAX);
-	   BOOST_CHECK_EQUAL(c.get<unsigned short>("eq_short_max"), INT16_MAX);
-	   BOOST_CHECK_THROW(c.get<unsigned short>("gt_uint_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned short>("gt_int_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned short>("eq_int_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned short>("gt_uint64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned short>("gt_int64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned short>("eq_int64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<short>("double"), 42);
+      BOOST_CHECK_EQUAL(c.get<short>("float"), 42);
+      BOOST_CHECK_EQUAL(c.get<short>("double2"), 42);
+      BOOST_CHECK_EQUAL(c.get<short>("float2"), 42);
+      BOOST_CHECK_EQUAL(c.get<short>("gt_uchar_max"), UINT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<short>("gt_char_max"), INT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<short>("eq_char_max"), INT8_MAX);
+      BOOST_CHECK_THROW(c.get<short>("gt_ushort_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<short>("gt_short_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<short>("eq_short_max"), INT16_MAX);
+      BOOST_CHECK_THROW(c.get<short>("gt_uint_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<short>("gt_int_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<short>("eq_int_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<short>("gt_uint64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<short>("gt_int64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<short>("eq_int64_max"), shared::exception::COutOfRange);
 
-	   BOOST_CHECK_EQUAL(c.get<int>("double"), 42);
-	   BOOST_CHECK_EQUAL(c.get<int>("float"), 42);
-	   BOOST_CHECK_EQUAL(c.get<int>("double2"), 42);
-	   BOOST_CHECK_EQUAL(c.get<int>("float2"), 42);
-	   BOOST_CHECK_EQUAL(c.get<int>("gt_uchar_max"), UINT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int>("gt_char_max"), INT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int>("eq_char_max"), INT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int>("gt_ushort_max"), UINT16_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int>("gt_short_max"), INT16_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int>("eq_short_max"), INT16_MAX);
-	   BOOST_CHECK_THROW(c.get<int>("gt_uint_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<int>("gt_int_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_EQUAL(c.get<int>("eq_int_max"), INT32_MAX);
-	   BOOST_CHECK_THROW(c.get<int>("gt_uint64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<int>("gt_int64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<int>("eq_int64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<unsigned short>("double"), 42);
+      BOOST_CHECK_EQUAL(c.get<unsigned short>("float"), 42);
+      BOOST_CHECK_EQUAL(c.get<unsigned short>("double2"), 42);
+      BOOST_CHECK_EQUAL(c.get<unsigned short>("float2"), 42);
+      BOOST_CHECK_EQUAL(c.get<unsigned short>("gt_uchar_max"), UINT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<unsigned short>("gt_char_max"), INT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<unsigned short>("eq_char_max"), INT8_MAX);
+      BOOST_CHECK_THROW(c.get<unsigned short>("gt_ushort_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<unsigned short>("gt_short_max"), INT16_MAX);
+      BOOST_CHECK_EQUAL(c.get<unsigned short>("eq_short_max"), INT16_MAX);
+      BOOST_CHECK_THROW(c.get<unsigned short>("gt_uint_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned short>("gt_int_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned short>("eq_int_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned short>("gt_uint64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned short>("gt_int64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned short>("eq_int64_max"), shared::exception::COutOfRange);
 
-	   BOOST_CHECK_EQUAL(c.get<unsigned int>("double"), static_cast<unsigned int>(42));
-	   BOOST_CHECK_EQUAL(c.get<unsigned int>("float"), static_cast<unsigned int>(42));
-	   BOOST_CHECK_EQUAL(c.get<unsigned int>("double2"), static_cast<unsigned int>(42));
-	   BOOST_CHECK_EQUAL(c.get<unsigned int>("float2"), static_cast<unsigned int>(42));
-	   BOOST_CHECK_EQUAL(c.get<unsigned int>("gt_uchar_max"), UINT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<unsigned int>("gt_char_max"), static_cast<unsigned int>(INT8_MAX));
-	   BOOST_CHECK_EQUAL(c.get<unsigned int>("eq_char_max"), static_cast<unsigned int>(INT8_MAX));
-	   BOOST_CHECK_EQUAL(c.get<unsigned int>("gt_ushort_max"), UINT16_MAX);
-	   BOOST_CHECK_EQUAL(c.get<unsigned int>("gt_short_max"), static_cast<unsigned int>(INT16_MAX));
-	   BOOST_CHECK_EQUAL(c.get<unsigned int>("eq_short_max"), static_cast<unsigned int>(INT16_MAX));
-	   BOOST_CHECK_THROW(c.get<unsigned int>("gt_uint_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_EQUAL(c.get<unsigned int>("gt_int_max"), static_cast<unsigned int>(INT32_MAX));
-	   BOOST_CHECK_EQUAL(c.get<unsigned int>("eq_int_max"), static_cast<unsigned int>(INT32_MAX));
-	   BOOST_CHECK_THROW(c.get<unsigned int>("gt_uint64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned int>("gt_int64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<unsigned int>("eq_int64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<int>("double"), 42);
+      BOOST_CHECK_EQUAL(c.get<int>("float"), 42);
+      BOOST_CHECK_EQUAL(c.get<int>("double2"), 42);
+      BOOST_CHECK_EQUAL(c.get<int>("float2"), 42);
+      BOOST_CHECK_EQUAL(c.get<int>("gt_uchar_max"), UINT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<int>("gt_char_max"), INT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<int>("eq_char_max"), INT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<int>("gt_ushort_max"), UINT16_MAX);
+      BOOST_CHECK_EQUAL(c.get<int>("gt_short_max"), INT16_MAX);
+      BOOST_CHECK_EQUAL(c.get<int>("eq_short_max"), INT16_MAX);
+      BOOST_CHECK_THROW(c.get<int>("gt_uint_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<int>("gt_int_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<int>("eq_int_max"), INT32_MAX);
+      BOOST_CHECK_THROW(c.get<int>("gt_uint64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<int>("gt_int64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<int>("eq_int64_max"), shared::exception::COutOfRange);
 
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("double"), 42);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("float"), 42);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("double2"), 42);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("float2"), 42);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("gt_uchar_max"), UINT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("gt_char_max"), INT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("eq_char_max"), INT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("gt_ushort_max"), UINT16_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("gt_short_max"), INT16_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("eq_short_max"), INT16_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("gt_uint_max"), UINT32_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("gt_int_max"), INT32_MAX);
-	   BOOST_CHECK_EQUAL(c.get<int64_t>("eq_int_max"), INT32_MAX);
-	   BOOST_CHECK_THROW(c.get<int64_t>("gt_uint64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<int64_t>("gt_int64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_THROW(c.get<int64_t>("eq_int64_max"), shared::exception::COutOfRange); //int64 max with .0 is overflowed
+      BOOST_CHECK_EQUAL(c.get<unsigned int>("double"), static_cast<unsigned int>(42));
+      BOOST_CHECK_EQUAL(c.get<unsigned int>("float"), static_cast<unsigned int>(42));
+      BOOST_CHECK_EQUAL(c.get<unsigned int>("double2"), static_cast<unsigned int>(42));
+      BOOST_CHECK_EQUAL(c.get<unsigned int>("float2"), static_cast<unsigned int>(42));
+      BOOST_CHECK_EQUAL(c.get<unsigned int>("gt_uchar_max"), UINT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<unsigned int>("gt_char_max"), static_cast<unsigned int>(INT8_MAX));
+      BOOST_CHECK_EQUAL(c.get<unsigned int>("eq_char_max"), static_cast<unsigned int>(INT8_MAX));
+      BOOST_CHECK_EQUAL(c.get<unsigned int>("gt_ushort_max"), UINT16_MAX);
+      BOOST_CHECK_EQUAL(c.get<unsigned int>("gt_short_max"), static_cast<unsigned int>(INT16_MAX));
+      BOOST_CHECK_EQUAL(c.get<unsigned int>("eq_short_max"), static_cast<unsigned int>(INT16_MAX));
+      BOOST_CHECK_THROW(c.get<unsigned int>("gt_uint_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<unsigned int>("gt_int_max"), static_cast<unsigned int>(INT32_MAX));
+      BOOST_CHECK_EQUAL(c.get<unsigned int>("eq_int_max"), static_cast<unsigned int>(INT32_MAX));
+      BOOST_CHECK_THROW(c.get<unsigned int>("gt_uint64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned int>("gt_int64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<unsigned int>("eq_int64_max"), shared::exception::COutOfRange);
 
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("double"), 42);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("float"), 42);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("double2"), 42);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("float2"), 42);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_uchar_max"), UINT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_char_max"), INT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("eq_char_max"), INT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_ushort_max"), UINT16_MAX);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_short_max"), INT16_MAX);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("eq_short_max"), INT16_MAX);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_uint_max"), UINT32_MAX);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_int_max"), INT32_MAX);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("eq_int_max"), INT32_MAX);
-	   BOOST_CHECK_THROW(c.get<uint64_t>("gt_uint64_max"), shared::exception::COutOfRange);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_int64_max"), 9223372036854775807.1);
-	   BOOST_CHECK_EQUAL(c.get<uint64_t>("eq_int64_max"), 9223372036854775807.1); //int64 max with .0 is overflowed
+      BOOST_CHECK_EQUAL(c.get<int64_t>("double"), 42);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("float"), 42);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("double2"), 42);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("float2"), 42);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("gt_uchar_max"), UINT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("gt_char_max"), INT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("eq_char_max"), INT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("gt_ushort_max"), UINT16_MAX);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("gt_short_max"), INT16_MAX);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("eq_short_max"), INT16_MAX);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("gt_uint_max"), UINT32_MAX);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("gt_int_max"), INT32_MAX);
+      BOOST_CHECK_EQUAL(c.get<int64_t>("eq_int_max"), INT32_MAX);
+      BOOST_CHECK_THROW(c.get<int64_t>("gt_uint64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<int64_t>("gt_int64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_THROW(c.get<int64_t>("eq_int64_max"), shared::exception::COutOfRange); //int64 max with .0 is overflowed
 
-	   BOOST_CHECK_EQUAL(c.get<double>("double"), 42);
-	   BOOST_CHECK_EQUAL(c.get<double>("float"), 42);
-	   BOOST_CHECK_EQUAL(c.get<double>("double2"), 42.1);
-	   BOOST_CHECK_EQUAL(c.get<double>("float2"), 42.1);
-	   BOOST_CHECK_EQUAL(c.get<double>("gt_uchar_max"), 255.1);
-	   BOOST_CHECK_EQUAL(c.get<double>("gt_char_max"), 127.1);
-	   BOOST_CHECK_EQUAL(c.get<double>("eq_char_max"), INT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<double>("gt_ushort_max"), 65535.1);
-	   BOOST_CHECK_EQUAL(c.get<double>("gt_short_max"), 32767.1);
-	   BOOST_CHECK_EQUAL(c.get<double>("eq_short_max"), INT16_MAX);
-	   BOOST_CHECK_EQUAL(c.get<double>("gt_uint_max"), 4294967295.1);
-	   BOOST_CHECK_EQUAL(c.get<double>("gt_int_max"), 2147483647.1);
-	   BOOST_CHECK_EQUAL(c.get<double>("eq_int_max"), INT32_MAX);
-	   BOOST_CHECK_EQUAL(c.get<double>("gt_uint64_max"), 18446744073709551615.1);
-	   BOOST_CHECK_EQUAL(c.get<double>("gt_int64_max"), 9223372036854775807.1);
-	   BOOST_CHECK_EQUAL(c.get<double>("eq_int64_max"), INT64_MAX); 
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("double"), 42);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("float"), 42);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("double2"), 42);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("float2"), 42);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_uchar_max"), UINT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_char_max"), INT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("eq_char_max"), INT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_ushort_max"), UINT16_MAX);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_short_max"), INT16_MAX);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("eq_short_max"), INT16_MAX);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_uint_max"), UINT32_MAX);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_int_max"), INT32_MAX);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("eq_int_max"), INT32_MAX);
+      BOOST_CHECK_THROW(c.get<uint64_t>("gt_uint64_max"), shared::exception::COutOfRange);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("gt_int64_max"), 9223372036854775807.1);
+      BOOST_CHECK_EQUAL(c.get<uint64_t>("eq_int64_max"), 9223372036854775807.1); //int64 max with .0 is overflowed
 
-	   BOOST_CHECK_EQUAL(c.get<float>("double"), 42);
-	   BOOST_CHECK_EQUAL(c.get<float>("float"), 42);
-	   BOOST_CHECK_EQUAL(c.get<float>("double2"), 42.1f);
-	   BOOST_CHECK_EQUAL(c.get<float>("float2"), 42.1f);
-	   BOOST_CHECK_EQUAL(c.get<float>("gt_uchar_max"), 255.1f);
-	   BOOST_CHECK_EQUAL(c.get<float>("gt_char_max"), 127.1f);
-	   BOOST_CHECK_EQUAL(c.get<float>("eq_char_max"), INT8_MAX);
-	   BOOST_CHECK_EQUAL(c.get<float>("gt_ushort_max"), 65535.1f);
-	   BOOST_CHECK_EQUAL(c.get<float>("gt_short_max"), 32767.1f);
-	   BOOST_CHECK_EQUAL(c.get<float>("eq_short_max"), INT16_MAX);
-	   BOOST_CHECK_EQUAL(c.get<float>("gt_uint_max"), 4294967295.1f);
-	   BOOST_CHECK_EQUAL(c.get<float>("gt_int_max"), 2147483647.1f);
-	   BOOST_CHECK_EQUAL(c.get<float>("eq_int_max"), INT32_MAX);
-	   BOOST_CHECK_EQUAL(c.get<float>("gt_uint64_max"), 18446744073709551615.1f);
-	   BOOST_CHECK_EQUAL(c.get<float>("gt_int64_max"), 9223372036854775807.1f);
-	   BOOST_CHECK_EQUAL(c.get<float>("eq_int64_max"), INT64_MAX);
+      BOOST_CHECK_EQUAL(c.get<double>("double"), 42);
+      BOOST_CHECK_EQUAL(c.get<double>("float"), 42);
+      BOOST_CHECK_EQUAL(c.get<double>("double2"), 42.1);
+      BOOST_CHECK_EQUAL(c.get<double>("float2"), 42.1);
+      BOOST_CHECK_EQUAL(c.get<double>("gt_uchar_max"), 255.1);
+      BOOST_CHECK_EQUAL(c.get<double>("gt_char_max"), 127.1);
+      BOOST_CHECK_EQUAL(c.get<double>("eq_char_max"), INT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<double>("gt_ushort_max"), 65535.1);
+      BOOST_CHECK_EQUAL(c.get<double>("gt_short_max"), 32767.1);
+      BOOST_CHECK_EQUAL(c.get<double>("eq_short_max"), INT16_MAX);
+      BOOST_CHECK_EQUAL(c.get<double>("gt_uint_max"), 4294967295.1);
+      BOOST_CHECK_EQUAL(c.get<double>("gt_int_max"), 2147483647.1);
+      BOOST_CHECK_EQUAL(c.get<double>("eq_int_max"), INT32_MAX);
+      BOOST_CHECK_EQUAL(c.get<double>("gt_uint64_max"), 18446744073709551615.1);
+      BOOST_CHECK_EQUAL(c.get<double>("gt_int64_max"), 9223372036854775807.1);
+      BOOST_CHECK_EQUAL(c.get<double>("eq_int64_max"), INT64_MAX);
 
+      BOOST_CHECK_EQUAL(c.get<float>("double"), 42);
+      BOOST_CHECK_EQUAL(c.get<float>("float"), 42);
+      BOOST_CHECK_EQUAL(c.get<float>("double2"), 42.1f);
+      BOOST_CHECK_EQUAL(c.get<float>("float2"), 42.1f);
+      BOOST_CHECK_EQUAL(c.get<float>("gt_uchar_max"), 255.1f);
+      BOOST_CHECK_EQUAL(c.get<float>("gt_char_max"), 127.1f);
+      BOOST_CHECK_EQUAL(c.get<float>("eq_char_max"), INT8_MAX);
+      BOOST_CHECK_EQUAL(c.get<float>("gt_ushort_max"), 65535.1f);
+      BOOST_CHECK_EQUAL(c.get<float>("gt_short_max"), 32767.1f);
+      BOOST_CHECK_EQUAL(c.get<float>("eq_short_max"), INT16_MAX);
+      BOOST_CHECK_EQUAL(c.get<float>("gt_uint_max"), 4294967295.1f);
+      BOOST_CHECK_EQUAL(c.get<float>("gt_int_max"), 2147483647.1f);
+      BOOST_CHECK_EQUAL(c.get<float>("eq_int_max"), INT32_MAX);
+      BOOST_CHECK_EQUAL(c.get<float>("gt_uint64_max"), 18446744073709551615.1f);
+      BOOST_CHECK_EQUAL(c.get<float>("gt_int64_max"), 9223372036854775807.1f);
+      BOOST_CHECK_EQUAL(c.get<float>("eq_int64_max"), INT64_MAX);
    }
 
    BOOST_AUTO_TEST_CASE(MergeOldAndNewJsonStyle)
    {
-	   shared::CDataContainer to(
-		   "{"
-		   "   \"developerMode\": false,"
-		   "   \"location\":"
-		   "   {"
-		   "      \"latitude\": 48.853,"
-		   "      \"longitude\": \"2.35\","
-		   "      \"timezone\": \"Europe/Paris\""
-		   "   },"
-		   "   \"language\": \"en\""
-		   "}");
+      shared::CDataContainer to(
+         "{"
+         "   \"developerMode\": false,"
+         "   \"location\":"
+         "   {"
+         "      \"latitude\": 48.853,"
+         "      \"longitude\": \"2.35\","
+         "      \"timezone\": \"Europe/Paris\""
+         "   },"
+         "   \"language\": \"en\""
+         "}");
 
-	   const shared::CDataContainer from(
-		   "{"
-		   "   \"developerMode\": \"true\","
-		   "   \"location\":"
-		   "   {"
-		   "      \"latitude\": \"52.5\""
-		   "   },"
-		   "   \"language\": \"fr\","
-		   "   \"newBloc\":"
-		   "   {"
-		   "      \"valueLevel1\": 1,"
-		   "      \"level2\":"
-		   "      {"
-		   "         \"valueLevel2\": 2,"
-		   "         \"level3\": "
-		   "         {"
-		   "            \"valueLevel3\": \"abc\""
-		   "         }"
-		   "      }"
-		   "   }"
-		   "}");
+      const shared::CDataContainer from(
+         "{"
+         "   \"developerMode\": \"true\","
+         "   \"location\":"
+         "   {"
+         "      \"latitude\": \"52.5\""
+         "   },"
+         "   \"language\": \"fr\","
+         "   \"newBloc\":"
+         "   {"
+         "      \"valueLevel1\": 1,"
+         "      \"level2\":"
+         "      {"
+         "         \"valueLevel2\": 2,"
+         "         \"level3\": "
+         "         {"
+         "            \"valueLevel3\": \"abc\""
+         "         }"
+         "      }"
+         "   }"
+         "}");
 
-	   const shared::CDataContainer expected(
-		   "{"
-		   "   \"developerMode\": true,"
-		   "   \"location\":"
-		   "   {"
-		   "      \"latitude\": 52.5,"
-		   "      \"longitude\": \"2.35\","
-		   "      \"timezone\": \"Europe/Paris\""
-		   "   },"
-		   "   \"language\": \"fr\","
-		   "   \"newBloc\":"
-		   "   {"
-		   "      \"valueLevel1\": 1,"
-		   "      \"level2\":"
-		   "      {"
-		   "         \"valueLevel2\": 2,"
-		   "         \"level3\": "
-		   "         {"
-		   "            \"valueLevel3\": \"abc\""
-		   "         }"
-		   "      }"
-		   "   }"
-		   "}");
+      const shared::CDataContainer expected(
+         "{"
+         "   \"developerMode\": true,"
+         "   \"location\":"
+         "   {"
+         "      \"latitude\": 52.5,"
+         "      \"longitude\": \"2.35\","
+         "      \"timezone\": \"Europe/Paris\""
+         "   },"
+         "   \"language\": \"fr\","
+         "   \"newBloc\":"
+         "   {"
+         "      \"valueLevel1\": 1,"
+         "      \"level2\":"
+         "      {"
+         "         \"valueLevel2\": 2,"
+         "         \"level3\": "
+         "         {"
+         "            \"valueLevel3\": \"abc\""
+         "         }"
+         "      }"
+         "   }"
+         "}");
 
 
-	   to.mergeFrom(from);
-	   BOOST_CHECK_EQUAL(to.serialize(), expected.serialize());
+      to.mergeFrom(from);
+      BOOST_CHECK_EQUAL(to.serialize(), expected.serialize());
    }
 
 
@@ -1189,58 +1189,97 @@ BOOST_AUTO_TEST_CASE(MergeAndRemoveSource)
 
    BOOST_AUTO_TEST_CASE(Map)
    {
-      std::map<std::string, std::string> input = {{"key1", "value1"},{"key2", "value2"},{"key3", "value3"},{"key4", "value4"}};
+      const std::map<std::string, std::string> input = {{"key1", "value1"}, {"key2", "value2"}, {"key3", "value3"}, {"key4", "value4"}};
       shared::CDataContainer dc(input);
 
-      auto output = dc.getAsMap<std::string>();
+      const auto output = dc.getAsMap<std::string>();
 
       //don't use BOOST_CHECK_EQUAL_COLLECTIONS because it do not builds with std::map
       CHECK_MAPS<std::string>(input, output);
 
-      auto output2 = dc.get<std::map<std::string, std::string>>();
+      const auto output2 = dc.get<std::map<std::string, std::string>>();
       CHECK_MAPS<std::string>(input, output2);
+   }
+
+   BOOST_AUTO_TEST_CASE(MapFromPath)
+   {
+      const shared::CDataContainer input(
+         "{"
+         "   \"level1\":"
+         "   {"
+         "      \"level2\":"
+         "      {"
+         "         \"level3\": "
+         "         {"
+         "            \"key1\": \"value1\","
+         "            \"key2\": \"value2\","
+         "            \"key3\": \"value3\","
+         "            \"key4\": \"value4\""
+         "         }"
+         "      }"
+         "   }"
+         "}");
+      const std::map<std::string, std::string> expected = {{"key1", "value1"}, {"key2", "value2"}, {"key3", "value3"}, {"key4", "value4"}};
+
+      const auto output = input.getAsMap<std::string>("level1.level2.level3");
+
+      //don't use BOOST_CHECK_EQUAL_COLLECTIONS because it do not builds with std::map
+      CHECK_MAPS<std::string>(expected, output);
    }
 
    BOOST_AUTO_TEST_CASE(MapOfContainers)
    {
-      const shared::CDataContainer input("\
-      {\
-         \"0\": {\
-            \"name\": \"moon\",\
-            \"description\": null,\
-            \"version\": \"1.0.0\"\
-         },\
-         \"1\": {\
-            \"name\": \"moon\",\
-            \"description\": null,\
-            \"version\": \"1.0.2\"\
-         },\
-         \"2\": {\
-            \"name\": \"moon\",\
-            \"description\": null,\
-            \"version\": \"1.0.0-rc.1\"\
-         }\
-      }");
+      const shared::CDataContainer input(
+         "\
+         {\
+            \"0\": {\
+               \"name\": \"moon\",\
+               \"description\": null,\
+               \"version\": \"1.0.0\"\
+            },\
+            \"1\": {\
+               \"name\": \"moon\",\
+               \"description\": null,\
+               \"version\": \"1.0.2\"\
+            },\
+            \"2\": {\
+               \"name\": \"moon\",\
+               \"description\": null,\
+               \"version\": \"1.0.0-rc.1\"\
+            }\
+         }");
 
       const std::map<std::string, shared::CDataContainer> expected =
       {
-         {"0", shared::CDataContainer("{\
+         {
+            "0",
+            shared::CDataContainer(
+               "{\
             \"name\": \"moon\",\
             \"description\": null,\
             \"version\": \"1.0.0\"\
-         }")},
-         {"1", shared::CDataContainer("{\
+         }")
+         },
+         {
+            "1",
+            shared::CDataContainer(
+               "{\
             \"name\": \"moon\",\
             \"description\": null,\
             \"version\": \"1.0.2\"\
-         }")},
-         {"2", shared::CDataContainer("{\
+         }")
+         },
+         {
+            "2",
+            shared::CDataContainer(
+               "{\
             \"name\": \"moon\",\
             \"description\": null,\
             \"version\": \"1.0.0-rc.1\"\
-         }")}
+         }")
+         }
       };
-      
+
       CHECK_MAPS<shared::CDataContainer>(input.getAsMap<shared::CDataContainer>(), expected);
    }
 
