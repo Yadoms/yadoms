@@ -119,7 +119,18 @@ void COpenZWaveNodeConfiguration::setConfigurationValues(const shared::CDataCont
             auto keywordKey = CConfigurationSchemaFactory::generateValidKeyName(i->first);
             if (configuration.containsValue(keywordKey))
             {
-               sendCommand(i->first, configuration.get<std::string>(keywordKey));
+				std::string currentValue = i->second->getLastKeywordValue()->formatValue();
+				std::string newValue = configuration.get(keywordKey);
+				if (!boost::iequals(currentValue, newValue))
+				{
+					YADOMS_LOG(information) << "Set configuration value for : " << i->first << " old=" << currentValue << " new=" << newValue;
+					sendCommand(i->first, configuration.get<std::string>(keywordKey));
+				}
+				else
+				{
+					//ignore update, values are same
+				}
+               
             }
          }
          catch (shared::exception::CNotSupported &)
