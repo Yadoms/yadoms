@@ -240,18 +240,18 @@ void COpenZWaveController::ExploreNetwork()
       YADOMS_LOG(information) << "Exploring " << (*it)->getHomeId() << "." << (int)(*it)->getNodeId();
 
       unsigned char nGrp = OpenZWave::Manager::Get()->GetNumGroups((*it)->getHomeId(), (*it)->getNodeId());
-      YADOMS_LOG(information) << "    Group count : " << (int)nGrp;
+      YADOMS_LOG(debug) << "    Group count : " << (int)nGrp;
       for (unsigned char i = 1; i <= nGrp; ++i)
       {
          std::string label = OpenZWave::Manager::Get()->GetGroupLabel((*it)->getHomeId(), (*it)->getNodeId(), i);
-         YADOMS_LOG(information) << "        Group name : " << label;
+         YADOMS_LOG(debug) << "        Group name : " << label;
 
          OpenZWave::InstanceAssociation* ia = NULL;
          int assocNb = OpenZWave::Manager::Get()->GetAssociations((*it)->getHomeId(), (*it)->getNodeId(), i, &ia);
-         YADOMS_LOG(information) << "        Assoc count : " << assocNb;
+         YADOMS_LOG(debug) << "        Assoc count : " << assocNb;
          for (int k = 0; k < assocNb; k++)
          {
-            YADOMS_LOG(information) << "          Association : " << (int)ia[k].m_nodeId << "#" << (int)ia[k].m_instance;
+            YADOMS_LOG(debug) << "          Association : " << (int)ia[k].m_nodeId << "#" << (int)ia[k].m_instance;
          }
       }
       
@@ -285,20 +285,20 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
          std::string deviceName = COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId());
 
-         YADOMS_LOG(information) << "OpenZWave notification [Type_ValueAdded] : " << vLabel << "(" << deviceName << ")";
+         YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueAdded] : " << vLabel << "(" << deviceName << ")";
 
          node->registerKeyword(vID, m_configuration->getIncludeSystemKeywords());
          auto kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
          if (kw)
          {
-            YADOMS_LOG(information) << "OpenZWave notification [Type_ValueAdded] : " << vLabel << "(" << deviceName << ")" << " keyword ok";
+            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueAdded] : " << vLabel << "(" << deviceName << ")" << " keyword ok";
 
             auto allKeywordsInvolved = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
             for (auto keywordHistorizer = allKeywordsInvolved.begin(); keywordHistorizer != allKeywordsInvolved.end(); ++keywordHistorizer)
             {
                auto keywordContainer(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), *keywordHistorizer, vID.GetGenre() == OpenZWave::ValueID::ValueGenre_Config));
                manageKeywordValue(deviceName, keywordContainer);
-               YADOMS_LOG(information) << "OpenZWave notification [Type_ValueAdded] : node.instance=" << static_cast<int>(vID.GetNodeId()) << "." << static_cast<int>(vID.GetInstance()) << " => " << vLabel << "=" << (*keywordHistorizer)->formatValue();
+               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueAdded] : node.instance=" << static_cast<int>(vID.GetNodeId()) << "." << static_cast<int>(vID.GetInstance()) << " => " << vLabel << "=" << (*keywordHistorizer)->formatValue();
             }
          }
          else
@@ -321,19 +321,19 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
          std::string deviceName = COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId());
 
-         YADOMS_LOG(information) << "OpenZWave notification [Type_ValueChanged] : " << vLabel << "(" << deviceName << ")";
+         YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : " << vLabel << "(" << deviceName << ")";
 
          auto kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
          if (kw)
          {
-            YADOMS_LOG(information) << "OpenZWave notification [Type_ValueChanged] : " << vLabel << "(" << deviceName << ")" << " keyword ok";
+            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : " << vLabel << "(" << deviceName << ")" << " keyword ok";
 
             auto allKeywordsInvolved = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
             for (auto keywordHistorizer = allKeywordsInvolved.begin(); keywordHistorizer != allKeywordsInvolved.end(); ++keywordHistorizer)
             {
                auto keywordContainer(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), *keywordHistorizer, vID.GetGenre() == OpenZWave::ValueID::ValueGenre_Config));
                manageKeywordValue(deviceName, keywordContainer);
-               YADOMS_LOG(information) << "OpenZWave notification [Type_ValueChanged] : node.instance=" << static_cast<int>(vID.GetNodeId()) << "." << static_cast<int>(vID.GetInstance()) << " => " << vLabel << "=" << (*keywordHistorizer)->formatValue();
+               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : node.instance=" << static_cast<int>(vID.GetNodeId()) << "." << static_cast<int>(vID.GetInstance()) << " => " << vLabel << "=" << (*keywordHistorizer)->formatValue();
             }
          }
          else
@@ -395,7 +395,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          if (OpenZWave::Manager::Get()->GetNodeClassInformation(_notification->GetHomeId(), _notification->GetNodeId(), ECommandClass::kUserCodeValue, &name, &version))
          {
             //it support
-            YADOMS_LOG(information) << "Node with UserCode command class";
+            YADOMS_LOG(debug) << "Node with UserCode command class";
          }
          m_nodes.push_back(boost::make_shared<COpenZWaveNode>(_notification->GetHomeId(), _notification->GetNodeId()));
 
@@ -617,7 +617,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       auto nodeInfo = getNode(_notification);
       if (nodeInfo)
       {
-         YADOMS_LOG(information) << "NodeQueriesComplete : " << nodeInfo->getHomeId() << ":" << (int)nodeInfo->getNodeId();
+         YADOMS_LOG(debug) << "NodeQueriesComplete : " << nodeInfo->getHomeId() << ":" << (int)nodeInfo->getNodeId();
 
          std::string deviceName = COpenZWaveHelpers::GenerateDeviceName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
          shared::CDataContainer d = getNodeInfo(nodeInfo->getHomeId(), nodeInfo->getNodeId());
@@ -698,28 +698,28 @@ shared::CDataContainer COpenZWaveController::getNodeInfo(const uint32 homeId, co
    std::string sNodeDeviceTypeString = OpenZWave::Manager::Get()->GetNodeDeviceTypeString(homeId, nodeId);
    std::string sNodeRole = OpenZWave::Manager::Get()->GetNodeRoleString(homeId, nodeId);
 
-   YADOMS_LOG(information) << "ZWave : NodeInfo : id = " << id;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : name = " << sNodeName;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : manufacturerId = " << sNodeManufacturerId;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : manufacturer = " << sNodeManufacturer;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : productName = " << sNodeProductName;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : productType = " << sNodeProductType;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : productId = " << sNodeProductId;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : version = " << static_cast<int>(sNodeVersion);
-   YADOMS_LOG(information) << "ZWave : NodeInfo : ZWave+ = " << (iszwplus ? "true" : "false");
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : id = " << id;
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : name = " << sNodeName;
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : manufacturerId = " << sNodeManufacturerId;
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : manufacturer = " << sNodeManufacturer;
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : productName = " << sNodeProductName;
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : productType = " << sNodeProductType;
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : productId = " << sNodeProductId;
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : version = " << static_cast<int>(sNodeVersion);
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : ZWave+ = " << (iszwplus ? "true" : "false");
    if(iszwplus)
-      YADOMS_LOG(information) << "ZWave : NodeInfo : ZWave+type = " << sNodePlusType;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : Device type = " << sNodeDeviceTypeString;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : Role = " << sNodeRole;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : " << sNodeType;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : Routing node " << isrouting;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : Listening node " << islistening;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : Listening frequent (FLiRS) " << islisteningfrequent;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : Beaming node " << isbeaming;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : Awake node " << isawake;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : Failed node " << isfailed;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : Security node " << issecurity;
-   YADOMS_LOG(information) << "ZWave : NodeInfo : ZWave+ node " << iszwplus;
+      YADOMS_LOG(debug) << "ZWave : NodeInfo : ZWave+type = " << sNodePlusType;
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : Device type = " << sNodeDeviceTypeString;
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : Role = " << sNodeRole;
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : " << sNodeType;
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : Routing node " << isrouting;
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : Listening node " << islistening;
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : Listening frequent (FLiRS) " << islisteningfrequent;
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : Beaming node " << isbeaming;
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : Awake node " << isawake;
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : Failed node " << isfailed;
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : Security node " << issecurity;
+   YADOMS_LOG(debug) << "ZWave : NodeInfo : ZWave+ node " << iszwplus;
 
 
    shared::CDataContainer d;
@@ -829,7 +829,7 @@ void COpenZWaveController::sendCommand(const std::string& device, const std::str
    auto node = getNode(homeId, nodeId);
    if (node)
    {
-      getNodeInfo(node->getHomeId(), node->getNodeId()).printToLog(YADOMS_LOG(information));
+      getNodeInfo(node->getHomeId(), node->getNodeId()).printToLog(YADOMS_LOG(debug));
 
       YADOMS_LOG(information) << "Sending command to ZWave keyword : " << keyword << " Value : "  << value << " home.node = " << COpenZWaveHelpers::GenerateDeviceId(node->getHomeId(), node->getNodeId());
       if (!node->sendCommand(keyword, value))
@@ -1005,7 +1005,7 @@ void COpenZWaveController::cachePop(const std::string & deviceName)
    {
       if (!deviceInfoRef.empty())
       {
-		  deviceInfoRef.printToLog(YADOMS_LOG(information) << "[CACHE] declare device ");
+		 deviceInfoRef.printToLog(YADOMS_LOG(debug) << "[CACHE] declare device ");
          m_handler->postEvent(CZWave::kDeclareDevice, deviceInfoRef);
 
          if (deviceInfo.getDeviceState() != shared::plugin::yPluginApi::historization::EDeviceState::kUnknown)
@@ -1020,7 +1020,7 @@ void COpenZWaveController::cachePop(const std::string & deviceName)
 
          for (COpenZWaveControllerCache::KeywordList::iterator i = keywords.begin(); i != keywords.end(); ++i)
          {
-            YADOMS_LOG(information) << "[CACHE] ---> declare keyword " << (*i)->getKeyword()->getKeyword() << " " << (*i)->getKeyword()->formatValue();
+            YADOMS_LOG(debug) << "[CACHE] ---> declare keyword " << (*i)->getKeyword()->getKeyword() << " " << (*i)->getKeyword()->formatValue();
 
             if ((*i)->isConfigurationKeyword())
                m_handler->postEvent(CZWave::kUpdateConfiguration, *i);

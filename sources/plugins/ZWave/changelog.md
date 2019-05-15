@@ -1,3 +1,9 @@
+### 1.2.1
+* Enhance configuration
+* Fix cache management (Fix #565)
+* Adjust log levels (Fix #560)
+
+
 ### 1.2.0
 * New feature #553 : use of full compliant Json
 
