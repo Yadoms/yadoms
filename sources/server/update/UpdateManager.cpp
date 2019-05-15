@@ -1026,10 +1026,10 @@ namespace update
    std::string CUpdateManager::findMd5HashAssociatedTo(const std::string& downloadUrl,
                                                        const std::string& allUpdatesNode) const
    {
-      if (m_allUpdates.exists(allUpdatesNode))
+      if (m_allUpdates.exists(allUpdatesNode, '|'))
       {
          m_allUpdates.printToLog(YADOMS_LOG(debug));//TODO virer
-         auto versions = m_allUpdates.getAsMap<shared::CDataContainer>(allUpdatesNode);
+         auto versions = m_allUpdates.getAsMap<shared::CDataContainer>(allUpdatesNode, '|'); // Don't use default pathChar('.') because also contained in version name (like '2.3.0')
          const auto versionInfo = std::find_if(versions.begin(),
                                                versions.end(),
                                                [&downloadUrl](const auto& version)
@@ -1050,9 +1050,9 @@ namespace update
       boost::lock_guard<boost::recursive_mutex> lock(m_updateMutex);
 
       // Find expected MD5Hash corresponding to the download URL
-      auto expectedMd5Hash = findMd5HashAssociatedTo(downloadUrl, "yadoms.versions.newer");
+      auto expectedMd5Hash = findMd5HashAssociatedTo(downloadUrl, "yadoms|versions|newer");
       if (expectedMd5Hash.empty())
-         expectedMd5Hash = findMd5HashAssociatedTo(downloadUrl, "yadoms.versions.older");
+         expectedMd5Hash = findMd5HashAssociatedTo(downloadUrl, "yadoms|versions|older");
       if (expectedMd5Hash.empty())
          throw std::runtime_error("Version not found");
 
