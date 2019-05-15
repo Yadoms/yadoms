@@ -291,7 +291,7 @@
       "title": "Envoi d'une extra requête au plugin"
     },
     "configure-device": {
-      "title": "Configuration de l'équipement",
+      "title": "Configuration de l'équipement {{deviceName}}",
       "friendlyName-configuration": {
         "name": "Nom",
         "description": "Nom l'équipement",
