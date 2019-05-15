@@ -25,6 +25,14 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       ("EnumValue3", kEnumValue3);
 
 
+   BOOST_AUTO_TEST_CASE(DataContainerEmptyContainer)
+   {
+	  BOOST_CHECK_NO_THROW(shared::CDataContainer());	
+      BOOST_CHECK_EQUAL(shared::CDataContainer().empty(), true);
+      BOOST_CHECK_EQUAL(shared::CDataContainer("{}").empty(), true);
+	  BOOST_CHECK_THROW(shared::CDataContainer(""), std::exception);	
+   }
+   
    BOOST_AUTO_TEST_CASE(SimpleContainer)
    {
       shared::CDataContainer dc;

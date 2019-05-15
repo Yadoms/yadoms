@@ -270,7 +270,7 @@ namespace web
                {
                   auto instanceId = boost::lexical_cast<int>(parameters[1]);
                   auto query = parameters[3];
-                  shared::CDataContainer queryData(requestContent);
+				  shared::CDataContainer queryData(requestContent.empty() ? "{}" : requestContent);
 
                   auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query, queryData, "");
                   std::string taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
@@ -308,7 +308,8 @@ namespace web
                   auto device = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
 
                   auto query = parameters[4];
-                  shared::CDataContainer queryData(requestContent);
+				  shared::CDataContainer queryData(requestContent.empty()?"{}": requestContent);
+
 
                   auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query, queryData, device->Name());
                   std::string taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
@@ -571,6 +572,9 @@ namespace web
                if (parameters.size() > 1)
                {
                   const auto pluginId = boost::lexical_cast<int>(parameters[1]);
+
+				  if(requestContent.empty())
+					  return CResult::GenerateError("invalid request content. Must not be empty");
 
                   shared::CDataContainer content(requestContent);
                   if (!content.exists("name") || !content.exists("type") || !content.exists("configuration"))
