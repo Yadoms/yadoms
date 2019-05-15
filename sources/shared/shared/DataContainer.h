@@ -1835,7 +1835,7 @@ namespace shared
          const auto path = !parameterName.empty() ? (parameterName + pathChar) : "";
          for (rapidjson::Value::ConstMemberIterator i = found->MemberBegin(); i != found->MemberEnd(); ++i)
          {
-            result[i->name.GetString()] = get<Type>(path + i->name.GetString());
+            result[i->name.GetString()] = get<Type>(path + i->name.GetString(), pathChar);
          }
       }
 

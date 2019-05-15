@@ -55,7 +55,9 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       BOOST_CHECK_EQUAL(dc.get<std::string>("Serial port"), "tty0") ;
       BOOST_CHECK_EQUAL(dc.get<std::string>("StringParameter"), "Yadoms is so powerful !") ;
       BOOST_CHECK_EQUAL(dc.get<int>("MySection.SubIntParameter"), 123) ;
+      BOOST_CHECK_EQUAL(dc.get<int>("MySection|SubIntParameter", '|'), 123);
       BOOST_CHECK_EQUAL(dc.get<std::string>("MySection.SubStringParameter"), "Just a string parameter in the sub-section") ;
+      BOOST_CHECK_EQUAL(dc.get<std::string>("MySection|SubStringParameter", '|'), "Just a string parameter in the sub-section");
       BOOST_CHECK_EQUAL(dc.get<boost::posix_time::ptime>("DateTimeParameter"), actualDatetime) ;
 
       //another test for a sub container
@@ -76,6 +78,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       test.set("config1", subContainer);
 
       BOOST_CHECK_EQUAL(test.get<double>("config1.double1"), 8.0) ;
+      BOOST_CHECK_EQUAL(test.get<double>("config1|double1", '|'), 8.0) ;
 
 
       //check for shared_ptr
@@ -194,17 +197,17 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
       shared::CDataContainer conditions;
 
-      std::vector<shared::CDataContainer> allconditions;
-      allconditions.push_back(cond1);
-      allconditions.push_back(cond2);
-      allconditions.push_back(cond3);
+      std::vector<shared::CDataContainer> allConditions;
+      allConditions.push_back(cond1);
+      allConditions.push_back(cond2);
+      allConditions.push_back(cond3);
 
-      conditions.set("and", allconditions);
+      conditions.set("and", allConditions);
 
       //do checks
       auto getAllCond = conditions.get<std::vector<shared::CDataContainer>>("and");
 
-      BOOST_CHECK_EQUAL(allconditions.size(), getAllCond.size()) ;
+      BOOST_CHECK_EQUAL(allConditions.size(), getAllCond.size()) ;
 
       const auto getCond1 = getAllCond[0];
       const auto getCond2 = getAllCond[1];
@@ -214,7 +217,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       BOOST_CHECK_EQUAL(cond2, getCond2) ;
       BOOST_CHECK_EQUAL(cond3, getCond3) ;
 
-      BOOST_CHECK_EQUAL_COLLECTIONS(allconditions.begin(), allconditions.end(), getAllCond.begin(), getAllCond.end()) ;
+      BOOST_CHECK_EQUAL_COLLECTIONS(allConditions.begin(), allConditions.end(), getAllCond.begin(), getAllCond.end()) ;
    }
 
    BOOST_AUTO_TEST_CASE(ContainerToVectorOfContainers)
@@ -248,12 +251,12 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
    }
 
 
-   boost::shared_ptr<shared::serialization::IDataSerializable> maketest(const unsigned int testcount)
+   boost::shared_ptr<shared::serialization::IDataSerializable> makeTest(const unsigned int testCount)
    {
       shared::CDataContainer result;
       std::vector<std::string> pluginCollection;
 
-      for (unsigned int i = 0; i < testcount; ++i)
+      for (unsigned int i = 0; i < testCount; ++i)
          pluginCollection.push_back((boost::format("plugin %1%") % i).str());
 
       result.set("plugins", pluginCollection);
@@ -279,34 +282,34 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
    BOOST_AUTO_TEST_CASE(DataCopy)
    {
       shared::CDataContainer dc;
-      const unsigned int testcount = 10;
+      const unsigned int testCount = 10;
 
       //ensure braces are used => in that case, inner container will be deleted to brace close
       {
          //check vector of std::string
          shared::CDataContainer test;
          std::vector<std::string> vstr;
-         for (unsigned int i = 0; i < testcount; ++i)
+         for (unsigned int i = 0; i < testCount; ++i)
             vstr.push_back((boost::format("string %1%") % i).str());
          test.set("vectorstring", vstr);
          dc = test;
       }
 
       auto vstr2 = dc.get<std::vector<std::string>>("vectorstring");
-      BOOST_CHECK_EQUAL(vstr2.size(), testcount);
+      BOOST_CHECK_EQUAL(vstr2.size(), testCount);
       for (unsigned int i = 0; i < vstr2.size(); ++i)
       {
          std::string loc = (boost::format("string %1%") % i).str();
          BOOST_CHECK_EQUAL(vstr2[i] == loc, true);
       }
 
-      //the following test illustrate a bad string allocation (normally datacontainer copy should keep allocation; 
-      //but if a string is copied into rapidjson value without allocator, then the string is kept as a simple reference
+      //the following test illustrate a bad string allocation (normally dataContainer copy should keep allocation; 
+      //but if a string is copied into Rapidjson value without allocator, then the string is kept as a simple reference
       //and this test fails if string are destroyed
-      const auto k = maketest(testcount);
+      const auto k = makeTest(testCount);
       shared::CDataContainer dc2(k->serialize());
       auto vstr = dc2.get<std::vector<std::string>>("data.plugins");
-      BOOST_CHECK_EQUAL(vstr.size(), testcount);
+      BOOST_CHECK_EQUAL(vstr.size(), testCount);
       for (unsigned int i = 0; i < vstr.size(); ++i)
       {
          std::string loc = (boost::format("plugin %1%") % i).str();
@@ -342,7 +345,9 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       BOOST_CHECK_EQUAL(cfg.get<std::string>("Serial port"), "tty0") ;
       BOOST_CHECK_EQUAL(cfg.get<std::string>("StringParameter"), "Yadoms is so powerful !") ;
       BOOST_CHECK_EQUAL(cfg.get<int>("MySection.SubIntParameter"), 123) ;
+      BOOST_CHECK_EQUAL(cfg.get<int>("MySection|SubIntParameter", '|'), 123) ;
       BOOST_CHECK_EQUAL(cfg.get<std::string>("MySection.SubStringParameter"), "Just a string parameter in the sub-section") ;
+      BOOST_CHECK_EQUAL(cfg.get<std::string>("MySection|SubStringParameter", '|'), "Just a string parameter in the sub-section") ;
 
       const boost::posix_time::ptime expected(boost::gregorian::date(2014, 7, 2),
                                               boost::posix_time::hours(11) + boost::posix_time::minutes(35) + boost::posix_time::seconds(0));
@@ -407,6 +412,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       BOOST_CHECK_EQUAL(cfg.containsChild("ArrayParameter"), false) ;
       BOOST_CHECK_EQUAL(cfg.containsChild("BoolParameter"), false) ;
       BOOST_CHECK_EQUAL(cfg.containsChild("MySection.SubIntParameter"), false) ;
+      BOOST_CHECK_EQUAL(cfg.containsChild("MySection|SubIntParameter", '|'), false) ;
 
       BOOST_CHECK_EQUAL(cfg.containsChildArray("ArrayParameter"), true);
       BOOST_CHECK_EQUAL(cfg.containsChildArray("MySection"), false);
@@ -416,6 +422,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       BOOST_CHECK_EQUAL(cfg.containsValue("MySection"), false) ;
       BOOST_CHECK_EQUAL(cfg.containsValue("BoolParameter"), true) ;
       BOOST_CHECK_EQUAL(cfg.containsValue("MySection.SubIntParameter"), true) ;
+      BOOST_CHECK_EQUAL(cfg.containsValue("MySection|SubIntParameter", '|'), true) ;
    }
 
    BOOST_AUTO_TEST_CASE(CurrentNodeTests)
@@ -508,15 +515,15 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       CTestClass obj(1, 42.0, "test of datacontainable");
       shared::CDataContainer cont;
       cont.set("myobject", obj);
-      auto result = cont.get<CTestClass>("myobject");
+      const auto result = cont.get<CTestClass>("myobject");
       BOOST_CHECK_EQUAL(obj.equals(result), true) ;
 
       // Container of boost::shared_ptr<IDataContainable>
       auto sp(boost::make_shared<CTestClass>(2, 43.0, "string1"));
       shared::CDataContainer cont2;
       cont2.set("myobject", sp);
-      auto result2 = cont2.get<boost::shared_ptr<CTestClass>>("myobject");
-      auto result2bis = cont2.get<CTestClass>("myobject");
+      const auto result2 = cont2.get<boost::shared_ptr<CTestClass>>("myobject");
+      const auto result2bis = cont2.get<CTestClass>("myobject");
       BOOST_CHECK_EQUAL(result2->equals(*sp.get()), true) ;
       BOOST_CHECK_EQUAL(result2bis.equals(*sp.get()), true) ;
 
@@ -598,6 +605,8 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
       BOOST_CHECK_EQUAL(dc.get<int>("secD.secE.valC", 0x00), fi()) ;
       BOOST_CHECK_EQUAL(dc.exists("secD.secE.valC"), false) ;
       BOOST_CHECK_THROW(dc.get<int>("secD.secE.valC"), std::exception) ;
+      BOOST_CHECK_EQUAL(dc.exists("secD|secE|valC", '|'), false) ;
+      BOOST_CHECK_THROW(dc.get<int>("secD|secE|valC", '|'), std::exception) ;
       BOOST_CHECK_THROW(dc.get<shared::CDataContainer>("secD"), std::exception) ;
    }
 
@@ -1221,10 +1230,38 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
          "}");
       const std::map<std::string, std::string> expected = {{"key1", "value1"}, {"key2", "value2"}, {"key3", "value3"}, {"key4", "value4"}};
 
-      const auto output = input.getAsMap<std::string>("level1.level2.level3");
+      //don't use BOOST_CHECK_EQUAL_COLLECTIONS because it do not builds with std::map
+      CHECK_MAPS<std::string>(expected, input.getAsMap<std::string>("level1.level2.level3"));
 
       //don't use BOOST_CHECK_EQUAL_COLLECTIONS because it do not builds with std::map
-      CHECK_MAPS<std::string>(expected, output);
+      CHECK_MAPS<std::string>(expected, input.getAsMap<std::string>("level1|level2|level3", '|'));
+   }
+
+   BOOST_AUTO_TEST_CASE(VectorFromPath)
+   {
+      const shared::CDataContainer input(
+         "{"
+         "   \"level1\":"
+         "   {"
+         "      \"level2\":"
+         "      {"
+         "         \"level3\": "
+         "         ["
+         "            \"value1\","
+         "            \"value2\","
+         "            \"value3\","
+         "            \"value4\""
+         "         ]"
+         "      }"
+         "   }"
+         "}");
+      const std::vector<std::string> expected = { "value1", "value2", "value3", "value4" };
+
+      auto output = input.get<std::vector<std::string>>("level1.level2.level3");
+      BOOST_CHECK_EQUAL_COLLECTIONS(expected.begin(), expected.end(), output.begin(), output.end());
+
+      output = input.get<std::vector<std::string>>("level1|level2|level3", '|');
+      BOOST_CHECK_EQUAL_COLLECTIONS(expected.begin(), expected.end(), output.begin(), output.end());
    }
 
    BOOST_AUTO_TEST_CASE(MapOfContainers)
