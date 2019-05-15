@@ -62,9 +62,9 @@ namespace web
             if (parameters.size() != 3)
                return CResult::GenerateError("Invalid parameters in url /rest/update/list");
 
-            const auto includePreleases = parameters[2] == "includePreReleases";
+            const auto includePrereleases = parameters[2] == "includePreReleases";
 
-            return CResult::GenerateSuccess(m_updateManager->getUpdates(includePreleases));
+            return CResult::GenerateSuccess(m_updateManager->getUpdates(includePrereleases));
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CUpdate::updateYadoms(const std::vector<std::string>& parameters,
@@ -74,7 +74,7 @@ namespace web
             {
                //the request content should contain the downloadURL
                if (parameters.size() <= 2)
-                  return CResult::GenerateError("Not enougth parameters in url /rest/update/yadoms/update");
+                  return CResult::GenerateError("Not enough parameters in url /rest/update/yadoms/update");
 
                shared::CDataContainer content(requestContent);
                if (!content.containsValue("downloadUrl"))

@@ -109,7 +109,7 @@ namespace update
          const auto widgetsAvailableVersions = info::CUpdateSite::getAllWidgetVersions();
 
          YADOMS_LOG(debug) << "Read ScriptInterpreters versions...";
-         const auto scriptInterpretersLocalVersions = m_interpreterManager->getAvailableInterpretersInformation();
+         const auto scriptInterpretersLocalVersions = m_interpreterManager->getLoadedInterpretersInformation();
          const auto scriptInterpretersAvailableVersions = info::CUpdateSite::getAllScriptInterpreterVersions();
 
          YADOMS_LOG(debug) << "Build updates data (with prereleases)...";
@@ -1028,20 +1028,19 @@ namespace update
    {
       if (m_allUpdates.exists(allUpdatesNode))
       {
-         auto versions = m_allUpdates.get<std::vector<shared::CDataContainer>>(allUpdatesNode);
+         m_allUpdates.printToLog(YADOMS_LOG(debug));//TODO virer
+         auto versions = m_allUpdates.getAsMap<shared::CDataContainer>(allUpdatesNode);
          const auto versionInfo = std::find_if(versions.begin(),
                                                versions.end(),
-                                               [&downloadUrl](
-                                         const shared::CDataContainer& version)
+                                               [&downloadUrl](const auto& version)
                                                {
-                                            return version.get<std::string>(
-                                                     "downloadUrl") == downloadUrl;
+                                                  return version.second.template get<std::string>("downloadUrl") == downloadUrl;
                                                });
 
          if (versionInfo == versions.end())
             return std::string();
 
-         return versionInfo->get<std::string>("md5Hash");
+         return versionInfo->second.get<std::string>("md5Hash");
       }
       return std::string();
    }

@@ -48,7 +48,7 @@ namespace automation
 
       script::CProperties ruleProperties(m_ruleData);
 
-      m_scriptInterpreter = m_interpreterManager->getInterpreterInstance(m_ruleData->Interpreter());
+      m_scriptInterpreter = m_interpreterManager->getAvailableInterpreterInstance(m_ruleData->Interpreter());
 
       m_scriptInterpreter->startScript(m_ruleData->Id(),
                                        ruleProperties.scriptPath(),
