@@ -4,6 +4,7 @@
 // Includes needed to compile tested classes
 #include "../../../../sources/shared/shared/DataContainer.h"
 #include "../../../../sources/server/web/rest/Result.h"
+#include "../testCommon/fileSystem.h"
 
 BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
@@ -1255,7 +1256,7 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
          "      }"
          "   }"
          "}");
-      const std::vector<std::string> expected = { "value1", "value2", "value3", "value4" };
+      const std::vector<std::string> expected = {"value1", "value2", "value3", "value4"};
 
       auto output = input.get<std::vector<std::string>>("level1.level2.level3");
       BOOST_CHECK_EQUAL_COLLECTIONS(expected.begin(), expected.end(), output.begin(), output.end());
@@ -1319,5 +1320,37 @@ BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
       CHECK_MAPS<shared::CDataContainer>(input.getAsMap<shared::CDataContainer>(), expected);
    }
+
+   BOOST_AUTO_TEST_CASE(DeserializeFromFile)
+   {
+      const auto filePath((boost::filesystem::temp_directory_path() / "withoutBom.json"));
+      const std::string fileContent(
+         "{"
+         "\"value\" : 25,"
+         "\"path\": {"
+         "\"string\": \"value\","
+         "\"int\": 12,"
+         "\"float\": 12.23"
+         "}"
+         "}");
+
+      // Create UTF-8 file (without BOM)
+      testCommon::filesystem::createFile(filePath, fileContent, false);
+      shared::CDataContainer fromFileContainer;
+      fromFileContainer.deserializeFromFile(filePath.string());
+      BOOST_CHECK_EQUAL(fromFileContainer.get<int>("value"), 25);
+      BOOST_CHECK_EQUAL(fromFileContainer.get<std::string>("path.string"), "value");
+      BOOST_CHECK_EQUAL(fromFileContainer.get<int>("path.int"), 12);
+      BOOST_CHECK_EQUAL(fromFileContainer.get<float>("path.float"), 12.23f);
+
+      // Create UTF-8 file (with BOM)
+      testCommon::filesystem::createFile(filePath, fileContent, true);
+      fromFileContainer.deserializeFromFile(filePath.string());
+      BOOST_CHECK_EQUAL(fromFileContainer.get<int>("value"), 25);
+      BOOST_CHECK_EQUAL(fromFileContainer.get<std::string>("path.string"), "value");
+      BOOST_CHECK_EQUAL(fromFileContainer.get<int>("path.int"), 12);
+      BOOST_CHECK_EQUAL(fromFileContainer.get<float>("path.float"), 12.23f);
+   }
+
 
 BOOST_AUTO_TEST_SUITE_END()
