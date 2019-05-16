@@ -12,8 +12,6 @@
 
 namespace yApi = shared::script::yInterpreterApi;
 
-extern void log(const std::string& s);//TODO virer
-
 namespace interpreter_cpp_api
 {
    CInterpreterContext::CInterpreterContext(int argc,
@@ -32,70 +30,52 @@ namespace interpreter_cpp_api
 
       try
       {
-         log("*** START *** " + to_simple_string(shared::currentTime::Provider().now()));
-         log("openMessageQueues...");
          openMessageQueues();
 
-         log("api->setSendingMessageQueue(m_sendMessageQueue)...");
          api->setSendingMessageQueue(m_sendMessageQueue);
 
-         log("m_msgReceiverThread = boost::thread(&CInterpreterContext::msgReceiverThreaded, this, api)");
          m_msgReceiverThread = boost::thread(&CInterpreterContext::msgReceiverThreaded, this, api);
 
-         log("api->waitInitialized()");
          api->waitInitialized();
 
-         log(api->getInformation()->getType() + " starting");
          std::cout << api->getInformation()->getType() << " starting" << std::endl;
 
-         log("waitDebugger(api)");
          waitDebugger(api);
 
-         log("configureLogger(api)");
          configureLogger(api);
 
-         log(api->getInformation()->getType() + " started");
          YADOMS_LOG(information) << api->getInformation()->getType() << " started";
 
          if (!api->stopRequested())
          {
             // Execute interpreter code
-            log("m_interpreter->doWork(api)");
             m_interpreter->doWork(api);
          }
 
-         log("if (!api->stopRequested())");
          if (!api->stopRequested())
          {
-            log(api->getInformation()->getType() + " has stopped itself.");
             std::cerr << api->getInformation()->getType() << " has stopped itself." << std::endl;
             m_returnCode = kUnexpectedStop;
          }
 
          // Normal stop
-         log(api->getInformation()->getType() + " is stopped");
          std::cout << api->getInformation()->getType() << " is stopped" << std::endl;
          m_returnCode = kOk;
       }
       catch (std::exception& e)
       {
-         log(api->getInformation()->getType() + " crashed with exception : " + e.what());
          std::cerr << api->getInformation()->getType() << " crashed with exception : " << e.what();
          m_returnCode = kRuntimeError;
       }
       catch (...)
       {
-         log(api->getInformation()->getType() + " crashed with unknown exception");
          std::cerr << api->getInformation()->getType() << " crashed with unknown exception" << std::endl;
          m_returnCode = kRuntimeError;
       }
 
-      log("m_msgReceiverThread.interrupt()");
       m_msgReceiverThread.interrupt();
-      log("m_msgReceiverThread.timed_join(boost::posix_time::seconds(30))");
       m_msgReceiverThread.timed_join(boost::posix_time::seconds(30));
 
-      log("closeMessageQueues()");
       closeMessageQueues();
    }
 
@@ -107,10 +87,13 @@ namespace interpreter_cpp_api
          std::cout << " Wait for a debugger to attach current process " << std::endl;
          std::cout << "***********************************************" << std::endl;
 
-         // Check every 300 ms, while 2 minutes
+         // Check every 300 ms, while 20 seconds (must be < at the delay that Yadoms expect an answer to the interpreter availability request, actually fixed at 30s)
          // Don't wait for stop request as it consumes standard event (interpreter init, interpreter available request...)
-         const auto endTimePoint = shared::currentTime::Provider().now() + boost::posix_time::minutes(2);
-         while (!Poco::Debugger::isAvailable() && shared::currentTime::Provider().now() < endTimePoint);
+         const auto endTimePoint = shared::currentTime::Provider().now() + boost::posix_time::seconds(20);
+         while (!Poco::Debugger::isAvailable() && shared::currentTime::Provider().now() < endTimePoint)
+         {
+            boost::this_thread::sleep(boost::posix_time::millisec(300));
+         }
 
          if (Poco::Debugger::isAvailable())
             std::cout << api->getInformation()->getType() << " attached to debugger" << std::endl;
@@ -185,8 +168,6 @@ namespace interpreter_cpp_api
       auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue->get_max_msg_size()));
       const auto messageAssembler = boost::make_shared<shared::communication::SmallHeaderMessageAssembler>(m_receiveMessageQueue->get_max_msg_size());
 
-      log("CInterpreterContext::msgReceiverThreaded");
-
       try
       {
          while (true)
@@ -209,7 +190,6 @@ namespace interpreter_cpp_api
 
                if (messageWasReceived)
                {
-                  log("CInterpreterContext::msgReceiverThreaded, messageWasReceived");
                   messageAssembler->appendPart(message,
                                                messageSize);
 

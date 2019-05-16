@@ -10,21 +10,6 @@
 #include "PurgeScriptLog.h"
 #include <shared/communication/SmallHeaderMessageCutter.h>
 
-template< typename T >
-std::string int_to_hex(T i) //TODO virer
-{
-   std::stringstream stream;
-   stream << "0x"
-      << std::setfill('0') << std::setw(sizeof(T) * 2)
-      << std::hex << i;
-   return stream.str();
-}
-
-void log(const std::string& s) //TODO virer
-{
-   std::ofstream logFile("logs\\interpreterStart.log", std::ios::out | std::ios::app);
-   logFile << GetCurrentThreadId() << " | " << s << std::endl;
-}
 
 namespace interpreter_cpp_api
 {
@@ -32,7 +17,6 @@ namespace interpreter_cpp_api
       : m_initialized(false),
         m_stopRequested(false)
    {
-      log("CApiImplementation::CApiImplementation:" + int_to_hex(&m_interpreterEventHandler));
    }
 
    CApiImplementation::~CApiImplementation()
@@ -168,7 +152,6 @@ namespace interpreter_cpp_api
    void CApiImplementation::onReceive(boost::shared_ptr<const unsigned char[]> message,
                                       size_t messageSize)
    {
-      log("CApiImplementation::onReceive");
       if (messageSize < 1)
          throw std::runtime_error("CApiImplementation::onReceive : received Yadoms answer is zero length");
 
@@ -223,19 +206,15 @@ namespace interpreter_cpp_api
 
    void CApiImplementation::waitInitialized() const
    {
-      log("CApiImplementation::waitInitialized()");
       std::unique_lock<std::mutex> lock(m_initializationConditionMutex);
       if (!m_initialized)
       {
-         log("m_initializationCondition.wait(lock)");
          m_initializationCondition.wait(lock);
-         log("CApiImplementation::waitInitialized() ==> OK");
       }
    }
 
    void CApiImplementation::processInit(const interpreter_IPC::toInterpreter::Init& msg)
    {
-      log("CApiImplementation::processInit()");
       m_interpreterInformation = boost::make_shared<CInformation>(
          boost::make_shared<const interpreter_IPC::toInterpreter::Information>(msg.interpreterinformation()));
       m_logFile = boost::make_shared<const boost::filesystem::path>(msg.logfile());
@@ -245,7 +224,6 @@ namespace interpreter_cpp_api
 
    void CApiImplementation::processSystem(const interpreter_IPC::toInterpreter::System& msg)
    {
-      log("CApiImplementation::processSystem()");
       if (msg.type() == interpreter_IPC::toInterpreter::System_EventType_kRequestStop)
       {
          // Request the main thread to stop
@@ -259,7 +237,6 @@ namespace interpreter_cpp_api
 
    void CApiImplementation::processAvailableRequest(const interpreter_IPC::toInterpreter::AvalaibleRequest& msg)
    {
-      log("CApiImplementation::processAvailableRequest()");
       const boost::shared_ptr<shared::script::yInterpreterApi::IAvalaibleRequest> request =
          boost::make_shared<CAvalaibleRequest>(msg,
                                                [&](bool available)
@@ -267,18 +244,15 @@ namespace interpreter_cpp_api
                                                   interpreter_IPC::toYadoms::msg ans;
                                                   auto answer = ans.mutable_avalaibleanswer();
                                                   answer->set_avalaible(available);
-                                                  log("CApiImplementation::processAvailableRequest() ==> send(OK)");
                                                   send(ans);
                                                },
                                                [&](const std::string& r)
                                                {
                                                   interpreter_IPC::toYadoms::msg ans;
                                                   ans.set_error(r);
-                                                  log("CApiImplementation::processAvailableRequest() ==> send(error)");
                                                   send(ans);
                                                });
 
-      log("CApiImplementation::processAvailableRequest(), postEvent==>kEventAvalaibleRequest" + int_to_hex(&m_interpreterEventHandler));
       m_interpreterEventHandler.postEvent(kEventAvalaibleRequest, request);
    }
 
@@ -349,13 +323,10 @@ namespace interpreter_cpp_api
 
    void CApiImplementation::setInitialized()
    {
-      log("CApiImplementation::setInitialized()");
       if (!!m_interpreterInformation && !!m_logFile && !!m_logLevel)
       {
-         log("CApiImplementation::setInitialized(), std::unique_lock<std::mutex> lock(m_initializationConditionMutex)");
          std::unique_lock<std::mutex> lock(m_initializationConditionMutex);
          m_initialized = true;
-         log("m_initializationCondition.notify_one()");
          m_initializationCondition.notify_one();
       }
    }
@@ -386,7 +357,6 @@ namespace interpreter_cpp_api
 
    shared::event::CEventHandler& CApiImplementation::getEventHandler()
    {
-      log("CApiImplementation::getEventHandler():" + int_to_hex(&m_interpreterEventHandler));
       return m_interpreterEventHandler;
    }
 } // namespace interpreter_cpp_api	

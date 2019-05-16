@@ -22,8 +22,6 @@ enum
    kEventScriptStopped = yApi::IYInterpreterApi::kPluginFirstEventId
 };
 
-extern void log(const std::string& s);
-
 CPython27::CPython27()
    : m_factory(boost::make_shared<CFactory>()),
      m_pythonExecutable(m_factory->createPythonExecutable())
@@ -38,18 +36,15 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
 {
    m_api = api;
 
-   log("doWork : Python interpreter is starting...");
    YADOMS_LOG(information) << "Python interpreter is starting...";
 
    while (true)
    {
-      log("doWork : api->getEventHandler().waitForEvents()...");
       switch (api->getEventHandler().waitForEvents())
       {
       case yApi::IYInterpreterApi::kEventStopRequested:
          {
             // Yadoms request the interpreter to stop. Note that interpreter must be stop in 10 seconds max, otherwise it will be killed.
-            log("doWork : Stop requested");
             YADOMS_LOG(information) << "Stop requested";
             onStopRequested();
             YADOMS_LOG(information) << "Python interpreter is stopped";
@@ -58,7 +53,6 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
 
       case yApi::IYInterpreterApi::kEventAvalaibleRequest:
          {
-            log("doWork : kEventAvalaibleRequest");
             auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IAvalaibleRequest>>();
             request->sendSuccess(isAvailable());
             break;
@@ -127,7 +121,6 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
 
       default:
          {
-            log("doWork : Unknown or unsupported message id " + std::to_string(api->getEventHandler().getEventId()));
             YADOMS_LOG(error) << "Unknown or unsupported message id " << api->getEventHandler().getEventId();
             break;
          }
@@ -248,7 +241,6 @@ void CPython27::onStopRequested()
    // Wait scripts are stopped
    while (!m_scriptProcesses.empty())
    {
-      log("CPython27::onStopRequested : api->getEventHandler().waitForEvents(10 secondes)...");
       switch (m_api->getEventHandler().waitForEvents(boost::posix_time::seconds(10)))
       {
       case kEventScriptStopped:
