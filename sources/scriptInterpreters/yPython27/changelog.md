@@ -1,3 +1,6 @@
+### 1.0.5
+* Fix startup in debug mode
+
 ### 1.0.4
 * New feature #541 : Add strToTimedelta function to script utilities
 
