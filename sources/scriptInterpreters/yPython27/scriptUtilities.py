@@ -104,8 +104,8 @@ def readKeywordValue(yApi, keywordId, defaultValue):
 class KeywordDetails:
    def __init__(self, jsonDetails):
       details = json.loads(jsonDetails)
-      self.id = details[u'Id']
-      self.deviceId = details[u'DeviceId']
+      self.id = int(details[u'Id'])
+      self.deviceId = int(details[u'DeviceId'])
       self.capacityName = details[u'CapacityName']
       self.accessMode = details[u'AccessMode']
       self.friendlyName = details[u'FriendlyName']
@@ -115,7 +115,7 @@ class KeywordDetails:
       self.measure = details[u'Measure']
       self.details = details[u'Details']
       self.lastAcquisitionValue = details[u'LastAcquisitionValue']
-      self.lastAcquisitionDate = details[u'LastAcquisitionDate']
+      self.lastAcquisitionDate = strToDateTime(details[u'LastAcquisitionDate'])
 
 
 # Read keyword details and populate a Python object

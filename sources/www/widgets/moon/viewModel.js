@@ -26,7 +26,7 @@ widgetViewModelCtor = function moonViewModel() {
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
 
-        if (keywordId === self.widget.configuration.device.keywordId) {
+        if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
             var obj = jQuery.parseJSON(data.value);
             if (obj) {
                 //parse as integers
@@ -62,9 +62,9 @@ widgetViewModelCtor = function moonViewModel() {
        var self = this;
         
        //we register keyword new acquisition
-       self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+       self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.device.keywordId));
 	   
 		//we register keyword for get last value at web client startup
-		self.widgetApi.getLastValue(self.widget.configuration.device.keywordId); 
+		self.widgetApi.getLastValue(parseInt(self.widget.configuration.device.keywordId)); 
     };
 };

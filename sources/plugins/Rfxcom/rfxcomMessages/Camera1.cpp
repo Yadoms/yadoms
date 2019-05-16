@@ -18,8 +18,8 @@ namespace rfxcomMessages
       m_camera->setCommand(command);
       m_signalPower->set(0);
 
-      m_subType = deviceDetails.get<unsigned char>("subType");
-      m_houseCode = deviceDetails.get<unsigned char>("houseCode");
+      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
+      m_houseCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("houseCode"));
 
       // Build device description
       buildDeviceModel();

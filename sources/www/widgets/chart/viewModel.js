@@ -173,7 +173,10 @@ function chartViewModel() {
                 chart: {
                     type: 'line',
                     animation: false,
-                    marginTop: 10
+                    marginTop: 10,
+                    zoomType: "xy",
+                    panning: true,
+                    panKey: 'shift'
                 },
                 boost: {
                    allowForce: true,

@@ -49,7 +49,7 @@
          var device;
          var $deviceDetailsTable = $("table#keyword-list");
          if ($deviceDetailsTable.length === 1) {
-            device = getDeviceFromId($deviceDetailsTable.attr("device-id"));
+            device = getDeviceFromId(parseInt($deviceDetailsTable.attr("device-id")));
          }
          if (!isNullOrUndefined(device)) {
             var index = device.keywords.map(function (e) {
@@ -650,18 +650,18 @@
                arrayOfDeffered.push(DeviceManager.get(device.id));
 
                $.when.apply($, arrayOfDeffered).done(function (configurationSchema, deviceInfos) {
-                  device.configuration = deviceInfos.configuration;
-                  Yadoms.showConfigurationDeviceModal(device, configurationSchema, function (modifiedDevice) {
-                     recordAndDisplayNewDeviceConfiguration(modifiedDevice);
+                     device.configuration = deviceInfos.configuration;
+                     Yadoms.showConfigurationDeviceModal(device, configurationSchema, function (modifiedDevice) {
+                        recordAndDisplayNewDeviceConfiguration(modifiedDevice);
+                     });
+                  })
+                  .fail(function (error) {
+                     notifyError($.t("objects.deviceManager.errorUpdating", {
+                        deviceName: device.friendlyName
+                     }), error);
+                     var $deviceRow = getDeviceDomRow(device);
+                     addDeviceButtonsEvents($deviceRow, device);
                   });
-               })
-               .fail(function (error) {
-                  notifyError($.t("objects.deviceManager.errorUpdating", {
-                     deviceName: device.friendlyName
-                  }), error);
-                  var $deviceRow = getDeviceDomRow(device);
-                  addDeviceButtonsEvents($deviceRow, device);
-               });
             });
       }
    }
@@ -914,7 +914,15 @@
          else
             value = false;
       } else {
-         value = $tdvalue.find("span").html();
+         if (keyword.capacityName === "duration") {
+            try {
+               value = $tdvalue.find("span").html().split(' ')[0];
+            } catch (e) {
+               value = $tdvalue.find("span").html();
+            }
+         } else {
+            value = $tdvalue.find("span").html();
+         }
       }
 
       if (keyword.capacityName.toLowerCase() === "event") {
@@ -1029,9 +1037,14 @@
                keywordValue = "<pre class=\"json-value-container\">" + library.json.prettyPrint(JSON.parse(acquisition.value)) +
                   "</pre>";
             } else {
-               if (acquisition.value !== "not-a-date-time")
-                  keywordValue = "<span>" + acquisition.value + "</span>";
-               else
+               if (acquisition.value !== "not-a-date-time") {
+                  if (keyword.capacityName === "duration") {
+                     keywordValue = "<span>" + acquisition.value + " (" + DurationParameterHandler.prototype.secondsToHhmmss(
+                        parseInt(acquisition.value)) + ")" + "</span>";
+                  } else {
+                     keywordValue = "<span>" + acquisition.value + "</span>";
+                  }
+               } else
                   keywordValue = "<span>-</span>";
             }
          } catch (err) {

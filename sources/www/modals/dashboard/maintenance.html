@@ -4,45 +4,86 @@
       <span data-i18n="modals.dashboard.sub-windows.maintenance.title"></span>
    </h1>
 
-   <button type="button" class="btn btn-default btn-info backupButton" data-i18n="modals.dashboard.sub-windows.maintenance.backup"
-      aria-expanded="false" />
-   <button type="button" class="btn btn-danger btn-info deleteAllButton" data-i18n="modals.dashboard.sub-windows.maintenance.deleteAll"
-      aria-expanded="false" />
+   <div class="panel-group" id="maintenance-accordion" role="tablist" aria-multiselectable="true">
+      <!-- Backup -->
+      <div class="panel panel-default with-overflow-visible">
+         <div class="panel-heading" role="tab" id="maintenance-backup-heading-panel" data-toggle="collapse" data-parent="#maintenance-accordion"
+            aria-expanded="true" aria-controls="maintenance-backup-heading-panel" data-target="#maintenance-backup-panel">
+            <h4 class="panel-title accordion-title" data-i18n="modals.dashboard.sub-windows.maintenance.backup.title" />
+         </div>
+         <div id="maintenance-backup-panel" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="maintenance-backup-heading-panel">
+            <div class="panel-body">
+               <button type="button" class="btn btn-default btn-info backupButton" data-i18n="modals.dashboard.sub-windows.maintenance.backup.startBackup" />
+               <button type="button" class="btn btn-danger btn-info deleteAllButton" data-i18n="modals.dashboard.sub-windows.maintenance.backup.deleteAll" />
 
-   <div class="action-progression" style="width: 340px; margin-top: 10px;">
-      <div class="progress">
-         <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
-            <span class="hidden">60% Complete</span>
+               <div class="backup-action-progression action-progression" style="width: 340px; margin-top: 10px;">
+                  <div class="progress">
+                     <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
+                        <span class="hidden">60% Complete</span>
+                     </div>
+                  </div>
+                  <span class="message"></span>
+               </div>
+
+               <table id="backup-list" class="table table-bordered table-striped dashboard-list">
+                  <tr>
+                     <td data-i18n="modals.dashboard.sub-windows.maintenance.backup.backuplist.state"></td>
+                     <td data-i18n="modals.dashboard.sub-windows.maintenance.backup.backuplist.date"></td>
+                     <td data-i18n="modals.dashboard.sub-windows.maintenance.backup.backuplist.size"></td>
+                     <td data-i18n="modals.dashboard.sub-windows.maintenance.backup.backuplist.location" class="hidden-xs hidden-sm"></td>
+                     <td data-i18n="modals.dashboard.sub-windows.maintenance.backup.backuplist.actions"></td>
+                  </tr>
+               </table>
+            </div>
          </div>
       </div>
-      <span class="message"></span>
-   </div>
 
-   <!-- Backup historic -->
-   <table id="backup-list" class="table table-bordered table-striped dashboard-list">
-      <tr>
-         <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.state"></td>
-         <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.date"></td>
-         <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.size"></td>
-         <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.location" class="hidden-xs hidden-sm"></td>
-         <td data-i18n="modals.dashboard.sub-windows.maintenance.backuplist.actions"></td>
-      </tr>
-   </table>
-
-   <br>
-
-   <!-- Logs download -->
-   <button type="button" class="btn btn-default btn-info logsDownloadButton" data-i18n="modals.dashboard.sub-windows.maintenance.logsDownload"
-      aria-expanded="false" />
-   <div class="logs-action-progression" style="width: 340px; margin-top: 10px;">
-      <div class="progress">
-         <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
-            <span class="hidden">60% Complete</span>
+      <!-- Logs download -->
+      <div class="panel panel-default with-overflow-visible">
+         <div class="panel-heading collapsed" role="tab" id="maintenance-logs-download-heading-panel" data-toggle="collapse"
+            data-parent="#maintenance-accordion" aria-expanded="true" aria-controls="maintenance-logs-download-heading-panel"
+            data-target="#maintenance-logs-download-panel">
+            <h4 class="panel-title accordion-title" data-i18n="modals.dashboard.sub-windows.maintenance.logs-download.title" />
+         </div>
+         <div id="maintenance-logs-download-panel" class="panel-collapse collapse" role="tabpanel" aria-labelledby="maintenance-logs-download-heading-panel">
+            <div class="panel-body">
+               <button type="button" class="btn btn-default btn-info logsDownloadButton" data-i18n="modals.dashboard.sub-windows.maintenance.logs-download.startDownload" />
+               <div class="logs-action-progression action-progression" style="width: 340px; margin-top: 10px;">
+                  <div class="progress">
+                     <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
+                        <span class="hidden">60% Complete</span>
+                     </div>
+                  </div>
+                  <span class="message"></span>
+               </div>
+            </div>
          </div>
       </div>
-      <span class="message"></span>
-   </div>
 
+      <!-- Export data -->
+      <div class="panel panel-default with-overflow-visible">
+         <div class="panel-heading collapsed" role="tab" id="maintenance-exportData-heading-panel" data-toggle="collapse"
+            data-parent="#maintenance-accordion" aria-expanded="true" aria-controls="maintenance-exportData-heading-panel"
+            data-target="#maintenance-exportData-panel">
+            <h4 class="panel-title accordion-title" data-i18n="modals.dashboard.sub-windows.maintenance.exportData.title" />
+         </div>
+         <div id="maintenance-exportData-panel" class="panel-collapse collapse" role="tabpanel" aria-labelledby="maintenance-exportData-heading-panel">
+            <div class="panel-body">
+               <div id="maintenance-exportData-device-select"></div>
+               <div class="exportData-action-progression action-progression" style="width: 340px; margin-top: 10px;">
+                  <div class="progress">
+                     <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
+                        <span class="hidden">60% Complete</span>
+                     </div>
+                  </div>
+                  <span class="message"></span>
+               </div>
+               <button type="button" class="btn btn-default btn-info exportDataStartButton" data-i18n="modals.dashboard.sub-windows.maintenance.exportData.startButton"
+                  disabled="disabled" />
+            </div>
+         </div>
+      </div>
+   </div>
 </div>
 
 <script>
@@ -65,16 +106,17 @@
 
                      var actionsBtns = '<div class="btn-group">' +
                         '<a class="btn btn-info lastBackupLink" href="backups/' + info.url +
-                        '" data-i18n="[title]modals.dashboard.sub-windows.maintenance.backuplist.download">' +
+                        '" data-i18n="[title]modals.dashboard.sub-windows.maintenance.backup.backuplist.download">' +
                         '    <span class="glyphicon glyphicon-save "></span>' +
                         '</a>' +
                         '<button type="button" class="btn btn-danger btn-delete" id="' + id +
-                        '" data-i18n="[title]modals.dashboard.sub-windows.maintenance.backuplist.delete"><span class="fa fa-trash"></span></button>' +
+                        '" data-i18n="[title]modals.dashboard.sub-windows.maintenance.backup.backuplist.delete"><span class="fa fa-trash"></span></button>' +
                         '</div>';
 
                      var line = '<tr>' +
                         '<td><span class="glyphicon ' + (!parseBool(info.inprogress) ?
-                           'glyphicon-ok text-success' : 'glyphicon-remove text-warning') + '"></span></td>' +
+                           'glyphicon-ok text-success' : 'glyphicon-remove text-warning') +
+                        '"></span></td>' +
                         '<td>' + DateTimeFormatter.isoDateToString(info.modificationDate) + '</td>' +
                         '<td>' + humanFileSize(info.size) + '</td>' +
                         '<td class="hidden-xs hidden-sm">' + info.path + '</td>' +
@@ -88,10 +130,10 @@
                            .done(function () {
                               Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
                                  $.t(
-                                    "modals.dashboard.sub-windows.maintenance.backuplist.deleteConfirmTitle"
+                                    "modals.dashboard.sub-windows.maintenance.backup.backuplist.deleteConfirmTitle"
                                  ),
                                  $.t(
-                                    "modals.dashboard.sub-windows.maintenance.backuplist.deleteConfirm"
+                                    "modals.dashboard.sub-windows.maintenance.backup.backuplist.deleteConfirm"
                                  ),
                                  function () {
                                     MaintenanceManager.deleteBackup(info.url)
@@ -119,23 +161,22 @@
          });
    }
 
-   function onBackupTaskUpdate(taskInformation) {
-      var $line = $(".action-progression");
-      $line.find("div.progress-bar").css("width", taskInformation.progression + "%");
+   function onTaskUpdate(taskInformation, actionProgressionElement, hideProgressBarAtEnd, onTaskFinishedFct) {
+      actionProgressionElement.find("div.progress-bar").css("width", taskInformation.progression + "%");
 
       if (taskInformation.message) {
-         $line.find("span.message").text($.t("core." + taskInformation.message));
+         actionProgressionElement.find("span.message").text($.t("core." + taskInformation.message));
       } else {
-         $line.find("span.message").text("");
+         actionProgressionElement.find("span.message").text("");
       }
 
       var taskFinished = false;
-      //we manage the end of the task
-      var state = taskInformation.taskState || taskInformation.status; //from taskManager=>status, from webSocket notif)>taskState
+      // End of the task managment
+      var state = taskInformation.taskState || taskInformation.status;
 
       if (state) {
          if (state.toLowerCase() === "fail") {
-            console.error("Unable to install : " + taskInformation.exception);
+            console.error("Unable to process task : " + taskInformation.exception);
             if (taskInformation.message) {
                notifyError($.t("core." + taskInformation.message));
             }
@@ -147,27 +188,35 @@
                notifySuccess($.t("core." + taskInformation.message));
             }
             taskFinished = true;
-            showLastBackupInformation();
+            onTaskFinishedFct();
          }
 
-         if (taskFinished) {
-            //we remove the progress information and restore buttons
-            $line.find("div.progress-bar").css("width", "0");
-            $line.hide();
+         if (taskFinished && hideProgressBarAtEnd) {
+            actionProgressionElement.find("div.progress-bar").css("width", "0");
+            actionProgressionElement.hide();
          }
       }
    }
 
    function registerNotificationForBackupTask(taskId) {
-      $(".action-progression").show();
+      $(".backup-action-progression").show();
       $(document).on("taskupdatenotification." + taskId, function (e, taskInformation) {
-         onBackupTaskUpdate(taskInformation);
+         onTaskUpdate(taskInformation, $(".backup-action-progression"), true, function () {
+            showLastBackupInformation();
+         });
       });
    }
 
 
    function enableBackupSection() {
-      $(".action-progression").hide();
+      $(".backup-action-progression").hide();
+
+      TaskManager.getTasksRunning("backup")
+         .done(function (tasks) {
+            $.each(tasks, function (index, task) {
+               registerNotificationForBackupTask(task.uuid);
+            });
+         })
 
       $(".backupButton").unbind('click').bind('click', function () {
          MaintenanceManager.startBackup()
@@ -202,32 +251,10 @@
       showLastBackupInformation();
    }
 
-   function onLogsDownloadTaskUpdate(taskInformation) {
-      var $line = $(".logs-action-progression");
-      $line.find("div.progress-bar").css("width", taskInformation.progression + "%");
-
-      if (taskInformation.message) {
-         $line.find("span.message").text($.t("core." + taskInformation.message));
-      } else {
-         $line.find("span.message").text("");
-      }
-
-      //we manage the end of the task
-      var state = taskInformation.taskState || taskInformation.status; //from taskManager=>status, from webSocket notif)>taskState
-
-      if (state) {
-         if (state.toLowerCase() === "fail") {
-            console.error("Unable to download logs : " + taskInformation.exception);
-            if (taskInformation.message) {
-               notifyError($.t("core." + taskInformation.message));
-            }
-         }
-
-         if (state.toLowerCase() === "success") {
-            if (taskInformation.message) {
-               notifySuccess($.t("core." + taskInformation.message));
-            }
-
+   function registerNotificationForLogsDownloadTask(taskId) {
+      $(".logs-action-progression").show();
+      $(document).on("taskupdatenotification." + taskId, function (e, taskInformation) {
+         onTaskUpdate(taskInformation, $(".logs-action-progression"), false, function () {
             MaintenanceManager.lastLogsDownloadInformation()
                .done(function (infos) {
                   top.location.href = "backups/" + infos.logs.url;
@@ -236,26 +263,168 @@
                   console.error(error);
                   notifyError($.t("core.task.packLogs.downloadError"));
                });
-         }
-      }
-   }
-
-   function registerNotificationForLogsDownloadTask(taskId) {
-      $(".logs-action-progression").show();
-      $(document).on("taskupdatenotification." + taskId, function (e, taskInformation) {
-         onLogsDownloadTaskUpdate(taskInformation);
+         });
       });
    }
 
    function enableLogsDownloadSection() {
       $(".logs-action-progression").hide();
 
+      TaskManager.getTasksRunning("packLogs")
+         .done(function (tasks) {
+            $.each(tasks, function (index, task) {
+               registerNotificationForLogsDownloadTask(task.uuid);
+            });
+         })
+
       $(".logsDownloadButton").unbind('click').bind('click', function () {
          MaintenanceManager.startLogsDownload()
             .done(function (data) {
-               //data.taskId
                registerNotificationForLogsDownloadTask(data.taskId);
             });
+      });
+   }
+
+   function enableExportDataSection() {
+      $(".exportData-action-progression").hide();
+      $exportDataStartButton = $(".exportDataStartButton");
+
+      TaskManager.getTasksRunning("exportData")
+         .done(function (tasks) {
+            $.each(tasks, function (index, task) {
+               registerNotificationForExportDataTask(task.uuid);
+            });
+         })
+
+      DeviceManager.getAll()
+         .done((allDevices) => {
+            $deviceSelect = $("#maintenance-exportData-device-select");
+            $deviceSelect.empty();
+
+            deviceListSchema = {
+               deviceListSection: {
+                  type: 'enum',
+                  name: $.t('modals.dashboard.sub-windows.maintenance.exportData.device.deviceListCombo.name'),
+                  description: $.t(
+                     'modals.dashboard.sub-windows.maintenance.exportData.device.deviceListCombo.description'),
+                  values: {}
+               },
+               keywordListSection: {
+                  type: 'enum',
+                  name: $.t('modals.dashboard.sub-windows.maintenance.exportData.device.keywordListCombo.name'),
+                  description: $.t(
+                     'modals.dashboard.sub-windows.maintenance.exportData.device.keywordListCombo.description'
+                  ),
+                  values: {}
+               }
+            };
+            const deviceListSectionIndex = 0;
+            const keywordListSectionIndex = 1;
+
+            // Populate the devices list
+            $.each(allDevices, function (key, device) {
+               if (device.blacklist === "true")
+                  return true;
+               deviceListSchema.deviceListSection.values[device.id] = device.friendlyName;
+            });
+
+            configMgr = new ConfigurationControlManager(
+               deviceListSchema,
+               null,
+               "modals.dashboard.sub-windows.maintenance.exportData.",
+               $deviceSelect);
+
+            // When opening the modal, if a device is already selected, process it
+            configMgr.getCurrentConfiguration()
+               .done(function (config) {
+                  if (isNullOrUndefinedOrEmpty(config.deviceListSection)) {
+                     $exportDataStartButton.attr("disabled", "disabled");
+                     configMgr.configurationHandlers[keywordListSectionIndex].setValues([]);
+                  } else {
+                     onExportDataDeviceSelected(parseInt(config.deviceListSection), configMgr.configurationHandlers[
+                        keywordListSectionIndex]);
+                  }
+               });
+            // When user selects another device
+            $deviceSelect.find("select").change(function (data) {
+               $exportDataStartButton.attr("disabled", "disabled");
+
+               configMgr.getCurrentConfiguration()
+                  .done(function (config) {
+                     if (data.currentTarget.id === $deviceSelect.find("select")[deviceListSectionIndex].id) {
+                        // Device select changed
+                        if (isNullOrUndefinedOrEmpty(config.deviceListSection)) {
+                           configMgr.configurationHandlers[keywordListSectionIndex].setValues([]);
+                        } else {
+                           onExportDataDeviceSelected(parseInt(config.deviceListSection), configMgr.configurationHandlers[
+                              keywordListSectionIndex]);
+                        }
+                     } else if (data.currentTarget.id === $deviceSelect.find("select")[
+                           keywordListSectionIndex].id) {
+                        // Keyword select changed
+                        onExportDataKeywordSelected(isNullOrUndefinedOrEmpty(config.keywordListSection) ?
+                           null :
+                           parseInt(config.keywordListSection));
+                     }
+                  });
+            });
+
+            $deviceSelect.i18n();
+            configMgr.afterI18n();
+
+            $exportDataStartButton.unbind('click').bind('click', function () {
+               configMgr.getCurrentConfiguration()
+                  .done(function (config) {
+                     if (isNullOrUndefinedOrEmpty(config.keywordListSection)) {
+                        console.log("No keyword selected");
+                     } else {
+                        MaintenanceManager.startExportData(parseInt(config.keywordListSection))
+                           .done(function (data) {
+                              registerNotificationForExportDataTask(data.taskId);
+                           });
+                     }
+                  });
+            });
+         });
+   }
+
+   onExportDataDeviceSelected = function (selectedDevice, keywordListSection) {
+      DeviceManager.getKeywordsByDeviceId(selectedDevice)
+         .done((keywords) => {
+            // Populate the keyword list
+            keywordList = [];
+            $.each(keywords, function (key, keyword) {
+               keywordList[keyword.id] = keyword.friendlyName;
+            });
+            keywordListSection.setValues(keywordList);
+
+            onExportDataKeywordSelected(isNullOrUndefinedOrEmpty(keywordListSection) ? null : parseInt(
+               keywordListSection));
+         });
+   }
+
+   onExportDataKeywordSelected = function (selectedKeyword) {
+      // Enable/disable start button
+      if (isNullOrUndefined(selectedKeyword)) {
+         $exportDataStartButton.attr("disabled", "disabled");
+      } else {
+         $exportDataStartButton.removeAttr("disabled");
+      }
+   }
+
+   function registerNotificationForExportDataTask(taskId) {
+      $(".exportData-action-progression").show();
+      $(document).on("taskupdatenotification." + taskId, function (e, taskInformation) {
+         onTaskUpdate(taskInformation, $(".exportData-action-progression"), true, function () {
+            MaintenanceManager.lastExportDataInformation()
+               .done(function (infos) {
+                  top.location.href = "backups/" + infos.exportData.url;
+               })
+               .fail(function (error) {
+                  console.error(error);
+                  notifyError($.t("core.task.exportData.downloadError"));
+               });
+         });
       });
    }
 
@@ -266,18 +435,9 @@
       asyncLoadJSLib("js/objects/maintenance-manager.js").done(function () {
             enableBackupSection();
             enableLogsDownloadSection();
+            enableExportDataSection();
 
-            //if running tasks, then just refresh
-            TaskManager.getTasksRunning("backup")
-               .done(function (tasks) {
-                  $.each(tasks, function (index, task) {
-                     registerNotificationForBackupTask(task.uuid);
-                     onBackupTaskUpdate(task);
-                  });
-               })
-               .always(function () {
-                  d.resolve();
-               });
+            d.resolve();
          })
          .fail(d.reject);
 

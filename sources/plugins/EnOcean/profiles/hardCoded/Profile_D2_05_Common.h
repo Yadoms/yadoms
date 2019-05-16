@@ -26,11 +26,11 @@ public:
    ) ;
 
    // CMD 0x1 - Actuator Set Output
-   static void sendkGoToPositionAndAngle(boost::shared_ptr<IMessageHandler> messageHandler,
-                                         const std::string& senderId,
-                                         const std::string& targetId,
-                                         boost::optional<yApi::historization::ECurtainCommand> curtain,
-                                         specificHistorizers::EBlindLockingMode lockingMode);
+   static void sendGoToPositionAndAngle(boost::shared_ptr<IMessageHandler> messageHandler,
+                                        const std::string& senderId,
+                                        const std::string& targetId,
+                                        boost::optional<yApi::historization::ECurtainCommand> curtain,
+                                        specificHistorizers::EBlindLockingMode lockingMode);
 
    // CMD 0x2 - Stop
    static void sendStop(boost::shared_ptr<IMessageHandler> messageHandler,

@@ -93,7 +93,7 @@ function RGBWcolorPickerViewModel() {
        var self = this;
        return function(e){
           var RGBValue = self.slider.value;
-          KeywordManager.sendCommand(self.widget.configuration.device.keywordId, RGBValue.toString());           
+          KeywordManager.sendCommand(parseInt(self.widget.configuration.device.keywordId), RGBValue.toString());           
         };
     };
     
@@ -109,7 +109,7 @@ function RGBWcolorPickerViewModel() {
           var blue = temp.substring(4, 6);
           self.slider.value = 0;
           var RGBValue = parseInt(red, 16)*256*256*256+parseInt(green, 16)*256*256+parseInt(blue, 16)*256;
-          KeywordManager.sendCommand(self.widget.configuration.device.keywordId, RGBValue.toString())
+          KeywordManager.sendCommand(parseInt(self.widget.configuration.device.keywordId), RGBValue.toString())
           self.colorpicker.unbind('changeColor').bind('changeColor', self.changeColorButtonClick());
        };
     };
@@ -136,10 +136,10 @@ function RGBWcolorPickerViewModel() {
           return;
        
         //we register keyword new acquisition
-        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+        self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.device.keywordId));
 	   
 		//we register keyword for get last value at web client startup
-		self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);  
+		self.widgetApi.getLastValue(parseInt(self.widget.configuration.device.keywordId));
        
        // destroy the precedent colorPicker if any
        // it's the only solution, to create/delete preselected colors
@@ -205,7 +205,7 @@ function RGBWcolorPickerViewModel() {
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
         
-        if (keywordId === self.widget.configuration.device.keywordId) {
+        if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
         }
     };
 };

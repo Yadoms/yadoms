@@ -192,7 +192,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiver::
    try
    {
       const auto& deviceDetails = api->getDeviceDetails(command->getDevice());
-      const auto deviceType = deviceDetails.get<unsigned char>("type");
+      const auto deviceType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("type"));
 
       // Create the RFXCom message
       switch (deviceType)

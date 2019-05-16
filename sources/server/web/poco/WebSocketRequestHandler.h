@@ -20,6 +20,9 @@ namespace web
                             Poco::Net::HTTPServerResponse& response) override;
 
       private:
+		  //unique ID (debug purpose only)
+		  std::string m_wsIdDebug;
+
          // Internal events
          enum
          {

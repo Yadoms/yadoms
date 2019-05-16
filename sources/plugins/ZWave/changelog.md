@@ -1,4 +1,5 @@
-### 1.2.1
+### 1.3.0
+* Fix #539 : add command class to configuration description (command class is the identifier found in devices manuals)
 * Enhance configuration
 * Fix cache management (Fix #565)
 * Adjust log levels (Fix #560)

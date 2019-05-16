@@ -29,6 +29,7 @@ namespace database
       virtual boost::shared_ptr<entities::CAcquisition> incrementData(int keywordId,
                                                                       const std::string& increment,
                                                                       boost::posix_time::ptime& dataTime) = 0;
+
       //--------------------------------------------------------------
       /// \brief     Container for summary data
       ///            first is summary on Day
@@ -91,6 +92,16 @@ namespace database
       virtual boost::shared_ptr<entities::CAcquisition> getAcquisitionByKeywordAndDate(int keywordId,
                                                                                        boost::posix_time::ptime time) = 0;
 
+      //-----------------------------------------
+      ///\brief      Export acquisitions for a keyword
+      ///\param [in] keywordId  The keyword id
+      ///\param [in] exportOneLineFunction : callback called for each acquisitions, used to write the exported file
+      //-----------------------------------------
+      virtual void exportAcquisitions(const int keywordId,
+                                      std::function<void(const boost::posix_time::ptime& date,
+                                                         const std::string& value,
+                                                         int nbTotalLines)> exportOneLineFunction) = 0;
+
       //--------------------------------------------------------------
       /// \brief                 Get the data
       /// \param [in] keywordId  keywordId Id
@@ -101,8 +112,10 @@ namespace database
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
       virtual std::vector<boost::tuple<boost::posix_time::ptime, std::string>> getKeywordData(int keywordId,
-                                                                                              boost::posix_time::ptime timeFrom = boost::posix_time::not_a_date_time,
-                                                                                              boost::posix_time::ptime timeTo = boost::posix_time::not_a_date_time,
+                                                                                              boost::posix_time::ptime timeFrom = boost::posix_time::
+                                                                                                 not_a_date_time,
+                                                                                              boost::posix_time::ptime timeTo = boost::posix_time::
+                                                                                                 not_a_date_time,
                                                                                               int limit = -1) = 0;
 
       //--------------------------------------------------------------

@@ -72,7 +72,7 @@ namespace web
             }
 
             //dispatch url to rest dispatcher
-            const auto js = m_restDispatcher.dispath(request.getMethod(), parameters, content);
+            const auto js = m_restDispatcher.dispatch(request.getMethod(), parameters, content);
             auto temp = js->serialize();
             return temp;
          }

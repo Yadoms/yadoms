@@ -81,11 +81,6 @@ namespace web
                if (parameters.size() > 2)
                {
                   const auto keywordId = boost::lexical_cast<int>(parameters[2]);
-
-                  shared::CDataContainer content(requestContent);
-                  const auto infoRequested = content.getWithDefault<std::vector<std::string>>("info",
-                                                                                              std::vector<std::string>());
-
                   shared::CDataContainer result;
                   readKeywordInfo(keywordId, "lastValue", result);
 

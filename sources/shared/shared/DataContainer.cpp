@@ -7,6 +7,8 @@
 #include "rapidjson/ostreamwrapper.h"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/pointer.h"
+#include "rapidjson/error/error.h"
+#include "rapidjson/error/en.h"
 
 namespace shared
 {
@@ -47,16 +49,12 @@ namespace shared
 	CDataContainer::CDataContainer(const std::map<std::string, std::string> & initialData)
 	{
 		m_tree.SetObject();
-		std::map<std::string, std::string>::const_iterator i;
-		for (i = initialData.begin(); i != initialData.end(); ++i)
-			set(i->first, i->second);
+	   for (const auto& i : initialData)
+	      set(i.first, i.second);
 	}
 
 
-	CDataContainer::~CDataContainer()
-	{
-
-	}
+   CDataContainer::~CDataContainer() = default;
 
 
 	CDataContainer::CDataContainer(const CDataContainer & initialData)
@@ -111,7 +109,7 @@ namespace shared
 		boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
 		rapidjson::Value* found = findValue(parameterName, pathChar);
-		return (found != NULL);
+		return (found != nullptr);
 	}
 
 
@@ -139,7 +137,7 @@ namespace shared
 
 		rapidjson::Value* found = findValue(parameterName, pathChar);
 
-		if (found != NULL && !found->IsNull())
+		if (found != nullptr && !found->IsNull())
 		{
 			return found->IsBool() || found->IsDouble() || found->IsFloat() || found->IsInt() || found->IsInt64() ||
 				found->IsNumber() || found->IsString() || found->IsUint() || found->IsUint64();
@@ -164,9 +162,9 @@ namespace shared
 		boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
 		m_tree.RemoveAllMembers();
-
-		if (m_tree.Parse(data.c_str()).HasParseError())
-			throw exception::CException("Fail to parse Json");
+		rapidjson::ParseResult parseError = m_tree.Parse(data.c_str());
+		if (!parseError)
+			throw exception::CJSONParse(rapidjson::GetParseError_En(parseError.Code()), parseError.Offset());
 	}
 
 	void CDataContainer::serializeToFile(const std::string & filename) const
@@ -238,7 +236,7 @@ namespace shared
 	std::string CDataContainer::generatePath(const std::string & parameterName, const char pathChar) const
 	{
 		std::string res = "/"; //pointer is still starting with /
-		int c = parameterName.size();
+	   const int c = parameterName.size();
 		const char * s = parameterName.c_str();
 		for (int i = 0; i < c; ++i)
 		{
@@ -254,37 +252,21 @@ namespace shared
 
 	void CDataContainer::set(const char* parameterName, const char* value, const char pathChar)
 	{
-		std::string strParamName(parameterName);
-		std::string strValue(value);
+	   const std::string strParamName(parameterName);
+	   const std::string strValue(value);
 		set<std::string>(strParamName, strValue, pathChar);
 	}
 
 
 	void CDataContainer::set(const std::string & parameterName, const char* value, const char pathChar)
 	{
-		std::string strValue(value);
+	   const std::string strValue(value);
 		set<std::string>(parameterName, strValue, pathChar);
 	}
 
 	std::string CDataContainer::get(const std::string & parameterName, const char pathChar) const
 	{
 		return get<std::string>(parameterName, pathChar);
-	}
-
-	std::map<std::string, std::string> CDataContainer::getAsMap(const std::string& parameterName, const char pathChar) const
-	{
-		std::map<std::string, std::string> result;
-
-		rapidjson::Value* found = findValue(parameterName, pathChar);
-		if (found)
-		{
-			for (rapidjson::Value::ConstMemberIterator i = found->MemberBegin(); i != found->MemberEnd(); ++i)
-			{
-				result[i->name.GetString()] = i->value.GetString();
-			}
-		}
-
-		return result;
 	}
 
 	std::vector<std::string> CDataContainer::getKeys(const std::string& parameterName, const char pathChar) const
@@ -305,15 +287,15 @@ namespace shared
 	{
 		if (parameterName.empty())
 		{
-			return (rapidjson::Document *)&m_tree;
+			return const_cast<rapidjson::Document *>(&m_tree);
 		}
 
 
-		std::string path = generatePath(parameterName, pathChar);
-		return (rapidjson::Value*)rapidjson::Pointer(path.c_str()).Get(m_tree);
+	   auto path = generatePath(parameterName, pathChar);
+		return const_cast<rapidjson::Value*>(rapidjson::Pointer(path.c_str()).Get(m_tree));
 	}
 
-	CDataContainer CDataContainer::find(const std::string& parameterName, boost::function<bool(const CDataContainer&)> whereFct, const char pathChar) const
+	CDataContainer CDataContainer::find(const std::string& parameterName, const boost::function<bool(const CDataContainer&)> whereFct, const char pathChar) const
 	{
 		for (const auto& key : getKeys(parameterName, pathChar))
 		{
@@ -349,8 +331,10 @@ namespace shared
 				}
 				else
 				{
-					//check type match, but also check some specific cases (kTrueType and kFalseType are booleans; and many number combination can alsom match)
-					if (srcIt->value.GetType() == dstIt->value.GetType() ||
+					//check type match, but also check some specific cases (kTrueType and kFalseType are booleans;
+					//and many number combination can also match)
+					//string cases : string should be copied (not just reference copy)
+					if ( (srcIt->value.GetType() == dstIt->value.GetType() && !srcIt->value.IsString()) ||
 						(srcIt->value.IsBool() && dstIt->value.IsBool()) ||
 						(srcIt->value.IsNumber() && dstIt->value.IsNumber()))
 					{
@@ -363,30 +347,29 @@ namespace shared
 						{
 						case rapidjson::kFalseType:
 						case rapidjson::kTrueType:
-							dstIt->value.SetBool(ConvertToBool(&srcIt->value));
+							dstIt->value.SetBool(convertToBool(&srcIt->value));
 							break;
 						case rapidjson::kStringType:
-							dstIt->value.SetString(ConvertToString(&srcIt->value), allocator);
+							dstIt->value.SetString(convertToString(&srcIt->value), allocator);
 							break;
 						case rapidjson::kNumberType:
 							if (dstIt->value.IsInt())
-								dstIt->value.SetInt(ConvertToInt(&srcIt->value));
+								dstIt->value.SetInt(convertToInt(&srcIt->value));
 							else if (dstIt->value.IsInt64())
-								dstIt->value.SetInt64(ConvertToInt64(&srcIt->value));
+								dstIt->value.SetInt64(convertToInt64(&srcIt->value));
 							else if (dstIt->value.IsUint())
-								dstIt->value.SetUint(ConvertToUInt(&srcIt->value));
+								dstIt->value.SetUint(convertToUInt(&srcIt->value));
 							else if (dstIt->value.IsUint64())
-								dstIt->value.SetUint64(ConvertToUInt64(&srcIt->value));
+								dstIt->value.SetUint64(convertToUInt64(&srcIt->value));
 							else if (dstIt->value.IsDouble())
-								dstIt->value.SetDouble(ConvertToDouble(&srcIt->value));
+								dstIt->value.SetDouble(convertToDouble(&srcIt->value));
 							else if (dstIt->value.IsFloat())
-								dstIt->value.SetFloat(ConvertToFloat(&srcIt->value));
+								dstIt->value.SetFloat(convertToFloat(&srcIt->value));
 							else
 								throw exception::CInvalidParameter("Value is not a valid type");
 							break;
 						default:
 							throw exception::CInvalidParameter("Value is not a valid type");
-							break;
 						}
 					}
 				}
@@ -412,7 +395,7 @@ namespace shared
 		mergeObjects(m_tree, source.m_tree, allocator);
 	}
 
-	void CDataContainer::setNull(const std::string& parameterName, const char pathChar)
+	void CDataContainer::setNull(const std::string& parameterName, const char pathChar) const
 	{
 		auto v = this->findValue(parameterName, pathChar);
 		if (v)
@@ -420,9 +403,9 @@ namespace shared
 		throw exception::CInvalidParameter(parameterName + " : is not found");
 	}
 
-	bool CDataContainer::isNull(const std::string& parameterName, const char pathChar)
+	bool CDataContainer::isNull(const std::string& parameterName, const char pathChar) const
 	{
-		auto v = this->findValue(parameterName, pathChar);
+	   const auto v = this->findValue(parameterName, pathChar);
 		if (v)
 			return v->IsNull();
 		throw exception::CInvalidParameter(parameterName + " : is not found");
@@ -430,10 +413,10 @@ namespace shared
 
 	rapidjson::Document * CDataContainer::getPointer() const
 	{
-		return (rapidjson::Document *) &m_tree;
+		return const_cast<rapidjson::Document *>(&m_tree);
 	}
 
-	std::string CDataContainer::ConvertToString(rapidjson::Value* v)
+	std::string CDataContainer::convertToString(rapidjson::Value* v)
 	{
 		if (v)
 		{
@@ -465,12 +448,12 @@ namespace shared
 		throw exception::CInvalidParameter("Parameter is null");
 	}
 
-	bool CDataContainer::ConvertToBool(rapidjson::Value* v)
+	bool CDataContainer::convertToBool(rapidjson::Value* v)
 	{
 		if (v)
 		{
 			if (v->IsString()) {
-				std::string s = v->GetString();
+			   const std::string s = v->GetString();
 				return boost::iequals(s, "true") || boost::iequals(s, "1");
 			}
 			if (v->IsBool())
@@ -498,7 +481,7 @@ namespace shared
 	}
 
 
-	int CDataContainer::ConvertToInt(rapidjson::Value* v)
+	int CDataContainer::convertToInt(rapidjson::Value* v)
 	{
 		if (v)
 		{
@@ -507,47 +490,47 @@ namespace shared
 
 			if (v->IsUint())
 			{
-				unsigned int b = v->GetUint();
+			   const unsigned int b = v->GetUint();
 				if (b< INT32_MIN || b>INT32_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to int32") % b).str());
-				return (int)b;
+				return static_cast<int>(b);
 			}
 
 			if (v->IsInt64())
 			{
-				int64_t b = v->GetInt64();
+			   const int64_t b = v->GetInt64();
 				if (b< INT32_MIN || b>INT32_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to int32") % b).str());
-				return (int)b;
+				return static_cast<int>(b);
 			}
 
 			if (v->IsUint64())
 			{
-				uint64_t b = v->GetUint64();
+			   const uint64_t b = v->GetUint64();
 				if (b< INT32_MIN || b>INT32_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to int32") % b).str());
-				return (int)b;
+				return static_cast<int>(b);
 			}
 
 			if (v->IsDouble())
 			{
-				double b = v->GetDouble();
+			   const double b = v->GetDouble();
 				if (b< INT32_MIN || b>INT32_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to int32") % b).str());
-				return (int)b;
+				return static_cast<int>(b);
 			}
 
 			if (v->IsFloat())
 			{
-				float b = v->GetFloat();
+			   const float b = v->GetFloat();
 				if (b< INT32_MIN || b>INT32_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to int32") % b).str());
-				return (int)b;
+				return static_cast<int>(b);
 			}
 
 
 			if (v->IsString()) {
-				std::string s = v->GetString();
+			   const std::string s = v->GetString();
 				return boost::lexical_cast<int>(s);
 			}
 
@@ -565,7 +548,7 @@ namespace shared
 		throw exception::CInvalidParameter("Parameter is null");
 	}
 
-	int64_t CDataContainer::ConvertToInt64(rapidjson::Value* v)
+	int64_t CDataContainer::convertToInt64(rapidjson::Value* v)
 	{
 		if (v)
 		{
@@ -574,48 +557,44 @@ namespace shared
 
 			if (v->IsUint64())
 			{
-				uint64_t b = v->GetUint64();
-				if (b< INT64_MIN || b>INT64_MAX)
+			   const uint64_t b = v->GetUint64();
+				if (b > INT64_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to int64") % b).str());
-				return (int64_t)b;
+				return static_cast<int64_t>(b);
 			}
 
 			if (v->IsUint())
 			{
-				unsigned int b = v->GetUint();
-				if (b< INT64_MIN || b>INT64_MAX)
-					throw exception::COutOfRange((boost::format("%1% is not assignable to int64") % b).str());
-				return (int64_t)b;
+			   const unsigned int b = v->GetUint();
+				return static_cast<int64_t>(b);
 			}
 
 			if (v->IsInt())
 			{
-				int b = v->GetInt();
-				if (b< INT64_MIN || b>INT64_MAX)
-					throw exception::COutOfRange((boost::format("%1% is not assignable to int64") % b).str());
-				return (int64_t)b;
+			   const int b = v->GetInt();
+				return static_cast<int64_t>(b);
 			}
 
 			if (v->IsDouble())
 			{
-				double b = v->GetDouble();
+			   const double b = v->GetDouble();
 				if (b< INT64_MIN || b>INT64_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to int64") % b).str());
 				if (b > nextafter(INT64_MAX, 0))
 					throw exception::COutOfRange((boost::format("%1% is not assignable to int64 : overflow") % b).str());
-				return (int64_t)b;
+				return static_cast<int64_t>(b);
 			}
 
 			if (v->IsFloat())
 			{
-				float b = v->GetFloat();
+			   const float b = v->GetFloat();
 				if (b< INT64_MIN || b>INT64_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to int64") % b).str());
-				return (int64_t)b;
+				return static_cast<int64_t>(b);
 			}
 
 			if (v->IsString()) {
-				std::string s = v->GetString();
+			   const std::string s = v->GetString();
 				return boost::lexical_cast<int64_t>(s);
 			}
 			if (v->IsBool())
@@ -632,56 +611,56 @@ namespace shared
 		throw exception::CInvalidParameter("Parameter is null");
 	}
 
-	char CDataContainer::ConvertToByte(rapidjson::Value* v)
+	char CDataContainer::convertToByte(rapidjson::Value* v)
 	{
 		if (v)
 		{
 			if (v->IsDouble())
 			{
-				double b = v->GetDouble();
+			   const double b = v->GetDouble();
 				if (b< INT8_MIN || b>INT8_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to char/int8") % b).str());
-				return (char)b;
+				return static_cast<char>(b);
 			}
 
 			if (v->IsFloat())
 			{
-				float b = v->GetFloat();
+			   const float b = v->GetFloat();
 				if (b< INT8_MIN || b>INT8_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to char/int8") % b).str());
-				return (char)b;
+				return static_cast<char>(b);
 			}
 
 			if (v->IsInt())
 			{
-				int b = v->GetInt();
+			   const int b = v->GetInt();
 				if (b< INT8_MIN || b>INT8_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to char/int8") % b).str());
-				return (char)b;
+				return static_cast<char>(b);
 			}
 
 			if (v->IsUint())
 			{
-				unsigned int b = v->GetUint();
-				if (b< INT8_MIN || b>INT8_MAX)
+			   const unsigned int b = v->GetUint();
+				if (b > INT8_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to char/int8") % b).str());
-				return (char)b;
+				return static_cast<char>(b);
 			}
 
 			if (v->IsInt64())
 			{
-				int64_t b = v->GetInt64();
+			   const int64_t b = v->GetInt64();
 				if (b< INT8_MIN || b>INT8_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to char/int8") % b).str());
-				return (char)b;
+				return static_cast<char>(b);
 			}
 
 			if (v->IsUint64())
 			{
-				uint64_t b = v->GetUint64();
-				if (b< INT8_MIN || b>INT8_MAX)
+			   const uint64_t b = v->GetUint64();
+				if (b>INT8_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to char/int8") % b).str());
-				return (char)b;
+				return static_cast<char>(b);
 			}
 
 			if (v->IsString()) {
@@ -703,56 +682,56 @@ namespace shared
 		throw exception::CInvalidParameter("Parameter is null");
 	}
 
-	short CDataContainer::ConvertToShort(rapidjson::Value* v)
+	short CDataContainer::convertToShort(rapidjson::Value* v)
 	{
 		if (v)
 		{
 			if (v->IsInt())
 			{
-				int b = v->GetInt();
+			   const int b = v->GetInt();
 				if (b< INT16_MIN || b>INT16_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to signed Short/Int16") % b).str());
-				return (short)b;
+				return static_cast<short>(b);
 			}
 			if (v->IsUint())
 			{
-				unsigned int b = v->GetUint();
-				if (b< INT16_MIN || b>INT16_MAX)
+			   const unsigned int b = v->GetUint();
+				if (b>INT16_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to signed Short/Int16") % b).str());
-				return (short)b;
+				return static_cast<short>(b);
 			}
 			if (v->IsInt64())
 			{
-				int64_t b = v->GetInt64();
+			   const int64_t b = v->GetInt64();
 				if (b< INT16_MIN || b>INT16_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to signed Short/Int16") % b).str());
-				return (short)b;
+				return static_cast<short>(b);
 			}
 			if (v->IsUint64())
 			{
-				uint64_t b = v->GetUint64();
-				if (b< INT16_MIN || b>INT16_MAX)
+			   const uint64_t b = v->GetUint64();
+				if (b>INT16_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to signed Short/Int16") % b).str());
-				return (short)b;
+				return static_cast<short>(b);
 			}
 			if (v->IsDouble())
 			{
-				double b = v->GetDouble();
+			   const double b = v->GetDouble();
 				if (b< INT16_MIN || b>INT16_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to signed Short/Int16") % b).str());
-				return (short)b;
+				return static_cast<short>(b);
 			}
 			if (v->IsFloat())
 			{
-				float b = v->GetFloat();
+			   const float b = v->GetFloat();
 				if (b< INT16_MIN || b>INT16_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to signed Short/Int16") % b).str());
-				return (short)b;
+				return static_cast<short>(b);
 			}
 
 			if (v->IsString())
 			{
-				std::string s = v->GetString();
+			   const std::string s = v->GetString();
 				return boost::lexical_cast<short>(s);
 			}
 
@@ -768,7 +747,7 @@ namespace shared
 		throw exception::CInvalidParameter("Parameter is null");
 	}
 
-	unsigned int CDataContainer::ConvertToUInt(rapidjson::Value* v)
+	unsigned int CDataContainer::convertToUInt(rapidjson::Value* v)
 	{
 		if (v)
 		{
@@ -777,46 +756,46 @@ namespace shared
 
 			if (v->IsUint64())
 			{
-				uint64_t b = v->GetUint64();
+			   const uint64_t b = v->GetUint64();
 				if (b< 0 || b>UINT32_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int/UInt32") % b).str());
-				return (unsigned int)b;
+				return static_cast<unsigned int>(b);
 			}
 
 			if (v->IsInt64())
 			{
-				int64_t b = v->GetInt64();
+			   const int64_t b = v->GetInt64();
 				if (b< 0 || b>UINT32_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int/UInt32") % b).str());
-				return (unsigned int)b;
+				return static_cast<unsigned int>(b);
 			}
 
 			if (v->IsInt())
 			{
-				int b = v->GetInt();
+			   const int b = v->GetInt();
 				if (b< 0 || b>UINT32_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int/UInt32") % b).str());
-				return (unsigned int)b;
+				return static_cast<unsigned int>(b);
 			}
 
 			if (v->IsDouble())
 			{
-				double b = v->GetDouble();
+			   const double b = v->GetDouble();
 				if (b< 0 || b>UINT32_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int/UInt32") % b).str());
-				return (unsigned int)b;
+				return static_cast<unsigned int>(b);
 			}
 
 			if (v->IsFloat())
 			{
-				float b = v->GetFloat();
+			   const float b = v->GetFloat();
 				if (b< 0 || b>UINT32_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int/UInt32") % b).str());
-				return (unsigned int)b;
+				return static_cast<unsigned int>(b);
 			}
 
 			if (v->IsString()) {
-				std::string s = v->GetString();
+			   const std::string s = v->GetString();
 				return boost::lexical_cast<unsigned int>(s);
 			}
 
@@ -833,7 +812,7 @@ namespace shared
 		}
 		throw exception::CInvalidParameter("Parameter is null");
 	}
-	uint64_t CDataContainer::ConvertToUInt64(rapidjson::Value* v)
+	uint64_t CDataContainer::convertToUInt64(rapidjson::Value* v)
 	{
 		if (v)
 		{
@@ -842,49 +821,49 @@ namespace shared
 
 			if (v->IsInt64())
 			{
-				int64_t b = v->GetInt64();
+			   const int64_t b = v->GetInt64();
 				if (b< 0 || b>UINT64_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int 64/UInt64") % b).str());
-				return (uint64_t)b;
+				return static_cast<uint64_t>(b);
 			}
 
 			if (v->IsUint())
 			{
-				unsigned int b = v->GetUint();
-				if (b< 0 || b>UINT64_MAX)
+			   const unsigned int b = v->GetUint();
+				if (b< 0)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int 64/UInt64") % b).str());
-				return (uint64_t)b;
+				return static_cast<uint64_t>(b);
 			}
 
 			if (v->IsInt())
 			{
-				int b = v->GetInt();
-				if (b< 0 || b>UINT64_MAX)
+			   const int b = v->GetInt();
+				if (b< 0)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int 64/UInt64") % b).str());
-				return (uint64_t)b;
+				return static_cast<uint64_t>(b);
 			}
 
 			if (v->IsDouble())
 			{
-				double b = v->GetDouble();
+			   const double b = v->GetDouble();
 				if (b< 0 || b>UINT64_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int 64/UInt64") % b).str());
 				if (b > nextafter(UINT64_MAX, 0))
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int 64/UInt64 : overflow") % b).str());
-				return (uint64_t)b;
+				return static_cast<uint64_t>(b);
 			}
 
 			if (v->IsFloat())
 			{
-				float b = v->GetFloat();
+			   const float b = v->GetFloat();
 				if (b< 0 || b>UINT64_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int 64/UInt64") % b).str());
-				return (uint64_t)b;
+				return static_cast<uint64_t>(b);
 			}
 
 			if (v->IsString()) 
 			{
-				std::string s = v->GetString();
+			   const std::string s = v->GetString();
 				return boost::lexical_cast<uint64_t>(s);
 			}
 			
@@ -901,57 +880,57 @@ namespace shared
 		throw exception::CInvalidParameter("Parameter is null");
 	}
 
-	unsigned char CDataContainer::ConvertToUByte(rapidjson::Value* v)
+	unsigned char CDataContainer::convertToUByte(rapidjson::Value* v)
 	{
 		if (v)
 		{
 			if (v->IsInt())
 			{
-				int b = v->GetInt();
+			   const int b = v->GetInt();
 				if (b< 0 || b>UINT8_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned char/uint8") % b).str());
-				return (unsigned char)b;
+				return static_cast<unsigned char>(b);
 			}
 			if (v->IsInt64())
 			{
-				int64_t b = v->GetInt64();
+			   const int64_t b = v->GetInt64();
 				if (b< 0 || b>UINT8_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned char/uint8") % b).str());
-				return (unsigned char)b;
+				return static_cast<unsigned char>(b);
 			}
 			if (v->IsUint())
 			{
-				unsigned int b = v->GetUint();
+			   const unsigned int b = v->GetUint();
 				if (b< 0 || b>UINT8_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned char/uint8") % b).str());
-				return (unsigned char)b;
+				return static_cast<unsigned char>(b);
 			}
 
 			if (v->IsUint64())
 			{
-				uint64_t b = v->GetUint64();
+			   const uint64_t b = v->GetUint64();
 				if (b< 0 || b>UINT8_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned char/uint8") % b).str());
-				return (unsigned char)b;
+				return static_cast<unsigned char>(b);
 			}
 
 			if (v->IsDouble())
 			{
-				double b = v->GetDouble();
+			   const double b = v->GetDouble();
 				if (b< 0 || b>UINT8_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned char/uint8") % b).str());
-				return (unsigned char)b;
+				return static_cast<unsigned char>(b);
 			}
 			if (v->IsFloat())
 			{
-				float b = v->GetFloat();
+			   const float b = v->GetFloat();
 				if (b< 0 || b>UINT8_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned char/uint8") % b).str());
-				return (unsigned char)b;
+				return static_cast<unsigned char>(b);
 			}
 
 			if (v->IsString()) {
-				std::string s = v->GetString();
+			   const std::string s = v->GetString();
 				return boost::lexical_cast<unsigned char>(s);
 			}
 			if (v->IsBool())
@@ -967,58 +946,58 @@ namespace shared
 	}
 
 
-	unsigned short CDataContainer::ConvertToUShort(rapidjson::Value* v)
+	unsigned short CDataContainer::convertToUShort(rapidjson::Value* v)
 	{
 		if (v)
 		{
 			if (v->IsUint())
 			{
-				unsigned int b = v->GetUint();
+			   const unsigned int b = v->GetUint();
 				if (b< 0 || b>UINT16_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned short/uint16") % b).str());
-				return (unsigned short)b;
+				return static_cast<unsigned short>(b);
 			}
 
 			if (v->IsUint64())
 			{
-				uint64_t b = v->GetUint64();
+			   const uint64_t b = v->GetUint64();
 				if (b< 0 || b>UINT16_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned short/uint16") % b).str());
-				return (unsigned short)b;
+				return static_cast<unsigned short>(b);
 			}
 
 			if (v->IsInt())
 			{
-				int b = v->GetInt();
+			   const int b = v->GetInt();
 				if (b< 0 || b>UINT16_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned short/uint16") % b).str());
-				return (unsigned short)b;
+				return static_cast<unsigned short>(b);
 			}
 			if (v->IsInt64())
 			{
-				int64_t b = v->GetInt64();
+			   const int64_t b = v->GetInt64();
 				if (b< 0 || b>UINT16_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned short/uint16") % b).str());
-				return (unsigned short)b;
+				return static_cast<unsigned short>(b);
 			}
 
 			if (v->IsDouble())
 			{
-				double b = v->GetDouble();
+			   const double b = v->GetDouble();
 				if (b< 0 || b>UINT16_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned short/uint16") % b).str());
-				return (unsigned short)b;
+				return static_cast<unsigned short>(b);
 			}
 			if (v->IsFloat())
 			{
-				float b = v->GetFloat();
+			   const float b = v->GetFloat();
 				if (b< 0 || b>UINT16_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned short/uint16") % b).str());
-				return (unsigned short)b;
+				return static_cast<unsigned short>(b);
 			}
 
 			if (v->IsString()) {
-				std::string s = v->GetString();
+			   const std::string s = v->GetString();
 				return boost::lexical_cast<unsigned short>(s);
 			}
 
@@ -1036,7 +1015,7 @@ namespace shared
 		throw exception::CInvalidParameter("Parameter is null");
 	}
 
-	float CDataContainer::ConvertToFloat(rapidjson::Value* v)
+	float CDataContainer::convertToFloat(rapidjson::Value* v)
 	{
 		if (v)
 		{
@@ -1045,46 +1024,46 @@ namespace shared
 
 			if (v->IsDouble())
 			{
-				double b = v->GetDouble();
-				if (b< FLT_MIN || b>FLT_MAX)
+			   const double b = v->GetDouble();
+				if (b< -FLT_MAX || b>FLT_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to float/single") % b).str());
-				return (float)b;
+				return static_cast<float>(b);
 			}
 
 			if (v->IsInt())
 			{
-				int b = v->GetInt();
-				if (b< FLT_MIN || b>FLT_MAX)
+			   const int b = v->GetInt();
+				if (b< -FLT_MAX || b>FLT_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to float/single") % b).str());
-				return (float)b;
+				return static_cast<float>(b);
 			}
 
 			if (v->IsUint())
 			{
-				unsigned int b = v->GetUint();
-				if (b< FLT_MIN || b>FLT_MAX)
+			   const unsigned int b = v->GetUint();
+				if (b< -FLT_MAX || b>FLT_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to float/single") % b).str());
-				return (float)b;
+				return static_cast<float>(b);
 			}
 
 			if (v->IsInt64())
 			{
-				int64_t b = v->GetInt64();
-				if (b< FLT_MIN || b>FLT_MAX)
+			   const int64_t b = v->GetInt64();
+				if (b< -FLT_MAX || b>FLT_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to float/single") % b).str());
-				return (float)b;
+				return static_cast<float>(b);
 			}
 
 			if (v->IsUint64())
 			{
-				uint64_t b = v->GetUint64();
-				if (b< FLT_MIN || b>FLT_MAX)
+			   const uint64_t b = v->GetUint64();
+				if (b< -FLT_MAX || b>FLT_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to float/single") % b).str());
-				return (float)b;
+				return static_cast<float>(b);
 			}
 					   
 			if (v->IsString()) {
-				std::string s = v->GetString();
+			   const std::string s = v->GetString();
 				return boost::lexical_cast<float>(s);
 			}
 
@@ -1102,7 +1081,7 @@ namespace shared
 		throw exception::CInvalidParameter("Parameter is null");
 	}
 
-	double CDataContainer::ConvertToDouble(rapidjson::Value* v)
+	double CDataContainer::convertToDouble(rapidjson::Value* v)
 	{
 		if (v)
 		{
@@ -1111,46 +1090,46 @@ namespace shared
 
 			if (v->IsFloat())
 			{
-				float b = v->GetFloat();
-				if (b< DBL_MIN || b>DBL_MAX)
+			   const float b = v->GetFloat();
+				if (b< -DBL_MAX || b>DBL_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to double") % b).str());
-				return (double)b;
+				return static_cast<double>(b);
 			}
 
 			if (v->IsInt())
 			{
-				int b = v->GetInt();
-				if (b< DBL_MIN || b>DBL_MAX)
+			   const int b = v->GetInt();
+				if (b< -DBL_MAX || b>DBL_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to double") % b).str());
-				return (double)b;
+				return static_cast<double>(b);
 			}
 
 			if (v->IsUint())
 			{
-				unsigned int b = v->GetUint();
-				if (b< DBL_MIN || b>DBL_MAX)
+			   const unsigned int b = v->GetUint();
+				if (b< -DBL_MAX || b>DBL_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to double") % b).str());
-				return (double)b;
+				return static_cast<double>(b);
 			}
 
 			if (v->IsInt64())
 			{
-				int64_t b = v->GetInt64();
-				if (b< DBL_MIN || b>DBL_MAX)
+			   const int64_t b = v->GetInt64();
+				if (b< -DBL_MAX || b>DBL_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to double") % b).str());
-				return (double)b;
+				return static_cast<double>(b);
 			}
 
 			if (v->IsUint64())
 			{
-				uint64_t b = v->GetUint64();
-				if (b< DBL_MIN || b>DBL_MAX)
+			   const uint64_t b = v->GetUint64();
+				if (b< -DBL_MAX || b>DBL_MAX)
 					throw exception::COutOfRange((boost::format("%1% is not assignable to double") % b).str());
-				return (double)b;
+				return static_cast<double>(b);
 			}
 
 			if (v->IsString()) {
-				std::string s = v->GetString();
+			   const std::string s = v->GetString();
 				return boost::lexical_cast<double>(s);
 			}
 			if (v->IsBool())

@@ -81,11 +81,11 @@ void CProfile_D2_05_00::sendCommand(const std::string& keyword,
       return;
    }
 
-   CProfile_D2_05_Common::sendkGoToPositionAndAngle(messageHandler,
-                                                    senderId,
-                                                    m_deviceId,
-                                                    m_curtain->get(),
-                                                    m_lockingMode->get());
+   CProfile_D2_05_Common::sendGoToPositionAndAngle(messageHandler,
+                                                   senderId,
+                                                   m_deviceId,
+                                                   m_curtain->get(),
+                                                   m_lockingMode->get());
 }
 
 void CProfile_D2_05_00::sendConfiguration(const shared::CDataContainer& deviceConfiguration,

@@ -15,9 +15,9 @@ namespace rfxcomMessages
    {
       m_state->setCommand(command);
 
-      m_subType = deviceDetails.get<unsigned char>("subType");
-      m_houseCode = deviceDetails.get<unsigned char>("houseCode");
-      m_unitCode = deviceDetails.get<unsigned char>("unitCode");
+      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
+      m_houseCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("houseCode"));
+      m_unitCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("unitCode"));
 
       // Build device description
       buildDeviceModel();
@@ -42,7 +42,7 @@ namespace rfxcomMessages
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
 
       m_houseCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<char>("houseCode"));
-      m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
+      m_unitCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode"));
 
       buildDeviceDetails();
       api->updateDeviceDetails(m_deviceName, m_deviceDetails);
