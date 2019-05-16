@@ -1,3 +1,6 @@
+### 1.3.3
+* Fix #521 - adapt the widget to display duration with the new format
+
 ### 1.3.2
 * Fix Zoom for Y position
 * Fix zooming and panning for PC

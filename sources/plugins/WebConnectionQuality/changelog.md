@@ -1,3 +1,6 @@
+### 2.0.0
+* Fix #521 : Align ping value with new Yadoms duration type
+
 ### 1.1.0
 * New feature #553 : use of full compliant Json
 

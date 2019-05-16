@@ -483,6 +483,13 @@ namespace database
                             const T09& field9 = T09(), const T9& value9 = T9(),
                             const T11& field10 = T11(), const T10& value10 = T10());
 
+         //
+         /// \brief           Append custom string to request
+         /// \param  string   the custom string
+         /// \return          A reference to itself to allow method chaining
+         //
+         CQuery& Custom(const std::string& string);
+
 
          //
          /// \brief           Append the WITH clause with a subquery 

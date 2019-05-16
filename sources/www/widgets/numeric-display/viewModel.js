@@ -7,8 +7,6 @@ widgetViewModelCtor =
 function numericDisplayViewModel() {
    
     this.precision = 1;
-   
-    //observable data
     this.data = ko.observable("-");
     this.rawUnit = "";
     this.unit = ko.observable("");
@@ -39,7 +37,8 @@ function numericDisplayViewModel() {
          return;
       }
       
-      var d = moment.duration(value);
+      self.widgetApi.find(".unit").addClass("hidden");
+      var d = moment.duration(parseFloat(value), "seconds");
       if (d.asSeconds() < 1) {  // Display in millisecond
          self.data(d.milliseconds().toString() + " ms");
       } else if (d.asSeconds() < 30) { // Display in seconds + milliseconds
