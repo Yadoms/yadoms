@@ -10,6 +10,7 @@
 #include "PurgeScriptLog.h"
 #include <shared/communication/SmallHeaderMessageCutter.h>
 
+
 namespace interpreter_cpp_api
 {
    CApiImplementation::CApiImplementation()
@@ -182,7 +183,7 @@ namespace interpreter_cpp_api
       {
       case interpreter_IPC::toInterpreter::msg::kSystem: processSystem(toInterpreterProtoBuffer.system());
          break;
-      case interpreter_IPC::toInterpreter::msg::kAvalaibleRequest: processAvalaibleRequest(toInterpreterProtoBuffer.avalaiblerequest());
+      case interpreter_IPC::toInterpreter::msg::kAvalaibleRequest: processAvailableRequest(toInterpreterProtoBuffer.avalaiblerequest());
          break;
       case interpreter_IPC::toInterpreter::msg::kLoadScriptContentRequest: processLoadScriptContentRequest(
             toInterpreterProtoBuffer.loadscriptcontentrequest());
@@ -207,12 +208,14 @@ namespace interpreter_cpp_api
    {
       std::unique_lock<std::mutex> lock(m_initializationConditionMutex);
       if (!m_initialized)
+      {
          m_initializationCondition.wait(lock);
+      }
    }
 
    void CApiImplementation::processInit(const interpreter_IPC::toInterpreter::Init& msg)
    {
-      m_pluginInformation = boost::make_shared<CInformation>(
+      m_interpreterInformation = boost::make_shared<CInformation>(
          boost::make_shared<const interpreter_IPC::toInterpreter::Information>(msg.interpreterinformation()));
       m_logFile = boost::make_shared<const boost::filesystem::path>(msg.logfile());
       m_logLevel = boost::make_shared<const std::string>(msg.loglevel());
@@ -232,7 +235,7 @@ namespace interpreter_cpp_api
       }
    }
 
-   void CApiImplementation::processAvalaibleRequest(const interpreter_IPC::toInterpreter::AvalaibleRequest& msg)
+   void CApiImplementation::processAvailableRequest(const interpreter_IPC::toInterpreter::AvalaibleRequest& msg)
    {
       const boost::shared_ptr<shared::script::yInterpreterApi::IAvalaibleRequest> request =
          boost::make_shared<CAvalaibleRequest>(msg,
@@ -320,7 +323,7 @@ namespace interpreter_cpp_api
 
    void CApiImplementation::setInitialized()
    {
-      if (!!m_pluginInformation && !!m_logFile && !!m_logLevel)
+      if (!!m_interpreterInformation && !!m_logFile && !!m_logLevel)
       {
          std::unique_lock<std::mutex> lock(m_initializationConditionMutex);
          m_initialized = true;
@@ -330,10 +333,10 @@ namespace interpreter_cpp_api
 
    boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> CApiImplementation::getInformation() const
    {
-      if (!m_pluginInformation)
+      if (!m_interpreterInformation)
          throw std::runtime_error("Interpreter information not available");
 
-      return m_pluginInformation;
+      return m_interpreterInformation;
    }
 
    const boost::filesystem::path& CApiImplementation::getLogFile() const
