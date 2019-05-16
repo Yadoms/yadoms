@@ -86,7 +86,7 @@ namespace web
                                                                                                          const std::string& requestContent) const
          {
             shared::CDataContainer t;
-            t.set("interpreters", m_rulesManager->getAvailableInterpreters());
+            t.set("interpreters", m_rulesManager->getLoadedInterpreters());
             return CResult::GenerateSuccess(t);
          }
 

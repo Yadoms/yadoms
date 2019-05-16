@@ -109,7 +109,7 @@ namespace update
          const auto widgetsAvailableVersions = info::CUpdateSite::getAllWidgetVersions();
 
          YADOMS_LOG(debug) << "Read ScriptInterpreters versions...";
-         const auto scriptInterpretersLocalVersions = m_interpreterManager->getAvailableInterpretersInformation();
+         const auto scriptInterpretersLocalVersions = m_interpreterManager->getLoadedInterpretersInformation();
          const auto scriptInterpretersAvailableVersions = info::CUpdateSite::getAllScriptInterpreterVersions();
 
          YADOMS_LOG(debug) << "Build updates data (with prereleases)...";
@@ -1026,22 +1026,20 @@ namespace update
    std::string CUpdateManager::findMd5HashAssociatedTo(const std::string& downloadUrl,
                                                        const std::string& allUpdatesNode) const
    {
-      if (m_allUpdates.exists(allUpdatesNode))
+      if (m_allUpdates.exists(allUpdatesNode, '|'))
       {
-         auto versions = m_allUpdates.get<std::vector<shared::CDataContainer>>(allUpdatesNode);
+         auto versions = m_allUpdates.getAsMap<shared::CDataContainer>(allUpdatesNode, '|'); // Don't use default pathChar('.') because also contained in version name (like '2.3.0')
          const auto versionInfo = std::find_if(versions.begin(),
                                                versions.end(),
-                                               [&downloadUrl](
-                                         const shared::CDataContainer& version)
+                                               [&downloadUrl](const auto& version)
                                                {
-                                            return version.get<std::string>(
-                                                     "downloadUrl") == downloadUrl;
+                                                  return version.second.template get<std::string>("downloadUrl") == downloadUrl;
                                                });
 
          if (versionInfo == versions.end())
             return std::string();
 
-         return versionInfo->get<std::string>("md5Hash");
+         return versionInfo->second.get<std::string>("md5Hash");
       }
       return std::string();
    }
@@ -1051,9 +1049,9 @@ namespace update
       boost::lock_guard<boost::recursive_mutex> lock(m_updateMutex);
 
       // Find expected MD5Hash corresponding to the download URL
-      auto expectedMd5Hash = findMd5HashAssociatedTo(downloadUrl, "yadoms.versions.newer");
+      auto expectedMd5Hash = findMd5HashAssociatedTo(downloadUrl, "yadoms|versions|newer");
       if (expectedMd5Hash.empty())
-         expectedMd5Hash = findMd5HashAssociatedTo(downloadUrl, "yadoms.versions.older");
+         expectedMd5Hash = findMd5HashAssociatedTo(downloadUrl, "yadoms|versions|older");
       if (expectedMd5Hash.empty())
          throw std::runtime_error("Version not found");
 

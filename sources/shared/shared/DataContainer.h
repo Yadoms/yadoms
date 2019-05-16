@@ -595,7 +595,7 @@ namespace shared
 	  /// \brief	Convert a rapidjson::Value into a std::string
 	  /// \param [in] v    A pointer on the value to convert
 	  /// \return The data as std::string
-	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
+	  /// \throw exception::CInvalidParameter if value is null or in an incompatible type
 	  //--------------------------------------------------------------
 	  static std::string convertToString(rapidjson::Value* v);
 
@@ -1802,10 +1802,10 @@ namespace shared
 
       rapidjson::Value & v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
       rapidjson::Document::AllocatorType& allocator = m_tree.GetAllocator();
-      for (auto i = values.begin(); i != values.end(); ++i)
+      for (const auto& value : values)
       {
          rapidjson::Value a;
-         a.CopyFrom(i->m_tree, allocator);
+         a.CopyFrom(value.m_tree, allocator);
          v.PushBack(a, allocator);
       }
    }
@@ -1828,12 +1828,13 @@ namespace shared
    {
       std::map<std::string, Type> result;
 
-      rapidjson::Value* found = findValue(parameterName, pathChar);
+      const auto found = findValue(parameterName, pathChar);
       if (found)
       {
+         const auto path = !parameterName.empty() ? (parameterName + pathChar) : "";
          for (rapidjson::Value::ConstMemberIterator i = found->MemberBegin(); i != found->MemberEnd(); ++i)
          {
-            result[i->name.GetString()] = get<Type>(i->name.GetString());
+            result[i->name.GetString()] = get<Type>(path + i->name.GetString(), pathChar);
          }
       }
 

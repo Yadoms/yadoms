@@ -38,7 +38,8 @@ namespace automation
                   try
                   {
                      m_loadedInterpreters[interpreterKeyName] = m_factory->createInterpreterInstance(interpreterKeyName,
-                                                                                                     [this](bool running, const std::string& interpreterType)
+                                                                                                     [this](bool running,
+                                                                                                            const std::string& interpreterType)
                                                                                                      {
                                                                                                         if (!running)
                                                                                                            onInterpreterUnloaded(interpreterType);
@@ -107,10 +108,11 @@ namespace automation
       std::vector<boost::filesystem::path> CManager::findInterpreterDirectories() const
       {
          // Look for all subdirectories in m_interpretersPath directory, where it contains interpreter executable file with same name,
-         // for example a subdirectory "Python" containing a "python.exe" file (Windows) / "python" (other platforms)
+         // for example a sub-directory "Python" containing a "python.exe" file (Windows) / "python" (other platforms)
          std::vector<boost::filesystem::path> interpreters;
 
-         if (boost::filesystem::exists(m_pathProvider->scriptInterpretersPath()) && boost::filesystem::is_directory(m_pathProvider->scriptInterpretersPath()))
+         if (boost::filesystem::exists(m_pathProvider->scriptInterpretersPath()) && boost::filesystem::is_directory(
+            m_pathProvider->scriptInterpretersPath()))
          {
             for (boost::filesystem::directory_iterator subDirIterator(m_pathProvider->scriptInterpretersPath());
                  subDirIterator != boost::filesystem::directory_iterator();
@@ -118,7 +120,7 @@ namespace automation
             {
                if (boost::filesystem::is_directory(subDirIterator->status()))
                {
-                  // Subdirectory, check if it is a interpreter (= contains a executable file with same name)
+                  // Sub-directory, check if it is a interpreter (= contains a executable file with same name)
                   const auto expectedExecutableName(shared::CExecutable::ToFileName(subDirIterator->path().filename().string()));
                   for (boost::filesystem::directory_iterator fileIterator(subDirIterator->path());
                        fileIterator != boost::filesystem::directory_iterator();
@@ -137,7 +139,7 @@ namespace automation
          return interpreters;
       }
 
-      std::vector<std::string> CManager::getAvailableInterpreters()
+      std::vector<std::string> CManager::getLoadedInterpreters()
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
 
@@ -147,21 +149,32 @@ namespace automation
          loadInterpreters();
 
          // Now find corresponding interpreter
-		 std::transform(m_loadedInterpreters.begin(), m_loadedInterpreters.end(), std::back_inserter(interpreters),
-			 [](const auto & c) -> std::string { return c.first; });
+         std::transform(m_loadedInterpreters.begin(), m_loadedInterpreters.end(), std::back_inserter(interpreters),
+                        [](const auto& c) -> std::string { return c.first; });
 
          return interpreters;
       }
 
       std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>> CManager::getAvailableInterpretersInformation()
       {
-         const auto interpreters = getAvailableInterpreters();
+         const auto interpreters = getLoadedInterpreters();
 
-         std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>> interpreterInformations;
+         std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>> interpreterInformation;
          for (const auto& interpreter : interpreters)
-            interpreterInformations[interpreter] = getInterpreterInstance(interpreter)->aboutInterpreter();            
+            interpreterInformation[interpreter] = getAvailableInterpreterInstance(interpreter)->aboutInterpreter();
 
-         return interpreterInformations;
+         return interpreterInformation;
+      }
+
+      std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>> CManager::getLoadedInterpretersInformation()
+      {
+         const auto interpreters = getLoadedInterpreters();
+
+         std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>> interpreterInformation;
+         for (const auto& interpreter : interpreters)
+            interpreterInformation[interpreter] = getLoadedInterpreterInstance(interpreter)->aboutInterpreter();
+
+         return interpreterInformation;
       }
 
       void CManager::unloadInterpreter(const std::string& interpreterType)
@@ -176,16 +189,16 @@ namespace automation
       void CManager::onInterpreterUnloaded(const std::string& interpreterType)
       {
          boost::thread([this, interpreterType]()
-            {
-               boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
+         {
+            boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
 
-               const auto interpreter = m_loadedInterpreters.find(interpreterType);
-               if (interpreter != m_loadedInterpreters.end())
-                  m_loadedInterpreters.erase(interpreter);
-            });
+            const auto interpreter = m_loadedInterpreters.find(interpreterType);
+            if (interpreter != m_loadedInterpreters.end())
+               m_loadedInterpreters.erase(interpreter);
+         });
       }
 
-      boost::shared_ptr<IInstance> CManager::getInterpreterInstance(const std::string& interpreterType)
+      boost::shared_ptr<IInstance> CManager::getAvailableInterpreterInstance(const std::string& interpreterType)
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
 
@@ -200,18 +213,33 @@ namespace automation
          throw std::runtime_error("Interpreter " + interpreterType + " not found");
       }
 
+      boost::shared_ptr<IInstance> CManager::getLoadedInterpreterInstance(const std::string& interpreterType)
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
+
+         // Update loaded interpreters list if necessary
+         loadInterpreters();
+
+         // Now find corresponding interpreter
+         const auto interpreter = m_loadedInterpreters.find(interpreterType);
+         if (interpreter != m_loadedInterpreters.end())
+            return interpreter->second;
+
+         throw std::runtime_error("Interpreter " + interpreterType + " not found");
+      }
+
       std::string CManager::getScriptContent(const std::string& interpreterType,
                                              const std::string& scriptPath)
       {
          // Load the file content (delegated to the interpreter)
-         const auto scriptInterpreter = getInterpreterInstance(interpreterType);
+         const auto scriptInterpreter = getAvailableInterpreterInstance(interpreterType);
          return scriptInterpreter->loadScriptContent(scriptPath);
       }
 
       std::string CManager::getScriptTemplateContent(const std::string& interpreterType)
       {
          // Load the template file content (delegated to the interpreter)
-         const auto scriptInterpreter = getInterpreterInstance(interpreterType);
+         const auto scriptInterpreter = getAvailableInterpreterInstance(interpreterType);
          return scriptInterpreter->loadScriptContent(std::string());
       }
 
@@ -236,7 +264,7 @@ namespace automation
          while (ec != boost::system::errc::success);
 
          // Create the file and put the code in (delegated to the interpreter)
-         const auto scriptInterpreter = getInterpreterInstance(interpreterType);
+         const auto scriptInterpreter = getAvailableInterpreterInstance(interpreterType);
          scriptInterpreter->saveScriptContent(scriptPath,
                                               code);
       }
@@ -248,7 +276,7 @@ namespace automation
          if (doBackup)
          {
             if (!boost::filesystem::exists(scriptPath))
-               return; // To remove reference to unexisting scripts (in case of database import, without associated scripts)
+               return; // To remove reference to non existing scripts (in case of database import, without associated scripts)
             const auto backupPath(scriptPath + ".bak");
             boost::filesystem::remove_all(backupPath);
             boost::filesystem::rename(scriptPath, backupPath);
@@ -293,5 +321,3 @@ namespace automation
       }
    }
 } // namespace automation::interpreter
-
-

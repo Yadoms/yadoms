@@ -2,6 +2,7 @@
 #include "DataContainer.h"
 #include <shared/exception/JSONParse.hpp>
 #include "exception/EmptyResult.hpp"
+#include "rapidjson/filereadstream.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/istreamwrapper.h"
 #include "rapidjson/ostreamwrapper.h"
@@ -181,10 +182,16 @@ namespace shared
 
 		m_tree.RemoveAllMembers();
 
-		std::ifstream ifs(file);
-		rapidjson::IStreamWrapper isw(ifs);
+      const auto fileSize(static_cast<size_t>(boost::filesystem::file_size(file)));
+      const auto buffer(boost::make_shared<char[]>(fileSize));
 
-		m_tree.ParseStream(isw);
+	   const auto fp = fopen(file.c_str(), "rb");
+	   rapidjson::FileReadStream bis(fp, static_cast<char*>(buffer.get()), fileSize);
+	   rapidjson::AutoUTFInputStream<unsigned, rapidjson::FileReadStream> isw(bis);
+
+		m_tree.ParseStream<0, rapidjson::AutoUTF<unsigned>>(isw);
+
+      fclose(fp);
 	}
 
 	void CDataContainer::extractContent(CDataContainer & container) const

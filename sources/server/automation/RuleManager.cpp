@@ -96,9 +96,9 @@ namespace automation
       return allRulesStarted;
    }
 
-   std::vector<std::string> CRuleManager::getAvailableInterpreters()
+   std::vector<std::string> CRuleManager::getLoadedInterpreters()
    {
-      return m_interpreterManager->getAvailableInterpreters();
+      return m_interpreterManager->getLoadedInterpreters();
    }
 
    void CRuleManager::startRule(int ruleId)

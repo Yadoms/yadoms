@@ -98,16 +98,16 @@ static const std::string DefaultPackageFileContent(
 class CTestPackageFile
 {
 public:
-   CTestPackageFile(const std::string& content)
+   explicit CTestPackageFile(const std::string& content)
       :m_packagePath(DefaultPackagePath / boost::filesystem::path("package.json"))
    {
       // Create the package.json file
-      testCommon::filesystem::WriteFile(m_packagePath, content);
+      testCommon::filesystem::writeFile(m_packagePath, content);
    }
    virtual ~CTestPackageFile()
    {
       // Clean-up
-      testCommon::filesystem::RemoveFile(m_packagePath, false);
+      testCommon::filesystem::removeFile(m_packagePath, false);
    }
 private:
    const boost::filesystem::path m_packagePath;
@@ -136,7 +136,8 @@ BOOST_AUTO_TEST_CASE(WrongPackageFileJsonFormat)
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\","); // Closing brace is missing
 
-   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContent), shared::exception::CInvalidParameter);
+   testCommon::filesystem::createFile(boost::filesystem::temp_directory_path() / "FakePackage" / "package.json", fileContent);
+   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(boost::filesystem::temp_directory_path() / "FakePackage"), shared::exception::CInvalidParameter);
 }
 
 BOOST_AUTO_TEST_CASE(NullOrEmptyPluginName)
@@ -150,7 +151,8 @@ BOOST_AUTO_TEST_CASE(NullOrEmptyPluginName)
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
-   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithEmptyName), shared::exception::CInvalidParameter);
+   testCommon::filesystem::createFile(boost::filesystem::temp_directory_path() / "FakePackage" / "package.json", fileContentWithEmptyName);
+   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(boost::filesystem::temp_directory_path() / "FakePackage"), shared::exception::CInvalidParameter);
 
    const std::string fileContentWithoutName(
       "{"
@@ -159,7 +161,8 @@ BOOST_AUTO_TEST_CASE(NullOrEmptyPluginName)
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
-   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithoutName), shared::exception::CInvalidParameter);
+   testCommon::filesystem::createFile(boost::filesystem::temp_directory_path() / "FakePackage" / "package.json", fileContentWithoutName);
+   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(boost::filesystem::temp_directory_path() / "FakePackage"), shared::exception::CInvalidParameter);
 }
 
 BOOST_AUTO_TEST_CASE(NullOrEmptyPluginDescription)
@@ -172,7 +175,8 @@ BOOST_AUTO_TEST_CASE(NullOrEmptyPluginDescription)
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
-   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithEmptyDescription), shared::exception::CInvalidParameter);
+   testCommon::filesystem::createFile(boost::filesystem::temp_directory_path() / "FakePackage" / "package.json", fileContentWithEmptyDescription);
+   BOOST_REQUIRE_NO_THROW(pluginSystem::CInformation info(boost::filesystem::temp_directory_path() / "FakePackage"));
 
    const std::string fileContentWithoutDescription(
       "{"
@@ -181,7 +185,8 @@ BOOST_AUTO_TEST_CASE(NullOrEmptyPluginDescription)
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
-   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithoutDescription), shared::exception::CInvalidParameter);
+   testCommon::filesystem::createFile(boost::filesystem::temp_directory_path() / "FakePackage" / "package.json", fileContentWithoutDescription);
+   BOOST_REQUIRE_NO_THROW(pluginSystem::CInformation info(boost::filesystem::temp_directory_path() / "FakePackage"));
 }
 
 BOOST_AUTO_TEST_CASE(BadPluginVersionFormat)
@@ -194,7 +199,8 @@ BOOST_AUTO_TEST_CASE(BadPluginVersionFormat)
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
-   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithEmptyVersion), shared::exception::CInvalidParameter);
+   testCommon::filesystem::createFile(boost::filesystem::temp_directory_path() / "FakePackage" / "package.json", fileContentWithEmptyVersion);
+   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(boost::filesystem::temp_directory_path() / "FakePackage"), shared::exception::CInvalidParameter);
 
    const std::string fileContentWithoutVersion(
       "{"
@@ -203,7 +209,8 @@ BOOST_AUTO_TEST_CASE(BadPluginVersionFormat)
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
-   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithoutVersion), shared::exception::CInvalidParameter);
+   testCommon::filesystem::createFile(boost::filesystem::temp_directory_path() / "FakePackage" / "package.json", fileContentWithoutVersion);
+   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(boost::filesystem::temp_directory_path() / "FakePackage"), shared::exception::CInvalidParameter);
 
    const std::string fileContentWithBadVersion1(
       "{"
@@ -213,7 +220,8 @@ BOOST_AUTO_TEST_CASE(BadPluginVersionFormat)
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
-   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithBadVersion1), shared::exception::CInvalidParameter);
+   testCommon::filesystem::createFile(boost::filesystem::temp_directory_path() / "FakePackage" / "package.json", fileContentWithBadVersion1);
+   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(boost::filesystem::temp_directory_path() / "FakePackage"), shared::exception::CInvalidParameter);
 
    const std::string fileContentWithBadVersion2(
       "{"
@@ -223,7 +231,8 @@ BOOST_AUTO_TEST_CASE(BadPluginVersionFormat)
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
-   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithBadVersion2), shared::exception::CInvalidParameter);
+   testCommon::filesystem::createFile(boost::filesystem::temp_directory_path() / "FakePackage" / "package.json", fileContentWithBadVersion2);
+   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(boost::filesystem::temp_directory_path() / "FakePackage"), shared::exception::CInvalidParameter);
 
    const std::string fileContentWithBadVersion3(
       "{"
@@ -233,7 +242,8 @@ BOOST_AUTO_TEST_CASE(BadPluginVersionFormat)
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
-   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithBadVersion3), shared::exception::CInvalidParameter);
+   testCommon::filesystem::createFile(boost::filesystem::temp_directory_path() / "FakePackage" / "package.json", fileContentWithBadVersion3);
+   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(boost::filesystem::temp_directory_path() / "FakePackage"), shared::exception::CInvalidParameter);
 
    const std::string fileContentWithBadVersion4(
       "{"
@@ -243,7 +253,8 @@ BOOST_AUTO_TEST_CASE(BadPluginVersionFormat)
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
-   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithBadVersion4), shared::exception::CInvalidParameter);
+   testCommon::filesystem::createFile(boost::filesystem::temp_directory_path() / "FakePackage" / "package.json", fileContentWithBadVersion4);
+   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(boost::filesystem::temp_directory_path() / "FakePackage"), shared::exception::CInvalidParameter);
 }
 
 BOOST_AUTO_TEST_CASE(NullOrEmptyPluginAuthor)
@@ -256,7 +267,8 @@ BOOST_AUTO_TEST_CASE(NullOrEmptyPluginAuthor)
       "   \"author\": \"\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
-   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithEmptyAuthor), shared::exception::CInvalidParameter);
+   testCommon::filesystem::createFile(boost::filesystem::temp_directory_path() / "FakePackage" / "package.json", fileContentWithEmptyAuthor);
+   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(boost::filesystem::temp_directory_path() / "FakePackage"), shared::exception::CInvalidParameter);
 
    const std::string fileContentWithoutAuthor(
       "{"
@@ -265,7 +277,8 @@ BOOST_AUTO_TEST_CASE(NullOrEmptyPluginAuthor)
       "   \"version\": \"0.1.0-beta\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
-   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithoutAuthor), shared::exception::CInvalidParameter);
+   testCommon::filesystem::createFile(boost::filesystem::temp_directory_path() / "FakePackage" / "package.json", fileContentWithoutAuthor);
+   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(boost::filesystem::temp_directory_path() / "FakePackage"), shared::exception::CInvalidParameter);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

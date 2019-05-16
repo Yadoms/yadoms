@@ -30,7 +30,7 @@ namespace automation
       ///\brief               Get all available interpreters (re-scan interpreters)
       ///\return              The interpreter list
       //-----------------------------------------------------
-      virtual std::vector<std::string> getAvailableInterpreters() = 0;
+      virtual std::vector<std::string> getLoadedInterpreters() = 0;
 
       //-----------------------------------------------------
       ///\brief               Get all rules
