@@ -135,11 +135,6 @@ MACRO(PLUGIN_LINK _targetName)
       ${ARGN}
       )
 	
-   ##################################################################################################
-   ## Add natvis (allow better debugging within VisualStudio)
-   ##################################################################################################
-   ADD_VS_NATVIS(${_targetName})
-   
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
    
    #configure plugin as installable component if not in devlopment state (target name begin by 'dev-')
@@ -180,7 +175,6 @@ MACRO(PLUGIN_LINK _targetName)
 		   if(CMAKE_CROSSCOMPILING)
 		      #Fix RPATH for cross compilation
 		      set_target_properties(${_targetName}_unity PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
-            ADD_VS_NATVIS(${_targetName}_unity)
 		   endif(CMAKE_CROSSCOMPILING)
 		endif()
 	endif()	

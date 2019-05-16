@@ -21,15 +21,8 @@ set(plugin_IPC_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "Path to
 add_library(plugin_IPC STATIC ${plugin_IPC_SOURCES})
 target_link_libraries(plugin_IPC ${PROTOBUF_LIBRARIES})
 
-ADD_VS_NATVIS(plugin_IPC)
-
 set_property(TARGET plugin_IPC PROPERTY INCLUDE_DIRECTORIES ${plugin_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
 
-##################################################################################################
-## Add natvis (allow better debugging within VisualStudio)
-##################################################################################################
-ADD_VS_NATVIS(plugin_IPC)
-   
 if(COTIRE_USE)
    if(COTIRE_USE_UNITY)
       set_target_properties(plugin_IPC PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
@@ -44,7 +37,6 @@ if(COTIRE_USE)
    
    if(COTIRE_USE_UNITY)
       target_link_libraries(plugin_IPC_unity ${PROTOBUF_LIBRARIES})
-      ADD_VS_NATVIS(plugin_IPC_unity)
    endif()	
 endif()
 

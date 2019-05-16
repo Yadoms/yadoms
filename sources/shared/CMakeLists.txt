@@ -490,12 +490,6 @@ add_library(yadoms-shared STATIC ${SHARED_LIB_SRC})
 target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 set_property( TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}  ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
 
-
-##################################################################################################
-## Add natvis (allow better debugging within VisualStudio)
-##################################################################################################
-ADD_VS_NATVIS(yadoms-shared)
-
 if(COTIRE_USE)
    set_target_properties(yadoms-shared PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
 	
@@ -510,7 +504,6 @@ if(COTIRE_USE)
    if(COTIRE_USE_UNITY)
       target_link_libraries(yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS})
       set_property( TARGET yadoms-shared_unity PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR})
-      ADD_VS_NATVIS(yadoms-shared_unity)
    endif()	
 else()
    add_precompiled_header(yadoms-shared stdafx.h)
