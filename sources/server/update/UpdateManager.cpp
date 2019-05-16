@@ -1028,7 +1028,6 @@ namespace update
    {
       if (m_allUpdates.exists(allUpdatesNode, '|'))
       {
-         m_allUpdates.printToLog(YADOMS_LOG(debug));//TODO virer
          auto versions = m_allUpdates.getAsMap<shared::CDataContainer>(allUpdatesNode, '|'); // Don't use default pathChar('.') because also contained in version name (like '2.3.0')
          const auto versionInfo = std::find_if(versions.begin(),
                                                versions.end(),
