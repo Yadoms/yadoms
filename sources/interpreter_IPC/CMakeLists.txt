@@ -20,15 +20,7 @@ set(interpreter_IPC_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "Pa
 
 add_library(interpreter_IPC STATIC ${interpreter_IPC_SOURCES})
 target_link_libraries(interpreter_IPC ${PROTOBUF_LIBRARIES})
-
-ADD_VS_NATVIS(interpreter_IPC)
-
 set_property(TARGET interpreter_IPC PROPERTY INCLUDE_DIRECTORIES ${interpreter_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
-
-##################################################################################################
-## Add natvis (allow better debugging within VisualStudio)
-##################################################################################################
-ADD_VS_NATVIS(interpreter_IPC)
 
 IF(MSVC OR XCODE)
    SET_PROPERTY(TARGET interpreter_IPC PROPERTY FOLDER "interpreter_IPC")
@@ -56,7 +48,6 @@ if(COTIRE_USE)
 	if(COTIRE_USE_UNITY)
 		target_link_libraries(interpreter_IPC_unity ${PROTOBUF_LIBRARIES})
 		set_property( TARGET interpreter_IPC_unity PROPERTY INCLUDE_DIRECTORIES ${interpreter_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
-      ADD_VS_NATVIS(interpreter_IPC_unity)
 	endif()	
 endif()
       

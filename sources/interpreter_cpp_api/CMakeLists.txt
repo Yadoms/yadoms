@@ -60,13 +60,7 @@ target_link_libraries(interpreter_cpp_api
    ${LIBS}
    ${CMAKE_DL_LIBS}
    ${interpreter_IPC_LIBRARY}
-   )
-
-ADD_VS_NATVIS(interpreter_cpp_api)
-##################################################################################################
-## Add natvis (allow better debugging within VisualStudio)
-##################################################################################################
-ADD_VS_NATVIS(interpreter_cpp_api)
+)
 
 ##################################################################################################
 ## COTIRE
@@ -85,7 +79,6 @@ if(COTIRE_USE)
 	if(COTIRE_USE_UNITY)
 		target_link_libraries(interpreter_cpp_api_unity yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS} ${interpreter_IPC_LIBRARY}_unity)
 		set_property( TARGET interpreter_cpp_api_unity PROPERTY INCLUDE_DIRECTORIES ${interpreter_cpp_api_ALL_INCLUDE_DIRS})
-      ADD_VS_NATVIS(interpreter_cpp_api_unity)
 	endif()	
 else()
 	add_precompiled_header(interpreter_cpp_api stdafx.h)
