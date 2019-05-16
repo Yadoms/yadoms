@@ -295,6 +295,21 @@ body {
     height: 100%;
 }
 
+.modal-content-scroll {
+    height: auto !important;
+}
+
+.modal-body-scroll {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    margin-right: 0 !important;	
+}
+
+.modal-dialog-scroll {
+    height: 80%;
+}
+
+
 /* fix blockly issue 1364 */
 .blocklyWidgetDiv .goog-menu { 
    max-height: 215px; 

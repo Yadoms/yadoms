@@ -1,13 +1,13 @@
 <!--Configure device Modal -->
 <div class="modal fade" id="configure-device-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
+    <div class="modal-dialog modal-dialog-scroll">
+        <div class="modal-content modal-content-scroll">
             <form class="form-horizontal" novalidate>
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title" data-i18n="modals.configure-device.title"></h4>
                 </div>
-                <div class="modal-body form-group">
+                <div class="modal-body modal-body-scroll form-group">
                     <!--configuration will be inserted here-->
                 </div>
                 <div class="modal-footer">
@@ -54,6 +54,8 @@
         //i18n
         $modalBody.i18n();
 
+		$(".modal-title").text($.t("modals.configure-device.title", { deviceName: device.friendlyName }));
+		
          //finalize treatments (ie sort items after trnaslation)
          configMgr.afterI18n();
 

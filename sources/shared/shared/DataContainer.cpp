@@ -271,9 +271,9 @@ namespace shared
 		set<std::string>(parameterName, strValue, pathChar);
 	}
 
-	const char* CDataContainer::get(const std::string & parameterName, const char pathChar) const
+	std::string CDataContainer::get(const std::string & parameterName, const char pathChar) const
 	{
-		return get<std::string>(parameterName, pathChar).c_str();
+		return get<std::string>(parameterName, pathChar);
 	}
 
 	std::vector<std::string> CDataContainer::getKeys(const std::string& parameterName, const char pathChar) const
@@ -383,15 +383,23 @@ namespace shared
 			}
 			else
 			{
-				dstObject.AddMember(srcIt->name, srcIt->value, allocator);
+				//make local Values (which are copies of key and value)
+				//-> ensure data is correctly copied (AddMember takes key and value ownership to dstObject)
+				rapidjson::Value key; 
+				key.CopyFrom(srcIt->name, allocator);
+
+				rapidjson::Value val;                             
+				val.CopyFrom(srcIt->value, allocator);
+
+				dstObject.AddMember(key, val, allocator);
 			}
 		}
 	}
 
-	void CDataContainer::mergeFrom(const CDataContainer& source)
+	void CDataContainer::mergeFrom(CDataContainer& source)
 	{
 		auto& allocator = m_tree.GetAllocator();
-		mergeObjects(m_tree, *source.getPointer(), allocator);
+		mergeObjects(m_tree, source.m_tree, allocator);
 	}
 
 	void CDataContainer::setNull(const std::string& parameterName, const char pathChar) const

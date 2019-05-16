@@ -570,6 +570,9 @@ namespace web
                {
                   const auto pluginId = boost::lexical_cast<int>(parameters[1]);
 
+				  if(requestContent.empty())
+					  return CResult::GenerateError("invalid request content. Must not be empty");
+
                   shared::CDataContainer content(requestContent);
                   if (!content.exists("name") || !content.exists("type") || !content.exists("configuration"))
                      return CResult::GenerateError("invalid request content. There must be a name, a type and a configuration field");
