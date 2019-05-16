@@ -517,7 +517,7 @@ namespace shared
       /// \desc       Add non-exisiting (or replace existing) values of "from" container into this container
       ///             Values of this container not present in "from" container will be kept
       //--------------------------------------------------------------
-      void mergeFrom(CDataContainer& from);
+      void mergeFrom(const CDataContainer& from);
 
       //--------------------------------------------------------------
       //
@@ -583,7 +583,7 @@ namespace shared
 	  /// \param [in] srcObject    Source value
 	  /// \param [in] allocator    The allocator
 	  //--------------------------------------------------------------
-	  static void mergeObjects(rapidjson::Value &dstObject, rapidjson::Value &srcObject, rapidjson::Document::AllocatorType &allocator);
+	  static void mergeObjects(rapidjson::Value &dstObject, const rapidjson::Value &srcObject, rapidjson::Document::AllocatorType &allocator);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Get pointer on the top root object
@@ -597,95 +597,95 @@ namespace shared
 	  /// \return The data as std::string
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static std::string convertToString(rapidjson::Value* v);
+	  static std::string convertToString(const rapidjson::Value& v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a bool
-	  /// \param [in] v    A pointer on the value to convert
+	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as bool (check for "true"/"false", "0"/"1", or ay numeric != 0)
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static bool convertToBool(rapidjson::Value* v);
+	  static bool convertToBool(const rapidjson::Value& v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a Int
-	  /// \param [in] v    A pointer on the value to convert
+	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as int 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static int convertToInt(rapidjson::Value* v);
+	  static int convertToInt(const rapidjson::Value& v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a Int64
-	  /// \param [in] v    A pointer on the value to convert
+	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as int64 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static int64_t convertToInt64(rapidjson::Value* v);
+	  static int64_t convertToInt64(const rapidjson::Value& v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a char
-	  /// \param [in] v    A pointer on the value to convert
+	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as char 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static char convertToByte(rapidjson::Value* v);
+	  static char convertToByte(const rapidjson::Value& v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a short
-	  /// \param [in] v    A pointer on the value to convert
+	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as short 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static short convertToShort(rapidjson::Value* v);
+	  static short convertToShort(const rapidjson::Value& v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a unsigned int
-	  /// \param [in] v    A pointer on the value to convert
+	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as unsigned int 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static unsigned int convertToUInt(rapidjson::Value* v);
+	  static unsigned int convertToUInt(const rapidjson::Value& v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a unsigned int64
-	  /// \param [in] v    A pointer on the value to convert
+	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as unsigned int64 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static uint64_t convertToUInt64(rapidjson::Value* v);
+	  static uint64_t convertToUInt64(const rapidjson::Value& v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a unsigned char
-	  /// \param [in] v    A pointer on the value to convert
+	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as unsigned char 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-      static unsigned char convertToUByte(rapidjson::Value* v);
+      static unsigned char convertToUByte(const rapidjson::Value& v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a unsigned short
-	  /// \param [in] v    A pointer on the value to convert
+	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as unsigned short 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static unsigned short convertToUShort(rapidjson::Value* v);
+	  static unsigned short convertToUShort(const rapidjson::Value& v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a float
-	  /// \param [in] v    A pointer on the value to convert
+	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as float 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-      static float convertToFloat(rapidjson::Value* v);
+      static float convertToFloat(const rapidjson::Value& v);
 
 	  //--------------------------------------------------------------
 	  /// \brief	Convert a rapidjson::Value into a double
-	  /// \param [in] v    A pointer on the value to convert
+	  /// \param [in] v    A reference on the value to convert
 	  /// \return The data as double 
 	  /// \throw exception::CInvalidParameter if value is null or in an incomptible type
 	  //--------------------------------------------------------------
-	  static double convertToDouble(rapidjson::Value* v);
+	  static double convertToDouble(const rapidjson::Value& v);
 
       //--------------------------------------------------------------
       //
@@ -1684,7 +1684,7 @@ namespace shared
    inline bool CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return convertToBool(found);
+         return convertToBool(*found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
 
@@ -1692,7 +1692,7 @@ namespace shared
    inline std::string CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return convertToString(found);
+         return convertToString(*found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
    
@@ -1700,7 +1700,7 @@ namespace shared
    inline int CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return convertToInt(found);
+         return convertToInt(*found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
    
@@ -1708,7 +1708,7 @@ namespace shared
    inline int64_t CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return convertToInt64(found);
+         return convertToInt64(*found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    } 
    
@@ -1716,7 +1716,7 @@ namespace shared
    inline char CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return convertToByte(found);
+         return convertToByte(*found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
 
@@ -1724,7 +1724,7 @@ namespace shared
    inline short CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return convertToShort(found);
+         return convertToShort(*found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }   
 
@@ -1732,7 +1732,7 @@ namespace shared
    inline unsigned int CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return convertToUInt(found);
+         return convertToUInt(*found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
    
@@ -1740,7 +1740,7 @@ namespace shared
    inline uint64_t CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return convertToUInt64(found);
+         return convertToUInt64(*found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    } 
    
@@ -1748,7 +1748,7 @@ namespace shared
    inline unsigned char CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return convertToUByte(found);
+         return convertToUByte(*found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
 
@@ -1756,7 +1756,7 @@ namespace shared
    inline unsigned short CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return convertToUShort(found);
+         return convertToUShort(*found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
 
@@ -1764,7 +1764,7 @@ namespace shared
    inline float CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return convertToFloat(found);
+         return convertToFloat(*found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
 
@@ -1772,7 +1772,7 @@ namespace shared
    inline double CDataContainer::convert(rapidjson::Value* found) const
    {
       if(found)
-         return convertToDouble(found);
+         return convertToDouble(*found);
       throw exception::CInvalidParameter("Fail to convert NULL value");
    }
 
