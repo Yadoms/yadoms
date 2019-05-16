@@ -1,3 +1,6 @@
+### 1.3.0
+* New feature #553 : use of full compliant Json
+
 ### 1.2.1
 * Fix display after update
 

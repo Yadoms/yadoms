@@ -16,22 +16,21 @@ std::map<std::string, boost::shared_ptr<equipments::IEquipment>> CDecoder::decod
 	std::map<std::string, boost::shared_ptr<equipments::IEquipment>> equipmentList;
    message.printToLog(YADOMS_LOG(trace));
 
-   auto errorcode = message.getWithDefault<std::string>("code","");
+   auto errorCode = message.getWithDefault<std::string>("code","");
 
-   if (errorcode == "UNAUTHORIZED")
+   if (errorCode == "UNAUTHORIZED")
       throw CUnauthorizedException(message.get<std::string>("message"));
 
-   if (errorcode != "")
+   if (!errorCode.empty())
       throw shared::exception::CException(message.get<std::string>("message"));
 
-   auto equipments = message.get<std::vector<shared::CDataContainer> >("data");
-   std::vector<shared::CDataContainer>::iterator equipmentIterator;
+   auto equipments = message.get<std::vector<shared::CDataContainer>>("data");
 
-   for (equipmentIterator = equipments.begin(); equipmentIterator != equipments.end(); ++equipmentIterator)
+   for (const auto& equipmentIterator : equipments)
    {
-      std::string name = (*equipmentIterator).get<std::string>("name");
-      std::string devEUI = (*equipmentIterator).get<std::string>("devEUI");
-      boost::shared_ptr<equipments::CDefaultEquipment> newEquipment(boost::make_shared<equipments::CDefaultEquipment>(name, devEUI, api));
+      auto name = equipmentIterator.get<std::string>("name");
+      auto devEUI = equipmentIterator.get<std::string>("devEUI");
+      auto newEquipment(boost::make_shared<equipments::CDefaultEquipment>(name, devEUI, api));
 	   equipmentList.insert(std::pair<std::string, boost::shared_ptr<equipments::IEquipment>>(name, newEquipment));
       YADOMS_LOG(information) << "create device name = " << name << " devEUI = " << devEUI;
    }
@@ -52,13 +51,13 @@ bool CDecoder::isFrameComplete(shared::CDataContainer& message)
 
 shared::CDataContainer CDecoder::getLastData(shared::CDataContainer& response)
 {
-   auto messages = response.get<std::vector<shared::CDataContainer> >("");
+   auto messages = response.get<std::vector<shared::CDataContainer>>("");
    shared::CDataContainer lastData;
 
-   if (messages.size() > 0)
+   if (!messages.empty())
    {
       // first message is the last message received
-      auto message = messages[0];
+      auto message = *messages.begin();
 
       //Copy to the answer needed information
       lastData.set("id", message.get<std::string>("id"));

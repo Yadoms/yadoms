@@ -20,7 +20,7 @@ namespace rfxcomMessages
               const std::string& command,
               const shared::CDataContainer& deviceDetails)
    {
-      createSubType(deviceDetails.get<unsigned char>("subType"));
+      createSubType(static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType")));
       m_subTypeManager->set(keyword, command);
       m_id = deviceDetails.get<unsigned int>("id");
 

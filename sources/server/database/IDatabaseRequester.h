@@ -66,7 +66,7 @@ namespace database
       virtual QueryRow querySingleLine(const common::CQuery& querytoExecute) = 0;
 
       //--------------------------------------------------------------
-      /// \brief		      query databse
+      /// \brief		      query database
       /// \param [in]	   querytoExecute The query (with vaargs)
       /// \return 	      a list of rows
       //--------------------------------------------------------------  

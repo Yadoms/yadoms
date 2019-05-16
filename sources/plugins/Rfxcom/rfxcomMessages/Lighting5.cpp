@@ -21,9 +21,9 @@ namespace rfxcomMessages
    {
       m_signalPower->set(0);
 
-      createSubType(deviceDetails.get<unsigned char>("subType"));
+      createSubType(static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType")));
       m_id = deviceDetails.get<unsigned int>("id");
-      m_unitCode = deviceDetails.get<unsigned char>("unitCode");
+      m_unitCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("unitCode"));
       m_subTypeManager->set(command);
 
       // Build device description
@@ -60,7 +60,7 @@ namespace rfxcomMessages
          m_unitCode = 0;
          break;
       default:
-         m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
+         m_unitCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode"));
          break;
       }
 

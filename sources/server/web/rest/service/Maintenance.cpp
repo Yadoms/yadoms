@@ -4,6 +4,7 @@
 #include "web/rest/RestDispatcher.h"
 #include "web/rest/Result.h"
 #include "task/backup/Backup.h"
+#include "task/exportData/ExportData.h"
 #include "task/packLogs/PackLogs.h"
 #include <shared/Log.h>
 #include <boost/date_time/c_local_time_adjustor.hpp>
@@ -18,9 +19,11 @@ namespace web
 
          CMaintenance::CMaintenance(boost::shared_ptr<const IPathProvider> pathProvider,
                                     boost::shared_ptr<database::IDatabaseRequester> databaseRequester,
+                                    boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
                                     boost::shared_ptr<task::CScheduler> taskScheduler)
             : m_pathProvider(pathProvider),
               m_databaseRequester(databaseRequester),
+              m_acquisitionRequester(acquisitionRequester),
               m_taskScheduler(taskScheduler)
          {
          }
@@ -36,6 +39,8 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("packlogs"), CMaintenance::startPackLogs);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("logs"), CMaintenance::getLogs);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("logs"), CMaintenance::deleteAllLogs);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("startExportData")("*"), CMaintenance::startExportData);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("exportData"), CMaintenance::getExportData);
          }
 
 
@@ -327,6 +332,90 @@ namespace web
             catch (...)
             {
                return CResult::GenerateError("unknown exception in deleting backup data");
+            }
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::startExportData(const std::vector<std::string>& parameters,
+                                                                                                   const std::string& requestContent)
+         {
+            try
+            {
+               if (parameters.size() > 2)
+               {
+                  const auto keywordId = std::stoi(parameters[2]);
+
+                  const boost::shared_ptr<task::ITask> task(boost::make_shared<task::exportData::CExportData>(m_pathProvider,
+                                                                                                              m_acquisitionRequester,
+                                                                                                              keywordId));
+
+                  std::string taskUid;
+                  if (m_taskScheduler->runTask(task, taskUid))
+                     YADOMS_LOG(information) << "Task : " << task->getName() << " successfully started. TaskId = " << taskUid;
+                  else
+                     YADOMS_LOG(error) << "Task : " << task->getName() << " fail to start";
+
+
+                  shared::CDataContainer result;
+                  result.set("taskId", taskUid);
+                  return CResult::GenerateSuccess(result);
+               }
+
+               return CResult::GenerateError("invalid parameter. Can not retrieve file to delete");
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in export data");
+            }
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CMaintenance::getExportData(const std::vector<std::string>& parameters,
+                                                                                                 const std::string& requestContent) const
+         {
+            try
+            {
+               auto backupPath = m_pathProvider->backupPath();
+
+               if (!backupPath.empty() && boost::filesystem::exists(backupPath) && boost::filesystem::is_directory(backupPath))
+               {
+                  for (boost::filesystem::directory_iterator i(backupPath); i != boost::filesystem::directory_iterator(); ++i)
+                  {
+                     if (i->path().filename().string() != "exportData.zip")
+                        continue;
+
+                     if (boost::filesystem::is_regular_file(i->path()))
+                     {
+                        const auto fileSize = boost::filesystem::file_size(i->path());
+
+                        const auto lastWriteTimeT = boost::filesystem::last_write_time(i->path());
+                        const auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::utc_to_local(
+                           boost::posix_time::from_time_t(lastWriteTimeT));
+
+                        shared::CDataContainer file;
+                        file.set("size", fileSize);
+                        file.set("modificationDate", lastWriteTimePosix);
+                        file.set("path", i->path().string());
+                        file.set("url", i->path().filename().string());
+                        file.set("inprogress", boost::iends_with(i->path().filename().string(), ".inprogress"));
+                        shared::CDataContainer result;
+                        result.set("exportData", file);
+                        return CResult::GenerateSuccess(result);
+                     }
+                  }
+               }
+               // Logs don't exist
+               return CResult::GenerateError();
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in retrieving last exportData");
             }
          }
       } //namespace service

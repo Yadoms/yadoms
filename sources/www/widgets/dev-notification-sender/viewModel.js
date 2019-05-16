@@ -36,7 +36,7 @@ function notificationSenderViewModel() {
          notification.body = self.body();
          notification.acknowledgment = 'true';
 
-          KeywordManager.sendCommand(this.widget.configuration.device.keywordId, JSON.stringify(notification))
+          KeywordManager.sendCommand(parseInt(this.widget.configuration.device.keywordId), JSON.stringify(notification))
               .done(function() {
                   self.widgetApi.notify($.t("widgets.dev-notification-sender:notificationSent"), "success");
               });

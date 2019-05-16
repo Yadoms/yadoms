@@ -15,23 +15,19 @@ Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_ = function () {
         keywords: {},
         recipients: {},
         enumerations: {},
-		capacities : {},
-
-        getPluginIdFromKeywordId: function (keywordId) {
-            if (this.keywords[keywordId] && this.devices[this.keywords[keywordId].deviceId])
-                return this.devices[this.keywords[keywordId].deviceId].pluginId;
-            return undefined;
-        }
+		capacities : {}
     };
 
     PluginInstanceManager.getAll().done(function (listPlugins) {
        $.each(listPlugins, function (key, plugin) {
-          result.plugins[plugin.id] = plugin;
+		  plugin.id = plugin.id.toString();
+          result.plugins[plugin.id.toString()] = plugin;
        });
 
        DeviceManager.getAll()
        .done(function (listDevices) {
           $.each(listDevices, function (deviceKey, device) {
+			  device.id = device.id.toString();
 			 if(parseBool(device.blacklist) === false)
 				result.devices[device.id] = device;
           });
@@ -39,6 +35,9 @@ Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_ = function () {
           KeywordManager.getAll()
           .done(function (listKeywords) {
              $.each(listKeywords, function (keywordKey, keyword) {
+				 keyword.id = keyword.id.toString();
+				 keyword.deviceId = keyword.deviceId.toString();
+				 
 				 //only for not blacklisted devices
 				 if(result.devices[keyword.deviceId]) {
 					result.keywords[keyword.id] = keyword;
@@ -49,6 +48,7 @@ Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_ = function () {
              RecipientManager.getAll()
              .done(function (listRecipients) {
                 $.each(listRecipients, function (recipientKey, recipient) {
+				   recipient.id = recipient.id.toString();
                    result.recipients[recipient.id] = recipient;
                 });
 
@@ -78,28 +78,30 @@ Blockly.Yadoms.LoadDataFinalize_ = function(result) {
       var device = result.devices[keywordData.deviceId];
       if (device) {
          var pluginData = result.plugins[device.pluginId];
-         if (keywordData && keywordData.type.toUpperCase() === "enum".toUpperCase()) {
-            var typeInfo = keywordData.typeInfo;
-            if (!isNullOrUndefined(typeInfo) && !isNullOrUndefined(typeInfo.name) && !isNullOrUndefined(typeInfo.values)) {
-               var typeToSet = "enum_" + typeInfo.name;
+		 if(pluginData) { //in case device do not mach any plugin
+			 if (keywordData && keywordData.type.toUpperCase() === "enum".toUpperCase()) {
+				var typeInfo = keywordData.typeInfo;
+				if (!isNullOrUndefined(typeInfo) && !isNullOrUndefined(typeInfo.name) && !isNullOrUndefined(typeInfo.values)) {
+				   var typeToSet = "enum_" + typeInfo.name;
 
-               //all is OK, this is a new enum, ask for translation
-               var translatedEnum = [];
-               $.each(typeInfo.values, function (index2, value) {
-                  var trad = $.t("plugins." + pluginData.type + ":enumerations." + typeInfo.name + ".values." + value, { defaultValue: value });
-                  translatedEnum.push([trad, value]);
-               });
+				   //all is OK, this is a new enum, ask for translation
+				   var translatedEnum = [];
+				   $.each(typeInfo.values, function (index2, value) {
+					  var trad = $.t("plugins." + pluginData.type + ":enumerations." + typeInfo.name + ".values." + value, { defaultValue: value });
+					  translatedEnum.push([trad, value]);
+				   });
 
-               var translatedName = $.t("plugins." + pluginData.type + ":enumerations." + typeInfo.name + ".name", { defaultValue: typeInfo.name });
+				   var translatedName = $.t("plugins." + pluginData.type + ":enumerations." + typeInfo.name + ".name", { defaultValue: typeInfo.name });
 
-               result.enumerations[typeToSet] = {
-                  typeToSet: typeToSet,
-                  name: typeInfo.name,
-                  translatedName: translatedName,
-                  values: translatedEnum
-               };
-            }
-         }
+				   result.enumerations[typeToSet] = {
+					  typeToSet: typeToSet,
+					  name: typeInfo.name,
+					  translatedName: translatedName,
+					  values: translatedEnum
+				   };
+				}
+			 }
+		 }
       }
    });
 }
