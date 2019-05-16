@@ -4,6 +4,7 @@
 // Includes needed to compile tested classes
 #include "../../../../sources/shared/shared/DataContainer.h"
 #include "../../../../sources/server/web/rest/Result.h"
+#include "../testCommon/fileSystem.h"
 
 BOOST_AUTO_TEST_SUITE(TestDataContainer)
 

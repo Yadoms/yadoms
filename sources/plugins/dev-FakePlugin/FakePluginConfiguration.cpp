@@ -11,6 +11,11 @@ void CFakePluginConfiguration::initializeWith(const shared::CDataContainer& data
    m_configuration.initializeWith(data);
 }
 
+void CFakePluginConfiguration::initializeWith(const shared::CDataContainer& data, boost::filesystem::path & packageJsonPath)
+{
+   m_configuration.initializeWith(data, packageJsonPath);
+}
+
 EEnumType CFakePluginConfiguration::getEnumParameter() const
 {
    // Enum type, declare keys labels
