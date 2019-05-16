@@ -37,7 +37,7 @@ namespace automation
                        const boost::filesystem::path& logFile,
                        const std::string& logLevel) override;
 
-         void postAvalaibleRequest(boost::shared_ptr<shared::script::yInterpreterApi::IAvalaibleRequest> request) override;
+         void postAvailableRequest(boost::shared_ptr<shared::script::yInterpreterApi::IAvalaibleRequest> request) override;
          void postLoadScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ILoadScriptContentRequest> request) override;
          void postSaveScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ISaveScriptContentRequest> request) override;
          void postStartScript(boost::shared_ptr<shared::script::yInterpreterApi::IStartScript> request) override;
@@ -67,6 +67,7 @@ namespace automation
          /// \param[in] pbMsg The message
          /// \param[in] checkExpectedMessageFunction Callback checking that answer is the expected one
          /// \param[in] onReceiveFunction Callback to process the received message
+         /// \param[in] timeout Timeout waiting answer
          //--------------------------------------------------------------
          void send(const interpreter_IPC::toInterpreter::msg& pbMsg,
                    boost::function1<bool, const interpreter_IPC::toYadoms::msg&> checkExpectedMessageFunction,
@@ -80,7 +81,7 @@ namespace automation
          //--------------------------------------------------------------
          void processMessage(boost::shared_ptr<const unsigned char[]> message, size_t messageSize);
 
-         void processNotifiyScriptStopped(const interpreter_IPC::toYadoms::NotifiyScriptStopped& notifiyScriptStopped) const;
+         void processNotifyScriptStopped(const interpreter_IPC::toYadoms::NotifiyScriptStopped& notifyScriptStopped) const;
 
       private:
          //--------------------------------------------------------------

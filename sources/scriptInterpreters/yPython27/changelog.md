@@ -1,5 +1,6 @@
 ### 1.0.5
 * Fix scriptUtilities.readkeyworddetails method to return native types (int for ids, datetime.datetime for lastAcquisitionDate)
+* Fix startup in debug mode
 
 ### 1.0.4
 * New feature #541 : Add strToTimedelta function to script utilities

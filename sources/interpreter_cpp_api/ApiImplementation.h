@@ -1,4 +1,5 @@
 #pragma once
+#include <shared/event/EventHandler.hpp>
 #include <shared/script/yInterpreterApi/IYInterpreterApi.h>
 #include <shared/script/yInterpreterApi/IInformation.h>
 #include <interpreter_IPC/yadomsToInterpreter.pb.h>
@@ -53,7 +54,7 @@ namespace interpreter_cpp_api
 
       void processInit(const interpreter_IPC::toInterpreter::Init& msg);
       void processSystem(const interpreter_IPC::toInterpreter::System& msg);
-      void processAvalaibleRequest(const interpreter_IPC::toInterpreter::AvalaibleRequest& msg);
+      void processAvailableRequest(const interpreter_IPC::toInterpreter::AvalaibleRequest& msg);
       void processLoadScriptContentRequest(const interpreter_IPC::toInterpreter::LoadScriptContentRequest& msg);
       void processSaveScriptContent(const interpreter_IPC::toInterpreter::SaveScriptContentRequest& msg);
       void processStartScript(const interpreter_IPC::toInterpreter::StartScript& msg);
@@ -83,7 +84,7 @@ namespace interpreter_cpp_api
       mutable boost::recursive_mutex m_onReceiveHookMutex;
       mutable boost::function1<bool, const interpreter_IPC::toInterpreter::msg&> m_onReceiveHook;
 
-      boost::shared_ptr<shared::script::yInterpreterApi::IInformation> m_pluginInformation;
+      boost::shared_ptr<shared::script::yInterpreterApi::IInformation> m_interpreterInformation;
       boost::shared_ptr<const boost::filesystem::path> m_logFile;
       boost::shared_ptr<const std::string> m_logLevel;
    };
