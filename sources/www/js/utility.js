@@ -601,3 +601,13 @@ function humanFileSize(size) {
 															  $.t("filesize-units.gb", {defaultValue: 'GB'}), 
 															  $.t("filesize-units.tb", {defaultValue: 'TB'})][i];
 }
+
+/**
+ * Obtain the key of the first child which have matching value
+ * @param object The container
+ * @param value The value to test
+ * @return the key of matching value
+ */
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
+}
