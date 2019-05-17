@@ -164,7 +164,7 @@ void CWebConnectionQuality::processResult(boost::shared_ptr<yApi::IYPluginApi> a
       resultContainer.printToLog(YADOMS_LOG(debug));
       
       m_connectedKw->set(true);
-      m_pingKw->set(boost::posix_time::millisec(static_cast<unsigned int>(resultContainer.get<double>("ping"))));
+      m_pingKw->set(static_cast<unsigned int>(resultContainer.get<double>("ping") / 1000.0));
       m_downloadKw->set(static_cast<unsigned int>(resultContainer.get<double>("download")));
       m_uploadKw->set(static_cast<unsigned int>(resultContainer.get<double>("upload")));
 

@@ -34,7 +34,7 @@ namespace shared
             static const CStandardCapacity& Dimmable();         // dimmable          | none                  | A value from 0-100 (0 is off, 100 is on)
             static const CStandardCapacity& Direction();        // direction         | degrees               | Direction (for compass, wind direction)
             static const CStandardCapacity& Distance();         // length            | meter                 | A distance, in meter	  
-            static const CStandardCapacity& Duration();         // duration          | none                  | A Duration (duration type)
+            static const CStandardCapacity& Duration();         // duration          | s                     | A duration, in seconds
             static const CStandardCapacity& ElectricLoad();     // electric load     | Ampere/hour           | Electric load in Ah
             static const CStandardCapacity& Energy();           // energy            | Watt/hour             | Energy measure
             static const CStandardCapacity& Event();            // event             | -                     | Just an event (no associated data)

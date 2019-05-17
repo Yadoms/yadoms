@@ -119,6 +119,13 @@ namespace database
          return Append(ss);
       }
 
+      CQuery& CQuery::Custom(const std::string& string)
+      {
+         std::ostringstream ss;
+         ss << " " << string << " ";
+         return Append(ss);
+      }
+
       CQuery& CQuery::With(const std::string& tableName1, const CQuery& subQuery1,
                            const std::string& tableName2, const CQuery& subQuery2,
                            const std::string& tableName3, const CQuery& subQuery3,
