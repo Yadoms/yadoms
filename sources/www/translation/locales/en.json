@@ -51,7 +51,8 @@
          "deploy": "Deploying Yadoms ...",
          "deployFailed": "Deploy Yadoms failed",
          "exit": "Exiting Yadoms ...",
-         "information": "Yadoms information"
+         "information": "Yadoms information",
+		 "disconnected" : "Server - Disconnected"
       },
       "task": {
          "name": "task",

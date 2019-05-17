@@ -59,6 +59,7 @@ function initializeWidgetEngine() {
 
                 //we can start the periodic update
                 serverIsOnline = true;
+                displayConnectedState();
                 if (!WebSocketEngine.isActive())
                     widgetUpdateInterval = setInterval(periodicUpdateTask,
                         Yadoms.updateIntervalWithWebSocketDisabled);
@@ -166,6 +167,7 @@ function periodicUpdateTask() {
             //if we were offline we go back to online status
             if (!serverIsOnline) {
                 serverIsOnline = true;
+                displayConnectedState();
                 //we signal that server has been back
                 notifyInformation($.t("mainPage.notifications.connectionToServerHasBeenRestored"));
                 //if the errorNotification is always visible we close it
@@ -251,13 +253,17 @@ function periodicUpdateTask() {
                         LastEventLogId = value.id;
                     });
             }
-            if (!WebSocketEngine.isConnected())
+            if (!WebSocketEngine.isConnected()) {
                 serverIsOnline = false;
+                displayDisconnectedState();
+            }
         })
         .fail(function (error) {
             if (serverIsOnline) {
                 //we indicate that *server has passed offline
                 serverIsOnline = false;
+                displayDisconnectedState();
+                
                 OfflineServerNotification =
                     notifyError($.t("mainPage.errors.youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline"),
                         error,
