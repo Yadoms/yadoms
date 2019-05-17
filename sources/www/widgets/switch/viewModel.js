@@ -6,7 +6,7 @@ widgetViewModelCtor =
     */
    function switchViewModel() {
       //observable data
-      this.state = ko.observableArray();
+      this.state = ko.observable("off"); // ["off", "on", "unknown" ]
       this.kind = ko.observable("simple");
       this.icon = ko.observable("");
       this.showDeviceName = ko.observable(true);
@@ -15,39 +15,43 @@ widgetViewModelCtor =
       this.update = ko.observable(false);
       this.askConfirmation = false;
 
-      this.capacity = [];
-      this.accessMode = [];
+      this.capacity="";
+      this.accessMode="";
 
       /**
        * method to send command to Yadoms
        * @param newState to send
        */
-      this.formatAndSend = function (index, keywordId, newState) {
+      this.formatAndSend = function (keywordId, newState) {
          var self = this;
          var cmd = null;
 
-         if (!isNullOrUndefined(self.capacity[index])) {
-            switch (self.capacity[index]) {
+         if (self.invert()) {
+            if (newState == "on")
+               newState = "off";
+            else if (newState == "off")
+               newState = "on";
+            else
+               console.log("Widget Switch : formatAndSend : invalid newState value: " + newState + " (expected 'on' or 'off')");
+         }
+      
+         if (!isNullOrUndefined(self.capacity)) {
+            switch (self.capacity) {
                case "dimmable":
-                  cmd = newState == 1 ? 100 : 0;
+                  cmd = (newState == "on" ? 100 : 0);
                   break; // Adapt here the state for dimmable
                case "event":
                   cmd = 0;
                   break;
                default:
-                  cmd = newState;
+                  cmd = (newState == "off" ? 0 : 1);
                   break;
             }
 
-            if (self.invert()) {
-               if (cmd == 1)
-                  cmd = 0;
-               else if (cmd == 0)
-                  cmd = 1;
-            }
+
 
             // We send the command only for Set and GetSet variables
-            if (self.accessMode[index] === "GetSet" || self.accessMode[index] === "Set") {
+            if (self.accessMode === "GetSet" || self.accessMode === "Set") {
                if (self.askConfirmation) {
                   Yadoms.modals.confirmation.loadAsync()
                      .done(() => {
@@ -60,27 +64,33 @@ widgetViewModelCtor =
             }
          }
       };
-
+      
       this.command = ko.computed(function () {
          var self = this;
-         var average = 0;
-
-         if (self.state().length != 0) {
-            $.each(self.state(), function (index, value) {
-               average = average + value;
-            });
-            average = average / self.state().length;
-         }
-
+         
+         var result=self.state();
+         
          if (self.invert()) {
-            if (average == 1)
-               average = 0;
-            else if (average == 0)
-               average = 1;
+            //manage inversion
+            switch (self.state()) {
+               case "off":
+                  result = "on";
+                  break;
+                  
+               case "on":
+                  result ="off";
+                  break;
+                  
+               case "unknown":
+               default:
+                  result ="unknown";
+                  break;
+            }
          }
-
-         return average;
+         console.log("switch val = " + result);
+         return result;
       }, this);
+
 
       this.commandClick = function (newState) {
          var self = this;
@@ -90,15 +100,9 @@ widgetViewModelCtor =
 
          // Checks for the first device
          if (!isNullOrUndefined(self.widget.configuration.device)) {
-            self.formatAndSend(0, parseInt(self.widget.configuration.device.keywordId), newState);
+            self.formatAndSend(parseInt(self.widget.configuration.device.keywordId), newState);
          }
 
-         if (!isNullOrUndefined(self.widget.configuration.additionalDevices.content.devices)) {
-            // Check for the others devices
-            $.each(self.widget.configuration.additionalDevices.content.devices, function (index, device) {
-               self.formatAndSend(index + 1, parseInt(device.content.source.keywordId), newState);
-            });
-         }
       };
 
       /**
@@ -142,25 +146,6 @@ widgetViewModelCtor =
             self.widgetApi.registerAdditionalInformation(["accessMode", "capacity"]); // We would like the unit !
          }
 
-         if (self.state.length == 0)
-            self.state.push(1);
-
-         // registration of additional keywords
-         if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.additionalDevices.content.devices))) {
-            $.each(this.widget.configuration.additionalDevices.content.devices, function (index, device) {
-               //we register keyword new acquisition
-               self.widgetApi.registerKeywordForNewAcquisitions(parseInt(device.content.source.keywordId));
-
-               //we register keyword for get last value at web client startup 
-               self.widgetApi.getLastValue(device.content.source.keywordId);
-               if (self.state.length != index + 1)
-                  self.state.push(1);
-            });
-         } else { // we remove elements if any
-            if (self.state().length > 1)
-               self.state.splice(1, self.state().length - 1);
-         }
-
          // update of the kind of switchs
          // keep the icon selected in ocase of pushbutton selected
          if (!isNullOrUndefined(this.widget.configuration.kind)) {
@@ -197,13 +182,8 @@ widgetViewModelCtor =
          }
          // This variable is used only for the display
          $.when.apply($, arrayOfDeffered)
-            .done(function () {
-               d.resolve();
-            })
-            .fail(function () {
-               d.reject();
-            });
-
+            .done(d.resolve)
+            .fail(d.reject);
          return d.promise();
       };
 
@@ -222,10 +202,10 @@ widgetViewModelCtor =
          //Check if first device
          if (keywordId == parseInt(this.widget.configuration.device.keywordId)) {
             if (!isNullOrUndefinedOrEmpty(data.capacity))
-               self.capacity[0] = data.capacity;
+               self.capacity = data.capacity;
 
             if (!isNullOrUndefinedOrEmpty(data.accessMode)) {
-               self.accessMode[0] = data.accessMode;
+               self.accessMode = data.accessMode;
                if (data.accessMode === "GetSet")
                   readonly |= false;
                else
@@ -233,50 +213,64 @@ widgetViewModelCtor =
             }
 
             //it is the right device
-            if (self.capacity[0] === "event")
-               self.state.replace(self.state()[0], 0);
-            else {
-               self.state.replace(self.state()[0], parseInt(data.value));
-            }
-         }
-
-         //check if additional devices
-         if (!isNullOrUndefined(this.widget.configuration.additionalDevices.content.devices)) {
-            $.each(this.widget.configuration.additionalDevices.content.devices, function (index, device) {
-               if (keywordId == parseInt(device.content.source.keywordId)) {
-                  if (!isNullOrUndefinedOrEmpty(data.capacity))
-                     self.capacity[index + 1] = data.capacity;
-
-                  if (!isNullOrUndefinedOrEmpty(data.accessMode)) {
-                     self.accessMode[index + 1] = data.accessMode;
-                     if (data.accessMode === "GetSet")
-                        readonly |= false;
-                     else
-                        readonly |= true;
+            switch (self.capacity) {
+               case "dimmable":
+                  switch(parseInt(data.value)) {
+                     case 0:
+                        self.state("off");
+                        break;
+                     case 100:
+                        self.state("on");
+                        break;
+                     default: //all other values
+                        self.state("unknown");
+                        break;
                   }
+                  break; // Adapt here the state for dimmable
+               case "event":
+                  self.state("off");
+                  break;
+               default:
+                  self.state((parseInt(data.value) == 0?"off":"on"));
+                  break;
+            }
 
-                  //it is the right device
-                  if (self.capacity[index] === "event")
-                     self.state()[index + 1] = 0;
-                  else
-                     self.state()[index + 1] = parseInt(data.value); // get the state. Same for dimmable
-               }
-            });
+
          }
 
          self.readonly(readonly);
 
-         //knockout doesn't work witj bootstrap. So change values have to be done manually
+         //knockout doesn't work with bootstrap. So change values have to be done manually
          if (self.kind() === 'toggle') {
             self.update(true);
             if (self.readonly())
                this.widget.$content.find("input[type=checkbox]").prop('disabled', false);
 
-            if (self.command() == 1)
+            if (self.command() != "off")
                this.widget.$content.find("input[type=checkbox]").prop('checked', true).change();
             else
                this.widget.$content.find("input[type=checkbox]").prop('checked', false).change();
 
+            switch(self.command())
+            {
+               case "on":
+                  this.widget.$content.find(".toggle-on").removeClass("indeterminate");
+                  this.widget.$content.find(".toggle-on").html("On");
+                  this.widget.$content.find(".toggle-handle").removeClass("hidden");
+                  break;
+               case "off":
+                  this.widget.$content.find(".toggle-on").removeClass("indeterminate");
+                  this.widget.$content.find(".toggle-on").html("Off");
+                  this.widget.$content.find(".toggle-handle").removeClass("hidden");
+                  break;
+               case "unknown":
+               default:
+                  this.widget.$content.find(".toggle-on").html("-");
+                  this.widget.$content.find(".toggle-on").addClass("indeterminate");
+                  this.widget.$content.find(".toggle-handle").addClass("hidden");
+                  break;
+            }            
+            
             self.update(false);
             this.widget.$content.find("input[type=checkbox]").prop('disabled', self.readonly());
          }
@@ -284,11 +278,9 @@ widgetViewModelCtor =
 
       this.toggleCommand = function () {
          var self = this;
-         var average = 0;
-
-         if (self.command() == 0)
-            self.commandClick(1);
+         if (self.command() == "off")
+            self.commandClick("on");
          else
-            self.commandClick(0);
+            self.commandClick("off"); //for on and unknown 
       };
    };
