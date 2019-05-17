@@ -236,15 +236,10 @@ namespace database
 
          std::vector<boost::tuple<int, std::string>> CKeyword::getKeywordListLastData(const std::vector<int> keywordIds)
          {
-            std::string list("(");
-            for (const auto& keywordId:keywordIds)
-               list += std::to_string(keywordId) + ",";
-            list += ")";
-
             auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select(CKeywordTable::getIdColumnName(), CKeywordTable::getLastAcquisitionValueColumnName()).
                      From(CKeywordTable::getTableName()).
-                     Where(CKeywordTable::getIdColumnName(), CQUERY_OP_IN, list);
+                     WhereIn(CKeywordTable::getIdColumnName(), keywordIds);
 
             adapters::CMultipleValueAdapter<int, std::string> mva;
             m_databaseRequester->queryEntities(&mva, *qSelect);
