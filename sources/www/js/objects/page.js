@@ -28,7 +28,7 @@ function Page(id, name, pageOrder) {
  */
 Page.prototype.getWidget = function(widgetId) {
    var res = $.grep(this.widgets, function(item) {
-      return (item.id === widgetId);
+      return (item.id === parseInt(widgetId));
    });
    if (res.length !== 1)
       return null;
