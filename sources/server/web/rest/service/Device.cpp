@@ -47,7 +47,8 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchkeywordaccess")("*"), CDevice::getDeviceWithKeywordAccessMode);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*")("*"), CDevice::getDeviceKeywordsForCapacity);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keywordslastvalue"), CDevice::getKeywordsLastState);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keywordslastvalue"), CDevice::getKeywordsLastState,
+               CDevice:: transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("configuration"), CDevice::updateDeviceConfiguration,
                CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("merge"), CDevice::mergeDevices,
@@ -252,7 +253,7 @@ namespace web
                if (parameters.size() >= 2)
                {
                   const auto keywordIds = shared::CDataContainer(requestContent);
-                  const auto keywordListLastData = m_keywordManager->getKeywordListLastData(keywordIds.get<std::vector<int>>());
+                  const auto keywordListLastData = m_keywordManager->getKeywordListLastData(keywordIds.get<std::vector<int>>("keywordIds"));
                   shared::CDataContainer result;
                   for (auto keywordLastData:keywordListLastData)
                   {
