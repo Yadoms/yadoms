@@ -47,6 +47,7 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchkeywordaccess")("*"), CDevice::getDeviceWithKeywordAccessMode);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*")("*"), CDevice::getDeviceKeywordsForCapacity);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keywordslastvalue"), CDevice::getKeywordsLastState);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("configuration"), CDevice::updateDeviceConfiguration,
                CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("merge"), CDevice::mergeDevices,
@@ -101,50 +102,50 @@ namespace web
                      std::remove_if(compatibleDevices.begin(),
                                     compatibleDevices.end(),
                                     [this, &refKeywords, &commonKeywordsForCompatibleDevices](
-                                    const boost::shared_ptr<database::entities::CDevice>& candidateDevice)
+                                       const boost::shared_ptr<database::entities::CDevice>& candidateDevice)
+                                 {
+                                    auto candidateKeywords = m_keywordManager->getKeywords(candidateDevice->Id);
+                                    std::vector<shared::CDataContainer> commonKeywords;
+                                    // Iterate through reference keywords to find a common keyword in candidateDevice
+                                    for (const auto& refKeyword : refKeywords)
                                     {
-                                       auto candidateKeywords = m_keywordManager->getKeywords(candidateDevice->Id);
-                                       std::vector<shared::CDataContainer> commonKeywords;
-                                       // Iterate through reference keywords to find a common keyword in candidateDevice
-                                       for (const auto& refKeyword : refKeywords)
-                                       {
-                                          // Iterate through candidate keywords and remove consumed candidate to not used it more than one time
-                                          candidateKeywords.erase(
-                                             std::remove_if(candidateKeywords.begin(),
-                                                            candidateKeywords.end(),
-                                                            [&commonKeywords, &candidateDevice, &refKeyword](
+                                       // Iterate through candidate keywords and remove consumed candidate to not used it more than one time
+                                       candidateKeywords.erase(
+                                          std::remove_if(candidateKeywords.begin(),
+                                                         candidateKeywords.end(),
+                                                         [&commonKeywords, &candidateDevice, &refKeyword](
                                                             const boost::shared_ptr<database::entities::CKeyword>& candidateKeyword)
-                                                            {
-                                                               if (refKeyword->CapacityName == candidateKeyword->CapacityName &&
-                                                                  refKeyword->AccessMode == candidateKeyword->AccessMode &&
-                                                                  refKeyword->Name == candidateKeyword->Name &&
-                                                                  refKeyword->Type == candidateKeyword->Type &&
-                                                                  refKeyword->Units == candidateKeyword->Units &&
-                                                                  refKeyword->TypeInfo == candidateKeyword->TypeInfo &&
-                                                                  refKeyword->Measure == candidateKeyword->Measure &&
-                                                                  refKeyword->Details == candidateKeyword->Details)
-                                                               {
-                                                                  // A common device was found
-                                                                  shared::CDataContainer commonKeyword;
-                                                                  commonKeyword.set("from", refKeyword);
-                                                                  commonKeyword.set("to", candidateKeyword);
-                                                                  commonKeywords.push_back(commonKeyword);
-                                                                  return true;
-                                                               }
-                                                               return false;
-                                                            }),
-                                             candidateKeywords.end());
-                                       }
+                                                      {
+                                                         if (refKeyword->CapacityName == candidateKeyword->CapacityName &&
+                                                            refKeyword->AccessMode == candidateKeyword->AccessMode &&
+                                                            refKeyword->Name == candidateKeyword->Name &&
+                                                            refKeyword->Type == candidateKeyword->Type &&
+                                                            refKeyword->Units == candidateKeyword->Units &&
+                                                            refKeyword->TypeInfo == candidateKeyword->TypeInfo &&
+                                                            refKeyword->Measure == candidateKeyword->Measure &&
+                                                            refKeyword->Details == candidateKeyword->Details)
+                                                         {
+                                                            // A common device was found
+                                                            shared::CDataContainer commonKeyword;
+                                                            commonKeyword.set("from", refKeyword);
+                                                            commonKeyword.set("to", candidateKeyword);
+                                                            commonKeywords.push_back(commonKeyword);
+                                                            return true;
+                                                         }
+                                                         return false;
+                                                      }),
+                                          candidateKeywords.end());
+                                    }
 
-                                       if (commonKeywords.empty())
-                                       {
-                                          // Remove device from compatible devices list if no common keyword
-                                          return true;
-                                       }
+                                    if (commonKeywords.empty())
+                                    {
+                                       // Remove device from compatible devices list if no common keyword
+                                       return true;
+                                    }
 
-                                       commonKeywordsForCompatibleDevices.set(std::to_string(candidateDevice->Id), commonKeywords);
-                                       return false;
-                                    }),
+                                    commonKeywordsForCompatibleDevices.set(std::to_string(candidateDevice->Id), commonKeywords);
+                                    return false;
+                                 }),
                      compatibleDevices.end());
                }
                shared::CDataContainer collection;
@@ -228,10 +229,38 @@ namespace web
                if (parameters.size() >= 2)
                {
                   const auto keywordId = boost::lexical_cast<int>(parameters[2]);
-
                   const auto keyword = m_keywordManager->getKeyword(keywordId);
                   return CResult::GenerateSuccess(keyword);
                }
+               return CResult::GenerateError("invalid parameter. Can not retrieve keyword id in url");
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in retrieving keyword");
+            }
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getKeywordsLastState(const std::vector<std::string>& parameters,
+                                                                                                   const std::string& requestContent) const
+         {
+            try
+            {
+               if (parameters.size() >= 2)
+               {
+                  const auto keywordIds = shared::CDataContainer(requestContent);
+                  const auto keywordListLastData = m_keywordManager->getKeywordListLastData(keywordIds.get<std::vector<int>>());
+                  shared::CDataContainer result;
+                  for (auto keywordLastData:keywordListLastData)
+                  {
+                     result.set(std::to_string(keywordLastData.get<0>()), keywordLastData.get<1>());
+                  }
+                  return CResult::GenerateSuccess(result);
+               }
+
                return CResult::GenerateError("invalid parameter. Can not retrieve keyword id in url");
             }
             catch (std::exception& ex)

@@ -71,6 +71,11 @@ namespace web
             ///\brief   get all the keywords of a device
             //-----------------------------------------
             boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceKeywords(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            
+            //-----------------------------------------
+            ///\brief   get the keywords last state (from unique keyword or keyword list)
+            //-----------------------------------------
+            boost::shared_ptr<shared::serialization::IDataSerializable> getKeywordsLastState(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   get a keyword
