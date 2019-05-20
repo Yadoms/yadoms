@@ -4,28 +4,28 @@
 // Includes needed to compile tested classes
 #include "../../../../sources/shared/shared/enumeration/EnumHelpers.hpp"
 #include "../../../../sources/server/database/entities/Entities.h"
-#include "../../../../sources/shared/shared/enumeration/IExtendedEnum.h"
 #include "../../../../sources/server/database/common/Query.h"
 #include "../../../../sources/server/database/pgsql/PgsqlQuery.h"
+#include "../../../../sources/server/database/sqlite/SQLiteQuery.h"
 #include "../../../../sources/server/database/common/DatabaseTables.h"
 
 
 
 BOOST_AUTO_TEST_SUITE(TestQuery)
 
-bool BothAreSpaces(char lhs, char rhs) { return (lhs == rhs) && (lhs == ' '); }
+bool bothAreSpaces(char lhs, char rhs) { return (lhs == rhs) && (lhs == ' '); }
 
 
 std::string beautifyQuery(database::common::CQuery & q)
 {
    //trim spaces
-   std::string trimm = boost::trim_copy(q.str());
+   auto trimmed = boost::trim_copy(q.str());
    
    //replace any double space by only one
-   std::string::iterator new_end = std::unique(trimm.begin(), trimm.end(), BothAreSpaces);
-   trimm.erase(new_end, trimm.end());
+   const auto newEnd = std::unique(trimmed.begin(), trimmed.end(), bothAreSpaces);
+   trimmed.erase(newEnd, trimmed.end());
 
-   return trimm;
+   return trimmed;
 }
 
 
@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_CASE(InsertInto)
    test1.InsertInto(database::common::CKeywordTable::getTableName(), database::common::CKeywordTable::getDeviceIdColumnName(), database::common::CKeywordTable::getCapacityNameColumnName(), database::common::CKeywordTable::getAccessModeColumnName(), database::common::CKeywordTable::getNameColumnName(), database::common::CKeywordTable::getTypeColumnName(), database::common::CKeywordTable::getMeasureColumnName()).
       Values(1, "temperature", shared::plugin::yPluginApi::EKeywordAccessMode::kGet, "test", shared::plugin::yPluginApi::EKeywordDataType::kNumeric, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute);
 
-   std::string checkQuery = (boost::format("INSERT INTO %1% (%2%,%3%,%4%,%5%,%6%,%7%) VALUES (1,'temperature','Get','test','Numeric','Absolute')") % database::common::CKeywordTable::getTableName().GetName() % database::common::CKeywordTable::getDeviceIdColumnName().GetName() % database::common::CKeywordTable::getCapacityNameColumnName().GetName() % database::common::CKeywordTable::getAccessModeColumnName().GetName() % database::common::CKeywordTable::getNameColumnName().GetName() % database::common::CKeywordTable::getTypeColumnName().GetName() % database::common::CKeywordTable::getMeasureColumnName().GetName()).str();
+   const auto checkQuery = (boost::format("INSERT INTO %1% (%2%,%3%,%4%,%5%,%6%,%7%) VALUES (1,'temperature','Get','test','Numeric','Absolute')") % database::common::CKeywordTable::getTableName().GetName() % database::common::CKeywordTable::getDeviceIdColumnName().GetName() % database::common::CKeywordTable::getCapacityNameColumnName().GetName() % database::common::CKeywordTable::getAccessModeColumnName().GetName() % database::common::CKeywordTable::getNameColumnName().GetName() % database::common::CKeywordTable::getTypeColumnName().GetName() % database::common::CKeywordTable::getMeasureColumnName().GetName()).str();
    BOOST_CHECK_EQUAL(beautifyQuery(test1), checkQuery);
 
 
@@ -86,9 +86,29 @@ BOOST_AUTO_TEST_CASE(Update)
       Where(database::common::CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, 42).
       And(database::common::CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, "2.42635");
 
-   std::string checkQuery = (boost::format("UPDATE %1% SET friendlyName = 'garage' WHERE deviceId = 42 AND name = '2.42635'") % database::common::CKeywordTable::getTableName().GetName()).str();
+   const auto checkQuery = (boost::format("UPDATE %1% SET friendlyName = 'garage' WHERE deviceId = 42 AND name = '2.42635'") % database::common::CKeywordTable::getTableName().GetName()).str();
    BOOST_CHECK_EQUAL(beautifyQuery(test1), checkQuery);
 
+}
+
+BOOST_AUTO_TEST_CASE(WhereIn)
+{
+   const std::vector<int> intData = { 3, 8, 25, 7, 12 };
+   database::pgsql::CPgsqlQuery intPgsqlQuery;
+   intPgsqlQuery.Select("column1").From("table").WhereIn("column2", intData);
+   BOOST_CHECK_EQUAL(beautifyQuery(intPgsqlQuery), "SELECT 'column1' FROM 'table' WHERE 'column2' IN (3,8,25,7,12)");
+   database::sqlite::CSQLiteQuery intSQLiteQuery;
+   intSQLiteQuery.Select("column1").From("table").WhereIn("column2", intData);
+   BOOST_CHECK_EQUAL(beautifyQuery(intSQLiteQuery), "SELECT 'column1' FROM 'table' WHERE 'column2' IN (3,8,25,7,12)");
+
+
+   const std::vector<std::string> strData = { "value1", "value2", "value3" };
+   database::pgsql::CPgsqlQuery strPgsqlQuery;
+   strPgsqlQuery.Select("column1").From("table").WhereIn("column2", strData);
+   BOOST_CHECK_EQUAL(beautifyQuery(strPgsqlQuery), "SELECT 'column1' FROM 'table' WHERE 'column2' IN ('value1','value2','value3')");
+   database::sqlite::CSQLiteQuery strSQLiteQuery;
+   strSQLiteQuery.Select("column1").From("table").WhereIn("column2", strData);
+   BOOST_CHECK_EQUAL(beautifyQuery(strSQLiteQuery), "SELECT 'column1' FROM 'table' WHERE 'column2' IN ('value1','value2','value3')");
 }
 
 

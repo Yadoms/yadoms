@@ -87,6 +87,11 @@ namespace dataAccessLayer
    {
       return m_keywordRequester->getKeywordLastData(keywordId, throwIfNotExists);
    }
+   
+   std::vector<boost::tuple<int, std::string>> CKeywordManager::getKeywordListLastData(const std::vector<int> keywordIds)
+   {
+      return m_keywordRequester->getKeywordListLastData(keywordIds);
+   }
 
    void CKeywordManager::addKeyword(const database::entities::CKeyword& newKeyword) const
    {

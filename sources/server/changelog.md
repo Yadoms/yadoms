@@ -1,7 +1,8 @@
 ### 2.3.0-beta.4
+* Fix #521 : Change the format of duration keywords
 * Fix #561 : Yadoms update
 * Fix script interpreter startup in debug mode
-* Fix #521 : Change the format of duration keywords
+* Add getKeywordListLastData REST request
 
 ### 2.3.0-beta.3
 * N/A (fixes on RFXCom plugin only)
