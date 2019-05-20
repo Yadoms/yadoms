@@ -77,27 +77,27 @@ namespace shared
          return compare(rhs) == 0;
       }
 
-      int CVersion::major() const
+      int CVersion::getMajor() const
       {
          return m_major;
       }
 
-      int CVersion::minor() const
+      int CVersion::getMinor() const
       {
          return m_minor;
       }
 
-      int CVersion::patch() const
+      int CVersion::getPatch() const
       {
          return m_patch;
       }
 
-      const std::string& CVersion::prerelease() const
+      const std::string& CVersion::getPrerelease() const
       {
          return m_prerelease;
       }
 
-      const std::string& CVersion::buildMetadata() const
+      const std::string& CVersion::getBuildMetadata() const
       {
          return m_buildMetadata;
       }
