@@ -28,13 +28,17 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CWidget::getOneWidget);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("package"), CWidget::findWidgetPackages);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CWidget::addWidget, CWidget::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CWidget::updateOneWidget, CWidget::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CWidget::deleteAllWidgets, CWidget::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CWidget::deleteOneWidget, CWidget::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CWidget::updateOneWidget, CWidget::
+               transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CWidget::deleteAllWidgets, CWidget::transactionalMethod
+            );
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CWidget::deleteOneWidget, CWidget::
+               transactionalMethod);
          }
 
          boost::shared_ptr<shared::serialization::IDataSerializable> CWidget::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
-                                                                                                  const std::vector<std::string>& parameters, const std::string& requestContent) const
+                                                                                                  const std::vector<std::string>& parameters,
+                                                                                                  const std::string& requestContent) const
          {
             auto pTransactionalEngine = m_dataProvider->getTransactionalEngine();
             boost::shared_ptr<shared::serialization::IDataSerializable> result;
@@ -188,7 +192,8 @@ namespace web
             try
             {
                m_dataProvider->getWidgetRequester()->removeAllWidgets();
-               const auto widgetsToAdd = shared::CDataContainer(requestContent).get<std::vector<boost::shared_ptr<database::entities::CWidget>>>(getRestKeyword());
+               const auto widgetsToAdd = shared::CDataContainer(requestContent).get<std::vector<boost::shared_ptr<database::entities::CWidget>>>(
+                  getRestKeyword());
                for (const auto& i : widgetsToAdd)
                   m_dataProvider->getWidgetRequester()->addWidget(*i);
                return CResult::GenerateSuccess();
