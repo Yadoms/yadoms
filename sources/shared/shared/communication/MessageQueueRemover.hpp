@@ -1,5 +1,5 @@
 #pragma once
-#include <boost/interprocess/interprocess_fwd.hpp>
+#include <boost/interprocess/ipc/message_queue.hpp>
 
 namespace shared
 {
