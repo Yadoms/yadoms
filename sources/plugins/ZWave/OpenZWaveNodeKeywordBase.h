@@ -26,6 +26,8 @@ public:
    virtual void updateValue(OpenZWave::ValueID& value);
    virtual shared::CDataContainer serialize();
    virtual boost::shared_ptr<shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo> & getTypeInformation() override;
+   int getIndex() override;
+   ECommandClass getCommandClass() override;
    // [END] IOpenZWaveKeyword implementation
 
 protected:

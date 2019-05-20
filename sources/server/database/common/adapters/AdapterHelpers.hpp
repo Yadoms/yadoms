@@ -209,8 +209,8 @@
    public: \
       ADAPTER_CLASS(_tablename) (); \
       virtual~ ADAPTER_CLASS(_tablename)(); \
-      bool adapt(boost::shared_ptr<IResultHandler> resultHandler); \
-      std::vector<boost::shared_ptr<ENTITY_CLASS(_tablename)> > getResults() { return m_results; } \
+      bool adapt(boost::shared_ptr<IResultHandler> resultHandler) override; \
+      std::vector<boost::shared_ptr<ENTITY_CLASS(_tablename)> > getResults() override { return m_results; } \
    private: \
       std::vector<boost::shared_ptr<ENTITY_CLASS(_tablename)> > m_results;\
    };

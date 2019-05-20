@@ -8,35 +8,23 @@ function chartViewModel() {
     this.seriesUuid = [];
     this.interval = 0;
     this.deviceInfo = [];
-    
-    // The unit of the plot
-    this.unit = [];
-    
+    this.keywordPosition = [];
+    this.unit = [];                      // The unit of the plot
     this.differentialDisplay = [];
     this.incompatibility = false;
     this.serverTime = null;
     this.precision = [];
-    this.ConfigurationLegendLabels="";
+    this.ConfigurationLegendLabels = "";
     this.timeDeffered = null;
-    
-    // defined by the configuration of the widget chart for cleaning old points
-    this.cleanValue = 0;
+    this.cleanValue = 0;                  // defined by the configuration of the widget chart for cleaning old points
     this.prefix = "";
-    
-    //defined by the configuration of the widget chart for adding new summary points for continuous display
-    this.summaryTimeBetweenNewPoint = 0;
-    
-    //This variable is used in differential display
-    this.chartLastValue = [];
-    
-    //this variable is for the selection of the computed value used for the chart (min, avg, max)
-    this.periodValueType = [];
-    
-    // This variable is only used for keyword of type enum. It returns the plugin instance type for this keyword
-    this.pluginInstanceType = [];
-    
-    // Adaptation coefficient, if units have been adapted
-    this.coeff = 1;
+    this.summaryTimeBetweenNewPoint = 0;  // defined by the configuration of the widget chart for adding new summary points for continuous display
+    this.chartLastXPosition = [];         // This variable is used to know the last x position, and used to add new values in continuous display
+    this.chartLastValue = [];             // This variable is used in differential display
+    this.periodValueType = [];            // This variable is for the selection of the computed value used for the chart (min, avg, max)
+    this.pluginInstanceType = [];         // This variable is only used for keyword of type enum. It returns the plugin instance type for this keyword
+    this.coeff = [];                      // Adaptation coefficient, if units have been adapted
+    this.automaticScale = true;           // Automatic unit scale
 
     /**
      * Configure the toolbar
@@ -132,8 +120,6 @@ function chartViewModel() {
         var self = this;
         return function (e) {
           try{
-             console.log(this);
-             console.log(self);
              self.chart.exportChartLocal({
                  type: $(e.currentTarget).attr("mime-type"),
                  filename: 'export'
@@ -187,7 +173,10 @@ function chartViewModel() {
                 chart: {
                     type: 'line',
                     animation: false,
-                    marginTop: 10
+                    marginTop: 10,
+                    zoomType: "xy",
+                    panning: true,
+                    panKey: 'shift'
                 },
                 boost: {
                    allowForce: true,
@@ -250,6 +239,16 @@ function chartViewModel() {
                 plotOptions: {
                     bar: {
                         pointPadding: 0.2
+                    },
+                    series: {
+                       events: {
+                          hide: function () {
+                             this.chart.keyword[this.keywordTabId].visible = this.visible;
+                          },
+                          show: function () {
+                             this.chart.keyword[this.keywordTabId].visible = this.visible;
+                          }                          
+                       }
                     }
                 },
                 tooltip: {
@@ -260,9 +259,9 @@ function chartViewModel() {
                         $.each(this.points, function () {
                             if (!this.series.hideInLegend) {
                                 if (isNullOrUndefined(this.point.low)) { //Standard serie
-                                   if (this.series.chart.keyword[this.series.keywordTabId].type === "Enum") {
+                                   if (this.series.chart.keyword[this.series.keywordTabId].dataType === "Enum") {
                                       s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
-                                        this.series.chart.keyword[this.series.index].typeInfo.translatedValues[parseInt(this.y)];
+                                        this.series.chart.keyword[this.series.keywordTabId].typeInfo.translatedValues[parseInt(this.y)];
                                    }else {
                                     s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
                                         this.series.name + " : " + roundNumber(this.y, this.series.precision) + " " + this.series.units;
@@ -360,6 +359,10 @@ function chartViewModel() {
         if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
             return;
         
+        if (!isNullOrUndefined(self.widget.configuration.automaticScale)){
+           self.automaticScale = parseBool(self.widget.configuration.automaticScale);
+        }
+        
         var intervalConfiguration = compatibilityManagement(self.widget.configuration.interval);
         self.configureToolbar(intervalConfiguration);
         self.interval = intervalConfiguration.substring(0,intervalConfiguration.indexOf("/"));
@@ -379,66 +382,70 @@ function chartViewModel() {
         
         //we create an uuid for each serie
         $.each(self.widget.configuration.devices, function (index, device) {
+            var keywordId = device.content.source.keywordId;
+            //Register the keyword position into the tab
+            self.keywordPosition[keywordId] = index;
+            
             //we update uuid if they don't exist
-            if (isNullOrUndefined(self.seriesUuid[index]))
-                self.seriesUuid[index] = createUUID();
+            if (isNullOrUndefined(self.seriesUuid[keywordId]))
+                self.seriesUuid[keywordId] = createUUID();
             
             // reading the precision for the display of the value and the unit
             if (!isNullOrUndefined(device.content.advancedConfiguration.content.precision))
-               self.precision[index] = parseInt(device.content.advancedConfiguration.content.precision, 10);
+               self.precision[keywordId] = parseInt(device.content.advancedConfiguration.content.precision, 10);
             else
-               self.precision[index] = 1;
+               self.precision[keywordId] = 1;
             
             var deffered = self.widgetApi.getDeviceInformation(device.content.source.deviceId);
             arrayOfDeffered.push(deffered);
             
             deffered
             .done(function (device) {
-               self.deviceInfo[index] = device;
+               self.deviceInfo[keywordId] = device;
             })
             .fail(function (error) {
                self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
             });
 
-            keywords.push(device.content.source.keywordId);
+            keywords.push(keywordId);
         });
         
         var defferedPluginInstance = new $.Deferred();
         arrayOfDeffered.push(defferedPluginInstance);
         
-        var deffered2 = self.widgetApi.getKeywordsInformation(keywords, ["accessMode", "capacity", "friendlyName", "unit", "measure", "dataType"]);
+        var deffered2 = self.widgetApi.getKeywordsInformation(keywords, ["accessMode", "capacity", "friendlyName", "unit", "measure", "dataType", "pluginId", "typeInfo"]);
          arrayOfDeffered.push(deffered2);
          deffered2.done(function (keywordsInformation) {
             $.each(keywordsInformation, function (index, keyword) {
-                self.chart.keyword[index] = keyword;
-                //self.chart.keyword[index].typeInfo.translatedValues = [];
+                self.chart.keyword[keyword.keywordId] = keyword;
+                self.chart.keyword[keyword.keywordId].visible = true;
 
                 function measureManagement(measure){
                   if (measure === "Cumulative"){
-                     self.differentialDisplay[index] = true;
-                     self.periodValueType[index] = "max";
+                     self.differentialDisplay[keyword.keywordId] = true;
+                     self.periodValueType[keyword.keywordId] = "max";
                   }
                   else{ // Default values and Absolute value
-                     self.differentialDisplay[index] = false;
-                     self.periodValueType[index] = "avg";
+                     self.differentialDisplay[keyword.keywordId] = false;
+                     self.periodValueType[keyword.keywordId] = "avg";
                   }
                 }
                 
                 try{
-                   if (parseBool(self.widget.configuration.devices[index].content.advancedConfiguration.checkbox)){
-                      self.differentialDisplay[index] = (self.widget.configuration.devices[index].content.advancedConfiguration.content.differentialDisplay ==="relative") ? true : false;
-                      self.periodValueType[index] = self.widget.configuration.devices[index].content.advancedConfiguration.content.periodtype;
+                   if (parseBool(self.widget.configuration.devices[self.keywordPosition[keyword.keywordId]].content.advancedConfiguration.checkbox)){
+                      self.differentialDisplay[keyword.keywordId] = (self.widget.configuration.devices[self.keywordPosition[keyword.keywordId]].content.advancedConfiguration.content.differentialDisplay ==="relative") ? true : false;
+                      self.periodValueType[keyword.keywordId] = self.widget.configuration.devices[self.keywordPosition[keyword.keywordId]].content.advancedConfiguration.content.periodtype;
 
                    }else{ // automatic managment : the managment of the information is done from the measure type of the keyword
                       measureManagement(keyword.measure);
                   }
                }
                catch(error){
-                  console.log('error detecting during defferential configuration display => automatic management.');
+                  console.log('error detecting during differential configuration display => automatic management');
                   measureManagement(keyword.measure);
                }
                
-               if (self.differentialDisplay[index] && self.widget.configuration.devices[index].content.PlotType === "arearange"){
+               if (self.differentialDisplay[keyword.keywordId] && self.widget.configuration.devices[self.keywordPosition[keyword.keywordId]].content.PlotType === "arearange"){
                   notifyError($.t("widgets.chart:incompatibilityDifferential"), "error");
                   self.incompatibility = true;
                   return;
@@ -451,11 +458,12 @@ function chartViewModel() {
                if (isEnumVariable(keyword)) {
                   self.widgetApi.getPluginInstanceInformation(keyword.pluginId)
                   .done(function (pluginInstance) {
-                     self.pluginInstanceType[index] = pluginInstance.type;
+                     self.pluginInstanceType[keyword.keywordId] = pluginInstance.type;
+                     self.chart.keyword[keyword.keywordId].typeInfo.translatedValues = [];
                      // Translate enum values only for enum keyword
-                     $.each(self.chart.keywordInfo[index].typeInfo.values, function (index2, value) {
-                        self.chart.keyword[index].typeInfo.translatedValues[index2] = $.t("plugins." + self.pluginInstanceType[index] + ":enumerations." + self.chart.keyword[index].typeInfo.name + ".values." + value, { defaultValue:value} );
-                     });                        
+                     $.each(self.chart.keyword[keyword.keywordId].typeInfo.values, function (index2, value) {
+                        self.chart.keyword[keyword.keywordId].typeInfo.translatedValues[index2] = $.t("plugins." + self.pluginInstanceType[keyword.keywordId] + ":enumerations." + self.chart.keyword[keyword.keywordId].typeInfo.name + ".values." + value, { defaultValue:value} );
+                     });
                      defferedPluginInstance.resolve();
                   })
                   .fail(defferedPluginInstance.reject);
@@ -520,6 +528,8 @@ function chartViewModel() {
     this.refreshData = function (interval) {
        var self = this;
        var d = new $.Deferred();
+       var plot = [];
+       var range = [];    
        
        if (self.chart) {
          //we save interval in the chart
@@ -537,51 +547,60 @@ function chartViewModel() {
                self.chart.yAxis[0].remove(false);
 
            var arrayOfDeffered = [];
+           var arrayOfDeffered1 = [];
+           var arrayOfDeffered2 = [];
            self.chartLastValue = [];
            
            //we compute the date from the configuration
            var dateFrom = calculateBeginDate(interval, self.serverTime, self.prefix);
            changexAxisBound(self.chart, dateFrom);
            var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
-           var prefixUri = "/" + self.prefix;
            var timeBetweenTwoConsecutiveValues = moment.duration(1, self.prefix).asMilliseconds();              
            
            //for each plot in the configuration we request for data
            $.each(self.widget.configuration.devices, function (index, device) {
-               //If the device is a bool, you have to modify
-               if (isBoolVariable(self.chart.keyword[index]) || isEnumVariable(self.chart.keyword[index])) {
+               var prefixUri = "/" + self.prefix;
+               // Index to find all information about each keyword
+               var keywordId = device.content.source.keywordId;
+               
+               // Initialize work tables
+               plot[keywordId] = [];
+               range[keywordId] = [];
+               self.coeff[keywordId] = 1; // Default adaptation coeff for unit
+               
+               //If the device is a bool or a enum, you have to modify
+               if (isBoolVariable(self.chart.keyword[keywordId]) || isEnumVariable(self.chart.keyword[keywordId])) {
                    dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
                    prefixUri = "";                      
-                   deviceIsSummary[index] = false; // We change the summary for the boolean device.
+                   deviceIsSummary[keywordId] = false; // We change the summary for the boolean device.
                } else {
                   // if self.prefix = "minute" then whe want all data
                   if (self.prefix == "minute"){
                    dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime)); // rewriting the final time
                    //we request all data
                    timeBetweenTwoConsecutiveValues = undefined;
-                   deviceIsSummary[index] = false;
+                   deviceIsSummary[keywordId] = false;
                    prefixUri = ""; // rewrite the prefix                          
                  }else if (self.prefix === "week") {
                     // the prefix week doesn't exist at the server side we have to to it manually
                     // we use the day prefix
                     prefixUri = "/day";
-                    deviceIsSummary[index] = true;
+                    deviceIsSummary[keywordId] = true;
                  }else{
-                    deviceIsSummary[index] = true; // By default, it's the summary define above.
+                    deviceIsSummary[keywordId] = true; // By default, it's the summary define above.
                  }
                }
 
                 var deffered = RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
                 arrayOfDeffered.push(deffered);
+                arrayOfDeffered1[keywordId] = new $.Deferred();
+                arrayOfDeffered2[keywordId] = new $.Deferred();
                 deffered.done(function (data) {
-                    //we make the serie
-                    var plot = [];
-                    var range = [];
                     var lastDate;
                     var d;
                     var dataVector = data.data;
 
-                    if (!(deviceIsSummary[index])) {
+                    if (!(deviceIsSummary[keywordId])) {
                         //data comes from acquisition table
                         $.each(data.data, function (index2,value) {
                             lastDate = d;
@@ -589,8 +608,8 @@ function chartViewModel() {
 
                             var v;
                             if (!isNullOrUndefined(value.key)) {
-                               if (isEnumVariable(self.chart.keyword[index])) {
-                                  v= self.chart.keyword[index].typeInfo.values.indexOf(value.key);
+                               if (isEnumVariable(self.chart.keyword[keywordId])) {
+								  v = getKeyByValue(self.chart.keyword[keywordId].typeInfo.values, value.key);
                                }else {
                                   v = parseFloat(value.key);
                                }
@@ -600,14 +619,14 @@ function chartViewModel() {
                             }
                             
                             // The differential display is disabled if the type of the data is enum or boolean
-                            if (self.differentialDisplay[index] && !isBoolVariable(self.chart.keyword[index]) && !isEnumVariable(self.chart.keyword[index])){
-                               if (!isNullOrUndefined(self.chartLastValue[index]))
-                                  plot.push([d, v-self.chartLastValue[index]]);
+                            if (self.differentialDisplay[keywordId] && !isBoolVariable(self.chart.keyword[keywordId]) && !isEnumVariable(self.chart.keyword[keywordId])){
+                               if (!isNullOrUndefined(self.chartLastValue[keywordId]))
+                                  plot[keywordId].push([d, v-self.chartLastValue[keywordId]]);
 
-                               self.chartLastValue[index] = v;
+                               self.chartLastValue[keywordId] = v;
                             }
                             else // standard display
-                               plot.push([d, v]);
+                               plot[keywordId].push([d, v]);
                         });
                     } else {
                         var vMin;
@@ -626,15 +645,16 @@ function chartViewModel() {
                             lastDate = d;
                             d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
                             var vplot;
-                    
-                            if (!isNullOrUndefined(value[self.periodValueType[index]])) {
+
+                            if (!isNullOrUndefined(value[self.periodValueType[keywordId]])) {
                                 // read the computed desired value (avg/min/max)
-                                vplot = parseFloat(value[self.periodValueType[index]]);
+                                vplot = parseFloat(value[self.periodValueType[keywordId]]);
                                 vMin = parseFloat(value.min);
                                 vMax = parseFloat(value.max);
                             } else {
                                self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
                                notifyError($.t("widgets.chart:errorInitialization"));
+                               throw $.t("widgets.chart:errorInitialization");
                             }
 
                             //we manage the missing data
@@ -642,29 +662,29 @@ function chartViewModel() {
                             (lastDate + timeBetweenTwoConsecutiveValues < d)) {
 
                                 if (device.content.PlotType === "arearange")
-                                    range.push([d, null, null]);
+                                    range[keywordId].push([d, null, null]);
 
-                                plot.push([d, null]);
+                                plot[keywordId].push([d, null]);
                             }
                             
                             // The differential display is disabled if the type of the data is enum or boolean
-                            if (self.differentialDisplay[index] && !isBoolVariable(self.chart.keyword[index]) && !isEnumVariable(self.chart.keyword[index])){  
-                                if (self.periodValueType[index] =="avg") {
-                                  if (!isNullOrUndefined(self.chartLastValue[index]))
-                                    plot.push([d, vplot-self.chartLastValue[index]]);
+                            if (self.differentialDisplay[keywordId] && !isBoolVariable(self.chart.keyword[keywordId]) && !isEnumVariable(self.chart.keyword[keywordId])){  
+                                if (self.periodValueType[keywordId] =="avg") {
+                                  if (!isNullOrUndefined(self.chartLastValue[keywordId]))
+                                    plot[keywordId].push([d, vplot-self.chartLastValue[keywordId]]);
                                   
-                                  self.chartLastValue[index] = vplot;
+                                  self.chartLastValue[keywordId] = vplot;
                                }
-                               else if (self.periodValueType[index] =="max") { // In this case, we display vMax-vMin
-                                  plot.push([d, vMax-vMin]);
-                                  self.chartLastValue[index] = vMax;
+                               else if (self.periodValueType[keywordId] =="max") { // In this case, we display vMax-vMin
+                                  plot[keywordId].push([d, vMax-vMin]);
+                                  self.chartLastValue[keywordId] = vMax;
                                }
                             }
                             else{
                                if (device.content.PlotType === "arearange")
-                                   range.push([d, vMin, vMax]);
+                                   range[keywordId].push([d, vMin, vMax]);
 
-                               plot.push([d, vplot]);                                                   
+                               plot[keywordId].push([d, vplot]);                                                   
                             }
                         });
                         
@@ -676,131 +696,11 @@ function chartViewModel() {
                            
                            if ((time - d) > self.summaryTimeBetweenNewPoint){
                                if (device.content.PlotType === "arearange")
-                                    range.push([registerDate, null, null]);
+                                    range[keywordId].push([registerDate, null, null]);
 
-                               plot.push([registerDate, null]);                                             
+                               plot[keywordId].push([registerDate, null]);                                             
                            }
                         }
-                    }
-                    
-                    // Adapt units if needed
-                    adaptValuesAndUnit(plot, range, self.chart.keyword[index].unit, function(newValues, newRange, newUnit, newcoeff){
-                       plot = newValues;
-                       range = newRange;
-                       self.unit[index] = newUnit;
-                       self.coeff = newcoeff;
-                    });
-                    
-                    var axisName;
-                    try{
-                       axisName = createAxis(index, self.chart, self.seriesUuid, self.widget.configuration, self.precision[index], self.unit[index], device);
-                    }catch(error){
-                       console.error (error);
-                    }
-                    
-                    var legendText="";
-                    try{
-                       // series names
-                       if (self.ConfigurationLegendLabels ==="Device")
-                          legendText = self.deviceInfo[index].friendlyName;
-                       else if (self.ConfigurationLegendLabels ==="Keyword")
-                          legendText = self.chart.keyword[index].friendlyName;                                       
-                       else
-                          legendText = self.deviceInfo[index].friendlyName + "/" + self.chart.keyword[index].friendlyName;
-                    }catch(error){
-                       self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
-                    }
-                    
-                    var serie = null;
-                    var legendConfiguration;
-                    try{
-                       legendConfiguration = parseBool(self.widget.configuration.legends.checkbox);
-                    }catch(err){
-                       legendConfiguration = true;
-                    }
-                    
-                    try {
-                       // Standard options
-                       var serieOption = {
-                           id: self.seriesUuid[index],
-                           data: plot,
-                           dataGrouping: {
-                              enabled: false
-                           },
-                           name: legendText,
-                           connectNulls: isBoolVariable(self.chart.keyword[index]), // TODO : false si self.prefix === "minute"
-                           marker: {
-                              enabled: null,
-                              radius: 2,
-                              symbol: "circle"
-                           },
-                           color: device.content.color,
-                           yAxis: axisName,
-                           lineWidth: 2,
-                           showInLegend: legendConfiguration,
-                           animation: false
-                        };
-                       
-                        if (device.content.PlotType === "arearange") { // arearange
-                            serieOption.type = 'line';
-                        }else {                                             // default option
-                            serieOption.step = isBoolVariable(self.chart.keyword[index]);  // For boolean values, create steps.
-                            serieOption.type = device.content.PlotType;
-                        }
-                        
-                        //Add plot
-                        serie = self.chart.addSeries(serieOption, false, false); // Do not redraw immediately
-                            
-                        if (device.content.PlotType === "arearange") {
-                            //Add Ranges
-                            if (deviceIsSummary[index]) {
-                                var serieRange = null;
-                                
-                                serieRange = self.chart.addSeries({
-                                    id: 'range_' + self.seriesUuid[index],
-                                    data: range,
-                                    dataGrouping: {
-                                        enabled: false
-                                    },
-                                    name: legendText[index] + '(Min,Max)',
-                                    linkedTo: self.seriesUuid[index],
-                                    color: device.content.color,
-                                    yAxis: axisName,
-                                    type: device.content.PlotType,
-                                    connectNulls: false,
-                                    lineWidth: 0,
-                                    fillOpacity: 0.3,
-                                    zIndex: 0
-                                }, false, false); // Do not redraw immediately
-
-                                // Add Units and precision for ranges
-                                if (serieRange){
-                                   try{
-                                      serieRange.units = $.t(self.chart.keyword[index].unit);
-                                   }
-                                   catch(error){
-                                      serieRange.units="";
-                                   }
-                                   serieRange.precision = self.precision[index];
-                                   serieRange.keywordTabId = index;
-                                }
-                            }
-                        }
-                    } catch (err2){
-                        console.error('Fail to create serie : ' + err2);
-                    }
-
-                    if (serie){
-                       //we save the unit in the serie for tooltip formatting
-                       try{
-                          serie.units = $.t(self.unit);
-                       }catch(error){
-                          serie.units = "";
-                       }
-                       
-                       // register the precision for each serie into the serie
-                       serie.precision = self.precision[index];
-                       serie.keywordTabId = index;
                     }
                 })
                 .fail(function (error) {
@@ -808,7 +708,201 @@ function chartViewModel() {
                    d.reject();
                 });
            });
+
+           var newPlots = [];
+           var newRanges = [];
+           var newUnits = [];
+           
+           // Unit traitments
            $.when.apply($, arrayOfDeffered).done(function () {
+              // automatic unit
+              if (self.automaticScale){
+                 $.each(self.widget.configuration.devices, function (index, device) {
+                    var keywordId = device.content.source.keywordId;
+                    
+                    // Adapt units if needed
+                    adaptValuesAndUnit(plot[keywordId], range[keywordId], self.chart.keyword[keywordId].unit, function(newValues, newRange, newUnit, newcoeff){
+                       newPlots[keywordId] = newValues;
+                       newRanges[keywordId] = newRange;
+                       newUnits[keywordId] = newUnit;
+                       self.coeff[keywordId] = newcoeff;
+                       arrayOfDeffered1[keywordId].resolve();
+                    });
+                 });
+              }else{
+                 $.each(self.widget.configuration.devices, function (index, device) {
+                    var keywordId = device.content.source.keywordId;
+                    self.unit[keywordId] = self.chart.keyword[keywordId].unit;
+                    arrayOfDeffered1[keywordId].resolve();
+                 });
+              }
+           });
+           
+           // Display each curves
+           $.when.apply($, arrayOfDeffered1).done(function () {
+              // automatic unit
+              if (self.automaticScale){
+                 if (parseBool(self.widget.configuration.oneAxis.checkbox)) { // We the same axis we adapt all identical units the the same correct unit
+                    // Analysis of all adaptations
+                    $.each(self.widget.configuration.devices, function (index, device1) {
+                       var keywordId1 = device1.content.source.keywordId;
+                       
+                       $.each(self.widget.configuration.devices, function (index, device2) {
+                          var keywordId2 = device2.content.source.keywordId;
+                          
+                          if (self.chart.keyword[keywordId1].unit === self.chart.keyword[keywordId2].unit){
+                             // If applicable adaptation are different
+                             if (self.coeff[keywordId1] != self.coeff[keywordId2]){
+                                //We keep the lowest one
+                                if (self.coeff[keywordId1] < self.coeff[keywordId2]){
+                                   // Adapt the second one
+                                   newPlots[keywordId2] = adaptArray(plot[keywordId2], self.coeff[keywordId1]);
+                                   newRanges[keywordId2] = adaptRange(range[keywordId2], self.coeff[keywordId1]);
+                                   newUnits[keywordId2] = newUnits[keywordId1];
+                                   self.coeff[keywordId2] = self.coeff[keywordId1];
+                                }else{
+                                   // Adapt the first one
+                                   newPlots[keywordId1] = adaptArray(plot[keywordId1], self.coeff[keywordId2]);
+                                   newRanges[keywordId1] = adaptRange(range[keywordId1], self.coeff[keywordId2]);
+                                   newUnits[keywordId1] = newUnits[keywordId2];
+                                   self.coeff[keywordId1] = self.coeff[keywordId2];                                
+                                }
+                             }
+                          }
+                       });
+                       
+                       plot[keywordId1] = newPlots[keywordId1];
+                       range[keywordId1] = newRanges[keywordId1];
+                       self.unit[keywordId1] = newUnits[keywordId1];
+                    });
+                 }else{
+                    $.each(self.widget.configuration.devices, function (index, device) {
+                       var keywordId = device.content.source.keywordId;
+                       
+                       plot[keywordId] = newPlots[keywordId];
+                       range[keywordId] = newRanges[keywordId];
+                       self.unit[keywordId] = newUnits[keywordId];
+                    });
+                 }
+              }
+              
+              // Creates all axis and curves
+              $.each(self.widget.configuration.devices, function (index, device) {
+                 var keywordId = device.content.source.keywordId;
+                 
+                 var axisName = createAxis(keywordId, self.chart, self.seriesUuid, self.widget.configuration, self.precision[keywordId], self.unit[keywordId], device);
+                 var legendText="";
+                 
+                 try{
+                    // series names
+                    if (self.ConfigurationLegendLabels ==="Device")
+                       legendText = self.deviceInfo[keywordId].friendlyName;
+                    else if (self.ConfigurationLegendLabels ==="Keyword")
+                       legendText = self.chart.keyword[keywordId].friendlyName;                                       
+                    else
+                       legendText = self.deviceInfo[keywordId].friendlyName + "/" + self.chart.keyword[keywordId].friendlyName;
+                 }catch(error){
+                    self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
+                 }
+                 
+                 var serie = null;
+                 var legendConfiguration;
+                 try{
+                    legendConfiguration = parseBool(self.widget.configuration.legends.checkbox);
+                 }catch(err){
+                    legendConfiguration = true;
+                 }
+                 
+                 if (plot[keywordId].length != 0)
+                    self.chartLastXPosition[keywordId] = plot[keywordId][plot[keywordId].length-1][0];
+                 
+                 try {
+                    // Standard options
+                    var serieOption = {
+                        id: self.seriesUuid[keywordId],
+                        data: plot[keywordId],
+                        dataGrouping: {
+                           enabled: false
+                        },
+                        name: legendText,
+                        connectNulls: isBoolVariable(self.chart.keyword[keywordId]), // TODO : false si self.prefix === "minute"
+                        marker: {
+                           enabled: null,
+                           radius: 2,
+                           symbol: "circle"
+                        },
+                        color: device.content.color,
+                        yAxis: axisName,
+                        lineWidth: 2,
+                        showInLegend: legendConfiguration,
+                        animation: false,
+                        visible: self.chart.keyword[keywordId].visible
+                     };
+                    
+                     if (device.content.PlotType === "arearange") { // arearange
+                         serieOption.type = 'line';
+                     }else {                                             // default option
+                         serieOption.step = isBoolVariable(self.chart.keyword[keywordId]);  // For boolean values, create steps.
+                         serieOption.type = device.content.PlotType;
+                     }
+                     
+                     //Add plot
+                     serie = self.chart.addSeries(serieOption, false, false); // Do not redraw immediately
+
+                     if (device.content.PlotType === "arearange" && deviceIsSummary[keywordId]) {
+                        //Add Ranges
+                        var serieRange = self.chart.addSeries({
+                            id: 'range_' + self.seriesUuid[keywordId],
+                            data: range[keywordId],
+                            dataGrouping: {
+                               enabled: false
+                            },
+                            name: legendText + '(Min,Max)',
+                            linkedTo: self.seriesUuid[keywordId],
+                            color: device.content.color,
+                            yAxis: axisName,
+                            type: device.content.PlotType,
+                            connectNulls: false,
+                            lineWidth: 0,
+                            fillOpacity: 0.3,
+                            zIndex: 0,
+                            visible: self.chart.keyword[keywordId].visible
+                        }, false, false); // Do not redraw immediately
+
+                        // Add Units and precision for ranges
+                        if (serieRange){
+                           try{
+                              serieRange.units = $.t(self.unit[keywordId]);
+                           }
+                           catch(error){
+                              serieRange.units="";
+                           }
+                           serieRange.precision = self.precision[keywordId];
+                           serieRange.keywordTabId = keywordId;
+                        }
+                     }
+                 } catch (err2){
+                     console.error('Fail to create serie : ' + err2);
+                 }
+
+                 if (serie){
+                    //we save the unit in the serie for tooltip formatting
+                    serie.units = $.t(self.unit[keywordId]);
+                    
+                    // register the precision for each serie into the serie
+                    serie.precision = self.precision[keywordId];
+                    serie.keywordTabId = keywordId;
+                 }
+                 arrayOfDeffered2[keywordId].resolve();
+              });
+           })
+          .fail(function (error) {
+             notifyError($.t("widgets.chart:errorDuringGettingDeviceData"), error);
+             arrayOfDeffered2[keywordId].reject();
+          });
+
+          // Final traitment
+           $.when.apply($, arrayOfDeffered2).done(function () {
               self.finalRefresh();
               d.resolve();
            })
@@ -851,34 +945,31 @@ function chartViewModel() {
        var d= null;
        
       $.each(self.widget.configuration.devices, function (index, device) {
-         var serie = self.chart.get(self.seriesUuid[index]);
+         var keywordId = device.content.source.keywordId;
+         var serie = self.chart.get(self.seriesUuid[keywordId]);
          var time = moment(self.serverTime)._d.getTime().valueOf();
-         var lastDate = 0;
           
           if (!isNullOrUndefined(serie)){
-             if ((serie.points.length > 0) && ((time - lastDate) > (self.summaryTimeBetweenNewPoint))){
-                lastDate = serie.points[serie.points.length - 1].x;
-                
-                //debugger;
-                
+             var lastDate = self.chartLastXPosition[keywordId];
+             if (((time - lastDate) > (self.summaryTimeBetweenNewPoint))){
                 switch (self.interval) {
                   case "DAY":
-                     d = self.DisplaySummary(serie, index, 1, device, "days", self.prefix, lastDate);
+                     d = self.DisplaySummary(serie, keywordId, 1, "days", self.prefix, lastDate);
                      break;
                   case "WEEK":
-                     d = self.DisplaySummary(serie, index, 1, device, "weeks", self.prefix, lastDate);
+                     d = self.DisplaySummary(serie, keywordId, 1, "weeks", self.prefix, lastDate);
                      break;
                   case "MONTH":
-                     d = self.DisplaySummary(serie, index, 1, device, "months", self.prefix, lastDate);
+                     d = self.DisplaySummary(serie, keywordId, 1, "months", self.prefix, lastDate);
                      break;
                   case "HALF_YEAR":
-                     d = self.DisplaySummary(serie, index, 6, device, "months", self.prefix, lastDate);
+                     d = self.DisplaySummary(serie, keywordId, 6, "months", self.prefix, lastDate);
                      break
                   case "YEAR":
-                     d = self.DisplaySummary(index, 1, device, "years", self.prefix, lastDate);
+                     d = self.DisplaySummary(serie, keywordId, 1, "years", self.prefix, lastDate);
                      break;
                   case "FIVE_YEAR":
-                     d = self.DisplaySummary(index, 5, device, "years", self.prefix, lastDate);
+                     d = self.DisplaySummary(serie, keywordId, 5, "years", self.prefix, lastDate);
                      break;                     
                   default:
                      break;
@@ -923,13 +1014,13 @@ function chartViewModel() {
       });
     };
    
-    this.DisplaySummary = function (serie, index, nb, device, range, prefix, lastPointDate) {
+    this.DisplaySummary = function (serie, keywordId, nb, range, prefix, lastPointDate) {
         var self = this;
         var d = null;
         try {
             //The goal is to ask to the server the elapsed time only. Example : 22h00 -> 22h59mn59s. 
             //If you ask 22h00 -> 23h00, the system return also the average for 23h. If 23h is not complete, the value will be wrong.
-            var serieRange = self.chart.get('range_' + self.seriesUuid[index]);
+            var serieRange = self.chart.get('range_' + self.seriesUuid[keywordId]);
             var dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf(prefix).subtract(1, prefix + 's'));
             var request_prefix = "";
             
@@ -944,7 +1035,7 @@ function chartViewModel() {
             else
                request_prefix = prefix + "/";
          
-            d = RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + "/" + request_prefix + dateFrom + "/" + dateTo);
+            d = RestEngine.getJson("rest/acquisition/keyword/" + keywordId + "/" + request_prefix + dateFrom + "/" + dateTo);
             d.done(function (data) {
                // If there is no data => return immediatly
                if (data.data.length == 0)
@@ -960,26 +1051,26 @@ function chartViewModel() {
                        var registerDate = DateTimeFormatter.isoDateToDate(vectorToAnalyze[vectorToAnalyze.length-1].date)._d.getTime().valueOf();
                        if (registerDate != serie.points[serie.points.length-1].x){
                           self.chart.hideLoading(); // If a text was displayed before
-                          var valueToDisplay = parseFloat(vectorToAnalyze[vectorToAnalyze.length-1][self.periodValueType[index]]);
+                          var valueToDisplay = parseFloat(vectorToAnalyze[vectorToAnalyze.length-1][self.periodValueType[keywordId]]);
                     
-                          if (self.differentialDisplay[index]){
-                             if (serie && !isNullOrUndefined(self.chartLastValue[index])){
-                                serie.addPoint([registerDate, (valueToDisplay-self.chartLastValue[index])*self.coeff], 
+                          if (self.differentialDisplay[keywordId]){
+                             if (serie && !isNullOrUndefined(self.chartLastValue[keywordId])){
+                                serie.addPoint([registerDate, (valueToDisplay-self.chartLastValue[keywordId])*self.coeff[keywordId]], 
                                                true,  // redraw. When more than 1 => false.
                                                false, // shift if true, one point at left is remove
                                                true); // animation.
                              }
-                             self.chartLastValue[index] = valueToDisplay;
+                             self.chartLastValue[keywordId] = valueToDisplay;
                           }
                           else                              
-                             serie.addPoint([registerDate, valueToDisplay*self.coeff], true, false, true);
+                             serie.addPoint([registerDate, valueToDisplay*self.coeff[keywordId]], true, false, true);
                      
                           //Add also for ranges if any
-                          if (serieRange && !self.differentialDisplay[index]){
+                          if (serieRange && !self.differentialDisplay[keywordId]){
                              serieRange.addPoint([registerDate, 
-                                                  parseFloat(vectorToAnalyze[vectorToAnalyze.length-1].min)*self.coeff, 
-                                                  parseFloat(vectorToAnalyze[vectorToAnalyze.length-1].max)*self.coeff], 
-                                                 true, false, true);
+                                                  parseFloat(vectorToAnalyze[vectorToAnalyze.length-1].min)*self.coeff[keywordId], 
+                                                  parseFloat(vectorToAnalyze[vectorToAnalyze.length-1].max)*self.coeff[keywordId]], 
+                                                  true, false, true);
                           }
                        }
                     }
@@ -989,7 +1080,7 @@ function chartViewModel() {
                        if ((registerDate - serie.points[serie.points.length-1].x) > self.cleanValue)
                           serie.addPoint([registerDate, null], true, false, true);
                        
-                       if (serieRange && !self.differentialDisplay[index])
+                       if (serieRange && !self.differentialDisplay[keywordId])
                        {
                           if ((registerDate - serieRange.points[serieRange.points.length-1].x) > self.cleanValue)
                              serieRange.addPoint([registerDate, null, null], true, false, true);
@@ -1015,18 +1106,19 @@ function chartViewModel() {
     this.onKeywordDeletion = function (keywordId) {
        var self = this;
        
-       if (self.chart){
-          $.each(self.chart.keyword, function (index, keyword) {
-             if (keywordId.id == keyword.id){ // we found the keyword associated, index to the corresponding series
-                var serie = self.chart.get(self.seriesUuid[index]);
-                var serieRange = self.chart.get('range_' + self.seriesUuid[index]);             
-                
-                // Remove corresponding series to the keyword
-                if (serie) serie.remove();
-                if (serieRange) serieRange.remove();
-             }
-          });
-       }
+       if (!self.chart)
+          return;
+
+       $.each(self.chart.keyword, function (index, keyword) {
+          if (keywordId.id == keyword.id){ // we found the keyword associated, index to the corresponding series
+             var serie = self.chart.get(self.seriesUuid[index]);
+             var serieRange = self.chart.get('range_' + self.seriesUuid[index]);             
+             
+             // Remove corresponding series to the keyword
+             if (serie) serie.remove();
+             if (serieRange) serieRange.remove();
+          }
+       });
     };
     
     /**
@@ -1062,7 +1154,7 @@ function chartViewModel() {
          try {
              $.each(self.widget.configuration.devices, function (index, device) {
                  if (keywordId === device.content.source.keywordId && self.chart) {
-                     var serie = self.chart.get(self.seriesUuid[index]);
+                     var serie = self.chart.get(self.seriesUuid[keywordId]);
                      // If a serie is available
                      if (!isNullOrUndefined(serie) && data.date!=="" & data.value!=="") {
                          // others points are treated into the onTime function
@@ -1071,15 +1163,15 @@ function chartViewModel() {
                             var isolastdate = DateTimeFormatter.isoDateToDate(data.date)._d.getTime().valueOf();
                             if (time - isolastdate < 3600000){ // Only if the last value is in last hour
                                self.chart.hideLoading(); // If a text was displayed before
-                               if (self.differentialDisplay[index]){
-                                  if (serie.points.length > 0 && !isNullOrUndefined(self.chartLastValue[index]))
-                                     serie.addPoint([isolastdate, (parseFloat(data.value) - self.chartLastValue[index])*self.coeff], true, false, true);
-                                  self.chartLastValue[index] = parseFloat(data.value);                                                 
-                               }else if (isEnumVariable(index)){
-                                  var value = self.chart.keyword[index].typeInfo.values.indexOf(data.value);
+                               if (self.differentialDisplay[keywordId]){
+                                  if (serie.points.length > 0 && !isNullOrUndefined(self.chartLastValue[keywordId]))
+                                     serie.addPoint([isolastdate, (parseFloat(data.value) - self.chartLastValue[keywordId])*self.coeff[keywordId]], true, false, true);
+                                  self.chartLastValue[keywordId] = parseFloat(data.value);                                                 
+                               }else if (isEnumVariable(keywordId)){
+								  var value = getKeyByValue(self.chart.keyword[keywordId].typeInfo.values, data.value);
                                   serie.addPoint([isolastdate, value], true, false, true);
                                }else
-                                  serie.addPoint([isolastdate, parseFloat(data.value)*self.coeff], true, false, true);
+                                  serie.addPoint([isolastdate, parseFloat(data.value)*self.coeff[keywordId]], true, false, true);
                             }
                          }
                      }

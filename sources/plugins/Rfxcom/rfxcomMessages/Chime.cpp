@@ -17,7 +17,7 @@ namespace rfxcomMessages
    {
       m_signalPower->set(0);
 
-      createSubType(deviceDetails.get<unsigned char>("subType"));
+      createSubType(static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType")));
       m_subTypeManager->set(command, deviceDetails);
       m_id = deviceDetails.get<unsigned int>("id");
 

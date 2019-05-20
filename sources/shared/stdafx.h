@@ -10,6 +10,7 @@
 
 //include only needed files
 #include <boost/algorithm/string.hpp>
+#include <boost/any.hpp>
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 #include <boost/assert.hpp>
@@ -22,7 +23,6 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/preprocessor.hpp>
-#include <boost/property_tree/ptree.hpp>
 #include <boost/regex.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/type_traits/is_enum.hpp>

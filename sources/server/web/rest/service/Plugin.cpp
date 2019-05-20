@@ -28,11 +28,6 @@ namespace web
          {
          }
 
-
-         CPlugin::~CPlugin()
-         {
-         }
-
          const std::string& CPlugin::getRestKeyword() const
          {
             return m_restKeyword;
@@ -113,7 +108,7 @@ namespace web
                   return CResult::GenerateSuccess(m_pluginManager->getInstance(instanceId));
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
@@ -121,7 +116,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving one plugin instance");
+               return CResult::GenerateError("unknown exception in retrieving one plugin instance");
             }
          }
 
@@ -167,21 +162,21 @@ namespace web
          {
             std::vector<boost::shared_ptr<database::entities::CPlugin>> result;
 
-            //liste de toutes les instances
+            // List all instances
             auto hwList = m_pluginManager->getInstanceList();
 
-            //search for manuallyCreatedDevice
+            // Search for manuallyCreatedDevice
             auto pluginList = m_pluginManager->getPluginList();
 
-            for (auto currentInstance = hwList.begin(); currentInstance != hwList.end(); ++currentInstance)
+            for (auto& currentInstance : hwList)
             {
-               if (m_pluginManager->isInstanceRunning(currentInstance->get()->Id))
+               if (m_pluginManager->isInstanceRunning(currentInstance.get()->Id))
                {
-                  const auto matchingInfo = pluginList.find((*currentInstance)->Type);
+                  const auto matchingInfo = pluginList.find(currentInstance->Type);
                   if (matchingInfo != pluginList.end())
                   {
                      if (matchingInfo->second->getSupportManuallyCreatedDevice())
-                        result.push_back(*currentInstance);
+                        result.push_back(currentInstance);
                   }
                }
             }
@@ -206,6 +201,7 @@ namespace web
                   pluginCollection.push_back(plugin->first);
 
                result.set("plugins", pluginCollection);
+
                return CResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)
@@ -234,25 +230,25 @@ namespace web
                auto pluginList = m_pluginManager->getPluginList();
 
                // Filter plugins
-               std::vector<boost::shared_ptr<const shared::CDataContainer>> pluginCollection;
-               for (auto plugin = pluginList.begin(); plugin != pluginList.end(); ++plugin)
+               std::vector<shared::CDataContainer> pluginCollection;
+               for (auto& plugin : pluginList)
                {
-                  if (!plugin->second->isSupportedOnThisPlatform())
+                  if (!plugin.second->isSupportedOnThisPlatform())
                      continue;
 
-                  if (!m_developerMode && boost::starts_with(plugin->first, "dev-"))
+                  if (!m_developerMode && boost::starts_with(plugin.first, "dev-"))
                      continue;
 
                   // Filter returned data (fields)
                   if (fields.empty())
-                     pluginCollection.push_back(plugin->second->getPackage());
+                     pluginCollection.push_back(*plugin.second->getPackage());
                   else
                   {
                      auto pluginData = boost::make_shared<shared::CDataContainer>();
-                     for (auto field = fields.begin(); field != fields.end(); ++field)
-                        pluginData->set(*field, plugin->second->getPackage()->get<std::string>(*field));
+                     for (auto& field : fields)
+                        pluginData->set(field, plugin.second->getPackage()->get<std::string>(field));
 
-                     pluginCollection.push_back(pluginData);
+                     pluginCollection.push_back(*pluginData);
                   }
                }
 
@@ -280,11 +276,11 @@ namespace web
 
                shared::CDataContainer result;
                std::vector<shared::CDataContainer> pluginCollection;
-               for (auto plugin = pluginList.begin(); plugin != pluginList.end(); ++plugin)
+               for (auto& plugin : pluginList)
                {
                   shared::CDataContainer pluginInfo;
-                  pluginInfo.set("type", plugin->first);
-                  pluginInfo.set("package", *(plugin->second->getPackage()));
+                  pluginInfo.set("type", plugin.first);
+                  pluginInfo.set("package", *(plugin.second->getPackage()));
                   pluginCollection.push_back(pluginInfo);
                }
 
@@ -351,17 +347,20 @@ namespace web
                if (parameters.size() >= 4)
                {
                   const auto instanceId = boost::lexical_cast<int>(parameters[1]);
-                  auto query = parameters[3];
-                  shared::CDataContainer queryData(requestContent);
+                  const auto query = parameters[3];
 
-                  const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query, queryData, "");
-                  auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
+                  const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query,
+                                                                                      requestContent.empty() ? shared::CDataContainer() : shared::CDataContainer(requestContent),
+                                                                                      "");
+                  const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
+
                   if (!taskId.empty())
                   {
                      shared::CDataContainer result;
                      result.set("taskId", taskId);
                      return CResult::GenerateSuccess(result);
                   }
+                  
                   return CResult::GenerateError("Fail to get extra query task");
                }
                return CResult::GenerateError("invalid parameter. Not enough parameters in url");
@@ -385,19 +384,22 @@ namespace web
                {
                   const auto instanceId = boost::lexical_cast<int>(parameters[1]);
                   const auto deviceId = boost::lexical_cast<int>(parameters[3]);
-                  auto device = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+                  const auto device = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
 
-                  auto query = parameters[4];
-                  shared::CDataContainer queryData(requestContent);
+                  const auto query = parameters[4];
 
-                  const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query, queryData, device->Name());
-                  auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
+                  const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query,
+                                                                                requestContent.empty() ? shared::CDataContainer() : shared::CDataContainer(requestContent),
+                                                                                device->Name());
+                  const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
+
                   if (!taskId.empty())
                   {
                      shared::CDataContainer result;
                      result.set("taskId", taskId);
                      return CResult::GenerateSuccess(result);
                   }
+                  
                   return CResult::GenerateError("Fail to get extra query task");
                }
                return CResult::GenerateError("invalid parameter. Not enough parameters in url");
@@ -424,7 +426,7 @@ namespace web
                   return CResult::GenerateSuccess();
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
@@ -459,10 +461,10 @@ namespace web
                   if (m_pluginManager->getInstance(instanceId))
                      return CResult::GenerateSuccess(m_pluginManager->getInstanceFullState(instanceId));
 
-                  return CResult::GenerateError("invalid parameter. Can not retreive instance id");
+                  return CResult::GenerateError("invalid parameter. Can not retrieve instance id");
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
@@ -487,7 +489,7 @@ namespace web
                   result.set("isRunning", m_pluginManager->isInstanceRunning(instanceId));
                   return CResult::GenerateSuccess(result);
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
@@ -514,7 +516,7 @@ namespace web
                   return CResult::GenerateSuccess(t);
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retreive pluigin instance id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve plugin instance id in url");
             }
             catch (std::exception& ex)
             {
@@ -545,10 +547,10 @@ namespace web
                      return CResult::GenerateError("Fail to start the plugin instance");
                   }
 
-                  return CResult::GenerateError("invalid parameter. Can not retreive instance id");
+                  return CResult::GenerateError("invalid parameter. Can not retrieve instance id");
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
@@ -571,13 +573,13 @@ namespace web
 
                   const auto pluginInstanceFound = m_pluginManager->getInstance(instanceId);
                   if (!pluginInstanceFound)
-                     return CResult::GenerateError("invalid parameter. Can not retreive instance id");
+                     return CResult::GenerateError("invalid parameter. Can not retrieve instance id");
 
                   m_pluginManager->stopInstance(instanceId);
                   return CResult::GenerateSuccess();
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
@@ -603,7 +605,7 @@ namespace web
                   return CResult::GenerateSuccess(result);
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
             }
             catch (std::exception& ex)
             {
@@ -643,6 +645,9 @@ namespace web
                if (parameters.size() > 1)
                {
                   const auto pluginId = boost::lexical_cast<int>(parameters[1]);
+
+				  if(requestContent.empty())
+					  return CResult::GenerateError("invalid request content. Must not be empty");
 
                   shared::CDataContainer content(requestContent);
                   if (!content.exists("name") || !content.exists("type") || !content.exists("configuration"))
@@ -700,7 +705,7 @@ namespace web
                      default:
                         {
                            m_dataProvider->getDeviceRequester()->removeDevice(device->Id());
-                           return CResult::GenerateError("Unkown plugin result");
+                           return CResult::GenerateError("Unknown plugin result");
                         }
                      }
                   }
@@ -714,7 +719,7 @@ namespace web
                   }
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retreive keyword id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve keyword id in url");
             }
             catch (std::exception& ex)
             {
@@ -722,7 +727,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving keyword");
+               return CResult::GenerateError("unknown exception in retrieving keyword");
             }
          }
 
@@ -764,7 +769,7 @@ namespace web
                         return CResult::GenerateError("The plugin did not respond");
 
                      default:
-                        return CResult::GenerateError("Unkown plugin result");
+                        return CResult::GenerateError("Unknown plugin result");
                      }
                   }
                   catch (shared::exception::CException& ex)
@@ -773,7 +778,7 @@ namespace web
                   }
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retreive plugin id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve plugin id in url");
             }
             catch (std::exception& ex)
             {

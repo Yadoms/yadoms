@@ -22,18 +22,12 @@ namespace web
          }
 
 
-         CWidget::~CWidget()
-         {
-         }
-
-
          void CWidget::configureDispatcher(CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CWidget::getAllWidgets);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CWidget::getOneWidget);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("package"), CWidget::findWidgetPackages);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CWidget::addWidget, CWidget::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword), CWidget::replaceAllWidgets, CWidget::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CWidget::updateOneWidget, CWidget::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CWidget::deleteAllWidgets, CWidget::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CWidget::deleteOneWidget, CWidget::transactionalMethod);
@@ -87,7 +81,7 @@ namespace web
                   const auto widgetFound = m_dataProvider->getWidgetRequester()->getWidget(objectId);
                   return CResult::GenerateSuccess(widgetFound);
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive widget id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve widget id in url");
             }
             catch (std::exception& ex)
             {
@@ -95,7 +89,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving one widget");
+               return CResult::GenerateError("unknown exception in retrieving one widget");
             }
          }
 
@@ -150,9 +144,9 @@ namespace web
                      const auto wi = m_dataProvider->getWidgetRequester()->getWidget(widgetToUpdate.Id());
                      return CResult::GenerateSuccess(wi);
                   }
-                  return CResult::GenerateError("The wiget from URL is different than request content one");
+                  return CResult::GenerateError("The widget from URL is different than request content one");
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive widget id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve widget id in url");
             }
             catch (std::exception& ex)
             {
@@ -176,7 +170,7 @@ namespace web
                   m_dataProvider->getWidgetRequester()->removeWidget(widgetId);
                   return CResult::GenerateSuccess();
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive widget id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve widget id in url");
             }
             catch (std::exception& ex)
             {
@@ -188,21 +182,15 @@ namespace web
             }
          }
 
-
          boost::shared_ptr<shared::serialization::IDataSerializable> CWidget::replaceAllWidgets(const std::vector<std::string>& parameters,
                                                                                                 const std::string& requestContent) const
          {
             try
             {
                m_dataProvider->getWidgetRequester()->removeAllWidgets();
-
                const auto widgetsToAdd = shared::CDataContainer(requestContent).get<std::vector<boost::shared_ptr<database::entities::CWidget>>>(getRestKeyword());
-
-               for (auto i = widgetsToAdd.begin(); i != widgetsToAdd.end(); ++i)
-               {
-                  m_dataProvider->getWidgetRequester()->addWidget(*i->get());
-               }
-
+               for (const auto& i : widgetsToAdd)
+                  m_dataProvider->getWidgetRequester()->addWidget(*i);
                return CResult::GenerateSuccess();
             }
             catch (std::exception& ex)
@@ -247,18 +235,18 @@ namespace web
                   widgetPath += "/";
                widgetPath += "widgets";
 
-               boost::filesystem::path someDir(widgetPath);
-               boost::filesystem::directory_iterator end_itr; // default construction yields past-the-end
+               const boost::filesystem::path someDir(widgetPath);
+               const boost::filesystem::directory_iterator endItr; // default construction yields past-the-end
 
                if (boost::filesystem::exists(someDir) && boost::filesystem::is_directory(someDir))
                {
                   std::vector<shared::CDataContainer> allData;
-                  for (boost::filesystem::directory_iterator dir_iter(someDir); dir_iter != end_itr; ++dir_iter)
+                  for (boost::filesystem::directory_iterator dirItr(someDir); dirItr != endItr; ++dirItr)
                   {
-                     if (boost::filesystem::is_directory(*dir_iter))
+                     if (boost::filesystem::is_directory(*dirItr))
                      {
-                        //dir_iter->m_path
-                        auto packageFile = dir_iter->path().string();
+                        //dirItr->m_path
+                        auto packageFile = dirItr->path().string();
                         if (!boost::algorithm::ends_with(packageFile, "/"))
                            packageFile += "/";
                         packageFile += "package.json";

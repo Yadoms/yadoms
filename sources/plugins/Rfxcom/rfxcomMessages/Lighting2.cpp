@@ -14,10 +14,10 @@ namespace rfxcomMessages
       : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_signalPower})
    {
-      m_subType = deviceDetails.get<unsigned char>("subType");
-      m_houseCode = (m_subType == sTypeKambrook) ? deviceDetails.get<unsigned char>("houseCode") : 0;
+      m_subType = static_cast<unsigned char>(deviceDetails.get<unsigned int>("subType"));
+      m_houseCode = (m_subType == sTypeKambrook) ? static_cast<unsigned char>(deviceDetails.get<unsigned int>("houseCode")) : 0;
       m_id = deviceDetails.get<unsigned int>("id");
-      m_unitCode = deviceDetails.get<unsigned char>("unitCode");
+      m_unitCode = static_cast<unsigned char>(deviceDetails.get<unsigned int>("unitCode"));
 
       m_subTypeManager = createSubType(m_subType);
       m_subTypeManager->set(command);
@@ -39,7 +39,7 @@ namespace rfxcomMessages
       m_subType = static_cast<unsigned char>(subType);
       m_houseCode = m_subType == sTypeKambrook ? (manuallyDeviceCreationConfiguration.get<char>("houseCode", 0) - 'A') : 0;
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
-      m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
+      m_unitCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode"));
       const auto deviceType = manuallyDeviceCreationConfiguration.get<std::string>("type") == "onOff" ? ILighting2Subtype::kOnOff : ILighting2Subtype::kDimmable;
       m_deviceDetails = buildDeviceDetails(m_subType,
                                            m_houseCode,

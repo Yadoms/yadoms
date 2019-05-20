@@ -365,7 +365,7 @@ namespace shared
                throw shared::exception::CException(message);
             }
 
-            UCHAR flowControl;
+            USHORT flowControl;
 
             if (m_flowControl.value() == boost::asio::serial_port_base::flow_control::hardware)
                flowControl = FT_FLOW_XON_XOFF;

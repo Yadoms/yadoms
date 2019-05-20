@@ -7,7 +7,7 @@
   "supportedPlatforms": "all",
   "dependencies": {
     "yadoms": {
-      "minimumVersion": "2.1.0-beta.2"
+      "minimumVersion": "2.3.0-beta.1"
     }
   },
   "configurationSchema": {
@@ -18,6 +18,13 @@
           "type": "system",
           "query": "serialPorts"
         }
+      }
+    },
+    "PairingMode": {
+      "type": "enum",
+      "values": {
+        "auto": "Automatic pairing mode",
+        "manual": "Manual pairing mode"
       }
     }
   },
@@ -625,6 +632,11 @@
           "defaultValue": "noAction"
         }
       }
+    }
+  },
+  "extraQueries": {
+    "pairing": {
+      "iconClass": "fa fa-handshake-o"
     }
   }
 }

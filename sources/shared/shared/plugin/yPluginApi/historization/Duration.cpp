@@ -11,12 +11,15 @@ namespace shared
          namespace historization
          {
             CDuration::CDuration(const std::string& keywordName,
-                                 const EKeywordAccessMode& accessMode)
-               : CSingleHistorizableData<boost::posix_time::time_duration>(keywordName,
-                                                                           CStandardCapacities::Duration(),
-                                                                           accessMode,
-                                                                           boost::posix_time::time_duration(),
-                                                                           EMeasureType::kAbsolute)
+                                 const EKeywordAccessMode& accessMode,
+                                 const EMeasureType& measureType,
+                                 typeInfo::CDoubleTypeInfo& additionalInfo)
+               : CSingleHistorizableData<double>(keywordName,
+                                                 CStandardCapacities::Duration(),
+                                                 accessMode,
+                                                 0.0,
+                                                 measureType,
+                                                 additionalInfo)
             {
             }
 
@@ -27,5 +30,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

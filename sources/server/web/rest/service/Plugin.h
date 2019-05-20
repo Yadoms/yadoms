@@ -19,7 +19,7 @@ namespace web
                              boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                              communication::ISendMessageAsync& messageSender,
                              bool developerMode);
-            virtual ~CPlugin();
+            virtual ~CPlugin() = default;
 
             // IRestService implementation
             void configureDispatcher(CRestDispatcher& dispatcher) override;

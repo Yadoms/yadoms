@@ -81,11 +81,6 @@ namespace web
                if (parameters.size() > 2)
                {
                   const auto keywordId = boost::lexical_cast<int>(parameters[2]);
-
-                  shared::CDataContainer content(requestContent);
-                  const auto infoRequested = content.getWithDefault<std::vector<std::string>>("info",
-                                                                                              std::vector<std::string>());
-
                   shared::CDataContainer result;
                   readKeywordInfo(keywordId, "lastValue", result);
 
@@ -99,7 +94,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving one acquisition");
+               return CResult::GenerateError("unknown exception in retrieving one acquisition");
             }
          }
 
@@ -225,7 +220,7 @@ namespace web
                      }
                      return CResult::GenerateSuccess(result);
                   }
-                  return CResult::GenerateError("invalid parameter. Can not retreive keywords in request content");
+                  return CResult::GenerateError("invalid parameter. Can not retrieve keywords in request content");
                }
                return CResult::GenerateError("invalid parameter.");
             }
@@ -235,7 +230,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving one acquisition");
+               return CResult::GenerateError("unknown exception in retrieving one acquisition");
             }
          }
 
@@ -248,11 +243,10 @@ namespace web
                {
                   shared::CDataContainer content(requestContent);
                   content.printToLog(YADOMS_LOG(information));
-                  if (content.containsChild("keywords"))
+                  if (content.containsChildArray("keywords"))
                   {
                      auto keywords = content.get<std::vector<int>>("keywords");
-                     const auto infoRequested = content.getWithDefault<std::vector<std::string>>("info",
-                                                                                                 std::vector<std::string>());
+                     const auto infoRequested = content.getWithDefault<std::vector<std::string>>("info", std::vector<std::string>());
 
                      // erase all duplicates, if any
                      sort(keywords.begin(), keywords.end());
@@ -270,7 +264,7 @@ namespace web
                      }
                      return CResult::GenerateSuccess(result);
                   }
-                  return CResult::GenerateError("invalid parameter. Can not retreive keywords in request content");
+                  return CResult::GenerateError("invalid parameter. Can not retrieve keywords in request content");
                }
                return CResult::GenerateError("invalid parameter.");
             }
@@ -280,7 +274,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving one acquisition");
+               return CResult::GenerateError("unknown exception in retrieving one acquisition");
             }
          }
 
@@ -321,7 +315,7 @@ namespace web
                   result.set<std::vector<shared::CDataContainer>>("data", objectList);
                   return CResult::GenerateSuccess(result);
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
             }
             catch (std::exception& ex)
             {
@@ -365,7 +359,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in retreiving one acquisition");
+               return CResult::GenerateError("unknown exception in retrieving one acquisition");
             }
          }
 
@@ -396,7 +390,7 @@ namespace web
                   boost::shared_ptr<CStringContainer> result = boost::make_shared<CStringContainer>(allData);
                   return result;
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
             }
             catch (std::exception& ex)
             {
@@ -436,7 +430,7 @@ namespace web
                   boost::shared_ptr<CStringContainer> result = boost::make_shared<CStringContainer>(allData);
                   return result;
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
             }
             catch (std::exception& ex)
             {
@@ -475,7 +469,7 @@ namespace web
                   boost::shared_ptr<CStringContainer> result = boost::make_shared<CStringContainer>(allData);
                   return result;
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
             }
             catch (std::exception& ex)
             {
@@ -514,7 +508,7 @@ namespace web
                   boost::shared_ptr<CStringContainer> result = boost::make_shared<CStringContainer>(allData);
                   return result;
                }
-               return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve parameters in url");
             }
             catch (std::exception& ex)
             {

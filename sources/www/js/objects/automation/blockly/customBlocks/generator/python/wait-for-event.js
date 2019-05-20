@@ -96,7 +96,7 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
 				
 			case "yadoms_wait_for_event_mutator_keyword" : 
 				console.error("Should not enter here");
-				if(this.mutationData_.additionalBlocks[i].condition === "true" || this.mutationData_.additionalBlocks[i].condition === true) {
+				if(parseBool(this.mutationData_.additionalBlocks[i].condition)) {
 					//add the become if
 					operator = Blockly.Yadoms.Python.getOperatorCode(block.getFieldValue("operatorDd" + i));
 					var argument0 = Blockly.Yadoms.Python.castToPython(keyId, outVar);
@@ -126,7 +126,7 @@ Blockly.Python["yadoms_wait_for_event"] = function (block) {
 				
             case "yadoms_wait_for_event_mutator_capacity":
 				console.error("Should not enter here");
-				if(this.mutationData_.additionalBlocks[i].condition === "true" || this.mutationData_.additionalBlocks[i].condition === true) {
+				if(parseBool(this.mutationData_.additionalBlocks[i].condition)) {
 					operator = Blockly.Yadoms.Python.getOperatorCode(block.getFieldValue("operatorDd" + i));
 					//retreive keyword associated to the capacity (the first one), just to know the type of data
 					var argument0 = Blockly.Yadoms.Python.castToPython(Blockly.Yadoms.data.capacities[capacity].id, outVar);

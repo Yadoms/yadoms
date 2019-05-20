@@ -13,12 +13,7 @@ namespace shared
       class CException : public std::exception
       {
       protected:
-         //--------------------------------------------------------------
-         /// \brief	                        Default constructor (only internal usage)
-         //--------------------------------------------------------------
-         CException()
-         {
-         }
+         CException() = default;
 
       public:
          //--------------------------------------------------------------
@@ -27,7 +22,7 @@ namespace shared
          //--------------------------------------------------------------
          explicit CException(const char* message)
          {
-            if (message != NULL)
+            if (message != nullptr)
                m_message = std::string(message);
          }
 
@@ -36,23 +31,15 @@ namespace shared
          {
          }
 
-         //--------------------------------------------------------------
-         /// \brief      Destructor
-         //--------------------------------------------------------------
-         virtual ~CException() throw()
-         {
-         }
+         virtual ~CException() noexcept = default;
 
          //--------------------------------------------------------------
          /// \brief	    Build full message explaining exception reason
          /// \return     message explaining exception reason
          //--------------------------------------------------------------
-         virtual char const* what() const throw() override { return m_message.c_str(); }
+         char const* what() const noexcept override { return m_message.c_str(); }
 
       protected:
-         //--------------------------------------------------------------
-         /// \brief      Message container
-         //--------------------------------------------------------------
          std::string m_message;
       };
    }

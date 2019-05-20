@@ -392,12 +392,17 @@ namespace database
       }
 
 
-      bool CSQLiteRequester::backupSupported()
+      bool CSQLiteRequester::backupSupported() const
       {
          return true;
       }
 
-      void CSQLiteRequester::backupData(const std::string & backupFolder, ProgressFunc reporter)
+      uintmax_t CSQLiteRequester::backupNeededSpace() const
+      {
+         return boost::filesystem::file_size(m_dbFile);
+      }
+
+      void CSQLiteRequester::backupData(const std::string & backupFolder, ProgressFunc reporter) const
       {
          int rc;
          int currentTry = 0;

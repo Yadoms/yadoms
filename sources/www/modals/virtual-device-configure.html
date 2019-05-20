@@ -22,12 +22,12 @@
 </div>
 
 <script>
-    Yadoms.showVirtualDeviceConfigurationModal = function (currentDevice, displayConfiguration, callback) {
+    Yadoms.showVirtualDeviceConfigurationModal = function (currentDevice, createVirtualDevice, callback) {
         assert($.isFunction(callback), "callback must be defined");
 
         buildVirtualDeviceConfigurationSchema()
             .done(function (configurationSchema) {
-                if (!isNullOrUndefined(currentDevice) && displayConfiguration) {
+                if (!isNullOrUndefined(currentDevice) && createVirtualDevice) {
                     // Editing existing device
                     applyCurrentConfiguration(configurationSchema, currentDevice);
                 }
@@ -35,6 +35,15 @@
                 var $modalBody = $("div#virtual-device-configure-modal .modal-body");
                 $modalBody.empty();
 
+                // Activate the button to configure a new time this device
+                // In case of cancel the showConfiguration modal, it's the only way to reactivate the device button
+                if (!isNullOrUndefined(currentDevice)){ // When created, the currentDevice is null
+                   $("div#virtual-device-configure-modal").one('hide.bs.modal', function() {
+                      var $deviceRow = getDeviceDomRow(currentDevice);
+                      addDeviceButtonsEvents($deviceRow ,currentDevice);
+                   });
+                }
+                
                 //we append the common parameters section
                 var friendlyNameParameter = new StringParameterHandler(
                     "modals.virtual-device-configure.",
@@ -60,7 +69,7 @@
                 if ($.isFunction(modelParameter.applyScript))
                     modelParameter.applyScript();
 
-                if (displayConfiguration){
+                if (createVirtualDevice){
                    //we append classic configuration
                    var configMgr = new ConfigurationControlManager(
                        configurationSchema,
@@ -92,12 +101,16 @@
                             .done(function (deviceName) {
                                 modelParameter.getCurrentConfiguration()
                                     .done(function (deviceModel) {
-                                        configMgr.getCurrentConfiguration()
-                                            .done(function (config) {
-                                                $("div#virtual-device-configure-modal")
-                                                    .modal("hide");
-                                                callback(deviceName, deviceModel, config);
-                                            });
+                                        if (createVirtualDevice){ // When we create the virtual device
+                                           configMgr.getCurrentConfiguration()
+                                               .done(function (config) {
+                                                   $("div#virtual-device-configure-modal").modal("hide");
+                                                   callback(deviceName, deviceModel, config);
+                                               });
+                                        }else{ // When we update the virtual device
+                                           $("div#virtual-device-configure-modal").modal("hide");
+                                           callback(deviceName, deviceModel);                                        
+                                        }
                                     });
                             });
                     },

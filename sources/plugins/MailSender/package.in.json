@@ -5,6 +5,11 @@
   "url": "https://github.com/Yadoms/yadoms/wiki/MailSender",
   "credits": "",
   "supportedPlatforms": "all",
+  "dependencies": {
+    "yadoms": {
+      "minimumVersion": "2.3.0-beta.1"
+    }
+  },
   "supportManuallyDeviceCreation": "false",
   "configurationSchema": {
     "Sender": {

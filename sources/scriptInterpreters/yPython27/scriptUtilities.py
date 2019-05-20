@@ -7,6 +7,7 @@
 import sys
 import datetime
 import time
+import json
 
 # Define some constants for waitForEvents results
 WAITFOREVENT_TIMEOUT = 0
@@ -40,6 +41,13 @@ def strToTime(timeAsString):
 def strToDateTime(dateTimeAsString):
    t = time.strptime(dateTimeAsString, "%Y%m%dT%H%M%S.%f")
    return datetime.datetime(t.tm_year, t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min)
+   
+# Convert a duration string, into timedelta object
+# param [in] timedeltaAsString The duration as string HH:MM:SS
+# return A timedelta object
+def strToTimedelta(timedeltaAsString):
+   timeStruct = time.strptime(timedeltaAsString, "%H:%M:%S")
+   return datetime.timedelta(hours=timeStruct.tm_hour, minutes=timeStruct.tm_min, seconds=timeStruct.tm_sec)
    
 # Helper function which compare an ISO datetime string to a datetime object
 # param [in] dateTimeAsString The datetime as ISO string YYYYMMDDTHHMMSS
@@ -88,6 +96,31 @@ def toDatetime(object):
 def readKeywordValue(yApi, keywordId, defaultValue):
    try:
       return yApi.readKeyword(keywordId)
-   except Exception, e:
+   except e as Exception:
       print "Exception in reading keyword value, using default value for the keyword type : " + str(e)
       return defaultValue
+
+      
+class KeywordDetails:
+   def __init__(self, jsonDetails):
+      details = json.loads(jsonDetails)
+      self.id = int(details[u'Id'])
+      self.deviceId = int(details[u'DeviceId'])
+      self.capacityName = details[u'CapacityName']
+      self.accessMode = details[u'AccessMode']
+      self.friendlyName = details[u'FriendlyName']
+      self.type = details[u'Type']
+      self.units = details[u'Units']
+      self.typeInfo = details[u'TypeInfo']
+      self.measure = details[u'Measure']
+      self.details = details[u'Details']
+      self.lastAcquisitionValue = details[u'LastAcquisitionValue']
+      self.lastAcquisitionDate = strToDateTime(details[u'LastAcquisitionDate'])
+
+
+# Read keyword details and populate a Python object
+# param [in] yApi The script Api object
+# param [in] keywordId The keywordid
+# return a Python object
+def readKeywordDetails(yApi, keywordId):
+   return KeywordDetails(yApi.readKeywordDetails(keywordId))

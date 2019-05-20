@@ -14,7 +14,6 @@ IMPLEMENT_PLUGIN(CRfxcom)
 enum
 {
    kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId,
-   // Always start from yApi::IYPluginApi::kPluginFirstEventId
    kEvtPortDataReceived,
    kProtocolErrorRetryTimer,
    kProgressPairingTimer,
@@ -25,7 +24,8 @@ enum
 CRfxcom::CRfxcom()
    : m_logger("debug"),
      m_configurationUpdated(false),
-     m_lastRequest(sizeof(RBUF))
+     m_lastRequest(sizeof(RBUF)),
+     m_lastPluginState(yApi::historization::EPluginState::kUnknown)
 {
 }
 
@@ -35,7 +35,7 @@ CRfxcom::~CRfxcom()
 
 void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+   setPluginState(api, yApi::historization::EPluginState::kCustom, "connecting");
 
    YADOMS_LOG(information) << "RFXCom is starting...";
 
@@ -68,7 +68,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          case yApi::IYPluginApi::kEventStopRequested:
             {
                YADOMS_LOG(information) << "Stop requested";
-               api->setPluginState(yApi::historization::EPluginState::kStopped);
+               setPluginState(api, yApi::historization::EPluginState::kStopped);
                return;
             }
          case yApi::IYPluginApi::kEventDeviceCommand:
@@ -109,7 +109,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
          case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
-               api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+               setPluginState(api, yApi::historization::EPluginState::kCustom, "updateConfiguration");
                onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
 
                break;
@@ -128,13 +128,13 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   else
                   {
                      YADOMS_LOG(error) << "Unsupported query : " << extraQuery->getData()->query();
-                     extraQuery->sendError("customLabels.firmwareUpdate.ErrorInternal");
+                     extraQuery->sendError("customLabels.extraquery.ErrorInternal");
                   }
                }
                else
                {
                   YADOMS_LOG(error) << "Invalid query";
-                  extraQuery->sendError("customLabels.firmwareUpdate.ErrorInternal");
+                  extraQuery->sendError("customLabels.extraquery.ErrorInternal");
                }
                break;
             }
@@ -192,6 +192,14 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          YADOMS_LOG(error) << "The message is not sent and will be discarded";
          errorProcess(api);
+      }
+      catch (std::exception& ex)
+      {
+         YADOMS_LOG(error) << "Error in main loop : " << ex.what();
+      }
+      catch (...)
+      {
+         YADOMS_LOG(error) << "Error in main loop (unknown exception)";
       }
    }
 }
@@ -321,7 +329,7 @@ void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    YADOMS_LOG(information) << "RFXCom port opened";
-   api->setPluginState(yApi::historization::EPluginState::kCustom, "initializing");
+   setPluginState(api, yApi::historization::EPluginState::kCustom, "initializing");
 
    try
    {
@@ -348,11 +356,14 @@ void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi
 {
    YADOMS_LOG(information) << "RFXCom connection was lost";
    if (notification)
-      api->setPluginState(yApi::historization::EPluginState::kError,
-                          notification->getErrorMessageI18n(),
-                          notification->getErrorMessageI18nParameters());
+      setPluginState(api,
+                     yApi::historization::EPluginState::kError,
+                     notification->getErrorMessageI18n(),
+                     notification->getErrorMessageI18nParameters());
    else
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionLost");
+      setPluginState(api,
+                     yApi::historization::EPluginState::kCustom,
+                     "connectionLost");
 
    errorProcess(api);
 }
@@ -414,7 +425,7 @@ void CRfxcom::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    boost::shared_ptr<IRfxcomFirmwareUpdater> updater;
 
-   api->setPluginState(yApi::historization::EPluginState::kCustom, "updateFirmware");
+   setPluginState(api, yApi::historization::EPluginState::kCustom, "updateFirmware");
 
    // First step : initialization. No connection restart if fail.
    try
@@ -514,12 +525,12 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> ap
       if (status.needConfigurationUpdate(m_configuration))
       {
          YADOMS_LOG(error) << "Unable to set configuration as expected, maybe incompatible protocols were selected";
-         api->setPluginState(yApi::historization::EPluginState::kError, "failToConfigure");
+         setPluginState(api, yApi::historization::EPluginState::kError, "failToConfigure");
          throw boost::thread_interrupted();
       }
 
       YADOMS_LOG(information) << "RFXCom is running";
-      api->setPluginState(yApi::historization::EPluginState::kRunning);
+      setPluginState(api, yApi::historization::EPluginState::kRunning);
    }
    else
    {
@@ -530,7 +541,7 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> ap
       }
       m_configurationUpdated = true;
       YADOMS_LOG(information) << "RFXCom is running";
-      api->setPluginState(yApi::historization::EPluginState::kRunning);
+      setPluginState(api, yApi::historization::EPluginState::kRunning);
    }
 }
 
@@ -582,7 +593,31 @@ void CRfxcom::processRfxcomUnknownRfyRemoteMessage(boost::shared_ptr<yApi::IYPlu
 void CRfxcom::processRfxcomAckMessage(const rfxcomMessages::CAck& ack)
 {
    if (ack.isOk())
+   {
       YADOMS_LOG(information) << "RFXCom acknowledge";
+   }
    else
+   {
       YADOMS_LOG(information) << "RFXCom Received acknowledge is KO";
+   }
+}
+
+void CRfxcom::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api,
+                             const yApi::historization::EPluginState& state,
+                             const std::string& customMessageId,
+                             const std::map<std::string, std::string>& customMessageDataParams)
+{
+   if (state != m_lastPluginState ||
+      customMessageId != m_lastPluginStateCustomMessageId ||
+      customMessageDataParams.size() != m_lastPluginStateCustomMessageDataParams.size() ||
+      !std::equal(customMessageDataParams.begin(), customMessageDataParams.end(), m_lastPluginStateCustomMessageDataParams.begin()))
+   {
+      api->setPluginState(state,
+                          customMessageId,
+                          customMessageDataParams);
+
+      m_lastPluginState = state;
+      m_lastPluginStateCustomMessageId = customMessageId;
+      m_lastPluginStateCustomMessageDataParams = customMessageDataParams;
+   }
 }

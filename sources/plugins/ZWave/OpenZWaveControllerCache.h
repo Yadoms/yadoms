@@ -40,15 +40,40 @@ public:
    void UpdateDeviceState(const std::string & device, shared::plugin::yPluginApi::historization::EDeviceState & state);
 
 public:
+	class CDeviceInfoAndState
+	{
+	public:
+		CDeviceInfoAndState()
+		{
+		}
+
+		CDeviceInfoAndState(shared::CDataContainer deviceInfo, shared::plugin::yPluginApi::historization::EDeviceState deviceState)
+			:m_deviceInfo(deviceInfo), m_deviceState(deviceState)
+		{
+		}
+
+		virtual ~CDeviceInfoAndState()
+		{
+		}
+
+		shared::CDataContainer& getDeviceInfo() { return m_deviceInfo; }
+		void setDeviceInfo(shared::CDataContainer &deviceInfo) { m_deviceInfo = deviceInfo; }
+
+		shared::plugin::yPluginApi::historization::EDeviceState& getDeviceState() { return m_deviceState; }
+		void setDeviceState(shared::plugin::yPluginApi::historization::EDeviceState &deviceState) { m_deviceState = deviceState; }
+	private:
+		shared::CDataContainer m_deviceInfo;
+		shared::plugin::yPluginApi::historization::EDeviceState m_deviceState;
+	};
+
    typedef std::vector<boost::shared_ptr<CKeywordContainer>> KeywordList;
    typedef std::map<std::string, KeywordList > KeywordCache;
-   typedef std::pair<shared::CDataContainer, shared::plugin::yPluginApi::historization::EDeviceState> DeviceInfoAndState;
-   typedef std::map<std::string, DeviceInfoAndState > DeviceCache;
+   typedef std::map<std::string, CDeviceInfoAndState > DeviceCache;
    
 
    DeviceCache & getDeviceCache();
 
-   DeviceInfoAndState & getDeviceInfo(const std::string & deviceName);
+   CDeviceInfoAndState & getDeviceInfo(const std::string & deviceName);
 
    KeywordList & getKeywordsForDevice(const std::string & deviceName);
 

@@ -307,8 +307,6 @@ CCurtain::ECommand::ECommand()
 */
 
 
-
-
 //
 /// \brief In the sequence of enum values, the first column is the name
 //
@@ -343,12 +341,10 @@ CCurtain::ECommand::ECommand()
 //
 #define ENUM_EXTRACT_NAME(_elem) BOOST_PP_CAT(k, BOOST_PP_SEQ_ELEM(ENUM_COLUMN_NAME, _elem))
 
-
 //
 /// \brief Give the domain name of a value (in header) : ((Off)(0)) -> kOffValue
 //
 #define ENUM_EXTRACT_DOMAINNAME(_elem) BOOST_PP_CAT(ENUM_EXTRACT_NAME(_elem), Value)
-
 
 //
 /// \brief Give the name of a value (in header) : ((Off)(0)) -> Off
@@ -360,7 +356,6 @@ CCurtain::ECommand::ECommand()
 //
 #define ENUM_EXTRACT_VALUE(_seq) BOOST_PP_SEQ_ELEM(ENUM_COLUMN_VALUE, _seq)
 
-
 //
 /// \brief Give the variable name of an enum value string (in header) : ((Off)(0)) -> OffString
 //
@@ -370,11 +365,6 @@ CCurtain::ECommand::ECommand()
 /// \brief Give the variable name of an enum value string (in header) : ((Off)(0)) -> kOff
 //
 #define ENUM_EXTRACT_CONST_NAME(_seq) ENUM_EXTRACT_NAME_IMPL(BOOST_PP_SEQ_ELEM(ENUM_COLUMN_NAME, _seq))
-
-
-
-
-
 
 //
 /// \brief Macro used to get the enum value CONDITION
@@ -393,19 +383,12 @@ CCurtain::ECommand::ECommand()
 
 //
 /// \brief Macro used to get the enum value (either specified, or generated automatically)
-///		((Off))      -> 0  (or another incremented value)
-///		((Off)(5))   -> 5
+///     ((Off))      -> 0  (or another incremented value)
+///     ((Off)(5))   -> 5
 /// ! the BOOST_PP_IF just return the macro name (true branch or false branch). It must not return directly the branches content
 ///   to preserve compatibility with gcc/clang
 //
 #define DECLARE_VALUE_OR_AUTOINC(_seq, _r) BOOST_PP_IF(DECLARE_VALUE_OR_AUTOINC_CONDITION(_seq), DECLARE_VALUE_OR_AUTOINC_TRUE_BRANCH, DECLARE_VALUE_OR_AUTOINC_FALSE_BRANCH)(_seq, _r)
-
-
-
-
-
-
-
 
 //
 /// \brief Macro used to get the enum name string CONDITION
@@ -424,8 +407,8 @@ CCurtain::ECommand::ECommand()
 
 //
 /// \brief Macro used to get the enum name string (either specified, or generated automatically)
-///		((Off))              -> "off"
-///		((Off)("powerOff"))  -> "powerOff"
+///     ((Off))              -> "off"
+///     ((Off)("powerOff"))  -> "powerOff"
 /// ! the BOOST_PP_IF just return the macro name (true branch or false branch). It must not return directly the branches content
 ///   to preserve compatibility with gcc/clang
 //
@@ -435,23 +418,23 @@ CCurtain::ECommand::ECommand()
 //
 /// \brief Macro used to declare one enum value
 //
-#define DECLARE_ENUM_STATIC_VALUE(r, _enumName, elem)   static const ENUM_CLASSNAME(_enumName) ENUM_EXTRACT_NAME(elem);								
+#define DECLARE_ENUM_STATIC_VALUE(r, _enumName, elem)   static const ENUM_CLASSNAME(_enumName) ENUM_EXTRACT_NAME(elem);
 
 //
 /// \brief Macro used to declare all the enum values
 //
-#define DECLARE_ENUM_STATIC_VALUES(_enumName, _seq)	BOOST_PP_SEQ_FOR_EACH(DECLARE_ENUM_STATIC_VALUE, _enumName, _seq)     
+#define DECLARE_ENUM_STATIC_VALUES(_enumName, _seq) BOOST_PP_SEQ_FOR_EACH(DECLARE_ENUM_STATIC_VALUE, _enumName, _seq)
 
 
 //
 /// \brief Macro used to declare one enum value (constant value, usable in switch/case statements)
 //
-#define DECLARE_DOMAIN_VALUE(r, _notused, i, elem)   ENUM_EXTRACT_DOMAINNAME(elem)  = DECLARE_VALUE_OR_AUTOINC(elem, i),								
+#define DECLARE_DOMAIN_VALUE(r, _notused, i, elem)   ENUM_EXTRACT_DOMAINNAME(elem)  = DECLARE_VALUE_OR_AUTOINC(elem, i),
 
 //
 /// \brief Macro used to declare all the enum values (constant value, usable in switch/case statements)
 //
-#define DECLARE_DOMAIN_VALUES(_seq)	                              \
+#define DECLARE_DOMAIN_VALUES(_seq)                               \
       enum domain   {                                             \
          BOOST_PP_SEQ_FOR_EACH_I(DECLARE_DOMAIN_VALUE, _, _seq)   \
             };
@@ -461,7 +444,7 @@ CCurtain::ECommand::ECommand()
 //
 /// \brief Macro used to declare in header the string of one value
 //
-#define ENUM_DECLARE_STATIC_CONST_NAME(r, _enumName, elem)	static const std::string ENUM_EXTRACT_CONST_STRINGNAME(elem);
+#define ENUM_DECLARE_STATIC_CONST_NAME(r, _enumName, elem)  static const std::string ENUM_EXTRACT_CONST_STRINGNAME(elem);
 
 //
 /// \brief Macro used to declare in header the string of each value
@@ -476,49 +459,49 @@ CCurtain::ECommand::ECommand()
 /// \param [in] _export       The export class specifier (can be __declspec(dllexport/dllimport) for MSVC, or extern "C" for unix systems
 /// \param [in] _seq          The enumeration sequence
 //
-#define DECLARE_ENUM_HEADER_SHARED_TYPE(_enumName, _export, _type, _seq) 											   \
-   class _export ENUM_CLASSNAME(_enumName): public shared::enumeration::IExtendedEnum								\
-   	{																																		\
-	public:																																	\
-		DECLARE_DOMAIN_VALUES(_seq)						    																		\
-		DECLARE_ENUM_STATIC_VALUES(_enumName, _seq)						    													\
-		ENUM_CLASSNAME(_enumName)();																									\
-		ENUM_CLASSNAME(_enumName)(const ENUM_CLASSNAME(_enumName) & valueTocopy);										\
-		explicit ENUM_CLASSNAME(_enumName)(const std::string & valueAsString);	    									\
-		explicit ENUM_CLASSNAME(_enumName)(const char * valueAsString);	    											\
-		explicit ENUM_CLASSNAME(_enumName)(const _type valueAsInt);	    													\
-		virtual ~ENUM_CLASSNAME(_enumName)();																						\
-		operator _type() const;																											\
-		operator std::string() const;																									\
-		ENUM_CLASSNAME(_enumName) & operator=(_type const& obj);																\
-		ENUM_CLASSNAME(_enumName) & operator=(std::string const& obj);														\
-		ENUM_CLASSNAME(_enumName) & operator=(const char * obj);																\
-		ENUM_CLASSNAME(_enumName) & operator=(const ENUM_CLASSNAME(_enumName) & obj);									\
-		ENUM_CLASSNAME(_enumName) const operator() () const;																	\
-		const std::string & toString() const;																						\
-      int toInteger() const;																										   \
-      void logEnum() const;                                                                                 \
-		virtual void fromString(const std::string & val);																		\
-		virtual const std::multimap<int, std::string> getAllValuesAndStrings() const;									\
-		virtual const std::vector<int> getAllValues() const;																	\
-		virtual const std::vector<std::string> getAllStrings() const;														\
-		virtual const std::string & getName() const;																				\
-		static ENUM_CLASSNAME(_enumName) parse(const std::string & val);													\
-		static bool isDefined(const std::string & stringValue);																\
-		static bool isDefined(const int intValue);																				\
-      static std::string toAllString(const std::string & separator);                                        \
-	private:																									                        \
-		static std::string m_name;																										\
-		_type   m_value;																					                        \
-		ENUM_DECLARE_STATIC_CONST_NAMES(_seq);																						\
-   	};																											
+#define DECLARE_ENUM_HEADER_SHARED_TYPE(_enumName, _export, _type, _seq)                  \
+   class _export ENUM_CLASSNAME(_enumName): public shared::enumeration::IExtendedEnum     \
+    {                                                                                     \
+    public:                                                                               \
+        DECLARE_DOMAIN_VALUES(_seq)                                                       \
+        DECLARE_ENUM_STATIC_VALUES(_enumName, _seq)                                       \
+        ENUM_CLASSNAME(_enumName)();                                                      \
+        ENUM_CLASSNAME(_enumName)(const ENUM_CLASSNAME(_enumName) & valueTocopy);         \
+        explicit ENUM_CLASSNAME(_enumName)(const std::string & valueAsString);            \
+        explicit ENUM_CLASSNAME(_enumName)(const char * valueAsString);                   \
+        explicit ENUM_CLASSNAME(_enumName)(const _type valueAsInt);                       \
+        virtual ~ENUM_CLASSNAME(_enumName)();                                             \
+        operator _type() const;                                                           \
+        operator std::string() const;                                                     \
+        ENUM_CLASSNAME(_enumName) & operator=(_type const& obj);                          \
+        ENUM_CLASSNAME(_enumName) & operator=(std::string const& obj);                    \
+        ENUM_CLASSNAME(_enumName) & operator=(const char * obj);                          \
+        ENUM_CLASSNAME(_enumName) & operator=(const ENUM_CLASSNAME(_enumName) & obj);     \
+        ENUM_CLASSNAME(_enumName) const operator() () const;                              \
+        const std::string & toString() const override;                                    \
+        int toInteger() const;                                                            \
+        void logEnum() const;                                                             \
+        void fromString(const std::string & val) override;                                \
+        const std::multimap<int, std::string> getAllValuesAndStrings() const override;    \
+        const std::vector<int> getAllValues() const override;                             \
+        const std::vector<std::string> getAllStrings() const override;                    \
+        const std::string & getName() const override;                                     \
+        static ENUM_CLASSNAME(_enumName) parse(const std::string & val);                  \
+        static bool isDefined(const std::string & stringValue);                           \
+        static bool isDefined(const int intValue);                                        \
+        static std::string toAllString(const std::string & separator);                    \
+    private:                                                                              \
+        static std::string m_name;                                                        \
+        _type   m_value;                                                                  \
+        ENUM_DECLARE_STATIC_CONST_NAMES(_seq);                                            \
+    };
 
 //
 /// \brief Macro used to declare the Enum class header 
 /// \param [in] _enumName     The enumeration name : Test : will give "enum ETest {..."
 /// \param [in] _seq          The enumeration sequence ((On)(0)) ((Off)(1)) ((Dim)(2))
 //
-#define DECLARE_ENUM_HEADER(_enumName, _seq)	DECLARE_ENUM_HEADER_SHARED_TYPE(_enumName, , int, _seq)			
+#define DECLARE_ENUM_HEADER(_enumName, _seq)    DECLARE_ENUM_HEADER_SHARED_TYPE(_enumName, , int, _seq)
 
 //
 /// \brief Macro used to declare the Enum class header with an underlying type
@@ -526,7 +509,7 @@ CCurtain::ECommand::ECommand()
 /// \param [in] _seq          The enumeration sequence ((On)(0)) ((Off)(1)) ((Dim)(2))
 /// \param [in] _type         The enumeration type (int, unsigned int, short,....)
 //
-#define DECLARE_ENUM_HEADER_TYPE(_enumName, _seq, _type)	DECLARE_ENUM_HEADER_SHARED_TYPE(_enumName, , _type, _seq)			
+#define DECLARE_ENUM_HEADER_TYPE(_enumName, _seq, _type)    DECLARE_ENUM_HEADER_SHARED_TYPE(_enumName, , _type, _seq)
 
 //
 /// \brief Macro used to declare the Enum class header with possibility of export/import from/to a shared library
@@ -534,137 +517,105 @@ CCurtain::ECommand::ECommand()
 /// \param [in] _export       The export class specifier (can be __declspec(dllexport/dllimport) for MSVC, or extern "C" for unix systems
 /// \param [in] _seq          The enumeration sequence
 //
-#define DECLARE_ENUM_HEADER_SHARED(_enumName, _export, _seq)   DECLARE_ENUM_HEADER_SHARED_TYPE(_enumName, _export, int, _seq)			
-
-
-
+#define DECLARE_ENUM_HEADER_SHARED(_enumName, _export, _seq)   DECLARE_ENUM_HEADER_SHARED_TYPE(_enumName, _export, int, _seq)
 
 //
 /// \brief Macro used to declare the implementation of GetAsString method for one case
 //
 #define ENUM_DECLARE_GETASSTRING(r, _enumName, elem) case ENUM_EXTRACT_DOMAINNAME(elem): return ENUM_EXTRACT_CONST_STRINGNAME(elem);
 
-
 //
 /// \brief Macro used to declare the implementation of GetAsString method
 //
 #define ENUM_DECLARE_GETASSTRING_IMPL(_seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_GETASSTRING, _, _seq)     
 
-
-
 //
 /// \brief Macro used to declare the implementation of SetFromString method for one case
 //
-#define ENUM_DECLARE_SETFROMSTRING(r, _enumName, elem)									                 \
+#define ENUM_DECLARE_SETFROMSTRING(r, _enumName, elem)                                                   \
    if (boost::iequals(val, ENUM_EXTRACT_NAME_IMPL( ENUM_EXTRACT_NAME_RAW(elem) ).toString()))            \
       m_value = ENUM_EXTRACT_DOMAINNAME(elem);                                                           \
-      else                                                                                
-
+      else
 
 //
 /// \brief Macro used to declare the implementation of SetFromString method
 //
-#define ENUM_DECLARE_SETFROMSTRING_IMPL(_seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_SETFROMSTRING, _, _seq)     
-
-
-
+#define ENUM_DECLARE_SETFROMSTRING_IMPL(_seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_SETFROMSTRING, _, _seq)
 
 //
 /// \brief Macro used to declare the implementation of adding one enumeration value to a (multi)map
 //
-#define ENUM_DECLARE_ADD_ONE_VALUE_AND_STRING(r, _var, elem)  _var.insert(std::make_pair((int)ENUM_EXTRACT_DOMAINNAME(elem), ENUM_EXTRACT_CONST_STRINGNAME(elem)));
-
-
+#define ENUM_DECLARE_ADD_ONE_VALUE_AND_STRING(r, _var, elem) _var.insert(std::make_pair((int)ENUM_EXTRACT_DOMAINNAME(elem), ENUM_EXTRACT_CONST_STRINGNAME(elem)));
 
 //
 /// \brief Macro used to declare the implementation of values lisiting method
 //
-#define ENUM_DECLARE_LIST_ALL_VALUES_AND_STRINGS_IMPL(_var, _seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_ADD_ONE_VALUE_AND_STRING, _var, _seq)     
-
-
+#define ENUM_DECLARE_LIST_ALL_VALUES_AND_STRINGS_IMPL(_var, _seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_ADD_ONE_VALUE_AND_STRING, _var, _seq)
 
 //
 /// \brief Macro used to declare the implementation of adding one enumeration value to a (multi)map
 //
 #define ENUM_DECLARE_ADD_ONE_VALUE(r, _var, elem)  _var.push_back((int)ENUM_EXTRACT_DOMAINNAME(elem));
 
-
-
 //
 /// \brief Macro used to declare the implementation of values lisiting method
 //
-#define ENUM_DECLARE_LIST_ALL_VALUES_IMPL(_var, _seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_ADD_ONE_VALUE, _var, _seq)     
-
+#define ENUM_DECLARE_LIST_ALL_VALUES_IMPL(_var, _seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_ADD_ONE_VALUE, _var, _seq)
 
 //
 /// \brief Macro used to declare the implementation of adding one enumeration value to a (multi)map
 //
 #define ENUM_DECLARE_ADD_ONE_STRING(r, _var, elem)  _var.push_back(ENUM_EXTRACT_CONST_STRINGNAME(elem));
 
-
-
 //
 /// \brief Macro used to declare the implementation of values lisiting method
 //
-#define ENUM_DECLARE_LIST_ALL_STRINGS_IMPL(_var, _seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_ADD_ONE_STRING, _var, _seq)     
+#define ENUM_DECLARE_LIST_ALL_STRINGS_IMPL(_var, _seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_ADD_ONE_STRING, _var, _seq)
 
 //
 /// \brief Macro used to declare the implementation of adding one enumeration value to a (multi)map
 //
 #define ENUM_DECLARE_ONE_TO_ALL_STRINGS_IMPL(r, _var, elem)  result += ENUM_EXTRACT_CONST_STRINGNAME(elem) + _var;
 
-
 //
 /// \brief Macro used to declare the implementation of values lisiting method
 //
-#define ENUM_DECLARE_LIST_TO_ALL_STRINGS_IMPL(_var, _seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_ONE_TO_ALL_STRINGS_IMPL, _var, _seq)     
-
-
-
+#define ENUM_DECLARE_LIST_TO_ALL_STRINGS_IMPL(_var, _seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_ONE_TO_ALL_STRINGS_IMPL, _var, _seq)
 
 //
 /// \brief Macro used to declare the implementation of exists(int) method for one case
 //
 #define ENUM_DECLARE_ISDEFINED_INT(r, _enumName, elem)  case ENUM_EXTRACT_DOMAINNAME(elem):
 
-
-
 //
 /// \brief Macro used to declare the implementation of exists(int) method
 //
-#define ENUM_DECLARE_ISDEFINED_INT_IMPL(_seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_ISDEFINED_INT, _, _seq)     
-
-
-
-
+#define ENUM_DECLARE_ISDEFINED_INT_IMPL(_seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_ISDEFINED_INT, _, _seq)
 
 //
 /// \brief Macro used to declare the implementation of exists(string) method for one case
 //
-#define ENUM_DECLARE_ISDEFINED_STRING(r, _enumName, elem)	                                             \
+#define ENUM_DECLARE_ISDEFINED_STRING(r, _enumName, elem)                                                \
    if (boost::iequals(val, ENUM_EXTRACT_NAME_IMPL(ENUM_EXTRACT_NAME_RAW(elem)).toString()))              \
       return true;                                                                                       \
-      else                                                                                
-
+      else
 
 //
 /// \brief Macro used to declare the implementation of exists(string) method
 //
-#define ENUM_DECLARE_ISDEFINED_STRING_IMPL(_seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_ISDEFINED_STRING, _, _seq)     
-
+#define ENUM_DECLARE_ISDEFINED_STRING_IMPL(_seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_ISDEFINED_STRING, _, _seq)
 
 //
 /// \brief Macro used to declare the definition of one static enum name string with custom definition
 //   
 //#define ENUM_DECLARE_STATIC_CONST_ENUM_IMPL(r, _fullEnumNameAndEnumName, elem) const BOOST_PP_SEQ_ELEM(1, _fullEnumNameAndEnumName) BOOST_PP_SEQ_ELEM(0, _fullEnumNameAndEnumName)::ENUM_EXTRACT_CONST_NAME( elem )( ENUM_EXTRACT_VALUE(elem) );
 #define ENUM_DECLARE_STATIC_CONST_ENUM_IMPL(r, _fullEnumNameAndEnumName, i, elem) \
-   const BOOST_PP_SEQ_ELEM(0, _fullEnumNameAndEnumName) BOOST_PP_SEQ_ELEM(0, _fullEnumNameAndEnumName)::ENUM_EXTRACT_CONST_NAME( elem )( BOOST_PP_SEQ_ELEM(0, _fullEnumNameAndEnumName)::ENUM_EXTRACT_DOMAINNAME(elem) ); 
+   const BOOST_PP_SEQ_ELEM(0, _fullEnumNameAndEnumName) BOOST_PP_SEQ_ELEM(0, _fullEnumNameAndEnumName)::ENUM_EXTRACT_CONST_NAME( elem )( BOOST_PP_SEQ_ELEM(0, _fullEnumNameAndEnumName)::ENUM_EXTRACT_DOMAINNAME(elem) );
 
 //
 /// \brief Macro used to declare the definition of static enum name strings with custom definition
 //   
-#define ENUM_DECLARE_STATIC_CONST_ENUMS_IMPL(_fullEnumNameAndEnumName, _seq) BOOST_PP_SEQ_FOR_EACH_I(ENUM_DECLARE_STATIC_CONST_ENUM_IMPL, _fullEnumNameAndEnumName, _seq)     
-
+#define ENUM_DECLARE_STATIC_CONST_ENUMS_IMPL(_fullEnumNameAndEnumName, _seq) BOOST_PP_SEQ_FOR_EACH_I(ENUM_DECLARE_STATIC_CONST_ENUM_IMPL, _fullEnumNameAndEnumName, _seq)
 
 //
 /// \brief Macro used to declare the definition of one static enum name string
@@ -679,19 +630,19 @@ CCurtain::ECommand::ECommand()
 
 #define CHECK_VALUE(val)      if(!isDefined(val)) {                                                                                                                  \
                                  logEnum();                                                                                                                          \
-                                 YADOMS_LOG(error) << "_fullClassifiedEnumName(" << m_name << ") : Invalid value : " << val << " is not defined";                                      \
+                                 YADOMS_LOG(error) << "_fullClassifiedEnumName(" << m_name << ") : Invalid value : " << val << " is not defined";                    \
                                  throw shared::exception::COutOfRange((boost::format("Invalid enum value. Value =  %1%") % val).str());                              \
                               }
 
 //
 /// \brief Macro used to declare the Enum class implementation with possibility of defining it as a nested class
 /// \param [in] _fullClassifiedEnumName The enumeration name if nested : ex : CMyClass::EMyEnum
-/// \param [in] __enumName       	The namespace to use without full qualified name : EMyEnum
+/// \param [in] __enumName          The namespace to use without full qualified name : EMyEnum
 /// \param [in] _type          The enumeration inner type (can be int, short,...)
 /// \param [in] _seq          The enumeration sequence ((Off)("off")) or ((Off)) . The second parameter is optional. By default this is the first parameter stringized as lower
 //
 #define DECLARE_ENUM_IMPLEMENTATION_NESTED_TYPE(_fullClassifiedEnumName, _enumName, _type, _seq)                                                \
-   std::string _fullClassifiedEnumName::m_name = std::string(BOOST_PP_STRINGIZE(_enumName));													               \
+   std::string _fullClassifiedEnumName::m_name = std::string(BOOST_PP_STRINGIZE(_enumName));                                                    \
    ENUM_DECLARE_STATIC_CONST_ENUMS_IMPL((_fullClassifiedEnumName)(_enumName), _seq)                                                             \
    ENUM_DECLARE_STATIC_CONST_NAMES_IMPL(_fullClassifiedEnumName, _seq)                                                                          \
    _fullClassifiedEnumName::ENUM_CLASSNAME(_enumName)() : m_value( ENUM_EXTRACT_NAME(BOOST_PP_SEQ_HEAD(_seq)) ) {CHECK_VALUE(m_value); }        \
@@ -705,12 +656,12 @@ CCurtain::ECommand::ECommand()
    void _fullClassifiedEnumName::logEnum() const {                                                                                              \
       const std::multimap<int, std::string> allValues = getAllValuesAndStrings();                                                               \
       YADOMS_LOG(information) << "_fullClassifiedEnumName content : ";                                                                          \
-      for(std::multimap<int, std::string>::const_iterator i=allValues.begin();i!=allValues.end();++i) {                                       \
-         YADOMS_LOG(information) << "    " << i->first << " : " << i->second;                                                                  \
+      for(std::multimap<int, std::string>::const_iterator i=allValues.begin();i!=allValues.end();++i) {                                         \
+         YADOMS_LOG(information) << "    " << i->first << " : " << i->second;                                                                   \
       }                                                                                                                                         \
    }                                                                                                                                            \
    _fullClassifiedEnumName::operator std::string() const { return toString(); }                                                                 \
-   _fullClassifiedEnumName const _fullClassifiedEnumName::operator() () const { return _fullClassifiedEnumName(m_value); }				            \
+   _fullClassifiedEnumName const _fullClassifiedEnumName::operator() () const { return _fullClassifiedEnumName(m_value); }                      \
    _fullClassifiedEnumName & _fullClassifiedEnumName::operator=(_type const& obj)                                                               \
       {                                                                                                                                         \
       m_value = obj;                                                                                                                            \
@@ -734,25 +685,25 @@ CCurtain::ECommand::ECommand()
       return *this;                                                                                                                             \
       }                                                                                                                                         \
    const std::string & _fullClassifiedEnumName::toString() const                                                                                \
-   	{                                                                                                                                         \
+    {                                                                                                                                           \
       switch(m_value)                                                                                                                           \
             {                                                                                                                                   \
-		   ENUM_DECLARE_GETASSTRING_IMPL(_seq)                                                                                                    \
-		   default :                                                                                                                              \
+           ENUM_DECLARE_GETASSTRING_IMPL(_seq)                                                                                                  \
+           default :                                                                                                                            \
                logEnum();                                                                                                                       \
-               YADOMS_LOG(error) << "_fullClassifiedEnumName(" << m_name << ")::toString : Invalid value : " << m_value << " is not known";                       \
+               YADOMS_LOG(error) << "_fullClassifiedEnumName(" << m_name << ")::toString : Invalid value : " << m_value << " is not known";     \
                throw shared::exception::COutOfRange((boost::format("Invalid enum value. Value = %1%") % m_value).str());                        \
             }                                                                                                                                   \
       }                                                                                                                                         \
-	void _fullClassifiedEnumName::fromString(const std::string & val)                                                                            \
-   	{                                                                                                                                         \
-		ENUM_DECLARE_SETFROMSTRING_IMPL(_seq)                                                                                                     \
+    void _fullClassifiedEnumName::fromString(const std::string & val)                                                                           \
+    {                                                                                                                                           \
+        ENUM_DECLARE_SETFROMSTRING_IMPL(_seq)                                                                                                   \
          {                                                                                                                                      \
             logEnum();                                                                                                                          \
-            YADOMS_LOG(error) << "_fullClassifiedEnumName(" << m_name << ")::fromString : Invalid value : " << val << " is not known";                            \
+            YADOMS_LOG(error) << "_fullClassifiedEnumName(" << m_name << ")::fromString : Invalid value : " << val << " is not known";          \
             throw shared::exception::COutOfRange((boost::format("Invalid enum string value. Value =  %1%") % val).str());                       \
          }                                                                                                                                      \
-   	}                                                                                                                                         \
+    }                                                                                                                                           \
    _fullClassifiedEnumName _fullClassifiedEnumName::parse(const std::string & val)                                                              \
       {                                                                                                                                         \
       ENUM_CLASSNAME(_enumName) local;                                                                                                          \
@@ -773,25 +724,25 @@ CCurtain::ECommand::ECommand()
          default :                                                                                                                              \
             return false;                                                                                                                       \
             }                                                                                                                                   \
-      }																																			                                 \
-	const std::multimap<int, std::string> _fullClassifiedEnumName::getAllValuesAndStrings() const												            \
-	{																																			                                    \
-		std::multimap<int, std::string> allValues;																								                        \
+      }                                                                                                                                         \
+    const std::multimap<int, std::string> _fullClassifiedEnumName::getAllValuesAndStrings() const                                               \
+    {                                                                                                                                           \
+        std::multimap<int, std::string> allValues;                                                                                              \
         ENUM_DECLARE_LIST_ALL_VALUES_AND_STRINGS_IMPL(allValues, _seq)                                                                          \
-		return allValues;																														                                 \
-	}																																			                                    \
-	const std::vector<int> _fullClassifiedEnumName::getAllValues() const																		                     \
-	{																																			                                    \
-		std::vector<int> allValues;																												                           \
+        return allValues;                                                                                                                       \
+    }                                                                                                                                           \
+    const std::vector<int> _fullClassifiedEnumName::getAllValues() const                                                                        \
+    {                                                                                                                                           \
+        std::vector<int> allValues;                                                                                                             \
         ENUM_DECLARE_LIST_ALL_VALUES_IMPL(allValues, _seq)                                                                                      \
-		return allValues;																														                                 \
-	}																																			                                    \
-	const std::vector<std::string> _fullClassifiedEnumName::getAllStrings() const																                  \
-	{																																			                                    \
-		std::vector<std::string> allStrings;																									                           \
+        return allValues;                                                                                                                       \
+    }                                                                                                                                           \
+    const std::vector<std::string> _fullClassifiedEnumName::getAllStrings() const                                                               \
+    {                                                                                                                                           \
+        std::vector<std::string> allStrings;                                                                                                    \
         ENUM_DECLARE_LIST_ALL_STRINGS_IMPL(allStrings, _seq)                                                                                    \
-		return allStrings;																														                              \
-	}																																			                                    \
+        return allStrings;                                                                                                                      \
+    }                                                                                                                                           \
    std::string _fullClassifiedEnumName::toAllString(const std::string & separator)                                                              \
    {                                                                                                                                            \
       std::string result;                                                                                                                       \
@@ -799,11 +750,10 @@ CCurtain::ECommand::ECommand()
       if(boost::algorithm::ends_with(result, separator)) result.erase(result.rfind(separator));                                                 \
       return result;                                                                                                                            \
    }                                                                                                                                            \
-	const std::string & _fullClassifiedEnumName::getName() const															                                    \
-	{																																			                                    \
-		return m_name;																															                                 \
-	}
-
+    const std::string & _fullClassifiedEnumName::getName() const                                                                                \
+    {                                                                                                                                           \
+        return m_name;                                                                                                                          \
+    }
 
 //
 /// \brief Macro used to declare the Enum class implementation

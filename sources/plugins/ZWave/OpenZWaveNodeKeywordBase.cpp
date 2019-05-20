@@ -75,3 +75,13 @@ bool COpenZWaveNodeKeywordBase::releaseButton()
    }
    return false;
 }
+
+int COpenZWaveNodeKeywordBase::getIndex()
+{
+	return m_valueId.GetIndex();
+}
+
+ECommandClass COpenZWaveNodeKeywordBase::getCommandClass() 
+{
+	return ECommandClass(static_cast<int>(m_valueId.GetCommandClassId()));
+}

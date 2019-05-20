@@ -42,7 +42,6 @@ else()
 	include(cmake/PrecompiledHeader.cmake)
 endif()
 
-
 # Windows specific macro
 if(WIN32)
 	include(cmake/windows.cmake)
@@ -55,9 +54,6 @@ endif()
    
 # Compilers/IDE configurations
 include(cmake/compilers.cmake)
-
-# include debug helpers
-include(cmake/debugger.cmake)
 
 ##################################################################################################
 ## CPack installation preconfiguration
@@ -543,6 +539,10 @@ set(YADOMS_SRC
    server/task/TaskStatus.cpp
    server/task/backup/Backup.h
    server/task/backup/Backup.cpp
+   server/task/exportData/ExportData.h
+   server/task/exportData/ExportData.cpp
+   server/task/packLogs/PackLogs.h
+   server/task/packLogs/PackLogs.cpp
    server/task/plugins/ExtraQuery.h
    server/task/plugins/ExtraQuery.cpp
    
@@ -668,6 +668,7 @@ source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPl
 source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\task  server/task/*.*)
 source_group(server\\task\\backup  server/task/backup/*.*)
+source_group(server\\task\\packLogs  server/task/packLogs/*.*)
 source_group(server\\task\\plugins  server/task/plugins/*.*)
 source_group(server\\update  server/update/*.*)
 source_group(server\\update\\info  server/update/info/*.*)
@@ -744,7 +745,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/adapters/DatabaseAdapters.cpp
 	server/database/common/adapters/GenericAdapter.h
 	server/database/common/adapters/GenericAdapter.cpp
-	server/database/common/adapters/HugeDataVectorAdapter.hpp
+	server/database/common/adapters/HugeDataVectorAdapter.h
+	server/database/common/adapters/HugeDataVectorAdapter.cpp
 	server/database/common/adapters/IResultAdapter.h
 	server/database/common/adapters/MultipleValueAdapter.hpp
 	server/database/common/adapters/SingleValueAdapter.hpp
@@ -788,6 +790,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/versioning/Version_4_1_0.cpp
 	server/database/common/versioning/Version_4_2_0.h
 	server/database/common/versioning/Version_4_2_0.cpp
+	server/database/common/versioning/Version_4_3_0.h
+	server/database/common/versioning/Version_4_3_0.cpp
 	server/database/common/versioning/VersionUpgraderFactory.h
 	server/database/common/versioning/VersionUpgraderFactory.cpp
 	server/database/common/versioning/VersionException.h
@@ -960,10 +964,6 @@ else()
 	add_precompiled_header(yadoms stdafx.h)
 endif()
 
-##################################################################################################
-## Add natvis (allow better debugging within VisualStudio)
-##################################################################################################
-ADD_VS_NATVIS(yadoms)
 
 ##################################################################################################
 ## yadoms-shared

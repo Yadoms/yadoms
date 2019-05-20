@@ -133,7 +133,7 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
             for (var k in schema){
                 if (schema.hasOwnProperty(k)) {
                    for(var typeName in schema[k].types) {
-                     if(schema[k].types[typeName].canBeCreatedManually == "true") {
+                     if(parseBool(schema[k].types[typeName].canBeCreatedManually)) {
                         tmp.type.content[typeName] = {
                            type: "section",
                            name: $.t("plugins." + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".types." + typeName + ".title", { defaultValue: typeName}),

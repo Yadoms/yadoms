@@ -95,6 +95,13 @@ namespace database
       virtual std::string getKeywordLastData(const int keywordId,
                                              bool throwIfNotExists = true) = 0;
 
+      //-----------------------------------------
+      ///\brief      Get the last data of a keywords list
+      ///\param [in] keywordIds  The keyword ids list
+      ///\return     the last acquisition for the keywords
+      //-----------------------------------------
+      virtual std::vector<boost::tuple<int, std::string>> getKeywordListLastData(const std::vector<int> keywordIds) = 0;
+
       //--------------------------------------------------------------
       /// \brief                          Update the keyword blacklist state
       /// \param [in] keywordId           The keyword id

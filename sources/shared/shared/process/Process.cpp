@@ -29,9 +29,9 @@ namespace shared
          try
          {
             Poco::Process::Args args;
-            for (const auto& cmdLineArg : m_commandLine->args())
-               args.push_back(cmdLineArg);
 
+			auto & ar = m_commandLine->args();
+			std::copy(ar.begin(), ar.end(),	std::back_inserter(args));
 
             YADOMS_LOG(debug) << "Start process " << m_commandLine->executable() << " from " << m_commandLine->workingDirectory();
 
@@ -75,7 +75,7 @@ namespace shared
       {
          // Work on local copy of the process handle to avoid to lock mutex while wait for process end
          m_processMutex.lock();
-         auto processHandle = *m_processHandle;
+         const auto processHandle = *m_processHandle;
          m_processMutex.unlock();
 
          if (!!m_processObserver)

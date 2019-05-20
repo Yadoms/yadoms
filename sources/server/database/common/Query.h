@@ -208,6 +208,16 @@ namespace database
          template <class T1, class T2>
          inline CQuery& Where(const T1& field, const std::string& op, const T2& value);
 
+         //
+         /// \brief           Append the where in clause
+         ///                  Where field in("value1", "value2", "value3")
+         /// \param  field    the field name
+         /// \param  values   the list of values
+         /// \return          A reference to itself to allow method chaining
+         //
+         template <class T1, class T2>
+         inline CQuery& WhereIn(const T1& field, const std::vector<T2>& values);
+
 
          //
          /// \brief           Append the where clause with a start parenthesis
@@ -482,6 +492,13 @@ namespace database
                             const T08& field8 = T08(), const T8& value8 = T8(),
                             const T09& field9 = T09(), const T9& value9 = T9(),
                             const T11& field10 = T11(), const T10& value10 = T10());
+
+         //
+         /// \brief           Append custom string to request
+         /// \param  string   the custom string
+         /// \return          A reference to itself to allow method chaining
+         //
+         CQuery& Custom(const std::string& string);
 
 
          //

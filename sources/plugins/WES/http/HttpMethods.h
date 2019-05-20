@@ -31,7 +31,7 @@ namespace http
       /// \param[in]  timeout             timeout for the request
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      boost::property_tree::ptree SendGetRequest(const std::string & url,
+      shared::CDataContainer SendGetRequest(const std::string & url,
                                                  const shared::CDataContainer & parameters,
                                                  const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
@@ -42,7 +42,7 @@ namespace http
       /// \param[in]  timeout             timeout for the request
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      static boost::property_tree::ptree SendGetRequest(const std::string & url,
+      static shared::CDataContainer SendGetRequest(const std::string & url,
                                                         const shared::CDataContainer & credentials,
                                                         const shared::CDataContainer & parameters,
                                                         const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
@@ -58,7 +58,7 @@ namespace http
       static bool SendGetRequest(const std::string & url, 
                                  const shared::CDataContainer& credentials,
                                  const shared::CDataContainer& parameters,
-                                 boost::function1<void, boost::property_tree::ptree&> onReceive,
+                                 boost::function1<void, shared::CDataContainer&> onReceive,
                                  const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
@@ -69,7 +69,7 @@ namespace http
       //--------------------------------------------------------------
       static bool XmlResponseReader(std::istream& stream,
                                     Poco::Net::HTTPResponse& httpresponse,
-                                    boost::property_tree::ptree& treeResponse);
+                                    shared::CDataContainer& treeResponse);
 
    private:
    };

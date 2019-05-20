@@ -57,7 +57,7 @@ function Widget(id, idPage, type, title, sizeX, sizeY, position, configuration) 
     this.listenedKeywords = [];
     
     //list of all keywords {keywordId} to get the last value
-    this.getlastValue = [];
+    this.keywordsToGetlastValue = [];
     
     //list of all waiting acquisitions during the startup of the widget 
     this.waitingAcquisition = [];

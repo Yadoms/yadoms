@@ -62,6 +62,18 @@ namespace i18n
    std::string CClientStrings::BackupClean                                  = "task.backup.clean";
    std::string CClientStrings::BackupSuccess                                = "task.backup.success";
 
+   std::string CClientStrings::PackLogsPrepare                              = "task.packLogs.prepare";
+   std::string CClientStrings::PackLogsCopyFile                             = "task.packLogs.copyfiles";
+   std::string CClientStrings::PackLogsCompress                             = "task.packLogs.compress";
+   std::string CClientStrings::PackLogsClean                                = "task.packLogs.clean";
+   std::string CClientStrings::PackLogsSuccess                              = "task.packLogs.success";
+
+   std::string CClientStrings::ExportDataPrepare                            = "task.exportData.prepare";
+   std::string CClientStrings::ExportDataCreateFile                         = "task.exportData.createfile";
+   std::string CClientStrings::ExportDataCompress                           = "task.exportData.compress";
+   std::string CClientStrings::ExportDataClean                              = "task.exportData.clean";
+   std::string CClientStrings::ExportDataSuccess                            = "task.exportData.success";
+
    std::string CClientStrings::ExtraQuerySuccess                            = "plugins.extraquery.success";
    std::string CClientStrings::ExtraQueryFail                               = "plugins.extraquery.fail";
 

@@ -9,7 +9,7 @@ shared::CDataContainer CConfigurationSchemaFactory::generateForHistorizer(boost:
 {
    if (boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<double> >(historizer))
    {
-      return CConfigurationSchemaFactory::generateForDouble(historizer->getTypeInformation()->serialize());
+      return CConfigurationSchemaFactory::generateForDouble(historizer->getTypeInformation()->serialize(), historizer->getCommandClass());
    }
 
    if (boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<Poco::Int8> >(historizer) ||
@@ -18,22 +18,22 @@ shared::CDataContainer CConfigurationSchemaFactory::generateForHistorizer(boost:
       boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<Poco::UInt8> >(historizer)
       )
    {
-      return CConfigurationSchemaFactory::generateForInteger(historizer->getTypeInformation()->serialize());
+      return CConfigurationSchemaFactory::generateForInteger(historizer->getTypeInformation()->serialize(), historizer->getCommandClass());
    }
 
    if (boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<bool> >(historizer))
    {
-      return CConfigurationSchemaFactory::generateForBool(historizer->getTypeInformation()->serialize());
+      return CConfigurationSchemaFactory::generateForBool(historizer->getTypeInformation()->serialize(), historizer->getCommandClass());
    }
    
    if (boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<std::string> >(historizer))
    {
-      return CConfigurationSchemaFactory::generateForString(historizer->getTypeInformation()->serialize());
+      return CConfigurationSchemaFactory::generateForString(historizer->getTypeInformation()->serialize(), historizer->getCommandClass());
    }
    
    if (boost::dynamic_pointer_cast< COpenZWaveNodeKeywordGeneric<COpenZWaveEnumHandler> >(historizer))
    {
-      return CConfigurationSchemaFactory::generateForEnum(historizer->getTypeInformation()->serialize());
+      return CConfigurationSchemaFactory::generateForEnum(historizer->getTypeInformation()->serialize(), historizer->getCommandClass());
    }
    
    throw shared::exception::CNotSupported("This historizer");
@@ -44,7 +44,7 @@ std::string CConfigurationSchemaFactory::generateValidKeyName(const std::string 
    return boost::replace_all_copy(val, ".", "_");
 }
 
-shared::CDataContainer CConfigurationSchemaFactory::generateForDouble(shared::CDataContainer zwaveTypeInfo)
+shared::CDataContainer CConfigurationSchemaFactory::generateForDouble(shared::CDataContainer zwaveTypeInfo, ECommandClass commandclass)
 {
 /*
    "CurrentCoefficient" : {
@@ -60,9 +60,8 @@ shared::CDataContainer CConfigurationSchemaFactory::generateForDouble(shared::CD
    shared::CDataContainer options;
    options.set("type", "decimal");
    options.set("name", zwaveTypeInfo.get<std::string>("name"));
+   options.set("description", generateDescription(zwaveTypeInfo, commandclass));
 
-   if (zwaveTypeInfo.containsValue("description"))
-      options.set("description", zwaveTypeInfo.get<std::string>("description"));
    if (zwaveTypeInfo.containsValue("min"))
       options.set("minimumValue", zwaveTypeInfo.get<std::string>("min"));
    if (zwaveTypeInfo.containsValue("max"))
@@ -73,7 +72,7 @@ shared::CDataContainer CConfigurationSchemaFactory::generateForDouble(shared::CD
    return options;
 }
 
-shared::CDataContainer CConfigurationSchemaFactory::generateForInteger(shared::CDataContainer zwaveTypeInfo)
+shared::CDataContainer CConfigurationSchemaFactory::generateForInteger(shared::CDataContainer zwaveTypeInfo, ECommandClass commandclass)
 {
    /*
    "offsetHour" : {
@@ -89,9 +88,8 @@ shared::CDataContainer CConfigurationSchemaFactory::generateForInteger(shared::C
    shared::CDataContainer options;
    options.set("type", "int");
    options.set("name", zwaveTypeInfo.get<std::string>("name"));
+   options.set("description", generateDescription(zwaveTypeInfo, commandclass));
 
-   if (zwaveTypeInfo.containsValue("description"))
-      options.set("description", zwaveTypeInfo.get<std::string>("description"));
    if (zwaveTypeInfo.containsValue("min"))
       options.set("minimumValue", zwaveTypeInfo.get<std::string>("min"));
    if (zwaveTypeInfo.containsValue("max"))
@@ -103,7 +101,7 @@ shared::CDataContainer CConfigurationSchemaFactory::generateForInteger(shared::C
 
    return options;
 }
-shared::CDataContainer CConfigurationSchemaFactory::generateForBool(shared::CDataContainer zwaveTypeInfo)
+shared::CDataContainer CConfigurationSchemaFactory::generateForBool(shared::CDataContainer zwaveTypeInfo, ECommandClass commandclass)
 {
    /*
    "enabled" : {
@@ -117,13 +115,10 @@ shared::CDataContainer CConfigurationSchemaFactory::generateForBool(shared::CDat
    shared::CDataContainer options;
    options.set("type", "bool");
    options.set("name", zwaveTypeInfo.get<std::string>("name"));
-
-   if (zwaveTypeInfo.containsValue("description"))
-      options.set("description", zwaveTypeInfo.get<std::string>("description"));
-
+   options.set("description", generateDescription(zwaveTypeInfo, commandclass));
    return options;
 }
-shared::CDataContainer CConfigurationSchemaFactory::generateForString(shared::CDataContainer zwaveTypeInfo)
+shared::CDataContainer CConfigurationSchemaFactory::generateForString(shared::CDataContainer zwaveTypeInfo, ECommandClass commandclass)
 {
    /*
    "ipAddress" : {
@@ -138,13 +133,10 @@ shared::CDataContainer CConfigurationSchemaFactory::generateForString(shared::CD
    shared::CDataContainer options;
    options.set("type", "string");
    options.set("name", zwaveTypeInfo.get<std::string>("name"));
-
-   if (zwaveTypeInfo.containsValue("description"))
-      options.set("description", zwaveTypeInfo.get<std::string>("description"));
-
+   options.set("description", generateDescription(zwaveTypeInfo, commandclass));
    return options;
 }
-shared::CDataContainer CConfigurationSchemaFactory::generateForEnum(shared::CDataContainer zwaveTypeInfo)
+shared::CDataContainer CConfigurationSchemaFactory::generateForEnum(shared::CDataContainer zwaveTypeInfo, ECommandClass commandclass)
 {
    /*
    "timeFormat" : {
@@ -162,12 +154,19 @@ shared::CDataContainer CConfigurationSchemaFactory::generateForEnum(shared::CDat
    shared::CDataContainer options;
    options.set("type", "enum");
    options.set("name", zwaveTypeInfo.get<std::string>("name"));
-
-   if (zwaveTypeInfo.containsValue("description"))
-      options.set("description", zwaveTypeInfo.get<std::string>("description"));
+   options.set("description", generateDescription(zwaveTypeInfo, commandclass));
 
    if (zwaveTypeInfo.containsChild("values"))
       options.set("values", zwaveTypeInfo.get<shared::CDataContainer>("values"));
 
    return options;
+}
+
+std::string CConfigurationSchemaFactory::generateDescription(shared::CDataContainer zwaveTypeInfo, ECommandClass commandclass)
+{
+	std::string descr = (boost::format("0x%02X %s") % commandclass.toInteger() % commandclass.toString()).str();
+	if (zwaveTypeInfo.containsValue("description")) {
+		descr += " : " + zwaveTypeInfo.get<std::string>("description");
+	}
+	return descr;
 }

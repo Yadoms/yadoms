@@ -14,8 +14,8 @@ namespace shared { namespace exception
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       //--------------------------------------------------------------
-      CJSONParse(const std::string& message, const long line)
-         :CException((boost::format("Error parsing JSON data on line %1% : %2%") % line % message).str())
+      CJSONParse(const std::string& message, const long offset)
+         :CException((boost::format("Error parsing JSON data %1% : (%2%)") % message % offset).str())
       {
       }
 

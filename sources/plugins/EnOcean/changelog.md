@@ -1,3 +1,15 @@
+### 1.5.0
+* Issue #557 : D2-05-00 profile : fix the blinds direction (was inverted)
+
+### 1.4.0
+* New feature #553 : use of full compliant Json
+
+### 1.3.0
+* NewFeature #364 : Add reset keyword to devices containing counters (profiles D2-01-05, D2-01-08, D2-01-09, D2-01-0B, D2-01-0C, D2-01-0E)
+
+### 1.2.0
+* Fix #530 : Add manual pairing mode (switch between auto/manual mode in configuration)
+
 ### 1.1.2
 * Fix #495
 

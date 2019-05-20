@@ -14,7 +14,7 @@ namespace web
          {
          public:
             explicit CWidget(boost::shared_ptr<database::IDataProvider> dataProvider, const std::string& webServerPath);
-            virtual ~CWidget();
+            virtual ~CWidget() = default;
 
             // IRestService implementation
             void configureDispatcher(CRestDispatcher& dispatcher) override;

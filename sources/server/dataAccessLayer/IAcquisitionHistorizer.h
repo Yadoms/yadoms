@@ -19,8 +19,8 @@ namespace dataAccessLayer {
 
 	  //--------------------------------------------------------------
       /// \brief           Save a new list of data into base
-      /// \param [in]      keywordId   The list of keyword id
-      /// \param [in]      data        The list of data
+      /// \param [in]      KeywordIdVect   The list of keyword id
+      /// \param [in]      dataVect        The list of data
       //--------------------------------------------------------------
 	  virtual void saveData(std::vector<int> KeywordIdVect, const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect) = 0;
 

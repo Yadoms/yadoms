@@ -1,12 +1,12 @@
 {
   "type": "switch",
-  "version": "1.1.0-beta.2",
-  "author": "Jean-Michel BERHAULT, Nicolas HILAIRE",
+  "version": "1.3.0",
+  "author": "Jean-Michel DECORET, Jean-Michel BERHAULT, Nicolas HILAIRE",
   "url": "https://github.com/Yadoms/yadoms/wiki/switch",
   "credits": "[bootstrap toogle](http://www.bootstraptoggle.com/)",
   "dependencies": {
      "yadoms" : {
-        "minimumVersion" : "2.2.0-beta.1"
+        "minimumVersion" : "2.3.0-beta.3"
      }
   },    
   "dimensions": {
@@ -38,34 +38,6 @@
       "type": "bool",
       "defaultValue": "false"
     },    
-    "additionalDevices": {
-      "type": "section",
-      "defaultValue": "false",
-      "enableWithCheckBox": "true",
-      "enableWithCheckBoxDefaultValue": "false",
-      "content": {
-        "devices": {
-          "type": "list",
-          "nbItemsMin": "1",
-          "nbItemsMax": "10",
-          "allowDuplication": "true",
-          "item": {
-            "type": "section",
-            "name": "",
-            "description": "",
-            "content": {
-              "source": {
-                "name": "",
-                "description": "",
-                "type": "keyword",
-                "expectedCapacity": ["switch", "dimmable", "event"],
-                "expectedKeywordAccess": "get"
-              }
-            }
-          }
-        }
-      }
-    },
     "kind": {
       "type": "radioSection",
       "content": {

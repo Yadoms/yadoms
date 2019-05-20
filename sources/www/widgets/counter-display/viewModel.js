@@ -63,10 +63,10 @@ function counterDisplayViewModel() {
         var self = this;
 
         //we register keyword new acquisition
-        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);	   
+        self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.device.keywordId));
 	   
         //we register keyword for get last value at web client startup
-        self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);  
+        self.widgetApi.getLastValue(parseInt(self.widget.configuration.device.keywordId));
 		
         //we fill the deviceId of the battery indicator
         self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
@@ -81,7 +81,7 @@ function counterDisplayViewModel() {
     */
     this.onNewAcquisition = function (keywordId, data) {
        var self = this;
-       if (keywordId === self.widget.configuration.device.keywordId) {
+       if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
           // Receive at startup data.unit
           if (!isNullOrUndefinedOrEmpty(data.unit)){
              self.rawUnit = data.unit;

@@ -22,7 +22,7 @@ namespace task
          //------------------------------------------
          ///\brief   Destructor
          //------------------------------------------
-         virtual ~CBackup();
+         virtual ~CBackup() = default;
 
          // ITask implementation
          const std::string& getName() const override;
@@ -31,6 +31,7 @@ namespace task
 
       private:
          void doWork(int currentTry = 0);
+         bool checkEnoughSpace(const boost::filesystem::path& where) const;
          boost::filesystem::path prepareBackup() const;
          bool backupFiles(boost::filesystem::path & tempPath);
          boost::filesystem::path makeZipArchive(boost::filesystem::path & tempPath);
@@ -42,8 +43,9 @@ namespace task
          ///\param [in] total       The total count for current operation
          ///\param [in] currentPart The current total progression
          ///\param [in] totalPart   The final progression when current operation ends
+         ///\param [in] message     Optional message to display
          //------------------------------------------
-         void OnProgressionUpdatedInternal(int remaining, int total, float currentPart, float totalPart, const std::string& message = std::string()) const;
+         void onProgressionUpdatedInternal(int remaining, int total, float currentPart, float totalPart, const std::string& message = std::string()) const;
 
          //------------------------------------------
          ///\brief   Report event

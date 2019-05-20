@@ -15,7 +15,7 @@ namespace database
       /// \param [in]      dataTime    The datetime of the data
       /// \return          The inserted acquisition
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CAcquisition> saveData(const int keywordId,
+      virtual boost::shared_ptr<entities::CAcquisition> saveData(int keywordId,
                                                                  const std::string& data,
                                                                  boost::posix_time::ptime& dataTime) = 0;
 
@@ -26,7 +26,7 @@ namespace database
       /// \param [in]      dataTime    The datetime of the data
       /// \return          The inserted acquisition
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CAcquisition> incrementData(const int keywordId,
+      virtual boost::shared_ptr<entities::CAcquisition> incrementData(int keywordId,
                                                                       const std::string& increment,
                                                                       boost::posix_time::ptime& dataTime) = 0;
 
@@ -45,7 +45,7 @@ namespace database
       /// \param [in]      dataTime    The datetime of the data
       /// \return          The inserted acquisition summary
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CAcquisitionSummary> saveSummaryData(const int keywordId,
+      virtual boost::shared_ptr<entities::CAcquisitionSummary> saveSummaryData(int keywordId,
                                                                                database::entities::EAcquisitionSummaryType curType,
                                                                                boost::posix_time::ptime& dataTime) = 0;
 
@@ -65,7 +65,7 @@ namespace database
       /// \param [in]      curType     The type of summary data to check
       /// \param [in]      date        The datetime of the summary data
       //--------------------------------------------------------------
-      virtual bool summaryDataExists(const int keywordId,
+      virtual bool summaryDataExists(int keywordId,
                                      database::entities::EAcquisitionSummaryType curType,
                                      boost::posix_time::ptime& date) = 0;
 
@@ -73,34 +73,56 @@ namespace database
       /// \brief           Remove all data associated to a keyword
       /// \param [in]      keywordId   The keyword id
       //--------------------------------------------------------------
-      virtual void removeKeywordData(const int keywordId) = 0;
+      virtual void removeKeywordData(int keywordId) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief           Move all acquisitions and summary from one keyword to another
+      /// \param [in]      fromKw      The source keyword id
+      /// \param [in]      toKw        The target keyword id
+      //--------------------------------------------------------------
+      virtual void moveAllData(int fromKw,
+                               int toKw) = 0;
 
       //-----------------------------------------
-      ///\brief      Get an acquisition by keywordid and date
+      ///\brief      Get an acquisition by keywordId and date
       ///\param [in] keywordId  The keyword id
-      ///\param [in] acqId  The acquisition date/time
+      ///\param [in] time  The acquisition date/time
       ///\return     the acquisition
       //-----------------------------------------
-      virtual boost::shared_ptr<entities::CAcquisition> getAcquisitionByKeywordAndDate(const int keywordId,
+      virtual boost::shared_ptr<entities::CAcquisition> getAcquisitionByKeywordAndDate(int keywordId,
                                                                                        boost::posix_time::ptime time) = 0;
+
+      //-----------------------------------------
+      ///\brief      Export acquisitions for a keyword
+      ///\param [in] keywordId  The keyword id
+      ///\param [in] exportOneLineFunction : callback called for each acquisitions, used to write the exported file
+      //-----------------------------------------
+      virtual void exportAcquisitions(const int keywordId,
+                                      std::function<void(const boost::posix_time::ptime& date,
+                                                         const std::string& value,
+                                                         int nbTotalLines)> exportOneLineFunction) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Get the data
       /// \param [in] keywordId  keywordId Id
-      /// \param [in] timeFrom   The start date (optionnal)
-      /// \param [in] timeTo     The end date (optionnal)
+      /// \param [in] timeFrom   The start date (optional)
+      /// \param [in] timeTo     The end date (optional)
+      /// \param [in] limit      Max count of records to return (optional, -1 if no limit)
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
       virtual std::vector<boost::tuple<boost::posix_time::ptime, std::string>> getKeywordData(int keywordId,
-                                                                                              boost::posix_time::ptime timeFrom,
-                                                                                              boost::posix_time::ptime timeTo) = 0;
+                                                                                              boost::posix_time::ptime timeFrom = boost::posix_time::
+                                                                                                 not_a_date_time,
+                                                                                              boost::posix_time::ptime timeTo = boost::posix_time::
+                                                                                                 not_a_date_time,
+                                                                                              int limit = -1) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Get the data  by hour (avg, min, max per hour)
       /// \param [in] keywordId  keywordId Id
-      /// \param [in] timeFrom   The start date (optionnal)
-      /// \param [in] timeTo     The end date (optionnal)
+      /// \param [in] timeFrom   The start date (optional)
+      /// \param [in] timeTo     The end date (optional)
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
@@ -111,8 +133,8 @@ namespace database
       //--------------------------------------------------------------
       /// \brief                 Get the data  by day (avg, min, max per day)
       /// \param [in] keywordId  keywordId Id
-      /// \param [in] timeFrom   The start date (optionnal)
-      /// \param [in] timeTo     The end date (optionnal)
+      /// \param [in] timeFrom   The start date (optional)
+      /// \param [in] timeTo     The end date (optional)
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
@@ -123,8 +145,8 @@ namespace database
       //--------------------------------------------------------------
       /// \brief                 Get the data by month (avg, min, max per day)
       /// \param [in] keywordId  keywordId Id
-      /// \param [in] timeFrom   The start date (optionnal)
-      /// \param [in] timeTo     The end date (optionnal)
+      /// \param [in] timeFrom   The start date (optional)
+      /// \param [in] timeTo     The end date (optional)
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
@@ -135,8 +157,8 @@ namespace database
       //--------------------------------------------------------------
       /// \brief                 Get the data by year (avg, min, max per day)
       /// \param [in] keywordId  keywordId Id
-      /// \param [in] timeFrom   The start date (optionnal)
-      /// \param [in] timeTo     The end date (optionnal)
+      /// \param [in] timeFrom   The start date (optional)
+      /// \param [in] timeTo     The end date (optional)
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
@@ -147,8 +169,8 @@ namespace database
       //--------------------------------------------------------------
       /// \brief                 Get the data  by hour (avg, min, max per hour)
       /// \param [in] keywordId  keywordId Id
-      /// \param [in] timeFrom   The start date (optionnal)
-      /// \param [in] timeTo     The end date (optionnal)
+      /// \param [in] timeFrom   The start date (optional)
+      /// \param [in] timeTo     The end date (optional)
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
@@ -159,8 +181,8 @@ namespace database
       //--------------------------------------------------------------
       /// \brief                 Get the data  by day (avg, min, max per day)
       /// \param [in] keywordId  keywordId Id
-      /// \param [in] timeFrom   The start date (optionnal)
-      /// \param [in] timeTo     The end date (optionnal)
+      /// \param [in] timeFrom   The start date (optional)
+      /// \param [in] timeTo     The end date (optional)
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
@@ -171,8 +193,8 @@ namespace database
       //--------------------------------------------------------------
       /// \brief                 Get the data by month (avg, min, max per day)
       /// \param [in] keywordId  keywordId Id
-      /// \param [in] timeFrom   The start date (optionnal)
-      /// \param [in] timeTo     The end date (optionnal)
+      /// \param [in] timeFrom   The start date (optional)
+      /// \param [in] timeTo     The end date (optional)
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
@@ -183,8 +205,8 @@ namespace database
       //--------------------------------------------------------------
       /// \brief                 Get the data by year (avg, min, max per day)
       /// \param [in] keywordId  keywordId Id
-      /// \param [in] timeFrom   The start date (optionnal)
-      /// \param [in] timeTo     The end date (optionnal)
+      /// \param [in] timeFrom   The start date (optional)
+      /// \param [in] timeTo     The end date (optional)
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
@@ -195,6 +217,7 @@ namespace database
       //--------------------------------------------------------------
       /// \brief                 Delete old acquisition
       /// \param [in] purgeDate  The date of purge (any data prior ro his date will be deleted)
+      /// \param [in] limit      Purge limitation (no limit by default)
       /// \return                Number of deleted rows
       //--------------------------------------------------------------
       virtual int purgeAcquisitions(boost::posix_time::ptime purgeDate,

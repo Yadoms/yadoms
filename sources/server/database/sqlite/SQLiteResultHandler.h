@@ -13,19 +13,19 @@ namespace sqlite {
       virtual ~CSQLiteResultHandler();
 
       // database::common::IResultHandler implementation
-      virtual int getColumnCount();
-      virtual std::string getColumnName(const int columnIndex);
-      virtual bool next_step();
-      virtual std::string extractValueAsString(const int columnIndex);
-      virtual int extractValueAsInt(const int columnIndex);
-      virtual float extractValueAsFloat(const int columnIndex);
-      virtual double extractValueAsDouble(const int columnIndex);
-      virtual unsigned char* extractValueAsBlob(const int columnIndex);
-      virtual bool extractValueAsBool(const int columnIndex);
-      virtual bool isValueNull(const int columnIndex);
-      virtual boost::posix_time::ptime extractValueAsBoostTime(const int columnIndex);
-      virtual Poco::DateTime extractValueAsPocoTime(const int columnIndex);
-      virtual shared::CDataContainer extractValueAsDataContainer(const int columnIndex);
+      int getColumnCount() override;
+      std::string getColumnName(const int columnIndex) override;
+      bool next_step() override;
+      std::string extractValueAsString(const int columnIndex) override;
+      int extractValueAsInt(const int columnIndex) override;
+      float extractValueAsFloat(const int columnIndex) override;
+      double extractValueAsDouble(const int columnIndex) override;
+      unsigned char* extractValueAsBlob(const int columnIndex) override;
+      bool extractValueAsBool(const int columnIndex) override;
+      bool isValueNull(const int columnIndex) override;
+      boost::posix_time::ptime extractValueAsBoostTime(const int columnIndex) override;
+      Poco::DateTime extractValueAsPocoTime(const int columnIndex) override;
+      shared::CDataContainer extractValueAsDataContainer(const int columnIndex) override;
       // [END] - database::common::IResultHandler implementation
 
    private:

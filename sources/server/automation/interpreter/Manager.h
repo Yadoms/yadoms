@@ -26,9 +26,11 @@ namespace automation
 
       protected:
          // IManager Implementation
-         std::vector<std::string> getAvailableInterpreters() override;
+         std::vector<std::string> getLoadedInterpreters() override;
          std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>> getAvailableInterpretersInformation() override;
-         boost::shared_ptr<IInstance> getInterpreterInstance(const std::string& interpreterType) override;
+         std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>> getLoadedInterpretersInformation() override;
+         boost::shared_ptr<IInstance> getAvailableInterpreterInstance(const std::string& interpreterType) override;
+         boost::shared_ptr<IInstance> getLoadedInterpreterInstance(const std::string& interpreterType) override;
          void unloadInterpreter(const std::string& interpreterType) override;
          void onInterpreterUnloaded(const std::string& interpreterType);
          std::string getScriptContent(const std::string& interpreterType,
@@ -55,17 +57,17 @@ namespace automation
 
          //-----------------------------------------------------
          /// \brief              Check platform compatibility for interpreter
-         /// \param[in] interpreterName Interpreter name (ie "python")
+         /// \param[in] interpreterType Interpreter type (ie "python")
          /// \return true if compatible, false if not
          /// \throw shared::exception::CInvalidParameter if fails to determine compatibility
          //-----------------------------------------------------
-         bool isInterpreterCompatibleWithPlatform(const std::string& interpreterName) const;
+         bool isInterpreterCompatibleWithPlatform(const std::string& interpreterType) const;
 
          //--------------------------------------------------------------
          /// \brief        Returns all interpreter directories installed
          /// \return       a list of all found interpreter directories
          /// \note         This function just lists interpreter directory names.
-         ///               It doesn't check if interpreter is valid (export expected functions)
+         ///               It does not check if interpreter is valid (export expected functions)
          //--------------------------------------------------------------
          std::vector<boost::filesystem::path> findInterpreterDirectories() const;
 

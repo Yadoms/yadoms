@@ -1,6 +1,6 @@
 {
 	"type": "weather",
-	"version": "1.0.5",
+	"version": "1.1.0",
 	"author": "Nicolas HILAIRE",
 	"url": "http://www.yadoms.com/wiki/widgets/weather.html",
 	"credits": "[Weather icons](https://github.com/erikflowers/weather-icons)",

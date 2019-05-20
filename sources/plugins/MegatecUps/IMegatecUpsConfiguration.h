@@ -7,16 +7,15 @@
 class IMegatecUpsConfiguration
 {
 public:
-   //--------------------------------------------------------------
-   /// \brief	    Destructor
-   //--------------------------------------------------------------
-   virtual ~IMegatecUpsConfiguration() {}
+   virtual ~IMegatecUpsConfiguration()
+   {
+   }
 
    //--------------------------------------------------------------
    /// \brief		 Load configuration data
    /// \param [in] data The data container
    //--------------------------------------------------------------
-   virtual void initializeWith(const shared::CDataContainer &data) = 0;
+   virtual void initializeWith(const shared::CDataContainer& data) = 0;
 
    //--------------------------------------------------------------
    /// \brief	    Virtual serial port connected to the UPS
@@ -26,9 +25,15 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	    Check if UPS beep is enable
-   /// \return     true if UPS beep should be enable
+   /// \return     true if UPS beep enable
    //--------------------------------------------------------------
    virtual bool upsBeepEnable() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	    Check if autotest is enable
+   /// \return     true if autotest enable
+   //--------------------------------------------------------------
+   virtual bool autotestEnable() const = 0;
 
    //--------------------------------------------------------------
    /// \brief	    Get the output shutdown delay
@@ -42,4 +47,3 @@ public:
    //--------------------------------------------------------------
    virtual double outputRestoreDelay() const = 0;
 };
-

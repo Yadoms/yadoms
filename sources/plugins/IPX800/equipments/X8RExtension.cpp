@@ -116,9 +116,9 @@ namespace equipments
                if (boost::regex_search(keywordName, match, reg))
                {
                   if (boost::lexical_cast<bool>(command->getBody()))
-                     parameters.set("Set" + (*diIterator)->getHardwareName(), match[2]);
+                     parameters.set("Set" + (*diIterator)->getHardwareName(), match[2].str());
                   else
-                     parameters.set("Clear" + (*diIterator)->getHardwareName(), match[2]);
+                     parameters.set("Clear" + (*diIterator)->getHardwareName(), match[2].str());
 
                   m_pendingHistorizer = (*diIterator);
                }

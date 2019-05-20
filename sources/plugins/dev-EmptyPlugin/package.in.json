@@ -4,6 +4,11 @@
   "author": "Your name here",
   "credits": "external libraries used here",
   "supportedPlatforms": "all",
+  "dependencies": {
+    "yadoms": {
+      "minimumVersion": "2.3.0-beta.1"
+    }
+  },
   "configurationSchema": {
     "StringParameter": {
       "type": "string"

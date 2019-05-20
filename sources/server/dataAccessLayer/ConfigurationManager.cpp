@@ -22,9 +22,9 @@ namespace dataAccessLayer
          //   - "autoDetected" : when location was automaticaly detected (ie from IP)
          //   - "userDefined" : when location was defined by user
          m_configuration->set("location.status", "default");
-         m_configuration->set("location.latitude", "48.853");
-         m_configuration->set("location.longitude", "2.35");
-         m_configuration->set("location.altitude", "0.0");
+         m_configuration->set("location.latitude", 48.853);
+         m_configuration->set("location.longitude", 2.35);
+         m_configuration->set("location.altitude", 0.0);
          m_configuration->set("location.timezone", "Europe/Paris");
 
          m_configuration->set("basicAuthentication.active", false);
@@ -74,7 +74,8 @@ namespace dataAccessLayer
       {
          // Returned configuration is the default one, overriden by stored values
          auto configuration = boost::make_shared<shared::CDataContainer>(*m_defaultServerConfiguration);
-         configuration->mergeFrom(shared::CDataContainer(getConfiguration("server")));
+		 shared::CDataContainer cfg(getConfiguration("server"));
+         configuration->mergeFrom(cfg);
          return configuration;
       }
       catch (shared::exception::CEmptyResult&)
@@ -90,9 +91,9 @@ namespace dataAccessLayer
       // If location changed, mark it as user-modified
       auto currentConfiguration(*getServerConfiguration());
       auto configurationToSave(newConfiguration);
-      if (newConfiguration.get<std::string>("location.latitude") != currentConfiguration.get<std::string>("location.latitude") ||
-         newConfiguration.get<std::string>("location.longitude") != currentConfiguration.get<std::string>("location.longitude") ||
-         newConfiguration.get<std::string>("location.altitude") != currentConfiguration.get<std::string>("location.altitude") ||
+      if (newConfiguration.get<double>("location.latitude") != currentConfiguration.get<double>("location.latitude") ||
+         newConfiguration.get<double>("location.longitude") != currentConfiguration.get<double>("location.longitude") ||
+         newConfiguration.get<double>("location.altitude") != currentConfiguration.get<double>("location.altitude") ||
          newConfiguration.get<std::string>("location.timezone") != currentConfiguration.get<std::string>("location.timezone"))
       {
          configurationToSave.set("location.status", "userDefined");
@@ -137,9 +138,9 @@ namespace dataAccessLayer
          return;
       
       serverConfiguration.set("location.status", "autoDetected");
-      serverConfiguration.set("location.latitude", newLocation.get<std::string>("latitude"));
-      serverConfiguration.set("location.longitude", newLocation.get<std::string>("longitude"));
-      serverConfiguration.set("location.altitude", newLocation.get<std::string>("altitude"));
+      serverConfiguration.set("location.latitude", newLocation.get<double>("latitude"));
+      serverConfiguration.set("location.longitude", newLocation.get<double>("longitude"));
+      serverConfiguration.set("location.altitude", newLocation.get<double>("altitude"));
       serverConfiguration.set("location.timezone", newLocation.get<std::string>("timezone"));
 
       saveConfiguration("server",

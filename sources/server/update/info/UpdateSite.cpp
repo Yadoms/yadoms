@@ -10,10 +10,10 @@ namespace update
 {
    namespace info
    {
-      std::string CUpdateSite::m_distantYadomsListScript("yadoms2.php");
-      std::string CUpdateSite::m_distantPluginsListScript("plugins2.php");
-      std::string CUpdateSite::m_distantScriptInterpretersListScript("scriptInterpreters2.php");
-      std::string CUpdateSite::m_distantWidgetsListScript("widgets2.php");
+      std::string CUpdateSite::m_distantYadomsListScript("yadoms3.php");
+      std::string CUpdateSite::m_distantPluginsListScript("plugins3.php");
+      std::string CUpdateSite::m_distantScriptInterpretersListScript("scriptInterpreters3.php");
+      std::string CUpdateSite::m_distantWidgetsListScript("widgets3.php");
 
       std::string CUpdateSite::m_distantYadomsScriptResultField("data.yadoms");
       std::string CUpdateSite::m_distantPluginsScriptResultField("data.plugins");

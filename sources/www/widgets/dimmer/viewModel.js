@@ -20,7 +20,7 @@ widgetViewModelCtor = function dimmerViewModel() {
     this.commandClick = function (value) {
        if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
           this.data(this.data() + value);
-          KeywordManager.sendCommand(this.widget.configuration.device.keywordId, this.data().toString());
+          KeywordManager.sendCommand(parseInt(this.widget.configuration.device.keywordId), this.data().toString());
        }
     };
 
@@ -40,11 +40,11 @@ widgetViewModelCtor = function dimmerViewModel() {
 
     this.configurationChanged = function () {
         var self = this;
-        self.widgetApi.registerKeywordForNewAcquisitions(self.widget.configuration.device.keywordId);
-		  self.widgetApi.getLastValue(self.widget.configuration.device.keywordId);  		
+        self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.device.keywordId));
+		  self.widgetApi.getLastValue(parseInt(self.widget.configuration.device.keywordId));
         self.widgetApi.registerAdditionalInformation(["unit"]); // return unit with the getLast Value
-        self.widgetApi.configureBatteryIcon(self.widget.configuration.device.deviceId);
-        self.step(self.widget.configuration.StepValue);
+        self.widgetApi.configureBatteryIcon(parseInt(self.widget.configuration.device.deviceId));
+        self.step(parseInt(self.widget.configuration.StepValue));
     };
 
     /**
@@ -55,7 +55,7 @@ widgetViewModelCtor = function dimmerViewModel() {
     this.onNewAcquisition = function (keywordId, data) {
         var self = this;
 
-        if (keywordId === self.widget.configuration.device.keywordId) {
+        if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
            if (!isNullOrUndefinedOrEmpty(data.unit))
               self.unit($.t(self.rawUnit = data.unit));
 

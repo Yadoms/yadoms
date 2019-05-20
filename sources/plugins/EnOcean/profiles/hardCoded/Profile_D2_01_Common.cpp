@@ -144,12 +144,14 @@ const boost::shared_ptr<yApi::historization::CDimmable> CProfile_D2_01_Common::n
 const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noPowerFailure = boost::shared_ptr<yApi::historization::CSwitch>();
 const boost::shared_ptr<yApi::historization::CSwitch> CProfile_D2_01_Common::noOverCurrent = boost::shared_ptr<yApi::historization::CSwitch>();
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorStatusResponse(unsigned char rorg,
-                                                                                                                              const boost::dynamic_bitset<>& data,
-                                                                                                                              boost::shared_ptr<yApi::historization::CSwitch> channel1,
-                                                                                                                              boost::shared_ptr<yApi::historization::CDimmable> dimmer,
-                                                                                                                              boost::shared_ptr<yApi::historization::CSwitch> powerFailure,
-                                                                                                                              boost::shared_ptr<yApi::historization::CSwitch> overCurrent)
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorStatusResponse(
+   unsigned char rorg,
+   const boost::dynamic_bitset<>& data,
+   boost::shared_ptr<yApi::historization::CSwitch> channel1,
+   boost::shared_ptr<yApi::historization::CDimmable> dimmer,
+   boost::shared_ptr<yApi::historization::CSwitch>
+   powerFailure,
+   boost::shared_ptr<yApi::historization::CSwitch> overCurrent)
 {
    // Some devices supports several RORG telegrams, ignore non-VLD telegrams
    if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
@@ -169,7 +171,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    // Sometimes ioChannel is not well set by device (ex NODON ASP-2-1-00 set ioChannel to 1 instead of 0),
    // so ignore ioChannel value (juste verify that is not input channel)
    if (ioChannel == kInputChannel)
-   YADOMS_LOG(warning) << "ActuatorStatusResponse : received unsupported ioChannel value " << ioChannel;
+      YADOMS_LOG(warning) << "ActuatorStatusResponse : received unsupported ioChannel value " << ioChannel;
    else
    {
       if (!!channel1)
@@ -205,13 +207,14 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return historizers;
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorStatusResponse2Channels(unsigned char rorg,
-                                                                                                                                       const boost::dynamic_bitset<>& data,
-                                                                                                                                       boost::shared_ptr<yApi::historization::CSwitch> channel1,
-                                                                                                                                       boost::shared_ptr<yApi::historization::CSwitch> channel2,
-                                                                                                                                       boost::shared_ptr<yApi::historization::CDimmable> dimmer,
-                                                                                                                                       boost::shared_ptr<yApi::historization::CSwitch> powerFailure,
-                                                                                                                                       boost::shared_ptr<yApi::historization::CSwitch> overCurrent)
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorStatusResponse2Channels(
+   unsigned char rorg,
+   const boost::dynamic_bitset<>& data,
+   boost::shared_ptr<yApi::historization::CSwitch> channel1,
+   boost::shared_ptr<yApi::historization::CSwitch> channel2,
+   boost::shared_ptr<yApi::historization::CDimmable> dimmer,
+   boost::shared_ptr<yApi::historization::CSwitch> powerFailure,
+   boost::shared_ptr<yApi::historization::CSwitch> overCurrent)
 {
    // Some devices supports several RORG telegrams, ignore non-VLD telegrams
    if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
@@ -283,6 +286,7 @@ void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<
                                                               const std::string& targetId,
                                                               EOutputChannel outputChannel,
                                                               bool powerMeasurement,
+                                                              bool resetMeasurement,
                                                               double minEnergyMeasureRefreshTime,
                                                               double maxEnergyMeasureRefreshTime)
 {
@@ -294,7 +298,7 @@ void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<
 
    bitset_insert(data, 4, 4, kActuatorSetMeasurement);
    bitset_insert(data, 8, true); // Report on query + auto reporting
-   bitset_insert(data, 9, false); // reset measurement not (yet ?) available
+   bitset_insert(data, 9, resetMeasurement); // Reset measurement
    bitset_insert(data, 10, powerMeasurement);
    bitset_insert(data, 11, 5, outputChannel); // Specific channel, or 0x1E for all output channels, or 0x1F for input channel
    bitset_insert(data, 16, 4, 0); // No measurement delta
@@ -333,10 +337,11 @@ const boost::shared_ptr<yApi::historization::CPower> CProfile_D2_01_Common::noIn
 const boost::shared_ptr<yApi::historization::CEnergy> CProfile_D2_01_Common::noLoadEnergy = boost::shared_ptr<yApi::historization::CEnergy>();
 const boost::shared_ptr<yApi::historization::CPower> CProfile_D2_01_Common::noLoadPower = boost::shared_ptr<yApi::historization::CPower>();
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorMeasurementResponse(unsigned char rorg,
-                                                                                                                                   const boost::dynamic_bitset<>& data,
-                                                                                                                                   boost::shared_ptr<yApi::historization::CEnergy> loadEnergy,
-                                                                                                                                   boost::shared_ptr<yApi::historization::CPower> loadPower)
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorMeasurementResponse(
+   unsigned char rorg,
+   const boost::dynamic_bitset<>& data,
+   boost::shared_ptr<yApi::historization::CEnergy> loadEnergy,
+   boost::shared_ptr<yApi::historization::CPower> loadPower)
 {
    // Some devices supports several RORG telegrams, ignore non-VLD telegrams
    if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
@@ -442,9 +447,10 @@ void CProfile_D2_01_Common::sendActuatorPilotWireModeQuery(boost::shared_ptr<IMe
                "Actuator Pilot Wire Mode Query");
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorPilotWireModeResponse(unsigned char rorg,
-                                                                                                                                     const boost::dynamic_bitset<>& data,
-                                                                                                                                     boost::shared_ptr<specificHistorizers::CPilotWireHistorizer> pilotWire)
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_Common::extractActuatorPilotWireModeResponse(
+   unsigned char rorg,
+   const boost::dynamic_bitset<>& data,
+   boost::shared_ptr<specificHistorizers::CPilotWireHistorizer> pilotWire)
 {
    // Some devices supports several RORG telegrams, ignore non-VLD telegrams
    if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
@@ -532,13 +538,13 @@ void CProfile_D2_01_Common::sendMessage(boost::shared_ptr<IMessageHandler> messa
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!messageHandler->send(command,
                              [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                          {
-                             return esp3Packet->header().packetType() == message::RESPONSE;
-                          },
+                             {
+                                return esp3Packet->header().packetType() == message::RESPONSE;
+                             },
                              [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                          {
-                             answer = esp3Packet;
-                          }))
+                             {
+                                answer = esp3Packet;
+                             }))
       throw std::runtime_error((boost::format("Fail to send message to %1% : no answer to \"%2%\"") % targetId % commandName).str());
 
    const auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);

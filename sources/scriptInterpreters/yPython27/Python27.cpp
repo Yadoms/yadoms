@@ -22,7 +22,6 @@ enum
    kEventScriptStopped = yApi::IYInterpreterApi::kPluginFirstEventId
 };
 
-
 CPython27::CPython27()
    : m_factory(boost::make_shared<CFactory>()),
      m_pythonExecutable(m_factory->createPythonExecutable())

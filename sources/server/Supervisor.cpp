@@ -157,7 +157,10 @@ void CSupervisor::run()
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CRecipient>(pDataProvider));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CUpdate>(updateManager));
       webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CMaintenance>(m_pathProvider, pDataProvider->getDatabaseRequester(), taskManager));
+         boost::make_shared<web::rest::service::CMaintenance>(m_pathProvider,
+                                                              pDataProvider->getDatabaseRequester(),
+                                                              pDataProvider->getAcquisitionRequester(),
+                                                              taskManager));
 
       webServer->start();
 
@@ -223,6 +226,12 @@ void CSupervisor::run()
       if (dal && dal->getEventLogger())
          dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", e.displayText());
    }
+   catch (shared::exception::CException& ex)
+   {
+      YADOMS_LOG(error) << "Supervisor : unhandled shared::exception::CException " << ex.what();
+      if (dal && dal->getEventLogger())
+         dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", ex.what());
+   }
    catch (std::exception& e)
    {
       YADOMS_LOG(error) << "Supervisor : unhandled exception " << e.what();
@@ -233,7 +242,7 @@ void CSupervisor::run()
    {
       YADOMS_LOG(error) << "Supervisor : unhandled exception.";
       if (dal && dal->getEventLogger())
-         dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", "unknwon error");
+         dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", "unknown error");
    }
 
    //notify application that supervisor ends

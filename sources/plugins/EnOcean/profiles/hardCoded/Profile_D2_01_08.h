@@ -34,6 +34,7 @@ private:
    const std::string m_deviceId;
    boost::shared_ptr<yApi::historization::CSwitch> m_channel;
    boost::shared_ptr<yApi::historization::CEnergy> m_loadEnergy;
+   boost::shared_ptr<yApi::historization::CEvent> m_resetLoadEnergy;
    boost::shared_ptr<yApi::historization::CPower> m_loadPower;
    boost::shared_ptr<yApi::historization::CSwitch> m_overCurrent;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;

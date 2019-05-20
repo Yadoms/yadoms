@@ -60,12 +60,7 @@ target_link_libraries(interpreter_cpp_api
    ${LIBS}
    ${CMAKE_DL_LIBS}
    ${interpreter_IPC_LIBRARY}
-   )
-
-##################################################################################################
-## Add natvis (allow better debugging within VisualStudio)
-##################################################################################################
-ADD_VS_NATVIS(interpreter_cpp_api)
+)
 
 ##################################################################################################
 ## COTIRE

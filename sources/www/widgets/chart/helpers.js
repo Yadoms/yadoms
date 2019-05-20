@@ -193,7 +193,7 @@ function createAxis (index,         // index of the plot
   
   // treat oneAxis configuration option => axis name and color
   if (parseBool(configuration.oneAxis.checkbox)) {
-     yAxisName = 'axis' + seriesUuid[0];
+     yAxisName = 'axis0';
   }
   else {
      yAxisName = 'axis' + seriesUuid[index];
@@ -218,13 +218,7 @@ function createAxis (index,         // index of the plot
           if (isOdd(index))
               align = 'left';
 
-          var unit="";
-          try {
-             unit = $.t(units);
-          }
-          catch(error){
-             console.log ("unit is empty for keyword ", device.content.source.keywordId);
-          }
+          var unit = $.t(units);
 
           chart.addAxis({
               // new axis
@@ -233,11 +227,12 @@ function createAxis (index,         // index of the plot
               title: getAxisTitle(),
               labels: {
                   align: align,
+                  enabled: !isBoolVariable(chart.keyword[index]),
                   style: {
                       color: colorAxis
                   },
                   formatter: function () {
-                     if (this.chart.keyword[index].type === "Enum") {  // Return the translated enum value
+                     if (isEnumVariable(this.chart.keyword[index])) {  // Return the translated enum value
                         return this.chart.keyword[index].typeInfo.translatedValues[this.value];
                      }
                      else
@@ -248,10 +243,10 @@ function createAxis (index,         // index of the plot
           }, false, false, false);
 
       } catch (error) {
-          console.log('Fail to create axis (for index = ' + index + ') : ' + error);
+          console.log('Fail to create axis for keyword = ' + index + ' : ' + error);
       }
   } else {
-      console.log('Axis already exists (for index = ' + index + ')');
+      console.log('Axis already exists for keyword = ' + index);
   }
 
   if ((parseBool(configuration.oneAxis.checkbox))) {
@@ -277,6 +272,32 @@ function createAxis (index,         // index of the plot
   }
   
   return yAxisName; // Return the name of the axis
+};
+
+/**
+ * Adapt an array of values with coefficient
+ * @param arrayToAdapt values to adapt
+ * @param coeff the new coefficient
+ */
+adaptArray = function(arrayToAdapt, coeff) {
+   var newArray = [];
+   $.each(arrayToAdapt, function (index,value) {
+      newArray.push([value[0],parseFloat(value[1])*coeff]);
+   });
+   return newArray;
+};
+
+/**
+ * Adapt a range with coefficient
+ * @param rangeToAdapt rangeToAdapt
+ * @param coeff the new coefficient
+ */
+adaptRange = function(rangeToAdapt, coeff) {
+   var newRange = [];
+   $.each(rangeToAdapt, function (index,value) {
+      newRange.push([value[0],parseFloat(value[1])*coeff,parseFloat(value[2])*coeff]);
+   });
+   return newRange;
 };
 
 /**
@@ -307,22 +328,6 @@ adaptValuesAndUnit = function (values, range, baseUnit, callback) {
          moy = moy / nbre;
       
       return moy;
-   };
-   
-   adaptArray = function(arrayToAdapt, coeff) {
-      var newArray = [];
-      $.each(arrayToAdapt, function (index,value) {
-         newArray.push([value[0],parseFloat(value[1])*coeff]);
-      });
-      return newArray;
-   };
-   
-   adaptRange = function(rangeToAdapt, coeff) {
-      var newRange = [];
-      $.each(rangeToAdapt, function (index,value) {
-         newRange.push([value[0],parseFloat(value[1])*coeff,parseFloat(value[2])*coeff]);
-      });
-      return newRange;
    };
    
    switch (baseUnit){
@@ -379,8 +384,36 @@ adaptValuesAndUnit = function (values, range, baseUnit, callback) {
             newValues = adaptArray(values, coeff);
             newRange = adaptRange(range, coeff);
             unit = "Kb/s";
-         }
-         break;         
+         }else{}
+         break;
+      case "data.units.second":
+         console.log(evaluateArray(values));
+         if (evaluateArray(values)<0.002){
+            coeff = 0.000001;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.microsecond";
+         }else if (evaluateArray(values)<2){
+            coeff = 0.001;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.millisecond";
+         }else if (evaluateArray(values)>86400){
+            coeff = 1/86400;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.day";
+         }else if (evaluateArray(values)>3600) {
+            coeff = 1/3600;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.hour";
+         }else if (evaluateArray(values)>60) {
+            coeff = 1/60;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.minute";
+         }else{}
       default:
          break;
    }

@@ -50,13 +50,13 @@
 
     addMainPage = function(){    
        page = "<!-- Fixed navbar -->" +
-       "<div class=\"navbar navbar-default navbar-static-top\" role=\"navigation\" style=\"height:100vh\">" + //
+       "<div class=\"yadoms-allcontent\"></div><div class=\"navbar navbar-default navbar-static-top\" role=\"navigation\" style=\"height:100vh\">" + //
            "<div class=\"container\">" +
                "<div class=\"row\" id=\"mainNavBar\">" +
                    "<div class=\"col-md-12\">" +
                        "<div class=\"navbar-header\">" +
                            "<img src=\"img/icon_256.png\" class=\"img-responsive pull-left application-logo\" />" +
-                           "<a class=\"navbar-brand\" href=\"#\">Yadoms</a>" +
+                           "<a class=\"navbar-brand\" href=\"#\">Yadoms&nbsp;<span class=\"disconnected-title hidden\" data-i18n=\"core.yadoms.disconnected\"></span></a>" +
                        "</div>" +
                        "<div class=\"navbar-right\">" +
                            "<button href=\"#\" class=\"btn btn-success pull-left customization-item hidden\" id=\"btn-add-widget\">" +
@@ -112,7 +112,7 @@
                   "<button class=\"btn btn-primary\" id=\"btn-show-qrcode\">" +
                       "<i class=\"fa fa-qrcode\"></i>" +
                   "</button>" +
-                  "<label id=\"copyrightLabel\" class=\"label label-default\">&copy; Yadoms 2016</label>" +
+                  "<label id=\"copyrightLabel\" class=\"label label-default\">&copy; Yadoms 2019</label>" +
               "</footer>" +
           "</div>" +           
            "<!--/.nav-collapse -->" +
@@ -373,6 +373,7 @@
          Yadoms.modals.qrCode = new LazyLoaderManager("modals/qrcode.html");
          Yadoms.modals.mainDashboard = new LazyLoaderManager("modals/dashboard.html");
          Yadoms.modals.confirmation = new LazyLoaderManager("modals/confirmation.html");
+         Yadoms.modals.pleaseWait = new LazyLoaderManager("modals/please-wait.html");
          Yadoms.modals.pluginConfigure = new LazyLoaderManager("modals/plugin-configure.html");
          Yadoms.modals.pluginExtraQueriesConfigure = new LazyLoaderManager("modals/plugin-extra-queries-configure.html");
          Yadoms.modals.pluginShowLog = new LazyLoaderManager("modals/plugin-show-log.html");
@@ -380,6 +381,7 @@
          Yadoms.modals.keywordConfigure = new LazyLoaderManager("modals/keyword-configure.html");
          Yadoms.modals.keywordSetValue = new LazyLoaderManager("modals/keyword-set-value.html");
          Yadoms.modals.deviceAddManually = new LazyLoaderManager("modals/device-add-manually.html");
+         Yadoms.modals.deviceMerge = new LazyLoaderManager("modals/device-merge.html");
          Yadoms.modals.deviceConfigureManually = new LazyLoaderManager("modals/device-configure-manually.html");
          Yadoms.modals.virtualDeviceConfigure = new LazyLoaderManager("modals/virtual-device-configure.html");
          Yadoms.modals.deviceDelete = new LazyLoaderManager("modals/device-delete.html");
@@ -448,6 +450,18 @@
             });
          });
      }
+
+	 function displayDisconnectedState() {
+		$(".application-logo").addClass("disconnected-logo");
+		$(".yadoms-allcontent").addClass("disconnected-content");
+		$(".disconnected-title").removeClass("hidden");
+	 }
+
+	 function displayConnectedState() {
+		$(".application-logo").removeClass("disconnected-logo");
+		$(".yadoms-allcontent").removeClass("disconnected-content");
+		$(".disconnected-title").addClass("hidden");
+	 }
 
      function main() {
       //we set the right language

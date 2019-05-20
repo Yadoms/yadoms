@@ -27,7 +27,7 @@ namespace shared
             return boost::shared_ptr<std::vector<boost::shared_ptr<IMessageCutterPart>>>();
          }
 
-         const auto nbParts = static_cast<unsigned char>(messageSize / m_maxUsefulPartSize + (messageSize % m_maxUsefulPartSize ? 1 : 0));
+         const auto nbParts = static_cast<unsigned char>(messageSize / m_maxUsefulPartSize + ((messageSize % m_maxUsefulPartSize) ? 1 : 0));
          auto parts = boost::make_shared<std::vector<boost::shared_ptr<IMessageCutterPart>>>();
          for (unsigned char idxPart = 0; idxPart < nbParts; ++idxPart)
          {
