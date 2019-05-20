@@ -37,7 +37,7 @@ namespace web
                const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getAllAvailablePlugins(const std::vector<std::string>& parameters,
                                                                                                const std::string& requestContent) const;
-            boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllAvailablePluginsParameterized(
+            boost::shared_ptr<shared::serialization::IDataSerializable> getAllAvailablePluginsParameterized(
                const std::vector<std::string>& parameters,
                const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> getAllAvailablePluginsWithPackage(const std::vector<std::string>& parameters,
