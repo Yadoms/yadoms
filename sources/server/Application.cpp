@@ -106,7 +106,7 @@ int CYadomsServer::main(const ArgVec& /*args*/)
 
       YADOMS_LOG_CONFIGURE("Main");
 
-      YADOMS_LOG(information) << "********************************************************************";
+      YADOMS_LOG(information) << "\n********************************************************************";
       YADOMS_LOG(information) << "Yadoms " << YadomsVersion << " is starting";
       YADOMS_LOG(information) << "********************************************************************";
       if (m_startupOptions->getDeveloperMode())

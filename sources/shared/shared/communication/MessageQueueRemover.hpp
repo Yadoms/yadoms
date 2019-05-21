@@ -1,11 +1,12 @@
 #pragma once
+#include <boost/interprocess/ipc/message_queue.hpp>
 
 namespace shared
 {
    namespace communication
    {
       //--------------------------------------------------------------
-      /// \brief An automaticaly message queue remover
+      /// \brief An automatically message queue remover
       /// \details As a message queue is persistent on the system,
       /// we delete it :
       /// - on construction (for safety)
@@ -35,7 +36,7 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	The message queue ID (unique system-wide)
          //--------------------------------------------------------------
-         const std::string& m_messageQueueId;
+         const std::string m_messageQueueId;
       };
    }
 } // namespace shared::communication

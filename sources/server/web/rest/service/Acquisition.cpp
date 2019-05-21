@@ -182,8 +182,8 @@ namespace web
                }
                else
                {
-                  YADOMS_LOG(warning) << "readKeywordInfo, can not get requested keyword " << keywordId << " info \"" << info <<
-                     "\", ignored : unknown info label";
+               YADOMS_LOG(warning) << "readKeywordInfo, can not get requested keyword " << keywordId << " info \"" << info <<
+                  "\", ignored : unknown info label";
                }
             }
             catch (std::exception& exception)
