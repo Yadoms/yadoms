@@ -389,6 +389,5 @@ PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation = function (
  * @return {Promise} A promise for the result
  */
 PluginInstanceManager.createManuallyDevice = function (pluginInstance, deviceName, deviceModel, deviceType, deviceConfiguration) {
-   debugger;
    return RestEngine.postJson("/rest/plugin/" + pluginInstance.id + "/createDevice", { data: JSON.stringify({ name: deviceName, model: deviceModel, type: deviceType, configuration: deviceConfiguration }) });
 };
