@@ -50,10 +50,10 @@ if(COTIRE_USE)
 		set_property( TARGET interpreter_IPC_unity PROPERTY INCLUDE_DIRECTORIES ${interpreter_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
 	endif()	
 endif()
-      
-      
 
-#Ignore some warnings under VisualStudio for Protobuf generated files
+
+
 if(MSVC)
-add_definitions( "/wd4244 /wd4125" )
+   #Ignore some warnings under VisualStudio for Protobuf generated files
+   add_definitions( "/wd4244 /wd4125" )
 endif()

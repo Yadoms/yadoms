@@ -223,6 +223,12 @@ if(NOT ${PROTOBUF_FOUND})
 endif()
 
 
+if(MSVC)   
+   # Workaround to avoid conflict between min/max constants defined in windows.h and Protobuf
+   add_definitions(-DNOMINMAX)
+endif()
+
+
 ###############################################
 # define libraries to link with
 #
