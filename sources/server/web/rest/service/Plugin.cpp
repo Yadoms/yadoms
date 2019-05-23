@@ -128,8 +128,9 @@ namespace web
             return CResult::GenerateSuccess(t);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstanceWithState(const std::vector<std::string>& parameters,
-                                                                                                             const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstanceWithState(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -170,7 +171,7 @@ namespace web
 
             for (auto& currentInstance : hwList)
             {
-               if (m_pluginManager->isInstanceRunning(currentInstance.get()->Id))
+               if (m_pluginManager->isInstanceRunning(currentInstance->Id))
                {
                   const auto matchingInfo = pluginList.find(currentInstance->Type);
                   if (matchingInfo != pluginList.end())
@@ -197,8 +198,8 @@ namespace web
                shared::CDataContainer result;
                std::vector<std::string> pluginCollection;
 
-               for (auto plugin = pluginList.begin(); plugin != pluginList.end(); ++plugin)
-                  pluginCollection.push_back(plugin->first);
+               for (auto& plugin : pluginList)
+                  pluginCollection.push_back(plugin.first);
 
                result.set("plugins", pluginCollection);
 
@@ -350,7 +351,9 @@ namespace web
                   const auto query = parameters[3];
 
                   const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query,
-                                                                                      requestContent.empty() ? shared::CDataContainer() : shared::CDataContainer(requestContent),
+                                                                                      requestContent.empty()
+                                                                                         ? shared::CDataContainer()
+                                                                                         : shared::CDataContainer(requestContent),
                                                                                       "");
                   const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
 
@@ -360,7 +363,7 @@ namespace web
                      result.set("taskId", taskId);
                      return CResult::GenerateSuccess(result);
                   }
-                  
+
                   return CResult::GenerateError("Fail to get extra query task");
                }
                return CResult::GenerateError("invalid parameter. Not enough parameters in url");
@@ -389,8 +392,10 @@ namespace web
                   const auto query = parameters[4];
 
                   const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query,
-                                                                                requestContent.empty() ? shared::CDataContainer() : shared::CDataContainer(requestContent),
-                                                                                device->Name());
+                                                                                      requestContent.empty()
+                                                                                         ? shared::CDataContainer()
+                                                                                         : shared::CDataContainer(requestContent),
+                                                                                      device->Name());
                   const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
 
                   if (!taskId.empty())
@@ -399,7 +404,7 @@ namespace web
                      result.set("taskId", taskId);
                      return CResult::GenerateSuccess(result);
                   }
-                  
+
                   return CResult::GenerateError("Fail to get extra query task");
                }
                return CResult::GenerateError("invalid parameter. Not enough parameters in url");
@@ -646,8 +651,8 @@ namespace web
                {
                   const auto pluginId = boost::lexical_cast<int>(parameters[1]);
 
-				  if(requestContent.empty())
-					  return CResult::GenerateError("invalid request content. Must not be empty");
+                  if (requestContent.empty())
+                     return CResult::GenerateError("invalid request content. Must not be empty");
 
                   shared::CDataContainer content(requestContent);
                   if (!content.exists("name") || !content.exists("type") || !content.exists("configuration"))
@@ -664,9 +669,7 @@ namespace web
                                                                         deviceName,
                                                                         content.get<std::string>("name"),
                                                                         content.get<std::string>("type"),
-                                                                        content.exists("model") && !content.get<std::string>("model").empty()
-                                                                           ? content.get<std::string>("name")
-                                                                           : content.get<std::string>("model"),
+                                                                        content.exists("model") ? content.get<std::string>("model") : "",
                                                                         shared::CDataContainer());
                      m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(device->Id(),
                                                                                      content.get<shared::CDataContainer>("configuration"));
