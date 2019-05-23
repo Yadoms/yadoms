@@ -1,4 +1,6 @@
 ### 2.3.0-beta.4
+* Fix #569 : Fix model usage on manually created devices
+* Fix #558 : Build with Protobuf 3.7.1 under Windows
 * Fix #521 : Change the format of duration keywords
 * Fix #561 : Yadoms update
 * Fix script interpreter startup in debug mode
