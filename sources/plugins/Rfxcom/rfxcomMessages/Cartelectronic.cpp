@@ -22,7 +22,7 @@ namespace rfxcomMessages
 
       m_id = m_subTypeManager->idFromProtocol(rbuf);
       m_batteryLevel->set(NormalizeBatteryLevel(m_subTypeManager->batteryLevelFromProtocol(rbuf)));
-      m_signalPower->set(NormalizesignalPowerLevel(m_subTypeManager->signalPowerFromProtocol(rbuf)));
+      m_signalPower->set(NormalizeSignalPowerLevel(m_subTypeManager->signalPowerFromProtocol(rbuf)));
       declare(api);
    }
 

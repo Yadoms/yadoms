@@ -72,7 +72,7 @@ namespace rfxcomMessages
       m_houseCode = rbuf.HOMECONFORT.housecode;
       m_unitCode = rbuf.HOMECONFORT.unitcode;
       m_state->set(fromProtocolState(rbuf.HOMECONFORT.cmnd));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.HOMECONFORT.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.HOMECONFORT.rssi));
 
       // Build device description
       buildDeviceModel();

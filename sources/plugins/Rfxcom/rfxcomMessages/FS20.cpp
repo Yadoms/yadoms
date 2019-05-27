@@ -177,7 +177,7 @@ namespace rfxcomMessages
          }
       }
 
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.FS20.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.FS20.rssi));
 
       // Build device description
       buildDeviceModel();

@@ -67,7 +67,7 @@ namespace rfxcomMessages
 
       m_subType = rbuf.LIGHTING4.subtype;
       m_id = rbuf.LIGHTING4.cmd1 << 16 | rbuf.LIGHTING4.cmd2 << 8 | rbuf.LIGHTING4.cmd3;
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING4.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.LIGHTING4.rssi));
 
       // Build device description
       buildDeviceModel();

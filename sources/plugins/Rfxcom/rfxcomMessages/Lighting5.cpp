@@ -90,7 +90,7 @@ namespace rfxcomMessages
       m_id = rbuf.LIGHTING5.id1 << 16 | rbuf.LIGHTING5.id2 << 8 | rbuf.LIGHTING5.id3;
       m_unitCode = rbuf.LIGHTING5.unitcode;
       m_subTypeManager->setFromProtocolState(rbuf.LIGHTING5.cmnd, rbuf.LIGHTING5.level);
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING5.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.LIGHTING5.rssi));
 
       // Build device description
       buildDeviceName();

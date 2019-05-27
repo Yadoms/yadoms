@@ -1,46 +1,48 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/DataContainer.h>
-#include "IChimeSubtype.h"
+#include "IWeatherSubtype.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
    //--------------------------------------------------------------
-   /// \brief	The Chime Byron SX keyword
+   /// \brief	The Weather1 keyword
    //--------------------------------------------------------------
-   class CChimeByronMp001 : public IChimeSubtype
+   class CWeather1 : public IWeatherSubtype
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       //--------------------------------------------------------------
-      explicit CChimeByronMp001(const std::string& model);
+      CWeather1();
+      virtual ~CWeather1() = default;
 
-      // ILighting2Subtype implementation
+      // IWeatherSubtype implementation
       std::string getModel() const override;
       const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords() const override;
-      void set(const std::string& yadomsCommand, const shared::CDataContainer& deviceDetails) override;
-      void reset() override;
-      unsigned int idFromProtocol(unsigned char id1,
-                                  unsigned char id2,
-                                  unsigned char sound) override;
-      void idToProtocol(unsigned int id,
-                        unsigned char& id1,
-                        unsigned char& id2,
-                        unsigned char& sound) const override;
-      void setFromProtocolState(unsigned char cmd) override;
-      void toProtocolState(unsigned char& sound) const override;
-      // [END] ILighting2Subtype implementation
+      void setFromProtocolState(unsigned short windDirection,
+                                unsigned short windSpeed,
+                                unsigned short windGust,
+                                short temperature,
+                                short chill,
+                                unsigned char humidity,
+                                unsigned short rainRate,
+                                unsigned int rainTotal,
+                                unsigned char uv,
+                                unsigned short solar,
+                                unsigned short pressure,
+                                EWeatherForecast forecast) override;
+      // [END] IWeatherSubtype implementation
 
    private:
-      const std::string m_model;
-
       //--------------------------------------------------------------
       /// \brief	                        The keywords
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CEvent> m_event;
+      boost::shared_ptr<yApi::historization::CSpeed> m_averageWind;
+      boost::shared_ptr<yApi::historization::CSpeed> m_gustWind;
+      boost::shared_ptr<yApi::historization::CTemperature> m_temperature;
+      boost::shared_ptr<yApi::historization::CRain> m_rainTotal;
 
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances

@@ -22,6 +22,7 @@ namespace shared
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] accessMode      The access mode
                ///\param[in] measureType     The measure type (normally kAbsolute)
+               ///\param[in] additionalInfo  Additional information
                //-----------------------------------------------------
                explicit CDirection(const std::string& keywordName,
                                    const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,

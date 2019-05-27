@@ -75,6 +75,7 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/ISecurity2Subtype.h
    rfxcomMessages/IThermostat1Subtype.h
    rfxcomMessages/IThermostat3Subtype.h
+   rfxcomMessages/IWeatherSubtype.h
    rfxcomMessages/Lighting1.h
    rfxcomMessages/Lighting1.cpp
    rfxcomMessages/Lighting2.h
@@ -175,6 +176,12 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/TransceiverStatus.cpp
    rfxcomMessages/UV.h
    rfxcomMessages/UV.cpp
+   rfxcomMessages/Weather.h
+   rfxcomMessages/Weather.cpp
+   rfxcomMessages/Weather1.h
+   rfxcomMessages/Weather1.cpp
+   rfxcomMessages/Weather2.h
+   rfxcomMessages/Weather2.cpp
    rfxcomMessages/Weight.h
    rfxcomMessages/Weight.cpp
    rfxcomMessages/Wind.h
