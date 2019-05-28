@@ -28,7 +28,7 @@ namespace rfxcomMessages
 
       m_counter->set(rbuf.RFXMETER.count4 | (rbuf.RFXMETER.count3 << 8) | (rbuf.RFXMETER.count2 << 16) | (rbuf.RFXMETER.count1 << 24));
 
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.RFXMETER.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.RFXMETER.rssi));
 
       buildDeviceModel();
       buildDeviceName();

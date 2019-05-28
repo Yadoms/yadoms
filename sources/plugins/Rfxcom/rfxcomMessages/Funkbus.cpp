@@ -79,7 +79,7 @@ namespace rfxcomMessages
       m_unitCode = rbuf.FUNKBUS.unitcode;
       m_id = (rbuf.FUNKBUS.id1 << 8) | rbuf.FUNKBUS.id2;
       m_state->set(fromProtocolState(rbuf.FUNKBUS.cmnd));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.FUNKBUS.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.FUNKBUS.rssi));
 
       // Build device description
       buildDeviceModel();

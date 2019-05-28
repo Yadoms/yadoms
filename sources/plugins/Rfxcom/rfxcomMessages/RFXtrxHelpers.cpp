@@ -60,17 +60,17 @@ void CheckReceivedMessage(const RBUF& rbuf,
 
 int NormalizeBatteryLevel(unsigned char fromRfxcom)
 {
-   auto batteryLevel = (fromRfxcom + 1) * 10;
-   return (batteryLevel == 10 ? 0 : batteryLevel); // 10% = empty ==> force it to 0%
+   const auto batteryLevel = (fromRfxcom + 1) * 10;
+   return batteryLevel == 10 ? 0 : batteryLevel; // 10% = empty ==> force it to 0%
 }
 
-int NormalizesignalPowerLevel(unsigned char fromRfxcom)
+int NormalizeSignalPowerLevel(unsigned char fromRfxcom)
 {
-   return (fromRfxcom * 100 / 0x0F);
+   return fromRfxcom * 100 / 0x0F;
 }
 
 double NormalizeTemperature(unsigned char fromRfxcomTemperatureHigh, unsigned char fromRfxcomTemperatureLow, bool negative)
 {
-   auto temperature = static_cast<double>((fromRfxcomTemperatureHigh << 8) | fromRfxcomTemperatureLow) / 10.0;
+   const auto temperature = static_cast<double>((fromRfxcomTemperatureHigh << 8) | fromRfxcomTemperatureLow) / 10.0;
    return (negative ? -temperature : temperature);
 }

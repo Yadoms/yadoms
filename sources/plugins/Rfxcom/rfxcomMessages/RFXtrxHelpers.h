@@ -81,7 +81,7 @@ int NormalizeBatteryLevel(unsigned char fromRfxcom);
 /// \param[in] fromRfxcom              signalPower level, as encoded in RFXCom messages
 /// \return                            signalPower level in %
 //--------------------------------------------------------------
-int NormalizesignalPowerLevel(unsigned char fromRfxcom);
+int NormalizeSignalPowerLevel(unsigned char fromRfxcom);
 
 //--------------------------------------------------------------
 /// \brief	                           Normalize temperature

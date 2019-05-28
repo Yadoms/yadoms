@@ -87,7 +87,7 @@ namespace rfxcomMessages
       m_houseCode = rbuf.LIGHTING1.housecode;
       m_unitCode = rbuf.LIGHTING1.unitcode;
       m_state->set(fromProtocolState(rbuf.LIGHTING1.cmnd));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING1.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.LIGHTING1.rssi));
 
       // Build device description
       buildDeviceModel();

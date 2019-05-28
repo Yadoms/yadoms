@@ -31,6 +31,7 @@ namespace shared
          DECLARE_CAPACITY(CStandardCapacities::Frequency, "frequency", CStandardUnits::Hertz(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Humidity, "humidity", CStandardUnits::Percent(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Illumination, "illumination", CStandardUnits::Lux(), EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::IlluminationWm2, "illuminationWm2", CStandardUnits::WattPerSquareMeter(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Load, "load", CStandardUnits::Percent(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Message, "message", CStandardUnits::NoUnit(), EKeywordDataType::kJson);
          DECLARE_CAPACITY(CStandardCapacities::PluginState, "pluginState", CStandardUnits::NoUnit(), EKeywordDataType::kEnum);

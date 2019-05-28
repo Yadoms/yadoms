@@ -63,7 +63,7 @@ namespace rfxcomMessages
       m_subType = rbuf.THERMOSTAT3.subtype;
       m_unitCode = rbuf.THERMOSTAT3.unitcode1 << 16 | rbuf.THERMOSTAT3.unitcode2 << 8 | rbuf.THERMOSTAT3.unitcode3;
       m_subTypeManager->setFromProtocolState(rbuf.THERMOSTAT3.cmnd);
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.THERMOSTAT3.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.THERMOSTAT3.rssi));
 
       Init(api);
    }

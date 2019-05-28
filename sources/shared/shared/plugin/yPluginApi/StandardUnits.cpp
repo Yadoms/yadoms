@@ -41,6 +41,7 @@ namespace shared
          DECLARE_UNIT(VoltAmpere, "data.units.voltAmpere");
          DECLARE_UNIT(Watt, "data.units.watt");
          DECLARE_UNIT(WattPerHour, "data.units.wattPerHour");
+         DECLARE_UNIT(WattPerSquareMeter, "data.units.wattPerSquareMeter");
       }
    }
 } // namespace shared::plugin::yPluginApi
