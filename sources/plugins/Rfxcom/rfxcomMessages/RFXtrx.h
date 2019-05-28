@@ -27,6 +27,15 @@ portions of this file.
 */
 
 /*
+SDK version 9.24
+	Chime Alfawise, dBell added
+	SelectPlus3 changed to ByronBY
+	Async Get Settings added
+	868 protocol selection bits updated and changed
+	WEATHER & SOLAR structures added
+	ACH2010 moved to WEATHER
+	WS5500 added
+
 SDK version 9.23
 	Async data subtypes changed
 
@@ -1373,8 +1382,8 @@ typedef union tRBUF {
 		//BYTE	msg3;
 		BYTE	UNDECODEDenabled : 1;
 		BYTE	ALECTOenabled : 1;
-		BYTE	MSG3Reserved5 : 1;
-		BYTE	MSG3Reserved4 : 1;
+		BYTE	ALECTO5500enabled : 1;
+		BYTE	LACROSSEenabled : 1;
 		BYTE	DAVISEUenabled : 1;
 		BYTE	DAVISUSenabled : 1;
 		BYTE	DAVISAUenabled : 1;
@@ -1383,50 +1392,50 @@ typedef union tRBUF {
 		//BYTE	msg4;
 		BYTE	MSG4Reserved7 : 1;
 		BYTE	MSG4Reserved6 : 1;
-		BYTE	PROGUARDenabled : 1;
-		BYTE	FS20enabled : 1;
+		BYTE	MSG4Reserved5 : 1;
+		BYTE	MSG4Reserved4 : 1;
 		BYTE	MSG4Reserved3 : 1;
-		BYTE	MSG4Reserved2 : 1;
-		BYTE	MSG4Reserved1 : 1;
+		BYTE	FS20enabled : 1;
+		BYTE	LWRFenabled : 1;
 		BYTE	EDISIOenabled : 1;
 
 		//BYTE	msg5;
 		BYTE	VISONICenabled : 1;
-		BYTE	MSG5Reserved6 : 1;
-		BYTE	MSG5Reserved5 : 1;
-		BYTE	MSG5Reserved4 : 1;
+		BYTE	MEIANTECHenabled : 1;
+		BYTE	KEELOQenabled : 1;
+		BYTE	PROGUARDenabled : 1;
 		BYTE	MSG5Reserved3 : 1;
 		BYTE	MSG5Reserved2 : 1;
 		BYTE	MSG5Reserved1 : 1;
 		BYTE	MSG5Reserved0 : 1; //note: keep this order
 
 								//BYTE    msg6;
-		BYTE    MSG6Reserved7 : 1;
-		BYTE    MSG6Reserved6 : 1;
-		BYTE    MSG6Reserved5 : 1;
+		BYTE    ITHOenabled : 1;
+		BYTE    ITHOecoenabled : 1;
+		BYTE    HONEYWELLenabled : 1;
 		BYTE    MSG6Reserved4 : 1;
 		BYTE    MSG6Reserved3 : 1;
 		BYTE    MSG6Reserved2 : 1;
 		BYTE    MSG6Reserved1 : 1;
-		BYTE    KEELOQenabled : 1;
+		BYTE    MSG6Reserved0 : 1;
 #else
 		//BYTE	msg3;
 		BYTE	MSG3Reserved0 : 1;
 		BYTE	DAVISAUenabled : 1;
 		BYTE	DAVISUSenabled : 1;
 		BYTE	DAVISEUenabled : 1;
-		BYTE	MSG3Reserved4 : 1;
-		BYTE	MSG3Reserved5 : 1;
+		BYTE	LACROSSEenabled : 1;
+		BYTE	ALECTO5500enabled : 1;
 		BYTE	ALECTOenabled : 1;
 		BYTE	UNDECODEDenabled : 1;
 
 		//BYTE	msg4;
 		BYTE	EDISIOenabled : 1;
-		BYTE	MSG4Reserved1 : 1;
-		BYTE	MSG4Reserved2 : 1;
-		BYTE	MSG4Reserved3 : 1;
+		BYTE	LWRFenabled : 1;
 		BYTE	FS20enabled : 1;
-		BYTE	PROGUARDenabled : 1;
+		BYTE	MSG4Reserved3 : 1;
+		BYTE	MSG4Reserved4 : 1;
+		BYTE	MSG4Reserved5 : 1;
 		BYTE	MSG4Reserved6 : 1;
 		BYTE	MSG4Reserved7 : 1;
 
@@ -1435,20 +1444,20 @@ typedef union tRBUF {
 		BYTE	MSG5Reserved1 : 1;
 		BYTE	MSG5Reserved2 : 1;
 		BYTE	MSG5Reserved3 : 1;
-		BYTE	MSG5Reserved4 : 1;
-		BYTE	MSG5Reserved5 : 1;
-		BYTE	MSG5Reserved6 : 1;
+		BYTE	PROGUARDenabled : 1;
+		BYTE    KEELOQenabled : 1;
+		BYTE	MEIANTECHenabled : 1;
 		BYTE	VISONICenabled : 1;
 
 		//BYTE	msg6;
-		BYTE    KEELOQenabled : 1;
+		BYTE    MSG6Reserved0 : 1;
 		BYTE    MSG6Reserved1 : 1;
 		BYTE    MSG6Reserved2 : 1;
 		BYTE    MSG6Reserved3 : 1;
 		BYTE    MSG6Reserved4 : 1;
-		BYTE    MSG6Reserved5 : 1;
-		BYTE    MSG6Reserved6 : 1;
-		BYTE    MSG6Reserved7 : 1;
+		BYTE    HONEYWELLenabled : 1;
+		BYTE    ITHOecoenabled : 1;
+		BYTE    ITHOenabled : 1;
 #endif
 
 		BYTE	msg7;

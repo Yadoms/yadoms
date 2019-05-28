@@ -14,7 +14,7 @@ namespace rfxcomMessages
       : m_illumination(boost::make_shared<yApi::historization::CIlluminationWm2>("illumination")),
         m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-        m_keywords({ m_illumination, m_batteryLevel, m_signalPower})
+        m_keywords({m_illumination, m_batteryLevel, m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -27,7 +27,7 @@ namespace rfxcomMessages
 
       m_id = rbuf.SOLAR.id1 | (rbuf.SOLAR.id2 << 8);
 
-      m_illumination->set( (rbuf.SOLAR.solarlow | (rbuf.SOLAR.solarhigh << 8)) / 100.0);
+      m_illumination->set((rbuf.SOLAR.solarlow | (rbuf.SOLAR.solarhigh << 8)) / 100.0);
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.SOLAR.battery_level));
       m_signalPower->set(NormalizeSignalPowerLevel(rbuf.SOLAR.rssi));
