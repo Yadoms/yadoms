@@ -22,6 +22,7 @@
 #include "Frequency.h"
 #include "Humidity.h"
 #include "Illumination.h"
+#include "IlluminationWm2.h"
 #include "Load.h"
 #include "Message.h"
 #include "PluginState.h"

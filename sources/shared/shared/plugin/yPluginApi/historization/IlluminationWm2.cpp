@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Illumination.h"
+#include "IlluminationWm2.h"
 #include "../StandardCapacities.h"
 
 namespace shared
@@ -10,12 +10,12 @@ namespace shared
       {
          namespace historization
          {
-            CIllumination::CIllumination(const std::string& keywordName,
-                                         const EKeywordAccessMode& accessMode,
-                                         const EMeasureType& measureType,
-                                         typeInfo::CDoubleTypeInfo& additionalInfo)
+            CIlluminationWm2::CIlluminationWm2(const std::string& keywordName,
+                                               const EKeywordAccessMode& accessMode,
+                                               const EMeasureType& measureType,
+                                               typeInfo::CDoubleTypeInfo& additionalInfo)
                : CSingleHistorizableData<double>(keywordName,
-                                                 CStandardCapacities::Illumination(),
+                                                 CStandardCapacities::IlluminationWm2(),
                                                  accessMode,
                                                  0.0,
                                                  measureType,

@@ -41,6 +41,7 @@ namespace shared
             static const CStandardCapacity& Frequency();        // frequency         | Hertz                 | Frequency
             static const CStandardCapacity& Humidity();         // humidity          | percent               | Humidity
             static const CStandardCapacity& Illumination();     // illumination      | lux                   | Illumination (lux)
+            static const CStandardCapacity& IlluminationWm2();  // illuminationWm2   | W/m²                  | Illumination (W/m²)
             static const CStandardCapacity& Load();             // load              | percent               | Load (%)
             static const CStandardCapacity& Message();          // message           | -                     | A message (contains "from", "to" and "body" fields)
             static const CStandardCapacity& PluginState();      // pluginState       | -                     | Specific capacity for plugin states
