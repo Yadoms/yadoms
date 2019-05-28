@@ -46,7 +46,7 @@ namespace rfxcomMessages
       boost::shared_ptr<yApi::historization::CHumidity> m_humidity;
       boost::shared_ptr<yApi::historization::CRain> m_rainTotal;
       boost::shared_ptr<yApi::historization::CUv> m_uv;
-      boost::shared_ptr<yApi::historization::CPressure> m_pressure;
+      boost::shared_ptr<yApi::historization::CIlluminationWm2> m_solar;
 
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances

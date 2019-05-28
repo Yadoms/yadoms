@@ -13,8 +13,8 @@ namespace rfxcomMessages
         m_humidity(boost::make_shared<yApi::historization::CHumidity>("humidity")),
         m_rainTotal(boost::make_shared<yApi::historization::CRain>("rainTotal")),
         m_uv(boost::make_shared<yApi::historization::CUv>("uv")),
-        m_pressure(boost::make_shared<yApi::historization::CPressure>("pressure")),
-        m_keywords({m_averageWind, m_gustWind, m_temperature, m_rainTotal})
+        m_solar(boost::make_shared<yApi::historization::CIlluminationWm2>("illumination")),
+        m_keywords({m_averageWind, m_gustWind, m_temperature, m_humidity, m_rainTotal, m_uv, m_solar})
    {
    }
 
@@ -47,7 +47,7 @@ namespace rfxcomMessages
       m_temperature->set(static_cast<double>(temperature) / 10);
       m_humidity->set(static_cast<double>(humidity) / 10);
       m_rainTotal->set(static_cast<double>(rainTotal) * 0.3);
-      m_uv->set(static_cast<double>(uv) * 10);
-      m_pressure->set(static_cast<double>(pressure));
+      m_uv->set(static_cast<double>(uv));
+      m_solar->set(static_cast<double>(solar));
    }
 } // namespace rfxcomMessages
