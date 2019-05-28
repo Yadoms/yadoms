@@ -12,6 +12,8 @@ IF(NOT DISABLE_TEST_ENUM)
 		server/database/common/DatabaseTables.cpp
 		server/database/pgsql/PgsqlQuery.h
 		server/database/pgsql/PgsqlQuery.cpp
+		server/database/sqlite/SQLiteQuery.h
+		server/database/sqlite/SQLiteQuery.cpp
 	)
 	
    ADD_SOURCES(TestEnum.cpp)

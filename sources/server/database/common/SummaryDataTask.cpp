@@ -14,7 +14,8 @@ namespace database {
 namespace common { 
 
 
-   CSummaryDataTask::CSummaryDataTask(boost::shared_ptr<IAcquisitionRequester> acquisitionRequester, boost::shared_ptr<IKeywordRequester> keywordRequester)
+   CSummaryDataTask::CSummaryDataTask(boost::shared_ptr<IAcquisitionRequester> acquisitionRequester,
+                                      boost::shared_ptr<IKeywordRequester> keywordRequester)
       :m_acquisitionRequester(acquisitionRequester), m_keywordRequester(keywordRequester), m_firstRun(true)
    {
    }
@@ -204,19 +205,21 @@ namespace common {
 
       Pour tous les keywords ayant émis à l'heure précédente, on lance le calcul des valeurs résumées (si la valeur n'existe pas)
       Pour tous les keywords ayant émis le jour précédent, on lance le calcul des valeurs résumées (si la valeur n'existe pas)
+      Pour tous les keywords ayant émis le mois précédent, on lance le calcul des valeurs résumées (si la valeur n'existe pas)
+      Pour tous les keywords ayant émis l'année précédent, on lance le calcul des valeurs résumées (si la valeur n'existe pas)
 
       */
-      boost::posix_time::ptime now = shared::currentTime::Provider().now();
-      boost::posix_time::time_duration oneHour = boost::posix_time::hours(1);
+      const boost::posix_time::ptime now = shared::currentTime::Provider().now();
+      const boost::posix_time::time_duration oneHour = boost::posix_time::hours(1);
 
-      boost::posix_time::ptime currentHour(now.date(), boost::posix_time::hours(now.time_of_day().hours()));
+      const boost::posix_time::ptime currentHour(now.date(), boost::posix_time::hours(now.time_of_day().hours()));
       boost::posix_time::ptime previousHour = currentHour - oneHour;
 
       std::vector<int> keywordToTreat;
       std::vector< boost::shared_ptr< database::entities::CAcquisitionSummary> > summaryAcquisitions;
 
       m_acquisitionRequester->getKeywordsHavingDate(previousHour, currentHour, keywordToTreat);
-      for (std::vector<int>::iterator i = keywordToTreat.begin(); i != keywordToTreat.end(); ++i)
+      for (auto i = keywordToTreat.begin(); i != keywordToTreat.end(); ++i)
       {
          try
          {
@@ -241,14 +244,12 @@ namespace common {
       //check if day have changed
       if (currentHour.date() != previousHour.date())
       {
-
-         boost::posix_time::time_duration oneDay = boost::posix_time::hours(24);
-         boost::posix_time::ptime currentDay(now.date());
-         boost::posix_time::ptime previousDay = currentDay - oneDay;
+         const boost::posix_time::ptime currentDay(now.date());
+         boost::posix_time::ptime previousDay = currentDay - boost::gregorian::days(1);
 
          keywordToTreat.clear();
          m_acquisitionRequester->getKeywordsHavingDate(previousDay, currentDay, keywordToTreat);
-         for (std::vector<int>::iterator i = keywordToTreat.begin(); i != keywordToTreat.end(); ++i)
+         for (auto i = keywordToTreat.begin(); i != keywordToTreat.end(); ++i)
          {
             try
             {
@@ -267,6 +268,68 @@ namespace common {
             catch (std::exception & ex)
             {
                YADOMS_LOG(error) << "Error in computing DAY summary values :" << ex.what();
+            }
+         }
+
+         //check if MONTH have changed
+         if(currentDay.date().month() != previousDay.date().month())
+         {
+            const boost::posix_time::ptime currentMonth(boost::gregorian::date(now.date().year(), now.date().month(), 1));
+            boost::posix_time::ptime previousMonth = currentMonth - boost::gregorian::months(1);
+
+            keywordToTreat.clear();
+            m_acquisitionRequester->getKeywordsHavingDate(previousMonth, currentMonth, keywordToTreat);
+            for (auto i = keywordToTreat.begin(); i != keywordToTreat.end(); ++i)
+            {
+               try
+               {
+                  if (!m_acquisitionRequester->summaryDataExists(*i, database::entities::EAcquisitionSummaryType::kMonth, previousMonth))
+                  {
+                     YADOMS_LOG(debug) << "    Computing MONTH : " << *i << " @ " << previousMonth << " ...";
+                     boost::shared_ptr< database::entities::CAcquisitionSummary> insertedValue = m_acquisitionRequester->saveSummaryData(*i, database::entities::EAcquisitionSummaryType::kMonth, previousMonth);
+                     summaryAcquisitions.push_back(insertedValue);
+                     YADOMS_LOG(debug) << "    Computing MONTH : " << *i << " @ " << previousMonth << " done";
+                  }
+               }
+               catch (shared::exception::CEmptyResult & ex)
+               {
+                  YADOMS_LOG(information) << "Cannot compute MONTH summary value : " << ex.what();
+               }
+               catch (std::exception & ex)
+               {
+                  YADOMS_LOG(error) << "Error in computing MONTH summary values :" << ex.what();
+               }
+            }
+
+            //check if YEAR have changed
+            if (currentMonth.date().year() != previousMonth.date().year())
+            {
+               const boost::posix_time::ptime currentYear(boost::gregorian::date(now.date().year(), 1, 1));
+               boost::posix_time::ptime previousYear = currentYear - boost::gregorian::years(1);
+
+               keywordToTreat.clear();
+               m_acquisitionRequester->getKeywordsHavingDate(previousYear, currentYear, keywordToTreat);
+               for (auto i = keywordToTreat.begin(); i != keywordToTreat.end(); ++i)
+               {
+                  try
+                  {
+                     if (!m_acquisitionRequester->summaryDataExists(*i, database::entities::EAcquisitionSummaryType::kYear, previousYear))
+                     {
+                        YADOMS_LOG(debug) << "    Computing YEAR : " << *i << " @ " << previousYear << " ...";
+                        boost::shared_ptr< database::entities::CAcquisitionSummary> insertedValue = m_acquisitionRequester->saveSummaryData(*i, database::entities::EAcquisitionSummaryType::kYear, previousYear);
+                        summaryAcquisitions.push_back(insertedValue);
+                        YADOMS_LOG(debug) << "    Computing YEAR : " << *i << " @ " << previousYear << " done";
+                     }
+                  }
+                  catch (shared::exception::CEmptyResult & ex)
+                  {
+                     YADOMS_LOG(information) << "Cannot compute YEAR summary value : " << ex.what();
+                  }
+                  catch (std::exception & ex)
+                  {
+                     YADOMS_LOG(error) << "Error in computing YEAR summary values :" << ex.what();
+                  }
+               }
             }
          }
       }

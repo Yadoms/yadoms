@@ -21,9 +21,8 @@ namespace shared
          /// \param[in]  message             Exception message
          //--------------------------------------------------------------
          explicit CException(const char* message)
+            :m_message(message)
          {
-            if (message != nullptr)
-               m_message = std::string(message);
          }
 
          explicit CException(const std::string& message)
@@ -37,10 +36,14 @@ namespace shared
          /// \brief	    Build full message explaining exception reason
          /// \return     message explaining exception reason
          //--------------------------------------------------------------
-         char const* what() const noexcept override { return m_message.c_str(); }
-
+         const char *what() const noexcept override {
+            return m_message.what();
+         }
       protected:
-         std::string m_message;
+         std::runtime_error m_message;
       };
+
+      static_assert(std::is_nothrow_copy_constructible<CException>::value, "shared::exception::CException must be nothrow copy constructible");
+
    }
 } // namespace shared::exception
