@@ -144,6 +144,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Security2.cpp
    rfxcomMessages/Security2ClassicKeyLoq.h
    rfxcomMessages/Security2ClassicKeyLoq.cpp
+   rfxcomMessages/Solar.h
+   rfxcomMessages/Solar.cpp
    rfxcomMessages/Thermostat1.h
    rfxcomMessages/Thermostat1.cpp
    rfxcomMessages/Thermostat1Digimax.h

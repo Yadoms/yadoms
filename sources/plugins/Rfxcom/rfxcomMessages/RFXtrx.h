@@ -1228,6 +1228,10 @@ SDK version 4.9
 #define sTypeWEATHER1 0x1   //Alecto ACH2010
 #define sTypeWEATHER2 0x2   //Alecto WS5500
 
+//types for Solar
+#define pTypeSOLAR 0x77
+#define sTypeSOLAR1 0x1   //Davis
+
 //RAW transit/receive
 #define pTypeRAW 0x7F
 #define sTypeRAW1 0x0
@@ -2596,6 +2600,26 @@ typedef union tRBUF {
 		BYTE rssi : 4;
 #endif
 	} WEATHER;
+
+	struct {
+		BYTE	packetlength;
+		BYTE	packettype;
+		BYTE	subtype;
+		BYTE	seqnbr;
+		BYTE	id1;
+		BYTE	id2;
+		BYTE	solarhigh;
+		BYTE	solarlow;
+		BYTE	rfu1;
+		BYTE	rfu2;
+#ifdef IS_BIG_ENDIAN
+		BYTE	rssi : 4;
+		BYTE	battery_level : 4;
+#else
+		BYTE battery_level : 4;
+		BYTE rssi : 4;
+#endif
+	} SOLAR;
 
 	struct {
 	BYTE	packetlength;
