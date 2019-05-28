@@ -553,7 +553,7 @@ namespace database
 
          common::adapters::CSingleValueAdapter<bool> existsAdapter;
          queryEntities(&existsAdapter, sCheckForTableExists);
-         if (existsAdapter.getResults().size() >= 1)
+         if (!existsAdapter.getResults().empty())
             return existsAdapter.getResults()[0];
          return false;
       }

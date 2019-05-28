@@ -426,7 +426,7 @@ inline CQuery & CQuery::Set(const T01 & field1, const T1 & value1,
    const T11 & field10, const T10 &  value10)
 {
    std::ostringstream ss;
-   ss << " SET  " << queryhelper<T01>::format(this, field1) << " = " << queryhelper<T1 >::format(this, value1);
+   ss << " SET " << queryhelper<T01>::format(this, field1) << "=" << queryhelper<T1 >::format(this, value1);
    if (typeid(value2) != typeid(CNotUsedTemplateField))
       AppendSet(ss, queryhelper<T02>::format(this, field2), queryhelper<T2 >::format(this, value2));
    if (typeid(value3) != typeid(CNotUsedTemplateField))
@@ -663,6 +663,12 @@ template<class T1, class T2>
 inline const CQuery::CFunction CQuery::math(const T1 & value1, const std::string & op, const T2 & value2)
 {
    return CFunction(queryhelper<T1>::format(this, value1) + " " + op + " " + queryhelper<T2>::format(this, value2));
+}
+
+template<class T>
+inline const CQuery::CFunction CQuery::substr(const T & value, int offset, int count)
+{
+   return CFunction(this->functionSubstring(queryhelper<T>::format(this, value), offset, count));
 }
 
 //--------------------------------------------------------------

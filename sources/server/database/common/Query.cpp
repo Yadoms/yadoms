@@ -88,6 +88,20 @@ namespace database
          return Append(ss);
       }
 
+      //
+      /// \brief           Append 'From (subquery)'
+      /// \param  subquery   the subquery
+      /// \return          A reference to itself to allow method chaining
+      //   
+      CQuery& CQuery::FromParenthesis(const CQuery& subquery, const std::string & name)
+      {
+         std::ostringstream ss;
+         ss << " FROM (" << subquery.str() << " " <<  name << ")";
+         ss << " ";
+         return Append(ss);
+      }
+
+
       CQuery& CQuery::Where(const std::string& condition)
       {
          return PredicateInternal("WHERE ", condition);
@@ -319,7 +333,7 @@ namespace database
       void CQuery::AppendSet(std::ostringstream& ss, const std::string& field, const std::string& value)
       {
          if (field.size() > 0)
-            ss << "," << field << "=" << value;
+            ss << ", " << field << "=" << value;
       }
 
       void CQuery::AppendValue(std::ostringstream& ss, const std::string& value)
@@ -431,6 +445,11 @@ namespace database
       std::string CQuery::functionMin(const std::string& sqlPart)
       {
          return (boost::format("min(%1%)") % sqlPart).str();
+      }
+
+      std::string CQuery::functionSubstring(const std::string& sqlPart, int offset, int count)
+      {
+         return (boost::format("substr(%1%, %2%, %3%)") % sqlPart % offset % count).str();
       }
 
       std::string CQuery::functionMax(const std::string& sqlPart)
