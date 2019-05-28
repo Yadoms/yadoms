@@ -792,6 +792,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/versioning/Version_4_2_0.cpp
 	server/database/common/versioning/Version_4_3_0.h
 	server/database/common/versioning/Version_4_3_0.cpp
+	server/database/common/versioning/Version_4_4_0.h
+	server/database/common/versioning/Version_4_4_0.cpp
 	server/database/common/versioning/VersionUpgraderFactory.h
 	server/database/common/versioning/VersionUpgraderFactory.cpp
 	server/database/common/versioning/VersionException.h
@@ -834,7 +836,7 @@ ENDIF()
 
 IF(USE_PGSQL_DATABASE)
    # Be careful updating PostgreSQL version : you maybe have to update ssleay32.dll dependency (MSVCRxxx.DLL)
-   find_package(PostgreSQL 9.6 EXACT)
+   find_package(PostgreSQL 9.6)
 
    if(PostgreSQL_FOUND)
       message(STATUS "Found postgresql ${PostgreSQL_VERSION_STRING}")
