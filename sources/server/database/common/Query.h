@@ -216,6 +216,16 @@ namespace database
          template <class T1, class T2>
          inline CQuery& Where(const T1& field, const std::string& op, const T2& value);
 
+         //
+         /// \brief           Append the where in clause
+         ///                  Where field in("value1", "value2", "value3")
+         /// \param  field    the field name
+         /// \param  values   the list of values
+         /// \return          A reference to itself to allow method chaining
+         //
+         template <class T1, class T2>
+         inline CQuery& WhereIn(const T1& field, const std::vector<T2>& values);
+
 
          //
          /// \brief           Append the where clause with a start parenthesis

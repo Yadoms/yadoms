@@ -1,7 +1,12 @@
 ### 2.3.0-beta.4
+* Fix #561 : remove connected user from Summary page of configuration panel (makes no sense)
+* Add IlluminationWm2 historizer
+* Fix #569 : Fix model usage on manually created devices
+* Fix #558 : Build with Protobuf 3.7.1 under Windows
+* Fix #521 : Change the format of duration keywords
 * Fix #561 : Yadoms update
 * Fix script interpreter startup in debug mode
-* Fix #521 : Change the format of duration keywords
+* Add getKeywordListLastData REST request
 
 ### 2.3.0-beta.3
 * N/A (fixes on RFXCom plugin only)

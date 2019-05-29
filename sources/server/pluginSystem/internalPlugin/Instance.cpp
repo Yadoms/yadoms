@@ -19,10 +19,6 @@ namespace pluginSystem
       {
       }
 
-      CInstance::~CInstance()
-      {
-      }
-
       void CInstance::requestStop()
       {
          m_thread.interrupt();

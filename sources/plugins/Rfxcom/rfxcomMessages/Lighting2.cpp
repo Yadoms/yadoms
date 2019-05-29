@@ -87,7 +87,7 @@ namespace rfxcomMessages
 
       m_keywords.insert(m_keywords.end(), m_subTypeManager->keywords().begin(), m_subTypeManager->keywords().end());
 
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING2.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.LIGHTING2.rssi));
 
       // Create device and keywords if needed
       if (api->deviceExists(m_deviceName))

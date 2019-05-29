@@ -155,7 +155,7 @@ namespace rfxcomMessages
 
       m_state->set(fromProtocolState(rbuf.BLINDS1.cmnd));
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.BLINDS1.filler)); // filler is specified as battery level in RFXtrx SDF.pdf
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.BLINDS1.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.BLINDS1.rssi));
 
       // Build device description
       buildDeviceModel();

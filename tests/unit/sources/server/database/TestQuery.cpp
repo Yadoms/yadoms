@@ -147,4 +147,24 @@ BOOST_AUTO_TEST_CASE(UpdateOperation)
 }
 
 
+BOOST_AUTO_TEST_CASE(WhereIn)
+{
+   const std::vector<int> intData = { 3, 8, 25, 7, 12 };
+   database::pgsql::CPgsqlQuery intPgsqlQuery;
+   intPgsqlQuery.Select("column1").From("table").WhereIn("column2", intData);
+   BOOST_CHECK_EQUAL(beautifyQuery(intPgsqlQuery), "SELECT 'column1' FROM 'table' WHERE 'column2' IN (3,8,25,7,12)");
+   database::sqlite::CSQLiteQuery intSQLiteQuery;
+   intSQLiteQuery.Select("column1").From("table").WhereIn("column2", intData);
+   BOOST_CHECK_EQUAL(beautifyQuery(intSQLiteQuery), "SELECT 'column1' FROM 'table' WHERE 'column2' IN (3,8,25,7,12)");
+
+   const std::vector<std::string> strData = { "value1", "value2", "value3" };
+   database::pgsql::CPgsqlQuery strPgsqlQuery;
+   strPgsqlQuery.Select("column1").From("table").WhereIn("column2", strData);
+   BOOST_CHECK_EQUAL(beautifyQuery(strPgsqlQuery), "SELECT 'column1' FROM 'table' WHERE 'column2' IN ('value1','value2','value3')");
+   database::sqlite::CSQLiteQuery strSQLiteQuery;
+   strSQLiteQuery.Select("column1").From("table").WhereIn("column2", strData);
+   BOOST_CHECK_EQUAL(beautifyQuery(strSQLiteQuery), "SELECT 'column1' FROM 'table' WHERE 'column2' IN ('value1','value2','value3')");
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()

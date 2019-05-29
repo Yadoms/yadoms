@@ -303,9 +303,8 @@ function asyncLoadJSGzLibs(libraryNames) {
 function asyncLoadJSLib(librayName) {
    assert(librayName != undefined, "librayName must be defined");
 
+   var d = new $.Deferred();
    if (!loadedJSLibs[librayName]) {
-      //we create a new deffered
-      var d = new $.Deferred();
       var script = document.createElement("script");
       script.type = "text/javascript";
       script.src = librayName;
@@ -338,10 +337,11 @@ function asyncLoadJSLib(librayName) {
 
       //we save the promise for other load requests
       loadedJSLibs[librayName] = d.promise();
-      return d.promise();
    } else {
-      return loadedJSLibs[librayName];
+      d.resolve();
    }
+
+   return d.promise();
 }
 
 /**

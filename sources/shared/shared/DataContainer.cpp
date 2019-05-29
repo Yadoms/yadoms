@@ -489,7 +489,7 @@ namespace shared
 		if (v.IsUint())
 		{
 			const unsigned int b = v.GetUint();
-			if (b< INT32_MIN || b>INT32_MAX)
+			if (b< 0 || b>INT32_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to int32") % b).str());
 			return static_cast<int>(b);
 		}
@@ -505,7 +505,7 @@ namespace shared
 		if (v.IsUint64())
 		{
 			const uint64_t b = v.GetUint64();
-			if (b< INT32_MIN || b>INT32_MAX)
+			if (b< 0 || b>INT32_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to int32") % b).str());
 			return static_cast<int>(b);
 		}
@@ -755,7 +755,7 @@ namespace shared
 		if (v.IsInt())
 		{
 			const int b = v.GetInt();
-			if (b< 0 || b>UINT32_MAX)
+			if (b< 0 || b>INT32_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int/UInt32") % b).str());
 			return static_cast<unsigned int>(b);
 		}
@@ -800,7 +800,7 @@ namespace shared
 		if (v.IsInt64())
 		{
 			const int64_t b = v.GetInt64();
-			if (b< 0 || b>UINT64_MAX)
+			if (b< 0 || b>INT64_MAX)
 				throw exception::COutOfRange((boost::format("%1% is not assignable to unsigned int 64/UInt64") % b).str());
 			return static_cast<uint64_t>(b);
 		}

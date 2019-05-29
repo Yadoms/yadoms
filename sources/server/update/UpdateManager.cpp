@@ -310,7 +310,7 @@ namespace update
             shared::versioning::CVersion v(version.get<std::string>("version"));
 
             // Don't add prereleases versions if not asked
-            if (!v.prerelease().empty() && !includePrereleases)
+            if (!v.getPrerelease().empty() && !includePrereleases)
                continue;
 
             if (v == localVersion)
@@ -396,7 +396,7 @@ namespace update
                      shared::versioning::CVersion v(version.get<std::string>("version"));
 
                      // Don't add prereleases versions if not asked
-                     if (!v.prerelease().empty() && !includePrereleases)
+                     if (!v.getPrerelease().empty() && !includePrereleases)
                         continue;
 
                      if (v == localVersion.second->getVersion())
@@ -458,7 +458,7 @@ namespace update
                shared::versioning::CVersion v(version.get<std::string>("version"));
 
                // Don't add prereleases versions if not asked
-               if (!v.prerelease().empty() && !includePrereleases)
+               if (!v.getPrerelease().empty() && !includePrereleases)
                   continue;
 
                if (!checkDependencies(version))
@@ -551,7 +551,7 @@ namespace update
                      shared::versioning::CVersion v(version.get<std::string>("version"));
 
                      // Don't add prereleases versions if not asked
-                     if (!v.prerelease().empty() && !includePrereleases)
+                     if (!v.getPrerelease().empty() && !includePrereleases)
                         continue;
 
                      if (v == localVersion.second->getVersion())
@@ -613,7 +613,7 @@ namespace update
                shared::versioning::CVersion v(version.get<std::string>("version"));
 
                // Don't add prereleases versions if not asked
-               if (!v.prerelease().empty() && !includePrereleases)
+               if (!v.getPrerelease().empty() && !includePrereleases)
                   continue;
 
                if (!checkDependencies(version))
@@ -701,7 +701,7 @@ namespace update
                      shared::versioning::CVersion v(version.get<std::string>("version"));
 
                      // Don't add prereleases versions if not asked
-                     if (!v.prerelease().empty() && !includePrereleases)
+                     if (!v.getPrerelease().empty() && !includePrereleases)
                         continue;
 
                      if (v == localVersion.second->getVersion())
@@ -764,7 +764,7 @@ namespace update
                shared::versioning::CVersion v(version.get<std::string>("version"));
 
                // Don't add prereleases versions if not asked
-               if (!v.prerelease().empty() && !includePrereleases)
+               if (!v.getPrerelease().empty() && !includePrereleases)
                   continue;
 
                if (!checkDependencies(version))

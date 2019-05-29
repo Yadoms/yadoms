@@ -43,7 +43,7 @@ namespace rfxcomMessages
 
       m_frequency->set(rbuf.POWER.freq);
 
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.POWER.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.POWER.rssi));
 
       buildDeviceModel();
       buildDeviceName();

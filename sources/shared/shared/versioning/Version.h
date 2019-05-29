@@ -113,31 +113,31 @@ namespace shared
          ///\brief Get the MAJOR number
          ///\return  the MAJOR number
          //---------------------------------------------
-         int major() const;
+         int getMajor() const;
 
          //---------------------------------------------
          ///\brief Get the MINOR number
          ///\return  the MINOR number
          //---------------------------------------------
-         int minor() const;
+         int getMinor() const;
 
          //---------------------------------------------
          ///\brief Get the PATCH number
          ///\return  the PATCH number
          //---------------------------------------------
-         int patch() const;
+         int getPatch() const;
 
          //---------------------------------------------
          ///\brief Get the PRERELEASE version
          ///\return  the PRERELEASE version
          //---------------------------------------------
-         const std::string& prerelease() const;
+         const std::string& getPrerelease() const;
 
          //---------------------------------------------
          ///\brief Get the BUILD metadata version
          ///\return  the BUILD metadata version
          //---------------------------------------------
-         const std::string& buildMetadata() const;
+         const std::string& getBuildMetadata() const;
 
       protected:
          //---------------------------------------------

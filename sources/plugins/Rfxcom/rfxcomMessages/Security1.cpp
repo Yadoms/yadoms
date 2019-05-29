@@ -78,7 +78,7 @@ namespace rfxcomMessages
       m_id = m_subTypeManager->idFromProtocol(rbuf);
       m_subTypeManager->setFromProtocolState(rbuf.SECURITY1.status);
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.SECURITY1.battery_level));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.SECURITY1.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.SECURITY1.rssi));
 
       // Build device description
       buildDeviceName();

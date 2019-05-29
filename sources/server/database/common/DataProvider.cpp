@@ -30,6 +30,13 @@ namespace database
       {
          try
          {
+            if (!m_databaseRequester->checkTableExists(CConfigurationTable::getTableName())
+               && !m_databaseRequester->checkTableExists(CDatabaseTable("Configuration")))
+            {
+               // New database
+               return shared::versioning::CVersion();
+            }
+
             // Configuration table changed from Database 4.2.0 version (updated to 4.2.0 in Yadoms 2.1.0 version).
             // As database version is stored in the Configuration table and this table structure changed,
             // we have to know the current table structure before get Database version
@@ -52,7 +59,7 @@ namespace database
                m_databaseRequester->queryEntities(&adapter, *qVersion);
                auto results = adapter.getResults();
 
-               if (results.size() >= 1)
+               if (!results.empty())
                   return shared::versioning::CVersion(results[0]);
             }
             else
@@ -66,7 +73,7 @@ namespace database
                m_databaseRequester->queryEntities(&adapter, *qVersion);
                auto results = adapter.getResults();
 
-               if (results.size() >= 1)
+               if (!results.empty())
                   return shared::versioning::CVersion(results[0]);
             }
          }
@@ -76,7 +83,7 @@ namespace database
          }
          catch (...)
          {
-            YADOMS_LOG(debug) << "Fail to get version of database : Unkonown exception";
+            YADOMS_LOG(debug) << "Fail to get version of database : Unknown exception";
          }
 
          return shared::versioning::CVersion();
@@ -98,7 +105,7 @@ namespace database
 
             versioning::CVersionUpgraderFactory::GetUpgrader()->checkForUpgrade(m_databaseRequester, getVersion());
 
-            //create entities requester (high level querier)
+            //create entities requester (high level queries)
             loadRequesters();
 
             YADOMS_LOG(information) << "Load database with success";
@@ -112,9 +119,9 @@ namespace database
             YADOMS_LOG(error) << "Fail to load database (upgrade error) : " << std::endl << exc.what();
             result = false;
          }
-         catch (CDatabaseException& dbex)
+         catch (CDatabaseException& dbException)
          {
-            YADOMS_LOG(error) << "Database exception while loading database" << std::endl << dbex.what();
+            YADOMS_LOG(error) << "Database exception while loading database" << std::endl << dbException.what();
             result = false;
          }
          catch (std::exception& ex)

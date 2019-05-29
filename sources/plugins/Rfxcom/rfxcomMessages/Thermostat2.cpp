@@ -73,7 +73,7 @@ namespace rfxcomMessages
       m_subType = rbuf.THERMOSTAT2.subtype;
       m_unitCode = rbuf.THERMOSTAT2.unitcode;
       m_state->set(fromProtocolState(rbuf.THERMOSTAT2.cmnd));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.THERMOSTAT2.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.THERMOSTAT2.rssi));
 
       // Build device description
       buildDeviceModel();
