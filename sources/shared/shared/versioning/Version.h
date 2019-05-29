@@ -1,5 +1,7 @@
 #pragma once
+#include <shared/exception/Exception.hpp>
 #include <shared/Export.h>
+
 
 namespace shared
 {
@@ -19,86 +21,91 @@ namespace shared
 
          //---------------------------------------------
          ///\brief Constructor from a string version
-         ///\param [in] stringVersion the version as a string. Separators between version digits must be . or ,
+         ///\param[in] stringVersion the version as a string. Separators between version digits must be . or ,
          //---------------------------------------------
-         explicit CVersion(const std::string& stringVersion);
-         CVersion& operator=(const CVersion& rhs);
+         explicit CVersion(const std::string& stringVersion) noexcept(false);
 
          //---------------------------------------------
          ///\brief Constructor
-         ///\param [in] major       the major version number (when you make incompatible API changes,)
-         ///\param [in] minor       the minor version number (when you add functionality in a backwards-compatible manner)
-         ///\param [in] patch       the patch version number (when you make backwards-compatible bug fixes)
+         ///\param[in] major       the major version number (when you make incompatible API changes,)
+         ///\param[in] minor       the minor version number (when you add functionality in a backwards-compatible manner)
+         ///\param[in] patch       the patch version number (when you make backwards-compatible bug fixes)
          //---------------------------------------------
          CVersion(int major, int minor, int patch);
 
          //---------------------------------------------
          ///\brief Constructor
-         ///\param [in] major          the major version number (when you make incompatible API changes,)
-         ///\param [in] minor          the minor version number (when you add functionality in a backwards-compatible manner)
-         ///\param [in] patch          the patch version number (when you make backwards-compatible bug fixes)
-         ///\param [in] prerelease     the prerelease information
+         ///\param[in] major          the major version number (when you make incompatible API changes,)
+         ///\param[in] minor          the minor version number (when you add functionality in a backwards-compatible manner)
+         ///\param[in] patch          the patch version number (when you make backwards-compatible bug fixes)
+         ///\param[in] prerelease     the prerelease information
          //---------------------------------------------
          CVersion(int major, int minor, int patch, const std::string& prerelease);
 
          //---------------------------------------------
          ///\brief Constructor
-         ///\param [in] major          the major version number (when you make incompatible API changes,)
-         ///\param [in] minor          the minor version number (when you add functionality in a backwards-compatible manner)
-         ///\param [in] patch          the patch version number (when you make backwards-compatible bug fixes)
-         ///\param [in] prerelease     the prerelease information
-         ///\param [in] buildMetaData  the build metadata
+         ///\param[in] major          the major version number (when you make incompatible API changes,)
+         ///\param[in] minor          the minor version number (when you add functionality in a backwards-compatible manner)
+         ///\param[in] patch          the patch version number (when you make backwards-compatible bug fixes)
+         ///\param[in] prerelease     the prerelease information
+         ///\param[in] buildMetadata  the build metadata
          //---------------------------------------------
-         CVersion(int major, int minor, int patch, const std::string& prerelease, const std::string& buildMetaData);
+         CVersion(int major, int minor, int patch, const std::string& prerelease, const std::string& buildMetadata);
 
          //---------------------------------------------
          ///\brief Copy constructor
          //---------------------------------------------
-         CVersion(const CVersion& rhs);
+         CVersion(const CVersion& rhs) = default;
+
+         //---------------------------------------------
+         ///\brief Copy operator
+         //---------------------------------------------
+         CVersion& operator=(const CVersion& rhs) = default;
 
          //---------------------------------------------
          ///\brief Destructor
          //---------------------------------------------
-         virtual ~CVersion();
+         virtual ~CVersion() = default;
 
          //---------------------------------------------
          ///\brief Compare if current Version is strictly less than parameter version
-         ///\param [in] rhs the version object to compare
+         ///\param[in] rhs the version object to compare
          ///\return  true is current Version is strictly less than parameter version
          //---------------------------------------------
          bool operator<(CVersion const& rhs) const;
 
          //---------------------------------------------
          ///\brief Compare if current Version is less or equal to parameter version
-         ///\param [in] rhs the version object to compare
+         ///\param[in] rhs the version object to compare
          ///\return  true is current Version is less or equal to parameter version
          //---------------------------------------------
          bool operator<=(CVersion const& rhs) const;
 
          //---------------------------------------------
          ///\brief Compare if current Version is greater or equal to parameter version
-         ///\param [in] rhs the version object to compare
+         ///\param[in] rhs the version object to compare
          ///\return  true is current Version is greater or equal to parameter version
          //---------------------------------------------
          bool operator>=(CVersion const& rhs) const;
 
          //---------------------------------------------
          ///\brief Compare if current Version is strictly greater than parameter version
-         ///\param [in] rhs the version object to compare
+         ///\param[in] rhs the version object to compare
          ///\return  true is current Version is strictly greater than parameter version
          //---------------------------------------------
          bool operator>(CVersion const& rhs) const;
 
          //---------------------------------------------
          ///\brief Compare if current Version is equal to parameter version
-         ///\param [in] rhs the version object to compare
+         ///\param[in] rhs the version object to compare
          ///\return  true is current Version is equal to parameter version
          //---------------------------------------------
          bool operator==(CVersion const& rhs) const;
 
          //---------------------------------------------
          ///\brief Operator to print out version to a stream
-         ///\param [in] oss the target stream
+         ///\param[in] oss the target stream
+         ///\param[in] rhs the version object to serialize
          ///\return  the target stream
          //---------------------------------------------
          friend std::ostream& operator<<(std::ostream& oss, const CVersion& rhs);
@@ -142,7 +149,7 @@ namespace shared
       protected:
          //---------------------------------------------
          ///\brief Compare the current object to another CVersion
-         ///\param [in] rhs the version object to compare
+         ///\param[in] rhs the version object to compare
          ///\return  0 if equals, -1 if this<rhs, +1 if this>rhs
          //---------------------------------------------
          int compare(CVersion const& rhs) const;
@@ -151,9 +158,10 @@ namespace shared
 
          //---------------------------------------------
          ///\brief Parse a version contained in string
+         ///\param[in] version Version as string (SEMVER compatible)
          ///\throw shared::exception::CException in case of bad format
          //---------------------------------------------
-         void parse(const std::string& version);
+         void parse(const std::string& version) noexcept(false);
 
          //---------------------------------------------
          ///\brief  Major number

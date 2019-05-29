@@ -2,16 +2,16 @@
 # include common script interpreters definitions
 include("../../YadomsScriptWrappersCommon.cmake")
 
-set(YPYTHON27_PARENT_INTERPRETER yPython27)
-set(YPYTHON27_TARGET_LANGUAGE python)
+set(YPYTHON3_PARENT_INTERPRETER yPython3)
+set(YPYTHON3_TARGET_LANGUAGE python)
 
 
-SCRIPT_API_WRAPPER_SET_PARENT_INTERPRETER(${YPYTHON27_PARENT_INTERPRETER})
+SCRIPT_API_WRAPPER_SET_PARENT_INTERPRETER(${YPYTHON3_PARENT_INTERPRETER})
 
 #########################################
 ## Place here all the source files
 #########################################
-set(YPYTHON27_WRAPPER_SOURCES
+set(YPYTHON3_WRAPPER_SOURCES
    yScriptApiWrapper.i
    
 	swigpyrun.h
@@ -32,7 +32,7 @@ set_source_files_properties(yScriptApiWrapper.i PROPERTIES CPLUSPLUS ON)
 ## Place here all additional include directories
 ## (by default yadoms-shared, boost and poco are included)
 #########################################
-set(YPYTHON27_WRAPPER_INCLDIR
+set(YPYTHON3_WRAPPER_INCLDIR
    ${PYTHON_INCLUDE_DIRS}
    ${script_cpp_api_INCLUDE_DIR}
 )
@@ -41,7 +41,7 @@ set(YPYTHON27_WRAPPER_INCLDIR
 ## Place here all additional libraries to link with
 ## (by default yadoms-shared, boost and poco are included)
 #########################################
-set(YPYTHON27_WRAPPER_LINK
+set(YPYTHON3_WRAPPER_LINK
    ${PYTHON_LIBRARIES}
    script_cpp_api
 )
@@ -68,10 +68,10 @@ endif()
 ## Always leave these lines to configure script wrapper correctly
 ## even if some variables are empty
 #########################################
-SCRIPT_API_WRAPPER_SOURCES(_yScriptApiWrapper27 ${YPYTHON27_TARGET_LANGUAGE} ${YPYTHON27_WRAPPER_SOURCES})
-SCRIPT_API_WRAPPER_LINK(_yScriptApiWrapper27 ${YPYTHON27_WRAPPER_LINK})
-SCRIPT_API_WRAPPER_INCLDIR(_yScriptApiWrapper27 ${YPYTHON27_WRAPPER_INCLDIR} ${PROTOBUF_INCLUDE_DIRS})
-SCRIPT_API_SOURCE_GROUP(${YPYTHON27_PARENT_INTERPRETER})
+SCRIPT_API_WRAPPER_SOURCES(_yScriptApiWrapper3 ${YPYTHON3_TARGET_LANGUAGE} ${YPYTHON3_WRAPPER_SOURCES})
+SCRIPT_API_WRAPPER_LINK(_yScriptApiWrapper3 ${YPYTHON3_WRAPPER_LINK})
+SCRIPT_API_WRAPPER_INCLDIR(_yScriptApiWrapper3 ${YPYTHON3_WRAPPER_INCLDIR} ${PROTOBUF_INCLUDE_DIRS})
+SCRIPT_API_SOURCE_GROUP(${YPYTHON3_PARENT_INTERPRETER})
 
 #########################################
 ## Add pre-build step to generate swigpyrun.h file
@@ -81,17 +81,17 @@ SCRIPT_API_SOURCE_GROUP(${YPYTHON27_PARENT_INTERPRETER})
 ## the output filename into the target sources to make it generated at build time
 #########################################
 add_custom_command(OUTPUT swigpyrun.h 
-  COMMAND ${SWIG_EXECUTABLE} -${YPYTHON27_TARGET_LANGUAGE} -external-runtime ${CMAKE_CURRENT_SOURCE_DIR}/swigpyrun.h)
+  COMMAND ${SWIG_EXECUTABLE} -${YPYTHON3_TARGET_LANGUAGE} -external-runtime ${CMAKE_CURRENT_SOURCE_DIR}/swigpyrun.h)
   
 #########################################
 ## Add post-build step to deploy Swig-generated file
 #########################################
-SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE(_yScriptApiWrapper27 ${CMAKE_CURRENT_BINARY_DIR}/yScriptApiWrapper.py ${YPYTHON27_PARENT_INTERPRETER})
+SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE(_yScriptApiWrapper3 ${CMAKE_CURRENT_BINARY_DIR}/yScriptApiWrapper.py ${YPYTHON3_PARENT_INTERPRETER})
   
 #########################################
 ## Add post-build step to deploy Api doc file
 #########################################
-SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE(_yScriptApiWrapper27 ${CMAKE_CURRENT_SOURCE_DIR}/yScriptApiDoc.md ${YPYTHON27_PARENT_INTERPRETER})
+SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE(_yScriptApiWrapper3 ${CMAKE_CURRENT_SOURCE_DIR}/yScriptApiDoc.md ${YPYTHON3_PARENT_INTERPRETER})
 
 
-install(TARGETS _yScriptApiWrapper27 DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/yPython27)
+install(TARGETS _yScriptApiWrapper3 DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/yPython3)

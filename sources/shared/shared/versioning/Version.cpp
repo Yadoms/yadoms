@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Version.h"
-#include <shared/exception/Exception.hpp>
 #include <Poco/RegularExpression.h>
 #include <Poco/NumberParser.h>
 
@@ -13,19 +12,9 @@ namespace shared
       {
       }
 
-      CVersion::CVersion(const std::string& stringVersion)
+      CVersion::CVersion(const std::string& stringVersion) noexcept(false)
       {
          parse(stringVersion);
-      }
-
-      CVersion& CVersion::operator=(const CVersion& rhs)
-      {
-         m_major = rhs.m_major;
-         m_minor = rhs.m_minor;
-         m_patch = rhs.m_patch;
-         m_prerelease = rhs.m_prerelease;
-         m_buildMetadata = rhs.m_buildMetadata;
-         return *this;
       }
 
       CVersion::CVersion(int major, int minor, int patch)
@@ -40,15 +29,6 @@ namespace shared
 
       CVersion::CVersion(int major, int minor, int patch, const std::string& prerelease, const std::string& buildMetadata)
          : m_major(major), m_minor(minor), m_patch(patch), m_prerelease(prerelease), m_buildMetadata(buildMetadata)
-      {
-      }
-
-      CVersion::CVersion(const CVersion& rhs)
-         : m_major(rhs.m_major), m_minor(rhs.m_minor), m_patch(rhs.m_patch), m_prerelease(rhs.m_prerelease), m_buildMetadata(rhs.m_buildMetadata)
-      {
-      }
-
-      CVersion::~CVersion()
       {
       }
 
@@ -110,7 +90,7 @@ namespace shared
 
          //Comparison (matching to SEMVER requirements)
          // compare major, minor and patch
-         // if the same, the preRelease field (alphabetically ordered) make the precendence
+         // if the same, the preRelease field (alphabetically ordered) make the precedence
 
          if (m_major > rhs.m_major)
             return 1;
@@ -141,7 +121,7 @@ namespace shared
       }
 
 
-      void CVersion::parse(const std::string& version)
+      void CVersion::parse(const std::string& version) noexcept(false)
       {
          //Regex for SEMVER is taken from http://rgxdb.com/r/40OZ1HN5 (adjusted by removing leading and trailing "/" )
          Poco::RegularExpression re(
@@ -151,8 +131,6 @@ namespace shared
 
          if (resultCount > 3)
          {
-            //std::string foundStr(ss.str().substr(match.offset, match.length));
-
             m_major = Poco::NumberParser::parse(strings[1]);
             m_minor = Poco::NumberParser::parse(strings[2]);
             m_patch = Poco::NumberParser::parse(strings[3]);
