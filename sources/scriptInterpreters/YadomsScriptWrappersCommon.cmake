@@ -23,7 +23,7 @@ ENDMACRO()
    
 MACRO(SCRIPT_API_WRAPPER_SOURCES _targetName targetLanguage)
    include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${SHARED_INCL_DIR})
-   SET(SWIG_MODULE_yScriptApiWrapper_EXTRA_DEPS ${SHARED_COMMON_INCL_DIR}/shared/script/yScriptApi/IYScriptApi.h)
+   SET(SWIG_MODULE_${_targetName}_EXTRA_DEPS ${SHARED_COMMON_INCL_DIR}/shared/script/yScriptApi/IYScriptApi.h)
 
    if (${CMAKE_VERSION} VERSION_LESS "3.8.0")
       SWIG_ADD_MODULE(${_targetName} ${targetLanguage} ${ARGN})
@@ -65,7 +65,7 @@ ENDMACRO()
 
 MACRO(SCRIPT_API_SOURCE_GROUP parentInterpreter)
    IF(MSVC OR XCODE)
-      SET_PROPERTY(TARGET ${SWIG_MODULE_yScriptApiWrapper_REAL_NAME} PROPERTY FOLDER "scriptInterpreters/${parentInterpreter}")
+      SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "scriptInterpreters/${parentInterpreter}")
    ENDIF()
 ENDMACRO()
 
