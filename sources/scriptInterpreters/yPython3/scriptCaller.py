@@ -21,7 +21,7 @@ if __name__ == '__main__':
    args = sys.argv
 
    if len(args) != 4:
-      print "scriptCaller.py, error launching script : invalid argument list ", args
+      print ("scriptCaller.py, error launching script : invalid argument list ", args)
       sys.exit(1)
       
    scriptPath = args[1]

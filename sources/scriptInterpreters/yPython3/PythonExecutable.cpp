@@ -75,7 +75,7 @@ std::string CPythonExecutable::readPythonVersion(const boost::filesystem::path& 
 {
    try
    {
-      const auto& command = initialDirectory / CPythonExecutablePath::getExecutableName();
+      const auto& command = initialDirectory / shared::CExecutable::ToFileName(CPythonExecutablePath::getExecutableName());
 
       Poco::Process::Args args;
       args.push_back("--version");

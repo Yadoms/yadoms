@@ -28,6 +28,6 @@ void CPythonExecutablePath::getCommonPythonPaths(std::vector<boost::filesystem::
 
 const std::string& CPythonExecutablePath::getExecutableName()
 {
-   static const std::string ExecutableName("py.exe");
+   static const std::string ExecutableName("py");
    return ExecutableName;
 }
