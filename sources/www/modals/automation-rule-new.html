@@ -47,7 +47,7 @@
             $area.append($buttonHtml);
 
             var $btn = $area.find("button#" + tempUuid);
-            $btn.bind("click", newAutomationRuleButtonClicked(editor, $btn, callback));
+            $btn.bind("click", newAutomationRuleButtonClicked(interpreter.name, editor.getName(), $btn, callback));
          });
       });
 
@@ -58,10 +58,10 @@
       $("div#automation-rule-new-modal").modal({ backdrop: 'static' });
    };
 
-   function newAutomationRuleButtonClicked(editor, button, callback) {
+   function newAutomationRuleButtonClicked(interpreterName, editorName, button, callback) {
       return function() {
          //we create the empty rule and go to edition
-         var r = new AutomationRule(-1, "", "", editor.getActiveSupportedInterpreters()[0].name, editor.getName(),
+         var r = new AutomationRule(-1, "", "", interpreterName, editorName,
                                     "", "", "", true);
          callback(r, $("div#automation-rule-new-modal"), button);
       };
