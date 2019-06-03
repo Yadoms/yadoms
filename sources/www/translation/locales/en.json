@@ -52,7 +52,7 @@
          "deployFailed": "Deploy Yadoms failed",
          "exit": "Exiting Yadoms ...",
          "information": "Yadoms information",
-		 "disconnected" : "Server - Disconnected"
+         "disconnected": "Server - Disconnected"
       },
       "task": {
          "name": "task",
@@ -750,6 +750,14 @@
                   },
                   "blockly": {
                      "name": "Blockly"
+                  }
+               },
+               "interpreters": {
+                  "yPython27": {
+                     "name": "Python 2.7"
+                  },
+                  "yPython3": {
+                     "name": "Python 3.x"
                   }
                }
             },
