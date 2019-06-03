@@ -1,4 +1,4 @@
-﻿# This is a template of Python 2.7.x rule.
+﻿# This is a template of Python 3.x rule.
 # This aims is to demonstrate usage of main functions.
 # Full documentation is available by the button below code window.
 #
@@ -30,15 +30,15 @@ def yMain(yApi):
       newTemperature = float(yApi.waitForNextAcquisition(temperatureKw))
          
       # Log the new temperature
-      print "New temperature : ", newTemperature
+      print ("New temperature : ", newTemperature)
       
       # Now decide to drive or not heating
       if newTemperature >= setPoint:
-         print "Enough hot ! ! ! STOP HEATING ! ! !"
+         print ("Enough hot ! ! ! STOP HEATING ! ! !")
          # Stop heating. Be careful, value must be set as string
          yApi.writeKeyword(heatingKw, '0')
       else:
-         print "Brrr... START HEATING"
+         print ("Brrr... START HEATING")
          # Start heating. Be careful, value must be set as string
          yApi.writeKeyword(heatingKw, '1')
 

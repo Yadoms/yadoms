@@ -86,18 +86,18 @@ Error if keyword not found
 ```python
 import json
 jsonKeywordDetails = json.loads(yApi.readKeywordDetails(keywordId))
-print "Id : ", jsonKeywordDetails[u'Id']
-print "DeviceId : ", jsonKeywordDetails[u'DeviceId']
-print "CapacityName : ", jsonKeywordDetails[u'CapacityName']
-print "AccessMode : ", jsonKeywordDetails[u'AccessMode']
-print "FriendlyName : ", jsonKeywordDetails[u'FriendlyName']
-print "Type : ", jsonKeywordDetails[u'Type']
-print "Units : ", jsonKeywordDetails[u'Units']
-print "TypeInfo : ", jsonKeywordDetails[u'TypeInfo']
-print "Measure : ", jsonKeywordDetails[u'Measure']
-print "Details : ", jsonKeywordDetails[u'Details']
-print "LastAcquisitionValue : ", jsonKeywordDetails[u'LastAcquisitionValue']
-print "LastAcquisitionDate : ", jsonKeywordDetails[u'LastAcquisitionDate']
+print ("Id : ", jsonKeywordDetails[u'Id'])
+print ("DeviceId : ", jsonKeywordDetails[u'DeviceId'])
+print ("CapacityName : ", jsonKeywordDetails[u'CapacityName'])
+print ("AccessMode : ", jsonKeywordDetails[u'AccessMode'])
+print ("FriendlyName : ", jsonKeywordDetails[u'FriendlyName'])
+print ("Type : ", jsonKeywordDetails[u'Type'])
+print ("Units : ", jsonKeywordDetails[u'Units'])
+print ("TypeInfo : ", jsonKeywordDetails[u'TypeInfo'])
+print ("Measure : ", jsonKeywordDetails[u'Measure'])
+print ("Details : ", jsonKeywordDetails[u'Details'])
+print ("LastAcquisitionValue : ", jsonKeywordDetails[u'LastAcquisitionValue'])
+print ("LastAcquisitionDate : ", jsonKeywordDetails[u'LastAcquisitionDate'])
 ```
 
 
@@ -116,18 +116,18 @@ Error if keyword not found
 #### Example
 ```python
 keywordDetails = scriptUtilities.readKeywordDetails(yApi, keywordId)
-print "Id : ", keywordDetails.id # Integer
-print "DeviceId : ", keywordDetails.deviceId # Integer
-print "CapacityName : ", keywordDetails.capacityName
-print "AccessMode : ", keywordDetails.accessMode
-print "FriendlyName : ", keywordDetails.friendlyName
-print "Type : ", keywordDetails.type
-print "Units : ", keywordDetails.units
-print "TypeInfo : ", keywordDetails.typeInfo
-print "Measure : ", keywordDetails.measure
-print "Details : ", keywordDetails.details
-print "LastAcquisitionValue : ", keywordDetails.lastAcquisitionValue
-print "LastAcquisitionDate : ", keywordDetails.lastAcquisitionDate # datetime.datetime object
+print ("Id : ", keywordDetails.id) # Integer
+print ("DeviceId : ", keywordDetails.deviceId) # Integer
+print ("CapacityName : ", keywordDetails.capacityName)
+print ("AccessMode : ", keywordDetails.accessMode)
+print ("FriendlyName : ", keywordDetails.friendlyName)
+print ("Type : ", keywordDetails.type)
+print ("Units : ", keywordDetails.units)
+print ("TypeInfo : ", keywordDetails.typeInfo)
+print ("Measure : ", keywordDetails.measure)
+print ("Details : ", keywordDetails.details)
+print ("LastAcquisitionValue : ", keywordDetails.lastAcquisitionValue)
+print ("LastAcquisitionDate : ", keywordDetails.lastAcquisitionDate) # datetime.datetime object
 ```
 
 ### waitForNextAcquisition
