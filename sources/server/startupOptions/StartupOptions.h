@@ -77,6 +77,11 @@ namespace startupOptions
       std::string getScriptInterpretersPath() const override;
       bool getNoPasswordFlag() const override;
       bool getIsRunningAsService() const override;
+      Poco::Nullable<std::string> getProxyHost() const override;
+      Poco::Nullable<Poco::UInt16> getProxyPort() const override;
+      Poco::Nullable<std::string> getProxyUsername() const override;
+      Poco::Nullable<std::string> getProxyPassword() const override;
+      Poco::Nullable<std::string> getProxyFilter() const override;
       std::string getUpdateSiteUri() const override;
       std::string getBackupPath() const override;
       int getDatabaseAcquisitionLifetime() const override;

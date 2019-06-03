@@ -291,6 +291,42 @@ namespace startupOptions
          .binding("server.noPassword", &m_configContainer));
 
       options.addOption(
+         Poco::Util::Option("proxyHost", "pxh", "Proxy server host name or IP address.")
+         .required(false)
+         .repeatable(false)
+         .argument("proxyHost")
+         .binding("server.proxy.host", &m_configContainer));
+
+      options.addOption(
+         Poco::Util::Option("proxyPort", "pxp", "Proxy server TCP port")
+         .required(false)
+         .repeatable(false)
+         .argument("proxyPort")
+         .validator(new Poco::Util::IntValidator(1, 65535))
+         .binding("server.proxy.port", &m_configContainer));
+
+      options.addOption(
+         Poco::Util::Option("proxyUsername", "pxu", "Proxy server username")
+         .required(false)
+         .repeatable(false)
+         .argument("proxyUsername")
+         .binding("server.proxy.username", &m_configContainer));
+
+      options.addOption(
+         Poco::Util::Option("proxyPassword", "pxpw", "Proxy server password")
+         .required(false)
+         .repeatable(false)
+         .argument("proxyPassword")
+         .binding("server.proxy.password", &m_configContainer));
+
+      options.addOption(
+         Poco::Util::Option("proxyFilter", "pxf", "A regular expression defining hosts for which the proxy should be bypassed, e.g. \"localhost|127\\.0\\.0\\.1|192\\.168\\.0\\.\\d+\". Can also be an empty string to disable proxy bypassing.")
+         .required(false)
+         .repeatable(false)
+         .argument("proxyFilter")
+         .binding("server.proxy.filter", &m_configContainer));
+      
+      options.addOption(
          Poco::Util::Option("acquisitionLifetime", "a", "Specify the acquisition lifetime in days.")
          .required(false)
          .repeatable(false)
@@ -545,6 +581,43 @@ namespace startupOptions
    {
       return m_configContainer.getBool("application.runAsService", false);
    }
+
+   Poco::Nullable<std::string> CStartupOptions::getProxyHost() const
+   {
+      if (m_configContainer.has("server.proxy.host"))
+         return m_configContainer.getString("server.proxy.host", "");
+      return Poco::NULL_GENERIC;
+   }
+
+   Poco::Nullable<Poco::UInt16> CStartupOptions::getProxyPort() const
+   {
+      if (m_configContainer.has("server.proxy.port"))
+         return static_cast<Poco::UInt16>(m_configContainer.getUInt("server.proxy.port", 80)); //safe cast because server.proxy.port is checked between 1 and 65535
+      return Poco::NULL_GENERIC;
+   }
+
+   Poco::Nullable<std::string> CStartupOptions::getProxyUsername() const
+   {
+      if (m_configContainer.has("server.proxy.username"))
+         return m_configContainer.getString("server.proxy.username", "");
+      return Poco::NULL_GENERIC;
+   }
+
+   Poco::Nullable<std::string> CStartupOptions::getProxyPassword() const
+   {
+      if (m_configContainer.has("server.proxy.password"))
+         return m_configContainer.getString("server.proxy.password", "");
+      return Poco::NULL_GENERIC;
+   }
+
+   Poco::Nullable<std::string> CStartupOptions::getProxyFilter() const
+   {
+      if (m_configContainer.has("server.proxy.filter"))
+         return m_configContainer.getString("server.proxy.filter", "");
+      return Poco::NULL_GENERIC;
+   }
+
+
 
    std::string CStartupOptions::getUpdateSiteUri() const
    {
