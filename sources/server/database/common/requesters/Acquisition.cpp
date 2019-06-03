@@ -583,7 +583,8 @@ namespace database
                            Select(curType, fromDate, keywordId, 
                                   q->math(q->sum(q->math(q->fromSubquery("acq", CAcquisitionSummaryTable::getAvgColumnName()), CQUERY_OP_MUL, q->fromSubquery("acq", CAcquisitionSummaryTable::getCountColumnName()))), CQUERY_OP_DIVIDE, q->sum(q->fromSubquery("acq", CAcquisitionSummaryTable::getCountColumnName()))),
                                   q->min(q->fromSubquery("acq", CAcquisitionSummaryTable::getMinColumnName())),
-                                  q->max(q->fromSubquery("acq", CAcquisitionSummaryTable::getMaxColumnName()))).
+                                  q->max(q->fromSubquery("acq", CAcquisitionSummaryTable::getMaxColumnName())),
+                                  q->max(q->fromSubquery("acq", CAcquisitionSummaryTable::getCountColumnName()))).
                            From(q->as(CAcquisitionSummaryTable::getTableName(), "acq")).
                            Where(q->fromSubquery("acq", CAcquisitionSummaryTable::getKeywordIdColumnName()), CQUERY_OP_EQUAL, keywordId).
                            And(q->fromSubquery("acq", CAcquisitionSummaryTable::getTypeColumnName()), CQUERY_OP_EQUAL, toQuery.toString()).
