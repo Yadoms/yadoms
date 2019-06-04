@@ -2,14 +2,14 @@ import os
 import sys
 
 # Import yScript API
-# We need to relocate current working directory to make yScriptApiWrapper module find it's
+# We need to relocate current working directory to make yScriptApiWrapper3 module find it's
 # dependencies (Boost libraries...)
-# Note that yScriptApiWrapper module is in scriptCaller directory (so the CWD)
+# Note that yScriptApiWrapper3 module is in scriptCaller directory (so the CWD)
 scriptCallerDirectory = os.getcwd()
 # Change directory to all dependencies directory
 os.chdir('../../')
 sys.path.append(scriptCallerDirectory)
-import yScriptApiWrapper
+import yScriptApiWrapper3
 import scriptUtilities
 # Restore working directory
 os.chdir(scriptCallerDirectory)
@@ -29,7 +29,7 @@ if __name__ == '__main__':
    contextAccessorId = args[3]
    
    # Create yScript API instance
-   yApi = yScriptApiWrapper.createScriptApiInstance(contextAccessorId)
+   yApi = yScriptApiWrapper3.createScriptApiInstance(contextAccessorId)
    
    # Call script
    sys.path.append(scriptPath)
@@ -41,4 +41,4 @@ if __name__ == '__main__':
       pass
    
    # Delete yScript API instance
-   yScriptApiWrapper.deleteScriptApiInstance(yApi)
+   yScriptApiWrapper3.deleteScriptApiInstance(yApi)

@@ -68,9 +68,9 @@ endif()
 ## Always leave these lines to configure script wrapper correctly
 ## even if some variables are empty
 #########################################
-SCRIPT_API_WRAPPER_SOURCES(_yScriptApiWrapper27 ${YPYTHON27_TARGET_LANGUAGE} ${YPYTHON27_WRAPPER_SOURCES})
-SCRIPT_API_WRAPPER_LINK(_yScriptApiWrapper27 ${YPYTHON27_WRAPPER_LINK})
-SCRIPT_API_WRAPPER_INCLDIR(_yScriptApiWrapper27 ${YPYTHON27_WRAPPER_INCLDIR} ${PROTOBUF_INCLUDE_DIRS})
+SCRIPT_API_WRAPPER_SOURCES(yScriptApiWrapper27 ${YPYTHON27_TARGET_LANGUAGE} ${YPYTHON27_WRAPPER_SOURCES})
+SCRIPT_API_WRAPPER_LINK(yScriptApiWrapper27 ${YPYTHON27_WRAPPER_LINK})
+SCRIPT_API_WRAPPER_INCLDIR(yScriptApiWrapper27 ${YPYTHON27_WRAPPER_INCLDIR} ${PROTOBUF_INCLUDE_DIRS})
 SCRIPT_API_SOURCE_GROUP(${YPYTHON27_PARENT_INTERPRETER})
 
 #########################################
@@ -86,12 +86,12 @@ add_custom_command(OUTPUT swigpyrun.h
 #########################################
 ## Add post-build step to deploy Swig-generated file
 #########################################
-SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE(_yScriptApiWrapper27 ${CMAKE_CURRENT_BINARY_DIR}/yScriptApiWrapper.py ${YPYTHON27_PARENT_INTERPRETER})
+SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE(yScriptApiWrapper27 ${CMAKE_CURRENT_BINARY_DIR}/yScriptApiWrapper27.py ${YPYTHON27_PARENT_INTERPRETER})
   
 #########################################
 ## Add post-build step to deploy Api doc file
 #########################################
-SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE(_yScriptApiWrapper27 ${CMAKE_CURRENT_SOURCE_DIR}/yScriptApiDoc.md ${YPYTHON27_PARENT_INTERPRETER})
+SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE(yScriptApiWrapper27 ${CMAKE_CURRENT_SOURCE_DIR}/yScriptApiDoc.md ${YPYTHON27_PARENT_INTERPRETER})
 
 
-install(TARGETS _yScriptApiWrapper27 DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/yPython27)
+install(TARGETS yScriptApiWrapper27 DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/yPython27)

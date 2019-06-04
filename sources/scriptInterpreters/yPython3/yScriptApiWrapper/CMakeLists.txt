@@ -68,9 +68,9 @@ endif()
 ## Always leave these lines to configure script wrapper correctly
 ## even if some variables are empty
 #########################################
-SCRIPT_API_WRAPPER_SOURCES(_yScriptApiWrapper3 ${YPYTHON3_TARGET_LANGUAGE} ${YPYTHON3_WRAPPER_SOURCES})
-SCRIPT_API_WRAPPER_LINK(_yScriptApiWrapper3 ${YPYTHON3_WRAPPER_LINK})
-SCRIPT_API_WRAPPER_INCLDIR(_yScriptApiWrapper3 ${YPYTHON3_WRAPPER_INCLDIR} ${PROTOBUF_INCLUDE_DIRS})
+SCRIPT_API_WRAPPER_SOURCES(yScriptApiWrapper3 ${YPYTHON3_TARGET_LANGUAGE} ${YPYTHON3_WRAPPER_SOURCES})
+SCRIPT_API_WRAPPER_LINK(yScriptApiWrapper3 ${YPYTHON3_WRAPPER_LINK})
+SCRIPT_API_WRAPPER_INCLDIR(yScriptApiWrapper3 ${YPYTHON3_WRAPPER_INCLDIR} ${PROTOBUF_INCLUDE_DIRS})
 SCRIPT_API_SOURCE_GROUP(${YPYTHON3_PARENT_INTERPRETER})
 
 #########################################
@@ -86,12 +86,12 @@ add_custom_command(OUTPUT swigpyrun.h
 #########################################
 ## Add post-build step to deploy Swig-generated file
 #########################################
-SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE(_yScriptApiWrapper3 ${CMAKE_CURRENT_BINARY_DIR}/yScriptApiWrapper.py ${YPYTHON3_PARENT_INTERPRETER})
+SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE(yScriptApiWrapper3 ${CMAKE_CURRENT_BINARY_DIR}/yScriptApiWrapper3.py ${YPYTHON3_PARENT_INTERPRETER})
   
 #########################################
 ## Add post-build step to deploy Api doc file
 #########################################
-SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE(_yScriptApiWrapper3 ${CMAKE_CURRENT_SOURCE_DIR}/yScriptApiDoc.md ${YPYTHON3_PARENT_INTERPRETER})
+SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE(yScriptApiWrapper3 ${CMAKE_CURRENT_SOURCE_DIR}/yScriptApiDoc.md ${YPYTHON3_PARENT_INTERPRETER})
 
 
-install(TARGETS _yScriptApiWrapper3 DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/yPython3)
+install(TARGETS yScriptApiWrapper3 DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/yPython3)

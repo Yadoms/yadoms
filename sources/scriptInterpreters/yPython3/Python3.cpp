@@ -149,7 +149,7 @@ bool CPython3::isAvailable() const
    try
    {
       boost::smatch result;
-      if (!boost::regex_search(m_pythonExecutable->version(), result, boost::regex("Python ([[:digit:]\.]+)")))
+      if (!boost::regex_search(m_pythonExecutable->version(), result, boost::regex("Python ([[:digit:]\\.]+)")))
          return false;
 
       return shared::versioning::CVersion(std::string(result[1].first, result[1].second)) >= shared::versioning::CVersion(3, 0, 0);

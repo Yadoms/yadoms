@@ -1,5 +1,5 @@
 
-%module(docstring="The Yadoms Script API") yScriptApiWrapper
+%module(docstring="The Yadoms Script API") yScriptApiWrapper3
 
 %{
 /* Put headers and other declarations here */
