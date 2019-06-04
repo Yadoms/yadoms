@@ -81,7 +81,7 @@ namespace startupOptions
       Poco::Nullable<Poco::UInt16> getProxyPort() const override;
       Poco::Nullable<std::string> getProxyUsername() const override;
       Poco::Nullable<std::string> getProxyPassword() const override;
-      Poco::Nullable<std::string> getProxyFilter() const override;
+      Poco::Nullable<std::string> getProxyBypass() const override;
       std::string getUpdateSiteUri() const override;
       std::string getBackupPath() const override;
       int getDatabaseAcquisitionLifetime() const override;

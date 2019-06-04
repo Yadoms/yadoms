@@ -287,13 +287,13 @@ namespace startupOptions
       virtual Poco::Nullable<std::string> getProxyPassword() const = 0;     
       
       //--------------------------------------------------------------
-      /// \brief	    Get the proxy filter
+      /// \brief	    Get the proxy bypass filter
       /// A regular expression defining hosts for which the proxy should be bypassed,
 		/// e.g. "localhost|127\.0\.0\.1|192\.168\.0\.\d+". Can also be an empty
       /// string to disable proxy bypassing.
       /// \return     The proxy filter
       //--------------------------------------------------------------
-      virtual Poco::Nullable<std::string> getProxyFilter() const = 0;
+      virtual Poco::Nullable<std::string> getProxyBypass() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the update site URI

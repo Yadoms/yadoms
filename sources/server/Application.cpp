@@ -74,9 +74,9 @@ void CYadomsServer::setupProxy() const
    {
       cfg.password = m_startupOptions->getProxyPassword().value();
    }
-   if (!m_startupOptions->getProxyFilter().isNull())
+   if (!m_startupOptions->getProxyBypass().isNull())
    {
-      cfg.nonProxyHosts = m_startupOptions->getProxyFilter().value();
+      cfg.nonProxyHosts = m_startupOptions->getProxyBypass().value();
    }
 
    Poco::Net::HTTPClientSession::setGlobalProxyConfig(cfg);

@@ -320,11 +320,11 @@ namespace startupOptions
          .binding("server.proxy.password", &m_configContainer));
 
       options.addOption(
-         Poco::Util::Option("proxyFilter", "pxf", "A regular expression defining hosts for which the proxy should be bypassed, e.g. \"localhost|127\\.0\\.0\\.1|192\\.168\\.0\\.\\d+\". Can also be an empty string to disable proxy bypassing.")
+         Poco::Util::Option("proxyBypass", "pxb", "A regular expression defining hosts for which the proxy should be bypassed, e.g. \"localhost|127\\.0\\.0\\.1|192\\.168\\.0\\.\\d+\". Can also be an empty string to disable proxy bypassing.")
          .required(false)
          .repeatable(false)
-         .argument("proxyFilter")
-         .binding("server.proxy.filter", &m_configContainer));
+         .argument("proxyBypass")
+         .binding("server.proxy.bypass", &m_configContainer));
       
       options.addOption(
          Poco::Util::Option("acquisitionLifetime", "a", "Specify the acquisition lifetime in days.")
@@ -610,10 +610,10 @@ namespace startupOptions
       return Poco::NULL_GENERIC;
    }
 
-   Poco::Nullable<std::string> CStartupOptions::getProxyFilter() const
+   Poco::Nullable<std::string> CStartupOptions::getProxyBypass() const
    {
-      if (m_configContainer.has("server.proxy.filter"))
-         return m_configContainer.getString("server.proxy.filter", "");
+      if (m_configContainer.has("server.proxy.bypass"))
+         return m_configContainer.getString("server.proxy.bypass", "");
       return Poco::NULL_GENERIC;
    }
 
