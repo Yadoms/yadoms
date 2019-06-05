@@ -248,7 +248,7 @@ namespace automation
    }
 
    int CRuleManager::createRule(boost::shared_ptr<const database::entities::CRule> ruleData,
-                                const std::string& code)
+                                const std::string& code, bool startNow)
    {
       // Add rule in database
       const auto ruleId = m_ruleRequester->addRule(ruleData);
@@ -259,8 +259,11 @@ namespace automation
                                              ruleProperties->scriptPath().string(),
                                              code);
 
-      // Start the rule
-      startRule(ruleId);
+      if (startNow)
+      {
+         // Start the rule
+         startRule(ruleId);
+      }
 
       return ruleId;
    }
@@ -389,8 +392,11 @@ namespace automation
          //3. update name
          rule->Name = newName;
 
-         //4. create rule
-         return createRule(rule, ruleCode);
+         //4. set new rule as stopped
+         rule->State = database::entities::ERuleState::kStopped;
+
+         //5. create rule
+         return createRule(rule, ruleCode, false); //don't start the rule
       }
       catch (shared::exception::CException& e)
       {

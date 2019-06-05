@@ -37,7 +37,7 @@ namespace automation
       void stop() override;
       std::vector<std::string> getLoadedInterpreters() override;
       std::vector<boost::shared_ptr<database::entities::CRule>> getRules() const override;
-      int createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code) override;
+      int createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code, bool startNow = true) override;
       boost::shared_ptr<database::entities::CRule> getRule(int id) const override;
       std::string getRuleCode(int id) const override;
       std::string getRuleLog(int id) const override;
