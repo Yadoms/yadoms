@@ -18,6 +18,7 @@
 * Fix #565 : Extra queries failure
 * Fix #136 : JSON empty collection. 
 * Fix #539 : ZWave : configuration items : add numbers NewFeature
+* Feature #556 : Duplicate rule function 
 
 ### 2.3.0-beta.3
 * N/A (fixes on RFXCom plugin only)
