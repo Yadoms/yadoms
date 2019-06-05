@@ -17,18 +17,18 @@ public:
       // Ensure TestDirectory is empty
       try
       {
-         testCommon::filesystem::RemoveDirectory(m_testDirectory);
+         testCommon::filesystem::removeDirectory(m_testDirectory);
       }
       catch (boost::filesystem::filesystem_error&)
       {
          // Under Windows, directory can be locked for a little duration after directory creation
          // So wait a bit and re-try
          boost::this_thread::sleep(boost::posix_time::millisec(500));
-         testCommon::filesystem::RemoveDirectory(m_testDirectory);
+         testCommon::filesystem::removeDirectory(m_testDirectory);
       }
 
       // Create directory
-      testCommon::filesystem::CreateDirectory(m_testDirectory);
+      testCommon::filesystem::createDirectory(m_testDirectory);
    }
 
    virtual ~CTestPath()
@@ -36,14 +36,14 @@ public:
       // Clean-up TestDirectory
       try
       {
-         testCommon::filesystem::RemoveDirectory(m_testDirectory);
+         testCommon::filesystem::removeDirectory(m_testDirectory);
       }
       catch(boost::filesystem::filesystem_error&)
       {
          // Under Windows, directory can be locked for a little duration after directory creation
          // So wait a bit and re-try
          boost::this_thread::sleep(boost::posix_time::millisec(500));
-         testCommon::filesystem::RemoveDirectory(m_testDirectory);
+         testCommon::filesystem::removeDirectory(m_testDirectory);
       }
    }
 
@@ -58,13 +58,13 @@ public:
       : m_configFile("yadoms.cfg")
    {
       // Ensure file doesn't exist
-      testCommon::filesystem::RemoveFile(m_configFile, false);
+      testCommon::filesystem::removeFile(m_configFile, false);
    }
 
    virtual ~CTestConfigFile()
    {
       // Clean-up
-      testCommon::filesystem::RemoveFile(m_configFile, false);
+      testCommon::filesystem::removeFile(m_configFile, false);
    }
 
    void writeSettings(std::string setting, std::string value) const
@@ -97,10 +97,10 @@ static const std::string testFalsePath("FalsePath");
 BOOST_AUTO_TEST_SUITE(TestLoader)
 
 
-   class CStartupOptionMokeup
+   class CStartupOptionMockup
    {
    public:
-      CStartupOptionMokeup(int argc, char* argv[], bool unixStyle)
+      CStartupOptionMockup(int argc, char* argv[], bool unixStyle)
          : m_options(m_config)
       {
          m_config.add(new Poco::Util::SystemConfiguration, Poco::Util::Application::PRIO_SYSTEM, false, false);
@@ -173,13 +173,13 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with no argument
+   /// \brief	    Test CStartupOptionMockup with no argument
    /// \result         No Error
    //--------------------------------------------------------------
 
    BOOST_AUTO_TEST_CASE(Initialisation_Test)
    {
-      CStartupOptionMokeup loader(0, nullptr, true);
+      CStartupOptionMockup loader(0, nullptr, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -196,25 +196,25 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the help resquested "--help"
+   /// \brief	    Test CStartupOptionMockup with the help requested "--help"
    /// \result         CLoaderException exception expected
    //--------------------------------------------------------------
 
    BOOST_AUTO_TEST_CASE(helpRequest)
    {
       char* argv[] = {"./TestLoader", "-help"};
-      BOOST_CHECK_THROW(CStartupOptionMokeup loader(2, argv, true), std::exception) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), std::exception) ;
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the help resquested (short form) "-h"
+   /// \brief	    Test CStartupOptionMockup with the help Mockup (short form) "-h"
    /// \result         CLoaderException exception expected
    //--------------------------------------------------------------
 
    BOOST_AUTO_TEST_CASE(helpRequestShort)
    {
       char* argv[] = {"./TestLoader", "-h"};
-      BOOST_CHECK_THROW(CStartupOptionMokeup loader(2, argv, true), std::exception) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), std::exception) ;
    }
 
 
@@ -222,7 +222,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       char* argv[] = {"./TestLoader", "--port:2000"};
 
-      CStartupOptionMokeup loader(2, argv, true);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(2000)) ;
@@ -239,7 +239,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the change of the port with --port
+   /// \brief	    Test CStartupOptionMockup with the change of the port with --port
    /// \result         No Error - port number change
    //--------------------------------------------------------------
 
@@ -247,7 +247,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       char* argv[] = {"./TestLoader", "--port", "2000"};
 
-      CStartupOptionMokeup loader(3, argv, true);
+      CStartupOptionMockup loader(3, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(2000)) ;
@@ -264,7 +264,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with an argument error : --por
+   /// \brief	    Test CStartupOptionMockup with an argument error : --por
    /// \result         No Error, syntax accepted since no ambiguity with other option - port number change
    //--------------------------------------------------------------
 
@@ -272,7 +272,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       char* argv[] = {"./TestLoader", "--por", "2000"};
 
-      CStartupOptionMokeup loader(3, argv, true);
+      CStartupOptionMockup loader(3, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(2000)) ;
@@ -289,19 +289,19 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with an argument error : --webServer
-   /// \result         Error : Raise an Exception (ambigous webServerIp or webServerPath ?)
+   /// \brief	    Test CStartupOptionMockup with an argument error : --webServer
+   /// \result         Error : Raise an Exception (ambiguous webServerIp or webServerPath ?)
    //--------------------------------------------------------------
 
    BOOST_AUTO_TEST_CASE(Port_Initialisation_Error1)
    {
       char* argv[] = {"./TestLoader", "--webServer", "192.168.1.1"};
 
-      BOOST_CHECK_THROW(CStartupOptionMokeup loader(3, argv, true), Poco::Exception) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup loader(3, argv, true), Poco::Exception) ;
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with an argument error : -port
+   /// \brief	    Test CStartupOptionMockup with an argument error : -port
    /// \result         Error : Raise an Exception
    //--------------------------------------------------------------
 
@@ -310,11 +310,11 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
       char* argv[] = {"./TestLoader", "-port", "2000"};
 
       //Test the exception, and if this one is the correct one !
-      BOOST_CHECK_THROW(CStartupOptionMokeup loader(3, argv, true), Poco::Exception) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup loader(3, argv, true), Poco::Exception) ;
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the argument --databaseFile
+   /// \brief	    Test CStartupOptionMockup with the argument --databaseFile
    /// \result         No Error - database name change
    //--------------------------------------------------------------
 
@@ -322,7 +322,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       char* argv[] = {"./TestLoader", "--databaseSqliteFile:toto.db3"};
 
-      CStartupOptionMokeup loader(2, argv, true);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -339,7 +339,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the argument -d
+   /// \brief	    Test CStartupOptionMockup with the argument -d
    /// \result         No Error - database name change
    //--------------------------------------------------------------
 
@@ -347,7 +347,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       char* argv[] = {"./TestLoader", "-Dtoto.db3"};
 
-      CStartupOptionMokeup loader(2, argv, true);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -364,7 +364,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the argument -l
+   /// \brief	    Test CStartupOptionMockup with the argument -l
    /// \result         No Error - logs change to trace
    //--------------------------------------------------------------
 
@@ -372,7 +372,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       char* argv[] = {"./TestLoader", "-ltrace"};
 
-      CStartupOptionMokeup loader(2, argv, true);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "trace") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -389,7 +389,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the argument -l
+   /// \brief	    Test CStartupOptionMockup with the argument -l
    /// \result         No Error - logs change to debug
    //--------------------------------------------------------------
 
@@ -397,7 +397,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       char* argv[] = {"./TestLoader", "-ldebug"};
 
-      CStartupOptionMokeup loader(2, argv, true);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "debug") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -414,7 +414,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the argument -l
+   /// \brief	    Test CStartupOptionMockup with the argument -l
    /// \result         No Error - logs change to info
    //--------------------------------------------------------------
 
@@ -422,7 +422,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       char* argv[] = {"./TestLoader", "-linformation"};
 
-      CStartupOptionMokeup loader(2, argv, true);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -439,7 +439,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the argument -l
+   /// \brief	    Test CStartupOptionMockup with the argument -l
    /// \result         No Error - logs change to warning
    //--------------------------------------------------------------
 
@@ -447,7 +447,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       char* argv[] = {"./TestLoader", "-lwarning"};
 
-      CStartupOptionMokeup loader(2, argv, true);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "warning") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -464,7 +464,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the argument -l
+   /// \brief	    Test CStartupOptionMockup with the argument -l
    /// \result         No Error - logs change to error
    //--------------------------------------------------------------
 
@@ -472,7 +472,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       char* argv[] = {"./TestLoader", "-lerror"};
 
-      CStartupOptionMokeup loader(2, argv, true);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "error") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -489,7 +489,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the argument -l
+   /// \brief	    Test CStartupOptionMockup with the argument -l
    /// \result         No Error - logs change to fatal
    //--------------------------------------------------------------
 
@@ -497,7 +497,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       char* argv[] = {"./TestLoader", "-lfatal"};
 
-      CStartupOptionMokeup loader(2, argv, true);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "fatal") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -515,7 +515,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the argument -l
+   /// \brief	    Test CStartupOptionMockup with the argument -l
    /// \result         No Error - logs change to notice
    //--------------------------------------------------------------
 
@@ -523,7 +523,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       char* argv[] = {"./TestLoader", "-lnotice"};
 
-      CStartupOptionMokeup loader(2, argv, true);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "notice") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -540,7 +540,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the argument -l
+   /// \brief	    Test CStartupOptionMockup with the argument -l
    /// \result         No Error - logs change to notice
    //--------------------------------------------------------------
 
@@ -548,7 +548,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       char* argv[] = {"./TestLoader", "-lcritical"};
 
-      CStartupOptionMokeup loader(2, argv, true);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "critical") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -565,7 +565,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with all logger levels
+   /// \brief	    Test CStartupOptionMockup with all logger levels
    /// \result         No error, no exception
    //--------------------------------------------------------------
 
@@ -577,35 +577,35 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
          std::string opt("-l");
          opt += *it;
          char* argv[] = {"./TestLoader", const_cast<char*>(opt.c_str())};
-         CStartupOptionMokeup loader(2, argv, true);
+         CStartupOptionMockup loader(2, argv, true);
          BOOST_CHECK_EQUAL(loader.options().getLogLevel(), *it) ;
       }
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with a faulty log argument -l
+   /// \brief	    Test CStartupOptionMockup with a faulty log argument -l
    /// \result         Raise an exception
    //--------------------------------------------------------------
 
    BOOST_AUTO_TEST_CASE(Unknow_Log_l_Error1)
    {
       char* argv[] = {"./TestLoader", "-ltoto"};
-      BOOST_CHECK_THROW(CStartupOptionMokeup loader(2, argv, true), Poco::Util::InvalidArgumentException) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), Poco::Util::InvalidArgumentException) ;
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with a faulty argument entry
+   /// \brief	    Test CStartupOptionMockup with a faulty argument entry
    /// \result         Exception is raised
    //--------------------------------------------------------------
 
    BOOST_AUTO_TEST_CASE(Unknow_option_NoError)
    {
       char* argv[] = {"./TestLoader", "-binfo"};
-      BOOST_CHECK_THROW(CStartupOptionMokeup loader(2, argv, true), Poco::Util::UnknownOptionException) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), Poco::Util::UnknownOptionException) ;
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the argument -i
+   /// \brief	    Test CStartupOptionMockup with the argument -i
    /// \result         No Error - the adresse IP is changed
    //--------------------------------------------------------------
 
@@ -613,7 +613,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       char* argv[] = {"./TestLoader", "-i192.168.1.1"};
 
-      CStartupOptionMokeup loader(2, argv, true);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -630,7 +630,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the argument -i
+   /// \brief	    Test CStartupOptionMockup with the argument -i
    /// \result         No Error - the adresse IP is changed
    //--------------------------------------------------------------
 
@@ -638,7 +638,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       char* argv[] = {"./TestLoader", "--webServerIp:192.168.1.1"};
 
-      CStartupOptionMokeup loader(2, argv, true);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -655,7 +655,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the wrong argument -webServe
+   /// \brief	    Test CStartupOptionMockup with the wrong argument -webServe
    /// \result         Raise a Exception
    //--------------------------------------------------------------
 
@@ -663,11 +663,11 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       char* argv[] = {"./TestLoader", "--webServe:192.168.1.1"};
 
-      BOOST_CHECK_THROW(CStartupOptionMokeup loader(2, argv, true), Poco::Exception) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), Poco::Exception) ;
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with a malform IP address (not complete)
+   /// \brief	    Test CStartupOptionMockup with a malform IP address (not complete)
    /// \result         Raise a Exception
    //--------------------------------------------------------------
 
@@ -675,11 +675,11 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       char* argv[] = {"./TestLoader", "-i:192.168.1."};
 
-      BOOST_CHECK_THROW(CStartupOptionMokeup loader(2, argv, true), Poco::Exception) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), Poco::Exception) ;
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the argument -w
+   /// \brief	    Test CStartupOptionMockup with the argument -w
    /// \result         No Error - the website address is changed
    //--------------------------------------------------------------
 
@@ -691,7 +691,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       char* argv[] = {"./TestLoader", const_cast<char*>(arg.c_str())};
 
-      CStartupOptionMokeup loader(2, argv, true);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -708,7 +708,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the argument --webServerPath
+   /// \brief	    Test CStartupOptionMockup with the argument --webServerPath
    /// \result         No Error - the website address is changed
    //--------------------------------------------------------------
 
@@ -719,7 +719,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
       arg += testNewWebServerPath;
       char* argv[] = {"./TestLoader", const_cast<char*>(arg.c_str())};
 
-      CStartupOptionMokeup loader(2, argv, true);
+      CStartupOptionMockup loader(2, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "information") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8080)) ;
@@ -736,7 +736,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the argument --webServerPath with a wrong Path
+   /// \brief	    Test CStartupOptionMockup with the argument --webServerPath with a wrong Path
    /// \result         Raise a Exception
    //--------------------------------------------------------------
 
@@ -749,11 +749,11 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 
       char* argv[] = {"./TestLoader", const_cast<char*>(arg.c_str())};
 
-      BOOST_CHECK_THROW(CStartupOptionMokeup loader(2, argv, true), Poco::Exception) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup loader(2, argv, true), Poco::Exception) ;
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the all arguments with argc/argv
+   /// \brief	    Test CStartupOptionMockup with the all arguments with argc/argv
    /// \result         No Error - all options are changed
    //--------------------------------------------------------------
 
@@ -771,7 +771,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
             "--logLevel", "warning"
          };
 
-      CStartupOptionMokeup loader(11, argv, true);
+      CStartupOptionMockup loader(11, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "warning") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8085)) ;
@@ -788,7 +788,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the all arguments (low profile) by argc/argv
+   /// \brief	    Test CStartupOptionMockup with the all arguments (low profile) by argc/argv
    /// \result         No Error - all options are changed
    //--------------------------------------------------------------
 
@@ -809,7 +809,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
             const_cast<char*>(arg.c_str())
          };
 
-      CStartupOptionMokeup loader(6, argv, true);
+      CStartupOptionMockup loader(6, argv, true);
 
       BOOST_CHECK_EQUAL(loader.options().getLogLevel(), "warning") ;
       BOOST_CHECK_EQUAL(loader.options().getWebServerPortNumber(), static_cast<unsigned int>(8085)) ;
@@ -826,7 +826,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    }
 
    //--------------------------------------------------------------
-   /// \brief	    Test CStartupOptionMokeup with the parameter -p without value
+   /// \brief	    Test CStartupOptionMockup with the parameter -p without value
    /// \result         No Error - No Exception thrown
    //--------------------------------------------------------------
 
@@ -834,7 +834,7 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
    {
       char* argv[] = {"./TestLoader", "-p"};
 
-      BOOST_CHECK_THROW(CStartupOptionMokeup app(2, argv, true), Poco::Exception) ;
+      BOOST_CHECK_THROW(CStartupOptionMockup app(2, argv, true), Poco::Exception) ;
    }
 
    BOOST_AUTO_TEST_SUITE_END()

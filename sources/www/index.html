@@ -50,13 +50,13 @@
 
     addMainPage = function(){    
        page = "<!-- Fixed navbar -->" +
-       "<div class=\"navbar navbar-default navbar-static-top\" role=\"navigation\" style=\"height:100vh\">" + //
+       "<div class=\"yadoms-allcontent\"></div><div class=\"navbar navbar-default navbar-static-top\" role=\"navigation\" style=\"height:100vh\">" + //
            "<div class=\"container\">" +
                "<div class=\"row\" id=\"mainNavBar\">" +
                    "<div class=\"col-md-12\">" +
                        "<div class=\"navbar-header\">" +
                            "<img src=\"img/icon_256.png\" class=\"img-responsive pull-left application-logo\" />" +
-                           "<a class=\"navbar-brand\" href=\"#\">Yadoms</a>" +
+                           "<a class=\"navbar-brand\" href=\"#\">Yadoms&nbsp;<span class=\"disconnected-title hidden\" data-i18n=\"core.yadoms.disconnected\"></span></a>" +
                        "</div>" +
                        "<div class=\"navbar-right\">" +
                            "<button href=\"#\" class=\"btn btn-success pull-left customization-item hidden\" id=\"btn-add-widget\">" +
@@ -450,6 +450,18 @@
             });
          });
      }
+
+	 function displayDisconnectedState() {
+		$(".application-logo").addClass("disconnected-logo");
+		$(".yadoms-allcontent").addClass("disconnected-content");
+		$(".disconnected-title").removeClass("hidden");
+	 }
+
+	 function displayConnectedState() {
+		$(".application-logo").removeClass("disconnected-logo");
+		$(".yadoms-allcontent").removeClass("disconnected-content");
+		$(".disconnected-title").addClass("hidden");
+	 }
 
      function main() {
       //we set the right language

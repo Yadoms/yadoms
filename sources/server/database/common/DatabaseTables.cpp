@@ -99,6 +99,7 @@ namespace database
          ((Avg)("avgValue"))
          ((Min)("minValue"))
          ((Max)("maxValue"))
+         ((Count)("count"))
       )
 
 

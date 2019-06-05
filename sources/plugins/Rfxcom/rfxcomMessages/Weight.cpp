@@ -30,7 +30,7 @@ namespace rfxcomMessages
       m_weight->set((rbuf.WEIGHT.weighthigh << 8 | rbuf.WEIGHT.weightlow) / 10.0);
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.WEIGHT.filler)); // In SDK specification battery_level is at filler location
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.WEIGHT.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.WEIGHT.rssi));
 
       // Build device description
       buildDeviceModel();

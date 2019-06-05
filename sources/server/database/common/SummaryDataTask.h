@@ -12,7 +12,8 @@ namespace common {
    public:
       //--------------------------------------------------------------
       /// \brief	Constructor
-      /// \param [in]	databaseProvider: the database provider
+      /// \param acquisitionRequester
+      /// \param keywordRequester
       //--------------------------------------------------------------
       CSummaryDataTask(boost::shared_ptr<IAcquisitionRequester> acquisitionRequester, boost::shared_ptr<IKeywordRequester> keywordRequester);
 
@@ -22,7 +23,7 @@ namespace common {
       virtual ~CSummaryDataTask();
 
       // BEGIN Poco::Util::TimerTask implementation 
-      virtual void run();
+      void run() override;
       // END Poco::Util::TimerTask implementation 
 
    private:

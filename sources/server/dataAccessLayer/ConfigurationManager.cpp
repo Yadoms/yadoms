@@ -74,7 +74,8 @@ namespace dataAccessLayer
       {
          // Returned configuration is the default one, overriden by stored values
          auto configuration = boost::make_shared<shared::CDataContainer>(*m_defaultServerConfiguration);
-         configuration->mergeFrom(shared::CDataContainer(getConfiguration("server")));
+		 shared::CDataContainer cfg(getConfiguration("server"));
+         configuration->mergeFrom(cfg);
          return configuration;
       }
       catch (shared::exception::CEmptyResult&)

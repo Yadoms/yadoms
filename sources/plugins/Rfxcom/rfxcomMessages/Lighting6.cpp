@@ -79,7 +79,7 @@ namespace rfxcomMessages
       m_groupCode = rbuf.LIGHTING6.groupcode;
       m_unitCode = rbuf.LIGHTING6.unitcode;
       m_state->set(fromProtocolState(rbuf.LIGHTING6.cmnd));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING6.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.LIGHTING6.rssi));
 
       // Build device description
       buildDeviceModel();

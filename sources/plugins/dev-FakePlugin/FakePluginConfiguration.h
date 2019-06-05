@@ -35,6 +35,13 @@ public:
    void initializeWith(const shared::CDataContainer& data);
 
    //--------------------------------------------------------------
+   /// \brief		   Load configuration data
+   /// \param [in] data The data container
+   /// \param [in] packageJsonPath The package.json path
+   //--------------------------------------------------------------
+   void initializeWith(const shared::CDataContainer& data, boost::filesystem::path & packageJsonPath);
+
+   //--------------------------------------------------------------
    /// \brief	    Just for test, not needed for real plugin
    //--------------------------------------------------------------
    void trace() const;

@@ -14,19 +14,25 @@ namespace shared { namespace exception
       /// \brief	                        Constructor
       //--------------------------------------------------------------
       explicit CNullReference(const char * reference = NULL)
+         :CException(makeExceptionDetails(reference))
       {
-         std::ostringstream s;
-         s << "Null reference exception" << std::endl;
-         if (reference)
-            s << "Exception details : " << reference << std::endl << std::endl;
-         m_message = s.str();
       }
 
       //--------------------------------------------------------------
       /// \brief      Destructor
       //--------------------------------------------------------------
-      virtual ~CNullReference() throw()
+      virtual ~CNullReference() noexcept
       {
+      }
+
+   private:
+      static std::string makeExceptionDetails(const char * reference)
+      {
+         std::ostringstream s;
+         s << "Null reference exception" << std::endl;
+         if (reference)
+            s << "Exception details : " << reference << std::endl << std::endl;
+         return s.str();
       }
    };
 

@@ -191,6 +191,14 @@ namespace database
          CQuery& FromParenthesis(const CQuery& subquery);
 
          //
+         /// \brief           Append 'From (subquery)'
+         /// \param  subquery   the subquery
+         /// \param subqueryName
+         /// \return          A reference to itself to allow method chaining
+         //   
+         CQuery& FromParenthesis(const CQuery& subquery, const std::string & subqueryName);
+
+         //
          /// \brief           Append the where clause
          /// \param  condition the where condition
          /// \return          A reference to itself to allow method chaining
@@ -207,6 +215,16 @@ namespace database
          //     
          template <class T1, class T2>
          inline CQuery& Where(const T1& field, const std::string& op, const T2& value);
+
+         //
+         /// \brief           Append the where in clause
+         ///                  Where field in("value1", "value2", "value3")
+         /// \param  field    the field name
+         /// \param  values   the list of values
+         /// \return          A reference to itself to allow method chaining
+         //
+         template <class T1, class T2>
+         inline CQuery& WhereIn(const T1& field, const std::vector<T2>& values);
 
 
          //
@@ -483,6 +501,13 @@ namespace database
                             const T09& field9 = T09(), const T9& value9 = T9(),
                             const T11& field10 = T11(), const T10& value10 = T10());
 
+         //
+         /// \brief           Append custom string to request
+         /// \param  string   the custom string
+         /// \return          A reference to itself to allow method chaining
+         //
+         CQuery& Custom(const std::string& string);
+
 
          //
          /// \brief           Append the WITH clause with a subquery 
@@ -665,6 +690,7 @@ namespace database
          virtual std::string formatDateToSql(const Poco::Timestamp& time);
          virtual std::string formatEnumToSql(const shared::enumeration::IExtendedEnum& enumValue);
          virtual std::string formatSubQueryToSql(const CQuery& subQuery);
+         virtual std::string functionSubstring(const std::string& sqlPart, int offset, int count);
          virtual std::string functionMin(const std::string& sqlPart);
          virtual std::string functionMax(const std::string& sqlPart);
          virtual std::string functionAvg(const std::string& sqlPart);
@@ -676,6 +702,8 @@ namespace database
          virtual std::string functionAs(const std::string& sqlPart, const std::string& name);
          virtual std::string functionFromSubquery(const std::string& subQueryName, const std::string& subQueryFieldName);
          virtual std::string functionDistinct(const std::string& field);
+         virtual std::string functionCount(const std::string& field);
+         virtual std::string functionSum(const std::string& field);
 
          class CFunction
          {
@@ -710,12 +738,22 @@ namespace database
          };
 
          //--------------------------------------------------------------
-         ///\brief	generate min function ( ie: min(field0) )
-         ///\param [in]	field    The field or query
+         ///\brief	generate a math function ( ie: value operand value2 => anyValue * 3600 )
+         ///\param [in]	value        The left value
+         ///\param [in]	op           The operand
+         ///\param [in]	value2        The right value
          ///\return The query function
          //--------------------------------------------------------------
          template <class T1, class T2>
          inline const CFunction math(const T1& value, const std::string& op, const T2& value2);
+
+         //--------------------------------------------------------------
+         ///\brief	generate substring function ( ie: substr(field0, 1, 4) )
+         ///\param [in]	field    The field or query
+         ///\return The query function
+         //--------------------------------------------------------------
+         template <class T>
+         inline const CFunction substr(const T& value, int offset, int count);
 
          //--------------------------------------------------------------
          ///\brief	generate min function ( ie: min(field0) )
@@ -816,6 +854,21 @@ namespace database
          template <class T>
          inline const CFunction distinct(const T& fieldOrQuery);
 
+         //--------------------------------------------------------------
+         ///\brief	generate count sql
+         ///\param [in]	fieldOrQuery       The field or query
+         ///\return The query function
+         //--------------------------------------------------------------
+         template <class T = CNotUsedTemplateField>
+         inline const CFunction count(const T& fieldOrQuery = T());
+
+         //--------------------------------------------------------------
+         ///\brief	generate sum sql
+         ///\param [in]	fieldOrQuery       The field or query
+         ///\return The query function
+         //--------------------------------------------------------------
+         template <class T = CNotUsedTemplateField>
+         inline const CFunction sum(const T& fieldOrQuery);
 
          //--------------------------------------------------------------
          ///\brief	generate column naming sql

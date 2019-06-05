@@ -51,7 +51,7 @@ set(plugin_IPC_LIBRARY plugin_IPC CACHE INTERNAL "plugin_IPC library")
 
 
 
-#Ignore some warnings under VisualStudio for Protobuf generated files
 if(MSVC)
-add_definitions( "/wd4244 /wd4125" )
+   #Ignore some warnings under VisualStudio for Protobuf generated files
+   add_definitions( "/wd4244 /wd4125" )
 endif()

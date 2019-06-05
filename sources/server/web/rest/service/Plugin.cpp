@@ -17,17 +17,14 @@ namespace web
          CPlugin::CPlugin(boost::shared_ptr<database::IDataProvider> dataProvider,
                           boost::shared_ptr<pluginSystem::CManager> pluginManager,
                           boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
-                          communication::ISendMessageAsync& messageSender)
+                          communication::ISendMessageAsync& messageSender,
+                          bool developerMode)
             : m_dataProvider(dataProvider),
               m_pluginManager(pluginManager),
               m_deviceManager(deviceManager),
               m_restKeyword("plugin"),
-              m_messageSender(messageSender)
-         {
-         }
-
-
-         CPlugin::~CPlugin()
+              m_messageSender(messageSender),
+              m_developerMode(developerMode)
          {
          }
 
@@ -39,9 +36,12 @@ namespace web
          void CPlugin::configureDispatcher(CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CPlugin::getAllAvailablePlugins);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword), CPlugin::getAllAvailablePluginsParameterized);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("withPackage"), CPlugin::getAllAvailablePluginsWithPackage);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance"), CPlugin::getAllPluginsInstance);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance")("handleManuallyDeviceCreation"), CPlugin::getAllPluginsInstanceForManualDeviceCreation);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instanceWithState"), CPlugin::getAllPluginsInstanceWithState);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance")("handleManuallyDeviceCreation"), CPlugin::
+               getAllPluginsInstanceForManualDeviceCreation);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CPlugin::getOnePlugin);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("state"), CPlugin::getInstanceState);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("devices"), CPlugin::getPluginDevices);
@@ -52,12 +52,17 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("instanceRunning"), CPlugin::getInstanceRunning);
 
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CPlugin::createPlugin, CPlugin::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::
+               transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CPlugin::updatePlugin, CPlugin::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("extraQuery")("*"), CPlugin::sendExtraQuery, CPlugin::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("deviceExtraQuery")("*")("*"), CPlugin::sendDeviceExtraQuery, CPlugin::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CPlugin::deleteAllPlugins, CPlugin::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPlugin::deletePlugin, CPlugin::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("extraQuery")("*"), CPlugin::sendExtraQuery, CPlugin
+               ::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("deviceExtraQuery")("*")("*"), CPlugin::
+               sendDeviceExtraQuery, CPlugin::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CPlugin::deleteAllPlugins, CPlugin::transactionalMethod
+            );
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPlugin::deletePlugin, CPlugin::
+               transactionalMethod);
          }
 
 
@@ -99,11 +104,8 @@ namespace web
             {
                if (parameters.size() > 1)
                {
-                  auto instanceId = boost::lexical_cast<int>(parameters[1]);
-
-                  auto pluginFound = m_pluginManager->getInstance(instanceId);
-
-                  return CResult::GenerateSuccess(pluginFound);
+                  const auto instanceId = boost::lexical_cast<int>(parameters[1]);
+                  return CResult::GenerateSuccess(m_pluginManager->getInstance(instanceId));
                }
 
                return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
@@ -121,32 +123,61 @@ namespace web
          boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstance(const std::vector<std::string>& parameters,
                                                                                                     const std::string& requestContent) const
          {
-            auto hwList = m_pluginManager->getInstanceList();
             shared::CDataContainer t;
-            t.set(getRestKeyword(), hwList);
+            t.set(getRestKeyword(), m_pluginManager->getInstanceList());
             return CResult::GenerateSuccess(t);
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstanceForManualDeviceCreation(const std::vector<std::string>& parameters,
-                                                                                                                           const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstanceWithState(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
+         {
+            try
+            {
+               std::vector<shared::CDataContainer> list;
+               for (const auto& instance : m_pluginManager->getInstanceList())
+               {
+                  shared::CDataContainer item;
+                  item.set("instance", instance);
+                  item.set("state", m_pluginManager->getInstanceFullState(instance->Id()));
+                  list.push_back(item);
+               }
+
+               shared::CDataContainer result;
+               result.set(getRestKeyword(), list);
+               return CResult::GenerateSuccess(result);
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in reading plugin instance status");
+            }
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllPluginsInstanceForManualDeviceCreation(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             std::vector<boost::shared_ptr<database::entities::CPlugin>> result;
 
-            //liste de toutes les instances
+            // List all instances
             auto hwList = m_pluginManager->getInstanceList();
 
-            //search for manuallyCreatedDevice
+            // Search for manuallyCreatedDevice
             auto pluginList = m_pluginManager->getPluginList();
 
-            for (auto currentInstance = hwList.begin(); currentInstance != hwList.end(); ++currentInstance)
+            for (auto& currentInstance : hwList)
             {
-               if (m_pluginManager->isInstanceRunning(currentInstance->get()->Id))
+               if (m_pluginManager->isInstanceRunning(currentInstance->Id))
                {
-                  auto matchingInfo = pluginList.find((*currentInstance)->Type);
+                  const auto matchingInfo = pluginList.find(currentInstance->Type);
                   if (matchingInfo != pluginList.end())
                   {
                      if (matchingInfo->second->getSupportManuallyCreatedDevice())
-                        result.push_back(*currentInstance);
+                        result.push_back(currentInstance);
                   }
                }
             }
@@ -167,8 +198,8 @@ namespace web
                shared::CDataContainer result;
                std::vector<std::string> pluginCollection;
 
-               for (auto plugin = pluginList.begin(); plugin != pluginList.end(); ++plugin)
-                  pluginCollection.push_back(plugin->first);
+               for (auto& plugin : pluginList)
+                  pluginCollection.push_back(plugin.first);
 
                result.set("plugins", pluginCollection);
 
@@ -184,8 +215,61 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllAvailablePluginsWithPackage(const std::vector<std::string>& parameters,
-                                                                                                                const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllAvailablePluginsParameterized(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
+         {
+            try
+            {
+               // Get input parameters
+               shared::CDataContainer content(requestContent);
+               std::vector<std::string> fields;
+               if (content.containsChild("fields"))
+                  fields = content.get<std::vector<std::string>>("fields");
+
+               // Get all available plugins
+               auto pluginList = m_pluginManager->getPluginList();
+
+               // Filter plugins
+               std::vector<shared::CDataContainer> pluginCollection;
+               for (auto& plugin : pluginList)
+               {
+                  if (!plugin.second->isSupportedOnThisPlatform())
+                     continue;
+
+                  if (!m_developerMode && boost::starts_with(plugin.first, "dev-"))
+                     continue;
+
+                  // Filter returned data (fields)
+                  if (fields.empty())
+                     pluginCollection.push_back(*plugin.second->getPackage());
+                  else
+                  {
+                     auto pluginData = boost::make_shared<shared::CDataContainer>();
+                     for (auto& field : fields)
+                        pluginData->set(field, plugin.second->getPackage()->get<std::string>(field));
+
+                     pluginCollection.push_back(*pluginData);
+                  }
+               }
+
+               shared::CDataContainer result;
+               result.set("plugins", pluginCollection);
+               return CResult::GenerateSuccess(result);
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in creating a new plugin instance");
+            }
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getAllAvailablePluginsWithPackage(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
          {
             try
             {
@@ -193,11 +277,11 @@ namespace web
 
                shared::CDataContainer result;
                std::vector<shared::CDataContainer> pluginCollection;
-               for (auto plugin = pluginList.begin(); plugin != pluginList.end(); ++plugin)
+               for (auto& plugin : pluginList)
                {
                   shared::CDataContainer pluginInfo;
-                  pluginInfo.set("type", plugin->first);
-                  pluginInfo.set("package", *(plugin->second->getPackage()));
+                  pluginInfo.set("type", plugin.first);
+                  pluginInfo.set("package", *(plugin.second->getPackage()));
                   pluginCollection.push_back(pluginInfo);
                }
 
@@ -221,10 +305,8 @@ namespace web
             {
                database::entities::CPlugin plugin;
                plugin.fillFromSerializedString(requestContent);
-               auto idCreated = m_pluginManager->createInstance(plugin);
-
-               auto pluginFound = m_pluginManager->getInstance(idCreated);
-               return CResult::GenerateSuccess(pluginFound);
+               const auto idCreated = m_pluginManager->createInstance(plugin);
+               return CResult::GenerateSuccess(m_pluginManager->getInstance(idCreated));
             }
             catch (std::exception& ex)
             {
@@ -246,8 +328,7 @@ namespace web
 
                m_pluginManager->updateInstance(instanceToUpdate);
 
-               auto pluginFound = m_pluginManager->getInstance(instanceToUpdate.Id());
-               return CResult::GenerateSuccess(pluginFound);
+               return CResult::GenerateSuccess(m_pluginManager->getInstance(instanceToUpdate.Id()));
             }
             catch (std::exception& ex)
             {
@@ -270,7 +351,9 @@ namespace web
                   const auto query = parameters[3];
 
                   const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query,
-                                                                                      requestContent.empty() ? shared::CDataContainer() : shared::CDataContainer(requestContent),
+                                                                                      requestContent.empty()
+                                                                                         ? shared::CDataContainer()
+                                                                                         : shared::CDataContainer(requestContent),
                                                                                       "");
                   const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
 
@@ -280,7 +363,7 @@ namespace web
                      result.set("taskId", taskId);
                      return CResult::GenerateSuccess(result);
                   }
-                  
+
                   return CResult::GenerateError("Fail to get extra query task");
                }
                return CResult::GenerateError("invalid parameter. Not enough parameters in url");
@@ -295,7 +378,8 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::sendDeviceExtraQuery(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::sendDeviceExtraQuery(
+            const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -308,8 +392,10 @@ namespace web
                   const auto query = parameters[4];
 
                   const auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query,
-                                                                                requestContent.empty() ? shared::CDataContainer() : shared::CDataContainer(requestContent),
-                                                                                device->Name());
+                                                                                      requestContent.empty()
+                                                                                         ? shared::CDataContainer()
+                                                                                         : shared::CDataContainer(requestContent),
+                                                                                      device->Name());
                   const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
 
                   if (!taskId.empty())
@@ -318,7 +404,7 @@ namespace web
                      result.set("taskId", taskId);
                      return CResult::GenerateSuccess(result);
                   }
-                  
+
                   return CResult::GenerateError("Fail to get extra query task");
                }
                return CResult::GenerateError("invalid parameter. Not enough parameters in url");
@@ -340,7 +426,7 @@ namespace web
             {
                if (parameters.size() > 1)
                {
-                  auto instanceId = boost::lexical_cast<int>(parameters[1]);
+                  const auto instanceId = boost::lexical_cast<int>(parameters[1]);
                   m_pluginManager->deleteInstance(instanceId);
                   return CResult::GenerateSuccess();
                }
@@ -368,16 +454,16 @@ namespace web
             return CResult::GenerateSuccess();
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getInstanceState(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getInstanceState(
+            const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() > 1)
                {
-                  auto instanceId = boost::lexical_cast<int>(parameters[1]);
+                  const auto instanceId = boost::lexical_cast<int>(parameters[1]);
 
-                  auto pluginInstanceFound = m_pluginManager->getInstance(instanceId);
-                  if (pluginInstanceFound)
+                  if (m_pluginManager->getInstance(instanceId))
                      return CResult::GenerateSuccess(m_pluginManager->getInstanceFullState(instanceId));
 
                   return CResult::GenerateError("invalid parameter. Can not retrieve instance id");
@@ -395,17 +481,17 @@ namespace web
             }
          }
 
-         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getInstanceRunning(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         boost::shared_ptr<shared::serialization::IDataSerializable> CPlugin::getInstanceRunning(
+            const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() > 1)
                {
-                  auto instanceId = boost::lexical_cast<int>(parameters[1]);
+                  const auto instanceId = boost::lexical_cast<int>(parameters[1]);
 
-                  bool instanceRunning = m_pluginManager->isInstanceRunning(instanceId);
                   shared::CDataContainer result;
-                  result.set("isRunning", instanceRunning);
+                  result.set("isRunning", m_pluginManager->isInstanceRunning(instanceId));
                   return CResult::GenerateSuccess(result);
                }
                return CResult::GenerateError("invalid parameter. Can not retrieve instance id in url");
@@ -427,18 +513,15 @@ namespace web
             {
                if (parameters.size() > 1)
                {
-                  auto instanceId = boost::lexical_cast<int>(parameters[1]);
+                  const auto instanceId = boost::lexical_cast<int>(parameters[1]);
 
-
-                  auto devicesFound = m_dataProvider->getDeviceRequester()->getDevices(instanceId,
-                                                                                       true);
-                  //send result
                   shared::CDataContainer t;
-                  t.set("devices", devicesFound);
+                  t.set("devices", m_dataProvider->getDeviceRequester()->getDevices(instanceId,
+                                                                                    true));
                   return CResult::GenerateSuccess(t);
                }
 
-               return CResult::GenerateError("invalid parameter. Can not retrieve pluigin instance id in url");
+               return CResult::GenerateError("invalid parameter. Can not retrieve plugin instance id in url");
             }
             catch (std::exception& ex)
             {
@@ -457,16 +540,14 @@ namespace web
             {
                if (parameters.size() > 1)
                {
-                  auto instanceId = boost::lexical_cast<int>(parameters[1]);
+                  const auto instanceId = boost::lexical_cast<int>(parameters[1]);
 
-                  auto pluginInstanceFound = m_pluginManager->getInstance(instanceId);
-                  if (pluginInstanceFound)
+                  if (m_pluginManager->getInstance(instanceId))
                   {
                      //start instance
                      m_pluginManager->startInstance(instanceId);
                      //check for instance status
-                     auto state = m_pluginManager->isInstanceRunning(instanceId);
-                     if (state)
+                     if (m_pluginManager->isInstanceRunning(instanceId))
                         return CResult::GenerateSuccess();
                      return CResult::GenerateError("Fail to start the plugin instance");
                   }
@@ -493,9 +574,9 @@ namespace web
             {
                if (parameters.size() > 1)
                {
-                  auto instanceId = boost::lexical_cast<int>(parameters[1]);
+                  const auto instanceId = boost::lexical_cast<int>(parameters[1]);
 
-                  auto pluginInstanceFound = m_pluginManager->getInstance(instanceId);
+                  const auto pluginInstanceFound = m_pluginManager->getInstance(instanceId);
                   if (!pluginInstanceFound)
                      return CResult::GenerateError("invalid parameter. Can not retrieve instance id");
 
@@ -522,7 +603,7 @@ namespace web
             {
                if (parameters.size() > 1)
                {
-                  auto instanceId = boost::lexical_cast<int>(parameters[1]);
+                  const auto instanceId = boost::lexical_cast<int>(parameters[1]);
 
                   shared::CDataContainer result;
                   result.set("log", m_pluginManager->getInstanceLog(instanceId));
@@ -552,7 +633,7 @@ namespace web
                boost::smatch result;
                if (boost::regex_search(device->Name(), result, DeviceNamePattern))
                {
-                  auto number = std::stoul(std::string(result[1].first, result[1].second));
+                  const auto number = std::stoul(std::string(result[1].first, result[1].second));
                   if (lastNumber < number)
                      lastNumber = number;
                }
@@ -570,6 +651,9 @@ namespace web
                {
                   const auto pluginId = boost::lexical_cast<int>(parameters[1]);
 
+                  if (requestContent.empty())
+                     return CResult::GenerateError("invalid request content. Must not be empty");
+
                   shared::CDataContainer content(requestContent);
                   if (!content.exists("name") || !content.exists("type") || !content.exists("configuration"))
                      return CResult::GenerateError("invalid request content. There must be a name, a type and a configuration field");
@@ -585,17 +669,16 @@ namespace web
                                                                         deviceName,
                                                                         content.get<std::string>("name"),
                                                                         content.get<std::string>("type"),
-                                                                        content.exists("model") && !content.get<std::string>("model").empty() ?
-                                                                           content.get<std::string>("name") : content.get<std::string>("model"),
+                                                                        content.exists("model") ? content.get<std::string>("model") : "",
                                                                         shared::CDataContainer());
                      m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(device->Id(),
                                                                                      content.get<shared::CDataContainer>("configuration"));
 
                      // Send request to plugin
                      communication::callback::CSynchronousCallback<std::string> cb;
-                     pluginSystem::CManuallyDeviceCreationData data(deviceName,
-                                                                    content.get<std::string>("type"),
-                                                                    content.get<shared::CDataContainer>("configuration"));
+                     const pluginSystem::CManuallyDeviceCreationData data(deviceName,
+                                                                          content.get<std::string>("type"),
+                                                                          content.get<shared::CDataContainer>("configuration"));
                      m_messageSender.sendManuallyDeviceCreationRequest(pluginId,
                                                                        data,
                                                                        cb);
@@ -605,7 +688,7 @@ namespace web
                      {
                      case communication::callback::CSynchronousCallback<std::string>::kResult:
                         {
-                           auto res = cb.getCallbackResult();
+                           const auto res = cb.getCallbackResult();
 
                            if (res.success)
                               return CResult::GenerateSuccess(m_dataProvider->getDeviceRequester()->getDeviceInPlugin(pluginId,
@@ -625,7 +708,7 @@ namespace web
                      default:
                         {
                            m_dataProvider->getDeviceRequester()->removeDevice(device->Id());
-                           return CResult::GenerateError("Unkown plugin result");
+                           return CResult::GenerateError("Unknown plugin result");
                         }
                      }
                   }
@@ -658,16 +741,16 @@ namespace web
             {
                if (parameters.size() > 3)
                {
-                  auto pluginId = boost::lexical_cast<int>(parameters[1]);
+                  const auto pluginId = boost::lexical_cast<int>(parameters[1]);
 
-                  auto query = parameters[3];
+                  const auto query = parameters[3];
                   try
                   {
                      //create a callback (allow waiting for result)              
                      communication::callback::CSynchronousCallback<shared::CDataContainer> cb;
 
                      //create the data container to send to plugin
-                     pluginSystem::CBindingQueryData data(query);
+                     const pluginSystem::CBindingQueryData data(query);
 
                      //send request to plugin
                      m_messageSender.sendBindingQueryRequest(pluginId, data, cb);
@@ -677,7 +760,7 @@ namespace web
                      {
                      case communication::callback::CSynchronousCallback<shared::CDataContainer>::kResult:
                         {
-                           auto res = cb.getCallbackResult();
+                           const auto res = cb.getCallbackResult();
 
                            if (res.success)
                               return CResult::GenerateSuccess(res.result);
@@ -689,7 +772,7 @@ namespace web
                         return CResult::GenerateError("The plugin did not respond");
 
                      default:
-                        return CResult::GenerateError("Unkown plugin result");
+                        return CResult::GenerateError("Unknown plugin result");
                      }
                   }
                   catch (shared::exception::CException& ex)

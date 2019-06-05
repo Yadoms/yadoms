@@ -1,3 +1,8 @@
+### 1.3.0
+* Restore single device target (simplify code)
+* Manage indeterminate style when using switch with dimmable keyword (any value other than 0 and 100 is considered as indeterminate)
+* Fix #520 : Bad behaviour with dimmable keyword
+
 ### 1.2.0
 * New feature #553 : use of full compliant Json
 

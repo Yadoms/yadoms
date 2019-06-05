@@ -303,9 +303,8 @@ function asyncLoadJSGzLibs(libraryNames) {
 function asyncLoadJSLib(librayName) {
    assert(librayName != undefined, "librayName must be defined");
 
+   var d = new $.Deferred();
    if (!loadedJSLibs[librayName]) {
-      //we create a new deffered
-      var d = new $.Deferred();
       var script = document.createElement("script");
       script.type = "text/javascript";
       script.src = librayName;
@@ -338,10 +337,11 @@ function asyncLoadJSLib(librayName) {
 
       //we save the promise for other load requests
       loadedJSLibs[librayName] = d.promise();
-      return d.promise();
    } else {
-      return loadedJSLibs[librayName];
+      d.resolve();
    }
+
+   return d.promise();
 }
 
 /**
@@ -600,4 +600,14 @@ function humanFileSize(size) {
 															  $.t("filesize-units.mb", {defaultValue: 'MB'}), 
 															  $.t("filesize-units.gb", {defaultValue: 'GB'}), 
 															  $.t("filesize-units.tb", {defaultValue: 'TB'})][i];
+}
+
+/**
+ * Obtain the key of the first child which have matching value
+ * @param object The container
+ * @param value The value to test
+ * @return the key of matching value
+ */
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
 }

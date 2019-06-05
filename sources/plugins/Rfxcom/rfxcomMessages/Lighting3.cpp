@@ -70,7 +70,7 @@ namespace rfxcomMessages
       m_system = rbuf.LIGHTING3.system;
       m_channel = rbuf.LIGHTING3.channel8_1 & (rbuf.LIGHTING3.channel10_9 << 8);
       m_state->set(fromProtocolState(rbuf.LIGHTING3.cmnd));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING2.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.LIGHTING2.rssi));
 
       // Build device description
       buildDeviceModel();

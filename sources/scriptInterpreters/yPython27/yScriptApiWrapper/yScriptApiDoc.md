@@ -116,7 +116,8 @@ Error if keyword not found
 #### Example
 ```python
 keywordDetails = scriptUtilities.readKeywordDetails(yApi, keywordId)
-print "Id : ", keywordDetails.id
+print "Id : ", keywordDetails.id # Integer
+print "DeviceId : ", keywordDetails.deviceId # Integer
 print "CapacityName : ", keywordDetails.capacityName
 print "AccessMode : ", keywordDetails.accessMode
 print "FriendlyName : ", keywordDetails.friendlyName
@@ -126,7 +127,7 @@ print "TypeInfo : ", keywordDetails.typeInfo
 print "Measure : ", keywordDetails.measure
 print "Details : ", keywordDetails.details
 print "LastAcquisitionValue : ", keywordDetails.lastAcquisitionValue
-print "LastAcquisitionDate : ", keywordDetails.lastAcquisitionDate
+print "LastAcquisitionDate : ", keywordDetails.lastAcquisitionDate # datetime.datetime object
 ```
 
 ### waitForNextAcquisition

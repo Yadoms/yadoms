@@ -32,7 +32,7 @@ namespace rfxcomMessages
       m_humidity->set(rbuf.TEMP_HUM.humidity);
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.TEMP_HUM.battery_level));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.TEMP_HUM.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.TEMP_HUM.rssi));
 
       buildDeviceModel();
       buildDeviceName();

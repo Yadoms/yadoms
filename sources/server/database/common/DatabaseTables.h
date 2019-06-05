@@ -99,6 +99,7 @@ namespace database
          (Avg)
          (Min)
          (Max)
+         (Count)
       )
 
       DECLARE_TABLE(Rule,

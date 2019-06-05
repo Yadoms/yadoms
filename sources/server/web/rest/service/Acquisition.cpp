@@ -182,8 +182,8 @@ namespace web
                }
                else
                {
-                  YADOMS_LOG(warning) << "readKeywordInfo, can not get requested keyword " << keywordId << " info \"" << info <<
-                     "\", ignored : unknown info label";
+               YADOMS_LOG(warning) << "readKeywordInfo, can not get requested keyword " << keywordId << " info \"" << info <<
+                  "\", ignored : unknown info label";
                }
             }
             catch (std::exception& exception)
@@ -303,11 +303,11 @@ namespace web
                                                                                            timeTo);
                   std::vector<shared::CDataContainer> objectList;
 
-                  for (auto i = allData.begin(); i != allData.end(); ++i)
+                  for (auto& i : allData)
                   {
                      shared::CDataContainer result;
-                     result.set("date", boost::posix_time::to_iso_string(i->get<0>()));
-                     result.set("key", i->get<1>());
+                     result.set("date", boost::posix_time::to_iso_string(i.get<0>()));
+                     result.set("key", i.get<1>());
                      objectList.push_back(result);
                   }
 

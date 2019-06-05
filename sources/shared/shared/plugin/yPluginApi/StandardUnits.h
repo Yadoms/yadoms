@@ -42,6 +42,7 @@ namespace shared
             static const std::string& VoltAmpere(); // VA
             static const std::string& Watt(); // W
             static const std::string& WattPerHour(); // Wh
+            static const std::string& WattPerSquareMeter(); // Wm2
          };
       }
    }

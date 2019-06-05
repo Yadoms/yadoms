@@ -39,6 +39,7 @@ namespace database
             std::vector<boost::shared_ptr<entities::CKeyword>> getDeviceKeywordsWithCapacity(int deviceId, const std::string& capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode) const override;
             boost::shared_ptr<entities::CAcquisition> getKeywordLastAcquisition(const int keywordId, bool throwIfNotExists = true) override;
             std::string getKeywordLastData(const int keywordId, bool throwIfNotExists = true) override;
+            std::vector<boost::tuple<int, std::string>> getKeywordListLastData(const std::vector<int> keywordIds) override;
             void updateKeywordBlacklistState(int keywordId, const bool blacklist) override;
             void removeKeyword(int keywordId) override;
             void updateKeywordFriendlyName(int keywordId, const std::string& newFriendlyName) override;

@@ -173,7 +173,10 @@ function chartViewModel() {
                 chart: {
                     type: 'line',
                     animation: false,
-                    marginTop: 10
+                    marginTop: 10,
+                    zoomType: "xy",
+                    panning: true,
+                    panKey: 'shift'
                 },
                 boost: {
                    allowForce: true,
@@ -606,7 +609,7 @@ function chartViewModel() {
                             var v;
                             if (!isNullOrUndefined(value.key)) {
                                if (isEnumVariable(self.chart.keyword[keywordId])) {
-                                  v= self.chart.keyword[keywordId].typeInfo.values.indexOf(value.key);
+								  v = getKeyByValue(self.chart.keyword[keywordId].typeInfo.values, value.key);
                                }else {
                                   v = parseFloat(value.key);
                                }
@@ -1165,7 +1168,7 @@ function chartViewModel() {
                                      serie.addPoint([isolastdate, (parseFloat(data.value) - self.chartLastValue[keywordId])*self.coeff[keywordId]], true, false, true);
                                   self.chartLastValue[keywordId] = parseFloat(data.value);                                                 
                                }else if (isEnumVariable(keywordId)){
-                                  var value = self.chart.keyword[keywordId].typeInfo.values.indexOf(data.value);
+								  var value = getKeyByValue(self.chart.keyword[keywordId].typeInfo.values, data.value);
                                   serie.addPoint([isolastdate, value], true, false, true);
                                }else
                                   serie.addPoint([isolastdate, parseFloat(data.value)*self.coeff[keywordId]], true, false, true);

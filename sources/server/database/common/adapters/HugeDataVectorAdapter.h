@@ -2,6 +2,7 @@
 
 #include "IResultAdapter.h"
 #include "SqlExtension.hpp"
+#include "database/common/IResultHandler.h"
 
 namespace database
 {

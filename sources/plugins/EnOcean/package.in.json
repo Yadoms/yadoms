@@ -2,7 +2,7 @@
   "type": "enOcean",
   "version": "@PLUGIN_VERSION@",
   "author": "Sébastien Gallou",
-  "url": "https://github.com/Yadoms/yadoms/",
+  "url": "https://github.com/Yadoms/yadoms/wiki/EnOcean",
   "credits": "",
   "supportedPlatforms": "all",
   "dependencies": {

@@ -66,7 +66,7 @@ namespace rfxcomMessages
          }
       }
 
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.RFXSENSOR.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.RFXSENSOR.rssi));
 
       buildDeviceModel();
       buildDeviceName();

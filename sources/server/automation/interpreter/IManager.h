@@ -14,29 +14,41 @@ namespace automation
          //-----------------------------------------------------
          ///\brief               Destructor
          //-----------------------------------------------------
-         virtual ~IManager()
-         {
-         }
+         virtual ~IManager() = default;
 
          //-----------------------------------------------------
-         ///\brief               Get available interpreters (as user-friendly names)
-         ///\return              The list of available interpreters
+         ///\brief               Get all loaded interpreters (available or not)
+         ///\return              The list of loaded interpreters
          //-----------------------------------------------------
-         virtual std::vector<std::string> getAvailableInterpreters() = 0;
+         virtual std::vector<std::string> getLoadedInterpreters() = 0;
 
          //-----------------------------------------------------
-         ///\brief               Get available interpreters with associated informations
-         ///\return              The list of available interpreters with their informations
+         ///\brief               Get loaded interpreters with associated information
+         ///\return              The list of loaded interpreters (available or not) with their information
+         //-----------------------------------------------------
+         virtual std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>> getLoadedInterpretersInformation() = 0;
+
+         //-----------------------------------------------------
+         ///\brief               Get available interpreters with associated information
+         ///\return              The list of available interpreters with their information
          //-----------------------------------------------------
          virtual std::map<std::string, boost::shared_ptr<const shared::script::yInterpreterApi::IInformation>> getAvailableInterpretersInformation() = 0;
 
          //-----------------------------------------------------
-         ///\brief               Get the interpreter needed to run a script
+         ///\brief               Get the available interpreter instance
          ///\param[in] interpreterType The interpreter type
-         ///\return              The first interpreter found supporting this script
-         ///\throw std::runtime_error No corresponding script interpreter was found
+         ///\return              The corresponding interpreter instance
+         ///\throw std::runtime_error No corresponding interpreter was found
          //-----------------------------------------------------
-         virtual boost::shared_ptr<IInstance> getInterpreterInstance(const std::string& interpreterType) = 0;
+         virtual boost::shared_ptr<IInstance> getAvailableInterpreterInstance(const std::string& interpreterType) = 0;
+
+         //-----------------------------------------------------
+         ///\brief               Get the loaded interpreter c
+         ///\param[in] interpreterType The interpreter type
+         ///\return              The corresponding interpreter instance
+         ///\throw std::runtime_error No corresponding interpreter was found
+         //-----------------------------------------------------
+         virtual boost::shared_ptr<IInstance> getLoadedInterpreterInstance(const std::string& interpreterType) = 0;
 
          //-----------------------------------------------------
          ///\brief               Unload an interpreter (do nothing if interpreter not loaded)
@@ -72,7 +84,7 @@ namespace automation
          ///\brief               Update the script file (create if necessary)
          ///\param[in] interpreterName Associated interpreter
          ///\param[in] scriptPath      Script path
-         ///\return              The rule code
+         ///\param[in] code            New script code
          //-----------------------------------------------------
          virtual void updateScriptFile(const std::string& interpreterName,
                                        const std::string& scriptPath,

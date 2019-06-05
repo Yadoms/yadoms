@@ -96,9 +96,9 @@ namespace automation
       return allRulesStarted;
    }
 
-   std::vector<std::string> CRuleManager::getAvailableInterpreters()
+   std::vector<std::string> CRuleManager::getLoadedInterpreters()
    {
-      return m_interpreterManager->getAvailableInterpreters();
+      return m_interpreterManager->getLoadedInterpreters();
    }
 
    void CRuleManager::startRule(int ruleId)
@@ -248,7 +248,7 @@ namespace automation
    }
 
    int CRuleManager::createRule(boost::shared_ptr<const database::entities::CRule> ruleData,
-                                const std::string& code)
+                                const std::string& code, bool startNow)
    {
       // Add rule in database
       const auto ruleId = m_ruleRequester->addRule(ruleData);
@@ -259,8 +259,11 @@ namespace automation
                                              ruleProperties->scriptPath().string(),
                                              code);
 
-      // Start the rule
-      startRule(ruleId);
+      if (startNow)
+      {
+         // Start the rule
+         startRule(ruleId);
+      }
 
       return ruleId;
    }
@@ -307,7 +310,7 @@ namespace automation
       catch (shared::exception::CException& e)
       {
          YADOMS_LOG(error) << "Unable to delete rule log (" << id << ") : " << e.what();
-         throw shared::exception::CInvalidParameter(boost::lexical_cast<std::string>(id));
+         throw shared::exception::CInvalidParameter(std::to_string(id));
       }
    }
 
@@ -372,7 +375,33 @@ namespace automation
       catch (shared::exception::CException& e)
       {
          YADOMS_LOG(error) << "Unable to delete rule (" << id << ") : " << e.what();
-         throw shared::exception::CInvalidParameter(boost::lexical_cast<std::string>(id));
+         throw shared::exception::CInvalidParameter(std::to_string(id));
+      }
+   }
+
+   int CRuleManager::duplicateRule(int idToDuplicate, const std::string & newName)
+   {
+      try
+      {
+         //1. get rule
+         auto rule = getRule(idToDuplicate);
+
+         //2. get code
+         const auto ruleCode = getRuleCode(idToDuplicate);
+
+         //3. update name
+         rule->Name = newName;
+
+         //4. set new rule as stopped
+         rule->State = database::entities::ERuleState::kStopped;
+
+         //5. create rule
+         return createRule(rule, ruleCode, false); //don't start the rule
+      }
+      catch (shared::exception::CException& e)
+      {
+         YADOMS_LOG(error) << "Unable to duplicate rule (" << idToDuplicate << ") : " << e.what();
+         throw shared::exception::CInvalidParameter(std::to_string(idToDuplicate));
       }
    }
 
@@ -387,12 +416,10 @@ namespace automation
    {
       // First, stop all running rules associated with this interpreter
       auto interpreterRules = m_ruleRequester->getRules(interpreterName);
-      for (auto interpreterRule = interpreterRules.begin();
-           interpreterRule != interpreterRules.end();
-           ++interpreterRule)
+      for (auto& interpreterRule : interpreterRules)
       {
-         if (isRuleStarted((*interpreterRule)->Id()))
-            stopRuleAndWaitForStopped((*interpreterRule)->Id());
+         if (isRuleStarted(interpreterRule->Id()))
+            stopRuleAndWaitForStopped(interpreterRule->Id());
       }
 
       // We can unload the interpreter as it is not used anymore (will be automaticaly re-loaded when needed by a rule)
@@ -402,10 +429,8 @@ namespace automation
    void CRuleManager::deleteAllRulesMatchingInterpreter(const std::string& interpreterName)
    {
       auto interpreterRules = m_ruleRequester->getRules(interpreterName);
-      for (auto interpreterRule = interpreterRules.begin();
-           interpreterRule != interpreterRules.end();
-           ++interpreterRule)
-         deleteRule((*interpreterRule)->Id());
+      for (auto& interpreterRule : interpreterRules)
+         deleteRule(interpreterRule->Id());
 
       // We can unload the interpreter as it is not used anymore (will be automaticaly re-loaded when needed by a rule)
       m_interpreterManager->unloadInterpreter(interpreterName);

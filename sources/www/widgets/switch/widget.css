@@ -18,3 +18,8 @@
     align-self: center;
     justify-content: center;
 }
+
+.indeterminate {
+	background-color: #89bbe6;
+}
+

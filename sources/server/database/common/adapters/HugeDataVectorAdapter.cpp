@@ -18,11 +18,13 @@ namespace database
 
 			bool CHugeDataVectorAdapter::adapt(boost::shared_ptr<IResultHandler> resultHandler)
 			{
-				auto nCols = resultHandler->getColumnCount();
-				m_internalValue.reserve(100 * nCols);
-				m_internalValue = "{\"result\":true,\"message\":\"\",\"data\":{\"data\":[";
-				if (nCols == 6)
+            const auto nCols = resultHandler->getColumnCount();
+
+				if (nCols >= 6) //since 2.3.0, summary table contains 7 columns
 				{
+               m_internalValue.reserve(100 * nCols);
+               m_internalValue = "{\"result\":true,\"message\":\"\",\"data\":{\"data\":[";
+
 					long size = 0;
 					while (resultHandler->next_step())
 					{
@@ -41,8 +43,14 @@ namespace database
 							m_internalValue += "]";
 					}
 					m_internalValue += "}}"; //no data, just append closing bracket
+               return true;
 				}
-				return true;
+            else
+            {
+               //ensure result string is json !!!
+               m_internalValue = "{\"result\":false,\"message\":\"invalid query column count\"}";
+               return false;
+            }
 			}
 
 

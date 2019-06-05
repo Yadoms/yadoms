@@ -35,32 +35,32 @@ BOOST_AUTO_TEST_SUITE(TestVersion)
    BOOST_AUTO_TEST_CASE(extract)
    {
       shared::versioning::CVersion t("2.4.6-beta.2+build0001");
-      BOOST_CHECK_EQUAL(t.major(), 2);
-      BOOST_CHECK_EQUAL(t.minor(), 4);
-      BOOST_CHECK_EQUAL(t.patch(), 6);
-      BOOST_CHECK_EQUAL(t.prerelease(), "beta.2");
-      BOOST_CHECK_EQUAL(t.buildMetadata(), "build0001");
+      BOOST_CHECK_EQUAL(t.getMajor(), 2);
+      BOOST_CHECK_EQUAL(t.getMinor(), 4);
+      BOOST_CHECK_EQUAL(t.getPatch(), 6);
+      BOOST_CHECK_EQUAL(t.getPrerelease(), "beta.2");
+      BOOST_CHECK_EQUAL(t.getBuildMetadata(), "build0001");
 
       shared::versioning::CVersion t2("1.2.3");
-      BOOST_CHECK_EQUAL(t2.major(), 1);
-      BOOST_CHECK_EQUAL(t2.minor(), 2);
-      BOOST_CHECK_EQUAL(t2.patch(), 3);
-      BOOST_CHECK_EQUAL(t2.prerelease(), "");
-      BOOST_CHECK_EQUAL(t2.buildMetadata(), "");
+      BOOST_CHECK_EQUAL(t2.getMajor(), 1);
+      BOOST_CHECK_EQUAL(t2.getMinor(), 2);
+      BOOST_CHECK_EQUAL(t2.getPatch(), 3);
+      BOOST_CHECK_EQUAL(t2.getPrerelease(), "");
+      BOOST_CHECK_EQUAL(t2.getBuildMetadata(), "");
 
       shared::versioning::CVersion t3("1.2.3-beta.42");
-      BOOST_CHECK_EQUAL(t3.major(), 1);
-      BOOST_CHECK_EQUAL(t3.minor(), 2);
-      BOOST_CHECK_EQUAL(t3.patch(), 3);
-      BOOST_CHECK_EQUAL(t3.prerelease(), "beta.42");
-      BOOST_CHECK_EQUAL(t3.buildMetadata(), "");
+      BOOST_CHECK_EQUAL(t3.getMajor(), 1);
+      BOOST_CHECK_EQUAL(t3.getMinor(), 2);
+      BOOST_CHECK_EQUAL(t3.getPatch(), 3);
+      BOOST_CHECK_EQUAL(t3.getPrerelease(), "beta.42");
+      BOOST_CHECK_EQUAL(t3.getBuildMetadata(), "");
 
       shared::versioning::CVersion t4("1.2.3+build0001");
-      BOOST_CHECK_EQUAL(t4.major(), 1);
-      BOOST_CHECK_EQUAL(t4.minor(), 2);
-      BOOST_CHECK_EQUAL(t4.patch(), 3);
-      BOOST_CHECK_EQUAL(t4.prerelease(), "");
-      BOOST_CHECK_EQUAL(t4.buildMetadata(), "build0001");
+      BOOST_CHECK_EQUAL(t4.getMajor(), 1);
+      BOOST_CHECK_EQUAL(t4.getMinor(), 2);
+      BOOST_CHECK_EQUAL(t4.getPatch(), 3);
+      BOOST_CHECK_EQUAL(t4.getPrerelease(), "");
+      BOOST_CHECK_EQUAL(t4.getBuildMetadata(), "build0001");
    }
 
 

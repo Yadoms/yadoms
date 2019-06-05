@@ -22,10 +22,6 @@ namespace shared
                                                  additionalInfo)
             {
             }
-
-            CIllumination::~CIllumination()
-            {
-            }
          }
       }
    }

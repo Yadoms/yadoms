@@ -19,10 +19,6 @@ namespace pluginSystem
       {
       }
 
-      CInstance::~CInstance()
-      {
-      }
-
       void CInstance::requestStop()
       {
          m_thread.interrupt();
@@ -182,7 +178,7 @@ namespace pluginSystem
          }
          catch (shared::exception::CException& ex)
          {
-            YADOMS_LOG(fatal) << "The Yadoms Sytem plugin fails. Unknown exception : " << ex.what();
+            YADOMS_LOG(fatal) << "The Yadoms System plugin fails. Unknown exception : " << ex.what();
          }
       }
 
@@ -195,7 +191,6 @@ namespace pluginSystem
          try
          {
             const auto isStandardCapacity = data.getConfiguration().get<std::string>("capacity.activeSection") == "standardCapacity";
-            boost::shared_ptr<const yApi::historization::IHistorizable> keyword;
             if (isStandardCapacity)
                createStandardCapacityDevice(api,
                                             data.getDeviceName(),

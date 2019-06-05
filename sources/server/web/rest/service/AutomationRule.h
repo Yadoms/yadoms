@@ -48,6 +48,8 @@ namespace web
                                                                                        const std::string& requestContent) const;
             boost::shared_ptr<shared::serialization::IDataSerializable> deleteRule(const std::vector<std::string>& parameters,
                                                                                    const std::string& requestContent) const;
+            boost::shared_ptr<shared::serialization::IDataSerializable> duplicateRule(const std::vector<std::string>& parameters,
+                                                                                   const std::string& requestContent) const;
 
             boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
                                                                                             const std::vector<std::string>& parameters,

@@ -28,10 +28,7 @@ namespace rfxcomMessages
 
       m_id = rbuf.WIND.id1 | (rbuf.WIND.id2 << 8);
 
-      if (m_subType != sTypeWIND8)
-      {
-         m_windDirection->set(rbuf.WIND.directionl | (rbuf.WIND.directionh << 8));
-      }
+      m_windDirection->set(rbuf.WIND.directionl | (rbuf.WIND.directionh << 8));
 
       if (m_subType != sTypeWIND5)
       {
@@ -43,7 +40,7 @@ namespace rfxcomMessages
 
       m_windMaxSpeed->set((rbuf.WIND.gustl | (rbuf.WIND.gusth << 8)) / 10.0);
 
-      if (m_subType == sTypeWIND4 || m_subType == sTypeWIND8)
+      if (m_subType == sTypeWIND4)
       {
          m_temperature = boost::make_shared<yApi::historization::CTemperature>("temperature");
          m_temperature->set(NormalizeTemperature(rbuf.WIND.temperatureh, rbuf.WIND.temperaturel, rbuf.WIND.tempsign == 1));
@@ -58,7 +55,7 @@ namespace rfxcomMessages
       }
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.WIND.battery_level));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.WIND.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.WIND.rssi));
 
       buildDeviceModel();
       buildDeviceName();
@@ -129,8 +126,6 @@ namespace rfxcomMessages
       case sTypeWIND6: ssModel << "La Crosse WS2300";
          break;
       case sTypeWIND7: ssModel << "Alecto WS4500, Auriol H13726, Hama EWS1500, Meteoscan W155/W160, Ventus WS155";
-         break;
-      case sTypeWIND8: ssModel << "Alecto ACH2010";
          break;
       default: ssModel << boost::lexical_cast<std::string>(m_subType);
          break;

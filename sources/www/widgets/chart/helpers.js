@@ -384,8 +384,36 @@ adaptValuesAndUnit = function (values, range, baseUnit, callback) {
             newValues = adaptArray(values, coeff);
             newRange = adaptRange(range, coeff);
             unit = "Kb/s";
-         }
-         break;         
+         }else{}
+         break;
+      case "data.units.second":
+         console.log(evaluateArray(values));
+         if (evaluateArray(values)<0.002){
+            coeff = 0.000001;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.microsecond";
+         }else if (evaluateArray(values)<2){
+            coeff = 0.001;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.millisecond";
+         }else if (evaluateArray(values)>86400){
+            coeff = 1/86400;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.day";
+         }else if (evaluateArray(values)>3600) {
+            coeff = 1/3600;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.hour";
+         }else if (evaluateArray(values)>60) {
+            coeff = 1/60;
+            newValues = adaptArray(values, coeff);
+            newRange = adaptRange(range, coeff);
+            unit = "data.units.minute";
+         }else{}
       default:
          break;
    }

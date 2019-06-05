@@ -36,6 +36,12 @@ namespace database
       {
          return (boost::format("to_char(%1%, 'YYYY\"-\"MM\"-\"DD\"T\"HH24\":\"MI\":\"SS')") % sqlPart).str();
       }
+
+
+      std::string CPgsqlQuery::functionSubstring(const std::string& sqlPart, int offset, int count)
+      {
+         return (boost::format("substring(%1% from %2% for %3%)") % sqlPart % offset % count).str();
+      }
    } //namespace pgsql
 } //namespace database 
 

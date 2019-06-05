@@ -50,6 +50,7 @@
 #include "ManuallyDeviceCreationException.hpp"
 #include "MessageFilteredException.hpp"
 #include <shared/Log.h>
+#include "rfxcomMessages/Weather.h"
 
 //
 // =======================================================================
@@ -360,6 +361,8 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
       case pTypeBBQ: message = boost::make_shared<rfxcomMessages::CBbq>(api, *buf, bufSize);
          break;
       case pTypeFS20: message = boost::make_shared<rfxcomMessages::CFS20>(api, *buf, bufSize);
+         break;
+      case pTypeWEATHER: message = boost::make_shared<rfxcomMessages::CWeather>(api, *buf, bufSize);
          break;
       default:
          {

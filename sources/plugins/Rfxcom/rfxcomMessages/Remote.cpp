@@ -45,7 +45,7 @@ namespace rfxcomMessages
       m_id = rbuf.REMOTE.id;
       m_subTypeManager->setFromProtocolState(rbuf);
 
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.REMOTE.rssi));
+      m_signalPower->set(NormalizeSignalPowerLevel(rbuf.REMOTE.rssi));
 
       buildDeviceName();
    }
