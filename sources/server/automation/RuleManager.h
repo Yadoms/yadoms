@@ -46,6 +46,7 @@ namespace automation
       void updateRule(boost::shared_ptr<const database::entities::CRule> ruleData) override;
       void updateRuleCode(int id, const std::string& code) override;
       void deleteRule(int id) override;
+      int duplicateRule(int idToDuplicate, const std::string & newName) override;
       void startAllRulesMatchingInterpreter(const std::string& interpreterName) override;
       void stopAllRulesMatchingInterpreter(const std::string& interpreterName) override;
       void deleteAllRulesMatchingInterpreter(const std::string& interpreterName) override;

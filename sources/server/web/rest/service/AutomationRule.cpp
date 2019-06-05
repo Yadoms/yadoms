@@ -47,6 +47,7 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordRule)("*")("start"), CAutomationRule::startRule);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordRule)("*")("stop"), CAutomationRule::stopRule);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeywordRule)("*"), CAutomationRule::updateRule, CAutomationRule::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeywordRule)("*")("copy"), CAutomationRule::duplicateRule, CAutomationRule::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeywordRule)("*")("code"), CAutomationRule::updateRuleCode, CAutomationRule::transactionalMethod);
          }
 
@@ -390,6 +391,43 @@ namespace web
             catch (...)
             {
                return CResult::GenerateError("unknown exception in updating a rule");
+            }
+         }
+
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CAutomationRule::duplicateRule(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         {
+            try
+            {
+               if (parameters.size() != 4)
+                  throw CRuleException("invalid parameter in URL");
+
+               shared::CDataContainer content(requestContent);
+               if(!content.containsValue("name"))
+                  throw CRuleException("No name provided for the rule copy");
+
+               auto name = content.get<std::string>("name");
+               if (name.empty())
+                  throw CRuleException("empty name provided for the rule copy");
+               auto ruleId = boost::lexical_cast<int>(parameters[2]);
+
+               auto newRuleId = m_rulesManager->duplicateRule(ruleId, name);
+
+               const boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(newRuleId);
+               return CResult::GenerateSuccess(ruleFound);
+            }
+
+            catch (CRuleException& e)
+            {
+               return CResult::GenerateError(std::string("Fail to duplicate rule : ") + e.what());
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in duplicating a rule");
             }
          }
 

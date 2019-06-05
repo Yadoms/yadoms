@@ -13,8 +13,7 @@ namespace automation
       ///\brief               Destructor
       //-----------------------------------------------------
       virtual ~IRuleManager()
-      {
-      }
+      = default;
 
       //-----------------------------------------------------
       ///\brief               Start the Rule manager (start all rules)
@@ -106,6 +105,15 @@ namespace automation
       //--------------------------------------------------------------
       virtual void deleteRule(int id) = 0;
 
+            //--------------------------------------------------------------
+      /// \brief                          Duplicate a rule
+      /// \param[in] idToDuplicate        Rule Id to duplicate
+      /// \param[in] newName              The new rule name
+      /// \return                         The new rule id
+      /// \throw                          CInvalidParameter if rule id is unknown
+      //--------------------------------------------------------------
+      virtual int duplicateRule(int idToDuplicate, const std::string & newName) = 0;
+
       //--------------------------------------------------------------
       /// \brief                          Start all rules using a script interpreter
       /// \param[in] interpreterName      The script interpreter name
@@ -141,6 +149,7 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               Stop a rule
       ///\param[in] ruleId    The rule ID
+      ///\param timeout       The timeout (default 20sec)
       ///\throw               CRuleException if timeout
       //-----------------------------------------------------
       virtual void stopRuleAndWaitForStopped(int ruleId,
