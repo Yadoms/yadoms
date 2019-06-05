@@ -19,6 +19,7 @@
 * Fix #136 : JSON empty collection. 
 * Fix #539 : ZWave : configuration items : add numbers NewFeature
 * Feature #556 : Duplicate rule function 
+* Fix #573 : fix querying summary values and fix widget chart
 
 ### 2.3.0-beta.3
 * N/A (fixes on RFXCom plugin only)
