@@ -110,6 +110,28 @@ AutomationRuleManager.updateToServer = function(rule) {
 };
 
 /**
+ * Duplicate a rule
+ * @param {Object} rule The rule to duplicate
+ * @param {Object} newName The new rule name
+ * @returns {Promsie} 
+ */
+AutomationRuleManager.duplicateRule = function(rule, newName) {
+   assert(!isNullOrUndefined(rule), "rule must be defined");
+   assert(!isNullOrUndefined(newName), "newName must be defined");
+
+   var d = new $.Deferred();
+   RestEngine.putJson("/rest/automation/rule/" + rule.id + "/duplicate", { data: JSON.stringify({ name : newName }) })
+   .done(function (data) {
+      //it's okay
+      //we update our information from the server
+      var newRule = AutomationRuleManager.factory(data);
+      d.resolve(newRule);
+   })
+   .fail(d.reject);
+   return d.promise();
+};
+
+/**
  * Stop a rule
  * @param {Object} rule The rule to update
  * @returns {Promise} 
