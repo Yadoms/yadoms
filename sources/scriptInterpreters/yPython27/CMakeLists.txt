@@ -1,9 +1,9 @@
 # Check dependencies
 
-set (PYTHON_REQUIRED_VERSION 2.7)
-include(findPython.cmake)
+set (PYTHON27_REQUIRED_VERSION 2.7)
+include(findPython27.cmake)
   
-if(PYTHONLIBS_FOUND)
+if(PYTHONLIBS27_FOUND)
 
    # include common script interpreters definitions
    include("../YadomsScriptInterpertersCommon.cmake")   
@@ -89,5 +89,5 @@ if(PYTHONLIBS_FOUND)
    add_subdirectory(yScriptApiWrapper)
    
 else()
-   message(SEND_ERROR "yPython27 interpreter is not available. Python library is Mssing")
+   message(SEND_ERROR "yPython27 interpreter is not available. Python 2.7.x library is Mssing")
 endif()

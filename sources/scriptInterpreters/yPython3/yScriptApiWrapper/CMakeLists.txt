@@ -33,7 +33,7 @@ set_source_files_properties(yScriptApiWrapper.i PROPERTIES CPLUSPLUS ON)
 ## (by default yadoms-shared, boost and poco are included)
 #########################################
 set(YPYTHON3_WRAPPER_INCLDIR
-   ${PYTHON_INCLUDE_DIRS}
+   ${PYTHON3_INCLUDE_DIRS}
    ${script_cpp_api_INCLUDE_DIR}
 )
 
@@ -42,7 +42,7 @@ set(YPYTHON3_WRAPPER_INCLDIR
 ## (by default yadoms-shared, boost and poco are included)
 #########################################
 set(YPYTHON3_WRAPPER_LINK
-   ${PYTHON_LIBRARIES}
+   ${PYTHON3_LIBRARIES}
    script_cpp_api
 )
 
@@ -51,12 +51,12 @@ set(YPYTHON3_WRAPPER_LINK
 #########################################
 # Special workaround for Python under Windows : When using the Windows installer version of Python, the debug library is not provided.
 # We should use this workaround to make our application build in debug configuration.
-if(WIN32 AND NOT PYTHON_USE_SOURCES)
+if(WIN32 AND NOT PYTHON3_USE_SOURCES)
    add_definitions(-DSWIG_PYTHON_INTERPRETER_NO_DEBUG)
 endif()
 
-if(PYTHON_USE_SOURCES)
-   add_definitions(-DPYTHON_USE_SOURCES)
+if(PYTHON3_USE_SOURCES)
+   add_definitions(-DPYTHON3_USE_SOURCES)
 endif()
 
 ## Remove some warnings on generated code

@@ -109,23 +109,31 @@ SET(COTIRE_USE_UNITY ON)
 set(SWIG_ROOT "")
 
 
-##### Python interpreter ######
+##### Python 2.7.x interpreter ######
 #
-#find Python method selection for linux
-#set PYTHON_USE_PKGCONFIG will use PkgConfig tool to find installed Python in the system
-#if you want to use your own version of Python, set PYTHON_USE_PKGCONFIG to OFF and
-#define the PYTHON_ROOT to indicate to cmake where is your Python version.
-set(PYTHON_USE_PKGCONFIG ON)
-
-#Select Python installation
-#set PYTHON_USE_SOURCES to OFF to use Python installer version (only release version. Available here for Windows : https://www.python.org/downloads/windows/).
-#set PYTHON_USE_SOURCES to ON to use Python sources (https://www.python.org/downloads/source/), which need to be compiled.
-set(PYTHON_USE_SOURCES OFF)
-
-#define Python ROOT
-# For using pre-installed Python version (Linux for example), don't define PYTHON_ROOT
+#define Python 2.7.x ROOT
+# For using pre-installed Python version (Linux for example), don't define PYTHON27_ROOT
 # For Windows, download Python from "https://www.python.org/downloads/windows/" (Need Python 2.7.x 32-bit version)
-#set(PYTHON_ROOT "/path/to/Python27")
+#set(PYTHON27_ROOT "/path/to/Python27")
+
+#Select Python 2.7.x installation
+#set PYTHON27_USE_SOURCES to OFF to use Python installer version (only release version. Available here for Windows : https://www.python.org/downloads/windows/).
+#set PYTHON27_USE_SOURCES to ON to use Python sources (https://www.python.org/downloads/source/), which need to be compiled.
+set(PYTHON27_USE_SOURCES OFF)
+
+
+##### Python 3.x interpreter ######
+#
+#define Python 3.x ROOT
+# For using pre-installed Python version (Linux for example), don't define PYTHON3_ROOT
+# For Windows, download Python from "https://www.python.org/downloads/windows/" (Need Python 3.x 32-bit version)
+#set(PYTHON3_ROOT "/path/to/Python3")
+
+#Select Python 3.x installation
+#set PYTHON3_USE_SOURCES to OFF to use Python installer version (only release version. Available here for Windows : https://www.python.org/downloads/windows/).
+#set PYTHON3_USE_SOURCES to ON to use Python sources (https://www.python.org/downloads/source/), which need to be compiled.
+set(PYTHON3_USE_SOURCES OFF)
+
 
 
 ##### CPACK ######

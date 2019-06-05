@@ -1,7 +1,7 @@
 #pragma once
 
 
-#ifdef PYTHON_USE_SOURCES
+#ifdef PYTHON3_USE_SOURCES
 
    #include <Python.h>
 
@@ -34,4 +34,4 @@
       #include <Python.h>
    #endif
 
-#endif // PYTHON_USE_SOURCES
+#endif // PYTHON3_USE_SOURCES

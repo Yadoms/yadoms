@@ -1,9 +1,9 @@
 # Check dependencies
 
-set (PYTHON_REQUIRED_VERSION 3.7)
-include(findPython.cmake)
+set (PYTHON3_REQUIRED_VERSION 3.7)
+include(findPython3.cmake)
   
-if(PYTHONLIBS_FOUND)
+if(PYTHONLIBS3_FOUND)
 
    # include common script interpreters definitions
    include("../YadomsScriptInterpertersCommon.cmake")   
@@ -89,5 +89,5 @@ if(PYTHONLIBS_FOUND)
    add_subdirectory(yScriptApiWrapper)
    
 else()
-   message(SEND_ERROR "yPython3 interpreter is not available. Python library is Mssing")
+   message(SEND_ERROR "yPython3 interpreter is not available. Python 3.x library is Mssing")
 endif()
