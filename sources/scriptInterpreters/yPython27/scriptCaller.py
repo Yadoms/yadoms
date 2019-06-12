@@ -1,4 +1,5 @@
 import os
+import sys
 
 # Import yScript API
 # We need to relocate current working directory to make yScriptApiWrapper27 module find it's
