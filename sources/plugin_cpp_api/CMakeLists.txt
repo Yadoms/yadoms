@@ -83,7 +83,7 @@ if(COTIRE_USE)
    cotire(plugin_cpp_api)
    
    if(COTIRE_USE_UNITY)
-      target_link_libraries(plugin_cpp_api_unity yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS} ${plugin_IPC_LIBRARY}_unity)
+      target_link_libraries(plugin_cpp_api_unity yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS} ${plugin_IPC_LIBRARY})
    endif()	
 else()
 	add_precompiled_header(plugin_cpp_api stdafx.h)
