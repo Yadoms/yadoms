@@ -11,7 +11,7 @@ include(CMakeListsUserConfig.txt OPTIONAL)
 # cross compiler tools
 set(CC_RPI_GCC ${CC_RPI_ROOT}/bin/arm-linux-gnueabihf-gcc)
 set(CC_RPI_GXX ${CC_RPI_ROOT}/bin/arm-linux-gnueabihf-g++)
-set(CC_RPI_LIBS ${CC_RPI_ROOT}/arm-linux-gnueabihf/libc/usr/lib/arm-linux-gnueabihf/)
+set(CC_RPI_LIBS ${CC_RPI_ROOT}/armv6-rpi-linux-gnueabihf/lib)
 
 # specify the cross compiler
 SET(CMAKE_C_COMPILER   ${CC_RPI_GCC})
