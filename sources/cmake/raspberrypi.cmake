@@ -17,6 +17,12 @@ set(CC_RPI_LIBS ${CC_RPI_ROOT}/armv6-rpi-linux-gnueabihf/sysroot/usr/lib)
 SET(CMAKE_C_COMPILER   ${CC_RPI_GCC})
 SET(CMAKE_CXX_COMPILER ${CC_RPI_GXX})
 
+message(STATUS "Cross building for RaspberryPI")
+message(STATUS "CC_RPI_ROOT : ${CC_RPI_ROOT}")
+message(STATUS "CC_RPI_GCC : ${CC_RPI_GCC}")
+message(STATUS "CC_RPI_GXX : ${CC_RPI_GXX}")
+message(STATUS "CC_RPI_LIBS : ${CC_RPI_LIBS}")
+
 # search for programs in the build host directories
 SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 # for libraries and headers in the target directories
