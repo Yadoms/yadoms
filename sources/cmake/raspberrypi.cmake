@@ -9,9 +9,9 @@ set(CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER ON)
 include(CMakeListsUserConfig.txt OPTIONAL)
 
 # cross compiler tools
-set(CC_RPI_GCC ${CC_RPI_ROOT}/bin/arm-linux-gnueabihf-gcc)
-set(CC_RPI_GXX ${CC_RPI_ROOT}/bin/arm-linux-gnueabihf-g++)
-set(CC_RPI_LIBS ${CC_RPI_ROOT}/armv6-rpi-linux-gnueabihf/lib)
+set(CC_RPI_GCC ${CC_RPI_ROOT}/bin/armv6-rpi-linux-gnueabihf-gcc)
+set(CC_RPI_GXX ${CC_RPI_ROOT}/bin/armv6-rpi-linux-gnueabihf-g++)
+set(CC_RPI_LIBS ${CC_RPI_ROOT}/armv6-rpi-linux-gnueabihf/sysroot/usr/lib)
 
 # specify the cross compiler
 SET(CMAKE_C_COMPILER   ${CC_RPI_GCC})
