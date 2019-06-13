@@ -10,7 +10,7 @@
 * Fix #571 : Summary data : average values are not exact 
 * Fix #451 : Summary Acquisition Months 
 * Fix #568 : Check summary acquisition on yadoms update 
-* Feature #434 : Add a "connected/disconnected" flag on the main page 
+* New feature #434 : Add a "connected/disconnected" flag on the main page 
 * Fix #520 : [switch] Bad behaviour with dimmable keyword 
 * Fix #567 : Widget moving to another page fail 
 * Fix #482 : ZWave plugin - Configuration display error
@@ -18,7 +18,8 @@
 * Fix #565 : Extra queries failure
 * Fix #136 : JSON empty collection. 
 * Fix #539 : ZWave : configuration items : add numbers NewFeature
-* Feature #556 : Duplicate rule function 
+* New feature #556 : Duplicate rule function 
+* New feature #572 : App proxy support
 * Fix #573 : fix querying summary values and fix widget chart
 
 ### 2.3.0-beta.3
