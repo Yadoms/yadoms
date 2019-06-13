@@ -24,20 +24,11 @@ target_link_libraries(plugin_IPC ${PROTOBUF_LIBRARIES})
 set_property(TARGET plugin_IPC PROPERTY INCLUDE_DIRECTORIES ${plugin_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
 
 if(COTIRE_USE)
-   if(COTIRE_USE_UNITY)
-      set_target_properties(plugin_IPC PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
-   else()
-      set_target_properties(plugin_IPC PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
-   endif()
-   
    # this target is for protobuf and precompiled header has no real sense
    set_target_properties(plugin_IPC PROPERTIES COTIRE_ENABLE_PRECOMPILED_HEADER FALSE)
+   set_target_properties(plugin_IPC PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
 
    cotire(plugin_IPC)
-   
-   if(COTIRE_USE_UNITY)
-      target_link_libraries(plugin_IPC_unity ${PROTOBUF_LIBRARIES})
-   endif()	
 endif()
 
 

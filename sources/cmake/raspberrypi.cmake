@@ -9,13 +9,19 @@ set(CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER ON)
 include(CMakeListsUserConfig.txt OPTIONAL)
 
 # cross compiler tools
-set(CC_RPI_GCC ${CC_RPI_ROOT}/bin/arm-linux-gnueabihf-gcc)
-set(CC_RPI_GXX ${CC_RPI_ROOT}/bin/arm-linux-gnueabihf-g++)
-set(CC_RPI_LIBS ${CC_RPI_ROOT}/arm-linux-gnueabihf/libc/usr/lib/arm-linux-gnueabihf/)
+set(CC_RPI_GCC ${CC_RPI_ROOT}/bin/armv6-rpi-linux-gnueabihf-gcc)
+set(CC_RPI_GXX ${CC_RPI_ROOT}/bin/armv6-rpi-linux-gnueabihf-g++)
+set(CC_RPI_LIBS ${CC_RPI_ROOT}/armv6-rpi-linux-gnueabihf/sysroot/usr/lib)
 
 # specify the cross compiler
 SET(CMAKE_C_COMPILER   ${CC_RPI_GCC})
 SET(CMAKE_CXX_COMPILER ${CC_RPI_GXX})
+
+message(STATUS "Cross building for RaspberryPI")
+message(STATUS "CC_RPI_ROOT : ${CC_RPI_ROOT}")
+message(STATUS "CC_RPI_GCC : ${CC_RPI_GCC}")
+message(STATUS "CC_RPI_GXX : ${CC_RPI_GXX}")
+message(STATUS "CC_RPI_LIBS : ${CC_RPI_LIBS}")
 
 # search for programs in the build host directories
 SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)

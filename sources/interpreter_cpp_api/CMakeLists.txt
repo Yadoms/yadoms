@@ -77,7 +77,7 @@ if(COTIRE_USE)
    
 	cotire(interpreter_cpp_api)
 	if(COTIRE_USE_UNITY)
-		target_link_libraries(interpreter_cpp_api_unity yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS} ${interpreter_IPC_LIBRARY}_unity)
+		target_link_libraries(interpreter_cpp_api_unity yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS} ${interpreter_IPC_LIBRARY})
 		set_property( TARGET interpreter_cpp_api_unity PROPERTY INCLUDE_DIRECTORIES ${interpreter_cpp_api_ALL_INCLUDE_DIRS})
 	endif()	
 else()
