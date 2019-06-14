@@ -159,7 +159,8 @@ namespace database
          ((Avg)(std::string)("")("avg"))
          ((Min)(std::string)("")("min"))
          ((Max)(std::string)("")("max"))
-      ) ;
+         ((Count)(int)(0)("count"))
+         ) ;
 
 
       DECLARE_ENTITY_CLASS_IMPLEMENTATION(

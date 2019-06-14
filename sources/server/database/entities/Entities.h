@@ -153,6 +153,7 @@ namespace database
          ((Avg)(std::string))
          ((Min)(std::string))
          ((Max)(std::string))
+         ((Count)(int))
       )
 
 

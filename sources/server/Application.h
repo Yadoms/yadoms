@@ -35,6 +35,11 @@ protected:
 
 private:
    //-----------------------------
+   ///\brief Setup global proxy settings
+   //-----------------------------
+   void setupProxy() const;
+   
+   //-----------------------------
    ///\brief Indicate if help display is requested
    //-----------------------------
    bool m_helpRequested;

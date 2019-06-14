@@ -702,6 +702,8 @@ namespace database
          virtual std::string functionAs(const std::string& sqlPart, const std::string& name);
          virtual std::string functionFromSubquery(const std::string& subQueryName, const std::string& subQueryFieldName);
          virtual std::string functionDistinct(const std::string& field);
+         virtual std::string functionCount(const std::string& field);
+         virtual std::string functionSum(const std::string& field);
 
          class CFunction
          {
@@ -852,6 +854,21 @@ namespace database
          template <class T>
          inline const CFunction distinct(const T& fieldOrQuery);
 
+         //--------------------------------------------------------------
+         ///\brief	generate count sql
+         ///\param [in]	fieldOrQuery       The field or query
+         ///\return The query function
+         //--------------------------------------------------------------
+         template <class T = CNotUsedTemplateField>
+         inline const CFunction count(const T& fieldOrQuery = T());
+
+         //--------------------------------------------------------------
+         ///\brief	generate sum sql
+         ///\param [in]	fieldOrQuery       The field or query
+         ///\return The query function
+         //--------------------------------------------------------------
+         template <class T = CNotUsedTemplateField>
+         inline const CFunction sum(const T& fieldOrQuery);
 
          //--------------------------------------------------------------
          ///\brief	generate column naming sql

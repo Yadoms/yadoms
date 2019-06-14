@@ -460,6 +460,11 @@ namespace database
       std::string CQuery::functionAvg(const std::string& sqlPart)
       {
          return (boost::format("avg(%1%)") % sqlPart).str();
+      }      
+      
+      std::string CQuery::functionSum(const std::string& sqlPart)
+      {
+         return (boost::format("sum(%1%)") % sqlPart).str();
       }
 
       std::string CQuery::functionCoalesce(const std::string& sqlPart, const std::string& defaultValue)
@@ -512,6 +517,11 @@ namespace database
       std::string CQuery::functionDistinct(const std::string& field)
       {
          return (boost::format("DISTINCT(%1%)") % field).str();
+      }
+
+      std::string CQuery::functionCount(const std::string& field)
+      {
+         return (boost::format("COUNT(%1%)") % field).str();
       }
    } //namespace common
 } //namespace database 

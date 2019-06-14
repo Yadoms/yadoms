@@ -99,6 +99,7 @@
                               "<div class=\"btn-group\">\n" +
                               "<button type=\"button\" class=\"btn btn-startStop\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.startStop\"></button>\n" +
                               "<button type=\"button\" class=\"btn btn-edit btn-primary\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.edit\"><span class=\"fa fa-pencil\"></span></button>\n" +
+                              "<button type=\"button\" class=\"btn btn-duplicate btn-primary\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.duplicate\"><span class=\"fa fa-copy\"></span></button>\n" +
                               "<button type=\"button\" class=\"btn btn-log btn-info\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.log\"><span class=\"fa fa-file-text-o\"></span></button>\n" +
                               "<button type=\"button\" class=\"btn btn-delete btn-danger\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.delete\"><span class=\"fa fa-trash-o\"></span></button>\n" +
                               "</div>\n" +
@@ -114,6 +115,7 @@
       $ruleRow.find("input.cb-autoStart").unbind('change').bind('change', function () { autoStartChange(rule); });
       $ruleRow.find("button.btn-startStop").unbind('click').bind('click', function () { startStopAutomationRule(rule); });
       $ruleRow.find("button.btn-edit").unbind('click').bind('click', function () { editAutomationRule(rule); });
+      $ruleRow.find("button.btn-duplicate").unbind('click').bind('click', function () { duplicateAutomationRule(rule); });
       $ruleRow.find("button.btn-log").unbind('click').bind('click', function () { showLogAutomationRule(rule); });
       $ruleRow.find("button.btn-delete").unbind('click').bind('click', function () { deleteAutomationRule(rule); });
 
@@ -250,6 +252,17 @@
             $btnEdit.find("span").addClass("fa-pencil").removeClass("fa-spinner fa-pulse");
          }
       });
+   }
+   
+   function duplicateAutomationRule(rule) {
+      AutomationRuleManager.duplicateRule(rule, $.t("modals.dashboard.sub-windows.automation-center.copyname", { rule: rule.name }))
+	   .done(function (newRule) {
+		  addAutomationRuleToDom(newRule);
+  		  notifySuccess($.t("modals.dashboard.sub-windows.automation-center.ruleSuccessfullyDuplicated"));
+	   })
+	  .fail(function (error) {
+		 notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleDuplicateError"), error);
+	  });   
    }
 
    function showLogAutomationRule(rule) {

@@ -6,6 +6,7 @@
 #include <Poco/Util/Option.h>
 #include <Poco/Util/OptionSet.h>
 #include <Poco/Util/HelpFormatter.h>
+#include <Poco/Net/HTTPClientSession.h>
 
 #include "Supervisor.h"
 #include "ErrorHandler.h"
@@ -29,8 +30,7 @@ CYadomsServer::CYadomsServer()
 }
 
 CYadomsServer::~CYadomsServer()
-{
-}
+= default;
 
 
 void CYadomsServer::initialize(Application& self)
@@ -44,11 +44,42 @@ void CYadomsServer::initialize(Application& self)
    
    //first of all, chng ethe working dir
    //in daemon mode, poco change dir to '/', (path provider create logs, data, dirs => so fails if working dir is '/')
-   boost::filesystem::path workingDir(config().getString("application.path"));
+   const boost::filesystem::path workingDir(config().getString("application.path"));
    boost::filesystem::current_path(workingDir.parent_path());
 
    m_pathProvider = boost::make_shared<CPathProvider>(m_startupOptions);
    logging::CLogConfiguration::configure(m_startupOptions->getLogLevel(), m_pathProvider->logsPath());
+
+   //define proxy settings as earlier possible
+   setupProxy();
+}
+
+void CYadomsServer::setupProxy() const
+{
+   Poco::Net::HTTPClientSession::ProxyConfig cfg;
+
+   if (!m_startupOptions->getProxyHost().isNull())
+   {
+      cfg.host = m_startupOptions->getProxyHost().value();
+   }
+   if (!m_startupOptions->getProxyPort().isNull())
+   {
+      cfg.port = m_startupOptions->getProxyPort().value();
+   }
+   if (!m_startupOptions->getProxyUsername().isNull())
+   {
+      cfg.username = m_startupOptions->getProxyUsername().value();
+   }
+   if (!m_startupOptions->getProxyPassword().isNull())
+   {
+      cfg.password = m_startupOptions->getProxyPassword().value();
+   }
+   if (!m_startupOptions->getProxyBypass().isNull())
+   {
+      cfg.nonProxyHosts = m_startupOptions->getProxyBypass().value();
+   }
+
+   Poco::Net::HTTPClientSession::setGlobalProxyConfig(cfg);
 }
 
 void CYadomsServer::uninitialize()

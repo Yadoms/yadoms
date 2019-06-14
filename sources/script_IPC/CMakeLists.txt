@@ -29,20 +29,11 @@ set(script_IPC_LIBRARY script_IPC CACHE INTERNAL "script_IPC library")
 
 
 if(COTIRE_USE)
-   if(COTIRE_USE_UNITY)
-      set_target_properties(script_IPC PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
-   else()
-      set_target_properties(script_IPC PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
-   endif()
-   
    # this target is for protobuf and precompiled header has no real sense
    set_target_properties(script_IPC PROPERTIES COTIRE_ENABLE_PRECOMPILED_HEADER FALSE)
+   set_target_properties(script_IPC PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
 
    cotire(script_IPC)
-   
-   if(COTIRE_USE_UNITY)
-      target_link_libraries(script_IPC_unity ${PROTOBUF_LIBRARIES})
-   endif()	
 endif()
 
 

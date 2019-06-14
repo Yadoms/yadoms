@@ -34,21 +34,11 @@ set(interpreter_IPC_LIBRARY interpreter_IPC CACHE INTERNAL "interpreter_IPC libr
 ## COTIRE
 ##################################################################################################
 if(COTIRE_USE)
-   if(COTIRE_USE_UNITY)
-      set_target_properties(interpreter_IPC PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
-   else()
-      set_target_properties(interpreter_IPC PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
-   endif()
-
    # this target is for protobuf and precompiled header has no real sense
    set_target_properties(interpreter_IPC PROPERTIES COTIRE_ENABLE_PRECOMPILED_HEADER FALSE)
+   set_target_properties(interpreter_IPC PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
 
-	cotire(interpreter_IPC)
-   
-	if(COTIRE_USE_UNITY)
-		target_link_libraries(interpreter_IPC_unity ${PROTOBUF_LIBRARIES})
-		set_property( TARGET interpreter_IPC_unity PROPERTY INCLUDE_DIRECTORIES ${interpreter_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
-	endif()	
+   cotire(interpreter_IPC)
 endif()
 
 

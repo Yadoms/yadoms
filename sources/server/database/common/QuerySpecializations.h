@@ -666,6 +666,20 @@ inline const CQuery::CFunction CQuery::distinct(const T& fieldOrQuery)
    return CFunction(functionDistinct(queryhelper<T>::format(this, fieldOrQuery)));
 }
 
+template <class T>
+inline const CQuery::CFunction CQuery::count(const T& fieldOrQuery)
+{
+   if (typeid(fieldOrQuery) != typeid(CNotUsedTemplateField))
+      return CFunction(functionCount(queryhelper<T>::format(this, fieldOrQuery)));
+   return CFunction(functionCount("*"));
+}
+
+template <class T>
+inline const CQuery::CFunction CQuery::sum(const T& fieldOrQuery)
+{
+   return CFunction(functionSum(queryhelper<T>::format(this, fieldOrQuery)));
+}
+
 
 template <class T1, class T2>
 inline const CQuery::CFunction CQuery::math(const T1& value1, const std::string& op, const T2& value2)

@@ -263,6 +263,39 @@ namespace startupOptions
       virtual bool getIsRunningAsService() const = 0;
 
       //--------------------------------------------------------------
+      /// \brief	    Get the proxy host name or ip address
+      /// \return     The proxy host
+      //--------------------------------------------------------------
+      virtual Poco::Nullable<std::string> getProxyHost() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the proxy port
+      /// \return     The proxy port
+      //--------------------------------------------------------------
+      virtual Poco::Nullable<Poco::UInt16> getProxyPort() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the proxy username
+      /// \return     The proxy username
+      //--------------------------------------------------------------
+      virtual Poco::Nullable<std::string> getProxyUsername() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the proxy password
+      /// \return     The proxy password
+      //--------------------------------------------------------------
+      virtual Poco::Nullable<std::string> getProxyPassword() const = 0;     
+      
+      //--------------------------------------------------------------
+      /// \brief	    Get the proxy bypass filter
+      /// A regular expression defining hosts for which the proxy should be bypassed,
+		/// e.g. "localhost|127\.0\.0\.1|192\.168\.0\.\d+". Can also be an empty
+      /// string to disable proxy bypassing.
+      /// \return     The proxy filter
+      //--------------------------------------------------------------
+      virtual Poco::Nullable<std::string> getProxyBypass() const = 0;
+
+      //--------------------------------------------------------------
       /// \brief	    Get the update site URI
       /// \return     The update site URI
       /// \note       If not exist, it returns "http://www.yadoms.com/downloads/update/"

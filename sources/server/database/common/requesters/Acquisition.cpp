@@ -462,10 +462,10 @@ namespace database
                         q->InsertOrReplaceInto(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTypeColumnName(),
                                                CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(),
                                                CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(),
-                                               CAcquisitionSummaryTable::getMaxColumnName()).
+                                               CAcquisitionSummaryTable::getMaxColumnName(), CAcquisitionSummaryTable::getCountColumnName()).
                            Select(curType, fromDate, keywordId, q->averageWithCast(q->fromSubquery("acq", CAcquisitionTable::getValueColumnName())),
                                   q->minWithCast(q->fromSubquery("acq", CAcquisitionTable::getValueColumnName())),
-                                  q->maxWithCast(q->fromSubquery("acq", CAcquisitionTable::getValueColumnName()))).
+                                  q->maxWithCast(q->fromSubquery("acq", CAcquisitionTable::getValueColumnName())), q->count()).
                            From(q->as(CAcquisitionTable::getTableName(), "acq")).
                            Where(q->fromSubquery("acq", CAcquisitionTable::getKeywordIdColumnName()), CQUERY_OP_EQUAL, keywordId).
                            And(q->fromSubquery("acq", CAcquisitionTable::getDateColumnName()), CQUERY_OP_SUP_EQUAL, fromDate).
@@ -480,7 +480,8 @@ namespace database
 
                         compute->Select(compute->as(compute->averageWithCast(CAcquisitionTable::getValueColumnName()), "avg"),
                                         compute->as(compute->minWithCast(CAcquisitionTable::getValueColumnName()), "min"),
-                                        compute->as(compute->maxWithCast(CAcquisitionTable::getValueColumnName()), "max")).
+                                        compute->as(compute->maxWithCast(CAcquisitionTable::getValueColumnName()), "max"),
+                                        compute->as(compute->count(), "count")).
                                  From(CAcquisitionTable::getTableName()).
                                  Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
                                  And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, fromDate).
@@ -493,7 +494,8 @@ namespace database
                            Update(CAcquisitionSummaryTable::getTableName())
                            .Set(CAcquisitionSummaryTable::getAvgColumnName(), q->fromSubquery("acq", "avg"),
                                 CAcquisitionSummaryTable::getMinColumnName(), q->fromSubquery("acq", "min"),
-                                CAcquisitionSummaryTable::getMaxColumnName(), q->fromSubquery("acq", "max"))
+                                CAcquisitionSummaryTable::getMaxColumnName(), q->fromSubquery("acq", "max"),
+                                CAcquisitionSummaryTable::getCountColumnName(), q->fromSubquery("acq", "count"))
                            .FromWith("acq")
                            .Where(CAcquisitionSummaryTable::getTypeColumnName(), CQUERY_OP_EQUAL, curType.toString())
                            .And(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId)
@@ -507,11 +509,12 @@ namespace database
                            q->InsertInto(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTypeColumnName(),
                                          CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(),
                                          CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(),
-                                         CAcquisitionSummaryTable::getMaxColumnName()).
+                                         CAcquisitionSummaryTable::getMaxColumnName(), CAcquisitionSummaryTable::getCountColumnName()).
                               Select(curType, fromDate, keywordId,
                                      q->averageWithCast(q->fromSubquery("acq", CAcquisitionTable::getValueColumnName())),
                                      q->minWithCast(q->fromSubquery("acq", CAcquisitionTable::getValueColumnName())),
-                                     q->maxWithCast(q->fromSubquery("acq", CAcquisitionTable::getValueColumnName()))).
+                                     q->maxWithCast(q->fromSubquery("acq", CAcquisitionTable::getValueColumnName())),
+                                     q->count()).
                               From(q->as(CAcquisitionTable::getTableName(), "acq")).
                               Where(q->fromSubquery("acq", CAcquisitionTable::getKeywordIdColumnName()), CQUERY_OP_EQUAL, keywordId).
                               And(q->fromSubquery("acq", CAcquisitionTable::getDateColumnName()), CQUERY_OP_SUP_EQUAL, fromDate).
@@ -570,14 +573,18 @@ namespace database
 
                      if (m_databaseRequester->supportInsertOrUpdateStatement())
                      {
+                        //sum(k.avgValue * k.count) / sum(k.count)  as moy
+
                         auto q = m_databaseRequester->newQuery();
                         q->InsertOrReplaceInto(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTypeColumnName(),
                                                CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(),
                                                CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(),
-                                               CAcquisitionSummaryTable::getMaxColumnName()).
-                           Select(curType, fromDate, keywordId, q->average(q->fromSubquery("acq", CAcquisitionSummaryTable::getAvgColumnName())),
+                                               CAcquisitionSummaryTable::getMaxColumnName(), CAcquisitionSummaryTable::getCountColumnName()).
+                           Select(curType, fromDate, keywordId, 
+                                  q->math(q->sum(q->math(q->fromSubquery("acq", CAcquisitionSummaryTable::getAvgColumnName()), CQUERY_OP_MUL, q->fromSubquery("acq", CAcquisitionSummaryTable::getCountColumnName()))), CQUERY_OP_DIVIDE, q->sum(q->fromSubquery("acq", CAcquisitionSummaryTable::getCountColumnName()))),
                                   q->min(q->fromSubquery("acq", CAcquisitionSummaryTable::getMinColumnName())),
-                                  q->max(q->fromSubquery("acq", CAcquisitionSummaryTable::getMaxColumnName()))).
+                                  q->max(q->fromSubquery("acq", CAcquisitionSummaryTable::getMaxColumnName())),
+                                  q->sum(q->fromSubquery("acq", CAcquisitionSummaryTable::getCountColumnName()))).
                            From(q->as(CAcquisitionSummaryTable::getTableName(), "acq")).
                            Where(q->fromSubquery("acq", CAcquisitionSummaryTable::getKeywordIdColumnName()), CQUERY_OP_EQUAL, keywordId).
                            And(q->fromSubquery("acq", CAcquisitionSummaryTable::getTypeColumnName()), CQUERY_OP_EQUAL, toQuery.toString()).
@@ -592,9 +599,12 @@ namespace database
                         //update
                         auto compute = m_databaseRequester->newQuery();
 
-                        compute->Select(compute->as(compute->average(CAcquisitionSummaryTable::getAvgColumnName()), "avg"),
+// ,
+
+                        compute->Select(compute->as(compute->math(compute->sum(compute->math(CAcquisitionSummaryTable::getAvgColumnName(), CQUERY_OP_MUL, CAcquisitionSummaryTable::getCountColumnName())), CQUERY_OP_DIVIDE, compute->sum(CAcquisitionSummaryTable::getCountColumnName())), "avg"),
                                         compute->as(compute->min(CAcquisitionSummaryTable::getMinColumnName()), "min"),
-                                        compute->as(compute->max(CAcquisitionSummaryTable::getMaxColumnName()), "max")).
+                                        compute->as(compute->max(CAcquisitionSummaryTable::getMaxColumnName()), "max"),
+                                        compute->as(compute->sum(CAcquisitionSummaryTable::getCountColumnName()), "count")).
                                  From(CAcquisitionSummaryTable::getTableName()).
                                  Where(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
                                  And(CAcquisitionSummaryTable::getTypeColumnName(), CQUERY_OP_EQUAL, toQuery.toString()).
@@ -607,7 +617,8 @@ namespace database
                            Update(CAcquisitionSummaryTable::getTableName())
                            .Set(CAcquisitionSummaryTable::getAvgColumnName(), q->fromSubquery("acq", "avg"),
                                 CAcquisitionSummaryTable::getMinColumnName(), q->fromSubquery("acq", "min"),
-                                CAcquisitionSummaryTable::getMaxColumnName(), q->fromSubquery("acq", "max"))
+                                CAcquisitionSummaryTable::getMaxColumnName(), q->fromSubquery("acq", "max"),
+                                CAcquisitionSummaryTable::getCountColumnName(), q->fromSubquery("acq", "count"))
                            .FromWith("acq")
                            .Where(CAcquisitionSummaryTable::getTypeColumnName(), CQUERY_OP_EQUAL, curType.toString())
                            .And(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId)
@@ -621,10 +632,12 @@ namespace database
                            q->InsertInto(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTypeColumnName(),
                                          CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(),
                                          CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(),
-                                         CAcquisitionSummaryTable::getMaxColumnName()).
-                              Select(curType, fromDate, keywordId, q->average(q->fromSubquery("acq", CAcquisitionSummaryTable::getAvgColumnName())),
+                                         CAcquisitionSummaryTable::getMaxColumnName(), CAcquisitionSummaryTable::getCountColumnName()).
+                              Select(curType, fromDate, keywordId, 
+                                     q->math(q->sum(q->math(q->fromSubquery("acq", CAcquisitionSummaryTable::getAvgColumnName()), CQUERY_OP_MUL, q->fromSubquery("acq", CAcquisitionSummaryTable::getCountColumnName()))), CQUERY_OP_DIVIDE, q->sum(q->fromSubquery("acq", CAcquisitionSummaryTable::getCountColumnName()))),
                                      q->min(q->fromSubquery("acq", CAcquisitionSummaryTable::getMinColumnName())),
-                                     q->max(q->fromSubquery("acq", CAcquisitionSummaryTable::getMaxColumnName()))).
+                                     q->max(q->fromSubquery("acq", CAcquisitionSummaryTable::getMaxColumnName())),
+                                     q->sum(q->fromSubquery("acq", CAcquisitionSummaryTable::getCountColumnName()))).
                               From(q->as(CAcquisitionSummaryTable::getTableName(), "acq")).
                               Where(q->fromSubquery("acq", CAcquisitionSummaryTable::getKeywordIdColumnName()), CQUERY_OP_EQUAL, keywordId).
                               And(q->fromSubquery("acq", CAcquisitionSummaryTable::getTypeColumnName()), CQUERY_OP_EQUAL, toQuery.toString()).

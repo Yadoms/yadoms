@@ -1,5 +1,5 @@
 ### 2.3.0-beta.4
-* Fix #561 : remove connected user from Summary page of configuration panel (makes no sense)
+* Fix #570 : remove connected user from Summary page of configuration panel (makes no sense)
 * Add IlluminationWm2 historizer
 * Fix #569 : Fix model usage on manually created devices
 * Fix #558 : Build with Protobuf 3.7.1 under Windows
@@ -7,6 +7,20 @@
 * Fix #561 : Yadoms update
 * Fix script interpreter startup in debug mode
 * Add getKeywordListLastData REST request
+* Fix #571 : Summary data : average values are not exact 
+* Fix #451 : Summary Acquisition Months 
+* Fix #568 : Check summary acquisition on yadoms update 
+* New feature #434 : Add a "connected/disconnected" flag on the main page 
+* Fix #520 : [switch] Bad behaviour with dimmable keyword 
+* Fix #567 : Widget moving to another page fail 
+* Fix #482 : ZWave plugin - Configuration display error
+* Fix #560 : ZWave plugin - cleanup logs
+* Fix #565 : Extra queries failure
+* Fix #136 : JSON empty collection. 
+* Fix #539 : ZWave : configuration items : add numbers NewFeature
+* New feature #556 : Duplicate rule function 
+* New feature #572 : App proxy support
+* Fix #573 : fix querying summary values and fix widget chart
 
 ### 2.3.0-beta.3
 * N/A (fixes on RFXCom plugin only)
