@@ -208,6 +208,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Illumination.h
    shared/plugin/yPluginApi/historization/IlluminationWm2.cpp
    shared/plugin/yPluginApi/historization/IlluminationWm2.h
+   shared/plugin/yPluginApi/historization/HistoryDepth.cpp
+   shared/plugin/yPluginApi/historization/HistoryDepth.h
    shared/plugin/yPluginApi/historization/Load.cpp
    shared/plugin/yPluginApi/historization/Load.h
    shared/plugin/yPluginApi/historization/Message.cpp

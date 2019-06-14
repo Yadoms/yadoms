@@ -15,12 +15,10 @@ namespace pluginSystem
       ///\param[in] historizable    Historizable data from Protobuf buffer
       ///\param[in] formatValue     Value (for historization, not need for keyword declaration)
       //-----------------------------------------------------
-      CFromPluginHistorizer(const plugin_IPC::toYadoms::Historizable& historizable,
-                            const std::string& formatValue = std::string());
-      //-----------------------------------------------------
-      ///\brief                     Destructor
-      //-----------------------------------------------------
-      virtual ~CFromPluginHistorizer();
+      explicit CFromPluginHistorizer(const plugin_IPC::toYadoms::Historizable& historizable,
+                                     const std::string& formatValue = std::string());
+
+      virtual ~CFromPluginHistorizer() = default;
 
       // IHistorizable implementation
       const std::string& getKeyword() const override;
@@ -29,6 +27,7 @@ namespace pluginSystem
       std::string formatValue() const override;
       const shared::plugin::yPluginApi::historization::EMeasureType& getMeasureType() const override;
       shared::CDataContainer getTypeInfo() const override;
+      const shared::plugin::yPluginApi::historization::EHistoryDepth& getHistoryDepth() const override;
       // [END] IHistorizable implementation
 
    private:
@@ -37,8 +36,7 @@ namespace pluginSystem
       const shared::plugin::yPluginApi::EKeywordAccessMode m_accessMode;
       const shared::plugin::yPluginApi::historization::EMeasureType m_measureType;
       const shared::CDataContainer m_typeInfo;
+      const shared::plugin::yPluginApi::historization::EHistoryDepth m_historyDepth;
       const std::string m_value;
    };
 } // namespace pluginSystem	
-
-

@@ -24,10 +24,6 @@ namespace pluginSystem
       {
       }
 
-      CCustomEnumHistorizer::~CCustomEnumHistorizer()
-      {
-      }
-
       const std::string& CCustomEnumHistorizer::getKeyword() const
       {
          return m_keywordName;
@@ -57,7 +53,10 @@ namespace pluginSystem
       {
          return m_typeInfo.serialize();
       }
+
+      const yApi::historization::EHistoryDepth& CCustomEnumHistorizer::getHistoryDepth() const
+      {
+         return yApi::historization::EHistoryDepth::kDefault;
+      }
    }
 } // namespace pluginSystem::internalPlugin
-
-

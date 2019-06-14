@@ -944,6 +944,7 @@ namespace plugin_cpp_api
       out->set_units(in->getCapacity().getUnit());
       out->set_typeinfo(in->getTypeInfo().serialize());
       out->set_measure(in->getMeasureType().toString());
+      out->set_historydepth(in->getHistoryDepth().toString());
    }
 
    void CApiImplementation::fillCapacity(const shared::plugin::yPluginApi::CStandardCapacity& in,

@@ -13,11 +13,8 @@ namespace dataAccessLayer
    {
    }
 
-   CKeywordManager::~CKeywordManager()
-   {
-   }
-
-   bool CKeywordManager::keywordExists(int deviceId, const std::string& keywordName) const
+   bool CKeywordManager::keywordExists(int deviceId,
+                                       const std::string& keywordName) const
    {
       try
       {
@@ -43,7 +40,8 @@ namespace dataAccessLayer
       return true;
    }
 
-   boost::shared_ptr<database::entities::CKeyword> CKeywordManager::getKeyword(int deviceId, const std::string& keyword) const
+   boost::shared_ptr<database::entities::CKeyword> CKeywordManager::getKeyword(int deviceId,
+                                                                               const std::string& keyword) const
    {
       return m_keywordRequester->getKeyword(deviceId, keyword);
    }
@@ -53,7 +51,8 @@ namespace dataAccessLayer
       return m_keywordRequester->getKeyword(keywordId);
    }
 
-   std::vector<boost::shared_ptr<database::entities::CKeyword>> CKeywordManager::getKeywordIdFromFriendlyName(int deviceId, const std::string& friendlyName) const
+   std::vector<boost::shared_ptr<database::entities::CKeyword>> CKeywordManager::getKeywordIdFromFriendlyName(int deviceId,
+                                                                                                              const std::string& friendlyName) const
    {
       return m_keywordRequester->getKeywordIdFromFriendlyName(deviceId, friendlyName);
    }
@@ -73,21 +72,27 @@ namespace dataAccessLayer
       return m_keywordRequester->getKeywordsMatchingCapacity(capacity);
    }
 
-   std::vector<boost::shared_ptr<database::entities::CKeyword>> CKeywordManager::getDeviceKeywordsWithCapacity(int deviceId, const std::string& capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const
+   std::vector<boost::shared_ptr<database::entities::CKeyword>> CKeywordManager::getDeviceKeywordsWithCapacity(int deviceId,
+                                                                                                               const std::string& capacityName,
+                                                                                                               const shared::plugin::yPluginApi::
+                                                                                                               EKeywordAccessMode& capacityAccessMode)
+   const
    {
       return m_keywordRequester->getDeviceKeywordsWithCapacity(deviceId, capacityName, capacityAccessMode);
    }
 
-   boost::shared_ptr<database::entities::CAcquisition> CKeywordManager::getKeywordLastAcquisition(const int keywordId, bool throwIfNotExists)
+   boost::shared_ptr<database::entities::CAcquisition> CKeywordManager::getKeywordLastAcquisition(const int keywordId,
+                                                                                                  bool throwIfNotExists)
    {
       return m_keywordRequester->getKeywordLastAcquisition(keywordId, throwIfNotExists);
    }
 
-   std::string CKeywordManager::getKeywordLastData(const int keywordId, bool throwIfNotExists)
+   std::string CKeywordManager::getKeywordLastData(const int keywordId,
+                                                   bool throwIfNotExists)
    {
       return m_keywordRequester->getKeywordLastData(keywordId, throwIfNotExists);
    }
-   
+
    std::vector<boost::tuple<int, std::string>> CKeywordManager::getKeywordListLastData(const std::vector<int> keywordIds)
    {
       return m_keywordRequester->getKeywordListLastData(keywordIds);
@@ -97,19 +102,21 @@ namespace dataAccessLayer
    {
       m_keywordRequester->addKeyword(newKeyword);
       auto keywords = m_keywordRequester->getKeywordIdFromFriendlyName(newKeyword.DeviceId,
-                                                                      newKeyword.FriendlyName);
+                                                                       newKeyword.FriendlyName);
 
       //post notification
       for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
          notification::CHelpers::postChangeNotification(keyword[0], notification::change::EChangeType::kCreate);
    }
 
-   void CKeywordManager::addKeyword(int deviceId, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details)
+   void CKeywordManager::addKeyword(int deviceId,
+                                    const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details)
    {
       addKeyword(*makeKeywordEntity(deviceId, keyword, details));
    }
 
-   void CKeywordManager::addKeywords(int deviceId, const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords)
+   void CKeywordManager::addKeywords(int deviceId,
+                                     const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords)
    {
       auto transactionalEngine = m_dataProvider->getTransactionalEngine();
 
@@ -133,7 +140,9 @@ namespace dataAccessLayer
       }
    }
 
-   void CKeywordManager::updateKeywordFriendlyName(int deviceId, const std::string& keyword, const std::string& newFriendlyName)
+   void CKeywordManager::updateKeywordFriendlyName(int deviceId,
+                                                   const std::string& keyword,
+                                                   const std::string& newFriendlyName)
    {
       auto keywordToUpdate = getKeyword(deviceId, keyword);
       if (!keywordToUpdate)
@@ -143,21 +152,24 @@ namespace dataAccessLayer
                                 newFriendlyName);
    }
 
-   void CKeywordManager::updateKeywordFriendlyName(int keywordId, const std::string& newFriendlyName)
+   void CKeywordManager::updateKeywordFriendlyName(int keywordId,
+                                                   const std::string& newFriendlyName)
    {
       m_keywordRequester->updateKeywordFriendlyName(keywordId, newFriendlyName);
    }
 
-   void CKeywordManager::updateKeywordBlacklistState(int keywordId, const bool blacklist)
+   void CKeywordManager::updateKeywordBlacklistState(int keywordId,
+                                                     const bool blacklist)
    {
-      auto keywordToBlacklist = getKeyword(keywordId);
+      const auto keywordToBlacklist = getKeyword(keywordId);
 
-      if(blacklist)
+      if (blacklist)
          m_dataProvider->getAcquisitionRequester()->removeKeywordData(keywordId);
       m_keywordRequester->updateKeywordBlacklistState(keywordId, blacklist);
 
       //post notification
-      notification::CHelpers::postChangeNotification(keywordToBlacklist, notification::change::EChangeType::kDelete);
+      notification::CHelpers::postChangeNotification(keywordToBlacklist,
+                                                     notification::change::EChangeType::kDelete);
    }
 
    void CKeywordManager::removeKeyword(int deviceId, const std::string& keyword)
@@ -171,15 +183,18 @@ namespace dataAccessLayer
 
    void CKeywordManager::removeKeyword(int keywordId)
    {
-     auto keywordToDelete = getKeyword(keywordId);
-     m_dataProvider->getAcquisitionRequester()->removeKeywordData(keywordId);
-     m_keywordRequester->removeKeyword(keywordId);
+      const auto keywordToDelete = getKeyword(keywordId);
+      m_dataProvider->getAcquisitionRequester()->removeKeywordData(keywordId);
+      m_keywordRequester->removeKeyword(keywordId);
 
-     //post notification
-     notification::CHelpers::postChangeNotification(keywordToDelete, notification::change::EChangeType::kDelete);
+      //post notification
+      notification::CHelpers::postChangeNotification(keywordToDelete, notification::change::EChangeType::kDelete);
    }
 
-   boost::shared_ptr<database::entities::CKeyword> CKeywordManager::makeKeywordEntity(int deviceId, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details)
+   boost::shared_ptr<database::entities::CKeyword> CKeywordManager::makeKeywordEntity(int deviceId,
+                                                                                      const shared::plugin::yPluginApi::historization::IHistorizable&
+                                                                                      keyword,
+                                                                                      const shared::CDataContainer& details)
    {
       // Validate keyword and capacity names. They must match URI pattern
       try
@@ -210,6 +225,7 @@ namespace dataAccessLayer
       keywordEntity->FriendlyName = keyword.getKeyword();
       keywordEntity->Measure = keyword.getMeasureType();
       keywordEntity->TypeInfo = keyword.getTypeInfo();
+      keywordEntity->HistoryDepth = keyword.getHistoryDepth();
       keywordEntity->Details = details;
 
       return keywordEntity;

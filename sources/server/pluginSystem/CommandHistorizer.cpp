@@ -11,10 +11,6 @@ namespace pluginSystem
    {
    }
 
-   CCommandHistorizer::~CCommandHistorizer()
-   {
-   }
-
    const std::string& CCommandHistorizer::getKeyword() const
    {
       return m_keyword->Name();
@@ -45,5 +41,10 @@ namespace pluginSystem
    shared::CDataContainer CCommandHistorizer::getTypeInfo() const
    {
       return shared::CDataContainer();
+   }
+
+   const shared::plugin::yPluginApi::historization::EHistoryDepth& CCommandHistorizer::getHistoryDepth() const
+   {
+      return shared::plugin::yPluginApi::historization::EHistoryDepth::kDefault;
    }
 } // namespace pluginSystem	

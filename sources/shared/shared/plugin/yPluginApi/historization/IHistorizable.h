@@ -2,6 +2,7 @@
 #include "../StandardCapacities.h"
 #include "../KeywordAccessMode.h"
 #include "MeasureType.h"
+#include "HistoryDepth.h"
 #include <shared/DataContainer.h>
 
 namespace shared
@@ -21,9 +22,7 @@ namespace shared
                //-----------------------------------------------------
                ///\brief               Destructor
                //-----------------------------------------------------
-               virtual ~IHistorizable()
-               {
-               }
+               virtual ~IHistorizable() = default;
 
                //-----------------------------------------------------
                ///\brief                     Get the keyword name
@@ -60,10 +59,14 @@ namespace shared
                ///\return                    Type information
                //-----------------------------------------------------
                virtual CDataContainer getTypeInfo() const = 0;
+
+               //-----------------------------------------------------
+               ///\brief                     The history depth policy
+               ///\return                    History depth policy
+               //-----------------------------------------------------
+               virtual const EHistoryDepth& getHistoryDepth() const = 0;
             };
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

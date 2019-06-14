@@ -2,7 +2,6 @@
 #include <shared/Export.h>
 #include <shared/DataContainer.h>
 #include <shared/enumeration/EnumHelpers.hpp>
-#include <shared/Field.hpp>
 #include "IHistorizable.h"
 
 namespace shared
@@ -27,10 +26,7 @@ namespace shared
                explicit CEvent(const std::string& keywordName,
                                const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGetSet);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CEvent();
+               virtual ~CEvent() = default;
 
                // IHistorizable implementation
                const std::string& getKeyword() const override;
@@ -39,6 +35,7 @@ namespace shared
                std::string formatValue() const override;
                const EMeasureType& getMeasureType() const override;
                CDataContainer getTypeInfo() const override;
+               const EHistoryDepth& getHistoryDepth() const override;
                // [END] IHistorizable implementation
 
             private:
