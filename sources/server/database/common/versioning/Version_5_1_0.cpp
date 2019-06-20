@@ -45,7 +45,9 @@ namespace database
                   requester->transactionBegin();
 
                // Add column
-               requester->addTableColumn(CKeywordTable::getTableName(), "historyDepth STRING NOT NULL default \"Default\"");
+               requester->addTableColumn(CKeywordTable::getTableName(), "historyDepth TEXT NOT NULL default \"Default\"");
+
+               updateDatabaseVersion(requester, Version);
 
                // Commit transaction
                if (requester->transactionSupport())
