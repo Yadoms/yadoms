@@ -47,6 +47,7 @@ namespace xplrules
             std::string formatValue() const override;
             const shared::plugin::yPluginApi::historization::EMeasureType& getMeasureType() const override;
             shared::CDataContainer getTypeInfo() const override;
+            const shared::plugin::yPluginApi::historization::EHistoryDepth& getHistoryDepth() const override;
             // [END] IHistorizable implementation;
 
             //-----------------------------------------------------

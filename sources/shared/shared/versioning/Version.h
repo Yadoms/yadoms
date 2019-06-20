@@ -22,7 +22,7 @@ namespace shared
          ///\param [in] stringVersion the version as a string. Separators between version digits must be . or ,
          //---------------------------------------------
          explicit CVersion(const std::string& stringVersion);
-         CVersion& operator=(const CVersion& rhs);
+         CVersion& operator=(const CVersion& rhs) = default;
 
          //---------------------------------------------
          ///\brief Constructor
@@ -54,12 +54,12 @@ namespace shared
          //---------------------------------------------
          ///\brief Copy constructor
          //---------------------------------------------
-         CVersion(const CVersion& rhs);
+         CVersion(const CVersion& rhs) = default;
 
          //---------------------------------------------
          ///\brief Destructor
          //---------------------------------------------
-         virtual ~CVersion();
+         virtual ~CVersion() = default;
 
          //---------------------------------------------
          ///\brief Compare if current Version is strictly less than parameter version
@@ -99,6 +99,7 @@ namespace shared
          //---------------------------------------------
          ///\brief Operator to print out version to a stream
          ///\param [in] oss the target stream
+         ///\param [in] rhs the version object to print
          ///\return  the target stream
          //---------------------------------------------
          friend std::ostream& operator<<(std::ostream& oss, const CVersion& rhs);

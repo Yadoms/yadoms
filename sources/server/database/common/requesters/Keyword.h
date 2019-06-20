@@ -23,10 +23,7 @@ namespace database
             //--------------------------------------------------------------
             explicit CKeyword(boost::shared_ptr<IDatabaseRequester> databaseRequester);
 
-            //--------------------------------------------------------------
-            /// \Brief		   Destructor
-            //--------------------------------------------------------------
-            virtual ~CKeyword();
+            virtual ~CKeyword() = default;
 
             // IKeywordRequester implementation
             void addKeyword(const entities::CKeyword& newKeyword) override;

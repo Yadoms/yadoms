@@ -18,16 +18,6 @@ namespace shared
          parse(stringVersion);
       }
 
-      CVersion& CVersion::operator=(const CVersion& rhs)
-      {
-         m_major = rhs.m_major;
-         m_minor = rhs.m_minor;
-         m_patch = rhs.m_patch;
-         m_prerelease = rhs.m_prerelease;
-         m_buildMetadata = rhs.m_buildMetadata;
-         return *this;
-      }
-
       CVersion::CVersion(int major, int minor, int patch)
          : m_major(major), m_minor(minor), m_patch(patch), m_prerelease(""), m_buildMetadata("")
       {
@@ -38,17 +28,8 @@ namespace shared
       {
       }
 
-      CVersion::CVersion(int major, int minor, int patch, const std::string& prerelease, const std::string& buildMetadata)
-         : m_major(major), m_minor(minor), m_patch(patch), m_prerelease(prerelease), m_buildMetadata(buildMetadata)
-      {
-      }
-
-      CVersion::CVersion(const CVersion& rhs)
-         : m_major(rhs.m_major), m_minor(rhs.m_minor), m_patch(rhs.m_patch), m_prerelease(rhs.m_prerelease), m_buildMetadata(rhs.m_buildMetadata)
-      {
-      }
-
-      CVersion::~CVersion()
+      CVersion::CVersion(int major, int minor, int patch, const std::string& prerelease, const std::string& buildMetaData)
+         : m_major(major), m_minor(minor), m_patch(patch), m_prerelease(prerelease), m_buildMetadata(buildMetaData)
       {
       }
 
@@ -110,7 +91,7 @@ namespace shared
 
          //Comparison (matching to SEMVER requirements)
          // compare major, minor and patch
-         // if the same, the preRelease field (alphabetically ordered) make the precendence
+         // if the same, the preRelease field (alphabetically ordered) make the precedence
 
          if (m_major > rhs.m_major)
             return 1;
@@ -151,8 +132,6 @@ namespace shared
 
          if (resultCount > 3)
          {
-            //std::string foundStr(ss.str().substr(match.offset, match.length));
-
             m_major = Poco::NumberParser::parse(strings[1]);
             m_minor = Poco::NumberParser::parse(strings[2]);
             m_patch = Poco::NumberParser::parse(strings[3]);

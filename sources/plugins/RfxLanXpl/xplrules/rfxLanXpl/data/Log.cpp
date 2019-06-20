@@ -95,6 +95,12 @@ namespace xplrules
          {
             return shared::CDataContainer();
          }
+
+         const shared::plugin::yPluginApi::historization::EHistoryDepth& CLog::getHistoryDepth() const
+         {
+            static const auto DefaultHistoryDepth(shared::plugin::yPluginApi::historization::EHistoryDepth::kDefault);
+            return DefaultHistoryDepth;
+         }
       }
    }
 } // namespace xplrules::rfxLanXpl::data

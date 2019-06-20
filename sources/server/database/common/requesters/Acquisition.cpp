@@ -33,39 +33,47 @@ namespace database
             {
                if (!keywordEntity->Blacklist())
                {
-                  auto q = m_databaseRequester->newQuery();
-                  q->InsertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(),
-                                CAcquisitionTable::getKeywordIdColumnName(), CAcquisitionTable::getValueColumnName()).
-                     Values(dataTime, keywordId, data);
-
-                  try
-                  {
-                     if (m_databaseRequester->queryStatement(*q) <= 0)
-                        throw shared::exception::CEmptyResult("Fail to insert new data");
-                  }
-                  catch (CDatabaseException& e)
-                  {
-                     if (e.returnCode() == CDatabaseException::kConstraintViolation)
-                     {
-                        // Maybe 2 acquisitions were recorded at same time for same keyword. In this case, we prefer to keep last value
-                        q->Clear().Update(CAcquisitionTable::getTableName())
-                         .Set(CAcquisitionTable::getValueColumnName(), data)
-                         .Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_EQUAL, dataTime)
-                         .And(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId);
-                        m_databaseRequester->queryStatement(*q);
-                     }
-                     else
-                     {
-                        throw;
-                     }
-                  }
-
-                  // Update also last value in keyword table
+                  // Update last value in keyword table
                   m_keywordRequester->updateLastValue(keywordId,
                                                       dataTime,
                                                       data);
 
-                  return getAcquisitionByKeywordAndDate(keywordId, dataTime);
+                  // Add value in acquisition table
+                  if (keywordEntity->HistoryDepth() != shared::plugin::yPluginApi::historization::EHistoryDepth::kNoHistory)
+                  {
+                     auto q = m_databaseRequester->newQuery();
+                     q->InsertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(),
+                                   CAcquisitionTable::getKeywordIdColumnName(), CAcquisitionTable::getValueColumnName()).
+                        Values(dataTime, keywordId, data);
+
+                     try
+                     {
+                        if (m_databaseRequester->queryStatement(*q) <= 0)
+                           throw shared::exception::CEmptyResult("Fail to insert new data");
+                     }
+                     catch (CDatabaseException& e)
+                     {
+                        if (e.returnCode() == CDatabaseException::kConstraintViolation)
+                        {
+                           // Maybe 2 acquisitions were recorded at same time for same keyword. In this case, we prefer to keep last value
+                           q->Clear().Update(CAcquisitionTable::getTableName())
+                            .Set(CAcquisitionTable::getValueColumnName(), data)
+                            .Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_EQUAL, dataTime)
+                            .And(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId);
+                           m_databaseRequester->queryStatement(*q);
+                        }
+                        else
+                        {
+                           throw;
+                        }
+                     }
+                  }
+
+                  auto acq = boost::make_shared<entities::CAcquisition>();
+                  acq->KeywordId = keywordId;
+                  acq->Date = dataTime;
+                  acq->Value = data;
+                  return acq;
                }
 
                //blacklisted keyword
@@ -90,40 +98,58 @@ namespace database
                return boost::shared_ptr<entities::CAcquisition>(); //return null instead of exception for performances
 
             auto qLastKeywordValue = m_databaseRequester->newQuery();
-            qLastKeywordValue->Select(qLastKeywordValue->castNumeric(CAcquisitionTable::getValueColumnName())).
-                               From(CAcquisitionTable::getTableName()).
-                               Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
-                               OrderBy(CAcquisitionTable::getDateColumnName(), CQuery::kDesc).
-                               Limit(1);
+            qLastKeywordValue->Select(qLastKeywordValue->castNumeric(CKeywordTable::getLastAcquisitionValueColumnName())).
+                               From(CKeywordTable::getTableName()).
+                               Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
 
-            auto q = m_databaseRequester->newQuery();
+            auto qUpdateValue = m_databaseRequester->newQuery();
 
+            // Update last value in Keyword table
+            qUpdateValue->InsertOrReplaceInto(CKeywordTable::getTableName(),
+                                              CKeywordTable::getLastAcquisitionDateColumnName(),
+                                              CKeywordTable::getLastAcquisitionValueColumnName())
+                        .Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId)
+                        .Values(dataTime,
+                                qUpdateValue->math(qUpdateValue->coalesce(*qLastKeywordValue, 0), CQUERY_OP_PLUS, increment));
 
-            //insert first (if fails, update )
-            q->InsertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getKeywordIdColumnName(),
-                          CAcquisitionTable::getValueColumnName()).
-               Values(dataTime, keywordId, q->math(q->coalesce(*qLastKeywordValue, 0), CQUERY_OP_PLUS, increment));
+            const auto newAcquisition = m_keywordRequester->getKeywordLastAcquisition(keywordId);
 
-            if (m_databaseRequester->queryStatement(*q, false) <= 0)
+            // Add value in acquisition table
+            if (keywordEntity->HistoryDepth() != shared::plugin::yPluginApi::historization::EHistoryDepth::kNoHistory)
             {
-               //update
-               q->Clear().Update(CAcquisitionTable::getTableName())
-                .Set(CAcquisitionTable::getValueColumnName(), q->math(q->coalesce(*qLastKeywordValue, 0), CQUERY_OP_PLUS, increment)).
-                Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
-                And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_EQUAL, dataTime);
+               auto q = m_databaseRequester->newQuery();
+               q->InsertInto(CAcquisitionTable::getTableName(),
+                             CAcquisitionTable::getDateColumnName(),
+                             CAcquisitionTable::getKeywordIdColumnName(),
+                             CAcquisitionTable::getValueColumnName()).
+                  Values(newAcquisition->Date(),
+                         newAcquisition->KeywordId(),
+                         newAcquisition->Value());
 
-               if (m_databaseRequester->queryStatement(*q) <= 0)
-                  throw shared::exception::CEmptyResult("Fail to insert new incremental data");
+               try
+               {
+                  if (m_databaseRequester->queryStatement(*q) <= 0)
+                     throw shared::exception::CEmptyResult("Fail to insert new data");
+               }
+               catch (CDatabaseException& e)
+               {
+                  if (e.returnCode() == CDatabaseException::kConstraintViolation)
+                  {
+                     // Maybe 2 acquisitions were recorded at same time for same keyword. In this case, we prefer to keep last value
+                     q->Clear().Update(CAcquisitionTable::getTableName())
+                      .Set(CAcquisitionTable::getValueColumnName(), newAcquisition->Value())
+                      .Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_EQUAL, newAcquisition->Date())
+                      .And(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, newAcquisition->KeywordId());
+                     m_databaseRequester->queryStatement(*q);
+                  }
+                  else
+                  {
+                     throw;
+                  }
+               }
             }
 
-            auto newData = getAcquisitionByKeywordAndDate(keywordId, dataTime);
-
-            // Update also last value in keyword table
-            m_keywordRequester->updateLastValue(keywordId,
-                                                dataTime,
-                                                newData->Value());
-
-            return newData;
+            return newAcquisition;
          }
 
          void CAcquisition::moveAllData(int fromKw,
@@ -204,7 +230,7 @@ namespace database
             adapters::CAcquisitionAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, *qSelect);
 
-            if (adapter.getResults().size() >= 1)
+            if (!adapter.getResults().empty())
             {
                return adapter.getResults()[0];
             }
@@ -580,8 +606,10 @@ namespace database
                                                CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(),
                                                CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(),
                                                CAcquisitionSummaryTable::getMaxColumnName(), CAcquisitionSummaryTable::getCountColumnName()).
-                           Select(curType, fromDate, keywordId, 
-                                  q->math(q->sum(q->math(q->fromSubquery("acq", CAcquisitionSummaryTable::getAvgColumnName()), CQUERY_OP_MUL, q->fromSubquery("acq", CAcquisitionSummaryTable::getCountColumnName()))), CQUERY_OP_DIVIDE, q->sum(q->fromSubquery("acq", CAcquisitionSummaryTable::getCountColumnName()))),
+                           Select(curType, fromDate, keywordId,
+                                  q->math(q->sum(q->math(q->fromSubquery("acq", CAcquisitionSummaryTable::getAvgColumnName()), CQUERY_OP_MUL,
+                                                         q->fromSubquery("acq", CAcquisitionSummaryTable::getCountColumnName()))), CQUERY_OP_DIVIDE,
+                                          q->sum(q->fromSubquery("acq", CAcquisitionSummaryTable::getCountColumnName()))),
                                   q->min(q->fromSubquery("acq", CAcquisitionSummaryTable::getMinColumnName())),
                                   q->max(q->fromSubquery("acq", CAcquisitionSummaryTable::getMaxColumnName())),
                                   q->sum(q->fromSubquery("acq", CAcquisitionSummaryTable::getCountColumnName()))).
@@ -599,9 +627,12 @@ namespace database
                         //update
                         auto compute = m_databaseRequester->newQuery();
 
-// ,
+                        // ,
 
-                        compute->Select(compute->as(compute->math(compute->sum(compute->math(CAcquisitionSummaryTable::getAvgColumnName(), CQUERY_OP_MUL, CAcquisitionSummaryTable::getCountColumnName())), CQUERY_OP_DIVIDE, compute->sum(CAcquisitionSummaryTable::getCountColumnName())), "avg"),
+                        compute->Select(compute->as(compute->math(
+                                                       compute->sum(compute->math(CAcquisitionSummaryTable::getAvgColumnName(), CQUERY_OP_MUL,
+                                                                                  CAcquisitionSummaryTable::getCountColumnName())), CQUERY_OP_DIVIDE,
+                                                       compute->sum(CAcquisitionSummaryTable::getCountColumnName())), "avg"),
                                         compute->as(compute->min(CAcquisitionSummaryTable::getMinColumnName()), "min"),
                                         compute->as(compute->max(CAcquisitionSummaryTable::getMaxColumnName()), "max"),
                                         compute->as(compute->sum(CAcquisitionSummaryTable::getCountColumnName()), "count")).
@@ -633,8 +664,10 @@ namespace database
                                          CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(),
                                          CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(),
                                          CAcquisitionSummaryTable::getMaxColumnName(), CAcquisitionSummaryTable::getCountColumnName()).
-                              Select(curType, fromDate, keywordId, 
-                                     q->math(q->sum(q->math(q->fromSubquery("acq", CAcquisitionSummaryTable::getAvgColumnName()), CQUERY_OP_MUL, q->fromSubquery("acq", CAcquisitionSummaryTable::getCountColumnName()))), CQUERY_OP_DIVIDE, q->sum(q->fromSubquery("acq", CAcquisitionSummaryTable::getCountColumnName()))),
+                              Select(curType, fromDate, keywordId,
+                                     q->math(q->sum(q->math(q->fromSubquery("acq", CAcquisitionSummaryTable::getAvgColumnName()), CQUERY_OP_MUL,
+                                                            q->fromSubquery("acq", CAcquisitionSummaryTable::getCountColumnName()))),
+                                             CQUERY_OP_DIVIDE, q->sum(q->fromSubquery("acq", CAcquisitionSummaryTable::getCountColumnName()))),
                                      q->min(q->fromSubquery("acq", CAcquisitionSummaryTable::getMinColumnName())),
                                      q->max(q->fromSubquery("acq", CAcquisitionSummaryTable::getMaxColumnName())),
                                      q->sum(q->fromSubquery("acq", CAcquisitionSummaryTable::getCountColumnName()))).

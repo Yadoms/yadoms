@@ -34,6 +34,8 @@ IF(NOT DISABLE_TEST_PLUGIN_ORANGE_BUSINESS)
       shared/shared/plugin/yPluginApi/StandardValues.cpp
       shared/shared/plugin/yPluginApi/StandardCapacity.h
       shared/shared/plugin/yPluginApi/StandardCapacity.cpp
+      shared/shared/plugin/yPluginApi/historization/HistoryDepth.h
+      shared/shared/plugin/yPluginApi/historization/HistoryDepth.cpp
       shared/shared/plugin/yPluginApi/historization/MeasureType.h
       shared/shared/plugin/yPluginApi/historization/MeasureType.cpp
    )

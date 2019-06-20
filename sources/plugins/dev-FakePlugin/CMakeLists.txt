@@ -19,6 +19,8 @@ set(FAKE_PLUGIN_SOURCES
 	FakePluginConfiguration.cpp 
 	FakeCounter.h
 	FakeCounter.cpp 
+	FakeNoHistorySensor.h
+	FakeNoHistorySensor.cpp 
 	FakeSensor.h
 	FakeSensor.cpp 
 	FakeSwitch.h

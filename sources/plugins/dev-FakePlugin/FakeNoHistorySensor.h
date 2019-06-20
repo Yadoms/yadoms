@@ -6,24 +6,24 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
-/// \brief	Fake temperature sensor
-/// \note   Use to simulate a temperature sensor, with 2 variables values :
+/// \brief	Fake sensor, with no history 
+/// \note   Can be useful to manage forecast values, for example from weather forecast provider.
 ///         - temperature : start at 25°, and vary from +- 0.0 to 1.0° at each read
-///         - battery level : start at 100%, decrease by 1% at each read, to 20%
+///         - humidity : start at 80%, and vary from +- 0.0 to 1.0% at each read
 //--------------------------------------------------------------
-class CFakeSensor
+class CFakeNoHistorySensor
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    /// \param[in] deviceName    The device name
    //--------------------------------------------------------------
-   explicit CFakeSensor(const std::string& deviceName);
+   explicit CFakeNoHistorySensor(const std::string& deviceName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CFakeSensor();
+   virtual ~CFakeNoHistorySensor() = default;
 
    //--------------------------------------------------------------
    /// \brief	            Declare device and associated keywords if necessary
@@ -34,7 +34,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
    //--------------------------------------------------------------
-   void read();
+   void read() const;
 
    //--------------------------------------------------------------
    /// \brief	            Send all sensor data to Yadoms
@@ -67,34 +67,19 @@ private:
    const std::string m_deviceName;
 
    //--------------------------------------------------------------
-   /// \brief	The keyword associated with temperature1
+   /// \brief	The keyword associated with temperature
    //--------------------------------------------------------------
-   boost::shared_ptr<yApi::historization::CTemperature> m_temperature1;
+   boost::shared_ptr<yApi::historization::CTemperature> m_temperature;
 
    //--------------------------------------------------------------
-   /// \brief	The keyword associated with temperature1
+   /// \brief	The keyword associated with humidity
    //--------------------------------------------------------------
-   boost::shared_ptr<yApi::historization::CTemperature> m_temperature2;
+   boost::shared_ptr<yApi::historization::CHumidity> m_humidity;
 
    //--------------------------------------------------------------
-   /// \brief	The keyword associated with battery level
+   /// \brief	The keyword associated with en incremental counter
    //--------------------------------------------------------------
-   boost::shared_ptr<yApi::historization::CBatteryLevel> m_batteryLevel;
-
-   //--------------------------------------------------------------
-   /// \brief	The keyword associated with current consumption
-   //--------------------------------------------------------------
-   boost::shared_ptr<yApi::historization::CCurrent> m_current;
-
-   //--------------------------------------------------------------
-   /// \brief	The keyword associated with signal strength
-   //--------------------------------------------------------------
-   boost::shared_ptr<yApi::historization::CSignalPower> m_signalPower;
-
-   //--------------------------------------------------------------
-   /// \brief	The keyword associated with date time under string format useful only for demo
-   //--------------------------------------------------------------
-   boost::shared_ptr<yApi::historization::CDateTime> m_dateTime;
+   boost::shared_ptr<yApi::historization::CCounter> m_incrementalCounter;
 
    //--------------------------------------------------------------
    /// \brief	Historizers vector

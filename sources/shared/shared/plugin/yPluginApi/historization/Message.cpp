@@ -67,8 +67,8 @@ namespace shared
 
             const std::string& CMessage::body() const
             {
-               static const std::string emptyString;
-               return !m_content ? emptyString : m_content->body();
+               static const std::string EmptyString;
+               return !m_content ? EmptyString : m_content->body();
             }
 
             const EMeasureType& CMessage::getMeasureType() const
@@ -82,6 +82,12 @@ namespace shared
                CDataContainer info;
                info.set("associatedRecipientField", m_associatedRecipientField);
                return info;
+            }
+
+            const EHistoryDepth& CMessage::getHistoryDepth() const
+            {
+               static const auto DefaultHistoryDepth(EHistoryDepth::kDefault);
+               return DefaultHistoryDepth;
             }
          }
       }
