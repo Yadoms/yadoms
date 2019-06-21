@@ -22,15 +22,14 @@ namespace shared
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] associatedRecipientField The associated recipient field name ("mobile", "email", etc...)
                ///\param[in] accessMode      Access mode
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                CMessage(const std::string& keywordName,
                         const std::string& associatedRecipientField,
-                        const EKeywordAccessMode& accessMode);
+                        const EKeywordAccessMode& accessMode,
+                        const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CMessage();
+               virtual ~CMessage() = default;
 
                // IHistorizable implementation
                const std::string& getKeyword() const override;
@@ -92,6 +91,11 @@ namespace shared
                const EKeywordAccessMode& m_accessMode;
 
                //-----------------------------------------------------
+               ///\brief                     The history depth policy
+               //-----------------------------------------------------
+               const EHistoryDepth m_historyDepth;
+
+               //-----------------------------------------------------
                ///\brief                     The message content
                //-----------------------------------------------------
                boost::shared_ptr<IMessageFormatter> m_content;
@@ -100,5 +104,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

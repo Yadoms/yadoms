@@ -28,8 +28,8 @@ namespace shared
                ///\param[in] capacity           the capacity
                ///\param[in] accessMode         The access mode
                ///\param[in] measureType        The measure type
-               ///\param typeInfo               The type information
-               ///\param historyDepth           The history depth policy
+               ///\param[in] typeInfo           The type information
+               ///\param[in] historyDepth       The history depth policy
                //-----------------------------------------------------
                CSingleHistorizableData(const std::string& keywordName,
                                        const CStandardCapacity& capacity,

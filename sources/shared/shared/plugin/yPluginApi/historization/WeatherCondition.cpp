@@ -31,21 +31,18 @@ namespace shared
 
             CWeatherCondition::CWeatherCondition(const std::string& keywordName,
                                                  const EKeywordAccessMode& accessMode,
-                                                 const EMeasureType& measureType)
+                                                 const EMeasureType& measureType,
+                                                 const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<EWeatherCondition>(keywordName,
                                                             CStandardCapacities::WeatherCondition(),
                                                             accessMode,
                                                             EWeatherCondition::kCloudy,
-                                                            measureType)
-            {
-            }
-
-            CWeatherCondition::~CWeatherCondition()
+                                                            measureType,
+                                                            typeInfo::CEmptyTypeInfo::Empty,
+                                                            historyDepth)
             {
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

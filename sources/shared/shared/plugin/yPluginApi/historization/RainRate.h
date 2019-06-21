@@ -20,16 +20,12 @@ namespace shared
                explicit CRainRate(const std::string& keywordName,
                                   const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
                                   const EMeasureType& measureType = EMeasureType::kCumulative,
-                                  typeInfo::CDoubleTypeInfo& additionalInfo = typeInfo::CDoubleTypeInfo::Empty);
+                                  const typeInfo::CDoubleTypeInfo& additionalInfo = typeInfo::CDoubleTypeInfo::Empty,
+                                  const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CRainRate();
+               virtual ~CRainRate() = default;
             };
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

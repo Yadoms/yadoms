@@ -14,17 +14,15 @@ namespace shared
             static const typeInfo::CPercentageTypeInfo PercentageTypeInfo;
 
             CSignalPower::CSignalPower(const std::string& keywordName,
-                                       const EMeasureType& measureType)
+                                       const EMeasureType& measureType,
+                                       const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<int>(keywordName,
                                               CStandardCapacities::SignalPower(),
                                               EKeywordAccessMode::kGet,
                                               0,
                                               measureType,
-                                              PercentageTypeInfo)
-            {
-            }
-
-            CSignalPower::~CSignalPower()
+                                              PercentageTypeInfo,
+                                              historyDepth)
             {
             }
          }

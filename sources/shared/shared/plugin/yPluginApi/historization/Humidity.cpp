@@ -1,8 +1,5 @@
-#include "stdafx.h"
 #include "Humidity.h"
-#include "../StandardValues.h"
 #include "../StandardCapacities.h"
-#include <shared/exception/InvalidParameter.hpp>
 #include <shared/Log.h>
 
 namespace shared
@@ -16,17 +13,15 @@ namespace shared
             CHumidity::CHumidity(const std::string& keywordName,
                                  const EKeywordAccessMode& accessMode,
                                  const EMeasureType& measureType,
-                                 typeInfo::CDoubleTypeInfo& additionalInfo)
+                                 typeInfo::CDoubleTypeInfo& additionalInfo,
+                                 const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<double>(keywordName,
                                                  CStandardCapacities::Humidity(),
                                                  accessMode,
                                                  0,
                                                  measureType,
-                                                 additionalInfo)
-            {
-            }
-
-            CHumidity::~CHumidity()
+                                                 additionalInfo,
+                                                 historyDepth)
             {
             }
 
@@ -43,5 +38,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

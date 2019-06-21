@@ -137,12 +137,12 @@ namespace database
          ((TypeInfo)(shared::CDataContainer)(shared::CDataContainer())("typeInfo"))
          ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType)(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute)(
             "measure"))
-         ((HistoryDepth)(shared::plugin::yPluginApi::historization::EHistoryDepth)(shared::plugin::yPluginApi::historization::EHistoryDepth::kDefault)(
-            "historyDepth"))
          ((Details)(shared::CDataContainer)(shared::CDataContainer())("details"))
          ((Blacklist)(bool)(false)("blacklist"))
          ((LastAcquisitionValue)(std::string)("")("lastAcquisitionValue"))
          ((LastAcquisitionDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now())("lastAcquisitionDate"))
+         ((HistoryDepth)(shared::plugin::yPluginApi::historization::EHistoryDepth)(shared::plugin::yPluginApi::historization::EHistoryDepth::kDefault)(
+            "historyDepth"))
       ) ;
 
       DECLARE_ENTITY_CLASS_IMPLEMENTATION(

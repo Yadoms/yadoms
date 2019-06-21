@@ -21,18 +21,15 @@ namespace shared
                ///\brief                     Constructor
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] accessMode      Access mode
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                CColorRGB(const std::string& keywordName,
-                        const EKeywordAccessMode& accessMode);
+                         const EKeywordAccessMode& accessMode,
+                         const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CColorRGB();
+               virtual ~CColorRGB() = default;
             };
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

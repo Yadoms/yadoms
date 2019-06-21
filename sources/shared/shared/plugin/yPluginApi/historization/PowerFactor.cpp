@@ -13,17 +13,15 @@ namespace shared
             CPowerFactor::CPowerFactor(const std::string& keywordName,
                                        const EKeywordAccessMode& accessMode,
                                        const EMeasureType& measureType,
-                                       typeInfo::CDoubleTypeInfo& additionalInfo)
+                                       typeInfo::CDoubleTypeInfo& additionalInfo,
+                                       const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<double>(keywordName,
                                                  CStandardCapacities::PowerFactor(),
                                                  accessMode,
                                                  0.0,
                                                  measureType,
-                                                 additionalInfo)
-            {
-            }
-
-            CPowerFactor::~CPowerFactor()
+                                                 additionalInfo,
+                                                 historyDepth)
             {
             }
 
@@ -39,5 +37,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

@@ -133,11 +133,11 @@ namespace database
          ((Units)(std::string))
          ((TypeInfo)(shared::CDataContainer))
          ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType))
-         ((HistoryDepth)(shared::plugin::yPluginApi::historization::EHistoryDepth))
          ((Details)(shared::CDataContainer))
          ((Blacklist)(bool))
          ((LastAcquisitionValue)(std::string))
          ((LastAcquisitionDate)(boost::posix_time::ptime))
+         ((HistoryDepth)(shared::plugin::yPluginApi::historization::EHistoryDepth))
       )
 
       DECLARE_ENTITY_CLASS_HEADER(Acquisition,

@@ -1,7 +1,6 @@
 #pragma once
 #include <shared/Export.h>
 #include <shared/DataContainer.h>
-#include <shared/enumeration/EnumHelpers.hpp>
 #include "IHistorizable.h"
 
 namespace shared

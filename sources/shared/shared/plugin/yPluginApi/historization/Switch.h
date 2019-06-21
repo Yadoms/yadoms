@@ -21,19 +21,17 @@ namespace shared
                ///\brief                     Constructor
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] accessMode      The access mode
+               ///\param[in] additionalInfo  The type information
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                explicit CSwitch(const std::string& keywordName,
                                 const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGetSet,
-                                typeInfo::CBoolTypeInfo& ti = typeInfo::CBoolTypeInfo::Empty);
+                                const typeInfo::CBoolTypeInfo& additionalInfo = typeInfo::CBoolTypeInfo::Empty,
+                                const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CSwitch();
+               virtual ~CSwitch() = default;
             };
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

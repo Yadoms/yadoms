@@ -22,20 +22,18 @@ namespace shared
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] accessMode      The access mode
                ///\param[in] measureType     The measure type (normally kAbsolute)
+               ///\param[in] additionalInfo  The type information
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                explicit CText(const std::string& keywordName,
                               const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
                               const EMeasureType& measureType = EMeasureType::kAbsolute,
-                              typeInfo::CStringTypeInfo& additionalInfo = typeInfo::CStringTypeInfo::Empty);
+                              const typeInfo::CStringTypeInfo& additionalInfo = typeInfo::CStringTypeInfo::Empty,
+                              const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CText();
+               virtual ~CText() = default;
             };
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

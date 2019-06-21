@@ -13,22 +13,18 @@ namespace shared
             CDirection::CDirection(const std::string& keywordName,
                                    const EKeywordAccessMode& accessMode,
                                    const EMeasureType& measureType,
-                                   typeInfo::CIntTypeInfo& additionalInfo)
+                                   typeInfo::CIntTypeInfo& additionalInfo,
+                                   const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<int>(keywordName,
                                               CStandardCapacities::Direction(),
                                               accessMode,
                                               0,
                                               measureType,
-                                              additionalInfo)
-            {
-            }
-
-            CDirection::~CDirection()
+                                              additionalInfo,
+                                              historyDepth)
             {
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

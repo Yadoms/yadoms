@@ -13,22 +13,18 @@ namespace shared
             CCounter::CCounter(const std::string& keywordName,
                                const EKeywordAccessMode& accessMode,
                                const EMeasureType& measureType,
-                               typeInfo::CIntTypeInfo& additionalInfo)
+                               const typeInfo::CIntTypeInfo& additionalInfo,
+                               const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<Poco::Int64>(keywordName,
                                                       CStandardCapacities::Counter(),
                                                       accessMode,
                                                       0,
                                                       measureType,
-                                                      additionalInfo)
-            {
-            }
-
-            CCounter::~CCounter()
+                                                      additionalInfo,
+                                                      historyDepth)
             {
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

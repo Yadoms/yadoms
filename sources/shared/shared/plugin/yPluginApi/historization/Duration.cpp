@@ -13,17 +13,15 @@ namespace shared
             CDuration::CDuration(const std::string& keywordName,
                                  const EKeywordAccessMode& accessMode,
                                  const EMeasureType& measureType,
-                                 typeInfo::CDoubleTypeInfo& additionalInfo)
+                                 typeInfo::CDoubleTypeInfo& additionalInfo,
+                                 const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<double>(keywordName,
                                                  CStandardCapacities::Duration(),
                                                  accessMode,
                                                  0.0,
                                                  measureType,
-                                                 additionalInfo)
-            {
-            }
-
-            CDuration::~CDuration()
+                                                 additionalInfo,
+                                                 historyDepth)
             {
             }
          }

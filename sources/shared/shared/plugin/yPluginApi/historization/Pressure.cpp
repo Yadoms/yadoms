@@ -13,22 +13,18 @@ namespace shared
             CPressure::CPressure(const std::string& keywordName,
                                  const EKeywordAccessMode& accessMode,
                                  const EMeasureType& measureType,
-                                 typeInfo::CDoubleTypeInfo& additionalInfo)
+                                 typeInfo::CDoubleTypeInfo& additionalInfo,
+                                 const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<double>(keywordName,
                                                  CStandardCapacities::Pressure(),
                                                  accessMode,
                                                  0,
                                                  measureType,
-                                                 additionalInfo)
-            {
-            }
-
-            CPressure::~CPressure()
+                                                 additionalInfo,
+                                                 historyDepth)
             {
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

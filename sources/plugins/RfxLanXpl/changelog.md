@@ -1,5 +1,5 @@
 ### 1.1.1
-* Fix #575 : Adapt custom historizer
+* New feature #575 : Adapt custom historizer
 
 ### 1.1.0
 * New feature #553 : use of full compliant Json

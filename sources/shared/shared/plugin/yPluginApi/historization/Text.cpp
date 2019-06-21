@@ -13,22 +13,18 @@ namespace shared
             CText::CText(const std::string& keywordName,
                          const EKeywordAccessMode& accessMode,
                          const EMeasureType& measureType,
-                         typeInfo::CStringTypeInfo& additionalInfo)
+                         const typeInfo::CStringTypeInfo& additionalInfo,
+                         const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<std::string>(keywordName,
                                                       CStandardCapacities::Text(),
                                                       accessMode,
                                                       std::string(),
                                                       measureType,
-                                                      additionalInfo)
-            {
-            }
-
-            CText::~CText()
+                                                      additionalInfo,
+                                                      historyDepth)
             {
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

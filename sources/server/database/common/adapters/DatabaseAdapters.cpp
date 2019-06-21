@@ -92,6 +92,8 @@ namespace database
             ((Blacklist)(bool)(false))
             ((LastAcquisitionValue)(std::string)(""))
             ((LastAcquisitionDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
+            ((HistoryDepth)(shared::plugin::yPluginApi::historization::EHistoryDepth)(shared::plugin::yPluginApi::historization::EHistoryDepth::kDefault)(
+               std::string))
          );
 
 

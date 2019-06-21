@@ -43,19 +43,16 @@ namespace shared
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] accessMode      The access mode
                ///\param[in] measureType     The measure type (normally kAbsolute)
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                explicit CWeatherCondition(const std::string& keywordName,
                                           const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
-                                          const EMeasureType& measureType = EMeasureType::kAbsolute);
+                                          const EMeasureType& measureType = EMeasureType::kAbsolute,
+                                          const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CWeatherCondition();
+               virtual ~CWeatherCondition() = default;
             };
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-
