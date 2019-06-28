@@ -67,6 +67,21 @@ namespace database
       virtual std::vector<boost::shared_ptr<entities::CKeyword>> getKeywordsMatchingCapacity(const std::string& capacity) const = 0;
 
       //--------------------------------------------------------------
+      /// \brief                          Get the keyword list which match some criteria
+      /// \param [in] expectedKeywordTypes         The keyword type criteria
+      /// \param [in] expectedCapacities           The capacity name criteria
+      /// \param [in] expectedKeywordAccesses      The access mode criteria
+      /// \param [in] expectedKeywordHistoryDepth  The history depth criteria
+      /// \param [in] blacklisted                  The blacklisted criteria
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getKeywordsMatchingCriteria(
+         const std::vector<shared::plugin::yPluginApi::EKeywordDataType>& expectedKeywordTypes,
+         const std::vector<std::string>& expectedCapacities,
+         const std::vector<shared::plugin::yPluginApi::EKeywordAccessMode>& expectedKeywordAccesses,
+         const std::vector<shared::plugin::yPluginApi::historization::EHistoryDepth>& expectedKeywordHistoryDepth,
+         bool blacklisted) const = 0;
+
+      //--------------------------------------------------------------
       /// \brief           List all keywords which match capacity for a device
       /// \param [in]      deviceId             the device which own the keyword
       /// \param [in]      capacityName         the capacity name

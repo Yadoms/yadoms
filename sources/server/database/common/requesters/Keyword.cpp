@@ -183,6 +183,37 @@ namespace database
             return adapter.getResults();
          }
 
+         std::vector<boost::shared_ptr<entities::CKeyword>> CKeyword::getKeywordsMatchingCriteria(
+            const std::vector<shared::plugin::yPluginApi::EKeywordDataType>& expectedKeywordTypes,
+            const std::vector<std::string>& expectedCapacities,
+            const std::vector<shared::plugin::yPluginApi::EKeywordAccessMode>& expectedKeywordAccesses,
+            const std::vector<shared::plugin::yPluginApi::historization::EHistoryDepth>& expectedKeywordHistoryDepth,
+            bool blacklisted) const
+         {
+            auto subQuery = m_databaseRequester->newQuery();
+            subQuery->Select().
+               From(CKeywordTable::getTableName()).
+               WhereTrue();
+
+            if (!expectedKeywordTypes.empty())
+               subQuery->And(CKeywordTable::getTypeColumnName(), CQUERY_OP_IN, expectedKeywordTypes);
+
+            if (!expectedCapacities.empty())
+               subQuery->And(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_IN, expectedCapacities);
+
+            if (!expectedKeywordAccesses.empty())
+               subQuery->And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_IN, expectedKeywordAccesses);
+
+            if (!expectedKeywordHistoryDepth.empty())
+               subQuery->And(CKeywordTable::getHistoryDepthColumnName(), CQUERY_OP_IN, expectedKeywordHistoryDepth);
+
+            subQuery->And(CKeywordTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, blacklisted);
+
+            adapters::CKeywordAdapter keywordsAdapter;
+            m_databaseRequester->queryEntities(&keywordsAdapter, *subQuery);
+            return keywordsAdapter.getResults();
+         }
+
          std::vector<boost::shared_ptr<entities::CKeyword>> CKeyword::getAllKeywords() const
          {
             adapters::CKeywordAdapter adapter;
@@ -267,7 +298,7 @@ namespace database
             auto qSelect = m_databaseRequester->newQuery();
             qSelect->Select(CKeywordTable::getIdColumnName(), CKeywordTable::getLastAcquisitionValueColumnName()).
                      From(CKeywordTable::getTableName()).
-                     WhereIn(CKeywordTable::getIdColumnName(), keywordIds);
+                     Where(CKeywordTable::getIdColumnName(), CQUERY_OP_IN, keywordIds);
 
             adapters::CMultipleValueAdapter<int, std::string> mva;
             m_databaseRequester->queryEntities(&mva, *qSelect);

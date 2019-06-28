@@ -102,15 +102,16 @@ namespace database
                                From(CKeywordTable::getTableName()).
                                Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
 
-            auto qUpdateValue = m_databaseRequester->newQuery();
-
             // Update last value in Keyword table
-            qUpdateValue->InsertOrReplaceInto(CKeywordTable::getTableName(),
-                                              CKeywordTable::getLastAcquisitionDateColumnName(),
-                                              CKeywordTable::getLastAcquisitionValueColumnName())
-                        .Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId)
-                        .Values(dataTime,
-                                qUpdateValue->math(qUpdateValue->coalesce(*qLastKeywordValue, 0), CQUERY_OP_PLUS, increment));
+            auto qUpdateValue = m_databaseRequester->newQuery();
+            qUpdateValue->Update(CKeywordTable::getTableName())
+                        .Set(CKeywordTable::getLastAcquisitionDateColumnName(), dataTime,
+                             CKeywordTable::getLastAcquisitionValueColumnName(),
+                             qUpdateValue->math(qUpdateValue->coalesce(*qLastKeywordValue, 0), CQUERY_OP_PLUS, increment))
+                        .Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
+
+            if (m_databaseRequester->queryStatement(*qUpdateValue) <= 0)
+               throw shared::exception::CEmptyResult("No lines affected");
 
             const auto newAcquisition = m_keywordRequester->getKeywordLastAcquisition(keywordId);
 

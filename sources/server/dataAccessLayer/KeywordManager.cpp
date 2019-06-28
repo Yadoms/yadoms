@@ -72,13 +72,27 @@ namespace dataAccessLayer
       return m_keywordRequester->getKeywordsMatchingCapacity(capacity);
    }
 
-   std::vector<boost::shared_ptr<database::entities::CKeyword>> CKeywordManager::getDeviceKeywordsWithCapacity(int deviceId,
-                                                                                                               const std::string& capacityName,
-                                                                                                               const shared::plugin::yPluginApi::
-                                                                                                               EKeywordAccessMode& capacityAccessMode)
-   const
+   std::vector<boost::shared_ptr<database::entities::CKeyword>> CKeywordManager::getDeviceKeywordsWithCapacity(
+      int deviceId,
+      const std::string& capacityName,
+      const shared::plugin::yPluginApi::
+      EKeywordAccessMode& capacityAccessMode) const
    {
       return m_keywordRequester->getDeviceKeywordsWithCapacity(deviceId, capacityName, capacityAccessMode);
+   }
+
+   std::vector<boost::shared_ptr<database::entities::CKeyword>> CKeywordManager::getKeywordsMatchingCriteria(
+      const std::vector<shared::plugin::yPluginApi::EKeywordDataType>& expectedKeywordTypes,
+      const std::vector<std::string>& expectedCapacities,
+      const std::vector<shared::plugin::yPluginApi::EKeywordAccessMode>& expectedKeywordAccesses,
+      const std::vector<shared::plugin::yPluginApi::historization::EHistoryDepth>& expectedKeywordHistoryDepth,
+      bool blacklisted) const
+   {
+      return m_keywordRequester->getKeywordsMatchingCriteria(expectedKeywordTypes,
+                                                             expectedCapacities,
+                                                             expectedKeywordAccesses,
+                                                             expectedKeywordHistoryDepth,
+                                                             blacklisted);
    }
 
    boost::shared_ptr<database::entities::CAcquisition> CKeywordManager::getKeywordLastAcquisition(const int keywordId,
