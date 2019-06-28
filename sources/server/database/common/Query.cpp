@@ -107,6 +107,11 @@ namespace database
          return PredicateInternal("WHERE ", condition);
       }
 
+      CQuery& CQuery::WhereTrue()
+      {
+         return Append("WHERE 1=1 ");
+      }
+
       CQuery& CQuery::And(const std::string& condition)
       {
          return PredicateInternal("AND ", condition);
