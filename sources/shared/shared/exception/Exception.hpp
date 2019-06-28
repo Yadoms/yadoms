@@ -42,8 +42,5 @@ namespace shared
       protected:
          std::runtime_error m_message;
       };
-
-      static_assert(std::is_nothrow_copy_constructible<CException>::value, "shared::exception::CException must be nothrow copy constructible");
-
    }
 } // namespace shared::exception
