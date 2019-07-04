@@ -1,3 +1,6 @@
+### 2.3.0-rc.1
+* Fix error when loading web client on slow connection
+
 ### 2.3.0-beta.4
 * Fix #570 : remove connected user from Summary page of configuration panel (makes no sense)
 * Add IlluminationWm2 historizer
