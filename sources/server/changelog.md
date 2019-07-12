@@ -1,3 +1,7 @@
+### 2.4.0-beta.1
+* NewFeature #575 : add keyword without history
+
+
 ### 2.3.0-beta.4
 * Fix #570 : remove connected user from Summary page of configuration panel (makes no sense)
 * Add IlluminationWm2 historizer

@@ -433,8 +433,8 @@ namespace web
                //
                // The answer is a JSON string, like :
                // {
-               //    "device": [ deviceEntity1, deviceEntity2... ],
-               //    "keyword" : [ keywordEntity1, keywordEntity2... ]
+               //    "devices": [ deviceEntity1, deviceEntity2... ],
+               //    "keywords" : [ keywordEntity1, keywordEntity2... ]
                // }
                //
                const auto criteria = shared::CDataContainer(requestContent);
@@ -475,8 +475,8 @@ namespace web
                const auto& devices = m_deviceRequester->getDevices(deviceIds);
 
                shared::CDataContainer collection;
-               collection.set("device", devices);
-               collection.set("keyword", keywords);
+               collection.set("devices", devices);
+               collection.set("keywords", keywords);
                return CResult::GenerateSuccess(collection);
             }
             catch (std::exception& ex)

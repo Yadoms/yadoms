@@ -1,9 +1,14 @@
 {
 	"type": "moon",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"author": "Jean-Michel BERHAULT",
 	"url": "https://github.com/Yadoms/yadoms/wiki/moon",
 	"credits": "[Moon Phases font](http://www.dafont.com/fr/moon-phases.font)",
+   "dependencies": {
+     "yadoms": {
+       "minimumVersion": "2.4.0-beta.1"
+     }
+   },
 	"dimensions": {
 		"min": {
 			"x": 1,
@@ -23,8 +28,7 @@
 			"name": "Moon Information",
 			"description": "Illuminated surface of the moon, Day of the moon",
 			"type": "keyword",
-			"expectedCapacity": ["Moon"],
-			"expectedKeywordAccess": "get"
+			"expectedCapacity": ["Moon"]
 		}
 	}
 }
