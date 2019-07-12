@@ -44,9 +44,9 @@ namespace pluginSystem
          return shared::CStringExtension::cultureInvariantToString(m_value);
       }
 
-      const yApi::historization::EMeasureType& CCustomEnumHistorizer::getMeasureType() const
+      const yApi::EMeasureType& CCustomEnumHistorizer::getMeasureType() const
       {
-         return yApi::historization::EMeasureType::kAbsolute;
+         return yApi::EMeasureType::kAbsolute;
       }
 
       shared::CDataContainer CCustomEnumHistorizer::getTypeInfo() const
@@ -54,9 +54,9 @@ namespace pluginSystem
          return m_typeInfo.serialize();
       }
 
-      const yApi::historization::EHistoryDepth& CCustomEnumHistorizer::getHistoryDepth() const
+      const yApi::EHistoryDepth& CCustomEnumHistorizer::getHistoryDepth() const
       {
-         return yApi::historization::EHistoryDepth::kDefault;
+         return yApi::EHistoryDepth::kDefault;
       }
    }
 } // namespace pluginSystem::internalPlugin

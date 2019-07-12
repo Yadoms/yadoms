@@ -22,7 +22,7 @@ namespace historizers
       ///\param[in] measureType     The measure type (normally kAbsolute)
       ///\param[in] ti              The measure type information
       //-----------------------------------------------------
-      CDirection(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::historization::EMeasureType measureType, CIntegerTypeInfo &ti);
+      CDirection(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::EMeasureType measureType, CIntegerTypeInfo &ti);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

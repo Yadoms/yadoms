@@ -183,13 +183,13 @@ namespace database
 
 
          std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDeviceWithKeywordHistoryDepth(
-            const shared::plugin::yPluginApi::historization::EHistoryDepth& historyDepth) const
+            const shared::plugin::yPluginApi::EHistoryDepth& historyDepth) const
          {
             auto subQuery = m_databaseRequester->newQuery();
             subQuery->Select(CKeywordTable::getDeviceIdColumnName()).
                       From(CKeywordTable::getTableName());
 
-            if (historyDepth() != shared::plugin::yPluginApi::historization::EHistoryDepth::kDefault)
+            if (historyDepth() != shared::plugin::yPluginApi::EHistoryDepth::kDefault)
             {
                //we add a constraint on history depth
                subQuery->Where(CKeywordTable::getHistoryDepthColumnName(), CQUERY_OP_EQUAL, historyDepth);

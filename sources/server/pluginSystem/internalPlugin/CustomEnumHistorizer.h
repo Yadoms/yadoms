@@ -25,9 +25,9 @@ namespace pluginSystem
          const yApi::CStandardCapacity& getCapacity() const override;
          const yApi::EKeywordAccessMode& getAccessMode() const override;
          std::string formatValue() const override;
-         const yApi::historization::EMeasureType& getMeasureType() const override;
+         const yApi::EMeasureType& getMeasureType() const override;
          shared::CDataContainer getTypeInfo() const override;
-         const yApi::historization::EHistoryDepth& getHistoryDepth() const override;
+         const yApi::EHistoryDepth& getHistoryDepth() const override;
          // [END]yApi::historization::IHistorizable Implementation
 
       private:

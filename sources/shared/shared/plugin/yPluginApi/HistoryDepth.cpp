@@ -7,15 +7,10 @@ namespace shared
    {
       namespace yPluginApi
       {
-         namespace historization
-         {
-            DECLARE_ENUM_IMPLEMENTATION(EHistoryDepth,
-               ((Default))
-               ((NoHistory))
-            )
-         }
+         DECLARE_ENUM_IMPLEMENTATION(EHistoryDepth,
+            ((Default))
+            ((NoHistory))
+         )
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

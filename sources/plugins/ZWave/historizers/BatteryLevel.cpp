@@ -5,11 +5,11 @@
 namespace historizers
 {
    CBatteryLevel::CBatteryLevel(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CIntegerTypeInfo &ti)
-      : COpenZWaveSingleHistorizableData<int>(boost::make_shared<shared::plugin::yPluginApi::historization::CBatteryLevel>(name, accessMode, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti))
+      : COpenZWaveSingleHistorizableData<int>(boost::make_shared<shared::plugin::yPluginApi::historization::CBatteryLevel>(name, accessMode, shared::plugin::yPluginApi::EMeasureType::kAbsolute, ti))
    {
    }
 
-   CBatteryLevel::CBatteryLevel(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::historization::EMeasureType measureType, CIntegerTypeInfo &ti)
+   CBatteryLevel::CBatteryLevel(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::EMeasureType measureType, CIntegerTypeInfo &ti)
       : COpenZWaveSingleHistorizableData<int>(boost::make_shared<shared::plugin::yPluginApi::historization::CBatteryLevel>(name, accessMode, measureType, ti))
    {
    }

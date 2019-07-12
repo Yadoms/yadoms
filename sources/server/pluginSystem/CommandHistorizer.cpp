@@ -33,7 +33,7 @@ namespace pluginSystem
       return m_value;
    }
 
-   const shared::plugin::yPluginApi::historization::EMeasureType& CCommandHistorizer::getMeasureType() const
+   const shared::plugin::yPluginApi::EMeasureType& CCommandHistorizer::getMeasureType() const
    {
       return m_keyword->Measure();
    }
@@ -43,8 +43,8 @@ namespace pluginSystem
       return shared::CDataContainer();
    }
 
-   const shared::plugin::yPluginApi::historization::EHistoryDepth& CCommandHistorizer::getHistoryDepth() const
+   const shared::plugin::yPluginApi::EHistoryDepth& CCommandHistorizer::getHistoryDepth() const
    {
-      return shared::plugin::yPluginApi::historization::EHistoryDepth::kDefault;
+      return shared::plugin::yPluginApi::EHistoryDepth::kDefault;
    }
 } // namespace pluginSystem	

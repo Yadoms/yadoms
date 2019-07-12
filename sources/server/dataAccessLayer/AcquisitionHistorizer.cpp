@@ -87,7 +87,7 @@ namespace dataAccessLayer
       boost::shared_ptr<database::entities::CAcquisition> acq;
 
       //save data
-      if (data.getMeasureType() == shared::plugin::yPluginApi::historization::EMeasureType::kIncrement)
+      if (data.getMeasureType() == shared::plugin::yPluginApi::EMeasureType::kIncrement)
          acq = m_dataProvider->getAcquisitionRequester()->incrementData(keywordId, data.formatValue(), dataTime);
       else
          acq = m_dataProvider->getAcquisitionRequester()->saveData(keywordId, data.formatValue(), dataTime);
@@ -96,7 +96,7 @@ namespace dataAccessLayer
       {
          std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary>> acquisitionSummary;
 
-         if (data.getHistoryDepth() != shared::plugin::yPluginApi::historization::EHistoryDepth::kNoHistory)
+         if (data.getHistoryDepth() != shared::plugin::yPluginApi::EHistoryDepth::kNoHistory)
          {
             //only update summary data if already exists
             //if not exists it will be created by SQLiteSummaryDataTask

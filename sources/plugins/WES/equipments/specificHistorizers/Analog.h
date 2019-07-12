@@ -23,7 +23,7 @@ namespace specificHistorizers
       //-----------------------------------------------------
       CAnalog(const std::string& keywordName,
               const yApi::EKeywordAccessMode& accessMode = yApi::EKeywordAccessMode::kGet,
-              const yApi::historization::EMeasureType& measureType = yApi::historization::EMeasureType::kAbsolute,
+              const yApi::EMeasureType& measureType = yApi::EMeasureType::kAbsolute,
               yApi::historization::typeInfo::ITypeInfo& additionalInfo = yApi::historization::typeInfo::CEmptyTypeInfo::Empty);
 
       //-----------------------------------------------------

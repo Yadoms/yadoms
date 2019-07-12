@@ -39,7 +39,7 @@ namespace database
                                                       data);
 
                   // Add value in acquisition table
-                  if (keywordEntity->HistoryDepth() != shared::plugin::yPluginApi::historization::EHistoryDepth::kNoHistory)
+                  if (keywordEntity->HistoryDepth() != shared::plugin::yPluginApi::EHistoryDepth::kNoHistory)
                   {
                      auto q = m_databaseRequester->newQuery();
                      q->InsertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(),
@@ -116,7 +116,7 @@ namespace database
             const auto newAcquisition = m_keywordRequester->getKeywordLastAcquisition(keywordId);
 
             // Add value in acquisition table
-            if (keywordEntity->HistoryDepth() != shared::plugin::yPluginApi::historization::EHistoryDepth::kNoHistory)
+            if (keywordEntity->HistoryDepth() != shared::plugin::yPluginApi::EHistoryDepth::kNoHistory)
             {
                auto q = m_databaseRequester->newQuery();
                q->InsertInto(CAcquisitionTable::getTableName(),

@@ -85,7 +85,7 @@ namespace dataAccessLayer
       const std::vector<shared::plugin::yPluginApi::EKeywordDataType>& expectedKeywordTypes,
       const std::vector<std::string>& expectedCapacities,
       const std::vector<shared::plugin::yPluginApi::EKeywordAccessMode>& expectedKeywordAccesses,
-      const std::vector<shared::plugin::yPluginApi::historization::EHistoryDepth>& expectedKeywordHistoryDepth,
+      const std::vector<shared::plugin::yPluginApi::EHistoryDepth>& expectedKeywordHistoryDepth,
       bool blacklisted) const
    {
       return m_keywordRequester->getKeywordsMatchingCriteria(expectedKeywordTypes,

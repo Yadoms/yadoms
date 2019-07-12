@@ -10,7 +10,7 @@ namespace specificHistorizers
    CAnalog::CAnalog(const std::string& keywordName,
                     const std::string& hardwareName,
                     const yApi::EKeywordAccessMode& accessMode,
-                    const yApi::historization::EMeasureType& measureType,
+                    const yApi::EMeasureType& measureType,
                     yApi::historization::typeInfo::ITypeInfo& additionalInfo)
       : CSingleHistorizableData<unsigned int>(keywordName,
                                               analogCapacity(),

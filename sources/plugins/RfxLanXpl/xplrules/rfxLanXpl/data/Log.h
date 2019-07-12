@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/DataContainer.h>
 #include <shared/plugin/yPluginApi/historization/IHistorizable.h>
-#include <shared/plugin/yPluginApi/historization/MeasureType.h>
+#include <shared/plugin/yPluginApi/MeasureType.h>
 #include <shared/plugin/yPluginApi/KeywordAccessMode.h>
 #include <shared/plugin/yPluginApi/StandardCapacity.h>
 
@@ -45,9 +45,9 @@ namespace xplrules
             const shared::plugin::yPluginApi::CStandardCapacity& getCapacity() const override;
             const shared::plugin::yPluginApi::EKeywordAccessMode& getAccessMode() const override;
             std::string formatValue() const override;
-            const shared::plugin::yPluginApi::historization::EMeasureType& getMeasureType() const override;
+            const shared::plugin::yPluginApi::EMeasureType& getMeasureType() const override;
             shared::CDataContainer getTypeInfo() const override;
-            const shared::plugin::yPluginApi::historization::EHistoryDepth& getHistoryDepth() const override;
+            const shared::plugin::yPluginApi::EHistoryDepth& getHistoryDepth() const override;
             // [END] IHistorizable implementation;
 
             //-----------------------------------------------------

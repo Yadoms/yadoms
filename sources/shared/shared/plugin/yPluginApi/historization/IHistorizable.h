@@ -1,8 +1,8 @@
 #pragma once
 #include "../StandardCapacities.h"
 #include "../KeywordAccessMode.h"
-#include "MeasureType.h"
-#include "HistoryDepth.h"
+#include "../MeasureType.h"
+#include "../HistoryDepth.h"
 #include <shared/DataContainer.h>
 
 namespace shared

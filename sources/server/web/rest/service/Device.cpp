@@ -391,7 +391,7 @@ namespace web
             {
                if (parameters.size() > 2)
                {
-                  const shared::plugin::yPluginApi::historization::EHistoryDepth historyDepth(parameters[2]);
+                  const shared::plugin::yPluginApi::EHistoryDepth historyDepth(parameters[2]);
 
                   //run query
                   const auto result = m_deviceRequester->getDeviceWithKeywordHistoryDepth(historyDepth);
@@ -457,7 +457,7 @@ namespace web
                      expectedKeywordAccesses.emplace_back(node);
                }
 
-               std::vector<shared::plugin::yPluginApi::historization::EHistoryDepth> expectedKeywordHistoryDepth;
+               std::vector<shared::plugin::yPluginApi::EHistoryDepth> expectedKeywordHistoryDepth;
                if (criteria.exists("expectedKeywordHistoryDepth"))
                {
                   for (const auto& node : criteria.get<std::vector<std::string>>("expectedKeywordHistoryDepth"))

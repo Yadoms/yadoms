@@ -5,7 +5,7 @@
 
 COpenZWaveNodeKeywordDimmable::COpenZWaveNodeKeywordDimmable(OpenZWave::ValueID& valueId, const std::string& vLabel, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CIntegerTypeInfo &ti)
    : COpenZWaveNodeKeywordBase(valueId),
-     m_keyword(boost::make_shared<shared::plugin::yPluginApi::historization::CDimmable>(COpenZWaveHelpers::GenerateKeywordName(valueId), accessMode, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti))
+     m_keyword(boost::make_shared<shared::plugin::yPluginApi::historization::CDimmable>(COpenZWaveHelpers::GenerateKeywordName(valueId), accessMode, shared::plugin::yPluginApi::EMeasureType::kAbsolute, ti))
 {
 }
 

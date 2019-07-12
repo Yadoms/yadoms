@@ -187,7 +187,7 @@ namespace database
             const std::vector<shared::plugin::yPluginApi::EKeywordDataType>& expectedKeywordTypes,
             const std::vector<std::string>& expectedCapacities,
             const std::vector<shared::plugin::yPluginApi::EKeywordAccessMode>& expectedKeywordAccesses,
-            const std::vector<shared::plugin::yPluginApi::historization::EHistoryDepth>& expectedKeywordHistoryDepth,
+            const std::vector<shared::plugin::yPluginApi::EHistoryDepth>& expectedKeywordHistoryDepth,
             bool blacklisted) const
          {
             auto subQuery = m_databaseRequester->newQuery();

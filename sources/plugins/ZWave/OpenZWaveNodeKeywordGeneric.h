@@ -69,7 +69,7 @@ public:
                                                                       shared::plugin::yPluginApi::EKeywordAccessMode accessMode,
                                                                       const std::string& units,
                                                                       shared::plugin::yPluginApi::EKeywordDataType dataType,
-                                                                      shared::plugin::yPluginApi::historization::EMeasureType measureType = shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute,
+                                                                      shared::plugin::yPluginApi::EMeasureType measureType = shared::plugin::yPluginApi::EMeasureType::kAbsolute,
                                                                       shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo& ti = shared::plugin::yPluginApi::historization::typeInfo::CEmptyTypeInfo::Empty)
    {
       auto keyword(boost::make_shared<COpenZWaveNodeKeywordGenericByType<T> >(COpenZWaveHelpers::GenerateKeywordName(vID), COpenZWaveNodeKeywordFactory::getCapacity(vLabel, units, dataType), accessMode, measureType, ti));

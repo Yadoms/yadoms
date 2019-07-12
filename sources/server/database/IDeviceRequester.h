@@ -95,7 +95,7 @@ namespace database
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithKeywordHistoryDepth(
-         const shared::plugin::yPluginApi::historization::EHistoryDepth& historyDepth) const = 0;
+         const shared::plugin::yPluginApi::EHistoryDepth& historyDepth) const = 0;
 
 
       //--------------------------------------------------------------

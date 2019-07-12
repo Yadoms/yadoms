@@ -127,6 +127,8 @@ set(SHARED_LIB_SRC
    shared/plugin/information/IYadomsInformation.h
 
    shared/plugin/yPluginApi/commonIncludes.h
+   shared/plugin/yPluginApi/HistoryDepth.cpp
+   shared/plugin/yPluginApi/HistoryDepth.h
    shared/plugin/yPluginApi/IBindingQueryData.h
    shared/plugin/yPluginApi/IBindingQueryRequest.h
    shared/plugin/yPluginApi/IDeviceCommand.h
@@ -142,6 +144,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/KeywordAccessMode.h
    shared/plugin/yPluginApi/KeywordDataType.cpp
    shared/plugin/yPluginApi/KeywordDataType.h
+   shared/plugin/yPluginApi/MeasureType.cpp
+   shared/plugin/yPluginApi/MeasureType.h
    shared/plugin/yPluginApi/StandardCapacities.cpp
    shared/plugin/yPluginApi/StandardCapacities.h
    shared/plugin/yPluginApi/StandardCapacity.cpp
@@ -208,16 +212,12 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Illumination.h
    shared/plugin/yPluginApi/historization/IlluminationWm2.cpp
    shared/plugin/yPluginApi/historization/IlluminationWm2.h
-   shared/plugin/yPluginApi/historization/HistoryDepth.cpp
-   shared/plugin/yPluginApi/historization/HistoryDepth.h
    shared/plugin/yPluginApi/historization/Load.cpp
    shared/plugin/yPluginApi/historization/Load.h
    shared/plugin/yPluginApi/historization/Message.cpp
    shared/plugin/yPluginApi/historization/Message.h
    shared/plugin/yPluginApi/historization/MessageFormatter.cpp
    shared/plugin/yPluginApi/historization/MessageFormatter.h
-   shared/plugin/yPluginApi/historization/MeasureType.cpp
-   shared/plugin/yPluginApi/historization/MeasureType.h
    shared/plugin/yPluginApi/historization/PluginState.cpp
    shared/plugin/yPluginApi/historization/PluginState.h
    shared/plugin/yPluginApi/historization/PluginStateMessage.cpp
