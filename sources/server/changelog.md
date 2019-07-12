@@ -1,42 +1,43 @@
 ### 2.4.0-beta.1
-* NewFeature #575 : add keyword without history
+* New feature #575 : add keyword without history
 
 
-### 2.3.0-beta.4
-* Fix #570 : remove connected user from Summary page of configuration panel (makes no sense)
+### 2.3.0
 * Add IlluminationWm2 historizer
-* Fix #569 : Fix model usage on manually created devices
-* Fix #558 : Build with Protobuf 3.7.1 under Windows
-* Fix #521 : Change the format of duration keywords
-* Fix #561 : Yadoms update
-* Fix script interpreter startup in debug mode
 * Add getKeywordListLastData REST request
-* Fix #571 : Summary data : average values are not exact 
-* Fix #451 : Summary Acquisition Months 
-* Fix #568 : Check summary acquisition on yadoms update 
 * New feature #434 : Add a "connected/disconnected" flag on the main page 
-* Fix #520 : [switch] Bad behaviour with dimmable keyword 
-* Fix #567 : Widget moving to another page fail 
-* Fix #482 : ZWave plugin - Configuration display error
-* Fix #560 : ZWave plugin - cleanup logs
-* Fix #565 : Extra queries failure
-* Fix #136 : JSON empty collection. 
-* Fix #539 : ZWave : configuration items : add numbers NewFeature
-* New feature #556 : Duplicate rule function 
-* New feature #572 : App proxy support
-* Fix #573 : fix querying summary values and fix widget chart
-
-### 2.3.0-beta.3
-* N/A (fixes on RFXCom plugin only)
-
-### 2.3.0-beta.2
-* New feature #555 : Add data export function (maintenance page of configuration panel)
-* New feature #553 : use of full compliant Json
 * New feature #532 : Add readkeyworddetails function to script API
 * New feature #537 : Add a download logs function
+* New feature #553 : use of full compliant Json
+* New feature #555 : Add data export function (maintenance page of configuration panel)
+* New feature #556 : Duplicate rule function 
+* New feature #572 : App proxy support
+* Fix #136 : JSON empty collection. 
+* Fix #451 : Summary Acquisition Months 
+* Fix #482 : ZWave plugin - Configuration display error
+* Fix #520 : [switch] Bad behaviour with dimmable keyword 
+* Fix #521 : Change the format of duration keywords
 * Fix #522 : Try to backup elsewhere if not enough place in system temp folder
-* Fix wrong display for new devices
+* Fix #539 : ZWave : configuration items : add numbers NewFeature
 * Fix #540 : Fix getKeywordData request when used without specifying limit
+* Fix #558 : Build with Protobuf 3.7.1 under Windows
+* Fix #560 : ZWave plugin - cleanup logs
+* Fix #561 : Yadoms update
+* Fix #565 : Extra queries failure
+* Fix #567 : Widget moving to another page fail 
+* Fix #568 : Check summary acquisition on yadoms update 
+* Fix #569 : Fix model usage on manually created devices
+* Fix #570 : remove connected user from Summary page of configuration panel (makes no sense)
+* Fix #571 : Summary data : average values are not exact 
+* Fix #573 : fix querying summary values and fix widget chart
+* Fix error when loading web client on slow connection
+* Fix script interpreter startup in debug mode
+* Fix wrong display for new devices
+
+#### Issues fixed
+* [Click here to see issues fixed in this version](https://github.com/Yadoms/yadoms/milestone/10?closed=1)
+
+
 
 
 ### 2.2.1

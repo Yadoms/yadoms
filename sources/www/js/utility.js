@@ -24,13 +24,18 @@ function notify(message, gravity, timeout) {
       timeout = defaultNotyTimeout;
    assert(message != undefined, "Message must be defined");
    assert(gravity != undefined, "Gravity must be defined");
-   return noty({ text: message, timeout: timeout, layout: defaultNotyLayout, type: gravity });
+   return noty({
+      text: message,
+      timeout: timeout,
+      layout: defaultNotyLayout,
+      type: gravity
+   });
 }
 
 /**
  * Notify an Information message to the window using noty library
  * @param message message to display
-  * @returns {noty}
+ * @returns {noty}
  */
 function notifyInformation(message) {
    console.info(message);
@@ -107,9 +112,19 @@ function parseBool(string, defaultValue) {
    if (typeof (string) == 'boolean')
       return string;
    switch (string.toLowerCase()) {
-      case "true": case "yes": case "1": case "on" : return true;
-      case "false": case "no": case "0": case "off" : case null: return false;
-      default: return defaultValue;
+      case "true":
+      case "yes":
+      case "1":
+      case "on":
+         return true;
+      case "false":
+      case "no":
+      case "0":
+      case "off":
+      case null:
+         return false;
+      default:
+         return defaultValue;
    }
 }
 /**
@@ -130,12 +145,15 @@ function notifyConfirm(message, gravity, confirmCallback, cancelCallback) {
       text: message,
       layout: defaultNotyLayout,
       gravity: gravity,
-      buttons: [
-         {
-            addClass: 'btn btn-primary', text: $.t("common.yes"), onClick: confirmCallback
+      buttons: [{
+            addClass: 'btn btn-primary',
+            text: $.t("common.yes"),
+            onClick: confirmCallback
          },
          {
-            addClass: 'btn btn-danger', text: $.t("common.no"), onClick: cancelCallback
+            addClass: 'btn btn-danger',
+            text: $.t("common.no"),
+            onClick: cancelCallback
          }
       ]
    });
@@ -153,8 +171,8 @@ function createUUID() {
    for (var i = 0; i < 36; i++) {
       s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
    }
-   s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
-   s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+   s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
+   s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
    s[8] = s[13] = s[18] = s[23] = "-";
 
    return s.join("");
@@ -235,6 +253,7 @@ function concatenateUrl(url1, url2) {
 }
 
 var loadedJSLibs = [];
+var loadedJSGzLibs = [];
 
 /**
  * Load js library in gz format and return a promise
@@ -242,13 +261,15 @@ var loadedJSLibs = [];
  */
 function asyncLoadJSGzLib(libraryName) {
    assert(libraryName != undefined, "libraryName must be defined");
+
+   if (loadedJSGzLibs[libraryName]) {
+      // Library already loading or loaded
+      return loadedJSGzLibs[libraryName];
+   }
+
    var d = new $.Deferred();
-   if (!loadedJSLibs[libraryName]){
-      //we save the promise for other load requests
-      loadedJSLibs[libraryName] = d.promise();
-      //we create a new deffered
-      RestEngine.getBinaryFiles(libraryName)
-      .done(function(data) {
+   RestEngine.getBinaryFiles(libraryName)
+      .done(function (data) {
          var script = document.createElement("script");
          script.type = "text/javascript";
          script.innerHTML = data;
@@ -262,14 +283,14 @@ function asyncLoadJSGzLib(libraryName) {
          head.appendChild(script, head.lastChild);
          d.resolve();
       })
-      .fail(function(error) {
+      .fail(function (error) {
          console.error(error);
          d.reject();
       });
-      return d.promise();
-   } else {
-      return loadedJSLibs[libraryName];
-   }
+
+   // Save the promise for other load requests
+   loadedJSGzLibs[libraryName] = d.promise();
+   return d.promise();
 }
 
 /**
@@ -284,15 +305,15 @@ function asyncLoadJSGzLibs(libraryNames) {
 
    $.each(libraryNames, function (index, lib) {
       arrayOfDeffered.push(asyncLoadJSGzLib(lib)
-      .fail(function(error){
-         console.log(error);
-      }));
+         .fail(function (error) {
+            console.log(error);
+         }));
    });
 
-   $.when.apply($,arrayOfDeffered)
-   .done(d.resolve)
-   .fail(d.reject);
-   
+   $.when.apply($, arrayOfDeffered)
+      .done(d.resolve)
+      .fail(d.reject);
+
    return d.promise();
 }
 
@@ -300,47 +321,47 @@ function asyncLoadJSGzLibs(libraryNames) {
  * Load js library and return a promise
  * @param {string} url of the library
  */
-function asyncLoadJSLib(librayName) {
-   assert(librayName != undefined, "librayName must be defined");
+function asyncLoadJSLib(libraryName) {
+   assert(libraryName != undefined, "libraryName must be defined");
+
+   if (loadedJSLibs[libraryName]) {
+      // Library already loading or loaded
+      return loadedJSLibs[libraryName];
+   }
 
    var d = new $.Deferred();
-   if (!loadedJSLibs[librayName]) {
-      var script = document.createElement("script");
-      script.type = "text/javascript";
-      script.src = librayName;
-      // ASYNC: load in parallel and execute as soon as possible
-      script.async = false;
-      // DEFER: load in parallel but maintain execution order
-      script.defer = false;
+   var script = document.createElement("script");
+   script.type = "text/javascript";
+   script.src = libraryName;
+   // ASYNC: load in parallel and execute as soon as possible
+   script.async = false;
+   // DEFER: load in parallel but maintain execution order
+   script.defer = false;
 
-      script.onload = script.onreadystatechange = function (event) {
-         //from headJS
-         if (event.type === "load" || (/loaded|complete/.test(script.readyState) && (!document.documentMode || document.documentMode < 9))) {
-            // release event listeners
-            script.onload = script.onreadystatechange = script.onerror = null;
-            console.debug(librayName + " loaded");
-            d.resolve();
-         }
-      };
-
-      script.onerror = function (event) {
-         console.error(event);
+   script.onload = script.onreadystatechange = function (event) {
+      //from headJS
+      if (event.type === "load" || (/loaded|complete/.test(script.readyState) && (!document.documentMode || document.documentMode < 9))) {
+         // release event listeners
          script.onload = script.onreadystatechange = script.onerror = null;
+         console.debug(libraryName + " loaded");
          d.resolve();
       }
+   };
 
-      console.debug("loading " + librayName + " ...");
-
-      //we insert into head (from HeadJS)
-      var head = document.head || document.getElementsByTagName("head")[0];
-      head.insertBefore(script, head.lastChild);
-
-      //we save the promise for other load requests
-      loadedJSLibs[librayName] = d.promise();
-   } else {
+   script.onerror = function (event) {
+      console.error(event);
+      script.onload = script.onreadystatechange = script.onerror = null;
       d.resolve();
    }
 
+   console.debug("loading " + libraryName + " ...");
+
+   //we insert into head (from HeadJS)
+   var head = document.head || document.getElementsByTagName("head")[0];
+   head.insertBefore(script, head.lastChild);
+
+   // Save the promise for other load requests
+   loadedJSLibs[libraryName] = d.promise();
    return d.promise();
 }
 
@@ -358,9 +379,9 @@ function asyncLoadJSLibs(librayNames) {
       arrayOfDeffered.push(asyncLoadJSLib(lib));
    });
 
-   $.when.apply($,arrayOfDeffered)
-   .done(d.resolve)
-   .fail(d.reject);
+   $.when.apply($, arrayOfDeffered)
+      .done(d.resolve)
+      .fail(d.reject);
 
    return d.promise();
 }
@@ -377,28 +398,28 @@ function asyncLoadGzCss(cssFile) {
       //we create a new deffered
       var d = new $.Deferred();
       RestEngine.getBinaryFiles(cssFile)
-      .done(function(data) {
-         var script = document.createElement("style");
-         //script.type = "text/css";
-         //script.rel = "stylesheet"; //
-         script.innerHTML = data;
-         // ASYNC: load in parallel and execute as soon as possible
-         script.async = false;
-         // DEFER: load in parallel but maintain execution order
-         script.defer = false;
+         .done(function (data) {
+            var script = document.createElement("style");
+            //script.type = "text/css";
+            //script.rel = "stylesheet"; //
+            script.innerHTML = data;
+            // ASYNC: load in parallel and execute as soon as possible
+            script.async = false;
+            // DEFER: load in parallel but maintain execution order
+            script.defer = false;
 
-         //we insert into head (from HeadJS)
-         var head = document.head || document.getElementsByTagName("head")[0];
-         head.appendChild(script, head.lastChild);
+            //we insert into head (from HeadJS)
+            var head = document.head || document.getElementsByTagName("head")[0];
+            head.appendChild(script, head.lastChild);
 
-         //we save the promise for other load requests
-         loadedCss[cssFile] = d.promise();
-         d.resolve();
-      })
-      .fail(function(error) {
-         console.error(error);
-         d.reject();
-      });
+            //we save the promise for other load requests
+            loadedCss[cssFile] = d.promise();
+            d.resolve();
+         })
+         .fail(function (error) {
+            console.error(error);
+            d.reject();
+         });
       return d.promise();
    } else {
       return loadedCss[cssFile];
@@ -419,10 +440,10 @@ function asyncLoadManyGzCss(cssNames) {
       arrayOfDeffered.push(asyncLoadGzCss(lib));
    });
 
-   $.when.apply($,arrayOfDeffered)
-   .done(d.resolve)
-   .fail(d.reject);
-   
+   $.when.apply($, arrayOfDeffered)
+      .done(d.resolve)
+      .fail(d.reject);
+
    return d.promise();
 }
 
@@ -490,7 +511,7 @@ function asyncLoadManyCss(cssNames) {
       arrayOfDeffered.push(asyncLoadCss(lib));
    });
 
-   $.when.apply($,arrayOfDeffered).done(function () {
+   $.when.apply($, arrayOfDeffered).done(function () {
       d.resolve();
    });
 
@@ -501,26 +522,26 @@ function asyncLoadManyCss(cssNames) {
  * Returns a reference to the specified CSS rule(s).
  * @param {RuleName} The name of the CSS Rule
  */
-function getRule( RuleName ) {
+function getRule(RuleName) {
 
-  var rule;
-  var findedRule=[];
+   var rule;
+   var findedRule = [];
 
-  var ss = document.styleSheets;
+   var ss = document.styleSheets;
 
-  for (var i = 0; i < ss.length; ++i) {
+   for (var i = 0; i < ss.length; ++i) {
 
-	  // loop through all the rules!
+      // loop through all the rules!
 
-	  for (var x = 0; x < ss[i].cssRules.length; ++x) {
-		  rule = ss[i].cssRules[x];
-		  if (rule.name == RuleName && rule.type == CSSRule.KEYFRAMES_RULE) {
-			  findedRule.push( rule );
-		  }
-	  }
-  }
-  return findedRule;
-} 
+      for (var x = 0; x < ss[i].cssRules.length; ++x) {
+         rule = ss[i].cssRules[x];
+         if (rule.name == RuleName && rule.type == CSSRule.KEYFRAMES_RULE) {
+            findedRule.push(rule);
+         }
+      }
+   }
+   return findedRule;
+}
 
 /**
  * Returns custom sort function to be passed as param/callback to the Array's sort method.
@@ -528,31 +549,29 @@ function getRule( RuleName ) {
  * @param a The the second parameter
  */
 function CustomSortFriendlyName(a, b) {
-	
-	if (typeof(a.friendlyName) == "undefined")
-	{
-		console.error("objet have no parameter friendlyName");
-		console.error(a);
-		return 1;
-	}
-	
-	if (typeof(b.friendlyName) == "undefined")
-	{
-		console.error("objet have no parameter friendlyName");
-		console.error(b);
-		return 1;
-	}
-	
-	return (a.friendlyName.toLowerCase() > b.friendlyName.toLowerCase()) ? 1 : -1;
+
+   if (typeof (a.friendlyName) == "undefined") {
+      console.error("objet have no parameter friendlyName");
+      console.error(a);
+      return 1;
+   }
+
+   if (typeof (b.friendlyName) == "undefined") {
+      console.error("objet have no parameter friendlyName");
+      console.error(b);
+      return 1;
+   }
+
+   return (a.friendlyName.toLowerCase() > b.friendlyName.toLowerCase()) ? 1 : -1;
 }
 
 /**
  * Returns A sorted array containing all keywords/devices. Each cell would have the friendlyName parameter.
  * @param arguments The existing array of keywords/devices.
  */
-function sortListItemsWithFriendlyName( arguments ) {
-	var op = Array.prototype.sort.call(arguments, CustomSortFriendlyName);
-	return op;
+function sortListItemsWithFriendlyName(arguments) {
+   var op = Array.prototype.sort.call(arguments, CustomSortFriendlyName);
+   return op;
 }
 
 /**
@@ -561,31 +580,29 @@ function sortListItemsWithFriendlyName( arguments ) {
  * @param a The the second parameter
  */
 function CustomSortDisplayName(a, b) {
-	
-	if (typeof(a.displayName) == "undefined")
-	{
-		console.error("object have no parameter displayName");
-		console.error(a);
-		return 1;
-	}
-	
-	if (typeof(b.displayName) == "undefined")
-	{
-		console.error("object have no parameter displayName");
-		console.error(b);
-		return 1;
-	}
-	
-	return (a.displayName.toLowerCase() > b.displayName.toLowerCase()) ? 1 : -1;
+
+   if (typeof (a.displayName) == "undefined") {
+      console.error("object have no parameter displayName");
+      console.error(a);
+      return 1;
+   }
+
+   if (typeof (b.displayName) == "undefined") {
+      console.error("object have no parameter displayName");
+      console.error(b);
+      return 1;
+   }
+
+   return (a.displayName.toLowerCase() > b.displayName.toLowerCase()) ? 1 : -1;
 }
 
 /**
  * Returns A sorted array containing all keywords/devices. Each cell would have the friendlyName parameter.
  * @param arguments The existing array of keywords/devices.
  */
-function sortListItemsWithdisplayName( arguments ) {
-	var op = Array.prototype.sort.call(arguments, CustomSortDisplayName);
-	return op;
+function sortListItemsWithdisplayName(arguments) {
+   var op = Array.prototype.sort.call(arguments, CustomSortDisplayName);
+   return op;
 }
 
 /**
@@ -594,12 +611,23 @@ function sortListItemsWithdisplayName( arguments ) {
  * @return string The file size formatted : 88 kB
  */
 function humanFileSize(size) {
-  var i = Math.floor( Math.log(size) / Math.log(1024) );
-  return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + [$.t("filesize-units.b", {defaultValue: 'B'}), 
-															  $.t("filesize-units.kb", {defaultValue: 'kB'}), 
-															  $.t("filesize-units.mb", {defaultValue: 'MB'}), 
-															  $.t("filesize-units.gb", {defaultValue: 'GB'}), 
-															  $.t("filesize-units.tb", {defaultValue: 'TB'})][i];
+   var i = Math.floor(Math.log(size) / Math.log(1024));
+   return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + [$.t("filesize-units.b", {
+         defaultValue: 'B'
+      }),
+      $.t("filesize-units.kb", {
+         defaultValue: 'kB'
+      }),
+      $.t("filesize-units.mb", {
+         defaultValue: 'MB'
+      }),
+      $.t("filesize-units.gb", {
+         defaultValue: 'GB'
+      }),
+      $.t("filesize-units.tb", {
+         defaultValue: 'TB'
+      })
+   ][i];
 }
 
 /**
@@ -609,5 +637,5 @@ function humanFileSize(size) {
  * @return the key of matching value
  */
 function getKeyByValue(object, value) {
-  return Object.keys(object).find(key => object[key] === value);
+   return Object.keys(object).find(key => object[key] === value);
 }
