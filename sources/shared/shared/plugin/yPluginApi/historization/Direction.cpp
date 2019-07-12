@@ -13,7 +13,7 @@ namespace shared
             CDirection::CDirection(const std::string& keywordName,
                                    const EKeywordAccessMode& accessMode,
                                    const EMeasureType& measureType,
-                                   typeInfo::CIntTypeInfo& additionalInfo,
+                                   const typeInfo::CIntTypeInfo& additionalInfo,
                                    const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<int>(keywordName,
                                               CStandardCapacities::Direction(),

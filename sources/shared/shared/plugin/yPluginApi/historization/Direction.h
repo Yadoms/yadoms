@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
-#include "typeInfo/IntTypeInfo.h"
+#include "../typeInfo/IntTypeInfo.h"
 
 namespace shared
 {
@@ -28,7 +28,7 @@ namespace shared
                explicit CDirection(const std::string& keywordName,
                                    const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
                                    const EMeasureType& measureType = EMeasureType::kAbsolute,
-                                   typeInfo::CIntTypeInfo& additionalInfo = typeInfo::CIntTypeInfo::Empty,
+                                   const typeInfo::CIntTypeInfo& additionalInfo = typeInfo::CIntTypeInfo::Empty,
                                    const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
                virtual ~CDirection() = default;

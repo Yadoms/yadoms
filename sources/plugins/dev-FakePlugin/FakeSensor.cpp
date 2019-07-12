@@ -11,7 +11,7 @@ CFakeSensor::CFakeSensor(const std::string& deviceName)
      m_current(boost::make_shared<yApi::historization::CCurrent>("current",
                                                                  yApi::EKeywordAccessMode::kGet,
                                                                  yApi::EMeasureType::kAbsolute,
-                                                                 yApi::historization::typeInfo::CDoubleTypeInfo().setMin(0).setMax(5).setPrecision(0.1))),
+                                                                 yApi::typeInfo::CDoubleTypeInfo().setMin(0).setMax(5).setPrecision(0.1))),
    m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
      m_dateTime(boost::make_shared<yApi::historization::CDateTime>("dateTime",
                                                                    shared::plugin::yPluginApi::EKeywordAccessMode::kGet)),

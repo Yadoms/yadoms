@@ -11,7 +11,7 @@ namespace specificHistorizers
                     const std::string& hardwareName,
                     const yApi::EKeywordAccessMode& accessMode,
                     const yApi::EMeasureType& measureType,
-                    yApi::historization::typeInfo::ITypeInfo& additionalInfo)
+                    const yApi::typeInfo::ITypeInfo& additionalInfo)
       : CSingleHistorizableData<unsigned int>(keywordName,
                                               analogCapacity(),
                                               accessMode,
@@ -26,9 +26,4 @@ namespace specificHistorizers
    {
       return m_hardwareName;
    }
-
-   CAnalog::~CAnalog()
-   {
-   }
 }
-

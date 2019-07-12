@@ -2,7 +2,7 @@
 #include <shared/Export.h>
 #include <Poco/Types.h>
 #include "SingleHistorizableData.hpp"
-#include "typeInfo/DoubleTypeInfo.h"
+#include "../typeInfo/DoubleTypeInfo.h"
 
 namespace shared
 {
@@ -29,7 +29,7 @@ namespace shared
                explicit CEnergy(const std::string& keywordName,
                                 const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
                                 const EMeasureType& measureType = EMeasureType::kCumulative,
-                                typeInfo::CDoubleTypeInfo& additionalInfo = typeInfo::CDoubleTypeInfo::Empty,
+                                const typeInfo::CDoubleTypeInfo& additionalInfo = typeInfo::CDoubleTypeInfo::Empty,
                                 const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
                virtual ~CEnergy() = default;
@@ -52,7 +52,7 @@ namespace shared
                explicit CEnergyDouble(const std::string& keywordName,
                                       const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
                                       const EMeasureType& measureType = EMeasureType::kCumulative,
-                                      typeInfo::CDoubleTypeInfo& additionalInfo = typeInfo::CDoubleTypeInfo::Empty,
+                                      const typeInfo::CDoubleTypeInfo& additionalInfo = typeInfo::CDoubleTypeInfo::Empty,
                                       const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
                virtual ~CEnergyDouble() = default;

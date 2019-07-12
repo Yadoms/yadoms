@@ -24,7 +24,7 @@ namespace specificHistorizers
       CAnalog(const std::string& keywordName,
               const yApi::EKeywordAccessMode& accessMode = yApi::EKeywordAccessMode::kGet,
               const yApi::EMeasureType& measureType = yApi::EMeasureType::kAbsolute,
-              yApi::historization::typeInfo::ITypeInfo& additionalInfo = yApi::historization::typeInfo::CEmptyTypeInfo::Empty);
+              const yApi::typeInfo::ITypeInfo& additionalInfo = yApi::typeInfo::CEmptyTypeInfo::Empty);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
-#include "typeInfo/DoubleTypeInfo.h"
+#include "../typeInfo/DoubleTypeInfo.h"
 
 namespace shared
 {
@@ -26,7 +26,7 @@ namespace shared
                //-----------------------------------------------------
                explicit CDistance(const std::string& keywordName,
                                   const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
-                                  typeInfo::CDoubleTypeInfo& additionalInfo = typeInfo::CDoubleTypeInfo::Empty,
+                                  const typeInfo::CDoubleTypeInfo& additionalInfo = typeInfo::CDoubleTypeInfo::Empty,
                                   const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
                virtual ~CDistance() = default;

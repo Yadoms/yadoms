@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
-#include "typeInfo/StringTypeInfo.h"
+#include "../typeInfo/StringTypeInfo.h"
 
 namespace shared
 {

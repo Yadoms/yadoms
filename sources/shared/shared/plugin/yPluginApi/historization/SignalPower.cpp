@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SignalPower.h"
 #include "../StandardCapacities.h"
-#include "typeInfo/PercentageTypeInfo.h"
+#include "../typeInfo/PercentageTypeInfo.h"
 
 namespace shared
 {

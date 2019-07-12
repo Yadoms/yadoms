@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/Export.h>
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
-#include "typeInfo/BoolTypeInfo.h"
+#include "../typeInfo/BoolTypeInfo.h"
 
 namespace shared
 {

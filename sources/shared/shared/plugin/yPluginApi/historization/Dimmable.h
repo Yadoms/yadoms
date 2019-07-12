@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/Export.h>
-#include "typeInfo/IntTypeInfo.h"
+#include "../typeInfo/IntTypeInfo.h"
 #include "SingleHistorizableData.hpp"
 
 namespace shared

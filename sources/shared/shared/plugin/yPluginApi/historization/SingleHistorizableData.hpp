@@ -2,9 +2,9 @@
 
 #include <shared/plugin/yPluginApi/historization/IHistorizable.h>
 #include <shared/enumeration/IExtendedEnum.h>
-#include "typeInfo/ITypeInfo.h"
-#include "typeInfo/EnumTypeInfo.hpp"
-#include "typeInfo/EmptyTypeInfo.h"
+#include "../typeInfo/ITypeInfo.h"
+#include "../typeInfo/EnumTypeInfo.hpp"
+#include "../typeInfo/EmptyTypeInfo.h"
 #include <shared/StringExtension.h>
 
 namespace shared

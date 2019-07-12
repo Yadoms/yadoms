@@ -13,7 +13,7 @@ namespace shared
             CHumidity::CHumidity(const std::string& keywordName,
                                  const EKeywordAccessMode& accessMode,
                                  const EMeasureType& measureType,
-                                 typeInfo::CDoubleTypeInfo& additionalInfo,
+                                 const typeInfo::CDoubleTypeInfo& additionalInfo,
                                  const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<double>(keywordName,
                                                  CStandardCapacities::Humidity(),

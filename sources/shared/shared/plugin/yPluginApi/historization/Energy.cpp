@@ -13,7 +13,7 @@ namespace shared
             CEnergy::CEnergy(const std::string& keywordName,
                              const EKeywordAccessMode& accessMode,
                              const EMeasureType& measureType,
-                             typeInfo::CDoubleTypeInfo& additionalInfo,
+                             const typeInfo::CDoubleTypeInfo& additionalInfo,
                              const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<Poco::Int64>(keywordName,
                                                       CStandardCapacities::Energy(),
@@ -28,7 +28,7 @@ namespace shared
             CEnergyDouble::CEnergyDouble(const std::string& keywordName,
                                          const EKeywordAccessMode& accessMode,
                                          const EMeasureType& measureType,
-                                         typeInfo::CDoubleTypeInfo& additionalInfo,
+                                         const typeInfo::CDoubleTypeInfo& additionalInfo,
                                          const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<double>(keywordName,
                                                  CStandardCapacities::Energy(),

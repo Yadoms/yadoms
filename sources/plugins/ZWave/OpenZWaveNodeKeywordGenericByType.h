@@ -18,7 +18,7 @@ public:
                                       const shared::plugin::yPluginApi::CStandardCapacity& capacity,
                                       const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode,
                                       const shared::plugin::yPluginApi::EMeasureType& measureType = shared::plugin::yPluginApi::EMeasureType::kAbsolute,
-                                      shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo& typeInfo = shared::plugin::yPluginApi::historization::typeInfo::CEmptyTypeInfo::Empty)
+                                      shared::plugin::yPluginApi::typeInfo::ITypeInfo& typeInfo = shared::plugin::yPluginApi::typeInfo::CEmptyTypeInfo::Empty)
       : shared::plugin::yPluginApi::historization::CSingleHistorizableData<T>(keywordName, capacity, accessMode, measureType, typeInfo)
    {
    }
@@ -36,7 +36,7 @@ public:
                                       const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode,
                                       const T& initialValue,
                                       const shared::plugin::yPluginApi::EMeasureType& measureType = shared::plugin::yPluginApi::EMeasureType::kAbsolute,
-                                      shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo& typeInfo = shared::plugin::yPluginApi::historization::typeInfo::CEmptyTypeInfo::Empty)
+                                      shared::plugin::yPluginApi::typeInfo::ITypeInfo& typeInfo = shared::plugin::yPluginApi::typeInfo::CEmptyTypeInfo::Empty)
       : shared::plugin::yPluginApi::historization::CSingleHistorizableData<T>(keywordName, capacity, accessMode, initialValue, measureType, typeInfo)
    {
    }

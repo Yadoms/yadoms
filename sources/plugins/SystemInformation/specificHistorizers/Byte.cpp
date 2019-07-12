@@ -20,17 +20,13 @@ namespace shared
             CByte::CByte(const std::string& keywordName,
                          const EKeywordAccessMode& accessMode,
                          const EMeasureType& measureType,
-                         typeInfo::CIntTypeInfo& additionalInfo)
+                         const typeInfo::CIntTypeInfo& additionalInfo)
                : CSingleHistorizableData<long>(keywordName,
                                                ByteCapacity(),
                                                accessMode,
                                                0,
                                                measureType,
                                                additionalInfo)
-            {
-            }
-
-            CByte::~CByte()
             {
             }
          }

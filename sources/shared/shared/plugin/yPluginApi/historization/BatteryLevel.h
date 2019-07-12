@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
-#include "typeInfo/PercentageTypeInfo.h"
+#include "../typeInfo/PercentageTypeInfo.h"
 
 namespace shared
 {
