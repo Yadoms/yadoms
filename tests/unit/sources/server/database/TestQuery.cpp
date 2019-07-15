@@ -71,7 +71,7 @@ BOOST_AUTO_TEST_CASE(InsertInto)
    database::pgsql::CPgsqlQuery test1;
 
    test1.InsertInto(database::common::CKeywordTable::getTableName(), database::common::CKeywordTable::getDeviceIdColumnName(), database::common::CKeywordTable::getCapacityNameColumnName(), database::common::CKeywordTable::getAccessModeColumnName(), database::common::CKeywordTable::getNameColumnName(), database::common::CKeywordTable::getTypeColumnName(), database::common::CKeywordTable::getMeasureColumnName()).
-      Values(1, "temperature", shared::plugin::yPluginApi::EKeywordAccessMode::kGet, "test", shared::plugin::yPluginApi::EKeywordDataType::kNumeric, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute);
+      Values(1, "temperature", shared::plugin::yPluginApi::EKeywordAccessMode::kGet, "test", shared::plugin::yPluginApi::EKeywordDataType::kNumeric, shared::plugin::yPluginApi::EMeasureType::kAbsolute);
 
    const auto check_query = (boost::format("INSERT INTO %1% (%2%,%3%,%4%,%5%,%6%,%7%) VALUES (1,'temperature','Get','test','Numeric','Absolute')") % database::common::CKeywordTable::getTableName().GetName() % database::common::CKeywordTable::getDeviceIdColumnName().GetName() % database::common::CKeywordTable::getCapacityNameColumnName().GetName() % database::common::CKeywordTable::getAccessModeColumnName().GetName() % database::common::CKeywordTable::getNameColumnName().GetName() % database::common::CKeywordTable::getTypeColumnName().GetName() % database::common::CKeywordTable::getMeasureColumnName().GetName()).str();
    BOOST_CHECK_EQUAL(beautifyQuery(test1), check_query);
