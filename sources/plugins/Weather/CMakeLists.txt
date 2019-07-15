@@ -5,12 +5,14 @@ include("../YadomsPluginsCommon.cmake")
 ## Place here all the plugin source files
 #########################################
 set(WEATHER_PLUGIN_SOURCES
-	stdafx.h
-	stdafx.cpp
-	Weather.h
-	Weather.cpp 
-	WeatherConfiguration.h
-	WeatherConfiguration.cpp 
+   stdafx.h
+   stdafx.cpp
+   LiveWeatherDevice.h
+   LiveWeatherDevice.cpp
+   Weather.h
+   Weather.cpp 
+   WeatherConfiguration.h
+   WeatherConfiguration.cpp 
 )
 
 #########################################

@@ -1,6 +1,7 @@
 #pragma once
 #include <plugin_cpp_api/IPlugin.h>
 #include "WeatherConfiguration.h"
+#include "LiveWeatherDevice.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -16,16 +17,20 @@ public:
    // [END] IPlugin implementation
 
 protected:
-   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const;
-   void startMeasure(boost::shared_ptr<yApi::IYPluginApi> api);
+   void declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api) const;
+   void requestWebService(boost::shared_ptr<yApi::IYPluginApi> api);
    void processResult(boost::shared_ptr<yApi::IYPluginApi> api,
                       const std::string& result) const;
 
 private:
    static const boost::posix_time::time_duration RequestPeriodicity;
+   static const std::string LiveWeatherDeviceName;
+   static const std::string ForecastWeatherDevicePrefix;
+   static const int NbForecastDays;
+
 
    CWeatherConfiguration m_configuration;
-   boost::shared_ptr<yApi::historization::CSwitch> m_connectedKw;
-   boost::shared_ptr<yApi::historization::CDuration> m_pingKw;
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
+   boost::shared_ptr<CLiveWeatherDevice> m_liveWeatherDevice;
+   //TODO std::vector<ForcastPerDayKeywords> forcastPerDayKeywords;
+   //TODO virer std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_forcastPerDayKeywords;
 };
