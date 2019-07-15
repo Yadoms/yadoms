@@ -1,22 +1,25 @@
 #include "stdafx.h"
-#include "WebConnectionQualityConfiguration.h"
+#include "WeatherConfiguration.h"
 #include "shared/Log.h"
 
-CWebConnectionQualityConfiguration::~CWebConnectionQualityConfiguration()
-{
-}
 
-void CWebConnectionQualityConfiguration::initializeWith(const shared::CDataContainer& data)
+void CWeatherConfiguration::initializeWith(const shared::CDataContainer& data)
 {
    m_configuration.initializeWith(data);
 }
 
-void CWebConnectionQualityConfiguration::trace() const
+void CWeatherConfiguration::trace() const
 {
    try
    {
       YADOMS_LOG(information) << "Configuration :";
-      YADOMS_LOG(information) << "  -  periodicity (minutes) : " << periodicityInMinutes();
+      YADOMS_LOG(information) << "  -  apiKey : " << apiKey();
+      YADOMS_LOG(information) << "  -  useSpecificLocation : " << useSpecificLocation();
+      if (useSpecificLocation())
+      {
+         YADOMS_LOG(information) << "  -     longitude : " << specificLocationLongitude();
+         YADOMS_LOG(information) << "  -     latitude : " << specificLocationLatitude();
+      }
    }
    catch (const shared::exception::CInvalidParameter& e)
    {
@@ -28,7 +31,22 @@ void CWebConnectionQualityConfiguration::trace() const
    }
 }
 
-unsigned int CWebConnectionQualityConfiguration::periodicityInMinutes() const
+std::string CWeatherConfiguration::apiKey() const
 {
-   return m_configuration.get<unsigned int>("periodicityMinutes");
+   return m_configuration.get<std::string>("apiKey");
+}
+
+bool CWeatherConfiguration::useSpecificLocation() const
+{
+   return m_configuration.get<bool>("useSpecificLocation");
+}
+
+double CWeatherConfiguration::specificLocationLongitude() const
+{
+   return m_configuration.get<double>("useSpecificLocation.content.longitude");
+}
+
+double CWeatherConfiguration::specificLocationLatitude() const
+{
+   return m_configuration.get<double>("useSpecificLocation.content.latitude");
 }

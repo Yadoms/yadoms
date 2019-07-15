@@ -6,17 +6,19 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 
-class CWebConnectionQualityConfiguration
+class CWeatherConfiguration
 {
 public:
-   virtual ~CWebConnectionQualityConfiguration();
+   virtual ~CWeatherConfiguration() = default;
 
    void initializeWith(const shared::CDataContainer& data);
    void trace() const;
 
-   unsigned int periodicityInMinutes() const;
+   std::string apiKey() const;
+   bool useSpecificLocation() const;
+   double specificLocationLongitude() const;
+   double specificLocationLatitude() const;
 
 private:
    yApi::YPluginConfiguration m_configuration;
 };
-
