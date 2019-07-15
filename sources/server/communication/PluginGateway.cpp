@@ -31,6 +31,12 @@ namespace communication
       auto keyword = m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
       auto device = m_dataProvider->getDeviceRequester()->getDevice(keyword->DeviceId);
 
+      if (keyword->AccessMode() != shared::plugin::yPluginApi::EKeywordAccessMode::kGetSetValue)
+      {
+         YADOMS_LOG(error) << "Can not send command to not writable keyword (" << keywordId << ")";
+         throw std::runtime_error("Keyword " + std::to_string(keywordId) + " is not writable");
+      }
+
       // Create the command
       const auto command(boost::make_shared<pluginSystem::CDeviceCommand>(device->Name, keyword, body));
 

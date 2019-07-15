@@ -13,22 +13,18 @@ namespace shared
             CFrequency::CFrequency(const std::string& keywordName,
                                    const EKeywordAccessMode& accessMode,
                                    const EMeasureType& measureType,
-                                   typeInfo::CDoubleTypeInfo& additionalInfo)
+                                   const typeInfo::CDoubleTypeInfo& additionalInfo,
+                                   const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<double>(keywordName,
                                                  CStandardCapacities::Frequency(),
                                                  accessMode,
                                                  0.0,
                                                  measureType,
-                                                 additionalInfo)
-            {
-            }
-
-            CFrequency::~CFrequency()
+                                                 additionalInfo,
+                                                 historyDepth)
             {
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

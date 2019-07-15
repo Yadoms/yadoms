@@ -1,12 +1,12 @@
 #pragma once
-#include <shared/plugin/yPluginApi/historization/typeInfo/DoubleTypeInfo.h>
+#include <shared/plugin/yPluginApi/typeInfo/DoubleTypeInfo.h>
 #include <shared/DataContainer.h>
 #include <value_classes/ValueID.h>
 
 //-----------------------------------------------------
 ///\brief Interface for keyword type information
 //-----------------------------------------------------
-class CDecimalTypeInfo : public shared::plugin::yPluginApi::historization::typeInfo::CDoubleTypeInfo
+class CDecimalTypeInfo : public shared::plugin::yPluginApi::typeInfo::CDoubleTypeInfo
 {
 public:
    //-----------------------------------------------------
@@ -19,9 +19,9 @@ public:
    //-----------------------------------------------------
    virtual ~CDecimalTypeInfo();
 
-   // shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo implementation 
+   // shared::plugin::yPluginApi::typeInfo::ITypeInfo implementation 
    shared::CDataContainer serialize() const override;
-   // END shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo implementation 
+   // END shared::plugin::yPluginApi::typeInfo::ITypeInfo implementation 
 
 private:
    //-----------------------------------------------------

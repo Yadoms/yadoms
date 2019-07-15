@@ -14,14 +14,12 @@ namespace shared
          {
             CMessage::CMessage(const std::string& keywordName,
                                const std::string& associatedRecipientField,
-                               const EKeywordAccessMode& accessMode)
+                               const EKeywordAccessMode& accessMode,
+                               const EHistoryDepth& historyDepth)
                : m_keywordName(keywordName),
                  m_associatedRecipientField(associatedRecipientField),
-                 m_accessMode(accessMode)
-            {
-            }
-
-            CMessage::~CMessage()
+                 m_accessMode(accessMode),
+                 m_historyDepth(historyDepth)
             {
             }
 
@@ -67,8 +65,8 @@ namespace shared
 
             const std::string& CMessage::body() const
             {
-               static const std::string emptyString;
-               return !m_content ? emptyString : m_content->body();
+               static const std::string EmptyString;
+               return !m_content ? EmptyString : m_content->body();
             }
 
             const EMeasureType& CMessage::getMeasureType() const
@@ -83,9 +81,12 @@ namespace shared
                info.set("associatedRecipientField", m_associatedRecipientField);
                return info;
             }
+
+            const EHistoryDepth& CMessage::getHistoryDepth() const
+            {
+               return m_historyDepth;
+            }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

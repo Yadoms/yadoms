@@ -16,17 +16,17 @@ namespace shared
             CDimmable::CDimmable(const std::string& keywordName,
                                  const EKeywordAccessMode& accessMode,
                                  const EMeasureType& measureType,
-                                 const typeInfo::CIntTypeInfo& additionalInfo)
+                                 const typeInfo::CIntTypeInfo& additionalInfo,
+                                 const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<int>(keywordName,
                                               CStandardCapacities::Dimmable(),
                                               accessMode,
                                               0,
                                               measureType,
-                                              additionalInfo)
-            {}
-
-            CDimmable::~CDimmable()
-            {}
+                                              additionalInfo,
+                                              historyDepth)
+            {
+            }
 
             void CDimmable::set(const std::string& yadomsCommand)
             {

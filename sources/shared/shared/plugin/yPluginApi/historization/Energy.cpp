@@ -13,39 +13,33 @@ namespace shared
             CEnergy::CEnergy(const std::string& keywordName,
                              const EKeywordAccessMode& accessMode,
                              const EMeasureType& measureType,
-                             typeInfo::CDoubleTypeInfo& additionalInfo)
+                             const typeInfo::CDoubleTypeInfo& additionalInfo,
+                             const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<Poco::Int64>(keywordName,
                                                       CStandardCapacities::Energy(),
                                                       accessMode,
                                                       0,
                                                       measureType,
-                                                      additionalInfo)
-            {
-            }
-
-            CEnergy::~CEnergy()
+                                                      additionalInfo,
+                                                      historyDepth)
             {
             }
 
             CEnergyDouble::CEnergyDouble(const std::string& keywordName,
                                          const EKeywordAccessMode& accessMode,
                                          const EMeasureType& measureType,
-                                         typeInfo::CDoubleTypeInfo& additionalInfo)
+                                         const typeInfo::CDoubleTypeInfo& additionalInfo,
+                                         const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<double>(keywordName,
                                                  CStandardCapacities::Energy(),
                                                  accessMode,
                                                  0,
                                                  measureType,
-                                                 additionalInfo)
-            {
-            }
-
-            CEnergyDouble::~CEnergyDouble()
+                                                 additionalInfo,
+                                                 historyDepth)
             {
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

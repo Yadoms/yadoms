@@ -1,3 +1,6 @@
+### 1.2.1
+* Better keyword selection filtering
+
 ### 1.2.0
 * New feature #553 : use of full compliant Json
 

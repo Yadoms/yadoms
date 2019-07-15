@@ -14,7 +14,7 @@ namespace rfxcomMessages
       : m_temperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
         m_rain(boost::make_shared<yApi::historization::CRain>("rain",
                                                               yApi::EKeywordAccessMode::kGet,
-                                                              yApi::historization::EMeasureType::kCumulative)),
+                                                              yApi::EMeasureType::kCumulative)),
         m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
         m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
         m_keywords({m_temperature , m_rain, m_batteryLevel , m_signalPower})

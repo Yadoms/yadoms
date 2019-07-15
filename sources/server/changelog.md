@@ -1,3 +1,7 @@
+### 2.4.0-beta.1
+* New feature #575 : add keyword without history
+
+
 ### 2.3.0
 * Add IlluminationWm2 historizer
 * Add getKeywordListLastData REST request
@@ -32,6 +36,8 @@
 
 #### Issues fixed
 * [Click here to see issues fixed in this version](https://github.com/Yadoms/yadoms/milestone/10?closed=1)
+
+
 
 
 ### 2.2.1

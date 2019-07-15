@@ -802,6 +802,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/versioning/Version_4_4_0.cpp
 	server/database/common/versioning/Version_5_0_0.h
 	server/database/common/versioning/Version_5_0_0.cpp
+	server/database/common/versioning/Version_5_1_0.h
+	server/database/common/versioning/Version_5_1_0.cpp
 	server/database/common/versioning/VersionUpgraderFactory.h
 	server/database/common/versioning/VersionUpgraderFactory.cpp
 	server/database/common/versioning/VersionException.h

@@ -21,14 +21,13 @@ namespace shared
                ///\brief                     Constructor
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] accessMode      The access mode
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                explicit CDeviceStateMessage(const std::string& keywordName,
-                                            const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet);
+                                            const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
+                                            const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CDeviceStateMessage();
+               virtual ~CDeviceStateMessage() = default;
 
                //-----------------------------------------------------
                ///\brief                     Set message
@@ -78,5 +77,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

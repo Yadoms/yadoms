@@ -28,7 +28,7 @@ namespace rfxcomMessages
 
       m_rain = boost::make_shared<yApi::historization::CRain>("rain",
                                                               yApi::EKeywordAccessMode::kGet,
-                                                              (m_subType == sTypeRAIN6) ? (yApi::historization::EMeasureType::kIncrement) : (yApi::historization::EMeasureType::kCumulative));
+                                                              (m_subType == sTypeRAIN6) ? (yApi::EMeasureType::kIncrement) : (yApi::EMeasureType::kCumulative));
       m_keywords.push_back(m_rain);
 
       switch (m_subType)

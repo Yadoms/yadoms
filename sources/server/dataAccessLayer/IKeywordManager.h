@@ -53,7 +53,8 @@ namespace dataAccessLayer
       /// \return                         The list of found keywords
       /// \throw                          shared::exception::CEmptyResult if none found
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getKeywordIdFromFriendlyName(int deviceId, const std::string& friendlyName) const = 0;
+      virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getKeywordIdFromFriendlyName(
+         int deviceId, const std::string& friendlyName) const = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all keywords 
@@ -79,12 +80,29 @@ namespace dataAccessLayer
       /// \brief           List all keywords which match capacity for a device
       /// \param [in]      deviceId             the device which own the keyword
       /// \param [in]      capacityName         the capacity name
-      /// \param [in]      capacityAccessMode   the capacity acces mode
+      /// \param [in]      capacityAccessMode   the capacity access mode
       /// \return          List of registered keywords
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getDeviceKeywordsWithCapacity(int deviceId,
-                                                                                                         const std::string& capacityName,
-                                                                                                         const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const = 0;
+      virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getDeviceKeywordsWithCapacity(
+         int deviceId,
+         const std::string& capacityName,
+         const shared::plugin::yPluginApi::
+         EKeywordAccessMode& capacityAccessMode) const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                          Get the keyword list which match some criteria
+      /// \param [in] expectedKeywordTypes         The keyword type criteria
+      /// \param [in] expectedCapacities           The capacity name criteria
+      /// \param [in] expectedKeywordAccesses      The access mode criteria
+      /// \param [in] expectedKeywordHistoryDepth  The history depth criteria
+      /// \param [in] blacklisted                  The blacklisted criteria
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<database::entities::CKeyword>> getKeywordsMatchingCriteria(
+         const std::vector<shared::plugin::yPluginApi::EKeywordDataType>& expectedKeywordTypes,
+         const std::vector<std::string>& expectedCapacities,
+         const std::vector<shared::plugin::yPluginApi::EKeywordAccessMode>& expectedKeywordAccesses,
+         const std::vector<shared::plugin::yPluginApi::EHistoryDepth>& expectedKeywordHistoryDepth,
+         bool blacklisted) const = 0;
 
       //-----------------------------------------
       ///\brief      Get the last acquisition of a keyword

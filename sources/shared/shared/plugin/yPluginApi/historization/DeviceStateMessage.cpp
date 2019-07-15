@@ -15,14 +15,14 @@ namespace shared
             DECLARE_CAPACITY(DeviceStateMessageCapacity, "deviceStateMessage_capacity", CStandardUnits::NoUnit(), EKeywordDataType::kJson);
 
             CDeviceStateMessage::CDeviceStateMessage(const std::string& keywordName,
-                                                     const EKeywordAccessMode& accessMode)
+                                                     const EKeywordAccessMode& accessMode,
+                                                     const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<CDataContainer>(keywordName,
                                                          DeviceStateMessageCapacity(),
-                                                         accessMode)
-            {
-            }
-
-            CDeviceStateMessage::~CDeviceStateMessage()
+                                                         accessMode,
+                                                         EMeasureType::kAbsolute,
+                                                         typeInfo::CEmptyTypeInfo::Empty,
+                                                         historyDepth)
             {
             }
 
@@ -78,5 +78,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

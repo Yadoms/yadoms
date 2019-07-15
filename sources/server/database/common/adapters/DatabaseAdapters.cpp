@@ -86,12 +86,14 @@ namespace database
             ((Type)(shared::plugin::yPluginApi::EKeywordDataType)(shared::plugin::yPluginApi::EKeywordDataType::kString)(std::string))
             ((Units)(std::string)(""))
             ((TypeInfo)(shared::CDataContainer)(shared::CDataContainer()))
-            ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType)(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute)(
+            ((Measure)(shared::plugin::yPluginApi::EMeasureType)(shared::plugin::yPluginApi::EMeasureType::kAbsolute)(
                std::string))
             ((Details)(shared::CDataContainer)(shared::CDataContainer()))
             ((Blacklist)(bool)(false))
             ((LastAcquisitionValue)(std::string)(""))
             ((LastAcquisitionDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
+            ((HistoryDepth)(shared::plugin::yPluginApi::EHistoryDepth)(shared::plugin::yPluginApi::EHistoryDepth::kDefault)(
+               std::string))
          );
 
 

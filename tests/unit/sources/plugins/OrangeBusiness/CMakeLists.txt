@@ -8,16 +8,16 @@ IF(NOT DISABLE_TEST_PLUGIN_ORANGE_BUSINESS)
       shared/shared/plugin/yPluginApi/historization/BatteryLevel.cpp
       shared/shared/plugin/yPluginApi/historization/BatteryLevel.h
 
-      shared/shared/plugin/yPluginApi/historization/typeInfo/ITypeInfo.h
-      shared/shared/plugin/yPluginApi/historization/typeInfo/EmptyTypeInfo.h
-      shared/shared/plugin/yPluginApi/historization/typeInfo/EmptyTypeInfo.cpp
-      shared/shared/plugin/yPluginApi/historization/typeInfo/IntTypeInfo.h
-      shared/shared/plugin/yPluginApi/historization/typeInfo/IntTypeInfo.cpp
-      shared/shared/plugin/yPluginApi/historization/typeInfo/DoubleTypeInfo.h
-      shared/shared/plugin/yPluginApi/historization/typeInfo/DoubleTypeInfo.cpp
-      shared/shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.h
-      shared/shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.cpp
-      shared/shared/plugin/yPluginApi/historization/typeInfo/EnumTypeInfo.hpp   
+      shared/shared/plugin/yPluginApi/typeInfo/ITypeInfo.h
+      shared/shared/plugin/yPluginApi/typeInfo/EmptyTypeInfo.h
+      shared/shared/plugin/yPluginApi/typeInfo/EmptyTypeInfo.cpp
+      shared/shared/plugin/yPluginApi/typeInfo/IntTypeInfo.h
+      shared/shared/plugin/yPluginApi/typeInfo/IntTypeInfo.cpp
+      shared/shared/plugin/yPluginApi/typeInfo/DoubleTypeInfo.h
+      shared/shared/plugin/yPluginApi/typeInfo/DoubleTypeInfo.cpp
+      shared/shared/plugin/yPluginApi/typeInfo/StringTypeInfo.h
+      shared/shared/plugin/yPluginApi/typeInfo/StringTypeInfo.cpp
+      shared/shared/plugin/yPluginApi/typeInfo/EnumTypeInfo.hpp   
    
       shared/shared/DataContainer.h
       shared/shared/DataContainer.cpp
@@ -34,8 +34,10 @@ IF(NOT DISABLE_TEST_PLUGIN_ORANGE_BUSINESS)
       shared/shared/plugin/yPluginApi/StandardValues.cpp
       shared/shared/plugin/yPluginApi/StandardCapacity.h
       shared/shared/plugin/yPluginApi/StandardCapacity.cpp
-      shared/shared/plugin/yPluginApi/historization/MeasureType.h
-      shared/shared/plugin/yPluginApi/historization/MeasureType.cpp
+      shared/shared/plugin/yPluginApi/HistoryDepth.h
+      shared/shared/plugin/yPluginApi/HistoryDepth.cpp
+      shared/shared/plugin/yPluginApi/MeasureType.h
+      shared/shared/plugin/yPluginApi/MeasureType.cpp
    )
    
    SET(YADOMS_SOURCES

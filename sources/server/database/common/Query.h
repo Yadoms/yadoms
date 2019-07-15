@@ -217,14 +217,12 @@ namespace database
          inline CQuery& Where(const T1& field, const std::string& op, const T2& value);
 
          //
-         /// \brief           Append the where in clause
-         ///                  Where field in("value1", "value2", "value3")
-         /// \param  field    the field name
-         /// \param  values   the list of values
+         /// \brief           Append an always true where clause
+         ///                  Where 1=1
+         ///                  Can be useful to add unknown number of and/or clauses
          /// \return          A reference to itself to allow method chaining
-         //
-         template <class T1, class T2>
-         inline CQuery& WhereIn(const T1& field, const std::vector<T2>& values);
+         //     
+         CQuery& WhereTrue();
 
 
          //

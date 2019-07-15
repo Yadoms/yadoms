@@ -23,14 +23,12 @@ namespace database
             //--------------------------------------------------------------
             explicit CKeyword(boost::shared_ptr<IDatabaseRequester> databaseRequester);
 
-            //--------------------------------------------------------------
-            /// \Brief		   Destructor
-            //--------------------------------------------------------------
-            virtual ~CKeyword();
+            virtual ~CKeyword() = default;
 
             // IKeywordRequester implementation
             void addKeyword(const entities::CKeyword& newKeyword) override;
             std::vector<boost::shared_ptr<entities::CKeyword>> getKeywordsMatchingCapacity(const std::string& capacity) const override;
+            std::vector<boost::shared_ptr<entities::CKeyword>> getKeywordsMatchingCriteria(const std::vector<shared::plugin::yPluginApi::EKeywordDataType>& expectedKeywordTypes, const std::vector<std::string>& expectedCapacities, const std::vector<shared::plugin::yPluginApi::EKeywordAccessMode>& expectedKeywordAccesses, const std::vector<shared::plugin::yPluginApi::EHistoryDepth>& expectedKeywordHistoryDepth, bool blacklisted) const override;
             boost::shared_ptr<entities::CKeyword> getKeyword(int deviceId, const std::string& keyword) const override;
             boost::shared_ptr<entities::CKeyword> getKeyword(int keywordId) const override;
             std::vector<boost::shared_ptr<entities::CKeyword>> getKeywordIdFromFriendlyName(int deviceId, const std::string& friendlyName) const override;

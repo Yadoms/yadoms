@@ -13,22 +13,18 @@ namespace shared
             CCurrent::CCurrent(const std::string& keywordName,
                                const EKeywordAccessMode& accessMode,
                                const EMeasureType& measureType,
-                               typeInfo::CDoubleTypeInfo& additionalInfo)
+                               const typeInfo::CDoubleTypeInfo& additionalInfo,
+                               const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<double>(keywordName,
                                                  CStandardCapacities::Current(),
                                                  accessMode,
                                                  0.0,
                                                  measureType,
-                                                 additionalInfo)
-            {
-            }
-
-            CCurrent::~CCurrent()
+                                                 additionalInfo,
+                                                 historyDepth)
             {
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

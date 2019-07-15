@@ -85,8 +85,7 @@
                             "type" : "keyword",
                             "name" : "Keyword parameter",
                             "description" : "type as keyword",
-                            "expectedKeywordType" : "numeric",
-                            "expectedKeywordAccess" : "get"
+                            "expectedKeywordType" : "numeric"
                         }
                     }
                 },

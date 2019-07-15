@@ -11,7 +11,7 @@ namespace shared
          namespace historization
          {
             //-----------------------------------------------------
-            ///\brief A energy historizable object
+            ///\brief A dataTime historizable object
             //-----------------------------------------------------
             class YADOMS_SHARED_EXPORT CDateTime : public CSingleHistorizableData<boost::posix_time::ptime>
             {
@@ -21,19 +21,16 @@ namespace shared
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] accessMode      The access mode
                ///\param[in] measureType     To be used as increment counter (values will be added to current database value) or totalizer
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                explicit CDateTime(const std::string& keywordName,
                                   const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
-                                  const EMeasureType& measureType = EMeasureType::kCumulative);
+                                  const EMeasureType& measureType = EMeasureType::kCumulative,
+                                  const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CDateTime();
+               virtual ~CDateTime() = default;
             };
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-
