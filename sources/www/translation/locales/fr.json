@@ -122,7 +122,7 @@
          "restart": "Redémarrer",
          "shutdown": "Eteindre",
          "charts": "Affichage graphique",
-         "customization": "Personalisation"
+         "customization": "Personnalisation"
       },
       "actions": {
          "loadingPage": "Chargement de la page {{pageName}} ...",
