@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "WeatherConfiguration.h"
 #include "shared/Log.h"
+#include "WeatherLocation.h"
 
 
 void CWeatherConfiguration::initializeWith(const shared::CDataContainer& data)
 {
+   data.printToLog(YADOMS_LOG(debug));
    m_configuration.initializeWith(data);
 }
 
@@ -17,8 +19,8 @@ void CWeatherConfiguration::trace() const
       YADOMS_LOG(information) << "  -  useSpecificLocation : " << useSpecificLocation();
       if (useSpecificLocation())
       {
-         YADOMS_LOG(information) << "  -     longitude : " << specificLocationLongitude();
-         YADOMS_LOG(information) << "  -     latitude : " << specificLocationLatitude();
+         YADOMS_LOG(information) << "  -     longitude : " << specificLocation()->longitude();
+         YADOMS_LOG(information) << "  -     latitude : " << specificLocation()->latitude();
       }
    }
    catch (const shared::exception::CInvalidParameter& e)
@@ -38,15 +40,13 @@ std::string CWeatherConfiguration::apiKey() const
 
 bool CWeatherConfiguration::useSpecificLocation() const
 {
-   return m_configuration.get<bool>("useSpecificLocation");
+   return m_configuration.get<bool>("useSpecificLocation.checkbox");
 }
 
-double CWeatherConfiguration::specificLocationLongitude() const
+boost::shared_ptr<const shared::ILocation> CWeatherConfiguration::specificLocation() const
 {
-   return m_configuration.get<double>("useSpecificLocation.content.longitude");
+   return boost::make_shared<CWeatherLocation>(
+      m_configuration.get<double>("useSpecificLocation.content.latitude"),
+      m_configuration.get<double>("useSpecificLocation.content.longitude"));
 }
 
-double CWeatherConfiguration::specificLocationLatitude() const
-{
-   return m_configuration.get<double>("useSpecificLocation.content.latitude");
-}

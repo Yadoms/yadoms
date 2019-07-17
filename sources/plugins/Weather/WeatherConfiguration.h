@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/DataContainer.h>
 #include <shared/plugin/yPluginApi/YPluginConfiguration.hpp>
+#include <shared/ILocation.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -16,8 +17,7 @@ public:
 
    std::string apiKey() const;
    bool useSpecificLocation() const;
-   double specificLocationLongitude() const;
-   double specificLocationLatitude() const;
+   boost::shared_ptr<const shared::ILocation> specificLocation() const;
 
 private:
    yApi::YPluginConfiguration m_configuration;

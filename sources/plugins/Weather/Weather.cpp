@@ -1,27 +1,21 @@
 #include "stdafx.h"
 #include "Weather.h"
 #include <plugin_cpp_api/ImplementationHelper.h>
+#include "OpenWeatherService.h"
 #include <shared/Log.h>
-#include "../MegatecUps/MegatecUps.h"
+#include <Poco/Net/HTTPClientSession.h>
 
 IMPLEMENT_PLUGIN(CWeather)
 
-const boost::posix_time::time_duration CWeather::RequestPeriodicity(boost::posix_time::hours(2));
-const std::string CWeather::LiveWeatherDeviceName("Weather");
+const boost::posix_time::time_duration CWeather::RequestPeriodicity(boost::posix_time::hours(3));
 const std::string CWeather::ForecastWeatherDevicePrefix("Forecast weather day + ");
 const int CWeather::NbForecastDays(3);
 
-
-CWeather::CWeather()
-   :  m_liveWeatherDevice(boost::make_shared<CLiveWeatherDevice>(LiveWeatherDeviceName))
-{
-}
 
 // Event IDs
 enum
 {
    kMeasureTimerEventId = yApi::IYPluginApi::kPluginFirstEventId,
-   kMeasureEndEventId
 };
 
 void CWeather::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -29,16 +23,18 @@ void CWeather::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    YADOMS_LOG(information) << "CWeather is starting...";
 
    m_configuration.initializeWith(api->getConfiguration());
+   m_configuration.trace();
 
-   declareDevice(api);
+   m_weatherService = boost::make_shared<COpenWeatherService>(api,
+                                                              m_configuration.apiKey());
+   declareDevices();
 
    api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-   requestWebService(api);
-   const auto measureTimer = api->getEventHandler().createTimer(kMeasureTimerEventId,
-                                                                shared::event::CEventTimer::kPeriodic,
-                                                                RequestPeriodicity);
-
+   requestWeather(api);
+   const auto periodicRequestTimer = api->getEventHandler().createTimer(kMeasureTimerEventId,
+                                                                        shared::event::CEventTimer::kPeriodic,
+                                                                        RequestPeriodicity);
 
    while (true)
    {
@@ -46,7 +42,7 @@ void CWeather::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
       case yApi::IYPluginApi::kEventStopRequested:
          {
-            measureTimer->stop();
+            periodicRequestTimer->stop();
             YADOMS_LOG(information) << "Stop requested";
             api->setPluginState(yApi::historization::EPluginState::kStopped);
             return;
@@ -61,38 +57,20 @@ void CWeather::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             m_configuration.initializeWith(newConfiguration);
             m_configuration.trace();
 
-            measureTimer->stop();
+            periodicRequestTimer->stop();
 
             api->setPluginState(yApi::historization::EPluginState::kRunning);
 
             // Start a measure now and restart timer for next measures
-            requestWebService(api);
-            measureTimer->start(RequestPeriodicity);
+            requestWeather(api);
+            periodicRequestTimer->start(RequestPeriodicity);
 
             break;
          }
 
       case kMeasureTimerEventId:
          {
-            requestWebService(api);
-            break;
-         }
-
-      case kMeasureEndEventId:
-         {
-            YADOMS_LOG(information) << "End of measure";
-            //m_speedTestProcess.reset();
-            //const auto eventData = api->getEventHandler().getEventData<boost::shared_ptr<CSpeedTestEventData>>();
-            //if (!eventData->success())
-            //{
-            //   YADOMS_LOG(warning) << "speedtest returns " << eventData->returnCode() << ", " << eventData->error();
-            //   m_connectedKw->set(false);
-            //   api->historizeData(DeviceName, m_connectedKw);
-            //   break;
-            //}
-
-            //processResult(api,
-            //              eventData->result());
+            requestWeather(api);
             break;
          }
 
@@ -105,9 +83,9 @@ void CWeather::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CWeather::declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api) const
+void CWeather::declareDevices() const
 {
-   m_liveWeatherDevice->declareDevice(api);
+   m_weatherService->declareDevices();
 
 
    //for (auto forecastDay = 0; forecastDay < NbForecastDays; ++forecastDay)//TODO revoir ?
@@ -123,37 +101,31 @@ void CWeather::declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api) const
    //}
 }
 
-void CWeather::requestWebService(boost::shared_ptr<yApi::IYPluginApi> api)
+void CWeather::requestWeather(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
    YADOMS_LOG(information) << "Request web service...";
 
-   //TODO
+   try
+   {
+      m_weatherService->requestWeather(getLocation(api));
+   }
+   catch (std::exception& exception)
+   {
+      YADOMS_LOG(error) << "Error requesting weather data, " << exception.what();
+      //TODO ajouter réessais
+      //TODO gérer plugin state
+   }
 }
 
-void CWeather::processResult(boost::shared_ptr<yApi::IYPluginApi> api,
-                             const std::string& result) const
+
+boost::shared_ptr<const shared::ILocation> CWeather::getLocation(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   YADOMS_LOG(information) << "Process result...";
-
-   //try
-   //{
-   //   shared::CDataContainer resultContainer(result);
-
-   //   YADOMS_LOG(information) << "Result file gives :";
-   //   resultContainer.printToLog(YADOMS_LOG(debug));
-
-   //   m_connectedKw->set(true);
-   //   m_pingKw->set(static_cast<unsigned int>(resultContainer.get<double>("ping") / 1000.0));
-
-   //   YADOMS_LOG(information) << "  - ping : " << m_pingKw->get();
-
-   //   api->historizeData(DeviceName,
-   //                      m_keywords);
-   //}
-   //catch (std::exception& e)
-   //{
-   //   YADOMS_LOG(error) << "Error processing speedtest result : " << e.what();
-   //   m_connectedKw->set(false);
-   //   api->historizeData(DeviceName, m_connectedKw);
-   //}
+   if (m_configuration.useSpecificLocation())
+   {
+      return m_configuration.specificLocation();   
+   }
+   else
+   {
+      return api->getYadomsInformation()->location();
+   }
 }

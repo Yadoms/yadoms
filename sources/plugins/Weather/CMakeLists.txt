@@ -7,12 +7,17 @@ include("../YadomsPluginsCommon.cmake")
 set(WEATHER_PLUGIN_SOURCES
    stdafx.h
    stdafx.cpp
+   IWeatherService.h
    LiveWeatherDevice.h
    LiveWeatherDevice.cpp
+   OpenWeatherService.h
+   OpenWeatherService.cpp
    Weather.h
    Weather.cpp 
    WeatherConfiguration.h
    WeatherConfiguration.cpp 
+   WeatherLocation.h
+   WeatherLocation.cpp 
 )
 
 #########################################
