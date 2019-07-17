@@ -11,16 +11,13 @@
 #include "DeviceRemoved.h"
 #include "YadomsInformation.h"
 #include <shared/communication/SmallHeaderMessageCutter.h>
+#include <Poco/Net/HTTPClientSession.h>
 
 namespace plugin_cpp_api
 {
    CApiImplementation::CApiImplementation()
       : m_initialized(false),
         m_stopRequested(false)
-   {
-   }
-
-   CApiImplementation::~CApiImplementation()
    {
    }
 
@@ -226,6 +223,27 @@ namespace plugin_cpp_api
       m_dataPath = boost::make_shared<const boost::filesystem::path>(msg.datapath());
       m_logFile = boost::make_shared<const boost::filesystem::path>(msg.logfile());
       m_logLevel = boost::make_shared<const std::string>(msg.loglevel());
+      if (msg.has_proxysettings())
+      {
+         Poco::Net::HTTPClientSession::ProxyConfig proxySettings;
+         const auto& providedProxySettings = msg.proxysettings();
+         if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
+                                                             msg.proxysettings().GetDescriptor()->FindFieldByName("host")))
+            proxySettings.host = providedProxySettings.host();
+         if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
+                                                             msg.proxysettings().GetDescriptor()->FindFieldByName("port")))
+            proxySettings.port = static_cast<unsigned short>(providedProxySettings.port());
+         if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
+                                                             msg.proxysettings().GetDescriptor()->FindFieldByName("username")))
+            proxySettings.username = providedProxySettings.username();
+         if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
+                                                             msg.proxysettings().GetDescriptor()->FindFieldByName("password")))
+            proxySettings.password = providedProxySettings.password();
+         if (providedProxySettings.GetReflection()->HasField(providedProxySettings,
+                                                             msg.proxysettings().GetDescriptor()->FindFieldByName("bypassRegex")))
+            proxySettings.nonProxyHosts = providedProxySettings.bypassregex();
+         Poco::Net::HTTPClientSession::setGlobalProxyConfig(proxySettings);
+      }
       setInitialized();
    }
 
@@ -306,7 +324,7 @@ namespace plugin_cpp_api
 
    void CApiImplementation::processExtraQuery(const plugin_IPC::toPlugin::ExtraQuery& msg)
    {
-      auto taskId = msg.taskid();
+      const auto& taskId = msg.taskid();
       const boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> command =
          boost::make_shared<CExtraQuery>(msg,
                                          [&, taskId](const shared::CDataContainer& r)
@@ -804,8 +822,8 @@ namespace plugin_cpp_api
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_declarekeywords();
       request->set_device(device);
-      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
-         fillHistorizable(*keyword, request->add_keywords());
+      for (const auto& keyword : keywords)
+         fillHistorizable(keyword, request->add_keywords());
 
       try
       {
@@ -1075,11 +1093,11 @@ namespace plugin_cpp_api
       plugin_IPC::toYadoms::msg msg;
       auto message = msg.mutable_historizedata();
       message->set_device(device);
-      for (auto data = dataVect.begin(); data != dataVect.end(); ++data)
+      for (const auto& data : dataVect)
       {
          auto value = message->add_value();
-         fillHistorizable(*data, value->mutable_historizable());
-         value->set_formattedvalue((*data)->formatValue());
+         fillHistorizable(data, value->mutable_historizable());
+         value->set_formattedvalue(data->formatValue());
       }
       try
       {
