@@ -33,7 +33,7 @@ set_source_files_properties(yScriptApiWrapper.i PROPERTIES CPLUSPLUS ON)
 ## (by default yadoms-shared, boost and poco are included)
 #########################################
 set(YPYTHON27_WRAPPER_INCLDIR
-   ${PYTHON27_INCLUDE_DIRS}
+   ${Python2_INCLUDE_DIRS}
    ${script_cpp_api_INCLUDE_DIR}
 )
 
@@ -42,7 +42,7 @@ set(YPYTHON27_WRAPPER_INCLDIR
 ## (by default yadoms-shared, boost and poco are included)
 #########################################
 set(YPYTHON27_WRAPPER_LINK
-   ${PYTHON27_LIBRARIES}
+   ${Python2_LIBRARIES}
    script_cpp_api
 )
 

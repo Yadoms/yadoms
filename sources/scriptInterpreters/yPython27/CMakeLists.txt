@@ -1,9 +1,16 @@
 # Check dependencies
 
-set (PYTHON27_REQUIRED_VERSION 2.7)
-include(findPython27.cmake)
-  
-if(PYTHONLIBS27_FOUND)
+find_package (Python2 COMPONENTS Interpreter Development)
+
+#message("==================================================================")
+#message("Python2_ROOT: ${Python2_ROOT}")
+#message("Python2_FOUND: ${Python2_FOUND}")
+#message("Python2_INCLUDE_DIRS: ${Python2_INCLUDE_DIRS}")
+#message("Python2_LIBRARIES: ${Python2_LIBRARIES}")
+#message("Python2_Interpreter_FOUND: ${Python2_Interpreter_FOUND}")
+#message("Python2_EXECUTABLE: ${Python2_EXECUTABLE}")
+
+if(${Python2_FOUND})
 
    # include common script interpreters definitions
    include("../YadomsScriptInterpertersCommon.cmake")   
@@ -69,11 +76,11 @@ if(PYTHONLIBS27_FOUND)
    
    #########################################
    ## Always leave these lines to configure script interpreter correctly
-   ## even if YPYTHON27_INCLDIR or YPYTHON27_LINK are empty
+   ## even if YPYTHON3_INCLDIR or YPYTHON3_LINK are empty
    #########################################
    SCRIPT_INTERPRETER_SOURCES(yPython27 ${YPYTHON27_SOURCES})
-   SCRIPT_INTERPRETER_INCLDIR(yPython27 ${YPYTHON27_INCLDIR} ${PLATFORM_SPECIFIC_INCL_DIR} ${PROTOBUF_INCLUDE_DIRS})
-   SCRIPT_INTERPRETER_LINK(yPython27 ${YPYTHON27_LINK})
+   SCRIPT_INTERPRETER_INCLDIR(yPython27 ${YPYTHON2_INCLDIR} ${PLATFORM_SPECIFIC_INCL_DIR} ${PROTOBUF_INCLUDE_DIRS})
+   SCRIPT_INTERPRETER_LINK(yPython27 ${YPYTHON2_LINK})
 
    #########################################
    ## Post-build commands

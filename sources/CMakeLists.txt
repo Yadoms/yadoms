@@ -12,7 +12,7 @@
 project (Yadoms)
 
 # Check the minimum CMake version
-cmake_minimum_required (VERSION 3.2.0)
+cmake_minimum_required (VERSION 3.14.0)
 
 # Global CMake policies
 cmake_policy(SET CMP0074 NEW)
