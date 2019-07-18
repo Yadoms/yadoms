@@ -1,3 +1,6 @@
+### 1.2.0
+* Fix keywords compatibility list
+
 ### 1.1.1
 * Better keyword selection filtering
 
