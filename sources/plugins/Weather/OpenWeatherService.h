@@ -1,7 +1,6 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "IWeatherService.h"
-#include "LiveWeatherDevice.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -23,10 +22,10 @@ public:
 private:
    shared::CDataContainer syncRequest(const std::string& url) const;
    void processAnswer(const shared::CDataContainer& weatherData) const;
+   static yApi::historization::EWeatherCondition toYadomsCondition(const std::string& owCondition);
 
 private:
    boost::shared_ptr<yApi::IYPluginApi> m_api;
    const std::string m_apiKey;
    static const std::string LiveWeatherDeviceName;
-   boost::shared_ptr<CLiveWeatherDevice> m_liveWeatherDevice;
 };

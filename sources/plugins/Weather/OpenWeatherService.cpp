@@ -11,9 +11,8 @@ const std::string COpenWeatherService::LiveWeatherDeviceName("Weather");
 
 COpenWeatherService::COpenWeatherService(boost::shared_ptr<yApi::IYPluginApi> api,
                                          std::string apiKey)
-   : m_api(api),
-     m_apiKey(std::move(apiKey)),
-     m_liveWeatherDevice(boost::make_shared<CLiveWeatherDevice>(LiveWeatherDeviceName))
+   : m_api(std::move(api)),
+     m_apiKey(std::move(apiKey))
 {
 }
 
@@ -25,7 +24,8 @@ boost::posix_time::time_duration COpenWeatherService::serviceRecommendedRetryDel
 
 void COpenWeatherService::declareDevices() const
 {
-   m_liveWeatherDevice->declareDevice(m_api);
+   CLiveWeatherDevice liveWeatherDevice(LiveWeatherDeviceName);
+   liveWeatherDevice.declareDevice(m_api);
 }
 
 void COpenWeatherService::requestWeather(boost::shared_ptr<const shared::ILocation> forLocation) const
@@ -66,16 +66,87 @@ void COpenWeatherService::processAnswer(const shared::CDataContainer& weatherDat
 {
    try
    {
-      CLiveWeatherDevice currentWeather("Current weather");
-      if (weatherData.containsValue("main.temp"))
-         currentWeather.setTemperature(weatherData.get<double>("main.temp"));
+      YADOMS_LOG(information) << "Location name " << weatherData.get<std::string>("name");
 
-      //TODO process data
-      //TODO historize data
+      CLiveWeatherDevice liveWeatherDevice(LiveWeatherDeviceName);
+
+      if (weatherData.containsChildArray("weather"))
+      {
+         try
+         {
+            liveWeatherDevice.setCondition(toYadomsCondition(weatherData.get<std::vector<shared::CDataContainer>>("weather")[0].get("main")));
+         }
+         catch (const std::out_of_range& exOutOfRange)
+         {
+            YADOMS_LOG(warning) << "Can not convert weather condition from OpenWeather service, when \"weather.main\" = " << exOutOfRange.what();
+         }
+         catch (const std::exception& exception)
+         {
+            YADOMS_LOG(warning) << "Can not convert weather condition from OpenWeather service, " << exception.what();
+         }
+      }
+      if (weatherData.containsValue("main.temp"))
+         liveWeatherDevice.setTemperature(weatherData.get<double>("main.temp"));
+      if (weatherData.containsValue("main.temp_min"))
+         liveWeatherDevice.setTemperatureMin(weatherData.get<double>("main.temp_min"));
+      if (weatherData.containsValue("main.temp_max"))
+         liveWeatherDevice.setTemperatureMax(weatherData.get<double>("main.temp_max"));
+      if (weatherData.containsValue("main.humidity"))
+         liveWeatherDevice.setHumidity(weatherData.get<double>("main.humidity"));
+      if (weatherData.containsValue("main.pressure"))
+         liveWeatherDevice.setPressure(weatherData.get<double>("main.pressure"));
+      if (weatherData.containsValue("wind.speed"))
+         liveWeatherDevice.setWindSpeed(weatherData.get<double>("wind.speed"));
+      if (weatherData.containsValue("wind.deg"))
+         liveWeatherDevice.setWindDirection(weatherData.get<int>("wind.deg"));
+      if (weatherData.containsValue("visibility"))
+         liveWeatherDevice.setVisibility(weatherData.get<int>("visibility"));
+
+      liveWeatherDevice.historize(m_api);
    }
    catch (std::exception& exception)
    {
       YADOMS_LOG(error) << "Fail to process OpenWeather answer, " << exception.what();
       throw;
    }
+}
+
+yApi::historization::EWeatherCondition COpenWeatherService::toYadomsCondition(const std::string& owCondition)
+{
+   // See https://openweathermap.org/weather-conditions
+
+   if (owCondition == "Thunderstorm")
+      return yApi::historization::EWeatherCondition::kStorm;
+   if (owCondition == "Drizzle")
+      return yApi::historization::EWeatherCondition::kRain;
+   if (owCondition == "Rain")
+      return yApi::historization::EWeatherCondition::kRain;
+   if (owCondition == "Snow")
+      return yApi::historization::EWeatherCondition::kSnow;
+
+   if (owCondition == "Mist")
+      return yApi::historization::EWeatherCondition::kFog;
+   if (owCondition == "Smoke")
+      return yApi::historization::EWeatherCondition::kFog;
+   if (owCondition == "Haze")
+      return yApi::historization::EWeatherCondition::kFog;
+   if (owCondition == "Dust")
+      return yApi::historization::EWeatherCondition::kFog;
+   if (owCondition == "Fog")
+      return yApi::historization::EWeatherCondition::kFog;
+   if (owCondition == "Sand")
+      return yApi::historization::EWeatherCondition::kFog;
+   if (owCondition == "Ash")
+      return yApi::historization::EWeatherCondition::kFog;
+   if (owCondition == "Squall")
+      return yApi::historization::EWeatherCondition::kStorm;
+   if (owCondition == "Tornado")
+      return yApi::historization::EWeatherCondition::kStorm;
+
+   if (owCondition == "Clear")
+      return yApi::historization::EWeatherCondition::kSunny;
+   if (owCondition == "Clouds")
+      return yApi::historization::EWeatherCondition::kCloudy;
+
+   throw std::out_of_range(owCondition);
 }
