@@ -1,32 +1,30 @@
-.widget-weather .mainDiv {
-    flex: 1;
-    width: 100%;
-    text-align: center;
-    display: flex;
-    flex-direction: row;
-}
-
-.widget-weather .city {
-    height: 25%;
-    width: 100%;
-    text-align: center;
+.widget-weather .main-div {
+   width: 100%;
+   text-align: center;
+   display: flex;
+   flex-direction: row;
+   flex: 0 0 85%;
 }
 
 .widget-weather .condition {
-    flex: 3;
-    text-align: center;
-    display: flex;
-    flex-direction: row;
-}
-
-.widget-weather .condition i {
-    margin: auto;
-    flex: 1;
-    text-align: center;
-    padding: 10px;
+   flex: 0 0 55%;
+   text-align: center;
 }
 
 .widget-weather .temperature {
-    flex: 1;
-    text-align: center;
+   flex: 0 0 45%;
+   display: flex;
+   flex-direction: row;
+   text-align: center;
+}
+
+.widget-weather .condition i {
+   margin: auto;
+   text-align: center;
+   padding: 10px;
+}
+
+.widget-weather .unit {
+   flex: 0 0 20%;
+   vertical-align:top;
 }

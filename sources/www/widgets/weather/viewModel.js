@@ -7,16 +7,45 @@ widgetViewModelCtor = function weatherViewModel() {
    var environment = this;
    //observable data
    this.data = ko.observable("");
-   this.city = ko.observable("");
    this.temperature = ko.observable("");
-   this.condition = ko.observable("sunny");
+   this.unit = ko.observable("");
+   this.condition = ko.observable("");
 
    this.conditionClass = ko.computed(function () {
-      var localCondition = environment.condition().toLowerCase();
-      if (localCondition === "storm" || localCondition === "chancestorm") {
-         localCondition = "tstorms";
+      switch (environment.condition().toLowerCase()) {
+         case "cloudy":
+            return "wi wi-day-cloudy";
+         case "snow":
+            return "wi wi-day-snow";
+         case "chancesnow":
+            return "wi wi-day-snow";
+         case "partlysunny":
+            return "wi wi-day-cloudy";
+         case "sunny":
+            return "wi wi-day-sunny";
+         case "chancerain":
+            return "wi wi-day-rain";
+         case "rain":
+            return "wi wi-day-rain";
+         case "sleet":
+            return "wi wi-day-sleet";
+         case "chancestorm":
+            return "wi wi-day-thunderstorm";
+         case "storm":
+            return "wi wi-day-thunderstorm";
+         case "fog":
+            return "wi wi-day-fog";
+         case "night_clear":
+            return "wi wi-night-clear";
+         case "night_cloudy":
+            return "wi wi-night-cloudy";
+         case "night_rain":
+            return "wi wi-night-rain";
+         case "night_snow":
+            return "wi wi-night-snow";
+         default:
+            return "wi wi-na";
       }
-      return "wi wi-wu-" + localCondition.toString();
    });
 
    /**
@@ -27,12 +56,11 @@ widgetViewModelCtor = function weatherViewModel() {
       var self = this;
       var d = new $.Deferred();
 
-      // create the chart
-      self.$chart = self.widgetApi.find("div.container");
       self.widgetApi.loadCss("libs/weather-icons/css/weather-icons.min.css").done(function () {
-            //we configure the toolbar
+            // Configure the toolbar
             self.widgetApi.toolbar({
-               activated: false
+               activated: true,
+               displayTitle: true
             });
             d.resolve();
          })
@@ -47,46 +75,23 @@ widgetViewModelCtor = function weatherViewModel() {
     */
    this.onNewAcquisition = function (keywordId, data) {
       var self = this;
-
-      if (keywordId === parseInt(self.widget.configuration.device.keywordId)) {
-         var isJson = true;
-         try {
-            $.parseJSON(data.value);
-         } catch (err) {
-            isJson = false;
-         }
-
-         if (isJson)
-         {
-            var obj = jQuery.parseJSON(data.value);
-
-            //We only keep the city name
-            var res = obj.city.split(",");
-   
-            if (res.length >= 2)
-               self.city(res[1]);
-            else
-               self.city(res[0]);
-            self.condition(obj.Conditions.WeatherCondition);
-            self.temperature(obj.Conditions.Temp + $.t(obj.Units.temperature));
-         }
-         else
-         {            
-            self.condition(data.value);
-         }
+      if (keywordId === parseInt(self.widget.configuration.conditionKeyword.keywordId)) {
+         self.condition(data.value);
+      } else if (keywordId === parseInt(self.widget.configuration.temperatureSection.content.temperatureKeyword.keywordId)) {
+         self.temperature(data.value);
+         self.unit($.t(self.rawUnit = data.unit));
       }
    };
 
    this.configurationChanged = function () {
       var self = this;
-
-      if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
-         return;
-
       //we register keyword new acquisition
-      self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.device.keywordId));
+      self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.conditionKeyword.keywordId));
+      self.widgetApi.registerKeywordForNewAcquisitions(parseInt(self.widget.configuration.temperatureSection.content.temperatureKeyword.keywordId));
+      self.widgetApi.registerAdditionalInformation(["unit"]); // return unit with the getLast Value
 
       //we register keyword for get last value at web client startup
-      self.widgetApi.getLastValue(parseInt(self.widget.configuration.device.keywordId));
+      self.widgetApi.getLastValue(parseInt(self.widget.configuration.conditionKeyword.keywordId));
+      self.widgetApi.getLastValue(parseInt(self.widget.configuration.temperatureSection.content.temperatureKeyword.keywordId));
    }
 };
