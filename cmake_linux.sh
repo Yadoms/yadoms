@@ -41,7 +41,7 @@ case "$choice" in
 
     r)
 	# cmake for makefile
-	$cmake_executable -DCMAKE_BUILD_TYPE="Release" ../sources
+	$cmake_executable -DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE -DCMAKE_BUILD_TYPE="Release" ../sources
 	;;
 
     c)
