@@ -13,15 +13,8 @@ namespace plugin_cpp_api
    class CApiImplementation : public shared::plugin::yPluginApi::IYPluginApi
    {
    public:
-      //-----------------------------------------------------
-      ///\brief               Constructor
-      //-----------------------------------------------------
       CApiImplementation();
-
-      //-----------------------------------------------------
-      ///\brief               Destructor
-      //-----------------------------------------------------
-      virtual ~CApiImplementation();
+      virtual ~CApiImplementation() = default;
 
       void setSendingMessageQueue(boost::shared_ptr<boost::interprocess::message_queue> sendMessageQueue);
 
@@ -54,9 +47,9 @@ namespace plugin_cpp_api
       std::string getDeviceType(const std::string& device) const override;
       void updateDeviceType(const std::string& device, const std::string& type) const override;
       void updateDeviceState(const std::string& device,
-         const shared::plugin::yPluginApi::historization::EDeviceState& state,
-         const std::string& customMessageId = std::string(),
-         const std::map<std::string, std::string>& customMessageDataParams = std::map<std::string, std::string>()) const override;
+                             const shared::plugin::yPluginApi::historization::EDeviceState& state,
+                             const std::string& customMessageId = std::string(),
+                             const std::map<std::string, std::string>& customMessageDataParams = std::map<std::string, std::string>()) const override;
       void removeDevice(const std::string& device) override;
       void declareKeyword(const std::string& device,
                           boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
@@ -86,7 +79,8 @@ namespace plugin_cpp_api
       boost::shared_ptr<const shared::plugin::information::IYadomsInformation> getYadomsInformation() const override;
       // [END] shared::script::yScriptApi::IYScriptApi implementation
 
-      void onReceive(boost::shared_ptr<const unsigned char[]> message, size_t messageSize);
+      void onReceive(boost::shared_ptr<const unsigned char[]> message,
+                     size_t messageSize);
 
       void waitInitialized() const;
 
@@ -144,5 +138,3 @@ namespace plugin_cpp_api
       boost::shared_ptr<const std::string> m_logLevel;
    };
 } // namespace plugin_cpp_api	
-
-

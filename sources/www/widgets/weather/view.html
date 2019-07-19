@@ -1,7 +1,11 @@
 <script type="text/html" id="weather-template">
-    <div class="mainDiv">
-        <div class="condition"><i class="textfit textfit-in-parent" data-bind="css: conditionClass"></i></div>
-        <div class="temperature textfit" data-bind="text: temperature"></div>
-    </div>
-    <div class="city textfit" data-bind="text: city"></div>
+   <div class="main-div">
+      <div class="condition">
+         <i class="textfit textfit-in-parent" data-bind="css: conditionClass"></i>
+      </div>
+      <div class="temperature">
+         <div class="textfit-in-parent textfit" data-bind="text: temperature"></div>
+         <div class="unit textfit" data-bind="text: unit" min-font="14"></div>
+      </div>
+   </div>
 </script>

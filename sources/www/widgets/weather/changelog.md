@@ -1,3 +1,6 @@
+### 1.2.0
+* Fix keywords managment (no more compatible with WeatherUnderground plugin data)
+
 ### 1.1.1
 * Better keyword selection filtering
 

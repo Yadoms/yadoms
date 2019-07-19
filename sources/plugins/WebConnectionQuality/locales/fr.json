@@ -5,5 +5,10 @@
     "periodicityMinutes": {
       "name": "Périodicité de la mesure (en minutes)"
     }
+  },
+  "customLabels": {
+    "pluginState": {
+      "updateConfiguration": "Mise à jour de la configuration..."
+    }
   }
 }

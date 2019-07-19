@@ -16,7 +16,7 @@ namespace shared
       return sendGetRequest(url, CDataContainer());
    }
 
-   bool CHttpMethods::sendGetRequest(const boost::shared_ptr<IHTTPSession> session,
+   void CHttpMethods::sendGetRequest(const boost::shared_ptr<IHTTPSession> session,
                                      const CDataContainer& headerParameters,
                                      const CDataContainer& parameters,
                                      boost::function1<void, CDataContainer&> onReceive,
@@ -56,7 +56,7 @@ namespace shared
             if (jsonResponseReader(session, response, data))
             {
                onReceive(data);
-               return true;
+               return;
             }
 
             const auto message = (boost::format("content not yet managed : %1%") % response.getContentType()).str();
