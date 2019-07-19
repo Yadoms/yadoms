@@ -78,8 +78,8 @@ widgetViewModelCtor = function weatherViewModel() {
       if (keywordId === parseInt(self.widget.configuration.conditionKeyword.keywordId)) {
          self.condition(data.value);
       } else if (keywordId === parseInt(self.widget.configuration.temperatureSection.content.temperatureKeyword.keywordId)) {
-         self.temperature(data.value);
-         self.unit($.t(self.rawUnit = data.unit));
+         self.temperature(parseFloat(data.value).toFixed(1));
+         self.unit($.t(data.unit));
       }
    };
 
