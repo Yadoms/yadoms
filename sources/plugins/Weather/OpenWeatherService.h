@@ -22,9 +22,14 @@ public:
 private:
    shared::CDataContainer syncRequest(const std::string& url) const;
    void processAnswer(const shared::CDataContainer& weatherData) const;
-   static yApi::historization::EWeatherCondition toYadomsCondition(const std::string& owCondition);
+   static yApi::historization::EWeatherCondition toYadomsCondition(int owConditionCode);
+   static yApi::historization::EWeatherCondition toYadomsConditionsFromOwThunderstorm(int owConditionCode);
+   static yApi::historization::EWeatherCondition toYadomsConditionsFromOwDrizzle(int owConditionCode);
+   static yApi::historization::EWeatherCondition toYadomsConditionsFromOwRain(int owConditionCode);
+   static yApi::historization::EWeatherCondition toYadomsConditionsFromOwSnow(int owConditionCode);
+   static yApi::historization::EWeatherCondition toYadomsConditionsFromOwAtmosphere(int owConditionCode);
+   static yApi::historization::EWeatherCondition toYadomsConditionsFromOwClearClouds(int owConditionCode);
 
-private:
    boost::shared_ptr<yApi::IYPluginApi> m_api;
    const std::string m_apiKey;
    static const std::string LiveWeatherDeviceName;
