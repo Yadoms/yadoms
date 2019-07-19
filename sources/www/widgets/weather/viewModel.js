@@ -13,36 +13,104 @@ widgetViewModelCtor = function weatherViewModel() {
 
    this.conditionClass = ko.computed(function () {
       switch (environment.condition().toLowerCase()) {
-         case "cloudy":
-            return "wi wi-day-cloudy";
-         case "snow":
-            return "wi wi-day-snow";
-         case "chancesnow":
-            return "wi wi-day-snow";
-         case "partlysunny":
-            return "wi wi-day-cloudy";
          case "sunny":
             return "wi wi-day-sunny";
-         case "chancerain":
-            return "wi wi-day-rain";
-         case "rain":
-            return "wi wi-day-rain";
-         case "sleet":
-            return "wi wi-day-sleet";
-         case "chancestorm":
-            return "wi wi-day-thunderstorm";
-         case "storm":
-            return "wi wi-day-thunderstorm";
+         case "cloudy":
+            return "wi wi-cloudy";
+         case "cloudygusts":
+            return "wi wi-cloudy-gusts";
+         case "cloudywindy":
+            return "wi wi-cloudy-windy";
+         case "cloudyhigh":
+            return "wi wi-day-cloudy-high";
+         case "partlycloudy":
+            return "wi wi-day-cloudy";
          case "fog":
+            return "wi wi-fog";
+         case "hail":
+            return "wi wi-hail";
+         case "haze":
+            return "wi wi-day-haze";
+         case "drizzle":
             return "wi wi-day-fog";
-         case "night_clear":
+         case "lightning":
+            return "wi wi-lightning";
+         case "rain":
+            return "wi wi-rain";
+         case "rainmix":
+            return "wi wi-rain-mix";
+         case "rainwind":
+            return "wi wi-rain-wind";
+         case "showers":
+            return "wi wi-showers";
+         case "sleet":
+            return "wi wi-sleet";
+         case "sleetstorm":
+            return "wi wi-sleet";
+         case "snow":
+            return "wi wi-snow";
+         case "snowthunderstorm":
+            return "wi wi-snow";
+         case "snowwind":
+            return "wi wi-snow-wind";
+         case "sprinkle":
+            return "wi wi-sprinkle";
+         case "stormshowers":
+            return "wi wi-storm-showers";
+         case "thunderstorm":
+            return "wi wi-thunderstorm";
+         case "windy":
+            return "wi wi-windy";
+         case "lightwind":
+            return "wi wi-windy";
+         case "nightclear":
             return "wi wi-night-clear";
-         case "night_cloudy":
+         case "nightcloudy":
             return "wi wi-night-cloudy";
-         case "night_rain":
-            return "wi wi-night-rain";
-         case "night_snow":
+         case "nightcloudygusts":
+            return "wi wi-night-cloudy-gusts";
+         case "nightcloudywindy":
+            return "wi wi-night-cloudy-windy";
+         case "nightcloudyhigh":
+            return "wi wi-night-cloudy-high";
+         case "nightpartlycloudy":
+            return "wi wi-night-partly-cloudy";
+         case "nightfog":
+            return "wi wi-night-fog";
+         case "nighthail":
+            return "wi wi-night-hail";
+         case "nighthaze":
+            return "wi wi-night-fog";
+         case "nightlightning":
+            return "wi wi-night-";
+         case "nightrain":
+            return "wi wi-night-lightning";
+         case "nightrainmix":
+            return "wi wi-night-rain-mix";
+         case "nightrainwind":
+            return "wi wi-night-rain-wind";
+         case "nightshowers":
+            return "wi wi-night-showers";
+         case "nightsleet":
+            return "wi wi-night-sleet";
+         case "nightsleetstorm":
+            return "wi wi-night-sleet-storm";
+         case "nightsnow":
             return "wi wi-night-snow";
+         case "nightsnowthunderstorm":
+            return "wi wi-night-snow-thunderstorm";
+         case "nightsnowwind":
+            return "wi wi-night-snow-wind";
+         case "nightsprinkle":
+            return "wi wi-night-sprinkle";
+         case "nightstormshowers":
+            return "wi wi-night-storm-showers";
+         case "nightthunderstorm":
+            return "wi wi-night-thunderstorm";
+         case "nightwindy":
+            return "wi wi-night-windy";
+         case "nightlightwind":
+            return "wi wi-night-windy";
          default:
             return "wi wi-na";
       }
