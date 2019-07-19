@@ -10,7 +10,7 @@ namespace yApi = shared::plugin::yPluginApi;
 class CWeather : public plugin_cpp_api::IPlugin
 {
 public:
-   CWeather() = default;
+   CWeather();
    virtual ~CWeather() = default;
 
    // IPlugin implementation
@@ -19,17 +19,19 @@ public:
 
 protected:
    void declareDevices() const;
-   void requestWeather(boost::shared_ptr<yApi::IYPluginApi> api) const;
+   void requestWeather(boost::shared_ptr<yApi::IYPluginApi> api);
    boost::shared_ptr<const shared::ILocation> getLocation(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
 private:
    static const boost::posix_time::time_duration RequestPeriodicity;
+   static const boost::posix_time::time_duration RetryDelay;
+   boost::shared_ptr<shared::event::CEventTimer> m_requestTimer;
    static const std::string LiveWeatherDeviceName;
    static const std::string ForecastWeatherDevicePrefix;
    static const int NbForecastDays;
-
+   
    CWeatherConfiguration m_configuration;
    boost::shared_ptr<IWeatherService> m_weatherService;
+   int m_requestTries;
    //TODO std::vector<ForcastPerDayKeywords> forcastPerDayKeywords;
-   //TODO virer std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_forcastPerDayKeywords;
 };

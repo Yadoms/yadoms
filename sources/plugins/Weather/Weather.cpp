@@ -8,6 +8,8 @@
 IMPLEMENT_PLUGIN(CWeather)
 
 const boost::posix_time::time_duration CWeather::RequestPeriodicity(boost::posix_time::hours(3));
+const boost::posix_time::time_duration CWeather::RetryDelay(boost::posix_time::minutes(10));
+
 const std::string CWeather::ForecastWeatherDevicePrefix("Forecast weather day + ");
 const int CWeather::NbForecastDays(3);
 
@@ -17,6 +19,11 @@ enum
 {
    kMeasureTimerEventId = yApi::IYPluginApi::kPluginFirstEventId,
 };
+
+CWeather::CWeather()
+   : m_requestTries(0)
+{
+}
 
 void CWeather::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
@@ -31,10 +38,11 @@ void CWeather::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-   requestWeather(api);
-   const auto periodicRequestTimer = api->getEventHandler().createTimer(kMeasureTimerEventId,
-                                                                        shared::event::CEventTimer::kPeriodic,
-                                                                        RequestPeriodicity);
+   m_requestTries = 0;
+   static const auto Immediately = boost::posix_time::seconds(0);
+   m_requestTimer = api->getEventHandler().createTimer(kMeasureTimerEventId,
+                                                       shared::event::CEventTimer::kOneShot,
+                                                       Immediately);
 
    while (true)
    {
@@ -42,7 +50,7 @@ void CWeather::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
       case yApi::IYPluginApi::kEventStopRequested:
          {
-            periodicRequestTimer->stop();
+            m_requestTimer->stop();
             YADOMS_LOG(information) << "Stop requested";
             api->setPluginState(yApi::historization::EPluginState::kStopped);
             return;
@@ -57,13 +65,12 @@ void CWeather::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             m_configuration.initializeWith(newConfiguration);
             m_configuration.trace();
 
-            periodicRequestTimer->stop();
+            m_requestTimer->stop();
 
             api->setPluginState(yApi::historization::EPluginState::kRunning);
 
             // Start a measure now and restart timer for next measures
             requestWeather(api);
-            periodicRequestTimer->start(RequestPeriodicity);
 
             break;
          }
@@ -101,19 +108,32 @@ void CWeather::declareDevices() const
    //}
 }
 
-void CWeather::requestWeather(boost::shared_ptr<yApi::IYPluginApi> api) const
+void CWeather::requestWeather(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    YADOMS_LOG(information) << "Request web service...";
 
    try
    {
       m_weatherService->requestWeather(getLocation(api));
+
+      api->setPluginState(yApi::historization::EPluginState::kRunning);
+      m_requestTries = 0;
+      m_requestTimer->start(RequestPeriodicity);
    }
    catch (std::exception& exception)
    {
       YADOMS_LOG(error) << "Error requesting weather data, " << exception.what();
-      //TODO ajouter réessais
-      //TODO gérer plugin state
+
+      api->setPluginState(yApi::historization::EPluginState::kCustom, "lastRequestFailed");
+
+      if (++m_requestTries >= 3)
+      {
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "maxTriesAchieved");
+         m_requestTries = 0;
+         m_requestTimer->start(RequestPeriodicity);
+         return;
+      }
+      m_requestTimer->start(RetryDelay);
    }
 }
 
@@ -122,7 +142,7 @@ boost::shared_ptr<const shared::ILocation> CWeather::getLocation(boost::shared_p
 {
    if (m_configuration.useSpecificLocation())
    {
-      return m_configuration.specificLocation();   
+      return m_configuration.specificLocation();
    }
    else
    {

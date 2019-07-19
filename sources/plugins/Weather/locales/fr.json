@@ -18,5 +18,10 @@
         }
       }
     }
+  },
+  "customLabels": {
+    "pluginState": {
+      "updateConfiguration": "Mise à jour de la configuration..."
+    }
   }
 }
