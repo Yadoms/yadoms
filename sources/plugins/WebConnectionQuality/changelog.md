@@ -1,3 +1,6 @@
+### 2.0.1
+* Add translation
+
 ### 2.0.0
 * Fix #521 : Align ping value with new Yadoms duration type
 
