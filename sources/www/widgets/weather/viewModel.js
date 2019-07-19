@@ -147,7 +147,8 @@ widgetViewModelCtor = function weatherViewModel() {
          self.condition(data.value);
       } else if (keywordId === parseInt(self.widget.configuration.temperatureSection.content.temperatureKeyword.keywordId)) {
          self.temperature(parseFloat(data.value).toFixed(1));
-         self.unit($.t(data.unit));
+         if (!isNullOrUndefinedOrEmpty(data.unit))
+            self.unit($.t(data.unit));
       }
    };
 
