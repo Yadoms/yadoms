@@ -3,6 +3,7 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "OledEspEasyController.h"
 #include "OledScreenLine.h"
+#include "OledScreenControl.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -26,5 +27,6 @@ private:
 	boost::shared_ptr<COledEspEasyController> m_controller;
 	std::string m_deviceName;
 	std::vector< boost::shared_ptr<COledScreenLine> > m_keywordLines;
+	boost::shared_ptr<COledScreenControl> m_keywordControl;
 };
 

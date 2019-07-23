@@ -73,7 +73,7 @@ void COledEspEasy::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             // Yadoms request the plugin to stop. Note that plugin must be stopped in 10 seconds max, otherwise it will be killed.
             YADOMS_LOG(information) << "Stop requested";
             api->setPluginState(yApi::historization::EPluginState::kStopped);
-			m_controller->update_line(2, 1, "Stopped");
+			m_controller->update_line(1, 1, "Stopped");
             return;
          }
 

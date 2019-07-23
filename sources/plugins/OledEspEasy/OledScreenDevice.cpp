@@ -38,6 +38,16 @@ void COledScreenDevice::declareDevice(boost::shared_ptr<yApi::IYPluginApi> & api
 			api->declareKeyword(m_deviceName, lineI->getHistorizer());
 		m_keywordLines.push_back(lineI);
 	}
+
+	m_keywordControl = boost::make_shared<COledScreenControl>();
+
+	if (!api->keywordExists(m_deviceName, m_keywordControl->get_on_event()))
+		api->declareKeyword(m_deviceName, m_keywordControl->get_on_event());
+	if (!api->keywordExists(m_deviceName, m_keywordControl->get_off_event()))
+		api->declareKeyword(m_deviceName, m_keywordControl->get_off_event());
+	if (!api->keywordExists(m_deviceName, m_keywordControl->get_clear_event()))
+		api->declareKeyword(m_deviceName, m_keywordControl->get_clear_event());
+
 }
 
 void COledScreenDevice::updateScreen(const std::string& keyword, const std::string& text)
@@ -48,4 +58,20 @@ void COledScreenDevice::updateScreen(const std::string& keyword, const std::stri
 		m_controller->update_line((*keywordIt)->getLine(), 1, text);
 		(*keywordIt)->getHistorizer()->set(text);
 	}
+	else
+	{
+		if(boost::iequals(m_keywordControl->get_on_event()->getKeyword(), keyword))
+		{
+			m_controller->switch_on();	
+		}
+		else if (boost::iequals(m_keywordControl->get_off_event()->getKeyword(), keyword))
+		{
+			m_controller->switch_off();
+		}
+		else if (boost::iequals(m_keywordControl->get_clear_event()->getKeyword(), keyword))
+		{
+			m_controller->clear_screen();
+		}
+	}
+
 }

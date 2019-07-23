@@ -17,6 +17,8 @@ set(OLED_ESPEASY_SOURCES
 	OledScreenDevice.cpp
 	OledScreenLine.h
 	OledScreenLine.cpp
+	OledScreenControl.h
+	OledScreenControl.cpp
 )
 
 #########################################
