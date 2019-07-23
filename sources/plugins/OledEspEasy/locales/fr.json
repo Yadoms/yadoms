@@ -1,0 +1,18 @@
+﻿{
+  "name": "Ecran déporté OLED ESPEasy",
+  "description": "Plugin d'écran déporté pour fonctionner avec un écran OLED sur un support ESP8266 avec Firmware ESPEasy (d1, lolin, arduino...)",
+  "configurationSchema": {
+    "ipAddress": {
+      "name": "Adresse IP de la carte ESPEasy",
+      "description": "Entrer l'adresse IP de la carte avec le formware ESPEasy",
+      "regexErrorMessage": "U ne IPv4 est requise (exemple 192.168.0.12)"
+    },
+    "OledSize": {
+      "name": "Taille de l'écran utilisé",
+      "description": "",
+      "values": {
+        "Oled0_66": "Oled 0.66 pouces (68x48)"
+      }
+    }
+  }
+}

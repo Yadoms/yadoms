@@ -1,0 +1,51 @@
+#include "stdafx.h"
+#include "OledScreenDevice.h"
+#include <shared/Log.h>
+#include <shared/http/HttpMethods.h>
+
+COledScreenDevice::COledScreenDevice(boost::shared_ptr<COledEspEasyController> controller)
+	:m_controller(controller), m_deviceName("oled1306_066")
+{
+	
+}
+
+COledScreenDevice::COledScreenDevice(boost::shared_ptr<COledEspEasyController> controller, std::string deviceName)
+	: m_controller(controller), m_deviceName(std::move(deviceName))
+{
+	
+}
+
+
+COledScreenDevice::~COledScreenDevice()
+{
+	
+}
+
+const std::string& COledScreenDevice::getDeviceName() const
+{
+	return m_deviceName;
+}
+
+void COledScreenDevice::declareDevice(boost::shared_ptr<yApi::IYPluginApi> & api)
+{
+	if (!api->deviceExists(m_deviceName))
+		api->declareDevice(m_deviceName, "SSD1306", "OLED SSD1306 Display 0.66 inch");
+
+	for (int i = 0; i < 6; ++i)
+	{
+		auto lineI = boost::make_shared<COledScreenLine>(i+1);
+		if (!api->keywordExists(m_deviceName, lineI->getHistorizer()))
+			api->declareKeyword(m_deviceName, lineI->getHistorizer());
+		m_keywordLines.push_back(lineI);
+	}
+}
+
+void COledScreenDevice::updateScreen(const std::string& keyword, const std::string& text)
+{
+	const auto keywordIt = std::find_if(m_keywordLines.begin(), m_keywordLines.end(), [&keyword](const boost::shared_ptr<COledScreenLine>& x) { return x->getKeywordName() == keyword; });
+	if(keywordIt != m_keywordLines.end())
+	{
+		m_controller->update_line((*keywordIt)->getLine(), 1, text);
+		(*keywordIt)->getHistorizer()->set(text);
+	}
+}
