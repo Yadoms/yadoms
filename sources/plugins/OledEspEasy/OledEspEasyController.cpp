@@ -40,7 +40,8 @@ void COledEspEasyController::clear_screen()
 
 void COledEspEasyController::update_line(int iLine, int iCol, const std::string& text)
 {
-	sendCommand(ECommands::kOled, boost::lexical_cast<std::string>(iLine), boost::lexical_cast<std::string>(iCol), text);
+	std::string fixedText = processText(text);
+	sendCommand(ECommands::kOled, boost::lexical_cast<std::string>(iLine), boost::lexical_cast<std::string>(iCol), fixedText);
 }
 
 void COledEspEasyController::sendCommand(const ECommands& command, const std::vector<std::string> & args) const
@@ -64,5 +65,12 @@ void COledEspEasyController::sendCommand(const ECommands& command, const std::ve
 	{
 		YADOMS_LOG(error) << "Fail to send command to ESPEasy : unknown error";
 	}
+}
+
+std::string COledEspEasyController::processText(const std::string& text)
+{
+	std::string t = boost::replace_all_copy(text, " ", "%20");
+
+	return t;
 }
 

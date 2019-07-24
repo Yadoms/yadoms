@@ -3,8 +3,7 @@
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/Log.h>
 #include <shared/currentTime/Provider.h>
-#include <Poco/DateTime.h>
-#include <Poco/LocalDateTime.h>
+#include <shared/dateTime/Format.h>
 #include "OledScreenDevice.h"
 
 /* ----------------------------------
@@ -72,9 +71,12 @@ void COledEspEasy::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             // Yadoms request the plugin to stop. Note that plugin must be stopped in 10 seconds max, otherwise it will be killed.
             YADOMS_LOG(information) << "Stop requested";
-            api->setPluginState(yApi::historization::EPluginState::kStopped);
-			m_controller->update_line(1, 1, "Stopped");
-            return;
+			m_controller->clear_screen();
+			m_controller->update_line(1, 1, "Stopped"); 
+			m_controller->update_line(3, 1, shared::dateTime::CFormat::formatNow("%d %b"));
+			m_controller->update_line(4, 1, shared::dateTime::CFormat::formatNow("%H:%M"));
+			api->setPluginState(yApi::historization::EPluginState::kStopped);
+			return;
          }
 
       case yApi::IYPluginApi::kEventUpdateConfiguration:
