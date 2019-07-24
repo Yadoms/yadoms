@@ -6,15 +6,6 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-
-//--------------------------------------------------------------
-/// \brief	An example of an enum type of parameter
-//--------------------------------------------------------------
-enum EEnumType
-{
-	kOled0_66,
-};
-
 //--------------------------------------------------------------
 /// \brief	Configuration of the empty plugin
 //--------------------------------------------------------------
@@ -43,9 +34,9 @@ public:
    std::string getIPAddress() const;
 
    //--------------------------------------------------------------
-   /// \brief	    Enum parameter
+   /// \brief	    Obtain the number of lines
    //--------------------------------------------------------------
-   EEnumType getOledType() const;
+   int getOledLineCount() const;
 
 private:
    //--------------------------------------------------------------

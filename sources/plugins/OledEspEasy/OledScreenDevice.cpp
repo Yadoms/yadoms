@@ -1,16 +1,15 @@
 #include "stdafx.h"
 #include "OledScreenDevice.h"
-#include <shared/Log.h>
 #include <shared/http/HttpMethods.h>
 
-COledScreenDevice::COledScreenDevice(boost::shared_ptr<COledEspEasyController> controller)
-	:m_controller(controller), m_deviceName("oled1306_066")
+COledScreenDevice::COledScreenDevice(boost::shared_ptr<COledEspEasyController> controller, int lineCount)
+	:m_controller(controller), m_deviceName("oledssd1306"), m_lineCount(lineCount)
 {
 	
 }
 
-COledScreenDevice::COledScreenDevice(boost::shared_ptr<COledEspEasyController> controller, std::string deviceName)
-	: m_controller(controller), m_deviceName(std::move(deviceName))
+COledScreenDevice::COledScreenDevice(boost::shared_ptr<COledEspEasyController> controller, std::string deviceName, int lineCount)
+	: m_controller(controller), m_deviceName(std::move(deviceName)), m_lineCount(lineCount)
 {
 	
 }
@@ -29,9 +28,9 @@ const std::string& COledScreenDevice::getDeviceName() const
 void COledScreenDevice::declareDevice(boost::shared_ptr<yApi::IYPluginApi> & api)
 {
 	if (!api->deviceExists(m_deviceName))
-		api->declareDevice(m_deviceName, "SSD1306", "OLED SSD1306 Display 0.66 inch");
+		api->declareDevice(m_deviceName, "SSD1306", "OLED SSD1306 Display");
 
-	for (int i = 0; i < 6; ++i)
+	for (int i = 0; i < m_lineCount; ++i)
 	{
 		auto lineI = boost::make_shared<COledScreenLine>(i+1);
 		if (!api->keywordExists(m_deviceName, lineI->getHistorizer()))

@@ -14,12 +14,17 @@
       "type": "string",
       "regex": "([0-9]{1,3}\\.){3}[0-9]{1,3}"
     },
-    "OledSize": {
-      "type": "enum",
-      "values": {
-        "Oled0_66": ""
-      },
-      "defaultValue": "Oled0_66"
+    "specificOledSize": {
+      "type": "section",
+      "enableWithCheckBox": "true",
+      "enableWithCheckBoxDefaultValue": "false",
+      "content": {
+        "LineCount": {
+          "type": "int",
+          "defaultValue": "8",
+          "minimumValue": "1"
+        }
+      }
     }
   }
 }

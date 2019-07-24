@@ -7,11 +7,14 @@
       "description": "Enter IP address of card",
       "regexErrorMessage": "Must be an ipv4 adress like 192.168.0.12"
     },
-    "OledSize": {
-      "name": "Oled screen size",
-      "description": "",
-      "values": {
-        "Oled0_66": "Oled 0.66 inches (68x48)"
+    "specificOledSize": {
+      "name": "Use of non standard screen",
+      "description": "Check it if your screen do not manage 8 lines",
+      "content": {
+        "LineCount": {
+          "name": "Number of lines the screen can display",
+          "description": "Defatul value is 8"
+        }
       }
     }
   }

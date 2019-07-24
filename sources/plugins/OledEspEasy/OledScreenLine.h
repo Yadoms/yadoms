@@ -2,7 +2,6 @@
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/plugin/yPluginApi/historization/Text.h>
-#include "OledEspEasyController.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -17,7 +16,7 @@ public:
 	COledScreenLine(int line);
 	virtual ~COledScreenLine();
 
-	const int getLine() const;
+	int getLine() const;
 	const std::string & getKeywordName() const;
 	boost::shared_ptr< yApi::historization::CText> & getHistorizer();
 private:

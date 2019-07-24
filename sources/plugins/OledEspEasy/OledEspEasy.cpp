@@ -56,7 +56,7 @@ void COledEspEasy::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       ----------------------------- */
    m_controller = boost::make_shared<COledEspEasyController>(m_configuration);
-   boost::shared_ptr<COledScreenDevice> oledScreen = boost::make_shared<COledScreenDevice>(m_controller);
+   boost::shared_ptr<COledScreenDevice> oledScreen = boost::make_shared<COledScreenDevice>(m_controller, m_configuration.getOledLineCount());
    oledScreen->declareDevice(api);
 
       api->setPluginState(yApi::historization::EPluginState::kRunning);

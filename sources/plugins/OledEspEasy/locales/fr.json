@@ -7,11 +7,14 @@
       "description": "Entrer l'adresse IP de la carte avec le formware ESPEasy",
       "regexErrorMessage": "U ne IPv4 est requise (exemple 192.168.0.12)"
     },
-    "OledSize": {
-      "name": "Taille de l'écran utilisé",
-      "description": "",
-      "values": {
-        "Oled0_66": "Oled 0.66 pouces (68x48)"
+    "specificOledSize": {
+      "name": "Utilisation d'un écran non standard",
+      "description": "Cocher si votre écran ne possède pas 8 lignes affichables",
+      "content": {
+        "LineCount": {
+          "name": "Nombre de lignes affichables sur l'écran",
+          "description": "Par défaut 8"
+        }
       }
     }
   }

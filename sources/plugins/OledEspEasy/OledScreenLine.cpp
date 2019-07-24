@@ -14,7 +14,7 @@ COledScreenLine::~COledScreenLine()
 	
 }
 
-const int COledScreenLine::getLine() const
+int COledScreenLine::getLine() const
 {
 	return m_line;
 }

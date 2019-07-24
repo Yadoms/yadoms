@@ -15,8 +15,8 @@ namespace yApi = shared::plugin::yPluginApi;
 class COledScreenDevice
 {
 public:
-	COledScreenDevice(boost::shared_ptr<COledEspEasyController> controller);
-	COledScreenDevice(boost::shared_ptr<COledEspEasyController> controller, std::string deviceName);
+	COledScreenDevice(boost::shared_ptr<COledEspEasyController> controller, int lineCount);
+	COledScreenDevice(boost::shared_ptr<COledEspEasyController> controller, std::string deviceName, int lineCount);
 	virtual ~COledScreenDevice();
 
 	const std::string& getDeviceName() const;
@@ -28,5 +28,6 @@ private:
 	std::string m_deviceName;
 	std::vector< boost::shared_ptr<COledScreenLine> > m_keywordLines;
 	boost::shared_ptr<COledScreenControl> m_keywordControl;
+	int m_lineCount;
 };
 
