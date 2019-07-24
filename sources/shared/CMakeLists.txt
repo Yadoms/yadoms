@@ -81,6 +81,8 @@ set(SHARED_LIB_SRC
 
    shared/dateTime/DateTimeContainer.h
    shared/dateTime/DateTimeContainer.cpp
+   shared/dateTime/Format.h
+   shared/dateTime/Format.cpp
 
    shared/encryption/Xor.h
    shared/encryption/Xor.cpp
