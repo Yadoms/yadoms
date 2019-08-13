@@ -11,6 +11,8 @@ then
 	echo "Which choice would you like?"
 	echo " -> Generate a makefile (m)"
 	echo " -> Generate a makefile RELEASE (r)"
+	echo " -> Generate a makefile for crosscompilation (osxcroos) (c)"
+	echo " -> Generate a makefile for crosscompilation (osxcroos) RELEASE (d)"
 	echo " -> Generate a xcode project (x)"
 	read choice
 else
@@ -29,6 +31,16 @@ case "$choice" in
 	# cmake for makefile
 	cmake -DCMAKE_BUILD_TYPE="Release" -D CMAKE_C_COMPILER=gcc -D CMAKE_CXX_COMPILER=g++ ../sources
 	;;
+	
+    c)
+	# cmake for makefile (cross compilation)
+	cmake -D CMAKE_C_COMPILER=x86_64-apple-darwin17-gcc -D CMAKE_CXX_COMPILER=x86_64-apple-darwin17-g++ -DCMAKE_TOOLCHAIN_FILE=../sources/cmake/ccmacos.cmake ../sources
+	;;	
+
+    d)
+	# cmake for makefile (cross compilation)
+	cmake -DCMAKE_BUILD_TYPE="Release" -D CMAKE_C_COMPILER=x86_64-apple-darwin17-gcc -D CMAKE_CXX_COMPILER=x86_64-apple-darwin17-g++ -DCMAKE_TOOLCHAIN_FILE=../sources/cmake/ccmacos.cmake ../sources
+	;;	
 
     x)
 	# cmake for xcode
