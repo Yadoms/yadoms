@@ -33,8 +33,8 @@ case "$choice" in
 	;;
 	
     c)
-	eval "`x86_64-apple-darwin17-osxcross-conf`"
-	export OSXCROSS_HOST="x86_64-apple-darwin17"
+	eval "`x86_64-apple-darwin16-osxcross-conf`"
+	export OSXCROSS_HOST="x86_64-apple-darwin16"
 	# cmake for makefile (cross compilation)
 	cmake -D CMAKE_C_COMPILER=x86_64-apple-darwin17-gcc -D CMAKE_CXX_COMPILER=x86_64-apple-darwin17-g++ -DCMAKE_TOOLCHAIN_FILE=../sources/cmake/ccmacos.cmake ../sources
 	;;	
