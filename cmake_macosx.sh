@@ -41,7 +41,7 @@ case "$choice" in
 
     d)
 	# cmake for makefile (cross compilation)
-	cmake -DCMAKE_BUILD_TYPE="Release" -D CMAKE_C_COMPILER=x86_64-apple-darwin17-gcc -D CMAKE_CXX_COMPILER=x86_64-apple-darwin17-g++ -DCMAKE_TOOLCHAIN_FILE=../sources/cmake/ccmacos.cmake ../sources
+	cmake -DCMAKE_BUILD_TYPE="Release" -D CMAKE_C_COMPILER=x86_64-apple-darwin16-gcc -D CMAKE_CXX_COMPILER=x86_64-apple-darwin16-g++ -DCMAKE_TOOLCHAIN_FILE=../sources/cmake/ccmacos.cmake ../sources
 	;;	
 
     x)
