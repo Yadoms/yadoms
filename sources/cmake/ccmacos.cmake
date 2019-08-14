@@ -15,6 +15,9 @@ set(CC_RPI_GXX ${CC_RPI_ROOT}/bin/x86_64-apple-darwin17-g++)
 set(CC_RPI_LIBS /opt/osxcross/target/bin/../SDK/MacOSX10.13.sdk)
 set(CMAKE_SYSROOT ${CC_RPI_LIBS})
 
+#fix boost find libs by enableing GHSMULTI
+set(GHSMULTI ON)
+
 # specify the cross compiler
 SET(CMAKE_C_COMPILER   ${CC_RPI_GCC})
 SET(CMAKE_CXX_COMPILER ${CC_RPI_GXX})
