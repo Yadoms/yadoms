@@ -84,6 +84,7 @@ if(POCO_VERSION_CHECKED_SUCCESS)
       lib/Linux/x86_64
       lib/Linux/ARM
       lib/Darwin/x86_64
+      lib/darwin/x86_64
       lib/Linux/armv6l
       lib/Linux/armv7l
    )
