@@ -23,7 +23,7 @@ if(${Python3_ManualSetup})
 	endif((EXISTS ${Python3_EXECUTABLE}))
 else(${Python3_ManualSetup})
 	find_package (Python3 COMPONENTS Interpreter Development)
-endif((${Python3_ManualSetup})
+endif(${Python3_ManualSetup})
 
 
 if(${Python3_FOUND})
