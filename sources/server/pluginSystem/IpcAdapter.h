@@ -32,13 +32,18 @@ namespace pluginSystem
       void postInit(boost::shared_ptr<const shared::plugin::information::IInformation> information,
                     const boost::filesystem::path& dataPath,
                     const boost::filesystem::path& logFile,
-                    const std::string& logLevel) override;
+                    const std::string& logLevel,
+                    Poco::Nullable<std::string> proxyHost,
+                    Poco::Nullable<Poco::UInt16> proxyPort,
+                    Poco::Nullable<std::string> proxyUsername,
+                    Poco::Nullable<std::string> proxyPassword,
+                    Poco::Nullable<std::string> proxyBypass) override;
       void postUpdateConfiguration(const shared::CDataContainer& newConfiguration) override;
       void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) override;
       void postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request) override;
       void postSetDeviceConfiguration(boost::shared_ptr<const shared::plugin::yPluginApi::ISetDeviceConfiguration>& command) override;
       void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) override;
-      void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery, const std::string & taskId) override;
+      void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery, const std::string& taskId) override;
       void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) override;
       void postDeviceRemoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event) override;
       // [END] IIpcAdapter Implementation
@@ -108,7 +113,7 @@ namespace pluginSystem
       void processUpdateDeviceConfiguration(const plugin_IPC::toYadoms::UpdateDeviceConfiguration& msg) const;
       void processExtraQueryProgression(const plugin_IPC::toYadoms::ExtraQueryProgression& msg) const;
       void processSetDeviceState(const plugin_IPC::toYadoms::SetDeviceState& msg) const;
-      
+
    private:
       //--------------------------------------------------------------
       /// \brief	Message queue max message size & number
@@ -175,7 +180,7 @@ namespace pluginSystem
       ///\brief               The receiving hook mutex
       //-----------------------------------------------------
       mutable boost::recursive_mutex m_onReceiveHookMutex;
-      
+
       //-----------------------------------------------------
       ///\brief               The receiving hook event
       //-----------------------------------------------------
@@ -184,6 +189,6 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief               The pending extra queries
       //-----------------------------------------------------
-      std::map<std::string, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> > m_pendingExtraQueries;
+      std::map<std::string, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery>> m_pendingExtraQueries;
    };
 } // namespace pluginSystem

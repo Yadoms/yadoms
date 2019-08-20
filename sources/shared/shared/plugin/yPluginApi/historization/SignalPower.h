@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
-#include "typeInfo/IntTypeInfo.h"
+#include "../typeInfo/IntTypeInfo.h"
 
 namespace shared
 {
@@ -22,14 +22,13 @@ namespace shared
                ///\brief                     Constructor
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] measureType     The measure type (normally kAbsolute)
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                explicit CSignalPower(const std::string& keywordName,
-                                     const EMeasureType& measureType = EMeasureType::kAbsolute);
+                                     const EMeasureType& measureType = EMeasureType::kAbsolute,
+                                     const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CSignalPower();
+               virtual ~CSignalPower() = default;
             };
          }
       }

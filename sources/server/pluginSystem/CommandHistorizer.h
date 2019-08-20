@@ -18,29 +18,20 @@ namespace pluginSystem
       explicit CCommandHistorizer(boost::shared_ptr<const database::entities::CKeyword> keyword,
                                   const std::string& value);
 
-      //-----------------------------------------------------
-      ///\brief                     Destructor
-      //-----------------------------------------------------
-      virtual ~CCommandHistorizer();
+      virtual ~CCommandHistorizer() = default;
 
       // IHistorizable implementation
       const std::string& getKeyword() const override;
       const shared::plugin::yPluginApi::CStandardCapacity& getCapacity() const override;
       const shared::plugin::yPluginApi::EKeywordAccessMode& getAccessMode() const override;
       std::string formatValue() const override;
-      const shared::plugin::yPluginApi::historization::EMeasureType& getMeasureType() const override;
+      const shared::plugin::yPluginApi::EMeasureType& getMeasureType() const override;
       shared::CDataContainer getTypeInfo() const override;
+      const shared::plugin::yPluginApi::EHistoryDepth& getHistoryDepth() const override;
       // [END] IHistorizable implementation
 
    private:
-      //-----------------------------------------------------
-      ///\brief                     The keyword name
-      //-----------------------------------------------------
       boost::shared_ptr<const database::entities::CKeyword> m_keyword;
-
-      //-----------------------------------------------------
-      ///\brief                     The value
-      //-----------------------------------------------------
       std::string m_value;
    };
 } // namespace pluginSystem	

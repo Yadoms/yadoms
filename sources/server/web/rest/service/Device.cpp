@@ -45,6 +45,10 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchcapacity")("*")("*"), CDevice::getDevicesWithCapacity);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchcapacitytype")("*")("*"), CDevice::getDeviceWithCapacityType);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchkeywordaccess")("*"), CDevice::getDeviceWithKeywordAccessMode);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchkeywordhistorydepth")("*"), CDevice::getDeviceWithKeywordHistoryDepth
+            );
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("matchcriteria"), CDevice::getDeviceMatchCriteria,
+               CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*")("*"), CDevice::getDeviceKeywordsForCapacity);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keywordslastvalue"), CDevice::getKeywordsLastState,
@@ -103,50 +107,50 @@ namespace web
                      std::remove_if(compatibleDevices.begin(),
                                     compatibleDevices.end(),
                                     [this, &refKeywords, &commonKeywordsForCompatibleDevices](
-                                       const boost::shared_ptr<database::entities::CDevice>& candidateDevice)
-                                 {
-                                    auto candidateKeywords = m_keywordManager->getKeywords(candidateDevice->Id);
-                                    std::vector<shared::CDataContainer> commonKeywords;
-                                    // Iterate through reference keywords to find a common keyword in candidateDevice
-                                    for (const auto& refKeyword : refKeywords)
+                                    const boost::shared_ptr<database::entities::CDevice>& candidateDevice)
                                     {
-                                       // Iterate through candidate keywords and remove consumed candidate to not used it more than one time
-                                       candidateKeywords.erase(
-                                          std::remove_if(candidateKeywords.begin(),
-                                                         candidateKeywords.end(),
-                                                         [&commonKeywords, &candidateDevice, &refKeyword](
+                                       auto candidateKeywords = m_keywordManager->getKeywords(candidateDevice->Id);
+                                       std::vector<shared::CDataContainer> commonKeywords;
+                                       // Iterate through reference keywords to find a common keyword in candidateDevice
+                                       for (const auto& refKeyword : refKeywords)
+                                       {
+                                          // Iterate through candidate keywords and remove consumed candidate to not used it more than one time
+                                          candidateKeywords.erase(
+                                             std::remove_if(candidateKeywords.begin(),
+                                                            candidateKeywords.end(),
+                                                            [&commonKeywords, &refKeyword](
                                                             const boost::shared_ptr<database::entities::CKeyword>& candidateKeyword)
-                                                      {
-                                                         if (refKeyword->CapacityName == candidateKeyword->CapacityName &&
-                                                            refKeyword->AccessMode == candidateKeyword->AccessMode &&
-                                                            refKeyword->Name == candidateKeyword->Name &&
-                                                            refKeyword->Type == candidateKeyword->Type &&
-                                                            refKeyword->Units == candidateKeyword->Units &&
-                                                            refKeyword->TypeInfo == candidateKeyword->TypeInfo &&
-                                                            refKeyword->Measure == candidateKeyword->Measure &&
-                                                            refKeyword->Details == candidateKeyword->Details)
-                                                         {
-                                                            // A common device was found
-                                                            shared::CDataContainer commonKeyword;
-                                                            commonKeyword.set("from", refKeyword);
-                                                            commonKeyword.set("to", candidateKeyword);
-                                                            commonKeywords.push_back(commonKeyword);
-                                                            return true;
-                                                         }
-                                                         return false;
-                                                      }),
-                                          candidateKeywords.end());
-                                    }
+                                                            {
+                                                               if (refKeyword->CapacityName == candidateKeyword->CapacityName &&
+                                                                  refKeyword->AccessMode == candidateKeyword->AccessMode &&
+                                                                  refKeyword->Name == candidateKeyword->Name &&
+                                                                  refKeyword->Type == candidateKeyword->Type &&
+                                                                  refKeyword->Units == candidateKeyword->Units &&
+                                                                  refKeyword->TypeInfo == candidateKeyword->TypeInfo &&
+                                                                  refKeyword->Measure == candidateKeyword->Measure &&
+                                                                  refKeyword->Details == candidateKeyword->Details)
+                                                               {
+                                                                  // A common device was found
+                                                                  shared::CDataContainer commonKeyword;
+                                                                  commonKeyword.set("from", refKeyword);
+                                                                  commonKeyword.set("to", candidateKeyword);
+                                                                  commonKeywords.push_back(commonKeyword);
+                                                                  return true;
+                                                               }
+                                                               return false;
+                                                            }),
+                                             candidateKeywords.end());
+                                       }
 
-                                    if (commonKeywords.empty())
-                                    {
-                                       // Remove device from compatible devices list if no common keyword
-                                       return true;
-                                    }
+                                       if (commonKeywords.empty())
+                                       {
+                                          // Remove device from compatible devices list if no common keyword
+                                          return true;
+                                       }
 
-                                    commonKeywordsForCompatibleDevices.set(std::to_string(candidateDevice->Id), commonKeywords);
-                                    return false;
-                                 }),
+                                       commonKeywordsForCompatibleDevices.set(std::to_string(candidateDevice->Id), commonKeywords);
+                                       return false;
+                                    }),
                      compatibleDevices.end());
                }
                shared::CDataContainer collection;
@@ -255,7 +259,7 @@ namespace web
                   const auto keywordIds = shared::CDataContainer(requestContent);
                   const auto keywordListLastData = m_keywordManager->getKeywordListLastData(keywordIds.get<std::vector<int>>("keywordIds"));
                   shared::CDataContainer result;
-                  for (auto keywordLastData:keywordListLastData)
+                  for (auto keywordLastData : keywordListLastData)
                   {
                      result.set(std::to_string(keywordLastData.get<0>()), keywordLastData.get<1>());
                   }
@@ -376,6 +380,112 @@ namespace web
             catch (...)
             {
                return CResult::GenerateError("unknown exception in retrieving device with get capacity");
+            }
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceWithKeywordHistoryDepth(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
+         {
+            try
+            {
+               if (parameters.size() > 2)
+               {
+                  const shared::plugin::yPluginApi::EHistoryDepth historyDepth(parameters[2]);
+
+                  //run query
+                  const auto result = m_deviceRequester->getDeviceWithKeywordHistoryDepth(historyDepth);
+                  shared::CDataContainer collection;
+                  collection.set(getRestKeyword(), result);
+                  return CResult::GenerateSuccess(collection);
+               }
+               return CResult::GenerateError("invalid parameter. Can not retrieve history-depth in url");
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in retrieving device with this history-depth policy");
+            }
+         }
+
+         boost::shared_ptr<shared::serialization::IDataSerializable> CDevice::getDeviceMatchCriteria(
+            const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
+         {
+            try
+            {
+               // Get all devices matching some criteria.
+               // Criteria are provided by a JSON string, like :
+               //
+               // {
+               //    "expectedKeywordType": [
+               //       "numeric",
+               //       "bool",
+               //       "Enum"
+               //    ],
+               //    "expectedCapacity" : ["curtain", "upDownStop"],
+               //    "expectedKeywordAccess" : ["get"],
+               //    "expectedKeywordHistoryDepth" : ["default"]
+               // }
+               //
+               // The answer is a JSON string, like :
+               // {
+               //    "devices": [ deviceEntity1, deviceEntity2... ],
+               //    "keywords" : [ keywordEntity1, keywordEntity2... ]
+               // }
+               //
+               const auto criteria = shared::CDataContainer(requestContent);
+
+               std::vector<shared::plugin::yPluginApi::EKeywordDataType> expectedKeywordTypes;
+               if (criteria.exists("expectedKeywordType"))
+               {
+                  for (const auto& node : criteria.get<std::vector<std::string>>("expectedKeywordType"))
+                     expectedKeywordTypes.emplace_back(node);
+               }
+
+               const auto expectedCapacities = criteria.exists("expectedCapacity")
+                                                  ? criteria.get<std::vector<std::string>>("expectedCapacity")
+                                                  : std::vector<std::string>();
+
+               std::vector<shared::plugin::yPluginApi::EKeywordAccessMode> expectedKeywordAccesses;
+               if (criteria.exists("expectedKeywordAccess"))
+               {
+                  for (const auto& node : criteria.get<std::vector<std::string>>("expectedKeywordAccess"))
+                     expectedKeywordAccesses.emplace_back(node);
+               }
+
+               std::vector<shared::plugin::yPluginApi::EHistoryDepth> expectedKeywordHistoryDepth;
+               if (criteria.exists("expectedKeywordHistoryDepth"))
+               {
+                  for (const auto& node : criteria.get<std::vector<std::string>>("expectedKeywordHistoryDepth"))
+                     expectedKeywordHistoryDepth.emplace_back(node);
+               }
+
+               const auto& keywords = m_keywordManager->getKeywordsMatchingCriteria(expectedKeywordTypes,
+                                                                                    expectedCapacities,
+                                                                                    expectedKeywordAccesses,
+                                                                                    expectedKeywordHistoryDepth,
+                                                                                    false);
+               std::set<int> deviceIds;
+               for (const auto& keyword : keywords)
+                  deviceIds.insert(keyword->DeviceId);
+               const auto& devices = m_deviceRequester->getDevices(deviceIds);
+
+               shared::CDataContainer collection;
+               collection.set("devices", devices);
+               collection.set("keywords", keywords);
+               return CResult::GenerateSuccess(collection);
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in retrieving device with this history-depth policy");
             }
          }
 

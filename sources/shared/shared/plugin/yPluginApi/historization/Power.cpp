@@ -14,22 +14,18 @@ namespace shared
             CPower::CPower(const std::string& keywordName,
                            const EKeywordAccessMode& accessMode,
                            const EMeasureType& measureType,
-                           typeInfo::CDoubleTypeInfo& additionalInfo)
+                           const typeInfo::CDoubleTypeInfo& additionalInfo,
+                           const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<double>(keywordName,
                                                  CStandardCapacities::Power(),
                                                  accessMode,
                                                  0.0,
                                                  measureType,
-                                                 additionalInfo)
-            {
-            }
-
-            CPower::~CPower()
+                                                 additionalInfo,
+                                                 historyDepth)
             {
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

@@ -65,7 +65,7 @@ case "$choice" in
 
     r)
 	# cmake for cross compilation RELEASE
-	cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_YADOMS_PLATFORM=Raspberry -DCC_RPI_GCC=armv6-rpi-linux-gnueabihf-gcc -DCC_RPI_GXX=armv6-rpi-linux-gnueabihf-g++  -DCMAKE_TOOLCHAIN_FILE=../sources/cmake/raspberrypi.cmake ../sources
+	cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_YADOMS_PLATFORM=Raspberry -DCC_RPI_GCC=arm-linux-gnueabihf-gcc -DCC_RPI_GXX=arm-linux-gnueabihf-g++  -DCMAKE_TOOLCHAIN_FILE=../sources/cmake/raspberrypi.cmake ../sources
 	;;
 
     e)

@@ -15,17 +15,15 @@ namespace shared
             CBatteryLevel::CBatteryLevel(const std::string& keywordName,
                                          const EKeywordAccessMode& accessMode,
                                          const EMeasureType& measureType,
-                                         const typeInfo::ITypeInfo& additionalInfo)
+                                         const typeInfo::ITypeInfo& additionalInfo,
+                                         const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<int>(keywordName,
                                               CStandardCapacities::BatteryLevel(),
                                               accessMode,
                                               0,
                                               measureType,
-                                              additionalInfo)
-            {
-            }
-
-            CBatteryLevel::~CBatteryLevel()
+                                              additionalInfo,
+                                              historyDepth)
             {
             }
 

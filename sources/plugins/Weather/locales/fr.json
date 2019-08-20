@@ -1,0 +1,27 @@
+﻿{
+  "name": "Météo",
+  "description": "Ce plugin permet de récupérer les données météo (courante, prévisions) à partir du service en ligne OpenWeather (aucun capteur nécessaire)",
+  "configurationSchema": {
+    "apiKey": {
+      "name": "Clé d'API",
+      "description": "Cette clé est nécessaire pour le fonctionnement de votre plugin. Elle peut être obtenue sur simple inscription (gratuite) au service [OpenWeather](https://openweathermap.org/appid)."
+    },
+    "useSpecificLocation": {
+      "name": "Utiliser une localisation spécifique",
+      "description": "Utiliser cette option si la localisation par défaut fournie par Yadoms ne convient pas",
+      "content": {
+        "longitude": {
+          "name": "Longitude"
+        },
+        "latitude": {
+          "name": "Latitude"
+        }
+      }
+    }
+  },
+  "customLabels": {
+    "pluginState": {
+      "updateConfiguration": "Mise à jour de la configuration..."
+    }
+  }
+}

@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
-#include "typeInfo/IntTypeInfo.h"
+#include "../typeInfo/IntTypeInfo.h"
 
 namespace shared
 {
@@ -22,19 +22,17 @@ namespace shared
                ///\brief                     Constructor
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] measureType     The measure type (normally kAbsolute)
+               ///\param[in] additionalInfo  The type information
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                explicit CSignalLevel(const std::string& keywordName,
-                                 const EMeasureType& measureType = EMeasureType::kAbsolute,
-                                 typeInfo::CIntTypeInfo& additionalInfo = typeInfo::CIntTypeInfo::Empty);
+                                     const EMeasureType& measureType = EMeasureType::kAbsolute,
+                                     const typeInfo::CIntTypeInfo& additionalInfo = typeInfo::CIntTypeInfo::Empty,
+                                     const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CSignalLevel();
+               virtual ~CSignalLevel() = default;
             };
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

@@ -68,6 +68,16 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceWithKeywordAccessMode(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
             //-----------------------------------------
+            ///\brief   get all the devices with any keyword history depth
+            //-----------------------------------------
+            boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceWithKeywordHistoryDepth(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+
+            //-----------------------------------------
+            ///\brief   get all the devices matching some criteria
+            //-----------------------------------------
+            boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceMatchCriteria(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+
+            //-----------------------------------------
             ///\brief   get all the keywords of a device
             //-----------------------------------------
             boost::shared_ptr<shared::serialization::IDataSerializable> getDeviceKeywords(const std::vector<std::string>& parameters, const std::string& requestContent) const;

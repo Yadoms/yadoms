@@ -122,7 +122,7 @@
          "restart": "Redémarrer",
          "shutdown": "Eteindre",
          "charts": "Affichage graphique",
-         "customization": "Personalisation"
+         "customization": "Personnalisation"
       },
       "actions": {
          "loadingPage": "Chargement de la page {{pageName}} ...",
@@ -185,13 +185,7 @@
             "name": "Titre",
             "description": "Texte affiché au-dessus du widget"
          },
-         "errorDuringGettingDeviceList": "Erreur lors de la récupération de la liste des équipements",
-         "errorDuringGettingDeviceListMatchCapacity": "Erreur lors de la récupération de la liste des équipements ayant la capacité {{expectedCapacityAccess}} {{expectedCapacity}}",
-         "errorDuringGettingDeviceListMatchCapacityType": "Erreur lors de la récupération de la liste des équipements ayant la capacité {{expectedCapacityAccess}} {{expectedCapacityType}}",
-         "errorDuringGettingDeviceListMatchKeywordAccess": "Erreur lors de la récupération de la liste des équipements ayant une données en accès {{expectedKeywordAccess}}",
-         "errorDuringGettingKeywordList": "Erreur lors de la récupération de la liste des données",
-         "errorDuringGettingKeywordListMatchCapacity": "Erreur lors de la récupération de la liste des données équipement ayant la capacité {{expectedCapacityAccess}} {{expectedCapacity}}",
-         "errorDuringGettingSerialPortList": "Erreur lors de la récupération de la liste des ports série"
+         "errorDuringGettingDeviceList": "Erreur lors de la récupération de la liste des équipements"
       },
       "delete-widget": {
          "title": "Confirmation de la suppression du widget",

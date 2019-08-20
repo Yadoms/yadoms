@@ -44,18 +44,15 @@ namespace shared
                ///\brief                     Constructor
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] accessMode      The access mode
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                explicit CCameraMove(const std::string& keywordName,
-                                    const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGetSet);
+                                    const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGetSet,
+                                    const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CCameraMove();
+               virtual ~CCameraMove() = default;
             };
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

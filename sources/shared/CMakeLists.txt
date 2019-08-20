@@ -127,6 +127,8 @@ set(SHARED_LIB_SRC
    shared/plugin/information/IYadomsInformation.h
 
    shared/plugin/yPluginApi/commonIncludes.h
+   shared/plugin/yPluginApi/HistoryDepth.cpp
+   shared/plugin/yPluginApi/HistoryDepth.h
    shared/plugin/yPluginApi/IBindingQueryData.h
    shared/plugin/yPluginApi/IBindingQueryRequest.h
    shared/plugin/yPluginApi/IDeviceCommand.h
@@ -142,6 +144,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/KeywordAccessMode.h
    shared/plugin/yPluginApi/KeywordDataType.cpp
    shared/plugin/yPluginApi/KeywordDataType.h
+   shared/plugin/yPluginApi/MeasureType.cpp
+   shared/plugin/yPluginApi/MeasureType.h
    shared/plugin/yPluginApi/StandardCapacities.cpp
    shared/plugin/yPluginApi/StandardCapacities.h
    shared/plugin/yPluginApi/StandardCapacity.cpp
@@ -214,8 +218,6 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Message.h
    shared/plugin/yPluginApi/historization/MessageFormatter.cpp
    shared/plugin/yPluginApi/historization/MessageFormatter.h
-   shared/plugin/yPluginApi/historization/MeasureType.cpp
-   shared/plugin/yPluginApi/historization/MeasureType.h
    shared/plugin/yPluginApi/historization/PluginState.cpp
    shared/plugin/yPluginApi/historization/PluginState.h
    shared/plugin/yPluginApi/historization/PluginStateMessage.cpp
@@ -261,22 +263,22 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/WeatherCondition.cpp
    shared/plugin/yPluginApi/historization/Weight.h
    
-   shared/plugin/yPluginApi/historization/typeInfo/ITypeInfo.h
-   shared/plugin/yPluginApi/historization/typeInfo/EmptyTypeInfo.h
-   shared/plugin/yPluginApi/historization/typeInfo/EmptyTypeInfo.cpp
-   shared/plugin/yPluginApi/historization/typeInfo/ByteArrayTypeInfo.h
-   shared/plugin/yPluginApi/historization/typeInfo/ByteArrayTypeInfo.cpp
-   shared/plugin/yPluginApi/historization/typeInfo/BoolTypeInfo.h
-   shared/plugin/yPluginApi/historization/typeInfo/BoolTypeInfo.cpp
-   shared/plugin/yPluginApi/historization/typeInfo/IntTypeInfo.h
-   shared/plugin/yPluginApi/historization/typeInfo/IntTypeInfo.cpp
-   shared/plugin/yPluginApi/historization/typeInfo/DoubleTypeInfo.h
-   shared/plugin/yPluginApi/historization/typeInfo/DoubleTypeInfo.cpp
-   shared/plugin/yPluginApi/historization/typeInfo/PercentageTypeInfo.h
-   shared/plugin/yPluginApi/historization/typeInfo/PercentageTypeInfo.cpp
-   shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.h
-   shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.cpp
-   shared/plugin/yPluginApi/historization/typeInfo/EnumTypeInfo.hpp
+   shared/plugin/yPluginApi/typeInfo/ITypeInfo.h
+   shared/plugin/yPluginApi/typeInfo/EmptyTypeInfo.h
+   shared/plugin/yPluginApi/typeInfo/EmptyTypeInfo.cpp
+   shared/plugin/yPluginApi/typeInfo/ByteArrayTypeInfo.h
+   shared/plugin/yPluginApi/typeInfo/ByteArrayTypeInfo.cpp
+   shared/plugin/yPluginApi/typeInfo/BoolTypeInfo.h
+   shared/plugin/yPluginApi/typeInfo/BoolTypeInfo.cpp
+   shared/plugin/yPluginApi/typeInfo/IntTypeInfo.h
+   shared/plugin/yPluginApi/typeInfo/IntTypeInfo.cpp
+   shared/plugin/yPluginApi/typeInfo/DoubleTypeInfo.h
+   shared/plugin/yPluginApi/typeInfo/DoubleTypeInfo.cpp
+   shared/plugin/yPluginApi/typeInfo/PercentageTypeInfo.h
+   shared/plugin/yPluginApi/typeInfo/PercentageTypeInfo.cpp
+   shared/plugin/yPluginApi/typeInfo/StringTypeInfo.h
+   shared/plugin/yPluginApi/typeInfo/StringTypeInfo.cpp
+   shared/plugin/yPluginApi/typeInfo/EnumTypeInfo.hpp
 
    shared/process/CoutCerrConsoleLogChannel.h
    shared/process/CoutCerrConsoleLogChannel.cpp
@@ -459,7 +461,7 @@ source_group(plugin\\information shared/shared/plugin/information/*.* )
 source_group(plugin\\yPluginApi shared/shared/plugin/yPluginApi/*.* )	
 source_group(plugin\\yPluginApi\\configuration shared/shared/plugin/yPluginApi/configuration/*.* )	
 source_group(plugin\\yPluginApi\\historization shared/shared/plugin/yPluginApi/historization/*.* )	
-source_group(plugin\\yPluginApi\\historization\\typeInfo shared/shared/plugin/yPluginApi/historization/typeInfo/*.* )	
+source_group(plugin\\yPluginApi\\typeInfo shared/shared/plugin/yPluginApi/typeInfo/*.* )	
 source_group(process process/*.* )	
 source_group(rapidjson shared/shared/rapidjson/*.* )	
 source_group(rapidjson\\msinttypes shared/shared/rapidjson/msinttypes/*.* )	

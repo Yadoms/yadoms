@@ -15,10 +15,19 @@ message Information {
 	bool supportDeviceRemovedNotification = 11;
 }
 
+message ProxySettings {
+	string host = 1;
+	uint32 port = 2;
+	string username = 3;
+	string password = 4;
+	string bypassRegex = 5;
+}
+
 message Init {
 	Information pluginInformation = 1;
 	string dataPath = 2;
 	string logFile = 3;
 	string logLevel = 4;
+	ProxySettings proxySettings = 5;
 }
 

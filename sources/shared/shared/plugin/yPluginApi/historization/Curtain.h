@@ -30,13 +30,12 @@ namespace shared
                //-----------------------------------------------------
                ///\brief                     Constructor
                ///\param[in] keywordName     Yadoms keyword name
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
-               explicit CCurtain(const std::string& keywordName);
+               explicit CCurtain(const std::string& keywordName,
+                                 const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CCurtain();
+               virtual ~CCurtain() = default;
             };
          }
       }

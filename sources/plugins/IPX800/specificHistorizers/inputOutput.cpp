@@ -10,7 +10,7 @@ namespace specificHistorizers
                                       yApi::CStandardCapacities::Switch(),
                                       accessMode,
                                       false,
-                                      yApi::historization::EMeasureType::kAbsolute),
+                                      yApi::EMeasureType::kAbsolute),
         m_hardwareName(hardwareName)
    {
    }

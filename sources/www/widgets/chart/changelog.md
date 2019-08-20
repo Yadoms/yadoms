@@ -1,3 +1,6 @@
+### 1.3.4
+* Better keyword selection filtering
+
 ### 1.3.3
 * Fix #521 - adapt the widget to display duration with the new format
 

@@ -27,8 +27,8 @@ namespace shared
       {
       }
 
-      CVersion::CVersion(int major, int minor, int patch, const std::string& prerelease, const std::string& buildMetadata)
-         : m_major(major), m_minor(minor), m_patch(patch), m_prerelease(prerelease), m_buildMetadata(buildMetadata)
+      CVersion::CVersion(int major, int minor, int patch, const std::string& prerelease, const std::string& buildMetaData)
+         : m_major(major), m_minor(minor), m_patch(patch), m_prerelease(prerelease), m_buildMetadata(buildMetaData)
       {
       }
 

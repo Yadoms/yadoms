@@ -82,6 +82,7 @@ namespace database
          (Measure)
          (Details)
          (Blacklist)
+         (HistoryDepth)
          (LastAcquisitionValue)
          (LastAcquisitionDate)
       )

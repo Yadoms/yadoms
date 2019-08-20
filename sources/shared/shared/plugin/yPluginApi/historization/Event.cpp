@@ -17,10 +17,6 @@ namespace shared
             {
             }
 
-            CEvent::~CEvent()
-            {
-            }
-
             const std::string& CEvent::getKeyword() const
             {
                return m_keywordName;
@@ -44,13 +40,19 @@ namespace shared
 
             const EMeasureType& CEvent::getMeasureType() const
             {
-               static const EMeasureType MeasureType(EMeasureType::kAbsolute);
+               static const auto MeasureType(EMeasureType::kAbsolute);
                return MeasureType;
             }
 
             CDataContainer CEvent::getTypeInfo() const
             {
                return CDataContainer();
+            }
+
+            const EHistoryDepth& CEvent::getHistoryDepth() const
+            {
+               static const auto DefaultHistoryDepth(EHistoryDepth::kDefault);
+               return DefaultHistoryDepth;
             }
          }
       }

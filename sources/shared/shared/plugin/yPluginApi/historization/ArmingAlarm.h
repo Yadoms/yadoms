@@ -30,14 +30,13 @@ namespace shared
                ///\brief                     Constructor
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] accessMode      The access mode
+               ///\param[in] historyDepth    The history depth policy
                //-----------------------------------------------------
                explicit CArmingAlarm(const std::string& keywordName,
-                                     const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet);
+                                     const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
+                  const EHistoryDepth& historyDepth = EHistoryDepth::kDefault);
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CArmingAlarm();
+               virtual ~CArmingAlarm() = default;
             };
          }
       }

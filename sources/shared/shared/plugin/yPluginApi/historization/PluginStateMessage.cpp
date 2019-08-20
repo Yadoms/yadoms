@@ -22,10 +22,6 @@ namespace shared
             {
             }
 
-            CPluginStateMessage::~CPluginStateMessage()
-            {
-            }
-
             void CPluginStateMessage::setMessage(const std::string& messageId)
             {
                setMessage(messageId,
@@ -79,5 +75,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

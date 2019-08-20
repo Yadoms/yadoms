@@ -10,17 +10,20 @@ namespace shared
       {
          namespace historization
          {
-            CAlarm::CAlarm(const std::string& keywordName, const EKeywordAccessMode& accessMode, typeInfo::CBoolTypeInfo &ti)
-               : CSingleHistorizableData<bool>(keywordName, CStandardCapacities::Alarm(), accessMode, false, EMeasureType::kAbsolute, ti)
-            {
-            }
-
-            CAlarm::~CAlarm()
+            CAlarm::CAlarm(const std::string& keywordName,
+                           const EKeywordAccessMode& accessMode,
+                           const typeInfo::CBoolTypeInfo& additionalInfo,
+                           const EHistoryDepth& historyDepth)
+               : CSingleHistorizableData<bool>(keywordName,
+                                               CStandardCapacities::Alarm(),
+                                               accessMode,
+                                               false,
+                                               EMeasureType::kAbsolute,
+                                               additionalInfo,
+                                               historyDepth)
             {
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

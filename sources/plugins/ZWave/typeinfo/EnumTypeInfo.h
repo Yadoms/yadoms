@@ -1,12 +1,12 @@
 #pragma once
-#include <shared/plugin/yPluginApi/historization/typeInfo/ITypeInfo.h>
+#include <shared/plugin/yPluginApi/typeInfo/ITypeInfo.h>
 #include <shared/DataContainer.h>
 #include <value_classes/ValueID.h>
 
 //-----------------------------------------------------
 ///\brief Interface for keyword type information
 //-----------------------------------------------------
-class CEnumTypeInfo : public shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo
+class CEnumTypeInfo : public shared::plugin::yPluginApi::typeInfo::ITypeInfo
 {
 public:
    //-----------------------------------------------------
@@ -19,9 +19,9 @@ public:
    //-----------------------------------------------------
    virtual ~CEnumTypeInfo();
 
-   // shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo implementation 
+   // shared::plugin::yPluginApi::typeInfo::ITypeInfo implementation 
    shared::CDataContainer serialize() const override;
-   // END shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo implementation 
+   // END shared::plugin::yPluginApi::typeInfo::ITypeInfo implementation 
 
 private:
    //-----------------------------------------------------

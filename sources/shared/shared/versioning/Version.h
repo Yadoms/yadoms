@@ -24,6 +24,7 @@ namespace shared
          ///\param[in] stringVersion the version as a string. Separators between version digits must be . or ,
          //---------------------------------------------
          explicit CVersion(const std::string& stringVersion) noexcept(false);
+         CVersion& operator=(const CVersion& rhs);
 
          //---------------------------------------------
          ///\brief Constructor
@@ -104,8 +105,7 @@ namespace shared
 
          //---------------------------------------------
          ///\brief Operator to print out version to a stream
-         ///\param[in] oss the target stream
-         ///\param[in] rhs the version object to serialize
+         ///\param [in] oss the target stream
          ///\return  the target stream
          //---------------------------------------------
          friend std::ostream& operator<<(std::ostream& oss, const CVersion& rhs);

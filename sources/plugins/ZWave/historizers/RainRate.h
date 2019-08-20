@@ -20,7 +20,7 @@ namespace historizers
       ///\param[in] measureType     The measure type (normally kAbsolute)
       ///\param[in] ti              The measure type information
       //-----------------------------------------------------
-      CRainRate(const std::string& name, shared::plugin::yPluginApi::historization::EMeasureType measureType, CDecimalTypeInfo &ti);
+      CRainRate(const std::string& name, shared::plugin::yPluginApi::EMeasureType measureType, CDecimalTypeInfo &ti);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

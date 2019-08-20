@@ -1,12 +1,12 @@
 {
    "type": "thermostat",
-   "version": "1.1.0",
+   "version": "1.1.1",
    "author": "jean-Michel BERHAULT",
    "url": "https://github.com/Yadoms/yadoms/wiki/thermostat",
    "credits": "",
    "dependencies": {
       "yadoms": {
-         "minimumVersion": "2.2.0"
+         "minimumVersion": "2.4.0-beta.1"
       }
    },
    "dimensions": {
@@ -33,8 +33,7 @@
          "content": {
             "temperatureDevice": {
                "type": "keyword",
-               "expectedCapacity": ["temperature"],
-               "expectedKeywordAccess": "get"
+               "expectedCapacity": ["temperature"]
             }
          }
       },
@@ -43,8 +42,7 @@
          "content": {
             "temperatureSet": {
                "type": "keyword",
-               "expectedCapacity": ["temperature"],
-               "expectedKeywordAccess": "get"
+               "expectedCapacity": ["temperature"]
             },
             "stepValue": {
                "type": "decimal",
@@ -60,8 +58,7 @@
          "content": {
             "state": {
                "type": "keyword",
-               "expectedCapacity": ["switch", "Operating State"],
-               "expectedKeywordAccess": "get"
+               "expectedCapacity": ["switch", "Operating State"]
             }
          }
       }

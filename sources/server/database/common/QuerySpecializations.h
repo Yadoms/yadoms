@@ -27,7 +27,7 @@ struct queryhelper
 {
    static std::string format(CQuery* obj, const T& anyValue)
    {
-      //dont use queryhelper <std::string> because Clang iisue it
+      //dont use queryhelper <std::string> because Clang issue it
       return obj->formatStringToSql(boost::lexical_cast<std::string>(anyValue));
    }
 };
@@ -177,6 +177,52 @@ struct queryhelper<Poco::Timestamp>
    static std::string format(CQuery* obj, const Poco::Timestamp& anyValue)
    {
       return obj->formatDateToSql(anyValue);
+   }
+};
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting vector to sql string
+//--------------------------------------------------------------
+template <typename T>
+struct queryhelper<std::vector<T>>
+{
+   static std::string format(CQuery* obj, const std::vector<T>& values)
+   {
+      std::ostringstream ss;
+      ss << "( ";
+      auto first = true;
+      for (const auto& value : values)
+      {
+         if (!first)
+            ss << ", ";
+         first = false;
+         ss << queryhelper<T>::format(obj, value);
+      }
+      ss << ") ";
+      return ss.str();
+   }
+};
+
+//--------------------------------------------------------------
+/// \brief	    Helper structure for converting set to sql string
+//--------------------------------------------------------------
+template <typename T>
+struct queryhelper<std::set<T>>
+{
+   static std::string format(CQuery* obj, const std::set<T>& values)
+   {
+      std::ostringstream ss;
+      ss << "( ";
+      auto first = true;
+      for (const auto& value : values)
+      {
+         if (!first)
+            ss << ", ";
+         first = false;
+         ss << queryhelper<T>::format(obj, value);
+      }
+      ss << ") ";
+      return ss.str();
    }
 };
 
@@ -419,7 +465,7 @@ inline CQuery& CQuery::Set(const T01& field1, const T1& value1,
                            const T11& field10, const T10& value10)
 {
    std::ostringstream ss;
-   ss << " SET " << queryhelper<T01>::format(this, field1) << "=" << queryhelper<T1 >::format(this, value1);
+   ss << " SET " << queryhelper<T01>::format(this, field1) << "=" << queryhelper<T1>::format(this, value1);
    if (typeid(value2) != typeid(CNotUsedTemplateField))
       AppendSet(ss, queryhelper<T02>::format(this, field2), queryhelper<T2>::format(this, value2));
    if (typeid(value3) != typeid(CNotUsedTemplateField))
@@ -447,28 +493,6 @@ template <class T1, class T2>
 CQuery& CQuery::Where(const T1& field, const std::string& op, const T2& value)
 {
    return PredicateInternal("WHERE ", queryhelper<T1>::format(this, field), op, queryhelper<T2>::format(this, value));
-}
-
-template <class T1, class T2>
-CQuery& CQuery::WhereIn(const T1& field, const std::vector<T2>& values)
-{
-   std::ostringstream ss;
-   ss << "WHERE " << queryhelper<T1>::format(this, field) << " IN (";
-   auto firstValue = true;
-   for (const auto& value:values)
-   {
-      if (firstValue)
-      {
-         ss << queryhelper<T2>::format(this, value);
-         firstValue = false;
-      }
-      else
-      {
-         ss << "," << queryhelper<T2>::format(this, value);
-      }
-   }
-   ss << ") ";
-   return Append(ss);
 }
 
 template <class T1, class T2>
@@ -687,8 +711,8 @@ inline const CQuery::CFunction CQuery::math(const T1& value1, const std::string&
    return CFunction(queryhelper<T1>::format(this, value1) + " " + op + " " + queryhelper<T2>::format(this, value2));
 }
 
-template<class T>
-inline const CQuery::CFunction CQuery::substr(const T & value, int offset, int count)
+template <class T>
+inline const CQuery::CFunction CQuery::substr(const T& value, int offset, int count)
 {
    return CFunction(this->functionSubstring(queryhelper<T>::format(this, value), offset, count));
 }

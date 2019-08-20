@@ -37,8 +37,8 @@ namespace pluginSystem
    {
       //convert map to dataContainer
       shared::CDataContainer dc;
-      for (auto i = customMessageDataParams.begin(); i != customMessageDataParams.end(); ++i)
-         dc.set(i->first, i->second);
+      for (const auto& customMessageDataParam : customMessageDataParams)
+         dc.set(customMessageDataParam.first, customMessageDataParam.second);
 
       const auto customMessageDataSerialized = dc.serialize(); //use variable to allow use of reference parameter
       m_instanceStateHandler->setState(state, customMessageId, customMessageDataSerialized);
@@ -146,8 +146,8 @@ namespace pluginSystem
 
       //convert map to dataContainer
       shared::CDataContainer dc;
-      for (auto i = customMessageDataParams.begin(); i != customMessageDataParams.end(); ++i)
-         dc.set(i->first, i->second);
+      for (const auto& customMessageDataParam : customMessageDataParams)
+         dc.set(customMessageDataParam.first, customMessageDataParam.second);
 
       m_deviceManager->updateDeviceState(m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Id(), state, customMessageId, dc);
    }
@@ -176,10 +176,10 @@ namespace pluginSystem
    {
       std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> keywordsToDeclare;
 
-      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
+      for (const auto& keyword : keywords)
       {
-         if (!keywordExists(device, *keyword))
-            keywordsToDeclare.push_back(*keyword);
+         if (!keywordExists(device, keyword))
+            keywordsToDeclare.push_back(keyword);
       }
 
       if (keywordsToDeclare.empty())
@@ -224,14 +224,14 @@ namespace pluginSystem
       const auto recipient = m_recipientRequester->getRecipient(recipientId);
 
       // Search for from plugin fields
-      for (auto itField = recipient->Fields().begin(); itField != recipient->Fields().end(); ++itField)
-         if ((*itField)->PluginType == m_instanceData->Type && (*itField)->FieldName == fieldName)
-            return (*itField)->Value;
+      for (auto& itField : recipient->Fields())
+         if (itField->PluginType == m_instanceData->Type && itField->FieldName == fieldName)
+            return itField->Value;
 
       // If not found from plugin fields, looking for general fields
-      for (auto itField = recipient->Fields().begin(); itField != recipient->Fields().end(); ++itField)
-         if ((*itField)->PluginType == "system" && (*itField)->FieldName == fieldName)
-            return (*itField)->Value;
+      for (auto& itField : recipient->Fields())
+         if (itField->PluginType == "system" && itField->FieldName == fieldName)
+            return itField->Value;
 
       throw shared::exception::CEmptyResult(
          (boost::format("Cannot retrieve field %1% for recipient Id %2% in database") % fieldName % recipientId).str());
@@ -242,8 +242,8 @@ namespace pluginSystem
       auto recipients = m_recipientRequester->findRecipientsFromField(fieldName, expectedFieldValue);
       std::vector<int> recipientIds;
 
-      for (auto itRecipient = recipients.begin(); itRecipient != recipients.end(); ++itRecipient)
-         recipientIds.push_back((*itRecipient)->Id);
+      for (auto& recipient : recipients)
+         recipientIds.push_back(recipient->Id);
 
       return recipientIds;
    }
@@ -296,13 +296,13 @@ namespace pluginSystem
          {
             std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> dataVectFilter;
 
-            for (auto iter = dataVect.begin(); iter != dataVect.end(); ++iter)
+            for (const auto& item : dataVect)
             {
-               const auto keywordEntity = m_keywordDataAccessLayer->getKeyword(deviceEntity->Id, (*iter)->getKeyword());
+               const auto keywordEntity = m_keywordDataAccessLayer->getKeyword(deviceEntity->Id, item->getKeyword());
                if (!keywordEntity->Blacklist())
                {
                   keywordIdList.push_back(keywordEntity->Id);
-                  dataVectFilter.push_back(*iter);
+                  dataVectFilter.push_back(item);
                }
                else
                {

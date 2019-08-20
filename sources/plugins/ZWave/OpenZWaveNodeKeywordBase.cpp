@@ -29,7 +29,7 @@ shared::CDataContainer COpenZWaveNodeKeywordBase::serialize()
    return result;
 }
 
-boost::shared_ptr<shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo> & COpenZWaveNodeKeywordBase::getTypeInformation()
+boost::shared_ptr<shared::plugin::yPluginApi::typeInfo::ITypeInfo> & COpenZWaveNodeKeywordBase::getTypeInformation()
 {
    return m_typeInformation;
 }

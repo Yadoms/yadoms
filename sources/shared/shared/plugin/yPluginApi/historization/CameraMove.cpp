@@ -31,20 +31,18 @@ namespace shared
             );
 
             CCameraMove::CCameraMove(const std::string& keywordName,
-                                     const EKeywordAccessMode& accessMode)
+                                     const EKeywordAccessMode& accessMode,
+                                     const EHistoryDepth& historyDepth)
                : CSingleHistorizableData<ECameraMoveCommand>(keywordName,
                                                              CStandardCapacities::CameraMove(),
                                                              accessMode,
-                                                             ECameraMoveCommand::kCenterPosition)
-            {
-            }
-
-            CCameraMove::~CCameraMove()
+                                                             ECameraMoveCommand::kCenterPosition,
+                                                             EMeasureType::kAbsolute,
+                                                             typeInfo::CEmptyTypeInfo::Empty,
+                                                             historyDepth)
             {
             }
          }
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

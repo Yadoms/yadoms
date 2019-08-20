@@ -1,0 +1,33 @@
+{
+  "type": "Weather",
+  "version": "@PLUGIN_VERSION@",
+  "author": "Sébastien Gallou",
+  "url": "",
+  "supportedPlatforms": "all",
+  "dependencies": {
+    "yadoms": {
+      "minimumVersion": "2.4.0-beta.1"
+    }
+  },
+  "configurationSchema": {
+    "apiKey": {
+      "type": "string",
+      "required": "true"
+    },
+    "useSpecificLocation": {
+      "type": "section",
+      "enableWithCheckBox": "true",
+      "enableWithCheckBoxDefaultValue": "false",
+      "content": {
+        "longitude": {
+          "type": "decimal",
+          "defaultValue": "0"
+        },
+        "latitude": {
+          "type": "decimal",
+          "defaultValue": "0"
+        }
+      }
+    }
+  }
+}
