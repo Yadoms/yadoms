@@ -59,7 +59,13 @@ if (PYTHON3_ROOT)
          SET(PYTHON3_EXECUTABLE ${PYTHON3_ROOT}/python)
             
       else(PYTHON3_USE_SOURCES)
-         find_library(PYTHON3_LIBRARIES NAMES libpython${PYTHON3_REQUIRED_VERSION}.a PATHS ${PYTHON3_ROOT}/libs)
+         find_library(PYTHON3_LIBRARIES 
+			NAMES libpython${PYTHON3_REQUIRED_VERSION}.a 
+			PATHS 
+			${PYTHON3_ROOT}/libs
+			${PYTHON3_ROOT}
+			${PYTHON3_ADDITIONAL_LIB_PATH}
+		  )
       endif(PYTHON3_USE_SOURCES)
    endif(WIN32)
 
