@@ -33,6 +33,7 @@ case "$choice" in
 	;;
 	
     c)
+	#run osxcross-conf to get all env var and set OSXCROSS_HOST (needed by osxcross)
 	eval "`x86_64-apple-darwin16-osxcross-conf`"
 	export OSXCROSS_HOST="x86_64-apple-darwin16"
 	# cmake for makefile (cross compilation)
@@ -40,6 +41,9 @@ case "$choice" in
 	;;	
 
     d)
+	#run osxcross-conf to get all env var and set OSXCROSS_HOST (needed by osxcross)
+	eval "`x86_64-apple-darwin16-osxcross-conf`"
+	export OSXCROSS_HOST="x86_64-apple-darwin16"
 	# cmake for makefile (cross compilation)
 	cmake -DCMAKE_BUILD_TYPE="Release" -D CMAKE_C_COMPILER=x86_64-apple-darwin16-gcc -D CMAKE_CXX_COMPILER=x86_64-apple-darwin16-g++ -DCMAKE_TOOLCHAIN_FILE=../sources/cmake/ccmacos.cmake ../sources
 	;;	
