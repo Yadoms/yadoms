@@ -47,8 +47,8 @@ if(NOT APPLE)
 
       
    else()
-      set(GAMMU_PKG_INCLUDE_DIRS ${GAMMU_ROOT}/build/include)
-      set(GAMMU_PKG_LIBRARY_DIRS  ${GAMMU_ROOT}/build/libgammu)
+      set(GAMMU_PKG_INCLUDE_DIRS ${GAMMU_ROOT}/build/include ${GAMMU_ROOT}/include)
+      set(GAMMU_PKG_LIBRARY_DIRS  ${GAMMU_ROOT}/build/libgammu ${GAMMU_ROOT}/lib)
       set(GAMMU_PKG_LIBRARIES libGammu.a)
       
       set(GAMMU_ADDITIONAL_LIBRARIES usb-1.0 bluetooth glib-2.0)
