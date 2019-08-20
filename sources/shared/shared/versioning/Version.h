@@ -24,7 +24,6 @@ namespace shared
          ///\param[in] stringVersion the version as a string. Separators between version digits must be . or ,
          //---------------------------------------------
          explicit CVersion(const std::string& stringVersion) noexcept(false);
-         CVersion& operator=(const CVersion& rhs);
 
          //---------------------------------------------
          ///\brief Constructor
