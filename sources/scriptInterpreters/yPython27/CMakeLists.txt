@@ -1,14 +1,27 @@
 # Check dependencies
 
-find_package (Python2 COMPONENTS Interpreter Development)
+if(${Python2_ManualSetup})
+	if(EXISTS ${Python2_EXECUTABLE})
+		set(Python2_Interpreter_FOUND TRUE)
+		if(EXISTS ${Python2_LIBRARIES})
+				if(EXISTS ${Python2_INCLUDE_DIRS})
+					set(Python2_FOUND TRUE)
+				else(EXISTS ${Python2_INCLUDE_DIRS})
+					message(FATAL_ERROR "The specified Python2_INCLUDE_DIRS is not found : ${Python2_INCLUDE_DIRS}")
+				endif(EXISTS ${Python2_INCLUDE_DIRS})
 
-#message("==================================================================")
-#message("Python2_ROOT: ${Python2_ROOT}")
-#message("Python2_FOUND: ${Python2_FOUND}")
-#message("Python2_INCLUDE_DIRS: ${Python2_INCLUDE_DIRS}")
-#message("Python2_LIBRARIES: ${Python2_LIBRARIES}")
-#message("Python2_Interpreter_FOUND: ${Python2_Interpreter_FOUND}")
-#message("Python2_EXECUTABLE: ${Python2_EXECUTABLE}")
+		else(EXISTS ${Python2_LIBRARIES})
+			message(FATAL_ERROR "The specified Python2_LIBRARIES is not found : ${Python2_LIBRARIES}")
+		endif(EXISTS ${Python2_LIBRARIES})
+	else(EXISTS ${Python2_EXECUTABLE})
+		message(FATAL_ERROR "The specified Python2 executable is not found : ${Python2_EXECUTABLE}")
+	endif(EXISTS ${Python2_EXECUTABLE})
+else(${Python2_ManualSetup})
+	find_package (Python2 COMPONENTS Interpreter Development)
+endif(${Python2_ManualSetup})
+
+
+
 
 if(${Python2_FOUND})
 
@@ -96,5 +109,15 @@ if(${Python2_FOUND})
    add_subdirectory(yScriptApiWrapper)
    
 else()
+   message("==================================================================")
+   message("Python2_ROOT: ${Python2_ROOT}")
+   message("Python2_FOUND: ${Python2_FOUND}")
+   message("Python2_INCLUDE_DIRS: ${Python2_INCLUDE_DIRS}")
+   message("Python2_LIBRARIES: ${Python2_LIBRARIES}")
+   message("Python2_Interpreter_FOUND: ${Python2_Interpreter_FOUND}")
+   message("Python2_EXECUTABLE: ${Python2_EXECUTABLE}")  
+
    message(SEND_ERROR "yPython27 interpreter is not available. Python 2.7.x library is Mssing")
+  
+
 endif()
