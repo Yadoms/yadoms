@@ -72,7 +72,7 @@ else()
 			message(FATAL_ERROR "libintl not FOUND")
 		endif()
 	else()
-	
+	endif()
 
 	find_library(GAMMU_LIBRARIES NAMES ${GAMMU_PKG_LIBRARIES} PATHS ${GAMMU_PKG_LIBRARY_DIRS} NO_DEFAULT_PATH)
   
