@@ -58,12 +58,21 @@ else()
 	)
 	
 	set(GAMMU_PKG_LIBRARIES libGammu.a)
-  
 	if (CMAKE_SYSTEM_NAME MATCHES Darwin)
-			set(GAMMU_ADDITIONAL_LIBRARIES iconv)
+		find_package(Iconv)
+		if(Iconv_FOUND)
+			set(GAMMU_ADDITIONAL_LIBRARIES ${GAMMU_ADDITIONAL_LIBRARIES} ${Iconv_LIBRARIES})
+		else(Iconv_FOUND)
+			message(FATAL_ERROR "libiconv not FOUND")
+		endif()
+		find_package(Intl)
+		if(Intl_FOUND)
+			set(GAMMU_ADDITIONAL_LIBRARIES ${GAMMU_ADDITIONAL_LIBRARIES} ${Intl_LIBRARIES})
+		else(Intl_FOUND)
+			message(FATAL_ERROR "libintl not FOUND")
+		endif()
 	else()
-			set(GAMMU_ADDITIONAL_LIBRARIES usb-1.0 bluetooth glib-2.0)
-	endif()
+	
 
 	find_library(GAMMU_LIBRARIES NAMES ${GAMMU_PKG_LIBRARIES} PATHS ${GAMMU_PKG_LIBRARY_DIRS} NO_DEFAULT_PATH)
   
