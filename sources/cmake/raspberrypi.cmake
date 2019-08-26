@@ -16,6 +16,8 @@ set(CC_RPI_LIBS ${CC_RPI_ROOT}/armv6-rpi-linux-gnueabihf/lib)
 # specify the cross compiler
 SET(CMAKE_C_COMPILER   ${CC_RPI_GCC})
 SET(CMAKE_CXX_COMPILER ${CC_RPI_GXX})
+set(CMAKE_C_FLAGS -m32)
+set(CMAKE_CXX_FLAGS -m32)
 
 message(STATUS "Cross building for RaspberryPI")
 message(STATUS "CC_RPI_ROOT : ${CC_RPI_ROOT}")
