@@ -5,6 +5,13 @@ if(${Python2_ManualSetup})
 		set(Python2_Interpreter_FOUND TRUE)
 		if(EXISTS ${Python2_LIBRARIES})
 				if(EXISTS ${Python2_INCLUDE_DIRS})
+					#append Include and include dirs (to cover cross compile contexts)
+					set(Python2_INCLUDE_DIRS 
+							${Python2_INCLUDE_DIRS}
+							${Python2_INCLUDE_DIRS}/Include
+							${Python2_INCLUDE_DIRS}/include
+					)
+				
 					set(Python2_FOUND TRUE)
 				else(EXISTS ${Python2_INCLUDE_DIRS})
 					message(FATAL_ERROR "The specified Python2_INCLUDE_DIRS is not found : ${Python2_INCLUDE_DIRS}")

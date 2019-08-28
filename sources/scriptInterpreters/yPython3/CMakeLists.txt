@@ -10,6 +10,13 @@ if(${Python3_ManualSetup})
 		set(Python3_Interpreter_FOUND TRUE)
 		if(EXISTS ${Python3_LIBRARIES})
 				if(EXISTS ${Python3_INCLUDE_DIRS})
+					#append Include and include dirs (to cover cross compile contexts)
+					set(Python3_INCLUDE_DIRS 
+							${Python3_INCLUDE_DIRS}
+							${Python3_INCLUDE_DIRS}/Include
+							${Python3_INCLUDE_DIRS}/include
+					)
+				
 					set(Python3_FOUND TRUE)
 				else(EXISTS ${Python3_INCLUDE_DIRS})
 					message(FATAL_ERROR "The specified Python3_INCLUDE_DIRS is not found : ${Python3_INCLUDE_DIRS}")
