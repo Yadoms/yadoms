@@ -145,10 +145,7 @@ if ( WIN32 )
 		Setupapi.lib dnsapi.lib
 	)
 else( WIN32 )
-	set(ZWAVE_PLUGIN_ADDITIONAL_LIB 
-		${ZWAVE_PLUGIN_ADDITIONAL_LIB}
-		resolv
-	)
+	set(ZWAVE_PLUGIN_ADDITIONAL_LIB ${ZWAVE_PLUGIN_ADDITIONAL_LIB})
 endif( WIN32)
 
 
