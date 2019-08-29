@@ -1,3 +1,7 @@
+### 1.6.0.beta1
+* **Update OpenZwave to 1.6.xxx**
+* Remove libudev dependency
+
 ### 1.3.0
 * Fix #539 : add command class to configuration description (command class is the identifier found in devices manuals)
 * Enhance configuration
