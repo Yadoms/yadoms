@@ -29,7 +29,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeUserCodePlugin::createKey
    auto vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
    boost::regex reg("Code (\\d*):");
    boost::smatch match;
-
+   
    //Set parameters
    if (boost::regex_search(vLabel, match, reg))
    {
@@ -43,7 +43,9 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeUserCodePlugin::createKey
       uint8 size;
       if (OpenZWave::Manager::Get()->GetValueAsRaw(vID, &d, &size))
       {
-         if (size >= 2 && d[0] == 0 && d[1] == 0)
+      	//check both decimal or ascii value
+         if ((size >= 2 && d[0] == 0 && d[1] == 0) || 
+			 (size >= 4 && d[0] == '0' && d[1] == '0' && d[2] == '0' && d[3] == '0'))
          {
             delete d; //free memory
 
