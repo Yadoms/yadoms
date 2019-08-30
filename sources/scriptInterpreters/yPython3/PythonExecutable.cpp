@@ -39,9 +39,6 @@ std::string CPythonExecutable::filename() const
 bool CPythonExecutable::findPythonDirectory(boost::filesystem::path& pythonDirectory,
                                             bool& inSystemPath)
 {
-   if (isPythonIn(boost::filesystem::path(), pythonDirectory, inSystemPath))// Empty directory to search in system path
-      return true;
-
    //retrieve common path for the system
    std::vector<boost::filesystem::path> commonPaths;
    CPythonExecutablePath::getCommonPythonPaths(commonPaths);
@@ -52,6 +49,9 @@ bool CPythonExecutable::findPythonDirectory(boost::filesystem::path& pythonDirec
          return true;
    }
 
+   if (isPythonIn(boost::filesystem::path(), pythonDirectory, inSystemPath))// Empty directory to search in system path
+      return true;
+
    YADOMS_LOG(error) << "Python 3 executable not found";
    return false;
 }
@@ -60,7 +60,10 @@ bool CPythonExecutable::isPythonIn(const boost::filesystem::path& directory,
                                    boost::filesystem::path& pythonDirectory,
                                    bool& inSystemPath)
 {
-   if (!readPythonVersion(directory).empty())
+   static const std::string ExpectedVersionString("Python 3.7");
+   const std::string version = readPythonVersion(directory);
+
+	if (!version.empty() && version.find(ExpectedVersionString) != std::string::npos)
    {
       YADOMS_LOG(information) << "Python 3 executable found in " << (directory.empty() ? "the system path" : directory.string());
       pythonDirectory = directory;

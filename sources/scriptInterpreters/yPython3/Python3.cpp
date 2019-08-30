@@ -23,8 +23,6 @@ enum
 };
 
 CPython3::CPython3()
-   : m_factory(boost::make_shared<CFactory>()),
-     m_pythonExecutable(m_factory->createPythonExecutable())
 {
 }
 
@@ -35,6 +33,10 @@ CPython3::~CPython3()
 void CPython3::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
 {
    m_api = api;
+
+   //initialize in doWork => allow to debug (if in ctor, unable to debug)
+   m_factory = boost::make_shared<CFactory>();
+   m_pythonExecutable = m_factory->createPythonExecutable();
 
    YADOMS_LOG(information) << "Python 3 interpreter is starting...";
 
