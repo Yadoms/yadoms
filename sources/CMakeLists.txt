@@ -146,6 +146,23 @@ if(APPLE)
 	set(LIBS ${LIBS} ${IOKIT_LIBRARY} ${CARBON_LIBRARY})
 endif()
 
+##specific linker lib for osxcross (cross build for Darwin)
+if (CMAKE_SYSTEM_NAME MATCHES Darwin)
+	#check osxcross cross compilation
+	#in taht case, we must use 
+	find_package(Iconv)
+	if(Iconv_FOUND)
+			set(LIBS ${LIBS} ${Iconv_LIBRARIES})
+	else(Iconv_FOUND)
+			message(FATAL_ERROR "libiconv not FOUND")
+	endif()
+	find_package(Intl)
+	if(Intl_FOUND)
+			set(LIBS ${LIBS} ${Intl_LIBRARIES})
+	else(Intl_FOUND)
+			message(FATAL_ERROR "libintl not FOUND")
+	endif()
+endif()
 
 ###############################################
 # OpenSSL
