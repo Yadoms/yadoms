@@ -64,6 +64,25 @@ if(MSVC)
    add_definitions( "/wd4706 /wd4701 /wd4459 /wd4456 /wd4702" )
 endif()
 
+##specific linker lib for osxcross (cross build for Darwin)
+if (CMAKE_SYSTEM_NAME MATCHES Darwin)
+	#check osxcross cross compilation
+	#in taht case, we must use 
+	find_package(Iconv)
+	if(Iconv_FOUND)
+			set(YPYTHON3_WRAPPER_LINK ${YPYTHON3_WRAPPER_LINK} ${Iconv_LIBRARIES})
+	else(Iconv_FOUND)
+			message(FATAL_ERROR "libiconv not FOUND")
+	endif()
+	find_package(Intl)
+	if(Intl_FOUND)
+			set(YPYTHON3_WRAPPER_LINK ${YPYTHON3_WRAPPER_LINK} ${Intl_LIBRARIES})
+	else(Intl_FOUND)
+			message(FATAL_ERROR "libintl not FOUND")
+	endif()
+endif()
+
+
 #########################################
 ## Always leave these lines to configure script wrapper correctly
 ## even if some variables are empty
