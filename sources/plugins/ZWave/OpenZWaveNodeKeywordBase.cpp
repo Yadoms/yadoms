@@ -16,7 +16,7 @@ void COpenZWaveNodeKeywordBase::updateValue(OpenZWave::ValueID& value)
    m_valueId = value;
 }
 
-const std::string COpenZWaveNodeKeywordBase::getUnit()
+std::string COpenZWaveNodeKeywordBase::getUnit() const
 {
    return OpenZWave::Manager::Get()->GetValueUnits(m_valueId);
 }
@@ -34,7 +34,7 @@ boost::shared_ptr<shared::plugin::yPluginApi::typeInfo::ITypeInfo> & COpenZWaveN
    return m_typeInformation;
 }
 
-bool COpenZWaveNodeKeywordBase::pressButton()
+bool COpenZWaveNodeKeywordBase::pressButton() const
 {
    try
    {
@@ -55,7 +55,7 @@ bool COpenZWaveNodeKeywordBase::pressButton()
    return false;
 }
 
-bool COpenZWaveNodeKeywordBase::releaseButton()
+bool COpenZWaveNodeKeywordBase::releaseButton() const
 {
    try
    {

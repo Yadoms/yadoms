@@ -20,7 +20,7 @@ public:
    virtual ~COpenZWaveController();
 
    // IZWaveController implementation
-   void configure(CZWaveConfiguration* configuration, shared::event::CEventHandler* handler) override;
+   void configure(CZWaveConfiguration* configuration, shared::event::CEventHandler* handler, bool developerMode) override;
    E_StartResult start(boost::function0<void> checkStoprequested) override;
    void stop() override;
    void sendCommand(const std::string& device, const std::string& keyword, const std::string& value) override;
@@ -42,7 +42,7 @@ public:
    //-----------------------------------------------------------------------------
    /// \brief	Callback that is triggered when a value, group or node changes
    /// \param [in]    _notification    The openzwave notification
-   /// \param [in]    content          The context
+   /// \param [in]    _context          The context
    //-----------------------------------------------------------------------------
    void onNotification(OpenZWave::Notification const* _notification, void* _context);
 
@@ -55,17 +55,17 @@ private:
    //-----------------------------------------------------------------------------
    /// \brief	Return the NodeInfo object matching homeId and nodeId
    //-----------------------------------------------------------------------------   
-   boost::shared_ptr<COpenZWaveNode> getNode(const uint32 homeId, const uint8 nodeId);
+   boost::shared_ptr<COpenZWaveNode> getNode(uint32 homeId, uint8 nodeId);
 
    //-----------------------------------------------------------------------------
    /// \brief	Return the Node information
    //-----------------------------------------------------------------------------   
-   shared::CDataContainer getNodeInfo(const uint32 homeId, const uint8 nodeId);
+   shared::CDataContainer getNodeInfo(uint32 homeId, uint8 nodeId);
 
    //-----------------------------------------------------------------------------
    /// \brief	Configure the value refresh mode depending on the device listening state
    //-----------------------------------------------------------------------------   
-   void setupValue(boost::shared_ptr<COpenZWaveNode> node, OpenZWave::ValueID & vid);
+   static void setupValue(boost::shared_ptr<COpenZWaveNode> node, OpenZWave::ValueID & vid);
 
 
    void manageDeviceValue(const std::string & deviceName, shared::CDataContainer &container);
@@ -85,7 +85,7 @@ private:
    //-----------------------------------------------------------------------------
    /// \brief	Return the command classes of the device
    //-----------------------------------------------------------------------------   
-   std::vector<shared::CDataContainer> getDeviceCommandClasses(const uint32 homeId, const uint8 nodeId);
+   static std::vector<shared::CDataContainer> getDeviceCommandClasses(uint32 homeId, const uint8 nodeId);
 
    //-----------------------------------------------------------------------------
    /// \brief	Ask configuration parameters to each found node
@@ -139,5 +139,10 @@ private:
    /// \brief	   The cache
    //--------------------------------------------------------------
    COpenZWaveControllerCache m_cache;
+
+   //--------------------------------------------------------------
+   /// \brief	   The developerMode flag
+   //--------------------------------------------------------------
+   bool m_developerMode;
 };
 

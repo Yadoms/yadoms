@@ -65,7 +65,8 @@ public:
    /// \param [in]   classIdentifier   The class identifier for the keyword
    /// \param [in]   keyword           The keyword name
    //--------------------------------------------------------------   
-   const boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> getLastKeywordValue(const std::string& keyword);
+   boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> getLastKeywordValue(
+      const std::string& keyword);
 
    //--------------------------------------------------------------
    /// \brief	      Check if this node match to a pair [home,node]
@@ -73,18 +74,18 @@ public:
    /// \param [in]   nodeId   The node id
    /// \return       true if current node as the same homeId and nodeId
    //--------------------------------------------------------------     
-   const bool match(const uint32 homeId, const uint8 nodeId);
+   bool match(const uint32 homeId, const uint8 nodeId) const;
 
    //--------------------------------------------------------------
    /// \brief	      Get the homeId
    /// \return       The homeId
    //--------------------------------------------------------------      
-   const uint32 getHomeId();
+   uint32 getHomeId() const;
    //--------------------------------------------------------------
    /// \brief	      Get the nodeId
    /// \return       The nodeId
    //--------------------------------------------------------------      
-   const uint8 getNodeId();
+   uint8 getNodeId() const;
 
    //--------------------------------------------------------------
    /// \brief	      Get the configuration schema

@@ -44,13 +44,13 @@ protected:
    /// \brief	      Send a button command (press).
    /// \return       true if command is sent (just sent, not applied), false other cases
    //--------------------------------------------------------------
-   bool pressButton();
+   bool pressButton() const;
 
    //--------------------------------------------------------------
    /// \brief	      Send a button command (press).
    /// \return       true if command is sent (just sent, not applied), false other cases
    //--------------------------------------------------------------
-   bool releaseButton();
+   bool releaseButton() const;
 
    //--------------------------------------------------------------
    /// \brief	      Extract a typed value from the OpenZWave::ValueID container 
@@ -64,7 +64,7 @@ protected:
    /// \brief	      Get the unit of the data
    /// \return       The data unit
    //--------------------------------------------------------------
-   const std::string getUnit();
+   std::string getUnit() const;
 
 private:
    //--------------------------------------------------------------

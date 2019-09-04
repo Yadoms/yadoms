@@ -18,7 +18,7 @@ COpenZWaveNodeConfiguration::~COpenZWaveNodeConfiguration()
 
 void COpenZWaveNodeConfiguration::registerConfiguration(OpenZWave::ValueID& value)
 {
-   std::string keyword = COpenZWaveHelpers::GenerateKeywordName(value);
+   const std::string keyword = COpenZWaveHelpers::GenerateKeywordName(value);
 
    if (m_configurationItems.find(keyword) == m_configurationItems.end())
       m_configurationItems[keyword] = COpenZWaveNodeKeywordFactory::createKeyword(value, m_homeId, m_nodeId, false);
@@ -27,7 +27,7 @@ void COpenZWaveNodeConfiguration::registerConfiguration(OpenZWave::ValueID& valu
 
 boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeConfiguration::getConfigurationItem(OpenZWave::ValueID& value)
 {
-   std::string keyword = COpenZWaveHelpers::GenerateKeywordName(value);
+   const std::string keyword = COpenZWaveHelpers::GenerateKeywordName(value);
 
    if (m_configurationItems.find(keyword) == m_configurationItems.end())
    {
@@ -58,7 +58,7 @@ shared::CDataContainer COpenZWaveNodeConfiguration::generateConfigurationSchema(
    for (auto i = orderedKeywordsByIndex.begin(); i != orderedKeywordsByIndex.end(); ++i)
    {
 	
-      if (m_configurationItems[i->second] != NULL)
+      if (m_configurationItems[i->second] != nullptr)
       {
          try
          {
@@ -85,7 +85,7 @@ shared::CDataContainer COpenZWaveNodeConfiguration::saveValuesToDatabase()
    shared::CDataContainer result;
    for (auto i = m_configurationItems.begin(); i != m_configurationItems.end(); ++i)
    {
-      if (i->second != NULL)
+      if (i->second != nullptr)
       {
          try
          {
@@ -112,7 +112,7 @@ void COpenZWaveNodeConfiguration::setConfigurationValues(const shared::CDataCont
    shared::CDataContainer result;
    for (auto i = m_configurationItems.begin(); i != m_configurationItems.end(); ++i)
    {
-      if (i->second != NULL)
+      if (i->second != nullptr)
       {
          try
          {

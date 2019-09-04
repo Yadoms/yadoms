@@ -6,8 +6,8 @@
 
 std::string COpenZWaveHelpers::GenerateKeywordName(OpenZWave::ValueID& value)
 {
-   ECommandClass commandClass(static_cast<int>(value.GetCommandClassId()));
-   auto vLabel = OpenZWave::Manager::Get()->GetValueLabel(value);
+   const ECommandClass commandClass(static_cast<int>(value.GetCommandClassId()));
+   const auto vLabel = OpenZWave::Manager::Get()->GetValueLabel(value);
    return (boost::format("%1%.%2%.%3%") % commandClass.toString() % vLabel % static_cast<int>(value.GetInstance())).str();
 }
 
