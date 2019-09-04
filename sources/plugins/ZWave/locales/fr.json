@@ -1,17 +1,20 @@
 ﻿{
 	"name": "Z-Wave",
 	"description": "Plugin qui supporte le protocole Z-Wave",
-	"configurationSchema": {
-		"Serial Port": {
-			"name": "Port série",
-			"description": "Le port série connecté au matériel ZWave (adaptateur USB par exemple)."
-		},
-		"IncludeSystemKeywords":
-		{
-			"name": "Enregistre les données systèmes",
-			"description": "Enregistre des données internes supplémentaires (pour un usage avancé)"
-		}		
-	},
+  "configurationSchema": {
+    "Serial Port": {
+      "name": "Port série",
+      "description": "Le port série connecté au matériel ZWave (adaptateur USB par exemple)."
+    },
+    "IncludeSystemKeywords": {
+      "name": "Enregistre les données systèmes",
+      "description": "Enregistre des données internes supplémentaires (pour un usage avancé)"
+    },
+    "initTimeout": {
+      "name": "Timeout pour l'initialisation (secondes)",
+      "description": "Cela permet de by-passer l'étape d'initialisation au bout d'un certain temps (cas d'un équipement qui pose problème). Par défaut à 0, le timeout est inihibé; sinon cela défini une valeur en secondes: 1800 (30 min) est une bonne valeur car l'initialiation de tout le réseau peut être très longue"
+    }
+  },
 	"customLabels": {
 		"pluginState": {
 			"waiting": "En attente...",

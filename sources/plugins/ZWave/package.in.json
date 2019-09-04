@@ -23,6 +23,10 @@
     "IncludeSystemKeywords": {
       "type": "bool",
       "defaultValue": "false"
+    },
+    "initTimeout": {
+      "type": "numeric",
+      "defaultValue": "0"
     }
   },
   "extraQueries": {

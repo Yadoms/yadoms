@@ -10,6 +10,7 @@
 #include "OpenZWaveHelpers.h"
 #include "ZWaveInternalState.h"
 #include <shared/Log.h>
+#include <Poco/DateTime.h>
 
 COpenZWaveController::COpenZWaveController()
    : m_homeId(0),
@@ -92,6 +93,8 @@ IZWaveController::E_StartResult COpenZWaveController::start(boost::function0<voi
          }
       }
 
+      OpenZWave::Options::Create(folder.string(), dataFolder.string(), "");
+
       if (m_developerMode)
       {
          OpenZWave::Options::Get()->AddOptionInt("SaveLogLevel", OpenZWave::LogLevel_Detail);
@@ -105,7 +108,6 @@ IZWaveController::E_StartResult COpenZWaveController::start(boost::function0<voi
          OpenZWave::Options::Get()->AddOptionInt("DumpTriggerLevel", OpenZWave::LogLevel_Error);
       }
 
-      OpenZWave::Options::Create(folder.string(), dataFolder.string(), "");
       OpenZWave::Options::Get()->AddOptionInt("PollInterval", 30000); // 30 seconds (can easily poll 30 values in this time; ~120 values is the effective limit for 30 seconds)
       OpenZWave::Options::Get()->AddOptionBool("IntervalBetweenPolls", true);
       OpenZWave::Options::Get()->AddOptionBool("ValidateValueChanges", true);
@@ -170,10 +172,26 @@ IZWaveController::E_StartResult COpenZWaveController::start(boost::function0<voi
       // on the network have been queried (at least the "listening" ones) before
       // writing the configuration file.  (Maybe write again after sleeping nodes have
       // been queried as well.)
+
+      const int timeout = m_configuration->getInitTimeout();
+      Poco::DateTime timeoutEnd;
+      if(timeout>0)
+         timeoutEnd += Poco::Timespan(0, 0, timeout, 0, 0);;
+
       while (!m_nodesQueried && !m_initFailed)
       {
          checkStopRequested();
          boost::this_thread::sleep(boost::posix_time::milliseconds(200));
+
+         if(timeout > 0)
+         {
+            if(Poco::DateTime() > timeoutEnd)
+            {
+               //timeout expired
+               YADOMS_LOG(warning) << "Initialization timeout expired";
+               m_nodesQueried = true;//force exiting init step
+            }
+         }
       }
 
       if (!m_initFailed)
@@ -523,19 +541,24 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    }
 
    case OpenZWave::Notification::Type_AwakeNodesQueried:
+   {
+      YADOMS_LOG(information) << "ZWave Notification : Type_AwakeNodesQueried";
+      cachePopAll();
+      m_nodesQueried = true;
+      break;
+   }
+
    case OpenZWave::Notification::Type_AllNodesQueried:
+   {
+      YADOMS_LOG(information) << "ZWave Notification : Type_AllNodesQueried";
+      cachePopAll();
+      m_nodesQueried = true;
+      break;
+   }
+
    case OpenZWave::Notification::Type_AllNodesQueriedSomeDead:
    {
-      /*
-      YADOMS_LOG(information) << "ZWave : Check if refreshing node info is required";
-      for (auto i = m_nodes.begin(); i != m_nodes.end(); ++i)
-      {
-         if (!OpenZWave::Manager::Get()->IsNodeInfoReceived((*i)->getHomeId(), (*i)->getNodeId()))
-         {
-            YADOMS_LOG(information) << "ZWave : Refresh node info for "<< (*i)->getHomeId() << "." << (int)(*i)->getNodeId();
-            OpenZWave::Manager::Get()->RefreshNodeInfo((*i)->getHomeId(), (*i)->getNodeId());
-         }
-      }*/
+      YADOMS_LOG(information) << "ZWave Notification : Type_AllNodesQueriedSomeDead";
       cachePopAll();
       m_nodesQueried = true;
       break;
@@ -545,12 +568,15 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       switch (_notification->GetEvent())
       {
       case OpenZWave::Driver::ControllerState_Normal:
+         YADOMS_LOG(debug) << "ZWave Notification : Type_ControllerCommand : normal";
          if (m_handler != nullptr)
             m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kRunning);
          break;
       case OpenZWave::Driver::ControllerState_Starting:
+         YADOMS_LOG(debug) << "ZWave Notification : Type_ControllerCommand : starting";
          break;
       case OpenZWave::Driver::ControllerState_Cancel:
+         YADOMS_LOG(debug) << "ZWave Notification : Type_ControllerCommand : cancel";
          m_lastSuccessfullySentCommand = OpenZWave::Driver::ControllerCommand_None;
          if (m_handler != nullptr)
             m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kRunning);
@@ -599,6 +625,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          }
          break;
       case OpenZWave::Driver::ControllerState_Waiting:
+         YADOMS_LOG(information) << "ZWave Notification : ControllerState_Waiting : waiting got user action";
          if (m_handler != nullptr)
          {
             switch (m_lastSuccessfullySentCommand)
@@ -617,15 +644,21 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
 
          break;
       case OpenZWave::Driver::ControllerState_Sleeping:
+         YADOMS_LOG(information) << "ZWave Notification : ControllerState_Sleeping : command on sleep queue (waiting for device)";
          break;
       case OpenZWave::Driver::ControllerState_InProgress:
+         YADOMS_LOG(information) << "ZWave Notification : ControllerState_InProgress : communicating with device";
          break;
       case OpenZWave::Driver::ControllerState_Completed:
+         YADOMS_LOG(information) << "ZWave Notification : ControllerState_InProgress : command completed";
          m_lastSuccessfullySentCommand = OpenZWave::Driver::ControllerCommand_None;
          if (m_handler != nullptr)
             m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kCompleted);
          break;
       case OpenZWave::Driver::ControllerState_Failed:
+         YADOMS_LOG(information) << "ZWave Notification : ControllerState_InProgress : command has failed";
+         if (m_handler != nullptr)
+            m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kCompleted);
          break;
       case OpenZWave::Driver::ControllerState_NodeOK:
          break;

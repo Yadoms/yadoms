@@ -1,17 +1,20 @@
 {
 	"name": "Z-Wave",
 	"description": "Plugin which handle Z-Wave protocol.",
-	"configurationSchema": {
-		"Serial Port": {
-			"name": "Serial port",
-			"description": "The serial port connected to the ZWave controller (stick,...)"
-		},
-		"IncludeSystemKeywords":
-		{
-			"name": "Save system data",
-			"description": "Provide system data (very advanced usage)"
-		}		
-	},
+  "configurationSchema": {
+    "Serial Port": {
+      "name": "Serial port",
+      "description": "The serial port connected to the ZWave controller (stick,...)"
+    },
+    "IncludeSystemKeywords": {
+      "name": "Save system data",
+      "description": "Provide system data (very advanced usage)"
+    },
+    "initTimeout": {
+      "name": "Timeout for initialization (seconds)",
+      "description": "Allow to bypass init step (case of faulty equipment which hangs yadoms). By default 0, le timeout is ignored; else this is the timeout in seconds : 1800 (30 min) is a good value because init could be very long"
+    }
+  },
 	"customLabels": {
 		"pluginState": {
 			"waiting": "Waiting...",
