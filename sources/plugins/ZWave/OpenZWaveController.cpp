@@ -835,7 +835,7 @@ std::vector<shared::CDataContainer> COpenZWaveController::getDeviceCommandClasse
    std::vector<shared::CDataContainer> allClasses;
    //const std::multimap<int, std::string> 
    auto allclasses = ECommandClass().getAllValues();
-   for (std::_Vector_iterator<std::_Vector_val<std::_Simple_types<int>>>::value_type& allclasse : allclasses)
+   for (auto& allclasse : allclasses)
    {
       std::string name;
       unsigned char version;
