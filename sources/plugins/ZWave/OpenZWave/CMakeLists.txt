@@ -345,28 +345,6 @@ set(OPENZWAVE_TINYXML_SOURCES
 	${OPENZWAVE_DIR_NAME}/cpp/tinyxml/tinyxmlparser.cpp
 )
 
-#########################################
-## HidAPI sources
-#########################################
-if ( WIN32 )
-	set(OPENZWAVE_HIDAPI_SOURCES
-		${OPENZWAVE_DIR_NAME}/cpp/hidapi/windows/hid.cpp
-		${OPENZWAVE_DIR_NAME}/cpp/hidapi/hidapi/hidapi.h
-	) 
-	
-ELSEIF(APPLE)
-	set(OPENZWAVE_HIDAPI_SOURCES
-		${OPENZWAVE_DIR_NAME}/cpp/hidapi/mac/hid.c
-		${OPENZWAVE_DIR_NAME}/cpp/hidapi/hidapi/hidapi.h
-	) 
-
-else()
-	set(OPENZWAVE_HIDAPI_SOURCES
-		${OPENZWAVE_DIR_NAME}/cpp/hidapi/linux/hid.c
-		${OPENZWAVE_DIR_NAME}/cpp/hidapi/hidapi/hidapi.h
-	) 
-	
-endif()
 
 
 #########################################
@@ -379,7 +357,6 @@ set(OPENZWAVE_SOURCES
 	${OPENZWAVE_PLATFORM_SOURCES}
     ${OPENZWAVE_AES_SOURCES}
 	${OPENZWAVE_TINYXML_SOURCES}
-	${OPENZWAVE_HIDAPI_SOURCES}
 )
 
 #########################################
@@ -427,7 +404,6 @@ set(OPENZWAVE_INCLUDE_DIRECTORY
 	${OPENZWAVE_INCLUDE_SHARED_DIRECTORY}/value_classes/
 	${OPENZWAVE_INCLUDE_SHARED_DIRECTORY}/platform/
 	${CMAKE_CURRENT_SOURCE_DIR}/${OPENZWAVE_DIR_NAME}/cpp/aes/
-	${CMAKE_CURRENT_SOURCE_DIR}/${OPENZWAVE_DIR_NAME}/cpp/hidapi/hidapi/
 	${CMAKE_CURRENT_SOURCE_DIR}/${OPENZWAVE_DIR_NAME}/cpp/tinyxml/
 )
 
