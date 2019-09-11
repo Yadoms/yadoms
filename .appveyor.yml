@@ -62,7 +62,6 @@ install:
   - ps: if (!(Test-Path 'protobuf-3.4.1')) { Invoke-WebRequest http://yadoms.com/appveyor_build/protobuf-3.4.1-build.7z -OutFile protobuf.7z; 7z x protobuf.7z -bso0 }
   - ps: if (!(Test-Path 'pgsql')) { Invoke-WebRequest http://yadoms.com/appveyor_build/postgresql-9.6.2-3-windows-binaries.zip -OutFile pgsql.zip; 7z x pgsql.zip -bso0 }
   - ps: if (!(Test-Path 'gammu-1.37.4')) { Invoke-WebRequest http://yadoms.com/appveyor_build/gammu-1.37.4-build.7z -OutFile gammu.7z; 7z x gammu.7z -bso0 }
-  # - ps: if (!(Test-Path 'cmake-3.10.2')) { Invoke-WebRequest http://yadoms.com/appveyor_build/cmake-3.10.2-build.7z -OutFile cmake.7z; 7z x cmake.7z -bso0 }
   - ps: rm *.7z
   - ps: popd    
   - ps: echo "[END] install"
@@ -74,7 +73,6 @@ before_build:
   - ps: echo "Create Yadoms configuration file CMakeListsUserConfig.txt..."
   - ps: $cd_for_cmake="$pwd".Replace("\", "/")
   - ps: echo $cd_for_cmake
-  # - ps: Set-Content 'sources/CMakeListsUserConfig.txt' ('set(ALTERNATIVE_CMAKE_ROOT "' + $cd_for_cmake + '/extra_libs/cmake-3.10.2-win32-x86")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(BOOST_ROOT "' + $cd_for_cmake + '/extra_libs/boost_1_71_0")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(POCO_ROOT "' + $cd_for_cmake + '/extra_libs/poco-1.8.1-all")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(OPENSSL_ROOT "' + $cd_for_cmake + '/extra_libs/openssl-1.1.0g")')
