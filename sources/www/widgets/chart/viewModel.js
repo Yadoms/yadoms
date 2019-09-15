@@ -33,6 +33,7 @@ function chartViewModel() {
        self=this;
        
        var menuItem = [
+          { custom: "<div class=\"widget-toolbar-button range-btn glyphicon glyphicon-chevron-left\" interval=\"HOUR\"></div>" },
           { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"widgets.chart:navigator.hour\"/></div>" },
           { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"widgets.chart:navigator.day\"/></div>"},
           { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\"><span data-i18n=\"widgets.chart:navigator.week\"/></div>"},
@@ -40,11 +41,11 @@ function chartViewModel() {
           { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\"><span data-i18n=\"widgets.chart:navigator.half_year\"/></div>"},
           { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets.chart:navigator.year\"/></div>" },
           { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"FIVE_YEAR\"><span data-i18n=\"widgets.chart:navigator.five_year\"/></div>" },
+          { custom: "<div class=\"widget-toolbar-button range-btn glyphicon glyphicon-chevron-right\" interval=\"HOUR\"></div>" },
           { separator: ""}
           ];
        
-       switch(interval)
-       {
+       switch(interval){
           case "HOUR/minute":
              menuItem.push({ custom: "<div class=\"widget-toolbar-button range-btn\" prefix=\"minute\"><span data-i18n=\"widgets.chart:navigator.all\"/></div>" });
              break;
@@ -111,12 +112,21 @@ function chartViewModel() {
 
       //we manage toolbar buttons
       var $btns = self.widgetApi.find(".range-btn");
-      $btns.unbind("click").bind("click", self.navigatorBtnClick());
-      self.widgetApi.widget.$toolbar.find(".print-command").unbind("click").bind("click", self.printBtnClick());
-      self.widgetApi.widget.$toolbar.find(".export-command").unbind("click").bind("click", self.exportBtnClick());     
+      $btns.off("click").on("click", self.navigatorBtnClick());
+      self.widgetApi.widget.$toolbar.find(".print-command").off("click").on("click", self.printBtnClick());
+      self.widgetApi.widget.$toolbar.find(".export-command").off("click").on("click", self.exportBtnClick());
+      
+      self.widgetApi.widget.$toolbar.find(".glyphicon-chevron-left").off("click").on("click", self.displayBefore());
+      self.widgetApi.widget.$toolbar.find(".glyphicon-chevron-right").off("click").on("click", self.displayAfter());      
     };
     
-     this.exportBtnClick = function () {
+    this.displayBefore = function () {
+    };
+    
+    this.displayAfter = function () {
+    };    
+    
+    this.exportBtnClick = function () {
         var self = this;
         return function (e) {
           try{
