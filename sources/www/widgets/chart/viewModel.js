@@ -25,6 +25,7 @@ function chartViewModel() {
     this.pluginInstanceType = [];         // This variable is only used for keyword of type enum. It returns the plugin instance type for this keyword
     this.coeff = [];                      // Adaptation coefficient, if units have been adapted
     this.automaticScale = true;           // Automatic unit scale
+	this.displayDefinition = [];
 
     /**
      * Configure the toolbar
@@ -33,7 +34,7 @@ function chartViewModel() {
        self=this;
        
        var menuItem = [
-          { custom: "<div class=\"widget-toolbar-button range-btn glyphicon glyphicon-chevron-left\" interval=\"HOUR\"></div>" },
+          { custom: "<div class=\"widget-toolbar-button before\"><span class=\"glyphicon glyphicon-chevron-left\"></div>" },
           { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HOUR\"><span data-i18n=\"widgets.chart:navigator.hour\"/></div>" },
           { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"DAY\"><span data-i18n=\"widgets.chart:navigator.day\"/></div>"},
           { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"WEEK\"><span data-i18n=\"widgets.chart:navigator.week\"/></div>"},
@@ -41,7 +42,7 @@ function chartViewModel() {
           { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"HALF_YEAR\"><span data-i18n=\"widgets.chart:navigator.half_year\"/></div>"},
           { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets.chart:navigator.year\"/></div>" },
           { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"FIVE_YEAR\"><span data-i18n=\"widgets.chart:navigator.five_year\"/></div>" },
-          { custom: "<div class=\"widget-toolbar-button range-btn glyphicon glyphicon-chevron-right\" interval=\"HOUR\"></div>" },
+          { custom: "<div class=\"widget-toolbar-button after\"><span class=\"glyphicon glyphicon-chevron-right\"></div>" },
           { separator: ""}
           ];
        
@@ -116,8 +117,8 @@ function chartViewModel() {
       self.widgetApi.widget.$toolbar.find(".print-command").off("click").on("click", self.printBtnClick());
       self.widgetApi.widget.$toolbar.find(".export-command").off("click").on("click", self.exportBtnClick());
       
-      self.widgetApi.widget.$toolbar.find(".glyphicon-chevron-left").off("click").on("click", self.displayBefore());
-      self.widgetApi.widget.$toolbar.find(".glyphicon-chevron-right").off("click").on("click", self.displayAfter());      
+      self.widgetApi.widget.$toolbar.find(".before").off("click").on("click", self.displayBefore());
+      self.widgetApi.widget.$toolbar.find(".after").off("click").on("click", self.displayAfter());      
     };
     
     this.displayBefore = function () {
@@ -156,6 +157,13 @@ function chartViewModel() {
         var self = this;
         var arrayOfDeffered = [];
         var d = new $.Deferred();
+		self.displayDefinition["HOUR"] = {nb:1, type:'hours'};
+		self.displayDefinition["DAY"] = {nb:1, type:'days'};
+		self.displayDefinition["WEEK"] = {nb:1, type:'weeks'};
+		self.displayDefinition["MONTH"] = {nb:1, type:'months'};
+		self.displayDefinition["HALF_YEAR"] = {nb:6, type:'months'};
+		self.displayDefinition["YEAR"] = {nb:1, type:'years'};
+		self.displayDefinition["FIVE_YEAR"] = {nb:5, type:'years'};
         self.$chart = self.widgetApi.find("div.container");
         
         //
@@ -537,7 +545,7 @@ function chartViewModel() {
             self.chart.series[0].remove(false);
 
         while (self.chart.yAxis.length > 0)
-            self.chart.yAxis[0].remove(false);
+           self.chart.yAxis[0].remove(false);
 
         var arrayOfDeffered = [];
         var arrayOfDeffered1 = [];
@@ -943,15 +951,7 @@ function chartViewModel() {
           if (!isNullOrUndefined(serie)){
              var lastDate = self.chartLastXPosition[keywordId];
              if (((time - lastDate) > (self.summaryTimeBetweenNewPoint))){
-                switch (self.interval) {
-                  case "DAY":  d = self.DisplaySummary(serie, keywordId, 1, "days", self.prefix, lastDate);break;
-                  case "WEEK": d = self.DisplaySummary(serie, keywordId, 1, "weeks", self.prefix, lastDate);break;
-                  case "MONTH":d = self.DisplaySummary(serie, keywordId, 1, "months", self.prefix, lastDate);break;
-                  case "HALF_YEAR": d = self.DisplaySummary(serie, keywordId, 6, "months", self.prefix, lastDate);break;
-                  case "YEAR": d = self.DisplaySummary(serie, keywordId, 1, "years", self.prefix, lastDate);break;
-                  case "FIVE_YEAR": d = self.DisplaySummary(serie, keywordId, 5, "years", self.prefix, lastDate);break;
-                  default: break;
-                }
+				d = self.DisplaySummary(serie, keywordId, self.displayDefinition[interval].nb, self.displayDefinition[interval].type, self.prefix, lastDate);
              }
           }
       });

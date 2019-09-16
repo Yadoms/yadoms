@@ -72,18 +72,11 @@ function roundNumber(num, scale) {
  };
  
  function calculateBeginDate(interval, time, prefix) {
-  var dateValue;
-  switch (interval) {
-      case "HOUR":dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'hours').startOf(prefix));break;
-      default:
-      case "DAY": dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'days').startOf(prefix)); break;//hour summary data
-      case "WEEK": dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'weeks').startOf(prefix));break;//hour summary data
-      case "MONTH": dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'months').startOf(prefix));break;//day summary data
-      case "HALF_YEAR": dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(6, 'months').startOf(prefix));break;//day summary data
-      case "YEAR": dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'years').startOf(prefix));break;//day summary data
-      case "FIVE_YEAR": dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(5, 'years').startOf(prefix));break;//day summary data
-  }
-  return dateValue;
+  return = DateTimeFormatter.dateToIsoDate(moment(time).subtract(self.displayDefinition[interval].nb, self.displayDefinition[interval].type).startOf(prefix));
+ };
+ 
+ function calculateFinalDate(){
+   return DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
  };
 
   /**
@@ -98,8 +91,7 @@ function getWeeks(vectorToParse){
     $.each(vectorToParse, function (index, data) {
        weekNum = DateTimeFormatter.isoDateToDate(data.date).week();
        try{
-          if (weekNum == weekplot[weekplot.length-1].week)
-          {
+          if (weekNum == weekplot[weekplot.length-1].week){
              weekplot[weekplot.length-1].avg += parseFloat(data.avg);
              
              // treat min and max values
