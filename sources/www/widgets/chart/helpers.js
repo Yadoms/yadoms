@@ -38,38 +38,21 @@ function roundNumber(num, scale) {
  function compatibilityManagement (intervalConfiguration) {
   var returnValue;
   switch (intervalConfiguration) {
-      case "HOUR":
-          returnValue = "HOUR/minute";
-          break;
-      case "DAY":
-          returnValue = "DAY/hour";
-          break;
-      case "WEEK":
-          returnValue = "WEEK/hour";
-          break;
-      case "MONTH":
-          returnValue = "MONTH/day";
-          break;
-      case "HALF_YEAR":
-          returnValue = "HALF_YEAR/day";
-          break;
-      case "YEAR":
-          returnValue = "YEAR/day";
-          break;
-      case "FIVE_YEAR": //This one doesn't exist
-          returnValue = "FIVE_YEAR/day";
-          break;
-      default:
-         returnValue = intervalConfiguration;
-         break;          
+      case "HOUR": returnValue = "HOUR/minute"; break;
+      case "DAY": returnValue = "DAY/hour"; break;
+      case "WEEK": returnValue = "WEEK/hour"; break;
+      case "MONTH": returnValue = "MONTH/day"; break;
+      case "HALF_YEAR": returnValue = "HALF_YEAR/day"; break;
+      case "YEAR": returnValue = "YEAR/day"; break;
+      case "FIVE_YEAR": returnValue = "FIVE_YEAR/day"; break; //This one doesn't exist
+      default: returnValue = intervalConfiguration; break;          
   }
   return returnValue;
  };
  
  function defaultPrefixForInterval(interval) {
    var prefix;
-   switch (interval)
-   {
+   switch (interval){
       default:
       case "HOUR":
       case "DAY":
@@ -91,30 +74,15 @@ function roundNumber(num, scale) {
  function calculateBeginDate(interval, time, prefix) {
   var dateValue;
   switch (interval) {
-      case "HOUR":
-          dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'hours').startOf(prefix));
-          break;
+      case "HOUR":dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'hours').startOf(prefix));break;
       default:
-      case "DAY": //we request hour summary data
-          dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'days').startOf(prefix));
-          break;
-      case "WEEK": //we request hour summary data
-          dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'weeks').startOf(prefix));
-          break;
-      case "MONTH": //we request day summary data
-          dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'months').startOf(prefix));
-          break;
-      case "HALF_YEAR": //we request day summary data
-          dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(6, 'months').startOf(prefix));
-          break;
-      case "YEAR": //we request day summary data
-          dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'years').startOf(prefix));
-          break;
-      case "FIVE_YEAR": //we request day summary data
-          dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(5, 'years').startOf(prefix));
-          break;          
+      case "DAY": dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'days').startOf(prefix)); break;//hour summary data
+      case "WEEK": dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'weeks').startOf(prefix));break;//hour summary data
+      case "MONTH": dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'months').startOf(prefix));break;//day summary data
+      case "HALF_YEAR": dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(6, 'months').startOf(prefix));break;//day summary data
+      case "YEAR": dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(1, 'years').startOf(prefix));break;//day summary data
+      case "FIVE_YEAR": dateValue = DateTimeFormatter.dateToIsoDate(moment(time).subtract(5, 'years').startOf(prefix));break;//day summary data
   }
-  
   return dateValue;
  };
 
@@ -130,7 +98,6 @@ function getWeeks(vectorToParse){
     $.each(vectorToParse, function (index, data) {
        weekNum = DateTimeFormatter.isoDateToDate(data.date).week();
        try{
-          
           if (weekNum == weekplot[weekplot.length-1].week)
           {
              weekplot[weekplot.length-1].avg += parseFloat(data.avg);
@@ -270,7 +237,6 @@ function createAxis (index,         // index of the plot
           console.log(error2);
       }
   }
-  
   return yAxisName; // Return the name of the axis
 };
 
