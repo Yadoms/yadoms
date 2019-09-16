@@ -238,7 +238,7 @@ if(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
    endif(NOT PROTOBUF_PROTOC_EXECUTABLE)
 endif(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
 
-find_package(Protobuf 3.0.0 REQUIRED)
+find_package(Protobuf 3.1.0 REQUIRED)
 
 if(NOT ${PROTOBUF_FOUND})
 	message(FATAL_ERROR "Unable to find the required Protobuf tool")
