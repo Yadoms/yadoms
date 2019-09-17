@@ -72,7 +72,7 @@ function roundNumber(num, scale) {
  };
  
  function calculateBeginDate(interval, time, prefix) {
-  return = DateTimeFormatter.dateToIsoDate(moment(time).subtract(self.displayDefinition[interval].nb, self.displayDefinition[interval].type).startOf(prefix));
+  return DateTimeFormatter.dateToIsoDate(moment(time).subtract(self.displayDefinition[interval].nb, self.displayDefinition[interval].type).startOf(prefix));
  };
  
  function calculateFinalDate(){

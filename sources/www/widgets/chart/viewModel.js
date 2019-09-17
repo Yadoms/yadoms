@@ -330,17 +330,8 @@ function chartViewModel() {
 
     this.chartParametersConfiguration = function (interval, prefix) {
       var self = this;
-      
-      switch (interval) { // Cleaning ranges switch
-          case "HOUR": self.cleanValue = 3600000; break;
-          case "DAY":
-          default:     self.cleanValue = 3600000 * 24; break;
-          case "WEEK": self.cleanValue = 3600000 * 24 * 7; break;
-          case "MONTH":self.cleanValue = 3600000 * 24 * 30; break;
-          case "HALF_YEAR":self.cleanValue = 3600000 * 24 * 182; break;
-          case "YEAR": self.cleanValue = 3600000 * 24 * 365; break;
-          case "FIVE_YEAR":self.cleanValue = 3600000 * 24 * 365 * 5; break;
-      }
+	  var duration = moment.duration(self.displayDefinition[interval].nb, self.displayDefinition[interval].type);
+      self.cleanValue = duration.asMilliseconds();
       
       if (prefix === "hour")
          self.summaryTimeBetweenNewPoint = 3600000 * 2 + 60000;
