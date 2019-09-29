@@ -942,7 +942,7 @@ function chartViewModel() {
           if (!isNullOrUndefined(serie)){
              var lastDate = self.chartLastXPosition[keywordId];
              if (((time - lastDate) > (self.summaryTimeBetweenNewPoint))){
-				d = self.DisplaySummary(serie, keywordId, self.displayDefinition[interval].nb, self.displayDefinition[interval].type, self.prefix, lastDate);
+				d = self.DisplaySummary(serie, keywordId, self.displayDefinition[self.interval].nb, self.displayDefinition[self.interval].type, self.prefix, lastDate);
              }
           }
       });
