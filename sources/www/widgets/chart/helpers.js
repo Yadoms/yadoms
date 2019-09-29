@@ -307,55 +307,39 @@ adaptValuesAndUnit = function (values, range, baseUnit, callback) {
       case "data.units.cubicMetre":
          if (evaluateArray(values) <1) {
             coeff = 1000;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.liter";
          }
          break;
       case "data.units.wattPerHour":
          if (evaluateArray(values) >2000) {
             coeff = 0.001;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.KwattPerHour";
          }      
          break;
       case "data.units.watt":
          if (evaluateArray(values)>2000) {
             coeff = 0.001;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.Kwatt";
          }      
          break;
       case "data.units.ampere":
          if (evaluateArray(values)>2000) {
             coeff = 0.001;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.Kampere";
          } else if (evaluateArray(values)<1) {
             coeff = 1000;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.mampere";
          }
          break;
       case "bit/s":
          if (evaluateArray(values)>2000000000) {
             coeff = 0.000000001;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "Gb/s";
          }else if (evaluateArray(values)>2000000) {
             coeff = 0.000001;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "Mb/s";
          }else if (evaluateArray(values)>2000) {
             coeff = 0.001;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "Kb/s";
          }else{}
          break;
@@ -363,32 +347,26 @@ adaptValuesAndUnit = function (values, range, baseUnit, callback) {
          console.log(evaluateArray(values));
          if (evaluateArray(values)<0.002){
             coeff = 0.000001;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.microsecond";
          }else if (evaluateArray(values)<2){
             coeff = 0.001;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.millisecond";
          }else if (evaluateArray(values)>86400){
             coeff = 1/86400;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.day";
          }else if (evaluateArray(values)>3600) {
             coeff = 1/3600;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.hour";
          }else if (evaluateArray(values)>60) {
             coeff = 1/60;
-            newValues = adaptArray(values, coeff);
-            newRange = adaptRange(range, coeff);
             unit = "data.units.minute";
          }else{}
       default:
          break;
+   }
+   if (coeff!=1){
+      newValues = adaptArray(values, coeff);
+      newRange = adaptRange(range, coeff);	   
    }
    callback(newValues, newRange, unit, coeff);
 };
