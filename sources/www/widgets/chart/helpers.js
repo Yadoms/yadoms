@@ -84,14 +84,12 @@ function roundNumber(num, scale) {
  function computePrefixUIForRequest(keywordInformation, prefix){
 	var prefixUri = "/" + prefix;
 	
-	if (isBoolVariable(keywordInformation) || isEnumVariable(keywordInformation)) {
-		prefixUri = "";
-	}else if (prefix == "minute"){
-		prefixUri = "";
+	if (isBoolVariable(keywordInformation) || isEnumVariable(keywordInformation) || (prefix == "minute")) {
+       prefixUri = "";
 	}else if (prefix === "week") {
-        // the prefix week doesn't exist at the server side we have to to it manually
-	    // we use the day prefix		
-		prefixUri = "/day";
+       // the prefix week doesn't exist at the server side we have to to it manually
+	   // we use the day prefix		
+       prefixUri = "/day";
 	};
 	return prefixUri;
  };
@@ -393,4 +391,108 @@ adaptValuesAndUnit = function (values, range, baseUnit, callback) {
          break;
    }
    callback(newValues, newRange, unit, coeff);
+};
+
+createPlotVector = function (data, KeywordInformation, differentialDisplay, lastValue) {
+   var plot=[];
+   //data comes from acquisition table
+   $.each(data, function (index,value) {
+       var d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
+
+       var v;
+       if (!isNullOrUndefined(value.key)) {
+          if (isEnumVariable(KeywordInformation)) {
+             v = getKeyByValue(KeywordInformation.typeInfo.values, value.key);
+          }else {
+             v = parseFloat(value.key);
+          }
+       } else {
+          throw $.t("widgets.chart:errorInitialization");
+       }
+		 
+       // The differential display is disabled if the type of the data is enum or boolean
+       if (differentialDisplay && !isBoolVariable(KeywordInformation) && !isEnumVariable(KeywordInformation)){
+          if (!isNullOrUndefined(lastValue))
+             plot.push([d, v-lastValue]);
+
+          lastValue = v;
+       }else // standard display
+          plot.push([d, v]);
+    });
+	return plot;
+}
+
+createSummaryPlotVector = function (
+              data, 
+			  periodValueType, 
+			  timeBetweenTwoConsecutiveValues, 
+			  plotType,
+			  plot,
+			  range,
+			  KeywordInformation, 
+			  differentialDisplay, 
+			  lastValue) {
+	 var vMin;
+	 var vMax;
+	 var lastDate;
+
+	 $.each(data, function (index2, value) {
+		 lastDate = d;
+		 d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
+		 var vplot;
+
+		 if (!isNullOrUndefined(value[periodValueType])) {
+			 // read the computed desired value (avg/min/max)
+			 vplot = parseFloat(value[periodValueType]);
+			 vMin = parseFloat(value.min);
+			 vMax = parseFloat(value.max);
+		 } else {
+			throw $.t("widgets.chart:errorInitialization");
+		 }
+
+		 //we manage the missing data
+		 if ((lastDate != undefined) && (timeBetweenTwoConsecutiveValues != undefined) &&
+		 (lastDate + timeBetweenTwoConsecutiveValues < d)) {
+
+			 if (plotType === "arearange")
+				 range.push([d, null, null]);
+
+			 plot.push([d, null]);
+		 }
+		 
+		 // The differential display is disabled if the type of the data is enum or boolean
+		 if (differentialDisplay && !isBoolVariable(KeywordInformation) && !isEnumVariable(KeywordInformation)){  
+			 if (periodValueType =="avg") {
+			   if (!isNullOrUndefined(lastValue))
+				 plot.push([d, vplot-lastValue]);
+			   
+			   lastValue = vplot;
+			}
+			else if (periodValueType =="max") { // In this case, we display vMax-vMin
+			   plot.push([d, vMax-vMin]);
+			   lastValue = vMax;
+			}
+		 }
+		 else{
+			if (plotType === "arearange")
+				range.push([d, vMin, vMax]);
+
+			plot.push([d, vplot]);                                                   
+		 }
+	 });
+	 
+	 // Add here missing last data at the end
+	 /* TODO : This have to be added only in continuous format => To be placed elsewhere
+	 if (!isNullOrUndefinedOrEmpty(data)){
+		d = DateTimeFormatter.isoDateToDate(data[data.length-1].date)._d.getTime();
+		var time = moment(self.serverTime).startOf(self.prefix)._d.getTime().valueOf();
+		var registerDate = moment(self.serverTime).startOf(self.prefix).subtract(1, self.prefix + 's')._d.getTime().valueOf();
+		
+		if ((time - d) > self.summaryTimeBetweenNewPoint){
+			if (plotType === "arearange")
+				 range.push([registerDate, null, null]);
+
+			plot.push([registerDate, null]);                                             
+		}
+	 }*/	
 };
