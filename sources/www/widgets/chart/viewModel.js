@@ -5,27 +5,26 @@ widgetViewModelCtor =
  * @constructor
  */
 function chartViewModel() {
-    this.seriesUuid = [];
-    this.interval = 0;
-    this.deviceInfo = [];
-    this.keywordPosition = [];
-    this.unit = [];                      // The unit of the plot
-    this.differentialDisplay = [];
-    this.incompatibility = false;
-    this.serverTime = null;
-    this.precision = [];
-    this.ConfigurationLegendLabels = "";
-    this.timeDeffered = null;
-    this.cleanValue = 0;                  // defined by the configuration of the widget chart for cleaning old points
-    this.prefix = "";
-    this.summaryTimeBetweenNewPoint = 0;  // defined by the configuration of the widget chart for adding new summary points for continuous display
-    this.chartLastXPosition = [];         // This variable is used to know the last x position, and used to add new values in continuous display
-    this.chartLastValue = [];             // This variable is used in differential display
-    this.periodValueType = [];            // This variable is for the selection of the computed value used for the chart (min, avg, max)
-    this.pluginInstanceType = [];         // This variable is only used for keyword of type enum. It returns the plugin instance type for this keyword
-    this.coeff = [];                      // Adaptation coefficient, if units have been adapted
-    this.automaticScale = true;           // Automatic unit scale
+	this.chartLastValue = [];            // This variable is used in differential display
+	this.chartLastXPosition = [];        // This variable is used to know the last x position, and used to add new values in continuous display
+	this.cleanValue = 0;                 // defined by the configuration of the widget chart for cleaning old points
+	this.coeff = [];                     // Adaptation coefficient, if units have been adapted
+	this.ConfigurationLegendLabels = "";
+	this.deviceInfo = [];
+	this.differentialDisplay = [];
 	this.displayDefinition = [];
+	this.incompatibility = false;
+	this.interval = 0;
+	this.keywordPosition = [];
+	this.periodValueType = [];           // This variable is for the selection of the computed value used for the chart (min, avg, max)
+	this.pluginInstanceType = [];        // This variable is only used for keyword of type enum. It returns the plugin instance type for this keyword
+	this.precision = [];
+	this.prefix = "";
+    this.seriesUuid = [];
+	this.serverTime = null;
+	this.summaryTimeBetweenNewPoint = 0; // defined by the configuration of the widget chart for adding new summary points for continuous display
+	this.timeDeffered = null;
+    this.unit = [];                      // The unit of the plot
 
     /**
      * Configure the toolbar
@@ -255,9 +254,7 @@ function chartViewModel() {
                     // Default Axis
                 },
                 plotOptions: {
-                    bar: {
-                        pointPadding: 0.2
-                    },
+                    bar: {pointPadding: 0.2},
                     series: {
                        events: {
                           hide: function () {
@@ -297,9 +294,7 @@ function chartViewModel() {
                     },
                     shared: true
                 },
-                exporting: {
-                    enabled: false
-                },
+                exporting: {enabled: false},
                 series: []
             };
 
@@ -343,17 +338,12 @@ function chartViewModel() {
         var self = this;
         var arrayOfDeffered = [];
         var keywords = [];
-        var d = new $.Deferred();        
-        // Reset of some values
-        self.periodValueType = [];
-        self.seriesUuid = [];
+        var d = new $.Deferred();
+        self.periodValueType = []; // Reset of some values
+        self.seriesUuid = [];      // Reset of some values
 
         if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
             return;
-        
-        if (!isNullOrUndefined(self.widget.configuration.automaticScale)){
-           self.automaticScale = parseBool(self.widget.configuration.automaticScale);
-        }
         
         var intervalConfiguration = compatibilityManagement(self.widget.configuration.interval);
         self.configureToolbar(intervalConfiguration);
@@ -427,7 +417,6 @@ function chartViewModel() {
                    if (parseBool(self.widget.configuration.devices[self.keywordPosition[keyword.keywordId]].content.advancedConfiguration.checkbox)){
                       self.differentialDisplay[keyword.keywordId] = (self.widget.configuration.devices[self.keywordPosition[keyword.keywordId]].content.advancedConfiguration.content.differentialDisplay ==="relative") ? true : false;
                       self.periodValueType[keyword.keywordId] = self.widget.configuration.devices[self.keywordPosition[keyword.keywordId]].content.advancedConfiguration.content.periodtype;
-
                    }else{ // automatic managment : the managment of the information is done from the measure type of the keyword
                       measureManagement(keyword.measure);
                   }
@@ -443,10 +432,9 @@ function chartViewModel() {
                   return;
                }
                
-                //we register the keyword for new acquisition if the device exist
-                self.widgetApi.registerKeywordForNewAcquisitions(keyword.keywordId);
+               self.widgetApi.registerKeywordForNewAcquisitions(keyword.keywordId);
                 
-                //TODO : The deffered doesnt work with more than 1 Enum
+               //TODO : The deffered doesnt work with more than 1 Enum
                if (isEnumVariable(keyword)) {
                   self.widgetApi.getPluginInstanceInformation(keyword.pluginId)
                   .done(function (pluginInstance) {
@@ -471,11 +459,10 @@ function chartViewModel() {
         .done(function () {
            if (self.chart) { self.chart.interval = self.interval;}//we save interval in the chart
            self.refreshData(calculateBeginDate(self.interval, self.serverTime, self.prefix))
-            .always(d.resolve)
-            .fail(d.reject)
+              .always(d.resolve)
+              .fail(d.reject)
         })
         .fail(d.reject);
-        
         return d.promise();
     };
 
@@ -497,7 +484,6 @@ function chartViewModel() {
             var prefix = $(e.currentTarget).attr("prefix");
             
             if (!isNullOrUndefined(interval)) {
-               //default prefix for each interval
                self.prefix = defaultPrefixForInterval(interval);
                self.configureToolbar(interval + "/" + self.prefix);
                self.widgetApi.find(".range-btn[interval='" + interval + "']").addClass("widget-toolbar-pressed-button");
@@ -522,7 +508,7 @@ function chartViewModel() {
        var self = this;
        var d = new $.Deferred();
        var plot = [];
-       var range = [];    
+       var range = [];
        
        if (!self.chart) 
           return d.promise().reject(); // Liberate immediately the deffered
@@ -531,7 +517,7 @@ function chartViewModel() {
         self.chart.showLoading($.t("widgets.chart:loadingData"));
         var deviceIsSummary = [];
         
-        //ensure all series and axis are removed (may cause some crash if not done)
+        // Clean up the chart
         while (self.chart.series.length > 0)
             self.chart.series[0].remove(false);
 
@@ -543,50 +529,38 @@ function chartViewModel() {
         var arrayOfDeffered2 = [];
         self.chartLastValue = [];
         
-        //we compute the date from the configuration
+        //we compute the initial date
         changexAxisBound(self.chart, dateFrom);
-        var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
+		console.log(self.prefix);   // minute
+		console.log(self.interval); // hour
         var timeBetweenTwoConsecutiveValues = moment.duration(1, self.prefix).asMilliseconds();              
         
         //for each plot in the configuration we request for data
         $.each(self.widget.configuration.devices, function (index, device) {
-            var prefixUri = "/" + self.prefix;
-            // Index to find all information about each keyword
-            var keywordId = device.content.source.keywordId;
+            var keywordId = device.content.source.keywordId; // Index to find all information about each keyword
             
-            // Initialize work tables
-            plot[keywordId] = [];
+            plot[keywordId] = []; // Initialize work tables
             range[keywordId] = [];
-            self.coeff[keywordId] = 1; // Default adaptation coeff for unit
             
+			console.log(self.chart.keyword[keywordId]);
+			var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
+			
             //If the device is a bool or a enum, you have to modify
-            if (isBoolVariable(self.chart.keyword[keywordId]) || isEnumVariable(self.chart.keyword[keywordId])) {
+            if (isBoolVariable(self.chart.keyword[keywordId]) || isEnumVariable(self.chart.keyword[keywordId]) || (self.prefix === "minute")) {
                 dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
-                prefixUri = "";                      
+				timeBetweenTwoConsecutiveValues = undefined;
                 deviceIsSummary[keywordId] = false; // We change the summary for the boolean device.
             } else {
-               // if self.prefix = "minute" then whe want all data
-               if (self.prefix == "minute"){
-                  dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime)); // rewriting the final time
-                  //we request all data
-                  timeBetweenTwoConsecutiveValues = undefined;
-                  deviceIsSummary[keywordId] = false;
-                  prefixUri = ""; // rewrite the prefix                          
-              }else if (self.prefix === "week") {
-                  // the prefix week doesn't exist at the server side we have to to it manually
-                  // we use the day prefix
-                  prefixUri = "/day";
-                  deviceIsSummary[keywordId] = true;
-              }else{
-                  deviceIsSummary[keywordId] = true; // By default, it's the summary define above.
-              }
+               deviceIsSummary[keywordId] = true; // By default, it's the summary define above.
             }
+			
+			var prefixUri = computePrefixUIForRequest(self.chart.keyword[keywordId], self.prefix);
 
-             var deffered = RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
-             arrayOfDeffered.push(deffered);
-             arrayOfDeffered1[keywordId] = new $.Deferred();
-             arrayOfDeffered2[keywordId] = new $.Deferred();
-             deffered.done(function (data) {
+            var deffered = RestEngine.getJson("rest/acquisition/keyword/" + keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
+            arrayOfDeffered.push(deffered);
+            arrayOfDeffered1[keywordId] = new $.Deferred();
+            arrayOfDeffered2[keywordId] = new $.Deferred();
+            deffered.done(function (data) {
                  var lastDate;
                  var d;
                  var dataVector = data.data;
@@ -600,7 +574,7 @@ function chartViewModel() {
                          var v;
                          if (!isNullOrUndefined(value.key)) {
                             if (isEnumVariable(self.chart.keyword[keywordId])) {
-                       v = getKeyByValue(self.chart.keyword[keywordId].typeInfo.values, value.key);
+                               v = getKeyByValue(self.chart.keyword[keywordId].typeInfo.values, value.key);
                             }else {
                                v = parseFloat(value.key);
                             }
@@ -622,11 +596,8 @@ function chartViewModel() {
                  } else {
                      var vMin;
                      var vMax;
-                     
-                     //
-                     // in case of week, we have to change manually the array
-                     //
-                     if (self.prefix === "week") {
+
+                     if (self.prefix === "week") { // in case of week, we have to change manually the array
                         dataVector = getWeeks(data.data);
                      }else{
                         dataVector = data.data;
@@ -703,11 +674,12 @@ function chartViewModel() {
         var newPlots = [];
         var newRanges = [];
         var newUnits = [];
+        self.coeff[keywordId] = 1; // Default adaptation coeff for unit		
         
         // Unit traitments
         $.when.apply($, arrayOfDeffered).done(function () {
            // automatic unit
-           if (self.automaticScale){
+           if (parseBool(self.widget.configuration.automaticScale)){
               $.each(self.widget.configuration.devices, function (index, device) {
                  var keywordId = device.content.source.keywordId;
                  
@@ -731,9 +703,8 @@ function chartViewModel() {
         
         // Display each curves
         $.when.apply($, arrayOfDeffered1).done(function () {
-           // automatic unit
-           if (self.automaticScale){
-              if (parseBool(self.widget.configuration.oneAxis.checkbox)) { // We the same axis we adapt all identical units the the same correct unit
+           if (parseBool(self.widget.configuration.automaticScale)){ // automatic scaling
+              if (parseBool(self.widget.configuration.oneAxis.checkbox)) { // For the same axis we adapt all identical units to the same correct unit
                  // Analysis of all adaptations
                  $.each(self.widget.configuration.devices, function (index, device1) {
                     var keywordId1 = device1.content.source.keywordId;
@@ -742,10 +713,8 @@ function chartViewModel() {
                        var keywordId2 = device2.content.source.keywordId;
                        
                        if (self.chart.keyword[keywordId1].unit === self.chart.keyword[keywordId2].unit){
-                          // If applicable adaptation are different
-                          if (self.coeff[keywordId1] != self.coeff[keywordId2]){
-                             //We keep the lowest one
-                             if (self.coeff[keywordId1] < self.coeff[keywordId2]){
+                          if (self.coeff[keywordId1] != self.coeff[keywordId2]){ // If applicable adaptation are different
+                             if (self.coeff[keywordId1] < self.coeff[keywordId2]){ //We keep the lowest one
                                 // Adapt the second one
                                 newPlots[keywordId2] = adaptArray(plot[keywordId2], self.coeff[keywordId1]);
                                 newRanges[keywordId2] = adaptRange(range[keywordId2], self.coeff[keywordId1]);
@@ -926,7 +895,6 @@ function chartViewModel() {
        }else {
           self.chart.hideLoading();
         }
-        
         self.chart.redraw(false); //without animation
     };
 
@@ -991,9 +959,7 @@ function chartViewModel() {
             var serieRange = self.chart.get('range_' + self.seriesUuid[keywordId]);
             var dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf(prefix).subtract(1, prefix + 's'));
             var request_prefix = "";
-            
-            // we ask only from the last point registered
-            var dateFrom = DateTimeFormatter.dateToIsoDate(moment(lastPointDate+1));
+            var dateFrom = DateTimeFormatter.dateToIsoDate(moment(lastPointDate+1)); // we ask only from the last point registered
             
             //the week is not well calculated
             if (prefix === "week") 
@@ -1009,7 +975,7 @@ function chartViewModel() {
                if (data.data.length == 0)
                   return;
                 try {
-                   // Weeks is not returned by the server, so we calculate here the weeks vector
+                   // Weeks are not returned by the server, so we calculate here the weeks vector
                    if (prefix === "week")
                       vectorToAnalyze = getWeeks(data.data);
                    else 
@@ -1072,7 +1038,7 @@ function chartViewModel() {
     * @param keywordId keyword Id removed from Yadoms
     */    
     this.onKeywordDeletion = function (keywordId) {
-       var self = this;
+       var self=this;
        
        if (!self.chart)
           return;
@@ -1097,13 +1063,12 @@ function chartViewModel() {
        self.widgetApi.askServerLocalTime(function (serverLocalTime) {
           self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
        }).done(function(data) {
-          
           // We wait that the timeDeffered is finished
           if (self.chart) { self.chart.interval = self.interval;}//we save interval in the chart
           if (self.timeDeffered!= null) {
                 self.timeDeffered.done(function() {
-                self.refreshData(calculateBeginDate(self.interval, self.serverTime, self.prefix));
-             });
+                   self.refreshData(calculateBeginDate(self.interval, self.serverTime, self.prefix));
+                });
           }else{
              self.refreshData(calculateBeginDate(self.interval, self.serverTime, self.prefix));
           }

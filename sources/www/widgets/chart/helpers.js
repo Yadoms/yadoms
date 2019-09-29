@@ -76,7 +76,24 @@ function roundNumber(num, scale) {
  };
  
  function calculateFinalDate(){
+   //if (isBoolVariable(self.chart.keyword[keywordId]) || isEnumVariable(self.chart.keyword[keywordId])) {
+   //}
    return DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
+ };
+ 
+ function computePrefixUIForRequest(keywordInformation, prefix){
+	var prefixUri = "/" + prefix;
+	
+	if (isBoolVariable(keywordInformation) || isEnumVariable(keywordInformation)) {
+		prefixUri = "";
+	}else if (prefix == "minute"){
+		prefixUri = "";
+	}else if (prefix === "week") {
+        // the prefix week doesn't exist at the server side we have to to it manually
+	    // we use the day prefix		
+		prefixUri = "/day";
+	};
+	return prefixUri;
  };
 
   /**
