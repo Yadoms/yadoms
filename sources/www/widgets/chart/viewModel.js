@@ -25,6 +25,7 @@ function chartViewModel() {
 	this.summaryTimeBetweenNewPoint = 0; // defined by the configuration of the widget chart for adding new summary points for continuous display
 	this.timeDeffered = null;
     this.unit = [];                      // The unit of the plot
+	this.window = 1;
 
     /**
      * Configure the toolbar
@@ -42,8 +43,7 @@ function chartViewModel() {
           { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"YEAR\"><span data-i18n=\"widgets.chart:navigator.year\"/></div>" },
           { custom: "<div class=\"widget-toolbar-button range-btn\" interval=\"FIVE_YEAR\"><span data-i18n=\"widgets.chart:navigator.five_year\"/></div>" },
           { custom: "<div class=\"widget-toolbar-button after\"><span class=\"glyphicon glyphicon-chevron-right\"></div>" },
-          { separator: ""}
-          ];
+          { separator: ""}];
        
        switch(interval){
           case "HOUR/minute":
@@ -115,15 +115,31 @@ function chartViewModel() {
       $btns.off("click").on("click", self.navigatorBtnClick());
       self.widgetApi.widget.$toolbar.find(".print-command").off("click").on("click", self.printBtnClick());
       self.widgetApi.widget.$toolbar.find(".export-command").off("click").on("click", self.exportBtnClick());
-      
+	  
       self.widgetApi.widget.$toolbar.find(".before").off("click").on("click", self.displayBefore());
       self.widgetApi.widget.$toolbar.find(".after").off("click").on("click", self.displayAfter());      
     };
     
     this.displayBefore = function () {
+		var self=this;
+		return function (e) {
+			self.window += 1;
+			self.refreshData(calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window),
+							 calculateFinalDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window));
+		};
     };
     
     this.displayAfter = function () {
+		var self=this;
+        return function (e) {
+			if (self.window>1){
+			   self.window -= 1;
+			   self.refreshData(calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window),
+								calculateFinalDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window));
+			}else{
+			   // TODO : Throw an error
+			}
+		};
     };    
     
     this.exportBtnClick = function () {
@@ -382,10 +398,10 @@ function chartViewModel() {
             
             deffered
             .done(function (device) {
-               self.deviceInfo[keywordId] = device;
+               self.deviceInfo[keywordId]=device;
             })
             .fail(function (error) {
-               self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
+               self.widgetApi.setState(widgetStateEnum.InvalidConfiguration);
             });
 
             keywords.push(keywordId);
@@ -405,8 +421,7 @@ function chartViewModel() {
                   if (measure === "Cumulative"){
                      self.differentialDisplay[keyword.keywordId] = true;
                      self.periodValueType[keyword.keywordId] = "max";
-                  }
-                  else{ // Default values and Absolute value
+                  }else{ // Default values and Absolute value
                      self.differentialDisplay[keyword.keywordId] = false;
                      self.periodValueType[keyword.keywordId] = "avg";
                   }
@@ -431,8 +446,9 @@ function chartViewModel() {
                   return;
                }
                
-			   // TODO : This registering is only available when prefix is minute
-               self.widgetApi.registerKeywordForNewAcquisitions(keyword.keywordId);
+			   if (self.prefix === "minute"){
+                  self.widgetApi.registerKeywordForNewAcquisitions(keyword.keywordId);
+			   }
                 
                //TODO : The deffered doesnt work with more than 1 Enum
                if (isEnumVariable(keyword)) {
@@ -458,7 +474,9 @@ function chartViewModel() {
         $.when.apply($, arrayOfDeffered) // The first failing array fail the when.apply
         .done(function () {
            if (self.chart) { self.chart.interval = self.interval;}//we save interval in the chart
-           self.refreshData(calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix))
+		   console.log("self.window : ", self.window);
+           self.refreshData(calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window),
+		                    calculateFinalDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window))
               .always(d.resolve)
               .fail(d.reject)
         })
@@ -475,7 +493,8 @@ function chartViewModel() {
                self.widgetApi.askServerLocalTime(function (serverLocalTime) { //we ask the new time server, and we refresh information
                   self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
                   if (self.chart) { self.chart.interval = interval;}//we save interval in the chart
-                  self.refreshData(calculateBeginDate(self.displayDefinition[interval], self.serverTime, self.prefix));
+                  self.refreshData(calculateBeginDate(self.displayDefinition[interval], self.serverTime, self.prefix, self.window),
+				                   calculateFinalDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window));
                });
             }           
            
@@ -539,7 +558,7 @@ function chartViewModel() {
 		 });
 	};
 
-    this.refreshData = function (dateFrom) {
+    this.refreshData = function (dateFrom, dateTo) {
        var self = this;
        var defferedRefresh = new $.Deferred();
 	   var defferedOneAxis = new $.Deferred();
@@ -554,7 +573,6 @@ function chartViewModel() {
         var deviceIsSummary = [];
 		self.chartLastValue = [];
         var arrayOfDeffered = [];
-		//var arrayOfDeffered1 = [];
         var arrayOfDeffered2 = [];		
         
         // Clean up the chart
@@ -573,11 +591,11 @@ function chartViewModel() {
         //for each plot in the configuration we request for data
         $.each(self.widget.configuration.devices, function (index, device) {
             var keywordId = device.content.source.keywordId; // Index to find all information about each keyword
-			var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
+			//var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
 			
             //If the device is a bool or a enum, you have to modify
             if (isBoolVariable(self.chart.keyword[keywordId]) || isEnumVariable(self.chart.keyword[keywordId]) || (self.prefix === "minute")) {
-                dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
+                //dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
 				timeBetweenTwoConsecutiveValues = undefined;
                 deviceIsSummary[keywordId] = false; // We change the summary for the boolean device.
             } else {
@@ -585,6 +603,8 @@ function chartViewModel() {
                deviceIsSummary[keywordId] = true;
             }
 			
+			console.log("date from : ", dateFrom);
+			console.log("date to : ", dateTo);
 			var prefixUri = computePrefixUIForRequest(self.chart.keyword[keywordId], self.prefix);
             var deffered = RestEngine.getJson("rest/acquisition/keyword/" + keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
             arrayOfDeffered.push(deffered);
@@ -616,8 +636,6 @@ function chartViewModel() {
 					   self.chartLastValue[keywordId]);
 			   }
 			   
-               console.log (plot);			   
-			   
 			   // automatic unit for each plot
 			   self.coeff[keywordId] = 1; // Default adaptation coeff for unit
 			   if (parseBool(self.widget.configuration.automaticScale)){
@@ -629,8 +647,7 @@ function chartViewModel() {
 				  });
 			   }else{
 				   self.unit[keywordId] = self.chart.keyword[keywordId].unit;
-			   }			   
-			   console.log (plot);
+			   }
              })
              .fail(function (error) {
                 throw $.t("widgets.chart:errorDuringGettingDeviceData");
@@ -656,7 +673,6 @@ function chartViewModel() {
               var serie = null;
               var legendConfiguration = parseBool(self.widget.configuration.legends.checkbox);
               
-			  console.log (plot);
               if (plot[keywordId].length != 0)
                  self.chartLastXPosition[keywordId] = plot[keywordId][plot[keywordId].length-1][0];
               
@@ -805,7 +821,7 @@ function chartViewModel() {
        if (!isNullOrUndefined(serie.points)) {
           if (!isNullOrUndefined(serie.points[0])) {
              if ((finaldate - serie.points[0].x) > dateInMilliSecondes)
-                changexAxisBound(self.chart, calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix));
+                changexAxisBound(self.chart, calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window));
           }
        }
     };
@@ -947,10 +963,12 @@ function chartViewModel() {
           if (self.chart) { self.chart.interval = self.interval;}//we save interval in the chart
           if (self.timeDeffered!= null) {
                 self.timeDeffered.done(function() {
-                   self.refreshData(calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix));
+                   self.refreshData(calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window),
+				                    calculateFinalDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window));
                 });
           }else{
-             self.refreshData(calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix));
+             self.refreshData(calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window),
+			                  calculateFinalDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window));
           }
        })
        .fail(function(error) {

@@ -71,15 +71,12 @@ function roundNumber(num, scale) {
    return prefix;
  };
  
- function calculateBeginDate(period, time, prefix) {
-   console.log("time : ", time);
-   return DateTimeFormatter.dateToIsoDate(moment(time).subtract(period.nb, period.type).startOf(prefix));
+ function calculateBeginDate(period, time, prefix, window) {
+   return DateTimeFormatter.dateToIsoDate(moment(time).subtract(period.nb * window, period.type).startOf(prefix));
  };
  
- function calculateFinalDate(){
-   //if (isBoolVariable(self.chart.keyword[keywordId]) || isEnumVariable(self.chart.keyword[keywordId])) {
-   //}
-   return DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
+ function calculateFinalDate(period, time, prefix, window){
+   return DateTimeFormatter.dateToIsoDate(moment(time).subtract(period.nb * (window-1), period.type).startOf(prefix)); // TODO : A valider !
  };
  
  function computePrefixUIForRequest(keywordInformation, prefix){
