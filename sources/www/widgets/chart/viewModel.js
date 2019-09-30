@@ -458,7 +458,7 @@ function chartViewModel() {
         $.when.apply($, arrayOfDeffered) // The first failing array fail the when.apply
         .done(function () {
            if (self.chart) { self.chart.interval = self.interval;}//we save interval in the chart
-           self.refreshData(calculateBeginDate(self.interval, self.serverTime, self.prefix))
+           self.refreshData(calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix))
               .always(d.resolve)
               .fail(d.reject)
         })
@@ -475,7 +475,7 @@ function chartViewModel() {
                self.widgetApi.askServerLocalTime(function (serverLocalTime) { //we ask the new time server, and we refresh information
                   self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
                   if (self.chart) { self.chart.interval = interval;}//we save interval in the chart
-                  self.refreshData(calculateBeginDate(interval, self.serverTime, self.prefix));
+                  self.refreshData(calculateBeginDate(self.displayDefinition[interval], self.serverTime, self.prefix));
                });
             }           
            
@@ -542,17 +542,19 @@ function chartViewModel() {
     this.refreshData = function (dateFrom) {
        var self = this;
        var defferedRefresh = new $.Deferred();
+	   var defferedOneAxis = new $.Deferred();
        var plot = [];
        var range = [];
        
        if (!self.chart) 
-          return d.promise().reject(); // Liberate immediately the deffered
+          return defferedRefresh.promise().reject(); // Liberate immediately the deffered
        
-      try {
+      //try {
         self.chart.showLoading($.t("widgets.chart:loadingData"));
         var deviceIsSummary = [];
 		self.chartLastValue = [];
         var arrayOfDeffered = [];
+		//var arrayOfDeffered1 = [];
         var arrayOfDeffered2 = [];		
         
         // Clean up the chart
@@ -571,8 +573,6 @@ function chartViewModel() {
         //for each plot in the configuration we request for data
         $.each(self.widget.configuration.devices, function (index, device) {
             var keywordId = device.content.source.keywordId; // Index to find all information about each keyword
-            
-			console.log(self.chart.keyword[keywordId]);
 			var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
 			
             //If the device is a bool or a enum, you have to modify
@@ -586,9 +586,9 @@ function chartViewModel() {
             }
 			
 			var prefixUri = computePrefixUIForRequest(self.chart.keyword[keywordId], self.prefix);
-
             var deffered = RestEngine.getJson("rest/acquisition/keyword/" + keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
             arrayOfDeffered.push(deffered);
+			//arrayOfDeffered1[keywordId] = new $.Deferred();
             arrayOfDeffered2[keywordId] = new $.Deferred();
             deffered.done(function (data) {
                var d;
@@ -600,7 +600,7 @@ function chartViewModel() {
 									   self.chart.keyword[keywordId], 
 									   self.differentialDisplay[keywordId], 
 									   self.chartLastValue[keywordId]);
-			   } else {
+			   }else{
 				 if (self.prefix === "week") { // in case of week, we have to change manually the array
 					dataVector = getWeeks(data.data);
 				 }				   
@@ -616,6 +616,8 @@ function chartViewModel() {
 					   self.chartLastValue[keywordId]);
 			   }
 			   
+               console.log (plot);			   
+			   
 			   // automatic unit for each plot
 			   self.coeff[keywordId] = 1; // Default adaptation coeff for unit
 			   if (parseBool(self.widget.configuration.automaticScale)){
@@ -628,54 +630,33 @@ function chartViewModel() {
 			   }else{
 				   self.unit[keywordId] = self.chart.keyword[keywordId].unit;
 			   }			   
-			   
+			   console.log (plot);
              })
              .fail(function (error) {
-                notifyError($.t("widgets.chart:errorDuringGettingDeviceData"), error);
-                defferedRefresh.reject();
+                throw $.t("widgets.chart:errorDuringGettingDeviceData");
              });
         });
 		
-		var defferedOneAxis = new $.Deferred();
-        if (parseBool(self.widget.configuration.automaticScale) &&
-            parseBool(self.widget.configuration.oneAxis.checkbox)) { // For the same axis we adapt all identical units to the same correct unit		
-			$.when.apply($, arrayOfDeffered).done(function () {			
-				self.adaptPlotsUnitsSameAxis(plot, range);
-				defferedOneAxis.resolve();
+			$.when.apply($, arrayOfDeffered).done(function () {		
+				if (parseBool(self.widget.configuration.automaticScale) &&
+			        parseBool(self.widget.configuration.oneAxis.checkbox)) { // For the same axis we adapt all identical units to the same correct unit		
+				   self.adaptPlotsUnitsSameAxis(plot, range);
+				   defferedOneAxis.resolve();
+				}else{
+					defferedOneAxis.resolve();
+				}
 			});
-		}else{
-			defferedOneAxis.resolve();
-		}
         
-        // Display each curves
+        // Create and display each curve
         defferedOneAxis.done(function () {
-           // Creates all axis and curves
            $.each(self.widget.configuration.devices, function (index, device) {
               var keywordId = device.content.source.keywordId;
-              
               var axisName = createAxis(keywordId, self.chart, self.seriesUuid, self.widget.configuration, self.precision[keywordId], self.unit[keywordId], device);
-              var legendText="";
-              
-              try{
-                 // series names
-                 if (self.ConfigurationLegendLabels ==="Device")
-                    legendText = self.deviceInfo[keywordId].friendlyName;
-                 else if (self.ConfigurationLegendLabels ==="Keyword")
-                    legendText = self.chart.keyword[keywordId].friendlyName;                                       
-                 else
-                    legendText = self.deviceInfo[keywordId].friendlyName + "/" + self.chart.keyword[keywordId].friendlyName;
-              }catch(error){
-                 self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
-              }
-              
+              var legendText = createLegendText(self.ConfigurationLegendLabels, self.deviceInfo[keywordId].friendlyName, self.chart.keyword[keywordId].friendlyName);
               var serie = null;
-              var legendConfiguration;
-              try{
-                 legendConfiguration = parseBool(self.widget.configuration.legends.checkbox);
-              }catch(err){
-                 legendConfiguration = true;
-              }
+              var legendConfiguration = parseBool(self.widget.configuration.legends.checkbox);
               
+			  console.log (plot);
               if (plot[keywordId].length != 0)
                  self.chartLastXPosition[keywordId] = plot[keywordId][plot[keywordId].length-1][0];
               
@@ -770,12 +751,12 @@ function chartViewModel() {
           notifyError($.t("widgets.chart:errorDuringGettingDeviceData"), error);
           defferedRefresh.reject();
        });
-      } catch (err) {
+      /*} catch (err) {
          console.error(err.message);
          notifyError(err.message);
 		 self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
          defferedRefresh.reject();
-      }
+      }*/
        return defferedRefresh.promise();
     };
 
@@ -824,7 +805,7 @@ function chartViewModel() {
        if (!isNullOrUndefined(serie.points)) {
           if (!isNullOrUndefined(serie.points[0])) {
              if ((finaldate - serie.points[0].x) > dateInMilliSecondes)
-                changexAxisBound(self.chart, calculateBeginDate(self.interval, self.serverTime, self.prefix));
+                changexAxisBound(self.chart, calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix));
           }
        }
     };
@@ -966,10 +947,10 @@ function chartViewModel() {
           if (self.chart) { self.chart.interval = self.interval;}//we save interval in the chart
           if (self.timeDeffered!= null) {
                 self.timeDeffered.done(function() {
-                   self.refreshData(calculateBeginDate(self.interval, self.serverTime, self.prefix));
+                   self.refreshData(calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix));
                 });
           }else{
-             self.refreshData(calculateBeginDate(self.interval, self.serverTime, self.prefix));
+             self.refreshData(calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix));
           }
        })
        .fail(function(error) {

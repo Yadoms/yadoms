@@ -71,8 +71,9 @@ function roundNumber(num, scale) {
    return prefix;
  };
  
- function calculateBeginDate(interval, time, prefix) {
-  return DateTimeFormatter.dateToIsoDate(moment(time).subtract(self.displayDefinition[interval].nb, self.displayDefinition[interval].type).startOf(prefix));
+ function calculateBeginDate(period, time, prefix) {
+   console.log("time : ", time);
+   return DateTimeFormatter.dateToIsoDate(moment(time).subtract(period.nb, period.type).startOf(prefix));
  };
  
  function calculateFinalDate(){
@@ -472,5 +473,18 @@ createSummaryPlotVector = function (
 
 			plot.push([registerDate, null]);                                             
 		}
-	 }*/	
+	 }*/
+};
+
+createLegendText = function (configuration, deviceName, keywordName){
+   try{
+      if (configuration ==="Device")
+         legendText = deviceName;
+      else if (configuration ==="Keyword")
+         legendText = keywordName;                                       
+      else
+         legendText = deviceName + "/" + keywordName;
+  }catch(error){
+	 throw error;
+  }	
 };
