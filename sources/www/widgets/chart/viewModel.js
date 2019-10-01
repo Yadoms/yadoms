@@ -620,7 +620,6 @@ function chartViewModel() {
             arrayOfDeffered.push(deffered);
             arrayOfDeffered2[keywordId] = new $.Deferred();
             deffered.done(function (data) {
-               var d;
                var dataVector = data.data;
 
                if (!(deviceIsSummary[keywordId])) {
@@ -632,7 +631,9 @@ function chartViewModel() {
 			   }else{
 				 if (self.prefix === "week") { // in case of week, we have to change manually the array
 					dataVector = getWeeks(data.data);
-				 }				   
+				 }
+				 plot[keywordId] = [];
+			     range[keywordId] = [];
 				 createSummaryPlotVector(
 					   dataVector, 
 					   self.periodValueType[keywordId], 
@@ -663,15 +664,15 @@ function chartViewModel() {
              });
         });
 		
-			$.when.apply($, arrayOfDeffered).done(function () {		
-				if (parseBool(self.widget.configuration.automaticScale) &&
-			        parseBool(self.widget.configuration.oneAxis.checkbox)) { // For the same axis we adapt all identical units to the same correct unit		
-				   self.adaptPlotsUnitsSameAxis(plot, range);
-				   defferedOneAxis.resolve();
-				}else{
-					defferedOneAxis.resolve();
-				}
-			});
+		$.when.apply($, arrayOfDeffered).done(function () {		
+			if (parseBool(self.widget.configuration.automaticScale) &&
+			    parseBool(self.widget.configuration.oneAxis.checkbox)) { // For the same axis we adapt all identical units to the same correct unit		
+				self.adaptPlotsUnitsSameAxis(plot, range);
+				defferedOneAxis.resolve();
+			}else{
+				defferedOneAxis.resolve();
+			}
+		});
         
         // Create and display each curve
         defferedOneAxis.done(function () {
@@ -715,11 +716,9 @@ function chartViewModel() {
                       serieOption.type = device.content.PlotType;
                   }
                   
-                  //Add plot
-                  serie = self.chart.addSeries(serieOption, false, false); // Do not redraw immediately
+                  serie = self.chart.addSeries(serieOption, false, false); // Add plot and do not redraw immediately
 
-                  if (device.content.PlotType === "arearange" && deviceIsSummary[keywordId]) {
-                     //Add Ranges
+                  if (device.content.PlotType === "arearange" && deviceIsSummary[keywordId]) { //Add Ranges
                      var serieRange = self.chart.addSeries({
                          id: 'range_' + self.seriesUuid[keywordId],
                          data: range[keywordId],
@@ -738,8 +737,7 @@ function chartViewModel() {
                          visible: self.chart.keyword[keywordId].visible
                      }, false, false); // Do not redraw immediately
 
-                     // Add Units and precision for ranges
-                     if (serieRange){
+                     if (serieRange){ // Add Units and precision for ranges
                         try{
                            serieRange.units = $.t(self.unit[keywordId]);
                         }

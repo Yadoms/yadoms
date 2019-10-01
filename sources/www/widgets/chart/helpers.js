@@ -420,6 +420,7 @@ createSummaryPlotVector = function (
 	 var vMin;
 	 var vMax;
 	 var lastDate;
+	 var d = undefined;
 
 	 $.each(data, function (index2, value) {
 		 lastDate = d;
