@@ -117,19 +117,30 @@ function chartViewModel() {
       self.widgetApi.widget.$toolbar.find(".export-command").off("click").on("click", self.exportBtnClick());
 	  
       self.widgetApi.widget.$toolbar.find(".before").off("click").on("click", self.displayBefore());
-      self.widgetApi.widget.$toolbar.find(".after").off("click").on("click", self.displayAfter());      
+	  self.enableButtonAfter();
     };
+
+	this.enableButtonAfter = function(){
+       self.widgetApi.widget.$toolbar.find(".after").off("click").on("click", self.displayAfter());
+	   self.widgetApi.widget.$toolbar.find(".after").attr("disabled", false);
+	};
+	
+	this.disableButtonAfter = function(){
+       self.widgetApi.widget.$toolbar.find(".after").off("click");
+	   self.widgetApi.widget.$toolbar.find(".after").attr("disabled", true);
+	};
     
-    this.displayBefore = function () {
+    this.displayBefore = function(){
 		var self=this;
 		return function (e) {
 			self.window += 1;
 			self.refreshData(calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window),
 							 calculateFinalDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window));
+			self.enableButtonAfter();				 
 		};
     };
     
-    this.displayAfter = function () {
+    this.displayAfter = function(){
 		var self=this;
         return function (e) {
 			if (self.window>1){
@@ -137,7 +148,7 @@ function chartViewModel() {
 			   self.refreshData(calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window),
 								calculateFinalDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window));
 			}else{
-			   // TODO : Throw an error
+			   self.disableButtonAfter();
 			}
 		};
     };    
@@ -474,7 +485,6 @@ function chartViewModel() {
         $.when.apply($, arrayOfDeffered) // The first failing array fail the when.apply
         .done(function () {
            if (self.chart) { self.chart.interval = self.interval;}//we save interval in the chart
-		   console.log("self.window : ", self.window);
            self.refreshData(calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window),
 		                    calculateFinalDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window))
               .always(d.resolve)
@@ -583,7 +593,7 @@ function chartViewModel() {
            self.chart.yAxis[0].remove(false);
 
         //we compute the initial date
-        changexAxisBound(self.chart, dateFrom);
+//        changexAxisBound(self.chart, dateFrom, dateTo);
 		console.log(self.prefix);   // minute
 		console.log(self.interval); // hour
         var timeBetweenTwoConsecutiveValues;
@@ -608,7 +618,6 @@ function chartViewModel() {
 			var prefixUri = computePrefixUIForRequest(self.chart.keyword[keywordId], self.prefix);
             var deffered = RestEngine.getJson("rest/acquisition/keyword/" + keywordId + prefixUri + "/" + dateFrom + "/" + dateTo);
             arrayOfDeffered.push(deffered);
-			//arrayOfDeffered1[keywordId] = new $.Deferred();
             arrayOfDeffered2[keywordId] = new $.Deferred();
             deffered.done(function (data) {
                var d;
@@ -760,6 +769,11 @@ function chartViewModel() {
 
        // Final traitment
         $.when.apply($, arrayOfDeffered2).done(function () {
+			if (self.window==1){
+               setDateMin(self.chart, dateFrom);
+			}else{
+			   setDateMinAndMax(self.chart, dateFrom, dateTo);
+			}
            self.finalRefresh();
            defferedRefresh.resolve();
         })
@@ -820,8 +834,9 @@ function chartViewModel() {
 
        if (!isNullOrUndefined(serie.points)) {
           if (!isNullOrUndefined(serie.points[0])) {
-             if ((finaldate - serie.points[0].x) > dateInMilliSecondes)
-                changexAxisBound(self.chart, calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window));
+             if ((finaldate - serie.points[0].x) > dateInMilliSecondes){
+                setDateMin(self.chart, calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window));
+			 }
           }
        }
     };
@@ -832,20 +847,23 @@ function chartViewModel() {
       self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime); // Update the serverTime
       var dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf(self.prefix).subtract(1, 'seconds'));
       var isofinaldate = DateTimeFormatter.isoDateToDate(dateTo)._d.getTime().valueOf();
-      self.timeDeffered = self.addContinuousSummaryPoint();
-      
-      $.each(self.seriesUuid, function (index, value) {
-         var serie = self.chart.get(value);
-         var serieRange = self.chart.get('range_' + value);
-         
-         // If a serie is available  // Clean points > cleanValue for serie
-         if (!isNullOrUndefined(serie))
-            self.cleanUpChart(serie, isofinaldate, self.cleanValue);
+	  
+	  // Display new points only if we are in the last window
+	  if (self.window==1){
+		  self.timeDeffered = self.addContinuousSummaryPoint();		  
+		  $.each(self.seriesUuid, function (index, value) {
+			 var serie = self.chart.get(value);
+			 var serieRange = self.chart.get('range_' + value);
+			 
+			 // If a serie is available  // Clean points > cleanValue for serie
+			 if (!isNullOrUndefined(serie))
+				self.cleanUpChart(serie, isofinaldate, self.cleanValue);
 
-          // Clean points > cleanValue for ranges, if any
-         if (!isNullOrUndefined(serieRange))
-            self.cleanUpChart(serieRange, isofinaldate, self.cleanValue);
-      });
+			  // Clean points > cleanValue for ranges, if any
+			 if (!isNullOrUndefined(serieRange))
+				self.cleanUpChart(serieRange, isofinaldate, self.cleanValue);
+		  });
+	  }
     };
    
     this.DisplaySummary = function (serie, keywordId, nb, range, prefix, lastPointDate) {
@@ -988,7 +1006,7 @@ function chartViewModel() {
                      var serie = self.chart.get(self.seriesUuid[keywordId]);
                      // If a serie is available
 					 // Point with prefix != minutes are not treated
-                     if (!isNullOrUndefined(serie) && data.date!=="" && data.value!=="" && (self.prefix === "minute")) {
+                     if (!isNullOrUndefined(serie) && data.date!=="" && data.value!=="" && (self.prefix === "minute") && (self.window == 1)) {
 						var time  = moment(self.serverTime)._d.getTime().valueOf();
 						var isolastdate = DateTimeFormatter.isoDateToDate(data.date)._d.getTime().valueOf();
 						if (time - isolastdate < 3600000){ // Only if the last value is in last hour

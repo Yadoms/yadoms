@@ -147,8 +147,17 @@ function getWeeks(vectorToParse){
   * Highcharts Helpers
   */  
  
-function changexAxisBound(chart, dateMin){
+function setDateMinAndMax(chart, dateMin, dateMax){
     var datet = DateTimeFormatter.isoDateToDate(dateMin)._d.getTime();
+	var datem = DateTimeFormatter.isoDateToDate(dateMax)._d.getTime();
+	console.log(datet);
+	console.log(datem);
+    chart.xAxis[0].setExtremes(datet, datem);
+};
+
+function setDateMin(chart, dateMin){
+    var datet = DateTimeFormatter.isoDateToDate(dateMin)._d.getTime();
+	console.log(datet);
     chart.xAxis[0].setExtremes(datet, null);
 };
 
