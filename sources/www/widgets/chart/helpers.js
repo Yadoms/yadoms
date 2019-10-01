@@ -483,6 +483,7 @@ createSummaryPlotVector = function (
 };
 
 createLegendText = function (configuration, deviceName, keywordName){
+   var legendText = "";
    try{
       if (configuration ==="Device")
          legendText = deviceName;
@@ -490,7 +491,9 @@ createLegendText = function (configuration, deviceName, keywordName){
          legendText = keywordName;                                       
       else
          legendText = deviceName + "/" + keywordName;
-  }catch(error){
-	 throw error;
-  }	
+
+   return legendText;
+   }catch(error){
+	  throw error;
+   }	
 };
