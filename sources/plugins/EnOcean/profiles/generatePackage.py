@@ -81,7 +81,7 @@ def generate(packageJsonInPath, packageJsonPath, localesInPath, localesPath, sup
 
    # Locales
    for localesInPath in glob.glob(os.path.join(localesInPath, '*.json')):
-      print 'Process locales', localesInPath, 'file...',
+      print('Process locales ' + localesInPath + ' file...')
       with codecs.open(localesInPath, 'r', 'utf_8') as localesInFile:
 
          inPackage = json.load(localesInFile, object_pairs_hook=OrderedDict)
@@ -111,5 +111,5 @@ def generate(packageJsonInPath, packageJsonPath, localesInPath, localesPath, sup
          util.createParentDir(localesOutPath)
          with codecs.open(localesOutPath, 'w', 'utf_8') as localesOutFile:
             json.dump(outPackage, localesOutFile, indent=2, ensure_ascii=False)
-      print 'OK'
+      print('OK')
 
