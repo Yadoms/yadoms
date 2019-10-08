@@ -4,6 +4,7 @@
 #include <shared/web/FileDownloader.h>
 #include <Poco/Environment.h>
 #include "startupOptions/IStartupOptions.h"
+#include <shared/http/HttpMethods.h>
 #include <shared/ServiceLocator.h>
 
 namespace update
@@ -26,9 +27,6 @@ namespace update
 
       std::string CUpdateSite::m_distantScriptResult("result");
 
-      CUpdateSite::CUpdateSite()
-      {
-      }
 
       shared::CDataContainer CUpdateSite::getAllYadomsVersions()
       {
@@ -43,7 +41,8 @@ namespace update
 
       shared::CDataContainer CUpdateSite::getAllScriptInterpreterVersions()
       {
-         return callDistantScript(m_distantScriptInterpretersListScript, true, m_distantScriptInterpretersScriptResultField);
+         return callDistantScript(m_distantScriptInterpretersListScript, true,
+                                  m_distantScriptInterpretersScriptResultField);
       }
 
 
@@ -59,31 +58,34 @@ namespace update
       {
          try
          {
-            const auto startupOptions(shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>());
+            const auto startupOptions(
+               shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>());
 
             //get the script address
-            Poco::URI base(startupOptions->getUpdateSiteUri());
-            shared::web::CUriHelpers::appendPath(base, script);
+            Poco::URI uri(startupOptions->getUpdateSiteUri());
+            shared::web::CUriHelpers::appendPath(uri, script);
 
             //include script parameters
             if (includeOsAndArch)
             {
-               base.addQueryParameter(m_distantScriptParamOs, Poco::Environment::osName());
-               base.addQueryParameter(m_distantScriptParamArch, Poco::Environment::osArchitecture());
+               uri.addQueryParameter(m_distantScriptParamOs, Poco::Environment::osName());
+               uri.addQueryParameter(m_distantScriptParamArch, Poco::Environment::osArchitecture());
             }
-            if (shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode())
-               base.addQueryParameter(m_distantScriptParamDevMode);
+            if (shared::CServiceLocator::instance().get<const startupOptions::IStartupOptions>()->getDeveloperMode()
+            )
+               uri.addQueryParameter(m_distantScriptParamDevMode);
 
             //call script
-            auto lastVersionInformation = shared::web::CFileDownloader::downloadInMemoryJsonFile(base,
-                                                                                                 boost::bind(
-                                                                                                    &shared::web::
-                                                                                                    CFileDownloader::
-                                                                                                    reportProgressToLog,
-                                                                                                    _1, _2));
+            shared::CDataContainer headerParameters;
+            headerParameters.set("Host", uri.getHost() + ":" + std::to_string(uri.getPort()));
+            headerParameters.set("User-Agent", "yadoms");
+            headerParameters.set("Accept", "application/json");
+            headerParameters.set("Connection", "close");
+            auto lastVersionInformation(shared::CHttpMethods::sendGetRequest(uri,
+                                                                             headerParameters));
 
             if (!lastVersionInformation.containsValue(m_distantScriptResult))
-               throw std::runtime_error("Error in calling script. Fail to get data from " + base.toString());
+               throw std::runtime_error("Error in calling script. Fail to get data from " + uri.toString());
 
             if (!lastVersionInformation.get<bool>(m_distantScriptResult))
                throw std::runtime_error(
@@ -93,8 +95,15 @@ namespace update
          }
          catch (std::exception& e)
          {
-            YADOMS_LOG(error) << "CUpdateSite::callDistantScript : fail to call " << script << " distant script" << e.
+            YADOMS_LOG(error) << "CUpdateSite::callDistantScript : fail to call " << script << " distant script" <<
+               e.
                what();
+            throw std::runtime_error("Fail to call distant script");
+         }
+         catch (...)
+         {
+            YADOMS_LOG(error) << "CUpdateSite::callDistantScript : fail to call " << script <<
+               " distant script, unknown error";
             throw std::runtime_error("Fail to call distant script");
          }
       }

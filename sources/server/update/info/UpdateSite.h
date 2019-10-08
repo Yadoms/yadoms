@@ -15,33 +15,30 @@ namespace update
          //---------------------------------------------
          ///\brief  Private ctor to disallow it
          //---------------------------------------------
-         CUpdateSite();
+         CUpdateSite() = delete;
+         virtual ~CUpdateSite() = default;
 
       public:
          //---------------------------------------------
          ///\brief   Get all the available versions of Yadoms
-         ///\param [in] displayLanguage The language used for display
          ///\return the list of Yadoms versions
          //---------------------------------------------
          static shared::CDataContainer getAllYadomsVersions();
 
          //---------------------------------------------
          ///\brief   Get all the available versions for a plugin
-         ///\param [in] displayLanguage The language used for display
          ///\return the list of plugin version
          //---------------------------------------------
          static shared::CDataContainer getAllPluginVersions();
 
          //---------------------------------------------
          ///\brief   Get all the available versions for widgets
-         ///\param [in] displayLanguage The language used for display
          ///\return the list of widgets version
          //---------------------------------------------
          static shared::CDataContainer getAllWidgetVersions();
 
          //---------------------------------------------
          ///\brief   Get all the available versions for a scriptInterpreter
-         ///\param [in] displayLanguage The language used for display
          ///\return the list of scriptInterpreter version
          //---------------------------------------------
          static shared::CDataContainer getAllScriptInterpreterVersions();
@@ -51,7 +48,6 @@ namespace update
          ///\brief                           Call the distant script
          ///\param [in] script               The script to call (i.e.: yadoms.php)
          ///\param [in] includeOsAndArch     If true : parameters LANG, OS and ARCH are passed to script, otherwise only LANG is passed
-         ///\param [in] displayLanguage      The language used for display
          ///\param [in] resultFieldToReturn  The field to return
          ///\return                          The field in script result json
          //---------------------------------------------
@@ -113,5 +109,3 @@ namespace update
       };
    }
 } // namespace update::info
-
-

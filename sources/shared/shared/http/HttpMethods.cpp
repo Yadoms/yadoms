@@ -24,8 +24,7 @@ namespace shared
    {
       try
       {
-         auto mapParameters = parameters.getAsMap<std::string>();
-         auto mapheaderParameters = headerParameters.getAsMap<std::string>();
+         const auto& mapParameters = parameters.getAsMap<std::string>();
          Poco::URI uri(session->getUrl());
 
          if (!parameters.empty())
@@ -34,14 +33,39 @@ namespace shared
                uri.addQueryParameter(parametersIterator.first, parametersIterator.second);
          }
 
+         sendGetRequest(session,
+                        headerParameters,
+                        uri,
+                        onReceive,
+                        timeout);
+      }
+      catch (std::exception& e)
+      {
+         const auto message = (boost::format("Fail to send get http request \"%1%\" : %2%") % session->getUrl() % e.
+            what()).str();
+         YADOMS_LOG(error) << message;
+         throw CHttpException(message);
+      }
+   }
+
+
+   void CHttpMethods::sendGetRequest(const boost::shared_ptr<IHTTPSession> session,
+                                     const CDataContainer& headerParameters,
+                                     const Poco::URI& uri,
+                                     boost::function1<void, CDataContainer&> onReceive,
+                                     const boost::posix_time::time_duration& timeout)
+   {
+      try
+      {
          Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET,
                                         uri.getPathAndQuery(),
                                         Poco::Net::HTTPMessage::HTTP_1_1);
 
+         const auto& mapHeaderParameters = headerParameters.getAsMap<std::string>();
          if (!headerParameters.empty())
          {
-            for (const auto& headerparametersIterator : mapheaderParameters)
-               request.add(headerparametersIterator.first, headerparametersIterator.second);
+            for (const auto& headerParametersIterator : mapHeaderParameters)
+               request.add(headerParametersIterator.first, headerParametersIterator.second);
          }
 
          session->setTimeout(timeout);
@@ -75,7 +99,8 @@ namespace shared
       }
       catch (Poco::Exception& e)
       {
-         const auto message = (boost::format("Fail to send get http request \"%1%\" : %2%") % session->getUrl() % e.message()).str();
+         const auto message = (boost::format("Fail to send get http request \"%1%\" : %2%") % session->getUrl() % e.
+            message()).str();
          YADOMS_LOG(error) << message;
          throw CHttpException(message);
       }
@@ -91,6 +116,25 @@ namespace shared
       sendGetRequest(session,
                      CDataContainer(), // no header parameters
                      parameters,
+                     [&](CDataContainer& data)
+                     {
+                        responseData = data;
+                     },
+                     timeout);
+
+      return responseData;
+   }
+
+   CDataContainer CHttpMethods::sendGetRequest(const Poco::URI& uri,
+                                               const CDataContainer& headerParameters,
+                                               const boost::posix_time::time_duration& timeout)
+   {
+      CDataContainer responseData;
+      const auto session = boost::make_shared<CStandardSession>(uri.toString());
+
+      sendGetRequest(session,
+                     headerParameters,
+                     uri,
                      [&](CDataContainer& data)
                      {
                         responseData = data;

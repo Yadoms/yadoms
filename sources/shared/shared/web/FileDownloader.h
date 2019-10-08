@@ -14,20 +14,15 @@ namespace shared
       //---------------------------------
       class YADOMS_SHARED_EXPORT CFileDownloader
       {
-      private:
          //---------------------------------
-         ///\brief Private constructor. this class should be yused with static methods only
+         ///\brief Private constructor. this class should be used with static methods only
          //---------------------------------
-         CFileDownloader()
-         {
-         }
+         CFileDownloader() = delete;
 
          //---------------------------------
-         ///\brief Private destructor. this class should be yused with static methods only
+         ///\brief Private destructor. this class should be used with static methods only
          //---------------------------------
-         virtual ~CFileDownloader()
-         {
-         }
+         virtual ~CFileDownloader() = default;
 
       public:
          //---------------------------------
@@ -65,15 +60,6 @@ namespace shared
          //---------------------------------
          static int downloadFile(const Poco::URI& uri, std::ostream& output, ProgressFunc reporter);
 
-
-         //---------------------------------
-         ///\brief Download a JSON file (in memory)
-         ///\param [in] jsonPath : the JSON file to read
-         ///\param [in] reporter : a function pointer for reporting progress (can be used with CFileDownloader::reportProgressToLog)
-         ///\return A DataContainer which handles the JSON content
-         //---------------------------------
-         static shared::CDataContainer downloadInMemoryJsonFile(const Poco::URI& jsonPath, ProgressFunc reporter);
-
          //---------------------------------
          ///\brief Download a file and check MD5 hash
          ///\param [in] toDownload        The URI to download
@@ -85,7 +71,8 @@ namespace shared
          ///\throw   shared::exception::CException : if url is not valid
          ///\throw   shared::exception::CException : if md5 hash is not valid
          //---------------------------------
-         static Poco::Path downloadFileAndVerify(const Poco::URI& toDownload, const Poco::Path& location, const std::string& md5HashExpected, ProgressFunc reporter);
+         static Poco::Path downloadFileAndVerify(const Poco::URI& toDownload, const Poco::Path& location,
+                                                 const std::string& md5HashExpected, ProgressFunc reporter);
 
          //---------------------------------
          ///\brief Download a file
