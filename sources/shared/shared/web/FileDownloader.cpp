@@ -4,6 +4,7 @@
 #include <shared/exception/Exception.hpp>
 #include <shared/encryption/Md5.h>
 #include <Poco/URI.h>
+#include <Poco/URIStreamOpener.h>
 #include <Poco/File.h>
 #include <Poco/StreamCopier.h>
 #include "exception/InvalidHash.hpp"
@@ -27,18 +28,9 @@ namespace shared
          //TODO gérer la progressions
          try
          {
-            shared::CDataContainer headerParameters;
-            headerParameters.set("Host", uri.getHost() + ":" + std::to_string(uri.getPort()));
-            headerParameters.set("User-Agent", "yadoms");
-            headerParameters.set("Accept", "application/json");
-            headerParameters.set("Connection", "close");
-            auto result(CHttpMethods::sendGetRequest(uri,
-                                                     headerParameters));
-
-            //Poco::Net::HTTPStreamFactory::registerFactory();//TODO à dépalcer ?
-            //std::unique_ptr<std::istream> pStr(Poco::URIStreamOpener::defaultOpener().open(uri));
-            //Poco::StreamCopier::copyStream(*pStr, output);
-            //return pStr->gcount();//TODO hmmm...
+            std::unique_ptr<std::istream> pStr(Poco::URIStreamOpener::defaultOpener().open(uri));
+            Poco::StreamCopier::copyStream(*pStr, output);
+            return pStr->gcount();//TODO hmmm...
          }
          catch (std::exception& e)
          {
