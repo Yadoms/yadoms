@@ -1202,7 +1202,8 @@ endif(COTIRE_USE)
 install(TARGETS yadoms RUNTIME DESTINATION ${INSTALL_BINDIR})
 
 #set yadoms.ini configuration file to be copied in bindir
-install(FILES "../config/yadoms.ini" DESTINATION ${INSTALL_BINDIR})
+install(FILES ${CMAKE_SOURCE_DIR}/../config/yadoms.ini
+   DESTINATION ${INSTALL_BINDIR})
 
 #Configure all building targets to allow finding dependencies next to them
 #so just copying boost and poco next to yadoms executable and it will work
