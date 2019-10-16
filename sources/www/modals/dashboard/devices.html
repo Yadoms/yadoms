@@ -568,8 +568,9 @@
             $deviceRow.find("td.device-attachedTo").html(attachedTo);
          })
          .fail(function (error) {
+            console.warn("Error getting attached plugin of " + device.attachedPlugin.displayName + " : " + error);
             $deviceRow.find("button.btn-configure").addClass("hide");
-            $deviceRow.find("td.device-attachedTo").html(error);
+            $deviceRow.find("td.device-attachedTo").html(device.attachedPlugin.displayName);
          });
    }
 
