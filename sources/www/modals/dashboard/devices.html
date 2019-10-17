@@ -562,7 +562,7 @@
             }
 
             var attachedTo = "<img src=\"" + iconName +
-               "\" class=\"img-thumbnail dashboard-table-icon\">&nbsp;&nbsp;" +
+               "\" class=\"img-thumbnail dashboard-table-icon alt=\"\"\">&thinsp;&nbsp;" +
                "<span>" + device.attachedPlugin.displayName + "</span>";
 
             $deviceRow.find("td.device-attachedTo").html(attachedTo);
@@ -570,7 +570,10 @@
          .fail(function (error) {
             console.warn("Error getting attached plugin of " + device.attachedPlugin.displayName + " : " + error);
             $deviceRow.find("button.btn-configure").addClass("hide");
-            $deviceRow.find("td.device-attachedTo").html(device.attachedPlugin.displayName);
+            var attachedTo = "<img src=\"" + "plugins/" + device.attachedPlugin.type + "/icon.png" +
+               "\" class=\"img-thumbnail dashboard-table-icon alt=\"\"\">&thinsp;&nbsp;" +
+               "<span>" + device.attachedPlugin.displayName + "</span>";
+            $deviceRow.find("td.device-attachedTo").html(attachedTo);
          });
    }
 
