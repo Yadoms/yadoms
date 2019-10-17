@@ -124,7 +124,7 @@ else()
    message("Python2_Interpreter_FOUND: ${Python2_Interpreter_FOUND}")
    message("Python2_EXECUTABLE: ${Python2_EXECUTABLE}")  
 
-   message(SEND_ERROR "yPython27 interpreter is not available. Python 2.7.x library is Mssing")
+   message(NOTICE "yPython27 interpreter is not available. Python 2.7.x library is Mssing")
   
 
 endif()
