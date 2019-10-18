@@ -6,7 +6,6 @@
 #include <shared/plugin/yPluginApi/historization/MessageFormatter.h>
 #include <shared/Log.h>
 #include <shared/http/HttpMethods.h>
-#include <shared/http/StandardSession.h>
 #include <shared/encryption/Base64.h>
 
 /* ----------------------------------
@@ -24,151 +23,147 @@ IMPLEMENT_PLUGIN(CLametric)
 // Event IDs
 enum
 {
-	// Example of adding a custom event
-	kCustomEvent = yApi::IYPluginApi::kPluginFirstEventId,
-	// Always start from yApi::IYPluginApi::kPluginFirstEventId
+   // Example of adding a custom event
+   kCustomEvent = yApi::IYPluginApi::kPluginFirstEventId,
+   // Always start from yApi::IYPluginApi::kPluginFirstEventId
 
-	/* ----------------------------------
+   /* ----------------------------------
 
-	Insert here all your events
+   Insert here all your events
 
-	---------------------------------- */
+   ---------------------------------- */
 };
 
 void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-	// Informs Yadoms about the plugin actual state
-	api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+   // Informs Yadoms about the plugin actual state
+   api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-	YADOMS_LOG(information) << "CLametric is starting...";
+   YADOMS_LOG(information) << "CLametric is starting...";
 
-	// Load configuration values (provided by database)
-	m_configuration.initializeWith(api->getConfiguration());
+   // Load configuration values (provided by database)
+   m_configuration.initializeWith(api->getConfiguration());
 
-	/* -----------------------------
+   /* -----------------------------
 
-	   Create & declare here all your devices and keywords.
-	   Create timers.
+      Create & declare here all your devices and keywords.
+      Create timers.
 
-	   ----------------------------- */
-	api->setPluginState(yApi::historization::EPluginState::kRunning);
+      ----------------------------- */
+   api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-	getWifiState();
+   getWifiState();
 
-	// the main loop
-	while (true)
-	{
-		// Wait for an event
-		switch (api->getEventHandler().waitForEvents())
-		{
-		case yApi::IYPluginApi::kEventStopRequested:
-			{
-				// Yadoms request the plugin to stop. Note that plugin must be stopped in 10 seconds max, otherwise it will be killed.
-				YADOMS_LOG(information) << "Stop requested";
-				api->setPluginState(yApi::historization::EPluginState::kStopped);
-				return;
-			}
+   // the main loop
+   while (true)
+   {
+      // Wait for an event
+      switch (api->getEventHandler().waitForEvents())
+      {
+      case yApi::IYPluginApi::kEventStopRequested:
+         {
+            // Yadoms request the plugin to stop. Note that plugin must be stopped in 10 seconds max, otherwise it will be killed.
+            YADOMS_LOG(information) << "Stop requested";
+            api->setPluginState(yApi::historization::EPluginState::kStopped);
+            return;
+         }
 
-		case yApi::IYPluginApi::kEventUpdateConfiguration:
-			{
-				// Configuration was updated
-				api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-				const auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
-				YADOMS_LOG(information) << "Update configuration...";
+      case yApi::IYPluginApi::kEventUpdateConfiguration:
+         {
+            // Configuration was updated
+            api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+            const auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
+            YADOMS_LOG(information) << "Update configuration...";
 
-				// Take into account the new configuration
-				// - Restart the plugin if necessary,
-				// - Update some resources,
-				// - etc...
-				m_configuration.initializeWith(newConfiguration);
+            // Take into account the new configuration
+            // - Restart the plugin if necessary,
+            // - Update some resources,
+            // - etc...
+            m_configuration.initializeWith(newConfiguration);
 
-				// Trace the configuration
-				m_configuration.trace();
+            // Trace the configuration
+            m_configuration.trace();
 
-				api->setPluginState(yApi::historization::EPluginState::kRunning);
+            api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-				break;
-			}
+            break;
+         }
 
-		case yApi::IYPluginApi::kEventDeviceCommand:
-			{
-				// A command was received from Yadoms
-				const auto command =
-					api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
-				YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
+      case yApi::IYPluginApi::kEventDeviceCommand:
+         {
+            // A command was received from Yadoms
+            const auto command =
+               api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
+            YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
 
-				/*
-	
-				Process the command here (to drive a keyword for example)
-	
-				*/
+            /*
+   
+            Process the command here (to drive a keyword for example)
+   
+            */
 
-				break;
-			}
+            break;
+         }
 
-		case kCustomEvent:
-			{
-				/*
-	
-				Process your custom event
-	
-				*/
+      case kCustomEvent:
+         {
+            /*
+   
+            Process your custom event
+   
+            */
 
-				break;
-			}
+            break;
+         }
 
-		default:
-			{
-				YADOMS_LOG(error) << "Unknown or unsupported message id " << api->getEventHandler().getEventId();
-				break;
-			}
-		}
-	}
+      default:
+         {
+            YADOMS_LOG(error) << "Unknown or unsupported message id " << api->getEventHandler().getEventId();
+            break;
+         }
+      }
+   }
 }
 
 void CLametric::getWifiState() const
 {
-	const auto apiKey = m_configuration.getAPIKey();
-	const auto ipAdress = m_configuration.getIPAddress();
-	const auto port = m_configuration.getPort();
+   try
+   {
+      shared::CDataContainer response;
+      shared::CDataContainer headerParameters;
+      shared::CDataContainer parameters;
 
+      //format url
+      auto uriStr = "http://" + m_configuration.getIPAddress() + ":" + m_configuration.getPort() +
+         "/api/v2/device/wifi";
 
-	try
-	{
-		shared::CDataContainer response;
-		shared::CDataContainer headerParameters;
-		shared::CDataContainer parameters;
+      std::string authorizationHeader = "dev:" + m_configuration.getAPIKey();
 
-		//format url
-		auto uriStr = "http://" + ipAdress + ":" + port + "/api/v2/device/wifi";
+      headerParameters.set("Authorization",
+                           "Basic " + shared::encryption::CBase64::encode(
+                              reinterpret_cast<const unsigned char*>(authorizationHeader.c_str()),
+                              authorizationHeader.length()));
 
-		std::string authorizationHeader = "basic dev:" + apiKey;
+      headerParameters.set("User-Agent", "yadoms");
+      headerParameters.set("Accept", "application/json");
+      headerParameters.set("Connection", "close");
 
-		headerParameters.set("Authorization",
-		                     shared::encryption::CBase64::encode(
-			                     reinterpret_cast<const unsigned char*>(authorizationHeader.c_str()),
-			                     authorizationHeader.size()));
+      response = shared::CHttpMethods::sendGetRequest(uriStr,
+                                                      headerParameters);
 
-
-		const auto session = boost::make_shared<shared::CStandardSession>(uriStr);
-		shared::CHttpMethods::sendGetRequest(session,
-		                                     headerParameters,
-		                                     parameters,
-		                                     [&](shared::CDataContainer& data)
-		                                     {
-			                                     response = data;
-		                                     });
-	}
-	catch (Poco::Exception& ex)
-	{
-		YADOMS_LOG(error) << "Error " << ex.displayText();
-	}
-	catch (std::exception& ex)
-	{
-		YADOMS_LOG(error) << "Error " << ex.what();
-	}
-	catch (...)
-	{
-		YADOMS_LOG(error) << "Unknown exception in sendSms";
-	}
+      bool isWifiavailable = response.get<bool>("available");
+      std::cout << isWifiavailable << std::endl;
+   }
+   catch (Poco::Exception& ex)
+   {
+      YADOMS_LOG(error) << "Error " << ex.displayText();
+   }
+   catch (std::exception& ex)
+   {
+      YADOMS_LOG(error) << "Error " << ex.what();
+   }
+   catch (...)
+   {
+      YADOMS_LOG(error) << "Unknown exception in sendSms";
+   }
 }
