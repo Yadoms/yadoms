@@ -11,11 +11,6 @@
 
 namespace shared
 {
-   CDataContainer CHttpMethods::sendGetRequest(const std::string& url)
-   {
-      return sendGetRequest(url, CDataContainer());
-   }
-
    void CHttpMethods::sendGetRequest(const boost::shared_ptr<IHTTPSession> session,
                                      const CDataContainer& headerParameters,
                                      const CDataContainer& parameters,
@@ -107,6 +102,7 @@ namespace shared
    }
 
    CDataContainer CHttpMethods::sendGetRequest(const std::string& url,
+                                               const CDataContainer& headerParameters,
                                                const CDataContainer& parameters,
                                                const boost::posix_time::time_duration& timeout)
    {
@@ -114,7 +110,7 @@ namespace shared
       const auto session = boost::make_shared<CStandardSession>(url);
 
       sendGetRequest(session,
-                     CDataContainer(), // no header parameters
+                     headerParameters,
                      parameters,
                      [&](CDataContainer& data)
                      {
