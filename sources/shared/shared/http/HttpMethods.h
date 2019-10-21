@@ -75,7 +75,7 @@ namespace shared
                                  const CDataContainer& headerParameters,
                                  const Poco::URI& uri,
                                  boost::function1<void, CDataContainer&> onReceive,
-                                 const boost::posix_time::time_duration& timeout);
+                                 const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
       /// \brief	    JsonResponseReader
