@@ -1,6 +1,8 @@
 #pragma once
 #include <plugin_cpp_api/IPlugin.h>
 #include "LametricConfiguration.h"
+#include "UrlManager.h"
+
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -14,24 +16,25 @@ namespace yApi = shared::plugin::yPluginApi;
 class CLametric : public plugin_cpp_api::IPlugin
 {
 public:
-	//--------------------------------------------------------------
-	/// \brief	Constructor
-	//--------------------------------------------------------------
-	CLametric() = default;
+   //--------------------------------------------------------------
+   /// \brief	Constructor
+   //--------------------------------------------------------------
+   CLametric() = default;
 
-	//--------------------------------------------------------------
-	/// \brief	Destructor
-	//--------------------------------------------------------------
-	virtual ~CLametric() = default;
+   //--------------------------------------------------------------
+   /// \brief	Destructor
+   //--------------------------------------------------------------
+   virtual ~CLametric() = default;
 
-	// IPlugin implementation
-	void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
-	// [END] IPlugin implementation
+   // IPlugin implementation
+   void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
+   // [END] IPlugin implementation
 
 private:
-	//--------------------------------------------------------------
-	/// \brief	The plugin configuration
-	//--------------------------------------------------------------
-	CLametricConfiguration m_configuration;
-	void getWifiState() const;
+   //--------------------------------------------------------------
+   /// \brief	The plugin configuration
+   //--------------------------------------------------------------
+   CLametricConfiguration m_configuration;
+
+   boost::shared_ptr<CUrlManager> m_lametricManager;
 };

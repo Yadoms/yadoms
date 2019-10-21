@@ -52,8 +52,12 @@ void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       ----------------------------- */
    api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-   getWifiState();
+   shared::CDataContainer response;
+   //getWifiState();
+   m_lametricManager = boost::make_shared<CUrlManager>();
+   response = m_lametricManager->getWifiState(m_configuration.getIPAddress(), m_configuration.getPort(), m_configuration.getAPIKey());
 
+   auto wifiAvailable = response.get<bool>("available");
    // the main loop
    while (true)
    {
@@ -122,48 +126,5 @@ void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             break;
          }
       }
-   }
-}
-
-void CLametric::getWifiState() const
-{
-   try
-   {
-      shared::CDataContainer response;
-      shared::CDataContainer headerParameters;
-      shared::CDataContainer parameters;
-
-      //format url
-      auto uriStr = "http://" + m_configuration.getIPAddress() + ":" + m_configuration.getPort() +
-         "/api/v2/device/wifi";
-
-      std::string authorizationHeader = "dev:" + m_configuration.getAPIKey();
-
-      headerParameters.set("Authorization",
-                           "Basic " + shared::encryption::CBase64::encode(
-                              reinterpret_cast<const unsigned char*>(authorizationHeader.c_str()),
-                              authorizationHeader.length()));
-
-      headerParameters.set("User-Agent", "yadoms");
-      headerParameters.set("Accept", "application/json");
-      headerParameters.set("Connection", "close");
-
-      response = shared::CHttpMethods::sendGetRequest(uriStr,
-                                                      headerParameters);
-
-      bool isWifiavailable = response.get<bool>("available");
-      std::cout << isWifiavailable << std::endl;
-   }
-   catch (Poco::Exception& ex)
-   {
-      YADOMS_LOG(error) << "Error " << ex.displayText();
-   }
-   catch (std::exception& ex)
-   {
-      YADOMS_LOG(error) << "Error " << ex.what();
-   }
-   catch (...)
-   {
-      YADOMS_LOG(error) << "Unknown exception in sendSms";
    }
 }

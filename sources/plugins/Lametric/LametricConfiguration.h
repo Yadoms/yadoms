@@ -27,20 +27,16 @@ public:
    /// \brief	    Just for test, not needed for real plugin
    //--------------------------------------------------------------
    void trace() const;
-	
+
    std::string CLametricConfiguration::getIPAddress() const;
 
    std::string CLametricConfiguration::getPort() const;
-	
+
    std::string CLametricConfiguration::getAPIKey() const;
-	
+
 private:
    //--------------------------------------------------------------
    /// \brief	    Configuration getter
    //--------------------------------------------------------------
    yApi::YPluginConfiguration m_configuration;
-
-
-
 };
-
