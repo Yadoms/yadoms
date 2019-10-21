@@ -424,6 +424,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
 
 # Start
+print ('Script run with Python version ' + sys.version)
 try:
    os.makedirs(outputPath)
 except OSError:
