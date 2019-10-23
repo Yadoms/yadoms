@@ -51,7 +51,6 @@ shared::CDataContainer CUrlManager::getState(ERequestType requestType)
 
    std::string authorizationHeader = username + ":" + apiKey;
 
-   Poco::URI uri(url);
 
    headerParameters.set("Authorization",
                         AuthorizationType + shared::encryption::CBase64::encode(
@@ -62,14 +61,7 @@ shared::CDataContainer CUrlManager::getState(ERequestType requestType)
    headerParameters.set("Accept", "application/json");
    headerParameters.set("Connection", "close");
 
-   const auto session = boost::make_shared<shared::CStandardSession>(url);
-
-   shared::CHttpMethods::sendGetRequest(session,
-                                        headerParameters,
-                                        uri,
-                                        [&](shared::CDataContainer& data)
-                                        {
-                                           response = data;
-                                        });
-   return response;
+   return shared::CHttpMethods::sendGetRequest(url,
+                                               parameters,
+                                               headerParameters);
 }
