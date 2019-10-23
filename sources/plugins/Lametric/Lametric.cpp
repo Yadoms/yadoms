@@ -5,8 +5,6 @@
 #include <Poco/Net/HTTPSClientSession.h>
 #include <shared/plugin/yPluginApi/historization/MessageFormatter.h>
 #include <shared/Log.h>
-#include <shared/http/HttpMethods.h>
-#include <shared/encryption/Base64.h>
 
 /* ----------------------------------
 
@@ -53,9 +51,10 @@ void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    api->setPluginState(yApi::historization::EPluginState::kRunning);
 
    shared::CDataContainer response;
-   //getWifiState();
-   m_lametricManager = boost::make_shared<CUrlManager>();
-   response = m_lametricManager->getWifiState(m_configuration.getIPAddress(), m_configuration.getPort(), m_configuration.getAPIKey());
+
+   m_lametricManager = boost::make_shared<CUrlManager>(m_configuration);
+
+   response = m_lametricManager->getState(CUrlManager::kRequestWifi);
 
    auto wifiAvailable = response.get<bool>("available");
    // the main loop

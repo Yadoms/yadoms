@@ -3,7 +3,7 @@
 #include "IUrlManager.h"
 #include "LametricConfiguration.h"
 
-class CUrlManager : public IUrlManager
+class CUrlManager
 {
 public:
 
@@ -13,20 +13,23 @@ public:
 
    virtual ~CUrlManager() = default;
 
-   shared::CDataContainer CUrlManager::getDeviceState() override;
+   enum ERequestType
+   {
+      kRequestDevice,
+      kRequestWifi,
+      kRequestBluetooth,
+      kRequestAudio,
+      kRequestUnknown
+   };
 
-   shared::CDataContainer CUrlManager::getWifiState() override;
-
-   shared::CDataContainer CUrlManager::getBluetoothState() override;
-
-   shared::CDataContainer CUrlManager::getAudioState() override;
+   shared::CDataContainer getState(ERequestType requestType);
 
 private:
 
-   static const std::string m_devicePath;
-   static const std::string m_WifiPath;
-   static const std::string m_BluetoothPath;
-   static const std::string m_audioPath;
-   CLametricConfiguration m_lametricConfiguration;
+   static const std::string DevicePath;
+   static const std::string WifiPath;
+   static const std::string BluetoothPath;
+   static const std::string AudioPath;
 
+   const CLametricConfiguration& m_lametricConfiguration;
 };
