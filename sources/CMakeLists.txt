@@ -255,6 +255,10 @@ endif()
 # define libraries to link with
 #
 ###############################################
+if(MSVC) #TODO This libs seem to  needed under Windows (maybe needed by Poco). To be confirmed...
+	set(LIBS ${LIBS} "C:/OpenSSL-Win32/lib/libeay32.lib" "C:/OpenSSL-Win32/lib/ssleay32.lib")
+endif()
+
 set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Poco_FOUND_LIBS} ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} ${Protobuf_LIBRARIES})
 
 ##################################################################################################
