@@ -14,23 +14,15 @@ namespace yApi = shared::plugin::yPluginApi;
 class COledEspEasyController
 {
 public:
-	enum E_StartResult
-	{
-		kSuccess = 0,      /// started successfully
-		kSerialPortError,  /// in case of serial port access problem
-		kControllerError,  /// in case of controller problem
-		kUnknownError      /// in case of any other problem      
-	};
-
 	//--------------------------------------------------------------
-	/// \brief	    Contructor
+	/// \brief	    Constructor
 	//--------------------------------------------------------------
 	COledEspEasyController(const COledEspEasyConfiguration& configuration);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~COledEspEasyController();
+   virtual ~COledEspEasyController() = default;
 
    //--------------------------------------------------------------
    /// \brief	    Switch screen ON

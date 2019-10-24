@@ -11,52 +11,24 @@
 
 namespace shared
 {
-   CDataContainer CHttpMethods::sendGetRequest(const std::string& url)
-   {
-      return sendGetRequest(url, CDataContainer());
-   }
-
-   void CHttpMethods::sendGetRequest(const boost::shared_ptr<IHTTPSession> session,
-                                     const CDataContainer& headerParameters,
-                                     const CDataContainer& parameters,
-                                     boost::function1<void, CDataContainer&> onReceive,
-                                     const boost::posix_time::time_duration& timeout)
+   CDataContainer CHttpMethods::sendGetRequest(const std::string& url,
+                                               const CDataContainer& headerParameters,
+                                               const CDataContainer& parameters,
+                                               const ESessionType& sessionType,
+                                               const boost::posix_time::time_duration& timeout)
    {
       try
       {
          const auto& mapParameters = parameters.getAsMap<std::string>();
-         Poco::URI uri(session->getUrl());
+         Poco::URI uri(url);
 
          if (!parameters.empty())
          {
             for (const auto& parametersIterator : mapParameters)
-               uri.addQueryParameter(parametersIterator.first, parametersIterator.second);
+               uri.addQueryParameter(parametersIterator.first,
+                                     parametersIterator.second);
          }
 
-         sendGetRequest(session,
-                        headerParameters,
-                        uri,
-                        onReceive,
-                        timeout);
-      }
-      catch (std::exception& e)
-      {
-         const auto message = (boost::format("Fail to send get http request \"%1%\" : %2%") % session->getUrl() % e.
-            what()).str();
-         YADOMS_LOG(error) << message;
-         throw CHttpException(message);
-      }
-   }
-
-
-   void CHttpMethods::sendGetRequest(const boost::shared_ptr<IHTTPSession> session,
-                                     const CDataContainer& headerParameters,
-                                     const Poco::URI& uri,
-                                     boost::function1<void, CDataContainer&> onReceive,
-                                     const boost::posix_time::time_duration& timeout)
-   {
-      try
-      {
          Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET,
                                         uri.getPathAndQuery(),
                                         Poco::Net::HTTPMessage::HTTP_1_1);
@@ -65,28 +37,21 @@ namespace shared
          if (!headerParameters.empty())
          {
             for (const auto& headerParametersIterator : mapHeaderParameters)
-               request.add(headerParametersIterator.first, headerParametersIterator.second);
+               request.add(headerParametersIterator.first,
+                           headerParametersIterator.second);
          }
 
-         session->setTimeout(timeout);
+         auto session(createSession(sessionType,
+                                    url,
+                                    timeout));
+
          session->sendRequest(request);
 
          Poco::Net::HTTPResponse response;
+         auto& receivedStream = session->receiveResponse(response);
 
          if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK)
-         {
-            CDataContainer data;
-
-            if (jsonResponseReader(session, response, data))
-            {
-               onReceive(data);
-               return;
-            }
-
-            const auto message = (boost::format("content not yet managed : %1%") % response.getContentType()).str();
-            YADOMS_LOG(error) << message;
-            throw exception::CException(message);
-         }
+            return jsonResponseReader(response, receivedStream);
 
          const auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
          YADOMS_LOG(error) << message;
@@ -99,64 +64,56 @@ namespace shared
       }
       catch (Poco::Exception& e)
       {
-         const auto message = (boost::format("Fail to send get http request \"%1%\" : %2%") % session->getUrl() % e.
+         const auto message = (boost::format("Fail to send GET http request \"%1%\" : %2%") % url % e.
             message()).str();
+         YADOMS_LOG(error) << message;
+         YADOMS_LOG(error) << "Request was : " << url;
+         throw CHttpException(message);
+      }
+      catch (std::exception& e)
+      {
+         const auto message = (boost::format("Fail to send GET http request or interpret answer \"%1%\" : %2%") % url %
+            e.what()).str();
          YADOMS_LOG(error) << message;
          throw CHttpException(message);
       }
    }
 
-   CDataContainer CHttpMethods::sendGetRequest(const std::string& url,
-                                               const CDataContainer& parameters,
-                                               const boost::posix_time::time_duration& timeout)
+   boost::shared_ptr<IHttpSession> CHttpMethods::createSession(const ESessionType& sessionType,
+                                                               const std::string& url,
+                                                               const boost::posix_time::time_duration& timeout)
    {
-      CDataContainer responseData;
-      const auto session = boost::make_shared<CStandardSession>(url);
+      boost::shared_ptr<IHttpSession> session;
 
-      sendGetRequest(session,
-                     CDataContainer(), // no header parameters
-                     parameters,
-                     [&](CDataContainer& data)
-                     {
-                        responseData = data;
-                     },
-                     timeout);
-
-      return responseData;
-   }
-
-   CDataContainer CHttpMethods::sendGetRequest(const Poco::URI& uri,
-                                               const CDataContainer& headerParameters,
-                                               const boost::posix_time::time_duration& timeout)
-   {
-      CDataContainer responseData;
-      const auto session = boost::make_shared<CStandardSession>(uri.toString());
-
-      sendGetRequest(session,
-                     headerParameters,
-                     uri,
-                     [&](CDataContainer& data)
-                     {
-                        responseData = data;
-                     },
-                     timeout);
-
-      return responseData;
-   }
-
-   bool CHttpMethods::jsonResponseReader(const boost::shared_ptr<IHTTPSession> session,
-                                         Poco::Net::HTTPResponse& httpresponse,
-                                         CDataContainer& response)
-   {
-      auto& rs = session->receiveResponse(httpresponse);
-      if (boost::icontains(httpresponse.getContentType(), "application/json"))
+      switch (sessionType)
       {
-         // Content-Length is not always fullfilled so we don't use hasContentLength and getContentLength
-         const std::istreambuf_iterator<char> eos;
-         const std::string content(std::istreambuf_iterator<char>(rs), eos);
-         response.deserialize(content);
-         return true;
+      case kStandard:
+         session = boost::make_shared<CStandardSession>(url);
+         break;
+      case kSecured:
+         session = boost::make_shared<CSecureSession>(url);
+         break;
+      default:
+         YADOMS_LOG(error) << "HTTP session type " << sessionType << " not supported";
+         throw std::invalid_argument("HTTP session type not supported");
       }
-      return false;
+
+      session->setTimeout(timeout);
+
+      return session;
+   }
+
+   CDataContainer CHttpMethods::jsonResponseReader(Poco::Net::HTTPResponse& response,
+                                                   std::istream& receivedStream)
+   {
+      if (!boost::icontains(response.getContentType(), "application/json"))
+      {
+         YADOMS_LOG(error) << "HTTP response is not JSON";
+         throw std::runtime_error("HTTP response is not JSON");
+      }
+
+      // Content-Length is not always fulfilled so we don't use hasContentLength and getContentLength
+      static const std::istreambuf_iterator<char> Eos;
+      return CDataContainer(std::string(std::istreambuf_iterator<char>(receivedStream), Eos));
    }
 } // namespace shared
