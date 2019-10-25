@@ -57,6 +57,8 @@ void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    response = m_lametricManager->getState(CUrlManager::kRequestWifi);
 
    auto wifiAvailable = response.get<bool>("available");
+
+   response = m_lametricManager->sendPostMessage();
    // the main loop
    while (true)
    {

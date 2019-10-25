@@ -6,6 +6,11 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
+enum EPortType
+{
+   kHttp = 8080,
+   kHttps = 4343
+};
 //--------------------------------------------------------------
 /// \brief	Configuration of the empty plugin
 //--------------------------------------------------------------
@@ -30,7 +35,7 @@ public:
 
    std::string CLametricConfiguration::getIPAddress() const;
 
-   std::string CLametricConfiguration::getPort() const;
+   EPortType CLametricConfiguration::getPort() const;
 
    std::string CLametricConfiguration::getAPIKey() const;
 

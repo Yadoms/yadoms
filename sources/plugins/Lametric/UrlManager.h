@@ -22,7 +22,14 @@ public:
       kRequestUnknown
    };
 
-   shared::CDataContainer getState(ERequestType requestType);
+   shared::CDataContainer getState(ERequestType requestType) const;
+   shared::CDataContainer getDeviceState() const;
+   shared::CDataContainer getWifiState() const;
+   shared::CDataContainer getBluetoothState() const;
+   shared::CDataContainer getAudioState() const;
+
+   shared::CDataContainer sendPostMessage() const;
+
 
 private:
 
@@ -30,6 +37,6 @@ private:
    static const std::string WifiPath;
    static const std::string BluetoothPath;
    static const std::string AudioPath;
-
+   static const std::string NotificationsPath;
    const CLametricConfiguration& m_lametricConfiguration;
 };
