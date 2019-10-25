@@ -79,6 +79,79 @@ namespace shared
       }
    }
 
+   CDataContainer CHttpMethods::sendPostRequest(const std::string& url,
+                                                const CDataContainer& headerParameters,
+                                                const CDataContainer& parameters,
+                                                const std::string& body,
+                                                const ESessionType& sessionType,
+                                                const boost::posix_time::time_duration& timeout)
+   {
+      try
+      {
+         const auto& mapParameters = parameters.getAsMap<std::string>();
+         Poco::URI uri(url);
+
+         if (!parameters.empty())
+         {
+            for (const auto& parametersIterator : mapParameters)
+               uri.addQueryParameter(parametersIterator.first,
+                                     parametersIterator.second);
+         }
+
+         Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_POST,
+                                        uri.getPathAndQuery(),
+                                        Poco::Net::HTTPMessage::HTTP_1_1);
+
+         const auto& mapHeaderParameters = headerParameters.getAsMap<std::string>();
+         if (!headerParameters.empty())
+         {
+            for (const auto& headerParametersIterator : mapHeaderParameters)
+               request.add(headerParametersIterator.first,
+                           headerParametersIterator.second);
+         }
+
+         request.setContentLength(body.length());
+
+         auto session(createSession(sessionType,
+                                    url,
+                                    timeout));
+
+         std::ostream& os = session->sendRequest(request);
+
+         os << body;
+
+         Poco::Net::HTTPResponse response;
+         auto& receivedStream = session->receiveResponse(response);
+
+         if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK || response.getStatus() == Poco::Net::HTTPResponse::HTTP_CREATED)
+            return jsonResponseReader(response, receivedStream);
+
+         const auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
+         YADOMS_LOG(error) << message;
+         throw exception::CException(message);
+      }
+      catch (const Poco::Net::SSLException& e)
+      {
+         std::cerr << e.what() << ": " << e.message() << std::endl;
+         throw CHttpException(e.message());
+      }
+      catch (Poco::Exception& e)
+      {
+         const auto message = (boost::format("Fail to send Post http request \"%1%\" : %2%") % url % e.
+            message()).str();
+         YADOMS_LOG(error) << message;
+         YADOMS_LOG(error) << "Request was : " << url;
+         throw CHttpException(message);
+      }
+      catch (std::exception& e)
+      {
+         const auto message = (boost::format("Fail to send Post http request or interpret answer \"%1%\" : %2%") % url %
+            e.what()).str();
+         YADOMS_LOG(error) << message;
+         throw CHttpException(message);
+      }
+   }
+
    boost::shared_ptr<IHttpSession> CHttpMethods::createSession(const ESessionType& sessionType,
                                                                const std::string& url,
                                                                const boost::posix_time::time_duration& timeout)
