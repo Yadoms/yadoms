@@ -8,7 +8,6 @@
 IMPLEMENT_PLUGIN(CWeather)
 
 const boost::posix_time::time_duration CWeather::RequestPeriodicity(boost::posix_time::hours(3));
-const boost::posix_time::time_duration CWeather::RetryDelay(boost::posix_time::minutes(10));
 
 const std::string CWeather::ForecastWeatherDevicePrefix("Forecast weather day + ");
 const int CWeather::NbForecastDays(3);
@@ -133,7 +132,7 @@ void CWeather::requestWeather(boost::shared_ptr<yApi::IYPluginApi> api)
          m_requestTimer->start(RequestPeriodicity);
          return;
       }
-      m_requestTimer->start(RetryDelay);
+      m_requestTimer->start(m_weatherService->serviceRecommendedRetryDelay());
    }
 }
 
