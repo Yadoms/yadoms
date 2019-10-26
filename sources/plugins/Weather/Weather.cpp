@@ -9,9 +9,6 @@ IMPLEMENT_PLUGIN(CWeather)
 
 const boost::posix_time::time_duration CWeather::RequestPeriodicity(boost::posix_time::hours(3));
 
-const std::string CWeather::ForecastWeatherDevicePrefix("Forecast weather day + ");
-const int CWeather::NbForecastDays(3);
-
 
 // Event IDs
 enum
@@ -92,19 +89,6 @@ void CWeather::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 void CWeather::declareDevices() const
 {
    m_weatherService->declareDevices();
-
-
-   //for (auto forecastDay = 0; forecastDay < NbForecastDays; ++forecastDay)//TODO revoir ?
-   //{
-   //   const auto deviceName = ForecastWeatherDevicePrefix + std::to_string(forecastDay);
-   //   if (!api->deviceExists(LiveWeatherDeviceName))
-   //   {
-   //      api->declareDevice(deviceName,
-   //                         deviceName,
-   //                         deviceName,
-   //                         m_forcastPerDayKeywords[forecastDay]);
-   //   }
-   //}
 }
 
 void CWeather::requestWeather(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -123,11 +107,14 @@ void CWeather::requestWeather(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       YADOMS_LOG(error) << "Error requesting weather data, " << exception.what();
 
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "lastRequestFailed");
+      api->setPluginState(yApi::historization::EPluginState::kCustom,
+                          "lastRequestFailed",
+                          {{"error", exception.what()}});
 
       if (++m_requestTries >= 3)
       {
-         api->setPluginState(yApi::historization::EPluginState::kCustom, "maxTriesAchieved");
+         api->setPluginState(yApi::historization::EPluginState::kCustom,
+                             "maxTriesAchieved");
          m_requestTries = 0;
          m_requestTimer->start(RequestPeriodicity);
          return;

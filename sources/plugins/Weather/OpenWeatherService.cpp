@@ -1,13 +1,20 @@
 #include "stdafx.h"
 #include "OpenWeatherService.h"
-#include <utility>
+#include "ForecastWeatherDevice.h"
 #include "LiveWeatherDevice.h"
-#include "shared/http/StandardSession.h"
-#include "shared/http/HttpMethods.h"
+#include <shared/http/StandardSession.h>
+#include <shared/http/HttpMethods.h>
 
 
-const std::string COpenWeatherService::LiveWeatherDeviceName("Weather");
-
+// Openweather gives up to 5 days forecast, by 3 hours, so 40 forecasts.
+// It's too many data for us, we keep only current day with 3 hours details,
+// and compute day summary for the last days to have a forecast per day.
+const unsigned int COpenWeatherService::NbForecastHours(8);
+const unsigned int COpenWeatherService::NbForecastDays(4);
+const std::string COpenWeatherService::LiveWeatherDeviceName("Live weather");
+const std::string COpenWeatherService::ServiceName("OpenWeather");
+const std::string COpenWeatherService::ForecastWeatherPerDayDevicePrefix("Forecast weather day + ");
+const std::string COpenWeatherService::ForecastWeatherPerHourDevicePrefix("Forecast weather hour + ");
 
 COpenWeatherService::COpenWeatherService(boost::shared_ptr<yApi::IYPluginApi> api,
                                          std::string apiKey)
@@ -22,22 +29,41 @@ boost::posix_time::time_duration COpenWeatherService::serviceRecommendedRetryDel
    return boost::posix_time::minutes(10);
 }
 
+std::string COpenWeatherService::getForecastWeatherDeviceNameForDay(int forecastDay) const
+{
+   return ForecastWeatherPerDayDevicePrefix + std::to_string(forecastDay + 2);
+}
+
+std::string COpenWeatherService::getForecastWeatherDeviceNameForHour(int forecastHour) const
+{
+   return ForecastWeatherPerHourDevicePrefix + std::to_string((forecastHour + 1) * 3);
+}
+
 void COpenWeatherService::declareDevices() const
 {
    CLiveWeatherDevice liveWeatherDevice(LiveWeatherDeviceName);
-   liveWeatherDevice.declareDevice(m_api);
+   liveWeatherDevice.declareDevice(m_api,
+                                   ServiceName);
+
+   for (auto forecastHour = 0; forecastHour < NbForecastHours; ++forecastHour)
+   {
+      CForecastWeatherDevice forecastWeatherDevice(getForecastWeatherDeviceNameForHour(forecastHour));
+      forecastWeatherDevice.declareDevice(m_api,
+                                          ServiceName);
+   }
+
+   for (auto forecastDay = 0; forecastDay < NbForecastDays; ++forecastDay)
+   {
+      CForecastWeatherDevice forecastWeatherDevice(getForecastWeatherDeviceNameForDay(forecastDay));
+      forecastWeatherDevice.declareDevice(m_api,
+                                          ServiceName);
+   }
 }
 
 void COpenWeatherService::requestWeather(boost::shared_ptr<const shared::ILocation> forLocation) const
 {
-   const auto url(std::string("http://api.openweathermap.org/data/2.5/weather")
-      + "?APPID=" + m_apiKey
-      + "&units=metric"
-      + "&lat=" + std::to_string(forLocation->latitude())
-      + "&lon=" + std::to_string(forLocation->longitude()));
-
-   const auto weatherData = syncRequest(url);
-   processAnswer(weatherData);
+   requestLiveWeather(forLocation);
+   requestForecastWeather(forLocation);
 }
 
 shared::CDataContainer COpenWeatherService::syncRequest(const std::string& url) const
@@ -62,23 +88,34 @@ shared::CDataContainer COpenWeatherService::syncRequest(const std::string& url) 
    }
 }
 
-void COpenWeatherService::processAnswer(const shared::CDataContainer& weatherData) const
+void COpenWeatherService::requestLiveWeather(boost::shared_ptr<const shared::ILocation> forLocation) const
+{
+   const auto url(std::string("http://api.openweathermap.org/data/2.5/weather")
+      + "?APPID=" + m_apiKey
+      + "&units=metric"
+      + "&lat=" + std::to_string(forLocation->latitude())
+      + "&lon=" + std::to_string(forLocation->longitude()));
+
+   processLiveWeatherAnswer(syncRequest(url));
+}
+
+void COpenWeatherService::processLiveWeatherAnswer(const shared::CDataContainer& weatherData) const
 {
    try
    {
       YADOMS_LOG(information) << "Location name " << weatherData.get<std::string>("name");
 
-      CLiveWeatherDevice liveWeatherDevice(LiveWeatherDeviceName);
+      CLiveWeatherDevice weatherDevice(LiveWeatherDeviceName);
 
       if (weatherData.containsChildArray("weather"))
       {
          try
          {
-            liveWeatherDevice.setCondition(toYadomsCondition(weatherData.get<std::vector<shared::CDataContainer>>("weather")[0].get<int>("id")));
+            weatherDevice.setCondition(toYadomsCondition(weatherData.get<std::vector<shared::CDataContainer>>("weather")[0].get<int>("id")));
          }
          catch (const std::out_of_range& exOutOfRange)
          {
-            YADOMS_LOG(warning) << "Can not convert weather condition from OpenWeather service, when \"weather.main\" = " << exOutOfRange.what();
+            YADOMS_LOG(warning) << "Can not convert weather condition from OpenWeather service, when \"weather.id\" = " << exOutOfRange.what();
          }
          catch (const std::exception& exception)
          {
@@ -86,23 +123,99 @@ void COpenWeatherService::processAnswer(const shared::CDataContainer& weatherDat
          }
       }
       if (weatherData.containsValue("main.temp"))
-         liveWeatherDevice.setTemperature(weatherData.get<double>("main.temp"));
+         weatherDevice.setTemperature(weatherData.get<double>("main.temp"));
       if (weatherData.containsValue("main.temp_min"))
-         liveWeatherDevice.setTemperatureMin(weatherData.get<double>("main.temp_min"));
+         weatherDevice.setTemperatureMin(weatherData.get<double>("main.temp_min"));
       if (weatherData.containsValue("main.temp_max"))
-         liveWeatherDevice.setTemperatureMax(weatherData.get<double>("main.temp_max"));
+         weatherDevice.setTemperatureMax(weatherData.get<double>("main.temp_max"));
       if (weatherData.containsValue("main.humidity"))
-         liveWeatherDevice.setHumidity(weatherData.get<double>("main.humidity"));
+         weatherDevice.setHumidity(weatherData.get<double>("main.humidity"));
       if (weatherData.containsValue("main.pressure"))
-         liveWeatherDevice.setPressure(weatherData.get<double>("main.pressure"));
+         weatherDevice.setPressure(weatherData.get<double>("main.pressure"));
       if (weatherData.containsValue("wind.speed"))
-         liveWeatherDevice.setWindSpeed(weatherData.get<double>("wind.speed"));
+         weatherDevice.setWindSpeed(weatherData.get<double>("wind.speed"));
       if (weatherData.containsValue("wind.deg"))
-         liveWeatherDevice.setWindDirection(weatherData.get<int>("wind.deg"));
+         weatherDevice.setWindDirection(weatherData.get<int>("wind.deg"));
       if (weatherData.containsValue("visibility"))
-         liveWeatherDevice.setVisibility(weatherData.get<int>("visibility"));
+         weatherDevice.setVisibility(weatherData.get<int>("visibility"));
 
-      liveWeatherDevice.historize(m_api);
+      weatherDevice.historize(m_api);
+   }
+   catch (std::exception& exception)
+   {
+      YADOMS_LOG(error) << "Fail to process OpenWeather answer, " << exception.what();
+      throw;
+   }
+}
+
+void COpenWeatherService::requestForecastWeather(boost::shared_ptr<const shared::ILocation> forLocation) const
+{
+   const auto url(std::string("http://api.openweathermap.org/data/2.5/forecast")
+      + "?APPID=" + m_apiKey
+      + "&units=metric"
+      + "&lat=" + std::to_string(forLocation->latitude())
+      + "&lon=" + std::to_string(forLocation->longitude()));
+
+   processForecastWeatherAnswer(syncRequest(url));
+}
+
+void COpenWeatherService::processForecastWeatherAnswer(const shared::CDataContainer& weatherData) const
+{
+   try
+   {
+      YADOMS_LOG(information) << "Location name " << weatherData.get<std::string>("city.name");
+
+      if (weatherData.containsChildArray("list"))
+      {
+         const auto& forecasts = weatherData.get<std::vector<shared::CDataContainer>>("list");
+
+         auto hourIndex = 0;
+         for (const auto& forecast:forecasts)
+         {
+            if (hourIndex < NbForecastHours)
+            {
+               CForecastWeatherDevice weatherDevice(getForecastWeatherDeviceNameForHour(hourIndex));
+
+               weatherDevice.setForecastDatetime(boost::posix_time::time_from_string(forecast.get<std::string>("dt_txt")));
+
+               if (weatherData.containsChildArray("weather"))
+               {
+                  try
+                  {
+                     weatherDevice.setCondition(toYadomsCondition(forecast.get<std::vector<shared::CDataContainer>>("weather")[0].get<int>("id")));
+                  }
+                  catch (const std::out_of_range& exOutOfRange)
+                  {
+                     YADOMS_LOG(warning) << "Can not convert weather condition from OpenWeather service, when \"weather.id\" = " << exOutOfRange.what();
+                  }
+                  catch (const std::exception& exception)
+                  {
+                     YADOMS_LOG(warning) << "Can not convert weather condition from OpenWeather service, " << exception.what();
+                  }
+               }
+
+               if (forecast.containsValue("main.temp"))
+                  weatherDevice.setTemperature(forecast.get<double>("main.temp"));
+               if (forecast.containsValue("main.temp_min"))
+                  weatherDevice.setTemperatureMin(forecast.get<double>("main.temp_min"));
+               if (forecast.containsValue("main.temp_max"))
+                  weatherDevice.setTemperatureMax(forecast.get<double>("main.temp_max"));
+               if (forecast.containsValue("main.humidity"))
+                  weatherDevice.setHumidity(forecast.get<double>("main.humidity"));
+               if (forecast.containsValue("main.pressure"))
+                  weatherDevice.setPressure(forecast.get<double>("main.pressure"));
+               if (forecast.containsValue("wind.speed"))
+                  weatherDevice.setWindSpeed(forecast.get<double>("wind.speed"));
+               if (forecast.containsValue("wind.deg"))
+                  weatherDevice.setWindDirection(forecast.get<int>("wind.deg"));
+
+               weatherDevice.historize(m_api);
+               ++hourIndex;
+            }
+
+            //TODO ajouter les jours
+         }
+      }
    }
    catch (std::exception& exception)
    {

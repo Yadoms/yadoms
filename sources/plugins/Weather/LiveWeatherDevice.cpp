@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "LiveWeatherDevice.h"
-#include <utility>
 
 
 CLiveWeatherDevice::CLiveWeatherDevice(std::string deviceName)
@@ -28,13 +27,14 @@ CLiveWeatherDevice::CLiveWeatherDevice(std::string deviceName)
 {
 }
 
-void CLiveWeatherDevice::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+void CLiveWeatherDevice::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                       const std::string serviceName) const
 {
    if (!api->deviceExists(m_deviceName))
    {
       api->declareDevice(m_deviceName,
                          m_deviceName,
-                         m_deviceName,
+                         serviceName,
                          m_allKeywords);
    }
 }
