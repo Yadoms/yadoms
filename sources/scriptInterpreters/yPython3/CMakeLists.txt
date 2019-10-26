@@ -29,7 +29,7 @@ if(${Python3_ManualSetup})
 		message(FATAL_ERROR "The specified Python3 executable is not found : ${Python3_EXECUTABLE}")
 	endif(EXISTS ${Python3_EXECUTABLE})
 else(${Python3_ManualSetup})
-	find_package (Python3 COMPONENTS Interpreter Development)
+	find_package (Python3 COMPONENTS Interpreter)
 endif(${Python3_ManualSetup})
 
 
