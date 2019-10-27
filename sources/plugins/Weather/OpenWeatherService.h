@@ -26,6 +26,10 @@ private:
    void requestLiveWeather(boost::shared_ptr<const shared::ILocation> forLocation) const;
    void processLiveWeatherAnswer(const shared::CDataContainer& weatherData) const;
    void requestForecastWeather(boost::shared_ptr<const shared::ILocation> forLocation) const;
+   void historize3HoursForecast(int hourIndex,
+                                const boost::posix_time::ptime& forecastDatetime,
+                                const shared::CDataContainer& forecast) const;
+   void historizeDaysForecast(const std::map<int, std::vector<shared::CDataContainer>>& forecastDataByDay) const;
    void processForecastWeatherAnswer(const shared::CDataContainer& weatherData) const;
    static yApi::historization::EWeatherCondition toYadomsCondition(int owConditionCode);
    static yApi::historization::EWeatherCondition toYadomsConditionsFromOwThunderstorm(int owConditionCode);

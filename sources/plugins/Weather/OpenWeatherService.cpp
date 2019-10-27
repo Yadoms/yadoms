@@ -4,13 +4,14 @@
 #include "LiveWeatherDevice.h"
 #include <shared/http/StandardSession.h>
 #include <shared/http/HttpMethods.h>
+#include <algorithm>
 
 
 // Openweather gives up to 5 days forecast, by 3 hours, so 40 forecasts.
-// It's too many data for us, we keep only current day with 3 hours details,
-// and compute day summary for the last days to have a forecast per day.
+// It's too many data for us, we keep only 24 hours with 3 hours details,
+// and compute day summary for the 5 days.
 const unsigned int COpenWeatherService::NbForecastHours(8);
-const unsigned int COpenWeatherService::NbForecastDays(4);
+const unsigned int COpenWeatherService::NbForecastDays(5);
 const std::string COpenWeatherService::LiveWeatherDeviceName("Live weather");
 const std::string COpenWeatherService::ServiceName("OpenWeather");
 const std::string COpenWeatherService::ForecastWeatherPerDayDevicePrefix("Forecast weather day + ");
@@ -19,7 +20,7 @@ const std::string COpenWeatherService::ForecastWeatherPerHourDevicePrefix("Forec
 COpenWeatherService::COpenWeatherService(boost::shared_ptr<yApi::IYPluginApi> api,
                                          std::string apiKey)
    : m_api(std::move(api)),
-     m_apiKey(std::move(apiKey))
+     m_apiKey(move(apiKey))
 {
 }
 
@@ -31,7 +32,7 @@ boost::posix_time::time_duration COpenWeatherService::serviceRecommendedRetryDel
 
 std::string COpenWeatherService::getForecastWeatherDeviceNameForDay(int forecastDay) const
 {
-   return ForecastWeatherPerDayDevicePrefix + std::to_string(forecastDay + 2);
+   return ForecastWeatherPerDayDevicePrefix + std::to_string(forecastDay + 1);
 }
 
 std::string COpenWeatherService::getForecastWeatherDeviceNameForHour(int forecastHour) const
@@ -159,8 +160,118 @@ void COpenWeatherService::requestForecastWeather(boost::shared_ptr<const shared:
    processForecastWeatherAnswer(syncRequest(url));
 }
 
+void COpenWeatherService::historize3HoursForecast(int hourIndex,
+                                                  const boost::posix_time::ptime& forecastDatetime,
+                                                  const shared::CDataContainer& forecast) const
+{
+   CForecastWeatherDevice weatherDevice(getForecastWeatherDeviceNameForHour(hourIndex));
+
+   weatherDevice.setForecastDatetime(forecastDatetime);
+
+   if (forecast.containsChildArray("weather"))
+   {
+      try
+      {
+         weatherDevice.setCondition(toYadomsCondition(forecast.get<std::vector<shared::CDataContainer>>("weather")[0].get<int>("id")));
+      }
+      catch (const std::out_of_range& exOutOfRange)
+      {
+         YADOMS_LOG(warning) << "Can not convert weather condition from OpenWeather service, when \"weather.id\" = " << exOutOfRange.what();
+      }
+      catch (const std::exception& exception)
+      {
+         YADOMS_LOG(warning) << "Can not convert weather condition from OpenWeather service, " << exception.what();
+      }
+   }
+
+   if (forecast.containsValue("main.temp"))
+      weatherDevice.setTemperature(forecast.get<double>("main.temp"));
+   if (forecast.containsValue("main.temp_min"))
+      weatherDevice.setTemperatureMin(forecast.get<double>("main.temp_min"));
+   if (forecast.containsValue("main.temp_max"))
+      weatherDevice.setTemperatureMax(forecast.get<double>("main.temp_max"));
+   if (forecast.containsValue("main.humidity"))
+      weatherDevice.setHumidity(forecast.get<double>("main.humidity"));
+   if (forecast.containsValue("main.pressure"))
+      weatherDevice.setPressure(forecast.get<double>("main.pressure"));
+   if (forecast.containsValue("wind.speed"))
+      weatherDevice.setWindSpeed(forecast.get<double>("wind.speed"));
+   if (forecast.containsValue("wind.deg"))
+      weatherDevice.setWindDirection(forecast.get<int>("wind.deg"));
+
+   weatherDevice.historize(m_api);
+}
+
+void COpenWeatherService::historizeDaysForecast(const std::map<int, std::vector<shared::CDataContainer>>& forecastDataByDay) const
+{
+   for (const auto& forecastDataForOneDay:forecastDataByDay)
+   {
+      const auto dayIndex = forecastDataForOneDay.first;
+      const auto dataCountInTheDay = forecastDataForOneDay.second.size();
+      boost::posix_time::ptime forecastDate;
+      auto averageWeatherCondition = static_cast<int>(0);
+      auto averageTemperature = static_cast<double>(0.0f);
+      auto minTemperature = static_cast<double>(0.0f);
+      auto maxTemperature = static_cast<double>(0.0f);
+      auto averageHumidity = static_cast<double>(0.0f);
+      auto averagePressure = static_cast<double>(0.0f);
+      auto averageWindSpeed = static_cast<double>(0.0f);
+      auto averageWindDeg = static_cast<int>(0);
+      for (const auto forecastData:forecastDataForOneDay.second)
+      {
+         // For weather condition, we consider that an average does the job
+         
+         forecastDate = boost::posix_time::ptime(boost::posix_time::time_from_string(forecastData.get<std::string>("dt_txt")).date());
+
+         try
+         {
+            averageWeatherCondition += toYadomsCondition(forecastData.get<std::vector<shared::CDataContainer>>("weather")[0].get<int>("id"));
+         }
+         catch (const std::out_of_range& exOutOfRange)
+         {
+            YADOMS_LOG(warning) << "Can not convert weather condition from OpenWeather service, when \"weather.id\" = " << exOutOfRange.what();
+         }
+         catch (const std::exception& exception)
+         {
+            YADOMS_LOG(warning) << "Can not convert weather condition from OpenWeather service, " << exception.what();
+         }
+
+         averageTemperature += forecastData.get<double>("main.temp");
+         minTemperature = std::min(minTemperature, forecastData.get<double>("main.temp_min"));
+         maxTemperature = std::max(maxTemperature, forecastData.get<double>("main.temp_max"));
+         averageHumidity += forecastData.get<double>("main.humidity");
+         averagePressure += forecastData.get<double>("main.pressure");
+         averageWindSpeed += forecastData.get<double>("wind.speed");
+         averageWindDeg += forecastData.get<int>("wind.deg");
+      }
+
+      averageWeatherCondition /= dataCountInTheDay;
+      averageTemperature /= dataCountInTheDay;
+      averageHumidity /= dataCountInTheDay;
+      averagePressure /= dataCountInTheDay;
+      averageWindSpeed /= dataCountInTheDay;
+      averageWindDeg /= dataCountInTheDay;
+
+      CForecastWeatherDevice weatherDevice(getForecastWeatherDeviceNameForDay(dayIndex));
+      
+      weatherDevice.setForecastDatetime(forecastDate);
+      weatherDevice.setCondition(yApi::historization::EWeatherCondition(averageWeatherCondition));
+      weatherDevice.setTemperature(averageTemperature);
+      weatherDevice.setTemperatureMin(minTemperature);
+      weatherDevice.setTemperatureMax(maxTemperature);
+      weatherDevice.setHumidity(averageHumidity);
+      weatherDevice.setPressure(averagePressure);
+      weatherDevice.setWindSpeed(averageWindSpeed);
+      weatherDevice.setWindDirection(averageWindDeg);
+
+      weatherDevice.historize(m_api);
+   }
+}
+
 void COpenWeatherService::processForecastWeatherAnswer(const shared::CDataContainer& weatherData) const
 {
+   //TODO ajouter pluie
+   //TODO ajouter index UV
    try
    {
       YADOMS_LOG(information) << "Location name " << weatherData.get<std::string>("city.name");
@@ -169,52 +280,31 @@ void COpenWeatherService::processForecastWeatherAnswer(const shared::CDataContai
       {
          const auto& forecasts = weatherData.get<std::vector<shared::CDataContainer>>("list");
 
+         auto forecastDataByDay = std::map<int, std::vector<shared::CDataContainer>>();
+
          auto hourIndex = 0;
          for (const auto& forecast:forecasts)
          {
+            const auto forecastDatetime = boost::posix_time::time_from_string(forecast.get<std::string>("dt_txt"));
+
             if (hourIndex < NbForecastHours)
             {
-               CForecastWeatherDevice weatherDevice(getForecastWeatherDeviceNameForHour(hourIndex));
-
-               weatherDevice.setForecastDatetime(boost::posix_time::time_from_string(forecast.get<std::string>("dt_txt")));
-
-               if (weatherData.containsChildArray("weather"))
-               {
-                  try
-                  {
-                     weatherDevice.setCondition(toYadomsCondition(forecast.get<std::vector<shared::CDataContainer>>("weather")[0].get<int>("id")));
-                  }
-                  catch (const std::out_of_range& exOutOfRange)
-                  {
-                     YADOMS_LOG(warning) << "Can not convert weather condition from OpenWeather service, when \"weather.id\" = " << exOutOfRange.what();
-                  }
-                  catch (const std::exception& exception)
-                  {
-                     YADOMS_LOG(warning) << "Can not convert weather condition from OpenWeather service, " << exception.what();
-                  }
-               }
-
-               if (forecast.containsValue("main.temp"))
-                  weatherDevice.setTemperature(forecast.get<double>("main.temp"));
-               if (forecast.containsValue("main.temp_min"))
-                  weatherDevice.setTemperatureMin(forecast.get<double>("main.temp_min"));
-               if (forecast.containsValue("main.temp_max"))
-                  weatherDevice.setTemperatureMax(forecast.get<double>("main.temp_max"));
-               if (forecast.containsValue("main.humidity"))
-                  weatherDevice.setHumidity(forecast.get<double>("main.humidity"));
-               if (forecast.containsValue("main.pressure"))
-                  weatherDevice.setPressure(forecast.get<double>("main.pressure"));
-               if (forecast.containsValue("wind.speed"))
-                  weatherDevice.setWindSpeed(forecast.get<double>("wind.speed"));
-               if (forecast.containsValue("wind.deg"))
-                  weatherDevice.setWindDirection(forecast.get<int>("wind.deg"));
-
-               weatherDevice.historize(m_api);
-               ++hourIndex;
+               historize3HoursForecast(hourIndex,
+                                       forecastDatetime,
+                                       forecast);
             }
 
-            //TODO ajouter les jours
+            if (forecastDatetime.date() > shared::currentTime::Provider().now().date())
+            {
+               auto dayIndex = (forecastDatetime.date() - shared::currentTime::Provider().now().date()).days() - 1;
+               if (dayIndex < NbForecastDays)
+                  forecastDataByDay[dayIndex].push_back(forecast);
+            }
+
+            ++hourIndex;
          }
+
+         historizeDaysForecast(forecastDataByDay);
       }
    }
    catch (std::exception& exception)
