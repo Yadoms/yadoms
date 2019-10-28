@@ -3,7 +3,7 @@
 #include "IUrlManager.h"
 #include "LametricConfiguration.h"
 
-class CUrlManager
+class CUrlManager : public IUrlManager
 {
 public:
 
@@ -19,16 +19,17 @@ public:
       kRequestWifi,
       kRequestBluetooth,
       kRequestAudio,
+      kRequestNotivications,
       kRequestUnknown
    };
 
-   shared::CDataContainer getState(ERequestType requestType) const;
-   shared::CDataContainer getDeviceState() const;
-   shared::CDataContainer getWifiState() const;
-   shared::CDataContainer getBluetoothState() const;
-   shared::CDataContainer getAudioState() const;
-
-   shared::CDataContainer sendPostMessage() const;
+   // IUrlManagerinterface implementation
+   shared::CDataContainer getDeviceState() const override;
+   shared::CDataContainer getWifiState() const override;
+   shared::CDataContainer getBluetoothState() const override;
+   shared::CDataContainer getAudioState() const override;
+   void displayText(const std::string& text) const override;
+   // [END] IUrlManagerinterface implementation
 
 
 private:
@@ -38,5 +39,12 @@ private:
    static const std::string BluetoothPath;
    static const std::string AudioPath;
    static const std::string NotificationsPath;
+   static const std::string Username;
    const CLametricConfiguration& m_lametricConfiguration;
+   const shared::CDataContainer m_headerParameters;
+
+   static std::string getRequestPath(const ERequestType requestType);
+   static std::string getUrl(const CLametricConfiguration& lametricConfiguration, const std::string& requestPath);
+   shared::CDataContainer getState(ERequestType requestType) const;
+   static shared::CDataContainer buildHeaderParameters(const CLametricConfiguration& lametricConfiguration);
 };

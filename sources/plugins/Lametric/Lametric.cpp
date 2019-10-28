@@ -5,6 +5,7 @@
 #include <Poco/Net/HTTPSClientSession.h>
 #include <shared/plugin/yPluginApi/historization/MessageFormatter.h>
 #include <shared/Log.h>
+#include "shared/http/HttpException.hpp"
 
 /* ----------------------------------
 
@@ -17,6 +18,8 @@ Insert here all include files
 // Note that you have to provide some extra files, like package.json, and icon.png
 IMPLEMENT_PLUGIN(CLametric)
 
+const std::string CLametric::DeviceName("Lametric display");
+const std::string CLametric::TextKeywordName("Message");
 
 // Event IDs
 enum
@@ -31,6 +34,12 @@ enum
 
    ---------------------------------- */
 };
+
+CLametric::CLametric()
+   : m_text(boost::make_shared<yApi::historization::CText>(TextKeywordName,
+                                                           yApi::EKeywordAccessMode::kGetSet))
+{
+}
 
 void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
@@ -48,17 +57,25 @@ void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       Create timers.
 
       ----------------------------- */
-   api->setPluginState(yApi::historization::EPluginState::kRunning);
-
-   shared::CDataContainer response;
-
    m_lametricManager = boost::make_shared<CUrlManager>(m_configuration);
+   // TODO : Timer in error case
+   DeviceInformation deviceInformation;
+   if (isDeviceActive(api))
+   {
+      api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-   response = m_lametricManager->getState(CUrlManager::kRequestWifi);
+      fillDeviceInformation(&deviceInformation);
 
-   auto wifiAvailable = response.get<bool>("available");
+      declareDevice(api, &deviceInformation);
 
-   response = m_lametricManager->sendPostMessage();
+      declareKeyword(api, &deviceInformation);
+   }
+   else
+   {
+      api->setPluginState(yApi::historization::EPluginState::kError);
+   }
+
+
    // the main loop
    while (true)
    {
@@ -85,6 +102,7 @@ void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             // - Update some resources,
             // - etc...
             m_configuration.initializeWith(newConfiguration);
+            m_lametricManager = boost::make_shared<CUrlManager>(m_configuration);
 
             // Trace the configuration
             m_configuration.trace();
@@ -101,11 +119,12 @@ void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
             YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
 
-            /*
-   
-            Process the command here (to drive a keyword for example)
-   
-            */
+
+            if (boost::iequals(command->getDevice(), deviceInformation.deviceName))
+            {
+               YADOMS_LOG(information) << "Texte à envoyer : " << command->getBody();
+               m_lametricManager->displayText(command->getBody());
+            }
 
             break;
          }
@@ -128,4 +147,41 @@ void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       }
    }
+}
+
+void CLametric::declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api, DeviceInformation* deviceInformation)
+{
+   if (!api->deviceExists(deviceInformation->deviceName))
+      api->declareDevice(deviceInformation->deviceName, deviceInformation->deviceType, deviceInformation->deviceModel);
+}
+
+void CLametric::declareKeyword(boost::shared_ptr<yApi::IYPluginApi>& api, DeviceInformation* deviceInformation) const
+{
+   if (!api->keywordExists(deviceInformation->deviceName, m_text))
+      api->declareKeyword(deviceInformation->deviceName, m_text);
+}
+
+void CLametric::fillDeviceInformation(DeviceInformation* deviceInformation) const
+{
+   deviceInformation->deviceName = "Lametric";
+   deviceInformation->deviceModel = m_lametricManager->getDeviceState().get<std::string>("model");
+   deviceInformation->deviceType = m_lametricManager->getDeviceState().get<std::string>("name");
+}
+
+bool CLametric::isDeviceActive(boost::shared_ptr<yApi::IYPluginApi>& api)
+{
+   try
+   {
+      const auto response = m_lametricManager->getWifiState();
+      return response.get<bool>("active");;
+   }
+   catch (std::exception& e)
+   {
+      // TODO : translate in .json
+      api->setPluginState(yApi::historization::EPluginState::kCustom, "cannot reach Lametric device");
+      const auto message = (boost::format("Fail to send GET http request \"%1%\"") % e.
+         what()).str();
+      YADOMS_LOG(error) << message;
+   }
+   return false;
 }

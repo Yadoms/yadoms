@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/DataContainer.h>
-#include <shared/http/HttpMethods.h>
 #include "LametricConfiguration.h"
 
 class IUrlManager
@@ -8,11 +7,13 @@ class IUrlManager
 public:
    virtual ~IUrlManager() = default;
 
-   virtual shared::CDataContainer getDeviceState() = 0;
+   virtual shared::CDataContainer getDeviceState() const = 0;
 
-   virtual shared::CDataContainer getWifiState() = 0;
+   virtual shared::CDataContainer getWifiState() const = 0;
 
-   virtual shared::CDataContainer getBluetoothState() = 0;
+   virtual shared::CDataContainer getBluetoothState() const = 0;
 
-   virtual shared::CDataContainer getAudioState() = 0;
+   virtual shared::CDataContainer getAudioState() const = 0;
+
+   virtual void displayText(const std::string& text) const = 0;
 };
