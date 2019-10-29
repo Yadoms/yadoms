@@ -8,7 +8,7 @@ set(LAMETRIC_PLUGIN_SOURCES
 	stdafx.h
 	stdafx.cpp
 	IUrlManager.h
-	NotificationState.h
+	NotificationProperties.h
 	UrlManager.cpp
 	UrlManager.h
 	Lametric.h

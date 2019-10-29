@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/DataContainer.h>
-#include "NotificationState.h"
+#include "NotificationProperties.h"
 
 class IUrlManager
 {
@@ -16,6 +16,6 @@ public:
    virtual shared::CDataContainer getAudioState() const = 0;
 
    virtual void displayText(const std::string& text,
-                            notificationState::CNotificationPriority::EPriorityType priorityType,
-                            notificationState::CNotificationIcon::EIconType iconType) const = 0;
+                            notificationProperties::CNotificationPriority::EPriorityType priorityType,
+                            notificationProperties::CNotificationIcon::EIconType iconType) const = 0;
 };

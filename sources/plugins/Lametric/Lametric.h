@@ -43,7 +43,7 @@ private:
    void declareKeyword(boost::shared_ptr<yApi::IYPluginApi>& api, DeviceInformation& deviceInformation) const;
    void fillDeviceInformation(DeviceInformation& deviceInformation) const;
    void initLametric(boost::shared_ptr<yApi::IYPluginApi>& api, DeviceInformation& deviceInformation) const;
-   void CLametric::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData);
+   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData);
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------

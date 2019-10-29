@@ -53,15 +53,15 @@ shared::CDataContainer CUrlManager::getAudioState() const
 }
 
 void CUrlManager::displayText(const std::string& text,
-                              notificationState::CNotificationPriority::EPriorityType priorityType,
-                              notificationState::CNotificationIcon::EIconType iconType) const
+                              notificationProperties::CNotificationPriority::EPriorityType priorityType,
+                              notificationProperties::CNotificationIcon::EIconType iconType) const
 {
    std::string authorizationType = "Basic ";
    std::string priorityMessage;
    std::string iconToDisplay;
 
-   notificationState::CNotificationPriority::getPriorityType(priorityType, priorityMessage);
-   notificationState::CNotificationIcon::getIconType(iconType, iconToDisplay);
+   notificationProperties::CNotificationPriority::getPriorityType(priorityType, priorityMessage);
+   notificationProperties::CNotificationIcon::getIconType(iconType, iconToDisplay);
    const auto requestPath = getRequestPath(kRequestNotivications);
 
    const auto url = getUrl(m_lametricConfiguration, requestPath);

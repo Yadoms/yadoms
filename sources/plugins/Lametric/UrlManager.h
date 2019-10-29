@@ -27,8 +27,8 @@ public:
    shared::CDataContainer getBluetoothState() const override;
    shared::CDataContainer getAudioState() const override;
    void displayText(const std::string& text,
-                    notificationState::CNotificationPriority::EPriorityType priorityType = notificationState::CNotificationPriority::EPriorityType::kInfo,
-                    notificationState::CNotificationIcon::EIconType iconType = notificationState::CNotificationIcon::EIconType::kInfo) const override;
+                    notificationProperties::CNotificationPriority::EPriorityType priorityType = notificationProperties::CNotificationPriority::EPriorityType::kInfo,
+                    notificationProperties::CNotificationIcon::EIconType iconType = notificationProperties::CNotificationIcon::EIconType::kInfo) const override;
    // [END] IUrlManagerinterface implementation
 
 
