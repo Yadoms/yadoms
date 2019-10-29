@@ -15,5 +15,7 @@ public:
 
    virtual shared::CDataContainer getAudioState() const = 0;
 
-   virtual void displayText(const std::string& text, notificationState::CNotificationPriority::EPriorityType priorityType, notificationState::CNotificationIcon::EIconType iconType) const = 0;
+   virtual void displayText(const std::string& text,
+                            notificationState::CNotificationPriority::EPriorityType priorityType,
+                            notificationState::CNotificationIcon::EIconType iconType) const = 0;
 };

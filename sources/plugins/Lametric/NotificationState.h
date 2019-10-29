@@ -19,6 +19,7 @@ namespace notificationState
          {
          case kInfo:
             priorityMessage = "info";
+            break;
          case kWarning:
             priorityMessage = "warning";
             break;
@@ -47,6 +48,7 @@ namespace notificationState
          {
          case kNone:
             iconToDisplay = "none";
+            break;
          case kInfo:
             iconToDisplay = "info";
             break;
