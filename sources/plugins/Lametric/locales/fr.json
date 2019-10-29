@@ -22,5 +22,11 @@
         "Cette clé est nécessaire pour le fonctionnement de votre plugin. Elle peut être obtenue sur simple inscription (gratuite) au [Lametric](https://developer.lametric.com/user/devices).",
       "regexErrorMessage": ""
     }
+  },
+  "customLabels": {
+    "pluginState": {
+      "failedToConnect": "La connexion a échoué...",
+      "initializationError": "Erreur d'initialisation"
+    }
   }
 }

@@ -21,5 +21,11 @@
         "This key is needed and provided by sign up on [Lametric website](https://developer.lametric.com/user/devices)",
       "regexErrorMessage": ""
     }
+  },
+  "customLabels": {
+    "pluginState": {
+      "failedToConnect": "The connexion failed...",
+      "initializationError": "Initialization error"
+    }
   }
 }

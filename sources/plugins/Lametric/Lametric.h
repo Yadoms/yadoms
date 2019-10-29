@@ -2,6 +2,7 @@
 #include <plugin_cpp_api/IPlugin.h>
 #include "LametricConfiguration.h"
 #include "UrlManager.h"
+#include <boost/smart_ptr/shared_ptr.hpp>
 
 
 // Shortcut to yPluginApi namespace
@@ -13,6 +14,7 @@ struct DeviceInformation
    std::string deviceType;
    std::string deviceModel;
 };
+
 //--------------------------------------------------------------
 /// \brief	This class is an empty plugin example
 /// \note   This plugin do nothing, you just have to :
@@ -37,10 +39,11 @@ public:
    // [END] IPlugin implementation
 
 private:
-   static void declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api, DeviceInformation* deviceInformation);
-   void declareKeyword(boost::shared_ptr<yApi::IYPluginApi>& api, DeviceInformation* deviceInformation) const;
-   bool isDeviceActive(boost::shared_ptr<yApi::IYPluginApi>& api);
-   void fillDeviceInformation(DeviceInformation* deviceInformation) const;
+   static void declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api, DeviceInformation& deviceInformation);
+   void declareKeyword(boost::shared_ptr<yApi::IYPluginApi>& api, DeviceInformation& deviceInformation) const;
+   void fillDeviceInformation(DeviceInformation& deviceInformation) const;
+   void initLametric(boost::shared_ptr<yApi::IYPluginApi>& api, DeviceInformation& deviceInformation) const;
+   void CLametric::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData);
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
@@ -52,4 +55,9 @@ private:
 
    static const std::string DeviceName;
    static const std::string TextKeywordName;
+
+   //--------------------------------------------------------------
+   /// \brief	Refresh timer
+   //--------------------------------------------------------------
+   boost::shared_ptr<shared::event::CEventTimer> m_refreshTimer;
 };
