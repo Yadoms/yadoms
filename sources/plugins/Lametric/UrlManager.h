@@ -3,11 +3,9 @@
 #include "IUrlManager.h"
 #include "LametricConfiguration.h"
 
-class CUrlManager : public IUrlManager
+class CUrlManager final : public IUrlManager
 {
 public:
-
-   CUrlManager() = default;
 
    CUrlManager(const CLametricConfiguration& lametricConfiguration);
 
@@ -28,7 +26,9 @@ public:
    shared::CDataContainer getWifiState() const override;
    shared::CDataContainer getBluetoothState() const override;
    shared::CDataContainer getAudioState() const override;
-   void displayText(const std::string& text) const override;
+   void displayText(const std::string& text,
+                    notificationState::CNotificationPriority::EPriorityType priorityType = notificationState::CNotificationPriority::EPriorityType::kInfo,
+                    notificationState::CNotificationIcon::EIconType iconType = notificationState::CNotificationIcon::EIconType::kInfo) const override;
    // [END] IUrlManagerinterface implementation
 
 

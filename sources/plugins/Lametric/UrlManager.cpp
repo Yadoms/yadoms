@@ -52,16 +52,22 @@ shared::CDataContainer CUrlManager::getAudioState() const
    return getState(kRequestAudio);
 }
 
-void CUrlManager::displayText(const std::string& text) const
+void CUrlManager::displayText(const std::string& text,
+                              notificationState::CNotificationPriority::EPriorityType priorityType,
+                              notificationState::CNotificationIcon::EIconType iconType) const
 {
    std::string authorizationType = "Basic ";
+   std::string priorityMessage;
+   std::string iconToDisplay;
 
+   notificationState::CNotificationPriority::getPriorityType(priorityType, priorityMessage);
+   notificationState::CNotificationIcon::getIconType(iconType, iconToDisplay);
    const auto requestPath = getRequestPath(kRequestNotivications);
-
 
    const auto url = getUrl(m_lametricConfiguration, requestPath);
    const std::string body =
-      "{\n\"model\":{\n\"frames\":[\n{\n\"text\":\"Yadoms\",\n\"icon\":\"i31581\",\n\"index\":0\n},\n{\n\"text\":\"" +
+      "{\n\"priority\": " + priorityMessage + "{\n\"icon_type\": " + iconToDisplay +
+      "\n\"model\":{\n\"frames\":[\n{\n\"text\":\"Yadoms\",\n\"icon\":\"i31581\",\n\"index\":0\n},\n{\n\"text\":\"" +
       text + "\",\n\"icon\":\"i31581\"\n}\n]\n}\n}";
 
    auto headerPostParameters = m_headerParameters;

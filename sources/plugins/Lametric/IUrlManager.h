@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/DataContainer.h>
-#include "LametricConfiguration.h"
+#include "NotificationState.h"
 
 class IUrlManager
 {
@@ -15,5 +15,5 @@ public:
 
    virtual shared::CDataContainer getAudioState() const = 0;
 
-   virtual void displayText(const std::string& text) const = 0;
+   virtual void displayText(const std::string& text, notificationState::CNotificationPriority::EPriorityType priorityType, notificationState::CNotificationIcon::EIconType iconType) const = 0;
 };

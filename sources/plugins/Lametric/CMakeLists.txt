@@ -7,9 +7,10 @@ include("../YadomsPluginsCommon.cmake")
 set(LAMETRIC_PLUGIN_SOURCES
 	stdafx.h
 	stdafx.cpp
+	IUrlManager.h
+	NotificationState.h
 	UrlManager.cpp
 	UrlManager.h
-	IUrlManager.h
 	Lametric.h
 	Lametric.cpp 
 	LametricConfiguration.h
