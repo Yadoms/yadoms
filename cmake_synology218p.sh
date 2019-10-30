@@ -34,12 +34,12 @@ case "$choice" in
 
     c)
 	# cmake for cross compilation
-	$cmake_executable  -DCMAKE_YADOMS_PLATFORM=Synology218p -DCC_RPI_GCC=x86_64-pc-linux-gnu-gcc -DCC_RPI_GXX=x86_64-pc-linux-gnu-g++  -DCMAKE_TOOLCHAIN_FILE=../sources/cmake/Synology218p.cmake ../sources
+	$cmake_executable  -DCMAKE_YADOMS_PLATFORM=Synology218p -DCC_RPI_GCC=x86_64-pc-linux-gnu-gcc -DCC_RPI_GXX=x86_64-pc-linux-gnu-g++  -DCMAKE_TOOLCHAIN_FILE=../sources/cmake/synology218p.cmake ../sources
 	;;
 
     r)
 	# cmake for cross compilation RELEASE
-	cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_YADOMS_PLATFORM=Synology218p -DCC_RPI_GCC=x86_64-pc-linux-gnu-gcc -DCC_RPI_GXX=x86_64-pc-linux-gnu-g++  -DCMAKE_TOOLCHAIN_FILE=../sources/cmake/Synology218p.cmake ../sources
+	cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_YADOMS_PLATFORM=Synology218p -DCC_RPI_GCC=x86_64-pc-linux-gnu-gcc -DCC_RPI_GXX=x86_64-pc-linux-gnu-g++  -DCMAKE_TOOLCHAIN_FILE=../sources/cmake/synology218p.cmake ../sources
 	;;
 
     *)
