@@ -54,7 +54,6 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	      Send a command to a keyword
-   /// \param [in]   classIdentifier   The class identifier for the keyword
    /// \param [in]   keyword           The keyword name
    /// \param [in]   commandData       The command data
    //--------------------------------------------------------------   
@@ -62,7 +61,6 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	      get the last value of a keyword
-   /// \param [in]   classIdentifier   The class identifier for the keyword
    /// \param [in]   keyword           The keyword name
    //--------------------------------------------------------------   
    boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> getLastKeywordValue(
@@ -79,7 +77,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	      Get the homeId
    /// \return       The homeId
-   //--------------------------------------------------------------      
+   //--------------------------------------------------------------
    uint32 getHomeId() const;
    //--------------------------------------------------------------
    /// \brief	      Get the nodeId
