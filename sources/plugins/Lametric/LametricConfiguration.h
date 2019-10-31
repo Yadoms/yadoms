@@ -33,11 +33,11 @@ public:
    //--------------------------------------------------------------
    void trace() const;
 
-   std::string CLametricConfiguration::getIPAddress() const;
+   std::string getIPAddress() const;
 
-   EPortType CLametricConfiguration::getPort() const;
+   EPortType getPort() const;
 
-   std::string CLametricConfiguration::getAPIKey() const;
+   std::string getAPIKey() const;
 
 private:
    //--------------------------------------------------------------
