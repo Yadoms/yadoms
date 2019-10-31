@@ -35,10 +35,9 @@ void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       m_lametricManager = boost::make_shared<CUrlManager>(m_configuration);
 
       // First connexion
-      api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot,
+      m_refreshTimer = api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot,
                                          boost::posix_time::seconds(00));
-      m_refreshTimer = api->getEventHandler().createTimer(kAnswerTimeout, shared::event::CEventTimer::kPeriodic,
-                                                          boost::posix_time::seconds(10));
+
       m_refreshTimer->stop();
 
       api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
@@ -83,8 +82,8 @@ void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             const auto command =
                api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
             YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
-
-            if (boost::iequals(command->getDevice(), deviceInformation.deviceName))
+            // TODO : deviceInformation not filled WHY ?
+            //if (boost::iequals(command->getDevice(), deviceInformation.deviceName))
             {
                m_lametricManager->displayText(command->getBody());
             }
