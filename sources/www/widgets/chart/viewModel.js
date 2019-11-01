@@ -848,7 +848,11 @@ function chartViewModel() {
 	  
 	  // Display new points only if we are in the last window
 	  if (self.window==1){
-		  self.timeDeffered = self.addContinuousSummaryPoint();		  
+		  
+		  // Display new points only if we are in summary display mode
+		  if (self.prefix !== "minute") 
+			  self.timeDeffered = self.addContinuousSummaryPoint();
+		  
 		  $.each(self.seriesUuid, function (index, value) {
 			 var serie = self.chart.get(value);
 			 var serieRange = self.chart.get('range_' + value);
