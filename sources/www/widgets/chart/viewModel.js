@@ -623,7 +623,6 @@ function chartViewModel() {
             arrayOfDeffered2[keywordId] = new $.Deferred();
             deffered.done(function (data) {
                var dataVector = data.data;
-
                if (!(deviceIsSummary[keywordId])) {
 			      plot[keywordId] = createPlotVector(
 				                       data.data, 

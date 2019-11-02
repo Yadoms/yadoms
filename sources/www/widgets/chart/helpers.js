@@ -18,23 +18,6 @@ function isEnumVariable (keywordInfo) {
       return false;
 };
 
-mean = function(array) {
-  var moy = 0;
-  var nbre = 0;
-  
-  $.each(array, function (index,value) {
-	 if (value != null) {
-		moy = moy + parseFloat(value);
-		nbre = nbre + 1;
-	 }
-  });
-  
-  if (nbre != 0)
-	 moy = moy/nbre;
-  
-  return moy;
-};
-
 function roundNumber(num, scale) {
   if(!("" + num).includes("e")) {
     return +(Math.round(num + "e+" + scale)  + "e-" + scale);
@@ -399,6 +382,8 @@ createPlotVector = function (data, KeywordInformation, differentialDisplay, last
    var plot=[];
    var lastDisplayDate = undefined;
    var timeBetweenAcquisition = [];
+   var sum = 0;
+   var nb = 0;
    $.each(data, function (index,value) { //data comes from acquisition table
        var d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
        var v;
@@ -407,15 +392,16 @@ createPlotVector = function (data, KeywordInformation, differentialDisplay, last
 		   throw $.t("widgets.chart:errorInitialization");
 	   
        if (isEnumVariable(KeywordInformation)) {
-          v = getKeyByValue(KeywordInformation.typeInfo.values, value.key);
+          v = parseFloat(getKeyByValue(KeywordInformation.typeInfo.values, value.key));
        }else {
           v = parseFloat(value.key);
        }
 
 	   if (!isNullOrUndefined(lastDisplayDate)){
-		  var meantime = mean(timeBetweenAcquisition);
+		  sum += (d-lastDisplayDate);
+		  nb++;
 		  
-		  if ((d-lastDisplayDate)> 2*meantime){
+		  if ((d-lastDisplayDate)> 2*(sum/nb)){
 			  plot.push([d, null]);
 		  }
 		  
