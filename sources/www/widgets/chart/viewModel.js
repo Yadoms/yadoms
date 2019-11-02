@@ -115,7 +115,6 @@ function chartViewModel() {
       $btns.off("click").on("click", self.navigatorBtnClick());
       self.widgetApi.widget.$toolbar.find(".print-command").off("click").on("click", self.printBtnClick());
       self.widgetApi.widget.$toolbar.find(".export-command").off("click").on("click", self.exportBtnClick());
-	  
       self.widgetApi.widget.$toolbar.find(".before").off("click").on("click", self.displayBefore());
 	  self.enableButtonAfter();
     };
@@ -541,18 +540,19 @@ function chartViewModel() {
        // Analysis of all adaptations
        $.each(self.widget.configuration.devices, function (index, device1) {
            var keywordId1 = device1.content.source.keywordId;
+		   var adaptation = false;
 		   $.each(self.widget.configuration.devices, function (index, device2) {
 			   var keywordId2 = device2.content.source.keywordId;
 			   if (self.chart.keyword[keywordId1].unit === self.chart.keyword[keywordId2].unit){
 				  if (self.coeff[keywordId1] != self.coeff[keywordId2]){ // If applicable adaptation are different
+				     adaptation = true;
 					 if (self.coeff[keywordId1] < self.coeff[keywordId2]){ //We keep the lowest one
 						// Adapt the second one
 						newPlots[keywordId2] = adaptArray(plot[keywordId2], self.coeff[keywordId1]);
 						newRanges[keywordId2] = adaptRange(range[keywordId2], self.coeff[keywordId1]);
 						newUnits[keywordId2] = newUnits[keywordId1];
 						self.coeff[keywordId2] = self.coeff[keywordId1];
-					 }else{
-						// Adapt the first one
+					 }else{ // Adapt the first one
 						newPlots[keywordId1] = adaptArray(plot[keywordId1], self.coeff[keywordId2]);
 						newRanges[keywordId1] = adaptRange(range[keywordId1], self.coeff[keywordId2]);
 						newUnits[keywordId1] = newUnits[keywordId2];
@@ -562,9 +562,11 @@ function chartViewModel() {
 			   }
 			});
 			
-			plot[keywordId1] = newPlots[keywordId1];
-			range[keywordId1] = newRanges[keywordId1];
-			self.unit[keywordId1] = newUnits[keywordId1];
+			if (adaptation){
+				plot[keywordId1] = newPlots[keywordId1];
+				range[keywordId1] = newRanges[keywordId1];
+				self.unit[keywordId1] = newUnits[keywordId1];
+			}
 		 });
 	};
 
@@ -578,8 +580,8 @@ function chartViewModel() {
        if (!self.chart) 
           return defferedRefresh.promise().reject(); // Liberate immediately the deffered
        
-      //try {
-        self.chart.showLoading($.t("widgets.chart:loadingData"));
+      try {
+        self.chart.showLoading("<img src=\"widgets/chart/loading.gif\">");
         var deviceIsSummary = [];
 		self.chartLastValue = [];
         var arrayOfDeffered = [];
@@ -668,10 +670,8 @@ function chartViewModel() {
 			if (parseBool(self.widget.configuration.automaticScale) &&
 			    parseBool(self.widget.configuration.oneAxis.checkbox)) { // For the same axis we adapt all identical units to the same correct unit		
 				self.adaptPlotsUnitsSameAxis(plot, range);
-				defferedOneAxis.resolve();
-			}else{
-				defferedOneAxis.resolve();
 			}
+			defferedOneAxis.resolve();
 		});
         
         // Create and display each curve
@@ -682,7 +682,7 @@ function chartViewModel() {
               var legendText = createLegendText(self.ConfigurationLegendLabels, self.deviceInfo[keywordId].friendlyName, self.chart.keyword[keywordId].friendlyName);
               var serie = null;
               var legendConfiguration = parseBool(self.widget.configuration.legends.checkbox);
-              
+              debugger;
               if (plot[keywordId].length != 0)
                  self.chartLastXPosition[keywordId] = plot[keywordId][plot[keywordId].length-1][0];
               
@@ -779,12 +779,12 @@ function chartViewModel() {
           notifyError($.t("widgets.chart:errorDuringGettingDeviceData"), error);
           defferedRefresh.reject();
        });
-      /*} catch (err) {
+      } catch (err) {
          console.error(err.message);
          notifyError(err.message);
 		 self.widgetApi.setState (widgetStateEnum.InvalidConfiguration);
          defferedRefresh.reject();
-      }*/
+      }
        return defferedRefresh.promise();
     };
 
@@ -848,7 +848,6 @@ function chartViewModel() {
 	  
 	  // Display new points only if we are in the last window
 	  if (self.window==1){
-		  
 		  // Display new points only if we are in summary display mode
 		  if (self.prefix !== "minute") 
 			  self.timeDeffered = self.addContinuousSummaryPoint();
