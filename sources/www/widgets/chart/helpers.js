@@ -18,6 +18,23 @@ function isEnumVariable (keywordInfo) {
       return false;
 };
 
+mean = function(array) {
+  var moy = 0;
+  var nbre = 0;
+  
+  $.each(array, function (index,value) {
+	 if (value != null) {
+		moy = moy + parseFloat(value);
+		nbre = nbre + 1;
+	 }
+  });
+  
+  if (nbre != 0)
+	 moy = moy/nbre;
+  
+  return moy;
+};
+
 function roundNumber(num, scale) {
   if(!("" + num).includes("e")) {
     return +(Math.round(num + "e+" + scale)  + "e-" + scale);
@@ -380,21 +397,32 @@ adaptValuesAndUnit = function (values, range, baseUnit, callback) {
 
 createPlotVector = function (data, KeywordInformation, differentialDisplay, lastValue) {
    var plot=[];
-   //data comes from acquisition table
-   $.each(data, function (index,value) {
+   var lastDisplayDate = undefined;
+   var timeBetweenAcquisition = [];
+   $.each(data, function (index,value) { //data comes from acquisition table
        var d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
-
        var v;
-       if (!isNullOrUndefined(value.key)) {
-          if (isEnumVariable(KeywordInformation)) {
-             v = getKeyByValue(KeywordInformation.typeInfo.values, value.key);
-          }else {
-             v = parseFloat(value.key);
-          }
-       } else {
-          throw $.t("widgets.chart:errorInitialization");
+	   
+	   if (isNullOrUndefined(value.key))
+		   throw $.t("widgets.chart:errorInitialization");
+	   
+       if (isEnumVariable(KeywordInformation)) {
+          v = getKeyByValue(KeywordInformation.typeInfo.values, value.key);
+       }else {
+          v = parseFloat(value.key);
        }
-		 
+
+	   if (!isNullOrUndefined(lastDisplayDate)){
+		  var meantime = mean(timeBetweenAcquisition);
+		  
+		  if ((d-lastDisplayDate)> 2*meantime){
+			  plot.push([d, null]);
+		  }
+		  
+		  timeBetweenAcquisition.push(d-lastDisplayDate);
+	   }
+	   lastDisplayDate = d;
+
        // The differential display is disabled if the type of the data is enum or boolean
        if (differentialDisplay && !isBoolVariable(KeywordInformation) && !isEnumVariable(KeywordInformation)){
           if (!isNullOrUndefined(lastValue))
@@ -466,8 +494,8 @@ createSummaryPlotVector = function (
 	 });
 	 
 	 // Add here a null plot to separate points (no connections) if there are a missing point between the last one and the future one (a future acquisition)
-	 if (!isNullOrUndefinedOrEmpty(value) && value.length>0){
-		d = DateTimeFormatter.isoDateToDate(value[value.length-1].date)._d.getTime();
+	 if (!isNullOrUndefinedOrEmpty(data) && data.length>0){
+		d = DateTimeFormatter.isoDateToDate(data[data.length-1].date)._d.getTime();
 		var time = moment(self.serverTime).startOf(self.prefix)._d.getTime().valueOf();
 		var registerDate = moment(self.serverTime).startOf(self.prefix).subtract(1, self.prefix + 's')._d.getTime().valueOf();
 		

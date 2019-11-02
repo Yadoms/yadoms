@@ -682,7 +682,6 @@ function chartViewModel() {
               var legendText = createLegendText(self.ConfigurationLegendLabels, self.deviceInfo[keywordId].friendlyName, self.chart.keyword[keywordId].friendlyName);
               var serie = null;
               var legendConfiguration = parseBool(self.widget.configuration.legends.checkbox);
-              debugger;
               if (plot[keywordId].length != 0)
                  self.chartLastXPosition[keywordId] = plot[keywordId][plot[keywordId].length-1][0];
               
