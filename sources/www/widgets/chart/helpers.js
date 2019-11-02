@@ -76,7 +76,7 @@ function roundNumber(num, scale) {
  };
  
  function calculateFinalDate(period, time, prefix, window){
-   return DateTimeFormatter.dateToIsoDate(moment(time).subtract(period.nb * (window-1), period.type).startOf(prefix)); // TODO : A valider !
+   return DateTimeFormatter.dateToIsoDate(moment(time).subtract(period.nb * (window-1), period.type).startOf(prefix));
  };
  
  function computePrefixUIForRequest(keywordInformation, prefix){
@@ -427,8 +427,7 @@ createSummaryPlotVector = function (
 		 d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
 		 var vplot;
 
-		 if (!isNullOrUndefined(value[periodValueType])) {
-			 // read the computed desired value (avg/min/max)
+		 if (!isNullOrUndefined(value[periodValueType])) { // read the computed desired value (avg/min/max)
 			 vplot = parseFloat(value[periodValueType]);
 			 vMin = parseFloat(value.min);
 			 vMax = parseFloat(value.max);
@@ -439,7 +438,6 @@ createSummaryPlotVector = function (
 		 //we manage the missing data
 		 if ((lastDate != undefined) && (timeBetweenTwoConsecutiveValues != undefined) &&
 		 (lastDate + timeBetweenTwoConsecutiveValues < d)) {
-
 			 if (plotType === "arearange")
 				 range.push([d, null, null]);
 
@@ -467,10 +465,9 @@ createSummaryPlotVector = function (
 		 }
 	 });
 	 
-	 // Add here missing last data at the end
-	 /* TODO : This have to be added only in continuous format => To be placed elsewhere
-	 if (!isNullOrUndefinedOrEmpty(data)){
-		d = DateTimeFormatter.isoDateToDate(data[data.length-1].date)._d.getTime();
+	 // Add here a null plot to separate points (no connections) if there are a missing point between the last one and the future one (a future acquisition)
+	 if (!isNullOrUndefinedOrEmpty(value) && value.length>0){
+		d = DateTimeFormatter.isoDateToDate(value[value.length-1].date)._d.getTime();
 		var time = moment(self.serverTime).startOf(self.prefix)._d.getTime().valueOf();
 		var registerDate = moment(self.serverTime).startOf(self.prefix).subtract(1, self.prefix + 's')._d.getTime().valueOf();
 		
@@ -480,7 +477,7 @@ createSummaryPlotVector = function (
 
 			plot.push([registerDate, null]);                                             
 		}
-	 }*/
+	 }
 };
 
 createLegendText = function (configuration, deviceName, keywordName){
