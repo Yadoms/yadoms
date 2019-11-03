@@ -594,8 +594,6 @@ function chartViewModel() {
         while (self.chart.yAxis.length > 0)
            self.chart.yAxis[0].remove(false);
 
-		console.log(self.prefix);   // minute
-		console.log(self.interval); // hour
         var timeBetweenTwoConsecutiveValues;
         
         //for each plot in the configuration we request for data
@@ -617,13 +615,13 @@ function chartViewModel() {
             arrayOfDeffered2[keywordId] = new $.Deferred();
             deffered.done(function (data) {
                var dataVector = data.data;
-//			   console.log(data.data);
                if (!(deviceIsSummary[keywordId])) {
 			      plot[keywordId] = createPlotVector(
 				                       data.data, 
 									   self.chart.keyword[keywordId], 
 									   self.differentialDisplay[keywordId], 
-									   self.chartLastValue[keywordId]);
+									   self.chartLastValue,
+									   keywordId);
 			   }else{
 				 if (self.prefix === "week") { // in case of week, we have to change manually the array
 					dataVector = getWeeks(data.data);
@@ -639,7 +637,8 @@ function chartViewModel() {
 					   range[keywordId],
 					   self.chart.keyword[keywordId],
 					   self.differentialDisplay[keywordId],
-					   self.chartLastValue[keywordId]);
+					   self.chartLastValue,
+					   keywordId);
 			   }
 			   
 			   // automatic unit for each plot
@@ -978,9 +977,9 @@ function chartViewModel() {
 						var isolastdate = DateTimeFormatter.isoDateToDate(data.date)._d.getTime().valueOf();
 						if (time - isolastdate < 3600000){ // Only if the last value is in last hour
 						   setDateMinAndMax(self.chart, calculateBeginDate(self.displayDefinition[self.interval], self.serverTime, self.prefix, self.window) ,data.date); // disable the last max extreme
-						   self.chart.hideLoading(); // If a text was displayed before
+						   self.chart.hideLoading(); // If loading is displayed, we remove it
 						   if (self.differentialDisplay[keywordId]){
-							  if (serie.points.length > 0 && !isNullOrUndefined(self.chartLastValue[keywordId]))
+							  if (/*serie.points.length > 0 &&*/ !isNullOrUndefined(self.chartLastValue[keywordId]))
 								 serie.addPoint([isolastdate, (parseFloat(data.value) - self.chartLastValue[keywordId])*self.coeff[keywordId]], true, false, true);
 							  self.chartLastValue[keywordId] = parseFloat(data.value);                                                 
 						   }else if (isEnumVariable(self.chart.keyword[keywordId])){

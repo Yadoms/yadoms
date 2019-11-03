@@ -375,7 +375,7 @@ adaptValuesAndUnit = function (values, range, baseUnit, callback) {
    callback(newValues, newRange, unit, coeff);
 };
 
-createPlotVector = function (data, KeywordInformation, differentialDisplay, lastValue) {
+createPlotVector = function (data, KeywordInformation, differentialDisplay, lastValue, keywordId) {
    var plot=[];
    var lastDisplayDate = undefined;
    var timeBetweenAcquisition = [];
@@ -408,10 +408,10 @@ createPlotVector = function (data, KeywordInformation, differentialDisplay, last
 
        // The differential display is disabled if the type of the data is enum or boolean
        if (differentialDisplay && !isBoolVariable(KeywordInformation) && !isEnumVariable(KeywordInformation)){
-          if (!isNullOrUndefined(lastValue))
-             plot.push([d, v-lastValue]);
+          if (!isNullOrUndefined(lastValue[keywordId]))
+             plot.push([d, v-lastValue[keywordId]]);
 
-          lastValue = v;
+          lastValue[keywordId] = v;
        }else // standard display
           plot.push([d, v]);
     });
@@ -427,7 +427,8 @@ createSummaryPlotVector = function (
 			  range,
 			  KeywordInformation, 
 			  differentialDisplay, 
-			  lastValue) {
+			  lastValue,
+			  keywordId) {
 	 var vMin;
 	 var vMax;
 	 var lastDate;
@@ -458,10 +459,10 @@ createSummaryPlotVector = function (
 		 // The differential display is disabled if the type of the data is enum or boolean
 		 if (differentialDisplay && !isBoolVariable(KeywordInformation) && !isEnumVariable(KeywordInformation)){  
 			 if (periodValueType =="avg") {
-			   if (!isNullOrUndefined(lastValue))
-				 plot.push([d, vplot-lastValue]);
+			   if (!isNullOrUndefined(lastValue[keywordId]))
+				 plot.push([d, vplot-lastValue[keywordId]]);
 			   
-			   lastValue = vplot;
+			   lastValue[keywordId] = vplot;
 			}
 			else if (periodValueType =="max") { // In this case, we display vMax-vMin
 			   plot.push([d, vMax-vMin]);
