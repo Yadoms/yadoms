@@ -386,6 +386,11 @@
     margin-left: 5px;
 }
 
+/* For status labels, authorize multi-lines (Override bootstrap label behavior that prevent text to wrap) */
+.label-status {
+    white-space: normal;
+}
+
 /*Yadoms updating blocking splash screen*/
 #yadoms-updating-splash {
     position: fixed;

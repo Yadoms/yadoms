@@ -26,12 +26,8 @@ private:
    static const boost::posix_time::time_duration RequestPeriodicity;
    static const boost::posix_time::time_duration RetryDelay;
    boost::shared_ptr<shared::event::CEventTimer> m_requestTimer;
-   static const std::string LiveWeatherDeviceName;
-   static const std::string ForecastWeatherDevicePrefix;
-   static const int NbForecastDays;
    
    CWeatherConfiguration m_configuration;
    boost::shared_ptr<IWeatherService> m_weatherService;
    int m_requestTries;
-   //TODO std::vector<ForcastPerDayKeywords> forcastPerDayKeywords;
 };
