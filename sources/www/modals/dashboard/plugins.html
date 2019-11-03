@@ -90,10 +90,10 @@
                   true;
 
             var type = "<img src=\"plugins/" + pi.type +
-                  "/icon.png\" class=\"img-thumbnail dashboard-table-icon\">&nbsp;&nbsp;" +
-                  "<span>" + $.t("plugins." + pi.type + ":name", {
+                  "/icon.png\" class=\"img-thumbnail dashboard-table-icon\" alt=\"" +
+                  $.t("plugins." + pi.type + ":name", {
                         defaultValue: pi.package.name
-                  }) + "</span>";
+                  }) + "\">";
 
             var autoStartCommand = "<input class=\"cb-autoStart\" type=\"checkbox\">";
             if (failToLoadPluginPackage === true)
@@ -135,7 +135,7 @@
 
             var frameworkPluginInstance = "<tr plugin-id=\"" + pi.id + "\">" +
                   "<td class=\"plugin-displayName vert-align\"></td>" +
-                  "<td class=\"plugin-type vert-align\" align=\"left\"></td>" +
+                  "<td class=\"plugin-type vert-align\" align=\"center\"></td>" +
                   "<td class=\"plugin-autoStart vert-align\"></td>" +
                   "<td class=\"plugin-actions vert-align\"></td>" +
                   "<td class=\"plugin-status vert-align\"></td>" +
