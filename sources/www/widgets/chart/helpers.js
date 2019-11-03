@@ -37,6 +37,7 @@ function roundNumber(num, scale) {
 
 function constructToolBarPeriodMenuItem(interval, datai18n) {return "<div class=\"widget-toolbar-button range-btn\" interval=" + interval + "><span data-i18n=\"widgets.chart:navigator." + datai18n + "\"/></div>";}
 function constructToolBarIntervalMenuItem(prefix, datai18n) {return "<div class=\"widget-toolbar-button range-btn\" prefix=" + prefix + "><span data-i18n=\"widgets.chart:navigator." + datai18n + "\"/></div>";}
+function constructExportCommandMenuItem(datai18n, mime) {return "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export." + datai18n + "\" mime-type=" + mime + "></span></li>";}
 
  /**
   * transform old configuration to new interval/prefix configuration

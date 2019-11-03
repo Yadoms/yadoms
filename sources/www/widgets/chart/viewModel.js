@@ -94,11 +94,11 @@ function chartViewModel() {
               "<ul class=\"dropdown-menu\" aria-labelledby=\"chartExportMenu" + self.widget.id + "\">" +
                   "<li><span class=\"print-command\" data-i18n=\"widgets.chart:export.print\"></span></li>" +
                   "<li role=\"separator\" class=\"divider\"></li>" +
-                  "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.png\" mime-type=\"image/png\"></span></li>" +
-                  "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.jpeg\" mime-type=\"image/jpeg\"></span></li>" +
-                  "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.svg\" mime-type=\"image/svg+xml\"></span></li>" +
-                  "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.csv\" mime-type=\"text/csv\"></span></li>" +
-                  "<li><span class=\"export-command\" data-i18n=\"widgets.chart:export.xls\" mime-type=\"application/vnd.ms-excel\"></span></li>" +
+				  constructExportCommandMenuItem("png", "image/png") +
+				  constructExportCommandMenuItem("jpeg", "image/jpeg") +
+				  constructExportCommandMenuItem("svg", "image/svg+xml") +
+				  constructExportCommandMenuItem("csv", "text/csv") +
+				  constructExportCommandMenuItem("xls", "application/vnd.ms-excel") +
               "</ul>" +
            "</div>"
            });
