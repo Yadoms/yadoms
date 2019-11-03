@@ -1,8 +1,9 @@
 #pragma once
 #include <plugin_cpp_api/IPlugin.h>
 #include "LametricConfiguration.h"
-#include "UrlManager.h"
+#include "LametricDeviceState.h"
 #include <boost/smart_ptr/shared_ptr.hpp>
+#include "LametricNotificationSender.h"
 
 
 // Shortcut to yPluginApi namespace
@@ -49,8 +50,8 @@ private:
    //--------------------------------------------------------------
    CLametricConfiguration m_configuration;
 
-   boost::shared_ptr<CUrlManager> m_lametricManager;
-
+   boost::shared_ptr<CLametricDeviceState> m_lametricDeviceManager;
+   boost::shared_ptr < CLametricNotificationSender> m_lametricManagerSender;
    boost::shared_ptr<yApi::historization::CText> m_text;
 
    static const std::string DeviceName;

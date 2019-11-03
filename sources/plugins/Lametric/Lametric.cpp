@@ -32,15 +32,17 @@ void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    try
    {
       m_configuration.initializeWith(api->getConfiguration());
-      m_lametricManager = boost::make_shared<CUrlManager>(m_configuration);
 
-      // First connexion
+      m_lametricDeviceManager = boost::make_shared<CLametricDeviceState>(m_configuration);
+
+      m_lametricManagerSender = boost::make_shared<CLametricNotificationSender>(m_configuration);
+
       m_refreshTimer = api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot,
                                          boost::posix_time::seconds(00));
 
       m_refreshTimer->stop();
 
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+      api->setPluginState(yApi::historization::EPluginState::kRunning);
    }
    catch (...)
    {
@@ -79,18 +81,19 @@ void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       case yApi::IYPluginApi::kEventDeviceCommand:
          {
+            initLametric(api, deviceInformation);
             const auto command =
                api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
             YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
-            // TODO : deviceInformation not filled WHY ?
-            //if (boost::iequals(command->getDevice(), deviceInformation.deviceName))
+
+            if (boost::iequals(command->getDevice(), deviceInformation.deviceName))
             {
-               m_lametricManager->displayText(command->getBody());
+               m_lametricManagerSender->displayText(command->getBody());
             }
 
             break;
          }
-
+         
       case kConnectionRetryTimer:
          {
             initLametric(api, deviceInformation);
@@ -130,8 +133,8 @@ void CLametric::declareKeyword(boost::shared_ptr<yApi::IYPluginApi>& api, Device
 void CLametric::fillDeviceInformation(DeviceInformation& deviceInformation) const
 {
    deviceInformation.deviceName = "Lametric";
-   deviceInformation.deviceModel = m_lametricManager->getDeviceState().get<std::string>("model");
-   deviceInformation.deviceType = m_lametricManager->getDeviceState().get<std::string>("name");
+   deviceInformation.deviceModel = m_lametricDeviceManager->getDeviceState().get<std::string>("model");
+   deviceInformation.deviceType = m_lametricDeviceManager->getDeviceState().get<std::string>("name");
 }
 
 
@@ -141,13 +144,15 @@ void CLametric::initLametric(boost::shared_ptr<yApi::IYPluginApi>& api, DeviceIn
 
    try
    {
-      const auto response = m_lametricManager->getWifiState();
-      m_refreshTimer->start();
+      m_lametricDeviceManager->getWifiState();
+
       fillDeviceInformation(deviceInformation);
 
       declareDevice(api, deviceInformation);
 
       declareKeyword(api, deviceInformation);
+
+      m_refreshTimer->start();
    }
    catch (std::exception& e)
    {
@@ -166,7 +171,8 @@ void CLametric::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
    YADOMS_LOG(information) << "Update configuration...";
 
    m_configuration.initializeWith(newConfiguration);
-   m_lametricManager = boost::make_shared<CUrlManager>(m_configuration);
+
+   m_lametricDeviceManager = boost::make_shared<CLametricDeviceState>(m_configuration);
 
    m_configuration.trace();
 }
