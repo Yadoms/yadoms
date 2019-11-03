@@ -16,7 +16,7 @@ shared::CDataContainer CLametricDeviceState::getState(const CUrlManagerHelper::E
    const auto requestPath = m_urlManagerHelper->getRequestPath(requestType);
 
 
-   const auto url = m_urlManagerHelper->getUrl(m_lametricConfiguration, requestPath);
+   const auto url = m_urlManagerHelper->getRequestUrl(m_lametricConfiguration, requestPath);
 
    return shared::CHttpMethods::sendGetRequest(url,
       m_urlManagerHelper->buildCommonHeaderParameters(m_lametricConfiguration));

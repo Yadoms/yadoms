@@ -6,11 +6,21 @@
 class CLametricNotificationSender
 {
 public:
-
+   // ----------------------------------------
+   /// \brief	        Constructor
+   // ---------------------------------------- 
    CLametricNotificationSender(CLametricConfiguration& lametricConfiguration);
-
+   // ----------------------------------------
+   /// \brief	        Destructor
+   // ---------------------------------------- 
    virtual ~CLametricNotificationSender() = default;
 
+   /**
+    * \brief     Sends new notification to device
+    * \param[in] text                              Text to send
+    * \param[in] priorityType                      Priority of the message, optional. Valid values are info, warning, critical
+    * \param[in] iconType                          Represents the nature of notification, optional. Valid values: none, info, alert
+   */
    void displayText(const std::string& text,
                     notificationProperties::CNotificationPriority::EPriorityType priorityType = notificationProperties::
                        CNotificationPriority::EPriorityType::kCritical,

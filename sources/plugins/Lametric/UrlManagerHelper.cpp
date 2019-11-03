@@ -32,7 +32,7 @@ std::string CUrlManagerHelper::getRequestPath(const ERequestType requestType)
    case kRequestAudio:
       requestPath = AudioPath;
       break;
-   case kRequestNotivications:
+   case kRequestNotifications:
       requestPath = NotificationsPath;
       break;
    default:
@@ -41,7 +41,7 @@ std::string CUrlManagerHelper::getRequestPath(const ERequestType requestType)
    return requestPath;
 }
 
-std::string CUrlManagerHelper::getUrl(const CLametricConfiguration& lametricConfiguration,
+std::string CUrlManagerHelper::getRequestUrl(const CLametricConfiguration& lametricConfiguration,
                                       const std::string& requestPath)
 {
    const auto protocolType = lametricConfiguration.getPort() == kHttp ? "http://" : "https://";

@@ -16,12 +16,6 @@ struct DeviceInformation
    std::string deviceModel;
 };
 
-//--------------------------------------------------------------
-/// \brief	This class is an empty plugin example
-/// \note   This plugin do nothing, you just have to :
-///         - rename all classes of this plugin
-///         - populate all code/functions
-//--------------------------------------------------------------
 class CLametric : public plugin_cpp_api::IPlugin
 {
 public:
@@ -29,7 +23,6 @@ public:
    /// \brief	Constructor
    //--------------------------------------------------------------
    CLametric();
-
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
@@ -40,25 +33,50 @@ public:
    // [END] IPlugin implementation
 
 private:
+   /**
+    * \brief Declare device
+    * \param[in] api                   Pointer to the API
+    * \param[in] deviceInformation     Structure with device informations
+    */
    static void declareDevice(boost::shared_ptr<yApi::IYPluginApi>& api, DeviceInformation& deviceInformation);
+   /**
+    * \brief  Declare Keyword
+    * \param api pointer to the API
+    * \param[in] deviceInformation     Structure with device informations
+    */
    void declareKeyword(boost::shared_ptr<yApi::IYPluginApi>& api, DeviceInformation& deviceInformation) const;
+   /**
+    * \brief Fill device informations
+    * \param[in] deviceInformation     Structure with device informations
+    */
    void fillDeviceInformation(DeviceInformation& deviceInformation) const;
+   /**
+    * \brief Init Lametric device
+    * \param[in] api                   Pointer to the API
+    * \param[int] deviceInformation    Structure with device informations
+    */
    void initLametric(boost::shared_ptr<yApi::IYPluginApi>& api, DeviceInformation& deviceInformation) const;
-   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData);
+   /**
+    * \brief Update the configuration of the plugin after a change
+    * \param api                  pointer to the API
+    * \param newConfigurationData The new configuration of the module
+    */
+   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                              const shared::CDataContainer& newConfigurationData);
+
+   //--------------------------------------------------------------
+   /// \brief	Refresh timer
+   //--------------------------------------------------------------
+   boost::shared_ptr<shared::event::CEventTimer> m_refreshTimer;
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
    CLametricConfiguration m_configuration;
 
    boost::shared_ptr<CLametricDeviceState> m_lametricDeviceManager;
-   boost::shared_ptr < CLametricNotificationSender> m_lametricManagerSender;
+   boost::shared_ptr<CLametricNotificationSender> m_lametricManagerSender;
    boost::shared_ptr<yApi::historization::CText> m_text;
 
    static const std::string DeviceName;
    static const std::string TextKeywordName;
-
-   //--------------------------------------------------------------
-   /// \brief	Refresh timer
-   //--------------------------------------------------------------
-   boost::shared_ptr<shared::event::CEventTimer> m_refreshTimer;
 };

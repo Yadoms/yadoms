@@ -21,9 +21,9 @@ void CLametricNotificationSender::displayText(const std::string& text,
 
    m_urlManagerHelper = boost::make_shared<CUrlManagerHelper>(m_lametricConfiguration);
 
-   const auto requestPath = m_urlManagerHelper->getRequestPath(CUrlManagerHelper::kRequestNotivications);
+   const auto requestPath = m_urlManagerHelper->getRequestPath(CUrlManagerHelper::kRequestNotifications);
    
-   const auto url = m_urlManagerHelper->getUrl(m_lametricConfiguration, requestPath);
+   const auto url = m_urlManagerHelper->getRequestUrl(m_lametricConfiguration, requestPath);
    const auto body =
       "{\n\"priority\": \"" + priorityMessage + "\",\n\"icon_type\": \"" + iconToDisplay +
       "\",\n\"model\":{\n\"frames\":[\n{\n\"text\":\"Yadoms\",\n\"icon\":\"i31581\",\n\"index\":0\n},\n{\n\"text\":\"" +

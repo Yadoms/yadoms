@@ -11,6 +11,7 @@ enum EPortType
    kHttp = 8080,
    kHttps = 4343
 };
+
 //--------------------------------------------------------------
 /// \brief	Configuration of the empty plugin
 //--------------------------------------------------------------
@@ -24,7 +25,7 @@ public:
 
    //--------------------------------------------------------------
    /// \brief		   Load configuration data
-   /// \param [in] data The data container
+   /// \param [in]   data The data container
    //--------------------------------------------------------------
    void initializeWith(const shared::CDataContainer& data);
 
@@ -32,11 +33,20 @@ public:
    /// \brief	    Just for test, not needed for real plugin
    //--------------------------------------------------------------
    void trace() const;
-
+   /**
+    * \brief  Get Device IP address
+    * \return Returns Device IP address
+    */
    std::string getIPAddress() const;
-
+   /**
+    * \brief  Get port
+    * \return Returns port
+    */
    EPortType getPort() const;
-
+   /**
+    * \brief  Get Device Api Key 
+    * \return Returns Device Api Key
+    */
    std::string getAPIKey() const;
 
 private:

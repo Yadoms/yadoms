@@ -38,7 +38,7 @@ void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       m_lametricManagerSender = boost::make_shared<CLametricNotificationSender>(m_configuration);
 
       m_refreshTimer = api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot,
-                                         boost::posix_time::seconds(00));
+                                                          boost::posix_time::seconds(00));
 
       m_refreshTimer->stop();
 
@@ -93,7 +93,7 @@ void CLametric::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             break;
          }
-         
+
       case kConnectionRetryTimer:
          {
             initLametric(api, deviceInformation);

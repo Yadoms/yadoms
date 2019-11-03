@@ -7,9 +7,13 @@
 class CLametricDeviceState : ILametricDeviceState
 {
 public:
-
+   //--------------------------------------------------------------
+   /// \brief	    Constructor
+   //--------------------------------------------------------------
    CLametricDeviceState(CLametricConfiguration& lametricConfiguration);
-
+   //--------------------------------------------------------------
+   /// \brief	    Destructor
+   //--------------------------------------------------------------
    virtual ~CLametricDeviceState() = default;
 
    // ILametricDeviceState implementation
