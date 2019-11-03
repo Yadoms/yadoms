@@ -1014,8 +1014,8 @@ function chartViewModel() {
 							  if (serie.points.length > 0 && !isNullOrUndefined(self.chartLastValue[keywordId]))
 								 serie.addPoint([isolastdate, (parseFloat(data.value) - self.chartLastValue[keywordId])*self.coeff[keywordId]], true, false, true);
 							  self.chartLastValue[keywordId] = parseFloat(data.value);                                                 
-						   }else if (isEnumVariable(keywordId)){
-							  var value = getKeyByValue(self.chart.keyword[keywordId].typeInfo.values, data.value);
+						   }else if (isEnumVariable(self.chart.keyword[keywordId])){
+							  var value = parseFloat(getKeyByValue(self.chart.keyword[keywordId].typeInfo.values, data.value));
 							  serie.addPoint([isolastdate, value], true, false, true);
 						   }else
 							  serie.addPoint([isolastdate, parseFloat(data.value)*self.coeff[keywordId]], true, false, true);

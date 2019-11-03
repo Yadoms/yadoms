@@ -504,7 +504,7 @@ createLegendText = function (configuration, deviceName, keywordName){
       else
          legendText = deviceName + "/" + keywordName;
 
-   return legendText;
+      return legendText;
    }catch(error){
 	  throw error;
    }	
