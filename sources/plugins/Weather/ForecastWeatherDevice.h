@@ -27,6 +27,7 @@ public:
    void setRainForNextPeriod(double rain);
    void setSnowForNextPeriod(double snow);
    void setVisibility(int distance);
+   void setUV(double uvIndex);
 
 private:
    const std::string m_deviceName;
@@ -42,6 +43,7 @@ private:
    boost::shared_ptr<yApi::historization::CRain> m_rain;
    boost::shared_ptr<yApi::historization::CRain> m_snow;
    boost::shared_ptr<yApi::historization::CDistance> m_visibility;
+   boost::shared_ptr<yApi::historization::CUv> m_uvIndex;
    const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_allKeywords;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
 };

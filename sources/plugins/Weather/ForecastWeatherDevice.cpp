@@ -3,7 +3,7 @@
 
 
 CForecastWeatherDevice::CForecastWeatherDevice(std::string deviceName)
-   : m_deviceName(std::move(deviceName)),
+   : m_deviceName(move(deviceName)),
      m_forecastDatetime(boost::make_shared<yApi::historization::CDateTime>("Forecast datetime",
                                                                            yApi::EKeywordAccessMode::kGet,
                                                                            yApi::EMeasureType::kAbsolute,
@@ -48,19 +48,24 @@ CForecastWeatherDevice::CForecastWeatherDevice(std::string deviceName)
                                                                          yApi::typeInfo::CIntTypeInfo::Empty,
                                                                          yApi::EHistoryDepth::kNoHistory)),
      m_rain(boost::make_shared<yApi::historization::CRain>("Rain next period",
-                                                                         yApi::EKeywordAccessMode::kGet,
-                                                                         yApi::EMeasureType::kCumulative,
-                                                                         yApi::typeInfo::CDoubleTypeInfo::Empty,
-                                                                         yApi::EHistoryDepth::kNoHistory)),
+                                                           yApi::EKeywordAccessMode::kGet,
+                                                           yApi::EMeasureType::kCumulative,
+                                                           yApi::typeInfo::CDoubleTypeInfo::Empty,
+                                                           yApi::EHistoryDepth::kNoHistory)),
      m_snow(boost::make_shared<yApi::historization::CRain>("Snow next period",
-                                                                         yApi::EKeywordAccessMode::kGet,
-                                                                         yApi::EMeasureType::kCumulative,
-                                                                         yApi::typeInfo::CDoubleTypeInfo::Empty,
-                                                                         yApi::EHistoryDepth::kNoHistory)),
+                                                           yApi::EKeywordAccessMode::kGet,
+                                                           yApi::EMeasureType::kCumulative,
+                                                           yApi::typeInfo::CDoubleTypeInfo::Empty,
+                                                           yApi::EHistoryDepth::kNoHistory)),
      m_visibility(boost::make_shared<yApi::historization::CDistance>("Visibility",
                                                                      yApi::EKeywordAccessMode::kGet,
                                                                      yApi::typeInfo::CDoubleTypeInfo::Empty,
                                                                      yApi::EHistoryDepth::kNoHistory)),
+     m_uvIndex(boost::make_shared<yApi::historization::CUv>("UV",
+                                                            yApi::EKeywordAccessMode::kGet,
+                                                            yApi::EMeasureType::kAbsolute,
+                                                            yApi::typeInfo::CDoubleTypeInfo::Empty,
+                                                            yApi::EHistoryDepth::kNoHistory)),
      m_allKeywords({
         m_forecastDatetime,
         m_condition,
@@ -73,7 +78,8 @@ CForecastWeatherDevice::CForecastWeatherDevice(std::string deviceName)
         m_windDirection,
         m_rain,
         m_snow,
-        m_visibility
+        m_visibility,
+        m_uvIndex
      })
 {
 }
@@ -169,4 +175,10 @@ void CForecastWeatherDevice::setVisibility(int distance)
 {
    m_visibility->set(distance);
    m_keywords.emplace_back(m_visibility);
+}
+
+void CForecastWeatherDevice::setUV(double uvIndex)
+{
+   m_uvIndex->set(uvIndex);
+   m_keywords.emplace_back(m_uvIndex);
 }

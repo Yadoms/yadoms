@@ -15,6 +15,7 @@ CLiveWeatherDevice::CLiveWeatherDevice(std::string deviceName)
      m_rain(boost::make_shared<yApi::historization::CRain>("Rain last 3h")),
      m_snow(boost::make_shared<yApi::historization::CRain>("Snow last 3h")),
      m_visibility(boost::make_shared<yApi::historization::CDistance>("Visibility")),
+     m_uvIndex(boost::make_shared<yApi::historization::CUv>("UV")),
      m_allKeywords({
         m_condition,
         m_temperature,
@@ -26,7 +27,8 @@ CLiveWeatherDevice::CLiveWeatherDevice(std::string deviceName)
         m_windDirection,
         m_rain,
         m_snow,
-        m_visibility
+        m_visibility,
+        m_uvIndex
      })
 {
 }
@@ -116,4 +118,10 @@ void CLiveWeatherDevice::setVisibility(int distance)
 {
    m_visibility->set(distance);
    m_keywords.emplace_back(m_visibility);
+}
+
+void CLiveWeatherDevice::setUV(double uvIndex)
+{
+   m_uvIndex->set(uvIndex);
+   m_keywords.emplace_back(m_uvIndex);
 }

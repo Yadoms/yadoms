@@ -72,15 +72,15 @@ shared::CDataContainer COpenWeatherService::syncRequest(const std::string& url) 
    try
    {
       YADOMS_LOG(debug) << "URL = " << url;
-      const auto weatherData = shared::CHttpMethods::sendGetRequest(url);
+      const auto answer = shared::CHttpMethods::sendGetRequest(url);
 
-      weatherData.printToLog(YADOMS_LOG(debug));
+      answer.printToLog(YADOMS_LOG(debug));
 
-      if (weatherData.get<int>("cod") != 200)
-         throw std::runtime_error(weatherData.get<std::string>("cod") + ", " +
-            weatherData.getWithDefault<std::string>("message", "Unknown error"));
+      if (answer.containsValue("cod") && answer.get<int>("cod") != 200)
+         throw std::runtime_error(answer.get<std::string>("cod") + ", " +
+            answer.getWithDefault<std::string>("message", "Unknown error"));
 
-      return weatherData;
+      return answer;
    }
    catch (std::exception& exception)
    {
@@ -91,16 +91,28 @@ shared::CDataContainer COpenWeatherService::syncRequest(const std::string& url) 
 
 void COpenWeatherService::requestLiveWeather(boost::shared_ptr<const shared::ILocation> forLocation) const
 {
-   const auto url(std::string("http://api.openweathermap.org/data/2.5/weather")
+   // General weather
+   const auto weatherUrl(std::string("http://api.openweathermap.org/data/2.5/weather")
       + "?APPID=" + m_apiKey
       + "&units=metric"
       + "&lat=" + std::to_string(forLocation->latitude())
       + "&lon=" + std::to_string(forLocation->longitude()));
+   const auto weatherData = syncRequest(weatherUrl);
 
-   processLiveWeatherAnswer(syncRequest(url));
+   // UV index
+   const auto uvIndexUrl(std::string("http://api.openweathermap.org/data/2.5/uvi")
+      + "?APPID=" + m_apiKey
+      + "&units=metric"
+      + "&lat=" + std::to_string(forLocation->latitude())
+      + "&lon=" + std::to_string(forLocation->longitude()));
+   const auto uvIndexData = syncRequest(uvIndexUrl);
+
+   processLiveWeatherAnswer(weatherData,
+                            uvIndexData);
 }
 
-void COpenWeatherService::processLiveWeatherAnswer(const shared::CDataContainer& weatherData) const
+void COpenWeatherService::processLiveWeatherAnswer(const shared::CDataContainer& weatherData,
+                                                   const shared::CDataContainer& uvIndexData) const
 {
    try
    {
@@ -143,6 +155,8 @@ void COpenWeatherService::processLiveWeatherAnswer(const shared::CDataContainer&
          weatherDevice.setSnowForLast3h(weatherData.get<double>("snow.3h"));
       if (weatherData.containsValue("visibility"))
          weatherDevice.setVisibility(weatherData.get<int>("visibility"));
+      if (uvIndexData.containsValue("value"))
+         weatherDevice.setUV(uvIndexData.get<double>("value"));
 
       weatherDevice.historize(m_api);
    }
@@ -155,13 +169,24 @@ void COpenWeatherService::processLiveWeatherAnswer(const shared::CDataContainer&
 
 void COpenWeatherService::requestForecastWeather(boost::shared_ptr<const shared::ILocation> forLocation) const
 {
-   const auto url(std::string("http://api.openweathermap.org/data/2.5/forecast")
+   // General weather
+   const auto weatherUrl(std::string("http://api.openweathermap.org/data/2.5/forecast")
       + "?APPID=" + m_apiKey
       + "&units=metric"
       + "&lat=" + std::to_string(forLocation->latitude())
       + "&lon=" + std::to_string(forLocation->longitude()));
+   const auto weatherData = syncRequest(weatherUrl);
 
-   processForecastWeatherAnswer(syncRequest(url));
+   // UV index
+   const auto uvIndexUrl(std::string("http://api.openweathermap.org/data/2.5/uvi/forecast")
+      + "?APPID=" + m_apiKey
+      + "&units=metric"
+      + "&lat=" + std::to_string(forLocation->latitude())
+      + "&lon=" + std::to_string(forLocation->longitude()));
+   const auto uvIndexData = syncRequest(uvIndexUrl);
+
+   processForecastWeatherAnswer(weatherData,
+                                uvIndexData);
 }
 
 void COpenWeatherService::historize3HoursForecast(int hourIndex,
@@ -210,7 +235,8 @@ void COpenWeatherService::historize3HoursForecast(int hourIndex,
    weatherDevice.historize(m_api);
 }
 
-void COpenWeatherService::historizeDaysForecast(const std::map<int, std::vector<shared::CDataContainer>>& forecastDataByDay) const
+void COpenWeatherService::historizeDaysForecast(const std::map<int, std::vector<shared::CDataContainer>>& forecastDataByDay,
+                                                const std::map<int, double>& uvIndexByDay) const
 {
    for (const auto& forecastDataForOneDay:forecastDataByDay)
    {
@@ -343,22 +369,33 @@ void COpenWeatherService::historizeDaysForecast(const std::map<int, std::vector<
       if (totalDaySnowDataCount)
          weatherDevice.setSnowForNextPeriod(totalDaySnow);
 
+      try
+      {
+         const auto uvValue = uvIndexByDay.at(dayIndex);
+         weatherDevice.setUV(uvValue);
+      }
+      catch (const std::out_of_range&)
+      {
+         // No UV index for selected day
+      }
+
       weatherDevice.historize(m_api);
    }
 }
 
-void COpenWeatherService::processForecastWeatherAnswer(const shared::CDataContainer& weatherData) const
+void COpenWeatherService::processForecastWeatherAnswer(const shared::CDataContainer& weatherData,
+                                                       const shared::CDataContainer& uvIndexData) const
 {
-   //TODO ajouter index UV
    try
    {
       YADOMS_LOG(information) << "Location name " << weatherData.get<std::string>("city.name");
 
+      auto forecastDataByDay = std::map<int, std::vector<shared::CDataContainer>>();
+      auto uvIndexByDay = std::map<int, double>();
+
       if (weatherData.containsChildArray("list"))
       {
          const auto& forecasts = weatherData.get<std::vector<shared::CDataContainer>>("list");
-
-         auto forecastDataByDay = std::map<int, std::vector<shared::CDataContainer>>();
 
          auto hourIndex = 0;
          for (const auto& forecast:forecasts)
@@ -381,9 +418,26 @@ void COpenWeatherService::processForecastWeatherAnswer(const shared::CDataContai
 
             ++hourIndex;
          }
-
-         historizeDaysForecast(forecastDataByDay);
       }
+
+      for (const auto& dayUvIndex:uvIndexData.get<std::vector<shared::CDataContainer>>())
+      {
+         auto uvDate = dayUvIndex.get<std::string>("date_iso");
+         // Not compilant with Boost
+         boost::erase_all(uvDate, "-");
+         boost::erase_all(uvDate, ":");
+         boost::erase_all(uvDate, "Z");
+         const auto forecastUvIndexDatetime = boost::posix_time::from_iso_string(uvDate);
+         if (forecastUvIndexDatetime.date() > shared::currentTime::Provider().now().date())
+         {
+            auto dayIndex = (forecastUvIndexDatetime.date() - shared::currentTime::Provider().now().date()).days() - 1;
+            if (dayIndex < NbForecastDays)
+               uvIndexByDay[dayIndex] = dayUvIndex.get<double>("value");
+         }
+      }
+
+      historizeDaysForecast(forecastDataByDay,
+                            uvIndexByDay);
    }
    catch (std::exception& exception)
    {
